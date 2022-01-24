@@ -22,6 +22,9 @@ export const FNumFormats = {
   },
   token: {
     maximumFractionDigits: 4
+  },
+  fiat: {
+    style: 'currency'
   }
 };
 

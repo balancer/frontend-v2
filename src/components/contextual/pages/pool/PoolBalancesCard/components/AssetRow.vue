@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { formatUnits } from '@ethersproject/units';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { bnum } from '@/lib/utils';
@@ -51,10 +51,10 @@ const balanceLabel = computed(() => {
       .times(props.priceRate)
       .toString();
 
-    return fNum2(equivMainTokenBalance, { maximumFractionDigits: 4 });
+    return fNum2(equivMainTokenBalance, FNumFormats.token);
   }
 
-  return fNum2(balance.value, { maximumFractionDigits: 4 });
+  return fNum2(balance.value, FNumFormats.token);
 });
 
 const fiatLabel = computed(() => {
@@ -64,11 +64,11 @@ const fiatLabel = computed(() => {
       .toString();
 
     const fiatValue = toFiat(equivMainTokenBalance, props.mainTokenAddress);
-    return fNum2(fiatValue, { style: 'currency' });
+    return fNum2(fiatValue, FNumFormats.fiat);
   }
 
   let fiatValue = toFiat(balance.value, props.address);
-  return fNum2(fiatValue, { style: 'currency' });
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

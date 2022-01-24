@@ -269,7 +269,7 @@ async function claimAvailableRewards() {
         />
         <BalLoadingIcon size="sm" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
-          fNum2(totalRewardsFiatValue, { style: 'currency' })
+          fNum2(totalRewardsFiatValue, FNumFormats.fiat)
         }}</span>
       </BalBtn>
     </template>
@@ -309,13 +309,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{
-                      fNum2(claimableToken.amount, { maximumFractionDigits: 4 })
-                    }}
+                    {{ fNum2(claimableToken.amount, FNumFormats.token) }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{ fNum2(claimableToken.fiatValue, { style: 'currency' }) }}
+                    {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
                   </div>
                 </div>
               </div>
@@ -336,13 +334,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{
-                      fNum2(claimableToken.amount, { maximumFractionDigits: 4 })
-                    }}
+                    {{ fNum2(claimableToken.amount, FNumFormats.token) }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{ fNum2(claimableToken.fiatValue, { style: 'currency' }) }}
+                    {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
                   </div>
                 </div>
               </div>
@@ -362,7 +358,7 @@ async function claimAvailableRewards() {
           >{{ $t('claimAll') }}
           <template v-if="hasClaimableTokens"
             >~{{
-              fNum2(totalClaimableTokensFiatValue, { style: 'currency' })
+              fNum2(totalClaimableTokensFiatValue, FNumFormats.fiat)
             }}</template
           ></BalBtn
         >

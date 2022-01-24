@@ -20,7 +20,7 @@
       <template v-else>
         <template v-if="balance > 0">
           <template v-if="balance >= 0.0001">
-            {{ fNum2(balance, { maximumFractionDigits: 4 }) }}
+            {{ fNum2(balance, FNumFormats.token) }}
           </template>
           <template v-else>
             &#60; 0.0001

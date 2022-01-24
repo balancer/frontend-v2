@@ -5,7 +5,7 @@
         >Week {{ currentWeek }} Liquidity mining incentives</span
       >
       <h1 class="font-body mt-2 text-white font-semi bold">
-        ~{{ fNum2(currentWeekTotalFiat, { style: 'currency' }) }}
+        ~{{ fNum2(currentWeekTotalFiat, FNumFormats.fiat) }}
       </h1>
     </div>
     <div class="lg:container lg:mx-auto pt-10 md:pt-12">

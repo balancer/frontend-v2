@@ -103,7 +103,7 @@ describe('useNumbers', () => {
     it('Should return the same result as usd preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'usd');
-        const format2 = fNum2(testNumber, { style: 'currency' });
+        const format2 = fNum2(testNumber, FNumFormats.fiat);
         expect(format2).toEqual(format1);
       });
     });
@@ -196,7 +196,7 @@ describe('useNumbers', () => {
     it('Should return the same result for token', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'token');
-        const format2 = fNum2(testNumber, { maximumFractionDigits: 4 });
+        const format2 = fNum2(testNumber, FNumFormats.token);
         expect(format2).toEqual(format1);
       });
     });

@@ -35,7 +35,7 @@ const { currency } = useUserSettings();
           {{ $t('total') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum2(fiatTotal, { style: 'currency' }) }}
+          {{ fNum2(fiatTotal, FNumFormats.fiat) }}
           <BalTooltip
             :text="$t('tooltips.withdraw.total', [currency.toUpperCase()])"
             icon-size="sm"

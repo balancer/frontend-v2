@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
@@ -27,13 +27,11 @@ const { fNum2, toFiat } = useNumbers();
  */
 const token = computed(() => getToken(props.address));
 
-const balanceLabel = computed(() =>
-  fNum2(props.balance, { maximumFractionDigits: 4 })
-);
+const balanceLabel = computed(() => fNum2(props.balance, FNumFormats.token));
 
 const fiatLabel = computed(() => {
   const fiatValue = toFiat(props.balance, props.address);
-  return fNum2(fiatValue, { style: 'currency' });
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

@@ -263,7 +263,7 @@ watchEffect(() => {
 
             <BalLoadingBlock v-if="balanceLoading" class="w-12 h-4 mx-2" />
             <span v-else class="mx-2">
-              {{ fNum2(tokenBalance, { maximumFractionDigits: 4 }) }}
+              {{ fNum2(tokenBalance, FNumFormats.token) }}
             </span>
 
             <template v-if="hasBalance && !noMax && !disableMax">
@@ -277,7 +277,7 @@ watchEffect(() => {
           </div>
           <div>
             <template v-if="hasAmount && hasToken">
-              {{ fNum2(tokenValue, { style: 'currency' }) }}
+              {{ fNum2(tokenValue, FNumFormats.fiat) }}
               <span v-if="priceImpact" :class="priceImpactClass">
                 ({{
                   priceImpactSign + fNum2(priceImpact, FNumFormats.percent)

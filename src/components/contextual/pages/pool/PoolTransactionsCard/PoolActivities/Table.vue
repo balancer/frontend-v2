@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { getAddress } from '@ethersproject/address';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import {
@@ -167,7 +167,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     return {
       address,
       symbol,
-      amount: fNum2(amountNumber, { maximumFractionDigits: 4 })
+      amount: fNum2(amountNumber, FNumFormats.token)
     };
   });
 }

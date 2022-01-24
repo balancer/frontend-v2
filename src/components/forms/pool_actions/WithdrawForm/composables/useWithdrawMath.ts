@@ -17,7 +17,7 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useUserSettings from '@/composables/useUserSettings';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import { BatchSwapOut } from '@/types';
@@ -345,7 +345,7 @@ export default function useWithdrawMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum2(fiatTotal.value, { style: 'currency' })
+    fNum2(fiatTotal.value, FNumFormats.fiat)
   );
 
   const shouldFetchBatchSwap = computed(

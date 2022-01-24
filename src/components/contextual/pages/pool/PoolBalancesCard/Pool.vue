@@ -169,7 +169,7 @@ export default defineComponent({
       if (!pool || !pool.value || price === 0) return '-';
 
       const balance = Number(pool.value.onchain.tokens[address].balance);
-      return fNum2(balance * price, { style: 'currency' });
+      return fNum2(balance * price, FNumFormats.fiat);
     }
 
     return {

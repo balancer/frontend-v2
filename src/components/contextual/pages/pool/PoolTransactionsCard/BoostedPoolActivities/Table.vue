@@ -315,7 +315,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                   class="mr-2 flex-shrink-0"
                 />
                 <span class="font-numeric">{{
-                  fNum2(tokenAmount.amount, { maximumFractionDigits: 4 })
+                  fNum2(tokenAmount.amount, FNumFormats.token)
                 }}</span>
               </div>
             </template>

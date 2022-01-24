@@ -393,7 +393,7 @@ function onAlertMountChange() {
             type="warning"
             >{{
               $t('createAPool.youCanFundWithThisPoolWith', [
-                fNum2(totalLiquidity.toString(), { style: 'currency' })
+                fNum2(totalLiquidity.toString(), FNumFormats.fiat)
               ])
             }}</BalAlert
           >

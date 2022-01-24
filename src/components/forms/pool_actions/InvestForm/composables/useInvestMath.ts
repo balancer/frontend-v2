@@ -1,7 +1,7 @@
 import { computed, Ref, watch, ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { parseUnits } from '@ethersproject/units';
@@ -128,7 +128,7 @@ export default function useInvestFormMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum2(fiatTotal.value, { style: 'currency' })
+    fNum2(fiatTotal.value, FNumFormats.fiat)
   );
 
   const hasAmounts = computed(() =>

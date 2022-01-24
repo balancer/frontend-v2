@@ -224,7 +224,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                         bnum(token.amount)
                           .times(priceFor(token.tokenAddress))
                           .toString(),
-                        { style: 'currency' }
+                        FNumFormats.fiat
                       )
                     }}
                   </span>
@@ -239,7 +239,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           >
             <h6>{{ $t('total') }}</h6>
             <h6>
-              {{ fNum2(poolLiquidity.toString(), { style: 'currency' }) }}
+              {{ fNum2(poolLiquidity.toString(), FNumFormats.fiat) }}
             </h6>
           </BalStack>
         </BalCard>
@@ -316,7 +316,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           class="mb-4"
           :title="
             t('createAPool.arbTitle', [
-              fNum2(arbitrageDelta.value, { style: 'currency' }),
+              fNum2(arbitrageDelta.value, FNumFormats.fiat),
               fNum2(arbitrageDelta.delta, FNumFormats.percent)
             ])
           "

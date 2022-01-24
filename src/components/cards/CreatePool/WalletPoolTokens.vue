@@ -71,7 +71,7 @@ const totalFiat = computed(() => {
             </BalStack>
             <BalStack vertical spacing="none" align="end">
               <h6>
-                {{ fNum2(balanceFor(token), { maximumFractionDigits: 4 }) }}
+                {{ fNum2(balanceFor(token), FNumFormats.token) }}
               </h6>
               <span class="text-sm text-gray-600">{{
                 fNum2(priceFor(token) * Number(balanceFor(token)), {
@@ -101,7 +101,7 @@ const totalFiat = computed(() => {
               </BalStack>
               <BalStack vertical spacing="none" align="end">
                 <h6>
-                  {{ fNum2(balanceFor(token), { maximumFractionDigits: 4 }) }}
+                  {{ fNum2(balanceFor(token), FNumFormats.token) }}
                 </h6>
                 <span class="text-sm text-gray-600">{{
                   fNum2(priceFor(token) * Number(balanceFor(token)), {
@@ -114,7 +114,7 @@ const totalFiat = computed(() => {
         </div>
         <BalStack justify="between">
           <h6>Total</h6>
-          <h6>{{ fNum2(totalFiat, { style: 'currency' }) }}</h6>
+          <h6>{{ fNum2(totalFiat, FNumFormats.fiat) }}</h6>
         </BalStack>
       </div>
     </BalStack>

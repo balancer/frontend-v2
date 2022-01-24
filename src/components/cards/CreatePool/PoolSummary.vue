@@ -12,7 +12,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { prominent } from 'color.js';
 import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * CONSTANTS
@@ -203,7 +203,7 @@ async function calculateColors() {
           {{ $t('createAPool.maxLiquidityTooltip') }}
         </BalTooltip>
       </BalStack>
-      <span>{{ fNum2(totalLiquidity.toString(), { style: 'currency' }) }}</span>
+      <span>{{ fNum2(totalLiquidity.toString(), FNumFormats.fiat) }}</span>
     </BalStack>
   </BalCard>
 </template>

@@ -84,7 +84,7 @@ function cancel() {
                 $t('poolValue')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool.totalLiquidity, { style: 'currency' })
+                fNum2(existingPool.totalLiquidity, FNumFormats.fiat)
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -92,7 +92,7 @@ function cancel() {
                 $t('volume24hShort')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool.dynamic.volume, { style: 'currency' })
+                fNum2(existingPool.dynamic.volume, FNumFormats.fiat)
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -125,7 +125,7 @@ function cancel() {
                   $t('poolValue')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.totalLiquidity, { style: 'currency' })
+                  fNum2(pool.totalLiquidity, FNumFormats.fiat)
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
@@ -133,7 +133,7 @@ function cancel() {
                   $t('volume24hShort')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.dynamic.volume, { style: 'currency' })
+                  fNum2(pool.dynamic.volume, FNumFormats.fiat)
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">

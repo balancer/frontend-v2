@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import { PoolSwap } from '@/services/balancer/subgraph/types';
@@ -170,14 +170,14 @@ const swapRows = computed<SwapRow[]>(() =>
           <div class="token-item">
             <BalAsset :address="action.tokenIn" class="mr-2 flex-shrink-0" />
             <span class="font-numeric">{{
-              fNum2(action.tokenAmountIn, { maximumFractionDigits: 4 })
+              fNum2(action.tokenAmountIn, FNumFormats.token)
             }}</span>
           </div>
           <BalIcon name="arrow-right" class="mx-1" />
           <div class="token-item">
             <BalAsset :address="action.tokenOut" class="mr-2 flex-shrink-0" />
             <span class="font-numeric">{{
-              fNum2(action.tokenAmountOut, { maximumFractionDigits: 4 })
+              fNum2(action.tokenAmountOut, FNumFormats.token)
             }}</span>
           </div>
         </div>

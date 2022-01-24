@@ -265,7 +265,7 @@ export default defineComponent({
                     trading.getQuote().maximumInAmount,
                     trading.tokenIn.value.decimals
                   ),
-                  { maximumFractionDigits: 4 }
+                  FNumFormats.token
                 ),
                 fNum2(trading.slippageBufferRate.value, FNumFormats.percent)
               ])

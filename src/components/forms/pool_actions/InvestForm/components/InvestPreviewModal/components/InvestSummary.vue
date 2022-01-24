@@ -105,7 +105,7 @@ function weeklyYieldForAPR(apr: string): string {
           {{ $t('total') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum2(fiatTotal, { style: 'currency' }) }}
+          {{ fNum2(fiatTotal, FNumFormats.fiat) }}
           <BalTooltip
             :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
             icon-size="sm"
@@ -130,7 +130,7 @@ function weeklyYieldForAPR(apr: string): string {
       <div class="summary-table-row">
         <div class="summary-table-label" v-text="$t('potentialWeeklyYield')" />
         <div class="summary-table-number">
-          {{ fNum2(totalWeeklyYield, { style: 'currency' }) }}
+          {{ fNum2(totalWeeklyYield, FNumFormats.fiat) }}
           <BalTooltip icon-size="sm" width="72" noPad>
             <template v-slot:activator>
               <StarsIcon
@@ -152,13 +152,13 @@ function weeklyYieldForAPR(apr: string): string {
                 ({{ $t('basedOnLast24h') }})
               </span>
               <div class="text-base font-semibold mt-1">
-                {{ fNum2(totalWeeklyYield, { style: 'currency' }) }}
+                {{ fNum2(totalWeeklyYield, FNumFormats.fiat) }}
                 {{ $t('perWeek') }}
               </div>
             </div>
             <div class="p-2">
               <div class="whitespace-nowrap flex items-center mb-1">
-                {{ fNum2(swapFeeWeeklyYield, { style: 'currency' }) }}
+                {{ fNum2(swapFeeWeeklyYield, FNumFormats.fiat) }}
                 <span class="ml-1 text-gray-500 text-xs">
                   {{ $t('swapFee') }}
                 </span>
@@ -169,13 +169,13 @@ function weeklyYieldForAPR(apr: string): string {
                 :hideItems="!thirdPartyMultiRewardPool"
               >
                 <div class="flex items-center">
-                  {{ fNum2(thirdPartyWeeklyYield, { style: 'currency' }) }}
+                  {{ fNum2(thirdPartyWeeklyYield, FNumFormats.fiat) }}
                   <span class="ml-1 text-gray-500 text-xs">
                     {{ thirdPartyFiatLabel }}
                   </span>
                 </div>
                 <template v-if="thirdPartyMultiRewardPool" #item="{ item }">
-                  {{ fNum2(weeklyYieldForAPR(item[1]), { style: 'currency' }) }}
+                  {{ fNum2(weeklyYieldForAPR(item[1]), FNumFormats.fiat) }}
                   <span class="text-gray-500 text-xs ml-1">
                     {{ thirdPartyTokens[item[0]].symbol }}
                   </span>
@@ -187,13 +187,13 @@ function weeklyYieldForAPR(apr: string): string {
                 :hideItems="!lmMultiRewardPool"
               >
                 <div class="flex items-center">
-                  <span>{{ fNum2(lmWeeklyYield, { style: 'currency' }) }}</span>
+                  <span>{{ fNum2(lmWeeklyYield, FNumFormats.fiat) }}</span>
                   <span class="ml-1 text-gray-500">
                     {{ $t('liquidityMining') }}
                   </span>
                 </div>
                 <template v-if="lmMultiRewardPool" v-slot:item="{ item }">
-                  {{ fNum2(weeklyYieldForAPR(item[1]), { style: 'currency' }) }}
+                  {{ fNum2(weeklyYieldForAPR(item[1]), FNumFormats.fiat) }}
                   <span class="text-gray-500 ml-1">
                     {{ lmTokens[item[0]].symbol }}
                   </span>

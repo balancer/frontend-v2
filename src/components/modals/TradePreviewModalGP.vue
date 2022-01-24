@@ -482,7 +482,7 @@ export default defineComponent({
           props.trading.tokenInAmountInput.value,
           props.trading.tokenIn.value.address
         ),
-        { style: 'currency' }
+        FNumFormats.fiat
       )
     );
 
@@ -492,14 +492,14 @@ export default defineComponent({
           props.trading.tokenOutAmountInput.value,
           props.trading.tokenOut.value.address
         ),
-        { style: 'currency' }
+        FNumFormats.fiat
       )
     );
 
     const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 
     const zeroFee = computed(() =>
-      showSummaryInFiat.value ? fNum2('0', { style: 'currency' }) : '0.0 ETH'
+      showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
     );
 
     const summary = computed(() => {
@@ -565,14 +565,14 @@ export default defineComponent({
           itemValue =>
             `${fNum2(
               toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
-              { style: 'currency' }
+              FNumFormats.fiat
             )}`
         );
       } else {
         return mapValues(
           summaryItems,
           itemValue =>
-            `${fNum2(itemValue, { maximumFractionDigits: 4 })} ${
+            `${fNum2(itemValue, FNumFormats.token)} ${
               exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol

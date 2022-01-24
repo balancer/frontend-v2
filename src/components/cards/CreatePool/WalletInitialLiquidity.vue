@@ -104,7 +104,7 @@ const totalsClass = computed(() => ({
             totalsClass
           ]"
         >
-          {{ fNum2(maxInitialLiquidity, { style: 'currency' }) }}
+          {{ fNum2(maxInitialLiquidity, FNumFormats.fiat) }}
         </div>
       </div>
     </div>

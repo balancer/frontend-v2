@@ -5,7 +5,7 @@ import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 // Composables
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 // Components
 import AssetRow from './components/AssetRow.vue';
 import { usePool } from '@/composables/usePool';
@@ -88,7 +88,7 @@ const fiatTotal = computed(() => {
         .plus(value)
         .toString()
     );
-  return fNum2(fiatValue, { style: 'currency' });
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

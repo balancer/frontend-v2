@@ -5,7 +5,7 @@ import { parseFixed } from '@ethersproject/bignumber';
 import useWeb3 from '@/services/web3/useWeb3';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 
-import useNumbers from '../useNumbers';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import { networkId } from '../useNetwork';
@@ -86,13 +86,13 @@ export default function useTrading(
           bnum(tokenOutAmount)
             .div(tokenInAmount)
             .toString(),
-          { maximumFractionDigits: 4 }
+          FNumFormats.token
         )} ${tokenOut.value?.symbol}`,
         tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum2(
           bnum(tokenInAmount)
             .div(tokenOutAmount)
             .toString(),
-          { maximumFractionDigits: 4 }
+          FNumFormats.token
         )} ${tokenIn.value?.symbol}`
       };
     }

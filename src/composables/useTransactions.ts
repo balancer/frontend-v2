@@ -16,7 +16,7 @@ import { lsGet, lsSet } from '@/lib/utils';
 
 import useNotifications from './useNotifications';
 import { processedTxs } from './useEthers';
-import useNumbers from './useNumbers';
+import useNumbers, { FNumFormats } from './useNumbers';
 
 import { GnosisTransactionDetails } from './trade/useGnosis';
 
@@ -279,11 +279,9 @@ export default function useTransactions() {
         tokenOut.decimals
       );
 
-      return `${fNum2(tokenInAmount, { maximumFractionDigits: 4 })} ${
+      return `${fNum2(tokenInAmount, FNumFormats.token)} ${
         tokenIn.symbol
-      } -> ${fNum2(tokenOutAmount, { maximumFractionDigits: 4 })} ${
-        tokenOut.symbol
-      }`;
+      } -> ${fNum2(tokenOutAmount, FNumFormats.token)} ${tokenOut.symbol}`;
     }
 
     return transaction.summary;

@@ -3,7 +3,7 @@ import { toRef, computed } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { lpTokensFor } from '@/composables/usePool';
@@ -55,7 +55,7 @@ const fiatTotal = computed(() => {
         .toString()
     );
 
-  return fNum2(fiatValue, { style: 'currency' });
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

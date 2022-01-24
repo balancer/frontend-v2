@@ -178,12 +178,10 @@ onBeforeMount(() => {
             <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-12" />
             <template v-else>
               <span class="break-words text-xl">
-                {{
-                  fNum2(proportionalAmounts[i], { maximumFractionDigits: 4 })
-                }}
+                {{ fNum2(proportionalAmounts[i], FNumFormats.token) }}
               </span>
               <span class="text-sm text-gray-400">
-                {{ fNum2(fiatAmounts[i], { style: 'currency' }) }}
+                {{ fNum2(fiatAmounts[i], FNumFormats.fiat) }}
               </span>
             </template>
           </div>

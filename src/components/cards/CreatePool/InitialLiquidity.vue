@@ -278,7 +278,7 @@ function saveAndProceed() {
               <BalStack horizontal spacing="xs" class="font-medium">
                 <span class="text-sm">
                   {{ t('available') }}:
-                  {{ fNum2(totalLiquidity, { style: 'currency' }) }}
+                  {{ fNum2(totalLiquidity.toString(), FNumFormats.fiat) }}
                 </span>
                 <button
                   :disabled="areAmountsMaxed"
@@ -296,7 +296,9 @@ function saveAndProceed() {
               </BalStack>
             </BalStack>
             <BalStack vertical spacing="none">
-              <h6>{{ fNum2(currentLiquidity, { style: 'currency' }) }}</h6>
+              <h6>
+                {{ fNum2(currentLiquidity.toString(), FNumFormats.fiat) }}
+              </h6>
               <AnimatePresence
                 :isVisible="!isOptimised"
                 @on-presence="onAlertMountChange"
@@ -323,8 +325,8 @@ function saveAndProceed() {
             type="warning"
             :title="
               t('createAPool.arbTitle', [
-                fNum2(arbitrageDelta.value, { style: 'currency' }),
-                fNum2(arbitrageDelta.delta, FNumFormats.percent)
+                fNum2(arbitrageDelta.value.toString(), FNumFormats.fiat),
+                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent)
               ])
             "
           >

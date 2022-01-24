@@ -58,7 +58,7 @@ const optimizeBtnClasses = computed(() => ({
     <div class="data-table-row total-row">
       <div class="p-2">{{ $t('total') }}</div>
       <div class="data-table-number-col">
-        {{ fNum2(fiatTotal, { style: 'currency' }) }}
+        {{ fNum2(fiatTotal, FNumFormats.fiat) }}
         <div v-if="isWalletReady && !hasNoBalances" class="text-sm">
           <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
             {{ $t('maxed') }}

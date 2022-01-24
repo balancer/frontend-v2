@@ -2,7 +2,7 @@
 import { toRef, computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { usePool } from '@/composables/usePool';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -90,7 +90,7 @@ const fiatTotal = computed(() => {
         .plus(value)
         .toString()
     );
-  return fNum2(fiatValue, { style: 'currency' });
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 
 /**
@@ -106,7 +106,7 @@ function weightLabelFor(address: string): string {
 
 function fiatLabelFor(index: number, address: string): string {
   const fiatValue = toFiat(propTokenAmounts.value[index], address);
-  return fNum2(fiatValue, { style: 'currency' });
+  return fNum2(fiatValue, FNumFormats.fiat);
 }
 </script>
 
@@ -150,7 +150,7 @@ function fiatLabelFor(index: number, address: string): string {
         <span class="flex flex-col flex-grow text-right">
           {{
             isWalletReady
-              ? fNum2(propTokenAmounts[index], { maximumFractionDigits: 4 })
+              ? fNum2(propTokenAmounts[index], FNumFormats.token)
               : '-'
           }}
           <span class="text-gray-500 text-sm">

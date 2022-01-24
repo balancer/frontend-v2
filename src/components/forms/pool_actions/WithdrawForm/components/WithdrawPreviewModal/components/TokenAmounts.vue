@@ -47,12 +47,12 @@ function amountShare(address: string): string {
         <div class="flex flex-col ml-3">
           <div class="font-medium text-lg">
             <span class="font-numeric">
-              {{ fNum2(amount, { maximumFractionDigits: 4 }) }}
+              {{ fNum2(amount, FNumFormats.token) }}
             </span>
             {{ tokenMap[address].symbol }}
           </div>
           <div class="text-sm text-gray-500 font-numeric">
-            {{ fNum2(fiatAmountMap[address], { style: 'currency' }) }}
+            {{ fNum2(fiatAmountMap[address], FNumFormats.fiat) }}
             ({{ fNum2(amountShare(address), FNumFormats.percent) }})
           </div>
         </div>
