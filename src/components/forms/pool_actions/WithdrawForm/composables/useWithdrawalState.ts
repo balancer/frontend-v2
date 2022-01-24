@@ -5,7 +5,7 @@ import { isStablePhantom } from '@/composables/usePool';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
-import { BasicContent } from '@/types';
+import { BaseContent } from '@/types';
 
 /**
  * TYPES
@@ -56,7 +56,7 @@ export function setError(error: WithdrawalError | null): void {
   state.error = error;
 }
 
-export function parseError(error: WithdrawalError): BasicContent {
+export function parseError(error: WithdrawalError): BaseContent {
   switch (error) {
     case WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT:
       return {
