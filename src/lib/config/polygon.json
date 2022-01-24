@@ -13,13 +13,13 @@
   "publicRpc": "https://polygon-rpc.com",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2-beta",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic"
   },
-  "supportsEIP1559": false,
+  "supportsEIP1559": true,
   "nativeAsset": {
     "name": "Matic",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

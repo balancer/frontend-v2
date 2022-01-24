@@ -14,7 +14,7 @@
       />
     </div>
     <div v-if="!alert.persistent" class="w-8">
-      <BalIcon name="x" class="cursor-pointer" @click="handleClose" />
+      <BalIcon name="x" class="cursor-pointer" @click.stop="handleClose" />
     </div>
   </div>
 </template>

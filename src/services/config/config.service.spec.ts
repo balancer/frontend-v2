@@ -1,5 +1,6 @@
 import { configService } from '@/services/config/config.service';
-import { Network, setNetworkId } from '@/composables/useNetwork';
+import { setNetworkId } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 describe('Config service', () => {
   describe('Get network config with key', () => {

@@ -1,7 +1,5 @@
 import { reactive, toRefs } from 'vue';
-import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { SOR } from '@balancer-labs/sor2';
+import { balancer } from '@/lib/balancer.sdk';
 
 type InvestState = {
   amounts: string[];
@@ -26,11 +24,7 @@ const state = reactive<InvestState>({
   sorReady: false
 });
 
-const sor = new SOR(
-  rpcProviderService.jsonProvider as any,
-  configService.network.chainId,
-  configService.network.subgraph
-);
+const sor = balancer.sor;
 
 /**
  * METHODS

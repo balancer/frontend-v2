@@ -28,7 +28,7 @@ onBeforeMount(async () => {
 
   if (pool.value && isStablePhantomPool.value) {
     // Initialise SOR for batch swap queries
-    sorReady.value = await sor.fetchPools([], false);
+    sorReady.value = await sor.fetchPools();
   } else {
     sorReady.value = true;
   }
