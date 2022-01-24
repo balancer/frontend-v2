@@ -138,6 +138,11 @@ export default function useMigrateMath(
     }
   });
 
+  const highPriceImpact = computed(() => {
+    if (!batchSwapLoaded.value) return false;
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+  });
+
   const batchSwapAmountMap = computed(
     (): Record<string, BigNumber> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
@@ -196,6 +201,7 @@ export default function useMigrateMath(
     shouldFetchBatchSwap,
     batchSwapLoading,
     batchSwapLoaded,
+    highPriceImpact,
     // methods
     getBatchSwap
   };

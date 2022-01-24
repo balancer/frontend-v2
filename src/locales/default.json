@@ -193,7 +193,8 @@
                 "title": "Migrate pool",
                 "loading": "Confirm pool migration in wallet",
                 "migrationStep": "Confirm pool migration"                
-            }
+            },
+            "priceImpactAccept": "I accept the high price impact from pool migration."
         },
         "migrateToBoostedPool": "Migrate to a boosted pool",
         "errorLoadingMigration": {

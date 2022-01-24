@@ -32,7 +32,7 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const { priceImpact, batchSwapLoaded } = toRefs(props.math);
+const { priceImpact, batchSwapLoaded, highPriceImpact } = toRefs(props.math);
 
 const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
 const fiatTotal = ref(props.math.fiatTotal.value);
@@ -45,6 +45,11 @@ const emit = defineEmits<{
  * STATE
  */
 const migrateConfirmed = ref(false);
+const highPriceImpactAccepted = ref(false);
+
+const hasAcceptedHighPriceImpact = computed((): boolean =>
+  highPriceImpact.value ? highPriceImpactAccepted.value : true
+);
 
 /**
  * COMPOSABLES
@@ -101,7 +106,21 @@ function handleClose() {
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
       :isLoadingPriceImpact="!batchSwapLoaded"
+      :highPriceImpact="highPriceImpact"
     />
+
+    <div
+      v-if="highPriceImpact"
+      class="border dark:border-gray-700 rounded-lg p-3 mt-4"
+    >
+      <BalCheckbox
+        v-model="highPriceImpactAccepted"
+        name="highPriceImpactAccepted"
+        size="sm"
+        :label="$t('migratePool.previewModal.priceImpactAccept')"
+        noMargin
+      />
+    </div>
 
     <MigrateActions
       :fromPool="fromPool"
@@ -110,7 +129,7 @@ function handleClose() {
       :toPoolTokenInfo="toPoolTokenInfo"
       :fiatTotalLabel="fiatTotalLabel"
       :math="math"
-      :disabled="!batchSwapLoaded"
+      :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
       @success="migrateConfirmed = true"
       class="mt-4"
     />

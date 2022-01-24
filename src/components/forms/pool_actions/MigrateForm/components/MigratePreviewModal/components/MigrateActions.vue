@@ -40,6 +40,7 @@ type Props = {
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
+  disabled?: boolean;
 };
 
 type MigratePoolState = {
@@ -222,7 +223,11 @@ watch(blockNumber, async () => {
 
 <template>
   <div>
-    <BalActionSteps v-if="!migratePoolState.confirmed" :actions="actions" />
+    <BalActionSteps
+      v-if="!migratePoolState.confirmed"
+      :actions="actions"
+      :disabled="disabled"
+    />
     <template v-else>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
