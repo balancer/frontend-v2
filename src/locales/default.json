@@ -418,6 +418,7 @@
     "optimize": "Optimize",
     "optimized": "Optimized",
     "optimizedPrefilled": "Optimized amounts have been pre-filled",
+    "oops": "Oops",
     "oracleWeightedPool": "Oracle Weighted Pool",
     "overview": "Overview",
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
@@ -516,6 +517,7 @@
     "singleToken": "Single token",
     "singleTokenMax": "Single token max",
     "slippageTolerance": "Slippage tolerance",
+    "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
     "strategy": "Strategy",
     "submit": "Submit",
@@ -725,6 +727,7 @@
     "volume24hShort": "Vol (24h)",
     "volumeTime": "Volume ({0})",
     "wallet": "Wallet",
+    "warning": "Warning",
     "week": "Week",
     "weekAbbrev": "w",
     "weight": "Weight",
@@ -746,6 +749,9 @@
             "tooltips": {
                 "withdrawStep": "Confirm withdrawal from this pool"
             }
+        },
+        "errors": {
+            "SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT": "You can only withdraw 30% of the pool's value in single asset withdrawals"
         }
     },
     "withdrawal": "Withdrawal",
