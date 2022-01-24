@@ -28,6 +28,7 @@ import cloverLogo from '@/assets/images/connectors/clover.svg';
 import i18n from '@/plugins/i18n';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { CloverWalletConnector } from '@/services/web3/connectors/clover/clover.connector';
+import { FrameWalletConnector } from '@/services/web3/connectors/frame/frame.connector';
 
 export type Wallet =
   | 'metamask'
@@ -35,13 +36,15 @@ export type Wallet =
   | 'gnosis'
   | 'walletlink'
   | 'portis'
-  | 'clover';
+  | 'clover'
+  | 'frame';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
   'gnosis',
   'walletlink',
-  'clover'
+  'clover',
+  'frame'
   //'portis'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
@@ -50,7 +53,8 @@ export const WalletNameMap: Record<Wallet, string> = {
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase',
   portis: 'Portis',
-  clover: 'Clover'
+  clover: 'Clover',
+  frame: 'Frame'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -72,7 +76,8 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   gnosis: GnosisSafeConnector,
   walletlink: WalletLinkConnector,
   portis: PortisConnector,
-  clover: CloverWalletConnector
+  clover: CloverWalletConnector,
+  frame: FrameWalletConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -249,6 +254,9 @@ export function getConnectorLogo(connectorId: string): string {
       return frameLogo;
     }
     return defaultLogo;
+  }
+  if (connectorId === 'frame') {
+    return frameLogo;
   }
   if (connectorId === 'fortmatic') {
     return fortmaticLogo;
