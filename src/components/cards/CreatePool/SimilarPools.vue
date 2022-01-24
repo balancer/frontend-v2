@@ -106,7 +106,7 @@ function cancel() {
           </BalStack>
         </BalStack>
       </BalCard>
-      <BalStack isDynamic v-else vertical>
+      <BalStack v-else vertical>
         <BalCard
           shadow="none"
           v-for="pool in relevantSimilarPools"

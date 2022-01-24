@@ -74,7 +74,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
     <div class="p-4 border-b dark:border-gray-600">
       <h6 class="dark:text-gray-300">{{ title }}</h6>
     </div>
-    <BalStack vertical isDynamic spacing="base" class="p-4" justify="center">
+    <BalStack vertical spacing="base" class="p-4" justify="center">
       <div
         v-for="(step, i) in visibleSteps"
         :key="`vertical-step-${step.tooltip}`"

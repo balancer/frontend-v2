@@ -232,7 +232,7 @@ function saveAndProceed() {
             </BalStack>
           </AnimatePresence>
         </BalStack>
-        <BalStack isDynamic vertical>
+        <BalStack vertical>
           <TokenInput
             v-for="(address, i) in tokenAddresses"
             v-model:amount="seedTokens[i].amount"
