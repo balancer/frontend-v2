@@ -26,6 +26,7 @@ import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import i18n from '@/plugins/i18n';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { web3Service } from './web3.service';
 
 export type Wallet =
   | 'metamask'
@@ -105,6 +106,9 @@ export default {
         rpcProviderService.getJsonProvider(chainId.value)
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
+    const userProvider = computed(() => {
+      return new Web3Provider(pluginState.connector.provider as any);
+    });
 
     // user supplied web3 provider. i.e. (web3, ethers)
     const connectWallet = async (wallet: Wallet) => {
@@ -134,6 +138,9 @@ export default {
 
         // it is handy to provide the connector instance
         pluginState.connector = connector;
+
+        // Add the new provider to the web3 service
+        web3Service.setUserProvider(userProvider);
 
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
