@@ -1,9 +1,11 @@
 import { Rules } from '@/types';
-import { onBeforeMount, reactive, toRefs, watch, ToRefs } from 'vue';
+import { onBeforeMount, reactive, toRefs, watch, ToRefs, Ref } from 'vue';
 
 type UseFormRequest<DefaultValues> = {
   name: string;
-  defaultValues?: Partial<{ [Property in keyof DefaultValues]: any }>;
+  defaultValues?: Partial<
+    { [Property in keyof DefaultValues]: Ref<any> | any }
+  >;
 };
 
 export type FormState = {
@@ -17,6 +19,7 @@ export type FormState = {
 export type FormInstance = ToRefs<FormState> & {
   register: (name: string, rules?: Rules) => any;
   onChange: (name: string, value: any) => void;
+  handleSubmit: (submit: () => void) => void;
 };
 
 export const FormContextSymbol = Symbol('FORM_CONTEXT');
@@ -105,6 +108,23 @@ export default function useForm<DefaultValues>({
     }
   }
 
+  function handleSubmit(submit: () => void) {
+    return function() {
+      const hasErrors = Object.values(formInstance).every(
+        errorListForInput => errorListForInput.length === 0
+      );
+      if (!hasErrors) {
+        submit();
+      } else {
+        console.log(
+          `Form [${formName}] has errors. ${JSON.stringify(
+            formInstance.errors
+          )}`
+        );
+      }
+    };
+  }
+
   watch(
     () => formInstance.values,
     () => {
@@ -118,6 +138,7 @@ export default function useForm<DefaultValues>({
   return {
     ...toRefs(formInstance),
     register,
-    onChange
+    onChange,
+    handleSubmit
   };
 }

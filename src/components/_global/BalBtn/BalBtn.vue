@@ -3,6 +3,7 @@
     :is="tag"
     :class="['bal-btn', btnClasses]"
     :disabled="disabled || loading"
+    :type="type"
   >
     <div v-if="loading" class="flex items-center justify-center">
       <BalLoadingIcon :size="size" :color="iconColor" />
@@ -31,6 +32,9 @@ export default defineComponent({
   },
 
   props: {
+    type: {
+      type: String
+    },
     tag: {
       type: String,
       default: 'button',

@@ -2,8 +2,11 @@
 import { onBeforeMount, provide } from 'vue';
 import { FormContextSymbol, FormInstance } from './useForm';
 
+type SubmitFn = () => void;
+
 type Props = {
   form: FormInstance;
+  submit: SubmitFn;
 };
 
 const props = withDefaults(defineProps<Props>(), {});
@@ -22,7 +25,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <form>
+  <form @submit.prevent="submit">
     <slot />
   </form>
 </template>
