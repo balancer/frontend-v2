@@ -125,16 +125,6 @@ export default function useForm<DefaultValues>({
     };
   }
 
-  watch(
-    () => formInstance.values,
-    () => {
-      console.log('f', formInstance.values);
-    },
-    {
-      deep: true
-    }
-  );
-
   return {
     ...toRefs(formInstance),
     register,
