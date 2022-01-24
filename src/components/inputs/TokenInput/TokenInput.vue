@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { HtmlInputEvent, RuleFunction } from '@/types';
-import { ref, computed, watchEffect, Ref } from 'vue';
+import { HtmlInputEvent } from '@/types';
+import { ref, computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -16,7 +16,6 @@ import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 
 import { TokenInfo } from '@/types/TokenList';
-import useFormContext from '@/components/_global/BalForm/useFormContext';
 
 /**
  * TYPES
@@ -27,7 +26,6 @@ type Props = {
   amount: InputValue;
   address?: string;
   weight?: number | string;
-  // ignore all rules
   noRules?: boolean;
   noMax?: boolean;
   priceImpact?: number;
@@ -41,15 +39,10 @@ type Props = {
   hintAmount?: string;
   excludedTokens?: string[];
   options?: string[];
-  // a list of rules to apply to the text input component
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
-  // will ignore the wallet balance check if true,
-  // no error will be rendered
   ignoreWalletBalance?: boolean;
-  // form binding
-  name?: string;
 };
 
 /**
@@ -68,7 +61,6 @@ const props = withDefaults(defineProps<Props>(), {
   disableNativeAssetBuffer: false,
   hideFooter: false,
   ignoreWalletBalance: false,
-  name: '',
   options: () => [],
   rules: () => []
 });
@@ -97,7 +89,6 @@ const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
-const formContext = useFormContext();
 
 /**
  * COMPUTED
@@ -217,34 +208,6 @@ const setMax = () => {
   emit('update:amount', _amount.value);
 };
 
-function handleTextInputChange(id: string, event) {
-  const formInputKey = `${props.name}.${id}`;
-  emit('update:amount', event);
-  if (formContext) {
-    formContext.onChange(formInputKey, event);
-  }
-}
-
-function handleAddressChange(id: string, event) {
-  const formInputKey = `${props.name}.${id}`;
-  emit('update:address', event);
-  if (formContext) {
-    formContext.onChange(formInputKey, event);
-  }
-}
-
-function getValue(id: string, fallBack: unknown) {
-  const formInputKey = `${props.name}.${id}`;
-  // if this component is a child of a <BalForm /> bind it.
-  if (formContext) {
-    return formContext.register(
-      formInputKey,
-      inputRules.value as RuleFunction[]
-    );
-  }
-  return fallBack;
-}
-
 /**
  * CALLBACKS
  */
@@ -256,7 +219,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
-    :value="getValue('amount', _amount)"
+    v-model="_amount"
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
@@ -271,19 +234,19 @@ watchEffect(() => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:modelValue="handleTextInputChange('amount', $event)"
+    @update:modelValue="emit('update:amount', $event)"
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template #prepend>
       <slot name="tokenSelect">
         <TokenSelectInput
-          :modelValue="getValue('address', _address)"
+          v-model="_address"
           :weight="weight"
           :fixed="fixedToken"
           :options="options"
           class="mr-2"
-          @update:modelValue="handleAddressChange('address', $event)"
+          @update:modelValue="emit('update:address', $event)"
           :excludedTokens="excludedTokens"
         />
       </slot>
