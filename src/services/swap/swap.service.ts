@@ -5,7 +5,6 @@ import { Swap } from '@balancer-labs/sor/dist/types';
 import { AddressZero } from '@ethersproject/constants';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
-import { SwapV2 } from '@balancer-labs/sor2';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
@@ -15,7 +14,7 @@ import {
   SwapKind
 } from '@balancer-labs/balancer-js';
 import Web3Service, { web3Service } from '../web3/web3.service';
-import { BatchSwapStep } from '@balancer-labs/sdk';
+import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
 
 export type Address = string;
 
