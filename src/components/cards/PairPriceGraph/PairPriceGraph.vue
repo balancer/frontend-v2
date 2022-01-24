@@ -214,7 +214,7 @@ const chartGrid = computed(() => {
     />
     <BalCard
       :square="upToLargeBreakpoint"
-      shadow="false"
+      shadow="none"
       hFull
       growContent
       noPad

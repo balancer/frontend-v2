@@ -1,9 +1,5 @@
 import { useI18n } from 'vue-i18n';
-
-export type TransactionError = {
-  title: string;
-  description: string;
-};
+import { TransactionError } from '@/types/transactions';
 
 export default function useTranasactionErrors() {
   /**
@@ -17,6 +13,11 @@ export default function useTranasactionErrors() {
   const gasTooLowError: TransactionError = {
     title: t('transactionErrors.gasTooLow.title'),
     description: t('transactionErrors.gasTooLow.description')
+  };
+
+  const cannotEstimateGasError: TransactionError = {
+    title: t('transactionErrors.cannotEstGas.title'),
+    description: t('transactionErrors.cannotEstGas.description')
   };
 
   const slippageError: TransactionError = {
@@ -38,6 +39,8 @@ export default function useTranasactionErrors() {
    */
   function parseError(error): TransactionError | null {
     if (error?.code && error.code === 4001) return null; // User rejected transaction
+    if (error?.code && error.code === 'UNPREDICTABLE_GAS_LIMIT')
+      return cannotEstimateGasError;
 
     if (error?.message) {
       if (error.message.includes('-32010')) return gasTooLowError;

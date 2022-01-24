@@ -15,6 +15,7 @@ const defaultArgs = {
 const defaultAttrs = {
   id: true,
   name: true,
+  address: true,
   poolType: true,
   swapFee: true,
   tokensList: true,
@@ -33,9 +34,40 @@ const defaultAttrs = {
     decimals: true,
     address: true,
     balance: true,
-    weight: true,
-    priceRate: true
+    weight: true
+    //TODO: uncomment for linear support
+    //priceRate: true
   }
+  //TODO: uncomment for linear support
+  /*wrappedIndex: true,
+  mainIndex: true,
+  lowerTarget: true,
+  upperTarget: true,*/
+  /*tokenRates: true,
+  linearPools: {
+    id: true,
+    address: true,
+    priceRate: true,
+    totalSupply: true,
+    unwrappedTokenAddress: true,
+    mainToken: {
+      index: true,
+      address: true,
+      balance: true,
+      name: true,
+      symbol: true,
+      decimals: true
+    },
+    wrappedToken: {
+      index: true,
+      address: true,
+      balance: true,
+      priceRate: true,
+      name: true,
+      symbol: true,
+      decimals: true
+    }
+  }*/
 };
 
 export default (args = {}, attrs = {}) => ({

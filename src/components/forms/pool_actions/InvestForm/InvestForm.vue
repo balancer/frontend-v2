@@ -11,7 +11,7 @@ import useTokens from '@/composables/useTokens';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import useInvestState from './composables/useInvestState';
 import useInvestMath from './composables/useInvestMath';
-import { isStableLike, usePool } from '@/composables/usePool';
+import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
@@ -51,14 +51,16 @@ const {
   amounts,
   validInputs,
   highPriceImpactAccepted,
-  resetAmounts
+  resetAmounts,
+  sor
 } = useInvestState();
 
 const investMath = useInvestMath(
   toRef(props, 'pool'),
   tokenAddresses,
   amounts,
-  useNativeAsset
+  useNativeAsset,
+  sor
 );
 
 const {
@@ -66,7 +68,8 @@ const {
   highPriceImpact,
   maximizeAmounts,
   optimizeAmounts,
-  proportionalAmounts
+  proportionalAmounts,
+  batchSwapLoading
 } = investMath;
 
 const {
@@ -95,6 +98,13 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value
 );
+
+const investmentTokens = computed((): string[] => {
+  if (isStablePhantom(props.pool.poolType)) {
+    return props.pool.mainTokens || [];
+  }
+  return props.pool.tokenAddresses;
+});
 
 /**
  * METHODS
@@ -175,7 +185,7 @@ function setNativeAsset(to: NativeAsset): void {
  */
 onBeforeMount(() => {
   resetAmounts();
-  tokenAddresses.value = [...props.pool.tokenAddresses];
+  tokenAddresses.value = [...investmentTokens.value];
   if (isWethPool.value) setNativeAssetByBalance();
 });
 
@@ -253,7 +263,12 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         v-else
         :label="$t('preview')"
         color="gradient"
-        :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
+        :disabled="
+          !hasAmounts ||
+            !hasValidInputs ||
+            isMismatchedNetwork ||
+            batchSwapLoading
+        "
         block
         @click="showInvestPreview = true"
       />

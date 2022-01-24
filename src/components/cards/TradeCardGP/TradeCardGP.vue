@@ -127,7 +127,6 @@ import useValidation, {
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
@@ -142,15 +141,11 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
-import { configService } from '@/services/config/config.service';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
 import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import useWeb3 from '@/services/web3/useWeb3';
-import useRelayerApproval, {
-  Relayer
-} from '@/composables/trade/useRelayerApproval';
 import { useTradeState } from '@/composables/trade/useTradeState';
 
 export default defineComponent({
@@ -169,7 +164,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
-    const { tokens, nativeAsset } = useTokens();
+    const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
       tokenOutAddress,
@@ -229,9 +224,6 @@ export default defineComponent({
       return hasValidationError || hasGnosisErrors || hasBalancerErrors;
     });
 
-    useTokenApproval(tokenInAddress, tokenInAmount, tokens);
-    useRelayerApproval(Relayer.GNOSIS, trading.isGnosisTrade);
-
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
         return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
@@ -243,23 +235,6 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (errorMessage.value === TradeValidation.NO_NATIVE_ASSET) {
-        return {
-          header: t('noNativeAsset', [nativeAsset.symbol]),
-          body: t('noNativeAssetDetailed', [
-            nativeAsset.symbol,
-            configService.network.chainName
-          ])
-        };
-      }
-
-      if (errorMessage.value === TradeValidation.NO_BALANCE) {
-        return {
-          header: t('insufficientBalance'),
-          body: t('insufficientBalanceDetailed')
-        };
-      }
-
       if (trading.isBalancerTrade.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
@@ -271,14 +246,14 @@ export default defineComponent({
 
       if (trading.isGnosisTrade.value) {
         if (trading.gnosis.validationError.value != null) {
-          const errorCode = trading.gnosis.validationError.value;
+          const validationError = trading.gnosis.validationError.value;
 
-          if (errorCode === ApiErrorCodes.SellAmountDoesNotCoverFee) {
+          if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
             return {
               header: t('gnosisErrors.lowAmount.header'),
               body: t('gnosisErrors.lowAmount.body')
             };
-          } else if (errorCode === ApiErrorCodes.PriceExceedsBalance) {
+          } else if (validationError === ApiErrorCodes.PriceExceedsBalance) {
             return {
               header: t('gnosisErrors.lowBalance.header', [
                 trading.tokenIn.value.symbol
@@ -295,7 +270,7 @@ export default defineComponent({
                 fNum(trading.slippageBufferRate.value, 'percent')
               ])
             };
-          } else if (errorCode === ApiErrorCodes.NoLiquidity) {
+          } else if (validationError === ApiErrorCodes.NoLiquidity) {
             return {
               header: t('gnosisErrors.noLiquidity.header', [
                 trading.tokenIn.value.symbol
@@ -305,9 +280,7 @@ export default defineComponent({
           } else {
             return {
               header: t('gnosisErrors.genericError.header'),
-              body: t('gnosisErrors.genericError.body', [
-                trading.gnosis.validationError.value
-              ])
+              body: trading.gnosis.validationError.value
             };
           }
         }

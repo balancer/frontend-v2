@@ -2,7 +2,12 @@
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
     <template v-if="isWalletReady">
       <div class="px-4 lg:px-0">
-        <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
+        <BalStack horizontal justify="between" align="center">
+          <h3>{{ $t('myV2Investments') }}</h3>
+          <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
+            $t('createAPool.title')
+          }}</BalBtn>
+        </BalStack>
       </div>
       <PoolsTable
         :isLoading="isLoadingUserPools"
@@ -20,14 +25,29 @@
       </div>
       <div class="mb-16" />
     </template>
+
     <div class="px-4 lg:px-0">
       <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
-      <TokenSearchInput
-        v-model="selectedTokens"
-        :loading="isLoadingPools"
-        @add="addSelectedToken"
-        @remove="removeSelectedToken"
-      />
+      <div
+        class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
+      >
+        <TokenSearchInput
+          v-model="selectedTokens"
+          :loading="isLoadingPools"
+          @add="addSelectedToken"
+          @remove="removeSelectedToken"
+          class="w-full md:w-2/3"
+        />
+        <BalBtn
+          @click="navigateToCreatePool"
+          color="blue"
+          size="sm"
+          :class="{ 'mt-4': upToMediumBreakpoint }"
+          :block="upToMediumBreakpoint"
+        >
+          {{ $t('createAPool.title') }}
+        </BalBtn>
+      </div>
     </div>
 
     <PoolsTable
@@ -68,6 +88,7 @@ import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -99,6 +120,7 @@ export default defineComponent({
       poolsQuery
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
+    const { upToMediumBreakpoint } = useBreakpoints();
 
     // COMPUTED
     const filteredPools = computed(() =>
@@ -129,6 +151,13 @@ export default defineComponent({
       }
     });
 
+    /**
+     * METHODS
+     */
+    function navigateToCreatePool() {
+      router.push({ name: 'create-pool' });
+    }
+
     return {
       // data
       filteredPools,
@@ -143,12 +172,14 @@ export default defineComponent({
       poolsIsFetchingNextPage,
       selectedTokens,
       isElementSupported,
+      upToMediumBreakpoint,
 
       //methods
       router,
       loadMorePools,
       addSelectedToken,
       removeSelectedToken,
+      navigateToCreatePool,
 
       // constants
       EXTERNAL_LINKS

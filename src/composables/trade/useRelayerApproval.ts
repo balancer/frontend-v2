@@ -11,21 +11,31 @@ import { configService } from '@/services/config/config.service';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+import { TransactionActionInfo } from '@/types/transactions';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 const vaultAddress = configService.network.addresses.vault;
 
 export enum Relayer {
   GNOSIS = 'gnosis',
-  LIDO = 'lido'
+  LIDO = 'lido',
+  BATCH = 'batch'
 }
+
+const relayerAddressMap = {
+  [Relayer.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
+  [Relayer.LIDO]: configService.network.addresses.lidoRelayer,
+  [Relayer.BATCH]: configService.network.addresses.batchRelayer
+};
 
 export default function useRelayerApproval(
   relayer: Relayer,
-  isEnabled: Ref<boolean>
+  isEnabled: Ref<boolean> = ref(true)
 ) {
   /**
    * STATE
    */
+  const init = ref(false);
   const approving = ref(false);
   const approved = ref(false);
 
@@ -33,11 +43,7 @@ export default function useRelayerApproval(
    * COMPOSABLES
    */
   const { getProvider, account } = useWeb3();
-  const relayerAddress = ref(
-    relayer === Relayer.LIDO
-      ? configService.network.addresses.lidoRelayer
-      : GP_RELAYER_CONTRACT_ADDRESS
-  );
+  const relayerAddress = ref(relayerAddressMap[relayer]);
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
@@ -46,17 +52,35 @@ export default function useRelayerApproval(
   /**
    * COMPUTED
    */
+  const isUnlocked = computed(
+    () =>
+      approved.value || (!isEnabled.value ? true : !!relayerApproval.data.value)
+  );
 
-  const isUnlocked = computed(() =>
-    approved.value || !isEnabled.value ? true : !!relayerApproval.data.value
+  const loading = computed(
+    (): boolean =>
+      relayerApproval.isLoading.value ||
+      relayerApproval.isError.value ||
+      relayerApproval.isIdle.value
+  );
+
+  const action = computed(
+    (): TransactionActionInfo => ({
+      label: t('approveBatchRelayer'),
+      loadingLabel: t('checkWallet'),
+      confirmingLabel: t('confirming'),
+      stepTooltip: t('approveBatchRelayerTooltip'),
+      action: approve
+    })
   );
 
   /**
    * METHODS
    */
-  async function approve(): Promise<void> {
-    approving.value = true;
+  async function approve(): Promise<TransactionResponse> {
     try {
+      init.value = true;
+
       const tx = await sendTransaction(
         getProvider(),
         configService.network.addresses.vault,
@@ -65,40 +89,52 @@ export default function useRelayerApproval(
         [account.value, relayerAddress.value, true]
       );
 
-      addTransaction({
-        id: tx.hash,
-        type: 'tx',
-        action: 'approve',
-        summary:
-          relayer === Relayer.LIDO
-            ? t('transactionSummary.approveLidoRelayer')
-            : t('transactionSummary.approveGnosisRelayer'),
-        details: {
-          contractAddress: vaultAddress,
-          spender: relayerAddress.value
-        }
-      });
+      init.value = false;
+      approving.value = true;
 
-      txListener(tx, {
-        onTxConfirmed: () => {
-          approving.value = false;
-          approved.value = true;
-          relayerApproval.refetch.value();
-        },
-        onTxFailed: () => {
-          approving.value = false;
-        }
-      });
+      handleTransaction(tx);
+      return tx;
     } catch (e) {
       console.log(e);
+      init.value = false;
       approving.value = false;
+      return Promise.reject(e);
     }
   }
 
+  async function handleTransaction(tx): Promise<void> {
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'approve',
+      summary:
+        relayer === Relayer.LIDO
+          ? t('transactionSummary.approveLidoRelayer')
+          : t('transactionSummary.approveGnosisRelayer'),
+      details: {
+        contractAddress: vaultAddress,
+        spender: relayerAddress.value
+      }
+    });
+
+    approved.value = await txListener(tx, {
+      onTxConfirmed: () => {
+        approving.value = false;
+        relayerApproval.refetch.value();
+      },
+      onTxFailed: () => {
+        approving.value = false;
+      }
+    });
+  }
+
   return {
-    approving,
+    action,
+    init,
     approve,
+    approving,
     approved,
-    isUnlocked
+    isUnlocked,
+    loading
   };
 }

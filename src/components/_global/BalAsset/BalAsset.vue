@@ -8,7 +8,8 @@
     :src="iconSRC"
     :style="{
       width: `${size}px`,
-      height: `${size}px`
+      height: `${size}px`,
+      background: 'transparent'
     }"
     @error="error = true"
     class="rounded-full inline-block leading-none shadow-sm"

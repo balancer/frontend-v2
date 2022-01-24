@@ -140,7 +140,11 @@ export class SorManager {
     try {
       console.log('fetching pools', this.sorV2);
       // Fetch of all pools from V2 subgraph and pull onchain data
-      const v2result = await this.sorV2.fetchPools();
+
+      const v2result = await this.sorV2.fetchPools(
+        [],
+        this.sorV2.chainId !== 4
+      );
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = v2result;
     } catch (err) {

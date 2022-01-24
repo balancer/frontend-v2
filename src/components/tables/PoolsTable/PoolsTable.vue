@@ -77,7 +77,7 @@
               ? '-'
               : fNum(pool.dynamic.apr.total, 'percent')
           }}
-          <LiquidityMiningTooltip :pool="pool" />
+          <LiquidityAPRTooltip :pool="pool" />
         </div>
       </template>
     </BalTable>
@@ -99,7 +99,7 @@ import { getAddress } from '@ethersproject/address';
 import useNumbers from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
 
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
 import {
@@ -108,7 +108,7 @@ import {
 } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isStableLike } from '@/composables/usePool';
+import { isStableLike, isStablePhantom } from '@/composables/usePool';
 import useWeb3 from '@/services/web3/useWeb3';
 import { sortBy } from 'lodash';
 
@@ -116,7 +116,7 @@ const POOLS_PER_PAGE = 10;
 
 export default defineComponent({
   components: {
-    LiquidityMiningTooltip
+    LiquidityAPRTooltip
     //TokenPills
   },
 
@@ -263,6 +263,8 @@ export default defineComponent({
     }
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
+      if (isStablePhantom(pool.poolType))
+        return pool.tokens.filter(token => token.address !== pool.address);
       if (isStableLike(pool.poolType)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();

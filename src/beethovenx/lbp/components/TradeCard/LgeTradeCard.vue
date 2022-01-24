@@ -259,14 +259,6 @@ export default defineComponent({
         };
       }
       switch (errorMessage.value) {
-        case TradeValidation.NO_NATIVE_ASSET:
-          return {
-            header: t('noNativeAsset', [nativeAsset.symbol]),
-            body: t('noNativeAssetDetailed', [
-              nativeAsset.symbol,
-              configService.network.chainName
-            ])
-          };
         case TradeValidation.NO_BALANCE:
           return {
             header: t('insufficientBalance'),

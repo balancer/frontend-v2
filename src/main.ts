@@ -3,7 +3,6 @@ import store from '@/store';
 import router from '@/beethovenx/plugins/router';
 import mixins from '@/plugins/mixins';
 import i18n from '@/plugins/i18n';
-import blocknative from '@/plugins/blocknative';
 import vueQuery from '@/plugins/vueQuery';
 import registerDirectives from '@/plugins/directives';
 import { registerGlobalComponents } from '@/plugins/components';
@@ -17,7 +16,8 @@ import {
   LegendComponent,
   ToolboxComponent,
   MarkPointComponent,
-  MarkLineComponent
+  MarkLineComponent,
+  PolarComponent
 } from 'echarts/components';
 import VueVirtualScroller from 'vue3-virtual-scroller';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -39,6 +39,7 @@ use([
   MarkPointComponent,
   MarkLineComponent,
   PieChart,
+  PolarComponent,
   BarChart
 ]);
 const app = createApp(Root)

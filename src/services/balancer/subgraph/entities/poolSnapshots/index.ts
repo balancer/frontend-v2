@@ -1,6 +1,7 @@
 import Service from '../../balancer-subgraph.service';
 import poolQueryBuilder from './query';
 import { PoolSnapshots, PoolSnapshot, QueryBuilder } from '../../types';
+import { unixToJsTime } from '@/lib/utils/date';
 
 const DAY = 60 * 60 * 24;
 
@@ -42,14 +43,28 @@ export default class PoolShares {
       Object.entries(snapshotData)
         .map(entry => {
           const [id, data] = entry;
-          const timestamp = parseInt(id.substr(1));
+          const timestamp = unixToJsTime(parseInt(id.substr(1)));
           if (!data) {
             return [timestamp, null];
           }
-          const { amounts, totalShares, swapVolume, swapFees } = data;
+          const {
+            amounts,
+            totalShares,
+            swapVolume,
+            swapFees,
+            liquidity
+          } = data;
+
           return [
-            timestamp * 1000,
-            { timestamp, amounts, totalShares, swapVolume, swapFees }
+            timestamp,
+            {
+              timestamp,
+              amounts,
+              totalShares,
+              swapVolume,
+              swapFees,
+              liquidity
+            }
           ];
         })
         .filter(entry => !!entry[1])

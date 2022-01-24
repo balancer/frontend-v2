@@ -24,9 +24,7 @@ export default function usePoolUserActivitiesQuery(
   const { networkId } = useNetwork();
 
   // COMPUTED
-  const isQueryEnabled = computed(
-    () => isWalletReady.value && account.value != null
-  );
+  const enabled = computed(() => isWalletReady.value && account.value != null);
 
   // DATA
   const queryKey = reactive(
@@ -54,7 +52,7 @@ export default function usePoolUserActivitiesQuery(
   };
 
   const queryOptions = reactive({
-    enabled: isQueryEnabled,
+    enabled,
     getNextPageParam: (lastPage: UserPoolActivitiesQueryResponse) =>
       lastPage.skip,
     ...options
