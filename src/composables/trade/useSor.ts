@@ -39,7 +39,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TradeQuote } from './types';
 import useTransactions, { TransactionAction } from '../useTransactions';
-import useNumbers from '../useNumbers';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
 import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
@@ -398,12 +398,14 @@ export default function useSor({
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
-      maximumFractionDigits: 4
-    });
-    const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
-      maximumFractionDigits: 4
-    });
+    const tokenInAmountFormatted = fNum2(
+      tokenInAmountInput.value,
+      FNumFormats.token
+    );
+    const tokenOutAmountFormatted = fNum2(
+      tokenOutAmountInput.value,
+      FNumFormats.token
+    );
 
     const tokenInSymbol = tokenIn.value.symbol;
     const tokenOutSymbol = tokenOut.value.symbol;

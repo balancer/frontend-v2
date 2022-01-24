@@ -151,9 +151,10 @@ export default defineComponent({
 
     function balanceFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum2(pool.value.onchain.tokens[address].balance, {
-        maximumFractionDigits: 4
-      });
+      return fNum2(
+        pool.value.onchain.tokens[address].balance,
+        FNumFormats.token
+      );
     }
 
     function weightFor(address: string): string {

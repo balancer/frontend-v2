@@ -188,14 +188,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                   <BalAsset :address="token.tokenAddress" :size="36" />
                   <BalStack vertical spacing="none">
                     <span class="font-semibold">
-                      {{
-                        fNum2(token.weight / 100, {
-                          style: 'unit',
-                          unit: 'percent',
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2
-                        })
-                      }}
+                      {{ fNum2(token.weight / 100, FNumFormats.percent) }}
                       {{ tokens[token.tokenAddress]?.symbol }}
                     </span>
                     <span

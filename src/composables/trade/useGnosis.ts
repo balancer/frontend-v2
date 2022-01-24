@@ -30,7 +30,7 @@ import { TokenInfo } from '@/types/TokenList';
 
 import { TradeQuote } from './types';
 
-import useNumbers from '../useNumbers';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
@@ -233,11 +233,13 @@ export default function useGnosis({
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
 
-      const summary = `${tokenInAmountEst}${fNum2(sellAmount, {
-        maximumFractionDigits: 4
-      })} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(buyAmount, {
-        maximumFractionDigits: 4
-      })} ${tokenOut.value.symbol}`;
+      const summary = `${tokenInAmountEst}${fNum2(
+        sellAmount,
+        FNumFormats.token
+      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(
+        buyAmount,
+        FNumFormats.token
+      )} ${tokenOut.value.symbol}`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
 

@@ -1,6 +1,6 @@
 import { FiatCurrency } from '@/constants/currency';
 import { mount } from 'vue-composable-tester';
-import useNumbers from './useNumbers';
+import useNumbers, { FNumFormats } from './useNumbers';
 
 const mockTokens = {
   ETH: {

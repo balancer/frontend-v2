@@ -8,7 +8,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { FullPool, PoolSwap } from '@/services/balancer/subgraph/types';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
@@ -286,9 +286,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum2(action.tokenAmounts[0].amount, {
-                  maximumFractionDigits: 4
-                })
+                fNum2(action.tokenAmounts[0].amount, FNumFormats.token)
               }}</span>
             </div>
             <BalIcon name="arrow-right" class="mx-1" />
@@ -298,9 +296,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum2(action.tokenAmounts[1].amount, {
-                  maximumFractionDigits: 4
-                })
+                fNum2(action.tokenAmounts[1].amount, FNumFormats.token)
               }}</span>
             </div>
           </template>

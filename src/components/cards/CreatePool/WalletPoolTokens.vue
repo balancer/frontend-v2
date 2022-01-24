@@ -3,7 +3,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { sumBy } from 'lodash';
 
 /**
@@ -74,9 +74,10 @@ const totalFiat = computed(() => {
                 {{ fNum2(balanceFor(token), FNumFormats.token) }}
               </h6>
               <span class="text-sm text-gray-600">{{
-                fNum2(priceFor(token) * Number(balanceFor(token)), {
-                  style: 'currency'
-                })
+                fNum2(
+                  priceFor(token) * Number(balanceFor(token)),
+                  FNumFormats.fiat
+                )
               }}</span>
             </BalStack>
           </BalStack>
@@ -104,9 +105,10 @@ const totalFiat = computed(() => {
                   {{ fNum2(balanceFor(token), FNumFormats.token) }}
                 </h6>
                 <span class="text-sm text-gray-600">{{
-                  fNum2(priceFor(token) * Number(balanceFor(token)), {
-                    style: 'currency'
-                  })
+                  fNum2(
+                    priceFor(token) * Number(balanceFor(token)),
+                    FNumFormats.fiat
+                  )
                 }}</span>
               </BalStack>
             </BalStack>

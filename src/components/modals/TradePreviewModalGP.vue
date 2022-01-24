@@ -27,9 +27,7 @@
               <div>
                 <div class="font-medium">
                   {{
-                    fNum2(trading.tokenInAmountInput.value, {
-                      maximumFractionDigits: 4
-                    })
+                    fNum2(trading.tokenInAmountInput.value, FNumFormats.token)
                   }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
@@ -53,9 +51,7 @@
               <div>
                 <div class="font-medium">
                   {{
-                    fNum2(trading.tokenOutAmountInput.value, {
-                      maximumFractionDigits: 4
-                    })
+                    fNum2(trading.tokenOutAmountInput.value, FNumFormats.token)
                   }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
