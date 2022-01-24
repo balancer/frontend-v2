@@ -144,14 +144,27 @@ watchEffect(() => {
 });
 
 const form = useForm({
-  name: 'trade'
+  name: 'trade',
+  defaultValues: {
+    'tokenIn.amount': _tokenInAmount.value,
+    'tokenOut.amount': _tokenOutAmount.value,
+    'tokenIn.address': _tokenInAddress.value,
+    'tokenOut.address': _tokenOutAddress.value
+  }
 });
 </script>
 
 <template>
   <div>
     <BalForm :form="form">
-      <TokenInput name="tokenIn" :disabled="tradeLoading" />
+      <TokenInput
+        :amount="_tokenInAmount"
+        :address="_tokenInAddress"
+        name="tokenIn"
+        @update:amount="handleInAmountChange"
+        @update:address="handleInputTokenChange"
+        :disabled="tradeLoading"
+      />
 
       <div class="flex items-center my-2">
         <TradePairToggle @toggle="handleTokenSwitch" />

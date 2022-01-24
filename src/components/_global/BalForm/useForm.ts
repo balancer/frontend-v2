@@ -1,16 +1,9 @@
 import { Rules } from '@/types';
-import {
-  onBeforeMount,
-  provide,
-  reactive,
-  ref,
-  toRefs,
-  watch,
-  ToRefs
-} from 'vue';
+import { onBeforeMount, reactive, toRefs, watch, ToRefs } from 'vue';
 
-type UseFormRequest = {
+type UseFormRequest<DefaultValues> = {
   name: string;
+  defaultValues?: Partial<{ [Property in keyof DefaultValues]: any }>;
 };
 
 export type FormState = {
@@ -18,6 +11,7 @@ export type FormState = {
   values: Record<string, any>;
   errors: Record<string, string[]>;
   rules: Record<string, Rules | undefined>;
+  defaultValues: Record<string, any>;
 };
 
 export type FormInstance = ToRefs<FormState> & {
@@ -27,9 +21,10 @@ export type FormInstance = ToRefs<FormState> & {
 
 export const FormContextSymbol = Symbol('FORM_CONTEXT');
 
-export default function useForm({
-  name: formName
-}: UseFormRequest): FormInstance {
+export default function useForm<DefaultValues>({
+  name: formName,
+  defaultValues = {}
+}: UseFormRequest<DefaultValues>): FormInstance {
   onBeforeMount(() => {
     if (!formName) {
       throw new Error(
@@ -37,6 +32,7 @@ export default function useForm({
       );
     }
     formInstance.name = formName;
+    registerDefaultValues();
   });
 
   /**
@@ -48,12 +44,20 @@ export default function useForm({
     name: '',
     values: {},
     errors: {},
-    rules: {}
+    rules: {},
+    defaultValues: {}
   });
 
   /**
    * METHODS
    */
+  function registerDefaultValues() {
+    formInstance.defaultValues = defaultValues;
+    for (const key of Object.keys(defaultValues)) {
+      formInstance.values[key] = defaultValues[key];
+    }
+  }
+
   // this method is used to pass in a form value to a field
   // make sure it is passed to the :value prop or an equivalent
   // as it is bound only one way (read only)
@@ -105,6 +109,9 @@ export default function useForm({
     () => formInstance.values,
     () => {
       console.log('f', formInstance.values);
+    },
+    {
+      deep: true
     }
   );
 

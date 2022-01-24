@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { HtmlInputEvent, RuleFunction } from '@/types';
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, watchEffect, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -225,7 +225,15 @@ function handleTextInputChange(id: string, event) {
   }
 }
 
-function getValue(id: string) {
+function handleAddressChange(id: string, event) {
+  const formInputKey = `${props.name}.${id}`;
+  emit('update:address', event);
+  if (formContext) {
+    formContext.onChange(formInputKey, event);
+  }
+}
+
+function getValue(id: string, fallBack: unknown) {
   const formInputKey = `${props.name}.${id}`;
   // if this component is a child of a <BalForm /> bind it.
   if (formContext) {
@@ -234,7 +242,7 @@ function getValue(id: string) {
       inputRules.value as RuleFunction[]
     );
   }
-  return _amount.value;
+  return fallBack;
 }
 
 /**
@@ -248,7 +256,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
-    :value="getValue('amount')"
+    :value="getValue('amount', _amount)"
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
@@ -270,12 +278,12 @@ watchEffect(() => {
     <template #prepend>
       <slot name="tokenSelect">
         <TokenSelectInput
-          v-model="_address"
+          :modelValue="getValue('address', _address)"
           :weight="weight"
           :fixed="fixedToken"
           :options="options"
           class="mr-2"
-          @update:modelValue="emit('update:address', $event)"
+          @update:modelValue="handleAddressChange('address', $event)"
           :excludedTokens="excludedTokens"
         />
       </slot>
