@@ -17,19 +17,15 @@
           width="22"
           class="rounded-full h-22 w-22"
         />
-        <Avatar
-          v-else
-          :address="account"
-          :iconURI="profile?.avatar"
-          :size="avatarSize"
-        />
+        <Avatar v-else :address="account" :size="avatarSize" />
         <span
           v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
         />
       </BalBtn>
     </template>
-    <AppNavSettings />
+    <div>abc</div>
+    <!--    <AppNavSettings />-->
   </BalPopover>
 </template>
 
@@ -47,13 +43,13 @@ export default defineComponent({
 
   components: {
     BalBtn,
-    AppNavSettings,
+    //AppNavSettings,
     Avatar
   },
 
   setup() {
     const { bp, upToLargeBreakpoint } = useBreakpoints();
-    const { isLoadingProfile, profile, account } = useWeb3();
+    const { isLoadingProfile, account } = useWeb3();
     const nftQuery = useNftQuery();
 
     const nftImage = computed(() => {
@@ -74,7 +70,6 @@ export default defineComponent({
       // computed
       bp,
       account,
-      profile,
       avatarSize,
       upToLargeBreakpoint,
       isLoadingProfile,
