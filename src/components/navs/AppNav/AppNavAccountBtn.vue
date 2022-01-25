@@ -1,7 +1,8 @@
 <template>
   <BalPopover no-pad>
     <template v-slot:activator>
-      <BalBtn
+      <BalBtn>ABC</BalBtn>
+      <!--      <BalBtn
         class="text-base"
         :class="{ btn: upToLargeBreakpoint }"
         :loading="isLoadingProfile"
@@ -33,8 +34,9 @@
           v-text="shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
         />
-      </BalBtn>
+      </BalBtn>-->
     </template>
+    <div>testing</div>
     <!--    <AppNavSettings />-->
   </BalPopover>
 </template>
@@ -47,13 +49,15 @@ import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNftQuery from '@/beethovenx/composables/nft/useNftQuery';
 import { shorten } from '@/plugins/mixins';
+import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
 
   components: {
+    BalBtn
     //AppNavSettings,
-    Avatar
+    //Avatar
   },
 
   setup() {
