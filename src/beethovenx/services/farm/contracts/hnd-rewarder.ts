@@ -2,7 +2,7 @@ import Service from '@/services/balancer/contracts/balancer-contracts.service';
 import ConfigService from '@/services/config/config.service';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { default as TimeBasedRewarder } from '@/beethovenx/abi/TimeBasedRewarder.json';
-import { getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
@@ -15,6 +15,10 @@ export default class HndRewarder {
 
   public async getPendingReward(id: string, user: string): Promise<number> {
     let result = {} as Record<any, any>;
+
+    if (!isAddress(user)) {
+      return 0;
+    }
 
     const rewarderMulticaller = new Multicaller(
       this.configService.network.key,
