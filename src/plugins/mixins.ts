@@ -23,3 +23,14 @@ export default {
     }
   }
 };
+
+export function shorten(str: string, key?: string): string {
+  if (!str) return str;
+  let limit;
+  if (key === 'symbol') limit = 6;
+  if (key === 'name') limit = 18;
+  if (key === 'choice') limit = 12;
+  if (limit)
+    return str.length > limit ? `${str.slice(0, limit).trim()}...` : str;
+  return shorten(str);
+}

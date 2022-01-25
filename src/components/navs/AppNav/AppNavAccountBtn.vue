@@ -28,11 +28,11 @@
           v-text="profile.ens"
           class="pl-2 hidden lg:inline-block"
         />
-        <!--        <span
+        <span
           v-else
-          v-text="_shorten(account)"
+          v-text="shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
-        />-->
+        />
       </BalBtn>
     </template>
     <!--    <AppNavSettings />-->
@@ -46,6 +46,7 @@ import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNftQuery from '@/beethovenx/composables/nft/useNftQuery';
+import { shorten } from '@/plugins/mixins';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
@@ -82,7 +83,8 @@ export default defineComponent({
       avatarSize,
       upToLargeBreakpoint,
       isLoadingProfile,
-      nftImage
+      nftImage,
+      shorten
     };
   }
 });
