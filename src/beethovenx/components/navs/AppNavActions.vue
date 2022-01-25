@@ -4,7 +4,7 @@
       <AppNavActivityBtn />
       <AppNavClaimBtn />
       <AppNavBeets />
-      <AppNavAccountBtn />
+      <!--      <AppNavAccountBtn />-->
     </div>
     <div v-else class="flex">
       <div class="mr-2">
@@ -43,7 +43,7 @@ export default defineComponent({
 
   components: {
     AppNavBeets,
-    AppNavAccountBtn,
+    //AppNavAccountBtn,
     AppNavClaimBtn,
     AppNavActivityBtn
   },
