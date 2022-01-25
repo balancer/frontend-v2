@@ -271,6 +271,15 @@ export interface GqlBeetsRewarder {
   id: Scalars['ID'];
   rewardPerSecond: Scalars['BigInt'];
   rewardToken: Scalars['Bytes'];
+  tokens: Array<GqlBeetsRewarderToken>;
+}
+
+export interface GqlBeetsRewarderToken {
+  __typename?: 'GqlBeetsRewarderToken';
+  rewardPerSecond: Scalars['BigInt'];
+  symbol: Scalars['String'];
+  token: Scalars['Bytes'];
+  tokenPrice: Scalars['Float'];
 }
 
 export interface GqlBeetsConfig {
@@ -304,5 +313,28 @@ export interface GqlBeetsConfigPoolFilterItem {
   __typename?: 'GqlBeetsConfigPoolFilterItem';
   id: Scalars['ID'];
   pools: Array<Scalars['String']>;
+  title: Scalars['String'];
+}
+
+export interface GqlBalancePoolApr {
+  __typename?: 'GqlBalancePoolApr';
+  beetsApr: Scalars['BigDecimal'];
+  hasRewardApr: Scalars['Boolean'];
+  items: Array<GqlBalancePoolAprItem>;
+  swapApr: Scalars['BigDecimal'];
+  thirdPartyApr: Scalars['BigDecimal'];
+  total: Scalars['BigDecimal'];
+}
+
+export interface GqlBalancePoolAprItem {
+  __typename?: 'GqlBalancePoolAprItem';
+  apr: Scalars['BigDecimal'];
+  subItems?: Array<GqlBalancePoolAprSubItem>;
+  title: Scalars['String'];
+}
+
+export interface GqlBalancePoolAprSubItem {
+  __typename?: 'GqlBalancePoolAprSubItem';
+  apr: Scalars['BigDecimal'];
   title: Scalars['String'];
 }

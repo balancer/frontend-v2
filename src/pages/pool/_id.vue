@@ -25,7 +25,7 @@
               </span>
             </div>
             <BalChip
-              v-if="pool.dynamic.isNewPool"
+              v-if="pool.isNewPool"
               color="red"
               size="sm"
               class="uppercase mt-2 mr-2"
@@ -389,6 +389,7 @@ export default defineComponent({
      * WATCHERS
      */
     watch(blockNumber, () => {
+      console.log('bcd');
       poolQuery.refetch.value();
     });
 

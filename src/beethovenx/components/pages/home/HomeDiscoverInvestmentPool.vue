@@ -69,11 +69,11 @@ function handleRowClick(pool: Pool) {
               :width="150"
             />
             <div class="text-xl font-medium truncate flex items-center mt-4">
-              {{ fNum(featuredPool.pool.dynamic.apr.total, 'percent') }} APR
+              {{ fNum(featuredPool.pool.apr.total, 'percent') }} APR
               <!--              <LiquidityMiningTooltip :pool="featuredPool.pool" />-->
             </div>
             <div class="text-sm text-gray-500">
-              {{ fNum(featuredPool.pool.dynamic.apr.total / 365, 'percent') }}
+              {{ fNum(featuredPool.pool.apr.total / 365, 'percent') }}
               DAILY
             </div>
           </div>

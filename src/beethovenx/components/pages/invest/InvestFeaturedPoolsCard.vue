@@ -51,11 +51,11 @@ function navigateToPool(pool: FullPool) {
           {{ topPerformer.name }}
         </div>-->
         <div class="text-xl font-medium truncate flex items-center mt-4">
-          {{ fNum(pool.dynamic.apr.total, 'percent') }} APR
+          {{ fNum(pool.apr.total, 'percent') }} APR
           <LiquidityAPRTooltip :pool="pool" />
         </div>
         <div class="text-sm text-gray-500">
-          {{ fNum(pool.dynamic.apr.total / 365, 'percent') }} DAILY
+          {{ fNum(pool.apr.total / 365, 'percent') }} DAILY
         </div>
       </BalCard>
     </template>

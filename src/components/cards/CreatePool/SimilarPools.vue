@@ -92,7 +92,7 @@ function cancel() {
                 $t('volume24hShort')
               }}</span>
               <span class="font-semibold">{{
-                fNum(existingPool.dynamic.volume, 'usd')
+                fNum(existingPool.volume24h, 'usd')
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -100,7 +100,7 @@ function cancel() {
                 $t('fees')
               }}</span>
               <span class="font-semibold">{{
-                fNum(existingPool.swapFee, 'percent')
+                fNum(existingPool.swapfee24h, 'percent')
               }}</span>
             </BalStack>
           </BalStack>
@@ -133,7 +133,7 @@ function cancel() {
                   $t('volume24hShort')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum(pool.dynamic.volume, 'usd')
+                  fNum(pool.volume24h, 'usd')
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
@@ -141,7 +141,7 @@ function cancel() {
                   $t('fees')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum(pool.swapFee, 'percent')
+                  fNum(pool.swapFee24h, 'percent')
                 }}</span>
               </BalStack>
             </BalStack>

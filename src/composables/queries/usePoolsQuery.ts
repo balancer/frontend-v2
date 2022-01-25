@@ -1,9 +1,8 @@
 import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { flatten, intersection } from 'lodash';
+import { flatten } from 'lodash';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { POOLS } from '@/constants/pools';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import {
   DecoratedPool,
@@ -130,12 +129,7 @@ export default function usePoolsQuery(
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 
-    const decoratedPools = await balancerSubgraphService.pools.decorate(
-      pools,
-      '24h',
-      prices.value,
-      currency.value
-    );
+    const decoratedPools = await balancerSubgraphService.pools.decorate(pools);
 
     // TODO - cleanup and extract elsewhere in refactor
     for (let i = 0; i < decoratedPools.length; i++) {

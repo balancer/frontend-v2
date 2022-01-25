@@ -147,7 +147,7 @@ export function useFreshBeets() {
   });
 
   const fbeetsDecoratedFarm = computed(
-    (): DecoratedFarm | undefined => pool.value?.farm
+    (): DecoratedFarm | undefined => pool.value?.decoratedFarm
   );
 
   async function approve(amount?: string) {
@@ -173,7 +173,7 @@ export function useFreshBeets() {
   }
 
   const swapApr = computed(() =>
-    pool.value ? parseFloat(pool.value.dynamic.apr.pool) : 0
+    pool.value ? parseFloat(pool.value.apr.swapApr) : 0
   );
   const farmApr = computed(() =>
     fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0

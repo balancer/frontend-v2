@@ -1,37 +1,16 @@
 import { getAddress } from '@ethersproject/address';
-import { bnum } from '@/lib/utils';
-import {
-  computeAPRsForPool,
-  computeTotalAPRForPool,
-  currentLiquidityMiningRewards
-} from '@/lib/utils/liquidityMining';
 
-import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
+import { isStable } from '@/composables/usePool';
 
 import Service from '../../balancer-subgraph.service';
 import queryBuilder, { pastPoolsQuery } from './query';
-import {
-  DecoratedPool,
-  Pool,
-  PoolToken,
-  QueryBuilder,
-  TimeTravelPeriod
-} from '../../types';
+import { DecoratedPool, Pool, PoolToken, QueryBuilder } from '../../types';
 
 import { Network } from '@/composables/useNetwork';
 import { configService as _configService } from '@/services/config/config.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { FiatCurrency } from '@/constants/currency';
-import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
-import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
-import { differenceInWeeks } from 'date-fns';
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-
-import { aaveService } from '@/services/aave/aave.service';
-
-const IS_LIQUIDITY_MINING_ENABLED = true;
 
 export default class Pools {
   service: Service;
@@ -83,27 +62,12 @@ export default class Pools {
     }
   }
 
-  public async decorate(
-    pools: Pool[],
-    period: TimeTravelPeriod,
-    prices: TokenPrices,
-    currency: FiatCurrency
-  ): Promise<DecoratedPool[]> {
-    const pastPools: Pool[] = await this.getPastPools();
-
-    return this.serialize(pools, pastPools, period, prices, currency);
+  public async decorate(pools: Pool[]): Promise<DecoratedPool[]> {
+    return this.serialize(pools);
   }
 
-  private async serialize(
-    pools: Pool[],
-    pastPools: Pool[],
-    period: TimeTravelPeriod,
-    prices: TokenPrices,
-    currency: FiatCurrency
-  ): Promise<DecoratedPool[]> {
+  private async serialize(pools: Pool[]): Promise<DecoratedPool[]> {
     const promises = pools.map(async pool => {
-      const poolService = new this.poolServiceClass(pool);
-
       if (
         pool.id ===
         '0xae1c69eae0f1342425ea3fdb51e9f11223c7ad5b00010000000000000000000b'
@@ -132,50 +96,8 @@ export default class Pools {
       pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
-      pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
 
-      const pastPool = pastPools.find(p => p.id === pool.id);
-      const volume = this.calcVolume(pool, pastPool);
-      const poolAPR = this.calcAPR(pool, pastPool);
-
-      const fees = this.calcFees(pool, pastPool);
-      const {
-        hasLiquidityMiningRewards,
-        liquidityMiningAPR,
-        liquidityMiningBreakdown
-      } = this.calcLiquidityMiningAPR(pool, prices, currency);
-      const {
-        thirdPartyAPR,
-        thirdPartyAPRBreakdown
-      } = await this.calcThirdPartyAPR(pool, prices, currency);
-      const totalAPR = this.calcTotalAPR(
-        poolAPR,
-        liquidityMiningAPR,
-        thirdPartyAPR
-      );
-      const isNewPool = this.isNewPool(pool);
-
-      // TODO - remove hasLiquidityMiningRewards from schema
-      // Add a conditional to usePool or somewhere else that
-      // checks what rewards are available.
-      return {
-        ...pool,
-        hasLiquidityMiningRewards,
-        dynamic: {
-          period,
-          volume,
-          fees,
-          apr: {
-            pool: poolAPR,
-            thirdParty: thirdPartyAPR,
-            thirdPartyBreakdown: thirdPartyAPRBreakdown,
-            liquidityMining: liquidityMiningAPR,
-            liquidityMiningBreakdown,
-            total: totalAPR
-          },
-          isNewPool
-        }
-      };
+      return pool;
     });
 
     return Promise.all(promises);
@@ -190,132 +112,6 @@ export default class Pools {
     if (isStable(pool.poolType)) return tokens;
 
     return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
-  }
-
-  private calcVolume(pool: Pool, pastPool: Pool | undefined): string {
-    if (!pastPool) return pool.totalSwapVolume;
-
-    return bnum(pool.totalSwapVolume)
-      .minus(pastPool.totalSwapVolume)
-      .toString();
-  }
-
-  private calcAPR(pool: Pool, pastPool?: Pool) {
-    if (!pastPool)
-      return bnum(pool.totalSwapFee)
-        .dividedBy(pool.totalLiquidity)
-        .multipliedBy(365)
-        .toString();
-
-    const swapFees = bnum(pool.totalSwapFee).minus(pastPool.totalSwapFee);
-    return swapFees
-      .dividedBy(pool.totalLiquidity)
-      .multipliedBy(365)
-      .toString();
-  }
-
-  private calcLiquidityMiningAPR(
-    pool: Pool,
-    prices: TokenPrices,
-    currency: FiatCurrency
-  ) {
-    let liquidityMiningAPR = '0';
-    let liquidityMiningBreakdown = {};
-
-    const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
-
-    const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
-      ? !!liquidityMiningRewards
-      : false;
-
-    if (hasLiquidityMiningRewards) {
-      liquidityMiningAPR = computeTotalAPRForPool(
-        liquidityMiningRewards,
-        prices,
-        currency,
-        pool.totalLiquidity
-      );
-      liquidityMiningBreakdown = computeAPRsForPool(
-        liquidityMiningRewards,
-        prices,
-        currency,
-        pool.totalLiquidity
-      );
-    }
-
-    return {
-      hasLiquidityMiningRewards,
-      liquidityMiningAPR,
-      liquidityMiningBreakdown
-    };
-  }
-
-  /**
-   * Fetch additional APRs not covered by pool swap fees and
-   * liquidity minning rewards. These APRs may require 3rd party
-   * API requests.
-   */
-  private async calcThirdPartyAPR(
-    pool: Pool,
-    prices: TokenPrices,
-    currency: FiatCurrency
-  ) {
-    const thirdPartyAPR = '0';
-    const thirdPartyAPRBreakdown = {};
-
-    /*if (isWstETH(pool)) {
-      thirdPartyAPR = await lidoService.calcStEthAPRFor(pool);
-    } else if (isStablePhantom(pool.poolType)) {
-      const {
-        total,
-        tokenBreakdown
-      } = await aaveService.calcWeightedSupplyAPRFor(pool, prices, currency);
-
-      thirdPartyAPR = total;
-      thirdPartyAPRBreakdown = tokenBreakdown;
-    }*/
-
-    return {
-      thirdPartyAPR,
-      thirdPartyAPRBreakdown
-    };
-  }
-
-  private calcTotalAPR(
-    poolAPR: string,
-    liquidityMiningAPR: string,
-    thirdPartyAPR: string
-  ): string {
-    return bnum(poolAPR)
-      .plus(liquidityMiningAPR)
-      .plus(thirdPartyAPR)
-      .toString();
-  }
-
-  private calcFees(pool: Pool, pastPool: Pool | undefined): string {
-    if (!pastPool) return pool.totalSwapFee;
-
-    return bnum(pool.totalSwapFee)
-      .minus(pastPool.totalSwapFee)
-      .toString();
-  }
-
-  private async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
-    const currentBlock = await this.service.rpcProviderService.getBlockNumber();
-    const blocksInDay = Math.round(
-      twentyFourHoursInSecs / this.service.blockTime
-    );
-
-    switch (period) {
-      case '24h':
-        return currentBlock - blocksInDay;
-      default:
-        return currentBlock - blocksInDay;
-    }
-  }
-
-  private isNewPool(pool: Pool): boolean {
-    return differenceInWeeks(Date.now(), pool.createTime * oneSecondInMs) < 1;
   }
 
   public addressFor(poolId: string): string {

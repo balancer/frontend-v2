@@ -84,26 +84,13 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
 
   const poolsWithFarms: ComputedRef<DecoratedPoolWithFarm[]> = computed(() => {
     return pools.value.map(pool => {
-      const farm = decoratedFarms.value.find(
+      const decoratedFarm = decoratedFarms.value.find(
         farm => pool.address.toLowerCase() === farm.pair.toLowerCase()
       );
 
       return {
         ...pool,
-        farm,
-        hasLiquidityMiningRewards: !!farm,
-        dynamic: {
-          ...pool.dynamic,
-          apr: farm
-            ? getPoolApr(
-                pool,
-                farm,
-                blocksPerYear.value,
-                beetsPrice.value,
-                rewardTokenPrice.value
-              )
-            : pool.dynamic.apr
-        }
+        decoratedFarm
       };
     });
   });
@@ -125,31 +112,15 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   const userPools = computed<DecoratedPoolWithShares[]>(() => {
     const userPools = userPoolsQuery.data.value?.pools || [];
     const userFarmPools = onlyPoolsWithFarms.value
-      .filter(pool => pool.farm.stake > 0)
+      .filter(pool => pool.decoratedFarm.stake > 0)
       .map(pool => ({ ...pool, shares: '0' }));
 
     return uniqBy([...userPools, ...userFarmPools], 'id').map(pool => {
-      const farm = decoratedFarms.value.find(
+      const decoratedFarm = decoratedFarms.value.find(
         farm => pool.address.toLowerCase() === farm.pair.toLowerCase()
       );
 
-      return {
-        ...pool,
-        farm,
-        hasLiquidityMiningRewards: !!farm,
-        dynamic: {
-          ...pool.dynamic,
-          apr: farm
-            ? getPoolApr(
-                pool,
-                farm,
-                blocksPerYear.value,
-                beetsPrice.value,
-                rewardTokenPrice.value
-              )
-            : pool.dynamic.apr
-        }
-      };
+      return { ...pool, decoratedFarm };
     });
   });
 

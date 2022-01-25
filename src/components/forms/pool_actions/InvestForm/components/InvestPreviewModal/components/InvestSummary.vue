@@ -34,19 +34,19 @@ const { getTokens } = useTokens();
  * COMPUTED
  */
 const totalWeeklyYield = computed((): string =>
-  weeklyYieldForAPR(props.pool.dynamic.apr.total)
+  weeklyYieldForAPR(`${props.pool.apr.total}`)
 );
 
 const swapFeeWeeklyYield = computed((): string =>
-  weeklyYieldForAPR(props.pool.dynamic.apr.pool)
+  weeklyYieldForAPR(props.pool.apr.swapApr)
 );
 
-const thirdPartyWeeklyYield = computed((): string =>
-  weeklyYieldForAPR(props.pool.dynamic.apr.thirdParty)
+/*const thirdPartyWeeklyYield = computed((): string =>
+  weeklyYieldForAPR(props.pool.apr.thirdPartyApr)
 );
 
 const lmWeeklyYield = computed((): string =>
-  weeklyYieldForAPR(props.pool.dynamic.apr.liquidityMining)
+  weeklyYieldForAPR(props.pool.apr.beetsApr)
 );
 
 const lmBreakdown = computed(
@@ -57,21 +57,21 @@ const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
 
 const lmMultiRewardPool = computed(
   () => Object.keys(lmTokens.value).length > 1
-);
+);*/
 
 const hasThirdPartyAPR = computed(() =>
-  bnum(props.pool.dynamic.apr.thirdParty).gt(0)
+  bnum(props.pool.apr.thirdPartyApr).gt(0)
 );
 
-const thirdPartyBreakdown = computed(
+/*const thirdPartyBreakdown = computed(
   () => props.pool.dynamic.apr.thirdPartyBreakdown
-);
+);*/
 
-const thirdPartyTokens = computed(() =>
+/*const thirdPartyTokens = computed(() =>
   getTokens(Object.keys(thirdPartyBreakdown.value))
-);
+);*/
 
-const thirdPartyMultiRewardPool = computed(
+/*const thirdPartyMultiRewardPool = computed(
   () => Object.keys(thirdPartyTokens.value).length > 1
 );
 
@@ -81,7 +81,7 @@ const thirdPartyFiatLabel = computed(() => {
     return t('thirdPartyRewards.fiat.aaveBoosted');
 
   return '';
-});
+});*/
 
 /**
  * METHODS
@@ -134,7 +134,7 @@ function weeklyYieldForAPR(apr: string): string {
           <BalTooltip icon-size="sm" width="72" noPad>
             <template v-slot:activator>
               <StarsIcon
-                v-if="props.pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
+                v-if="props.pool.apr.hasRewardApr || hasThirdPartyAPR"
                 class="h-4 text-yellow-300"
               />
               <BalIcon
@@ -163,7 +163,7 @@ function weeklyYieldForAPR(apr: string): string {
                   {{ $t('swapFee') }}
                 </span>
               </div>
-              <BalBreakdown
+              <!--              <BalBreakdown
                 :items="Object.entries(thirdPartyBreakdown)"
                 v-if="hasThirdPartyAPR"
                 :hideItems="!thirdPartyMultiRewardPool"
@@ -198,7 +198,7 @@ function weeklyYieldForAPR(apr: string): string {
                     {{ lmTokens[item[0]].symbol }}
                   </span>
                 </template>
-              </BalBreakdown>
+              </BalBreakdown>-->
             </div>
           </BalTooltip>
         </div>

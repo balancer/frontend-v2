@@ -1,4 +1,4 @@
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/balancer/subgraph/types';
 
 export interface Farm {
   id: string;
@@ -43,10 +43,10 @@ export interface DecoratedFarm extends Farm {
   pendingRewardTokenValue: number;
 }
 
-export interface DecoratedPoolWithFarm extends DecoratedPool {
-  farm?: DecoratedFarm;
+export interface DecoratedPoolWithFarm extends Pool {
+  decoratedFarm?: DecoratedFarm;
 }
 
-export interface DecoratedPoolWithRequiredFarm extends DecoratedPool {
-  farm: DecoratedFarm;
+export interface DecoratedPoolWithRequiredFarm extends Pool {
+  decoratedFarm: DecoratedFarm;
 }

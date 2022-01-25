@@ -55,17 +55,17 @@ export default defineComponent({
         {
           id: 'volumeTime',
           label: t('volumeTime', ['24h']),
-          value: fNum(props.pool.dynamic.volume, 'usd')
+          value: fNum(props.pool.volume24h, 'usd')
         },
         {
           id: 'feesTime',
           label: t('feesTime', ['24h']),
-          value: fNum(props.pool.dynamic.fees, 'usd')
+          value: fNum(props.pool.fees24h, 'usd')
         },
         {
           id: 'apr',
           label: 'APR',
-          value: fNum(props.pool.dynamic.apr.total, 'percent')
+          value: fNum(props.pool.apr.total, 'percent')
         }
       ];
     });

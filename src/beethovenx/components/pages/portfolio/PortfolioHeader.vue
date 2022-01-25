@@ -116,7 +116,7 @@ export default defineComponent({
     );
 
     const farmData = computed(() => {
-      const farms = props.pools.map(pool => pool.farm);
+      const farms = props.pools.map(pool => pool.decoratedFarm);
 
       const averageApr =
         sumBy(farms, farm => farm.apr * (farm.stake || 0)) /
@@ -143,7 +143,7 @@ export default defineComponent({
     });
 
     const hasFarmRewards = computed(
-      () => props.pools.filter(pool => pool.farm.stake > 0).length > 0
+      () => props.pools.filter(pool => pool.decoratedFarm.stake > 0).length > 0
     );
 
     return {

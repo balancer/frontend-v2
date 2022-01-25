@@ -118,7 +118,7 @@ export default defineComponent({
     const { upToLargeBreakpoint } = useBreakpoints();
 
     const data = computed(() => {
-      const farms = onlyPoolsWithFarms.value.map(pool => pool.farm);
+      const farms = onlyPoolsWithFarms.value.map(pool => pool.decoratedFarm);
 
       const pendingRewardToken = sumBy(farms, farm => farm.pendingRewardToken);
       const pendingRewardTokenValue = sumBy(
@@ -155,13 +155,14 @@ export default defineComponent({
 
     const hasFarmRewards = computed(
       () =>
-        onlyPoolsWithFarms.value.filter(pool => pool.farm.stake > 0).length > 0
+        onlyPoolsWithFarms.value.filter(pool => pool.decoratedFarm.stake > 0)
+          .length > 0
     );
 
     async function harvestAllRewards(): Promise<void> {
       const farmIds = onlyPoolsWithFarms.value
-        .filter(pool => pool.farm.stake > 0)
-        .map(pool => pool.farm.id);
+        .filter(pool => pool.decoratedFarm.stake > 0)
+        .map(pool => pool.decoratedFarm.id);
 
       harvesting.value = true;
       const tx = await harvestAllFarms(farmIds);

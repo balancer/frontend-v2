@@ -3,14 +3,12 @@ import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { formatUnits } from 'ethers/lib/utils';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import {
   FullPool,
   OnchainPoolData,
-  Pool,
-  LinearPool
+  Pool
 } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
@@ -18,10 +16,10 @@ import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { bnum, forChange } from '@/lib/utils';
 import {
-  lpTokensFor,
   isManaged,
   isStableLike,
-  isStablePhantom
+  isStablePhantom,
+  lpTokensFor
 } from '../usePool';
 import { keyBy } from 'lodash';
 
@@ -171,12 +169,9 @@ export default function usePoolQuery(
       tokenRates: pool.tokenRates
     };
 
-    const [decoratedPool] = await balancerSubgraphService.pools.decorate(
-      [{ ...pool, onchain: onchainData }],
-      '24h',
-      prices.value,
-      currency.value
-    );
+    const [decoratedPool] = await balancerSubgraphService.pools.decorate([
+      { ...pool, onchain: onchainData }
+    ]);
 
     let unwrappedTokens: Pool['unwrappedTokens'];
 

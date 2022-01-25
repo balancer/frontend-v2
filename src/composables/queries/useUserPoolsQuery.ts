@@ -139,10 +139,7 @@ export default function useUserPoolsQuery(
     await forChange(dynamicDataLoading, false);
 
     const decoratedPools = await balancerSubgraphService.pools.decorate(
-      userPools,
-      '24h',
-      prices.value,
-      currency.value
+      userPools
     );
 
     // TODO - cleanup and extract elsewhere in refactor

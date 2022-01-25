@@ -116,7 +116,9 @@ export default defineComponent({
     const { fNum } = useNumbers();
 
     const poolsWithUserInFarm = computed(() => {
-      return onlyPoolsWithFarms.value.filter(pool => pool.farm.stake > 0);
+      return onlyPoolsWithFarms.value.filter(
+        pool => pool.decoratedFarm.stake > 0
+      );
     });
 
     const timestamps = computed(() =>

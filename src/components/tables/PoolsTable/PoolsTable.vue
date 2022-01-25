@@ -60,7 +60,7 @@
             {{ pool.name }}
           </h5>
           <BalChip
-            v-if="pool.dynamic.isNewPool"
+            v-if="pool.isNewPool"
             color="red"
             size="sm"
             class="ml-2 uppercase"
@@ -73,9 +73,9 @@
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
           {{
-            Number(pool.dynamic.apr.pool) > 10000
+            Number(pool.apr.swapApr) > 10000
               ? '-'
-              : fNum(pool.dynamic.apr.total, 'percent')
+              : fNum(pool.apr.total, 'percent')
           }}
           <LiquidityAPRTooltip :pool="pool" />
         </div>
@@ -187,14 +187,15 @@ export default defineComponent({
         name: t('myBalance'),
         accessor: pool =>
           fNum(
-            parseFloat(pool.shares || '0') + (pool.farm?.stake || 0),
+            parseFloat(pool.shares || '0') + (pool.decoratedFarm?.stake || 0),
             'usd',
             { forcePreset: true }
           ),
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
-        sortKey: pool => Number(pool.shares || 0) + (pool.farm?.stake || 0),
+        sortKey: pool =>
+          Number(pool.shares || 0) + (pool.decoratedFarm?.stake || 0),
         width: 150
       },
       {
@@ -212,11 +213,11 @@ export default defineComponent({
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
-        accessor: pool => fNum(pool.dynamic.volume, 'usd'),
+        accessor: pool => fNum(pool.volume24h, 'usd'),
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => {
-          const apr = Number(pool.dynamic.volume);
+          const apr = Number(pool.volume24h);
           if (apr === Infinity || isNaN(apr)) return 0;
           return apr;
         },
@@ -226,11 +227,11 @@ export default defineComponent({
       {
         name: t('apr'),
         Cell: 'aprCell',
-        accessor: pool => pool.dynamic.apr.total,
+        accessor: pool => pool.apr.total,
         align: 'right',
         id: 'poolApr',
         sortKey: pool => {
-          const apr = Number(pool.dynamic.apr.total);
+          const apr = Number(pool.apr.total);
           if (apr === Infinity || isNaN(apr)) return 0;
           return apr;
         },

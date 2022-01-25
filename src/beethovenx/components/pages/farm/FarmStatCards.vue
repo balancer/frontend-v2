@@ -12,12 +12,13 @@
       </BalCard>
     </div>
     <FarmHarvestRewardsCard
-      :farm-id="pool.farm.id"
+      :farm-id="pool.decoratedFarm.id"
       :token-address="pool.address"
-      :pending-beets="pool.farm.pendingBeets"
-      :pending-beets-value="pool.farm.pendingBeetsValue"
-      :pending-reward-token="pool.farm.pendingRewardToken"
-      :pending-reward-token-value="pool.farm.pendingRewardTokenValue"
+      :pending-beets="pool.decoratedFarm.pendingBeets"
+      :pending-beets-value="pool.decoratedFarm.pendingBeetsValue"
+      :pending-reward-token="pool.decoratedFarm.pendingRewardToken"
+      :pending-reward-token-value="pool.decoratedFarm.pendingRewardTokenValue"
+      :reward-token-symbol="pool.farm?.rewarder?.tokens[0]?.symbol"
     />
   </div>
 </template>
@@ -55,10 +56,10 @@ export default defineComponent({
     const { txListener } = useEthers();
     const { harvest } = useFarm(
       ref(props.pool.address),
-      ref(props.pool.farm.id)
+      ref(props.pool.decoratedFarm.id)
     );
     const harvesting = ref(false);
-    const farmUserQuery = useFarmUserQuery(props.pool.farm.id);
+    const farmUserQuery = useFarmUserQuery(props.pool.decoratedFarm.id);
     const farmUser = computed(() => farmUserQuery.data.value);
 
     async function harvestRewards(): Promise<void> {
@@ -83,7 +84,7 @@ export default defineComponent({
 
     // COMPUTED
     const stats = computed(() => {
-      const farm = props.pool.farm;
+      const farm = props.pool.decoratedFarm;
 
       return [
         {

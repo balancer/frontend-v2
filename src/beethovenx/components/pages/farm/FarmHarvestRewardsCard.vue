@@ -10,7 +10,7 @@
       v-if="pendingRewardToken > 0"
       class="text-xl font-medium truncate flex items-center"
     >
-      {{ fNum(pendingRewardToken, 'token_fixed') }} HND
+      {{ fNum(pendingRewardToken, 'token_fixed') }} {{ rewardTokenSymbol }}
     </div>
     <div class="truncate flex items-center pb-8">
       {{ fNum(pendingBeetsValue + pendingRewardTokenValue, 'usd') }}
@@ -63,6 +63,9 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    rewardTokenSymbol: {
+      type: String
     }
   },
 

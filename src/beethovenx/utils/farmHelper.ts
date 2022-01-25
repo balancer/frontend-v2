@@ -85,10 +85,9 @@ export function getPoolApr(
     : '0';
 
   return {
-    pool: pool.dynamic.apr.pool,
+    pool: pool.apr.swapApr,
     liquidityMining: liquidityMiningApr,
-    total: `${parseFloat(pool.dynamic.apr.pool) +
-      parseFloat(liquidityMiningApr)}`,
+    total: `${parseFloat(pool.apr.swapApr) + parseFloat(liquidityMiningApr)}`,
     thirdParty: '',
     liquidityMiningBreakdown: {},
     thirdPartyBreakdown: {}

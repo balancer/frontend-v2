@@ -28,6 +28,46 @@ const defaultAttrs = {
   amp: true,
   createTime: true,
   swapEnabled: true,
+  farm: {
+    id: true,
+    pair: true,
+    allocPoint: true,
+    slpBalance: true,
+    masterChef: {
+      id: true,
+      totalAllocPoint: true,
+      beetsPerBlock: true
+    },
+    rewarder: {
+      id: true,
+      rewardToken: true,
+      rewardPerSecond: true,
+      tokens: {
+        rewardPerSecond: true,
+        symbol: true,
+        token: true,
+        tokenPrice: true
+      }
+    }
+  },
+  volume24h: true,
+  fees24h: true,
+  isNewPool: true,
+  apr: {
+    total: true,
+    hasRewardApr: true,
+    swapApr: true,
+    beetsApr: true,
+    thirdPartyApr: true,
+    items: {
+      title: true,
+      apr: true,
+      subItems: {
+        title: true,
+        apr: true
+      }
+    }
+  },
   tokens: {
     name: true,
     symbol: true,

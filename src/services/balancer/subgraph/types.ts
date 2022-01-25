@@ -1,6 +1,10 @@
 import { DecoratedFarm } from '@/beethovenx/services/subgraph/subgraph-types';
 
 import { BigNumber } from 'ethers';
+import {
+  GqlBalancePoolApr,
+  GqlBeetsFarm
+} from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 export type Address = string;
 export type QueryArgs = Record<string, any>;
@@ -53,7 +57,6 @@ export interface Pool {
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
-  hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
   createTime: number;
   swapEnabled: boolean;
@@ -86,6 +89,11 @@ export interface Pool {
       decimals: number;
     };
   }[];
+  apr: GqlBalancePoolApr;
+  farm?: GqlBeetsFarm;
+  isNewPool?: boolean;
+  volume24h: string;
+  fees24h: string;
 }
 
 export interface LinearPool extends Pool {
@@ -94,15 +102,7 @@ export interface LinearPool extends Pool {
   swapEnabled: boolean;
 }
 
-export interface DecoratedPool extends Pool {
-  dynamic: {
-    period: TimeTravelPeriod;
-    volume: string;
-    apr: PoolApr;
-    fees: string;
-    isNewPool: boolean;
-  };
-}
+export type DecoratedPool = Pool;
 
 export interface PoolApr {
   pool: string;
@@ -192,7 +192,7 @@ export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
 export interface FullPool extends DecoratedPool {
   onchain: OnchainPoolData;
-  farm?: DecoratedFarm;
+  //farm?: DecoratedFarm;
   shares?: string;
 }
 
@@ -207,7 +207,7 @@ export interface PoolShare {
 
 export interface DecoratedPoolWithShares extends DecoratedPool {
   shares: string;
-  farm?: DecoratedFarm;
+  decoratedFarm?: DecoratedFarm;
 }
 
 export type PoolActivityType = 'Join' | 'Exit';

@@ -45,11 +45,7 @@ export default function usePoolTransfers() {
 
     return {
       ...poolQuery.data.value,
-      dynamic: poolWithFarm
-        ? poolWithFarm.dynamic
-        : poolQuery.data.value.dynamic,
-      hasLiquidityMiningRewards: !!poolWithFarm,
-      farm: poolWithFarm?.farm,
+      decoratedFarm: poolWithFarm?.decoratedFarm,
       shares: userPool?.shares
     };
   });
