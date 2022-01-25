@@ -89,7 +89,7 @@ export default class Weighted {
     return SDK.WeightedMath._calcTokenOutGivenExactBptIn(
       tokenBalance,
       tokenNormalizedWeight,
-      bnum(bptAmount), // TODO - check if bpt amount is correctly scaled for all pool types
+      bnum(bptAmount),
       bnum(this.calc.poolTotalSupply.toString()),
       bnum(this.calc.poolSwapFee.toString())
     );
