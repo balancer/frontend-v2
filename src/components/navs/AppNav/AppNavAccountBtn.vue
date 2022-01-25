@@ -48,7 +48,7 @@ import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNftQuery from '@/beethovenx/composables/nft/useNftQuery';
-import { shorten } from '@/plugins/mixins';
+import { shortenString } from '@/plugins/mixins';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 
 export default defineComponent({
@@ -88,7 +88,7 @@ export default defineComponent({
       upToLargeBreakpoint,
       isLoadingProfile,
       nftImage,
-      shorten
+      shortenString
     };
   }
 });

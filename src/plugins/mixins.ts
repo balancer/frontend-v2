@@ -24,7 +24,7 @@ export default {
   }
 };
 
-export function shorten(str: string, key?: string): string {
+export function shortenString(str: string, key?: string): string {
   if (!str) return str;
   let limit;
   if (key === 'symbol') limit = 6;
