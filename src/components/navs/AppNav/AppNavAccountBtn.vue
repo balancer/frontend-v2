@@ -1,8 +1,7 @@
 <template>
   <BalPopover no-pad>
     <template v-slot:activator>
-      <BalBtn>ABC</BalBtn>
-      <!--      <BalBtn
+      <BalBtn
         class="text-base"
         :class="{ btn: upToLargeBreakpoint }"
         :loading="isLoadingProfile"
@@ -12,7 +11,8 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <img
+        abc
+        <!--        <img
           v-if="nftImage !== null"
           :src="nftImage"
           width="22"
@@ -33,8 +33,8 @@
           v-else
           v-text="shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
-        />
-      </BalBtn>-->
+        />-->
+      </BalBtn>
     </template>
     <div>testing</div>
     <!--    <AppNavSettings />-->
