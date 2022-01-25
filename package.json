@@ -13,7 +13,6 @@
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "lint:fix": "vue-cli-service lint",
-    "prepare": "node ./prepare.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o"
   },
