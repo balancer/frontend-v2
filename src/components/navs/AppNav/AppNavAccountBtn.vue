@@ -11,8 +11,7 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        abc
-        <!--        <img
+        <img
           v-if="nftImage !== null"
           :src="nftImage"
           width="22"
@@ -25,19 +24,12 @@
           :size="avatarSize"
         />
         <span
-          v-if="profile.ens"
-          v-text="profile.ens"
-          class="pl-2 hidden lg:inline-block"
-        />
-        <span
-          v-else
-          v-text="shorten(account)"
+          v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
-        />-->
+        />
       </BalBtn>
     </template>
-    <div>testing</div>
-    <!--    <AppNavSettings />-->
+    <AppNavSettings />
   </BalPopover>
 </template>
 
@@ -48,16 +40,15 @@ import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNftQuery from '@/beethovenx/composables/nft/useNftQuery';
-import { shortenString } from '@/plugins/mixins';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
 
   components: {
-    BalBtn
-    //AppNavSettings,
-    //Avatar
+    BalBtn,
+    AppNavSettings,
+    Avatar
   },
 
   setup() {
@@ -87,8 +78,7 @@ export default defineComponent({
       avatarSize,
       upToLargeBreakpoint,
       isLoadingProfile,
-      nftImage,
-      shortenString
+      nftImage
     };
   }
 });
