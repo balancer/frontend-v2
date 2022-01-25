@@ -28,14 +28,14 @@
           v-text="profile.ens"
           class="pl-2 hidden lg:inline-block"
         />
-        <span
+        <!--        <span
           v-else
           v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
-        />
+        />-->
       </BalBtn>
     </template>
-    <AppNavSettings />
+    <!--    <AppNavSettings />-->
   </BalPopover>
 </template>
 
@@ -51,7 +51,7 @@ export default defineComponent({
   name: 'AppNavAccountBtn',
 
   components: {
-    AppNavSettings,
+    //AppNavSettings,
     Avatar
   },
 
