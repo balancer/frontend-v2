@@ -65,10 +65,10 @@ const state = reactive<SorState>({
 
 type Props = {
   exactIn: Ref<boolean>;
-  tokenInAddressInput: Ref<string>;
-  tokenInAmountInput: Ref<string>;
-  tokenOutAddressInput: Ref<string>;
-  tokenOutAmountInput: Ref<string>;
+  tokenInAddressInput: string;
+  tokenInAmountInput: string;
+  tokenOutAddressInput: string;
+  tokenOutAmountInput: string;
   tokens: Ref<TokenInfoMap>;
   wrapType: Ref<WrapType>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
@@ -150,14 +150,14 @@ export default function useSor({
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
-    if (tokenInAddressInput.value && !tokens.value[tokenInAddressInput.value]) {
-      unknownAssets.push(tokenInAddressInput.value);
+    if (tokenInAddressInput && !tokens.value[tokenInAddressInput]) {
+      unknownAssets.push(tokenInAddressInput);
     }
     if (
-      tokenOutAddressInput.value &&
-      !tokens.value[tokenOutAddressInput.value]
+      tokenOutAddressInput &&
+      !tokens.value[tokenOutAddressInput]
     ) {
-      unknownAssets.push(tokenOutAddressInput.value);
+      unknownAssets.push(tokenOutAddressInput);
     }
     await injectTokens(unknownAssets);
     await initSor();
@@ -214,71 +214,75 @@ export default function useSor({
     }
   }
 
-  async function handleAmountChange(): Promise<void> {
+  async function handleAmountChange() {
     const amount = exactIn.value
-      ? tokenInAmountInput.value
-      : tokenOutAmountInput.value;
+      ? tokenInAmountInput
+      : tokenOutAmountInput;
+    const amounts = {
+      tokenInAmountInput,
+      tokenOutAmountInput
+    }
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || amount === '0';
     if (zeroValueTrade) {
-      tokenInAmountInput.value = amount;
-      tokenOutAmountInput.value = amount;
+      tokenInAmountInput = amount;
+      tokenOutAmountInput = amount;
       priceImpact.value = 0;
       sorReturn.value.hasSwaps = false;
       sorReturn.value.returnAmount = Zero;
-      return;
+      return amounts;
     }
 
-    const tokenInAddress = tokenInAddressInput.value;
-    const tokenOutAddress = tokenOutAddressInput.value;
+    const tokenInAddress = tokenInAddressInput;
+    const tokenOutAddress = tokenOutAddressInput;
 
     if (!tokenInAddress || !tokenOutAddress) {
-      if (exactIn.value) tokenOutAmountInput.value = '';
-      else tokenInAmountInput.value = '';
-      return;
+      if (exactIn.value) amounts.tokenOutAmountInput = '';
+      else amounts.tokenInAmountInput = '';
+      return amounts;
     }
 
-    const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
-    const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
+    const tokenInDecimals = tokens.value[tokenInAddressInput]?.decimals;
+    const tokenOutDecimals = tokens.value[tokenOutAddressInput]?.decimals;
 
     if (wrapType.value !== WrapType.NonWrap) {
       const wrapper =
         wrapType.value === WrapType.Wrap ? tokenOutAddress : tokenInAddress;
 
       if (exactIn.value) {
-        tokenInAmountInput.value = amount;
+        amounts.tokenInAmountInput = amount;
 
         const outputAmount = await getWrapOutput(
           wrapper,
           wrapType.value,
           parseFixed(amount, tokenInDecimals)
         );
-        tokenOutAmountInput.value = formatFixed(outputAmount, tokenInDecimals);
+        amounts.tokenOutAmountInput = formatFixed(outputAmount, tokenInDecimals);
       } else {
-        tokenOutAmountInput.value = amount;
+        amounts.tokenOutAmountInput = amount;
 
         const inputAmount = await getWrapOutput(
           wrapper,
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
           parseFixed(amount, tokenOutDecimals)
         );
-        tokenInAmountInput.value = formatFixed(inputAmount, tokenOutDecimals);
+        amounts.tokenInAmountInput = formatFixed(inputAmount, tokenOutDecimals);
       }
 
       sorReturn.value.hasSwaps = false;
       priceImpact.value = 0;
-      return;
+      return amounts;
     }
 
     if (!sorManager || !sorManager.hasPoolData()) {
-      if (exactIn.value) tokenOutAmountInput.value = '';
-      else tokenInAmountInput.value = '';
-      return;
+      if (exactIn.value) amounts.tokenOutAmountInput = '';
+      else amounts.tokenInAmountInput = '';
+      return amounts;
     }
 
     if (exactIn.value) {
       await setSwapCost(
-        tokenOutAddressInput.value,
+        tokenOutAddressInput,
         tokenOutDecimals,
         sorManager
       );
@@ -306,7 +310,7 @@ export default function useSor({
       const tokenOutAmountNormalised = bnum(
         formatFixed(swapReturn.returnAmount, tokenOutDecimals)
       );
-      tokenOutAmountInput.value =
+      amounts.tokenOutAmountInput =
         tokenOutAmountNormalised.toNumber() > 0
           ? tokenOutAmountNormalised.toFixed(6, OldBigNumber.ROUND_DOWN)
           : '';
@@ -336,7 +340,7 @@ export default function useSor({
       }
     } else {
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
-      await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
+      await setSwapCost(tokenInAddressInput, tokenInDecimals, sorManager);
 
       let tokenOutAmountNormalised = new OldBigNumber(amount);
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
@@ -360,7 +364,7 @@ export default function useSor({
       const tokenInAmountNormalised = bnum(
         formatFixed(tradeAmount, tokenInDecimals)
       );
-      tokenInAmountInput.value =
+      amounts.tokenInAmountInput =
         tokenInAmountNormalised.toNumber() > 0
           ? tokenInAmountNormalised.toFixed(6, OldBigNumber.ROUND_UP)
           : '';
@@ -392,14 +396,16 @@ export default function useSor({
 
     state.validationErrors.highPriceImpact =
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
+
+      return amounts;
   }
 
   function txHandler(tx: TransactionResponse, action: TransactionAction): void {
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
-    const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
+    const tokenInAmountFormatted = fNum(tokenInAmountInput, 'token');
+    const tokenOutAmountFormatted = fNum(tokenOutAmountInput, 'token');
 
     const tokenInSymbol = tokenIn.value.symbol;
     const tokenOutSymbol = tokenOut.value.symbol;
@@ -422,10 +428,10 @@ export default function useSor({
       details: {
         tokenIn: tokenIn.value,
         tokenOut: tokenOut.value,
-        tokenInAddress: tokenInAddressInput.value,
-        tokenOutAddress: tokenOutAddressInput.value,
-        tokenInAmount: tokenInAmountInput.value,
-        tokenOutAmount: tokenOutAmountInput.value,
+        tokenInAddress: tokenInAddressInput,
+        tokenOutAddress: tokenOutAddressInput,
+        tokenInAmount: tokenInAmountInput,
+        tokenOutAmount: tokenOutAmountInput,
         exactIn: exactIn.value,
         quote: getQuote(),
         priceImpact: priceImpact.value,
@@ -451,12 +457,12 @@ export default function useSor({
     confirming.value = true;
     state.submissionError = null;
 
-    const tokenInAddress = tokenInAddressInput.value;
-    const tokenOutAddress = tokenOutAddressInput.value;
+    const tokenInAddress = tokenInAddressInput;
+    const tokenOutAddress = tokenOutAddressInput;
     const tokenInDecimals = tokens.value[tokenInAddress].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
     const tokenInAmountScaled = parseFixed(
-      tokenInAmountInput.value,
+      tokenInAmountInput,
       tokenInDecimals
     );
 
@@ -508,7 +514,7 @@ export default function useSor({
 
     if (exactIn.value) {
       const tokenOutAmount = parseFixed(
-        tokenOutAmountInput.value,
+        tokenOutAmountInput,
         tokenOutDecimals
       );
       const minAmount = getMinOut(tokenOutAmount);
@@ -539,7 +545,7 @@ export default function useSor({
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
       const sr: SorReturn = sorReturn.value as SorReturn;
       const tokenOutAmountScaled = parseFixed(
-        tokenOutAmountInput.value,
+        tokenOutAmountInput,
         tokenOutDecimals
       );
 

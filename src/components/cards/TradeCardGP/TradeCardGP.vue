@@ -1,108 +1,109 @@
 <template>
   <BalCard class="relative card-container" :shadow="tradeCardShadow" no-border>
-    <template v-slot:header>
-      <div class="w-full flex items-center justify-between">
-        <h4 class="font-bold">{{ title }}</h4>
-        <TradeSettingsPopover
-          :context="TradeSettingsContext.trade"
-          :isGasless="trading.tradeGasless.value"
+    {{ form?.values }}
+    <BalForm :form="form" :submit="form.handleSubmit(handlePreviewButton)">
+      <template v-slot:header>
+        <div class="w-full flex items-center justify-between">
+          <h4 class="font-bold">{{ title }}</h4>
+          <TradeSettingsPopover
+            :context="TradeSettingsContext.trade"
+            :isGasless="trading.tradeGasless.value"
+          />
+        </div>
+      </template>
+      <div>
+        <TradePair
+          v-model:tokenInAmount="tokenInAmount"
+          v-model:tokenInAddress="tokenInAddress"
+          v-model:tokenOutAmount="tokenOutAmount"
+          v-model:tokenOutAddress="tokenOutAddress"
+          v-model:exactIn="exactIn"
+          :tradeLoading="false"
+          :effectivePriceMessage="trading.effectivePriceMessage"
+          @amountChange="trading.handleAmountChange"
+          class="mb-4"
         />
-      </div>
-    </template>
-    <div>
-      <TradePair
-        v-model:tokenInAmount="tokenInAmount"
-        v-model:tokenInAddress="tokenInAddress"
-        v-model:tokenOutAmount="tokenOutAmount"
-        v-model:tokenOutAddress="tokenOutAddress"
-        v-model:exactIn="exactIn"
-        :tradeLoading="
-          trading.isBalancerTrade.value ? trading.isLoading.value : false
-        "
-        :effectivePriceMessage="trading.effectivePriceMessage"
-        @amountChange="trading.handleAmountChange"
-        class="mb-4"
-      />
-      <GasReimbursement
-        v-if="!ENABLE_LEGACY_TRADE_INTERFACE && trading.isBalancerTrade.value"
-        class="mb-5"
-        :address-in="tokenInAddress"
-        :address-out="tokenOutAddress"
-        :sorReturn="trading.sor.sorReturn.value"
-      />
-      <BalAlert
-        v-if="error"
-        class="p-3 mb-4"
-        type="error"
-        size="sm"
-        :title="error.header"
-        :description="error.body"
-        :action-label="error.label"
-        block
-        @actionClick="handleErrorButtonClick"
-      />
-      <BalAlert
-        v-else-if="warning"
-        class="p-3 mb-4"
-        type="warning"
-        size="sm"
-        :title="warning.header"
-        :description="warning.body"
-        block
-      />
-      <BalBtn
-        v-if="trading.isLoading.value"
-        loading
-        disabled
-        :loading-label="
-          trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
-        "
-        block
-      />
-      <BalBtn
-        v-else
-        :label="$t('preview')"
-        :disabled="tradeDisabled"
-        color="gradient"
-        block
-        @click.prevent="handlePreviewButton"
-      />
-      <div
-        v-if="
-          !ENABLE_LEGACY_TRADE_INTERFACE &&
-            trading.isGnosisSupportedOnNetwork.value
-        "
-        class="mt-6 text-sm flex items-center"
-      >
-        <BalTooltip
-          width="64"
-          :disabled="!trading.isGaslessTradingDisabled.value"
+        <GasReimbursement
+          v-if="!ENABLE_LEGACY_TRADE_INTERFACE && trading.isBalancerTrade.value"
+          class="mb-5"
+          :address-in="tokenInAddress"
+          :address-out="tokenOutAddress"
+          :sorReturn="trading.sor.sorReturn.value"
+        />
+        <BalAlert
+          v-if="error"
+          class="p-3 mb-4"
+          type="error"
+          size="sm"
+          :title="error.header"
+          :description="error.body"
+          :action-label="error.label"
+          block
+          @actionClick="handleErrorButtonClick"
+        />
+        <BalAlert
+          v-else-if="warning"
+          class="p-3 mb-4"
+          type="warning"
+          size="sm"
+          :title="warning.header"
+          :description="warning.body"
+          block
+        />
+        <BalBtn
+          v-if="trading.isLoading.value"
+          loading
+          disabled
+          :loading-label="
+            trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
+          "
+          block
+        />
+        <BalBtn
+          v-else
+          :label="$t('preview')"
+          :disabled="tradeDisabled"
+          color="gradient"
+          block
+          type="submit"
+        />
+        <div
+          v-if="
+            !ENABLE_LEGACY_TRADE_INTERFACE &&
+              trading.isGnosisSupportedOnNetwork.value
+          "
+          class="mt-6 text-sm flex items-center"
         >
-          <template v-slot:activator>
-            <BalToggle
-              name="tradeGasless"
-              :checked="trading.tradeGasless.value"
-              @toggle="trading.toggleTradeGasless"
-              :disabled="trading.isGaslessTradingDisabled.value"
-            />
-          </template>
-          <div
-            v-text="
-              trading.isWrapUnwrapTrade.value
-                ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
-                : $t('tradeGaslessToggle.disabledTooltip.eth')
-            "
-          ></div>
-        </BalTooltip>
-        <span class="text-sm pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
-        <BalTooltip width="64">
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
-          </template>
-          <div v-html="$t('tradeGaslessToggle.tooltip')" />
-        </BalTooltip>
+          <BalTooltip
+            width="64"
+            :disabled="!trading.isGaslessTradingDisabled.value"
+          >
+            <template v-slot:activator>
+              <BalToggle
+                name="tradeGasless"
+                :checked="trading.tradeGasless.value"
+                @toggle="trading.toggleTradeGasless"
+                :disabled="trading.isGaslessTradingDisabled.value"
+              />
+            </template>
+            <div
+              v-text="
+                trading.isWrapUnwrapTrade.value
+                  ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
+                  : $t('tradeGaslessToggle.disabledTooltip.eth')
+              "
+            ></div>
+          </BalTooltip>
+          <span class="text-sm pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
+          <BalTooltip width="64">
+            <template v-slot:activator>
+              <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
+            </template>
+            <div v-html="$t('tradeGaslessToggle.tooltip')" />
+          </BalTooltip>
+        </div>
       </div>
-    </div>
+    </BalForm>
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModalGP
@@ -115,7 +116,15 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed } from 'vue';
+import {
+  ref,
+  defineComponent,
+  computed,
+  watch,
+  onBeforeMount,
+  toRef,
+  Ref
+} from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -147,6 +156,19 @@ import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useTradeState } from '@/composables/trade/useTradeState';
+import useForm from '@/components/_global/BalForm/useForm';
+import { lsGet } from '@/lib/utils';
+
+type TradeForm = {
+  tokenIn: {
+    amount: Ref<string>;
+    address: Ref<string>;
+  };
+  tokenOut: {
+    amount: Ref<string>;
+    address: Ref<string>;
+  };
+};
 
 export default defineComponent({
   components: {
@@ -158,21 +180,12 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
     const { nativeAsset } = useTokens();
-    const {
-      tokenInAddress,
-      tokenOutAddress,
-      tokenInAmount,
-      tokenOutAmount,
-      setTokenInAddress,
-      setTokenOutAddress
-    } = useTradeState();
 
     // DATA
     const exactIn = ref(true);
@@ -192,12 +205,49 @@ export default defineComponent({
       }
     });
 
+    const form = useForm<TradeForm>({
+      name: 'trade',
+      defaultValues: {
+        tokenIn: {
+          amount: '',
+          address: ''
+        },
+        tokenOut: {
+          amount: '',
+          address: ''
+        }
+      }
+    });
+
+    const {
+      values: {
+        tokenIn: { address: tokenInAddress, amount: tokenInAmount } = {
+          address: '',
+          amount: ''
+        },
+        tokenOut: { address: tokenOutAddress, amount: tokenOutAmount } = {
+          address: '',
+          amount: ''
+        }
+      }
+    } = form;
+
+    // watch(form.values.tokenIn?.amount, async () => {
+    //   const amounts = await trading.handleAmountChange();
+    //   console.log('amt', amounts);
+    // });
+
+    // watch(
+    //   form.values.tokenOut?.amount,
+    //   async () => {
+    //     const amounts = await trading.handleAmountChange();
+    //     console.log('amt', amounts);
+    //   }
+    // );
     const trading = useTrading(
       exactIn,
-      tokenInAddress,
-      tokenInAmount,
-      tokenOutAddress,
-      tokenOutAmount
+      form.values.tokenIn,
+      form.values.tokenOut
     );
 
     // COMPUTED
@@ -342,9 +392,15 @@ export default defineComponent({
         assetOut = getAddress(assetOut);
       }
 
-      setTokenInAddress(assetIn || store.state.trade.inputAsset);
-      setTokenOutAddress(assetOut || store.state.trade.outputAsset);
+      form.setValue('tokenIn.address', assetIn || lsGet('trade.inputAsset'));
+      form.setValue('tokenOut.address', assetOut || lsGet('trade.outputAsset'));
+
+      console.log('ahhhh', form.values.tokenIn.address.value)
     }
+
+    watch(form.values.tokenIn.address, () => {
+      console.log('fff', form.values.tokenIn.address.value)
+    })
 
     function switchToWETH() {
       tokenInAddress.value = appNetworkConfig.addresses.weth;
@@ -380,6 +436,7 @@ export default defineComponent({
       modalTradePreviewIsOpen,
       exactIn,
       trading,
+      form,
 
       // computed
       title,

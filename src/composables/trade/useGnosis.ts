@@ -73,10 +73,10 @@ export type GnosisTransactionDetails = {
 
 type Props = {
   exactIn: Ref<boolean>;
-  tokenInAddressInput: Ref<string>;
-  tokenInAmountInput: Ref<string>;
-  tokenOutAddressInput: Ref<string>;
-  tokenOutAmountInput: Ref<string>;
+  tokenInAddressInput: string;
+  tokenInAmountInput: string;
+  tokenOutAddressInput: string;
+  tokenOutAmountInput: string;
   tokenInAmountScaled: ComputedRef<BigNumber>;
   tokenOutAmountScaled: ComputedRef<BigNumber>;
   tokenIn: ComputedRef<TokenInfo>;
@@ -184,8 +184,8 @@ export default function useGnosis({
       const quote = getQuote();
 
       const unsignedOrder: UnsignedOrder = {
-        sellToken: tokenInAddressInput.value,
-        buyToken: tokenOutAddressInput.value,
+        sellToken: tokenInAddressInput,
+        buyToken: tokenOutAddressInput,
         sellAmount: (exactIn.value
           ? tokenInAmountScaled.value
           : quote.maximumInAmount
@@ -220,7 +220,7 @@ export default function useGnosis({
       });
 
       const sellAmount = exactIn.value
-        ? tokenInAmountInput.value
+        ? tokenInAmountInput
         : formatUnits(quote.maximumInAmount, tokenIn.value.decimals).toString();
 
       const buyAmount = exactIn.value
@@ -228,7 +228,7 @@ export default function useGnosis({
             quote.minimumOutAmount,
             tokenOut.value.decimals
           ).toString()
-        : tokenOutAmountInput.value;
+        : tokenOutAmountInput;
 
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
@@ -249,10 +249,10 @@ export default function useGnosis({
         details: {
           tokenIn: tokenIn.value,
           tokenOut: tokenOut.value,
-          tokenInAddress: tokenInAddressInput.value,
-          tokenOutAddress: tokenOutAddressInput.value,
-          tokenInAmount: tokenInAmountInput.value,
-          tokenOutAmount: tokenOutAmountInput.value,
+          tokenInAddress: tokenInAddressInput,
+          tokenOutAddress: tokenOutAddressInput,
+          tokenInAmount: tokenInAmountInput,
+          tokenOutAmount: tokenOutAmountInput,
           exactIn: exactIn.value,
           quote,
           slippageBufferRate: slippageBufferRate.value,
@@ -284,18 +284,22 @@ export default function useGnosis({
   }
 
   async function handleAmountChange() {
+    const amounts = {
+      tokenInAmountInput,
+      tokenOutAmountInput
+    }
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
       : tokenOutAmountScaled.value;
 
     if (amountToExchange === undefined) {
-      return;
+      return amounts;
     }
 
     if (amountToExchange.isZero()) {
-      tokenInAmountInput.value = '0';
-      tokenOutAmountInput.value = '0';
-      return;
+      amounts.tokenInAmountInput = '0';
+      amounts.tokenOutAmountInput = '0';
+      return amounts;
     }
 
     updatingQuotes.value = true;
@@ -304,8 +308,8 @@ export default function useGnosis({
     let feeQuoteResult: FeeInformation | null = null;
     try {
       const feeQuoteParams: FeeQuoteParams = {
-        sellToken: toErc20Address(tokenInAddressInput.value),
-        buyToken: toErc20Address(tokenOutAddressInput.value),
+        sellToken: toErc20Address(tokenInAddressInput),
+        buyToken: toErc20Address(tokenOutAddressInput),
         from: account.value || AddressZero,
         receiver: account.value || AddressZero,
         validTo: calculateValidTo(appTransactionDeadline.value),
@@ -334,8 +338,8 @@ export default function useGnosis({
         let priceQuoteAmount: string | null = null;
 
         const priceQuoteParams: PriceQuoteParams = {
-          sellToken: tokenInAddressInput.value,
-          buyToken: tokenOutAddressInput.value,
+          sellToken: tokenInAddressInput,
+          buyToken: tokenOutAddressInput,
           amount: amountToExchange.toString(),
           kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
           fromDecimals: tokenIn.value.decimals,
@@ -374,7 +378,7 @@ export default function useGnosis({
           feeQuote.value = feeQuoteResult;
 
           if (exactIn.value) {
-            tokenOutAmountInput.value = bnum(
+            amounts.tokenInAmountInput = bnum(
               formatUnits(priceQuoteAmount, tokenOut.value.decimals)
             ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
@@ -384,7 +388,7 @@ export default function useGnosis({
               amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
             );
           } else {
-            tokenInAmountInput.value = bnum(
+            amounts.tokenOutAmountInput = bnum(
               formatUnits(priceQuoteAmount, tokenIn.value.decimals)
             ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
@@ -409,6 +413,8 @@ export default function useGnosis({
     }
 
     updatingQuotes.value = false;
+
+    return amounts;
   }
 
   return {

@@ -28,12 +28,15 @@ export const tradeGasless = ref<boolean>(
   lsGet<boolean>(LS_KEYS.Trade.Gasless, true)
 );
 
+type TokenInput = {
+  address: Ref<string>;
+  amount: Ref<string>;
+}
+
 export default function useTrading(
   exactIn: Ref<boolean>,
-  tokenInAddressInput: Ref<string>,
-  tokenInAmountInput: Ref<string>,
-  tokenOutAddressInput: Ref<string>,
-  tokenOutAmountInput: Ref<string>
+  tokenInputIn: TokenInput,
+  tokenInputOut: TokenInput
 ) {
   // COMPOSABLES
   const store = useStore();
@@ -48,25 +51,25 @@ export default function useTrading(
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   const wrapType = computed(() =>
-    getWrapAction(tokenInAddressInput.value, tokenOutAddressInput.value)
+    getWrapAction(tokenInputIn.address.value, tokenInputOut.address.value)
   );
   const isWrap = computed(() => wrapType.value === WrapType.Wrap);
   const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
-  const tokenIn = computed(() => tokens.value[tokenInAddressInput.value]);
+  const tokenIn = computed(() => tokens.value[tokenInputIn.address.value]);
 
-  const tokenOut = computed(() => tokens.value[tokenOutAddressInput.value]);
+  const tokenOut = computed(() => tokens.value[tokenInputOut.address.value]);
 
   const isEthTrade = computed(
-    () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
+    () => tokenInputIn.address.value === NATIVE_ASSET_ADDRESS
   );
 
   const tokenInAmountScaled = computed(() =>
-    parseFixed(tokenInAmountInput.value, tokenIn.value.decimals)
+    parseFixed(tokenInputIn.amount.value, tokenIn.value.decimals)
   );
 
   const tokenOutAmountScaled = computed(() =>
-    parseFixed(tokenOutAmountInput.value, tokenOut.value.decimals)
+    parseFixed(tokenInputOut.amount.value, tokenOut.value.decimals)
   );
 
   const requiresTokenApproval = computed(() => {
@@ -77,8 +80,8 @@ export default function useTrading(
   });
 
   const effectivePriceMessage = computed(() => {
-    const tokenInAmount = parseFloat(tokenInAmountInput.value);
-    const tokenOutAmount = parseFloat(tokenOutAmountInput.value);
+    const tokenInAmount = parseFloat(tokenInputIn.amount.value);
+    const tokenOutAmount = parseFloat(tokenInputOut.amount.value);
 
     if (tokenInAmount > 0 && tokenOutAmount > 0) {
       return {
@@ -134,16 +137,16 @@ export default function useTrading(
 
   const hasTradeQuote = computed(
     () =>
-      parseFloat(tokenInAmountInput.value) > 0 &&
-      parseFloat(tokenOutAmountInput.value) > 0
+      parseFloat(tokenInputIn.amount.value) > 0 &&
+      parseFloat(tokenInputOut.amount.value) > 0
   );
 
   const sor = useSor({
     exactIn,
-    tokenInAddressInput,
-    tokenInAmountInput,
-    tokenOutAddressInput,
-    tokenOutAmountInput,
+    tokenInAddressInput: tokenInputIn.address?.value,
+    tokenInAmountInput: tokenInputIn.amount?.value,
+    tokenOutAddressInput: tokenInputOut.address?.value,
+    tokenOutAmountInput: tokenInputOut.amount?.value,
     tokens,
     wrapType,
     tokenInAmountScaled,
@@ -159,10 +162,10 @@ export default function useTrading(
 
   const gnosis = useGnosis({
     exactIn,
-    tokenInAddressInput,
-    tokenInAmountInput,
-    tokenOutAddressInput,
-    tokenOutAmountInput,
+    tokenInAddressInput: tokenInputIn.address?.value,
+    tokenInAmountInput: tokenInputIn.amount?.value,
+    tokenOutAddressInput: tokenInputOut.address?.value,
+    tokenOutAmountInput: tokenInputOut.amount?.value,
     tokenInAmountScaled,
     tokenOutAmountScaled,
     tokenIn,
@@ -235,31 +238,26 @@ export default function useTrading(
     }
   }
 
-  function handleAmountChange() {
-    if (exactIn.value) {
-      tokenOutAmountInput.value = '';
-    } else {
-      tokenInAmountInput.value = '';
-    }
-
+  async function handleAmountChange() {
+    console.log('esh', tokenInputIn.amount, tokenInputOut.amount)
     if (isGnosisTrade.value) {
       gnosis.resetState(false);
-      gnosis.handleAmountChange();
+      return await gnosis.handleAmountChange();
     } else {
       sor.resetState();
-      sor.handleAmountChange();
+      return await sor.handleAmountChange();
     }
   }
 
   // WATCHERS
-  watch(tokenInAddressInput, async () => {
-    store.commit('trade/setInputAsset', tokenInAddressInput.value);
+  watch(tokenInputIn.address, async () => {
+    store.commit('trade/setInputAsset', tokenInputIn.address.value);
 
     handleAmountChange();
   });
 
-  watch(tokenOutAddressInput, () => {
-    store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
+  watch(tokenInputOut.address, () => {
+    store.commit('trade/setOutputAsset', tokenInputOut.address.value);
 
     handleAmountChange();
   });
@@ -313,10 +311,10 @@ export default function useTrading(
     isBalancerTrade,
     wrapType,
     isWrapUnwrapTrade,
-    tokenInAddressInput,
-    tokenInAmountInput,
-    tokenOutAddressInput,
-    tokenOutAmountInput,
+    tokenInAddressInput: tokenInputIn.address?.value,
+    tokenInAmountInput: tokenInputIn.amount?.value,
+    tokenOutAddressInput: tokenInputOut.address?.value,
+    tokenOutAmountInput: tokenInputOut.amount?.value,
     slippageBufferRate,
     isConfirming,
     submissionError,
