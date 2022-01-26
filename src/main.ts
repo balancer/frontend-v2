@@ -27,6 +27,7 @@ import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 import { Web3Provider } from '@ethersproject/providers';
 import Root from './Root';
 import VueCountdown from '@chenfengyuan/vue-countdown';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 use([
   TitleComponent,
@@ -57,6 +58,7 @@ registerGlobalComponents(app);
 //initSentry(app);
 
 app.component(VueCountdown.name!, VueCountdown);
+app.component('jazzicon', Jazzicon);
 app.mount('#app');
 
 export default app;
