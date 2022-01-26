@@ -351,7 +351,13 @@ export default class BeethovenxService {
           rewarder: {
             id: true,
             rewardToken: true,
-            rewardPerSecond: true
+            rewardPerSecond: true,
+            tokens: {
+              token: true,
+              symbol: true,
+              tokenPrice: true,
+              rewardPerSecond: true
+            }
           }
         }
       }

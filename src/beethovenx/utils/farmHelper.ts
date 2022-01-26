@@ -100,7 +100,6 @@ export function decorateFarm(
   blocksPerYear: number,
   blocksPerDay: number,
   beetsPrice: number,
-  rewardTokenPrice: number,
   farmUser?: FarmUser
 ): DecoratedFarm {
   const tvl = calculateTvl(farm, pool);
@@ -109,7 +108,7 @@ export function decorateFarm(
     tvl,
     blocksPerYear,
     beetsPrice,
-    rewardTokenPrice
+    pool.farm?.rewarder?.tokens[0]?.tokenPrice || 0
   );
   const userShare = new BigNumber(farmUser?.amount || 0)
     .div(farm.slpBalance)
@@ -136,8 +135,7 @@ export function decorateFarms(
   allFarmsForUser: FarmUser[],
   blocksPerYear: number,
   blocksPerDay: number,
-  beetsPrice: number,
-  rewardTokenPrice: number
+  beetsPrice: number
 ) {
   if (farms.length === 0 || pools.length === 0) {
     return [];
@@ -161,7 +159,6 @@ export function decorateFarms(
           blocksPerYear,
           blocksPerDay,
           beetsPrice,
-          rewardTokenPrice,
           farmUser
         )
       );

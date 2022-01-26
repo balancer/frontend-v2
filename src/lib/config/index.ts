@@ -55,10 +55,8 @@ export interface Config {
     lidoRelayer: string;
     balancerHelpers: string;
     beethovenxToken: string;
-    hndRewarder: string;
     masterChef: string;
     earlyLudwigNft: string;
-    hnd: string;
     beetsUsdcReferencePricePool: string;
     beets: string;
     usdc: string;

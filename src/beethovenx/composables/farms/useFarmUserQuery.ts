@@ -16,13 +16,13 @@ export default function useFarmUserQuery(
   farmId: string,
   options: QueryObserverOptions<FarmUser | null> = {}
 ) {
-  const { account, isWalletReady, appNetworkConfig } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
   const { appLoading } = useApp();
   const protocolDataQuery = useProtocolDataQuery();
   const beetsPrice = computed(
     () => protocolDataQuery.data?.value?.beetsPrice || 0
   );
-  const { priceFor, dynamicDataLoading, loading } = useTokens();
+  const { dynamicDataLoading, loading } = useTokens();
 
   const enabled = computed(
     () =>
@@ -37,6 +37,11 @@ export default function useFarmUserQuery(
     const address = account.value || AddressZero;
 
     try {
+      const farms = await beethovenxService.getBeetsFarms();
+      const farm = farms.find(farm => (farm.id = farmId));
+      let pendingRewardToken = 0;
+      let rewardTokenPrice = 0;
+
       const userData = await beethovenxService.getUserDataForFarm(
         farmId,
         address
@@ -46,12 +51,16 @@ export default function useFarmUserQuery(
         address
       );
 
-      const pendingRewardToken = await masterChefContractsService.hndRewarder.getPendingReward(
-        farmId,
-        address
-      );
+      if (farm && farm.rewarder) {
+        const pendingRewards = await masterChefContractsService.rewarders.getPendingRewards(
+          [farmId],
+          [farm.rewarder.id],
+          account.value
+        );
 
-      const hndPrice = priceFor(appNetworkConfig.addresses.hnd);
+        pendingRewardToken = pendingRewards[farmId] || 0;
+        rewardTokenPrice = farm.rewarder.tokens[0]?.tokenPrice || 0;
+      }
 
       return {
         ...userData,
@@ -61,7 +70,7 @@ export default function useFarmUserQuery(
         pendingBeets,
         pendingBeetsValue: pendingBeets * beetsPrice.value,
         pendingRewardToken,
-        pendingRewardTokenValue: hndPrice * pendingRewardToken
+        pendingRewardTokenValue: rewardTokenPrice * pendingRewardToken
       };
     } catch (e) {
       console.log('ERROR', e);

@@ -1,16 +1,14 @@
 import { computed, ComputedRef, Ref, ref } from 'vue';
 
-import { flatten } from 'lodash';
+import { flatten, uniqBy } from 'lodash';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import useFarms from '@/beethovenx/composables/farms/useFarms';
-import { decorateFarms, getPoolApr } from '@/beethovenx/utils/farmHelper';
+import { decorateFarms } from '@/beethovenx/utils/farmHelper';
 import useAverageBlockTime from '@/beethovenx/composables/blocks/useAverageBlockTime';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import { uniqBy } from 'lodash';
-import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   DecoratedPoolWithFarm,
@@ -24,14 +22,10 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   const poolsQuery = usePoolsQuery(poolsTokenList, {}, { pageSize: 1000 });
   const userPoolsQuery = useUserPoolsQuery();
   const protocolDataQuery = useProtocolDataQuery();
-  const { priceFor } = useTokens();
   const { appNetworkConfig } = useWeb3();
   const { beethovenxConfig } = useBeethovenxConfig();
   const beetsPrice = computed(
     () => protocolDataQuery.data?.value?.beetsPrice || 0
-  );
-  const rewardTokenPrice = computed(
-    () => priceFor(appNetworkConfig.addresses.hnd) ?? 0
   );
 
   const {
@@ -42,8 +36,6 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     refetchFarmsForUser
   } = useFarms();
   const { blocksPerYear, blocksPerDay } = useAverageBlockTime();
-
-  // COMPUTED
 
   const pools = computed(() => {
     if (!poolsQuery.data.value) {
@@ -77,8 +69,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
       allFarmsForUser.value,
       blocksPerYear.value,
       blocksPerDay.value,
-      beetsPrice.value,
-      rewardTokenPrice.value
+      beetsPrice.value
     );
   });
 

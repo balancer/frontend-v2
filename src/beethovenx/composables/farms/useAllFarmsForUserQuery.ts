@@ -9,13 +9,14 @@ import { masterChefContractsService } from '@/beethovenx/services/farm/master-ch
 import { FarmUser } from '@/beethovenx/services/subgraph/subgraph-types';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { uniq } from 'lodash';
 
 export default function useAllFarmsForUserQuery(
   options: QueryObserverOptions<FarmUser[]> = {}
 ) {
-  const { account, isWalletReady, appNetworkConfig } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
   const { appLoading } = useApp();
-  const { priceFor, dynamicDataLoading, loading } = useTokens();
+  const { dynamicDataLoading, loading } = useTokens();
   const protocolDataQuery = useProtocolDataQuery();
   const beetsPrice = computed(
     () => protocolDataQuery.data?.value?.beetsPrice || 0
@@ -36,23 +37,35 @@ export default function useAllFarmsForUserQuery(
         return [];
       }
 
+      const farms = await beethovenxService.getBeetsFarms();
       const userFarms = await beethovenxService.getUserDataForAllFarms(
         account.value
       );
       const decoratedUserFarms: FarmUser[] = [];
 
+      const farmIds = userFarms.map(farm => farm.farmId);
+      const rewarders = uniq(
+        farms
+          .filter(farm => !!farm.rewarder)
+          .map(farm => farm.rewarder?.id || '')
+      );
+      const pendingBeetsForFarms = await masterChefContractsService.masterChef.getPendingBeetsForFarms(
+        farmIds,
+        account.value
+      );
+
+      const pendingRewardTokenForFarms = await masterChefContractsService.rewarders.getPendingRewards(
+        farmIds,
+        rewarders,
+        account.value
+      );
+
       for (const userFarm of userFarms) {
-        const pendingBeets = await masterChefContractsService.masterChef.getPendingBeetsForFarm(
-          userFarm.farmId,
-          account.value
-        );
-
-        const pendingRewardToken = await masterChefContractsService.hndRewarder.getPendingReward(
-          userFarm.farmId,
-          account.value
-        );
-
-        const hndPrice = priceFor(appNetworkConfig.addresses.hnd);
+        const farm = farms.find(farm => farm.id === userFarm.farmId);
+        const pendingBeets = pendingBeetsForFarms[userFarm.farmId] || 0;
+        const pendingRewardToken =
+          pendingRewardTokenForFarms[userFarm.farmId] || 0;
+        const rewardTokenPrice = farm?.rewarder?.tokens[0]?.tokenPrice || 0;
 
         decoratedUserFarms.push({
           ...userFarm,
@@ -62,7 +75,7 @@ export default function useAllFarmsForUserQuery(
           pendingBeets,
           pendingBeetsValue: pendingBeets * beetsPrice.value,
           pendingRewardToken,
-          pendingRewardTokenValue: pendingRewardToken * hndPrice
+          pendingRewardTokenValue: pendingRewardToken * rewardTokenPrice
         });
       }
 

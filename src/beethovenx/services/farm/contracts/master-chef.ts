@@ -7,12 +7,47 @@ import { Web3Provider } from '@ethersproject/providers';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
+import { mapValues } from 'lodash';
 
 export default class MasterChef {
   service: Service;
 
   constructor(service, private readonly configService = new ConfigService()) {
     this.service = service;
+  }
+
+  public async getPendingBeetsForFarms(
+    ids: string[],
+    user: string
+  ): Promise<{ [id: string]: number }> {
+    let result = {} as Record<any, any>;
+
+    if (!isAddress(user)) {
+      return {};
+    }
+
+    const masterChefMultiCaller = new Multicaller(
+      this.configService.network.key,
+      this.service.provider,
+      MasterChefAbi
+    );
+
+    for (const id of ids) {
+      masterChefMultiCaller.call(
+        `${id}.pendingBeets`,
+        this.address,
+        'pendingBeets',
+        [id, getAddress(user)]
+      );
+    }
+
+    result = await masterChefMultiCaller.execute(result);
+
+    return mapValues(result, item =>
+      item.pendingBeets
+        ? scale(new BigNumber(item.pendingBeets.toString()), -18).toNumber()
+        : 0
+    );
   }
 
   public async getPendingBeetsForFarm(
