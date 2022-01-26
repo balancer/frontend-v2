@@ -5,7 +5,7 @@
     :style="{
       width: `${size}px`,
       height: `${size}px`,
-      background: 'white'
+      backgroundColor: 'black'
     }"
     @error="error = true"
     class="rounded-full inline-block leading-none shadow-sm"
@@ -16,7 +16,7 @@
     :style="{
       width: `${size}px`,
       height: `${size}px`,
-      background: 'white'
+      backgroundColor: 'black'
     }"
     @error="error = true"
     class="rounded-full inline-block leading-none shadow-sm"

@@ -11,20 +11,20 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <!--        <img
+        <img
           v-if="nftImage !== null"
           :src="nftImage"
           width="22"
           class="rounded-full h-22 w-22"
-        />-->
-        <Avatar :address="account" :size="avatarSize" />
+        />
+        <Avatar v-else :address="account" :size="avatarSize" />
         <span
           v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
         />
       </BalBtn>
     </template>
-    <!--    <AppNavSettings />-->
+    <AppNavSettings />
   </BalPopover>
 </template>
 
@@ -42,7 +42,7 @@ export default defineComponent({
 
   components: {
     BalBtn,
-    //AppNavSettings
+    AppNavSettings,
     Avatar
   },
 
