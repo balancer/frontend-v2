@@ -18,21 +18,20 @@
       height: `${size}px`
     }"
   >
-    abc
-    <!--    <jazzicon :address="address" :diameter="size" />-->
+    <jazzicon :address="address" :diameter="size" />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed, watch } from 'vue';
-//import Jazzicon from 'vue3-jazzicon/src/components';
+import Jazzicon from 'vue3-jazzicon/src/components';
 import useUrls from '@/composables/useUrls';
 
 export default defineComponent({
   name: 'Avatar',
 
   components: {
-    //Jazzicon
+    Jazzicon
   },
 
   props: {
