@@ -10,7 +10,18 @@
     @error="error = true"
     class="rounded-full inline-block leading-none shadow-sm"
   />
-  <div
+  <img
+    v-else
+    :src="`https://avatar.tobi.sh/tobiaslins?size=${size}`"
+    :style="{
+      width: `${size}px`,
+      height: `${size}px`,
+      background: 'white'
+    }"
+    @error="error = true"
+    class="rounded-full inline-block leading-none shadow-sm"
+  />
+  <!--  <div
     v-else
     class="leading-none rounded-full overflow-hidden"
     :style="{
@@ -19,19 +30,19 @@
     }"
   >
     <jazzicon :address="address" :diameter="size" />
-  </div>
+  </div>-->
 </template>
 
 <script>
 import { defineComponent, ref, computed, watch } from 'vue';
-import Jazzicon from 'vue3-jazzicon/src/components';
+//import Jazzicon from 'vue3-jazzicon/src/components';
 import useUrls from '@/composables/useUrls';
 
 export default defineComponent({
   name: 'Avatar',
 
   components: {
-    Jazzicon
+    //Jazzicon
   },
 
   props: {
