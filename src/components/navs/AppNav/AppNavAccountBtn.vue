@@ -17,7 +17,7 @@
           width="22"
           class="rounded-full h-22 w-22"
         />-->
-        <!--        <Avatar :address="account" :size="avatarSize" />-->
+        <Avatar :address="account" :size="avatarSize" />
         <span
           v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
