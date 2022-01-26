@@ -12,7 +12,7 @@
   />
   <img
     v-else
-    :src="`https://avatar.tobi.sh/tobiaslins?size=${size}`"
+    :src="`https://avatar.tobi.sh/${address}?size=${size}`"
     :style="{
       width: `${size}px`,
       height: `${size}px`,
