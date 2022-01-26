@@ -24,7 +24,7 @@
         />
       </BalBtn>
     </template>
-    <AppNavSettings />
+    <!--    <AppNavSettings />-->
   </BalPopover>
 </template>
 
@@ -41,8 +41,8 @@ export default defineComponent({
   name: 'AppNavAccountBtn',
 
   components: {
-    BalBtn,
-    AppNavSettings
+    BalBtn
+    //AppNavSettings
     //Avatar
   },
 
