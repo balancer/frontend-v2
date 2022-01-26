@@ -41,9 +41,9 @@ export default defineComponent({
   name: 'AppNavAccountBtn',
 
   components: {
-    BalBtn
+    BalBtn,
     //AppNavSettings
-    //Avatar
+    Avatar
   },
 
   setup() {
