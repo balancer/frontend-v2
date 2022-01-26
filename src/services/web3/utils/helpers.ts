@@ -1,6 +1,6 @@
 import { ExternalProvider } from '@ethersproject/providers';
 import { configService } from '@/services/config/config.service';
-import { MetamaskError } from '@/types';
+import { WalletError } from '@/types';
 
 export async function switchToAppNetwork(provider: ExternalProvider) {
   const appNetworkConfig = configService.network;
@@ -14,7 +14,7 @@ export async function switchToAppNetwork(provider: ExternalProvider) {
       return true;
     }
   } catch (err) {
-    const error = err as MetamaskError;
+    const error = err as WalletError;
 
     // user rejected request
     if (error.code === 4001) {
