@@ -9,6 +9,9 @@
       </div>
     </template>
     <div class="w-48">
+      <a class="app-nav-other-item" href="https://snapshot.org/#/beets.eth"
+        >Vote</a
+      >
       <a class="app-nav-other-item" href="https://info.beets.fi">Analytics</a>
       <a class="app-nav-other-item" href="https://docs.beethovenx.io">
         Docs & Help
