@@ -99,9 +99,10 @@ export default class Pools {
 
   public removeExcludedAddressesFromTotalLiquidity(
     pool: Pool,
-    rawTotalLiquidity: string
+    totalLiquidityString: string
   ) {
-    let totalLiquidity = bnum(rawTotalLiquidity);
+    const totalLiquidity = bnum(totalLiquidityString);
+    let miningTotalLiquidity = totalLiquidity;
 
     if (
       this.excludedAddresses != null &&
@@ -112,14 +113,14 @@ export default class Pools {
           const accountBalanceFormatted = formatUnits(accountBalance, 18);
           const poolShare = bnum(accountBalanceFormatted).div(pool.totalShares);
 
-          totalLiquidity = totalLiquidity.minus(
+          miningTotalLiquidity = miningTotalLiquidity.minus(
             totalLiquidity.times(poolShare)
           );
         }
       );
     }
 
-    return totalLiquidity.toString();
+    return miningTotalLiquidity.toString();
   }
 
   private async serialize(
