@@ -41,7 +41,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
-type ExcludedPoolAddressesResponse = Record<Network, Record<string, string[]>>;
+type ExcludedAddressesResponse = Record<Network, Record<string, string[]>>;
 
 export default class Pools {
   service: Service;
@@ -197,7 +197,7 @@ export default class Pools {
 
   private async getExcludedAddresses() {
     try {
-      const { data } = await axios.get<ExcludedPoolAddressesResponse>(
+      const { data } = await axios.get<ExcludedAddressesResponse>(
         'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/config/exclude.json'
       );
 
