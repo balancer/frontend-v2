@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { HtmlInputEvent } from '@/types';
+import { HtmlInputEvent, RuleFunction } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
 import useTokens from '@/composables/useTokens';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import { TokenInfo } from '@/types/TokenList';
+import anime from 'animejs';
+import useFormContext from '@/components/_global/BalForm/useFormContext';
 
 /**
  * TYPES
@@ -18,6 +20,8 @@ type Props = {
   hint?: string;
   hintAmount?: string;
   excludedTokens?: string[];
+  name?: string;
+  rules?: RuleFunction[];
 };
 
 /**
@@ -26,7 +30,8 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   address: '',
   weight: 0,
-  hintAmount: ''
+  hintAmount: '',
+  rules: () => []
 });
 
 const emit = defineEmits<{
@@ -53,7 +58,7 @@ const isLocked = ref(false);
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
-import anime from 'animejs';
+const formContext = useFormContext();
 
 /**
  * COMPUTED
@@ -110,6 +115,32 @@ function onInput(event) {
   lockWeight(true);
 }
 
+function getValue(id: string, fallBack: unknown) {
+  const formInputKey = `${props.name}.${id}`;
+  // if this component is a child of a <BalForm /> bind it.
+  if (formContext) {
+    return formContext.register(formInputKey, props.rules as RuleFunction[]);
+  }
+  return fallBack;
+}
+
+function handleTextInputChange(id: string, event) {
+  const formInputKey = `${props.name}.${id}`;
+  emit('update:weight', event);
+  if (formContext) {
+    formContext.onChange(formInputKey, event);
+  }
+}
+
+
+function handleAddressChange(id: string, event) {
+  const formInputKey = `${props.name}.${id}`;
+  emit('update:address', event);
+  if (formContext) {
+    formContext.onChange(formInputKey, event);
+  }
+}
+
 /**
  * CALLBACKS
  */
@@ -121,8 +152,8 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
-    name="weight"
-    v-model="_weight"
+    :name="name"
+    :value="getValue('weight', _weight)"
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
@@ -139,16 +170,16 @@ watchEffect(() => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="onInput"
-    @update:modelValue="emit('update:weight', $event)"
+    @update:modelValue="handleTextInputChange('weight', $event)"
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template v-slot:prepend>
       <TokenSelectInput
-        v-model="_address"
+        :modelValue="getValue('address', _address)"
         :fixed="fixedToken"
         class="mr-2"
-        @update:modelValue="emit('update:address', $event)"
+        @update:modelValue="handleAddressChange('address', $event)"
         :excludedTokens="excludedTokens"
       />
     </template>

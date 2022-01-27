@@ -51,6 +51,7 @@ const hasToken = computed(() => !!props.modelValue);
 
 const token = computed((): TokenInfo | null => {
   if (!hasToken.value) return null;
+  console.log('toki', getToken(props.modelValue), props.modelValue)
   return getToken(props.modelValue);
 });
 
