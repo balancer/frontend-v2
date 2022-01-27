@@ -1,6 +1,6 @@
 import { RuleFunction, Rules } from '@/types';
 import { get, isEmpty, isPlainObject, set } from 'lodash';
-import { onBeforeMount, reactive, ref, Ref } from 'vue';
+import { onBeforeMount, reactive, ref, Ref, toRefs } from 'vue';
 
 /**
  * TYPES
@@ -22,12 +22,6 @@ export type FormInstance<T> = FormState<T> & {
   register: (name: string, rules?: Rules) => any;
   onChange: (name: string, value: any) => void;
   handleSubmit: (submit: () => void) => void;
-  setValue: (name: string, value: any) => void;
-};
-
-export type ReactiveFormInstance<T> = FormInstance<T> & {
-  values: Record<string, Ref>;
-  errors: Record<string, Ref>;
 };
 
 function validateAgainst(value: any, rules?: RuleFunction[]) {
@@ -70,7 +64,7 @@ export function useFormCache(name: string) {
 
 export const FormContextSymbol = Symbol('FORM_CONTEXT');
 
-export default function useForm<T>({
+export default function useForm<T extends Record<string, unknown>>({
   name: formName,
   defaultValues = {}
 }: UseFormRequest<T>) {
@@ -81,7 +75,7 @@ export default function useForm<T>({
   if (!formCache[formName]) {
     // each useForm call spawns its own instance to support
     // the usage of multiple forms on the same page
-    formCache[formName] = reactive<FormInstance<T>>({
+    formCache[formName] = <FormInstance<T>>{
       name: formName,
       values: {} as T,
       errors: {} as { [key in keyof T]: string[] },
@@ -89,9 +83,8 @@ export default function useForm<T>({
       defaultValues: {} as T,
       register,
       onChange,
-      setValue,
       handleSubmit
-    }) as any;
+    };
     registerDefaultValues();
   }
 
@@ -106,7 +99,7 @@ export default function useForm<T>({
   /**
    * STATE
    */
-  const formState = formCache[formName];
+  const formState = formCache[formName] as FormInstance<T>;
 
   /**
    * METHODS
@@ -121,7 +114,7 @@ export default function useForm<T>({
   // this method is used to pass in a form value to a field
   // make sure it is passed to the :value prop or an equivalent
   // as it is bound only one way (read only)
-  function register(key: string, rules?: Rules) {
+  function register(key: keyof T, rules?: Rules) {
     // invalid key
     if (key === '') {
       throw new Error(
@@ -142,7 +135,7 @@ export default function useForm<T>({
   }
 
   // call this function to update bound form values
-  function onChange(key: string, value: any) {
+  function onChange(key: keyof T, value: any) {
     if (get(formState.values, key) === undefined) {
       throw new Error(
         `[${key}] is not a registered input for form [${formState.name}]`
@@ -155,10 +148,6 @@ export default function useForm<T>({
     const rules = formState.rules[key];
     const failedRules = validateAgainst(value, rules);
     formState.errors[key] = failedRules as string[];
-  }
-
-  function setValue(key: string, value: any) {
-    onChange(key, value);
   }
 
   function handleSubmit(submit: () => void) {
@@ -176,5 +165,9 @@ export default function useForm<T>({
     };
   }
 
-  return formCache[formName];
+  return {
+    ...formState,
+    values: toRefs<T>(formState.values),
+    errors: toRefs<Record<keyof T, string[]>>(formState.errors)
+  };
 }
