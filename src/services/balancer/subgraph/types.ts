@@ -190,10 +190,10 @@ export interface LinearPoolData {
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
-export interface FullPool extends DecoratedPool {
+export interface FullPool extends DecoratedPoolWithShares {
   onchain: OnchainPoolData;
   //farm?: DecoratedFarm;
-  shares?: string;
+  //shares?: string;
 }
 
 export type AnyPool = Pool | FullPool | DecoratedPoolWithShares;

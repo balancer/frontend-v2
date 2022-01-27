@@ -49,7 +49,7 @@ const poolCalculator = new PoolCalculator(
  * COMPUTED
  */
 const propTokenAmounts = computed((): string[] => {
-  const farm = props.pool.farm;
+  const farm = props.pool.decoratedFarm;
   const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
   const farmBalance = farm ? farm.userBpt : 0;
 
