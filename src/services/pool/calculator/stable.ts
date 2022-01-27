@@ -133,7 +133,7 @@ export default class Stable {
     return this.scaleOutput(
       tokenAmountOut.toString(),
       this.calc.poolTokenDecimals[tokenIndex],
-      this.calc.pool.value.tokens[tokenIndex].priceRate,
+      this.calc.pool.value.tokens[tokenIndex].priceRate || null,
       OldBigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
