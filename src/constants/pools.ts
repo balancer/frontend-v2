@@ -1,5 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
 
+export const MIN_FIAT_VALUE_POOL_MIGRATION = 100_000; // 100K USD
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'

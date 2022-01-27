@@ -2,7 +2,7 @@
 import { toRef, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { POOLS } from '@/constants/pools';
+import { POOLS, MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -57,8 +57,6 @@ const poolCalculator = new PoolCalculator(
  */
 const bptBalance = computed((): string => balanceFor(props.pool.address));
 
-const hasBptBalance = computed(() => bnum(bptBalance.value).gt(0));
-
 const poolTokens = computed(() =>
   Object.values(getTokens(props.pool.tokenAddresses))
 );
@@ -96,16 +94,23 @@ const tokenAddresses = computed((): string[] => {
   return props.pool.tokenAddresses;
 });
 
-const fiatTotal = computed(() => {
-  const fiatValue = tokenAddresses.value
+const fiatValue = computed(() =>
+  tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
     .reduce((total, value) =>
       bnum(total)
         .plus(value)
         .toString()
-    );
-  return fNum(fiatValue, currency.value);
-});
+    )
+);
+
+const showMigrateButton = computed(
+  () =>
+    bnum(bptBalance.value).gt(0) &&
+    isMigratablePool(props.pool) &&
+    // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
+    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+);
 
 /**
  * METHODS
@@ -142,7 +147,7 @@ function navigateToPoolMigration(pool: FullPool) {
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h5>
         <h5>
-          {{ isWalletReady ? fiatTotal : '-' }}
+          {{ isWalletReady ? fNum(fiatValue, currency) : '-' }}
         </h5>
       </div>
     </template>
@@ -179,7 +184,7 @@ function navigateToPoolMigration(pool: FullPool) {
         </span>
       </div>
       <BalBtn
-        v-if="hasBptBalance && isMigratablePool(props.pool)"
+        v-if="showMigrateButton"
         color="blue"
         class="mt-4"
         block
