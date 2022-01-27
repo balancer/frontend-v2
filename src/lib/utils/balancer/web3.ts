@@ -11,7 +11,7 @@ import {
   EthereumTxType,
   ethereumTxType
 } from '@/composables/useEthereumTxType';
-import { MetamaskError } from '@/types';
+import { WalletError } from '@/types';
 
 const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
@@ -75,7 +75,7 @@ export async function sendTransaction(
     }
     return await contractWithSigner[action](...params, paramsOverrides);
   } catch (e) {
-    const error = e as MetamaskError;
+    const error = e as WalletError;
 
     if (
       error.code === RPC_INVALID_PARAMS_ERROR_CODE &&

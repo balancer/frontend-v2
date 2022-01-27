@@ -16,7 +16,7 @@ import {
 import { networkId } from '@/composables/useNetwork';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
-import { MetamaskError } from '@/types';
+import { WalletError } from '@/types';
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal
@@ -160,7 +160,7 @@ async function _signPayload(
       signingScheme
     })) as EcdsaSignature; // Only ECDSA signing supported for now
   } catch (e) {
-    const error = e as MetamaskError;
+    const error = e as WalletError;
     if (
       error.code === METHOD_NOT_FOUND_ERROR_CODE ||
       RPC_REQUEST_FAILED_REGEX.test(error.message)

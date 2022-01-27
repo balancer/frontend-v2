@@ -28,7 +28,6 @@ import useWithdrawalState from '../../../composables/useWithdrawalState';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
-import { configService } from '@/services/config/config.service';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -171,8 +170,6 @@ async function submit(): Promise<TransactionResponse> {
       );
     } else if (batchSwap.value) {
       tx = await boostedExitBatchSwap(
-        configService.network.key,
-        getProvider(),
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,

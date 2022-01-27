@@ -17,7 +17,6 @@ import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useConfig from '@/composables/useConfig';
-import { configService } from '@/services/config/config.service';
 import { BigNumber } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
@@ -158,8 +157,6 @@ async function submit(): Promise<TransactionResponse> {
 
     if (batchSwap.value) {
       tx = await boostedJoinBatchSwap(
-        configService.network.key,
-        getProvider(),
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,
