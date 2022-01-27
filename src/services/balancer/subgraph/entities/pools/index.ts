@@ -99,9 +99,10 @@ export default class Pools {
 
   public removeExcludedAddressesFromTotalLiquidity(
     pool: Pool,
-    rawTotalLiquidity: string
+    totalLiquidityString: string
   ) {
-    let totalLiquidity = bnum(rawTotalLiquidity);
+    const totalLiquidity = bnum(totalLiquidityString);
+    let miningTotalLiquidity = totalLiquidity;
 
     if (
       this.excludedAddresses != null &&
@@ -112,14 +113,14 @@ export default class Pools {
           const accountBalanceFormatted = formatUnits(accountBalance, 18);
           const poolShare = bnum(accountBalanceFormatted).div(pool.totalShares);
 
-          totalLiquidity = totalLiquidity.minus(
+          miningTotalLiquidity = miningTotalLiquidity.minus(
             totalLiquidity.times(poolShare)
           );
         }
       );
     }
 
-    return totalLiquidity.toString();
+    return miningTotalLiquidity.toString();
   }
 
   private async serialize(
@@ -137,10 +138,10 @@ export default class Pools {
       pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
-      pool.rawTotalLiquidity = poolService.calcTotalLiquidity(prices, currency);
-      pool.totalLiquidity = this.removeExcludedAddressesFromTotalLiquidity(
+      pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
+      pool.miningTotalLiquidity = this.removeExcludedAddressesFromTotalLiquidity(
         pool,
-        pool.rawTotalLiquidity
+        pool.totalLiquidity
       );
 
       const pastPool = pastPools.find(p => p.id === pool.id);
@@ -198,7 +199,7 @@ export default class Pools {
   private async getExcludedAddresses() {
     try {
       const { data } = await axios.get<ExcludedAddressesResponse>(
-        'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/config/exclude.json'
+        'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/frontend-exclude-test/config/exclude.json'
       );
 
       if (data[networkId.value]) {
@@ -290,13 +291,13 @@ export default class Pools {
         liquidityMiningRewards,
         prices,
         currency,
-        pool.totalLiquidity
+        pool.miningTotalLiquidity
       );
       liquidityMiningBreakdown = computeAPRsForPool(
         liquidityMiningRewards,
         prices,
         currency,
-        pool.totalLiquidity
+        pool.miningTotalLiquidity
       );
     }
 
