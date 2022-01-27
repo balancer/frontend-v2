@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, toRef, ref } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { computed, ref, toRef } from 'vue';
+import { FullPoolWithFarm } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 // Composables
@@ -16,7 +16,7 @@ import { usePool } from '@/composables/usePool';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: FullPoolWithFarm;
   hideHeader?: boolean;
 };
 /**

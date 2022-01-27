@@ -1,14 +1,5 @@
 import { computed, ComputedRef } from 'vue';
-import { flatten } from 'lodash';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useFarmsQuery from '@/beethovenx/composables/farms/useFarmsQuery';
-import { masterChefContractsService } from '@/beethovenx/services/farm/master-chef-contracts.service';
-import {
-  DecoratedPoolWithFarm,
-  Farm
-} from '@/beethovenx/services/subgraph/subgraph-types';
-import useAllFarmsForUserQuery from '@/beethovenx/composables/farms/useAllFarmsForUserQuery';
+import { DecoratedPoolWithFarm } from '@/beethovenx/services/subgraph/subgraph-types';
 import usePools from '@/composables/pools/usePools';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 
