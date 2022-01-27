@@ -1,4 +1,10 @@
 module.exports = {
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      isolatedModules: true
+    }
+  },
   projects: [
     {
       preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',

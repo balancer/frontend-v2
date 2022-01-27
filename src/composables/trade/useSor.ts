@@ -515,13 +515,7 @@ export default function useSor({
       const sr: SorReturn = sorReturn.value as SorReturn;
 
       try {
-        const tx = await swapIn(
-          appNetworkConfig.key,
-          provider.value as any,
-          sr,
-          tokenInAmountScaled,
-          minAmount
-        );
+        const tx = await swapIn(sr, tokenInAmountScaled, minAmount);
         console.log('Swap in tx', tx);
 
         txHandler(tx, 'trade');
@@ -544,13 +538,7 @@ export default function useSor({
       );
 
       try {
-        const tx = await swapOut(
-          appNetworkConfig.key,
-          provider.value as any,
-          sr,
-          tokenInAmountMax,
-          tokenOutAmountScaled
-        );
+        const tx = await swapOut(sr, tokenInAmountMax, tokenOutAmountScaled);
         console.log('Swap out tx', tx);
 
         txHandler(tx, 'trade');

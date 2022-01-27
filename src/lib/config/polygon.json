@@ -19,7 +19,7 @@
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic"
   },
-  "supportsEIP1559": false,
+  "supportsEIP1559": true,
   "nativeAsset": {
     "name": "Matic",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

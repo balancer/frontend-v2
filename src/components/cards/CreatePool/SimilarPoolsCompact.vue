@@ -33,7 +33,7 @@ function getPoolLabel(pool: Pool) {
       <BalIcon class="mt-1" name="alert-circle" size="md" />
       <h6>{{ $t('createAPool.similarPoolsExist') }}</h6>
     </BalStack>
-    <BalStack vertical isDynamic spacing="sm" class="p-4">
+    <BalStack vertical spacing="sm" class="p-4">
       <BalLink
         target="_blank"
         :href="`/#/pool/${pool.id}`"
