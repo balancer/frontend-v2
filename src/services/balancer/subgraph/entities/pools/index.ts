@@ -137,10 +137,10 @@ export default class Pools {
       pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
-      pool.rawTotalLiquidity = poolService.calcTotalLiquidity(prices, currency);
-      pool.totalLiquidity = this.removeExcludedAddressesFromTotalLiquidity(
+      pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
+      pool.miningTotalLiquidity = this.removeExcludedAddressesFromTotalLiquidity(
         pool,
-        pool.rawTotalLiquidity
+        pool.totalLiquidity
       );
 
       const pastPool = pastPools.find(p => p.id === pool.id);
@@ -290,13 +290,13 @@ export default class Pools {
         liquidityMiningRewards,
         prices,
         currency,
-        pool.totalLiquidity
+        pool.miningTotalLiquidity
       );
       liquidityMiningBreakdown = computeAPRsForPool(
         liquidityMiningRewards,
         prices,
         currency,
-        pool.totalLiquidity
+        pool.miningTotalLiquidity
       );
     }
 
