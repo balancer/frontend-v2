@@ -177,7 +177,7 @@ export default function useUserPoolsQuery(
           onchainData.linearPools != null &&
           decoratedPool.linearPoolTokensMap != null
         ) {
-          let totalLiquidity = bnum(0);
+          let rawTotalLiquidity = bnum(0);
           const tokensMap = getTokens(
             Object.keys(decoratedPool.linearPoolTokensMap)
           );
@@ -213,7 +213,7 @@ export default function useUserPoolsQuery(
                   .times(mainTokenPrice)
                   .times(token.wrappedToken.priceRate);
 
-                totalLiquidity = bnum(totalLiquidity)
+                rawTotalLiquidity = bnum(rawTotalLiquidity)
                   .plus(mainTokenValue)
                   .plus(wrappedTokenValue);
               }
@@ -221,14 +221,21 @@ export default function useUserPoolsQuery(
           );
 
           decoratedPools[i].onchain = onchainData;
-          decoratedPools[i].totalLiquidity = totalLiquidity.toString();
+          decoratedPools[i].rawTotalLiquidity = rawTotalLiquidity.toString();
+
+          const totalLiquidity = balancerSubgraphService.pools.removeExcludedAddressesFromTotalLiquidity(
+            decoratedPools[i],
+            decoratedPools[i].rawTotalLiquidity
+          );
+
+          decoratedPools[i].totalLiquidity = totalLiquidity;
         }
       }
     }
 
     const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,
-      shares: bnum(pool.totalLiquidity)
+      shares: bnum(pool.rawTotalLiquidity)
         .div(pool.totalShares)
         .times(poolSharesMap[pool.id].balance)
         .toString()

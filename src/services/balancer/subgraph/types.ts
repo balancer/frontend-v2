@@ -43,6 +43,7 @@ export interface Pool {
   tokensList: string[];
   tokenAddresses: string[];
   totalLiquidity: string;
+  rawTotalLiquidity: string;
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
