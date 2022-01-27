@@ -34,12 +34,11 @@
         <div class="text-xl font-medium truncate flex items-center">
           {{ data.pendingBeets }}
         </div>
-        <div
-          v-if="data.hasPendingRewardToken"
-          class="text-xl font-medium truncate flex items-center"
-        >
-          {{ data.pendingRewardToken }}
-        </div>
+        <template v-for="(token, idx) in data.rewardTokens" :key="idx">
+          <div class="text-xl font-medium truncate flex items-center">
+            {{ numeral(token.amount).format('0,0.[0000]') }} {{ token.symbol }}
+          </div>
+        </template>
         <div class="text-sm text-gray-500 font-medium mt-1 text-left">
           {{ data.pendingRewardValue }}
         </div>
@@ -87,14 +86,13 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { sumBy } from 'lodash';
+import { sumBy, groupBy, map } from 'lodash';
 import numeral from 'numeral';
 import usePools from '@/composables/pools/usePools';
 import useEthers from '@/composables/useEthers';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { Alert } from '@/composables/useAlerts';
-import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -119,12 +117,20 @@ export default defineComponent({
 
     const data = computed(() => {
       const farms = onlyPoolsWithFarms.value.map(pool => pool.decoratedFarm);
-
-      const pendingRewardToken = sumBy(farms, farm => farm.pendingRewardToken);
-      const pendingRewardTokenValue = sumBy(
-        farms,
-        farm => farm.pendingRewardTokenValue
+      const farmsWithRewardTokens = farms.filter(
+        farm => farm.rewardTokenSymbol !== null
       );
+
+      const rewardTokens = map(
+        groupBy(farmsWithRewardTokens, farm => farm.rewardTokenSymbol),
+        group => ({
+          symbol: group[0].rewardTokenSymbol || '',
+          amount: sumBy(group, item => item.pendingRewardToken) || 0,
+          value: sumBy(group, item => item.pendingRewardTokenValue)
+        })
+      );
+
+      const pendingRewardTokenValue = sumBy(rewardTokens, token => token.value);
       const pendingBeetsValue = sumBy(farms, farm => farm.pendingBeetsValue);
 
       const averageApr =
@@ -141,15 +147,13 @@ export default defineComponent({
           numeral(sumBy(farms, farm => farm.pendingBeets)).format(
             '0,0.[0000]'
           ) + ' BEETS',
-        hasPendingRewardToken: pendingRewardToken > 0,
-        pendingRewardToken:
-          numeral(pendingRewardToken).format('0,0.[0000]') + ' HND',
         pendingRewardValue: fNum(
           pendingBeetsValue + pendingRewardTokenValue,
           'usd'
         ),
         apr: fNum(averageApr, 'percent'),
-        dailyApr: fNum(averageApr / 365, 'percent')
+        dailyApr: fNum(averageApr / 365, 'percent'),
+        rewardTokens
       };
     });
 
@@ -187,6 +191,7 @@ export default defineComponent({
       data,
       hasFarmRewards,
       fNum,
+      numeral,
       harvestAllRewards,
       harvesting,
       upToLargeBreakpoint,

@@ -14,11 +14,13 @@
     <FarmHarvestRewardsCard
       :farm-id="pool.decoratedFarm.id"
       :token-address="pool.address"
+      :has-beets-rewards="pool.decoratedFarm.rewards > 0"
+      :has-third-party-rewards="pool.decoratedFarm.rewardTokenPerDay > 0"
       :pending-beets="pool.decoratedFarm.pendingBeets"
       :pending-beets-value="pool.decoratedFarm.pendingBeetsValue"
       :pending-reward-token="pool.decoratedFarm.pendingRewardToken"
       :pending-reward-token-value="pool.decoratedFarm.pendingRewardTokenValue"
-      :reward-token-symbol="pool.farm?.rewarder?.tokens[0]?.symbol"
+      :reward-token-symbol="pool.decoratedFarm.rewardTokenSymbol"
     />
   </div>
 </template>
@@ -86,28 +88,42 @@ export default defineComponent({
     const stats = computed(() => {
       const farm = props.pool.decoratedFarm;
 
-      return [
+      const rewardToken = props.pool.farm?.rewarder?.tokens[0];
+      const items = [
         {
           id: 'tvl',
           label: 'TVL',
           value: fNum(farm.tvl, 'usd')
-        },
-        {
+        }
+      ];
+
+      if (farm.rewards === 0 && farm.rewardTokenPerDay > 0) {
+        items.push({
+          id: rewardToken?.symbol || '',
+          label: rewardToken?.symbol || '',
+          value: `${fNum(farm.rewardTokenPerDay, 'token_lg')} / day`
+        });
+      } else {
+        items.push({
           id: 'beets',
           label: 'BEETS',
           value: `${fNum(farm.rewards, 'token_lg')} / day`
-        },
-        {
-          id: 'stake',
-          label: 'My Balance',
-          value: fNum(farm.stake, 'usd')
-        },
-        {
-          id: 'your_share',
-          label: 'My Share',
-          value: fNum(farm.share, 'percent')
-        }
-      ];
+        });
+      }
+
+      items.push({
+        id: 'stake',
+        label: 'My Balance',
+        value: fNum(farm.stake, 'usd')
+      });
+
+      items.push({
+        id: 'your_share',
+        label: 'My Share',
+        value: fNum(farm.share, 'percent')
+      });
+
+      return items;
     });
 
     const pendingRewards = computed(() => {

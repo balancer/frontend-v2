@@ -39,6 +39,8 @@ export interface DecoratedFarm extends Farm {
   share: number;
   userBpt: number;
 
+  rewardTokenSymbol: string | null;
+  rewardTokenPerDay: number;
   pendingRewardToken: number;
   pendingRewardTokenValue: number;
 }

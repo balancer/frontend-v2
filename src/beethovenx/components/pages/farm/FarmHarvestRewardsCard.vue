@@ -3,11 +3,14 @@
     <div class="text-sm text-gray-500 font-medium mb-2">
       My Pending Rewards
     </div>
-    <div class="text-xl font-medium truncate flex items-center">
+    <div
+      v-if="hasBeetsRewards"
+      class="text-xl font-medium truncate flex items-center"
+    >
       {{ fNum(pendingBeets, 'token_fixed') }} BEETS
     </div>
     <div
-      v-if="pendingRewardToken > 0"
+      v-if="hasThirdPartyRewards"
       class="text-xl font-medium truncate flex items-center"
     >
       {{ fNum(pendingRewardToken, 'token_fixed') }} {{ rewardTokenSymbol }}
@@ -40,6 +43,14 @@ export default defineComponent({
   components: {},
 
   props: {
+    hasBeetsRewards: {
+      type: Boolean,
+      required: true
+    },
+    hasThirdPartyRewards: {
+      type: Boolean,
+      required: true
+    },
     pendingBeets: {
       type: Number,
       required: true
