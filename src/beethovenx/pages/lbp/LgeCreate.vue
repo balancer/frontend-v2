@@ -41,7 +41,7 @@
     </StepContainer>
     <StepContainer
       :complete="lgeConfigSaved"
-      title="Configure Your Liquidity Generation Event"
+      title="Configure Your Liquidity Bootstrapping Pool"
       step-number="2"
     >
       <template v-slot:content v-if="lgeConfigOpen || lgeConfigSaved">
@@ -77,7 +77,7 @@
     </StepContainer>
     <StepContainer
       :complete="lgeSaved"
-      title="Create Your Liquidity Generation Event"
+      title="Create Your Liquidity Bootstrapping Pool"
       step-number="3"
     >
       <template v-slot:content v-if="reviewAndDeployOpen">

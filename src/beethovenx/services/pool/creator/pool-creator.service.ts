@@ -116,6 +116,10 @@ export class PoolCreatorService {
           'getPoolId',
           []
         );
+
+        if (poolId) {
+          break;
+        }
       } catch {
         //
       }

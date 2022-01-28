@@ -16,7 +16,7 @@ const hidden = ref(false);
       <div class="text-lg font-bold ml-2 text-red-500">Warning</div>
     </div>
     <div>
-      Participating in a Liquidity Generation Event on Beethoven X is a
+      Participating in a Liquidity Boostrapping Pool on Beethoven X is a
       high-risk endeavor. This is a permissionless service where
       <span class="font-bold">ANYONE</span> can create an event. Beethoven X is
       not liable for any losses incurred by using our platform. Please be

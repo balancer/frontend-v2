@@ -115,7 +115,7 @@ const fundsRaisedValue = computed(
       {{ props.lge.address }}
     </a>
     <div class="mt-8 mb-4">
-      <h3>LGE Details</h3>
+      <h3>LBP Details</h3>
     </div>
     <div class="lbp-review-row">
       <div>

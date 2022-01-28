@@ -62,6 +62,38 @@ export default class Pools {
     }
   }
 
+  public async getPoolDataFromTxHash(
+    txHash: string
+  ): Promise<{
+    id: string;
+    address: string;
+    poolType: string;
+    owner: string;
+  } | null> {
+    try {
+      const {
+        data: { data }
+      } = await axios.post(this.configService.network.subgraph, {
+        query: jsonToGraphQLQuery({
+          query: {
+            pools: {
+              __args: { where: { tx: txHash } },
+              id: true,
+              address: true,
+              poolType: true,
+              owner: true
+            }
+          }
+        })
+      });
+
+      return data?.pools[0] || null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
   public async decorate(pools: Pool[]): Promise<DecoratedPool[]> {
     return this.serialize(pools);
   }

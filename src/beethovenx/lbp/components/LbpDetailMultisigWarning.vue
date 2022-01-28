@@ -13,7 +13,7 @@ const hidden = ref(false);
       <div class="text-lg font-bold ml-2 text-red-500">Warning</div>
     </div>
     <div>
-      The owner of this Liquidity Generation Event is
+      The owner of this Liquidity Bootstrapping Pool is
       <span class="font-bold">NOT</span> a Gnosis Safe Multisig Wallet. This
       means that a single person has complete control over the funds in this
       pool. Please proceed with caution.

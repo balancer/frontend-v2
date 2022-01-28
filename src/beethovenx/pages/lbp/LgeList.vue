@@ -17,7 +17,7 @@ function goToLaunchCreate() {
       </div>
       <BalBtn
         class="hidden lg:block"
-        label="Create a LGE"
+        label="Create a LBP"
         @click="goToLaunchCreate"
       />
     </div>

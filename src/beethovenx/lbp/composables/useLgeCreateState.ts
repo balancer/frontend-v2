@@ -21,6 +21,8 @@ interface LbpState {
   collateralTokenRequiresApproval: boolean;
   savingLge: boolean;
   lgeSaved: boolean;
+  lbpCreateTriggered: boolean;
+  createTransactionHash: string;
 }
 
 export const LBPDefaultData: LgeData = {
@@ -64,7 +66,9 @@ const state = reactive<LbpState>({
   tokenRequiresApproval: false,
   collateralTokenRequiresApproval: false,
   savingLge: false,
-  lgeSaved: false
+  lgeSaved: false,
+  createTransactionHash: '',
+  lbpCreateTriggered: false
 });
 
 export default function useLgeCreateState() {
@@ -145,18 +149,22 @@ export default function useLgeCreateState() {
     const data = state.data;
 
     if (lgeChartConfigValid.value !== true) {
+      console.log('lgeChartConfigValid not valid');
       return false;
     }
 
     if (data.swapFeePercentage < 0.0001 || data.swapFeePercentage > 10) {
+      console.log('swapFeePercentage not valid');
       return false;
     }
 
     if (data.poolName === '' || data.poolSymbol === '') {
+      console.log('swapFepoolNameePercentage not valid');
       return false;
     }
 
     if (state.tokenRequiresApproval || state.collateralTokenRequiresApproval) {
+      console.log('tokenRequiresApproval not valid');
       return false;
     }
 

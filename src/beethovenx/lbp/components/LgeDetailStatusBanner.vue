@@ -29,7 +29,7 @@ const {
     <div class="w-8" />
     <div class="flex-1 text-center flex items-center justify-center">
       <span class="font-semibold text-black">
-        {{ props.lge.name }} Liquidity Generation Event
+        {{ props.lge.name }} Liquidity Bootstrapping Pool
         {{ isBeforeStart ? ' starts' : ' ended' }}:
         {{ `${isBeforeStart ? startDateTimeFormatted : endDateTimeFormatted}` }}
       </span>
