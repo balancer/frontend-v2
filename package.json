@@ -25,7 +25,7 @@
     "@balancer-labs/balancer-js": "^1.0.1",
     "@balancer-labs/sdk": "github:beethovenxfi/balancer-sdk#beethovenx-master",
     "@balancer-labs/sor": "^1.1.0",
-    "@balancer-labs/sor2": "github:beethovenxfi/balancer-sor#beethovenx-boosted-support",
+    "@balancer-labs/sor2": "github:beethovenxfi/balancer-sor#bcfe1123eb19f7a4473d48d29e51917b9a7e20ae",
     "@balancer-labs/typechain": "^1.0.0",
     "@chenfengyuan/vue-countdown": "^2.0.0-rc",
     "@clover-network/clover-connector": "^1.0.0",
