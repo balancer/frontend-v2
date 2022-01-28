@@ -23,7 +23,7 @@
     "@babel/plugin-proposal-numeric-separator": "^7.14.5",
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/balancer-js": "^1.0.1",
-    "@balancer-labs/sdk": "github:beethovenxfi/balancer-sdk#beethovenx-master",
+    "@balancer-labs/sdk": "github:beethovenxfi/balancer-sdk#2e9c754a43e12273dbfd9da0ae17ce7f011af419",
     "@balancer-labs/sor": "^1.1.0",
     "@balancer-labs/sor2": "github:beethovenxfi/balancer-sor#bcfe1123eb19f7a4473d48d29e51917b9a7e20ae",
     "@balancer-labs/typechain": "^1.0.0",
