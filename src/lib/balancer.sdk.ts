@@ -13,13 +13,15 @@ const network = ((): Network => {
       return Network.POLYGON;
     case '42161':
       return Network.ARBITRUM;
+    case '250':
+      return Network.ARBITRUM;
     default:
       return Network.MAINNET;
   }
 })();
 
 export const balancer = new BalancerSDK({
-  network,
+  network: parseInt(configService.network.key),
   rpcUrl: configService.network.rpc,
   subgraphUrl: configService.network.poolsUrlV2
 });
