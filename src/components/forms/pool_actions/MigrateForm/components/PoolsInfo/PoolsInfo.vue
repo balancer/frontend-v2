@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
@@ -16,6 +17,8 @@ import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue'
 
 import { TokenInfo } from '@/types/TokenList';
 import { PoolMigrationInfo } from '../../types';
+import { bnum } from '@/lib/utils';
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -42,14 +45,20 @@ const { t } = useI18n();
 
 const { fromPool, toPool } = toRefs(props);
 
+const router = useRouter();
+
 const migrateMath = useMigrateMath(fromPool, toPool);
-const { hasBpt, fiatTotalLabel } = migrateMath;
+const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
 
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
   migrateMath.getBatchSwap();
+
+  if (bnum(fiatTotal.value).lt(MIN_FIAT_VALUE_POOL_MIGRATION)) {
+    router.push({ name: 'pool', params: { id: fromPool.value.id } });
+  }
 });
 </script>
 
