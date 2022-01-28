@@ -128,7 +128,7 @@ export default defineComponent({
           amount: sumBy(group, item => item.pendingRewardToken) || 0,
           value: sumBy(group, item => item.pendingRewardTokenValue)
         })
-      );
+      ).filter(token => token.value > 0);
 
       const pendingRewardTokenValue = sumBy(rewardTokens, token => token.value);
       const pendingBeetsValue = sumBy(farms, farm => farm.pendingBeetsValue);
