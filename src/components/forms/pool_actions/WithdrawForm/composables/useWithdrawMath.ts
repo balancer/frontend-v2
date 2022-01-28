@@ -280,12 +280,17 @@ export default function useWithdrawMath(
     } catch (error) {
       if ((error as Error).message.includes('MIN_BPT_IN_FOR_TOKEN_OUT')) {
         setError(WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT);
-        const { receive } = poolCalculator.propAmountsGiven(
-          absMaxBpt.value,
-          0,
-          'send'
-        );
-        return receive;
+        return poolTokens.value.map((token, tokenIndex) => {
+          return formatUnits(
+            poolCalculator
+              .exactBPTInForTokenOut(
+                parseUnits(absMaxBpt.value, poolDecimals.value).toString(),
+                tokenIndex
+              )
+              .toString(),
+            token.decimals
+          );
+        });
       }
       return [];
     }
