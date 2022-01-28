@@ -93,7 +93,7 @@
     "numeral": "^2.0.4",
     "paraswap": "^4.18.0",
     "parse-filepath": "1.0.2",
-    "postcss": "^7.0.39",
+    "postcss": "^8.2.13",
     "prettier": "^1.19.1",
     "promise-worker": "^2.0.1",
     "swiper": "^6.4.5",
