@@ -8,12 +8,10 @@ import {
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
-import { POOLS } from '@/constants/pools';
-
 import { bnum } from '@/lib/utils';
 
 import { fNum } from './useNumbers';
-import { networkId } from './useNetwork';
+import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 
 /**
  * METHODS
@@ -74,7 +72,9 @@ export function isWstETH(pool: AnyPool): boolean {
 }
 
 export function isMigratablePool(pool: AnyPool) {
-  return pool.id === POOLS.IdsMap[networkId.value]?.staBAL;
+  return POOL_MIGRATIONS.some(
+    poolMigrationInfo => poolMigrationInfo.fromPoolId === pool.id
+  );
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {

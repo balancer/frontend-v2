@@ -2,7 +2,9 @@
 import { toRef, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { POOLS, MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -12,9 +14,9 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { usePool } from '@/composables/usePool';
-import { networkId } from '@/composables/useNetwork';
 
-import { bnum } from '@/lib/utils';
+import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 /**
  * TYPES
@@ -129,7 +131,7 @@ function navigateToPoolMigration(pool: FullPool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOLS.IdsMap[networkId.value]?.bbAaveUSD
+      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId
     },
     query: {
       returnRoute: 'pool',
