@@ -77,13 +77,13 @@ const defaultAttrs = {
     weight: true
     //TODO: uncomment for linear support
     //priceRate: true
-  }
+  },
   //TODO: uncomment for linear support
-  /*wrappedIndex: true,
+  wrappedIndex: true,
   mainIndex: true,
   lowerTarget: true,
-  upperTarget: true,*/
-  /*tokenRates: true,
+  upperTarget: true,
+  tokenRates: true,
   linearPools: {
     id: true,
     address: true,
@@ -107,7 +107,7 @@ const defaultAttrs = {
       symbol: true,
       decimals: true
     }
-  }*/
+  }
 };
 
 export default (args = {}, attrs = {}) => ({

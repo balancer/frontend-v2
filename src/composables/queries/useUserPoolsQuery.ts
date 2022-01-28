@@ -117,15 +117,14 @@ export default function useUserPoolsQuery(
     const pools = await balancerSubgraphService.pools.get();
     const userPools = pools.filter(pool => poolSharesIds.includes(pool.id));
 
-    //TODO: add back for boosted support
-    /*for (let i = 0; i < pools.length; i++) {
+    for (let i = 0; i < pools.length; i++) {
       const isStablePhantomPool = isStablePhantom(pools[i].poolType);
 
       if (isStablePhantomPool) {
         pools[i] = removePreMintedBPT(pools[i]);
         pools[i] = await getLinearPoolAttrs(pools[i]);
       }
-    }*/
+    }
 
     const tokens = flatten(
       pools.map(pool => {
@@ -144,7 +143,7 @@ export default function useUserPoolsQuery(
     );
 
     // TODO - cleanup and extract elsewhere in refactor
-    /*for (let i = 0; i < decoratedPools.length; i++) {
+    for (let i = 0; i < decoratedPools.length; i++) {
       const isStablePhantomPool = isStablePhantom(decoratedPools[i].poolType);
 
       if (isStablePhantomPool) {
@@ -212,7 +211,7 @@ export default function useUserPoolsQuery(
           decoratedPools[i].totalLiquidity = totalLiquidity.toString();
         }
       }
-    }*/
+    }
 
     const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,

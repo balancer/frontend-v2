@@ -109,15 +109,14 @@ export default function usePoolsQuery(
   const queryFn = async ({ pageParam = 0 }) => {
     const pools = await balancerSubgraphService.pools.get();
 
-    //TODO: add back for boosted support
-    /*for (let i = 0; i < pools.length; i++) {
+    for (let i = 0; i < pools.length; i++) {
       const isStablePhantomPool = isStablePhantom(pools[i].poolType);
 
       if (isStablePhantomPool) {
         pools[i] = removePreMintedBPT(pools[i]);
         pools[i] = await getLinearPoolAttrs(pools[i]);
       }
-    }*/
+    }
 
     const tokens = flatten(
       pools.map(pool => [
@@ -133,7 +132,7 @@ export default function usePoolsQuery(
     const decoratedPools = await balancerSubgraphService.pools.decorate(pools);
 
     // TODO - cleanup and extract elsewhere in refactor
-    /*for (let i = 0; i < decoratedPools.length; i++) {
+    for (let i = 0; i < decoratedPools.length; i++) {
       const isStablePhantomPool = isStablePhantom(decoratedPools[i].poolType);
 
       if (isStablePhantomPool) {
@@ -201,7 +200,7 @@ export default function usePoolsQuery(
           decoratedPools[i].totalLiquidity = totalLiquidity.toString();
         }
       }
-    }*/
+    }
 
     return {
       pools: decoratedPools,
