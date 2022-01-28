@@ -8,7 +8,10 @@ import useFarms from '@/beethovenx/composables/farms/useFarms';
 import { decorateFarms } from '@/beethovenx/utils/farmHelper';
 import useAverageBlockTime from '@/beethovenx/composables/blocks/useAverageBlockTime';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import {
+  DecoratedPoolWithShares,
+  PoolType
+} from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   DecoratedPoolWithFarm,
@@ -138,11 +141,15 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
           return (
             poolsTokenList.value.every((selectedToken: string) =>
               pool.tokenAddresses.includes(selectedToken)
-            ) && !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+            ) &&
+            !beethovenxConfig.value.incentivizedPools.includes(pool.id) &&
+            pool.poolType !== PoolType.Linear
           );
         })
       : poolsWithFarms?.value.filter(
-          pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+          pool =>
+            !beethovenxConfig.value.incentivizedPools.includes(pool.id) &&
+            pool.poolType !== PoolType.Linear
         );
   });
 
