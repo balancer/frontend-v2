@@ -699,5 +699,7 @@
     "farmWithdrawalSettled": "Your withdrawal has settled",
     "farmWithdrawalSuccess": "Your LP tokens have been withdrawn from this farm and any pending rewards have been harvested.",
     "farmDepositSettled": "Your deposit has settled",
-    "farmDepositSuccess": "Your LP tokens have been deposited into this farm. You will now start to accrue farming rewards."
+    "farmDepositSuccess": "Your LP tokens have been deposited into this farm. You will now start to accrue farming rewards.",
+    "approveBatchRelayer": "Approve Batch relayer",
+    "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer."
 }
