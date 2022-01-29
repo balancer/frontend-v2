@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { toRef, computed, ref } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool, FullPoolWithFarm } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
@@ -15,7 +15,7 @@ import { bnum } from '@/lib/utils';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: FullPoolWithFarm;
   missingPrices: boolean;
 };
 
@@ -45,7 +45,7 @@ const poolCalculator = new PoolCalculator(
   ref(false)
 );
 
-const proportionalAmounts = computed((): string[] => {
+/*const proportionalAmounts = computed((): string[] => {
   const farm = props.pool.farm;
   const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
   const farmBalance = farm ? farm.userBpt : 0;
@@ -56,12 +56,17 @@ const proportionalAmounts = computed((): string[] => {
     'send'
   );
   return receive;
-});
+});*/
 
 /**
  * COMPUTED
  */
-const bptBalance = computed((): string => balanceFor(props.pool.address));
+const bptBalance = computed((): string => {
+  const unstakedBalance = parseFloat(balanceFor(props.pool.address));
+  const stakedBalance = props.pool.decoratedFarm?.userBpt || 0;
+
+  return `${unstakedBalance + stakedBalance}`;
+});
 
 const poolTokens = computed(() =>
   Object.values(getTokens(props.pool.tokenAddresses))
@@ -128,9 +133,7 @@ function fiatLabelFor(index: number, address: string): string {
   <BalCard noPad>
     <template #header>
       <div class="card-header">
-        <h5>
-          {{ $t('poolTransfer.myPoolBalancesCard.title') }}
-        </h5>
+        <h5>{{ $t('poolTransfer.myPoolBalancesCard.title') }}</h5>
         <h5>
           {{ isWalletReady ? fiatTotal : '-' }}
         </h5>
