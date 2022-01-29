@@ -110,6 +110,7 @@ const {
       </BalCard>
     </div>
     <FarmHarvestRewardsCard
+      :has-beets-rewards="true"
       :farm-id="appNetworkConfig.fBeets.farmId"
       :token-address="appNetworkConfig.fBeets.poolAddress"
       :pending-beets="fbeetsDecoratedFarm?.pendingBeets || 0"
