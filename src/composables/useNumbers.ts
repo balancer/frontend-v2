@@ -98,10 +98,7 @@ export default function useNumbers() {
       number = Number(number || 0);
     }
 
-    const formatterOptions: Intl.NumberFormatOptions = Object.assign(
-      {},
-      options
-    );
+    const formatterOptions: Intl.NumberFormatOptions = { ...options };
     let postfixSymbol = '';
 
     if (options.abbreviate) {
