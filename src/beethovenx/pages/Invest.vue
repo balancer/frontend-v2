@@ -127,7 +127,7 @@ export default defineComponent({
     const { beethovenxConfig, beethovenxConfigLoading } = useBeethovenxConfig();
 
     const tabs = [
-      { value: 'beethovenx-pools', label: 'Beethoven X Pools' },
+      { value: 'beethovenx-pools', label: 'Incentivized Pools' },
       { value: 'community-pools', label: 'Community Pools' },
       { value: 'my-investments', label: 'My Investments' }
     ];
