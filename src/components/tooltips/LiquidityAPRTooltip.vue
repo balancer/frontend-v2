@@ -52,14 +52,31 @@ const hasThirdPartyAPR = computed(() =>
         </div>
       </div>
       <div class="p-3">
-        <div
-          v-for="(item, idx) in pool.apr.items"
-          :key="idx"
-          class="whitespace-nowrap flex items-center mb-1"
-        >
-          {{ fNum(item.apr, 'percent') }}
-          <span class="ml-1 text-gray-500 text-xs">{{ item.title }}</span>
+        <div v-for="(item, idx) in pool.apr.items" :key="idx">
+          <BalBreakdown
+            :items="item.subItems"
+            v-if="item.subItems && item.subItems.length > 0"
+            :hideItems="false"
+          >
+            <div class="flex items-center">
+              {{ fNum(item.apr, 'percent') }}
+              <span class="ml-1 text-gray-500 text-xs flex items-center">
+                {{ item.title }}
+              </span>
+            </div>
+            <template v-if="true" #item="{ item }">
+              {{ fNum(item.apr, 'percent') }}
+              <span class="text-gray-500 text-xs ml-1">
+                {{ item.title }}
+              </span>
+            </template>
+          </BalBreakdown>
+          <div v-else class="whitespace-nowrap flex items-center mb-1">
+            {{ fNum(item.apr, 'percent') }}
+            <span class="ml-1 text-gray-500 text-xs">{{ item.title }}</span>
+          </div>
         </div>
+
         <!--        <BalBreakdown
           :items="Object.entries(thirdPartyBreakdown)"
           v-if="hasThirdPartyAPR"
