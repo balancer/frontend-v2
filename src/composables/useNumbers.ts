@@ -95,8 +95,7 @@ export default function useNumbers() {
     options: FNumOptions | undefined = {}
   ): string {
     if (typeof number === 'string') {
-      number = number || 0;
-      number = new BigNumber(number).toNumber();
+      number = Number(number || 0);
     }
 
     const formatterOptions: Intl.NumberFormatOptions = Object.assign(

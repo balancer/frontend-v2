@@ -61,6 +61,39 @@ describe('useNumbers', () => {
       '121237821371'
     ];
 
+    it('Should return 0 for an empty string', () => {
+      expect(fNum2('')).toEqual('0');
+    });
+
+    it('Should not lose any precision with numbers passed as a string', () => {
+      testNumbers.forEach(testNumber => {
+        if (testNumber === '') return; // Ignore empty string as that is converted to 0
+        if (Number(testNumber) === 0) return; // Ignore 0 numbers as it will always trim their precision.
+        const formattedNumber = fNum2(testNumber, {
+          style: 'decimal',
+          maximumFractionDigits: 20,
+          useGrouping: false,
+          fixedFormat: true
+        });
+        expect(formattedNumber).toEqual(testNumber);
+      });
+    });
+
+    it('Should not lose any precision with numbers passed as a number', () => {
+      testNumbers.forEach(testNumber => {
+        if (testNumber === '') return; // Ignore empty string as that is converted to 0
+        if (Number(testNumber) === 0) return; // Ignore 0 numbers as it will always trim their precision.
+        const testNumberAsNumber = Number(testNumber);
+        const formattedNumber = fNum2(testNumberAsNumber, {
+          style: 'decimal',
+          maximumFractionDigits: 20,
+          useGrouping: false,
+          fixedFormat: true
+        });
+        expect(formattedNumber).toEqual(testNumber);
+      });
+    });
+
     it('Should give the same result without any arguments', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber);
