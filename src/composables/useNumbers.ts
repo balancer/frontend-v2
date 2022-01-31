@@ -13,7 +13,7 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
 }
 
-export const FNumFormats = {
+export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'unit',
     unit: 'percent',
@@ -139,7 +139,12 @@ export default function useNumbers() {
       formatterOptions.currency = currency.value;
     }
 
-    if (!options.style && number > 0 && number < 0.0001) {
+    if (
+      !options.fixedFormat &&
+      !options.style &&
+      number > 0 &&
+      number < 0.0001
+    ) {
       return '< 0.0001';
     }
 

@@ -198,7 +198,8 @@ export default defineComponent({
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
-        accessor: pool => fNum2(pool.dynamic.volume, {
+        accessor: pool =>
+          fNum2(pool.dynamic.volume, {
             style: 'currency',
             maximumFractionDigits: 0
           }),
