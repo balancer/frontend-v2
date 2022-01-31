@@ -1,6 +1,7 @@
+import { isMainnet } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
 
-export const MIN_FIAT_VALUE_POOL_MIGRATION = 100_000; // 100K USD
+export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
 
 export type FactoryType =
   | 'oracleWeightedPool'
