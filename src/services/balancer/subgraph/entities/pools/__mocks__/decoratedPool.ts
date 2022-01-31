@@ -1,6 +1,6 @@
-// import { Pool } from '../../../types';
+import { DecoratedPool, PoolType } from '../../../types';
 
-const decoratedPool: any = {
+const decoratedPool: DecoratedPool = {
   onchain: {
     tokens: {
       '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7': {
@@ -29,13 +29,11 @@ const decoratedPool: any = {
     swapFee: '0.0037'
   },
   address: '0x702605F43471183158938C1a3e5f5A359d7b31ba',
-  amp: null,
   createTime: 1633385013,
   factory: '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9',
   id: '0x702605f43471183158938c1a3e5f5a359d7b31ba00020000000000000000009f',
   owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
-  poolType: 'Weighted',
-  swapEnabled: true,
+  poolType: PoolType.Weighted,
   swapFee: '0.0037',
   tokens: [
     {
@@ -63,6 +61,7 @@ const decoratedPool: any = {
     '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
   ],
+  miningTotalLiquidity: '2300',
   hasLiquidityMiningRewards: false,
   dynamic: {
     period: '24h',

@@ -11,8 +11,8 @@ describe('helpers', () => {
   describe('removeAddressesFromTotalLiquidity tests', () => {
     const mockedDecoratedPool = {
       ...decoratedPool,
-      totalShares: 1000,
-      totalLiquidity: 2000
+      totalShares: '1000',
+      totalLiquidity: '2000'
     };
 
     it('Should correctly remove excluded addresses', () => {
@@ -32,7 +32,7 @@ describe('helpers', () => {
       expect(miningTotalLiquidity).toEqual('1000');
     });
 
-    it('Should return unchanged totalLiquidity when excluded addresses belong to different pools', () => {
+    it('Should return unchanged totalLiquidity when excludedAddresses belong to different pools', () => {
       const excludedAddresses: ExcludedAddresses = {
         '0x8f4205e1604133d1875a3E771AE7e4F2b0865639': {
           '0x567d220B0169836cBF351DF70A9c517096ec9De7': parseUnits('100'),
