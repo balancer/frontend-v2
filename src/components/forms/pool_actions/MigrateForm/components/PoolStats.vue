@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
@@ -20,8 +19,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2 } = useNumbers();
 </script>
 
 <template>
@@ -37,7 +35,7 @@ const { currency } = useUserSettings();
           {{ $t('poolValue') }}
         </div>
         <div class="font-semibold">
-          {{ fNum(pool.totalLiquidity, currency) }}
+          {{ fNum2(pool.totalLiquidity, FNumFormats.fiat) }}
         </div>
       </div>
       <div class="mb-3">
@@ -45,13 +43,13 @@ const { currency } = useUserSettings();
           {{ $t('volumeTime', ['24h']) }}
         </div>
         <div class="font-semibold">
-          {{ fNum(pool.dynamic.volume, currency) }}
+          {{ fNum2(pool.dynamic.volume, FNumFormats.fiat) }}
         </div>
       </div>
       <div>
         <div class="text-gray-500">{{ $t('apr') }}</div>
         <div class="flex items-center font-semibold">
-          {{ fNum(pool.dynamic.apr.total, 'percent') }}
+          {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
           <LiquidityAPRTooltip :pool="pool" />
         </div>
       </div>

@@ -2,9 +2,8 @@ import { computed, ref, Ref } from 'vue';
 import { parseUnits } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
 import { usePool } from '@/composables/usePool';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -36,8 +35,7 @@ export default function useMigrateMath(
    * COMPOSABLES
    */
   const { tokens, balances, balanceFor, getToken } = useTokens();
-  const { currency } = useUserSettings();
-  const { fNum, toFiat } = useNumbers();
+  const { fNum2, toFiat } = useNumbers();
 
   /**
    * SERVICES
@@ -164,7 +162,9 @@ export default function useMigrateMath(
 
   const fiatTotal = computed(() => bnSum(fiatAmounts.value).toString());
 
-  const fiatTotalLabel = computed(() => fNum(fiatTotal.value, currency.value));
+  const fiatTotalLabel = computed(() =>
+    fNum2(fiatTotal.value, FNumFormats.fiat)
+  );
 
   /**
    * METHODS
