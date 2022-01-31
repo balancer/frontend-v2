@@ -199,9 +199,9 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                     >
                       {{ initialWeightLabel }}:
                       {{
-                        fNum(
+                        fNum2(
                           initialWeights[token.tokenAddress].toString(),
-                          'percent'
+                          FNumFormats.percent
                         )
                       }}
                     </span>
