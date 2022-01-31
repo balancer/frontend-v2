@@ -1,6 +1,6 @@
 import { RuleFunction, Rules } from '@/types';
-import { get, isEmpty, isPlainObject, set } from 'lodash';
-import { onBeforeMount, reactive, ref, Ref, toRefs } from 'vue';
+import { get, set } from 'lodash';
+import { onBeforeMount, reactive, toRefs } from 'vue';
 
 /**
  * TYPES
@@ -37,21 +37,6 @@ function validateAgainst(value: any, rules?: RuleFunction[]) {
     return failedRules;
   }
   return [];
-}
-
-function toRefRecursive(value: Record<string, any>) {
-  if (isEmpty(value)) return {};
-  const refObj = {};
-
-  for (const key of Object.keys(value)) {
-    // not a leaf node
-    if (isPlainObject(value[key])) {
-      refObj[key] = toRefRecursive(value[key]);
-    } else {
-      refObj[key] = ref(value[key]);
-    }
-  }
-  return refObj;
 }
 
 /**
