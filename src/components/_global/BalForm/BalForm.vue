@@ -5,7 +5,7 @@ import { FormContextSymbol, FormInstance } from './useForm';
 type SubmitFn = () => void;
 
 type Props = {
-  form: FormInstance;
+  form: FormInstance<unknown>;
   submit: SubmitFn;
 };
 
@@ -15,7 +15,9 @@ provide(FormContextSymbol, props.form);
 
 onBeforeMount(() => {
   if (!props.form) {
-    throw new Error(`<BalForm /> component was rendered with a form instance.`);
+    throw new Error(
+      `<BalForm /> component was rendered without a form instance.`
+    );
   }
 });
 
