@@ -136,8 +136,8 @@ function getSwapFeeManager() {
 
 function getInitialWeightHighlightClass(tokenAddress: string) {
   return {
-    'text-gray-500': initialWeights[tokenAddress].gte(0.01),
-    'text-yellow-500': initialWeights[tokenAddress].lt(0.01)
+    'text-gray-500': initialWeights[tokenAddress]?.gte(0.01),
+    'text-yellow-500': initialWeights[tokenAddress]?.lt(0.01)
   };
 }
 </script>
