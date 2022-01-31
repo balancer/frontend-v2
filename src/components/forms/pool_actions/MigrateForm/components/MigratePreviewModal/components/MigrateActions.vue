@@ -2,6 +2,7 @@
 import { ref, computed, reactive, onBeforeMount, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { StablePoolEncoder, WeightedPoolEncoder } from '@balancer-labs/sdk';
+import { BigNumber, BigNumberish } from 'ethers';
 
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -182,6 +183,14 @@ async function submit() {
         fetchOnChain: false
       }
     });
+
+    const hasInvalidAmount = txInfo.outputs?.amountsOut.some(
+      (amount: BigNumberish) => BigNumber.from(amount).isZero()
+    );
+
+    if (hasInvalidAmount) {
+      throw new Error('exitPoolAndBatchSwap returned invalid amounts.');
+    }
 
     tx = await balancerContractsService.batchRelayer.execute(
       txInfo,
