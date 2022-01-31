@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
 
 import { computed } from 'vue';
 
@@ -19,8 +18,7 @@ defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { tokensList } = usePoolCreation();
 const { tokens, priceFor, injectedPrices } = useTokens();
-const { fNum } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
@@ -63,7 +61,7 @@ const hasUnknownPrice = computed(() =>
           <BalStack horizontal justify="center">
             <div>
               <div class="-mr-1">
-                <span>{{ fNum(priceFor(token), currency) }}</span>
+                <span>{{ fNum2(priceFor(token), FNumFormats.fiat) }}</span>
               </div>
             </div>
             <img
@@ -106,7 +104,7 @@ const hasUnknownPrice = computed(() =>
               class="w-1/2 text-right"
             >
               <span class="w-4/5 break-words">{{
-                fNum(injectedPrices[token], currency)
+                fNum2(injectedPrices[token], FNumFormats.fiat)
               }}</span>
               <BalIcon size="sm" name="edit" class="mr-px" />
             </BalStack>
