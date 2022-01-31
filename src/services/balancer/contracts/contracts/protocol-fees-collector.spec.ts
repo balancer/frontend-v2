@@ -1,10 +1,6 @@
 import ProtocolFeesCollector from './protocol-fees-collector';
 import { balancerContractsService } from '../balancer-contracts.service';
 import Vault from './vault';
-<<<<<<< HEAD
-import { Contract } from 'ethers';
-=======
->>>>>>> origin/develop
 
 jest.mock('../balancer-contracts.service');
 jest.mock('./vault');
@@ -23,10 +19,6 @@ jest.mock('ethers', () => {
 
 describe('ProtocolFeesCollector', () => {
   const vault = new Vault(balancerContractsService);
-<<<<<<< HEAD
-  const mockedContract = jest.mocked(Contract, true);
-=======
->>>>>>> origin/develop
 
   beforeEach(() => {
     jest.clearAllMocks();
