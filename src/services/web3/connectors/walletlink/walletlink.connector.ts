@@ -1,7 +1,7 @@
 import { Connector } from '../connector';
 import WalletLink from 'walletlink';
 import ConfigService from '@/services/config/config.service';
-import { MetamaskError } from '@/types';
+import { WalletError } from '@/types';
 
 export class WalletLinkConnector extends Connector {
   id = 'walletlink';
@@ -25,7 +25,7 @@ export class WalletLinkConnector extends Connector {
       this.handleChainChanged(chainId);
       this.handleAccountsChanged(accounts);
     } catch (err) {
-      if ((err as MetamaskError).code === 4001) {
+      if ((err as WalletError).code === 4001) {
         // EIP-1193 userRejectedRequest error
         // If this happens, the user rejected the connection request.
         console.log('Rejected connection.');

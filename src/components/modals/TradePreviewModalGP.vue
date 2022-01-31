@@ -26,7 +26,9 @@
               </div>
               <div>
                 <div class="font-medium">
-                  {{ fNum(trading.tokenInAmountInput.value, 'token') }}
+                  {{
+                    fNum2(trading.tokenInAmountInput.value, FNumFormats.token)
+                  }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
@@ -48,7 +50,9 @@
               </div>
               <div>
                 <div class="font-medium">
-                  {{ fNum(trading.tokenOutAmountInput.value, 'token') }}
+                  {{
+                    fNum2(trading.tokenOutAmountInput.value, FNumFormats.token)
+                  }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
@@ -60,7 +64,9 @@
                     "
                   >
                     / {{ $t('priceImpact') }}:
-                    {{ fNum(trading.sor.priceImpact.value, 'percent') }}
+                    {{
+                      fNum2(trading.sor.priceImpact.value, FNumFormats.percent)
+                    }}
                   </span>
                 </div>
               </div>
@@ -157,7 +163,7 @@
         :title="$t('priceUpdatedAlert.title')"
         :description="
           $t('priceUpdatedAlert.description', [
-            fNum(PRICE_UPDATE_THRESHOLD, 'percent')
+            fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent)
           ])
         "
         :action-label="$t('priceUpdatedAlert.actionLabel')"
@@ -410,7 +416,7 @@ import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
@@ -444,7 +450,7 @@ export default defineComponent({
   setup(props, { emit }) {
     // COMPOSABLES
     const { t } = useI18n();
-    const { fNum, toFiat } = useNumbers();
+    const { fNum2, toFiat } = useNumbers();
     const { tokens, approvalRequired } = useTokens();
     const { blockNumber } = useWeb3();
     const { slippage } = useUserSettings();
@@ -460,34 +466,36 @@ export default defineComponent({
     const showSummaryInFiat = ref(false);
 
     // COMPUTED
-    const slippageRatePercent = computed(() => fNum(slippage.value, 'percent'));
+    const slippageRatePercent = computed(() =>
+      fNum2(slippage.value, FNumFormats.percent)
+    );
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);
 
     const tokenInFiatValue = computed(() =>
-      fNum(
+      fNum2(
         toFiat(
           props.trading.tokenInAmountInput.value,
           props.trading.tokenIn.value.address
         ),
-        'usd'
+        FNumFormats.fiat
       )
     );
 
     const tokenOutFiatValue = computed(() =>
-      fNum(
+      fNum2(
         toFiat(
           props.trading.tokenOutAmountInput.value,
           props.trading.tokenOut.value.address
         ),
-        'usd'
+        FNumFormats.fiat
       )
     );
 
     const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 
     const zeroFee = computed(() =>
-      showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
+      showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
     );
 
     const summary = computed(() => {
@@ -551,16 +559,16 @@ export default defineComponent({
         return mapValues(
           summaryItems,
           itemValue =>
-            `${fNum(
+            `${fNum2(
               toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
-              'usd'
+              FNumFormats.fiat
             )}`
         );
       } else {
         return mapValues(
           summaryItems,
           itemValue =>
-            `${fNum(itemValue, 'token')} ${
+            `${fNum2(itemValue, FNumFormats.token)} ${
               exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol
@@ -839,9 +847,10 @@ export default defineComponent({
     return {
       // constants
       FiatCurrency,
+      FNumFormats,
 
       // methods
-      fNum,
+      fNum2,
       onClose,
       trade,
       cofirmPriceUpdate,

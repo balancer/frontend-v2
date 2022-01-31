@@ -12,7 +12,12 @@
           white
         />
         <span v-else class="text-3xl font-bold text-white">
-          {{ fNum(totalInvestedAmount, 'usd', { forcePreset: true }) }}
+          {{
+            fNum2(totalInvestedAmount || '', {
+              style: 'currency',
+              fixedFormat: true
+            })
+          }}
         </span>
       </template>
       <template v-else>
@@ -62,7 +67,7 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { isWalletReady, toggleWalletSelectModal } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { totalInvestedAmount, isLoadingUserPools } = usePools();
@@ -91,7 +96,7 @@ export default defineComponent({
 
       // methods
       toggleWalletSelectModal,
-      fNum,
+      fNum2,
       onClickConnect,
       trackGoal,
       // constants

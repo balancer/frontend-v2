@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfoMap } from '@/types/TokenList';
 // Composables
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
@@ -50,7 +50,7 @@ const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
 const { getTokens } = useTokens();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
@@ -161,7 +161,13 @@ onBeforeMount(() => {
               <span class="text-lg font-medium">
                 {{ token.symbol }}
                 <span v-if="!isStableLikePool">
-                  {{ fNum(seedTokens[i], 'percent_lg') }}
+                  {{
+                    fNum2(seedTokens[i], {
+                      style: 'unit',
+                      unit: 'percent',
+                      maximumFractionDigits: 0
+                    })
+                  }}
                 </span>
               </span>
             </div>
@@ -172,10 +178,10 @@ onBeforeMount(() => {
             <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-12" />
             <template v-else>
               <span class="break-words text-xl">
-                {{ fNum(proportionalAmounts[i], 'token') }}
+                {{ fNum2(proportionalAmounts[i], FNumFormats.token) }}
               </span>
               <span class="text-sm text-gray-400">
-                {{ fNum(fiatAmounts[i], 'usd') }}
+                {{ fNum2(fiatAmounts[i], FNumFormats.fiat) }}
               </span>
             </template>
           </div>

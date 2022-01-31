@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
@@ -84,7 +84,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { explorerLinks } = useWeb3();
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
@@ -151,12 +151,18 @@ export default defineComponent({
 
     function balanceFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum(pool.value.onchain.tokens[address].balance, 'token');
+      return fNum2(
+        pool.value.onchain.tokens[address].balance,
+        FNumFormats.token
+      );
     }
 
     function weightFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum(pool.value.onchain.tokens[address].weight, 'percent');
+      return fNum2(
+        pool.value.onchain.tokens[address].weight,
+        FNumFormats.percent
+      );
     }
 
     function fiatValueFor(address: string): string {
@@ -164,7 +170,7 @@ export default defineComponent({
       if (!pool || !pool.value || price === 0) return '-';
 
       const balance = Number(pool.value.onchain.tokens[address].balance);
-      return fNum(balance * price, 'usd');
+      return fNum2(balance * price, FNumFormats.fiat);
     }
 
     return {
@@ -172,7 +178,7 @@ export default defineComponent({
       balanceFor,
       weightFor,
       fiatValueFor,
-      fNum,
+      fNum2,
       explorer: explorerLinks,
       columns,
       tableData,

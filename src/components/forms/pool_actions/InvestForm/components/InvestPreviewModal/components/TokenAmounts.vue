@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -26,8 +25,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2 } = useNumbers();
 
 /**
  * METHODS
@@ -49,13 +47,13 @@ function amountShare(address: string): string {
         <div class="flex flex-col ml-3">
           <div class="font-medium text-lg">
             <span class="font-numeric">
-              {{ fNum(amount, 'token') }}
+              {{ fNum2(amount, FNumFormats.token) }}
             </span>
             {{ tokenMap[address].symbol }}
           </div>
           <div class="text-sm text-gray-500 font-numeric">
-            {{ fNum(fiatAmountMap[address], currency) }}
-            ({{ fNum(amountShare(address), 'percent') }})
+            {{ fNum2(fiatAmountMap[address], FNumFormats.fiat) }}
+            ({{ fNum2(amountShare(address), FNumFormats.percent) }})
           </div>
         </div>
       </div>

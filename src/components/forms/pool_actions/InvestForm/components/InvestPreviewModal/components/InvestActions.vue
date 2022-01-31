@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef, toRefs, computed, reactive, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { poolWeightsLabel } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -17,7 +17,6 @@ import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useConfig from '@/composables/useConfig';
-import { configService } from '@/services/config/config.service';
 import { BigNumber } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
@@ -69,6 +68,7 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   fullAmounts,
   batchSwapAmountMap,
@@ -158,8 +158,6 @@ async function submit(): Promise<TransactionResponse> {
 
     if (batchSwap.value) {
       tx = await boostedJoinBatchSwap(
-        configService.network.key,
-        getProvider(),
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,

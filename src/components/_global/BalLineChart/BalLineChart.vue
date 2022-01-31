@@ -43,7 +43,7 @@ import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
 import { last } from 'lodash';
-import useNumbers, { Preset } from '@/composables/useNumbers';
+import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import useDarkMode from '@/composables/useDarkMode';
 
@@ -58,8 +58,8 @@ type ChartData = {
 };
 
 type AxisLabelFormat = {
-  xAxis?: Preset | string;
-  yAxis?: Preset | string;
+  xAxis?: FNumOptions;
+  yAxis?: FNumOptions;
 };
 
 type PeriodOption = {
@@ -156,7 +156,7 @@ export default defineComponent({
     const lineChart = ref<HTMLElement>();
     const currentValue = ref('$0,00');
     const change = ref(0);
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const tailwind = useTailwind();
     const { darkMode } = useDarkMode();
 
@@ -180,9 +180,10 @@ export default defineComponent({
           const latestValue = last(
             props.data.find(d => d.name === legendName)?.values as any
           ) as [string | number, string | number];
-          return `${legendName}: ${fNum(latestValue[1], null, {
-            format: props.axisLabelFormatter.yAxis
-          })}`;
+          return `${legendName}: ${fNum2(
+            latestValue[1],
+            props.axisLabelFormatter.yAxis
+          )}`;
         },
         selected: props.legendState || {},
         textStyle: {
@@ -205,8 +206,7 @@ export default defineComponent({
         },
         axisLabel: {
           formatter: props.axisLabelFormatter.xAxis
-            ? value =>
-                fNum(value, null, { format: props.axisLabelFormatter.xAxis })
+            ? value => fNum2(value, props.axisLabelFormatter.xAxis)
             : undefined,
           color: tailwind.theme.colors.gray['400']
         }
@@ -229,8 +229,7 @@ export default defineComponent({
         axisLabel: {
           show: !props.hideYAxis,
           formatter: props.axisLabelFormatter.yAxis
-            ? value =>
-                fNum(value, null, { format: props.axisLabelFormatter.yAxis })
+            ? value => fNum2(value, props.axisLabelFormatter.yAxis)
             : undefined,
           color: tailwind.theme.colors.gray['400']
         },
@@ -271,9 +270,10 @@ export default defineComponent({
                 <span>
                 ${param.marker} ${
                     param.seriesName
-                  } <span class='font-medium'>${fNum(param.value[1], null, {
-                    format: props.axisLabelFormatter.yAxis
-                  })}
+                  } <span class='font-medium'>${fNum2(
+                    param.value[1],
+                    props.axisLabelFormatter.yAxis
+                  )})}
                   </span>
                 </span>
               `
@@ -311,9 +311,7 @@ export default defineComponent({
             borderRadius: 3,
             padding: 4,
             formatter: (params: any) => {
-              return fNum(params.data.yAxis, null, {
-                format: props.axisLabelFormatter.yAxis
-              });
+              return fNum2(params.data.yAxis, props.axisLabelFormatter.yAxis);
             },
             color: '#FFF',
             fontSize: 10
@@ -359,8 +357,13 @@ export default defineComponent({
       );
 
       if (updateCurrentValue) {
-        currentValue.value = currentDayValue.format(
-          props.axisLabelFormatter.yAxis || '$0,0.00'
+        currentValue.value = fNum2(
+          currentDayValue.value() || 0,
+          props.axisLabelFormatter.yAxis || {
+            style: 'currency',
+            currency: 'USD',
+            fixedFormat: true
+          }
         );
       }
 
@@ -397,9 +400,14 @@ export default defineComponent({
         props.onAxisMoved &&
           props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
 
-        currentValue.value = numeral(
-          props.data[seriesIndex].values[dataIndex][1]
-        ).format(props.axisLabelFormatter.yAxis || '$0,0.00');
+        currentValue.value = fNum2(
+          props.data[seriesIndex].values[dataIndex][1],
+          props.axisLabelFormatter.yAxis || {
+            style: 'currency',
+            currency: 'USD',
+            fixedFormat: true
+          }
+        );
 
         // if first point in chart, show overall change
         if (dataIndex === 0) {

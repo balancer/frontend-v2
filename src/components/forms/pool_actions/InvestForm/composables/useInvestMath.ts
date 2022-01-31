@@ -1,13 +1,12 @@
 import { computed, Ref, watch, ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import useNumbers, { fNum } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
-import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
@@ -59,11 +58,10 @@ export default function useInvestFormMath(
   /**
    * COMPOSABLES
    */
-  const { toFiat } = useNumbers();
+  const { toFiat, fNum2 } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
   const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
-  const { currency } = useUserSettings();
   const {
     promises: batchSwapPromises,
     processing: processingBatchSwaps,
@@ -130,7 +128,7 @@ export default function useInvestFormMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum(fiatTotal.value, currency.value)
+    fNum2(fiatTotal.value, FNumFormats.fiat)
   );
 
   const hasAmounts = computed(() =>
