@@ -187,7 +187,7 @@ export default class Pools {
   private async getExcludedAddresses() {
     try {
       const { data } = await axios.get<ExcludedAddressesResponse>(
-        'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/frontend-exclude-test/config/exclude.json'
+        'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/config/exclude.json'
       );
 
       if (data[networkId.value]) {
