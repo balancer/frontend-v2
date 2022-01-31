@@ -36,7 +36,7 @@ export interface HtmlInputEvent {
   preventDefault();
 }
 
-export interface MetamaskError extends Error {
+export interface WalletError extends Error {
   code: number | string;
 }
 

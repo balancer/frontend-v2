@@ -5,7 +5,7 @@ import { parseFixed } from '@ethersproject/bignumber';
 import useWeb3 from '@/services/web3/useWeb3';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 
-import useNumbers from '../useNumbers';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import { networkId } from '../useNetwork';
@@ -37,7 +37,7 @@ export default function useTrading(
 ) {
   // COMPOSABLES
   const store = useStore();
-  const { fNum } = useNumbers();
+  const { fNum2 } = useNumbers();
   const { tokens } = useTokens();
   const { blockNumber } = useWeb3();
   const { slippage } = useUserSettings();
@@ -82,17 +82,17 @@ export default function useTrading(
 
     if (tokenInAmount > 0 && tokenOutAmount > 0) {
       return {
-        tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum(
+        tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum2(
           bnum(tokenOutAmount)
             .div(tokenInAmount)
             .toString(),
-          'token'
+          FNumFormats.token
         )} ${tokenOut.value?.symbol}`,
-        tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum(
+        tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum2(
           bnum(tokenInAmount)
             .div(tokenOutAmount)
             .toString(),
-          'token'
+          FNumFormats.token
         )} ${tokenIn.value?.symbol}`
       };
     }

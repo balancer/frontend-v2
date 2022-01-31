@@ -1,4 +1,5 @@
 import { differenceInWeeks } from 'date-fns';
+import axios from 'axios';
 
 import { getAddress } from '@ethersproject/address';
 
@@ -10,6 +11,7 @@ import { configService as _configService } from '@/services/config/config.servic
 import { FiatCurrency } from '@/constants/currency';
 
 import { bnum } from '@/lib/utils';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   currentLiquidityMiningRewards,
   computeTotalAPRForPool,
@@ -19,6 +21,7 @@ import {
 import { Network } from '@balancer-labs/sdk';
 import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
+import { networkId } from '@/composables/useNetwork';
 
 import Service from '../../balancer-subgraph.service';
 
@@ -34,12 +37,20 @@ import {
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
+import {
+  ExcludedAddresses,
+  removeAddressesFromTotalLiquidity
+} from './helpers';
+
 const IS_LIQUIDITY_MINING_ENABLED = true;
+
+type ExcludedAddressesResponse = Record<Network, Record<string, string[]>>;
 
 export default class Pools {
   service: Service;
   query: QueryBuilder;
   networkId: Network;
+  excludedAddresses: ExcludedAddresses;
 
   constructor(
     service: Service,
@@ -51,6 +62,7 @@ export default class Pools {
     this.service = service;
     this.query = query;
     this.networkId = configService.env.NETWORK;
+    this.excludedAddresses = null;
   }
 
   public async get(args = {}, attrs = {}): Promise<Pool[]> {
@@ -79,7 +91,24 @@ export default class Pools {
     } catch {
       // eslint-disable-previous-line no-empty
     }
+
+    if (this.excludedAddresses == null) {
+      // fetch only once
+      this.excludedAddresses = await this.getExcludedAddresses();
+    }
+
     return this.serialize(pools, pastPools, period, prices, currency);
+  }
+
+  public removeExcludedAddressesFromTotalLiquidity(
+    pool: Pool,
+    totalLiquidityString: string
+  ) {
+    return removeAddressesFromTotalLiquidity(
+      this.excludedAddresses,
+      pool,
+      totalLiquidityString
+    );
   }
 
   private async serialize(
@@ -98,6 +127,10 @@ export default class Pools {
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
       pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
+      pool.miningTotalLiquidity = this.removeExcludedAddressesFromTotalLiquidity(
+        pool,
+        pool.totalLiquidity
+      );
 
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
@@ -149,6 +182,43 @@ export default class Pools {
     });
 
     return Promise.all(promises);
+  }
+
+  private async getExcludedAddresses() {
+    try {
+      const { data } = await axios.get<ExcludedAddressesResponse>(
+        'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/config/exclude.json'
+      );
+
+      if (data[networkId.value]) {
+        const poolMulticaller = new Multicaller(
+          this.balancerContracts.config.key,
+          this.balancerContracts.provider,
+          this.balancerContracts.allPoolABIs
+        );
+
+        Object.entries(data[networkId.value]).forEach(
+          ([poolAddress, accounts]) => {
+            accounts.forEach(account => {
+              const poolAddressNormalized = getAddress(poolAddress);
+
+              poolMulticaller.call(
+                `${poolAddressNormalized}.${account}`,
+                poolAddressNormalized,
+                'balanceOf',
+                [account]
+              );
+            });
+          }
+        );
+
+        return await poolMulticaller.execute();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    return null;
   }
 
   private formatPoolTokens(pool: Pool): PoolToken[] {
@@ -209,13 +279,13 @@ export default class Pools {
         liquidityMiningRewards,
         prices,
         currency,
-        pool.totalLiquidity
+        pool.miningTotalLiquidity
       );
       liquidityMiningBreakdown = computeAPRsForPool(
         liquidityMiningRewards,
         prices,
         currency,
-        pool.totalLiquidity
+        pool.miningTotalLiquidity
       );
     }
 

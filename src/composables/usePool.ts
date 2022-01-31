@@ -7,7 +7,7 @@ import {
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
-import { fNum } from './useNumbers';
+import useNumbers from './useNumbers';
 
 /**
  * METHODS
@@ -85,24 +85,33 @@ export function lpTokensFor(pool: AnyPool): string[] {
 }
 
 /**
- * Returns pool weights label
- */
-export function poolWeightsLabel(pool: FullPool): string {
-  if (isStableLike(pool.poolType)) {
-    return Object.values(pool.onchain.tokens)
-      .map(token => token.symbol)
-      .join(', ');
-  }
-
-  return Object.values(pool.onchain.tokens)
-    .map(token => `${fNum(token.weight, 'percent_lg')} ${token.symbol}`)
-    .join(', ');
-}
-
-/**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
+  const { fNum2 } = useNumbers();
+
+  /**
+   * Returns pool weights label
+   */
+  function poolWeightsLabel(pool: FullPool): string {
+    if (isStableLike(pool.poolType)) {
+      return Object.values(pool.onchain.tokens)
+        .map(token => token.symbol)
+        .join(', ');
+    }
+
+    return Object.values(pool.onchain.tokens)
+      .map(
+        token =>
+          `${fNum2(token.weight, {
+            style: 'unit',
+            unit: 'percent',
+            maximumFractionDigits: 0
+          })} ${token.symbol}`
+      )
+      .join(', ');
+  }
+
   /**
    * COMPUTED
    */
@@ -176,6 +185,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isTradingHaltable,
     isWeth,
     noInitLiquidity,
-    lpTokensFor
+    lpTokensFor,
+    poolWeightsLabel
   };
 }

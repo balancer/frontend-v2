@@ -4,7 +4,7 @@ import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -25,7 +25,7 @@ const cardWrapper = ref<HTMLElement>();
  */
 const { userNetworkConfig } = useWeb3();
 const { balanceFor, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const {
   seedTokens,
   tokensList,
@@ -277,7 +277,8 @@ function saveAndProceed() {
               <h6>{{ t('total') }}</h6>
               <BalStack horizontal spacing="xs" class="font-medium">
                 <span class="text-sm">
-                  {{ t('available') }}: {{ fNum(totalLiquidity, 'usd') }}
+                  {{ t('available') }}:
+                  {{ fNum2(totalLiquidity.toString(), FNumFormats.fiat) }}
                 </span>
                 <button
                   :disabled="areAmountsMaxed"
@@ -295,7 +296,9 @@ function saveAndProceed() {
               </BalStack>
             </BalStack>
             <BalStack vertical spacing="none">
-              <h6>{{ fNum(currentLiquidity, 'usd') }}</h6>
+              <h6>
+                {{ fNum2(currentLiquidity.toString(), FNumFormats.fiat) }}
+              </h6>
               <AnimatePresence
                 :isVisible="!isOptimised"
                 @on-presence="onAlertMountChange"
@@ -322,8 +325,8 @@ function saveAndProceed() {
             type="warning"
             :title="
               t('createAPool.arbTitle', [
-                fNum(arbitrageDelta.value, 'usd'),
-                fNum(arbitrageDelta.delta, 'percent')
+                fNum2(arbitrageDelta.value.toString(), FNumFormats.fiat),
+                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent)
               ])
             "
           >

@@ -2,8 +2,7 @@
 import { toRef, computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { usePool } from '@/composables/usePool';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -26,8 +25,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { tokens, balances, balanceFor, getTokens } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
@@ -92,19 +90,23 @@ const fiatTotal = computed(() => {
         .plus(value)
         .toString()
     );
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 
 /**
  * METHODS
  */
 function weightLabelFor(address: string): string {
-  return fNum(props.pool.onchain.tokens[address].weight, 'percent_lg');
+  return fNum2(props.pool.onchain.tokens[address].weight, {
+    style: 'unit',
+    unit: 'percent',
+    maximumFractionDigits: 0
+  });
 }
 
 function fiatLabelFor(index: number, address: string): string {
   const fiatValue = toFiat(propTokenAmounts.value[index], address);
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
 }
 </script>
 
@@ -146,7 +148,11 @@ function fiatLabelFor(index: number, address: string): string {
         </div>
 
         <span class="flex flex-col flex-grow text-right">
-          {{ isWalletReady ? fNum(propTokenAmounts[index], 'token') : '-' }}
+          {{
+            isWalletReady
+              ? fNum2(propTokenAmounts[index], FNumFormats.token)
+              : '-'
+          }}
           <span class="text-gray-500 text-sm">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>

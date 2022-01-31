@@ -8,7 +8,7 @@ import {
   onBeforeMount,
   watch
 } from 'vue';
-import { poolWeightsLabel } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -28,7 +28,6 @@ import useWithdrawalState from '../../../composables/useWithdrawalState';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
-import { configService } from '@/services/config/config.service';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -77,6 +76,7 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
   toRef(props, 'pool')
 );
@@ -171,8 +171,6 @@ async function submit(): Promise<TransactionResponse> {
       );
     } else if (batchSwap.value) {
       tx = await boostedExitBatchSwap(
-        configService.network.key,
-        getProvider(),
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,

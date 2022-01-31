@@ -9,7 +9,7 @@ const FIXED_OPTIONS = ['0.005', '0.01', '0.02'];
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { slippage, setSlippage } = useUserSettings();
 
 /**
@@ -23,7 +23,13 @@ const state = reactive({
 
 const options = FIXED_OPTIONS.map(option => {
   return {
-    label: fNum(option, null, { format: '0.0%' }),
+    label: fNum2(option, {
+      style: 'unit',
+      unit: 'percent',
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+      fixedFormat: true
+    }),
     value: option
   };
 });

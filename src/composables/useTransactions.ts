@@ -16,7 +16,7 @@ import { lsGet, lsSet } from '@/lib/utils';
 
 import useNotifications from './useNotifications';
 import { processedTxs } from './useEthers';
-import useNumbers from './useNumbers';
+import useNumbers, { FNumFormats } from './useNumbers';
 
 import { GnosisTransactionDetails } from './trade/useGnosis';
 
@@ -254,7 +254,7 @@ export default function useTransactions() {
   } = useWeb3();
   const { addNotification } = useNotifications();
   const { t } = useI18n();
-  const { fNum } = useNumbers();
+  const { fNum2 } = useNumbers();
 
   // COMPUTED
   const provider = computed(() => getWeb3Provider());
@@ -279,10 +279,9 @@ export default function useTransactions() {
         tokenOut.decimals
       );
 
-      return `${fNum(tokenInAmount, 'token')} ${tokenIn.symbol} -> ${fNum(
-        tokenOutAmount,
-        'token'
-      )} ${tokenOut.symbol}`;
+      return `${fNum2(tokenInAmount, FNumFormats.token)} ${
+        tokenIn.symbol
+      } -> ${fNum2(tokenOutAmount, FNumFormats.token)} ${tokenOut.symbol}`;
     }
 
     return transaction.summary;

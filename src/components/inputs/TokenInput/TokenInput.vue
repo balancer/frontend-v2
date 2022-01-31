@@ -3,9 +3,8 @@ import { HtmlInputEvent } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
 
 import { bnum } from '@/lib/utils';
 import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
@@ -85,8 +84,7 @@ const _address = ref<string>('');
  */
 
 const { getToken, balanceFor, nativeAsset } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
 
@@ -265,7 +263,7 @@ watchEffect(() => {
 
             <BalLoadingBlock v-if="balanceLoading" class="w-12 h-4 mx-2" />
             <span v-else class="mx-2">
-              {{ fNum(tokenBalance, 'token') }}
+              {{ fNum2(tokenBalance, FNumFormats.token) }}
             </span>
 
             <template v-if="hasBalance && !noMax && !disableMax">
@@ -279,9 +277,11 @@ watchEffect(() => {
           </div>
           <div>
             <template v-if="hasAmount && hasToken">
-              {{ fNum(tokenValue, currency) }}
+              {{ fNum2(tokenValue, FNumFormats.fiat) }}
               <span v-if="priceImpact" :class="priceImpactClass">
-                ({{ priceImpactSign + fNum(priceImpact, 'percent') }})
+                ({{
+                  priceImpactSign + fNum2(priceImpact, FNumFormats.percent)
+                }})
               </span>
             </template>
             <template v-else-if="hint">

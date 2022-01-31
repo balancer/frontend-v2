@@ -77,7 +77,10 @@
           >
             <span v-if="tokenIndex !== 0">+</span>&nbsp;
             <span class="font-numeric">{{
-              fNum(tokenDist.amount, 'token_lg')
+              fNum2(tokenDist.amount, {
+                style: 'decimal',
+                maximumFractionDigits: 0
+              })
             }}</span>
             {{ tokens[getAddress(tokenDist.tokenAddress)]?.symbol || 'N/A' }}
           </span>
@@ -98,11 +101,19 @@
             class="font-semibold text-right"
           >
             <span v-if="i !== 0">+</span>&nbsp;
-            <span class="font-numeric">{{ fNum(total, 'token_lg') }}</span>
+            <span class="font-numeric">{{
+              fNum2(total, { style: 'decimal', maximumFractionDigits: 0 })
+            }}</span>
             {{ tokens[getAddress(token)]?.symbol || 'N/A' }}
           </span>
           <span class="mt-2 text-gray-500 font-numeric"
-            >~${{ fNum(calculatePricesFor(totals[week.week])) }}</span
+            >~${{
+              fNum2(calculatePricesFor(totals[week.week]), {
+                style: 'decimal',
+                maximumFractionDigits: 1,
+                abbreviate: true
+              })
+            }}</span
           >
         </div>
       </template>
@@ -157,7 +168,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { weeks, poolMetadata } = toRefs(props);
     const { tokens, priceFor } = useTokens();
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { darkMode } = useDarkMode();
 
     const data = computed(() => {
@@ -247,7 +258,7 @@ export default defineComponent({
     return {
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      fNum,
+      fNum2,
       getAddress,
       calculatePricesFor,
       isStableLike,

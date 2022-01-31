@@ -3,8 +3,7 @@ import { toRef, computed } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { lpTokensFor } from '@/composables/usePool';
@@ -27,8 +26,7 @@ const props = defineProps<Props>();
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 
 /**
@@ -57,7 +55,7 @@ const fiatTotal = computed(() => {
         .toString()
     );
 
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

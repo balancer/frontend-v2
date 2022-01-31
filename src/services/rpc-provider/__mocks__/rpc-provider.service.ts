@@ -9,7 +9,8 @@ const RpcProviderService = jest.fn().mockImplementation(() => {
         })
       };
     },
-    initBlockListener: jest.fn().mockImplementation()
+    initBlockListener: jest.fn().mockImplementation(),
+    getJsonProvider: jest.fn().mockImplementation()
   };
 });
 

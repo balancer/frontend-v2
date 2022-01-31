@@ -1,8 +1,6 @@
 import ProtocolFeesCollector from './protocol-fees-collector';
 import { balancerContractsService } from '../balancer-contracts.service';
 import Vault from './vault';
-import { Contract } from 'ethers';
-import { mocked } from 'ts-jest/utils';
 
 jest.mock('../balancer-contracts.service');
 jest.mock('./vault');
@@ -21,11 +19,9 @@ jest.mock('ethers', () => {
 
 describe('ProtocolFeesCollector', () => {
   const vault = new Vault(balancerContractsService);
-  const mockedContract = mocked(Contract, true);
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedContract.mockClear();
   });
 
   it('Instantiates the provider service', () => {

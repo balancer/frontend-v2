@@ -3,9 +3,7 @@ import { computed } from 'vue';
 import { formatUnits } from '@ethersproject/units';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
-
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { bnum } from '@/lib/utils';
@@ -30,8 +28,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const { explorerLinks } = useWeb3();
 
 /**
@@ -54,10 +51,10 @@ const balanceLabel = computed(() => {
       .times(props.priceRate)
       .toString();
 
-    return fNum(equivMainTokenBalance, 'token');
+    return fNum2(equivMainTokenBalance, FNumFormats.token);
   }
 
-  return fNum(balance.value, 'token');
+  return fNum2(balance.value, FNumFormats.token);
 });
 
 const fiatLabel = computed(() => {
@@ -67,11 +64,11 @@ const fiatLabel = computed(() => {
       .toString();
 
     const fiatValue = toFiat(equivMainTokenBalance, props.mainTokenAddress);
-    return fNum(fiatValue, currency.value);
+    return fNum2(fiatValue, FNumFormats.fiat);
   }
 
   let fiatValue = toFiat(balance.value, props.address);
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

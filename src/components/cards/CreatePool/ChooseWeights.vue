@@ -3,7 +3,7 @@ import { computed, onMounted, ref, nextTick, onBeforeUpdate } from 'vue';
 
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
   PoolSeedToken
@@ -44,7 +44,7 @@ const {
   acceptedCustomTokenDisclaimer
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { nativeAsset, tokens } = useTokens();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { t } = useI18n();
@@ -393,7 +393,7 @@ function onAlertMountChange() {
             type="warning"
             >{{
               $t('createAPool.youCanFundWithThisPoolWith', [
-                fNum(totalLiquidity.toString(), 'usd')
+                fNum2(totalLiquidity.toString(), FNumFormats.fiat)
               ])
             }}</BalAlert
           >

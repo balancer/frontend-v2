@@ -8,7 +8,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { FullPool, PoolSwap } from '@/services/balancer/subgraph/types';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
@@ -62,7 +62,7 @@ const emit = defineEmits(['loadMore']);
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { priceFor } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -140,7 +140,8 @@ const swapRows = computed<SwapRow[]>(() => {
       label,
       type,
       value,
-      formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
+      formattedValue:
+        value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
       timestamp,
       formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
       tx,
@@ -285,7 +286,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum(action.tokenAmounts[0].amount, 'token')
+                fNum2(action.tokenAmounts[0].amount, FNumFormats.token)
               }}</span>
             </div>
             <BalIcon name="arrow-right" class="mx-1" />
@@ -295,7 +296,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum(action.tokenAmounts[1].amount, 'token')
+                fNum2(action.tokenAmounts[1].amount, FNumFormats.token)
               }}</span>
             </div>
           </template>
@@ -310,7 +311,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                   class="mr-2 flex-shrink-0"
                 />
                 <span class="font-numeric">{{
-                  fNum(tokenAmount.amount, 'token')
+                  fNum2(tokenAmount.amount, FNumFormats.token)
                 }}</span>
               </div>
             </template>

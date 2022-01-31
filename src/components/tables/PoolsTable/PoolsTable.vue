@@ -69,7 +69,7 @@
           {{
             Number(pool.dynamic.apr.pool) > 10000
               ? '-'
-              : fNum(pool.dynamic.apr.total, 'percent')
+              : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
           }}
           <LiquidityAPRTooltip :pool="pool" />
         </div>
@@ -90,7 +90,7 @@ import {
 
 import { getAddress } from '@ethersproject/address';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
@@ -139,7 +139,7 @@ export default defineComponent({
 
   setup(props) {
     // COMPOSABLES
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
@@ -166,7 +166,8 @@ export default defineComponent({
       },
       {
         name: t('myBalance'),
-        accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
+        accessor: pool =>
+          fNum2(pool.shares, { style: 'currency', fixedFormat: true }),
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
@@ -176,7 +177,7 @@ export default defineComponent({
       },
       {
         name: t('poolValue'),
-        accessor: pool => fNum(pool.totalLiquidity, 'usd'),
+        accessor: pool => fNum2(pool.totalLiquidity, FNumFormats.fiat),
         align: 'right',
         id: 'poolValue',
         sortKey: pool => {
@@ -189,7 +190,7 @@ export default defineComponent({
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
-        accessor: pool => fNum(pool.dynamic.volume, 'usd'),
+        accessor: pool => fNum2(pool.dynamic.volume, FNumFormats.fiat),
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => {
@@ -240,6 +241,9 @@ export default defineComponent({
       // data
       columns,
 
+      // constants
+      FNumFormats,
+
       // computed
       darkMode,
       upToLargeBreakpoint,
@@ -247,7 +251,7 @@ export default defineComponent({
       // methods
       handleRowClick,
       getAddress,
-      fNum,
+      fNum2,
       orderedTokenAddressesFor,
       orderedPoolTokens,
       isStableLike

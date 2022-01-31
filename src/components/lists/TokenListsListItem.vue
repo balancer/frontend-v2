@@ -9,7 +9,14 @@
     <div class="flex-auto">
       {{ tokenlist.name }}
       <div class="text-gray text-sm flex items-center">
-        {{ fNum(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
+        {{
+          fNum2(tokenlist.tokens.length, {
+            style: 'decimal',
+            maximumFractionDigits: 1,
+            abbreviate: true
+          })
+        }}
+        {{ $t('tokensLowerCase') }}
         <BalLink :href="listUrl" external class="flex items-center">
           <BalIcon
             name="arrow-up-right"
@@ -57,7 +64,7 @@ export default {
     /**
      * COMPOSABLES
      */
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { resolve } = useUrls();
 
     /**
@@ -70,7 +77,7 @@ export default {
 
     return {
       ...toRefs(state),
-      fNum
+      fNum2
     };
   }
 };
