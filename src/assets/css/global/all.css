@@ -10,6 +10,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html.dark {
+  background-color: rgba(15, 23, 42)
+}
+
 @media only screen and (max-width: 600px) {
   html {
     font-size: 14px;
