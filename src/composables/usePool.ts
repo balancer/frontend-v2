@@ -10,8 +10,9 @@ import { configService } from '@/services/config/config.service';
 
 import { bnum } from '@/lib/utils';
 
-import { fNum } from './useNumbers';
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+
+import useNumbers from './useNumbers';
 
 /**
  * METHODS
@@ -95,24 +96,33 @@ export function lpTokensFor(pool: AnyPool): string[] {
 }
 
 /**
- * Returns pool weights label
- */
-export function poolWeightsLabel(pool: FullPool): string {
-  if (isStableLike(pool.poolType)) {
-    return Object.values(pool.onchain.tokens)
-      .map(token => token.symbol)
-      .join(', ');
-  }
-
-  return Object.values(pool.onchain.tokens)
-    .map(token => `${fNum(token.weight, 'percent_lg')} ${token.symbol}`)
-    .join(', ');
-}
-
-/**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
+  const { fNum2 } = useNumbers();
+
+  /**
+   * Returns pool weights label
+   */
+  function poolWeightsLabel(pool: FullPool): string {
+    if (isStableLike(pool.poolType)) {
+      return Object.values(pool.onchain.tokens)
+        .map(token => token.symbol)
+        .join(', ');
+    }
+
+    return Object.values(pool.onchain.tokens)
+      .map(
+        token =>
+          `${fNum2(token.weight, {
+            style: 'unit',
+            unit: 'percent',
+            maximumFractionDigits: 0
+          })} ${token.symbol}`
+      )
+      .join(', ');
+  }
+
   /**
    * COMPUTED
    */
@@ -187,6 +197,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeth,
     noInitLiquidity,
     lpTokensFor,
-    isMigratablePool
+    isMigratablePool,
+    poolWeightsLabel
   };
 }

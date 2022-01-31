@@ -129,7 +129,7 @@ import useTrading from '@/composables/trade/useTrading';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import { TOKENS } from '@/constants/tokens';
 
@@ -162,7 +162,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { appNetworkConfig } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
@@ -260,14 +260,14 @@ export default defineComponent({
               ]),
               body: t('gnosisErrors.lowBalance.body', [
                 trading.tokenIn.value.symbol,
-                fNum(
+                fNum2(
                   formatUnits(
                     trading.getQuote().maximumInAmount,
                     trading.tokenIn.value.decimals
                   ),
-                  'token'
+                  FNumFormats.token
                 ),
-                fNum(trading.slippageBufferRate.value, 'percent')
+                fNum2(trading.slippageBufferRate.value, FNumFormats.percent)
               ])
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {

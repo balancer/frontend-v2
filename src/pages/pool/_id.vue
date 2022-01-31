@@ -21,7 +21,13 @@
                 v-if="!isStableLikePool"
                 class="font-medium text-gray-400 text-xs mt-px ml-1"
               >
-                {{ fNum(tokenMeta.weight, 'percent_lg') }}
+                {{
+                  fNum2(tokenMeta.weight, {
+                    style: 'unit',
+                    unit: 'percent',
+                    maximumFractionDigits: 0
+                  })
+                }}
               </span>
             </div>
             <BalChip
@@ -211,7 +217,7 @@ export default defineComponent({
     const { appLoading } = useApp();
     const { t } = useI18n();
     const route = useRoute();
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { isWalletReady } = useWeb3();
     const { prices } = useTokens();
     const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
@@ -307,10 +313,12 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `${fNum(
-        pool.value.onchain.swapFee,
-        'percent_variable'
-      )}`;
+      const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
+        style: 'unit',
+        unit: 'percent',
+        maximumFractionDigits: 4,
+        fixedFormat: true
+      })}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
@@ -434,7 +442,7 @@ export default defineComponent({
       copperNetworkPrefix,
       hasCustomToken,
       // methods
-      fNum,
+      fNum2,
       onNewTx
     };
   }

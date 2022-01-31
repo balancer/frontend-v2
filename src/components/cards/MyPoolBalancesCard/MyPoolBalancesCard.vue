@@ -5,8 +5,7 @@ import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 // Composables
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 // Components
 import AssetRow from './components/AssetRow.vue';
 import { usePool } from '@/composables/usePool';
@@ -29,8 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { tokens, balances, balanceFor } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
 /**
@@ -90,7 +88,7 @@ const fiatTotal = computed(() => {
         .plus(value)
         .toString()
     );
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
 

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import { PoolSwap } from '@/services/balancer/subgraph/types';
@@ -53,7 +53,7 @@ const emit = defineEmits(['loadMore']);
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { priceFor } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -118,7 +118,10 @@ const swapRows = computed<SwapRow[]>(() =>
 
           return {
             value,
-            formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
+            formattedValue:
+              value > 0
+                ? fNum2(value, { style: 'currency', abbreviate: true })
+                : '-',
             tokenIn,
             tokenOut,
             tokenAmountIn,
@@ -167,14 +170,14 @@ const swapRows = computed<SwapRow[]>(() =>
           <div class="token-item">
             <BalAsset :address="action.tokenIn" class="mr-2 flex-shrink-0" />
             <span class="font-numeric">{{
-              fNum(action.tokenAmountIn, 'token')
+              fNum2(action.tokenAmountIn, FNumFormats.token)
             }}</span>
           </div>
           <BalIcon name="arrow-right" class="mx-1" />
           <div class="token-item">
             <BalAsset :address="action.tokenOut" class="mr-2 flex-shrink-0" />
             <span class="font-numeric">{{
-              fNum(action.tokenAmountOut, 'token')
+              fNum2(action.tokenAmountOut, FNumFormats.token)
             }}</span>
           </div>
         </div>

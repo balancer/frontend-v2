@@ -5,7 +5,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useEthers from '@/composables/useEthers';
@@ -56,7 +56,7 @@ const claimError = ref<TransactionError | null>(null);
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
 const userClaimsQuery = useUserClaimsQuery();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const {
   account,
   getProvider,
@@ -222,9 +222,10 @@ async function claimAvailableRewards() {
       const summary = claimableTokens.value
         .map(
           claimableToken =>
-            `${fNum(claimableToken.amount, 'token_fixed')} ${
-              claimableToken.symbol
-            }`
+            `${fNum2(claimableToken.amount, {
+              minimumFractionDigits: 4,
+              maximumFractionDigits: 4
+            })} ${claimableToken.symbol}`
         )
         .join(', ');
 
@@ -268,7 +269,7 @@ async function claimAvailableRewards() {
         />
         <BalLoadingIcon size="sm" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
-          fNum(totalRewardsFiatValue, 'usd')
+          fNum2(totalRewardsFiatValue, FNumFormats.fiat)
         }}</span>
       </BalBtn>
     </template>
@@ -308,11 +309,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum(claimableToken.amount, 'token') }}
+                    {{ fNum2(claimableToken.amount, FNumFormats.token) }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{ fNum(claimableToken.fiatValue, 'usd') }}
+                    {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
                   </div>
                 </div>
               </div>
@@ -333,11 +334,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum(claimableToken.amount, 'token') }}
+                    {{ fNum2(claimableToken.amount, FNumFormats.token) }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{ fNum(claimableToken.fiatValue, 'usd') }}
+                    {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
                   </div>
                 </div>
               </div>
@@ -356,7 +357,9 @@ async function claimAvailableRewards() {
           :disabled="!hasClaimableTokens"
           >{{ $t('claimAll') }}
           <template v-if="hasClaimableTokens"
-            >~{{ fNum(totalClaimableTokensFiatValue, 'usd') }}</template
+            >~{{
+              fNum2(totalClaimableTokensFiatValue, FNumFormats.fiat)
+            }}</template
           ></BalBtn
         >
         <BalAlert

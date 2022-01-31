@@ -3,7 +3,7 @@ import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 import { sumBy } from 'lodash';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
@@ -16,7 +16,7 @@ const {
   maxInitialLiquidity,
   tokenColors
 } = usePoolCreation();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 /**
@@ -80,9 +80,9 @@ const totalsClass = computed(() => ({
           </div>
           <div class="col-span-6 text-sm text-right">
             {{
-              fNum(
+              fNum2(
                 optimisedLiquidity[token.tokenAddress].liquidityRequired,
-                'usd'
+                FNumFormats.fiat
               )
             }}
           </div>
@@ -105,7 +105,7 @@ const totalsClass = computed(() => ({
             totalsClass
           ]"
         >
-          {{ fNum(maxInitialLiquidity, 'usd') }}
+          {{ fNum2(maxInitialLiquidity, FNumFormats.fiat) }}
         </div>
       </div>
     </div>

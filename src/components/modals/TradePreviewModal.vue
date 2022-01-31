@@ -11,11 +11,12 @@
         />
         <div class="flex flex-col">
           <div class="font-bold">
-            {{ fNum(amountIn, 'token') }} {{ symbolIn }} ->
-            {{ fNum(amountOut, 'token') }} {{ symbolOut }}
+            {{ fNum2(amountIn, FNumFormats.token) }}
+            {{ symbolIn }} -> {{ fNum2(amountOut, FNumFormats.token) }}
+            {{ symbolOut }}
           </div>
           <div class="text-gray-500 text-sm">
-            {{ fNum(valueIn, 'usd') }}
+            {{ fNum2(valueIn, FNumFormats.fiat) }}
           </div>
         </div>
       </div>
@@ -64,7 +65,8 @@
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
+              {{ $t('trade') }} {{ fNum2(valueIn, FNumFormats.fiat) }}
+              {{ symbolIn }} ->
               {{ symbolOut }}
             </div>
           </div>
@@ -106,7 +108,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useRelayerApproval, {
   Relayer
@@ -150,7 +152,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { fNum, toFiat } = useNumbers();
+    const { fNum2, toFiat } = useNumbers();
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
@@ -271,8 +273,10 @@ export default defineComponent({
     }
 
     return {
+      // constants
+      FNumFormats,
       // methods
-      fNum,
+      fNum2,
       onClose,
       approveLidoRelayer,
       approveToken,
