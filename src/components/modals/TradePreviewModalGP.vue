@@ -847,6 +847,7 @@ export default defineComponent({
     return {
       // constants
       FiatCurrency,
+      FNumFormats,
 
       // methods
       fNum2,

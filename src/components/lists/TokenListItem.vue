@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import anime from 'animejs';
 import { onMounted, onUnmounted, PropType, ref, computed } from 'vue';
 import { TokenInfo } from '@/types/TokenList';
@@ -102,6 +102,7 @@ export default {
 
     return {
       fNum2,
+      FNumFormats,
       animateRef,
       balance,
       value

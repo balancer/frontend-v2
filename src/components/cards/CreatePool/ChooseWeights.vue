@@ -3,7 +3,7 @@ import { computed, onMounted, ref, nextTick, onBeforeUpdate } from 'vue';
 
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
   PoolSeedToken

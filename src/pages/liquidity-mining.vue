@@ -81,7 +81,7 @@ import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiToken
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { flatten, last, takeRight, uniq } from 'lodash';
 import { Network } from '@balancer-labs/sdk';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
 import useConfig from '@/composables/useConfig';
@@ -235,6 +235,7 @@ export default defineComponent({
       currentWeek,
       currentWeekTotalFiat,
       fNum2,
+      FNumFormats,
       otherNetwork,
       otherNetworkLink
     };

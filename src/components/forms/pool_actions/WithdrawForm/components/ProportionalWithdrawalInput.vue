@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfoMap } from '@/types/TokenList';
 // Composables
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
