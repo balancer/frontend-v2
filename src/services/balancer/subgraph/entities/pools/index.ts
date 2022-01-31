@@ -2,8 +2,6 @@ import { differenceInWeeks } from 'date-fns';
 import axios from 'axios';
 
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
 
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
@@ -39,6 +37,11 @@ import {
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
+import {
+  ExcludedAddresses,
+  removeAddressesFromTotalLiquidity
+} from './helpers';
+
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
 type ExcludedAddressesResponse = Record<Network, Record<string, string[]>>;
@@ -47,7 +50,7 @@ export default class Pools {
   service: Service;
   query: QueryBuilder;
   networkId: Network;
-  excludedAddresses: Record<string, Record<string, BigNumber>> | null;
+  excludedAddresses: ExcludedAddresses;
 
   constructor(
     service: Service,
@@ -101,26 +104,11 @@ export default class Pools {
     pool: Pool,
     totalLiquidityString: string
   ) {
-    const totalLiquidity = bnum(totalLiquidityString);
-    let miningTotalLiquidity = totalLiquidity;
-
-    if (
-      this.excludedAddresses != null &&
-      this.excludedAddresses[pool.address] != null
-    ) {
-      Object.values(this.excludedAddresses[pool.address]).forEach(
-        accountBalance => {
-          const accountBalanceFormatted = formatUnits(accountBalance, 18);
-          const poolShare = bnum(accountBalanceFormatted).div(pool.totalShares);
-
-          miningTotalLiquidity = miningTotalLiquidity.minus(
-            totalLiquidity.times(poolShare)
-          );
-        }
-      );
-    }
-
-    return miningTotalLiquidity.toString();
+    return removeAddressesFromTotalLiquidity(
+      this.excludedAddresses,
+      pool,
+      totalLiquidityString
+    );
   }
 
   private async serialize(
