@@ -240,6 +240,8 @@ export default defineComponent({
     return {
       // data
       columns,
+
+      // constants
       FNumFormats,
 
       // computed

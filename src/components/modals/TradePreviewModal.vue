@@ -108,7 +108,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useRelayerApproval, {
   Relayer
@@ -273,6 +273,8 @@ export default defineComponent({
     }
 
     return {
+      // constants
+      FNumFormats,
       // methods
       fNum2,
       onClose,

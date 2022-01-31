@@ -5,7 +5,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useEthers from '@/composables/useEthers';
