@@ -39,7 +39,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TradeQuote } from './types';
 import useTransactions, { TransactionAction } from '../useTransactions';
-import useNumbers from '../useNumbers';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
 import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
@@ -142,7 +142,7 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { fNum } = useNumbers();
+  const { fNum2 } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor } = useTokens();
 
@@ -398,8 +398,14 @@ export default function useSor({
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
-    const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
+    const tokenInAmountFormatted = fNum2(
+      tokenInAmountInput.value,
+      FNumFormats.token
+    );
+    const tokenOutAmountFormatted = fNum2(
+      tokenOutAmountInput.value,
+      FNumFormats.token
+    );
 
     const tokenInSymbol = tokenIn.value.symbol;
     const tokenOutSymbol = tokenOut.value.symbol;

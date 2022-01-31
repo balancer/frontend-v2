@@ -20,7 +20,7 @@
       <template v-else>
         <template v-if="balance > 0">
           <template v-if="balance >= 0.0001">
-            {{ fNum(balance, 'token') }}
+            {{ fNum2(balance, FNumFormats.token) }}
           </template>
           <template v-else>
             &#60; 0.0001
@@ -38,7 +38,7 @@
       />
       <div v-else class="text-gray-500 text-sm font-normal">
         <template v-if="value > 0">
-          {{ fNum(value, 'usd') }}
+          {{ fNum2(value, { style: 'currency', fixedFormat: true }) }}
         </template>
         <template v-else>-</template>
       </div>
@@ -66,7 +66,7 @@ export default {
     /**
      * COMPOSABLES
      */
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const animateRef = ref();
     const { balances, prices } = useTokens();
     const { currency } = useUserSettings();
@@ -101,7 +101,7 @@ export default {
     });
 
     return {
-      fNum,
+      fNum2,
       animateRef,
       balance,
       value

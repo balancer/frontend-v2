@@ -8,7 +8,7 @@ import {
   onBeforeMount,
   watch
 } from 'vue';
-import { poolWeightsLabel } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -76,6 +76,7 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
   toRef(props, 'pool')
 );
