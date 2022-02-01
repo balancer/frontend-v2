@@ -116,8 +116,7 @@ const showMigrateButton = computed(
  */
 function weightLabelFor(address: string): string {
   return fNum2(props.pool.onchain.tokens[address].weight, {
-    style: 'unit',
-    unit: 'percent',
+    style: 'percent',
     maximumFractionDigits: 0
   });
 }

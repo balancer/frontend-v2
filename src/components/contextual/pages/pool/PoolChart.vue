@@ -196,8 +196,7 @@ function getPoolValue(amounts: string[], prices: number[]) {
       :isPeriodSelectionEnabled="false"
       :axisLabelFormatter="{
         yAxis: {
-          style: 'unit',
-          unit: 'percent',
+          style: 'percent',
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
           fixedFormat: true

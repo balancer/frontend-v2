@@ -115,8 +115,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       .map(
         token =>
           `${fNum2(token.weight, {
-            style: 'unit',
-            unit: 'percent',
+            style: 'percent',
             maximumFractionDigits: 0
           })} ${token.symbol}`
       )

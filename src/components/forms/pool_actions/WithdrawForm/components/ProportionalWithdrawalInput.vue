@@ -163,8 +163,7 @@ onBeforeMount(() => {
                 <span v-if="!isStableLikePool">
                   {{
                     fNum2(seedTokens[i], {
-                      style: 'unit',
-                      unit: 'percent',
+                      style: 'percent',
                       maximumFractionDigits: 0
                     })
                   }}
