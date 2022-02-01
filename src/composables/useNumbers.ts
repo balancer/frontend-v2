@@ -94,6 +94,7 @@ export default function useNumbers() {
     options: FNumOptions | undefined = {}
   ): string {
     if (typeof number === 'string') {
+      if (number === 'NaN') number = 0;
       number = Number(number || 0);
     }
 
