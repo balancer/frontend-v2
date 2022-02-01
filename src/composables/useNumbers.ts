@@ -15,8 +15,7 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
 
 export const FNumFormats = {
   percent: {
-    style: 'unit',
-    unit: 'percent',
+    style: 'percent',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   },
@@ -132,6 +131,10 @@ export default function useNumbers() {
     // For consistency with numeral
     if (options.unit === 'percent') {
       number = number * 100;
+      formatterOptions.useGrouping = false;
+    }
+
+    if (options.style === 'percent') {
       formatterOptions.useGrouping = false;
     }
 

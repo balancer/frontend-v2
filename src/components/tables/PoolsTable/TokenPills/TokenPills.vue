@@ -48,8 +48,7 @@ function symbolFor(token: PoolToken): string {
 
 function weightFor(token: PoolToken): string {
   return fNum2(token.weight, {
-    style: 'unit',
-    unit: 'percent',
+    style: 'percent',
     maximumFractionDigits: 0
   });
 }
