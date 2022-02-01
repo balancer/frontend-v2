@@ -23,7 +23,7 @@
     "symbol": "FTM",
     "decimals": 18,
     "deeplinkId": "fantom",
-    "logoURI": "https://storageapi.fleek.co/beethovenxfi-team-bucket/FTM.png",
+    "logoURI": "https://beethoven-assets.s3.eu-central-1.amazonaws.com/FTM.png",
     "minTransactionBuffer": "0.5"
   },
   "subgraphs": {
