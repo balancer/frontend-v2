@@ -36,5 +36,6 @@ const networkName = computed(() => userNetworkConfig.value?.name);
         </h5>
       </BalStack>
     </BalStack>
+    <slot />
   </BalCard>
 </template>
