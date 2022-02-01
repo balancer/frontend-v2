@@ -110,8 +110,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '0.00%' });
         const format2 = fNum2(testNumber, {
-          style: 'unit',
-          unit: 'percent',
+          style: 'percent',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
           fixedFormat: true
@@ -178,8 +177,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent');
         const format2 = fNum2(testNumber, {
-          style: 'unit',
-          unit: 'percent',
+          style: 'percent',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         });
@@ -191,8 +189,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent_lg');
         const format2 = fNum2(testNumber, {
-          style: 'unit',
-          unit: 'percent',
+          style: 'percent',
           maximumFractionDigits: 0
         });
         expect(format2).toEqual(format1);
@@ -203,8 +200,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent_variable');
         const format2 = fNum2(testNumber, {
-          style: 'unit',
-          unit: 'percent',
+          style: 'percent',
           maximumFractionDigits: 4,
           fixedFormat: true
         });
@@ -216,8 +212,7 @@ describe('useNumbers', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '0.0%' });
         const format2 = fNum2(testNumber, {
-          style: 'unit',
-          unit: 'percent',
+          style: 'percent',
           minimumFractionDigits: 1,
           maximumFractionDigits: 1,
           fixedFormat: true
