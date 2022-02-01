@@ -1,25 +1,22 @@
 <script lang="ts">
-import { defineComponent, onBeforeMount, watch, ref } from 'vue';
-import { VueQueryDevTools } from 'vue-query/devtools';
-import { useStore } from 'vuex';
-import { useRoute, useRouter } from 'vue-router';
-import BigNumber from 'bignumber.js';
-import * as Layouts from '@/pages/_layouts';
-import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
-import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
-import Notifications from '@/components/notifications/Notifications.vue';
-import useGnosisSafeApp from './composables/useGnosisSafeApp';
-import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
-import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
-import useAlerts, {
-  Alert,
-  AlertPriority,
-  AlertType
-} from './composables/useAlerts';
-import { useI18n } from 'vue-i18n';
-import useExploitWatcher from './composables/watchers/useExploitWatcher';
+import { defineComponent, onBeforeMount, watch, ref } from "vue";
+import { VueQueryDevTools } from "vue-query/devtools";
+import { useStore } from "vuex";
+import { useRoute, useRouter } from "vue-router";
+import BigNumber from "bignumber.js";
+import * as Layouts from "@/pages/_layouts";
+import useWeb3Watchers from "@/composables/watchers/useWeb3Watchers";
+import WalletSelectModal from "@/components/web3/WalletSelectModal.vue";
+import useWeb3 from "@/services/web3/useWeb3";
+import { DEFAULT_TOKEN_DECIMALS } from "@/constants/tokens";
+import Notifications from "@/components/notifications/Notifications.vue";
+import useGnosisSafeApp from "./composables/useGnosisSafeApp";
+import useGlobalQueryWatchers from "./composables/watchers/useGlobalQueryWatchers";
+import usePoolCreationWatcher from "./composables/watchers/usePoolCreationWatcher";
+import useAlerts, { Alert, AlertPriority, AlertType } from "./composables/useAlerts";
+import { useI18n } from "vue-i18n";
+import useExploitWatcher from "./composables/watchers/useExploitWatcher";
+import PoolType from "./components/cards/CreatePool/PoolType.vue";
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -28,14 +25,15 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
-    Notifications
-  },
+    Notifications,
+    PoolType
+},
 
   setup() {
     /**
      * STATE
      */
-    const layout = ref('DefaultLayout');
+    const layout = ref("DefaultLayout");
 
     /**
      * COMPOSABLES
@@ -45,11 +43,7 @@ export default defineComponent({
     useGlobalQueryWatchers();
     useGnosisSafeApp();
     useExploitWatcher();
-    const {
-      isWalletSelectVisible,
-      toggleWalletSelectModal,
-      isMainnet
-    } = useWeb3();
+    const { isWalletSelectVisible, toggleWalletSelectModal, isMainnet } = useWeb3();
     const route = useRoute();
     const store = useStore();
     const router = useRouter();
@@ -59,24 +53,23 @@ export default defineComponent({
     // Temporary feature alert for Balancer boosted pools.
     if (isMainnet.value) {
       const featureAlert: Alert = {
-        id: 'boosted-pools',
+        id: "boosted-pools",
         priority: AlertPriority.LOW,
-        label: t('alerts.boostedPools'),
+        label: t("alerts.boostedPools"),
         type: AlertType.FEATURE,
         actionOnClick: true,
         action: () =>
           router.push({
-            name: 'pool',
+            name: "pool",
             params: {
-              id:
-                '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
+              id: "0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe",
             },
             query: {
-              utm_source: 'website',
-              utm_medium: 'banner',
-              utm_campaign: 'aaveboostedpools'
-            }
-          })
+              utm_source: "website",
+              utm_medium: "banner",
+              utm_campaign: "aaveboostedpools",
+            },
+          }),
       };
       addAlert(featureAlert);
     }
@@ -85,17 +78,17 @@ export default defineComponent({
      * CALLBACKS
      */
     onBeforeMount(async () => {
-      store.dispatch('app/init');
+      store.dispatch("app/init");
     });
 
     /**
      * WATCHERS
      */
-    watch(route, newRoute => {
+    watch(route, (newRoute) => {
       if (newRoute.meta.layout) {
         layout.value = newRoute.meta.layout as string;
       } else {
-        layout.value = 'DefaultLayout';
+        layout.value = "DefaultLayout";
       }
     });
 
@@ -105,9 +98,9 @@ export default defineComponent({
       // computed
       isWalletSelectVisible,
       // methods
-      toggleWalletSelectModal
+      toggleWalletSelectModal,
     };
-  }
+  },
 });
 </script>
 

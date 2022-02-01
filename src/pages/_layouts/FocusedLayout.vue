@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-16">
+  <div class="pb-16 bg-gray-50">
     <div class="layout-header mb-12">
       <div></div>
       <router-link :to="{ name: 'home' }">

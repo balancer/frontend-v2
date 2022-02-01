@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp } from 'vue/dist/vue.esm-bundler';
 import store from '@/store';
 import router from '@/plugins/router';
 import mixins from '@/plugins/mixins';

@@ -59,11 +59,10 @@ export default defineComponent({
       default: () => false
     }
   },
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     return {
       slotsWithContent: [],
-      slots,
-      attrs
+      slots
     };
   },
   render() {
@@ -116,7 +115,6 @@ export default defineComponent({
     return h(
       'div',
       {
-        attrs: this.$attrs,
         class: [
           'flex',
           {

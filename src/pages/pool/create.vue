@@ -27,6 +27,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useAlerts from '@/composables/useAlerts';
 import { lsGet } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
+import PoolType from '@/components/cards/CreatePool/PoolType.vue';
 
 /**
  * STATE
@@ -290,9 +291,10 @@ watch(isLoadingTokens, () => {
           </button>
         </BalAlert>
       </AnimatePresence>
+        <PoolType />
       <AnimatePresence
         :isVisible="
-          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
+          !appLoading && activeStep === 1 && !hasRestoredFromSavedState
         "
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
@@ -301,7 +303,7 @@ watch(isLoadingTokens, () => {
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 1"
+        :isVisible="!appLoading && activeStep === 2"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -310,7 +312,7 @@ watch(isLoadingTokens, () => {
         <PoolFees @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
+        :isVisible="!appLoading && activeStep === 3 && similarPools.length > 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -319,7 +321,7 @@ watch(isLoadingTokens, () => {
         <SimilarPools />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 3"
+        :isVisible="!appLoading && activeStep === 4"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -328,7 +330,7 @@ watch(isLoadingTokens, () => {
         <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
+        :isVisible="!appLoading && activeStep === 5 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"

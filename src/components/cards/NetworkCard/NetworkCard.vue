@@ -25,17 +25,20 @@ const networkName = computed(() => userNetworkConfig.value?.name);
 </script>
 
 <template>
-  <BalCard shadow="xl" noBorder>
-    <BalStack vertical spacing="sm">
-      <BalStack vertical spacing="xs">
-        <span class="text-xs text-gray-700 dark:text-gray-500">{{
-          networkName
-        }}</span>
-        <h5 class="font-bold dark:text-gray-300">
-          {{ title }}
-        </h5>
+  <BalCard shadow="card" noPad class="rounded-2xl p-5">
+    <BalStack vertical spacing="base">
+      <BalStack vertical spacing="sm">
+        <BalStack vertical spacing="xs">
+          <span class="text-xs text-gray-700 dark:text-gray-500">{{
+            networkName
+          }}</span>
+          <h4 class="font-bold dark:text-gray-300">
+            {{ title }}
+          </h4>
+        </BalStack>
       </BalStack>
+      <slot />
+      <div></div>
     </BalStack>
-    <slot />
   </BalCard>
 </template>
