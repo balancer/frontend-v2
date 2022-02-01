@@ -24,8 +24,7 @@ const state = reactive({
 const options = FIXED_OPTIONS.map(option => {
   return {
     label: fNum2(option, {
-      style: 'unit',
-      unit: 'percent',
+      style: 'percent',
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
       fixedFormat: true

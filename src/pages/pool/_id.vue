@@ -23,8 +23,7 @@
               >
                 {{
                   fNum2(tokenMeta.weight, {
-                    style: 'unit',
-                    unit: 'percent',
+                    style: 'percent',
                     maximumFractionDigits: 0
                   })
                 }}
@@ -314,8 +313,7 @@ export default defineComponent({
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
       const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
-        style: 'unit',
-        unit: 'percent',
+        style: 'percent',
         maximumFractionDigits: 4,
         fixedFormat: true
       })}`;
