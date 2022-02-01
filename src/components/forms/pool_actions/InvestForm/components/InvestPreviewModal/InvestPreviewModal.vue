@@ -45,7 +45,7 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.math);
+const { fullAmounts, priceImpact, highPriceImpact } = toRefs(props.math);
 const { resetAmounts } = useInvestState();
 
 /**
@@ -141,6 +141,7 @@ function handleClose(): void {
       :pool="pool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
+      :highPriceImpact="highPriceImpact"
     />
 
     <InvestActions

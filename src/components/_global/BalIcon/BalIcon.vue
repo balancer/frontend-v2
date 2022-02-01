@@ -8,6 +8,8 @@
 import feather from 'feather-icons';
 import { computed, defineComponent, onMounted } from 'vue';
 
+export type IconSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
 export default defineComponent({
   name: 'BalIcon',
 
