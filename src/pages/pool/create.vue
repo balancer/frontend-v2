@@ -338,8 +338,9 @@ watch(isLoadingTokens, () => {
       </AnimatePresence>
       <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
         <BalAccordion
+          :dependencies="validTokens"
           :sections="[
-            { title: t('poolSummary'), id: 'pool-summary' },
+            { title: t('createAPool.poolSummary'), id: 'pool-summary' },
             { title: t('tokenPrices'), id: 'token-prices' }
           ]"
         >
