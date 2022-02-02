@@ -6,6 +6,7 @@ import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vu
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
+  EMPTY_SEED_TOKEN,
   PoolSeedToken
 } from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
@@ -21,14 +22,6 @@ import { useI18n } from 'vue-i18n';
 import useDarkMode from '@/composables/useDarkMode';
 
 const emit = defineEmits(['update:height', 'trigger:alert']);
-
-const emptyTokenWeight: PoolSeedToken = {
-  tokenAddress: '',
-  weight: 0,
-  id: '0',
-  isLocked: false,
-  amount: '0'
-};
 
 /**
  * COMPOSABLES
@@ -225,7 +218,7 @@ async function animateHeight(offset = 0) {
 async function addTokenToPool() {
   const newWeights: PoolSeedToken[] = [
     ...seedTokens.value,
-    { ...emptyTokenWeight, id: uniqueId() } as PoolSeedToken
+    { ...EMPTY_SEED_TOKEN, id: uniqueId() }
   ];
   updateTokenWeights(newWeights);
   await animateHeight(1);

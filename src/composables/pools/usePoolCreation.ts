@@ -37,9 +37,17 @@ type FeeManagementType = 'governance' | 'self';
 type FeeType = 'fixed' | 'dynamic';
 type FeeController = 'self' | 'other';
 
+export const EMPTY_SEED_TOKEN: PoolSeedToken = {
+  tokenAddress: '',
+  weight: 0,
+  id: '0',
+  isLocked: false,
+  amount: '0'
+};
+
 const emptyPoolCreationState = {
   name: 'MyPool',
-  seedTokens: [] as PoolSeedToken[],
+  seedTokens: [EMPTY_SEED_TOKEN, EMPTY_SEED_TOKEN],
   activeStep: 0,
   initialFee: '0.003',
   isFeeGovManaged: false,

@@ -97,42 +97,40 @@ const chartConfig = computed(() => {
         top: -20,
         colors: colors.value,
         data: [
-          ...seedTokens.value
-            // .filter(t => t.tokenAddress !== '')
-            .map((t, i) => {
-              const tokenLogoURI = resolve(
-                tokens.value[t.tokenAddress]?.logoURI || ''
-              );
-              return {
-                name: t.tokenAddress,
-                value: t.weight,
-                tooltip: {
-                  show: false,
-                  borderWidth: '0'
-                },
-                emphasis: {
-                  label: {
-                    show: true,
-                    formatter: () => ' ',
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    backgroundColor: {
-                      image: tokenLogoURI
-                    },
-                    width: 48,
-                    height: 48,
-                    borderRadius: 48,
-                    overflow: 'hidden'
-                  }
-                },
-                itemStyle: {
-                  color:
-                    t.tokenAddress === ''
-                      ? tailwind.theme.colors.gray[`${i + 1}00`]
-                      : colors.value[i]
+          ...seedTokens.value.map((t, i) => {
+            const tokenLogoURI = resolve(
+              tokens.value[t.tokenAddress]?.logoURI || ''
+            );
+            return {
+              name: t.tokenAddress,
+              value: t.weight,
+              tooltip: {
+                show: false,
+                borderWidth: '0'
+              },
+              emphasis: {
+                label: {
+                  show: true,
+                  formatter: () => ' ',
+                  fontSize: '1rem',
+                  fontWeight: 'bold',
+                  backgroundColor: {
+                    image: tokenLogoURI
+                  },
+                  width: 48,
+                  height: 48,
+                  borderRadius: 48,
+                  overflow: 'hidden'
                 }
-              };
-            })
+              },
+              itemStyle: {
+                color:
+                  t.tokenAddress === ''
+                    ? tailwind.theme.colors.gray[`${i + 1}00`]
+                    : colors.value[i]
+              }
+            };
+          })
         ]
       }
     ]
