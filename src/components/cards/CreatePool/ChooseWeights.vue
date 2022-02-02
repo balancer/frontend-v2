@@ -376,6 +376,7 @@ function onAlertMountChange() {
                 <BalProgressBar
                   :color="progressBarColor"
                   :width="totalAllocatedWeight"
+                  :bufferWidth="0"
                   class="my-2"
                 />
               </div>

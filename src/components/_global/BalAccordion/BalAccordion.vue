@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue';
+import { ref, nextTick, onMounted, watch, Ref } from 'vue';
 import anime from 'animejs';
 import { takeRight } from 'lodash';
 
@@ -10,6 +10,10 @@ type Section = {
 
 type Props = {
   sections: Section[];
+  // changing variables which can be used to
+  // determine whether to re-render the height
+  // of an accordion section
+  dependencies: Ref<unknown>;
 };
 
 const props = defineProps<Props>();
@@ -30,8 +34,8 @@ const totalHeight = ref(0);
 
 const easing = 'spring(0.2, 150, 18, 0)';
 
-async function toggleSection(section: string) {
-  const collapseCurrentSection = activeSection.value === section;
+async function toggleSection(section: string, collapse = true) {
+  const collapseCurrentSection = activeSection.value === section && collapse;
   if (collapseCurrentSection) {
     activeSection.value = '';
     isContentVisible.value = false;
@@ -140,6 +144,16 @@ function setHandleBars(el: HTMLElement) {
     handleBarElements.value.push(el);
   }
 }
+
+/**
+ * WATCHERS
+ */
+watch(
+  () => props.dependencies,
+  () => {
+    toggleSection(activeSection.value, false);
+  }
+);
 </script>
 
 <template>
