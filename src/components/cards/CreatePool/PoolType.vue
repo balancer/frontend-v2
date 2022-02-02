@@ -5,6 +5,7 @@ import { PoolType } from '@/services/balancer/subgraph/types';
 
 import NetworkCard from '../NetworkCard/NetworkCard.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * CONSTANTS
@@ -16,6 +17,7 @@ const SUPPORTED_POOL_TYPES = [PoolType.Weighted, PoolType.Managed];
  */
 const { t } = useI18n();
 const { type: poolType, proceed } = usePoolCreation();
+const { upToLargeBreakpoint } = useBreakpoints();
 
 /**
  * COMPUTED
@@ -71,7 +73,12 @@ const PoolTypeButton = {
         />
       </BalStack>
     </NetworkCard>
-    <BalCard class="bg-gray-50 rounded-xl" shadow="none">
+    <BalCard
+      :noBorder="upToLargeBreakpoint"
+      class="rounded-xl"
+      shadow="none"
+      noBackground
+    >
       <BalStack vertical spacing="sm">
         <h6 class="font-bold">{{ $t('createAPool.learnOtherPoolTypes') }}</h6>
         <p>{{ $t('createAPool.poolsNotSupportedYet') }}</p>

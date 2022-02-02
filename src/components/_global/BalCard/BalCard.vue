@@ -41,6 +41,7 @@ export default defineComponent({
     rightAlignHeader: { type: Boolean, default: false },
     exposeOverflow: { type: Boolean, default: false },
     overflowYScroll: { type: Boolean, default: false },
+    noBackground: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -59,7 +60,7 @@ export default defineComponent({
       return {
         'rounded-lg': !props.square,
         'overflow-hidden': !props.exposeOverflow,
-        [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
+        [`bg-white dark:bg-gray-${props.darkBgColor}`]: !props.noBackground,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
         'h-full': props.hFull
