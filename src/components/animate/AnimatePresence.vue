@@ -44,6 +44,9 @@ export default defineComponent({
     isVisible: {
       type: Boolean,
       default: () => true
+    },
+    onComplete: {
+      type: Function
     }
   },
   setup(props, { emit }) {
@@ -85,6 +88,7 @@ export default defineComponent({
             easing: 'spring(0.2, 80, 10, 0)',
             complete: () => {
               done();
+              if (props.onComplete) props.onComplete(el);
               emit('on-presence', { isCompleted: true });
             }
           }),
