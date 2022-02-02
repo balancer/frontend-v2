@@ -124,7 +124,7 @@ const {
     <div class="flex flex-col flex-grow mt-4">
       <div class="flex items-center space-x-4">
         <img
-          src="https://storageapi.fleek.co/beethovenxfi-team-bucket/FTM.png"
+          src="https://assets.coingecko.com/coins/images/4001/large/Fantom.png"
           width="52"
         />
         <div class="flex flex-col justify-center">

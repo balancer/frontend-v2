@@ -12,7 +12,7 @@
       </div>
       <div class="w-20 flex justify-center">
         <img
-          src="https://storageapi.fleek.co/beethovenxfi-team-bucket/SPIRIT.png"
+          src="https://assets.coingecko.com/coins/images/15118/large/4mY2Biy9_400x400.jpg"
           width="32"
         />
       </div>
