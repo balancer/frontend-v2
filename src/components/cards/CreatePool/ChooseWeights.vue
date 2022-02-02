@@ -41,8 +41,7 @@ const {
   totalLiquidity,
   hasInjectedToken,
   acceptCustomTokenDisclaimer,
-  acceptedCustomTokenDisclaimer,
-  goBack
+  acceptedCustomTokenDisclaimer
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
