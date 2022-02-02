@@ -302,7 +302,7 @@ function onAlertMountChange() {
 </script>
 
 <template>
-  <div ref="cardWrapper" class="mb-16">
+  <div ref="cardWrapper" class="lg:mb-16">
     <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">

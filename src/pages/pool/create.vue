@@ -31,10 +31,8 @@ import useTokens from '@/composables/useTokens';
 /**
  * STATE
  */
-const accordionWrapper = ref<HTMLElement>();
-const hasCompletedMountAnimation = ref(false);
-const prevWrapperHeight = ref(0);
 const isUnknownTokenModalVisible = ref(false);
+const isMainContentVisible = ref(false);
 
 /**
  * COMPOSABLES
@@ -43,14 +41,12 @@ const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
-  hasInjectedToken,
   hasRestoredFromSavedState,
   tokensList,
   seedTokens,
   setActiveStep,
   setRestoredState,
   importState,
-  totalLiquidity,
   resetPoolCreationState
 } = usePoolCreation();
 const { removeAlert } = useAlerts();
@@ -70,11 +66,6 @@ const {
  */
 onBeforeMount(async () => {
   removeAlert('return-to-pool-creation');
-  if (accordionWrapper.value) {
-    anime.set(accordionWrapper.value, {
-      opacity: 0
-    });
-  }
   let previouslySavedState = lsGet(
     POOL_CREATION_STATE_KEY,
     null,
@@ -162,6 +153,13 @@ const exitAnimateProps = computed(() => ({
   right: 0
 }));
 
+const animateProps = computed(() => ({
+  initial: initialAnimateProps.value,
+  animate: entryAnimateProps.value,
+  exit: exitAnimateProps.value,
+  onComplete: onPresence
+}));
+
 /**
  * FUNCTIONS
  */
@@ -175,30 +173,6 @@ function getStepState(idx: number) {
       return StepState.Todo;
     }
   }
-}
-
-function setWrapperHeight(dimensions?: { width: number; height: number }) {
-  // need to transform the accordion as everything is absolutely
-  // positioned inside the AnimateHeight component
-  if (dimensions?.height) prevWrapperHeight.value = dimensions.height;
-  let mobileOffset = 20;
-
-  anime({
-    targets: accordionWrapper.value,
-    translateY: `${prevWrapperHeight.value + mobileOffset}px`,
-    easing: 'spring(0.4, 500, 9, 0)',
-    complete: () => {
-      if (!hasCompletedMountAnimation.value) {
-        anime({
-          targets: accordionWrapper.value,
-          opacity: 1,
-          complete: () => {
-            hasCompletedMountAnimation.value = true;
-          }
-        });
-      }
-    }
-  });
 }
 
 function handleNavigate(stepIndex: number) {
@@ -230,13 +204,20 @@ function injectUnknownPoolTokens() {
   }
 }
 
+function onPresence(el) {
+  anime.set(el, {
+    position: 'relative'
+  });
+  isMainContentVisible.value = true;
+}
+
+function isStepVisible(step: number) {
+  return !appLoading.value && activeStep.value === step;
+}
+
 /**
  * WATCHERS
  */
-watch([hasInjectedToken, totalLiquidity], () => {
-  setWrapperHeight();
-});
-
 // can handle the behaviour to show the unknown token modal
 // on next step here, rather than having to clutter the
 // usePoolCreation composable further
@@ -244,6 +225,7 @@ watch(activeStep, () => {
   if (hasUnknownToken.value && !hasRestoredFromSavedState.value) {
     showUnknownTokenModal();
   }
+  isMainContentVisible.value = false;
 });
 
 // make sure to inject any custom tokens we cannot inject
@@ -291,55 +273,36 @@ watch(isLoadingTokens, () => {
         </BalAlert>
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="
-          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
-        "
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
+        :isVisible="isStepVisible(0) && !hasRestoredFromSavedState"
+        v-bind="animateProps"
       >
-        <ChooseWeights @update:height="setWrapperHeight" />
+        <ChooseWeights />
+      </AnimatePresence>
+      <AnimatePresence :isVisible="isStepVisible(1)" v-bind="animateProps">
+        <PoolFees />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 1"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
-      >
-        <PoolFees @update:height="setWrapperHeight" />
-      </AnimatePresence>
-      <AnimatePresence
-        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
+        :isVisible="isStepVisible(2) && similarPools.length > 0"
+        v-bind="animateProps"
       >
         <SimilarPools />
       </AnimatePresence>
-      <AnimatePresence
-        :isVisible="!appLoading && activeStep === 3"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
-      >
-        <InitialLiquidity @update:height="setWrapperHeight" />
+      <AnimatePresence :isVisible="isStepVisible(3)" v-bind="animateProps">
+        <InitialLiquidity />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
-        :initial="initialAnimateProps"
-        :animate="entryAnimateProps"
-        :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
+        :isVisible="isStepVisible(4) && !dynamicDataLoading"
+        v-bind="animateProps"
       >
         <PreviewPool />
       </AnimatePresence>
-      <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
+      <div
+        v-if="upToLargeBreakpoint && isMainContentVisible"
+        class="pt-4 pb-24"
+      >
         <BalAccordion
           :sections="[
-            { title: t('poolSummary'), id: 'pool-summary' },
+            { title: t('createAPool.poolSummary'), id: 'pool-summary' },
             { title: t('tokenPrices'), id: 'token-prices' }
           ]"
         >
