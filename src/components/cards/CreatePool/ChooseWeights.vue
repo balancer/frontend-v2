@@ -41,7 +41,8 @@ const {
   totalLiquidity,
   hasInjectedToken,
   acceptCustomTokenDisclaimer,
-  acceptedCustomTokenDisclaimer
+  acceptedCustomTokenDisclaimer,
+  goBack
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
@@ -309,9 +310,17 @@ function onAlertMountChange() {
           <span class="text-xs text-gray-700 dark:text-gray-500">{{
             networkName
           }}</span>
-          <h5 class="font-bold dark:text-gray-300">
-            {{ $t('createAPool.chooseTokenWeights') }}
-          </h5>
+          <BalStack horizontal align="center" spacing="xs">
+            <button
+              @click="goBack"
+              class="text-blue-500 hover:text-blue-700 flex"
+            >
+              <BalIcon class="flex" name="chevron-left" />
+            </button>
+            <h5 class="font-bold dark:text-gray-300">
+              {{ $t('createAPool.chooseTokenWeights') }}
+            </h5>
+          </BalStack>
         </BalStack>
         <BalCard shadow="none" noPad>
           <div ref="tokenWeightListWrapper">
