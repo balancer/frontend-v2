@@ -84,6 +84,7 @@ onBeforeMount(async () => {
   if (activeStep.value === 0 && previouslySavedState !== null) {
     // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
+    console.log('bingbing', previouslySavedState)
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
@@ -141,7 +142,7 @@ const steps = computed(() => [
 
 const initialAnimateProps = computed(() => ({
   opacity: 0,
-  translateY: '100px',
+  translateY: activeStep.value === 0 ? '0px' : '100px',
   position: 'absolute',
   top: 0,
   left: 0,
@@ -151,6 +152,7 @@ const initialAnimateProps = computed(() => ({
 const entryAnimateProps = computed(() => ({
   opacity: 1,
   translateY: hasRestoredFromSavedState.value ? '116px' : '0px',
+  easing: 'spring(0.3, 200, 10, 0)',
   position: 'relative'
 }));
 
@@ -276,25 +278,28 @@ watch(isLoadingTokens, () => {
       </div>
     </template>
     <div class="relative center-col-mh">
-      <AnimatePresence
-        :isVisible="hasRestoredFromSavedState && !appLoading"
-        unmountInstantly
-      >
-        <BalAlert
-          type="warning"
-          class="mb-4"
-          :title="$t('createAPool.recoveredState')"
-        >
+      <AnimatePresence :isVisible="hasRestoredFromSavedState && !appLoading" unmountInstantly>
+        <BalAlert type="warning" class="mb-4" :title="$t('createAPool.recoveredState')">
           {{ $t('createAPool.recoveredStateInfo') }}
-          <button @click="handleReset" class="font-semibold text-blue-500">
-            {{ $t('clickHere') }}
-          </button>
+          <button
+            @click="handleReset"
+            class="font-semibold text-blue-500"
+          >{{ $t('clickHere') }}</button>
         </BalAlert>
       </AnimatePresence>
-        <PoolType />
       <AnimatePresence
         :isVisible="
-          !appLoading && activeStep === 1 && !hasRestoredFromSavedState
+          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
+        "
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+      >
+        <PoolType />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="
+          !appLoading && activeStep === 1
         "
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
@@ -341,7 +346,7 @@ watch(isLoadingTokens, () => {
       <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
         <BalAccordion
           :sections="[
-            { title: t('poolSummary'), id: 'pool-summary' },
+            { title: t('createAPool.poolSummary'), id: 'pool-summary' },
             { title: t('tokenPrices'), id: 'token-prices' }
           ]"
         >

@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-16 bg-gray-50">
+  <div class="pb-16 bg-gray-50 h-full">
     <div class="layout-header mb-12">
       <div></div>
       <router-link :to="{ name: 'home' }">
@@ -17,4 +17,4 @@
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
 }
-</style>
+</style> 

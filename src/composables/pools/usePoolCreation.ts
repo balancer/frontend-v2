@@ -17,9 +17,9 @@ import { configService } from '@/services/config/config.service';
 import { TransactionResponse } from '@ethersproject/providers';
 import { POOLS } from '@/constants/pools';
 
-export const POOL_CREATION_STATE_VERSION = '1.0';
-export const POOL_CREATION_STATE_KEY = 'poolCreationState';
-
+/**
+ * TYPES
+ */
 export type PoolSeedToken = {
   tokenAddress: string;
   weight: number;
@@ -61,9 +61,17 @@ const emptyPoolCreationState = {
   createPoolTxHash: ''
 };
 
-export const poolCreationState = reactive({ ...emptyPoolCreationState });
-const tokenColors = ref<string[]>([]);
-export const hasRestoredFromSavedState = ref<boolean | null>(null);
+export type PoolCreationState = typeof emptyPoolCreationState;
+
+/**
+ * CONSTANTS
+ */
+ export const POOL_CREATION_STATE_VERSION = '1.0';
+ export const POOL_CREATION_STATE_KEY = 'poolCreationState';
+ export const poolCreationState = reactive({ ...emptyPoolCreationState });
+ export const hasRestoredFromSavedState = ref<boolean | null>(null);
+
+ const tokenColors = ref<string[]>([]);
 
 export default function usePoolCreation() {
   /**

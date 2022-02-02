@@ -16,7 +16,6 @@ import usePoolCreationWatcher from "./composables/watchers/usePoolCreationWatche
 import useAlerts, { Alert, AlertPriority, AlertType } from "./composables/useAlerts";
 import { useI18n } from "vue-i18n";
 import useExploitWatcher from "./composables/watchers/useExploitWatcher";
-import PoolType from "./components/cards/CreatePool/PoolType.vue";
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -26,7 +25,6 @@ export default defineComponent({
     VueQueryDevTools,
     WalletSelectModal,
     Notifications,
-    PoolType
 },
 
   setup() {

@@ -81,8 +81,8 @@ export default defineComponent({
         () =>
           anime({
             targets: el,
-            ...props.animate,
             easing: 'spring(0.2, 80, 10, 0)',
+            ...props.animate,
             complete: () => {
               done();
               emit('on-presence', { isCompleted: true });
