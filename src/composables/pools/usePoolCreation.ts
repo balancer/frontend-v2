@@ -66,12 +66,12 @@ export type PoolCreationState = typeof emptyPoolCreationState;
 /**
  * CONSTANTS
  */
- export const POOL_CREATION_STATE_VERSION = '1.0';
- export const POOL_CREATION_STATE_KEY = 'poolCreationState';
- export const poolCreationState = reactive({ ...emptyPoolCreationState });
- export const hasRestoredFromSavedState = ref<boolean | null>(null);
+export const POOL_CREATION_STATE_VERSION = '1.0';
+export const POOL_CREATION_STATE_KEY = 'poolCreationState';
+export const poolCreationState = reactive({ ...emptyPoolCreationState });
+export const hasRestoredFromSavedState = ref<boolean | null>(null);
 
- const tokenColors = ref<string[]>([]);
+const tokenColors = ref<string[]>([]);
 
 export default function usePoolCreation() {
   /**

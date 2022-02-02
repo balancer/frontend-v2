@@ -17,4 +17,4 @@
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
 }
-</style> 
+</style>

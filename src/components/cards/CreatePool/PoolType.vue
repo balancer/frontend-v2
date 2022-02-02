@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
-import { PoolType } from "@/services/balancer/subgraph/types";
+import { PoolType } from '@/services/balancer/subgraph/types';
 
-import NetworkCard from "../NetworkCard/NetworkCard.vue";
-import usePoolCreation from "@/composables/pools/usePoolCreation";
+import NetworkCard from '../NetworkCard/NetworkCard.vue';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 /**
  * CONSTANTS
@@ -15,7 +15,7 @@ const SUPPORTED_POOL_TYPES = [PoolType.Weighted, PoolType.Managed];
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { type: poolType , proceed } = usePoolCreation();
+const { type: poolType, proceed } = usePoolCreation();
 
 /**
  * COMPUTED
@@ -23,7 +23,7 @@ const { type: poolType , proceed } = usePoolCreation();
 const poolTypeDescriptionMap: Partial<Record<PoolType, string>> = {
   [PoolType.Weighted]: t('createAPool.weightedPoolDescription'),
   [PoolType.Managed]: t('createAPool.managedPoolDescription')
-}
+};
 
 /**
  * METHODS
@@ -37,7 +37,7 @@ function handlePoolTypeSelected(chosenPoolType: PoolType) {
 const PoolTypeButton = {
   props: {
     title: String,
-    text: String,
+    text: String
   },
   template: /*html*/ `
     <button class="border bg-white rounded-xl relative p-4 pool-type-button">
@@ -54,7 +54,7 @@ const PoolTypeButton = {
         <BalIcon name="chevron-right" class="chevron absolute right-0 text-blue-500" />
       </BalStack>
     </button>
-  `,
+  `
 };
 </script>
 
@@ -109,7 +109,7 @@ const PoolTypeButton = {
 }
 /* prevents shadow bleed by applying the shadow on a pseudo with a lower zIndex */
 .pool-type-button:after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   bottom: 0;

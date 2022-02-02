@@ -84,7 +84,7 @@ onBeforeMount(async () => {
   if (activeStep.value === 0 && previouslySavedState !== null) {
     // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
-    console.log('bingbing', previouslySavedState)
+    console.log('bingbing', previouslySavedState);
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
@@ -278,13 +278,19 @@ watch(isLoadingTokens, () => {
       </div>
     </template>
     <div class="relative center-col-mh">
-      <AnimatePresence :isVisible="hasRestoredFromSavedState && !appLoading" unmountInstantly>
-        <BalAlert type="warning" class="mb-4" :title="$t('createAPool.recoveredState')">
+      <AnimatePresence
+        :isVisible="hasRestoredFromSavedState && !appLoading"
+        unmountInstantly
+      >
+        <BalAlert
+          type="warning"
+          class="mb-4"
+          :title="$t('createAPool.recoveredState')"
+        >
           {{ $t('createAPool.recoveredStateInfo') }}
-          <button
-            @click="handleReset"
-            class="font-semibold text-blue-500"
-          >{{ $t('clickHere') }}</button>
+          <button @click="handleReset" class="font-semibold text-blue-500">
+            {{ $t('clickHere') }}
+          </button>
         </BalAlert>
       </AnimatePresence>
       <AnimatePresence
@@ -298,9 +304,7 @@ watch(isLoadingTokens, () => {
         <PoolType />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="
-          !appLoading && activeStep === 1
-        "
+        :isVisible="!appLoading && activeStep === 1"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
