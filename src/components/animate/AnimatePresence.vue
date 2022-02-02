@@ -46,7 +46,7 @@ export default defineComponent({
       default: () => true
     },
     onComplete: {
-      type: Function
+      type: Function as PropType<(el: HTMLElement) => void>
     }
   },
   setup(props, { emit }) {
