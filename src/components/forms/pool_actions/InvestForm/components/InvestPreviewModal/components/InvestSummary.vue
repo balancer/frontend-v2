@@ -15,12 +15,17 @@ type Props = {
   pool: FullPool;
   fiatTotal: string;
   priceImpact: number;
+  isLoadingPriceImpact?: boolean;
+  highPriceImpact?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  isLoadingPriceImpact: false,
+  highPriceImpact: false
+});
 
 /**
  * COMPOSABLES
@@ -113,18 +118,34 @@ function weeklyYieldForAPR(apr: string): string {
           />
         </div>
       </div>
-      <div class="summary-table-row">
+      <div
+        :class="[
+          'summary-table-row',
+          {
+            'bg-red-50 dark:bg-red-500 text-red-500 dark:text-white': highPriceImpact
+          }
+        ]"
+      >
         <div class="summary-table-label">
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum2(priceImpact, FNumFormats.percent) }}
-          <BalTooltip
-            :text="$t('tooltips.invest.priceImpact')"
-            icon-size="sm"
-            width="72"
-            class="ml-2"
-          />
+          <BalLoadingBlock v-if="isLoadingPriceImpact" class="h-6 w-10" />
+          <template v-else>
+            {{ fNum2(priceImpact, FNumFormats.percent) }}
+            <BalTooltip
+              :text="$t('tooltips.invest.priceImpact')"
+              icon-size="sm"
+              :icon-name="highPriceImpact ? 'alert-triangle' : 'info'"
+              :icon-class="
+                highPriceImpact
+                  ? 'text-red-500 dark:text-white'
+                  : 'text-gray-300'
+              "
+              width="72"
+              class="ml-2"
+            />
+          </template>
         </div>
       </div>
       <div class="summary-table-row">

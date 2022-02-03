@@ -42,6 +42,12 @@ describe('useNumbers', () => {
 
     const testNumbers = [
       '',
+      '-5678',
+      '-122.45',
+      '-1',
+      '-0.0078',
+      '-0.1',
+      '-0.0000443',
       '0',
       '0.0',
       '0.0000',
@@ -130,6 +136,8 @@ describe('useNumbers', () => {
           maximumFractionDigits: 2,
           fixedFormat: true
         });
+        if (format1 === '0$.00') return; // This is a bug with numeral in fNum
+        if (format1 === 'N$aN') return; // This is a bug with numeral in fNum
         expect(format2).toEqual(format1);
       });
     });
@@ -147,7 +155,7 @@ describe('useNumbers', () => {
         const format1 = fNum(testNumber, 'usd', { forcePreset: true });
         const format2 = fNum2(testNumber, {
           style: 'currency',
-          fixedFormat: true
+          dontAdjustLarge: true
         });
         expect(format2).toEqual(format1);
       });
@@ -204,7 +212,7 @@ describe('useNumbers', () => {
         const format2 = fNum2(testNumber, {
           style: 'percent',
           maximumFractionDigits: 4,
-          fixedFormat: true
+          dontAdjustLarge: true
         });
         expect(format2).toEqual(format1);
       });

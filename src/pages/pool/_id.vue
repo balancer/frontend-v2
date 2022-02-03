@@ -314,8 +314,7 @@ export default defineComponent({
       if (!pool.value) return '';
       const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
         style: 'percent',
-        maximumFractionDigits: 4,
-        fixedFormat: true
+        maximumFractionDigits: 4
       })}`;
 
       if (feesFixed.value) {
