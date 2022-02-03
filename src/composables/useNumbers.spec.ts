@@ -136,8 +136,8 @@ describe('useNumbers', () => {
           maximumFractionDigits: 2,
           fixedFormat: true
         });
-        if (format1 === "0$.00") return; // This is a bug with numeral in fNum
-        if (format1 === "N$aN") return; // This is a bug with numeral in fNum
+        if (format1 === '0$.00') return; // This is a bug with numeral in fNum
+        if (format1 === 'N$aN') return; // This is a bug with numeral in fNum
         expect(format2).toEqual(format1);
       });
     });
