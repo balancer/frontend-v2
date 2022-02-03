@@ -11,6 +11,7 @@ interface Options {
 export interface FNumOptions extends Intl.NumberFormatOptions {
   fixedFormat?: boolean; // If true, don't auto-adjust based on number magnitde
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
+  dontAdjustLarge?: boolean; // If true, don't auto-adjust if the number is large
 }
 
 export const FNumFormats = {
@@ -124,18 +125,23 @@ export default function useNumbers() {
         : number;
     }
 
-    if (number >= 1e4 && !options.fixedFormat) {
+    if (number >= 1e4 && !options.fixedFormat && !options.dontAdjustLarge) {
       formatterOptions.minimumFractionDigits = 0;
       formatterOptions.maximumFractionDigits = 0;
     }
 
-    // For consistency with numeral
-    if (options.unit === 'percent') {
-      number = number * 100;
-      formatterOptions.useGrouping = false;
-    }
-
     if (options.style === 'percent') {
+      if (
+        number < 0 &&
+        formatterOptions.maximumFractionDigits &&
+        formatterOptions.maximumFractionDigits >= 2 &&
+        (formatterOptions.minimumFractionDigits || 0) <
+          formatterOptions.maximumFractionDigits - 2
+      ) {
+        // For consistency with numeral which rounds based on digits before percentages are multiplied by 100
+        formatterOptions.maximumFractionDigits =
+          formatterOptions.maximumFractionDigits - 2;
+      }
       formatterOptions.useGrouping = false;
     }
 
@@ -147,9 +153,19 @@ export default function useNumbers() {
       return '< 0.0001';
     }
 
-    const formatter = new Intl.NumberFormat('en-US', formatterOptions);
+    if (!options.fixedFormat && number < 1e-6) {
+      number = 0;
+    }
 
-    return formatter.format(number) + postfixSymbol;
+    const formatter = new Intl.NumberFormat('en-US', formatterOptions);
+    let formattedNumber = formatter.format(number);
+
+    // If the number is -0, remove the negative
+    if (formattedNumber[0] === '-' && !formattedNumber.match(/[1-9]/)) {
+      formattedNumber = formattedNumber.slice(1);
+    }
+
+    return formattedNumber + postfixSymbol;
   }
 
   return { fNum, fNum2, toFiat };
