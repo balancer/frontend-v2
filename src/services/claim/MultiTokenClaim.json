@@ -94,13 +94,6 @@
             "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
             "weekStart": 10
-        },
-        {
-            "label": "TEL",
-            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
-            "token": "0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
-            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tel-polygon.json",
-            "weekStart": 17
         }
       ],
     "42161": [
