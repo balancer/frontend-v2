@@ -175,7 +175,7 @@ const toggle = () => {
 
 const chartData = computed(() => [
   {
-    name: `${inputSym.value}/${outputSym.value}`,
+    name: `${outputSym.value}/${inputSym.value}`,
     values: priceData.value || []
   }
 ]);
