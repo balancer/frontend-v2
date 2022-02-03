@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -14,6 +14,8 @@ import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/com
 import { TokenInfo } from '@/types/TokenList';
 
 import { PoolMigrationInfo } from '../../types';
+
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -32,11 +34,6 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const { priceImpact, batchSwapLoaded, highPriceImpact } = toRefs(props.math);
-
-const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
-const fiatTotal = ref(props.math.fiatTotal.value);
-
 const emit = defineEmits<{
   (e: 'close'): void;
 }>();
@@ -44,12 +41,20 @@ const emit = defineEmits<{
 /**
  * STATE
  */
+const { batchSwapLoaded, highPriceImpact, bptBalance } = toRefs(props.math);
+
+const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
+const fiatTotal = ref(props.math.fiatTotal.value);
+const priceImpact = ref(props.math.priceImpact.value);
+
 const migrateConfirmed = ref(false);
 const highPriceImpactAccepted = ref(false);
 
 const hasAcceptedHighPriceImpact = computed((): boolean =>
   highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
+
+const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
 
 /**
  * COMPOSABLES
@@ -71,6 +76,23 @@ const title = computed((): string =>
 function handleClose() {
   emit('close');
 }
+
+/**
+ * WATCHERS
+ */
+watch(bptBalance, () => {
+  if (!migrateConfirmed.value && bnum(bptBalance.value).gt(0)) {
+    fiatTotalLabel.value = props.math.fiatTotalLabel.value;
+    fiatTotal.value = props.math.fiatTotal.value;
+    priceImpact.value = props.math.priceImpact.value;
+  }
+});
+
+watch(isLoadingPriceImpact, () => {
+  if (!isLoadingPriceImpact.value) {
+    priceImpact.value = props.math.priceImpact.value;
+  }
+});
 </script>
 
 <template>
@@ -105,7 +127,7 @@ function handleClose() {
       :pool="toPool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
-      :isLoadingPriceImpact="!batchSwapLoaded"
+      :isLoadingPriceImpact="isLoadingPriceImpact"
       :highPriceImpact="highPriceImpact"
     />
 
