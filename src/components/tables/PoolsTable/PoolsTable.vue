@@ -88,7 +88,11 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(pool.shares, { style: 'currency', fixedFormat: true }),
+      fNum2(pool.shares, {
+        style: 'currency',
+        maximumFractionDigits: 0,
+        fixedFormat: true
+      }),
     align: 'right',
     id: 'myBalance',
     hidden: !props.showPoolShares,
@@ -98,7 +102,11 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
   },
   {
     name: t('poolValue'),
-    accessor: pool => fNum2(pool.totalLiquidity, FNumFormats.fiat),
+    accessor: pool =>
+      fNum2(pool.totalLiquidity, {
+        style: 'currency',
+        maximumFractionDigits: 0
+      }),
     align: 'right',
     id: 'poolValue',
     sortKey: pool => {
@@ -111,7 +119,11 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
-    accessor: pool => fNum2(pool.dynamic.volume, FNumFormats.fiat),
+    accessor: pool =>
+      fNum2(pool.dynamic.volume, {
+        style: 'currency',
+        maximumFractionDigits: 0
+      }),
     align: 'right',
     id: 'poolVolume',
     sortKey: pool => {
