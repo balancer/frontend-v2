@@ -129,13 +129,16 @@ export default function useNumbers() {
       formatterOptions.maximumFractionDigits = 0;
     }
 
-    // For consistency with numeral
-    if (options.unit === 'percent') {
-      number = number * 100;
-      formatterOptions.useGrouping = false;
-    }
-
     if (options.style === 'percent') {
+      if (
+        number < 0 &&
+        formatterOptions.maximumFractionDigits &&
+        formatterOptions.maximumFractionDigits > 2
+      ) {
+        // For consistency with numeral which rounds based on digits before percentages are multiplied by 100
+        formatterOptions.maximumFractionDigits =
+          formatterOptions.maximumFractionDigits - 2;
+      }
       formatterOptions.useGrouping = false;
     }
 
@@ -145,6 +148,11 @@ export default function useNumbers() {
 
     if (!options.style && number > 0 && number < 0.0001) {
       return '< 0.0001';
+    }
+
+    const maximumFractionDigits = formatterOptions.maximumFractionDigits || 3;
+    if (number < 0 && number > -1 / Math.pow(10, maximumFractionDigits)) {
+      number = Math.abs(number);
     }
 
     const formatter = new Intl.NumberFormat('en-US', formatterOptions);
