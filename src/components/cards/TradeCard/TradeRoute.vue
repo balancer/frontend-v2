@@ -128,7 +128,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { Pool, Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sdk';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -184,7 +184,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { t } = useI18n();
 
     const { appNetworkConfig } = useWeb3();
@@ -428,7 +428,7 @@ export default defineComponent({
     }
 
     function formatShare(share: number): string {
-      return fNum(share, 'percent');
+      return fNum2(share, FNumFormats.percent);
     }
 
     function getPoolLink(id: string): string {

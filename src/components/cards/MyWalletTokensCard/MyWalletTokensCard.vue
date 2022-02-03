@@ -3,8 +3,7 @@ import { computed, toRef } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 // Composables
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 // Components
 import AssetRow from './components/AssetRow.vue';
@@ -36,8 +35,7 @@ const emit = defineEmits<{
  */
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const route = useRoute();
 
 /**
@@ -89,7 +87,7 @@ const fiatTotal = computed(() => {
         .toString()
     );
 
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
 });
 
 /**

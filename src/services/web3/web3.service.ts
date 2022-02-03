@@ -12,6 +12,7 @@ import { logFailedTx } from '@/lib/utils/logging';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { WalletError } from '@/types';
+import { Network } from '@balancer-labs/sdk';
 
 interface Web3Profile {
   ens: string | null;
@@ -23,6 +24,7 @@ const EIP1559_UNSUPPORTED_REGEX = /network does not support EIP-1559/i;
 
 export default class Web3Service {
   appProvider: JsonRpcProvider;
+  ensProvider: JsonRpcProvider;
   userProvider!: ComputedRef<Web3Provider>;
 
   constructor(
@@ -30,6 +32,7 @@ export default class Web3Service {
     private readonly config: ConfigService = configService
   ) {
     this.appProvider = this.rpcProviderService.jsonProvider;
+    this.ensProvider = this.rpcProviderService.getJsonProvider(Network.MAINNET);
   }
 
   public setUserProvider(provider: ComputedRef<Web3Provider>) {
@@ -38,7 +41,7 @@ export default class Web3Service {
 
   async getEnsName(address: string): Promise<string | null> {
     try {
-      return await this.appProvider.lookupAddress(address);
+      return await this.ensProvider.lookupAddress(address);
     } catch (error) {
       return null;
     }
@@ -46,7 +49,7 @@ export default class Web3Service {
 
   async getEnsAvatar(address: string): Promise<string | null> {
     try {
-      return await resolveENSAvatar(this.appProvider, address);
+      return await resolveENSAvatar(this.ensProvider, address);
     } catch (error) {
       return null;
     }

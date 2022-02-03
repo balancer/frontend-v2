@@ -14,9 +14,9 @@ function setDarkMode(val: boolean): void {
   darkMode.value = val;
   lsSet(LS_KEYS.App.DarkMode, darkMode.value.toString());
   if (darkMode.value) {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add('dark', 'bg-gray-900');
   } else {
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark', 'bg-gray-900');
   }
 }
 

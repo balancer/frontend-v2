@@ -3,7 +3,7 @@ import { ref, watchEffect, computed } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TradePairToggle from './TradePairToggle.vue';
 import { bnum } from '@/lib/utils';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
 
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { getToken } = useTokens();
 
 /**
@@ -89,7 +89,7 @@ const rateLabel = computed(() => {
     outSymbol = tokenIn.value.symbol;
   }
 
-  return `1 ${inSymbol} = ${fNum(rate, 'token')} ${outSymbol}`;
+  return `1 ${inSymbol} = ${fNum2(rate, FNumFormats.token)} ${outSymbol}`;
 });
 
 /**

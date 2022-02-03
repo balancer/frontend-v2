@@ -1,13 +1,12 @@
 import { computed, Ref, watch, ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import useNumbers, { fNum } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
-import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
@@ -15,40 +14,15 @@ import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 
-export type InvestMathResponse = {
-  // computed
-  hasAmounts: Ref<boolean>;
-  fullAmounts: Ref<string[]>;
-  fullAmountsScaled: Ref<BigNumber[]>;
-  batchSwapAmountMap: Ref<Record<string, BigNumber>>;
-  fiatTotal: Ref<string>;
-  fiatTotalLabel: Ref<string>;
-  priceImpact: Ref<number>;
-  highPriceImpact: Ref<boolean>;
-  maximized: Ref<boolean>;
-  optimized: Ref<boolean>;
-  proportionalAmounts: Ref<string[]>;
-  batchSwap: Ref<BatchSwap | null>;
-  bptOut: Ref<string>;
-  hasZeroBalance: Ref<boolean>;
-  hasNoBalances: Ref<boolean>;
-  hasAllTokens: Ref<boolean>;
-  shouldFetchBatchSwap: Ref<boolean>;
-  batchSwapLoading: Ref<boolean>;
-  supportsPropotionalOptimization: Ref<boolean>;
-  // methods
-  maximizeAmounts: () => void;
-  optimizeAmounts: () => void;
-  getBatchSwap: () => Promise<void>;
-};
+export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
-export default function useInvestFormMath(
+export default function useInvestMath(
   pool: Ref<FullPool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,
   sor: SOR
-): InvestMathResponse {
+) {
   /**
    * STATE
    */
@@ -59,11 +33,10 @@ export default function useInvestFormMath(
   /**
    * COMPOSABLES
    */
-  const { toFiat } = useNumbers();
+  const { toFiat, fNum2 } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
   const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
-  const { currency } = useUserSettings();
   const {
     promises: batchSwapPromises,
     processing: processingBatchSwaps,
@@ -130,7 +103,7 @@ export default function useInvestFormMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum(fiatTotal.value, currency.value)
+    fNum2(fiatTotal.value, FNumFormats.fiat)
   );
 
   const hasAmounts = computed(() =>
@@ -267,6 +240,7 @@ export default function useInvestFormMath(
       Object.values(batchSwapAmountMap.value),
       pool.value.address.toLowerCase()
     );
+
     batchSwapLoading.value = false;
   }
 

@@ -17,7 +17,7 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useUserSettings from '@/composables/useUserSettings';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import { BatchSwapOut } from '@/types';
@@ -33,43 +33,14 @@ import { setError, WithdrawalError } from './useWithdrawalState';
 /**
  * TYPES
  */
-export type WithdrawMathResponse = {
-  hasAmounts: Ref<boolean>;
-  fullAmounts: Ref<string[]>;
-  amountsOut: Ref<string[]>;
-  fiatAmounts: Ref<string[]>;
-  tokenOutAmount: Ref<string>;
-  propBptIn: Ref<string>;
-  bptIn: Ref<string>;
-  bptBalance: Ref<string>;
-  hasBpt: Ref<boolean>;
-  fiatTotalLabel: Ref<string>;
-  priceImpact: Ref<number>;
-  highPriceImpact: Ref<boolean>;
-  proportionalAmounts: Ref<string[]>;
-  proportionalPoolTokenAmounts: Ref<string[]>;
-  singleAssetMaxes: Ref<string[]>;
-  exactOut: Ref<boolean>;
-  singleAssetMaxOut: Ref<boolean>;
-  tokenOutPoolBalance: Ref<string>;
-  shouldFetchBatchSwap: Ref<boolean>;
-  batchSwap: Ref<BatchSwapOut | null>;
-  batchSwapAmountsOutMap: Ref<Record<string, string>>;
-  batchSwapKind: Ref<SwapKind>;
-  shouldUseBatchRelayer: Ref<boolean>;
-  batchRelayerSwap: Ref<any | null>;
-  loadingAmountsOut: Ref<boolean>;
-  initMath: () => Promise<void>;
-  resetMath: () => void;
-  getSwap: () => Promise<void>;
-};
+export type WithdrawMathResponse = ReturnType<typeof useWithdrawMath>;
 
 export default function useWithdrawMath(
   pool: Ref<FullPool>,
   isProportional: Ref<boolean> = ref(true),
   tokenOut: Ref<string> = ref(''),
   tokenOutIndex: Ref<number> = ref(0)
-): WithdrawMathResponse {
+) {
   /**
    * STATE
    */
@@ -90,7 +61,7 @@ export default function useWithdrawMath(
    * COMPOSABLES
    */
   const { isWalletReady, account } = useWeb3();
-  const { toFiat, fNum } = useNumbers();
+  const { toFiat, fNum2 } = useNumbers();
   const {
     tokens: allTokens,
     balances,
@@ -103,7 +74,6 @@ export default function useWithdrawMath(
     addSlippageScaled,
     minusSlippageScaled
   } = useSlippage();
-  const { currency } = useUserSettings();
   const { isStablePhantomPool, isWeightedPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
@@ -385,7 +355,7 @@ export default function useWithdrawMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum(fiatTotal.value, currency.value)
+    fNum2(fiatTotal.value, FNumFormats.fiat)
   );
 
   const shouldFetchBatchSwap = computed(

@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { toRef, computed, ref } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
-import useWeb3 from '@/services/web3/useWeb3';
-import { usePool } from '@/composables/usePool';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { useRouter } from 'vue-router';
+
 import { bnum } from '@/lib/utils';
+
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+
+import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+
+import useTokens from '@/composables/useTokens';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
+
+import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 /**
  * TYPES
@@ -26,10 +34,12 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { tokens, balances, balanceFor, getTokens } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { isStableLikePool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
+  toRef(props, 'pool')
+);
+const router = useRouter();
 
 /**
  * SERVICES
@@ -84,27 +94,50 @@ const tokenAddresses = computed((): string[] => {
   return props.pool.tokenAddresses;
 });
 
-const fiatTotal = computed(() => {
-  const fiatValue = tokenAddresses.value
+const fiatValue = computed(() =>
+  tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
     .reduce((total, value) =>
       bnum(total)
         .plus(value)
         .toString()
-    );
-  return fNum(fiatValue, currency.value);
-});
+    )
+);
 
+const showMigrateButton = computed(
+  () =>
+    bnum(bptBalance.value).gt(0) &&
+    isMigratablePool(props.pool) &&
+    // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
+    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+);
 /**
  * METHODS
  */
 function weightLabelFor(address: string): string {
-  return fNum(props.pool.onchain.tokens[address].weight, 'percent_lg');
+  return fNum2(props.pool.onchain.tokens[address].weight, {
+    style: 'percent',
+    maximumFractionDigits: 0
+  });
 }
 
 function fiatLabelFor(index: number, address: string): string {
   const fiatValue = toFiat(propTokenAmounts.value[index], address);
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, FNumFormats.fiat);
+}
+
+function navigateToPoolMigration(pool: FullPool) {
+  router.push({
+    name: 'migrate-pool',
+    params: {
+      from: pool.id,
+      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId
+    },
+    query: {
+      returnRoute: 'pool',
+      returnParams: JSON.stringify({ id: pool.id })
+    }
+  });
 }
 </script>
 
@@ -116,7 +149,7 @@ function fiatLabelFor(index: number, address: string): string {
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h5>
         <h5>
-          {{ isWalletReady ? fiatTotal : '-' }}
+          {{ isWalletReady ? fNum2(fiatValue, FNumFormats.fiat) : '-' }}
         </h5>
       </div>
     </template>
@@ -146,12 +179,25 @@ function fiatLabelFor(index: number, address: string): string {
         </div>
 
         <span class="flex flex-col flex-grow text-right">
-          {{ isWalletReady ? fNum(propTokenAmounts[index], 'token') : '-' }}
+          {{
+            isWalletReady
+              ? fNum2(propTokenAmounts[index], FNumFormats.token)
+              : '-'
+          }}
           <span class="text-gray-500 text-sm">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>
         </span>
       </div>
+      <BalBtn
+        v-if="showMigrateButton"
+        color="blue"
+        class="mt-4"
+        block
+        @click.prevent="navigateToPoolMigration(props.pool)"
+      >
+        {{ $t('migratePool.migrateToBoostedPool') }}
+      </BalBtn>
     </div>
   </BalCard>
 </template>

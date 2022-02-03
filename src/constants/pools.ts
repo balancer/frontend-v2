@@ -1,4 +1,52 @@
-export const POOLS = {
+import { isMainnet } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
+
+export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
+
+export type FactoryType =
+  | 'oracleWeightedPool'
+  | 'weightedPool'
+  | 'stablePool'
+  | 'managedPool'
+  | 'liquidityBootstrappingPool'
+  | 'boostedPool';
+
+export type Pools = {
+  IdsMap: Partial<Record<Network, Record<'staBAL' | 'bbAaveUSD', string>>>;
+  Pagination: {
+    PerPage: number;
+  };
+  DelegateOwner: string;
+  ZeroAddress: string;
+  DynamicFees: {
+    Gauntlet: string[];
+  };
+  BlockList: string[];
+  ExcludedPoolTypes: string[];
+  Stable: {
+    AllowList: string[];
+  };
+  Investment: {
+    AllowList: string[];
+  };
+  Factories: Record<string, FactoryType>;
+};
+
+export const POOLS: Pools = {
+  IdsMap: {
+    [Network.MAINNET]: {
+      staBAL:
+        '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+      bbAaveUSD:
+        '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
+    },
+    [Network.KOVAN]: {
+      staBAL:
+        '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e',
+      bbAaveUSD:
+        '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8'
+    }
+  },
   Pagination: {
     PerPage: 10
   },
@@ -68,7 +116,8 @@ export const POOLS = {
       '0x386b5d43ba8b97c43d4afb4cdae7877a1b295e8a000000000000000000000020', // tusd arbitrum
       '0x5028497af0c9a54ea8c6d42a054c0341b9fc616800020000000000000000007b', // dusd polygon
       '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // Mainnet bb-a-USD
-      '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8' // kovan bb-a-USD
+      '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8', // kovan bb-a-USD,
+      '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e' // kovan staBAL3
     ]
   },
   Investment: {

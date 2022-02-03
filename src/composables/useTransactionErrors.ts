@@ -30,7 +30,7 @@ export default function useTranasactionErrors() {
       title: t('transactionErrors.default.title'),
       description: `${message} ${t(
         'transactionErrors.default.description'
-      )}.`.trim()
+      )}`.trim()
     };
   }
 
