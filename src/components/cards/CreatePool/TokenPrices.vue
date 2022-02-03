@@ -7,7 +7,7 @@ import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 
 type Props = {
-  toggleUnknownPriceModal: () => void;
+  toggleUnknownPriceModal?: () => void;
 };
 
 defineProps<Props>();

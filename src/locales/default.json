@@ -61,6 +61,7 @@
     "approveGP": "Approve trading on Gnosis Protocol",
     "approveLidoRelayer": "Approve Lido relayer",
     "approveBatchRelayer": "Approve Batch relayer",
+    "approvingBatchRelayer": "Approving Batch relayer",
     "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
     "approveTokens": "Approve tokens",
     "approving": "Approving",
@@ -160,6 +161,47 @@
         "zeroWeightTitle": "You’ve included a token with zero weight",
         "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%."
     },
+    "migratePool": {
+        "aaveBoostedPool": {
+            "whyMigrate": {
+                "title": "Why migrate?",
+                "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."                
+            },
+            "migrateToPool": {
+                "title": "Migrate to a boosted pool"
+            },
+            "poolStats": {
+                "title": "Boosted pool stats"
+            }
+        },
+        "previewModal": {
+            "titles": {
+                "default": "Migrate preview",
+                "confirmed": "Migrate confirmed"
+            },
+            "riskWarnings": {
+                "title": "Some risks - you may lose funds in the pool if:",
+                "risks": {
+                    "loseUSDPeg": "Any of the tokens in this pool permanently loses it's target peg of 1 USD.",
+                    "aaveStableExploit": "Problems arise on Aave. This is because, most of the stablecoins will be invested into Aave aTokens to earn you additional yield."
+                }
+            },
+            "summary": {
+                "title": "Migrate summary"
+            },
+            "actions": {                
+                "title": "Migrate pool",
+                "loading": "Confirm pool migration in wallet",
+                "migrationStep": "Confirm pool migration"                
+            },
+            "priceImpactAccept": "I accept the high price impact from pool migration."
+        },
+        "migrateToBoostedPool": "Migrate to a boosted pool",
+        "errorLoadingMigration": {
+            "title": "Something went wrong",
+            "description": "An error occurred while trying to show pool migration."
+        }      
+    },
     "creating": "Creating",
     "createPool": "Create pool",
     "createPoolTooltip": "Create {0} pool",
@@ -232,6 +274,7 @@
         }
     },
     "goToBalancerV1Site": "Go to the Balancer V1 site ->",
+    "goToMigratedPool": "Go to migrated pool",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
     "highPriceImpactDetailed": "This trade is significantly moving the market price.",
@@ -325,6 +368,7 @@
     "missingTokenPrices": "Missing token prices",
     "missingPoolNameOrSymbolInfo": "There is a missing pool name or symbol, fill it in before creating the pool.",
     "menu": "Menu",
+    "migrate": "Migrate",
     "month": "month",
     "months": "months",
     "mustBeAtLeast": "must be at least {0} characters",
@@ -434,6 +478,7 @@
     "previewTradeTransactions": "Preview trade transactions",
     "previewUnwrap": "Preview {0} Unwrap",
     "previewWrap": "Preview {0} Wrap",
+    "previewMigrate": "Preview migrate",
     "priceImpact": "Price impact",
     "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
     "priceImpactCheckbox": "Price impact acknowledgement",
@@ -605,6 +650,7 @@
         "claim": "Claim",
         "createPool": "Create pool",
         "fundPool": "Fund pool",
+        "migratePool": "Migrate pool",
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
@@ -643,12 +689,12 @@
     "transactionSummary": {
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
-        "approveGnosisRelayer": "Approve Gnosis relayer",
-        "approveLidoRelayer": "Approve Lido relayer",
+        "approveRelayer": "Approve {0} relayer",
         "createPool": "Create pool",
         "fundPool": "Fund pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
+        "migratePool": "{0} {1} to {2}",
         "wrapUnwrap": "{0} {1} to {2}"
     },
     "transactionType": "Transaction type",
@@ -716,6 +762,7 @@
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool",
+    "yourBalanceInPool": "Your balance in this pool",
     "trendingPairs": "Trending pairs",
     "chooseAPair": "Please select a valid pair",
     "youCanInvest": "You can invest"
