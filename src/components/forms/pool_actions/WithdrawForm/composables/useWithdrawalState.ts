@@ -5,11 +5,36 @@ import { isStablePhantom } from '@/composables/usePool';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import { BaseContent } from '@/types';
+import i18n from '@/plugins/i18n';
+
+/**
+ * TYPES
+ */
+export enum WithdrawalError {
+  SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT = 'SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT'
+}
+
+type WithdrawalState = {
+  isProportional: boolean;
+  tokenOut: string;
+  validInput: boolean;
+  highPriceImpactAccepted: boolean;
+  submitting: boolean;
+  sorReady: boolean;
+  slider: {
+    val: number;
+    max: number;
+    min: number;
+    interval: number;
+  };
+  error: WithdrawalError | null;
+};
 
 /**
  * STATE
  */
-const state = reactive({
+const state = reactive<WithdrawalState>({
   isProportional: true,
   tokenOut: '',
   validInput: true,
@@ -21,8 +46,33 @@ const state = reactive({
     max: 1000,
     min: 0,
     interval: 1
-  }
+  },
+  error: null
 });
+
+/**
+ * METHODS
+ */
+export function setError(error: WithdrawalError | null): void {
+  state.error = error;
+}
+
+export function parseError(error: WithdrawalError): BaseContent {
+  switch (error) {
+    case WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT:
+      return {
+        title: i18n.global.t('warning'),
+        description: i18n.global.t(
+          `withdraw.errors.${WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT}`
+        )
+      };
+    default:
+      return {
+        title: i18n.global.t('Ooops'),
+        description: i18n.global.t('somethingWentWrong')
+      };
+  }
+}
 
 export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   /**
@@ -69,6 +119,8 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
     tokenOutIndex,
     batchRelayerApproval,
     // methods
-    maxSlider
+    maxSlider,
+    setError,
+    parseError
   };
 }

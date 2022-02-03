@@ -1,12 +1,17 @@
 import { Ref, computed } from 'vue';
+import { getAddress } from 'ethers/lib/utils';
+
 import {
   PoolType,
   AnyPool,
   FullPool
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
-import { getAddress } from 'ethers/lib/utils';
+
 import { bnum } from '@/lib/utils';
+
+import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+
 import useNumbers from './useNumbers';
 
 /**
@@ -67,6 +72,12 @@ export function isWstETH(pool: AnyPool): boolean {
   );
 }
 
+export function isMigratablePool(pool: AnyPool) {
+  return POOL_MIGRATIONS.some(
+    poolMigrationInfo => poolMigrationInfo.fromPoolId === pool.id
+  );
+}
+
 export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
 }
@@ -104,8 +115,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       .map(
         token =>
           `${fNum2(token.weight, {
-            style: 'unit',
-            unit: 'percent',
+            style: 'percent',
             maximumFractionDigits: 0
           })} ${token.symbol}`
       )
@@ -186,6 +196,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeth,
     noInitLiquidity,
     lpTokensFor,
+    isMigratablePool,
     poolWeightsLabel
   };
 }

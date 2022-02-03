@@ -15,7 +15,7 @@
           {{
             fNum2(totalInvestedAmount || '', {
               style: 'currency',
-              fixedFormat: true
+              dontAdjustLarge: true
             })
           }}
         </span>

@@ -17,9 +17,9 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 const vaultAddress = configService.network.addresses.vault;
 
 export enum Relayer {
-  GNOSIS = 'gnosis',
-  LIDO = 'lido',
-  BATCH = 'batch'
+  GNOSIS = 'Gnosis',
+  LIDO = 'Lido',
+  BATCH = 'Batch'
 }
 
 const relayerAddressMap = {
@@ -68,7 +68,7 @@ export default function useRelayerApproval(
     (): TransactionActionInfo => ({
       label: t('approveBatchRelayer'),
       loadingLabel: t('checkWallet'),
-      confirmingLabel: t('confirming'),
+      confirmingLabel: t('approvingBatchRelayer'),
       stepTooltip: t('approveBatchRelayerTooltip'),
       action: approve
     })
@@ -107,10 +107,7 @@ export default function useRelayerApproval(
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary:
-        relayer === Relayer.LIDO
-          ? t('transactionSummary.approveLidoRelayer')
-          : t('transactionSummary.approveGnosisRelayer'),
+      summary: t('transactionSummary.approveRelayer', [relayer]),
       details: {
         contractAddress: vaultAddress,
         spender: relayerAddress.value

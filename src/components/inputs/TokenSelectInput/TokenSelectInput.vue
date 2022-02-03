@@ -82,8 +82,7 @@ function tokenFor(option: string): TokenInfo {
       <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
         {{
           fNum2(weight, {
-            style: 'unit',
-            unit: 'percent',
+            style: 'percent',
             maximumFractionDigits: 0
           })
         }}
@@ -112,8 +111,7 @@ function tokenFor(option: string): TokenInfo {
           <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
             {{
               fNum2(weight, {
-                style: 'unit',
-                unit: 'percent',
+                style: 'percent',
                 maximumFractionDigits: 0
               })
             }}

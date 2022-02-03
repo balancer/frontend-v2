@@ -14,8 +14,14 @@
         :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
+        :showMigrationColumn="showMigrationColumn"
         :selectedTokens="selectedTokens"
         class="mb-8"
+        :key="
+          `userPoolsTable-${
+            showMigrationColumn ? 'withMigrationCol' : 'withoutMigrationCol'
+          }`
+        "
       />
       <div class="px-4 lg:px-0" v-if="!hideV1Links">
         <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
@@ -89,6 +95,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { isMigratablePool } from '@/composables/usePool';
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
 
 export default defineComponent({
   components: {
@@ -135,6 +144,18 @@ export default defineComponent({
 
     const hideV1Links = computed(() => !isV1Supported);
 
+    const showMigrationColumn = computed(() =>
+      userPools.value?.some(pool => {
+        console.log(pool.shares);
+        return (
+          isMigratablePool(pool) &&
+          // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
+          bnum(pool.shares).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+        );
+      })
+    );
+
+    // userPools.value[0].shares
     watch(poolsQuery.error, () => {
       if (poolsQuery.error.value) {
         addAlert({
@@ -150,6 +171,8 @@ export default defineComponent({
         removeAlert('pools-fetch-error');
       }
     });
+
+    watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 
     /**
      * METHODS
@@ -173,6 +196,7 @@ export default defineComponent({
       selectedTokens,
       isElementSupported,
       upToMediumBreakpoint,
+      showMigrationColumn,
 
       //methods
       router,

@@ -74,7 +74,7 @@ const setTradePair = (pair: TrendingPair[]) => {
     <div class="trending-pairs">
       <div
         v-if="!upToLargeBreakpoint"
-        class="flex justify-between p-3 lg:border-b"
+        class="flex justify-between p-3 lg:border-b dark:border-gray-700"
       >
         <h6>{{ $t('trendingPairs') }}</h6>
       </div>
