@@ -267,16 +267,13 @@ export default defineComponent({
               ${params
                 .map(
                   param => `
-                <span>
-                ${param.marker} ${
-                    param.seriesName
-                  } <span class='font-medium'>${fNum2(
-                    param.value[1],
-                    props.axisLabelFormatter.yAxis
-                  )})}
-                  </span>
-                </span>
-              `
+                    <span>
+                      ${param.marker} ${param.seriesName}
+                      <span class='font-bold'>
+                        ${fNum2(param.value[1], props.axisLabelFormatter.yAxis)}
+                      </span>
+                    </span>
+                  `
                 )
                 .join('')}
             </div>
