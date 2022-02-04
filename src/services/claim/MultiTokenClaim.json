@@ -94,6 +94,13 @@
             "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
             "weekStart": 10
+        },
+        {
+            "label": "QI",
+            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+            "token": "0x580a84c73811e1839f75d86d75d88cca0c241ff4",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-pickle-qi.json",
+            "weekStart": 1
         }
       ],
     "42161": [
