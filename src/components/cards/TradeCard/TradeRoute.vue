@@ -440,7 +440,7 @@ export default defineComponent({
         [Network.ARBITRUM]: 'arbitrum.'
       };
       const prefix = prefixMap[chainId] || '';
-      if (props.sorReturn.isV1swap && chainId === 1) {
+      if (props.sorReturn.isV1swap && chainId === 42220) {
         return `https://pools.balancer.exchange/#/pool/${id}`;
       } else {
         return props.sorReturn.isV1swap

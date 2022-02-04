@@ -4,7 +4,7 @@ import { ref } from 'vue';
  * TYPES
  */
 export enum Network {
-  MAINNET = 1,
+  MAINNET = 42220,
   ROPSTEN = 3,
   RINKEBY = 4,
   GÖRLI = 5,

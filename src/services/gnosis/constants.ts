@@ -10,7 +10,7 @@ export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber(); // Ma
 export const GP_SUPPORTED_NETWORKS = Object.keys(GPv2VaultRelayer).map(
   parseInt
 );
-
+console.log(GPv2Settlement)
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: string = (
   GPv2Settlement[networkId.value] ?? GPv2Settlement[Network.MAINNET]
 ).address;
