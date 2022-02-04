@@ -87,6 +87,13 @@
             "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
             "weekStart": 1
+        },
+        {
+            "label": "TUSD",
+            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+            "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
+            "weekStart": 10
         }
       ],
     "42161": [
@@ -110,6 +117,13 @@
             "token": "0x965772e0e9c84b6f359c8597c891108dcf1c5b1a",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-pickle-arbitrum.json",
             "weekStart": 4
+        },
+        {
+            "label": "PICKLE",
+            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+            "token": "0x965772e0e9c84b6f359c8597c891108dcf1c5b1a",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-pickle-arbitrum.json",
+            "weekStart": 18
         }
     ]
   }
