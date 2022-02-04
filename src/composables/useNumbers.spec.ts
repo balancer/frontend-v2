@@ -260,6 +260,15 @@ describe('useNumbers', () => {
         expect(format2).toEqual(format1);
       });
     });
+
+    it('Should not return < 0.0001 if fixedFormat is true', () => {
+      const testNumber = '0.00000123';
+      const formattedNumber = fNum2(testNumber, {
+        maximumSignificantDigits: 6,
+        fixedFormat: true
+      });
+      expect(formattedNumber).toEqual(testNumber);
+    });
   });
 
   describe('toFiat', () => {
