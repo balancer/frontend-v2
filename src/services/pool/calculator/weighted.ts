@@ -85,14 +85,11 @@ export default class Weighted {
     const tokenNormalizedWeight = bnum(
       this.calc.poolTokenWeights[tokenIndex].toString()
     );
-    const bptAmountIn = bnum(
-      parseUnits(bptAmount, this.calc.poolDecimals).toString()
-    );
 
     return SDK.WeightedMath._calcTokenOutGivenExactBptIn(
       tokenBalance,
       tokenNormalizedWeight,
-      bptAmountIn,
+      bnum(bptAmount),
       bnum(this.calc.poolTotalSupply.toString()),
       bnum(this.calc.poolSwapFee.toString())
     );
@@ -113,14 +110,13 @@ export default class Weighted {
         bptAmount = this.bptInForExactTokensOut(tokenAmounts);
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       } else {
-        bptAmount = parseUnits(
-          this.calc.bptBalance,
-          this.calc.poolDecimals
-        ).toString();
+        bptAmount =
+          opts.queryBPT ||
+          parseUnits(this.calc.bptBalance, this.calc.poolDecimals).toString();
         tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
-            this.calc.bptBalance,
+            bptAmount,
             opts.tokenIndex
           ).toString();
           return formatUnits(

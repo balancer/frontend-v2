@@ -33,6 +33,7 @@ type Props = {
   customBalance?: string;
   balanceLabel?: string;
   disableMax?: boolean;
+  disableBalance?: boolean;
   balanceLoading?: boolean;
   hint?: string;
   hintAmount?: string;
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
   noMax: false,
   fixedToken: false,
   disableMax: false,
+  disableBalance: false,
   balanceLoading: false,
   hintAmount: '',
   disableNativeAssetBuffer: false,
@@ -82,7 +84,6 @@ const _address = ref<string>('');
 /**
  * COMPOSABLEs
  */
-
 const { getToken, balanceFor, nativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { t } = useI18n();
@@ -257,7 +258,7 @@ watchEffect(() => {
         <div
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
-          <div v-if="!isWalletReady" />
+          <div v-if="!isWalletReady || disableBalance" />
           <div v-else class="cursor-pointer flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
 
