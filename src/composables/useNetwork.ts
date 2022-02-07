@@ -11,7 +11,7 @@ export enum Network {
   KOVAN = 42,
   POLYGON = 137,
   ARBITRUM = 42161,
-  ETHEREUM = 1
+  ETHEREUM 
 }
 
 /**

@@ -181,7 +181,7 @@ export default {
     );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
-
+console.log(networkConfig.addresses)
     const wrappedNativeAsset = computed(
       (): TokenInfo => getToken(networkConfig.addresses.weth)
     );
@@ -251,7 +251,7 @@ export default {
       const tokensMap = {};
       const tokens = tokenLists.map(list => list.tokens).flat();
       tokens.forEach(token => {
-        if(token.address) {
+        if (token.address) {
           const address: string = token.address;
           // Don't include if already included
           if (Object.keys(tokensMap).includes(address)) return;
@@ -263,7 +263,6 @@ export default {
             address
           };
         }
-
       });
 
       return tokensMap;
