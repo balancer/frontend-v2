@@ -114,6 +114,8 @@ export default function usePoolsQuery(
   }
 
   const queryFn = async ({ pageParam = 0 }) => {
+    console.log('>>>>LOADING POOLS LIST<<<<');
+    console.time('poolsQuery');
     const tokensListFilterKey = filterOptions?.isExactTokensList
       ? 'tokensList'
       : 'tokensList_contains';
@@ -130,6 +132,8 @@ export default function usePoolsQuery(
     }
 
     const pools = await balancerSubgraphService.pools.get(queryArgs);
+    console.timeLog('poolsQuery');
+    console.log('\tSubgraph pools fetched');
 
     for (let i = 0; i < pools.length; i++) {
       const isStablePhantomPool = isStablePhantom(pools[i].poolType);
@@ -139,6 +143,8 @@ export default function usePoolsQuery(
         pools[i] = await getLinearPoolAttrs(pools[i]);
       }
     }
+    console.timeLog('poolsQuery');
+    console.log('\tLinear pool attributes fetched');
 
     const tokens = flatten(
       pools.map(pool => [
@@ -149,6 +155,8 @@ export default function usePoolsQuery(
     );
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
+    console.timeLog('poolsQuery');
+    console.log('\tAdditional tokens injected');
 
     const decoratedPools = await balancerSubgraphService.pools.decorate(
       pools,
@@ -156,6 +164,8 @@ export default function usePoolsQuery(
       prices.value,
       currency.value
     );
+    console.timeLog('poolsQuery');
+    console.log('\tPools decorated');
 
     // TODO - cleanup and extract elsewhere in refactor
     for (let i = 0; i < decoratedPools.length; i++) {
@@ -234,6 +244,9 @@ export default function usePoolsQuery(
         }
       }
     }
+    console.timeEnd('poolsQuery');
+    console.log('\tAdditional boosted pool onchain data fetched');
+    console.log('>>>>FINISHED LOADING POOLS LIST<<<<');
 
     return {
       pools: decoratedPools,
