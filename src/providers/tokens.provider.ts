@@ -181,7 +181,7 @@ export default {
     );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
-console.log(networkConfig.addresses)
+    console.log(networkConfig.addresses);
     const wrappedNativeAsset = computed(
       (): TokenInfo => getToken(networkConfig.addresses.weth)
     );
