@@ -53,7 +53,7 @@
         <BalAlert
           v-if="hasUnstakedBpt && activeTab === 'my-investments'"
           title="You have unstaked BPT in your wallet"
-          description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
+          description="If you deposit your BPT into the farm, you will earn additional rewards."
           type="warning"
           size="sm"
           class=""

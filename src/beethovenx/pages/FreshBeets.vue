@@ -106,7 +106,7 @@ const activeTab = ref(tabs[0].value);
         <BalAlert
           v-if="userBptTokenBalance.eq(0) && userUnstakedFbeetsBalance.gt(0)"
           title="You have unstaked fBEETS in your wallet"
-          description="If you deposit your fBEETS into the farm, you will earn additional rewards paid out in BEETS."
+          description="If you deposit your fBEETS into the farm, you will earn additional rewards."
           type="warning"
           size="md"
           class="mb-4"

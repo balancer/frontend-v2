@@ -59,7 +59,7 @@ const activeTab = ref(tabs[0].value);
     <BalAlert
       v-if="!loading && props.hasUnstakedBpt && !isOldFbeetsFarm"
       title="You have unstaked BPT in your wallet"
-      description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
+      description="If you deposit your BPT into the farm, you will earn additional rewards."
       type="warning"
       size="sm"
       class="mb-3"
