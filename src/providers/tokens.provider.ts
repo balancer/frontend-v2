@@ -250,18 +250,20 @@ export default {
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
       const tokens = tokenLists.map(list => list.tokens).flat();
-
       tokens.forEach(token => {
-        const address: string = getAddress(token.address);
-        // Don't include if already included
-        if (Object.keys(tokensMap).includes(address)) return;
-        // Don't include if not on app network
-        if (token.chainId !== networkConfig.chainId) return;
+        if(token.address) {
+          const address: string = token.address;
+          // Don't include if already included
+          if (Object.keys(tokensMap).includes(address)) return;
+          // Don't include if not on app network
+          if (token.chainId !== networkConfig.chainId) return;
 
-        tokensMap[address] = {
-          ...token,
-          address
-        };
+          tokensMap[address] = {
+            ...token,
+            address
+          };
+        }
+
       });
 
       return tokensMap;
