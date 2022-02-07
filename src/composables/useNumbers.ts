@@ -14,7 +14,7 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
   dontAdjustLarge?: boolean; // If true, don't auto-adjust if the number is large
 }
 
-export const FNumFormats = {
+export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'percent',
     minimumFractionDigits: 2,
@@ -149,7 +149,12 @@ export default function useNumbers() {
       formatterOptions.currency = currency.value;
     }
 
-    if (!options.style && number > 0 && number < 0.0001) {
+    if (
+      !options.fixedFormat &&
+      !options.style &&
+      number > 0 &&
+      number < 0.0001
+    ) {
       return '< 0.0001';
     }
 

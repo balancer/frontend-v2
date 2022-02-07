@@ -40,7 +40,10 @@ const {
   highPriceImpactAccepted,
   validInput,
   maxSlider,
-  tokensOut
+  tokensOut,
+  error,
+  parseError,
+  setError
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
@@ -105,6 +108,7 @@ onBeforeMount(() => {
       :address="tokenOut"
       v-model:amount="tokenOutAmount"
       v-model:isValid="validInput"
+      :disableBalance="singleAssetMaxes[tokenOutIndex] === '-'"
       :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
@@ -131,6 +135,17 @@ onBeforeMount(() => {
         :label="$t('priceImpactAccept', [$t('withdrawing')])"
       />
     </div>
+
+    <BalAlert
+      v-if="error !== null"
+      type="error"
+      :title="parseError(error).title"
+      :description="parseError(error).description"
+      class="mt-4"
+      block
+      actionLabel="Dismiss"
+      @actionClick="setError(null)"
+    />
 
     <div class="mt-4">
       <BalBtn

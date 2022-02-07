@@ -28,6 +28,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import { SwapType, TransactionData } from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
+import { setError, WithdrawalError } from './useWithdrawalState';
 
 /**
  * TYPES
@@ -73,7 +74,7 @@ export default function useWithdrawMath(
     addSlippageScaled,
     minusSlippageScaled
   } = useSlippage();
-  const { isStablePhantomPool } = usePool(pool);
+  const { isStablePhantomPool, isWeightedPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -118,10 +119,29 @@ export default function useWithdrawMath(
     tokenAddresses.value.map(address => getToken(address))
   );
 
-  const bptBalance = computed(() => balanceFor(pool.value.address));
+  const bptBalance = computed((): string => balanceFor(pool.value.address));
+
   const bptBalanceScaled = computed((): string =>
     parseUnits(bptBalance.value, poolDecimals.value).toString()
   );
+
+  /**
+   * Returns the absolute max BPT withdrawable from a pool.
+   * In most cases this is just the user's BPT balance.
+   *
+   * However, for weighted pools, if the user is a majority LP they may
+   * only be able to withdraw up to the 30% limit.
+   */
+  const absMaxBpt = computed((): string => {
+    if (!isWeightedPool.value) return bptBalance.value;
+    // Maximum BPT allowed from weighted pool is 30%
+    const poolMax = bnum(pool.value.totalShares)
+      .times(0.3)
+      .toFixed(poolDecimals.value, OldBigNumber.ROUND_DOWN);
+    // If the user's bpt balance is greater than the withdrawal limit for
+    // weighted pools we need to return the poolMax bpt value.
+    return OldBigNumber.min(bptBalance.value, poolMax).toString();
+  });
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
@@ -212,7 +232,7 @@ export default function useWithdrawMath(
     if (isProportional.value)
       return parseUnits(propBptIn.value, poolDecimals.value).toString();
     if (!exactOut.value)
-      return parseUnits(bptBalance.value, poolDecimals.value).toString(); // Single asset max withdrawal
+      return parseUnits(absMaxBpt.value, poolDecimals.value).toString(); // Single asset max withdrawal
 
     // Else single asset exact out amount case
 
@@ -248,14 +268,32 @@ export default function useWithdrawMath(
   const singleAssetMaxes = computed((): string[] => {
     if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;
 
-    return poolTokens.value.map((token, tokenIndex) => {
-      return formatUnits(
-        poolCalculator
-          .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
-          .toString(),
-        token.decimals
-      );
-    });
+    try {
+      return poolTokens.value.map((token, tokenIndex) => {
+        return formatUnits(
+          poolCalculator
+            .exactBPTInForTokenOut(bptBalanceScaled.value, tokenIndex)
+            .toString(),
+          token.decimals
+        );
+      });
+    } catch (error) {
+      if ((error as Error).message.includes('MIN_BPT_IN_FOR_TOKEN_OUT')) {
+        setError(WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT);
+        return poolTokens.value.map((token, tokenIndex) => {
+          return formatUnits(
+            poolCalculator
+              .exactBPTInForTokenOut(
+                parseUnits(absMaxBpt.value, poolDecimals.value).toString(),
+                tokenIndex
+              )
+              .toString(),
+            token.decimals
+          );
+        });
+      }
+      return [];
+    }
   });
 
   // Checks if the single asset withdrawal is maxed out.
@@ -292,6 +330,7 @@ export default function useWithdrawMath(
         tokenIndex: tokenOutIndex.value,
         queryBPT: fullBPTIn.value
       })
+
       .toNumber();
   });
 

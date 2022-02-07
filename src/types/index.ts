@@ -75,3 +75,8 @@ export type QueryBuilder = (
   args?: QueryArgs,
   attrs?: QueryAttrs
 ) => Record<string, any>;
+
+export type BaseContent = {
+  title: string;
+  description: string;
+};
