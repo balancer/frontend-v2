@@ -200,7 +200,7 @@
         "errorLoadingMigration": {
             "title": "Something went wrong",
             "description": "An error occurred while trying to show pool migration."
-        }      
+        }
     },
     "creating": "Creating",
     "createPool": "Create pool",
@@ -528,6 +528,118 @@
     "swapFeeManager": "Swap fee manager",
     "switchNetwork": "Switch Network",
     "symbol": "Symbol",
+    "veBAL": {
+        "hero": {
+            "title": "Get veBAL to earn extra and get voting power",
+            "benefits": {
+                "earn": "Earn 50% of protocol revenue from swap fees",
+                "boost": "Boost yield from liquidity mining—up to 2.5x",
+                "vote": "Vote on liquidity mining incentive allocations"
+            },
+            "buttons": {
+                "getVeBAL": "Get veBAL",
+                "learnMore": "Learn more"
+            }
+        },
+        "myVeBAL": {
+            "title": "My veBAL",
+            "cards": {
+                "myLpToken": "My 80-BAL LP token",
+                "myLockedBal": "My locked 80-BAL",
+                "lockedUntil": "Locked until",
+                "myVeBAL": "My veBAL"
+            }
+        },
+        "communityVeBAL": {
+            "title": "Community veBAL",
+            "cards": {
+                "totalVeBAL": "Total veBAL",
+                "avgLockUpPeriod": "Ave. lock up period",
+                "effectiveBalLocked": "Effective BAL locked",
+                "shareOfBalLocked": "Share of BAL locked"
+            },
+            "stats": {
+                "currentWeekVoting": "Current week voting",
+                "nextWeekVoting": "Next week voting",
+                "balIncentives": "BAL incentives"                
+            },
+            "table": {
+                "poolGauge": "Pool gauge",
+                "vote": "Vote",
+                "viewMore": "View more"
+            }
+        },
+        "liquidityMining": {
+            "title": "Pools eligible for liquidity mining",
+            "votingPeriod": "Current voting period ends: {0}",
+            "table": {
+                "composition": "Composition",
+                "voteShare": "Vote share",
+                "nextApr": "Next APR",
+                "myLiquidity": "My liquidity",
+                "myVotes": "My votes"
+            }
+        },
+        "notSupported": {
+            "title": "Locking is unavailable on this network",
+            "description": "Get veBAL on Ethereum Mainnet"
+        }
+    },
+    "getVeBAL": {
+        "lock": {
+            "lockableTokens": {
+                "title": "Lockable tokens in my wallet",
+                "getMoreVeBAL": "Get {0}"
+            },
+            "howToLock": {
+                "title": "How to lock and earn?",
+                "steps": {
+                    "invest": "Invest in the {0} pool",
+                    "lock": "Lock up the resulting LP token ({0}). The longer you lock ({1} max), the more veBAL you get."
+                },
+                "earn": {
+                    "boost": "veBAL holders get boosted liquidity mining yields (up to {1}) and increased voting power.",
+                    "voting": "Use this voting power to choose which pool gauges get allocated liquidity mining incentives. Vote on the pools where you have added liquidity to earn more yield."
+                }
+            },
+            "myLockedVeBAL": {
+                "title": "My veBAL",
+                "lockedUntil": "Locked until",
+                "percentVeBAL": "% of total veBAL"
+            },
+            "lockForm": {
+                "title": "Lock to get veBAL",
+                "lockAmount": {
+                    "title": "How much do you want to lock?"
+                },
+                "lockUntil": {
+                    "title": "Lock until",
+                    "tooltip": "The longer you lock your stake, the more veBAL voting power you get (up to 4 years). You can extend the lock later. Be careful, locking is not reversible."
+                },
+                "summary": {
+                    "receive": {
+                        "title": "You'll get",
+                        "tooltip": ""
+                    },
+                    "weeklyYield": {
+                        "title": "Potential weekly staking yield",
+                        "tooltip": ""
+                    }
+                },
+                "lockPeriods": {
+                    "1w": "1 week",
+                    "1m": "1 month",
+                    "6m": "6 months",
+                    "1y": "1 year",
+                    "4y": "4 years"
+                }
+            },
+            "notSupported": {
+                "title": "Locking is unavailable on this network",
+                "description": "Get veBAL on Ethereum Mainnet"
+            }
+        }
+    },
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
     
     "theme": "Theme",
