@@ -26,16 +26,11 @@ export default function useMigrateMath(
   toPool: Ref<FullPool>
 ) {
   /**
-   * STATE
-   */
-  const batchSwap = ref<BatchSwap | null>(null);
-  const batchSwapLoading = ref(false);
-
-  /**
    * COMPOSABLES
    */
   const { tokens, balances, balanceFor, getToken } = useTokens();
   const { fNum2, toFiat } = useNumbers();
+  const toPoolTypes = usePool(toPool);
 
   /**
    * SERVICES
@@ -56,12 +51,16 @@ export default function useMigrateMath(
     ref(false)
   );
 
-  const toPoolTypes = usePool(toPool);
+  /**
+   * STATE
+   */
+  const batchSwap = ref<BatchSwap | null>(null);
+  const batchSwapLoading = ref(false);
+  const bptBalance = ref(balanceFor(fromPool.value.address));
 
   /**
    * COMPUTED
    */
-  const bptBalance = computed(() => balanceFor(fromPool.value.address));
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
