@@ -119,13 +119,20 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
-    let [pool] = await balancerSubgraphService.pools.get({
+    const pastBlock = await balancerSubgraphService.pools.timeTravelBlock(
+      '24h'
+    );
+    const {
+      pools: [pool0],
+      pastPools: [pastPool]
+    } = await balancerSubgraphService.pools.getTimetravel(pastBlock, {
       where: {
         id: id.toLowerCase(),
         totalShares_gt: -1, // Avoid the filtering for low liquidity pools
         poolType_not_in: POOLS.ExcludedPoolTypes
       }
     });
+    let pool = pool0;
 
     if (isBlocked(pool)) throw new Error('Pool not allowed');
 
@@ -157,7 +164,7 @@ export default function usePoolQuery(
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
       [{ ...pool, onchain: onchainData }],
-      '24h',
+      [pastPool],
       prices.value,
       currency.value
     );

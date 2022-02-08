@@ -7,6 +7,11 @@ export type QueryBuilder = (
   args?: QueryArgs,
   attrs?: QueryAttrs
 ) => Record<string, any>;
+export type TimetravelQueryBuilder = (
+  block: number,
+  args?: QueryArgs,
+  attrs?: QueryAttrs
+) => Record<string, any>;
 
 export enum PoolType {
   Weighted = 'Weighted',
@@ -114,6 +119,11 @@ export interface OnchainPoolData {
   linearPools?: Record<Address, LinearPoolData>;
   tokenRates?: string[];
 }
+
+export type PoolTimetravelQuery = {
+  pools: Pool[];
+  pastPools: Pool[];
+};
 
 export interface RawLinearPoolToken {
   address: string;

@@ -120,7 +120,13 @@ export default function useUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
-    const pools = await balancerSubgraphService.pools.get({
+    const pastBlock = await balancerSubgraphService.pools.timeTravelBlock(
+      '24h'
+    );
+    const {
+      pools,
+      pastPools
+    } = await balancerSubgraphService.pools.getTimetravel(pastBlock, {
       where: {
         id_in: poolSharesIds,
         poolType_not_in: POOLS.ExcludedPoolTypes
@@ -150,7 +156,7 @@ export default function useUserPoolsQuery(
 
     const decoratedPools = await balancerSubgraphService.pools.decorate(
       pools,
-      '24h',
+      pastPools,
       prices.value,
       currency.value
     );

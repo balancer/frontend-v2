@@ -26,13 +26,16 @@ import { networkId } from '@/composables/useNetwork';
 import Service from '../../balancer-subgraph.service';
 
 import queryBuilder from './query';
+import timetravelQueryBuilder from './timetravel-query';
 
 import {
   Pool,
   QueryBuilder,
   TimeTravelPeriod,
   DecoratedPool,
-  PoolToken
+  PoolToken,
+  PoolTimetravelQuery,
+  TimetravelQueryBuilder
 } from '../../types';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -55,6 +58,7 @@ export default class Pools {
   constructor(
     service: Service,
     query: QueryBuilder = queryBuilder,
+    private readonly timetravelQuery: TimetravelQueryBuilder = timetravelQueryBuilder,
     private readonly configService = _configService,
     private readonly poolServiceClass = PoolService,
     private readonly balancerContracts = balancerContractsService
@@ -71,33 +75,45 @@ export default class Pools {
     return data.pools;
   }
 
+  public async getTimetravel(
+    block: number,
+    args = {},
+    attrs = {}
+  ): Promise<PoolTimetravelQuery> {
+    const query = this.timetravelQuery(block, args, attrs);
+    console.log('query', query)
+    const data = await this.service.client.get(query);
+    console.log('data', data)
+    return data;
+  }
+
   public async decorate(
     pools: Pool[],
-    period: TimeTravelPeriod,
+    pastPools: Pool[],
     prices: TokenPrices,
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
-    // Get past state of pools
-    const blockNumber = await this.timeTravelBlock(period);
-    const block = { number: blockNumber };
-    const isInPoolIds = { id_in: pools.map(pool => pool.id) };
-    const pastPoolsQuery = this.query({ where: isInPoolIds, block });
-    let pastPools: Pool[] = [];
-    try {
-      const data: { pools: Pool[] } = await this.service.client.get(
-        pastPoolsQuery
-      );
-      pastPools = data.pools;
-    } catch {
-      // eslint-disable-previous-line no-empty
-    }
+    // // Get past state of pools
+    // const blockNumber = await this.timeTravelBlock(period);
+    // const block = { number: blockNumber };
+    // const isInPoolIds = { id_in: pools.map(pool => pool.id) };
+    // const pastPoolsQuery = this.query({ where: isInPoolIds, block });
+    // let pastPools: Pool[] = [];
+    // try {
+    //   const data: { pools: Pool[] } = await this.service.client.get(
+    //     pastPoolsQuery
+    //   );
+    //   pastPools = data.pools;
+    // } catch {
+    //   // eslint-disable-previous-line no-empty
+    // }
 
     if (this.excludedAddresses == null) {
       // fetch only once
       this.excludedAddresses = await this.getExcludedAddresses();
     }
 
-    return this.serialize(pools, pastPools, period, prices, currency);
+    return this.serialize(pools, pastPools, '24h', prices, currency);
   }
 
   public removeExcludedAddressesFromTotalLiquidity(
@@ -350,7 +366,7 @@ export default class Pools {
       .toString();
   }
 
-  private async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
+  public async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
     const currentBlock = await this.service.rpcProviderService.getBlockNumber();
     const blocksInDay = Math.round(
       twentyFourHoursInSecs / this.service.blockTime

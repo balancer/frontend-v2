@@ -131,7 +131,14 @@ export default function usePoolsQuery(
       queryArgs.where.id_in = filterOptions.poolIds.value;
     }
 
-    const pools = await balancerSubgraphService.pools.get(queryArgs);
+    const pastBlock = await balancerSubgraphService.pools.timeTravelBlock(
+      '24h'
+    );
+    // const pools = await balancerSubgraphService.pools.get(queryArgs);
+    const { pools, pastPools } = await balancerSubgraphService.pools.getTimetravel(
+      pastBlock,
+      queryArgs
+    );
     console.timeLog('poolsQuery');
     console.log('\tSubgraph pools fetched');
 
@@ -160,7 +167,7 @@ export default function usePoolsQuery(
 
     const decoratedPools = await balancerSubgraphService.pools.decorate(
       pools,
-      '24h',
+      pastPools,
       prices.value,
       currency.value
     );
