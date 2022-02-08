@@ -12,7 +12,7 @@
       </div>
       <div class="w-20 flex justify-center">
         <img
-          src="https://assets.coingecko.com/coins/images/15118/large/4mY2Biy9_400x400.jpg"
+          src="https://swap.spiritswap.finance/images/coins/SPIRIT.png"
           width="32"
         />
       </div>
