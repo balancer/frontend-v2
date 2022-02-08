@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -38,7 +38,7 @@ type Props = {
   noPoolsLabel?: string;
   isPaginated?: boolean;
   selectedTokens?: string[];
-  showMigrationColumn?: boolean;
+  hiddenColumns: string[];
 };
 
 /**
@@ -48,9 +48,9 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoadingMore: false,
   showPoolShares: false,
-  showMigrationColumn: false,
   noPoolsLabel: 'No pools',
-  isPaginated: false
+  isPaginated: false,
+  hiddenColumns: () => []
 });
 
 const emit = defineEmits(['loadMore']);
@@ -83,7 +83,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     id: 'poolName',
     accessor: 'id',
     Cell: 'poolNameCell',
-    width: 350
+    width: props.hiddenColumns.length >= 2 ? 950 : 350
   },
   {
     name: t('myBalance'),
@@ -135,7 +135,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     cellClassName: 'font-numeric'
   },
   {
-    name: t('apr'),
+    name: t('myApr'),
     Cell: 'aprCell',
     accessor: pool => pool.dynamic.apr.total,
     align: 'right',
@@ -151,12 +151,23 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     name: t('migrate'),
     Cell: 'migrateCell',
     accessor: 'migrate',
-    align: 'right',
+    align: 'center',
     id: 'migrate',
-    width: 150,
-    hidden: !props.showMigrationColumn
+    width: 150
+  },
+  {
+    name: t('stake'),
+    Cell: 'stakeCell',
+    accessor: 'stake',
+    align: 'center',
+    id: 'stake',
+    width: 150
   }
 ]);
+
+const visibleColumns = computed(() =>
+  columns.value.filter(column => !props.hiddenColumns.includes(column.id))
+);
 
 /**
  * METHODS
@@ -196,13 +207,12 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
 <template>
   <BalCard
     shadow="lg"
-    class="mt-4"
     :square="upToLargeBreakpoint"
     :noBorder="upToLargeBreakpoint"
     noPad
   >
     <BalTable
-      :columns="columns"
+      :columns="visibleColumns"
       :data="data"
       :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
@@ -270,7 +280,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
         </div>
       </template>
       <template v-slot:migrateCell="pool">
-        <div class="px-6 py-4 flex justify-end">
+        <div class="px-2 py-4 flex justify-center">
           <BalBtn
             v-if="isMigratablePool(pool)"
             color="gradient"
@@ -278,6 +288,13 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
             @click.prevent="navigateToPoolMigration(pool)"
           >
             {{ $t('migrate') }}
+          </BalBtn>
+        </div>
+      </template>
+      <template v-slot:stakeCell>
+        <div class="px-2 py-4 flex justify-center">
+          <BalBtn color="gradient" size="sm">
+            {{ $t('stake') }}
           </BalBtn>
         </div>
       </template>
