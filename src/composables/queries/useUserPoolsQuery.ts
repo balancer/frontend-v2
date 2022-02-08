@@ -120,6 +120,14 @@ export default function useUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
+    if (poolSharesIds.length === 0) {
+      return {
+        pools: [],
+        tokens: [],
+        totalInvestedAmount: '0'
+      } as UserPoolsQueryResponse;
+    }
+
     const pastBlock = await balancerSubgraphService.pools.timeTravelBlock(
       '24h'
     );
