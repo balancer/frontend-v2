@@ -26,6 +26,7 @@ import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
+import useStaking, { StakeState } from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -38,7 +39,7 @@ type Props = {
   noPoolsLabel?: string;
   isPaginated?: boolean;
   selectedTokens?: string[];
-  hiddenColumns: string[];
+  hiddenColumns?: string[];
 };
 
 /**
@@ -64,6 +65,7 @@ const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { getStakeState } = useStaking();
 
 /**
  * DATA
@@ -291,11 +293,21 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
           </BalBtn>
         </div>
       </template>
-      <template v-slot:stakeCell>
+      <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
-          <BalBtn color="gradient" size="sm">
+          <BalBtn
+            color="gradient"
+            size="sm"
+            v-if="getStakeState(pool) === StakeState.CanStake"
+          >
             {{ $t('stake') }}
           </BalBtn>
+          <span v-if="getStakeState(pool) === StakeState.MaxStaked">
+            100.00%
+          </span>
+          <span v-if="getStakeState(pool) === StakeState.NoGuage">
+            N/A
+          </span>
         </div>
       </template>
     </BalTable>
