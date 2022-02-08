@@ -12,6 +12,7 @@
         </div>
         <BalStack vertical spacing="xl">
           <PoolsTable
+            :key="stakableUserPools"
             :isLoading="isLoadingUserPools"
             :data="stakableUserPools"
             :noPoolsLabel="$t('noInvestments')"
@@ -19,11 +20,11 @@
             :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
             showPoolShares
             class="mb-8"
-            key="userPoolsTable-withStake"
           />
           <BalStack vertical spacing="sm">
             <h5>{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
+              :key="migratableUserPools"
               :isLoading="isLoadingUserPools"
               :data="migratableUserPools"
               :noPoolsLabel="$t('noInvestments')"
@@ -31,7 +32,6 @@
               :selectedTokens="selectedTokens"
               :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
               class="mb-8"
-              key="userPoolsTable-withMigrationCol"
             />
           </BalStack>
         </BalStack>
@@ -195,7 +195,7 @@ export default defineComponent({
     });
 
     const stakableUserPools = computed(() => {
-      return userPools.value.filter(pool => isMigratablePool(pool));
+      return userPools.value.filter(pool => !isMigratablePool(pool));
     });
 
     watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
