@@ -81,9 +81,9 @@ export default class Pools {
     attrs = {}
   ): Promise<PoolTimetravelQuery> {
     const query = this.timetravelQuery(block, args, attrs);
-    console.log('query', query)
+    console.log('query', query);
     const data = await this.service.client.get(query);
-    console.log('data', data)
+    console.log('data', data);
     return data;
   }
 
