@@ -1,49 +1,38 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
-import { Token } from '@/types';
-import { computed } from 'vue';
-
-type Props = {
-  lockableToken: Token;
-};
-
-/**
- * PROPS
- */
-const props = defineProps<Props>();
+import useVeBal from '@/composables/useVeBAL';
 
 /**
  * COMPOSABLES
  */
-
+const { veBalBalance, veBalTokenInfo } = useVeBal();
 const { fNum2 } = useNumbers();
-
-const fiatTotal = computed(() =>
-  fNum2(
-    bnum(props.lockableToken.balance)
-      .times(props.lockableToken.price)
-      .toString(),
-    FNumFormats.fiat
-  )
-);
 </script>
 
 <template>
   <BalCard noPad shadow="none">
     <div class="p-4 w-full border-b dark:border-gray-900">
       <h6>
-        {{ $t('staking.lock.myLockedBpt.title') }}
+        {{ $t('getVeBAL.myVeBAL.title') }}
       </h6>
     </div>
-    <div class="-mt-2 p-4">
-      <div class="flex justify-between">
-        <div>{{ lockableToken.symbol }}</div>
-        <div>{{ fNum2(lockableToken.balance, FNumFormats.token) }}</div>
+    <div class="-mt-2 p-10 flex items-center justify-center">
+      <div>
+        {{ fNum2(veBalBalance, FNumFormats.token) }} {{ veBalTokenInfo.symbol }}
       </div>
-      <div class="flex justify-between text-gray-500">
-        <div>{{ lockableToken.symbol }}</div>
-        <div>{{ fiatTotal }}</div>
+    </div>
+    <div class="flex justify-center border-t dark:border-gray-900">
+      <div class="border-r dark:border-gray-900 p-3 text-center">
+        <div>-</div>
+        <div class="text-gray-400">
+          {{ $t('getVeBAL.myVeBAL.percentVeBAL') }}
+        </div>
+      </div>
+      <div class="p-3 text-center">
+        <div>-</div>
+        <div class="text-gray-400">
+          {{ $t('getVeBAL.myVeBAL.lockedUntil') }}
+        </div>
       </div>
     </div>
   </BalCard>

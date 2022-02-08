@@ -4,6 +4,7 @@ import { isMainnet, isKovan, networkId } from '@/composables/useNetwork';
 import { TOKENS } from '@/constants/tokens';
 
 import useTokens from './useTokens';
+import { getAddress } from '@ethersproject/address';
 
 export const isVeBalSupported = computed(
   () => isMainnet.value || isKovan.value
@@ -14,14 +15,22 @@ export const vebBalAddress = computed<string>(
 );
 
 export default function useVeBal() {
-  const { tokens } = useTokens();
+  /**
+   * COMPOSABLES
+   */
+  const { tokens, balanceFor } = useTokens();
 
-  const veBAL = computed(() => tokens.value[vebBalAddress.value]);
+  /**
+   * COMPUTED
+   */
+  const veBalTokenInfo = computed(() => tokens.value[vebBalAddress.value]);
+  const veBalBalance = computed(() => balanceFor(vebBalAddress.value));
 
   return {
     // computed
     isVeBalSupported,
     vebBalAddress,
-    veBAL
+    veBalTokenInfo,
+    veBalBalance
   };
 }

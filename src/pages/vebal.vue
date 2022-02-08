@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 
-import useVeBAL from '@/composables/useVeBAL';
-
-/**
- * COMPOSABLES
- */
-const { isVeBalSupported } = useVeBAL();
+import { isVeBalSupported } from '@/composables/useVeBAL';
 </script>
 
 <template>

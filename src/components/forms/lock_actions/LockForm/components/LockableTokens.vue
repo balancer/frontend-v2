@@ -36,7 +36,7 @@ const fiatTotal = computed(() =>
   <BalCard noPad shadow="none">
     <div class="p-4 w-full border-b dark:border-gray-900">
       <h6>
-        {{ $t('getVeBAL.lock.lockableTokens.title') }}
+        {{ $t('getVeBAL.lockableTokens.title') }}
       </h6>
     </div>
     <div class="-mt-2 p-4">
@@ -57,9 +57,7 @@ const fiatTotal = computed(() =>
         class="mt-2 block text-sm text-blue-600 dark:text-blue-400"
       >
         {{
-          $t('getVeBAL.lock.lockableTokens.getMoreVeBAL', [
-            lockableTokenInfo.symbol
-          ])
+          $t('getVeBAL.lockableTokens.getMoreVeBAL', [lockableTokenInfo.symbol])
         }}
       </BalLink>
     </div>

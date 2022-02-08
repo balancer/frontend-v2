@@ -20,7 +20,7 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { tokens, dynamicDataLoading } = useTokens();
 
 /**
  * COMPUTED
@@ -53,7 +53,10 @@ const lockableTokenInfo = computed(() =>
 );
 
 const isLoading = computed(
-  () => lockablePoolLoading.value || batchRelayerApprovalLoading.value
+  () =>
+    lockablePoolLoading.value ||
+    batchRelayerApprovalLoading.value ||
+    dynamicDataLoading.value
 );
 </script>
 
@@ -71,7 +74,8 @@ const isLoading = computed(
     <!-- <LockForm /> -->
 
     <template #gutterRight>
-      <!-- <MyVeBAL /> -->
+      <BalLoadingBlock v-if="isLoading" class="h-64" />
+      <MyVeBAL v-else />
     </template>
   </Col3Layout>
 </template>

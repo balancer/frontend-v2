@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import LockForm from '@/components/forms/lock_actions/LockForm/LockForm.vue';
 
-import useVeBAL from '@/composables/useVeBAL';
-
-const { isVeBalSupported } = useVeBAL();
+import { isVeBalSupported } from '@/composables/useVeBAL';
 </script>
 
 <template>
