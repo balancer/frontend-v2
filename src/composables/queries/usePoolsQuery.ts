@@ -134,7 +134,6 @@ export default function usePoolsQuery(
     const pastBlock = await balancerSubgraphService.pools.timeTravelBlock(
       '24h'
     );
-    // const pools = await balancerSubgraphService.pools.get(queryArgs);
     const {
       pools,
       pastPools

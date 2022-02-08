@@ -50,21 +50,17 @@ const IS_LIQUIDITY_MINING_ENABLED = true;
 type ExcludedAddressesResponse = Record<Network, Record<string, string[]>>;
 
 export default class Pools {
-  service: Service;
-  query: QueryBuilder;
   networkId: Network;
   excludedAddresses: ExcludedAddresses;
 
   constructor(
-    service: Service,
-    query: QueryBuilder = queryBuilder,
+    private readonly service: Service,
+    private readonly query: QueryBuilder = queryBuilder,
     private readonly timetravelQuery: TimetravelQueryBuilder = timetravelQueryBuilder,
     private readonly configService = _configService,
     private readonly poolServiceClass = PoolService,
     private readonly balancerContracts = balancerContractsService
   ) {
-    this.service = service;
-    this.query = query;
     this.networkId = configService.env.NETWORK;
     this.excludedAddresses = null;
   }
@@ -81,39 +77,7 @@ export default class Pools {
     attrs = {}
   ): Promise<PoolTimetravelQuery> {
     const query = this.timetravelQuery(block, args, attrs);
-    console.log('query', query);
-    const data = await this.service.client.get(query);
-    console.log('data', data);
-    return data;
-  }
-
-  public async decorate(
-    pools: Pool[],
-    pastPools: Pool[],
-    prices: TokenPrices,
-    currency: FiatCurrency
-  ): Promise<DecoratedPool[]> {
-    // // Get past state of pools
-    // const blockNumber = await this.timeTravelBlock(period);
-    // const block = { number: blockNumber };
-    // const isInPoolIds = { id_in: pools.map(pool => pool.id) };
-    // const pastPoolsQuery = this.query({ where: isInPoolIds, block });
-    // let pastPools: Pool[] = [];
-    // try {
-    //   const data: { pools: Pool[] } = await this.service.client.get(
-    //     pastPoolsQuery
-    //   );
-    //   pastPools = data.pools;
-    // } catch {
-    //   // eslint-disable-previous-line no-empty
-    // }
-
-    if (this.excludedAddresses == null) {
-      // fetch only once
-      this.excludedAddresses = await this.getExcludedAddresses();
-    }
-
-    return this.serialize(pools, pastPools, '24h', prices, currency);
+    return await this.service.client.get(query);
   }
 
   public removeExcludedAddressesFromTotalLiquidity(
@@ -127,13 +91,16 @@ export default class Pools {
     );
   }
 
-  private async serialize(
+  public async decorate(
     pools: Pool[],
     pastPools: Pool[],
-    period: TimeTravelPeriod,
     prices: TokenPrices,
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
+    if (this.excludedAddresses == null) {
+      // fetch only once
+      this.excludedAddresses = await this.getExcludedAddresses();
+    }
     const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
 
     const promises = pools.map(async pool => {
@@ -181,7 +148,6 @@ export default class Pools {
         ...pool,
         hasLiquidityMiningRewards,
         dynamic: {
-          period,
           volume,
           fees,
           apr: {

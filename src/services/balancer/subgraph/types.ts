@@ -68,7 +68,6 @@ export interface LinearPool extends Pool {
 
 export interface DecoratedPool extends Pool {
   dynamic: {
-    period: TimeTravelPeriod;
     volume: string;
     apr: {
       pool: string;
