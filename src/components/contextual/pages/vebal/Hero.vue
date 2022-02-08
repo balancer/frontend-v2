@@ -48,6 +48,7 @@ function navigateToGetVeBAL() {
         target="_blank"
         rel="noreferrer"
         color="white"
+        outline
       >
         {{ $t('veBAL.hero.buttons.learnMore') }}
         <BalIcon

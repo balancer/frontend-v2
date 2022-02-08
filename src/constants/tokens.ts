@@ -7,10 +7,10 @@ export const DEFAULT_TOKEN_DECIMALS = 18;
 export const TOKENS = {
   IdsMap: {
     [Network.MAINNET]: {
-      veBptBAL: '0x9b6a0e708290f713eae6b960c02952b9e15ecbc7'
+      veBAL: '0x9b6a0e708290f713eae6b960c02952b9e15ecbc7'
     },
     [Network.KOVAN]: {
-      veBptBAL: '0x9b6a0e708290f713eae6b960c02952b9e15ecbc7'
+      veBAL: '0x9b6a0e708290f713eae6b960c02952b9e15ecbc7'
     }
   },
   Popular: {

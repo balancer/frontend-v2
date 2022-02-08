@@ -9,7 +9,7 @@ export const isVeBalSupported = computed(
 );
 
 export const vebBalAddress = computed<string>(
-  () => TOKENS.IdsMap[networkId.value]
+  () => TOKENS.IdsMap[networkId.value]?.veBAL
 );
 
 export default function useVeBal() {
