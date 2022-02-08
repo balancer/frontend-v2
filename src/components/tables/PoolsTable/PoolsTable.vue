@@ -85,7 +85,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     id: 'poolName',
     accessor: 'id',
     Cell: 'poolNameCell',
-    width: props.hiddenColumns.length >= 2 ? 950 : 350
+    width: props.hiddenColumns.length >= 2 ? 900 : 350
   },
   {
     name: t('myBalance'),

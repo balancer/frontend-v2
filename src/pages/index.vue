@@ -76,6 +76,7 @@
         :noPoolsLabel="$t('noPoolsFound')"
         :isPaginated="poolsHasNextPage"
         :isLoadingMore="poolsIsFetchingNextPage"
+        :hiddenColumns="['migrate', 'stake']"
         @loadMore="loadMorePools"
         :selectedTokens="selectedTokens"
         class="mb-8"
