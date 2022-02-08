@@ -70,6 +70,8 @@ const history = computed(() => {
     return [];
   }
 
+  if (supportsPoolLiquidity.value) return [];
+
   // Prices are required when not using pool liquidity
   if (!supportsPoolLiquidity.value && pricesTimestamps.length === 0) {
     return [];
@@ -100,7 +102,8 @@ const history = computed(() => {
         return false;
       }
       return totalShares > 0 && amounts.length > 0;
-    });
+    })
+    .reverse();
 });
 
 const timestamps = computed(() =>
