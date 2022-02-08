@@ -119,7 +119,8 @@ export default class Stable {
 
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
-    const bptAmountIn = this.scaleInput(bptAmount);
+    const normalizedAmountIn = formatUnits(bptAmount, this.calc.poolDecimals);
+    const bptAmountIn = this.scaleInput(normalizedAmountIn);
 
     const tokenAmountOut = SDK.StableMath._calcTokenOutGivenExactBptIn(
       ampAdjusted,
@@ -161,7 +162,7 @@ export default class Stable {
         tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
-            this.calc.bptBalance,
+            bptAmount.toString(),
             opts.tokenIndex
           ).toString();
           return formatUnits(
