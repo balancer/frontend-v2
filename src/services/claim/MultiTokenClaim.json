@@ -101,6 +101,13 @@
             "token": "0x580a84c73811e1839f75d86d75d88cca0c241ff4",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-qi-polygon.json",
             "weekStart": 1
+        },
+        {
+            "label": "TEL",
+            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+            "token": "0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-telcoin-polygon.json",
+            "weekStart": 1
         }
       ],
     "42161": [
