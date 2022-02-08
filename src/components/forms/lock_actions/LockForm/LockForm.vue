@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 
-import LockableTokens from './components/LockableTokens.vue';
-import MyVeBAL from './components/MyVeBAL.vue';
-
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
-
 import useTokens from '@/composables/useTokens';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
-import { POOLS } from '@/constants/pools';
 import { networkId } from '@/composables/useNetwork';
+
+import { POOLS } from '@/constants/pools';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
+
+import LockableTokens from './components/LockableTokens.vue';
+import MyVeBAL from './components/MyVeBAL.vue';
+
+import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
 /**
  * COMPOSABLES

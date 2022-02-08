@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { computed, onBeforeMount, toRefs } from 'vue';
-
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 
 import useVeBAL from '@/composables/useVeBAL';

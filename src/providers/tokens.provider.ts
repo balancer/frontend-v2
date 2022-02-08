@@ -30,6 +30,7 @@ import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useUserSettings from '@/composables/useUserSettings';
+import { vebBalAddress } from '@/composables/useVeBAL';
 
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -444,7 +445,8 @@ export default {
       const tokensToInject = compact([
         ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,
-        configService.network.addresses.wstETH
+        configService.network.addresses.wstETH,
+        vebBalAddress.value
       ]);
 
       await forChange(loadingTokenLists, false);

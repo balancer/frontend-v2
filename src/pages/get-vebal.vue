@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { computed, onBeforeMount, toRefs } from 'vue';
-
 import LockForm from '@/components/forms/lock_actions/LockForm/LockForm.vue';
 
 import useVeBAL from '@/composables/useVeBAL';
