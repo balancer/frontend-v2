@@ -100,7 +100,8 @@ const history = computed(() => {
         return false;
       }
       return totalShares > 0 && amounts.length > 0;
-    });
+    })
+    .reverse();
 });
 
 const timestamps = computed(() =>
