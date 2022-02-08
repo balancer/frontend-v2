@@ -12,7 +12,7 @@ const defaultAttrs = {
   swapFees: true
 };
 
-if (!isPolygon) {
+if (!isPolygon.value) {
   defaultAttrs['liquidity'] = true;
 }
 
