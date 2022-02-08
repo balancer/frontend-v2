@@ -152,11 +152,7 @@ export default function useUserPoolsQuery(
 
     const tokens = flatten(
       pools.map(pool => {
-        return [
-          ...pool.tokensList,
-          ...lpTokensFor(pool),
-          balancerSubgraphService.pools.addressFor(pool.id)
-        ];
+        return [...pool.tokensList, ...lpTokensFor(pool), pool.address];
       })
     );
     await injectTokens(tokens);
