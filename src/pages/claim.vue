@@ -1,9 +1,36 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import StatCard from '@/components/cards/StatCard/StatCard.vue';
+import { configService } from '@/services/config/config.service';
+
+const networks = [
+  {
+    id: 'ethereum',
+    name: 'Ethereum',
+    subdomain: 'app',
+    key: '1'
+  },
+  {
+    id: 'polygon',
+    name: 'Polygon',
+    subdomain: 'polygon',
+    key: '137'
+  },
+  {
+    id: 'arbitrum',
+    name: 'Arbitrum',
+    subdomain: 'arbitrum',
+    key: '42161'
+  }
+];
+
+const networkBtns = computed(() => {
+  return networks.filter(network => network.key !== configService.network.key);
+});
 </script>
 
 <template>
-  <div class="lg:container lg:mx-auto pt-10 md:pt-12">
+  <div class="lg:container lg:mx-auto py-12">
     <div class="grid gap-24 grid-cols-2 grid-rows-1">
       <div class="">
         <h1 class="font-body font-bold text-4xl">
@@ -24,6 +51,35 @@ import StatCard from '@/components/cards/StatCard/StatCard.vue';
         <StatCard label="My 24h yield" value="$12.6845" />
         <StatCard label="My 24h APR" value="12.46%" />
       </div>
+    </div>
+  </div>
+  <div class="bg-gray-50">
+    <div class="lg:container lg:mx-auto py-12">
+      <h2 class="font-body font-bold text-2xl">
+        {{ configService.network.chainName }} liquidity incentives
+      </h2>
+
+      <h2 class="font-body font-bold text-2xl">
+        Incentives on other networks
+      </h2>
+      <div class="flex mt-4">
+        <BalBtn
+          tag="a"
+          :href="`https://${network.subdomain}.balancer.fi/#/claims`"
+          v-for="network in networkBtns"
+          :key="network.id"
+          color="white"
+          class="mr-4"
+        >
+          <img
+            :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
+            alt="Arbitrum"
+            class="w-6 h-6 rounded-full shadow-sm mr-2"
+          />
+          Claim on {{ network.name }}
+        </BalBtn>
+      </div>
+
     </div>
   </div>
 </template>
