@@ -10,7 +10,8 @@ import StatCard from '@/components/cards/StatCard/StatCard.vue';
           Claim all of your liquidity incentives
         </h1>
         <p class="text-lg text-gray-600 mt-2">
-          The Balancer protocol provides incentives to attract liquidity in eligible pools.
+          The Balancer protocol provides incentives to attract liquidity in
+          eligible pools.
         </p>
         <BalBtn outline class="mt-4">
           Learn more
