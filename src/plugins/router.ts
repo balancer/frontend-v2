@@ -10,6 +10,7 @@ import MigratePoolPage from '@/pages/pool/migrate.vue';
 import TermsOfUsePage from '@/pages/terms-of-use.vue';
 import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
+import ClaimPage from '@/pages/claim.vue';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -31,6 +32,11 @@ const routes: RouteRecordRaw[] = [
     path: '/trade/:assetIn?/:assetOut?',
     name: 'trade',
     component: TradePage
+  },
+  {
+    path: '/claim',
+    name: 'claim',
+    component: ClaimPage
   },
   {
     path: '/swap/:assetIn?/:assetOut?',
