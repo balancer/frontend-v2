@@ -79,7 +79,6 @@ const networkBtns = computed(() => {
           Claim on {{ network.name }}
         </BalBtn>
       </div>
-
     </div>
   </div>
 </template>
