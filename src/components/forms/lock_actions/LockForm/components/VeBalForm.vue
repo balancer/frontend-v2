@@ -1,31 +1,26 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { computed, ref } from 'vue';
+import { addDays, addYears, format } from 'date-fns';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
-import useMigrateMath from '../../composables/useMigrateMath';
-
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
-import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
-import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
+import { VeBalLockInfo } from '@/composables/queries/useVeBalLockInfoQuery';
+import useTokens from '@/composables/useTokens';
 
-import { TokenInfo } from '@/types/TokenList';
-import { PoolMigrationInfo } from '../../types';
+import { Token } from '@/types';
+
 import { bnum } from '@/lib/utils';
-import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 
 type Props = {
-  poolMigrationInfo: PoolMigrationInfo;
-  fromPool: FullPool;
-  toPool: FullPool;
-  fromPoolTokenInfo: TokenInfo;
-  toPoolTokenInfo: TokenInfo;
+  lockablePool: FullPool;
+  lockableTokenInfo: Token;
+  veBalLockInfo: VeBalLockInfo;
 };
 
 /**
@@ -37,29 +32,35 @@ const props = defineProps<Props>();
  * STATE
  */
 const showPreviewModal = ref(false);
+const lockAmount = ref('');
+const now = new Date();
+const DATE_FORMAT = 'yyyy-MM-dd';
+
+const minLock = format(addDays(now, 1), DATE_FORMAT);
+const maxLock = format(addYears(now, 4), DATE_FORMAT);
+const defaultLock = format(addYears(now, 1), DATE_FORMAT);
+
+const lockedUntil = ref(defaultLock);
 
 /**
  * COMPOSABLES
  */
-const { t } = useI18n();
-
-const { fromPool, toPool } = toRefs(props);
-
-const router = useRouter();
-
-const migrateMath = useMigrateMath(fromPool, toPool);
-const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
+const { balanceFor } = useTokens();
 
 /**
- * CALLBACKS
+ * COMPUTED
  */
-onBeforeMount(() => {
-  migrateMath.getBatchSwap();
+const bptBalance = computed(() => balanceFor(props.lockablePool.address));
 
-  if (bnum(fiatTotal.value).lt(MIN_FIAT_VALUE_POOL_MIGRATION)) {
-    router.push({ name: 'pool', params: { id: fromPool.value.id } });
-  }
-});
+const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
+
+const isValidLockAmount = computed(() => bnum(lockAmount.value ?? '0').gt(0));
+
+const isValidDate = computed(() => lockedUntil.value != null);
+
+const submissionDisabled = computed(
+  () => !hasBpt.value || !isValidLockAmount.value || !isValidDate.value
+);
 </script>
 
 <template>
@@ -71,44 +72,43 @@ onBeforeMount(() => {
         </div>
         <div class="flex items-center justify-between">
           <h4>
-            {{ t(`migratePool.${poolMigrationInfo.type}.migrateToPool.title`) }}
+            {{ $t('getVeBAL.lockForm.title') }}
           </h4>
           <TradeSettingsPopover :context="TradeSettingsContext.invest" />
         </div>
       </div>
     </template>
     <div class="mb-6">
-      <div class="text-gray-500">{{ $t('yourBalanceInPool') }}</div>
-      <div class="font-semibold text-lg">
-        {{ hasBpt ? fiatTotalLabel : '-' }}
+      <div class="pb-4">
+        {{ $t('getVeBAL.lockForm.lockAmount.title') }}
       </div>
+      <TokenInput
+        :address="lockableTokenInfo.address"
+        v-model:amount="lockAmount"
+        fixedToken
+        name="lockableToken"
+      />
     </div>
-    <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
-    <div class="block flex justify-center dark:text-gray-50 my-4">
-      <ArrowDownIcon class="dark:text-gray-500 h-5 w-5" />
+    <div class="mb-6">
+      <div class="pb-4">
+        {{ $t('getVeBAL.lockForm.lockUntil.title') }}
+      </div>
+      <BalTextInput
+        name="lockedUntil"
+        type="date"
+        v-model="lockedUntil"
+        :min="minLock"
+        :max="maxLock"
+      />
     </div>
-    <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
     <BalBtn
       color="gradient"
       class="mt-6"
       block
-      :disabled="!hasBpt"
+      :disabled="submissionDisabled"
       @click="showPreviewModal = true"
     >
-      {{ $t('previewMigrate') }}
+      {{ $t('preview') }}
     </BalBtn>
   </BalCard>
-
-  <teleport to="#modal">
-    <MigratePreviewModal
-      v-if="showPreviewModal"
-      :fromPool="fromPool"
-      :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-      :poolMigrationInfo="poolMigrationInfo"
-      :math="migrateMath"
-      @close="showPreviewModal = false"
-    />
-  </teleport>
 </template>

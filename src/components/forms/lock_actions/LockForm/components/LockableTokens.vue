@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+
 import { bnum } from '@/lib/utils';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
+
 import { Token } from '@/types';
-import { computed } from 'vue';
 
 type Props = {
   lockablePool: FullPool;
@@ -19,10 +23,12 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-
 const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
 
+/**
+ * COMPUTED
+ */
 const bptBalance = computed(() => balanceFor(props.lockablePool.address));
 
 const fiatTotal = computed(() =>

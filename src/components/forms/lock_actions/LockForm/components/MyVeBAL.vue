@@ -22,13 +22,13 @@ const { fNum2 } = useNumbers();
       </div>
     </div>
     <div class="flex justify-center border-t dark:border-gray-900">
-      <div class="border-r dark:border-gray-900 p-3 text-center">
+      <div class="border-r dark:border-gray-900 p-2 text-center w-1/2">
         <div>-</div>
         <div class="text-gray-400">
           {{ $t('getVeBAL.myVeBAL.percentVeBAL') }}
         </div>
       </div>
-      <div class="p-3 text-center">
+      <div class="p-3 text-center w-1/2">
         <div>-</div>
         <div class="text-gray-400">
           {{ $t('getVeBAL.myVeBAL.lockedUntil') }}

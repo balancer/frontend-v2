@@ -25,6 +25,8 @@ type QueryResponse<T = string> = {
   epoch: T;
 };
 
+export type VeBalLockInfo = QueryResponse;
+
 export default function useVeBalQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
@@ -45,22 +47,22 @@ export default function useVeBalQuery(
   const queryKey = reactive(QUERY_KEYS.Tokens.VeBAL(networkId, account));
 
   const queryFn = async () => {
-    const veBalMulticall = new Multicaller(
+    const multicaller = new Multicaller(
       appNetworkConfig.key,
       rpcProviderService.jsonProvider,
       veBalAbi
     );
 
-    veBalMulticall.call('lockedUntil', vebBalAddress.value, 'locked__end', [
+    multicaller.call('lockedUntil', vebBalAddress.value, 'locked__end', [
       account.value
     ]);
-    veBalMulticall.call('lockedBptAmount', vebBalAddress.value, 'locked', [
+    multicaller.call('lockedBptAmount', vebBalAddress.value, 'locked', [
       account.value
     ]);
-    // veBalMulticall.call('totalSupply', vebBalAddress.value, 'totalSupply');
-    veBalMulticall.call('epoch', vebBalAddress.value, 'epoch');
+    // multicaller.call('totalSupply', vebBalAddress.value, 'totalSupply');
+    multicaller.call('epoch', vebBalAddress.value, 'epoch');
 
-    const result = await veBalMulticall.execute<QueryResponse<BigNumber>>();
+    const result = await multicaller.execute<QueryResponse<BigNumber>>();
 
     return {
       lockedUntil: formatUnits(result.lockedUntil, 18),

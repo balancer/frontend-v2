@@ -2,7 +2,7 @@
 import { computed, toRefs } from 'vue';
 
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useVeBalQuery from '@/composables/queries/useVeBalQuery';
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import useTokens from '@/composables/useTokens';
 import useRelayerApproval, {
@@ -16,6 +16,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 
 import LockableTokens from './components/LockableTokens.vue';
 import MyVeBAL from './components/MyVeBAL.vue';
+import VeBalForm from './components/VeBalForm.vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
@@ -24,9 +25,6 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
  */
 const { tokens, dynamicDataLoading } = useTokens();
 
-/**
- * COMPUTED
- */
 const lockablePoolAddress = computed(
   () => POOLS.IdsMap[networkId.value]?.['B-80BAL-20WETH']
 );
@@ -35,12 +33,7 @@ const lockablePoolAddress = computed(
  * QUERIES
  */
 const lockablePoolQuery = usePoolQuery(lockablePoolAddress.value as string);
-const veBalQuery = useVeBalQuery();
-
-/**
- * COMPUTED
- */
-
+const veBalLockInfoQuery = useVeBalLockInfoQuery();
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
 const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
@@ -53,7 +46,7 @@ const lockablePoolLoading = computed(
 );
 
 const veBalQueryLoading = computed(
-  () => veBalQuery.isLoading.value || veBalQuery.isIdle.value
+  () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value
 );
 
 const lockablePool = computed<FullPool | undefined>(
@@ -63,6 +56,8 @@ const lockablePool = computed<FullPool | undefined>(
 const lockableTokenInfo = computed(() =>
   lockablePool.value != null ? tokens.value[lockablePool.value.address] : null
 );
+
+const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);
 
 const isLoading = computed(
   () =>
@@ -84,7 +79,13 @@ const isLoading = computed(
       />
     </template>
 
-    <!-- <LockForm /> -->
+    <BalLoadingBlock v-if="isLoading" class="h-96" />
+    <VeBalForm
+      v-else
+      :lockablePool="lockablePool"
+      :lockableTokenInfo="lockableTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
+    />
 
     <template #gutterRight>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
