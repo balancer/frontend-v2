@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 
-import useTokens from '@/composables/useTokens';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
+import useVeBalQuery from '@/composables/queries/useVeBalQuery';
+
+import useTokens from '@/composables/useTokens';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
@@ -33,6 +35,12 @@ const lockablePoolAddress = computed(
  * QUERIES
  */
 const lockablePoolQuery = usePoolQuery(lockablePoolAddress.value as string);
+const veBalQuery = useVeBalQuery();
+
+/**
+ * COMPUTED
+ */
+
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
 const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
@@ -42,6 +50,10 @@ const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
  */
 const lockablePoolLoading = computed(
   () => lockablePoolQuery.isLoading.value || lockablePoolQuery.isIdle.value
+);
+
+const veBalQueryLoading = computed(
+  () => veBalQuery.isLoading.value || veBalQuery.isIdle.value
 );
 
 const lockablePool = computed<FullPool | undefined>(
@@ -56,7 +68,8 @@ const isLoading = computed(
   () =>
     lockablePoolLoading.value ||
     batchRelayerApprovalLoading.value ||
-    dynamicDataLoading.value
+    dynamicDataLoading.value ||
+    veBalQueryLoading.value
 );
 </script>
 

@@ -78,7 +78,7 @@ export class Multicaller {
     return this;
   }
 
-  async execute(from?: any): Promise<any> {
+  async execute<T = any>(from?: any): Promise<T> {
     const obj = from || {};
     const result = await multicall(
       this.network,

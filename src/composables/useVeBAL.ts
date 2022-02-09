@@ -4,7 +4,6 @@ import { isMainnet, isKovan, networkId } from '@/composables/useNetwork';
 import { TOKENS } from '@/constants/tokens';
 
 import useTokens from './useTokens';
-import { getAddress } from '@ethersproject/address';
 
 export const isVeBalSupported = computed(
   () => isMainnet.value || isKovan.value
