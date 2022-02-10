@@ -63,6 +63,7 @@ export default defineComponent({
     circle: { type: Boolean, default: false },
     outline: { type: Boolean, default: false },
     flat: { type: Boolean, default: false },
+    plain: { type: Boolean, default: false },
     rounded: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
@@ -132,8 +133,9 @@ export default defineComponent({
     });
 
     const bgColorClasses = computed(() => {
-      if (props.color.includes('gradient')) return bgGradientClasses.value;
-      else if (props.outline) return 'bg-transparent';
+      if (props.color.includes('gradient') && !props.plain)
+        return bgGradientClasses.value;
+      else if (props.outline || props.plain) return 'bg-transparent';
       else if (props.flat) return bgFlatClasses.value;
       else if (props.color === 'white') {
         return 'bg-gray-50 dark:bg-gray-800';
@@ -159,9 +161,23 @@ export default defineComponent({
     });
 
     const textColorClasses = computed(() => {
+      let fromColor = 'blue';
+      let toColor = 'pink';
+
+      if (props.color === 'gradient-reverse') {
+        fromColor = 'pink';
+        toColor = 'blue';
+      } else if (props.color === 'gradient-pink-yellow') {
+        fromColor = 'pink';
+        toColor = 'yellow';
+      }
+
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
         else return 'text-gray-800 dark:text-gray-100';
+      }
+      if (props.color === 'gradient' && props.plain) {
+        return `text-transparent bg-clip-text bg-gradient-to-tr from-${fromColor}-500 to-${toColor}-500 hover:from-${fromColor}-600 hover:to-${toColor}-600`;
       }
       if (props.outline || props.flat)
         return `text-${props.color}-500 dark:text-${props.color}-400`;
@@ -185,7 +201,8 @@ export default defineComponent({
     });
 
     const shadowClasses = computed(() => {
-      if (props.flat || props.disabled || props.loading) return '';
+      if (props.flat || props.disabled || props.loading || props.plain)
+        return '';
       if (props.size === 'sm') return 'shadow hover:shadow-none';
       return 'shadow hover:shadow-none';
     });
