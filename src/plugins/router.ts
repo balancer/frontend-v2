@@ -12,6 +12,16 @@ import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
 import ClaimPage from '@/pages/claim.vue';
 
+declare module 'vue-router' {
+  interface RouteMeta {
+    layout?: string;
+    bgColors?: {
+      dark: string;
+      light: string;
+    };
+  }
+}
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -26,7 +36,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/claim',
     name: 'claim',
-    component: ClaimPage
+    component: ClaimPage,
+    meta: {
+      bgColors: {
+        light: 'bg-gray-50',
+        dark: 'bg-gray-800'
+      }
+    }
   },
   {
     path: '/swap/:assetIn?/:assetOut?',
