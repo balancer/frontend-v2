@@ -14,6 +14,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import { Step, StepState } from '@/types';
 import {
+  SecondaryTransactionActionInfo,
   TransactionAction,
   TransactionActionInfo,
   TransactionActionState
@@ -27,6 +28,8 @@ import useTransactionErrors from '@/composables/useTransactionErrors';
  */
 type Props = {
   actions: TransactionActionInfo[];
+
+  secondaryActions: SecondaryTransactionActionInfo[];
   disabled: boolean;
   errorMessage: string;
   // override action state loading prop and show
@@ -40,7 +43,9 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  secondaryActions: () => []
+});
 
 const emit = defineEmits<{
   (e: 'success', value: any): void;
@@ -64,6 +69,12 @@ const actionStates = props.actions.map(() => {
   });
 });
 
+const secondaryActionStates = props.secondaryActions.map(() => {
+  return reactive<TransactionActionState>({
+    ...defaultActionState
+  });
+});
+
 /**
  * COMPOSABLES
  */
@@ -78,6 +89,26 @@ const actions = computed((): TransactionAction[] => {
   return props.actions.map((actionInfo, idx) => {
     const actionState = actionStates[idx];
     return {
+      id: actionInfo.id || '',
+      label: actionInfo.label,
+      loadingLabel: actionState.init
+        ? actionInfo.loadingLabel
+        : actionInfo.confirmingLabel,
+      pending: actionState.init || actionState.confirming,
+      promise: submit.bind(null, actionInfo.action, actionState),
+      step: {
+        tooltip: actionInfo.stepTooltip,
+        state: getStepState(actionState, idx)
+      }
+    };
+  });
+});
+
+const secondaryActions = computed((): TransactionAction[] => {
+  return props.secondaryActions.map((actionInfo, idx) => {
+    const actionState = secondaryActionStates[idx];
+    return {
+      parentAction: actionInfo.parentAction,
       label: actionInfo.label,
       loadingLabel: actionState.init
         ? actionInfo.loadingLabel
@@ -94,6 +125,12 @@ const actions = computed((): TransactionAction[] => {
 
 const currentAction = computed(
   (): TransactionAction => actions.value[currentActionIndex.value]
+);
+
+const currentSecondaryAction = computed((): TransactionAction | undefined =>
+  secondaryActions.value.find(
+    action => (action.parentAction = currentAction.value.id)
+  )
 );
 
 const currentActionState = computed(
@@ -183,7 +220,7 @@ async function handleTransaction(
       block
       class="mb-4"
     />
-    <BalStack vertical>
+    <BalStack vertical spacing='sm'>
       <BalHorizSteps
         v-if="actions.length > 1 && !lastActionState.confirmed"
         :steps="steps"
@@ -200,6 +237,20 @@ async function handleTransaction(
         @click="currentAction.promise()"
       >
         {{ currentAction.label }}
+      </BalBtn>
+      <BalBtn
+        v-if="currentSecondaryAction !== undefined"
+        :disabled="props.disabled"
+        flat
+        color="white"
+        class="text-blue-500 hover:text-blue-200"
+        :loading="currentSecondaryAction.pending || isLoading"
+        :loading-label="
+          isLoading ? loadingLabel : currentSecondaryAction.loadingLabel
+        "
+        @click="currentSecondaryAction.promise()"
+      >
+        {{ currentSecondaryAction.label }}
       </BalBtn>
     </BalStack>
   </div>
