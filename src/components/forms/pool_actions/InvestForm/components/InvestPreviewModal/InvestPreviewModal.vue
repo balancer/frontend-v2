@@ -94,7 +94,7 @@ const fiatTotal = computed((): string =>
       bnum(total)
         .plus(amount)
         .toString(),
-    '0' 
+    '0'
   )
 );
 
@@ -112,9 +112,9 @@ function handleClose(): void {
   emit('close');
 }
 
-function handleInvestmentSuccess({ hasStaked }: { hasStaked: boolean}) {
-    investmentConfirmed.value = true;
-    stakingConfirmed.value = hasStaked;
+function handleInvestmentSuccess({ hasStaked }: { hasStaked: boolean }) {
+  investmentConfirmed.value = true;
+  stakingConfirmed.value = hasStaked;
 }
 </script>
 

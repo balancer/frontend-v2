@@ -93,14 +93,23 @@ const { tokenApprovalActions } = useTokenApprovalActions(
  */
 const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
+const primaryInvestmentLabel = computed(() => {
+  if (isGuagePool.value) {
+    return t('investAndStake');
+  } else {
+    return t('invest');
+  }
+});
+
 /**
  * COMPUTED
  */
 const actions = computed((): TransactionActionInfo[] => [
   ...tokenApprovalActions,
   {
-    id: 'investAndStake',
-    label: t('investAndStake'),
+    // if the id is 'invest' the secondary actions will not show
+    id: isGuagePool.value ? 'invest' : 'investAndStake',
+    label: primaryInvestmentLabel.value,
     loadingLabel: t('investment.preview.loadingLabel.investment'),
     confirmingLabel: t('confirming'),
     action: submit,
@@ -179,7 +188,7 @@ async function handleTransaction(tx): Promise<void> {
 // TODO INTEGRATE STAKING
 async function submit(isStaking = false): Promise<TransactionResponse> {
   // TODO INTEGRATE STAKING
-  if (isStaking) {
+  if (isStaking && isGuagePool.value) {
     investmentState.hasStaked = true;
   }
   try {
@@ -255,13 +264,22 @@ watch(blockNumber, async () => {
         </BalLink>
       </div>
       <BalStack class="mt-4" vertical spacing="sm" justify="center">
-        <BalCard shadow="none" noPad class="py-2 px-3" v-if="investmentState.hasStaked">
+        <BalCard
+          shadow="none"
+          noPad
+          class="py-2 px-3"
+          v-if="investmentState.hasStaked"
+        >
           <BalStack horizontal spacing="none" align="center">
             <StarsIcon />
             <BalBtn plain size="sm" color="gradient" class="animate">
-              <BalStack horizontal spacing="xs" align='center'>
+              <BalStack horizontal spacing="xs" align="center">
                 <span class="font-semibold">{{ $t('stakingEarnExtra') }}</span>
-                <BalIcon size='sm' name="arrow-right" class="text-pink-500 mt-px arrow" />
+                <BalIcon
+                  size="sm"
+                  name="arrow-right"
+                  class="text-pink-500 mt-px arrow"
+                />
               </BalStack>
             </BalBtn>
           </BalStack>
