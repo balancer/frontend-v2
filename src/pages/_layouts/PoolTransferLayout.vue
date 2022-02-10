@@ -7,6 +7,8 @@ import { useRoute } from 'vue-router';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
+import StakingAPRCard from '@/components/contextual/pages/pool/invest/StakingAPRCard/StakingAPRCard.vue';
+
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
@@ -89,8 +91,14 @@ usePoolTransfersGuard();
       </BalAccordion>
 
       <template #gutterRight v-if="!upToLargeBreakpoint">
-        <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
-        <MyPoolBalancesCard v-else :pool="pool" />
+        <BalStack vertical>
+          <BalLoadingBlock
+            v-if="loadingPool || !transfersAllowed"
+            class="h-64"
+          />
+          <MyPoolBalancesCard v-else :pool="pool" />
+          <StakingAPRCard />
+        </BalStack>
       </template>
     </Col3Layout>
   </div>
