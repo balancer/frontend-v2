@@ -10,7 +10,8 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
-import { VeBalLockInfo } from '@/composables/queries/useVeBalLockInfoQuery';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
+
 import useTokens from '@/composables/useTokens';
 
 import { Token } from '@/types';

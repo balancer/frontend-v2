@@ -1,31 +1,20 @@
 import { reactive, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
-import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import useWeb3 from '@/services/web3/useWeb3';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-
-import { Multicaller } from '@/lib/utils/balancer/contract';
-import veBalAbi from '@/lib/abi/veBalAbi.json';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
 
 import useNetwork from '../useNetwork';
-import { vebBalAddress, isVeBalSupported } from '../useVeBAL';
+import { isVeBalSupported } from '../useVeBAL';
 
 /**
  * TYPES
  */
-type QueryResponse<T = string> = {
-  lockedUntil: T;
-  lockedBptAmount: T[];
-  // totalSupply: T;
-  epoch: T;
-};
-
-export type VeBalLockInfo = QueryResponse;
+type QueryResponse = VeBalLockInfo;
 
 export default function useVeBalQuery(
   options: UseQueryOptions<QueryResponse> = {}
@@ -33,7 +22,7 @@ export default function useVeBalQuery(
   /**
    * COMPOSABLES
    */
-  const { account, isWalletReady, appNetworkConfig } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
 
   /**
@@ -46,32 +35,8 @@ export default function useVeBalQuery(
    */
   const queryKey = reactive(QUERY_KEYS.Tokens.VeBAL(networkId, account));
 
-  const queryFn = async () => {
-    const multicaller = new Multicaller(
-      appNetworkConfig.key,
-      rpcProviderService.jsonProvider,
-      veBalAbi
-    );
-
-    multicaller.call('lockedUntil', vebBalAddress.value, 'locked__end', [
-      account.value
-    ]);
-    multicaller.call('lockedBptAmount', vebBalAddress.value, 'locked', [
-      account.value
-    ]);
-    // multicaller.call('totalSupply', vebBalAddress.value, 'totalSupply');
-    multicaller.call('epoch', vebBalAddress.value, 'epoch');
-
-    const result = await multicaller.execute<QueryResponse<BigNumber>>();
-
-    return {
-      lockedUntil: formatUnits(result.lockedUntil, 18),
-      lockedBptAmount: result.lockedBptAmount.map(amount =>
-        formatUnits(amount, 18)
-      ),
-      epoch: formatUnits(result.epoch, 18)
-    };
-  };
+  const queryFn = () =>
+    balancerContractsService.veBAL.getLockInfo(account.value);
 
   const queryOptions = reactive({
     enabled,
