@@ -12,7 +12,7 @@ import { bnum } from '@/lib/utils';
 export type VeBalLockInfo = {
   lockedUntil: string;
   lockedAmount: string;
-  // totalSupply: string;
+  totalSupply: string;
   epoch: string;
   hasLock: boolean;
 };
@@ -20,6 +20,7 @@ export type VeBalLockInfo = {
 type VeBalLockInfoResult = {
   locked: BigNumber[];
   epoch: BigNumber;
+  totalSupply: string;
 };
 
 export default class VeBAL {
@@ -38,7 +39,7 @@ export default class VeBAL {
 
     veBalMulticaller.call('locked', vebBalAddress.value, 'locked', [account]);
     veBalMulticaller.call('epoch', vebBalAddress.value, 'epoch');
-    // veBalMulticaller.call('totalSupply', vebBalAddress.value, 'totalSupply');
+    veBalMulticaller.call('totalSupply', vebBalAddress.value, 'totalSupply()');
 
     const result = await veBalMulticaller.execute<VeBalLockInfoResult>();
 
@@ -53,6 +54,7 @@ export default class VeBAL {
     return {
       lockedUntil,
       lockedAmount,
+      totalSupply: formatUnits(lockInfo.totalSupply, 18),
       epoch: formatUnits(lockInfo.epoch, 18),
       hasLock: bnum(lockedAmount).gt(0)
     };
