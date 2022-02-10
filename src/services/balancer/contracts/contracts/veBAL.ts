@@ -7,12 +7,14 @@ import { formatUnits } from '@ethersproject/units';
 import { vebBalAddress } from '@/composables/useVeBAL';
 
 import veBalAbi from '@/lib/abi/veBalAbi.json';
+import { bnum } from '@/lib/utils';
 
 export type VeBalLockInfo = {
   lockedUntil: string;
   lockedAmount: string;
   // totalSupply: string;
   epoch: string;
+  hasLock: boolean;
 };
 
 type VeBalLockInfoResult = {
@@ -51,7 +53,8 @@ export default class VeBAL {
     return {
       lockedUntil,
       lockedAmount,
-      epoch: formatUnits(lockInfo.epoch, 18)
+      epoch: formatUnits(lockInfo.epoch, 18),
+      hasLock: bnum(lockedAmount).gt(0)
     };
   }
 }
