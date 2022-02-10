@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, Ref } from 'vue';
+import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -8,7 +8,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 
 type Props = {
   lockablePool: FullPool;
-  amount: Ref<string>;
+  lockAmount: string;
 };
 
 /**
@@ -54,7 +54,7 @@ function formatWeightLabel(weight: string) {
         <div class="font-semibold">
           {{
             $t('getVeBAL.previewModal.lpTokens', [
-              fNum2(amount, FNumFormats.token)
+              fNum2(lockAmount, FNumFormats.token)
             ])
           }}
         </div>

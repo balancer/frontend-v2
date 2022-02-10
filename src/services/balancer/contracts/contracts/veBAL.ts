@@ -48,8 +48,6 @@ export default class VeBAL {
       formatUnits(amount, 18)
     );
 
-    console.log(lockedAmount, lockedUntil);
-
     return {
       lockedUntil,
       lockedAmount,

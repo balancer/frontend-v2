@@ -12,7 +12,7 @@ import { Token } from '@/types';
 
 type Props = {
   lockablePool: FullPool;
-  lockableTokenInfo: Token;
+  lockablePoolTokenInfo: Token;
 };
 
 /**
@@ -47,11 +47,11 @@ const fiatTotal = computed(() =>
     </div>
     <div class="-mt-2 p-4">
       <div class="flex justify-between">
-        <div>{{ lockableTokenInfo.symbol }}</div>
+        <div>{{ lockablePoolTokenInfo.symbol }}</div>
         <div>{{ fNum2(bptBalance, FNumFormats.token) }}</div>
       </div>
       <div class="flex justify-between text-gray-500">
-        <div>{{ lockableTokenInfo.name }}</div>
+        <div>{{ lockablePoolTokenInfo.name }}</div>
         <div>{{ fNum2(fiatTotal, FNumFormats.fiat) }}</div>
       </div>
       <BalLink
@@ -63,7 +63,9 @@ const fiatTotal = computed(() =>
         class="mt-2 block text-sm text-blue-600 dark:text-blue-400"
       >
         {{
-          $t('getVeBAL.lockableTokens.getMoreVeBAL', [lockableTokenInfo.symbol])
+          $t('getVeBAL.lockableTokens.getMoreVeBAL', [
+            lockablePoolTokenInfo.symbol
+          ])
         }}
       </BalLink>
     </div>

@@ -612,7 +612,7 @@
             "lockAmount": {
                 "title": "How much do you want to lock?"
             },
-            "lockUntil": {
+            "lockedUntil": {
                 "title": "Lock until",
                 "tooltip": "The longer you lock your stake, the more veBAL voting power you get (up to 4 years). You can extend the lock later. Be careful, locking is not reversible."
             },
@@ -643,9 +643,9 @@
             "summary": {
                 "title": "Locking summary",
                 "totalToLock": "Total to lock",
-                "lockUpEndDate": "Lock-up end date",
-                "veBalYouGet": "Voting escrow tokens you’ll get",
-                "potentialYield": "Potential weekly yield"
+                "lockedUntil": "Lock-up end date",
+                "veBalYouGet": "Voting escrow you’ll get",
+                "potentialWeeklyYield": "Potential weekly yield"
             },
             "actions": {                
                 "title": "Confirm lock until {0}",

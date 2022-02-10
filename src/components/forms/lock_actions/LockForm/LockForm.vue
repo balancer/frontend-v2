@@ -53,7 +53,7 @@ const lockablePool = computed<FullPool | undefined>(
   () => lockablePoolQuery.data.value
 );
 
-const lockableTokenInfo = computed(() =>
+const lockablePoolTokenInfo = computed(() =>
   lockablePool.value != null ? tokens.value[lockablePool.value.address] : null
 );
 
@@ -75,7 +75,7 @@ const isLoading = computed(
       <LockableTokens
         v-else
         :lockablePool="lockablePool"
-        :lockableTokenInfo="lockableTokenInfo"
+        :lockablePoolTokenInfo="lockablePoolTokenInfo"
       />
     </template>
 
@@ -83,7 +83,7 @@ const isLoading = computed(
     <VeBalForm
       v-else
       :lockablePool="lockablePool"
-      :lockableTokenInfo="lockableTokenInfo"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"
     />
 

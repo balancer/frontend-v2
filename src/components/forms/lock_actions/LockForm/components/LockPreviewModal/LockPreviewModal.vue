@@ -8,21 +8,23 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { Token } from '@/types';
 
 import LockAmount from './components/LockAmount.vue';
+import LockSummary from './components/LockSummary.vue';
 
 /**
  * TYPES
  */
 type Props = {
   lockablePool: FullPool;
-  lockableTokenInfo: Token;
+  lockablePoolTokenInfo: Token;
   veBalLockInfo: VeBalLockInfo;
   lockAmount: string;
+  lockedUntil: string;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -74,6 +76,12 @@ function handleClose() {
       </div>
     </template>
 
-    <LockAmount :lockablePool="lockablePool" :amount="lockAmount" />
+    <LockAmount :lockablePool="lockablePool" :lockAmount="lockAmount" />
+
+    <LockSummary
+      :lockablePool="lockablePool"
+      :lockAmount="lockAmount"
+      :lockedUntil="lockedUntil"
+    />
   </BalModal>
 </template>

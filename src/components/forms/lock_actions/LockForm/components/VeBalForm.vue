@@ -21,7 +21,7 @@ import { bnum } from '@/lib/utils';
 
 type Props = {
   lockablePool: FullPool;
-  lockableTokenInfo: Token;
+  lockablePoolTokenInfo: Token;
   veBalLockInfo: VeBalLockInfo;
 };
 
@@ -85,7 +85,7 @@ const submissionDisabled = computed(
         {{ $t('getVeBAL.lockForm.lockAmount.title') }}
       </div>
       <TokenInput
-        :address="lockableTokenInfo.address"
+        :address="lockablePoolTokenInfo.address"
         v-model:amount="lockAmount"
         fixedToken
         name="lockableToken"
@@ -93,7 +93,7 @@ const submissionDisabled = computed(
     </div>
     <div class="mb-6">
       <div class="pb-4">
-        {{ $t('getVeBAL.lockForm.lockUntil.title') }}
+        {{ $t('getVeBAL.lockForm.lockedUntil.title') }}
       </div>
       <BalTextInput
         name="lockedUntil"
@@ -117,9 +117,10 @@ const submissionDisabled = computed(
     <LockPreviewModal
       v-if="showPreviewModal"
       :lockablePool="lockablePool"
-      :lockableTokenInfo="lockableTokenInfo"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"
       :lockAmount="lockAmount"
+      :lockedUntil="lockedUntil"
       @close="showPreviewModal = false"
     />
   </teleport>
