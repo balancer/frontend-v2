@@ -2,7 +2,11 @@
 import { computed } from 'vue';
 import StatCard from '@/components/cards/StatCard/StatCard.vue';
 import { configService } from '@/services/config/config.service';
+import useDarkMode from '@/composables/useDarkMode';
 
+/**
+ * CONSTANTS
+ */
 const networks = [
   {
     id: 'ethereum',
@@ -24,6 +28,14 @@ const networks = [
   }
 ];
 
+/**
+ * COMPOSABLES
+ */
+const { darkMode } = useDarkMode();
+
+/**
+ * COMPUTED
+ */
 const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
@@ -37,11 +49,11 @@ const networkBtns = computed(() => {
           <h1 class="font-body font-bold text-4xl">
             Claim all of your liquidity incentives
           </h1>
-          <p class="text-lg text-gray-600 mt-2">
+          <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">
             The Balancer protocol provides incentives to attract liquidity in
             eligible pools.
           </p>
-          <BalBtn outline class="mt-4">
+          <BalBtn outline class="mt-4" :color="darkMode ? 'white' : 'primary'">
             Learn more
             <BalIcon name="arrow-up-right" class="ml-2" />
           </BalBtn>
