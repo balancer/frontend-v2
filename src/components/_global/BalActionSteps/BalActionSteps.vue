@@ -220,7 +220,7 @@ async function handleTransaction(
       block
       class="mb-4"
     />
-    <BalStack vertical spacing='sm'>
+    <BalStack vertical spacing="sm">
       <BalHorizSteps
         v-if="actions.length > 1 && !lastActionState.confirmed"
         :steps="steps"
