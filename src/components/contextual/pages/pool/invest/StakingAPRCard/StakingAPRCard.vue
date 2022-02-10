@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { computed, onBeforeMount, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 
-import AnimatePresence from '@/components/animate/AnimatePresence.vue'
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 type Props = {
   poolId: string;
