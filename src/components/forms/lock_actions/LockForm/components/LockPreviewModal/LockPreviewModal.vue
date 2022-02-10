@@ -1,32 +1,22 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
-import { MigrateMathResponse } from '../../composables/useMigrateMath';
+import { Token } from '@/types';
 
-import MigratePoolRisks from './components/MigratePoolRisks.vue';
-import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
-import MigrateActions from './components/MigrateActions.vue';
-import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
-
-import { TokenInfo } from '@/types/TokenList';
-
-import { PoolMigrationInfo } from '../../types';
-
-import { bnum } from '@/lib/utils';
+import LockAmount from './components/LockAmount.vue';
 
 /**
  * TYPES
  */
 type Props = {
-  poolMigrationInfo: PoolMigrationInfo;
-  fromPool: FullPool;
-  toPool: FullPool;
-  fromPoolTokenInfo: TokenInfo;
-  toPoolTokenInfo: TokenInfo;
-  math: MigrateMathResponse;
+  lockablePool: FullPool;
+  lockableTokenInfo: Token;
+  veBalLockInfo: VeBalLockInfo;
+  lockAmount: string;
 };
 
 /**
@@ -41,20 +31,8 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const { batchSwapLoaded, highPriceImpact, bptBalance } = toRefs(props.math);
 
-const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
-const fiatTotal = ref(props.math.fiatTotal.value);
-const priceImpact = ref(props.math.priceImpact.value);
-
-const migrateConfirmed = ref(false);
-const highPriceImpactAccepted = ref(false);
-
-const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? highPriceImpactAccepted.value : true
-);
-
-const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
+const lockConfirmed = ref(false);
 
 /**
  * COMPOSABLES
@@ -65,9 +43,9 @@ const { t } = useI18n();
  * COMPUTED
  */
 const title = computed((): string =>
-  migrateConfirmed.value
-    ? t('migratePool.previewModal.titles.confirmed')
-    : t('migratePool.previewModal.titles.default')
+  lockConfirmed.value
+    ? t('getVeBAL.previewModal.titles.confirmed')
+    : t('getVeBAL.previewModal.titles.default')
 );
 
 /**
@@ -76,27 +54,10 @@ const title = computed((): string =>
 function handleClose() {
   emit('close');
 }
-
-/**
- * WATCHERS
- */
-watch(bptBalance, () => {
-  if (!migrateConfirmed.value && bnum(bptBalance.value).gt(0)) {
-    fiatTotalLabel.value = props.math.fiatTotalLabel.value;
-    fiatTotal.value = props.math.fiatTotal.value;
-    priceImpact.value = props.math.priceImpact.value;
-  }
-});
-
-watch(isLoadingPriceImpact, () => {
-  if (!isLoadingPriceImpact.value) {
-    priceImpact.value = props.math.priceImpact.value;
-  }
-});
 </script>
 
 <template>
-  <BalModal show :fireworks="migrateConfirmed" @close="handleClose">
+  <BalModal show :fireworks="lockConfirmed" @close="handleClose">
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
@@ -113,47 +74,6 @@ watch(isLoadingPriceImpact, () => {
       </div>
     </template>
 
-    <MigratePoolRisks
-      v-if="poolMigrationInfo.riskI18nLabels != null"
-      :poolMigrationInfo="poolMigrationInfo"
-    />
-
-    <MigratePoolsInfo
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-    />
-
-    <InvestSummary
-      :pool="toPool"
-      :fiatTotal="fiatTotal"
-      :priceImpact="priceImpact"
-      :isLoadingPriceImpact="isLoadingPriceImpact"
-      :highPriceImpact="highPriceImpact"
-    />
-
-    <div
-      v-if="highPriceImpact"
-      class="border dark:border-gray-700 rounded-lg p-3 mt-4"
-    >
-      <BalCheckbox
-        v-model="highPriceImpactAccepted"
-        name="highPriceImpactAccepted"
-        size="sm"
-        :label="$t('migratePool.previewModal.priceImpactAccept')"
-        noMargin
-      />
-    </div>
-
-    <MigrateActions
-      :fromPool="fromPool"
-      :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-      :fiatTotalLabel="fiatTotalLabel"
-      :math="math"
-      :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
-      @success="migrateConfirmed = true"
-      class="mt-4"
-    />
+    <LockAmount :lockablePool="lockablePool" :amount="lockAmount" />
   </BalModal>
 </template>

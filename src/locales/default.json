@@ -501,6 +501,7 @@
     "restoring": "Restoring...",
     "returnToPool": "Return to pool page",
     "returnToPoolCreation": "Return to pool creation",
+    "returnToVeBalPage": "Return to veBPT lock page",
     "saveGas": " to save gas.",
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
@@ -631,6 +632,25 @@
                 "6m": "6 months",
                 "1y": "1 year",
                 "4y": "4 years"
+            }
+        },
+        "previewModal": {
+            "titles": {
+                "default": "Locking preview",
+                "confirmed": "Locking confirmed"
+            },
+            "lpTokens": "{0} LP tokens",
+            "summary": {
+                "title": "Locking summary",
+                "totalToLock": "Total to lock",
+                "lockUpEndDate": "Lock-up end date",
+                "veBalYouGet": "Voting escrow tokens you’ll get",
+                "potentialYield": "Potential weekly yield"
+            },
+            "actions": {                
+                "title": "Confirm lock until {0}",
+                "loading": "Confirm lock in wallet",
+                "tooltip": "Confirm lock"
             }
         },
         "notSupported": {

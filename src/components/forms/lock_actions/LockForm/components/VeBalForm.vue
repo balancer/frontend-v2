@@ -9,6 +9,7 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import LockPreviewModal from './LockPreviewModal/LockPreviewModal.vue';
 
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
 
@@ -112,4 +113,14 @@ const submissionDisabled = computed(
       {{ $t('preview') }}
     </BalBtn>
   </BalCard>
+  <teleport to="#modal">
+    <LockPreviewModal
+      v-if="showPreviewModal"
+      :lockablePool="lockablePool"
+      :lockableTokenInfo="lockableTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
+      :lockAmount="lockAmount"
+      @close="showPreviewModal = false"
+    />
+  </teleport>
 </template>
