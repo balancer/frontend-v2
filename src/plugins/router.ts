@@ -76,17 +76,6 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'ContentLayout' }
   },
   {
-    path: '/vebal',
-    name: 'vebal',
-    component: VeBalPage
-  },
-  {
-    path: '/get-vebal',
-    name: 'get-vebal',
-    component: GetVeBalPage,
-    meta: { layout: 'FocusedLayout' }
-  },
-  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: '/'
@@ -99,7 +88,19 @@ const routes: RouteRecordRaw[] = [
 if (
   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
 ) {
-  // routes.push();
+  routes.push(
+    {
+      path: '/vebal',
+      name: 'vebal',
+      component: VeBalPage
+    },
+    {
+      path: '/get-vebal',
+      name: 'get-vebal',
+      component: GetVeBalPage,
+      meta: { layout: 'FocusedLayout' }
+    }
+  );
 }
 
 const router = createRouter({
