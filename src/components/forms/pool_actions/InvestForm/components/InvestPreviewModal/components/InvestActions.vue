@@ -38,6 +38,7 @@ type InvestmentState = {
   confirmed: boolean;
   confirmedAt: string;
   receipt?: TransactionReceipt;
+  hasStaked: boolean;
 };
 
 /**
@@ -46,7 +47,10 @@ type InvestmentState = {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'success', value: TransactionReceipt): void;
+  (
+    e: 'success',
+    value: { receipt: TransactionReceipt; hasStaked: boolean }
+  ): void;
 }>();
 
 /**
@@ -56,7 +60,8 @@ const investmentState = reactive<InvestmentState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
+  hasStaked: false
 });
 
 /**
@@ -94,11 +99,23 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
 const actions = computed((): TransactionActionInfo[] => [
   ...tokenApprovalActions,
   {
-    label: t('invest'),
+    id: 'investAndStake',
+    label: t('investAndStake'),
     loadingLabel: t('investment.preview.loadingLabel.investment'),
     confirmingLabel: t('confirming'),
     action: submit,
     stepTooltip: t('investmentTooltip')
+  }
+]);
+
+const secondaryActions = computed(() => [
+  {
+    label: t('investWithoutStaking'),
+    loadingLabel: t('investment.preview.loadingLabel.investment'),
+    confirmingLabel: t('confirming'),
+    action: submit,
+    stepTooltip: t('investmentTooltip'),
+    parentAction: 'investAndStake'
   }
 ]);
 
@@ -114,6 +131,14 @@ const transactionInProgress = computed(
     investmentState.confirming ||
     investmentState.confirmed
 );
+
+// TODO GUAGE INTEGRATION
+const isGuagePool = computed(() => {
+  return (
+    props.pool.id ===
+    '0x3a19030ed746bd1c3f2b0f996ff9479af04c5f0a000200000000000000000004'
+  );
+});
 
 /**
  * METHODS
@@ -136,7 +161,7 @@ async function handleTransaction(tx): Promise<void> {
 
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
-      emit('success', receipt);
+      emit('success', { receipt, hasStaked: investmentState.hasStaked });
       investmentState.receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
@@ -151,7 +176,12 @@ async function handleTransaction(tx): Promise<void> {
   });
 }
 
-async function submit(): Promise<TransactionResponse> {
+// TODO INTEGRATE STAKING
+async function submit(isStaking = false): Promise<TransactionResponse> {
+  // TODO INTEGRATE STAKING
+  if (isStaking) {
+    investmentState.hasStaked = true;
+  }
   try {
     let tx;
     investmentState.init = true;
@@ -199,7 +229,7 @@ watch(blockNumber, async () => {
 
 <template>
   <div>
-    <BalActionSteps :actions="actions" />
+    <BalActionSteps :actions="actions" :secondaryActions="secondaryActions" />
     <template v-if="investmentState.confirmed">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
@@ -224,16 +254,40 @@ watch(blockNumber, async () => {
           />
         </BalLink>
       </div>
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { id: route.params.id } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
-        {{ $t('returnToPool') }}
-      </BalBtn>
+      <BalStack class="mt-4" vertical spacing="sm" justify="center">
+        <BalCard shadow="none" noPad class="py-2 px-3" v-if="investmentState.hasStaked">
+          <BalStack horizontal spacing="none" align="center">
+            <StarsIcon />
+            <BalBtn plain size="sm" color="gradient" class="animate">
+              <BalStack horizontal spacing="xs" align='center'>
+                <span class="font-semibold">{{ $t('stakingEarnExtra') }}</span>
+                <BalIcon size='sm' name="arrow-right" class="text-pink-500 mt-px arrow" />
+              </BalStack>
+            </BalBtn>
+          </BalStack>
+        </BalCard>
+        <BalBtn
+          tag="router-link"
+          :to="{ name: 'pool', params: { id: route.params.id } }"
+          color="gray"
+          outline
+          block
+          class="mt-2"
+          flat
+        >
+          {{ $t('returnToPool') }}
+        </BalBtn>
+      </BalStack>
     </template>
   </div>
 </template>
+
+<style scoped>
+.animate .arrow {
+  transform: translateX(0px);
+  transition: transform 0.2s;
+}
+.animate:hover .arrow {
+  transform: translateX(3px);
+}
+</style>

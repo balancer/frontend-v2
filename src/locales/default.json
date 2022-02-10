@@ -19,7 +19,6 @@
     "allowing": "Allowing...",
     "allPools": "All pools",    
     "allTokens": "All tokens",
-    "and": "and",
     "ammPlatform": "Automated portfolio manager and trading platform",
     "amount": "Amount",
     "amountBeforeFees": "Amount before fees",
@@ -291,8 +290,10 @@
     "invalidFee": "Invalid fee",
     "invalidFeeExplain": "Please enter a valid fee between 0.0001% and 10%",
     "invest": "Invest",
+    "investAndStake": "Invest & Stake",
     "investInPool": "Invest in pool",
     "investWithdraw": "Invest & Withdraw",
+    "investWithoutStaking": "Invest without staking",
     "investment": {
         "label": "Investment",
         "preview": {
@@ -399,6 +400,7 @@
     "newToEthereum": "New to Ethereum?",
     "newWithdrawal": "New withdrawal",
     "next": "Next",
+    "no": "No",
     "noContent": "No content",
     "noData": "No data available",
     "noInitLiquidity": "This pool has no initial liquidity",
@@ -442,6 +444,7 @@
     "poolSymbol": "Pool symbol",
     "poolsToMigrate": "Pools to migrate",
     "poolTokenName": "Pool token name",
+    "poolTokensStaked": "Pool tokens staked",
     "poolTransactions": {
         "title": "Pool transactions",
         "tabs": {
@@ -523,6 +526,7 @@
     "stablePool": "Stable pool",
     "stake": "Stake",
     "staking": "Staking",
+    "stakingEarnExtra": "Earn extra from staking",
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",
@@ -769,6 +773,7 @@
     "wrapInstruction": "Wrap your {0} to {1}",
     "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
     "yearAbbrev": "y",
+    "yes": "Yes",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool",
