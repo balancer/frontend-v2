@@ -36,7 +36,7 @@ export default function usePoolQuery(
    * COMPUTED
    */
   const enabled = computed(
-    () => id != null && !appLoading.value && !dynamicDataLoading.value
+    () => !appLoading.value && !dynamicDataLoading.value
   );
 
   /**
