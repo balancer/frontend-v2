@@ -49,13 +49,8 @@
 import useBreakpoints from '@/composables/useBreakpoints';
 import ConfigService from '@/services/config/config.service';
 import { defineComponent } from 'vue';
+import { Network } from '@/services/balancer/subgraph/types';
 
-interface Network {
-  id: string;
-  name: string;
-  subdomain: string;
-  key: string;
-}
 
 export default defineComponent({
   name: 'AppNavNetworkSelect',

@@ -1,0 +1,821 @@
+[
+  {
+      "id": "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080",
+      "network": {
+        "id": "ethereum",
+        "name": "Ethereum"
+      },
+      "address": "0x32296969Ef14EB0c6d29669C550D4a0449130230",
+      "poolType": "MetaStable",
+      "swapFee": "0.0004",
+      "tokensList": [
+          "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "402367845.3712755892767372485479434648875",
+      "totalSwapVolume": "343036193.0291984831589161559809017",
+      "totalSwapFee": "137214.477211679393263566462392361",
+      "totalShares": "125574.588616286824118895",
+      "owner": "0x0000000000000000000000000000000000000000",
+      "factory": "0x67d27634e44793fe63c467035e31ea8635117cd4",
+      "amp": "50",
+      "createTime": 1628875520,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+              "balance": "61015.201637671313070225",
+              "weight": null,
+              "priceRate": "1.060146993702743608"
+          },
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "62681.842478966517168479",
+              "weight": null,
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "402367845.3712755892767372485479434648875",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "204955.4136351709754961347885362",
+          "fees": "81.9821654540683901984539154146",
+          "apr": {
+              "pool": "0.00006693164392069",
+              "thirdParty": "0.0204210970911941913666",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.02334888185969586",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.004785111489769777",
+                  "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32": "0.018563770369926083"
+              },
+              "total": "0.0438369105948107413666"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.1913",
+        "nextAPRMin": "0.1001",
+        "nextAPRMax": "0.1216",
+        "votes": "0.6"
+      }
+  },
+  {
+      "id": "0xa6f548df93de924d73be7d25dc02554c6bd66db500020000000000000000000e",
+      "network": {
+        "id": "ethereum",
+        "name": "Ethereum"
+      },
+      "address": "0xA6F548DF93de924d73be7D25dC02554c6bD66dB5",
+      "poolType": "Weighted",
+      "swapFee": "0.0006",
+      "tokensList": [
+          "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "197084860.587689772936565454",
+      "totalSwapVolume": "1417803579.396927300819202089608916",
+      "totalSwapFee": "2424459.795941594477682426147983995",
+      "totalShares": "16326.889390768588995915",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0",
+      "amp": null,
+      "createTime": 1620134851,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+              "balance": "2229.91176954",
+              "weight": "0.5",
+              "priceRate": "1"
+          },
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "30793.575714568447002311",
+              "weight": "0.5",
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "197084860.587689772936565454",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "5969714.196121002576394960276626",
+          "fees": "3581.828517672601545836976165973",
+          "apr": {
+              "pool": "0.005970172769977225",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.05861561342435032",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.05861561342435032"
+              },
+              "total": "0.064585786194327545"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.1862",
+        "nextAPRMin": "0.0968",
+        "nextAPRMax": "0.1186",
+        "votes": "0.2"
+      }
+  },
+  {
+      "id": "0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe",
+      "network": {
+        "id": "ethereum",
+        "name": "Ethereum"
+      },
+      "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
+      "poolType": "StablePhantom",
+      "swapFee": "0.00001",
+      "tokensList": [
+          "0x2bbf681cc4eb09218bee85ea2a5d3d13fa40fc0c",
+          "0x804cdb9116a10bb78768d3252355a1b18067bf8f",
+          "0x9210f1204b5a24742eba12f710636d76240df3d0"
+      ],
+      "totalLiquidity": "161803163.792324381092185572754145721541133815444442",
+      "totalSwapVolume": "12948836.5094270636225131134380191",
+      "totalSwapFee": "152.7848335470092572005893325096204",
+      "totalShares": "160956500.917192589290583026",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2",
+      "amp": "1472",
+      "createTime": 1639435704,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C",
+              "balance": "47279671.46319032875707251",
+              "weight": null,
+              "priceRate": "1.003587148971806967"
+          },
+          {
+              "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
+              "balance": "5192296697578326.711337907038637069",
+              "weight": null,
+              "priceRate": "1"
+          },
+          {
+              "address": "0x804CdB9116a10bB78768D3252355a1b18067bF8f",
+              "balance": "52068835.797320975068259428",
+              "weight": null,
+              "priceRate": "1.003102936294224982"
+          },
+          {
+              "address": "0x9210F1204b5a24742Eba12f710636D76240dF3d0",
+              "balance": "61914712.419745973910947361",
+              "weight": null,
+              "priceRate": "1.003350561164473166"
+          }
+      ],
+      "mainTokens": [
+          "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+          "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+      ],
+      "wrappedTokens": [
+          "0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58",
+          "0x02d60b84491589974263d922D9cC7a3152618Ef6",
+          "0xd093fA4Fb80D09bB30817FDcd442d4d02eD3E5de"
+      ],
+      "linearPoolTokensMap": {
+          "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+              "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "balance": "3100000",
+              "weight": null,
+              "priceRate": "1"
+          },
+          "0xd093fA4Fb80D09bB30817FDcd442d4d02eD3E5de": {
+              "address": "0xd093fA4Fb80D09bB30817FDcd442d4d02eD3E5de",
+              "balance": "55200059.008927",
+              "weight": null,
+              "priceRate": "1"
+          },
+          "0x02d60b84491589974263d922D9cC7a3152618Ef6": {
+              "address": "0x02d60b84491589974263d922D9cC7a3152618Ef6",
+              "balance": "46094068.318219906898512282",
+              "weight": null,
+              "priceRate": "1"
+          },
+          "0x6B175474E89094C44Da98b954EedeAC495271d0F": {
+              "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+              "balance": "3100000",
+              "weight": null,
+              "priceRate": "1"
+          },
+          "0xdAC17F958D2ee523a2206206994597C13D831ec7": {
+              "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+              "balance": "3350043.683234",
+              "weight": null,
+              "priceRate": "1"
+          },
+          "0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58": {
+              "address": "0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58",
+              "balance": "40848991.927594",
+              "weight": null,
+              "priceRate": "1"
+          }
+      },
+      "tokenAddresses": [
+          "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C",
+          "0x804CdB9116a10bB78768D3252355a1b18067bF8f",
+          "0x9210F1204b5a24742Eba12f710636D76240dF3d0"
+      ],
+      "miningTotalLiquidity": "161803163.792324381092185572754145721541133815444442",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "0",
+          "fees": "0",
+          "apr": {
+              "pool": "0",
+              "thirdParty": "0.019587276772131753",
+              "thirdPartyBreakdown": {
+                  "0x02d60b84491589974263d922D9cC7a3152618Ef6": "0.006730987737548518",
+                  "0xd093fA4Fb80D09bB30817FDcd442d4d02eD3E5de": "0.007224897196571996",
+                  "0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58": "0.005631391838011239"
+              },
+              "liquidityMining": "0.088847939742088453",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.088847939742088453"
+              },
+              "total": "0.108435216514220206"
+          },
+          "isNewPool": false
+      },
+      "onchain": {
+          "tokens": {
+              "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C": {
+                  "decimals": 18,
+                  "balance": "47279671.46319032875707251",
+                  "weight": 0.3333333333333333,
+                  "symbol": "bb-a-USDT",
+                  "name": "Balancer Aave Boosted Pool (USDT)",
+                  "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x2bbf681cc4eb09218bee85ea2a5d3d13fa40fc0c.png"
+              },
+              "0x804CdB9116a10bB78768D3252355a1b18067bF8f": {
+                  "decimals": 18,
+                  "balance": "52068835.797320975068259428",
+                  "weight": 0.3333333333333333,
+                  "symbol": "bb-a-DAI",
+                  "name": "Balancer Aave Boosted Pool (DAI)",
+                  "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x804cdb9116a10bb78768d3252355a1b18067bf8f.png"
+              },
+              "0x9210F1204b5a24742Eba12f710636D76240dF3d0": {
+                  "decimals": 18,
+                  "balance": "61914712.419745973910947361",
+                  "symbol": "bb-a-USDC",
+                  "name": "Balancer Aave Boosted Pool (USDC)",
+                  "logoURI": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x9210f1204b5a24742eba12f710636d76240df3d0.png"
+              }
+          },
+          "amp": "1472",
+          "swapEnabled": true,
+          "linearPools": {
+              "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C": {
+                  "id": "0x2bbf681cc4eb09218bee85ea2a5d3d13fa40fc0c0000000000000000000000fd",
+                  "priceRate": "1.003594959682028641",
+                  "mainToken": {
+                      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                      "index": 1,
+                      "balance": "3350043683234"
+                  },
+                  "wrappedToken": {
+                      "address": "0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58",
+                      "index": 2,
+                      "balance": "40848991927594",
+                      "priceRate": "1.079577465362509287"
+                  },
+                  "unwrappedTokenAddress": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+                  "totalSupply": "47279676.312181230139096968"
+              },
+              "0x804CdB9116a10bB78768D3252355a1b18067bF8f": {
+                  "id": "0x804cdb9116a10bb78768d3252355a1b18067bf8f0000000000000000000000fb",
+                  "priceRate": "1.003111350573475454",
+                  "mainToken": {
+                      "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+                      "index": 1,
+                      "balance": "3100000000000000000000000"
+                  },
+                  "wrappedToken": {
+                      "address": "0x02d60b84491589974263d922D9cC7a3152618Ef6",
+                      "index": 0,
+                      "balance": "46094068318219906898512282",
+                      "priceRate": "1.065882053635497761"
+                  },
+                  "unwrappedTokenAddress": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+                  "totalSupply": "52068835.797320975068259428"
+              },
+              "0x9210F1204b5a24742Eba12f710636D76240dF3d0": {
+                  "id": "0x9210f1204b5a24742eba12f710636d76240df3d00000000000000000000000fc",
+                  "priceRate": "1.003358187099668281",
+                  "mainToken": {
+                      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                      "index": 1,
+                      "balance": "3100000000000"
+                  },
+                  "wrappedToken": {
+                      "address": "0xd093fA4Fb80D09bB30817FDcd442d4d02eD3E5de",
+                      "index": 2,
+                      "balance": "55200059008927",
+                      "priceRate": "1.069249465815397884"
+                  },
+                  "unwrappedTokenAddress": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+                  "totalSupply": "61914712.419745973910947361"
+              }
+          },
+          "tokenRates": [
+              "1.003587148971806967",
+              "1.003102936294224982",
+              "1.003350561164473166"
+          ],
+          "totalSupply": "160956760.192834641890127948",
+          "decimals": 18,
+          "swapFee": "0.00001"
+      },
+      "gauge": {
+        "votePercent": "0.0810",
+        "nextAPRMin": "0.0688",
+        "nextAPRMax": "0.0816",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063",
+      "network": {
+        "id": "ethereum",
+        "name": "Ethereum"
+      },
+      "address": "0x06Df3b2bbB68adc8B0e302443692037ED9f91b42",
+      "poolType": "Stable",
+      "swapFee": "0.0001",
+      "tokensList": [
+          "0x6b175474e89094c44da98b954eedeac495271d0f",
+          "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      ],
+      "totalLiquidity": "153716213.936943783248904812",
+      "totalSwapVolume": "3772709834.497635586301992235",
+      "totalSwapFee": "430272.3594707347928689069853",
+      "totalShares": "152887035.858270632472178562",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xc66ba2b6595d3613ccab350c886ace23866ede24",
+      "amp": "1390",
+      "createTime": 1625518360,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+              "balance": "60163998.179085783248904812",
+              "weight": null,
+              "priceRate": "1"
+          },
+          {
+              "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "balance": "62435431.581347",
+              "weight": null,
+              "priceRate": "1"
+          },
+          {
+              "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+              "balance": "31116784.176511",
+              "weight": null,
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+          "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+      ],
+      "miningTotalLiquidity": "153716213.936943783248904812",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "8374633.264095330537984045",
+          "fees": "837.4633264095330537984045",
+          "apr": {
+              "pool": "0.00178970516954286",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.075153100015453608",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.075153100015453608"
+              },
+              "total": "0.076942805184996468"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0637",
+        "nextAPRMin": "0.0557",
+        "nextAPRMax": "0.0716",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0x0b09dea16768f0799065c475be02919503cb2a3500020000000000000000001a",
+      "network": {
+        "id": "arbitrum",
+        "name": "Arbitrum"
+      },
+      "address": "0x0b09deA16768f0799065C475bE02919503cB2a35",
+      "poolType": "Weighted",
+      "swapFee": "0.0014",
+      "tokensList": [
+          "0x6b175474e89094c44da98b954eedeac495271d0f",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "102812301.802281378053568871",
+      "totalSwapVolume": "1829996801.707640239292157832",
+      "totalSwapFee": "3408433.5499732245857142878832",
+      "totalShares": "789026.404471812814362456",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0",
+      "amp": null,
+      "createTime": 1620156813,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "19279.225670418345500297",
+              "weight": "0.6",
+              "priceRate": "1"
+          },
+          {
+              "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+              "balance": "41116658.942118926434613439",
+              "weight": "0.4",
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "102812301.802281378053568871",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "3848480.856225646324497803",
+          "fees": "5387.8731987159048542969242",
+          "apr": {
+              "pool": "0.017215024999458515",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.112362526638263229",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.112362526638263229"
+              },
+              "total": "0.129577551637721744"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0510",
+        "nextAPRMin": "0.055",
+        "nextAPRMax": "0.0702",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
+      "network": {
+        "id": "polygon",
+        "name": "Polygon"
+      },
+      "address": "0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56",
+      "poolType": "Weighted",
+      "swapFee": "0.0005",
+      "tokensList": [
+          "0xba100000625a3754423978a60c9317c58a424e3d",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "97783556.401375188705910644",
+      "totalSwapVolume": "681185655.4126428540232576464291568",
+      "totalSwapFee": "483797.2379801847355345515468345152",
+      "totalShares": "2722973.761667031314914669",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0",
+      "amp": null,
+      "createTime": 1620153071,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0xba100000625a3754423978a60c9317c58a424e3D",
+              "balance": "5297141.195540530970737597",
+              "weight": "0.8",
+              "priceRate": "1"
+          },
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "6107.534098278354890337",
+              "weight": "0.2",
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0xba100000625a3754423978a60c9317c58a424e3D",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "97783556.401375188705910644",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "1704516.3073857886229839303600602",
+          "fees": "852.2581536928943114919651800302",
+          "apr": {
+              "pool": "0.002863127644272875",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.20083974977743607",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.20083974977743607"
+              },
+              "total": "0.203702877421708945"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0321",
+        "nextAPRMin": "0.0498",
+        "nextAPRMax": "0.0616",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0xb0401ab1108bd26c85a07243dfdf09f4821d76a200020000000000000000007f",
+      "network": {
+        "id": "ethereum",
+        "name": "Ethereum"
+      },
+      "address": "0xB0401Ab1108BD26C85A07243dFDF09F4821D76a2",
+      "poolType": "Weighted",
+      "swapFee": "0.003",
+      "tokensList": [
+          "0x1e83916ea2ef2d7a6064775662e163b2d4c330a7",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "66884689.937922986668767787",
+      "totalSwapVolume": "14959303.54401762881028279935386104",
+      "totalSwapFee": "44877.91063205288643084839806158314",
+      "totalShares": "5693914.058730672173819941",
+      "owner": "0x85fc99fa14a708d5c60d78f53c794577ff97613b",
+      "factory": "0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0",
+      "amp": null,
+      "createTime": 1628862923,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x1e83916Ea2EF2D7a6064775662E163b2D4C330a7",
+              "balance": "753815186.463291267707735252",
+              "weight": "0.5",
+              "priceRate": "1"
+          },
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "10764.031598719529253915",
+              "weight": "0.5",
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x1e83916Ea2EF2D7a6064775662E163b2D4C330a7",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "66884689.937922986668767787",
+      "hasLiquidityMiningRewards": false,
+      "dynamic": {
+          "period": "24h",
+          "volume": "0",
+          "fees": "0",
+          "apr": {
+              "pool": "0",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0",
+              "liquidityMiningBreakdown": {},
+              "total": "0"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0223",
+        "nextAPRMin": "0.0456",
+        "nextAPRMax": "0.0608",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066",
+      "network": {
+        "id": "arbitrum",
+        "name": "Arbitrum"
+      },
+      "address": "0xFeadd389a5c427952D8fdb8057D6C8ba1156cC56",
+      "poolType": "Stable",
+      "swapFee": "0.0002",
+      "tokensList": [
+          "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+          "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+          "0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6"
+      ],
+      "totalLiquidity": "54721258.91586540767906912",
+      "totalSwapVolume": "266690467.6159853201121984477457754",
+      "totalSwapFee": "61882.72965219264761144981457868353",
+      "totalShares": "1233.64451654024350409",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xc66ba2b6595d3613ccab350c886ace23866ede24",
+      "amp": "605",
+      "createTime": 1625662646,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+              "balance": "418.03894443",
+              "weight": null,
+              "priceRate": "1"
+          },
+          {
+              "address": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
+              "balance": "562.13162094",
+              "weight": null,
+              "priceRate": "1"
+          },
+          {
+              "address": "0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6",
+              "balance": "257.139510208096066766",
+              "weight": null,
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+          "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
+          "0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6"
+      ],
+      "miningTotalLiquidity": "54721258.91586540767906912",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "4644385.0108598291196379204500314",
+          "fees": "928.8770021719658239275840900063",
+          "apr": {
+              "pool": "0.005576189240869595",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.035185137150449831",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.035185137150449831"
+              },
+              "total": "0.040761326391319426"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0216",
+        "nextAPRMin": "0.0424",
+        "nextAPRMax": "0.0598",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0xf4c0dd9b82da36c07605df83c8a416f11724d88b000200000000000000000026",
+      "network": {
+        "id": "ethereum",
+        "name": "Ethereum"
+      },
+      "address": "0xF4C0DD9B82DA36C07605df83c8a416F11724d88b",
+      "poolType": "Weighted",
+      "swapFee": "0.0019",
+      "tokensList": [
+          "0x6810e776880c02933d47db1b9fc05908e5386b96",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "48549196.040830333997433383",
+      "totalSwapVolume": "141442844.5180590755979611153265049",
+      "totalSwapFee": "311045.5608015883439077547890515228",
+      "totalShares": "106486.875766477335680873",
+      "owner": "0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b",
+      "factory": "0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0",
+      "amp": null,
+      "createTime": 1620161592,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96",
+              "balance": "110285.089195750622285972",
+              "weight": "0.8",
+              "priceRate": "1"
+          },
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "3034.64538083215728622",
+              "weight": "0.2",
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x6810e776880C02933D47DB1b9fc05908e5386b96",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "48549196.040830333997433383",
+      "hasLiquidityMiningRewards": true,
+      "dynamic": {
+          "period": "24h",
+          "volume": "68607.9930795747518458921333651",
+          "fees": "130.3551868511920285071950533932",
+          "apr": {
+              "pool": "0.000882026529225875",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0.015863290493055673",
+              "liquidityMiningBreakdown": {
+                  "0xba100000625a3754423978a60c9317c58a424e3D": "0.015863290493055673"
+              },
+              "total": "0.016745317022281548"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0210",
+        "nextAPRMin": "0.0402",
+        "nextAPRMax": "0.0581",
+        "votes": "0.0"
+      }
+  },
+  {
+      "id": "0x90291319f1d4ea3ad4db0dd8fe9e12baf749e84500020000000000000000013c",
+      "network": {
+        "id": "polygon",
+        "name": "Polygon"
+      },
+      "address": "0x90291319F1D4eA3ad4dB0Dd8fe9E12BAF749E845",
+      "poolType": "Weighted",
+      "swapFee": "0.003",
+      "tokensList": [
+          "0x956f47f50a910163d8bf957cf5846d573e7f87ca",
+          "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      ],
+      "totalLiquidity": "33728279.470226243891355332",
+      "totalSwapVolume": "9724328.081559556966274112533049616",
+      "totalSwapFee": "29172.98424467867089882233759914885",
+      "totalShares": "128737.68623079015309137",
+      "owner": "0x75b984d8ad22007923b03b5d40daa1917ef35313",
+      "factory": "0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0",
+      "amp": null,
+      "createTime": 1643150418,
+      "swapEnabled": true,
+      "tokens": [
+          {
+              "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "balance": "7383.805096673150675963",
+              "weight": "0.7",
+              "priceRate": "1"
+          },
+          {
+              "address": "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
+              "balance": "10099290.942311527681699377",
+              "weight": "0.3",
+              "priceRate": "1"
+          }
+      ],
+      "tokenAddresses": [
+          "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
+          "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      ],
+      "miningTotalLiquidity": "33728279.470226243891355332",
+      "hasLiquidityMiningRewards": false,
+      "dynamic": {
+          "period": "24h",
+          "volume": "691945.13889791657057541305172142",
+          "fees": "2075.83541669374971172623915516427",
+          "apr": {
+              "pool": "0.020217809656903795",
+              "thirdParty": "0",
+              "thirdPartyBreakdown": {},
+              "liquidityMining": "0",
+              "liquidityMiningBreakdown": {},
+              "total": "0.020217809656903795"
+          },
+          "isNewPool": false
+      },
+      "gauge": {
+        "votePercent": "0.0110",
+        "nextAPRMin": "0.0123",
+        "nextAPRMax": "0.0342",
+        "votes": "0.0"
+      }
+  }
+]

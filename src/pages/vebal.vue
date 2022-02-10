@@ -3,7 +3,16 @@ import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
 import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
 
+import usePoolFilters from '@/composables/pools/usePoolFilters';
+
 import { isVeBalSupported } from '@/composables/useVeBAL';
+
+
+const {
+  selectedTokens,
+  addSelectedToken,
+  removeSelectedToken
+} = usePoolFilters();
 </script>
 
 <template>
