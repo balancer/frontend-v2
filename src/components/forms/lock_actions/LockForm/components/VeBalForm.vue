@@ -118,7 +118,6 @@ const submissionDisabled = computed(
       v-if="showPreviewModal"
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :veBalLockInfo="veBalLockInfo"
       :lockAmount="lockAmount"
       :lockedUntil="lockedUntil"
       @close="showPreviewModal = false"

@@ -9,6 +9,7 @@ import { Token } from '@/types';
 
 import LockAmount from './components/LockAmount.vue';
 import LockSummary from './components/LockSummary.vue';
+import LockActions from './components/LockActions.vue';
 
 /**
  * TYPES
@@ -16,7 +17,6 @@ import LockSummary from './components/LockSummary.vue';
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: Token;
-  veBalLockInfo: VeBalLockInfo;
   lockAmount: string;
   lockedUntil: string;
 };
@@ -79,6 +79,12 @@ function handleClose() {
     <LockAmount :lockablePool="lockablePool" :lockAmount="lockAmount" />
 
     <LockSummary
+      :lockablePool="lockablePool"
+      :lockAmount="lockAmount"
+      :lockedUntil="lockedUntil"
+    />
+
+    <LockActions
       :lockablePool="lockablePool"
       :lockAmount="lockAmount"
       :lockedUntil="lockedUntil"

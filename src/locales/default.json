@@ -500,8 +500,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "restoring": "Restoring...",
     "returnToPool": "Return to pool page",
-    "returnToPoolCreation": "Return to pool creation",
-    "returnToVeBalPage": "Return to veBPT lock page",
+    "returnToPoolCreation": "Return to pool creation",    
     "saveGas": " to save gas.",
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
@@ -651,7 +650,8 @@
                 "title": "Confirm lock until {0}",
                 "loading": "Confirm lock in wallet",
                 "tooltip": "Confirm lock"
-            }
+            },
+            "returnToVeBalPage": "Return to veBPT lock page"
         },
         "notSupported": {
             "title": "Locking is unavailable on this network",
@@ -783,6 +783,7 @@
         "createPool": "Create pool",
         "fundPool": "Fund pool",
         "migratePool": "Migrate pool",
+        "lockBpt": "Lock BPT",
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
@@ -822,12 +823,14 @@
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveRelayer": "Approve {0} relayer",
+        "approveVeBAL": "Approve veBAL contract",
         "createPool": "Create pool",
         "fundPool": "Fund pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
         "migratePool": "{0} {1} to {2}",
-        "wrapUnwrap": "{0} {1} to {2}"
+        "wrapUnwrap": "{0} {1} to {2}",
+        "lockBpt": "Lock BPT"
     },
     "transactionType": "Transaction type",
     "unallocated": "Unallocated",
