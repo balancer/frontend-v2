@@ -38,6 +38,7 @@ const emit = defineEmits<{
  * STATE
  */
 const investmentConfirmed = ref(false);
+const stakingConfirmed = ref<boolean | null>(null);
 
 /**
  * COMPOSABLES
@@ -93,7 +94,7 @@ const fiatTotal = computed((): string =>
       bnum(total)
         .plus(amount)
         .toString(),
-    '0'
+    '0' 
   )
 );
 
@@ -109,6 +110,11 @@ function handleClose(): void {
     resetAmounts();
   }
   emit('close');
+}
+
+function handleInvestmentSuccess({ hasStaked }: { hasStaked: boolean}) {
+    investmentConfirmed.value = true;
+    stakingConfirmed.value = hasStaked;
 }
 </script>
 
@@ -142,6 +148,7 @@ function handleClose(): void {
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"
+      :stakingConfirmed="stakingConfirmed"
     />
 
     <InvestActions
@@ -149,7 +156,7 @@ function handleClose(): void {
       :math="math"
       :tokenAddresses="tokenAddresses"
       class="mt-4"
-      @success="investmentConfirmed = true"
+      @success="handleInvestmentSuccess"
     />
   </BalModal>
 </template>

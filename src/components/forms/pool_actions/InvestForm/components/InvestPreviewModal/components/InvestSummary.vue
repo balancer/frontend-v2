@@ -17,6 +17,7 @@ type Props = {
   priceImpact: number;
   isLoadingPriceImpact?: boolean;
   highPriceImpact?: boolean;
+  stakingConfirmed: boolean | null;
 };
 
 /**
@@ -24,7 +25,8 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
-  highPriceImpact: false
+  highPriceImpact: false,
+  stakingConfirmed: () => null
 });
 
 /**
@@ -101,6 +103,7 @@ function weeklyYieldForAPR(apr: string): string {
 
 <template>
   <div class="summary-table">
+    {{ stakingConfirmed }}
     <h6 class="p-2">
       {{ $t('summary') }}
     </h6>
@@ -222,6 +225,14 @@ function weeklyYieldForAPR(apr: string): string {
               </BalBreakdown>
             </div>
           </BalTooltip>
+        </div>
+      </div>
+      <div class="summary-table-row" v-if="stakingConfirmed !== null">
+        <div class="summary-table-label">
+          {{ $t('poolTokensStaked') }}
+        </div>
+        <div class="summary-table-number">
+          {{ stakingConfirmed ? $t('yes') : $t('no') }}
         </div>
       </div>
     </div>

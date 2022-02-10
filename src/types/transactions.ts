@@ -24,12 +24,19 @@ export type TransactionAction = {
   pending: boolean;
   step: Step;
   promise: () => Promise<void>;
+  id?: string;
+  parentAction?: string;
 };
 
 export type TransactionActionInfo = {
+  id?: string;
   label: string;
   loadingLabel: string;
   confirmingLabel: string;
   stepTooltip: string;
   action: () => Promise<TransactionResponse>;
 };
+
+export type SecondaryTransactionActionInfo = TransactionActionInfo & {
+  parentAction: string;
+}
