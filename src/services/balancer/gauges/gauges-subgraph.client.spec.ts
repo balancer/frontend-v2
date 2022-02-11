@@ -1,13 +1,13 @@
 import { gaugeQueryBuilder } from './entities/gauges/query';
 import { gaugesSubgraphClient } from './gauges-subgraph.client';
-import gaugesSchema from './__mocks__/gauges.schema.json';
+import gaugesResponse from './__mocks__/gauges-response.schema.json';
 import nock from 'nock';
 
 describe('GaugesSubgraphClient', () => {
   beforeEach(() => {
     nock('https://api.thegraph.com')
       .post('/subgraphs/name/mendesfabio/balancer-gauges')
-      .reply(200, { data: gaugesSchema.many });
+      .reply(200, gaugesResponse);
   });
 
   describe('#get', () => {
@@ -15,7 +15,7 @@ describe('GaugesSubgraphClient', () => {
       const query = gaugeQueryBuilder();
       const response = await gaugesSubgraphClient.get(query);
 
-      expect(response).toEqual(gaugesSchema.many);
+      expect(response).toEqual(gaugesResponse.data);
     });
   });
 });
