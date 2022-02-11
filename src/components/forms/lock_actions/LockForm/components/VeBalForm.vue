@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { addDays, addYears, format } from 'date-fns';
+import { computed, ref, watch } from 'vue';
+import { addDays, addYears, format, differenceInDays } from 'date-fns';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
@@ -14,6 +14,12 @@ import LockPreviewModal from './LockPreviewModal/LockPreviewModal.vue';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
 
 import useTokens from '@/composables/useTokens';
+
+import {
+  DEFAULT_LOCK_IN_DAYS,
+  MAX_LOCK_IN_DAYS,
+  MIN_LOCK_IN_DAYS
+} from '../../LockForm/constants';
 
 import { Token } from '@/types';
 
@@ -38,11 +44,11 @@ const lockAmount = ref('');
 const now = new Date();
 const DATE_FORMAT = 'yyyy-MM-dd';
 
-const minLock = format(addDays(now, 1), DATE_FORMAT);
-const maxLock = format(addYears(now, 4), DATE_FORMAT);
-const defaultLock = format(addYears(now, 1), DATE_FORMAT);
+const minLockTimestamp = addDays(now, MIN_LOCK_IN_DAYS).getTime();
+const maxLockTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
+const defaultLockTimestamp = addDays(now, DEFAULT_LOCK_IN_DAYS).getTime();
 
-const lockedUntil = ref(defaultLock);
+const lockedUntil = ref(format(defaultLockTimestamp, DATE_FORMAT));
 
 /**
  * COMPOSABLES
@@ -58,11 +64,37 @@ const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
 const isValidLockAmount = computed(() => bnum(lockAmount.value ?? '0').gt(0));
 
-const isValidDate = computed(() => lockedUntil.value != null);
+const isValidDate = computed(() => {
+  if (lockedUntil.value != null) {
+    const lockedUntilTimestamp = new Date(lockedUntil.value).getTime();
+
+    return (
+      lockedUntilTimestamp >= minLockTimestamp &&
+      lockedUntilTimestamp <= maxLockTimestamp
+    );
+  }
+
+  return false;
+});
 
 const submissionDisabled = computed(
   () => !hasBpt.value || !isValidLockAmount.value || !isValidDate.value
 );
+
+const expectedVeBalAmount = computed(() => {
+  if (!submissionDisabled.value) {
+    const lockAmountBN = bnum(lockAmount.value);
+
+    const lockAmountInDays =
+      differenceInDays(new Date(lockedUntil.value), now) + 1;
+
+    return lockAmountBN
+      .times(lockAmountInDays)
+      .div(MAX_LOCK_IN_DAYS)
+      .toString();
+  }
+  return '0';
+});
 </script>
 
 <template>
@@ -99,9 +131,15 @@ const submissionDisabled = computed(
         name="lockedUntil"
         type="date"
         v-model="lockedUntil"
-        :min="minLock"
-        :max="maxLock"
+        :min="format(minLockTimestamp, DATE_FORMAT)"
+        :max="format(maxLockTimestamp, DATE_FORMAT)"
       />
+    </div>
+    <div>
+      <div class="flex justify-between">
+        <div>veBAL you get</div>
+        <div>{{ expectedVeBalAmount }}</div>
+      </div>
     </div>
     <BalBtn
       color="gradient"
