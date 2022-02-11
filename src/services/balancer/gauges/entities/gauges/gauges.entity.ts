@@ -1,10 +1,10 @@
-import Service from '../../gauges-subgraph.service';
+import { GaugesSubgraphService } from '../../gauges-subgraph.service';
 import { gaugeQueryBuilder } from './query';
 import { SubgraphGauge, QueryBuilder } from '../../types';
 
-export default class Gauges {
+export class GaugesEntity {
   constructor(
-    private readonly service: Service,
+    private readonly service: GaugesSubgraphService,
     private readonly query: QueryBuilder = gaugeQueryBuilder
   ) {}
 

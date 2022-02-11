@@ -1,15 +1,15 @@
 import { gaugesSubgraphClient } from './gauges-subgraph.client';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import Gauges from './entities/gauges';
+import { GaugesEntity } from './entities/gauges/gauges.entity';
 
-export default class GaugesSubgraphService {
-  gauges: Gauges;
+export class GaugesSubgraphService {
+  gauges: GaugesEntity;
 
   constructor(
     readonly client = gaugesSubgraphClient,
     readonly rpcProviderService = _rpcProviderService
   ) {
-    this.gauges = new Gauges(this);
+    this.gauges = new GaugesEntity(this);
   }
 }
 

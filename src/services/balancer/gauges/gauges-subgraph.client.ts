@@ -4,7 +4,7 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 const BALANCER_GAUGES_SUBGRAPH =
   'https://api.thegraph.com/subgraphs/name/mendesfabio/balancer-gauges';
 
-export default class GaugesSubgraphClient {
+export class GaugesSubgraphClient {
   constructor(public readonly url: string = BALANCER_GAUGES_SUBGRAPH) {}
 
   public async get(query) {
