@@ -11,11 +11,13 @@ describe('GaugesSubgraphClient', () => {
   });
 
   describe('#get', () => {
-    it('returns array of gauges when called with default query', async () => {
-      const query = gaugeQueryBuilder();
-      const response = await gaugesSubgraphClient.get(query);
+    describe('default query', () => {
+      it('returns nested data object', async () => {
+        const query = gaugeQueryBuilder();
+        const response = await gaugesSubgraphClient.get(query);
 
-      expect(response).toEqual(gaugesResponse.data);
+        expect(response).toEqual(gaugesResponse.data);
+      });
     });
   });
 });
