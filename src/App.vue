@@ -20,6 +20,7 @@ import useAlerts, {
 } from './composables/useAlerts';
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
+import { LiquidityGauge } from './services/balancer/contracts/contracts/liquidity-gauge';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -86,6 +87,10 @@ export default defineComponent({
      */
     onBeforeMount(async () => {
       store.dispatch('app/init');
+      const gauge = new LiquidityGauge();
+      console.log('instance', gauge.instance);
+      const tokens = await gauge.getRewardTokens();
+      console.log('tokens', tokens);
     });
 
     /**
