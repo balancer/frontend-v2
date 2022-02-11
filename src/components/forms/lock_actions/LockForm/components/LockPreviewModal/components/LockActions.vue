@@ -14,12 +14,10 @@ import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useConfig from '@/composables/useConfig';
-import useUserSettings from '@/composables/useUserSettings';
 
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
-import useVeBal from '@/composables/useVeBAL';
 
 import { LockType } from '../../../types';
 
@@ -65,14 +63,12 @@ const lockState = reactive<LockState>({
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks, account } = useWeb3();
+const { getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { slippageScaled } = useUserSettings();
-const { veBalTokenInfo } = useVeBal();
 const { tokenApprovalActions } = useTokenApprovalActions(
   [props.lockablePoolTokenInfo.address],
-  ref(['100']),
+  ref([props.lockAmount]),
   'veBAL'
 );
 
@@ -104,20 +100,20 @@ const explorerLink = computed(() =>
     : ''
 );
 
-const transactionInProgress = computed(
-  () => lockState.init || lockState.confirming || lockState.confirmed
-);
-
 /**
  * METHODS
  */
-async function handleTransaction(tx): Promise<void> {
+async function handleTransaction(tx: TransactionResponse): Promise<void> {
   addTransaction({
     id: tx.hash,
     type: 'tx',
-    action: 'lock',
-    summary: t('transactionSummary.lock'),
-    details: {}
+    action: props.lockType,
+    summary: t(`transactionSummary.${props.lockType}`),
+    details: {
+      lockAmount: props.lockAmount,
+      lockedUntil: props.lockedUntil,
+      lockType: props.lockType
+    }
   });
 
   lockState.confirmed = await txListener(tx, {
@@ -137,8 +133,28 @@ async function handleTransaction(tx): Promise<void> {
 
 async function submit() {
   try {
-    let tx: any;
+    let tx: TransactionResponse;
     lockState.init = true;
+
+    if (props.lockType === LockType.CREATE_LOCK) {
+      tx = await balancerContractsService.veBAL.createLock(
+        getProvider(),
+        props.lockAmount,
+        props.lockedUntil
+      );
+    } else if (props.lockType === LockType.EXTEND_LOCK) {
+      tx = await balancerContractsService.veBAL.extendLock(
+        getProvider(),
+        props.lockedUntil
+      );
+    } else if (props.lockType === LockType.INCREASE_LOCK) {
+      tx = await balancerContractsService.veBAL.increaseLock(
+        getProvider(),
+        props.lockAmount
+      );
+    } else {
+      throw new Error('Unsupported lockType provided');
+    }
 
     lockState.init = false;
     lockState.confirming = true;

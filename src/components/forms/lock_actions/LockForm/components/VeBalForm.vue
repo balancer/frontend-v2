@@ -7,9 +7,6 @@ import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
-import TradeSettingsPopover, {
-  TradeSettingsContext
-} from '@/components/popovers/TradeSettingsPopover.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import LockPreviewModal from './LockPreviewModal/LockPreviewModal.vue';
 
@@ -20,6 +17,7 @@ import useTokens from '@/composables/useTokens';
 import { TokenInfo } from '@/types/TokenList';
 
 import {
+  INPUT_DATE_FORMAT,
   DEFAULT_LOCK_IN_DAYS,
   MAX_LOCK_IN_DAYS,
   MIN_LOCK_IN_DAYS
@@ -44,13 +42,12 @@ const props = defineProps<Props>();
 const showPreviewModal = ref(false);
 const lockAmount = ref('');
 const now = new Date();
-const DATE_FORMAT = 'yyyy-MM-dd';
 
 const minLockTimestamp = addDays(now, MIN_LOCK_IN_DAYS).getTime();
 const maxLockTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
 const defaultLockTimestamp = addDays(now, DEFAULT_LOCK_IN_DAYS).getTime();
 
-const lockedUntil = ref(format(defaultLockTimestamp, DATE_FORMAT));
+const lockedUntil = ref(format(defaultLockTimestamp, INPUT_DATE_FORMAT));
 
 /**
  * COMPOSABLES
@@ -98,7 +95,12 @@ const expectedVeBalAmount = computed(() => {
   return '0';
 });
 
-const lockType = computed(() => LockType.LOCK);
+const lockType = computed(() => {
+  if (props.veBalLockInfo.hasLock) {
+    return LockType.INCREASE_LOCK;
+  }
+  return LockType.CREATE_LOCK;
+});
 </script>
 
 <template>
@@ -112,7 +114,6 @@ const lockType = computed(() => LockType.LOCK);
           <h4>
             {{ $t('getVeBAL.lockForm.title') }}
           </h4>
-          <TradeSettingsPopover :context="TradeSettingsContext.invest" />
         </div>
       </div>
     </template>
@@ -135,8 +136,8 @@ const lockType = computed(() => LockType.LOCK);
         name="lockedUntil"
         type="date"
         v-model="lockedUntil"
-        :min="format(minLockTimestamp, DATE_FORMAT)"
-        :max="format(maxLockTimestamp, DATE_FORMAT)"
+        :min="format(minLockTimestamp, INPUT_DATE_FORMAT)"
+        :max="format(maxLockTimestamp, INPUT_DATE_FORMAT)"
       />
     </div>
     <div>

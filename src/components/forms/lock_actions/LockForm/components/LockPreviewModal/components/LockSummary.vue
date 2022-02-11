@@ -10,6 +10,8 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 
 import useVeBal from '@/composables/useVeBAL';
 
+import { PRETTY_DATE_FORMAT } from '../../../constants';
+
 type Props = {
   lockablePool: FullPool;
   lockAmount: string;
@@ -37,7 +39,7 @@ const fiatTotal = computed(() =>
     .times(props.lockAmount)
 );
 
-const veBalAmount = computed(() => props.lockAmount);
+// const veBalAmount = computed(() => props.lockAmount);
 
 const fiatWeeklyYield = computed(() => '0');
 </script>
@@ -56,7 +58,7 @@ const fiatWeeklyYield = computed(() => '0');
       </div>
       <div class="summary-item-row">
         <div>{{ $t('getVeBAL.previewModal.summary.lockedUntil') }}</div>
-        <div>{{ format(new Date(lockedUntil), 'd MMM yyyy') }}</div>
+        <div>{{ format(new Date(lockedUntil), PRETTY_DATE_FORMAT) }}</div>
       </div>
       <div class="summary-item-row">
         <div>{{ $t('getVeBAL.previewModal.summary.veBalYouGet') }}</div>

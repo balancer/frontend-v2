@@ -652,7 +652,7 @@
                     "tooltip": "You must approve {0}.",
                     "loadingLabel": "Confirm approval in wallet"                    
                 },
-                "lock": {
+                "createLock": {
                     "label": "Confirm lock until {0}",
                     "confirming": "Confirming lock...",
                     "tooltip": "Confirm locking.",
@@ -808,7 +808,7 @@
         "unwrap": "Unwrap",
         "withdraw": "Withdraw",
         "wrap": "Wrap",
-        "lock": "Lock",
+        "createLock": "Lock",
         "extendLock": "Extend lock",
         "increaseLock": "Increase lock"
     },

@@ -1,14 +1,18 @@
-import Service from '../balancer-contracts.service';
 import { Multicaller } from '@/lib/utils/balancer/contract';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
+import { Web3Provider } from '@ethersproject/providers';
+import { parseUnits } from '@ethersproject/units';
 
 import veBalAbi from '@/lib/abi/veBalAbi.json';
-import { bnum } from '@/lib/utils';
+
+import Service from '../balancer-contracts.service';
+import { unixToJsTime } from '@/lib/utils/date';
 
 export type VeBalLockInfo = {
-  lockedUntil: string;
+  lockedUntil: number;
   lockedAmount: string;
   totalSupply: string;
   epoch: string;
@@ -18,7 +22,7 @@ export type VeBalLockInfo = {
 type VeBalLockInfoResult = {
   locked: BigNumber[];
   epoch: BigNumber;
-  totalSupply: string;
+  totalSupply: BigNumber;
 };
 
 export default class VeBAL {
@@ -45,17 +49,52 @@ export default class VeBAL {
   }
 
   public formatLockInfo(lockInfo: VeBalLockInfoResult) {
-    const [lockedAmount, lockedUntil] = lockInfo.locked.map(amount =>
-      formatUnits(amount, 18)
-    );
+    const [lockedAmount, lockedUntil] = lockInfo.locked;
 
     return {
-      lockedUntil,
-      lockedAmount,
+      lockedUntil: unixToJsTime(lockedUntil.toNumber()),
+      lockedAmount: formatUnits(lockedAmount, 18),
       totalSupply: formatUnits(lockInfo.totalSupply, 18),
-      epoch: formatUnits(lockInfo.epoch, 18),
-      hasLock: bnum(lockedAmount).gt(0)
+      epoch: lockInfo.epoch.toString(),
+      hasLock: lockedAmount.gt(0)
     };
+  }
+
+  public createLock(
+    userProvider: Web3Provider,
+    lockAmount: string,
+    lockUntil: string
+  ) {
+    return sendTransaction(
+      userProvider,
+      this.address,
+      veBalAbi,
+      'create_lock',
+      [
+        parseUnits(lockAmount, 18),
+        (new Date(lockUntil).getTime() / 1000).toString()
+      ]
+    );
+  }
+
+  public increaseLock(userProvider: Web3Provider, lockAmount: string) {
+    return sendTransaction(
+      userProvider,
+      this.address,
+      veBalAbi,
+      'increase_amount',
+      [parseUnits(lockAmount, 18)]
+    );
+  }
+
+  public extendLock(userProvider: Web3Provider, lockUntil: string) {
+    return sendTransaction(
+      userProvider,
+      this.address,
+      veBalAbi,
+      'increase_unlock_time',
+      [(new Date(lockUntil).getTime() / 1000).toString()]
+    );
   }
 
   public get address(): string {

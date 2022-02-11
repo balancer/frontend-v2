@@ -89,7 +89,7 @@ const isLoading = computed(
 
     <template #gutterRight>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
-      <MyVeBAL v-else />
+      <MyVeBAL v-else :veBalLockInfo="veBalLockInfo" />
     </template>
   </Col3Layout>
 </template>

@@ -43,7 +43,7 @@ export type TransactionAction =
   | 'createPool'
   | 'fundPool'
   | 'migratePool'
-  | 'lock'
+  | 'createLock'
   | 'extendLock'
   | 'increaseLock';
 
