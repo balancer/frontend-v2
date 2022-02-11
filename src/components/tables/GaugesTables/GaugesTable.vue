@@ -24,6 +24,7 @@ import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
+import { GaugeVote } from '@/components/vebal/GaugeVote.vue';
 
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 
@@ -97,67 +98,38 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithGaugeShares>[]>([
   {
     name: t('votes'),
     accessor: pool =>
-      fNum2(pool.gauge.votePercent, {
+      fNum2(pool.gauge.votes, {
         style: 'percent',
         maximumFractionDigits: 2
       }),
     align: 'right',
     id: 'poolGaugeVotes',
-    sortKey: pool => Number(pool.gauge.votePercent),
-    width: 150,
-    cellClassName: 'font-numeric'
-  },
-  {
-    name: t('nextAPR'),
-    accessor: pool => {
-      const minAPR = fNum2(pool.gauge.nextAPRMin, {
-        style: 'percent',
-        maximumFractionDigits: 2
-      });
-      const maxAPR = fNum2(pool.gauge.nextAPRMax, {
-        style: 'percent',
-        maximumFractionDigits: 2
-      });
-      return `${minAPR}-${maxAPR}`;
-    },
-    align: 'right',
-    id: 'poolValue',
-    sortKey: pool => {
-      const apr = Number(pool.gauge.nextAPRMin);
-      if (apr === Infinity || isNaN(apr)) return 0;
-      return apr;
-    },
-    width: 150,
-    cellClassName: 'font-numeric'
-  },
-  {
-    name: t('myLiquidity'),
-    accessor: pool =>
-      fNum2(pool.shares, {
-        style: 'currency',
-        maximumFractionDigits: 0,
-        fixedFormat: true
-      }),
-    align: 'right',
-    id: 'myBalance',
-    hidden: !props.showPoolShares,
-    sortKey: pool => Number(pool.shares),
+    sortKey: pool => Number(pool.gauge.votes),
     width: 150,
     cellClassName: 'font-numeric'
   },
   {
     name: t('myVotes'),
     accessor: pool =>
-      fNum2(pool.gauge.votes, {
+      fNum2(pool.gauge.userVotes, {
         style: 'percent',
         maximumFractionDigits: 2
       }),
     align: 'right',
     id: 'myVotes',
     hidden: !props.showPoolShares,
-    sortKey: pool => Number(pool.gauge.votes),
+    sortKey: pool => Number(pool.gauge.userVotes),
     width: 150,
     cellClassName: 'font-numeric'
+  },
+  {
+    name: 'Vote',
+    id: 'vote',
+    accessor: 'id',
+    align: 'right',
+    Cell: 'voteColumnCell',
+    width: 50,
+    noGrow: true
   }
 ]);
 
@@ -285,27 +257,9 @@ function navigateToPoolMigration(pool: DecoratedPoolWithGaugeShares) {
           </BalChip>
         </div>
       </template>
-      <template v-slot:aprCell="pool">
-        <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
-          {{
-            Number(pool.dynamic.apr.pool) > 10000
-              ? '-'
-              : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
-          }}
-          <LiquidityAPRTooltip :pool="pool" />
-        </div>
-      </template>
-      <template v-slot:migrateCell="pool">
-        <div class="px-6 py-4 flex justify-end">
-          <BalBtn
-            v-if="isMigratablePool(pool)"
-            color="gradient"
-            size="sm"
-            @click.prevent="navigateToPoolMigration(pool)"
-          >
-            {{ $t('migrate') }}
-          </BalBtn>
-        </div>
+      <template v-slot:voteColumnCell="pool">
+        VoteCell pool: {{pool.id}}
+        <GagueVote :pool="pool"></GagueVote>
       </template>
     </BalTable>
   </BalCard>

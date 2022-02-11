@@ -59,10 +59,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.1913",
-        "nextAPRMin": "0.1001",
-        "nextAPRMax": "0.1216",
-        "votes": "0.6"
+        "votes": "0.1913",
+        "userVotes": "0.6"
       }
   },
   {
@@ -124,10 +122,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.1862",
-        "nextAPRMin": "0.0968",
-        "nextAPRMax": "0.1186",
-        "votes": "0.2"
+        "votes": "0.1862",
+        "userVotes": "0.2"
       }
   },
   {
@@ -345,10 +341,8 @@
           "swapFee": "0.00001"
       },
       "gauge": {
-        "votePercent": "0.0810",
-        "nextAPRMin": "0.0688",
-        "nextAPRMax": "0.0816",
-        "votes": "0.0"
+        "votes": "0.0810",
+        "userVotes": "0.0"
       }
   },
   {
@@ -418,10 +412,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0637",
-        "nextAPRMin": "0.0557",
-        "nextAPRMax": "0.0716",
-        "votes": "0.0"
+        "votes": "0.0637",
+        "userVotes": "0.0"
       }
   },
   {
@@ -483,10 +475,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0510",
-        "nextAPRMin": "0.055",
-        "nextAPRMax": "0.0702",
-        "votes": "0.0"
+        "votes": "0.0510",
+        "userVotes": "0.0"
       }
   },
   {
@@ -548,10 +538,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0321",
-        "nextAPRMin": "0.0498",
-        "nextAPRMax": "0.0616",
-        "votes": "0.0"
+        "votes": "0.0321",
+        "userVotes": "0.0"
       }
   },
   {
@@ -611,10 +599,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0223",
-        "nextAPRMin": "0.0456",
-        "nextAPRMax": "0.0608",
-        "votes": "0.0"
+        "votes": "0.0223",
+        "userVotes": "0.0"
       }
   },
   {
@@ -684,10 +670,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0216",
-        "nextAPRMin": "0.0424",
-        "nextAPRMax": "0.0598",
-        "votes": "0.0"
+        "votes": "0.0216",
+        "userVotes": "0.0"
       }
   },
   {
@@ -749,10 +733,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0210",
-        "nextAPRMin": "0.0402",
-        "nextAPRMax": "0.0581",
-        "votes": "0.0"
+        "votes": "0.0210",
+        "userVotes": "0.0"
       }
   },
   {
@@ -812,10 +794,8 @@
           "isNewPool": false
       },
       "gauge": {
-        "votePercent": "0.0110",
-        "nextAPRMin": "0.0123",
-        "nextAPRMax": "0.0342",
-        "votes": "0.0"
+        "votes": "0.0110",
+        "userVotes": "0.0"
       }
   }
 ]

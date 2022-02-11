@@ -180,10 +180,8 @@ export interface DecoratedPoolWithShares extends DecoratedPool {
 }
 
 export interface GaugeInformation {
-  votePercent: string;
-  nextAPRMin: string;
-  nextAPRMax: string;
   votes: string;
+  userVotes: string;
 }
 
 export interface DecoratedPoolWithGaugeShares extends DecoratedPoolWithShares {
