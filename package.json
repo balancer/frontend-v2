@@ -8,7 +8,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit --cache  --passWithNoTests --runInBand",
+    "test:unit": "vue-cli-service test:unit --cache  --passWithNoTests --runInBand --detectOpenHandles",
     "lint": "vue-cli-service lint --no-fix --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
