@@ -1,0 +1,15 @@
+[
+  {
+    "inputs": [],
+    "name": "get_reward_tokens",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
