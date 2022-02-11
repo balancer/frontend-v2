@@ -30,7 +30,6 @@ import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useUserSettings from '@/composables/useUserSettings';
-import { vebBalAddress } from '@/composables/useVeBAL';
 
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -137,7 +136,8 @@ export default {
       allowanceContracts: compact([
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
-        networkConfig.addresses.exchangeProxy
+        networkConfig.addresses.exchangeProxy,
+        configService.network.addresses.veBAL
       ]),
       injectedPrices: {}
     });
@@ -446,7 +446,7 @@ export default {
         ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
-        vebBalAddress.value
+        configService.network.addresses.veBAL
       ]);
 
       await forChange(loadingTokenLists, false);

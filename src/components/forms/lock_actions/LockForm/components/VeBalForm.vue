@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { addDays, addYears, format, differenceInDays } from 'date-fns';
+import { computed, ref } from 'vue';
+import { addDays, format, differenceInDays } from 'date-fns';
+
+import { bnum } from '@/lib/utils';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
@@ -15,19 +17,19 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
 
 import useTokens from '@/composables/useTokens';
 
+import { TokenInfo } from '@/types/TokenList';
+
 import {
   DEFAULT_LOCK_IN_DAYS,
   MAX_LOCK_IN_DAYS,
   MIN_LOCK_IN_DAYS
-} from '../../LockForm/constants';
+} from '../constants';
 
-import { Token } from '@/types';
-
-import { bnum } from '@/lib/utils';
+import { LockType } from '../types';
 
 type Props = {
   lockablePool: FullPool;
-  lockablePoolTokenInfo: Token;
+  lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo: VeBalLockInfo;
 };
 
@@ -95,6 +97,8 @@ const expectedVeBalAmount = computed(() => {
   }
   return '0';
 });
+
+const lockType = computed(() => LockType.LOCK);
 </script>
 
 <template>
@@ -158,6 +162,8 @@ const expectedVeBalAmount = computed(() => {
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :lockAmount="lockAmount"
       :lockedUntil="lockedUntil"
+      :expectedVeBalAmount="expectedVeBalAmount"
+      :lockType="lockType"
       @close="showPreviewModal = false"
     />
   </teleport>

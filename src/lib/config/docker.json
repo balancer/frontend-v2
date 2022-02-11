@@ -43,7 +43,8 @@
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "",
     "merkleOrchard": "",
-    "batchRelayer": ""
+    "batchRelayer": "",
+    "veBAL": ""
   },
   "keys": {},
   "strategies": {

@@ -4,8 +4,6 @@ import { Multicaller } from '@/lib/utils/balancer/contract';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 
-import { vebBalAddress } from '@/composables/useVeBAL';
-
 import veBalAbi from '@/lib/abi/veBalAbi.json';
 import { bnum } from '@/lib/utils';
 
@@ -37,9 +35,9 @@ export default class VeBAL {
       veBalAbi
     );
 
-    veBalMulticaller.call('locked', vebBalAddress.value, 'locked', [account]);
-    veBalMulticaller.call('epoch', vebBalAddress.value, 'epoch');
-    veBalMulticaller.call('totalSupply', vebBalAddress.value, 'totalSupply()');
+    veBalMulticaller.call('locked', this.address, 'locked', [account]);
+    veBalMulticaller.call('epoch', this.address, 'epoch');
+    veBalMulticaller.call('totalSupply', this.address, 'totalSupply()');
 
     const result = await veBalMulticaller.execute<VeBalLockInfoResult>();
 
@@ -58,5 +56,9 @@ export default class VeBAL {
       epoch: formatUnits(lockInfo.epoch, 18),
       hasLock: bnum(lockedAmount).gt(0)
     };
+  }
+
+  public get address(): string {
+    return this.service.config.addresses.veBAL;
   }
 }

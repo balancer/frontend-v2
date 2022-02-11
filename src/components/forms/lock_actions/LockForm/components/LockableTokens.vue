@@ -8,11 +8,11 @@ import { bnum } from '@/lib/utils';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import { Token } from '@/types';
+import { TokenInfo } from '@/types/TokenList';
 
 type Props = {
   lockablePool: FullPool;
-  lockablePoolTokenInfo: Token;
+  lockablePoolTokenInfo: TokenInfo;
 };
 
 /**

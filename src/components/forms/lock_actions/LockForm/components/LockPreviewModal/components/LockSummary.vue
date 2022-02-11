@@ -14,6 +14,7 @@ type Props = {
   lockablePool: FullPool;
   lockAmount: string;
   lockedUntil: string;
+  expectedVeBalAmount: string;
 };
 
 /**
@@ -60,7 +61,7 @@ const fiatWeeklyYield = computed(() => '0');
       <div class="summary-item-row">
         <div>{{ $t('getVeBAL.previewModal.summary.veBalYouGet') }}</div>
         <div>
-          {{ fNum2(veBalAmount, FNumFormats.token) }}
+          {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
         </div>
       </div>

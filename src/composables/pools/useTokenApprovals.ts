@@ -19,9 +19,12 @@ export type ApprovalStateMap = {
   [address: string]: ApprovalState;
 };
 
+export type SpenderType = 'vault' | 'veBAL';
+
 export default function useTokenApprovals(
   tokenAddresses: string[],
-  amounts: Ref<string[]>
+  amounts: Ref<string[]>,
+  spenderType?: SpenderType
 ) {
   /**
    * COMPOSABLES
@@ -37,7 +40,13 @@ export default function useTokenApprovals(
    */
   const requiredApprovalState = ref<ApprovalStateMap>(
     Object.fromEntries(
-      approvalsRequired(tokenAddresses, amounts.value).map(address => [
+      approvalsRequired(
+        tokenAddresses,
+        amounts.value,
+        spenderType === 'veBAL'
+          ? appNetworkConfig.addresses.veBAL
+          : appNetworkConfig.addresses.vault
+      ).map(address => [
         address,
         { init: false, confirming: false, approved: false }
       ])
@@ -51,7 +60,13 @@ export default function useTokenApprovals(
    * COMPUTED
    */
   const requiredApprovals = computed(() =>
-    approvalsRequired(tokenAddresses, amounts.value)
+    approvalsRequired(
+      tokenAddresses,
+      amounts.value,
+      spenderType === 'veBAL'
+        ? appNetworkConfig.addresses.veBAL
+        : appNetworkConfig.addresses.vault
+    )
   );
 
   /**
@@ -63,12 +78,17 @@ export default function useTokenApprovals(
     try {
       state.init = true;
 
+      const spender =
+        spenderType === 'veBAL'
+          ? appNetworkConfig.addresses.veBAL
+          : appNetworkConfig.addresses.vault;
+
       const tx = await sendTransaction(
         getProvider(),
         address,
         ERC20ABI,
         'approve',
-        [appNetworkConfig.addresses.vault, MaxUint256.toString()]
+        [spender, MaxUint256.toString()]
       );
 
       state.init = false;
@@ -78,12 +98,15 @@ export default function useTokenApprovals(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: t('transactionSummary.approveForInvesting', [
-          tokens.value[address]?.symbol
-        ]),
+        summary: t(
+          spenderType === 'veBAL'
+            ? 'transactionSummary.approveForLocking'
+            : 'transactionSummary.approveForInvesting',
+          [tokens.value[address]?.symbol]
+        ),
         details: {
           contractAddress: address,
-          spender: appNetworkConfig.addresses.vault
+          spender
         }
       });
 

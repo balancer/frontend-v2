@@ -646,10 +646,30 @@
                 "veBalYouGet": "Voting escrow you’ll get",
                 "potentialWeeklyYield": "Potential weekly yield"
             },
-            "actions": {                
-                "title": "Confirm lock until {0}",
-                "loading": "Confirm lock in wallet",
-                "tooltip": "Confirm lock"
+            "actions": {
+                "approve": {
+                    "confirming": "Confirming approval...",
+                    "tooltip": "You must approve {0}.",
+                    "loadingLabel": "Confirm approval in wallet"                    
+                },
+                "lock": {
+                    "label": "Confirm lock until {0}",
+                    "confirming": "Confirming lock...",
+                    "tooltip": "Confirm locking.",
+                    "loadingLabel": "Confirm lock in wallet"                    
+                },
+                "extendLock": {
+                    "label": "Confirm lock until {0}",
+                    "confirming": "Confirming lock...",
+                    "tooltip": "Confirm locking.",
+                    "loadingLabel": "Confirm lock in wallet"                    
+                },
+                "increaseLock": {
+                    "label": "Confirm lock until {0}",
+                    "confirming": "Confirming lock...",
+                    "tooltip": "Confirm locking.",
+                    "loadingLabel": "Confirm lock in wallet"                    
+                }
             },
             "returnToVeBalPage": "Return to veBPT lock page"
         },
@@ -783,12 +803,14 @@
         "createPool": "Create pool",
         "fundPool": "Fund pool",
         "migratePool": "Migrate pool",
-        "lockBpt": "Lock BPT",
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
         "withdraw": "Withdraw",
-        "wrap": "Wrap"
+        "wrap": "Wrap",
+        "lock": "Lock",
+        "extendLock": "Extend lock",
+        "increaseLock": "Increase lock"
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
@@ -822,15 +844,14 @@
     "transactionSummary": {
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
+        "approveForLocking": "Approve {0} for locking",
         "approveRelayer": "Approve {0} relayer",
-        "approveVeBAL": "Approve veBAL contract",
         "createPool": "Create pool",
         "fundPool": "Fund pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
         "migratePool": "{0} {1} to {2}",
-        "wrapUnwrap": "{0} {1} to {2}",
-        "lockBpt": "Lock BPT"
+        "wrapUnwrap": "{0} {1} to {2}"
     },
     "transactionType": "Transaction type",
     "unallocated": "Unallocated",

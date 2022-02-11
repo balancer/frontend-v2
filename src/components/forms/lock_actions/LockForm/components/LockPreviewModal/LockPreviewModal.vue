@@ -3,22 +3,24 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
-import { Token } from '@/types';
 
 import LockAmount from './components/LockAmount.vue';
 import LockSummary from './components/LockSummary.vue';
 import LockActions from './components/LockActions.vue';
+
+import { TokenInfo } from '@/types/TokenList';
+import { LockType } from '../../types';
 
 /**
  * TYPES
  */
 type Props = {
   lockablePool: FullPool;
-  lockablePoolTokenInfo: Token;
+  lockablePoolTokenInfo: TokenInfo;
   lockAmount: string;
   lockedUntil: string;
+  expectedVeBalAmount: string;
+  lockType: LockType;
 };
 
 /**
@@ -82,12 +84,15 @@ function handleClose() {
       :lockablePool="lockablePool"
       :lockAmount="lockAmount"
       :lockedUntil="lockedUntil"
+      :expectedVeBalAmount="expectedVeBalAmount"
     />
 
     <LockActions
       :lockablePool="lockablePool"
       :lockAmount="lockAmount"
       :lockedUntil="lockedUntil"
+      :lockType="lockType"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
     />
   </BalModal>
 </template>
