@@ -28,11 +28,12 @@ const props = defineProps<Props>();
     <template v-slot:activator>
       <BalBtn
         color="white"
-        :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        :size="'sm'"
         class="mr-2 p-1 relative"
         :circle="upToLargeBreakpoint"
+        @click.stop=""
       >
-        <ActivityIcon />
+        <VoteIcon />
       </BalBtn>
     </template>
     <BalCard class="w-72" noPad noBorder>

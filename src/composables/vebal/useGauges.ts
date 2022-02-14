@@ -2,18 +2,18 @@ import { computed, Ref, ref } from 'vue';
 
 import { flatten } from 'lodash';
 
-// import useGaugesQuery from '@/composables/vebal/useGaugesQuery';
+import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 
-export default function useGauges(poolsTokenList: Ref<string[]> = ref([])) {
+export default function useGauges() {
   // COMPOSABLES
-  // const poolsQuery = useGaugesQuery(poolsTokenList);
+  // const gaugesQuery = useGaugesQuery();
 
   // COMPUTED
   const gauges = require('@/constants/gauges.json');
 
-  // const tokens = computed(() =>
-  //   poolsQuery.data.value
-  //     ? flatten(poolsQuery.data.value.pages.map(page => page.tokens))
+  // const gauges = computed(() =>
+  //   gaugesQuery.data.value
+  //     ? flatten(gaugesQuery.data.value.pages.map(page => page.tokens))
   //     : []
   // );
 

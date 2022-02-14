@@ -24,7 +24,7 @@ import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
-import { GaugeVote } from '@/components/vebal/GaugeVote.vue';
+import GaugeVote from '@/components/vebal/GaugeVote.vue';
 
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 
@@ -258,8 +258,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithGaugeShares) {
         </div>
       </template>
       <template v-slot:voteColumnCell="pool">
-        VoteCell pool: {{pool.id}}
-        <GagueVote :pool="pool"></GagueVote>
+        <GaugeVote :pool="pool"></GaugeVote>
       </template>
     </BalTable>
   </BalCard>
