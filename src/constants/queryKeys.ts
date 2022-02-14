@@ -111,6 +111,9 @@ const QUERY_KEYS = {
       account: Ref<string>,
       chainId: Ref<number | undefined>
     ) => ['account', 'profile', { networkId, account, chainId }]
+  },
+  Gauges: {
+    All: () => ['gauges', 'all']
   }
 };
 
