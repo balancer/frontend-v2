@@ -1,0 +1,71 @@
+{
+    "key": "1",
+    "chainId": 42220,
+    "chainName": "celo",
+    "name": "celo",
+    "shortName": "celo",
+    "network": "celo",
+    "unknown": false,
+    "rpc": "https://forno.celo.org",
+    "ws": "wss://forno.celo.org/ws",
+    "loggingRpc": "https://forno.celo.org",
+    "explorer": "https://explorer.celo.org/",
+    "explorerName": "CeloScan",
+    "subgraph": "https://thegraph.com/hosted-service/subgraph/launchdex/symm-celo-v2",
+    "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
+    "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
+    "subgraphs": {
+      "aave": ""
+    },
+    "supportsEIP1559": true,
+    "nativeAsset": {
+      "name": "Celo",
+      "address": "0x471EcE3750Da237f93B8E339c536989b8978a438",
+      "symbol": "CELO",
+      "decimals": 18,
+      "deeplinkId": "celo",
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "minTransactionBuffer": "0.05"
+    },
+    "addresses": {
+      "bFactory": "",
+      "bActions": "",
+      "dsProxyRegistry": "",
+      "exchangeProxy": "",
+      "merkleRedeem": "0x30c30Da856AaF23eDCB4E27f9Ba5E95c5Fb8C254",
+      "merkleOrchard": "0xE62ee4bE8ECc0e4aeDEAA095CE4e49B9adB050Dc",
+      "multicall": "",
+      "authorizer": "0x8B98BD2e3ddC48ab197d26Fd7fde9b14f492b0BD",
+      "vault": "0xBaCB07678Ab8Fe8236cC6B52Fa8B96DFC278439B",
+      "weightedPoolFactory": "0x5463374B7127dcDdfD68B3A437f53CDF1B4A5264",
+      "stablePoolFactory": "0x8A217be3f8745efc522C49C66e1618699AF5bFAD",
+      "tokenFactory": "",
+      "weth": "0x471EcE3750Da237f93B8E339c536989b8978a438",
+      "stETH": "",
+      "wstETH": "",
+      "lidoRelayer": "",
+      "MockFlashLoanReceiver": "",
+      "balancerHelpers": "0x025228DD3CA5839934B145F4535545C7Aea9945f",
+      "batchRelayer": "0x8B98BD2e3ddC48ab197d26Fd7fde9b14f492b0BD"
+    },
+    "keys": {
+      "infura": "daaa68ec242643719749dd1caba2fc66",
+      "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
+    },
+    "strategies": {
+      "0": {
+        "type": "0",
+        "name": "stablePool"
+      },
+      "1": {
+        "type": "1",
+        "name": "weightedPool"
+      },
+      "2": {
+        "type": "2",
+        "name": "weightedPool"
+      }
+    },
+    "supportsElementPools": true
+  }
+  
