@@ -24,9 +24,7 @@ export default function useGaugesQuery(
   /**
    * QUERY FUNCTION
    */
-  const queryFn = async () => {
-    return await gaugesSubgraphService.gauges.get();
-  };
+  const queryFn = () => gaugesSubgraphService.gauges.get();
 
   /**
    * QUERY OPTIONS
