@@ -221,8 +221,7 @@ export default defineComponent({
         [displayClasses.value]: true,
         [shapeClasses.value]: true,
         [shadowClasses.value]: true,
-        [cursorClasses.value]: true,
-        'gradient-outline': true
+        [cursorClasses.value]: true
       };
     });
 
