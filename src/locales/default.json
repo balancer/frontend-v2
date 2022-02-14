@@ -522,6 +522,14 @@
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
     "stake": "Stake",
+    "staking": {
+        "stakedLPTokens": "Staked LP Tokens",
+        "staking": "Staking",
+        "unclaimedIncentives": "Unclaimed incentives",
+        "unstakedLPTokens": "Unstaked LP Tokens",
+        "potentialWeeklyYield": "Potential weekly yield"
+    },
+    "stakingIncentives": "Staking incentives",
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",
@@ -712,6 +720,7 @@
     "unknownTokenPrice": "Unknown token price",
     "unlock": "Unlock",
     "unlocking": "Unlocking",
+    "unstake": "Unstake",
     "unwrap": "Unwrap",
     "usdValue": "USD Value",
     "usingLiquidity": "Using {0} liquidity",
