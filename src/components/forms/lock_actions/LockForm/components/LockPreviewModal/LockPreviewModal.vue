@@ -11,7 +11,6 @@ import LockActions from './components/LockActions.vue';
 
 import { TokenInfo } from '@/types/TokenList';
 import { LockType } from '../../types';
-import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -52,8 +51,8 @@ const { t } = useI18n();
 const title = computed(() => {
   if (props.lockType.length === 1) {
     return lockConfirmed.value
-      ? t(`getVeBAL.previewModal.titles.${props.lockType}.confirmed`)
-      : t(`getVeBAL.previewModal.titles.${props.lockType}.default`);
+      ? t(`getVeBAL.previewModal.titles.${props.lockType[0]}.confirmed`)
+      : t(`getVeBAL.previewModal.titles.${props.lockType[0]}.default`);
   }
   return lockConfirmed.value
     ? t(`getVeBAL.previewModal.titles.${LockType.CREATE_LOCK}.confirmed`)
@@ -86,18 +85,16 @@ function handleClose() {
       </div>
     </template>
 
-    <LockAmount
-      :lockablePool="lockablePool"
-      :totalLpTokens="totalLpTokens"
-      :veBalLockInfo="veBalLockInfo"
-    />
+    <LockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
 
     <LockSummary
       :lockablePool="lockablePool"
       :totalLpTokens="totalLpTokens"
+      :lockAmount="lockAmount"
       :lockEndDate="lockEndDate"
       :expectedVeBalAmount="expectedVeBalAmount"
       :lockType="lockType"
+      :veBalLockInfo="veBalLockInfo"
     />
 
     <LockActions
@@ -106,6 +103,7 @@ function handleClose() {
       :lockEndDate="lockEndDate"
       :lockType="lockType"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      class="mt-4"
     />
   </BalModal>
 </template>

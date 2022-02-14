@@ -45,14 +45,17 @@ const showPreviewModal = ref(false);
 const lockAmount = ref('');
 const now = new Date();
 
-const minLockEndDateTimestamp = addDays(
-  props.veBalLockInfo.hasExistingLock ? props.veBalLockInfo.lockedEndDate : now,
-  MIN_LOCK_IN_DAYS
-).getTime();
+const minLockEndDateTimestamp = props.veBalLockInfo.hasExistingLock
+  ? props.veBalLockInfo.lockedEndDate
+  : addDays(now, MIN_LOCK_IN_DAYS).getTime();
 const maxLockEndDateTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
 const defaultLockTimestamp = addDays(now, DEFAULT_LOCK_IN_DAYS).getTime();
 
-const lockEndDate = ref(format(defaultLockTimestamp, INPUT_DATE_FORMAT));
+const lockEndDate = ref(
+  props.veBalLockInfo.hasExistingLock
+    ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
+    : format(defaultLockTimestamp, INPUT_DATE_FORMAT)
+);
 
 /**
  * COMPOSABLES
@@ -80,13 +83,19 @@ const isValidLockEndDate = computed(
     lockEndDateTimestamp.value <= maxLockEndDateTimestamp
 );
 
+const isIncreasedLockAmount = computed(
+  () => props.veBalLockInfo.hasExistingLock && isValidLockAmount.value
+);
+
+const isExtendedLockEndDate = computed(
+  () =>
+    props.veBalLockInfo.hasExistingLock &&
+    lockEndDateTimestamp.value > props.veBalLockInfo.lockedEndDate
+);
+
 const submissionDisabled = computed(() => {
   if (props.veBalLockInfo.hasExistingLock) {
-    const isIncreasedLockAmount = isValidLockAmount.value;
-    const isExtendedLockEndDate =
-      lockEndDateTimestamp.value > props.veBalLockInfo.lockedEndDate;
-
-    return !isIncreasedLockAmount && !isExtendedLockEndDate;
+    return !isIncreasedLockAmount.value && !isExtendedLockEndDate.value;
   }
   return (
     !bnum(lockablePoolBptBalance.value).gt(0) ||
@@ -121,7 +130,15 @@ const expectedVeBalAmount = computed(() => {
 
 const lockType = computed(() => {
   if (props.veBalLockInfo.hasExistingLock) {
-    return [LockType.INCREASE_LOCK, LockType.EXTEND_LOCK];
+    if (isIncreasedLockAmount.value && isExtendedLockEndDate.value) {
+      return [LockType.INCREASE_LOCK, LockType.EXTEND_LOCK];
+    }
+    if (isExtendedLockEndDate.value) {
+      return [LockType.EXTEND_LOCK];
+    }
+    if (isIncreasedLockAmount.value) {
+      return [LockType.INCREASE_LOCK];
+    }
   }
   return [LockType.CREATE_LOCK];
 });

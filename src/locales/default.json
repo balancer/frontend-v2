@@ -554,7 +554,7 @@
             "title": "Community veBAL",
             "cards": {
                 "totalVeBAL": "Total veBAL",
-                "avgLockUpPeriod": "Ave. lock up period",
+                "avgLockUpPeriod": "Ave. lock-up period",
                 "effectiveBalLocked": "Effective BAL locked",
                 "shareOfBalLocked": "Share of BAL locked"
             },
@@ -594,7 +594,7 @@
             "title": "How to lock and earn?",
             "steps": {
                 "invest": "Invest in the {0} pool",
-                "lock": "Lock up the resulting LP token ({0}). The longer you lock ({1} max), the more veBAL you get."
+                "lock": "Lock-up the resulting LP token ({0}). The longer you lock ({1} max), the more veBAL you get."
             },
             "earn": {
                 "boost": "veBAL holders get boosted liquidity mining yields (up to {1}) and increased voting power.",
@@ -640,13 +640,13 @@
                     "confirmed": "Locking confirmed"
                 },
                 "extendLock": {
-                    "default": "Increase lock amount",
-                    "confirmed": "Increase lock amount confirmed"
-                },
-                "increaseLock": {
                     "default": "Extend lock preview preview",
                     "confirmed": "Extend lock preview confirmed"
-                }                            
+                },
+                "increaseLock": {
+                    "default": "Increase lock amount",
+                    "confirmed": "Increase lock amount confirmed"
+                }                
             },
             "lpTokens": "{0} LP tokens",
             "summary": {
@@ -858,6 +858,7 @@
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveForLocking": "Approve {0} for locking",
+        "extendLock": "Lock until {0}",
         "approveRelayer": "Approve {0} relayer",
         "createPool": "Create pool",
         "fundPool": "Fund pool",

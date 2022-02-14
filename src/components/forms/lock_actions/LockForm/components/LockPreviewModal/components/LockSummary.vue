@@ -7,6 +7,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useVeBal from '@/composables/useVeBAL';
 
@@ -17,8 +18,10 @@ type Props = {
   lockablePool: FullPool;
   totalLpTokens: string;
   lockEndDate: string;
+  lockAmount: string;
   expectedVeBalAmount: string;
   lockType: LockType[];
+  veBalLockInfo: VeBalLockInfo;
 };
 
 /**
@@ -35,10 +38,20 @@ const { veBalTokenInfo } = useVeBal();
 /**
  * COMPUTED
  */
-const fiatTotal = computed(() =>
-  bnum(props.lockablePool.totalLiquidity)
-    .div(props.lockablePool.totalShares)
-    .times(props.totalLpTokens)
+const poolShares = computed(() =>
+  bnum(props.lockablePool.totalLiquidity).div(props.lockablePool.totalShares)
+);
+
+const fiatTotalLockedAmount = computed(() =>
+  poolShares.value.times(props.veBalLockInfo.lockedAmount).toString()
+);
+
+const fiatTotalLockAmount = computed(() =>
+  poolShares.value.times(props.lockAmount).toString()
+);
+
+const fiatTotalLpTokens = computed(() =>
+  poolShares.value.times(props.totalLpTokens).toString()
 );
 
 const isExtendLockOnly = computed(
@@ -64,11 +77,36 @@ const isIncreaseLockOnly = computed(
     </div>
     <div class="-mt-2 p-4">
       <div class="summary-item-row">
-        <div>{{ $t('getVeBAL.previewModal.summary.totalToLock') }}</div>
-        <div>{{ fNum2(fiatTotal, FNumFormats.fiat) }}</div>
+        <div>
+          {{
+            isExtendLockOnly || isIncreaseLockOnly
+              ? $t('getVeBAL.previewModal.summary.totalAlreadyLocked')
+              : $t('getVeBAL.previewModal.summary.totalToLock')
+          }}
+        </div>
+        <div>
+          {{
+            fNum2(
+              isIncreaseLockOnly ? fiatTotalLockedAmount : fiatTotalLpTokens,
+              FNumFormats.fiat
+            )
+          }}
+        </div>
+      </div>
+      <div v-if="isIncreaseLockOnly" class="summary-item-row">
+        <div>
+          {{ $t('getVeBAL.previewModal.summary.increasedLockAmount') }}
+        </div>
+        <div>{{ fNum2(fiatTotalLockAmount, FNumFormats.fiat) }}</div>
       </div>
       <div class="summary-item-row">
-        <div>{{ $t('getVeBAL.previewModal.summary.lockEndDate') }}</div>
+        <div>
+          {{
+            isExtendLockOnly
+              ? $t('getVeBAL.previewModal.summary.newLockEndDate')
+              : $t('getVeBAL.previewModal.summary.lockEndDate')
+          }}
+        </div>
         <div>{{ format(new Date(lockEndDate), PRETTY_DATE_FORMAT) }}</div>
       </div>
       <div class="summary-item-row">

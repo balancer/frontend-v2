@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { format } from 'date-fns';
 
 import {
   TransactionReceipt,
@@ -18,8 +19,10 @@ import useConfig from '@/composables/useConfig';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import { LockType } from '../../../types';
+import { PRETTY_DATE_FORMAT } from '../../../constants';
 
 /**
  * TYPES
@@ -71,10 +74,11 @@ const { tokenApprovalActions } = useTokenApprovalActions(
   ref([props.lockAmount]),
   'veBAL'
 );
+const { fNum2 } = useNumbers();
 
 const lockActions = props.lockType.map(lockType => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
-    props.lockEndDate
+    format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
   ]),
   loadingLabel: t(`getVeBAL.previewModal.actions.${lockType}.loadingLabel`),
   confirmingLabel: t(`getVeBAL.previewModal.actions.${lockType}.confirming`),
@@ -107,11 +111,18 @@ async function handleTransaction(
     id: tx.hash,
     type: 'tx',
     action: lockType,
-    summary: t(`transactionSummary.${props.lockType}`),
+    summary:
+      lockType === LockType.EXTEND_LOCK
+        ? t('transactionSummary.extendLock', [
+            format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
+          ])
+        : `${fNum2(props.lockAmount, FNumFormats.token)} ${
+            props.lockablePoolTokenInfo.symbol
+          }`,
     details: {
       lockAmount: props.lockAmount,
       lockEndDate: props.lockEndDate,
-      lockType: props.lockType
+      lockType
     }
   });
 
