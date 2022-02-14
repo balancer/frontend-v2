@@ -1,6 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
 import { NativeAsset } from '@/types/TokenList';
 import { Ref } from 'vue';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -113,7 +114,15 @@ const QUERY_KEYS = {
     ) => ['account', 'profile', { networkId, account, chainId }]
   },
   Gauges: {
-    All: () => ['gauges', 'all']
+    All: {
+      Static: () => ['gauges', 'all', 'static'],
+      Onchain: (gauges: Ref<SubgraphGauge[] | undefined>) => [
+        'gauges',
+        'all',
+        'onchain',
+        { gauges }
+      ]
+    }
   }
 };
 

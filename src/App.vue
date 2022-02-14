@@ -20,7 +20,8 @@ import useAlerts, {
 } from './composables/useAlerts';
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
-import { LiquidityGauge } from './services/balancer/contracts/contracts/liquidity-gauge';
+import useGaugesQuery from './composables/queries/useGaugesQuery';
+import useGaugesDecorationQuery from './composables/queries/useGaugesDecorationQuery';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -82,15 +83,18 @@ export default defineComponent({
       addAlert(featureAlert);
     }
 
+    const { data: rawGauges } = useGaugesQuery();
+    const { data: gauges } = useGaugesDecorationQuery(rawGauges);
+
+    watch(gauges, newGauges => {
+      console.log('newGauges', newGauges);
+    });
+
     /**
      * CALLBACKS
      */
     onBeforeMount(async () => {
       store.dispatch('app/init');
-      const gauge = new LiquidityGauge();
-      console.log('instance', gauge.instance);
-      const tokens = await gauge.getRewardTokens();
-      console.log('tokens', tokens);
     });
 
     /**

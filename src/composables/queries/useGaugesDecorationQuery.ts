@@ -1,40 +1,39 @@
-import { reactive } from 'vue';
+import { reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 
 /**
  * TYPES
  */
-type QueryResponse = SubgraphGauge[];
+type QueryResponse = SubgraphGauge[] | undefined;
 
 /**
- * @summary Fetches guages list from subgraph
+ * @summary Fetches onchain data for gauges list.
  */
-export default function useGaugesQuery(
+export default function useGaugesDecorationQuery(
+  gauges: Ref<SubgraphGauge[] | undefined>,
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * QUERY KEY
    */
-  const queryKey = reactive(QUERY_KEYS.Gauges.All.Static());
+  const queryKey = reactive(QUERY_KEYS.Gauges.All.Onchain(gauges));
 
   /**
    * QUERY FUNCTION
    */
-  const queryFn = async () => {
-    const gauges = await gaugesSubgraphService.gauges.get();
-    console.log(gauges, !!gauges);
-    return gauges;
+  const queryFn = () => {
+    console.log('Fetch onchain data for', gauges.value);
+    return gauges.value;
   };
 
   /**
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: true,
+    enabled: !!gauges.value,
     ...options
   });
 
