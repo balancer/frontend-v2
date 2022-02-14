@@ -14,7 +14,7 @@ import { tokenListService } from '@/services/token-list/token-list.service';
 import { lsSet } from '@/lib/utils';
 import { pick } from 'lodash';
 import useTokenListsQuery from '@/composables/queries/useTokenListsQuery';
-
+import newTokens from '../data/listed.tokenlist.json';
 /** TYPES */
 export interface TokenListsState {
   activeListKeys: string[];
@@ -83,11 +83,17 @@ export default {
     /**
      * All active (toggled) tokenlists
      */
+    // const activeTokenLists = computed(
+    //   (): TokenListMap => pick(allTokenLists.value, state.activeListKeys)
+    // );
     const activeTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists.value, state.activeListKeys)
+      (): TokenListMap => ({
+        [state.activeListKeys[0]]: newTokens
+      })
     );
-
     /**
+    /**
+     * The default Balancer token list.
      * The default Balancer token list.
      */
     const defaultTokenList = computed(
