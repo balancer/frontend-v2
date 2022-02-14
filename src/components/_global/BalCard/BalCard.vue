@@ -45,14 +45,24 @@ export default defineComponent({
       type: String,
       default: '',
       validator: (val: string): boolean => {
-        return ['', 'none', 'sm', 'md', 'lg', 'xl'].includes(val);
+        return [
+          '',
+          'none',
+          'sm',
+          'md',
+          'lg',
+          'xl',
+          '2xl',
+          '3xl',
+          '4xl'
+        ].includes(val);
       }
     }
   },
 
   setup(props) {
     const borderClasses = computed(() => {
-      return 'border dark:border-gray-900';
+      return 'border border-gray-200 dark:border-gray-900';
     });
 
     const cardClasses = computed(() => {
