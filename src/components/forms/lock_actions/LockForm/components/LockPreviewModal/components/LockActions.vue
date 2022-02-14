@@ -27,8 +27,8 @@ import { LockType } from '../../../types';
 type Props = {
   lockablePoolTokenInfo: TokenInfo;
   lockAmount: string;
-  lockedUntil: string;
-  lockType: LockType;
+  lockEndDate: string;
+  lockType: LockType[];
 };
 
 type LockState = {
@@ -72,23 +72,19 @@ const { tokenApprovalActions } = useTokenApprovalActions(
   'veBAL'
 );
 
-const lockAction: TransactionActionInfo = {
-  label: t(`getVeBAL.previewModal.actions.${props.lockType}.label`, [
-    props.lockedUntil
+const lockActions = props.lockType.map(lockType => ({
+  label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
+    props.lockEndDate
   ]),
-  loadingLabel: t(
-    `getVeBAL.previewModal.actions.${props.lockType}.loadingLabel`
-  ),
-  confirmingLabel: t(
-    `getVeBAL.previewModal.actions.${props.lockType}.confirming`
-  ),
-  action: submit,
-  stepTooltip: t(`getVeBAL.previewModal.actions.${props.lockType}.tooltip`)
-};
+  loadingLabel: t(`getVeBAL.previewModal.actions.${lockType}.loadingLabel`),
+  confirmingLabel: t(`getVeBAL.previewModal.actions.${lockType}.confirming`),
+  action: () => submit(lockType),
+  stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`)
+}));
 
 const actions = ref<TransactionActionInfo[]>([
   ...tokenApprovalActions,
-  lockAction
+  ...lockActions
 ]);
 
 /**
@@ -103,15 +99,18 @@ const explorerLink = computed(() =>
 /**
  * METHODS
  */
-async function handleTransaction(tx: TransactionResponse): Promise<void> {
+async function handleTransaction(
+  tx: TransactionResponse,
+  lockType: LockType
+): Promise<void> {
   addTransaction({
     id: tx.hash,
     type: 'tx',
-    action: props.lockType,
+    action: lockType,
     summary: t(`transactionSummary.${props.lockType}`),
     details: {
       lockAmount: props.lockAmount,
-      lockedUntil: props.lockedUntil,
+      lockEndDate: props.lockEndDate,
       lockType: props.lockType
     }
   });
@@ -131,23 +130,23 @@ async function handleTransaction(tx: TransactionResponse): Promise<void> {
   });
 }
 
-async function submit() {
+async function submit(lockType: LockType) {
   try {
     let tx: TransactionResponse;
     lockState.init = true;
 
-    if (props.lockType === LockType.CREATE_LOCK) {
+    if (lockType === LockType.CREATE_LOCK) {
       tx = await balancerContractsService.veBAL.createLock(
         getProvider(),
         props.lockAmount,
-        props.lockedUntil
+        props.lockEndDate
       );
-    } else if (props.lockType === LockType.EXTEND_LOCK) {
+    } else if (lockType === LockType.EXTEND_LOCK) {
       tx = await balancerContractsService.veBAL.extendLock(
         getProvider(),
-        props.lockedUntil
+        props.lockEndDate
       );
-    } else if (props.lockType === LockType.INCREASE_LOCK) {
+    } else if (lockType === LockType.INCREASE_LOCK) {
       tx = await balancerContractsService.veBAL.increaseLock(
         getProvider(),
         props.lockAmount
@@ -161,7 +160,7 @@ async function submit() {
 
     console.log('Receipt', tx);
 
-    handleTransaction(tx);
+    handleTransaction(tx, lockType);
     return tx;
   } catch (error) {
     console.error(error);

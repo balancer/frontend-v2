@@ -6,7 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useNetwork from '../useNetwork';
 import { isVeBalSupported } from '../useVeBAL';

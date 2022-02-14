@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import LockAmount from './components/LockAmount.vue';
 import LockSummary from './components/LockSummary.vue';
@@ -10,6 +11,7 @@ import LockActions from './components/LockActions.vue';
 
 import { TokenInfo } from '@/types/TokenList';
 import { LockType } from '../../types';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -18,15 +20,17 @@ type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;
   lockAmount: string;
-  lockedUntil: string;
+  lockEndDate: string;
   expectedVeBalAmount: string;
-  lockType: LockType;
+  lockType: LockType[];
+  veBalLockInfo: VeBalLockInfo;
+  totalLpTokens: string;
 };
 
 /**
  * PROPS & EMITS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -35,7 +39,6 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-
 const lockConfirmed = ref(false);
 
 /**
@@ -46,11 +49,16 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const title = computed((): string =>
-  lockConfirmed.value
-    ? t('getVeBAL.previewModal.titles.confirmed')
-    : t('getVeBAL.previewModal.titles.default')
-);
+const title = computed(() => {
+  if (props.lockType.length === 1) {
+    return lockConfirmed.value
+      ? t(`getVeBAL.previewModal.titles.${props.lockType}.confirmed`)
+      : t(`getVeBAL.previewModal.titles.${props.lockType}.default`);
+  }
+  return lockConfirmed.value
+    ? t(`getVeBAL.previewModal.titles.${LockType.CREATE_LOCK}.confirmed`)
+    : t(`getVeBAL.previewModal.titles.${LockType.CREATE_LOCK}.default`);
+});
 
 /**
  * METHODS
@@ -78,19 +86,24 @@ function handleClose() {
       </div>
     </template>
 
-    <LockAmount :lockablePool="lockablePool" :lockAmount="lockAmount" />
+    <LockAmount
+      :lockablePool="lockablePool"
+      :totalLpTokens="totalLpTokens"
+      :veBalLockInfo="veBalLockInfo"
+    />
 
     <LockSummary
       :lockablePool="lockablePool"
-      :lockAmount="lockAmount"
-      :lockedUntil="lockedUntil"
+      :totalLpTokens="totalLpTokens"
+      :lockEndDate="lockEndDate"
       :expectedVeBalAmount="expectedVeBalAmount"
+      :lockType="lockType"
     />
 
     <LockActions
       :lockablePool="lockablePool"
       :lockAmount="lockAmount"
-      :lockedUntil="lockedUntil"
+      :lockEndDate="lockEndDate"
       :lockType="lockType"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
     />

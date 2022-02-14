@@ -54,7 +54,7 @@ const p = computed(() => {
       <div class="border-r dark:border-gray-900 p-2 text-center w-1/2">
         <div>
           {{
-            veBalLockInfo.hasLock
+            veBalLockInfo.hasExistingLock
               ? fNum2(p, {
                   style: 'percent',
                   maximumFractionDigits: 2
@@ -69,13 +69,13 @@ const p = computed(() => {
       <div class="p-3 text-center w-1/2">
         <div>
           {{
-            veBalLockInfo.hasLock
-              ? format(veBalLockInfo.lockedUntil, PRETTY_DATE_FORMAT)
+            veBalLockInfo.hasExistingLock
+              ? format(veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT)
               : '-'
           }}
         </div>
         <div class="text-gray-400">
-          {{ $t('getVeBAL.myVeBAL.lockedUntil') }}
+          {{ $t('getVeBAL.myVeBAL.lockedEndDate') }}
         </div>
       </div>
     </div>

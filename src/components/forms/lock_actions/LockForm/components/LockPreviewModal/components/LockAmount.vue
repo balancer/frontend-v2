@@ -8,7 +8,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 
 type Props = {
   lockablePool: FullPool;
-  lockAmount: string;
+  totalLpTokens: string;
 };
 
 /**
@@ -54,7 +54,7 @@ function formatWeightLabel(weight: string) {
         <div class="font-semibold">
           {{
             $t('getVeBAL.previewModal.lpTokens', [
-              fNum2(lockAmount, FNumFormats.token)
+              fNum2(totalLpTokens, FNumFormats.token)
             ])
           }}
         </div>

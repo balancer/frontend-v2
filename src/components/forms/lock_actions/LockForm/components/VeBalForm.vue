@@ -10,9 +10,11 @@ import { configService } from '@/services/config/config.service';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import LockPreviewModal from './LockPreviewModal/LockPreviewModal.vue';
 
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBal';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useTokens from '@/composables/useTokens';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useVeBal from '@/composables/useVeBAL';
 
 import { TokenInfo } from '@/types/TokenList';
 
@@ -43,52 +45,74 @@ const showPreviewModal = ref(false);
 const lockAmount = ref('');
 const now = new Date();
 
-const minLockTimestamp = addDays(now, MIN_LOCK_IN_DAYS).getTime();
-const maxLockTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
+const minLockEndDateTimestamp = addDays(
+  props.veBalLockInfo.hasExistingLock ? props.veBalLockInfo.lockedEndDate : now,
+  MIN_LOCK_IN_DAYS
+).getTime();
+const maxLockEndDateTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
 const defaultLockTimestamp = addDays(now, DEFAULT_LOCK_IN_DAYS).getTime();
 
-const lockedUntil = ref(format(defaultLockTimestamp, INPUT_DATE_FORMAT));
+const lockEndDate = ref(format(defaultLockTimestamp, INPUT_DATE_FORMAT));
 
 /**
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
+const { fNum2 } = useNumbers();
+const { veBalTokenInfo } = useVeBal();
 
 /**
  * COMPUTED
  */
-const bptBalance = computed(() => balanceFor(props.lockablePool.address));
+const lockablePoolBptBalance = computed(() =>
+  balanceFor(props.lockablePool.address)
+);
 
-const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
+const lockEndDateTimestamp = computed(() =>
+  new Date(lockEndDate.value).getTime()
+);
 
 const isValidLockAmount = computed(() => bnum(lockAmount.value ?? '0').gt(0));
 
-const isValidDate = computed(() => {
-  if (lockedUntil.value != null) {
-    const lockedUntilTimestamp = new Date(lockedUntil.value).getTime();
+const isValidLockEndDate = computed(
+  () =>
+    lockEndDateTimestamp.value >= minLockEndDateTimestamp &&
+    lockEndDateTimestamp.value <= maxLockEndDateTimestamp
+);
 
-    return (
-      lockedUntilTimestamp >= minLockTimestamp &&
-      lockedUntilTimestamp <= maxLockTimestamp
-    );
+const submissionDisabled = computed(() => {
+  if (props.veBalLockInfo.hasExistingLock) {
+    const isIncreasedLockAmount = isValidLockAmount.value;
+    const isExtendedLockEndDate =
+      lockEndDateTimestamp.value > props.veBalLockInfo.lockedEndDate;
+
+    return !isIncreasedLockAmount && !isExtendedLockEndDate;
   }
-
-  return false;
+  return (
+    !bnum(lockablePoolBptBalance.value).gt(0) ||
+    !isValidLockAmount.value ||
+    !isValidLockEndDate.value
+  );
 });
 
-const submissionDisabled = computed(
-  () => !hasBpt.value || !isValidLockAmount.value || !isValidDate.value
-);
+const totalLpTokens = computed(() => {
+  if (!submissionDisabled.value) {
+    return props.veBalLockInfo.hasExistingLock
+      ? bnum(props.veBalLockInfo.lockedAmount)
+          .plus(lockAmount.value || '0')
+          .toString()
+      : lockAmount.value;
+  }
+  return '0';
+});
 
 const expectedVeBalAmount = computed(() => {
   if (!submissionDisabled.value) {
-    const lockAmountBN = bnum(lockAmount.value);
+    const lockEndDateInDays =
+      differenceInDays(new Date(lockEndDate.value), now) + 1;
 
-    const lockAmountInDays =
-      differenceInDays(new Date(lockedUntil.value), now) + 1;
-
-    return lockAmountBN
-      .times(lockAmountInDays)
+    return bnum(totalLpTokens.value)
+      .times(lockEndDateInDays)
       .div(MAX_LOCK_IN_DAYS)
       .toString();
   }
@@ -96,10 +120,10 @@ const expectedVeBalAmount = computed(() => {
 });
 
 const lockType = computed(() => {
-  if (props.veBalLockInfo.hasLock) {
-    return LockType.INCREASE_LOCK;
+  if (props.veBalLockInfo.hasExistingLock) {
+    return [LockType.INCREASE_LOCK, LockType.EXTEND_LOCK];
   }
-  return LockType.CREATE_LOCK;
+  return [LockType.CREATE_LOCK];
 });
 </script>
 
@@ -130,20 +154,27 @@ const lockType = computed(() => {
     </div>
     <div class="mb-6">
       <div class="pb-4">
-        {{ $t('getVeBAL.lockForm.lockedUntil.title') }}
+        {{ $t('getVeBAL.lockForm.lockEndDate.title') }}
       </div>
       <BalTextInput
-        name="lockedUntil"
+        name="lockEndDate"
         type="date"
-        v-model="lockedUntil"
-        :min="format(minLockTimestamp, INPUT_DATE_FORMAT)"
-        :max="format(maxLockTimestamp, INPUT_DATE_FORMAT)"
+        v-model="lockEndDate"
+        :min="format(minLockEndDateTimestamp, INPUT_DATE_FORMAT)"
+        :max="format(maxLockEndDateTimestamp, INPUT_DATE_FORMAT)"
       />
     </div>
     <div>
       <div class="flex justify-between">
-        <div>veBAL you get</div>
-        <div>{{ expectedVeBalAmount }}</div>
+        <div>{{ $t('getVeBAL.lockForm.summary.receive.title') }}</div>
+        <div>
+          {{
+            expectedVeBalAmount != null
+              ? fNum2(expectedVeBalAmount, FNumFormats.token)
+              : '-'
+          }}
+          {{ veBalTokenInfo.symbol }}
+        </div>
       </div>
     </div>
     <BalBtn
@@ -162,9 +193,11 @@ const lockType = computed(() => {
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :lockAmount="lockAmount"
-      :lockedUntil="lockedUntil"
+      :lockEndDate="lockEndDate"
       :expectedVeBalAmount="expectedVeBalAmount"
       :lockType="lockType"
+      :veBalLockInfo="veBalLockInfo"
+      :totalLpTokens="totalLpTokens"
       @close="showPreviewModal = false"
     />
   </teleport>

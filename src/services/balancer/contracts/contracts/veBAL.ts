@@ -12,11 +12,11 @@ import Service from '../balancer-contracts.service';
 import { unixToJsTime } from '@/lib/utils/date';
 
 export type VeBalLockInfo = {
-  lockedUntil: number;
+  lockedEndDate: number;
   lockedAmount: string;
   totalSupply: string;
   epoch: string;
-  hasLock: boolean;
+  hasExistingLock: boolean;
 };
 
 type VeBalLockInfoResult = {
@@ -30,6 +30,10 @@ export default class VeBAL {
 
   constructor(service: Service) {
     this.service = service;
+  }
+
+  private parseDate(date: string) {
+    return (new Date(date).getTime() / 1000).toString();
   }
 
   public async getLockInfo(account: string): Promise<VeBalLockInfo> {
@@ -49,31 +53,28 @@ export default class VeBAL {
   }
 
   public formatLockInfo(lockInfo: VeBalLockInfoResult) {
-    const [lockedAmount, lockedUntil] = lockInfo.locked;
+    const [lockedAmount, lockedEndDate] = lockInfo.locked;
 
     return {
-      lockedUntil: unixToJsTime(lockedUntil.toNumber()),
+      lockedEndDate: unixToJsTime(lockedEndDate.toNumber()),
       lockedAmount: formatUnits(lockedAmount, 18),
       totalSupply: formatUnits(lockInfo.totalSupply, 18),
       epoch: lockInfo.epoch.toString(),
-      hasLock: lockedAmount.gt(0)
+      hasExistingLock: lockedAmount.gt(0)
     };
   }
 
   public createLock(
     userProvider: Web3Provider,
     lockAmount: string,
-    lockUntil: string
+    lockEndDate: string
   ) {
     return sendTransaction(
       userProvider,
       this.address,
       veBalAbi,
       'create_lock',
-      [
-        parseUnits(lockAmount, 18),
-        (new Date(lockUntil).getTime() / 1000).toString()
-      ]
+      [parseUnits(lockAmount, 18), this.parseDate(lockEndDate)]
     );
   }
 
@@ -87,13 +88,13 @@ export default class VeBAL {
     );
   }
 
-  public extendLock(userProvider: Web3Provider, lockUntil: string) {
+  public extendLock(userProvider: Web3Provider, lockEndDate: string) {
     return sendTransaction(
       userProvider,
       this.address,
       veBalAbi,
       'increase_unlock_time',
-      [(new Date(lockUntil).getTime() / 1000).toString()]
+      [this.parseDate(lockEndDate)]
     );
   }
 

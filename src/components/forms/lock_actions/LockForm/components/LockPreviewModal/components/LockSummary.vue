@@ -11,12 +11,14 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useVeBal from '@/composables/useVeBAL';
 
 import { PRETTY_DATE_FORMAT } from '../../../constants';
+import { LockType } from '../../../types';
 
 type Props = {
   lockablePool: FullPool;
-  lockAmount: string;
-  lockedUntil: string;
+  totalLpTokens: string;
+  lockEndDate: string;
   expectedVeBalAmount: string;
+  lockType: LockType[];
 };
 
 /**
@@ -36,12 +38,21 @@ const { veBalTokenInfo } = useVeBal();
 const fiatTotal = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
-    .times(props.lockAmount)
+    .times(props.totalLpTokens)
 );
 
-// const veBalAmount = computed(() => props.lockAmount);
+const isExtendLockOnly = computed(
+  () =>
+    props.lockType.length === 1 && props.lockType.includes(LockType.EXTEND_LOCK)
+);
 
-const fiatWeeklyYield = computed(() => '0');
+const isIncreaseLockOnly = computed(
+  () =>
+    props.lockType.length === 1 &&
+    props.lockType.includes(LockType.INCREASE_LOCK)
+);
+
+// const fiatWeeklyYield = computed(() => '0');
 </script>
 
 <template>
@@ -57,22 +68,22 @@ const fiatWeeklyYield = computed(() => '0');
         <div>{{ fNum2(fiatTotal, FNumFormats.fiat) }}</div>
       </div>
       <div class="summary-item-row">
-        <div>{{ $t('getVeBAL.previewModal.summary.lockedUntil') }}</div>
-        <div>{{ format(new Date(lockedUntil), PRETTY_DATE_FORMAT) }}</div>
+        <div>{{ $t('getVeBAL.previewModal.summary.lockEndDate') }}</div>
+        <div>{{ format(new Date(lockEndDate), PRETTY_DATE_FORMAT) }}</div>
       </div>
       <div class="summary-item-row">
-        <div>{{ $t('getVeBAL.previewModal.summary.veBalYouGet') }}</div>
+        <div>{{ $t('getVeBAL.previewModal.summary.totalVotingEscrow') }}</div>
         <div>
           {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
         </div>
       </div>
-      <div class="summary-item-row">
+      <!-- <div class="summary-item-row">
         <div>
           {{ $t('getVeBAL.previewModal.summary.potentialWeeklyYield') }}
         </div>
         <div>{{ fNum2(fiatWeeklyYield, FNumFormats.fiat) }}</div>
-      </div>
+      </div> -->
     </div>
   </BalCard>
 </template>

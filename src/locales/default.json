@@ -546,7 +546,7 @@
             "cards": {
                 "myLpToken": "My 80-BAL LP token",
                 "myLockedBal": "My locked 80-BAL",
-                "lockedUntil": "Locked until",
+                "lockedEndDate": "Locked until",
                 "myVeBAL": "My veBAL"
             }
         },
@@ -603,7 +603,7 @@
         },
         "myVeBAL": {
             "title": "My veBAL",
-            "lockedUntil": "Locked until",
+            "lockedEndDate": "Locked until",
             "percentVeBAL": "% of total veBAL"
         },
         "lockForm": {
@@ -611,13 +611,13 @@
             "lockAmount": {
                 "title": "How much do you want to lock?"
             },
-            "lockedUntil": {
+            "lockEndDate": {
                 "title": "Lock until",
                 "tooltip": "The longer you lock your stake, the more veBAL voting power you get (up to 4 years). You can extend the lock later. Be careful, locking is not reversible."
             },
             "summary": {
                 "receive": {
-                    "title": "You'll get",
+                    "title": "Total voting escrow",
                     "tooltip": ""
                 },
                 "weeklyYield": {
@@ -635,15 +635,28 @@
         },
         "previewModal": {
             "titles": {
-                "default": "Locking preview",
-                "confirmed": "Locking confirmed"
+                "createLock": {
+                    "default": "Locking preview",
+                    "confirmed": "Locking confirmed"
+                },
+                "extendLock": {
+                    "default": "Increase lock amount",
+                    "confirmed": "Increase lock amount confirmed"
+                },
+                "increaseLock": {
+                    "default": "Extend lock preview preview",
+                    "confirmed": "Extend lock preview confirmed"
+                }                            
             },
             "lpTokens": "{0} LP tokens",
             "summary": {
                 "title": "Locking summary",
                 "totalToLock": "Total to lock",
-                "lockedUntil": "Lock-up end date",
-                "veBalYouGet": "Voting escrow you’ll get",
+                "totalAlreadyLocked": "Total already locked",
+                "lockEndDate": "Lock-up end date",
+                "newLockEndDate": "New lock-up end date",
+                "totalVotingEscrow": "Total voting escrow",
+                "increasedLockAmount" : "Increased lock amount",
                 "potentialWeeklyYield": "Potential weekly yield"
             },
             "actions": {
@@ -654,20 +667,20 @@
                 },
                 "createLock": {
                     "label": "Confirm lock until {0}",
-                    "confirming": "Confirming lock...",
+                    "confirming": "Confirming...",
                     "tooltip": "Confirm locking.",
                     "loadingLabel": "Confirm lock in wallet"                    
                 },
                 "extendLock": {
-                    "label": "Confirm lock until {0}",
-                    "confirming": "Confirming lock...",
-                    "tooltip": "Confirm locking.",
+                    "label": "Extend lock period",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm extending lock period.",
                     "loadingLabel": "Confirm lock in wallet"                    
                 },
                 "increaseLock": {
-                    "label": "Confirm lock until {0}",
-                    "confirming": "Confirming lock...",
-                    "tooltip": "Confirm locking.",
+                    "label": "Increase lock amount",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm increasing lock amount.",
                     "loadingLabel": "Confirm lock in wallet"                    
                 }
             },
