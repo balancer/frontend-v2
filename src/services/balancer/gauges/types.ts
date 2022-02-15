@@ -8,12 +8,22 @@ export type QueryBuilder = (
   attrs?: QueryAttrs
 ) => Record<string, any>;
 
-export type SubgraphGauge = {
+export interface SubgraphGauge {
   id: string;
   symbol: string;
   pool: string;
-  totalSupply: BigNumber;
+  totalSupply: string;
   factory: {
     id: string;
   };
-};
+}
+
+export interface OnchainGaugeData {
+  rewardTokens: string[];
+  claimableTokens: string;
+  claimableRewards: Record<string, string>;
+}
+
+export type OnchainGaugeDataMap = Record<string, OnchainGaugeData>;
+
+export type Gauge = SubgraphGauge & OnchainGaugeData;

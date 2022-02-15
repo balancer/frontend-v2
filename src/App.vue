@@ -84,11 +84,7 @@ export default defineComponent({
     }
 
     const { data: rawGauges } = useGaugesQuery();
-    const { data: gauges } = useGaugesDecorationQuery(rawGauges);
-
-    watch(gauges, newGauges => {
-      console.log('newGauges', newGauges);
-    });
+    useGaugesDecorationQuery(rawGauges);
 
     /**
      * CALLBACKS
