@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers';
-
 export type Address = string;
 export type QueryArgs = Record<string, any>;
 export type QueryAttrs = Record<string, any>;
