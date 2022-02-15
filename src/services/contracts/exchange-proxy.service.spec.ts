@@ -38,12 +38,12 @@ describe('exchange-proxy.service', () => {
   });
 
   describe('multiHopBatchSwap', () => {
-    it('Should error if minimum out or max in is not specified', () => {
+    it('Should error if minimum out or max in is not specified', async () => {
       tokens.USDC.type = SwapTokenType.fixed;
       tokens.DAI.type = SwapTokenType.fixed;
-      expect(
+      await expect(
         exchangeProxyService.multihopBatchSwap(swaps, tokens.USDC, tokens.DAI)
-      ).rejects.toEqual(
+      ).rejects.toThrow(
         'Invalid swap, must specify minimum out, or maximum in.'
       );
     });
