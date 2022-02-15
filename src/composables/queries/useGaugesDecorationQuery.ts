@@ -1,4 +1,4 @@
-import { reactive, Ref } from 'vue';
+import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -20,6 +20,9 @@ export default function useGaugesDecorationQuery(
    * QUERY KEY
    */
   const queryKey = reactive(QUERY_KEYS.Gauges.All.Onchain(gauges));
+  const isQueryEnabled = computed(
+    () => gauges?.value && gauges.value?.length > 0
+  );
 
   /**
    * QUERY FUNCTION
@@ -33,7 +36,7 @@ export default function useGaugesDecorationQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: !!gauges.value,
+    enabled: isQueryEnabled,
     ...options
   });
 
