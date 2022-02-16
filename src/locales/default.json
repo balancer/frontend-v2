@@ -684,7 +684,7 @@
                     "loadingLabel": "Confirm lock in wallet"                    
                 }
             },
-            "returnToVeBalPage": "Return to veBPT lock page"
+            "returnToVeBalPage": "Return to veBAL lock page"
         },
         "notSupported": {
             "title": "Locking is unavailable on this network",

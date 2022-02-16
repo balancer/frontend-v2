@@ -54,12 +54,14 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const lockState = reactive<LockState>({
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: ''
-});
+const lockStates = reactive<LockState[]>(
+  props.lockType.map(() => ({
+    init: false,
+    confirming: false,
+    confirmed: false,
+    confirmedAt: ''
+  }))
+);
 
 /**
  * COMPOSABLES
@@ -76,13 +78,13 @@ const { tokenApprovalActions } = useTokenApprovalActions(
 );
 const { fNum2 } = useNumbers();
 
-const lockActions = props.lockType.map(lockType => ({
+const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
     format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
   ]),
   loadingLabel: t(`getVeBAL.previewModal.actions.${lockType}.loadingLabel`),
   confirmingLabel: t(`getVeBAL.previewModal.actions.${lockType}.confirming`),
-  action: () => submit(lockType),
+  action: () => submit(lockType, actionIndex),
   stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`)
 }));
 
@@ -94,10 +96,9 @@ const actions = ref<TransactionActionInfo[]>([
 /**
  * COMPUTED
  */
-const explorerLink = computed(() =>
-  lockState.receipt
-    ? explorerLinks.txLink(lockState.receipt.transactionHash)
-    : ''
+
+const lockStatesConfirmed = computed(() =>
+  lockStates.every(lockState => lockState.confirmed)
 );
 
 /**
@@ -105,7 +106,8 @@ const explorerLink = computed(() =>
  */
 async function handleTransaction(
   tx: TransactionResponse,
-  lockType: LockType
+  lockType: LockType,
+  actionIndex: number
 ): Promise<void> {
   addTransaction({
     id: tx.hash,
@@ -126,25 +128,28 @@ async function handleTransaction(
     }
   });
 
-  lockState.confirmed = await txListener(tx, {
+  lockStates[actionIndex].confirmed = await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
-      emit('success', receipt);
-      lockState.confirming = false;
-      lockState.receipt = receipt;
+      if (lockStatesConfirmed.value) {
+        emit('success', receipt);
+      }
+
+      lockStates[actionIndex].confirming = false;
+      lockStates[actionIndex].receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
-      lockState.confirmedAt = dateTimeLabelFor(confirmedAt);
+      lockStates[actionIndex].confirmedAt = dateTimeLabelFor(confirmedAt);
     },
     onTxFailed: () => {
-      lockState.confirming = false;
+      lockStates[actionIndex].confirming = false;
     }
   });
 }
 
-async function submit(lockType: LockType) {
+async function submit(lockType: LockType, actionIndex: number) {
   try {
     let tx: TransactionResponse;
-    lockState.init = true;
+    lockStates[actionIndex].init = true;
 
     if (lockType === LockType.CREATE_LOCK) {
       tx = await balancerContractsService.veBAL.createLock(
@@ -166,12 +171,12 @@ async function submit(lockType: LockType) {
       throw new Error('Unsupported lockType provided');
     }
 
-    lockState.init = false;
-    lockState.confirming = true;
+    lockStates[actionIndex].init = false;
+    lockStates[actionIndex].confirming = true;
 
     console.log('Receipt', tx);
 
-    handleTransaction(tx, lockType);
+    handleTransaction(tx, lockType, actionIndex);
     return tx;
   } catch (error) {
     console.error(error);
@@ -183,12 +188,14 @@ async function submit(lockType: LockType) {
 <template>
   <div>
     <BalActionSteps
-      v-if="!lockState.confirmed"
+      v-if="!lockStatesConfirmed"
       :actions="actions"
       :disabled="disabled"
     />
     <template v-else>
       <div
+        v-for="(lockState, i) in lockStates"
+        :key="i"
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
         <div class="flex items-center">
@@ -198,7 +205,8 @@ async function submit(lockType: LockType) {
           </span>
         </div>
         <BalLink
-          :href="explorerLink"
+          v-if="lockState.receipt"
+          :href="explorerLinks.txLink(lockState.receipt.transactionHash)"
           external
           noStyle
           class="group flex items-center"

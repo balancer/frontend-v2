@@ -103,6 +103,7 @@ function handleClose() {
       :lockEndDate="lockEndDate"
       :lockType="lockType"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      @success="lockConfirmed = true"
       class="mt-4"
     />
   </BalModal>

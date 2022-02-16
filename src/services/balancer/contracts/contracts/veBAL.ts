@@ -1,5 +1,6 @@
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { toUtcTime } from '@/lib/utils/date';
 
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
@@ -33,7 +34,8 @@ export default class VeBAL {
   }
 
   private parseDate(date: string) {
-    return (new Date(date).getTime() / 1000).toString();
+    console.log((toUtcTime(new Date(date)) / 1000).toString());
+    return (toUtcTime(new Date(date)) / 1000).toString();
   }
 
   public async getLockInfo(account: string): Promise<VeBalLockInfo> {
