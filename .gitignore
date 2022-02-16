@@ -2,6 +2,7 @@
 node_modules
 /dist
 /tailwind-static
+.nvmrc
 
 # local env files
 .env
