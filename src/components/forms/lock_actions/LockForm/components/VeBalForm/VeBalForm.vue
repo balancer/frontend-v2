@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { addDays, format, differenceInDays } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 
 import { bnum } from '@/lib/utils';
 
@@ -17,15 +17,13 @@ import { TokenInfo } from '@/types/TokenList';
 
 import Summary from './components/Summary.vue';
 import LockAmount from './components/LockAmount.vue';
+import LockEndDate from './components/LockEndDate.vue';
 
 import useLockState from '../../composables/useLockState';
+import useLockAmount from '../../composables/useLockAmount';
+import useLockEndDate from '../../composables/useLockEndDate';
 
-import {
-  INPUT_DATE_FORMAT,
-  DEFAULT_LOCK_IN_DAYS,
-  MAX_LOCK_IN_DAYS,
-  MIN_LOCK_IN_DAYS
-} from '../../constants';
+import { MAX_LOCK_IN_DAYS } from '../../constants';
 
 import { LockType } from '../../types';
 
@@ -47,17 +45,19 @@ const showPreviewModal = ref(false);
 
 const { lockEndDate, lockAmount } = useLockState();
 
-const now = new Date();
+const {
+  isValidLockAmount,
+  isIncreasedLockAmount,
+  totalLpTokens
+} = useLockAmount(props.veBalLockInfo);
 
-const minLockEndDateTimestamp = props.veBalLockInfo.hasExistingLock
-  ? props.veBalLockInfo.lockedEndDate
-  : addDays(now, MIN_LOCK_IN_DAYS).getTime();
-const maxLockEndDateTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
-const defaultLockTimestamp = addDays(now, DEFAULT_LOCK_IN_DAYS).getTime();
-
-lockEndDate.value = props.veBalLockInfo.hasExistingLock
-  ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
-  : format(defaultLockTimestamp, INPUT_DATE_FORMAT);
+const {
+  todaysDate,
+  minLockEndDateTimestamp,
+  maxLockEndDateTimestamp,
+  isValidLockEndDate,
+  isExtendedLockEndDate
+} = useLockEndDate(props.veBalLockInfo);
 
 /**
  * COMPOSABLES
@@ -71,32 +71,11 @@ const lockablePoolBptBalance = computed(() =>
   balanceFor(props.lockablePool.address)
 );
 
-const lockEndDateTimestamp = computed(() =>
-  new Date(lockEndDate.value).getTime()
-);
-
-const isValidLockAmount = computed(() => bnum(lockAmount.value ?? '0').gt(0));
-
-const isValidLockEndDate = computed(
-  () =>
-    lockEndDateTimestamp.value >= minLockEndDateTimestamp &&
-    lockEndDateTimestamp.value <= maxLockEndDateTimestamp
-);
-
-const isIncreasedLockAmount = computed(
-  () => props.veBalLockInfo.hasExistingLock && isValidLockAmount.value
-);
-
-const isExtendedLockEndDate = computed(
-  () =>
-    props.veBalLockInfo.hasExistingLock &&
-    lockEndDateTimestamp.value > props.veBalLockInfo.lockedEndDate
-);
-
 const submissionDisabled = computed(() => {
   if (props.veBalLockInfo.hasExistingLock) {
     return !isIncreasedLockAmount.value && !isExtendedLockEndDate.value;
   }
+
   return (
     !bnum(lockablePoolBptBalance.value).gt(0) ||
     !isValidLockAmount.value ||
@@ -104,28 +83,18 @@ const submissionDisabled = computed(() => {
   );
 });
 
-const totalLpTokens = computed(() => {
-  if (!submissionDisabled.value) {
-    return props.veBalLockInfo.hasExistingLock
-      ? bnum(props.veBalLockInfo.lockedAmount)
-          .plus(lockAmount.value || '0')
-          .toString()
-      : lockAmount.value;
-  }
-  return '0';
-});
-
 const expectedVeBalAmount = computed(() => {
-  if (!submissionDisabled.value) {
-    const lockEndDateInDays =
-      differenceInDays(new Date(lockEndDate.value), now) + 1;
-
-    return bnum(totalLpTokens.value)
-      .times(lockEndDateInDays)
-      .div(MAX_LOCK_IN_DAYS)
-      .toString();
+  if (submissionDisabled.value) {
+    return '0';
   }
-  return '0';
+
+  const lockEndDateInDays =
+    differenceInDays(new Date(lockEndDate.value), todaysDate) + 1;
+
+  return bnum(totalLpTokens.value)
+    .times(lockEndDateInDays)
+    .div(MAX_LOCK_IN_DAYS)
+    .toString();
 });
 
 const lockType = computed(() => {
@@ -158,20 +127,16 @@ const lockType = computed(() => {
         </div>
       </div>
     </template>
+
     <LockAmount :lockablePoolTokenInfo="lockablePoolTokenInfo" />
-    <div class="mb-6">
-      <div class="pb-4">
-        {{ $t('getVeBAL.lockForm.lockEndDate.title') }}
-      </div>
-      <BalTextInput
-        name="lockEndDate"
-        type="date"
-        v-model="lockEndDate"
-        :min="format(minLockEndDateTimestamp, INPUT_DATE_FORMAT)"
-        :max="format(maxLockEndDateTimestamp, INPUT_DATE_FORMAT)"
-      />
-    </div>
+
+    <LockEndDate
+      :minLockEndDateTimestamp="minLockEndDateTimestamp"
+      :maxLockEndDateTimestamp="maxLockEndDateTimestamp"
+    />
+
     <Summary :expectedVeBalAmount="expectedVeBalAmount" />
+
     <BalBtn
       color="gradient"
       class="mt-6"

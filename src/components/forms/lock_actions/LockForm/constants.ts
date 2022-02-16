@@ -1,5 +1,5 @@
 export const MAX_LOCK_IN_DAYS = 365 * 4;
-export const MIN_LOCK_IN_DAYS = 1;
+export const MIN_LOCK_IN_DAYS = 7;
 export const DEFAULT_LOCK_IN_DAYS = MAX_LOCK_IN_DAYS;
 
 export const INPUT_DATE_FORMAT = 'yyyy-MM-dd';
