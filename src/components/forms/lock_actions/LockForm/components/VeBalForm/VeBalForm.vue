@@ -23,7 +23,7 @@ import useLockState from '../../composables/useLockState';
 import useLockAmount from '../../composables/useLockAmount';
 import useLockEndDate from '../../composables/useLockEndDate';
 
-import { MAX_LOCK_IN_DAYS } from '../../constants';
+import { MAX_LOCK_PERIOD_IN_DAYS } from '../../constants';
 
 import { LockType } from '../../types';
 
@@ -93,7 +93,7 @@ const expectedVeBalAmount = computed(() => {
 
   return bnum(totalLpTokens.value)
     .times(lockEndDateInDays)
-    .div(MAX_LOCK_IN_DAYS)
+    .div(MAX_LOCK_PERIOD_IN_DAYS)
     .toString();
 });
 
