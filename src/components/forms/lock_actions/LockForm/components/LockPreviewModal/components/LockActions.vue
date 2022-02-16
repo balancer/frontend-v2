@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
+import { watch, ref, computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { format } from 'date-fns';
 
@@ -96,7 +96,6 @@ const actions = ref<TransactionActionInfo[]>([
 /**
  * COMPUTED
  */
-
 const lockActionStatesConfirmed = computed(() =>
   lockActionStates.every(lockActionState => lockActionState.confirmed)
 );
@@ -130,10 +129,6 @@ async function handleTransaction(
 
   lockActionStates[actionIndex].confirmed = await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
-      if (lockActionStatesConfirmed.value) {
-        emit('success', lockActionStates);
-      }
-
       lockActionStates[actionIndex].confirming = false;
       lockActionStates[actionIndex].receipt = receipt;
 
@@ -183,6 +178,15 @@ async function submit(lockType: LockType, actionIndex: number) {
     return Promise.reject(error);
   }
 }
+
+/**
+ * COMPUTED
+ */
+watch(lockActionStatesConfirmed, () => {
+  if (lockActionStatesConfirmed.value) {
+    emit('success', lockActionStates);
+  }
+});
 </script>
 
 <template>
