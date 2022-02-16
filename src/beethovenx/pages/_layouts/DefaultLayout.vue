@@ -42,11 +42,9 @@ const isHomePage = computed(() => route.path === '/');
       <router-view :key="$route.path" />
     </div>
     <AppFooterNav v-if="upToXLargeBreakpoint" />
-    <div class="flex flex-1 mb-12 xl:mb-0 items-end relative">
+    <div class="flex flex-col items-center mb-12 xl:mb-0 relative">
       <img src="~@/beethovenx/assets/images/community-image.png" />
-      <div
-        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex justify-center pb-6 ml-8"
-      >
+      <div class="absolute bottom-0 flex justify-center pb-6 ml-8">
         <a href="https://twitter.com/beethoven_x" class="mr-12">
           <img
             src="~@/beethovenx/assets/images/twitter-icon.png"
