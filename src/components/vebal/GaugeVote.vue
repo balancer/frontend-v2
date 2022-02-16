@@ -9,6 +9,8 @@ import { APR_THRESHOLD } from '@/constants/poolAPR';
 
 import { DecoratedPoolWithGaugeShares } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
+import BalForm from '../_global/BalForm/BalForm.vue';
+import BalTextInput from '../_global/BalTextInput/BalTextInput.vue';
 
 /**
  * TYPES
@@ -21,18 +23,26 @@ type Props = {
  * PROPS
  */
 const props = defineProps<Props>();
+
+/**
+ * COMPUTED
+ */
+const voteDisabled = computed(() => false); // Make disabled when not a valid number
+
+/**
+ * METHODS
+ */
+function submitVote() {
+  
+
+}
+
 </script>
 
 <template>
   <BalPopover no-pad>
     <template v-slot:activator>
-      <BalBtn
-        color="white"
-        :size="'sm'"
-        class="mr-2 p-1 relative"
-        :circle="upToLargeBreakpoint"
-        @click.stop=""
-      >
+      <BalBtn color="transparent" :size="'sm'" class="mr-2 p-1 relative" flat>
         <VoteIcon />
       </BalBtn>
     </template>
@@ -41,11 +51,19 @@ const props = defineProps<Props>();
         <div
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
         >
-          <h5>{{ $t('recentActivityTitle') }}</h5>
+          <h5>{{ $t('voteWeight') }}</h5>
         </div>
       </template>
       <div :class="['p-3']">
-        <template>{{ $t('noRecentActivity') }}</template>
+        <BalForm>
+          <BalTextInput format="number" placeholder="100">
+            <template v-slot:append>
+              %
+            </template>
+          </BalTextInput>
+          <div class="">Unallocated Votes: </div>
+          <BalBtn color="gradient" class="mt-6" block :disabled="voteDisabled" @click.prevent="submitVote">Vote</BalBtn>
+        </BalForm>
       </div>
     </BalCard>
   </BalPopover>

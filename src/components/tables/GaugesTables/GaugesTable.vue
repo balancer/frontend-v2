@@ -150,22 +150,6 @@ function orderedPoolTokens(pool: DecoratedPoolWithGaugeShares): PoolToken[] {
   sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
   return sortedTokens;
 }
-
-function handleRowClick(pool: DecoratedPoolWithGaugeShares) {
-  trackGoal(Goals.ClickPoolsTableRow);
-  router.push({ name: 'pool', params: { id: pool.id } });
-}
-
-function navigateToPoolMigration(pool: DecoratedPoolWithGaugeShares) {
-  router.push({
-    name: 'migrate-pool',
-    params: {
-      from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId
-    },
-    query: { returnRoute: 'home' }
-  });
-}
 </script>
 
 <template>
@@ -184,11 +168,6 @@ function navigateToPoolMigration(pool: DecoratedPoolWithGaugeShares) {
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :link="{
-        to: 'pool',
-        getParams: pool => ({ id: pool.id })
-      }"
-      :on-row-click="handleRowClick"
       :is-paginated="isPaginated"
       @load-more="emit('loadMore')"
       :initial-state="{
