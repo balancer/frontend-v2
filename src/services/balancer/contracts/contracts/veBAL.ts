@@ -34,7 +34,6 @@ export default class VeBAL {
   }
 
   private parseDate(date: string) {
-    console.log((toUtcTime(new Date(date)) / 1000).toString());
     return (toUtcTime(new Date(date)) / 1000).toString();
   }
 
