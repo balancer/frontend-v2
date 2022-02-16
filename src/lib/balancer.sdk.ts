@@ -33,7 +33,7 @@ export const balancer = new BalancerSDK({
       //TODO: no need to requery every time
       getNativeAssetPriceInToken: async (tokenAddress: string) => {
         try {
-          const tokenPrices = await beethovenxService.getTokenPrices();
+          const tokenPrices = beethovenxService.getCachedTokenPrices();
           const nativeAssetPrice =
             tokenPrices[configService.network.addresses.weth]?.usd || 0;
           const tokenPrice = tokenPrices[getAddress(tokenAddress)]?.usd || 1;

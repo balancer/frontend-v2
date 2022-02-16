@@ -28,6 +28,7 @@ export type HistoricalPrices = { [timestamp: string]: number[] };
 
 export default class BeethovenxService {
   private readonly url: string;
+  private tokenPrices: TokenPrices = {};
 
   constructor(private readonly configService = _configService) {
     this.url =
@@ -85,7 +86,13 @@ export default class BeethovenxService {
       }
     }
 
+    this.tokenPrices = result;
+
     return result;
+  }
+
+  public getCachedTokenPrices(): TokenPrices {
+    return this.tokenPrices;
   }
 
   public async getHistoricalTokenPrices(
