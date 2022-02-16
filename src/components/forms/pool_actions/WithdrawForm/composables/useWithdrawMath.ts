@@ -25,6 +25,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
+//@ts-ignore
 import { SwapType, TransactionData, UnwrapType } from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
@@ -567,7 +568,9 @@ export default function useWithdrawMath(
       );
 
       const batchRelayerAmountOut = bnum(
-        _batchRelayerSwap.outputs.amountsOut[0].toString()
+        _batchRelayerSwap.outputs?.amountsOut
+          ? _batchRelayerSwap.outputs.amountsOut[0].toString()
+          : '0'
       ).abs();
       const amountOut = formatUnits(
         batchRelayerAmountOut.toString(),

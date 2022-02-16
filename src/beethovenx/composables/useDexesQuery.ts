@@ -7,11 +7,11 @@ import {
   LiquiditySelection,
   SorManager
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { SwapTypes } from '@balancer-labs/sor2';
 import { scale, scaleDown, sleep } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import { dexContractsService } from '@/beethovenx/services/dex/dex-contracts.service';
+import { SwapTypes } from '@balancer-labs/sdk';
 
 interface QueryResponse {
   spooky: number[];

@@ -4,6 +4,7 @@ import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import {
   FundManagement,
   TransactionData,
+  //@ts-ignore
   UnwrapType
 } from '@balancer-labs/sdk';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';

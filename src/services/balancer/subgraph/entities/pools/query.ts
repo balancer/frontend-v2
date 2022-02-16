@@ -23,6 +23,7 @@ const defaultAttrs = {
   totalSwapVolume: true,
   totalSwapFee: true,
   totalShares: true,
+  totalWeight: true,
   owner: true,
   factory: true,
   amp: true,
@@ -74,9 +75,8 @@ const defaultAttrs = {
     decimals: true,
     address: true,
     balance: true,
-    weight: true
-    //TODO: uncomment for linear support
-    //priceRate: true
+    weight: true,
+    priceRate: true
   },
   //TODO: uncomment for linear support
   wrappedIndex: true,
@@ -84,6 +84,7 @@ const defaultAttrs = {
   lowerTarget: true,
   upperTarget: true,
   tokenRates: true,
+  expiryTime: true,
   linearPools: {
     id: true,
     address: true,

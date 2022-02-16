@@ -2,7 +2,6 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { Vault__factory, LidoRelayer__factory } from '@balancer-labs/typechain';
 import { Swap } from '@balancer-labs/sor/dist/types';
-import { SwapV2 } from '@balancer-labs/sor2';
 import { BigNumber } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
@@ -16,7 +15,7 @@ import {
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
-import { BatchSwapStep } from '@balancer-labs/sdk';
+import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
 import { bnum } from '..';
 
 export async function swapIn(
