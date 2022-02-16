@@ -16,7 +16,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 
 import LockableTokens from './components/LockableTokens.vue';
 import MyVeBAL from './components/MyVeBAL.vue';
-import VeBalForm from './components/VeBalForm.vue';
+import VeBalForm from './components/VeBalForm/VeBalForm.vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 

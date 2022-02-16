@@ -8,24 +8,24 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import LockPreviewModal from './LockPreviewModal/LockPreviewModal.vue';
+import LockPreviewModal from '../LockPreviewModal/LockPreviewModal.vue';
 
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useVeBal from '@/composables/useVeBAL';
 
 import { TokenInfo } from '@/types/TokenList';
+
+import Summary from './components/Summary.vue';
 
 import {
   INPUT_DATE_FORMAT,
   DEFAULT_LOCK_IN_DAYS,
   MAX_LOCK_IN_DAYS,
   MIN_LOCK_IN_DAYS
-} from '../constants';
+} from '../../constants';
 
-import { LockType } from '../types';
+import { LockType } from '../../types';
 
 type Props = {
   lockablePool: FullPool;
@@ -61,8 +61,6 @@ const lockEndDate = ref(
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
-const { fNum2 } = useNumbers();
-const { veBalTokenInfo } = useVeBal();
 
 /**
  * COMPUTED
@@ -181,19 +179,7 @@ const lockType = computed(() => {
         :max="format(maxLockEndDateTimestamp, INPUT_DATE_FORMAT)"
       />
     </div>
-    <div>
-      <div class="flex justify-between">
-        <div>{{ $t('getVeBAL.lockForm.summary.receive.title') }}</div>
-        <div>
-          {{
-            expectedVeBalAmount != null
-              ? fNum2(expectedVeBalAmount, FNumFormats.token)
-              : '-'
-          }}
-          {{ veBalTokenInfo.symbol }}
-        </div>
-      </div>
-    </div>
+    <Summary :expectedVeBalAmount="expectedVeBalAmount" />
     <BalBtn
       color="gradient"
       class="mt-6"
