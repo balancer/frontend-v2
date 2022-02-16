@@ -73,7 +73,7 @@ const isIncreaseLockOnly = computed(
     <h6 class="p-2">
       {{ $t('getVeBAL.previewModal.summary.title') }}
     </h6>
-    <div class="px-2 py-1">
+    <div class="p-2">
       <div class="summary-item-row">
         <div>
           {{
