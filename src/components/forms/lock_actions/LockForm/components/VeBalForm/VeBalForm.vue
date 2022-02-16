@@ -18,6 +18,8 @@ import { TokenInfo } from '@/types/TokenList';
 
 import Summary from './components/Summary.vue';
 
+import useLockState from '../../composables/useLockState';
+
 import {
   INPUT_DATE_FORMAT,
   DEFAULT_LOCK_IN_DAYS,
@@ -42,7 +44,9 @@ const props = defineProps<Props>();
  * STATE
  */
 const showPreviewModal = ref(false);
-const lockAmount = ref('');
+
+const { lockEndDate, lockAmount } = useLockState();
+
 const now = new Date();
 
 const minLockEndDateTimestamp = props.veBalLockInfo.hasExistingLock
@@ -51,11 +55,9 @@ const minLockEndDateTimestamp = props.veBalLockInfo.hasExistingLock
 const maxLockEndDateTimestamp = addDays(now, MAX_LOCK_IN_DAYS).getTime();
 const defaultLockTimestamp = addDays(now, DEFAULT_LOCK_IN_DAYS).getTime();
 
-const lockEndDate = ref(
-  props.veBalLockInfo.hasExistingLock
-    ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
-    : format(defaultLockTimestamp, INPUT_DATE_FORMAT)
-);
+lockEndDate.value = props.veBalLockInfo.hasExistingLock
+  ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
+  : format(defaultLockTimestamp, INPUT_DATE_FORMAT);
 
 /**
  * COMPOSABLES

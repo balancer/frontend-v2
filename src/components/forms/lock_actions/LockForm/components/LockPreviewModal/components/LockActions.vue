@@ -34,7 +34,7 @@ type Props = {
   lockType: LockType[];
 };
 
-type LockState = {
+type LockActionState = {
   init: boolean;
   confirming: boolean;
   confirmed: boolean;
@@ -48,13 +48,13 @@ type LockState = {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'success', value: TransactionReceipt): void;
+  (e: 'success', value: LockActionState[]): void;
 }>();
 
 /**
  * STATE
  */
-const lockStates = reactive<LockState[]>(
+const lockActionStates = reactive<LockActionState[]>(
   props.lockType.map(() => ({
     init: false,
     confirming: false,
@@ -97,8 +97,8 @@ const actions = ref<TransactionActionInfo[]>([
  * COMPUTED
  */
 
-const lockStatesConfirmed = computed(() =>
-  lockStates.every(lockState => lockState.confirmed)
+const lockActionStatesConfirmed = computed(() =>
+  lockActionStates.every(lockActionState => lockActionState.confirmed)
 );
 
 /**
@@ -128,20 +128,20 @@ async function handleTransaction(
     }
   });
 
-  lockStates[actionIndex].confirmed = await txListener(tx, {
+  lockActionStates[actionIndex].confirmed = await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
-      if (lockStatesConfirmed.value) {
-        emit('success', receipt);
+      if (lockActionStatesConfirmed.value) {
+        emit('success', lockActionStates);
       }
 
-      lockStates[actionIndex].confirming = false;
-      lockStates[actionIndex].receipt = receipt;
+      lockActionStates[actionIndex].confirming = false;
+      lockActionStates[actionIndex].receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
-      lockStates[actionIndex].confirmedAt = dateTimeLabelFor(confirmedAt);
+      lockActionStates[actionIndex].confirmedAt = dateTimeLabelFor(confirmedAt);
     },
     onTxFailed: () => {
-      lockStates[actionIndex].confirming = false;
+      lockActionStates[actionIndex].confirming = false;
     }
   });
 }
@@ -149,7 +149,7 @@ async function handleTransaction(
 async function submit(lockType: LockType, actionIndex: number) {
   try {
     let tx: TransactionResponse;
-    lockStates[actionIndex].init = true;
+    lockActionStates[actionIndex].init = true;
 
     if (lockType === LockType.CREATE_LOCK) {
       tx = await balancerContractsService.veBAL.createLock(
@@ -171,8 +171,8 @@ async function submit(lockType: LockType, actionIndex: number) {
       throw new Error('Unsupported lockType provided');
     }
 
-    lockStates[actionIndex].init = false;
-    lockStates[actionIndex].confirming = true;
+    lockActionStates[actionIndex].init = false;
+    lockActionStates[actionIndex].confirming = true;
 
     console.log('Receipt', tx);
 
@@ -188,25 +188,25 @@ async function submit(lockType: LockType, actionIndex: number) {
 <template>
   <div>
     <BalActionSteps
-      v-if="!lockStatesConfirmed"
+      v-if="!lockActionStatesConfirmed"
       :actions="actions"
       :disabled="disabled"
     />
     <template v-else>
       <div
-        v-for="(lockState, i) in lockStates"
+        v-for="(lockActionState, i) in lockActionStates"
         :key="i"
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />
           <span class="ml-2">
-            {{ lockState.confirmedAt }}
+            {{ lockActionState.confirmedAt }}
           </span>
         </div>
         <BalLink
-          v-if="lockState.receipt"
-          :href="explorerLinks.txLink(lockState.receipt.transactionHash)"
+          v-if="lockActionState.receipt"
+          :href="explorerLinks.txLink(lockActionState.receipt.transactionHash)"
           external
           noStyle
           class="group flex items-center"
