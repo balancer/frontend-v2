@@ -30,7 +30,6 @@ export const balancer = new BalancerSDK({
   rpcUrl: configService.network.rpc,
   sor: {
     tokenPriceService: {
-      //TODO: no need to requery every time
       getNativeAssetPriceInToken: async (tokenAddress: string) => {
         try {
           const tokenPrices = beethovenxService.getCachedTokenPrices();
