@@ -69,13 +69,11 @@ const isIncreaseLockOnly = computed(
 </script>
 
 <template>
-  <BalCard noPad shadow="none" class="mt-4">
-    <div class="p-4 w-full border-b dark:border-gray-900">
-      <h6>
-        {{ $t('getVeBAL.previewModal.summary.title') }}
-      </h6>
-    </div>
-    <div class="-mt-2 p-4">
+  <div class="summary-table">
+    <h6 class="p-2">
+      {{ $t('getVeBAL.previewModal.summary.title') }}
+    </h6>
+    <div class="px-2 py-1">
       <div class="summary-item-row">
         <div>
           {{
@@ -123,10 +121,14 @@ const isIncreaseLockOnly = computed(
         <div>{{ fNum2(fiatWeeklyYield, FNumFormats.fiat) }}</div>
       </div> -->
     </div>
-  </BalCard>
+  </div>
 </template>
 
 <style scoped>
+.summary-table {
+  @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg mt-4;
+}
+
 .summary-item-row {
   @apply flex justify-between pb-2;
 }

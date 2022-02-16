@@ -48,8 +48,10 @@ function formatWeightLabel(weight: string) {
 </script>
 
 <template>
-  <BalCard noPad shadow="none">
-    <div class="-mt-2 p-4 flex justify-between items-center">
+  <div
+    class="shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg"
+  >
+    <div class="p-3 flex justify-between items-center">
       <div>
         <div class="font-semibold">
           {{
@@ -71,5 +73,5 @@ function formatWeightLabel(weight: string) {
         />
       </div>
     </div>
-  </BalCard>
+  </div>
 </template>
