@@ -7,7 +7,6 @@ import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import LockPreviewModal from '../LockPreviewModal/LockPreviewModal.vue';
 
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
@@ -17,6 +16,7 @@ import useTokens from '@/composables/useTokens';
 import { TokenInfo } from '@/types/TokenList';
 
 import Summary from './components/Summary.vue';
+import LockAmount from './components/LockAmount.vue';
 
 import useLockState from '../../composables/useLockState';
 
@@ -158,17 +158,7 @@ const lockType = computed(() => {
         </div>
       </div>
     </template>
-    <div class="mb-6">
-      <div class="pb-4">
-        {{ $t('getVeBAL.lockForm.lockAmount.title') }}
-      </div>
-      <TokenInput
-        :address="lockablePoolTokenInfo.address"
-        v-model:amount="lockAmount"
-        fixedToken
-        name="lockableToken"
-      />
-    </div>
+    <LockAmount :lockablePoolTokenInfo="lockablePoolTokenInfo" />
     <div class="mb-6">
       <div class="pb-4">
         {{ $t('getVeBAL.lockForm.lockEndDate.title') }}
