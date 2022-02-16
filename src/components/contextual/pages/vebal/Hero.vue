@@ -2,12 +2,14 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import useDarkMode from '@/composables/useDarkMode';
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
 const router = useRouter();
+const { darkMode } = useDarkMode();
 
 /**
  * COMPUTED
@@ -47,7 +49,7 @@ function navigateToGetVeBAL() {
         href="https://forum.balancer.fi/t/introducing-vebal-tokenomics/2512"
         target="_blank"
         rel="noreferrer"
-        color="white"
+        :color="darkMode ? 'white' : 'primary'"
         outline
       >
         {{ $t('veBAL.hero.buttons.learnMore') }}
