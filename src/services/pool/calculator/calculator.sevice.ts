@@ -11,6 +11,7 @@ import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import StablePhantom from './stable-phantom';
+import { Zero } from '@ethersproject/constants';
 
 interface Amounts {
   send: string[];
@@ -140,7 +141,13 @@ export default class CalculatorService {
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
     const fixedToken = this.allTokens.value[fixedTokenAddress];
-    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken.decimals);
+    let fixedDenormAmount = Zero;
+    try {
+      fixedDenormAmount = parseUnits(fixedAmount, fixedToken.decimals);
+    } catch {
+      //
+    }
+
     const fixedRatio = this.ratioOf(type, index);
     const amounts = {
       send: this.sendTokens.map(() => ''),

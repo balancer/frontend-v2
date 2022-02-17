@@ -4,7 +4,6 @@ import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import {
   FundManagement,
   TransactionData,
-  //@ts-ignore
   UnwrapType
 } from '@balancer-labs/sdk';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
@@ -52,6 +51,20 @@ export default class BatchRelayer {
     const tokensIn = tokensOut.map(() => tokenIn);
 
     const method = exactOut ? 'swapUnwrapExactOut' : 'swapUnwrapExactIn';
+
+    console.log('stableExitStatic', {
+      tokensIn,
+      tokensOut,
+      amountsIn,
+      rates,
+      funds,
+      slippage,
+      unwrapType,
+      abc: {
+        fetchPools,
+        fetchOnChain: false
+      }
+    });
 
     return await this.service.sdk.relayer[method](
       tokensIn,
