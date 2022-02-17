@@ -180,6 +180,7 @@ export interface DecoratedPoolWithShares extends DecoratedPool {
 }
 
 export interface GaugeInformation {
+  address: string;
   votes: string;
   userVotes: string;
 }

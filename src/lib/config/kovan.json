@@ -46,7 +46,8 @@
     "lidoRelayer": "0x41B953164995c11C81DA73D212ED8Af25741b7Ac",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d",
     "batchRelayer": "0x6bfd48F3873E21F7686982d352b610E1523c218B",
-    "veBAL": "0x9b6A0E708290f713eaE6B960c02952b9e15ecbc7"
+    "veBAL": "0x9b6A0E708290f713eaE6B960c02952b9e15ecbc7",
+    "gaugeController": "0x208E375cf84174030F1B1698ecDe8B6B0C85959e"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

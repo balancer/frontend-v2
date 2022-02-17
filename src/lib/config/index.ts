@@ -54,6 +54,7 @@ export interface Config {
     balancerHelpers: string;
     batchRelayer: string;
     veBAL: string;
+    gaugeController: string;
   };
   keys: {
     infura: string;

@@ -59,6 +59,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.1913",
         "userVotes": "0.6"
       }
@@ -122,6 +123,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.1862",
         "userVotes": "0.2"
       }
@@ -341,6 +343,7 @@
           "swapFee": "0.00001"
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0810",
         "userVotes": "0.0"
       }
@@ -412,6 +415,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0637",
         "userVotes": "0.0"
       }
@@ -475,6 +479,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0510",
         "userVotes": "0.0"
       }
@@ -538,6 +543,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0321",
         "userVotes": "0.0"
       }
@@ -599,6 +605,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0223",
         "userVotes": "0.0"
       }
@@ -670,6 +677,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0216",
         "userVotes": "0.0"
       }
@@ -733,6 +741,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0210",
         "userVotes": "0.0"
       }
@@ -794,6 +803,7 @@
           "isNewPool": false
       },
       "gauge": {
+        "address": "0xF5E1F2Ae2a4CEEeB1786c650856fDA2a27796F87",
         "votes": "0.0110",
         "userVotes": "0.0"
       }

@@ -11,6 +11,8 @@ import { DecoratedPoolWithGaugeShares } from '@/services/balancer/subgraph/types
 import { bnum } from '@/lib/utils';
 import BalForm from '../_global/BalForm/BalForm.vue';
 import BalTextInput from '../_global/BalTextInput/BalTextInput.vue';
+import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
+import { BigNumber } from '@ethersproject/bignumber';
 
 /**
  * TYPES
@@ -33,10 +35,11 @@ const voteDisabled = computed(() => false); // Make disabled when not a valid nu
  * METHODS
  */
 function submitVote() {
-  
-
+  gaugeControllerService.voteForGaugeWeights(
+    props.pool.gauge.address,
+    BigNumber.from('1')
+  );
 }
-
 </script>
 
 <template>
@@ -61,8 +64,15 @@ function submitVote() {
               %
             </template>
           </BalTextInput>
-          <div class="">Unallocated Votes: </div>
-          <BalBtn color="gradient" class="mt-6" block :disabled="voteDisabled" @click.prevent="submitVote">Vote</BalBtn>
+          <div class="">Unallocated Votes:</div>
+          <BalBtn
+            color="gradient"
+            class="mt-6"
+            block
+            :disabled="voteDisabled"
+            @click.prevent="submitVote"
+            >Vote</BalBtn
+          >
         </BalForm>
       </div>
     </BalCard>
