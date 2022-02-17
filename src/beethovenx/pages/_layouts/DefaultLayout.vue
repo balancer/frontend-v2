@@ -38,13 +38,13 @@ const isHomePage = computed(() => route.path === '/');
     <!--    <div class="relative">
       <AppHero v-if="isInvestPage" />
     </div>-->
-    <div class="pb-16 relative">
+    <div class="z-10 pb-16 relative">
       <router-view :key="$route.path" />
     </div>
     <AppFooterNav v-if="upToXLargeBreakpoint" />
-    <div class="flex flex-col items-center mb-12 xl:mb-0 relative">
+    <div class="-top-14 xl:top-0 flex flex-col items-center relative">
       <img src="~@/beethovenx/assets/images/community-image.png" />
-      <div class="absolute bottom-0 flex justify-center pb-6 ml-8">
+      <div class="absolute bottom-0 flex justify-center pb-4 xl:pb-6 xl:ml-8">
         <a href="https://twitter.com/beethoven_x" class="mr-12">
           <img
             src="~@/beethovenx/assets/images/twitter-icon.png"
