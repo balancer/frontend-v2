@@ -138,7 +138,10 @@ const lockType = computed(() => {
       </div>
     </template>
 
-    <LockAmount :lockablePoolTokenInfo="lockablePoolTokenInfo" />
+    <LockAmount
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+    />
 
     <LockEndDate
       :minLockEndDateTimestamp="minLockEndDateTimestamp"

@@ -1,23 +1,37 @@
 <script setup lang="ts">
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import { bnum } from '@/lib/utils';
+
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 import { TokenInfo } from '@/types/TokenList';
+import { computed } from 'vue';
 
 import useLockState from '../../../composables/useLockState';
 
 type Props = {
+  lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;
 };
 
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
  */
 const { lockAmount } = useLockState();
+
+/**
+ * COMPUTED
+ */
+const lockAmountFiatValue = computed(() =>
+  bnum(props.lockablePool.totalLiquidity)
+    .div(props.lockablePool.totalShares)
+    .times(lockAmount.value)
+);
 </script>
 
 <template>
@@ -27,9 +41,10 @@ const { lockAmount } = useLockState();
     </div>
     <TokenInput
       :address="lockablePoolTokenInfo.address"
+      :tokenValue="lockAmountFiatValue"
       v-model:amount="lockAmount"
       fixedToken
-      name="lockableToken"
+      name="lockAmount"
     />
   </div>
 </template>
