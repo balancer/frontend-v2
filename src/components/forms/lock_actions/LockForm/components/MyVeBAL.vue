@@ -12,7 +12,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { PRETTY_DATE_FORMAT } from '../constants';
 
 type Props = {
-  veBalLockInfo: VeBalLockInfo;
+  veBalLockInfo?: VeBalLockInfo;
 };
 
 /**
@@ -29,14 +29,17 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const p = computed(() => {
-  const totalSupply = bnum(props.veBalLockInfo.totalSupply);
+const percentVeBAL = computed(() => {
+  if (props.veBalLockInfo != null) {
+    const totalSupply = bnum(props.veBalLockInfo.totalSupply);
 
-  if (totalSupply.gt(0)) {
-    return bnum(veBalBalance.value)
-      .div(totalSupply)
-      .toString();
+    if (totalSupply.gt(0)) {
+      return bnum(veBalBalance.value)
+        .div(totalSupply)
+        .toString();
+    }
   }
+
   return '0';
 });
 </script>
@@ -50,15 +53,16 @@ const p = computed(() => {
     </div>
     <div class="-mt-2 p-10 flex items-center justify-center">
       <div>
-        {{ fNum2(veBalBalance, FNumFormats.token) }} {{ veBalTokenInfo.symbol }}
+        {{ fNum2(veBalBalance, FNumFormats.token) }}
+        {{ veBalTokenInfo?.symbol }}
       </div>
     </div>
     <div class="flex justify-center border-t dark:border-gray-900">
       <div class="border-r dark:border-gray-900 p-2 text-center w-1/2">
         <div>
           {{
-            veBalLockInfo.hasExistingLock
-              ? fNum2(p, {
+            veBalLockInfo?.hasExistingLock
+              ? fNum2(percentVeBAL, {
                   style: 'percent',
                   maximumFractionDigits: 2
                 })
@@ -72,7 +76,7 @@ const p = computed(() => {
       <div class="p-3 text-center w-1/2">
         <div>
           {{
-            veBalLockInfo.hasExistingLock
+            veBalLockInfo?.hasExistingLock
               ? format(veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT)
               : '-'
           }}

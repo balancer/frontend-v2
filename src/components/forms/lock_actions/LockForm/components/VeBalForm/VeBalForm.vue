@@ -26,11 +26,12 @@ import useLockEndDate from '../../composables/useLockEndDate';
 import { MAX_LOCK_PERIOD_IN_DAYS } from '../../constants';
 
 import { LockType } from '../../types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;
-  veBalLockInfo: VeBalLockInfo;
+  veBalLockInfo?: VeBalLockInfo;
 };
 
 /**
@@ -44,6 +45,11 @@ const props = defineProps<Props>();
 const showPreviewModal = ref(false);
 
 const { lockEndDate, lockAmount } = useLockState();
+const {
+  isWalletReady,
+  toggleWalletSelectModal,
+  isMismatchedNetwork
+} = useWeb3();
 
 const {
   isValidLockAmount,
@@ -72,7 +78,11 @@ const lockablePoolBptBalance = computed(() =>
 );
 
 const submissionDisabled = computed(() => {
-  if (props.veBalLockInfo.hasExistingLock) {
+  if (isMismatchedNetwork.value) {
+    return true;
+  }
+
+  if (props.veBalLockInfo?.hasExistingLock) {
     return !isIncreasedLockAmount.value && !isExtendedLockEndDate.value;
   }
 
@@ -98,7 +108,7 @@ const expectedVeBalAmount = computed(() => {
 });
 
 const lockType = computed(() => {
-  if (props.veBalLockInfo.hasExistingLock) {
+  if (props.veBalLockInfo?.hasExistingLock) {
     if (isIncreasedLockAmount.value && isExtendedLockEndDate.value) {
       return [LockType.INCREASE_LOCK, LockType.EXTEND_LOCK];
     }
@@ -137,15 +147,24 @@ const lockType = computed(() => {
 
     <Summary :expectedVeBalAmount="expectedVeBalAmount" />
 
-    <BalBtn
-      color="gradient"
-      class="mt-6"
-      block
-      :disabled="submissionDisabled"
-      @click="showPreviewModal = true"
-    >
-      {{ $t('preview') }}
-    </BalBtn>
+    <div class="mt-6">
+      <BalBtn
+        v-if="!isWalletReady"
+        :label="$t('connectWallet')"
+        color="gradient"
+        block
+        @click="toggleWalletSelectModal"
+      />
+      <BalBtn
+        v-else
+        color="gradient"
+        block
+        :disabled="submissionDisabled"
+        @click="showPreviewModal = true"
+      >
+        {{ $t('preview') }}
+      </BalBtn>
+    </div>
   </BalCard>
   <teleport to="#modal">
     <LockPreviewModal

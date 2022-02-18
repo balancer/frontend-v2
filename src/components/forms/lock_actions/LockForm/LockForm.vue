@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import useTokens from '@/composables/useTokens';
-import useRelayerApproval, {
-  Relayer
-} from '@/composables/trade/useRelayerApproval';
 import { networkId } from '@/composables/useNetwork';
 
 import { POOLS } from '@/constants/pools';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import LockableTokens from './components/LockableTokens.vue';
 import MyVeBAL from './components/MyVeBAL.vue';
@@ -23,7 +21,8 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 /**
  * COMPOSABLES
  */
-const { tokens, dynamicDataLoading } = useTokens();
+const { tokens } = useTokens();
+const { isWalletReady } = useWeb3();
 
 const lockablePoolAddress = computed(
   () => POOLS.IdsMap[networkId.value]?.['B-80BAL-20WETH']
@@ -34,9 +33,6 @@ const lockablePoolAddress = computed(
  */
 const lockablePoolQuery = usePoolQuery(lockablePoolAddress.value as string);
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
-const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
-
-const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
 
 /**
  * COMPUTED
@@ -59,12 +55,10 @@ const lockablePoolTokenInfo = computed(() =>
 
 const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);
 
-const isLoading = computed(
-  () =>
-    lockablePoolLoading.value ||
-    batchRelayerApprovalLoading.value ||
-    dynamicDataLoading.value ||
-    veBalQueryLoading.value
+const isLoading = computed(() =>
+  isWalletReady.value
+    ? lockablePoolLoading.value || veBalQueryLoading.value
+    : lockablePoolLoading.value
 );
 </script>
 
@@ -85,6 +79,7 @@ const isLoading = computed(
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"
+      :key="veBalLockInfo"
     />
 
     <template #gutterRight>

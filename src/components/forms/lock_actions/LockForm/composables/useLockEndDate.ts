@@ -13,7 +13,7 @@ import {
   EPOCH_IN_DAYS
 } from '../constants';
 
-export default function useLockEndDate(veBalLockInfo: VeBalLockInfo) {
+export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   /**
    * COMPOSABLES
    */
@@ -24,7 +24,7 @@ export default function useLockEndDate(veBalLockInfo: VeBalLockInfo) {
    */
   const todaysDate = new Date();
 
-  const minLockEndDateTimestamp = veBalLockInfo.hasExistingLock
+  const minLockEndDateTimestamp = veBalLockInfo?.hasExistingLock
     ? addDays(veBalLockInfo.lockedEndDate, EPOCH_IN_DAYS).getTime()
     : addDays(todaysDate, MIN_LOCK_PERIOD_IN_DAYS).getTime();
 
@@ -38,7 +38,7 @@ export default function useLockEndDate(veBalLockInfo: VeBalLockInfo) {
     DEFAULT_LOCK_PERIOD_IN_DAYS
   ).getTime();
 
-  lockEndDate.value = veBalLockInfo.hasExistingLock
+  lockEndDate.value = veBalLockInfo?.hasExistingLock
     ? format(veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
     : format(defaultLockTimestamp, INPUT_DATE_FORMAT);
 
@@ -56,7 +56,7 @@ export default function useLockEndDate(veBalLockInfo: VeBalLockInfo) {
   );
 
   const isExtendedLockEndDate = computed(
-    () => veBalLockInfo.hasExistingLock && isValidLockEndDate.value
+    () => veBalLockInfo?.hasExistingLock && isValidLockEndDate.value
   );
 
   return {
