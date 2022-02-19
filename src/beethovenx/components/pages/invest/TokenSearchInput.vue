@@ -52,6 +52,11 @@ const whiteListedTokens = computed(() =>
   Object.values(tokens.value)
     .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
     .filter(token => !isTokenSelected(token.address))
+    // filter out duplicates as well (eg yvUSDC, yvDAI are filtered in somewhere)
+    .filter(
+      (token, index, self) =>
+        self.findIndex(t => t.symbol === token.symbol) === index
+    )
 );
 
 function isTokenSelected(token: string) {
