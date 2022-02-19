@@ -357,6 +357,7 @@
     "loadMore": "Load more",
     "logOut": "Log out",
     "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
+    "lpTokens": "LP tokens",
     "managedPool": "Managed pool",
     "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
@@ -522,6 +523,9 @@
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
     "stake": "Stake",
+    "staking": {
+        "stakeLPTokens": "Stake LP tokens"
+    },
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",

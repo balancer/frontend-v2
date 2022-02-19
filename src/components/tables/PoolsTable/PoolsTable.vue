@@ -54,7 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   hiddenColumns: () => []
 });
 
-const emit = defineEmits(['loadMore']);
+const emit = defineEmits(['loadMore', 'triggerStake']);
 
 /**
  * COMPOSABLES
@@ -298,16 +298,10 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
           <BalBtn
             color="gradient"
             size="sm"
-            v-if="getStakeState(pool) === StakeState.CanStake"
+            @click.prevent="$emit('triggerStake', pool)"
           >
             {{ $t('stake') }}
           </BalBtn>
-          <span v-if="getStakeState(pool) === StakeState.MaxStaked">
-            100.00%
-          </span>
-          <span v-if="getStakeState(pool) === StakeState.NoGuage">
-            N/A
-          </span>
         </div>
       </template>
     </BalTable>

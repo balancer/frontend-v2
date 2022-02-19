@@ -17,6 +17,7 @@
             :data="stakableUserPools"
             :noPoolsLabel="$t('noInvestments')"
             :selectedTokens="selectedTokens"
+            @triggerStake="handleStake"
             :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
             showPoolShares
             class="mb-8"
@@ -94,11 +95,12 @@
     <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
       <FeaturedPools />
     </div>
+    <StakePreviewModal v-if="showStakeModal" :pool="stakePool" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from 'vue';
+import { defineComponent, computed, watch, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -115,14 +117,24 @@ import { isMigratablePool } from '@/composables/usePool';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
+import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+import { FullPool } from '@/services/balancer/subgraph/types';
+
 export default defineComponent({
   components: {
     TokenSearchInput,
     PoolsTable,
-    FeaturedPools
+    FeaturedPools,
+    StakePreviewModal
   },
 
   setup() {
+    /**
+     * STATE
+     */
+    const showStakeModal = ref(false);
+    const stakePool = ref<FullPool | undefined>();
+
     // COMPOSABLES
     const router = useRouter();
     const { t } = useI18n();
@@ -208,12 +220,19 @@ export default defineComponent({
       router.push({ name: 'create-pool' });
     }
 
+    function handleStake(pool: FullPool) {
+      showStakeModal.value = true;
+      stakePool.value = pool;
+    }
+
     return {
       // data
       filteredPools,
       userPools,
       isLoadingPools,
       isLoadingUserPools,
+      showStakeModal,
+      stakePool,
 
       // computed
       isWalletReady,
@@ -234,6 +253,7 @@ export default defineComponent({
       addSelectedToken,
       removeSelectedToken,
       navigateToCreatePool,
+      handleStake,
 
       // constants
       EXTERNAL_LINKS
