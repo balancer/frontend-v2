@@ -125,7 +125,7 @@ import BigNumber from 'bignumber.js';
 import { PropType, defineComponent, ref, computed } from 'vue';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
-import { Pool, Swap } from '@balancer-labs/sor/dist/types';
+import { Pool } from '@balancer-labs/sor/dist/types';
 import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sdk';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -197,8 +197,7 @@ export default defineComponent({
     }
 
     const label = computed(() => {
-      const version = props.sorReturn.isV1swap ? 'V1' : 'V2';
-      return `${t('usingLiquidity', [version])}`;
+      return `${t('usingLiquidity')}`;
     });
 
     const input = computed(() => {
@@ -226,81 +225,14 @@ export default defineComponent({
         return [];
       }
 
-      if (sorReturn.isV1swap) {
-        const pools = props.pools as Pool[];
-        const swaps = sorReturn.v1result[0];
+      const pools = props.pools as SubgraphPoolBase[];
+      const swaps = sorReturn.result.swaps;
+      const addresses = sorReturn.result.tokenAddresses;
+      const addressIn = props.addressIn as string;
+      const addressOut = props.addressOut as string;
 
-        return getV1Routes(pools, swaps);
-      } else {
-        const pools = props.pools as SubgraphPoolBase[];
-        const swaps = sorReturn.v2result.swaps;
-        const addresses = sorReturn.v2result.tokenAddresses;
-        const addressIn = props.addressIn as string;
-        const addressOut = props.addressOut as string;
-
-        return getV2Routes(addressIn, addressOut, pools, swaps, addresses);
-      }
+      return getV2Routes(addressIn, addressOut, pools, swaps, addresses);
     });
-
-    function getV1Routes(pools: Pool[], swaps: Swap[][]) {
-      if (!pools.length || !swaps.length) {
-        return [];
-      }
-
-      const totalSwapAmount = swaps.reduce((total, rawHops) => {
-        return total.plus(rawHops[0].swapAmount || '0');
-      }, new BigNumber(0));
-      const routes = swaps.map(rawHops => {
-        const swapAmount = new BigNumber(rawHops[0].swapAmount || '0');
-        const share = swapAmount.div(totalSwapAmount).toNumber();
-        const hops = rawHops.map(rawHop => {
-          const tokenIn = getAddress(rawHop.tokenIn);
-          const tokenOut = getAddress(rawHop.tokenOut);
-          const rawPool = pools.find(pool => pool.id === rawHop.pool);
-          if (!rawPool) {
-            return {};
-          }
-          const totalWeight = new BigNumber(rawPool.totalWeight);
-          const pool = {
-            id: rawPool.id,
-            tokens: rawPool.tokens
-              .map(token => {
-                const address = getAddress(token.address);
-                const weight = new BigNumber(token.denormWeight);
-                const share = weight.div(totalWeight).toNumber();
-                return {
-                  address,
-                  share
-                };
-              })
-              .sort((a, b) => {
-                if (a.address === tokenIn || b.address === tokenOut) {
-                  return -1;
-                }
-                if (a.address === tokenOut || b.address === tokenIn) {
-                  return 1;
-                }
-                return a.share - b.share;
-              })
-              .filter((_token, index, tokens) => {
-                // Show first 2 and last 2 tokens
-                return index < 2 || index > tokens.length - 3;
-              })
-          };
-          return {
-            pool,
-            tokenIn,
-            tokenOut
-          };
-        });
-        return {
-          share,
-          hops
-        };
-      }) as Route[];
-
-      return routes;
-    }
 
     function getV2Routes(
       addressIn: string,
@@ -440,13 +372,8 @@ export default defineComponent({
         [Network.ARBITRUM]: 'arbitrum.'
       };
       const prefix = prefixMap[chainId] || '';
-      if (props.sorReturn.isV1swap && chainId === 1) {
-        return `https://pools.balancer.exchange/#/pool/${id}`;
-      } else {
-        return props.sorReturn.isV1swap
-          ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-          : `https://${prefix}balancer.fi/#/pool/${id}`;
-      }
+
+      return `https://${prefix}balancer.fi/#/pool/${id}`;
     }
 
     return {

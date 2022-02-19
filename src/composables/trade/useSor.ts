@@ -7,7 +7,6 @@ import {
   reactive,
   toRefs
 } from 'vue';
-import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
 import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
@@ -25,8 +24,7 @@ import {
 } from '@/lib/utils/balancer/wrapper';
 import {
   SorManager,
-  SorReturn,
-  LiquiditySelection
+  SorReturn
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
@@ -105,16 +103,13 @@ export default function useSor({
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
   const sorReturn = ref<SorReturn>({
-    isV1swap: false,
-    isV1best: false,
     hasSwaps: false,
     tokenIn: '',
     tokenOut: '',
     returnDecimals: 18,
     returnAmount: Zero,
     marketSpNormalised: '0',
-    v1result: [[], Zero, new OldBigNumber(0)],
-    v2result: {
+    result: {
       tokenAddresses: [],
       swaps: [],
       swapAmount: Zero,
@@ -132,12 +127,7 @@ export default function useSor({
   const poolsLoading = ref(true);
 
   // COMPOSABLES
-  const store = useStore();
-  const {
-    getProvider: getWeb3Provider,
-    isV1Supported,
-    appNetworkConfig
-  } = useWeb3();
+  const { getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
@@ -145,8 +135,6 @@ export default function useSor({
   const { fNum2 } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor } = useTokens();
-
-  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -177,23 +165,12 @@ export default function useSor({
   }
 
   async function initSor(): Promise<void> {
-    const poolsUrlV1 = `${
-      configService.network.poolsUrlV1
-    }?timestamp=${Date.now()}`;
-
-    // If V1 previously selected on another network then it uses this and returns no liquidity.
-    if (!isV1Supported) {
-      store.commit('app/setTradeLiquidity', LiquiditySelection.V2);
-    }
-
     sorManager = new SorManager(
-      isV1Supported,
       rpcProviderService.jsonProvider,
       BigNumber.from(GAS_PRICE),
       Number(MAX_POOLS),
       configService.network.chainId,
-      configService.network.addresses.weth,
-      poolsUrlV1
+      configService.network.addresses.weth
     );
 
     fetchPools();
@@ -298,8 +275,7 @@ export default function useSor({
         tokenOutDecimals,
         SwapTypes.SwapExactIn,
         tokenInAmountScaled,
-        tokenInDecimals,
-        liquiditySelection.value
+        tokenInDecimals
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -354,8 +330,7 @@ export default function useSor({
         tokenOutDecimals,
         SwapTypes.SwapExactOut,
         tokenOutAmount,
-        tokenOutDecimals,
-        liquiditySelection.value
+        tokenOutDecimals
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?

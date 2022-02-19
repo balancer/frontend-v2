@@ -107,22 +107,6 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div v-if="!hideLiquidity" class="px-4 mt-6">
-      <div class="flex items-baseline">
-        <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
-        <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
-          </template>
-          <div v-text="$t('whichPools')" />
-        </BalTooltip>
-      </div>
-      <BalBtnGroup
-        :options="tradeLiquidityOptions"
-        v-model="appTradeLiquidity"
-        @update:modelValue="setTradeLiquidity"
-      />
-    </div>
     <div v-if="isEIP1559SupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
@@ -184,7 +168,6 @@ import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import {
-  tradeLiquidityOptions,
   tradeInterfaceOptions,
   ethereumTxTypeOptions
 } from '@/constants/options';
@@ -223,7 +206,6 @@ export default defineComponent({
       profile,
       disconnectWallet,
       connector,
-      isV1Supported,
       isEIP1559SupportedNetwork,
       userNetworkConfig,
       appNetworkConfig,
@@ -234,7 +216,6 @@ export default defineComponent({
     // DATA
     const data = reactive({
       locales,
-      tradeLiquidityOptions,
       tradeInterfaceOptions,
       copiedAddress: false
     });
@@ -267,9 +248,7 @@ export default defineComponent({
     const networkName = computed(() => userNetworkConfig.value?.name);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
-    const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
-    const hideLiquidity = computed(() => !isV1Supported);
     const connectorName = computed(() => getConnectorName(connector.value?.id));
 
     const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
@@ -282,8 +261,6 @@ export default defineComponent({
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
 
-    const setTradeLiquidity = tradeLiquidity =>
-      store.commit('app/setTradeLiquidity', tradeLiquidity);
     const setTradeInterface = tradeInterface =>
       store.commit('app/setTradeInterface', tradeInterface);
 
@@ -304,7 +281,6 @@ export default defineComponent({
       // computed
       account,
       profile,
-      appTradeLiquidity,
       appTradeInterface,
       networkName,
       networkColorClass,
@@ -312,7 +288,6 @@ export default defineComponent({
       appDarkMode,
       connectorName,
       connectorLogo,
-      hideLiquidity,
       hideDisconnect,
       isEIP1559SupportedNetwork,
       isGnosisSupportedNetwork,
@@ -321,7 +296,6 @@ export default defineComponent({
       disconnectWallet,
       setDarkMode,
       setLocale,
-      setTradeLiquidity,
       setTradeInterface,
       copyAddress,
       explorer: explorerLinks,

@@ -45,8 +45,6 @@ export default function useTrading(
   // COMPUTED
   const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
-  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
-
   const wrapType = computed(() =>
     getWrapAction(tokenInAddressInput.value, tokenOutAddressInput.value)
   );
@@ -284,12 +282,6 @@ export default function useTrading(
 
   watch(slippageBufferRate, () => {
     handleAmountChange();
-  });
-
-  watch(liquiditySelection, () => {
-    if (isBalancerTrade.value) {
-      handleAmountChange();
-    }
   });
 
   return {

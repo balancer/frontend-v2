@@ -126,10 +126,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    isV1Swap: {
-      type: Boolean,
-      required: true
-    },
     addressIn: {
       type: String,
       required: true
@@ -154,7 +150,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { fNum2, toFiat } = useNumbers();
 
-    const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
+    const { addressIn, amountIn, addressOut } = toRefs(props);
 
     const { tokens, approvalRequired } = useTokens();
 
@@ -216,7 +212,7 @@ export default defineComponent({
         return true;
       }
 
-      const { isUnlockedV1, isUnlockedV2 } = tokenApproval.allowanceState.value;
+      const { isUnlockedV2 } = tokenApproval.allowanceState.value;
       if (isWrap.value && !isEthTrade.value) {
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
@@ -226,7 +222,7 @@ export default defineComponent({
           addressOut.value
         );
       }
-      return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
+      return isUnlockedV2;
     });
 
     async function approveLidoRelayer(): Promise<void> {
@@ -238,8 +234,6 @@ export default defineComponent({
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
         await tokenApproval.approveSpender(addressOut.value);
-      } else if (isV1Swap.value) {
-        await tokenApproval.approveV1();
       } else {
         await tokenApproval.approveV2();
       }

@@ -23,12 +23,6 @@
           }`
         "
       />
-      <div class="px-4 lg:px-0" v-if="!hideV1Links">
-        <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
-        <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
-          $t('goToBalancerV1Site')
-        }}</BalLink>
-      </div>
       <div class="mb-16" />
     </template>
 
@@ -110,7 +104,7 @@ export default defineComponent({
     // COMPOSABLES
     const router = useRouter();
     const { t } = useI18n();
-    const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
+    const { isWalletReady, appNetworkConfig } = useWeb3();
     const isElementSupported = appNetworkConfig.supportsElementPools;
     const {
       selectedTokens,
@@ -141,8 +135,6 @@ export default defineComponent({
           })
         : pools?.value
     );
-
-    const hideV1Links = computed(() => !isV1Supported);
 
     const showMigrationColumn = computed(() =>
       userPools.value?.some(pool => {
@@ -190,7 +182,6 @@ export default defineComponent({
 
       // computed
       isWalletReady,
-      hideV1Links,
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       selectedTokens,
