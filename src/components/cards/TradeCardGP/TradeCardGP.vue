@@ -102,6 +102,18 @@
           <div v-html="$t('tradeGaslessToggle.tooltip')" />
         </BalTooltip>
       </div>
+      <div>
+        <TradeRoute
+          v-if="alwaysShowRoutes"
+          :address-in="trading.tokenIn.value.address"
+          :amount-in="trading.tokenInAmountInput.value"
+          :address-out="trading.tokenOut.value.address"
+          :amount-out="trading.tokenOutAmountInput.value"
+          :pools="trading.sor.pools.value"
+          :sor-return="trading.sor.sorReturn.value"
+          class="mt-5"
+        />
+      </div>
     </div>
   </BalCard>
   <teleport to="#modal">
@@ -135,6 +147,7 @@ import { TOKENS } from '@/constants/tokens';
 
 import { isRequired } from '@/lib/utils/validations';
 import { WrapType } from '@/lib/utils/balancer/wrapper';
+import { lsGet } from '@/lib/utils';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
@@ -145,6 +158,7 @@ import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
 import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
+import TradeRoute from '../TradeCard/TradeRoute.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useTradeState } from '@/composables/trade/useTradeState';
 
@@ -152,6 +166,7 @@ export default defineComponent({
   components: {
     TradePair,
     TradePreviewModalGP,
+    TradeRoute,
     TradeSettingsPopover,
     GasReimbursement
   },
@@ -180,6 +195,7 @@ export default defineComponent({
     const dismissedErrors = ref({
       highPriceImpact: false
     });
+    const alwaysShowRoutes = lsGet('alwaysShowRoutes', false);
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -378,6 +394,7 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount,
       modalTradePreviewIsOpen,
+      alwaysShowRoutes,
       exactIn,
       trading,
 
