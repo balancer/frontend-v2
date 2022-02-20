@@ -13,7 +13,7 @@ jest.mock('@/services/web3/web3.service');
 
 const userAddress = '0xAAA00fB39c06E7b41bEdFf8A6a4e013666141d40';
 
-describe('exchange-proxy.service', () => {
+describe('vault.service', () => {
   let swaps: SwapV2[] = [];
   const tokens: Record<string, SwapToken> = {};
   const poolId =

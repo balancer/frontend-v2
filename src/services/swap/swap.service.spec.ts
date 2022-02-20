@@ -11,7 +11,6 @@ import { AddressZero } from '@ethersproject/constants';
 
 jest.mock('@/lib/utils/balancer/lido');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/services/contracts/exchange-proxy.service');
 jest.mock('@/services/contracts/vault.service');
 jest.mock('@/services/contracts/lido-relayer.service');
 jest.mock('@/services/web3/web3.service');
