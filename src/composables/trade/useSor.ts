@@ -7,7 +7,6 @@ import {
   reactive,
   toRefs
 } from 'vue';
-import { useIntervalFn } from '@vueuse/core';
 import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
 import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
@@ -73,7 +72,6 @@ type Props = {
   tokenInAmountScaled?: ComputedRef<BigNumber>;
   tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
-    refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
   };
   tokenIn: ComputedRef<TokenInfo>;
@@ -94,7 +92,6 @@ export default function useSor({
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
-    refetchPools: true,
     handleAmountsOnFetchPools: true
   },
   tokenIn,
@@ -152,12 +149,6 @@ export default function useSor({
     await initSor();
     await handleAmountChange();
   });
-
-  useIntervalFn(async () => {
-    if (sorConfig.refetchPools && sorManager) {
-      fetchPools();
-    }
-  }, 30 * 1e3);
 
   function resetState() {
     state.validationErrors.highPriceImpact = false;

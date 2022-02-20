@@ -147,8 +147,7 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     sorConfig: {
-      handleAmountsOnFetchPools: false,
-      refetchPools: false
+      handleAmountsOnFetchPools: false
     },
     tokenIn,
     tokenOut,
