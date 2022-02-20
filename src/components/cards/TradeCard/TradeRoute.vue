@@ -5,7 +5,7 @@
       @click="toggleVisibility"
     >
       <div class="mr-2">
-        {{ label }}
+        {{ $t('tradeRoute') }}
       </div>
       <BalIcon v-if="visible" name="chevron-up" size="sm" />
       <BalIcon v-else name="chevron-down" size="sm" />
@@ -130,7 +130,6 @@ import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sdk';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -185,7 +184,6 @@ export default defineComponent({
   },
   setup(props) {
     const { fNum2 } = useNumbers();
-    const { t } = useI18n();
 
     const { appNetworkConfig } = useWeb3();
     const { tokens } = useTokens();
@@ -195,10 +193,6 @@ export default defineComponent({
     function toggleVisibility(): void {
       visible.value = !visible.value;
     }
-
-    const label = computed(() => {
-      return `${t('usingLiquidity')}`;
-    });
 
     const input = computed(() => {
       const symbol = tokens.value[props.addressIn].symbol;
@@ -380,7 +374,6 @@ export default defineComponent({
       visible,
       toggleVisibility,
 
-      label,
       input,
       output,
       routes,

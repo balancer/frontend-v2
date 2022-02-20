@@ -574,6 +574,7 @@
     "totalSupply": "Total supply",
     "totalValue": "Total value",
     "trade": "Trade",
+    "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
     "tradeFromWeth": "Trade from WETH",
     "tradeGaslessToggle": {
@@ -711,7 +712,6 @@
     "unlocking": "Unlocking",
     "unwrap": "Unwrap",
     "usdValue": "USD Value",
-    "usingLiquidity": "Using {0} liquidity",
     "v1": "V1",
     "v2": "V2",
     "value": "Value",
