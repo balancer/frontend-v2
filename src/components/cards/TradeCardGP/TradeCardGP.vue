@@ -102,18 +102,16 @@
           <div v-html="$t('tradeGaslessToggle.tooltip')" />
         </BalTooltip>
       </div>
-      <div>
-        <TradeRoute
-          v-if="alwaysShowRoutes"
-          :address-in="trading.tokenIn.value.address"
-          :amount-in="trading.tokenInAmountInput.value"
-          :address-out="trading.tokenOut.value.address"
-          :amount-out="trading.tokenOutAmountInput.value"
-          :pools="trading.sor.pools.value"
-          :sor-return="trading.sor.sorReturn.value"
-          class="mt-5"
-        />
-      </div>
+      <TradeRoute
+        v-if="alwaysShowRoutes"
+        :address-in="trading.tokenIn.value.address"
+        :amount-in="trading.tokenInAmountInput.value"
+        :address-out="trading.tokenOut.value.address"
+        :amount-out="trading.tokenOutAmountInput.value"
+        :pools="trading.sor.pools.value"
+        :sor-return="trading.sor.sorReturn.value"
+        class="mt-4"
+      />
     </div>
   </BalCard>
   <teleport to="#modal">
