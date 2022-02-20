@@ -274,8 +274,7 @@ export default function useSor({
         tokenInDecimals,
         tokenOutDecimals,
         SwapTypes.SwapExactIn,
-        tokenInAmountScaled,
-        tokenInDecimals
+        tokenInAmountScaled
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -329,8 +328,7 @@ export default function useSor({
         tokenInDecimals,
         tokenOutDecimals,
         SwapTypes.SwapExactOut,
-        tokenOutAmount,
-        tokenOutDecimals
+        tokenOutAmount
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?

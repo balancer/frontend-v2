@@ -124,8 +124,7 @@ export class SorManager {
     tokenInDecimals: number,
     tokenOutDecimals: number,
     swapType: SwapTypes,
-    amountScaled: OldBigNumber,
-    swapDecimals: number
+    amountScaled: OldBigNumber
   ): Promise<SorReturn> {
     const v2TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? AddressZero : tokenIn;
     const v2TokenOut =
