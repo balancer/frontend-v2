@@ -12,7 +12,7 @@ import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
 import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
-import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sdk';
+import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
@@ -42,6 +42,7 @@ import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
 import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { balancer } from '@/lib/balancer.sdk';
 
 type SorState = {
   validationErrors: {
@@ -191,6 +192,55 @@ export default function useSor({
     }
   }
 
+  async function updateTradeAmounts(): Promise<void> {
+    if (!sorManager) {
+      return;
+    }
+
+    if (sorReturn.value.hasSwaps) {
+      const { result } = sorReturn.value;
+
+      const deltas = await balancer.swaps.queryBatchSwap({
+        kind: exactIn.value ? SwapType.SwapExactIn : SwapType.SwapExactOut,
+        swaps: result.swaps,
+        assets: result.tokenAddresses
+      });
+
+      if (deltas.length >= 2) {
+        const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
+        const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
+
+        const tokenInAmountNormalised = bnum(
+          formatFixed(
+            bnum(deltas[0])
+              .abs()
+              .toString(),
+            tokenInDecimals
+          )
+        );
+
+        const tokenOutAmountNormalised = bnum(
+          formatFixed(
+            bnum(deltas[deltas.length - 1])
+              .abs()
+              .toString(),
+            tokenOutDecimals
+          )
+        );
+
+        tokenInAmountInput.value =
+          tokenInAmountNormalised.toNumber() > 0
+            ? formatAmount(tokenInAmountNormalised.toString())
+            : '';
+
+        tokenOutAmountInput.value =
+          tokenOutAmountNormalised.toNumber() > 0
+            ? formatAmount(tokenOutAmountNormalised.toString())
+            : '';
+      }
+    }
+  }
+
   async function handleAmountChange(): Promise<void> {
     const amount = exactIn.value
       ? tokenInAmountInput.value
@@ -215,8 +265,8 @@ export default function useSor({
       return;
     }
 
-    const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
-    const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
+    const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
+    const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
     if (wrapType.value !== WrapType.NonWrap) {
       const wrapper =
@@ -283,11 +333,7 @@ export default function useSor({
       );
       tokenOutAmountInput.value =
         tokenOutAmountNormalised.toNumber() > 0
-          ? fNum2(tokenOutAmountNormalised.toString(), {
-              maximumSignificantDigits: 6,
-              useGrouping: false,
-              fixedFormat: true
-            })
+          ? formatAmount(tokenOutAmountNormalised.toString())
           : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -339,11 +385,7 @@ export default function useSor({
       );
       tokenInAmountInput.value =
         tokenInAmountNormalised.toNumber() > 0
-          ? fNum2(tokenInAmountNormalised.toString(), {
-              maximumSignificantDigits: 6,
-              useGrouping: false,
-              fixedFormat: true
-            })
+          ? formatAmount(tokenInAmountNormalised.toString())
           : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -593,6 +635,18 @@ export default function useSor({
     };
   }
 
+  function formatAmount(amount: string) {
+    return fNum2(amount, {
+      maximumSignificantDigits: 6,
+      useGrouping: false,
+      fixedFormat: true
+    });
+  }
+
+  function getTokenDecimals(tokenAddress: string) {
+    return tokens.value[tokenAddress]?.decimals;
+  }
+
   /**
    * Under certain circumstance we need to adjust an amount
    * for the price impact calc due to background wrapping taking place
@@ -628,6 +682,7 @@ export default function useSor({
     getQuote,
     resetState,
     confirming,
+    updateTradeAmounts,
 
     // For Tests
     setSwapCost

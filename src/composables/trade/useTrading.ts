@@ -276,7 +276,7 @@ export default function useTrading(
         gnosis.handleAmountChange();
       }
     } else if (isBalancerTrade.value) {
-      sor.fetchPools();
+      sor.updateTradeAmounts();
     }
   });
 
