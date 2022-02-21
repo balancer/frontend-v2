@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { addDays, format } from 'date-fns';
+import { addDays } from 'date-fns';
 
 import useLockState from './useLockState';
 
@@ -9,18 +9,12 @@ import {
   MAX_LOCK_PERIOD_IN_DAYS,
   MIN_LOCK_PERIOD_IN_DAYS,
   DEFAULT_LOCK_PERIOD_IN_DAYS,
-  INPUT_DATE_FORMAT,
   EPOCH_IN_DAYS
 } from '../constants';
 
 export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   /**
-   * COMPOSABLES
-   */
-  const { lockEndDate } = useLockState();
-
-  /**
-   * COMPUTED
+   * STATE
    */
   const todaysDate = new Date();
 
@@ -38,9 +32,10 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
     DEFAULT_LOCK_PERIOD_IN_DAYS
   ).getTime();
 
-  lockEndDate.value = veBalLockInfo?.hasExistingLock
-    ? format(veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
-    : format(defaultLockTimestamp, INPUT_DATE_FORMAT);
+  /**
+   * COMPOSABLES
+   */
+  const { lockEndDate } = useLockState();
 
   /**
    * COMPUTED
@@ -60,11 +55,14 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   );
 
   return {
-    // computed
+    // state
     todaysDate,
+
+    // computed
     minLockEndDateTimestamp,
     maxLockEndDateTimestamp,
     isValidLockEndDate,
-    isExtendedLockEndDate
+    isExtendedLockEndDate,
+    defaultLockTimestamp
   };
 }

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import { onBeforeMount } from '@vue/runtime-core';
 import { format } from 'date-fns';
 
 import useLockState from '../../../composables/useLockState';
@@ -6,19 +8,32 @@ import useLockState from '../../../composables/useLockState';
 import { INPUT_DATE_FORMAT } from '../../../constants';
 
 type Props = {
+  defaultLockTimestamp: number;
   minLockEndDateTimestamp: number;
   maxLockEndDateTimestamp: number;
+  veBalLockInfo: VeBalLockInfo;
 };
 
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 /**
  * STATE
  */
 const { lockEndDate } = useLockState();
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  if (lockEndDate.value === '') {
+    lockEndDate.value = props.veBalLockInfo?.hasExistingLock
+      ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
+      : format(props.defaultLockTimestamp, INPUT_DATE_FORMAT);
+  }
+});
 </script>
 
 <template>
