@@ -20,7 +20,7 @@
         </span>
       </BalBtn>
     </template>
-    <div class="w-80 sm:w-96">
+    <div class="w-64 sm:w-96">
       <h5 class="text-lg mb-3 px-3 pt-3">
         Beethoven X
       </h5>
