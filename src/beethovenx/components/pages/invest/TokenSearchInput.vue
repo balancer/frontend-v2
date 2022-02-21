@@ -52,6 +52,11 @@ const whiteListedTokens = computed(() =>
   Object.values(tokens.value)
     .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
     .filter(token => !isTokenSelected(token.address))
+    // filter out duplicates as well (eg yvUSDC, yvDAI are filtered in somewhere)
+    .filter(
+      (token, index, self) =>
+        self.findIndex(t => t.symbol === token.symbol) === index
+    )
 );
 
 function isTokenSelected(token: string) {
@@ -96,7 +101,7 @@ function onClick() {
     >
       <div
         v-if="props.activeTab === 'beethovenx-pools'"
-        class="flex items-center flex-wrap"
+        class="flex flex-1 items-center flex-wrap"
       >
         <BalBtn
           v-for="filter in props.filters"
@@ -106,24 +111,12 @@ function onClick() {
           "
           size="sm"
           @click="emit('toggleFilter', filter.id)"
-          class="mr-2"
+          class="mr-2 mb-2 sm:mb-0"
         >
           {{ filter.title }}
         </BalBtn>
       </div>
-      <BalChip
-        v-for="token in props.modelValue"
-        class="mr-2"
-        :key="token"
-        color="white"
-        iconSize="sm"
-        :closeable="true"
-        @closed="$emit('remove', token)"
-      >
-        <BalAsset :address="token" :size="20" class="flex-auto" />
-        <span class="ml-2">{{ tokens[token]?.symbol }}</span>
-      </BalChip>
-      <div v-if="props.activeTab === 'community-pools'">
+      <div v-if="props.activeTab === 'community-pools'" class="flex-1">
         <div
           v-if="account && !dynamicDataLoading && !hasNoBalances"
           class="text-gray-400 overflow-x-auto"
@@ -140,7 +133,7 @@ function onClick() {
         </div>
         <div
           v-else-if="whiteListedTokens.length > 0"
-          class="text-gray-400 flex flex-wrap py-3"
+          class="text-gray-400 flex flex-wrap py-2"
         >
           <span class="mr-2">{{ $t('popularBases') }}</span>
           <span
@@ -152,8 +145,20 @@ function onClick() {
             {{ token?.symbol }}
           </span>
         </div>
+        <BalChip
+          v-for="token in props.modelValue"
+          class="mr-2"
+          :key="token"
+          color="white"
+          iconSize="sm"
+          :closeable="true"
+          @closed="$emit('remove', token)"
+        >
+          <BalAsset :address="token" :size="20" class="flex-auto" />
+          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
+        </BalChip>
       </div>
-      <div class="flex-1 flex justify-end">
+      <div class="self-start">
         <BalBtn color="white" size="sm" @click="onClick">
           <BalIcon name="search" size="sm" class="mr-2" />
           {{ $t('filterByToken') }}
