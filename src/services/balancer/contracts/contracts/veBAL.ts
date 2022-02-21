@@ -18,6 +18,7 @@ export type VeBalLockInfo = {
   totalSupply: string;
   epoch: string;
   hasExistingLock: boolean;
+  isExpired: boolean;
 };
 
 type VeBalLockInfoResult = {
@@ -56,12 +57,17 @@ export default class VeBAL {
   public formatLockInfo(lockInfo: VeBalLockInfoResult) {
     const [lockedAmount, lockedEndDate] = lockInfo.locked;
 
+    const hasExistingLock = lockedAmount.gt(0);
+    const lockedEndDateNormalised = unixToJsTime(lockedEndDate.toNumber());
+    const isExpired = hasExistingLock && Date.now() > lockedEndDateNormalised;
+
     return {
-      lockedEndDate: unixToJsTime(lockedEndDate.toNumber()),
+      lockedEndDate: lockedEndDateNormalised,
       lockedAmount: formatUnits(lockedAmount, 18),
       totalSupply: formatUnits(lockInfo.totalSupply, 18),
       epoch: lockInfo.epoch.toString(),
-      hasExistingLock: lockedAmount.gt(0)
+      hasExistingLock,
+      isExpired
     };
   }
 
@@ -96,6 +102,16 @@ export default class VeBAL {
       veBalAbi,
       'increase_unlock_time',
       [this.parseDate(lockEndDate)]
+    );
+  }
+
+  public unlock(userProvider: Web3Provider) {
+    return sendTransaction(
+      userProvider,
+      this.address,
+      veBalAbi,
+      'withdraw',
+      []
     );
   }
 

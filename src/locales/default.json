@@ -691,6 +691,50 @@
             "description": "Get veBAL on Ethereum Mainnet"
         }
     },
+    "unlockVeBAL": {
+        "expiredLockableTokens": {
+            "title": "Expired locked tokens"
+        },
+        "unlockForm": {
+            "title": "Unlock",
+            "lockAmount": {
+                "title": "How much do you want to lock?"
+            },
+            "summary": {
+                "weeklyYield": {
+                    "title": "Potential lost weekly staking yield",
+                    "tooltip": ""
+                }
+            }
+        },
+        "previewModal": {
+            "titles": {
+                "unlock": {
+                    "default": "Unlocking preview",
+                    "confirmed": "Unlocking confirmed"
+                }
+            },
+            "lpTokens": "{0} LP tokens",
+            "summary": {
+                "title": "Unlocking summary",
+                "totalToLock": "Total to unlock",
+                "totalVotingEscrow": "Total voting escrow"
+            },
+            "actions": {
+                "unlock": {
+                    "label": "Confirm unlock",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm unlocking.",
+                    "loadingLabel": "Confirm unlock in wallet"                    
+                }
+            },
+            "returnToVeBalPage": "Return to veBAL lock page"
+        },
+        "notSupported": {
+            "title": "Unlocking is unavailable on this network",
+            "description": "Unlock on Ethereum Mainnet"
+        }
+    },
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
     
     "theme": "Theme",
@@ -823,7 +867,8 @@
         "wrap": "Wrap",
         "createLock": "Lock",
         "extendLock": "Extend lock",
-        "increaseLock": "Increase lock"
+        "increaseLock": "Increase lock",
+        "unlock": "Unlock"
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
@@ -859,6 +904,7 @@
         "approveForTrading": "Approve {0} for trading",
         "approveForLocking": "Approve {0} for locking",
         "extendLock": "Lock until {0}",
+        "unlock": "Unlock {0}",
         "approveRelayer": "Approve {0} relayer",
         "createPool": "Create pool",
         "fundPool": "Fund pool",

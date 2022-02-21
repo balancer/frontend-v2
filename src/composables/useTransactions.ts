@@ -45,7 +45,8 @@ export type TransactionAction =
   | 'migratePool'
   | 'createLock'
   | 'extendLock'
-  | 'increaseLock';
+  | 'increaseLock'
+  | 'unlock';
 
 export type TransactionType = 'order' | 'tx';
 

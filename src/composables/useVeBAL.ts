@@ -1,5 +1,7 @@
 import { computed } from 'vue';
-import { isMainnet, isKovan } from '@/composables/useNetwork';
+import { isMainnet, isKovan, networkId } from '@/composables/useNetwork';
+
+import { POOLS } from '@/constants/pools';
 
 import useTokens from './useTokens';
 import useConfig from './useConfig';
@@ -26,10 +28,15 @@ export default function useVeBal() {
     balanceFor(networkConfig.addresses.veBAL)
   );
 
+  const lockablePoolAddress = computed(
+    () => POOLS.IdsMap[networkId.value]?.['B-80BAL-20WETH']
+  );
+
   return {
     // computed
     isVeBalSupported,
     veBalTokenInfo,
-    veBalBalance
+    veBalBalance,
+    lockablePoolAddress
   };
 }

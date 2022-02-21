@@ -3,16 +3,15 @@ import { computed } from 'vue';
 
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
-
-import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
+import useTokens from '@/composables/useTokens';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import LockableTokens from './components/LockableTokens.vue';
-import MyVeBAL from './components/MyVeBAL.vue';
-import VeBalForm from './components/VeBalForm/VeBalForm.vue';
+import ExpiredLockableTokens from './components/ExpiredLockableTokens.vue';
+import MyVeBAL from '../LockForm/components/MyVeBAL.vue';
+import VeBalUnlockForm from './components/VeBalUnlockForm/VeBalUnlockForm.vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
@@ -61,7 +60,7 @@ const isLoading = computed(() =>
   <Col3Layout offsetGutters>
     <template #gutterLeft>
       <BalLoadingBlock v-if="isLoading" class="h-36" />
-      <LockableTokens
+      <ExpiredLockableTokens
         v-else
         :lockablePool="lockablePool"
         :lockablePoolTokenInfo="lockablePoolTokenInfo"
@@ -69,15 +68,15 @@ const isLoading = computed(() =>
     </template>
 
     <BalLoadingBlock v-if="isLoading" class="h-96" />
-    <VeBalForm
+    <VeBalUnlockForm
       v-else
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"
       :key="
         veBalLockInfo?.hasExistingLock
-          ? 'veBalForm-hasLock'
-          : 'veBalForm-noLock'
+          ? 'veBalUnlockForm-hasLock'
+          : 'veBalUnlockForm-noLock'
       "
     />
 

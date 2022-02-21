@@ -72,7 +72,7 @@ function handleClose() {
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
-          v-if="withdrawalConfirmed"
+          v-if="lockConfirmed"
           size="8"
           color="green"
           class="text-white mr-2"

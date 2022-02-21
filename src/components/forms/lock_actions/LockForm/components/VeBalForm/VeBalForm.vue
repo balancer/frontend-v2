@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { differenceInDays } from 'date-fns';
 
 import { bnum } from '@/lib/utils';
@@ -121,10 +121,6 @@ const lockType = computed(() => {
     }
   }
   return [LockType.CREATE_LOCK];
-});
-
-watch(showPreviewModal, () => {
-  console.log('showPreviewModal', showPreviewModal.value);
 });
 </script>
 
