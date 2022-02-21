@@ -79,7 +79,11 @@ const isLoading = computed(() =>
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"
-      :key="veBalLockInfo"
+      :key="
+        veBalLockInfo?.hasExistingLock
+          ? 'veBalForm-hasLock'
+          : 'veBalForm-noLock'
+      "
     />
 
     <template #gutterRight>
