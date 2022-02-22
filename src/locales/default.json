@@ -604,6 +604,7 @@
         "myVeBAL": {
             "title": "My veBAL",
             "lockedEndDate": "Locked until",
+            "expired": "Expired",
             "percentVeBAL": "% of total veBAL"
         },
         "lockForm": {
@@ -697,14 +698,8 @@
         },
         "unlockForm": {
             "title": "Unlock",
-            "lockAmount": {
-                "title": "How much do you want to lock?"
-            },
-            "summary": {
-                "weeklyYield": {
-                    "title": "Potential lost weekly staking yield",
-                    "tooltip": ""
-                }
+            "lockedAmount": {
+                "title": "Available tokens to unlock:"
             }
         },
         "previewModal": {
@@ -717,7 +712,7 @@
             "lpTokens": "{0} LP tokens",
             "summary": {
                 "title": "Unlocking summary",
-                "totalToLock": "Total to unlock",
+                "totalToUnlock": "Total to unlock",
                 "totalVotingEscrow": "Total voting escrow"
             },
             "actions": {

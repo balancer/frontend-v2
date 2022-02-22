@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
+import { bnum } from '@/lib/utils';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
-
-// import UnlockPreviewModal from '../UnlockPreviewModal/UnlockPreviewModal.vue';
-
+import useWeb3 from '@/services/web3/useWeb3';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+
+import UnlockPreviewModal from '../UnlockPreviewModal/UnlockPreviewModal.vue';
 
 import { TokenInfo } from '@/types/TokenList';
 
-// import Summary from './components/Summary.vue';
-import LockAmount from './components/LockAmount.vue';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { bnum } from '@/lib/utils';
+import LockedAmount from './components/LockedAmount.vue';
 
 type Props = {
   lockablePool: FullPool;
@@ -41,8 +39,15 @@ const {
 /**
  * COMPUTED
  */
+const totalLpTokens = computed(() =>
+  props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0'
+);
 
-const totalLpTokens = computed(() => props.veBalLockInfo?.lockedAmount ?? '0');
+const fiatTotalLpTokens = computed(() =>
+  bnum(props.lockablePool.totalLiquidity)
+    .div(props.lockablePool.totalShares)
+    .times(totalLpTokens.value)
+);
 
 const submissionDisabled = computed(() => {
   if (isMismatchedNetwork.value) {
@@ -68,13 +73,12 @@ const submissionDisabled = computed(() => {
       </div>
     </template>
 
-    <LockAmount
+    <LockedAmount
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :veBalLockInfo="veBalLockInfo"
+      :totalLpTokens="totalLpTokens"
+      :fiatTotalLpTokens="fiatTotalLpTokens"
     />
-
-    <div>Summary</div>
 
     <div class="mt-6">
       <BalBtn
@@ -95,14 +99,15 @@ const submissionDisabled = computed(() => {
       </BalBtn>
     </div>
   </BalCard>
-  <!-- <teleport to="#modal">
+  <teleport to="#modal">
     <UnlockPreviewModal
       v-if="showPreviewModal"
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"
       :totalLpTokens="totalLpTokens"
+      :fiatTotalLpTokens="fiatTotalLpTokens"
       @close="showPreviewModal = false"
     />
-  </teleport> -->
+  </teleport>
 </template>

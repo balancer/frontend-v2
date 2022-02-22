@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { format } from 'date-fns';
+import { useI18n } from 'vue-i18n';
 
 import { bnum } from '@/lib/utils';
 
@@ -25,6 +26,7 @@ const props = defineProps<Props>();
  */
 const { veBalBalance, veBalTokenInfo } = useVeBal();
 const { fNum2 } = useNumbers();
+const { t } = useI18n();
 
 /**
  * COMPUTED
@@ -41,6 +43,18 @@ const percentVeBAL = computed(() => {
   }
 
   return '0';
+});
+
+const lockEndDateLabel = computed(() => {
+  if (!props.veBalLockInfo?.hasExistingLock) {
+    return '-';
+  }
+
+  if (props.veBalLockInfo.isExpired) {
+    return t('getVeBAL.myVeBAL.expired');
+  }
+
+  return format(props.veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT);
 });
 </script>
 
@@ -75,11 +89,7 @@ const percentVeBAL = computed(() => {
       </div>
       <div class="p-3 text-center w-1/2">
         <div>
-          {{
-            veBalLockInfo?.hasExistingLock
-              ? format(veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT)
-              : '-'
-          }}
+          {{ lockEndDateLabel }}
         </div>
         <div class="text-gray-400">
           {{ $t('getVeBAL.myVeBAL.lockedEndDate') }}

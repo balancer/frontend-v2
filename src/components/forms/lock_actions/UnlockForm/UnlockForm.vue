@@ -9,7 +9,6 @@ import useTokens from '@/composables/useTokens';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import ExpiredLockableTokens from './components/ExpiredLockableTokens.vue';
 import MyVeBAL from '../LockForm/components/MyVeBAL.vue';
 import VeBalUnlockForm from './components/VeBalUnlockForm/VeBalUnlockForm.vue';
 
@@ -58,15 +57,6 @@ const isLoading = computed(() =>
 
 <template>
   <Col3Layout offsetGutters>
-    <template #gutterLeft>
-      <BalLoadingBlock v-if="isLoading" class="h-36" />
-      <ExpiredLockableTokens
-        v-else
-        :lockablePool="lockablePool"
-        :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      />
-    </template>
-
     <BalLoadingBlock v-if="isLoading" class="h-96" />
     <VeBalUnlockForm
       v-else

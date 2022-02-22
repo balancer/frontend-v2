@@ -7,6 +7,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import UnlockAmount from './components/UnlockAmount.vue';
 import UnlockActions from './components/UnlockActions.vue';
+import UnlockSummary from './components/UnlockSummary.vue';
 
 import { TokenInfo } from '@/types/TokenList';
 
@@ -18,6 +19,7 @@ type Props = {
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo: VeBalLockInfo;
   totalLpTokens: string;
+  fiatTotalLpTokens: string;
 };
 
 /**
@@ -75,6 +77,8 @@ function handleClose() {
     </template>
 
     <UnlockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
+
+    <UnlockSummary :fiatTotalLpTokens="fiatTotalLpTokens" />
 
     <UnlockActions
       :lockablePool="lockablePool"
