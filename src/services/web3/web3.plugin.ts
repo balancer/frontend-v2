@@ -73,8 +73,7 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   gnosis: GnosisSafeConnector,
   walletlink: WalletLinkConnector,
   portis: PortisConnector,
-  tally: TallyConnector,
-
+  tally: TallyConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
