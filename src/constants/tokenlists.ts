@@ -36,7 +36,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
         'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/develop/src/lib/config/listed.tokenlist.json'
     },
     External: [
-      'ipns://tokens.uniswap.org',
+      'ipns://tokens.uniswap.org'
       // 'https://raw.githubusercontent.com/centfinance/Symmetric.ExchangeUI/develop/src/data/listed.tokenlist.json'
       //'tokenlist.aave.eth',
       // 'https://umaproject.org/uma.tokenlist.json'
