@@ -10,7 +10,8 @@ export enum Network {
   GÖRLI = 5,
   KOVAN = 42,
   POLYGON = 137,
-  ARBITRUM = 42161
+  ARBITRUM = 42161,
+  CELO = 42220
 }
 
 /**
@@ -19,13 +20,14 @@ export enum Network {
 const DEFAULT_NETWORK_ID =
   process.env.VUE_APP_NETWORK != null
     ? (Number(process.env.VUE_APP_NETWORK) as Network)
-    : Network.MAINNET;
+    : Network.CELO;
 
 export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
 export const isMainnet = networkId.value === Network.MAINNET;
 export const isPolygon = networkId.value === Network.POLYGON;
 export const isArbitrum = networkId.value === Network.ARBITRUM;
+export const isCelo = networkId.value === Network.CELO;
 
 /**
  * METHODS

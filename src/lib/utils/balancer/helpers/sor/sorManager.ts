@@ -5,7 +5,7 @@ import {
   SwapTypes,
   SwapOptions,
   PoolFilter
-} from '@balancer-labs/sor2';
+} from '@symmetric-v2/sor2';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Provider } from '@ethersproject/providers';

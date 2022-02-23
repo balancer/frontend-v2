@@ -23,6 +23,10 @@ export const TOKENS = {
     '42161': {
       WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8'
+    },
+    '42220': {
+      WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
+      BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8'
     }
   },
   Prices: {

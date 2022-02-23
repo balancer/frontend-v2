@@ -1,7 +1,7 @@
 import { Contract } from 'ethers';
 import ContractService from '../balancer-contracts.service';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
-import { FundManagement, TransactionData } from '@balancer-labs/sdk';
+import { FundManagement, TransactionData } from '@symmetric-v2/sdk';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 

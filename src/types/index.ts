@@ -1,7 +1,7 @@
 export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
-import { BatchSwapStep } from '@balancer-labs/sdk';
-import { SwapV2 } from '@balancer-labs/sor2';
+import { BatchSwapStep } from '@symmetric-v2/sdk';// TODO: Symmetric lib
+import { SwapV2 } from '@symmetric-v2/sor2';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export interface FormRef {

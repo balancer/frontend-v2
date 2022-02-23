@@ -21,7 +21,7 @@
       <div
         class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
       >
-        Select a network
+        Select a network (TODO:)
       </div>
       <a
         v-for="network in networks"
@@ -69,6 +69,12 @@ export default defineComponent({
 
     // DATA
     const networks = [
+      {
+        id: 'celo',
+        name: 'Celo',
+        subdomain: 'app',
+        key: '42220'
+      },
       {
         id: 'ethereum',
         name: 'Ethereum',

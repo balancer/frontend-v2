@@ -24,8 +24,8 @@ import { BatchSwapOut } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
-import { balancer } from '@/lib/balancer.sdk';
-import { SwapType, TransactionData } from '@balancer-labs/sdk';
+import { balancer } from '@/lib/balancer.sdk'; // TODO: Symmetric lib
+import { SwapType, TransactionData } from '@symmetric-v2/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 

@@ -1,5 +1,5 @@
 import { configService } from '@/services/config/config.service';
-import { BalancerSDK, Network } from '@balancer-labs/sdk';
+import { BalancerSDK, Network } from '@symmetric-v2/sdk'; // TODO: Symmetric lib
 
 const network = ((): Network => {
   switch (configService.network.key) {
@@ -11,6 +11,8 @@ const network = ((): Network => {
       return Network.POLYGON;
     case '42161':
       return Network.ARBITRUM;
+   case '42220': 
+      return Network.CELO;
     default:
       return Network.MAINNET;
   }

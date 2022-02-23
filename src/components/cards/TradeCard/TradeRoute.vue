@@ -126,7 +126,7 @@ import { PropType, defineComponent, ref, computed } from 'vue';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import { Pool, Swap } from '@balancer-labs/sor/dist/types';
-import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
+import { SwapV2, SubgraphPoolBase } from '@symmetric-v2/sor2';
 
 import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';

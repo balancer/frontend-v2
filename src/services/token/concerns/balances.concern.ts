@@ -82,7 +82,12 @@ export default class BalancesConcern {
   }
 
   private async fetchNativeBalance(account: string): Promise<string> {
+    console.log('Getting Balance');
+    console.log(this.provider);
+    console.log(account);
     const balance = await this.provider.getBalance(account);
+    console.log('---------------------------');
+    console.log(balance);
     return formatUnits(balance.toString(), this.nativeAssetDecimals);
   }
 

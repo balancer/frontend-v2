@@ -14,5 +14,9 @@
   "42161": {
     "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "output": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
+  },
+  "42220": {
+    "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "output": "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1"
   }
 }
