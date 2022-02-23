@@ -10,7 +10,7 @@ import useVeBal from '@/composables/useVeBAL';
 
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
-import { PRETTY_DATE_FORMAT } from '../constants';
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 type Props = {
   veBalLockInfo?: VeBalLockInfo;

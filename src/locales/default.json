@@ -713,7 +713,8 @@
             "summary": {
                 "title": "Unlocking summary",
                 "totalToUnlock": "Total to unlock",
-                "totalVotingEscrow": "Total voting escrow"
+                "totalVotingEscrow": "Total voting escrow",
+                "expiredOn": "Expired on"
             },
             "actions": {
                 "unlock": {

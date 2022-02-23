@@ -78,7 +78,10 @@ function handleClose() {
 
     <UnlockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
 
-    <UnlockSummary :fiatTotalLpTokens="fiatTotalLpTokens" />
+    <UnlockSummary
+      :fiatTotalLpTokens="fiatTotalLpTokens"
+      :veBalLockInfo="veBalLockInfo"
+    />
 
     <UnlockActions
       :lockablePool="lockablePool"

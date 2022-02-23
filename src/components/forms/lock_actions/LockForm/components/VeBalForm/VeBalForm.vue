@@ -23,9 +23,9 @@ import useLockState from '../../composables/useLockState';
 import useLockAmount from '../../composables/useLockAmount';
 import useLockEndDate from '../../composables/useLockEndDate';
 
-import { MAX_LOCK_PERIOD_IN_DAYS } from '../../constants';
+import { MAX_LOCK_PERIOD_IN_DAYS } from '@/components/forms/lock_actions/constants';
 
-import { LockType } from '../../types';
+import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {

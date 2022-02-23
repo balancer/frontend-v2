@@ -11,8 +11,8 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useVeBal from '@/composables/useVeBAL';
 
-import { PRETTY_DATE_FORMAT } from '../../../constants';
-import { LockType } from '../../../types';
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 
 type Props = {
   lockablePool: FullPool;

@@ -10,7 +10,7 @@ import LockSummary from './components/LockSummary.vue';
 import LockActions from './components/LockActions.vue';
 
 import { TokenInfo } from '@/types/TokenList';
-import { LockType } from '../../types';
+import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 
 /**
  * TYPES

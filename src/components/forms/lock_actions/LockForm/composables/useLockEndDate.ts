@@ -10,7 +10,7 @@ import {
   MIN_LOCK_PERIOD_IN_DAYS,
   DEFAULT_LOCK_PERIOD_IN_DAYS,
   EPOCH_IN_DAYS
-} from '../constants';
+} from '@/components/forms/lock_actions/constants';
 
 export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   /**

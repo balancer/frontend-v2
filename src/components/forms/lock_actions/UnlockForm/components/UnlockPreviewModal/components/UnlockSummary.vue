@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
 import useVeBal from '@/composables/useVeBAL';
+
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 type Props = {
   fiatTotalLpTokens: string;
+  veBalLockInfo: VeBalLockInfo;
 };
 
 /**
@@ -16,7 +21,7 @@ defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const { veBalTokenInfo, veBalBalance } = useVeBal();
+const { veBalTokenInfo } = useVeBal();
 
 /**
  * COMPUTED
@@ -42,8 +47,16 @@ const { veBalTokenInfo, veBalBalance } = useVeBal();
           {{ $t('unlockVeBAL.previewModal.summary.totalVotingEscrow') }}
         </div>
         <div>
-          {{ fNum2(veBalBalance, FNumFormats.token) }}
+          {{ fNum2(0, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
+        </div>
+      </div>
+      <div class="summary-item-row">
+        <div>
+          {{ $t('unlockVeBAL.previewModal.summary.expiredOn') }}
+        </div>
+        <div>
+          {{ format(veBalLockInfo.lockedEndDate, PRETTY_DATE_FORMAT) }}
         </div>
       </div>
     </div>

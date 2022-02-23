@@ -24,7 +24,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
  */
 type Props = {
   lockablePoolTokenInfo: TokenInfo;
-  unlockAmount: string;
+  totalLpTokens: string;
 };
 
 type UnlockActionState = {
@@ -83,11 +83,11 @@ async function handleTransaction(tx: TransactionResponse): Promise<void> {
     id: tx.hash,
     type: 'tx',
     action: 'unlock',
-    summary: `${fNum2(props.unlockAmount, FNumFormats.token)} ${
+    summary: `${fNum2(props.totalLpTokens, FNumFormats.token)} ${
       props.lockablePoolTokenInfo.symbol
     }`,
     details: {
-      unlockAmount: props.unlockAmount
+      totalLpTokens: props.totalLpTokens
     }
   });
 

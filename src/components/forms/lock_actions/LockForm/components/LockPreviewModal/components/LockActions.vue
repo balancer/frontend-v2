@@ -21,8 +21,9 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
-import { LockType } from '../../../types';
-import { PRETTY_DATE_FORMAT } from '../../../constants';
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+
+import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 
 /**
  * TYPES
