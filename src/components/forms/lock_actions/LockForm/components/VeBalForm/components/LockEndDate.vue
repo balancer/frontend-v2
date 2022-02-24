@@ -8,7 +8,6 @@ import useLockState from '../../../composables/useLockState';
 import { INPUT_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 type Props = {
-  defaultLockTimestamp: number;
   minLockEndDateTimestamp: number;
   maxLockEndDateTimestamp: number;
   veBalLockInfo: VeBalLockInfo;
@@ -28,11 +27,9 @@ const { lockEndDate } = useLockState();
  * CALLBACKS
  */
 onBeforeMount(() => {
-  if (lockEndDate.value === '') {
-    lockEndDate.value = props.veBalLockInfo?.hasExistingLock
-      ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
-      : format(props.defaultLockTimestamp, INPUT_DATE_FORMAT);
-  }
+  lockEndDate.value = props.veBalLockInfo?.hasExistingLock
+    ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
+    : format(props.maxLockEndDateTimestamp, INPUT_DATE_FORMAT);
 });
 </script>
 

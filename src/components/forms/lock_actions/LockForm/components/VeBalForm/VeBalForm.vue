@@ -59,7 +59,6 @@ const {
 
 const {
   todaysDate,
-  defaultLockTimestamp,
   minLockEndDateTimestamp,
   maxLockEndDateTimestamp,
   isValidLockEndDate,
@@ -145,7 +144,6 @@ const lockType = computed(() => {
     />
 
     <LockEndDate
-      :defaultLockTimestamp="defaultLockTimestamp"
       :minLockEndDateTimestamp="minLockEndDateTimestamp"
       :maxLockEndDateTimestamp="maxLockEndDateTimestamp"
       :veBalLockInfo="veBalLockInfo"
