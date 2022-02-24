@@ -544,8 +544,8 @@
         "myVeBAL": {
             "title": "My veBAL",
             "cards": {
-                "myLpToken": "My 80-BAL LP token",
-                "myLockedBal": "My locked 80-BAL",
+                "myLpToken": "My {0}",
+                "myLockedLpToken": "My locked {0}",
                 "lockedEndDate": "Locked until",
                 "myVeBAL": "My veBAL"
             }

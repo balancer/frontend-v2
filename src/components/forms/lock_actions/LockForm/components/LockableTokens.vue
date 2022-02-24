@@ -6,13 +6,15 @@ import useTokens from '@/composables/useTokens';
 
 import { bnum } from '@/lib/utils';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
+import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
 
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;
+  veBalLockInfo?: VeBalLockInfo;
 };
 
 /**
