@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed } from 'vue';
+import { toRef, computed, ref } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
@@ -8,6 +8,8 @@ import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { lpTokensFor } from '@/composables/usePool';
+import usePools from '@/composables/pools/usePools';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * TYPES
@@ -25,7 +27,9 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { pools } = usePools();
+const { usdAsset } = usePoolTransfers();
+const { hasBpt } = useWithdrawMath(toRef(props, 'pool'), pools, usdAsset);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();

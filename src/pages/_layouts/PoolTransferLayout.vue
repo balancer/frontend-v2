@@ -10,6 +10,7 @@ import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTo
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
+import useConfig from '@/composables/useConfig';
 
 /**
  * STATE
@@ -20,12 +21,14 @@ const id = ref<string>(route.params.id as string);
 /**
  * COMPOSABLES
  */
+
 const { upToLargeBreakpoint } = useBreakpoints();
 const {
   pool,
   loadingPool,
   useNativeAsset,
-  transfersAllowed
+  transfersAllowed,
+  usdAsset
 } = usePoolTransfers();
 usePoolTransfersGuard();
 </script>
@@ -44,6 +47,7 @@ usePoolTransfersGuard();
           v-else
           :pool="pool"
           v-model:useNativeAsset="useNativeAsset"
+          v-model:usdAsset="usdAsset"
         />
       </template>
 

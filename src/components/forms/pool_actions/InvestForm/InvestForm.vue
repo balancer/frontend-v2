@@ -17,6 +17,8 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
+import { getAddress } from '@ethersproject/address';
+import useConfig from '@/composables/useConfig';
 
 /**
  * TYPES
@@ -45,7 +47,7 @@ const showInvestPreview = ref(false);
  */
 const { t } = useI18n();
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { useNativeAsset } = usePoolTransfers();
+const { useNativeAsset, usdAsset } = usePoolTransfers();
 const {
   tokenAddresses,
   amounts,
@@ -62,6 +64,9 @@ const investMath = useInvestMath(
   useNativeAsset,
   sor
 );
+
+const { hasNestedUsdStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { networkConfig } = useConfig();
 
 const {
   hasAmounts,
@@ -100,8 +105,19 @@ const forceProportionalInputs = computed(
 );
 
 const investmentTokens = computed((): string[] => {
-  if (isStablePhantom(props.pool.poolType)) {
-    return props.pool.mainTokens || [];
+  if (props.pool.mainTokens) {
+    if (hasNestedUsdStablePhantomPool.value) {
+      return props.pool.mainTokens.filter(
+        mainToken =>
+          !(
+            networkConfig.usdTokens.includes(mainToken) &&
+            mainToken.toLowerCase() !==
+              networkConfig.addresses.usdc.toLowerCase()
+          )
+      );
+    }
+
+    return props.pool.mainTokens;
   }
   return props.pool.tokenAddresses;
 });
@@ -120,16 +136,36 @@ function handleAmountChange(value: string, index: number): void {
 }
 
 function handleAddressChange(newAddress: string): void {
-  useNativeAsset.value = newAddress === nativeAsset.address;
+  if (networkConfig.usdTokens.includes(newAddress)) {
+    usdAsset.value = newAddress;
+  } else {
+    useNativeAsset.value = newAddress === nativeAsset.address;
+  }
 }
 
 function tokenWeight(address: string): number {
-  if (isStableLike(props.pool.poolType)) return 0;
   if (address === nativeAsset.address) {
-    return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
+    address = wrappedNativeAsset.value.address;
   }
 
-  return props.pool.onchain.tokens[address].weight;
+  if (isStableLike(props.pool.poolType)) return 0;
+
+  if (props.pool.linearPools) {
+    const linearPool = props.pool.linearPools.find(linear => {
+      return linear.mainToken.address.toLowerCase() === address.toLowerCase();
+    });
+
+    if (linearPool) {
+      return parseFloat(
+        props.pool.onchain.tokens[getAddress(linearPool.poolToken)].weight ||
+          '0'
+      );
+    }
+  }
+
+  return props.pool.onchain.tokens[address].weight
+    ? parseFloat(props.pool.onchain.tokens[address].weight)
+    : 0;
 }
 
 function propAmountFor(index: number): string {
@@ -145,9 +181,16 @@ function hint(index: number): string {
 }
 
 function tokenOptions(index: number): string[] {
-  return props.pool.tokenAddresses[index] === wrappedNativeAsset.value.address
-    ? [wrappedNativeAsset.value.address, nativeAsset.address]
-    : [];
+  if (investmentTokens.value[index] === wrappedNativeAsset.value.address) {
+    return [wrappedNativeAsset.value.address, nativeAsset.address];
+  } else if (
+    hasNestedUsdStablePhantomPool.value &&
+    networkConfig.usdTokens.includes(getAddress(investmentTokens.value[index]))
+  ) {
+    return networkConfig.usdTokens;
+  }
+
+  return [];
 }
 
 // If ETH has a higher balance than WETH then use it for the input.
@@ -198,6 +241,14 @@ watch(useNativeAsset, shouldUseNativeAsset => {
   } else {
     setNativeAsset(NativeAsset.wrapped);
   }
+});
+
+watch(usdAsset, selectedUsdAsset => {
+  tokenAddresses.value = tokenAddresses.value.map(tokenAddress =>
+    networkConfig.usdTokens.includes(tokenAddress)
+      ? selectedUsdAsset
+      : tokenAddress
+  );
 });
 </script>
 

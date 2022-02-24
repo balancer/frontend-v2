@@ -272,7 +272,9 @@ export default class Vault {
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
         unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
-        totalSupply: formatUnits(totalSupply, 18)
+        totalSupply: formatUnits(totalSupply, 18),
+        balance: '0',
+        poolToken: ''
       };
     });
 

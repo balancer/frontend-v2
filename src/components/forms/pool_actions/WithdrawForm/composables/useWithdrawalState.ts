@@ -5,6 +5,9 @@ import { isStablePhantom } from '@/composables/usePool';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
+import useConfig from '@/composables/useConfig';
+import { configService } from '@/services/config/config.service';
 
 /**
  * STATE
@@ -30,14 +33,22 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
    */
   const { nativeAsset, wrappedNativeAsset } = useTokens();
   const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
+  const { usdAsset } = usePoolTransfers();
+  const { networkConfig } = useConfig();
 
   /**
    * COMPUTED
    */
   const tokensOut = computed(() => {
     if (!pool.value) return [];
-    const poolTokens = isStablePhantom(pool.value.poolType)
-      ? pool.value.mainTokens || []
+    const poolTokens = pool.value.mainTokens
+      ? pool.value.mainTokens.filter(
+          token =>
+            !(
+              configService.network.usdTokens.includes(token) &&
+              token.toLowerCase() !== usdAsset.value.toLowerCase()
+            )
+        )
       : pool.value.tokenAddresses;
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)

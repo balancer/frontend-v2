@@ -143,6 +143,23 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
   );
+  const hasNestedUsdStablePhantomPool = computed(
+    () =>
+      !!pool.value &&
+      pool.value.tokensList.includes(configService.network.addresses.bbUsd)
+  );
+  const hasNestedLinearPools = computed(
+    () =>
+      !!pool.value &&
+      (pool.value.mainTokens || []).length > 0 &&
+      pool.value.poolType === 'Weighted'
+  );
+  const isWeightedPoolWithNestedLinearPools = computed(
+    () =>
+      !!pool.value &&
+      hasNestedLinearPools.value &&
+      pool.value.poolType === 'Weighted'
+  );
 
   const lpTokens = computed(() => {
     if (!pool.value) return [];
@@ -176,6 +193,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isTradingHaltable,
     isWeth,
     noInitLiquidity,
-    lpTokensFor
+    lpTokensFor,
+    hasNestedLinearPools,
+    hasNestedUsdStablePhantomPool,
+    isWeightedPoolWithNestedLinearPools
   };
 }

@@ -68,6 +68,8 @@ export default class JoinParams {
   }
 
   private parseAmounts(amounts: string[], tokensIn: string[]): BigNumberish[] {
+    console.log('amounts', amounts);
+    console.log('tokensIn', tokensIn);
     const nativeAsset = this.config.network.nativeAsset;
 
     return amounts.map((amount, i) => {

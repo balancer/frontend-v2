@@ -19,6 +19,7 @@ const defaultAttrs = {
   poolType: true,
   swapFee: true,
   tokensList: true,
+  mainTokens: true,
   totalLiquidity: true,
   totalSwapVolume: true,
   totalSwapFee: true,
@@ -87,9 +88,11 @@ const defaultAttrs = {
   expiryTime: true,
   linearPools: {
     id: true,
+    symbol: true,
     address: true,
     priceRate: true,
     totalSupply: true,
+    balance: true,
     unwrappedTokenAddress: true,
     mainToken: {
       index: true,
@@ -107,7 +110,8 @@ const defaultAttrs = {
       name: true,
       symbol: true,
       decimals: true
-    }
+    },
+    poolToken: true
   }
 };
 

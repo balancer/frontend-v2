@@ -11,6 +11,8 @@ import useUserSettings from '@/composables/useUserSettings';
 import AssetRow from './components/AssetRow.vue';
 import { getAddress } from '@ethersproject/address';
 import { usePool } from '@/composables/usePool';
+import { keyBy } from 'lodash';
+import usePools from '@/composables/pools/usePools';
 
 /**
  * TYPES
@@ -33,6 +35,7 @@ const { tokens, balances, balanceFor } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { pools } = usePools();
 
 /**
  * SERVICES
@@ -49,6 +52,7 @@ const poolCalculator = new PoolCalculator(
  * COMPUTED
  */
 const propTokenAmounts = computed((): string[] => {
+  const pool = props.pool;
   const farm = props.pool.decoratedFarm;
   const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
   const farmBalance = farm ? farm.userBpt : 0;
@@ -59,17 +63,55 @@ const propTokenAmounts = computed((): string[] => {
     'send'
   );
 
-  if (isStablePhantomPool.value) {
-    // Return linear pool's main token balance using the price rate.
-    // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokenAddresses.map((address, i) => {
-      if (!props.pool.onchain.linearPools) return '0';
+  if (pool.mainTokens) {
+    const tokenAddresses = props.pool.tokenAddresses;
 
-      const priceRate = props.pool.onchain.linearPools[address].priceRate;
+    return pool.mainTokens.map(mainToken => {
+      if (tokenAddresses.includes(mainToken)) {
+        //this mainToken is a base asset on the pool, not nested
+        const index = tokenAddresses.indexOf(mainToken);
 
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
+        return receive[index];
+      }
+
+      //find the linear pool for this mainToken if there is one
+      const linearPool = pool.linearPools?.find(
+        linearPool => linearPool.mainToken.address === mainToken
+      );
+
+      if (linearPool) {
+        const linearPoolAddress = getAddress(linearPool.address);
+
+        if (tokenAddresses.includes(linearPoolAddress)) {
+          //the linear pool BPT is nested in this pool
+          const index = tokenAddresses.indexOf(linearPoolAddress);
+
+          return bnum(receive[index])
+            .times(linearPool.priceRate)
+            .toString();
+        } else {
+          // this linear pool BPT is nested in a stable phantom BPT
+          const stablePhantomPool = pools.value.find(
+            pool =>
+              pool.poolType === 'StablePhantom' &&
+              tokenAddresses.includes(getAddress(pool.address))
+          );
+
+          if (stablePhantomPool) {
+            const index = tokenAddresses.indexOf(
+              getAddress(stablePhantomPool.address)
+            );
+            const bptBalance = receive[index];
+            return bnum(bptBalance)
+              .div(stablePhantomPool.totalShares)
+              .times(linearPool.totalSupply)
+              .times(linearPool.priceRate)
+              .toString();
+          }
+        }
+      }
+
+      return '0';
     });
   }
 
@@ -77,10 +119,10 @@ const propTokenAmounts = computed((): string[] => {
 });
 
 const tokenAddresses = computed((): string[] => {
-  if (isStablePhantomPool.value) {
+  if (props.pool.mainTokens) {
     // We're using mainToken balances for StablePhantom pools
     // so return mainTokens here so that fiat values are correct.
-    return props.pool.mainTokens || [];
+    return props.pool.mainTokens;
   }
   return props.pool.tokenAddresses;
 });

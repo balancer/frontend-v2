@@ -8,6 +8,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 
 import AssetRow from './components/AssetRow.vue';
 import { bnum } from '@/lib/utils';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -34,6 +35,7 @@ const { explorerLinks } = useWeb3();
  * METHODS
  */
 function getUnderlyingTokens(address: string) {
+  address = getAddress(address);
   const linearPools = props.pool.onchain.linearPools;
 
   if (linearPools == null) {
@@ -54,15 +56,14 @@ function getUnderlyingTokens(address: string) {
 }
 
 function getTokenShare(address: string) {
+  address = getAddress(address);
   const linearPools = props.pool.onchain.linearPools;
 
   if (linearPools == null) {
     return null;
   }
 
-  const token = props.pool.onchain.tokens[address];
-
-  return bnum(token.balance)
+  return bnum(linearPools[address].balance)
     .div(linearPools[address].totalSupply)
     .toString();
 }
@@ -86,22 +87,26 @@ function getTokenShare(address: string) {
     </template>
 
     <div class="p-4 -mt-2">
-      <div v-for="address in pool.tokenAddresses" :key="address" class="py-4">
+      <div
+        v-for="linearPool in pool.linearPools"
+        :key="linearPool.address"
+        class="py-4"
+      >
         <BalBreakdown
-          :items="getUnderlyingTokens(address)"
+          :items="getUnderlyingTokens(linearPool.address)"
           class="w-full"
           offsetClassOverrides="mt-4 ml-3"
           initVertBarClassOverrides="h-6 -mt-6"
           size="lg"
         >
           <BalLink
-            :href="explorerLinks.addressLink(address)"
+            :href="explorerLinks.addressLink(getAddress(linearPool.address))"
             external
             noStyle
             class="flex items-center"
           >
-            <BalAsset :address="address" class="mr-2" />
-            {{ pool.onchain.tokens[address].symbol }}
+            <BalAsset :address="linearPool.address" class="mr-2" />
+            {{ linearPool.symbol }}
             <BalIcon
               name="arrow-up-right"
               size="sm"
@@ -114,7 +119,7 @@ function getTokenShare(address: string) {
               :main-token-address="asset.mainTokenAddress"
               :balance="asset.balance"
               :price-rate="asset.priceRate"
-              :share="getTokenShare(address)"
+              :share="getTokenShare(getAddress(linearPool.address))"
             />
           </template>
         </BalBreakdown>

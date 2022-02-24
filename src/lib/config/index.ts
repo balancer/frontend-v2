@@ -63,7 +63,9 @@ export interface Config {
     defaultPoolOwner: string;
     copperProxy: string;
     batchRelayer: string;
+    bbUsd: string;
   };
+  usdTokens: string[];
   keys: {
     infura: string;
     alchemy: string;

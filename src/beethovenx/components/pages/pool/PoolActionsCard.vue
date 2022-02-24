@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, toRef } from 'vue';
+import { computed, onBeforeMount, ref, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
@@ -11,6 +11,8 @@ import { getAddress } from '@ethersproject/address';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import FarmActionsCard from '@/beethovenx/components/pages/farm/FarmActionsCard.vue';
 import { lpTokensFor } from '@/composables/usePool';
+import usePools from '@/composables/pools/usePools';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * TYPES
@@ -28,7 +30,13 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { pools } = usePools();
+const { usdAsset } = usePoolTransfers();
+const { initMath, hasBpt } = useWithdrawMath(
+  toRef(props, 'pool'),
+  pools,
+  usdAsset
+);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
