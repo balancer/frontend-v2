@@ -208,7 +208,7 @@ export default defineComponent({
         return `BAL distributions on Arbitrum can be claimed weekly by tapping the
         liquidity mining claim tool in the header.`;
       }
-       if (networkConfig.chainId === Network.CELO) {
+      if (networkConfig.chainId === Network.CELO) {
         return `SYMM distributions on Celo can be claimed weekly by tapping the
         liquidity mining claim tool in the header.`;
       }

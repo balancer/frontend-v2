@@ -42,7 +42,7 @@ export default class BalancerSubgraphService {
         // Should be ~4s but this causes subgraph to return with unindexed block error.
         return 1;
       case Network.CELO:
-        return 42220; 
+        return 42220;
       default:
         return 13;
     }

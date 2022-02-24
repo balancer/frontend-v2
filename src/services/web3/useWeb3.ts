@@ -61,9 +61,7 @@ export default function useWeb3() {
   const isArbitrum = computed(
     () => appNetworkConfig.chainId === Network.ARBITRUM
   );
-  const isCelo = computed(
-    () => appNetworkConfig.chainId === Network.CELO
-  );
+  const isCelo = computed(() => appNetworkConfig.chainId === Network.CELO);
   const isEIP1559SupportedNetwork = computed(
     () => appNetworkConfig.supportsEIP1559
   );
