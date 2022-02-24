@@ -10,7 +10,8 @@ export class WalletConnectConnector extends Connector {
     const provider = new WalletConnectProvider({
       rpc: {
         [configService.env.NETWORK]: configService.rpc
-      }
+      },
+      chainId: configService.env.NETWORK
     });
     this.provider = provider;
 

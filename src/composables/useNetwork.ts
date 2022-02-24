@@ -20,7 +20,7 @@ export enum Network {
 const DEFAULT_NETWORK_ID =
   process.env.VUE_APP_NETWORK != null
     ? (Number(process.env.VUE_APP_NETWORK) as Network)
-    : Network.MAINNET;
+    : Network.FANTOM;
 
 export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
