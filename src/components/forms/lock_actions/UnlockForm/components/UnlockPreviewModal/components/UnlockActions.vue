@@ -131,7 +131,7 @@ async function submit() {
 <template>
   <div>
     <BalActionSteps
-      v-if="!isConfirmed"
+      v-if="!unlockActionState.confirmed"
       :actions="actions"
       :disabled="disabled"
     />

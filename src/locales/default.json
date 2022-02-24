@@ -604,7 +604,7 @@
         "myVeBAL": {
             "title": "My veBAL",
             "lockedEndDate": "Locked until",
-            "expired": "Expired",
+            "expiredOn": "Expired on",
             "percentVeBAL": "% of total veBAL"
         },
         "lockForm": {
