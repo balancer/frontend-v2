@@ -763,6 +763,7 @@ export default function useWithdrawMath(
    */
   async function getSwap(): Promise<void> {
     if (isWeightedPoolWithNestedLinearPools.value) {
+      console.log('inside get swap');
       getBatchRelayerExitPoolAndBatchSwap().catch();
     }
 
@@ -813,6 +814,10 @@ export default function useWithdrawMath(
   watch(tokenOut, () => {
     tokenOutAmount.value = '';
     if (isStablePhantomPool.value) getSingleAssetMaxOut();
+
+    if (isWeightedPoolWithNestedLinearPools.value) {
+      getBatchRelayerExitPoolAndBatchSwap().catch();
+    }
   });
 
   watch(isWalletReady, async () => {
@@ -822,16 +827,14 @@ export default function useWithdrawMath(
 
   watch(account, () => initMath());
 
-  watch(fullAmounts, async () => {
-    /**
-     * If a single asset exit and the input values change we
-     * need to refetch the swap to get the required BPT in.
-     */
+  /*watch(fullAmounts, async () => {
+    console.log('full amounts', fullAmounts.value);
     if (!isProportional.value) {
+      console.log('flag 3');
       swapPromises.value.push(getSwap);
       if (!processingSwaps.value) processSwaps();
     }
-  });
+  });*/
 
   return {
     // computed

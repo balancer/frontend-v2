@@ -42,13 +42,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   const tokensOut = computed(() => {
     if (!pool.value) return [];
     const poolTokens = pool.value.mainTokens
-      ? pool.value.mainTokens.filter(
-          token =>
-            !(
-              configService.network.usdTokens.includes(token) &&
-              token.toLowerCase() !== usdAsset.value.toLowerCase()
-            )
-        )
+      ? pool.value.mainTokens
       : pool.value.tokenAddresses;
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
@@ -61,6 +55,20 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
       });
 
     return poolTokens;
+  });
+
+  const withdrawTokens = computed(() => {
+    if (state.isProportional) {
+      return tokensOut.value.filter(
+        token =>
+          !(
+            configService.network.usdTokens.includes(token) &&
+            token.toLowerCase() !== usdAsset.value.toLowerCase()
+          )
+      );
+    }
+
+    return tokensOut.value;
   });
 
   const tokenOutIndex = computed(() => {
@@ -77,6 +85,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   return {
     ...toRefs(state),
     tokensOut,
+    withdrawTokens,
     tokenOutIndex,
     batchRelayerApproval,
     // methods
