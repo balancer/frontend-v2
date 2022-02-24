@@ -242,7 +242,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           </div>
           <BalStack vertical spacing="xs" class="p-3">
             <BalStack horizontal justify="between">
-              <span class="text-sm">{{ $t('poolSymbol') }}:</span>
+              <span class="text-sm">{{ $t('poolName') }}:</span>
               <BalInlineInput
                 size="xs"
                 v-model="poolName"
@@ -251,7 +251,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
               />
             </BalStack>
             <BalStack horizontal justify="between">
-              <span class="text-sm">{{ $t('poolName') }}:</span>
+              <span class="text-sm">{{ $t('poolSymbol') }}:</span>
               <BalInlineInput
                 size="xs"
                 v-model="poolSymbol"
