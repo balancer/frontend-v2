@@ -53,13 +53,14 @@ export default defineComponent({
       isMainnet,
       isKovan,
       isPolygon,
-      isArbitrum
+      isArbitrum,
+      isCelo
     } = useWeb3();
 
     // COMPUTED
     const liquidityMiningSupported = computed(
       () =>
-        isMainnet.value || isPolygon.value || isArbitrum.value || isKovan.value
+        isMainnet.value || isPolygon.value || isArbitrum.value || isKovan.value || isCelo.value
     );
 
     // METHODS

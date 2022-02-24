@@ -437,7 +437,8 @@ export default defineComponent({
         [Network.MAINNET]: 'app.',
         [Network.KOVAN]: 'kovan.',
         [Network.POLYGON]: 'polygon.',
-        [Network.ARBITRUM]: 'arbitrum.'
+        [Network.ARBITRUM]: 'arbitrum.',
+        [Network.CELO]: 'celo.'
       };
       const prefix = prefixMap[chainId] || '';
       if (props.sorReturn.isV1swap && chainId === 1) {

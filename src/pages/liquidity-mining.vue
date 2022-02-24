@@ -189,6 +189,9 @@ export default defineComponent({
       if (networkConfig.chainId === Network.ARBITRUM) {
         return 'Arbitrum';
       }
+      if (networkConfig.chainId === Network.CELO) {
+        return 'Celo';
+      }
       return 'Unknown Network';
     });
 
@@ -203,6 +206,10 @@ export default defineComponent({
       }
       if (networkConfig.chainId === Network.ARBITRUM) {
         return `BAL distributions on Arbitrum can be claimed weekly by tapping the
+        liquidity mining claim tool in the header.`;
+      }
+       if (networkConfig.chainId === Network.CELO) {
+        return `SYMM distributions on Celo can be claimed weekly by tapping the
         liquidity mining claim tool in the header.`;
       }
       return '';
