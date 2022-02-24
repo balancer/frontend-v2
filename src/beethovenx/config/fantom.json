@@ -14,9 +14,9 @@
   "subgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/beethovenx",
   "blockSubgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/fantom-blocks",
   "farmSubgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/masterchef",
-  "backendUrl": "http://localhost:4000/graphql",
+  "backendUrl": "https://backend.beets-ftm-node.com/graphql",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
-  "poolsUrlV2": "http://localhost:4000/graphql",
+  "poolsUrlV2": "https://backend.beets-ftm-node.com/graphql",
   "nativeAsset": {
     "name": "Fantom",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
