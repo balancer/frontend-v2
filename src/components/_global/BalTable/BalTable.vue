@@ -494,10 +494,11 @@ export default defineComponent({
 
 <style>
 .horizontalSticky {
-  @apply z-10 bg-white dark:bg-gray-850 group-hover:bg-gray-50 dark:group-hover:bg-gray-800 opacity-95 xs:opacity-90;
+  @apply z-10 bg-white dark:bg-gray-850 group-hover:bg-gray-50 dark:group-hover:bg-gray-800;
   position: sticky;
   left: 0;
   width: 100%;
+  --tw-bg-opacity: 0.9 !important;
 }
 
 .horizontalSticky::after {
