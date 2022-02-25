@@ -33,6 +33,9 @@ const props = defineProps<Props>();
  */
 const showPreviewModal = ref(false);
 
+/**
+ * COMPOSABLES
+ */
 const {
   isWalletReady,
   toggleWalletSelectModal,

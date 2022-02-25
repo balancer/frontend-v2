@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { format } from 'date-fns';
+import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import useVeBal from '@/composables/useVeBAL';
 
 import { bnum } from '@/lib/utils';
 
@@ -12,8 +14,8 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
+import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-import useVeBal from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -30,11 +32,17 @@ type Props = {
 const props = defineProps<Props>();
 
 /**
+ * STATE
+ */
+const showUnlockPreviewModal = ref(false);
+
+/**
  * COMPOSABLES
  */
 const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
 const { veBalBalance } = useVeBal();
+const { t } = useI18n();
 
 /**
  * COMPUTED
@@ -45,11 +53,13 @@ const poolShares = computed(() =>
 
 const bptBalance = computed(() => balanceFor(props.lockablePool.address));
 
-const fiatTotal = computed(() => poolShares.value.times(bptBalance.value));
+const fiatTotal = computed(() =>
+  poolShares.value.times(bptBalance.value).toString()
+);
 
 const lockedFiatTotal = computed(() =>
   props.veBalLockInfo?.hasExistingLock
-    ? poolShares.value.times(props.veBalLockInfo.lockedAmount)
+    ? poolShares.value.times(props.veBalLockInfo.lockedAmount).toString()
     : '0'
 );
 
@@ -60,60 +70,89 @@ const lockedUntil = computed(() => {
 
   return '—';
 });
+
+const totalExpiredLpTokens = computed(() =>
+  props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0'
+);
+
+const fiatTotalExpiredLpTokens = computed(() =>
+  bnum(props.lockablePool.totalLiquidity)
+    .div(props.lockablePool.totalShares)
+    .times(totalExpiredLpTokens.value)
+);
+
+const cards = computed(() => {
+  const hasExistingLock = props.veBalLockInfo?.hasExistingLock;
+  const isExpired = props.veBalLockInfo?.isExpired;
+
+  return [
+    {
+      id: 'myLpToken',
+      label: t('veBAL.myVeBAL.cards.myLpToken', [
+        props.lockablePoolTokenInfo.symbol
+      ]),
+      value: hasExistingLock ? fNum2(fiatTotal.value, FNumFormats.fiat) : '—',
+      showLockIcon: hasExistingLock ? true : false
+    },
+    {
+      id: 'myLockedLpToken',
+      label: t('veBAL.myVeBAL.cards.myLockedLpToken', [
+        props.lockablePoolTokenInfo.symbol
+      ]),
+      value: hasExistingLock
+        ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
+        : '—',
+      showLockIcon: hasExistingLock ? true : false,
+      showUnlockIcon: isExpired ? true : false
+    },
+    {
+      id: 'lockedEndDate',
+      label: t('veBAL.myVeBAL.cards.lockedEndDate'),
+      value: lockedUntil.value,
+      showLockIcon: hasExistingLock ? true : false
+    },
+    {
+      id: 'myVeBAL',
+      label: t('veBAL.myVeBAL.cards.myVeBAL'),
+      value: hasExistingLock
+        ? fNum2(veBalBalance.value, FNumFormats.token)
+        : '—'
+    }
+  ];
+});
 </script>
 
 <template>
-  <BalCard>
-    <div class="title">
-      {{ $t('veBAL.myVeBAL.cards.myLpToken', [lockablePoolTokenInfo.symbol]) }}
+  <BalCard v-for="card in cards" :key="card.id">
+    <div class="label">
+      {{ card.label }}
     </div>
     <div class="value">
-      {{
-        props.veBalLockInfo?.hasExistingLock
-          ? fNum2(fiatTotal, FNumFormats.fiat)
-          : '—'
-      }}
+      <span>{{ card.value }}</span>
+      <span>
+        <BalIcon
+          v-if="card.showUnlockIcon"
+          name="minus-circle"
+          class="pr-2 cursor-pointer"
+          @click="showUnlockPreviewModal = true"
+        />
+        <router-link :to="{ name: 'get-vebal' }" v-if="card.showLockIcon">
+          <BalIcon name="plus-circle" class="cursor-pointer" />
+        </router-link>
+      </span>
     </div>
   </BalCard>
-
-  <BalCard>
-    <div class="title">
-      {{
-        $t('veBAL.myVeBAL.cards.myLockedLpToken', [
-          lockablePoolTokenInfo.symbol
-        ])
-      }}
-    </div>
-    <div class="value">
-      {{
-        props.veBalLockInfo?.hasExistingLock
-          ? fNum2(lockedFiatTotal, FNumFormats.fiat)
-          : '—'
-      }}
-    </div>
-  </BalCard>
-
-  <BalCard>
-    <div class="title">
-      {{ $t('veBAL.myVeBAL.cards.lockedEndDate') }}
-    </div>
-    <div class="value">
-      {{ lockedUntil }}
-    </div>
-  </BalCard>
-
-  <BalCard>
-    <div class="title">
-      {{ $t('veBAL.myVeBAL.cards.myVeBAL') }}
-    </div>
-    <div class="value">
-      {{
-        props.veBalLockInfo?.hasExistingLock
-          ? fNum2(veBalBalance, FNumFormats.token)
-          : '—'
-      }}
-    </div>
-  </BalCard>
+  <teleport to="#modal">
+    <UnlockPreviewModal
+      v-if="showUnlockPreviewModal"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
+      :totalLpTokens="totalExpiredLpTokens"
+      :fiatTotalLpTokens="fiatTotalExpiredLpTokens"
+      @close="showUnlockPreviewModal = false"
+    />
+  </teleport>
 </template>
 
 <style scoped>
@@ -121,6 +160,6 @@ const lockedUntil = computed(() => {
   @apply text-sm text-gray-500 font-medium mb-2;
 }
 .value {
-  @apply text-xl font-medium truncate flex items-center;
+  @apply text-xl font-medium truncate flex items-center justify-between;
 }
 </style>
