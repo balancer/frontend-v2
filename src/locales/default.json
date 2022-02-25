@@ -573,11 +573,12 @@
             "title": "Pools eligible for liquidity mining",
             "votingPeriod": "Current voting period ends: {0}",
             "table": {
+                "chain": "Chain",
+                "assets": "Assets",
                 "composition": "Composition",
-                "voteShare": "Vote share",
-                "nextApr": "Next APR",
-                "myLiquidity": "My liquidity",
-                "myVotes": "My votes"
+                "nextPeriodVotes": "Next period votes",
+                "myVotes": "My votes",
+                "vote": "Vote"
             }
         },
         "notSupported": {

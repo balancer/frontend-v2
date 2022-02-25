@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
+import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
 
 import { isVeBalSupported } from '@/composables/useVeBAL';
 </script>
@@ -10,8 +11,11 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
     <div class="pb-24 px-1 lg:px-0">
       <Hero />
     </div>
-    <div class="mb-4 px-1 lg:px-0">
+    <div class="mb-16 px-1 lg:px-0">
       <MyVeBAL />
+    </div>
+    <div class="mb-16 px-1 lg:px-0">
+      <LMVoting />
     </div>
   </div>
   <div v-else class="text-center">
