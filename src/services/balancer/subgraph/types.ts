@@ -63,6 +63,7 @@ export interface Pool {
   mainTokens?: string[];
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
+  linearPoolToMainTokenMap?: Record<string, string>;
   unwrappedTokens?: string[];
   tokenRates?: string[];
   linearPools?: {

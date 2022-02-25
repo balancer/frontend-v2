@@ -10,6 +10,10 @@ import { usePool } from '@/composables/usePool';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
+import { useBoostedPool } from '@/composables/useBoostedPool';
+import usePools from '@/composables/pools/usePools';
+import useConfig from '@/composables/useConfig';
+import { sum } from 'lodash';
 
 /**
  * TYPES
@@ -31,7 +35,9 @@ const { tokens, balances, balanceFor, getTokens } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isWalletReady } = useWeb3();
-const { isStableLikePool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { isStableLikePool } = usePool(toRef(props, 'pool'));
+const { pools } = usePools();
+const { networkConfig } = useConfig();
 
 /**
  * SERVICES
@@ -44,19 +50,6 @@ const poolCalculator = new PoolCalculator(
   'exit',
   ref(false)
 );
-
-/*const proportionalAmounts = computed((): string[] => {
-  const farm = props.pool.farm;
-  const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
-  const farmBalance = farm ? farm.userBpt : 0;
-
-  const { receive } = poolCalculator.propAmountsGiven(
-    `${userBalance + farmBalance}`,
-    0,
-    'send'
-  );
-  return receive;
-});*/
 
 /**
  * COMPUTED
@@ -72,32 +65,19 @@ const poolTokens = computed(() =>
   Object.values(getTokens(props.pool.tokenAddresses))
 );
 
+const { userBoostedPoolBalance } = useBoostedPool(
+  toRef(props, 'pool'),
+  poolCalculator,
+  //@ts-ignore
+  pools
+);
+
 const propTokenAmounts = computed((): string[] => {
-  const { receive } = poolCalculator.propAmountsGiven(
-    bptBalance.value,
-    0,
-    'send'
-  );
-
-  if (isStablePhantomPool.value) {
-    // Return linear pool's main token balance using the price rate.
-    // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokenAddresses.map((address, i) => {
-      if (!props.pool.onchain.linearPools) return '0';
-
-      const priceRate = props.pool.onchain.linearPools[address].priceRate;
-
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
-    });
-  }
-
-  return receive;
+  return userBoostedPoolBalance.value;
 });
 
 const tokenAddresses = computed((): string[] => {
-  if (isStablePhantomPool.value) {
+  if (props.pool.mainTokens) {
     // We're using mainToken balances for StablePhantom pools
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];
@@ -124,6 +104,37 @@ function weightLabelFor(address: string): string {
 }
 
 function fiatLabelFor(index: number, address: string): string {
+  const mainTokens = props.pool.mainTokens || [];
+  if (address.toLowerCase() === networkConfig.addresses.bbUsd.toLowerCase()) {
+    //pool has bbUsd nested
+    const fiatValue = sum(
+      mainTokens.map((mainToken, index) => {
+        if (networkConfig.usdTokens.includes(mainToken)) {
+          return parseFloat(toFiat(propTokenAmounts.value[index], mainToken));
+        }
+      })
+    );
+
+    return fNum(fiatValue, currency.value);
+  } else if (
+    props.pool.linearPoolToMainTokenMap &&
+    props.pool.linearPoolToMainTokenMap[address.toLowerCase()]
+  ) {
+    const mainToken = props.pool.linearPoolToMainTokenMap[
+      address.toLowerCase()
+    ].toLowerCase();
+
+    const mainTokenIndex = mainTokens.findIndex(
+      token => token.toLowerCase() === mainToken
+    );
+
+    const fiatValue = toFiat(
+      propTokenAmounts.value[mainTokenIndex],
+      props.pool.linearPoolToMainTokenMap[address.toLowerCase()]
+    );
+    return fNum(fiatValue, currency.value);
+  }
+
   const fiatValue = toFiat(propTokenAmounts.value[index], address);
   return fNum(fiatValue, currency.value);
 }
@@ -141,7 +152,7 @@ function fiatLabelFor(index: number, address: string): string {
     </template>
     <div class="px-4 py-2">
       <div
-        v-for="(address, index) in tokenAddresses"
+        v-for="(address, index) in pool.tokenAddresses"
         :key="address"
         class="asset-row"
       >

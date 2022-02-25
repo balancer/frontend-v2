@@ -13,6 +13,7 @@ import { getAddress } from '@ethersproject/address';
 import { usePool } from '@/composables/usePool';
 import { keyBy } from 'lodash';
 import usePools from '@/composables/pools/usePools';
+import { useBoostedPool } from '@/composables/useBoostedPool';
 
 /**
  * TYPES
@@ -48,75 +49,16 @@ const poolCalculator = new PoolCalculator(
   ref(false)
 );
 
+const { userBoostedPoolBalance } = useBoostedPool(
+  toRef(props, 'pool'),
+  poolCalculator,
+  //@ts-ignore
+  pools
+);
+
 /**
  * COMPUTED
  */
-const propTokenAmounts = computed((): string[] => {
-  const pool = props.pool;
-  const farm = props.pool.decoratedFarm;
-  const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
-  const farmBalance = farm ? farm.userBpt : 0;
-
-  const { receive } = poolCalculator.propAmountsGiven(
-    `${userBalance + farmBalance}`,
-    0,
-    'send'
-  );
-
-  if (pool.mainTokens) {
-    const tokenAddresses = props.pool.tokenAddresses;
-
-    return pool.mainTokens.map(mainToken => {
-      if (tokenAddresses.includes(mainToken)) {
-        //this mainToken is a base asset on the pool, not nested
-        const index = tokenAddresses.indexOf(mainToken);
-
-        return receive[index];
-      }
-
-      //find the linear pool for this mainToken if there is one
-      const linearPool = pool.linearPools?.find(
-        linearPool => linearPool.mainToken.address === mainToken
-      );
-
-      if (linearPool) {
-        const linearPoolAddress = getAddress(linearPool.address);
-
-        if (tokenAddresses.includes(linearPoolAddress)) {
-          //the linear pool BPT is nested in this pool
-          const index = tokenAddresses.indexOf(linearPoolAddress);
-
-          return bnum(receive[index])
-            .times(linearPool.priceRate)
-            .toString();
-        } else {
-          // this linear pool BPT is nested in a stable phantom BPT
-          const stablePhantomPool = pools.value.find(
-            pool =>
-              pool.poolType === 'StablePhantom' &&
-              tokenAddresses.includes(getAddress(pool.address))
-          );
-
-          if (stablePhantomPool) {
-            const index = tokenAddresses.indexOf(
-              getAddress(stablePhantomPool.address)
-            );
-            const bptBalance = receive[index];
-            return bnum(bptBalance)
-              .div(stablePhantomPool.totalShares)
-              .times(linearPool.totalSupply)
-              .times(linearPool.priceRate)
-              .toString();
-          }
-        }
-      }
-
-      return '0';
-    });
-  }
-
-  return receive;
-});
 
 const tokenAddresses = computed((): string[] => {
   if (props.pool.mainTokens) {
@@ -129,7 +71,7 @@ const tokenAddresses = computed((): string[] => {
 
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
-    .map((address, i) => toFiat(propTokenAmounts.value[i], address))
+    .map((address, i) => toFiat(userBoostedPoolBalance.value[i], address))
     .reduce((total, value) =>
       bnum(total)
         .plus(value)
@@ -151,7 +93,7 @@ const fiatTotal = computed(() => {
 
     <div class="-mt-2 p-4">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
-        <AssetRow :address="address" :balance="propTokenAmounts[i]" />
+        <AssetRow :address="address" :balance="userBoostedPoolBalance[i]" />
       </div>
       <div class="pt-4 flex justify-between font-medium">
         <span>

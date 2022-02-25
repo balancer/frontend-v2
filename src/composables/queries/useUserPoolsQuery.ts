@@ -91,6 +91,10 @@ export default function useUserPoolsQuery(
     });
 
     pool.linearPoolTokensMap = linearPoolTokensMap;
+    pool.linearPoolToMainTokenMap = linearPools.reduce((map, linearPool) => {
+      map[linearPool.address] = linearPool.tokensList[linearPool.mainIndex];
+      return map;
+    }, {});
 
     return pool;
   }
