@@ -18,7 +18,6 @@ const state = reactive<LockState>({
  */
 function resetState(): void {
   state.lockAmount = '';
-  // state.lockEndDate = '';
 }
 
 export default function useLockState() {

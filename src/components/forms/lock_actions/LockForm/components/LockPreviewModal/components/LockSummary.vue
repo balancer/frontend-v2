@@ -14,6 +14,9 @@ import useVeBal from '@/composables/useVeBAL';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 
+/**
+ * TYPES
+ */
 type Props = {
   lockablePool: FullPool;
   totalLpTokens: string;

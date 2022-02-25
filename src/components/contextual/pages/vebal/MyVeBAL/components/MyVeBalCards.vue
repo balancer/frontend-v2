@@ -15,6 +15,9 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import useVeBal from '@/composables/useVeBAL';
 
+/**
+ * TYPES
+ */
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;
@@ -36,7 +39,6 @@ const { veBalBalance } = useVeBal();
 /**
  * COMPUTED
  */
-
 const poolShares = computed(() =>
   bnum(props.lockablePool.totalLiquidity).div(props.lockablePool.totalShares)
 );

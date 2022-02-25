@@ -7,6 +7,9 @@ import useLockState from '../../../composables/useLockState';
 
 import { INPUT_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
+/**
+ * TYPES
+ */
 type Props = {
   minLockEndDateTimestamp: number;
   maxLockEndDateTimestamp: number;

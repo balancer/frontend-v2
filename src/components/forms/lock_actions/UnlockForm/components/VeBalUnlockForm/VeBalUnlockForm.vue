@@ -14,6 +14,9 @@ import { TokenInfo } from '@/types/TokenList';
 
 import LockedAmount from './components/LockedAmount.vue';
 
+/**
+ * TYPES
+ */
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;

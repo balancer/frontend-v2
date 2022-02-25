@@ -28,6 +28,9 @@ import { MAX_LOCK_PERIOD_IN_DAYS } from '@/components/forms/lock_actions/constan
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
+/**
+ * TYPES
+ */
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;

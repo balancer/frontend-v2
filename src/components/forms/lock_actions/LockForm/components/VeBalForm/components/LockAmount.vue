@@ -9,6 +9,9 @@ import { computed } from 'vue';
 
 import useLockState from '../../../composables/useLockState';
 
+/**
+ * TYPES
+ */
 type Props = {
   lockablePool: FullPool;
   lockablePoolTokenInfo: TokenInfo;

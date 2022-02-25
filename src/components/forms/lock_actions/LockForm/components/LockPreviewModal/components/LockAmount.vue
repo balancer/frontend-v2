@@ -6,6 +6,9 @@ import useTokens from '@/composables/useTokens';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
+/**
+ * TYPES
+ */
 type Props = {
   lockablePool: FullPool;
   totalLpTokens: string;

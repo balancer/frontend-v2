@@ -2,6 +2,9 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 
+/**
+ * TYPES
+ */
 type Props = {
   expectedVeBalAmount: string;
 };

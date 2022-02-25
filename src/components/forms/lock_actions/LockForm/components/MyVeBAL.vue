@@ -11,6 +11,9 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
+/**
+ * TYPES
+ */
 type Props = {
   veBalLockInfo?: VeBalLockInfo;
 };
