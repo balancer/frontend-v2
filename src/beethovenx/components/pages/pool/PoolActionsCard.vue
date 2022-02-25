@@ -30,13 +30,8 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { pools } = usePools();
 const { usdAsset } = usePoolTransfers();
-const { initMath, hasBpt } = useWithdrawMath(
-  toRef(props, 'pool'),
-  pools,
-  usdAsset
-);
+const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'), usdAsset);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -79,10 +74,6 @@ const hasUnstakedBpt = computed(
 
 const hasFarm = computed(() => !!props.pool.farm);
 
-const hasFarmStake = computed(
-  () => props.pool.farm?.stake && props.pool.farm.stake > 0
-);
-
 const farmId = computed(() => props.pool.farm?.id || '');
 const tokenAddress = computed(() => props.pool.address);
 const hasFarmRewards = computed(() => props.pool.farm?.rewards || 0 > 0);
@@ -101,9 +92,7 @@ onBeforeMount(() => {
       {{ $t('basedOnTokensInWallet') }}
     </div>
     <div class="flex justify-between items-center mb-4">
-      <h5>
-        {{ $t('youCanInvest') }}
-      </h5>
+      <h5>{{ $t('youCanInvest') }}</h5>
       <h5>
         {{ isWalletReady ? fiatTotal : '-' }}
       </h5>

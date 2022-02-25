@@ -74,7 +74,6 @@ export type WithdrawMathResponse = {
 
 export default function useWithdrawMath(
   pool: Ref<FullPool>,
-  allPools: Ref<Pool[]>,
   usdAsset: Ref<string>,
   isProportional: Ref<boolean> = ref(true),
   tokenOut: Ref<string> = ref(''),

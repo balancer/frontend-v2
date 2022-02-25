@@ -45,11 +45,9 @@ const {
   tokensOut
 } = useWithdrawalState(toRef(props, 'pool'));
 
-const { pools } = usePools();
 const { usdAsset } = usePoolTransfers();
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
-  pools,
   usdAsset,
   isProportional,
   tokenOut,

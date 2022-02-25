@@ -27,9 +27,8 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { pools } = usePools();
 const { usdAsset } = usePoolTransfers();
-const { hasBpt } = useWithdrawMath(toRef(props, 'pool'), pools, usdAsset);
+const { hasBpt } = useWithdrawMath(toRef(props, 'pool'), usdAsset);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -71,9 +70,7 @@ const fiatTotal = computed(() => {
       {{ $t('basedOnTokensInWallet') }}
     </div>
     <div class="flex justify-between items-center mb-4">
-      <h5>
-        {{ $t('youCanInvest') }}
-      </h5>
+      <h5>{{ $t('youCanInvest') }}</h5>
       <h5>
         {{ isWalletReady ? fiatTotal : '-' }}
       </h5>

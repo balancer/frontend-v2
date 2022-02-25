@@ -76,10 +76,8 @@ export function noInitLiquidity(pool: AnyPool): boolean {
  * @returns tokens that can be used to invest or withdraw from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
-  if (isStablePhantom(pool.poolType)) {
-    const mainTokens = pool.mainTokens || [];
-    const wrappedTokens = pool.wrappedTokens || [];
-    return [...mainTokens, ...wrappedTokens];
+  if (pool.mainTokens) {
+    return pool.mainTokens;
   } else {
     return pool.tokenAddresses || [];
   }
@@ -162,6 +160,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       pool.value.poolType === 'Weighted'
   );
 
+  const isBoostedPool = computed(
+    () => !!pool.value && (pool.value.mainTokens || []).length > 0
+  );
+
   const lpTokens = computed(() => {
     if (!pool.value) return [];
 
@@ -197,6 +199,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     lpTokensFor,
     hasNestedLinearPools,
     hasNestedUsdStablePhantomPool,
-    isWeightedPoolWithNestedLinearPools
+    isWeightedPoolWithNestedLinearPools,
+    isBoostedPool
   };
 }
