@@ -37,7 +37,7 @@ const voteDisabled = computed(() => false); // Make disabled when not a valid nu
 function submitVote() {
   gaugeControllerService.voteForGaugeWeights(
     props.pool.gauge.address,
-    BigNumber.from('1')
+    BigNumber.from('42')
   );
 }
 </script>

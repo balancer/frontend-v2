@@ -11,7 +11,7 @@ export default class GaugeControllerService {
     protected readonly config: ConfigService = configService,
     private readonly web3: Web3Service = web3Service
   ) {
-    this.abi = GaugeControllerAbi;
+    this.abi = GaugeControllerAbi.abi;
   }
 
   get address() {
@@ -27,7 +27,7 @@ export default class GaugeControllerService {
       this.address,
       this.abi,
       'vote_for_many_gauge_weights',
-      [gaugeAddresses, weights.map(w => w.toString())],
+      [gaugeAddresses, weights],
       options
     );
   }
@@ -41,7 +41,7 @@ export default class GaugeControllerService {
       this.address,
       this.abi,
       'vote_for_gauge_weights',
-      [gaugeAddress, weight.toString()],
+      [gaugeAddress, weight],
       options
     );
   }
