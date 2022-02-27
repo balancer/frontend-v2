@@ -149,6 +149,13 @@ export default class BeethovenxService {
             description: true,
             publishDate: true
           },
+          homeEducationItems: {
+            title: true,
+            url: true,
+            image: true,
+            description: true,
+            publishDate: true
+          },
           poolFilters: {
             id: true,
             title: true,
