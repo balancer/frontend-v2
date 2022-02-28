@@ -9,9 +9,11 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '../useNetwork';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { GqlBalancerPoolActivity } from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 type UserPoolActivitiesQueryResponse = {
-  poolActivities: PoolActivity[];
+  poolActivities: GqlBalancerPoolActivity[];
   skip?: number;
 };
 
@@ -33,13 +35,11 @@ export default function usePoolUserActivitiesQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const poolActivities = await balancerSubgraphService.poolActivities.get({
+    const poolActivities = await beethovenxService.getBalancerPoolActivities({
+      poolId: id,
       first: POOLS.Pagination.PerPage,
       skip: pageParam,
-      where: {
-        pool: id,
-        sender: account.value.toLowerCase()
-      }
+      sender: account.value.toLowerCase()
     });
 
     return {

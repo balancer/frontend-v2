@@ -17,6 +17,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { bnum } from '@/lib/utils';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { GqlBalancerPoolActivity } from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 /**
  * TYPES
@@ -41,7 +42,7 @@ type ActivityRow = {
 
 type Props = {
   tokens: string[];
-  poolActivities: PoolActivity[];
+  poolActivities: GqlBalancerPoolActivity[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   loadMore?: () => void;
@@ -113,9 +114,9 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
 const activityRows = computed<ActivityRow[]>(() =>
   props.isLoading
     ? []
-    : props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
+    : props.poolActivities.map(({ type, timestamp, tx, amounts, valueUSD }) => {
         const isJoin = type === 'Join';
-        const value = getJoinExitValue(amounts);
+        const value = parseFloat(valueUSD);
 
         return {
           label: isJoin ? t('invest') : t('withdraw.label'),
