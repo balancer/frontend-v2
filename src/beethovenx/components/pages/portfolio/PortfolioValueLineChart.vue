@@ -153,6 +153,9 @@ export default defineComponent({
           formatter: params => {
             return `
             <div class='flex flex-col font-body bg-white dark:bg-gray-800 dark:text-white'>
+              <div class="text-sm mb-1 self-center">
+                ${format(params[0].value[0], 'MMM. d')}
+              </div>
               ${params
                 .map(
                   param => `

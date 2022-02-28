@@ -116,8 +116,7 @@ export default defineComponent({
         },
         axisTick: {
           show: false
-        },
-        data: props.dates
+        }
       },
       yAxis: {
         type: 'value',
@@ -133,10 +132,16 @@ export default defineComponent({
               ${params
                 .map(
                   param => `
+                <div class="text-sm mb-1 self-center">
+                  ${format(param.value[0] * 1000, 'MMM. d')}
+                </div>
                 <span>
                 ${param.marker} ${
                     param.seriesName
-                  } <span class='font-medium ml-2'>${fNum(param.value, 'usd')}
+                  } <span class='font-medium ml-2'>${fNum(
+                    param.value[1],
+                    'usd'
+                  )}
                   </span>
                 </span>
               `
@@ -150,7 +155,7 @@ export default defineComponent({
         {
           name: props.title,
           type: 'bar',
-          data: props.data,
+          data: props.dates.map((date, index) => [date, props.data[index]]),
           itemStyle: {
             borderRadius: 10
           }
