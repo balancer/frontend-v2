@@ -56,42 +56,34 @@ const tokensLoaded = computed(() => {
     </BalTextInput>
   </div>
   <div class="lbp-input-row">
-    <BalTextInput
-      title="Start Date (YYYY-MM-DD)"
-      v-model="data.startDate"
-      type="text"
-      placeholder="YYYY-MM-DD"
-    />
+    <BalTextInput title="Start Date" v-model="data.startDate" type="date" />
     <BalTextInput
       title="Start Time (UTC)"
-      tooltip="The start time in UTC. Must be in 24 hour time format. ie: 23:30 = 11:30 PM"
+      tooltip="The start time in UTC. Must be in 24 hour time format. ie: 11:30 PM = 23:30"
       v-model="data.startTime"
-      type="text"
+      type="time"
       validate-on="input"
       prepend-border
       :no-margin="true"
-      placeholder="HH:mm"
     />
   </div>
   <div class="lbp-input-row">
     <BalTextInput
-      title="End Date (YYYY-MM-DD)"
+      title="End Date"
       v-model="data.endDate"
-      type="text"
+      type="date"
       validate-on="input"
       prepend-border
       :no-margin="true"
-      placeholder="YYYY-MM-DD"
     />
     <BalTextInput
       title="End Time (UTC)"
-      tooltip="The end time in UTC. Must be in 24 hour time format. ie: 23:30 = 11:30 PM"
+      tooltip="The end time in UTC. Must be in 24 hour time format. ie: 11:30 PM = 23:30"
       v-model="data.endTime"
-      type="text"
+      type="time"
       validate-on="input"
       prepend-border
       :no-margin="true"
-      placeholder="HH:mm"
     />
   </div>
   <div class="mb-8">

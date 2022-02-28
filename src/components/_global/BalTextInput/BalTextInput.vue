@@ -18,7 +18,14 @@ import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
  * TYPES
  */
 type InputValue = string | number;
-type InputType = 'text' | 'number' | 'date' | 'email' | 'password' | 'textarea';
+type InputType =
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'email'
+  | 'password'
+  | 'textarea'
+  | 'time';
 type InputSize = 'xs' | 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
 type RuleFunction = (val: InputValue) => string;

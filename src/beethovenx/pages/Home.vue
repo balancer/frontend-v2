@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import HomeDiscoverInvestmentPool from '@/beethovenx/components/pages/home/HomeDiscoverInvestmentPool.vue';
 import HomeNewsItems from '@/beethovenx/components/pages/home/HomeNewsItems.vue';
+import HomeEducationItems from '@/beethovenx/components/pages/home/HomeEducationItems.vue';
 </script>
 
 <template>
@@ -145,6 +146,13 @@ import HomeNewsItems from '@/beethovenx/components/pages/home/HomeNewsItems.vue'
         class="mb-8 -ml-4"
       />
       <HomeNewsItems />
+    </div>
+    <div class="lg:container lg:mx-auto pt-10 md:pt-20">
+      <img
+        src="~@/beethovenx/assets/images/learning-the-notes.svg"
+        class="mb-8 -ml-4"
+      />
+      <HomeEducationItems />
     </div>
     <!--    <div class="lg:container lg:mx-auto pt-10 md:pt-20">
       <img

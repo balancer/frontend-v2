@@ -42,9 +42,10 @@
           class="rounded-br-xl h-4 w-4 flex bg-yellow-500 absolute top-0 left-0 bg-opacity-80"
         />
         <div v-if="!isLoading" class="px-6 py-4">
-          <BalAssetSet
+          <BalAssetSetWithTooltip
             :addresses="orderedTokenAddressesFor(pool)"
             :width="100"
+            :pool="pool"
           />
         </div>
       </template>
@@ -100,6 +101,7 @@ import useNumbers from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import BalAssetSetWithTooltip from '@/components/tooltips/BalAssetSetWithTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
 import {
@@ -116,7 +118,8 @@ const POOLS_PER_PAGE = 10;
 
 export default defineComponent({
   components: {
-    LiquidityAPRTooltip
+    LiquidityAPRTooltip,
+    BalAssetSetWithTooltip
     //TokenPills
   },
 

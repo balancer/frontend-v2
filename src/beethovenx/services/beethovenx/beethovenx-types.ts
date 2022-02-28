@@ -288,6 +288,7 @@ export interface GqlBeetsConfig {
   featuredPools: Array<Scalars['String']>;
   homeFeaturedPools: Array<GqlBeetsConfigFeaturedPool>;
   homeNewsItems: Array<GqlBeetsConfigNewsItem>;
+  homeEducationItems: Array<GqlBeetsConfigNewsItem>;
   incentivizedPools: Array<Scalars['String']>;
   pausedPools: Array<Scalars['String']>;
   poolFilters: Array<GqlBeetsConfigPoolFilterItem>;
