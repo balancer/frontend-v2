@@ -39,6 +39,7 @@
     "authorizer": "0x974D3FF709D84Ba44cde3257C0B5B0b14C081Ce9",
     "vault": "0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce",
     "weightedPoolFactory": "0x60467cb225092cE0c989361934311175f437Cf53",
+    "weightedPool2TokensFactory": "0x92b377187bcCC6556FceD2f1e6DAd65850C20630",
     "stablePoolFactory": "0x55df810876354Fc3e249f701Dd78DeDE57991F8D",
     "lbpFactory": "0x2C774732c93CE393eC8125bDA49fb3737Ae6F473",
     "tokenFactory": "0x6732d651EeA0bc98FcF4EFF8B62e0CdCB0064f4b",

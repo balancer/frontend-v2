@@ -3,6 +3,8 @@ import configs from '@/lib/config';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as weightedPoolFactoryAbi } from '@/beethovenx/abi/WeightedPoolFactory.json';
 import { default as weightedPoolAbi } from '@/beethovenx/abi/WeightedPool.json';
+import { default as weightedPool2TokensFactoryAbi } from '@/beethovenx/abi/WeightedPool2TokensFactory.json';
+import { default as weightedPool2TokensAbi } from '@/beethovenx/abi/WeightedPool2Tokens.json';
 import { default as vaultAbi } from '@/beethovenx/abi/Vault.json';
 import {
   JsonRpcProvider,
@@ -25,8 +27,9 @@ export interface PoolTokenInput {
 
 export class PoolCreatorService {
   network: string;
-  vaultAddress: string;
   weightedPoolFactoryAddress: string;
+  weightedPool2TokensFactoryAddress: string;
+  vaultAddress: string;
   helpersAddress: string;
   poolVerifier: PoolVerifierService;
 
@@ -35,6 +38,8 @@ export class PoolCreatorService {
     this.vaultAddress = configs[network].addresses.vault;
     this.weightedPoolFactoryAddress =
       configs[network].addresses.weightedPoolFactory;
+    this.weightedPool2TokensFactoryAddress =
+      configs[network].addresses.weightedPool2TokensFactory;
     this.helpersAddress = configs[network].addresses.balancerHelpers;
     this.poolVerifier = new PoolVerifierService(network);
   }
@@ -45,26 +50,44 @@ export class PoolCreatorService {
     symbol: string,
     owner: string,
     swapFeePercentage: string,
-    tokens: PoolTokenInput[]
+    tokens: PoolTokenInput[],
+    isWeightedPool2Tokens: boolean
   ): Promise<TransactionResponse> {
     const sorted = this.sortTokens(tokens);
 
+    const paramsArray: any[] = [
+      name,
+      symbol,
+      sorted.map(token => token.address),
+      //weights and swap fee come in as 1 = 1%, so its base 16
+      bnToNormalizedWeights(sorted.map(token => parseUnits(token.weight, 16))),
+      parseUnits(swapFeePercentage, 16),
+      owner
+    ];
+
+    let factoryAddress: string, factoryAbi: any[];
+    if (isWeightedPool2Tokens) {
+      /**
+       * for 2 token pools the weightedPool2TokensFactory is used
+       * and this requires an extra parameter at index 5
+       * 'bool oracleEnabled'
+       * which is hardcoded to 'false' for now
+       * **/
+      paramsArray.splice(5, 0, false);
+
+      factoryAddress = this.weightedPool2TokensFactoryAddress;
+      factoryAbi = weightedPool2TokensFactoryAbi;
+    } else {
+      factoryAddress = this.weightedPoolFactoryAddress;
+      factoryAbi = weightedPoolFactoryAbi;
+    }
+
     return await sendTransaction(
       provider,
-      this.weightedPoolFactoryAddress,
-      weightedPoolFactoryAbi,
+      factoryAddress,
+      factoryAbi,
       'create',
-      [
-        name,
-        symbol,
-        sorted.map(token => token.address),
-        //weights and swap fee come in as 1 = 1%, so its base 16
-        bnToNormalizedWeights(
-          sorted.map(token => parseUnits(token.weight, 16))
-        ),
-        parseUnits(swapFeePercentage, 16),
-        owner
-      ]
+      paramsArray
     );
   }
 
@@ -98,7 +121,8 @@ export class PoolCreatorService {
 
   public async getPoolDataFromTransaction(
     provider: Web3Provider | JsonRpcProvider,
-    receipt: any
+    receipt: any,
+    isWeightedPool2Tokens: boolean
   ): Promise<{ poolAddress: string; blockHash: string; poolId: string }> {
     const poolCreatedEvent = receipt.events.find(
       (e: { event: string }) => e.event === 'PoolCreated'
@@ -112,7 +136,7 @@ export class PoolCreatorService {
         poolId = await callStatic(
           provider,
           poolCreatedEvent.args.pool,
-          weightedPoolAbi,
+          isWeightedPool2Tokens ? weightedPool2TokensAbi : weightedPoolAbi,
           'getPoolId',
           []
         );
