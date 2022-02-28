@@ -61,6 +61,14 @@
             "logoURI": "https://raw.githubusercontent.com/centfinance/Symmetric.Assets/master/assets/asset_cETH.svg"
         },
         {
+            "address": "0x5d6b088DadD5DA64B7CDBE44340f0dD72364d7a1",
+            "chainId": 42220,
+            "name": "Wrapped Ether",
+            "symbol": "wEth",
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/centfinance/Symmetric.Assets/master/assets/asset_cETH.svg"
+        },
+        {
             "address": "0x471EcE3750Da237f93B8E339c536989b8978a438",
             "chainId": 42220,
             "name": "Celo",
