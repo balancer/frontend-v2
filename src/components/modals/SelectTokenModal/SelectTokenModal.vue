@@ -85,7 +85,7 @@
           v-slot="{ item: token }"
           :buffer="100"
         >
-          <a @click="onSelectToken(token.address)">
+          <a @click.self="onSelectToken(token.address)">
             <TokenListItem
               :token="token"
               :balanceLoading="dynamicDataLoading"
