@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, toRefs, computed, reactive, watch } from 'vue';
+import { toRef, toRefs, computed, reactive, watch, onBeforeMount } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { poolWeightsLabel, usePool } from '@/composables/usePool';
 // Types
@@ -29,6 +29,9 @@ import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { WeightedPoolEncoder } from '@balancer-labs/sdk';
 import useUserSettings from '@/composables/useUserSettings';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 /**
  * TYPES
  */
@@ -85,6 +88,7 @@ const {
   fullAmountsScaled
 } = toRefs(props.math);
 
+const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   fullAmounts
@@ -231,6 +235,16 @@ async function submit(): Promise<TransactionResponse> {
 watch(blockNumber, async () => {
   if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
     await props.math.getBatchSwap();
+  }
+});
+
+onBeforeMount(() => {
+  if (
+    isWeightedPoolWithNestedLinearPools.value &&
+    !batchRelayerApproval.isUnlocked.value
+  ) {
+    // Prepend relayer approval action if batch relayer not approved
+    actions.value.unshift(batchRelayerApproval.action.value);
   }
 });
 </script>
