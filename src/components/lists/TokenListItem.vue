@@ -15,13 +15,13 @@
         v-if="isWalletReady"
         placement="right"
         :width="32"
-        @click="addTokenToWallet(token)"
+        @click.stop="addTokenToWallet(token)"
       >
         <template v-slot:activator>
           <BalIcon name="plus-circle" size="xs" class="ml-1" />
         </template>
         <div class="text-sm bg-gray-50 dark:bg-gray-800 rounded-t">
-          Add token to wallet!
+          Add token to wallet
         </div>
       </BalTooltip>
       <div class="text-gray text-sm w-20 md:w-40 truncate">
