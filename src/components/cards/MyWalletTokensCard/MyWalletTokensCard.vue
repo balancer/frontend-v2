@@ -10,6 +10,8 @@ import useTokens from '@/composables/useTokens';
 import AssetRow from './components/AssetRow.vue';
 import { useRoute } from 'vue-router';
 import { usePool } from '@/composables/usePool';
+import useConfig from '@/composables/useConfig';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -18,6 +20,7 @@ type Props = {
   pool: FullPool;
   useNativeAsset: boolean;
   hideHeader?: boolean;
+  usdAsset: string;
 };
 
 /**
@@ -29,16 +32,20 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'update:useNativeAsset', value: boolean): void;
+  (e: 'update:usdAsset', value: string): void;
 }>();
 
 /**
  * COMPOSABLES
  */
-const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
-const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { isWethPool, hasNestedUsdStablePhantomPool } = usePool(
+  toRef(props, 'pool')
+);
+const { balanceFor, nativeAsset, wrappedNativeAsset, usdAssets } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const route = useRoute();
+const { networkConfig } = useConfig();
 
 /**
  * COMPUTED
@@ -46,25 +53,44 @@ const route = useRoute();
 const pageContext = computed(() => route.name);
 
 const tokenAddresses = computed((): string[] => {
-  if (isStablePhantomPool.value) {
-    return props.pool.mainTokens || [];
+  if (props.pool.mainTokens) {
+    if (hasNestedUsdStablePhantomPool.value) {
+      return [
+        ...props.pool.mainTokens.filter(
+          mainToken => !networkConfig.usdTokens.includes(mainToken)
+        ),
+        networkConfig.addresses.bbUsd
+      ];
+    }
+
+    return props.pool.mainTokens;
   }
 
   return props.pool.tokenAddresses;
 });
 
 const tokensForTotal = computed((): string[] => {
+  const mappedAddresses = tokenAddresses.value.map(address => {
+    if (address === networkConfig.addresses.bbUsd) {
+      return props.usdAsset;
+    }
+
+    return address;
+  });
+
   if (pageContext.value === 'invest' && props.useNativeAsset) {
-    return tokenAddresses.value.map(address => {
-      if (address === wrappedNativeAsset.value.address)
+    return mappedAddresses.map(address => {
+      if (address === wrappedNativeAsset.value.address) {
         return nativeAsset.address;
+      }
+
       return address;
     });
   } else if (pageContext.value === 'withdraw' && isWethPool.value) {
-    return [nativeAsset.address, ...tokenAddresses.value];
+    return [nativeAsset.address, ...mappedAddresses];
   }
 
-  return tokenAddresses.value;
+  return mappedAddresses;
 });
 
 const fiatTotal = computed(() => {
@@ -101,6 +127,10 @@ function isSelectedNativeAsset(address: string): boolean {
 
   return !props.useNativeAsset && address === wrappedNativeAsset.value.address;
 }
+
+function isSelectedUsdAsset(address: string): boolean {
+  return address.toLowerCase() === props.usdAsset.toLowerCase();
+}
 </script>
 
 <template>
@@ -115,7 +145,28 @@ function isSelectedNativeAsset(address: string): boolean {
 
     <div class="-mt-2 p-4">
       <div v-for="address in tokenAddresses" :key="address" class="py-2">
-        <div v-if="address === wrappedNativeAsset.address">
+        <div v-if="address === networkConfig.addresses.bbUsd">
+          <div class="flex items-start justify-between">
+            <BalBreakdown :items="usdAssets" class="w-full" size="lg">
+              <div class="flex justify-between">
+                <span>USD tokens</span>
+                <BalTooltip
+                  v-if="pageContext === 'invest'"
+                  text="When investing into a boosted pool that supports bb-yv-USD, you can invest with either USDC or DAI."
+                />
+              </div>
+              <template #item="{ item: asset }">
+                <AssetRow
+                  :address="asset.address"
+                  :selected="isSelectedUsdAsset(asset.address)"
+                  :class="[{ 'cursor-pointer': pageContext === 'invest' }]"
+                  @click="emit('update:usdAsset', asset.address)"
+                />
+              </template>
+            </BalBreakdown>
+          </div>
+        </div>
+        <div v-else-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
             <BalBreakdown
               :items="[nativeAsset, wrappedNativeAsset]"
@@ -153,7 +204,6 @@ function isSelectedNativeAsset(address: string): boolean {
             </BalBreakdown>
           </div>
         </div>
-
         <AssetRow v-else :address="address" :selected="true" />
       </div>
       <div class="pt-4 flex justify-between font-medium">

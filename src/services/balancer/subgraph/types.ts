@@ -63,14 +63,17 @@ export interface Pool {
   mainTokens?: string[];
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
+  linearPoolToMainTokenMap?: Record<string, string>;
   unwrappedTokens?: string[];
   tokenRates?: string[];
   linearPools?: {
     id: string;
+    symbol: string;
     address: string;
     priceRate: string;
     unwrappedTokenAddress: string;
     totalSupply: string;
+    balance: string;
     mainToken: {
       address: string;
       index: number;
@@ -88,6 +91,7 @@ export interface Pool {
       symbol: string;
       decimals: number;
     };
+    poolToken: string;
   }[];
   apr: GqlBalancePoolApr;
   farm?: GqlBeetsFarm;
@@ -187,6 +191,8 @@ export interface LinearPoolData {
   wrappedToken: WrappedLinearPoolToken;
   unwrappedTokenAddress: string;
   totalSupply: string;
+  balance: string;
+  poolToken: string;
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 

@@ -48,7 +48,7 @@ const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { fullAmounts, priceImpact, resetMath } = toRefs(props.math);
-const { tokensOut, maxSlider } = useWithdrawalState(toRef(props, 'pool'));
+const { maxSlider, withdrawTokens } = useWithdrawalState(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -63,7 +63,7 @@ const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[tokensOut.value[i]] = amount;
+      if (hasAmount(i)) amountMap[withdrawTokens.value[i]] = amount;
     });
     return amountMap;
   }

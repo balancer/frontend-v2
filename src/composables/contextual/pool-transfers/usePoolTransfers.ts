@@ -6,12 +6,14 @@ import { useRoute } from 'vue-router';
 import useTokens from '@/composables/useTokens';
 import usePools from '@/composables/pools/usePools';
 import { isStablePhantom } from '@/composables/usePool';
+import { configService } from '@/services/config/config.service';
 
 /**
  * STATE
  */
 const useNativeAsset = ref(false);
 const transfersAllowed = ref(true);
+const usdAsset = ref(configService.network.addresses.usdc);
 
 export default function usePoolTransfers() {
   const route = useRoute();
@@ -63,8 +65,8 @@ export default function usePoolTransfers() {
 
   const tokenAddresses = computed(() => {
     if (pool.value) {
-      if (isStablePhantom(pool.value.poolType)) {
-        return pool.value.mainTokens || [];
+      if (pool.value.mainTokens) {
+        return pool.value.mainTokens;
       }
       return pool.value?.tokenAddresses || [];
     }
@@ -83,6 +85,7 @@ export default function usePoolTransfers() {
     loadingPool,
     useNativeAsset,
     missingPrices,
-    transfersAllowed
+    transfersAllowed,
+    usdAsset
   };
 }

@@ -15,6 +15,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useWithdrawalState from '../composables/useWithdrawalState';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
+import useConfig from '@/composables/useConfig';
 
 /**
  * TYPES
@@ -41,15 +42,19 @@ const {
   fiatAmounts,
   proportionalAmounts,
   shouldFetchBatchSwap,
+  shouldFetchExitBatchSwap,
   loadingAmountsOut
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
 
+const { networkConfig } = useConfig();
 const { isWalletReady } = useWeb3();
-const { missingPrices } = usePoolTransfers();
+const { missingPrices, usdAsset } = usePoolTransfers();
 const { getTokens } = useTokens();
-const { isStableLikePool } = usePool(toRef(props, 'pool'));
+const { isStableLikePool, hasNestedUsdStablePhantomPool } = usePool(
+  toRef(props, 'pool')
+);
 const { fNum } = useNumbers();
 
 /**
@@ -57,8 +62,20 @@ const { fNum } = useNumbers();
  */
 const tokens = computed(
   (): TokenInfoMap => {
-    if (isStablePhantom(props.pool.poolType)) {
-      return getTokens(props.pool.mainTokens || []);
+    if (props.pool.mainTokens) {
+      if (hasNestedUsdStablePhantomPool.value) {
+        return getTokens(
+          props.pool.mainTokens.filter(
+            mainToken =>
+              !(
+                networkConfig.usdTokens.includes(mainToken) &&
+                mainToken.toLowerCase() !== usdAsset.value.toLowerCase()
+              )
+          )
+        );
+      }
+
+      return getTokens(props.pool.mainTokens);
     }
     return getTokens(props.pool.tokenAddresses);
   }
@@ -80,7 +97,9 @@ const percentageLabel = computed(() => {
 });
 
 const seedTokens = computed((): number[] =>
-  Object.values(props.pool.onchain.tokens).map(token => token.weight)
+  Object.values(props.pool.onchain.tokens).map(token =>
+    parseFloat(token.weight)
+  )
 );
 
 /**
@@ -95,7 +114,8 @@ function handleSliderChange(newVal: number): void {
 }
 
 async function handleSliderEnd(): Promise<void> {
-  if (shouldFetchBatchSwap.value) {
+  if (shouldFetchBatchSwap.value || shouldFetchExitBatchSwap.value) {
+    console.log('flag 1');
     await props.math.getSwap();
   }
 }

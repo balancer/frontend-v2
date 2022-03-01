@@ -13,6 +13,8 @@ import WithdrawTotals from './components/WithdrawTotals.vue';
 import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
 import ProportionalWithdrawalInput from './components/ProportionalWithdrawalInput.vue';
 import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
+import usePools from '@/composables/pools/usePools';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * TYPES
@@ -43,8 +45,10 @@ const {
   tokensOut
 } = useWithdrawalState(toRef(props, 'pool'));
 
+const { usdAsset } = usePoolTransfers();
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
+  usdAsset,
   isProportional,
   tokenOut,
   tokenOutIndex

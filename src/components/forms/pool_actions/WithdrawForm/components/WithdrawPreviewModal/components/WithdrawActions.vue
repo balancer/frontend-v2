@@ -8,7 +8,7 @@ import {
   onBeforeMount,
   watch
 } from 'vue';
-import { poolWeightsLabel } from '@/composables/usePool';
+import { poolWeightsLabel, usePool } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -32,6 +32,8 @@ import { configService } from '@/services/config/config.service';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { balancer } from '@/lib/balancer.sdk';
+import { WeightedPoolEncoder } from '@balancer-labs/sdk';
 
 /**
  * TYPES
@@ -81,6 +83,8 @@ const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
   toRef(props, 'pool')
 );
 
+const { isWeightedPoolWithNestedLinearPools } = usePool(toRef(props, 'pool'));
+
 const {
   bptIn,
   fiatTotalLabel,
@@ -92,7 +96,8 @@ const {
   batchSwapKind,
   shouldUseBatchRelayer,
   batchRelayerSwap,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
+  exitPoolAndBatchSwap
 } = toRefs(props.math);
 
 const withdrawalAction: TransactionActionInfo = {
@@ -164,7 +169,12 @@ async function submit(): Promise<TransactionResponse> {
     let tx;
     withdrawalState.init = true;
 
-    if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
+    if (isWeightedPoolWithNestedLinearPools.value) {
+      tx = await balancerContractsService.batchRelayer.stableExit(
+        exitPoolAndBatchSwap.value,
+        getProvider()
+      );
+    } else if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
       tx = await balancerContractsService.batchRelayer.stableExit(
         batchRelayerSwap.value,
         getProvider()

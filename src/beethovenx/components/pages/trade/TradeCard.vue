@@ -62,7 +62,7 @@
       @close="tradeSuccess = false"
     />
   </BalCard>
-  <TradeRatesCard v-if="sorManagerInitialized" :sor-manager="sorManagerRef" />
+  <!--  <TradeRatesCard v-if="sorManagerInitialized" :sor-manager="sorManagerRef" />-->
   <teleport to="#modal">
     <TradePreviewModal
       v-if="modalTradePreviewIsOpen"
@@ -112,7 +112,7 @@ import TradeRatesCard from '@/beethovenx/components/pages/trade/TradeRatesCard.v
 
 export default defineComponent({
   components: {
-    TradeRatesCard,
+    //TradeRatesCard,
     SuccessOverlay,
     TradePair,
     TradePreviewModal,

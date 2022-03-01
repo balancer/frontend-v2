@@ -2,6 +2,7 @@ import { configService as _configService } from '@/services/config/config.servic
 import axios from 'axios';
 import {
   CreateLgeTypes,
+  GqlBalancerPoolActivity,
   GqlBalancerPoolSnapshot,
   GqlBeetsConfig,
   GqlBeetsFarm,
@@ -28,6 +29,7 @@ export type HistoricalPrices = { [timestamp: string]: number[] };
 
 export default class BeethovenxService {
   private readonly url: string;
+  private tokenPrices: TokenPrices = {};
 
   constructor(private readonly configService = _configService) {
     this.url =
@@ -85,7 +87,13 @@ export default class BeethovenxService {
       }
     }
 
+    this.tokenPrices = result;
+
     return result;
+  }
+
+  public getCachedTokenPrices(): TokenPrices {
+    return this.tokenPrices;
   }
 
   public async getHistoricalTokenPrices(
@@ -340,6 +348,38 @@ export default class BeethovenxService {
     }>(query);
 
     return blocksGetAverageBlockTime;
+  }
+
+  public async getBalancerPoolActivities(input: {
+    poolId: string;
+    first: number;
+    skip: number;
+    sender?: string;
+  }): Promise<GqlBalancerPoolActivity[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        balancerGetPoolActivities: {
+          __args: { input },
+          id: true,
+          amounts: true,
+          poolId: true,
+          sender: true,
+          timestamp: true,
+          tx: true,
+          type: true,
+          valueUSD: true
+        }
+      }
+    });
+
+    const { balancerGetPoolActivities } = await this.get<{
+      balancerGetPoolActivities: GqlBalancerPoolActivity[];
+    }>(query);
+
+    return balancerGetPoolActivities.map(activity => ({
+      ...activity,
+      timestamp: activity.timestamp * 1000
+    }));
   }
 
   public async getBeetsFarms(): Promise<GqlBeetsFarm[]> {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, toRef } from 'vue';
+import { computed, onBeforeMount, ref, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
@@ -11,6 +11,8 @@ import { getAddress } from '@ethersproject/address';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import FarmActionsCard from '@/beethovenx/components/pages/farm/FarmActionsCard.vue';
 import { lpTokensFor } from '@/composables/usePool';
+import usePools from '@/composables/pools/usePools';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * TYPES
@@ -28,7 +30,8 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { usdAsset } = usePoolTransfers();
+const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'), usdAsset);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -71,10 +74,6 @@ const hasUnstakedBpt = computed(
 
 const hasFarm = computed(() => !!props.pool.farm);
 
-const hasFarmStake = computed(
-  () => props.pool.farm?.stake && props.pool.farm.stake > 0
-);
-
 const farmId = computed(() => props.pool.farm?.id || '');
 const tokenAddress = computed(() => props.pool.address);
 const hasFarmRewards = computed(() => props.pool.farm?.rewards || 0 > 0);
@@ -93,9 +92,7 @@ onBeforeMount(() => {
       {{ $t('basedOnTokensInWallet') }}
     </div>
     <div class="flex justify-between items-center mb-4">
-      <h5>
-        {{ $t('youCanInvest') }}
-      </h5>
+      <h5>{{ $t('youCanInvest') }}</h5>
       <h5>
         {{ isWalletReady ? fiatTotal : '-' }}
       </h5>

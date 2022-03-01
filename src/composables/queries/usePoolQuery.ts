@@ -86,14 +86,12 @@ export default function usePoolQuery(
 
     // Inject main/wrapped tokens into pool schema
     linearPools.forEach(linearPool => {
-      if (!pool.mainTokens) pool.mainTokens = [];
       if (!pool.wrappedTokens) pool.wrappedTokens = [];
 
       const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
       const mainToken = getAddress(linearPool.mainToken.address);
       const wrappedToken = getAddress(linearPool.wrappedToken.address);
 
-      pool.mainTokens[index] = mainToken;
       pool.wrappedTokens[index] = wrappedToken;
 
       linearPoolTokensMap[mainToken] = {
@@ -111,6 +109,10 @@ export default function usePoolQuery(
     });
 
     pool.linearPoolTokensMap = linearPoolTokensMap;
+    pool.linearPoolToMainTokenMap = linearPools.reduce((map, linearPool) => {
+      map[linearPool.address] = linearPool.mainToken.address;
+      return map;
+    }, {});
 
     return pool;
   }
@@ -132,8 +134,11 @@ export default function usePoolQuery(
 
     const isStablePhantomPool = isStablePhantom(pool.poolType);
 
-    if (isStablePhantomPool && pool.linearPools) {
+    if (isStablePhantomPool) {
       pool = removePreMintedBPT(pool);
+    }
+
+    if (pool.linearPools) {
       pool = getLinearPoolAttrs(pool);
     }
 

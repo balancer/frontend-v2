@@ -11,6 +11,9 @@ import useUserSettings from '@/composables/useUserSettings';
 import AssetRow from './components/AssetRow.vue';
 import { getAddress } from '@ethersproject/address';
 import { usePool } from '@/composables/usePool';
+import { keyBy } from 'lodash';
+import usePools from '@/composables/pools/usePools';
+import { useBoostedPool } from '@/composables/useBoostedPool';
 
 /**
  * TYPES
@@ -33,6 +36,7 @@ const { tokens, balances, balanceFor } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { pools } = usePools();
 
 /**
  * SERVICES
@@ -45,49 +49,29 @@ const poolCalculator = new PoolCalculator(
   ref(false)
 );
 
+const { userBoostedPoolBalance } = useBoostedPool(
+  toRef(props, 'pool'),
+  poolCalculator,
+  //@ts-ignore
+  pools
+);
+
 /**
  * COMPUTED
  */
-const propTokenAmounts = computed((): string[] => {
-  const farm = props.pool.decoratedFarm;
-  const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
-  const farmBalance = farm ? farm.userBpt : 0;
-
-  const { receive } = poolCalculator.propAmountsGiven(
-    `${userBalance + farmBalance}`,
-    0,
-    'send'
-  );
-
-  if (isStablePhantomPool.value) {
-    // Return linear pool's main token balance using the price rate.
-    // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokenAddresses.map((address, i) => {
-      if (!props.pool.onchain.linearPools) return '0';
-
-      const priceRate = props.pool.onchain.linearPools[address].priceRate;
-
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
-    });
-  }
-
-  return receive;
-});
 
 const tokenAddresses = computed((): string[] => {
-  if (isStablePhantomPool.value) {
+  if (props.pool.mainTokens) {
     // We're using mainToken balances for StablePhantom pools
     // so return mainTokens here so that fiat values are correct.
-    return props.pool.mainTokens || [];
+    return props.pool.mainTokens;
   }
   return props.pool.tokenAddresses;
 });
 
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
-    .map((address, i) => toFiat(propTokenAmounts.value[i], address))
+    .map((address, i) => toFiat(userBoostedPoolBalance.value[i], address))
     .reduce((total, value) =>
       bnum(total)
         .plus(value)
@@ -109,7 +93,7 @@ const fiatTotal = computed(() => {
 
     <div class="-mt-2 p-4">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
-        <AssetRow :address="address" :balance="propTokenAmounts[i]" />
+        <AssetRow :address="address" :balance="userBoostedPoolBalance[i]" />
       </div>
       <div class="pt-4 flex justify-between font-medium">
         <span>

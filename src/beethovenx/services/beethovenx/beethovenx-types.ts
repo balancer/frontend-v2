@@ -339,3 +339,17 @@ export interface GqlBalancePoolAprSubItem {
   apr: Scalars['BigDecimal'];
   title: Scalars['String'];
 }
+
+export interface GqlBalancerPoolActivity {
+  __typename?: 'GqlBalancerPoolActivity';
+  amounts: Array<Scalars['BigDecimal']>;
+  id: Scalars['ID'];
+  poolId: Scalars['String'];
+  sender: Scalars['Bytes'];
+  timestamp: Scalars['Int'];
+  tx: Scalars['Bytes'];
+  type: GqlBalancerPoolActivityType;
+  valueUSD: Scalars['BigDecimal'];
+}
+
+export type GqlBalancerPoolActivityType = 'Exit' | 'Join';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef, toRefs, computed, reactive, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { poolWeightsLabel } from '@/composables/usePool';
+import { poolWeightsLabel, usePool } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -24,6 +24,11 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+import { balancer } from '@/lib/balancer.sdk';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { WeightedPoolEncoder } from '@balancer-labs/sdk';
+import useUserSettings from '@/composables/useUserSettings';
 /**
  * TYPES
  */
@@ -76,7 +81,8 @@ const {
   bptOut,
   fiatTotalLabel,
   batchSwap,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
+  fullAmountsScaled
 } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
@@ -88,6 +94,7 @@ const { tokenApprovalActions } = useTokenApprovalActions(
  * SERVICES
  */
 const poolExchange = new PoolExchange(toRef(props, 'pool'));
+const { slippageScaled } = useUserSettings();
 
 /**
  * COMPUTED
@@ -115,6 +122,8 @@ const transactionInProgress = computed(
     investmentState.confirming ||
     investmentState.confirmed
 );
+
+const { isWeightedPoolWithNestedLinearPools } = usePool(toRef(props, 'pool'));
 
 /**
  * METHODS
@@ -157,7 +166,33 @@ async function submit(): Promise<TransactionResponse> {
     let tx;
     investmentState.init = true;
 
-    if (batchSwap.value) {
+    if (isWeightedPoolWithNestedLinearPools.value) {
+      await balancer.swaps.fetchPools();
+      const response = await balancer.relayer.joinPool({
+        poolId: props.pool.id,
+        tokens: props.tokenAddresses.map((address, idx) => ({
+          address,
+          amount: fullAmounts.value[idx].toString()
+        })),
+        bptOut: '0',
+        fetchPools: {
+          fetchPools: false,
+          fetchOnChain: false
+        },
+        slippage: slippageScaled.value,
+        funds: {
+          sender: account.value,
+          recipient: account.value,
+          fromInternalBalance: false,
+          toInternalBalance: false
+        }
+      });
+
+      tx = await balancerContractsService.batchRelayer.stableExit(
+        response,
+        getProvider()
+      );
+    } else if (batchSwap.value) {
       tx = await boostedJoinBatchSwap(
         configService.network.key,
         getProvider(),

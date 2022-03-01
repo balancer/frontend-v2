@@ -53,6 +53,7 @@ export interface TokensProviderResponse {
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
+  usdAssets: ComputedRef<TokenInfo[]>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
   balancerTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
@@ -186,6 +187,10 @@ export default {
 
     const wrappedNativeAsset = computed(
       (): TokenInfo => getToken(networkConfig.addresses.weth)
+    );
+
+    const usdAssets = computed((): TokenInfo[] =>
+      networkConfig.usdTokens.map(usdToken => getToken(usdToken))
     );
 
     /****************************************************************
@@ -484,7 +489,8 @@ export default {
       priceFor,
       balanceFor,
       getTokens,
-      getToken
+      getToken,
+      usdAssets
     });
 
     return () => slots.default();

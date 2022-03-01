@@ -19,10 +19,12 @@ const defaultAttrs = {
   poolType: true,
   swapFee: true,
   tokensList: true,
+  mainTokens: true,
   totalLiquidity: true,
   totalSwapVolume: true,
   totalSwapFee: true,
   totalShares: true,
+  totalWeight: true,
   owner: true,
   factory: true,
   amp: true,
@@ -74,9 +76,8 @@ const defaultAttrs = {
     decimals: true,
     address: true,
     balance: true,
-    weight: true
-    //TODO: uncomment for linear support
-    //priceRate: true
+    weight: true,
+    priceRate: true
   },
   //TODO: uncomment for linear support
   wrappedIndex: true,
@@ -84,11 +85,14 @@ const defaultAttrs = {
   lowerTarget: true,
   upperTarget: true,
   tokenRates: true,
+  expiryTime: true,
   linearPools: {
     id: true,
+    symbol: true,
     address: true,
     priceRate: true,
     totalSupply: true,
+    balance: true,
     unwrappedTokenAddress: true,
     mainToken: {
       index: true,
@@ -106,7 +110,8 @@ const defaultAttrs = {
       name: true,
       symbol: true,
       decimals: true
-    }
+    },
+    poolToken: true
   }
 };
 
