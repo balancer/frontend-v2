@@ -17,7 +17,7 @@ export default class GasPriceService {
       case '137':
         return await this.polygonProvider.getLatest();
       default:
-        return null;
+        return {price: 10000000};
     }
   }
 }

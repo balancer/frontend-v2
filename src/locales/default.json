@@ -219,7 +219,7 @@
             "header": "The fees on this transaction exceed 20% of the trade amount."
         }
     },
-    "goToBalancerV1Site": "Go to the Balancer V1 site ->",
+    "goToBalancerV1Site": "Go to the Symmetric V1 site ->",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
     "highPriceImpactDetailed": "This trade is significantly moving the market price.",
@@ -322,7 +322,7 @@
     "mustBeValidNum": "must be a valid number",
     "mustBeValidAddress": "This is not a valid Ethereum address",
     "myBalance": "My balance",
-    "myInvestments": "My V2 Balancer investments",
+    "myInvestments": "My V2 Symmetric investments",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
     "myV2Investments": "My V2 investments",
@@ -439,7 +439,7 @@
     "seeMore": "See more",
     "seeOnExplorer": "See on explorer",
     "seePools": "See pools",
-    "seeV1BalancerInvestments": "Want to see your Balancer V1 investments?",
+    "seeV1BalancerInvestments": "Want to see your Symmetric V1 investments?",
     "select": "Select",
     "selectToken": "Select token",
     "sell": "Sell",
@@ -457,7 +457,7 @@
     "swapFeeManager": "Swap fee manager",
     "switchNetwork": "Switch Network",
     "symbol": "Symbol",
-    "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
+    "tableShowsBalancerV2Pools": "This table shows only Symmetric V2 pools.",
     "theme": "Theme",
     "thirdPartyRewards": {
         "apr": {
