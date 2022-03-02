@@ -25,13 +25,13 @@ import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import { balancer } from '@/lib/balancer.sdk';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { WeightedPoolEncoder } from '@balancer-labs/sdk';
 import useUserSettings from '@/composables/useUserSettings';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import useTokens from '@/composables/useTokens';
+import { AddressZero } from '@ethersproject/constants';
 /**
  * TYPES
  */
@@ -78,6 +78,7 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { nativeAsset } = useTokens();
 const {
   fullAmounts,
   batchSwapAmountMap,
@@ -172,12 +173,23 @@ async function submit(): Promise<TransactionResponse> {
 
     if (isWeightedPoolWithNestedLinearPools.value) {
       await balancer.swaps.fetchPools();
+      const tokenAddresses = props.tokenAddresses;
+      let nativeAssetAmount: string | null = null;
+
+      for (let i = 0; i < tokenAddresses.length; i++) {
+        if (tokenAddresses[i] === nativeAsset.address) {
+          nativeAssetAmount = fullAmountsScaled.value[i].toString();
+        }
+      }
+
       const response = await balancer.relayer.joinPool({
         poolId: props.pool.id,
-        tokens: props.tokenAddresses.map((address, idx) => ({
-          address,
-          amount: fullAmounts.value[idx].toString()
-        })),
+        tokens: props.tokenAddresses.map((address, idx) => {
+          return {
+            address: address === nativeAsset.address ? AddressZero : address,
+            amount: fullAmounts.value[idx].toString()
+          };
+        }),
         bptOut: '0',
         fetchPools: {
           fetchPools: false,
@@ -194,7 +206,8 @@ async function submit(): Promise<TransactionResponse> {
 
       tx = await balancerContractsService.batchRelayer.stableExit(
         response,
-        getProvider()
+        getProvider(),
+        nativeAssetAmount ? { value: nativeAssetAmount } : {}
       );
     } else if (batchSwap.value) {
       tx = await boostedJoinBatchSwap(
