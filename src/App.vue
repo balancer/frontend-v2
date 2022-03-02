@@ -63,6 +63,7 @@ export default defineComponent({
         priority: AlertPriority.LOW,
         label: t('alerts.boostedPools'),
         type: AlertType.FEATURE,
+        rememberClose: true,
         actionOnClick: true,
         action: () =>
           router.push({
