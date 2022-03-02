@@ -40,11 +40,11 @@
       "weightedPoolFactory": "0xE9FFEd2523d5383340b10D98a15aFc95f62e82E5",
       "stablePoolFactory": "0x8A217be3f8745efc522C49C66e1618699AF5bFAD",
       "tokenFactory": "",
-      "weth": "0x5d6b088DadD5DA64B7CDBE44340f0dD72364d7a1",
-      "stETH": "",
-      "wstETH": "",
-      "lidoRelayer": "",
-      "balancerHelpers": "",
+      "weth": "0x2DEf4285787d58a2f811AF24755A8150622f4361",
+      "stETH": "0x4803BB90d18a1Cb7a2187344Fe4feb0E07878D05",
+      "wstETH": "0xA387B91e393cFB9356A460370842BC8dBB2F29aF",
+      "lidoRelayer": "0x41B953164995c11C81DA73D212ED8Af25741b7Ac",
+      "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d",
       "batchRelayer": "0x8B98BD2e3ddC48ab197d26Fd7fde9b14f492b0BD"
     },
     "keys": {
