@@ -61,7 +61,7 @@ export default class WeightedPoolService {
       swapFeeScaled.toString(),
       owner
     ];
-// TODO:
+    // TODO:
     return sendTransaction(
       provider,
       weightedPoolFactoryAddress,
