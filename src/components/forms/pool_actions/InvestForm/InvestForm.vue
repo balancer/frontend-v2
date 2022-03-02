@@ -19,6 +19,7 @@ import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewMod
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import { getAddress } from '@ethersproject/address';
 import useConfig from '@/composables/useConfig';
+import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 
 /**
  * TYPES
@@ -67,6 +68,9 @@ const investMath = useInvestMath(
 
 const { hasNestedUsdStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { networkConfig } = useConfig();
+const relayerApproval = useRelayerApprovalQuery(
+  ref(networkConfig.addresses.batchRelayer)
+);
 
 const {
   hasAmounts,
