@@ -122,6 +122,14 @@ const QUERY_KEYS = {
         'onchain',
         { gauges }
       ]
+    },
+    GaugeShares: {
+      User: (userAddress: Ref<string>) => [
+        'gauges',
+        'shares',
+        'user',
+        { userAddress }
+      ]
     }
   }
 };

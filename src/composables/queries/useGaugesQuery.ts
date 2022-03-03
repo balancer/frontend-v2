@@ -10,11 +10,16 @@ import { SubgraphGauge } from '@/services/balancer/gauges/types';
  */
 type QueryResponse = SubgraphGauge[];
 
+type UseGuageFilters = {
+  userAddress?: string;
+};
+
 /**
  * @summary Fetches guages list from subgraph
  */
 export default function useGaugesQuery(
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<QueryResponse> = {},
+  { userAddress }: UseGuageFilters
 ) {
   /**
    * QUERY KEY

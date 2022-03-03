@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from 'vue';
+import { defineComponent, computed, watch, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -119,6 +119,9 @@ import { bnum } from '@/lib/utils';
 
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import useGaugesQuery from '@/composables/queries/useGaugesQuery';
+import { useQuery } from 'vue-query';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 export default defineComponent({
   components: {
@@ -138,7 +141,12 @@ export default defineComponent({
     // COMPOSABLES
     const router = useRouter();
     const { t } = useI18n();
-    const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
+    const {
+      isWalletReady,
+      isV1Supported,
+      appNetworkConfig,
+      account
+    } = useWeb3();
     const isElementSupported = appNetworkConfig.supportsElementPools;
     const {
       selectedTokens,
@@ -158,6 +166,13 @@ export default defineComponent({
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
     const { upToMediumBreakpoint } = useBreakpoints();
+    const { data: userGaugeShares } = useQuery(
+      QUERY_KEYS.Gauges.GaugeShares.User(account),
+      () => false,
+      reactive({
+        enabled: isWalletReady
+      })
+    );
 
     // COMPUTED
     const filteredPools = computed(() =>
