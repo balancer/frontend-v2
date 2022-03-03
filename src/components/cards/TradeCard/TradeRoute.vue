@@ -403,7 +403,10 @@ export default defineComponent({
           // Only multihops that have a previous partner in sequence are pushed to routes
           if (tokenOut === addressOut && swap.amount === '0') {
             // TokenOut with amount of 0 for multihop means it's a swapExactIn and previous swap is partner of hop
-            const swapAmount = new BigNumber(allHops[i - 1].amount);
+            const swapAmount =
+              allHops[i - 1].amount.toString() === '0' && allHops[i - 2]
+                ? new BigNumber(allHops[i - 2].amount)
+                : new BigNumber(allHops[i - 1].amount);
             const share = swapAmount.div(totalSwapAmount).toNumber();
             const route = {
               share,
@@ -412,7 +415,10 @@ export default defineComponent({
             routes.push(route);
           } else if (tokenIn === addressIn && swap.amount === '0') {
             // TokenIn with amount of 0 for multihop means it's a swapExactOut and previous swap is partner of hop
-            const swapAmount = new BigNumber(allHops[i - 1].amount);
+            const swapAmount =
+              allHops[i - 1].amount.toString() === '0' && allHops[i - 2]
+                ? new BigNumber(allHops[i - 2].amount)
+                : new BigNumber(allHops[i - 1].amount);
             const share = swapAmount.div(totalSwapAmount).toNumber();
             const route = {
               share,
@@ -423,7 +429,14 @@ export default defineComponent({
         }
       }
 
-      return routes;
+      const linearPoolIds = pools
+        .filter(pool => pool.poolType === 'Linear')
+        .map(pool => pool.id);
+
+      return routes.map(route => ({
+        ...route,
+        hops: route.hops.filter(hop => !linearPoolIds.includes(hop.pool.id))
+      }));
     }
 
     function formatShare(share: number): string {
