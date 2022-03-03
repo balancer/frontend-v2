@@ -20,6 +20,7 @@ import useAlerts, {
 } from './composables/useAlerts';
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
+import useBackgroundColor from './composables/useBackgroundColor';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -55,6 +56,7 @@ export default defineComponent({
     const router = useRouter();
     const { addAlert } = useAlerts();
     const { t } = useI18n();
+    const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
 
     // Temporary feature alert for Balancer boosted pools.
     if (isMainnet.value) {
@@ -93,6 +95,7 @@ export default defineComponent({
      * WATCHERS
      */
     watch(route, newRoute => {
+      updateBgColorFor(newRoute);
       if (newRoute.meta.layout) {
         layout.value = newRoute.meta.layout as string;
       } else {
