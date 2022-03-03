@@ -292,6 +292,7 @@ export interface GqlBeetsConfig {
   incentivizedPools: Array<Scalars['String']>;
   pausedPools: Array<Scalars['String']>;
   poolFilters: Array<GqlBeetsConfigPoolFilterItem>;
+  blacklistedTokens: Array<Scalars['String']>;
 }
 
 export interface GqlBeetsConfigFeaturedPool {

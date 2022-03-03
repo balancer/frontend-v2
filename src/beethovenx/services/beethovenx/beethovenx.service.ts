@@ -144,6 +144,7 @@ export default class BeethovenxService {
           incentivizedPools: true,
           pausedPools: true,
           blacklistedPools: true,
+          blacklistedTokens: true,
           featuredPools: true,
           homeFeaturedPools: {
             poolId: true,
