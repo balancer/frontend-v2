@@ -17,9 +17,9 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '1': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/homestead.listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json'
+        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/homestead.vetted.tokenlist.json'
     },
     External: [
       'ipns://tokens.uniswap.org',
