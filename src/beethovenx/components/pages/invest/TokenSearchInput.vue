@@ -145,18 +145,6 @@ function onClick() {
             {{ token?.symbol }}
           </span>
         </div>
-        <BalChip
-          v-for="token in props.modelValue"
-          class="mr-2"
-          :key="token"
-          color="white"
-          iconSize="sm"
-          :closeable="true"
-          @closed="$emit('remove', token)"
-        >
-          <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
-        </BalChip>
       </div>
       <div class="self-start">
         <BalBtn color="white" size="sm" @click="onClick">
@@ -164,6 +152,19 @@ function onClick() {
           {{ $t('filterByToken') }}
         </BalBtn>
       </div>
+      <div class="break mb-2"></div>
+      <BalChip
+        v-for="token in props.modelValue"
+        class="mr-2"
+        :key="token"
+        color="white"
+        iconSize="sm"
+        :closeable="true"
+        @closed="$emit('remove', token)"
+      >
+        <BalAsset :address="token" :size="20" class="flex-auto" />
+        <span class="ml-2">{{ tokens[token]?.symbol }}</span>
+      </BalChip>
     </div>
 
     <teleport to="#modal">
@@ -176,3 +177,10 @@ function onClick() {
     </teleport>
   </div>
 </template>
+
+<style scoped>
+.break {
+  flex-basis: 100%;
+  height: 0;
+}
+</style>
