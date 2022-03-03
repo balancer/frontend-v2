@@ -23,7 +23,8 @@ export default function useBeethovenxConfig() {
             homeFeaturedPools: [],
             homeNewsItems: [],
             poolFilters: [],
-            homeEducationItems: []
+            homeEducationItems: [],
+            blacklistedTokens: []
           }
   );
 
