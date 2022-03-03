@@ -57,8 +57,8 @@ export default class GasPriceService {
       if (gasPrice != null) {
         if (
           ethereumTxType.value === EthereumTxType.EIP1559 &&
-          options.maxFeePerGas != null &&
-          options.maxPriorityFeePerGas != null &&
+          gasPrice.maxFeePerGas != null &&
+          gasPrice.maxPriorityFeePerGas != null &&
           !forceEthereumLegacyTxType
         ) {
           gasSettings.maxFeePerGas = gasPrice.maxFeePerGas;
