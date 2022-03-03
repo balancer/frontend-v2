@@ -11,6 +11,16 @@ import TermsOfUsePage from '@/pages/terms-of-use.vue';
 import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
 
+declare module 'vue-router' {
+  interface RouteMeta {
+    layout?: string;
+    bgColors?: {
+      dark: string;
+      light: string;
+    };
+  }
+}
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
