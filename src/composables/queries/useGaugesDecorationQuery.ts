@@ -40,12 +40,7 @@ export default function useGaugesDecorationQuery(
    */
   const queryFn = async () => {
     if (!gauges.value) return undefined;
-    const decoratedGauges = await gaugesDecorator.decorate(
-      gauges.value,
-      account.value
-    );
-    console.log('decoratedGauges', decoratedGauges);
-    return decoratedGauges;
+    return await gaugesDecorator.decorate(gauges.value, account.value);
   };
 
   /**
