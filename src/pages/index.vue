@@ -146,7 +146,6 @@ export default defineComponent({
 
     const showMigrationColumn = computed(() =>
       userPools.value?.some(pool => {
-        console.log(pool.shares);
         return (
           isMigratablePool(pool) &&
           // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
