@@ -24,7 +24,7 @@ export class GaugesDecorator {
   }
 
   /**
-   * @summary Decorate subgraph gauge schema with onchain data using multicalls.
+   * @summary Combine subgraph gauge schema with onchain data using multicalls.
    */
   async decorate(
     subgraphGauges: SubgraphGauge[],
@@ -61,7 +61,8 @@ export class GaugesDecorator {
   }
 
   /**
-   * @summary Fetch list of reward token addresses for gauge.
+   * @summary Add multicaller calls that fetch list of reward token addresses for each gauge
+   * in given array of gauges.
    */
   private callRewardTokens(subgraphGauges: SubgraphGauge[]) {
     subgraphGauges.forEach(gauge => {
@@ -77,15 +78,19 @@ export class GaugesDecorator {
   }
 
   /**
-   * @summary The rewardTokens array is filled with the zero address
-   * if no reward tokens have been added.
+   * @summary Filter out zero addresses from reward tokens array.
+   * @description There can be up to 8 reward tokens for a gauge.
+   * The onchain call for reward tokens returns an array of length 8
+   * with each position filled with the zero address if a reward token
+   * has not been added.
    */
   private formatRewardTokens(rewardTokens: string[]): string[] {
     return rewardTokens.filter(token => token !== AddressZero);
   }
 
   /**
-   * @summary Fetch user's claimable BAL for each gauge.
+   * @summary Add multicaller calls that fetch the user's claimable BAL
+   * for each gauge in given array of gauges.
    */
   private callClaimableTokens(
     subgraphGauges: SubgraphGauge[],
@@ -102,7 +107,7 @@ export class GaugesDecorator {
   }
 
   /**
-   * @summary Fetch claimable amounts for reward tokens,
+   * @summary Add multicaller calls that fetch the claimable amounts for reward tokens,
    * e.g. non BAL rewards on gauge.
    */
   private callClaimableRewards(
@@ -125,7 +130,7 @@ export class GaugesDecorator {
   }
 
   /**
-   * @summary Convert BigNumbers to strings
+   * @summary converts claimable reward values in map to strings from BigNumbers.
    */
   private formatClaimableRewards(
     claimableRewards: Record<string, string>
