@@ -34,11 +34,6 @@ const routes: RouteRecordRaw[] = [
     component: TradePage
   },
   {
-    path: '/claim',
-    name: 'claim',
-    component: ClaimPage
-  },
-  {
     path: '/swap/:assetIn?/:assetOut?',
     redirect: to => {
       return `/trade${to.path.split('/swap')[1]}`;
@@ -109,7 +104,17 @@ const routes: RouteRecordRaw[] = [
 if (
   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
 ) {
-  // routes.push();
+  routes.push({
+    path: '/claim',
+    name: 'claim',
+    component: ClaimPage,
+    meta: {
+      bgColors: {
+        light: 'bg-gray-50',
+        dark: 'bg-gray-800'
+      }
+    }
+  });
 }
 
 const router = createRouter({
