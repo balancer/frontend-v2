@@ -20,8 +20,6 @@ import useAlerts, {
 } from './composables/useAlerts';
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
-import useGaugesQuery from './composables/queries/useGaugesQuery';
-import useGaugesDecorationQuery from './composables/queries/useGaugesDecorationQuery';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -82,9 +80,6 @@ export default defineComponent({
       };
       addAlert(featureAlert);
     }
-
-    const { data: rawGauges } = useGaugesQuery();
-    useGaugesDecorationQuery(rawGauges);
 
     /**
      * CALLBACKS
