@@ -80,6 +80,7 @@ const POOLS_KOVAN: Pools = {
     '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
     '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',
     '0xc66ba2b6595d3613ccab350c886ace23866ede24': 'stablePool',
+    '0x1b57f637ce3408f1f834b0b70f9a595b062daea7': 'liquidityBootstrappingPool',
     '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
     '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'managedPool', // Kovan Managed
