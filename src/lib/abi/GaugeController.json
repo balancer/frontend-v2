@@ -287,27 +287,6 @@
     ]
   },
   {
-    "stateMutability": "view",
-    "type": "function",
-    "name": "gauge_relative_weight",
-    "inputs": [
-      {
-        "name": "addr",
-        "type": "address"
-      },
-      {
-        "name": "time",
-        "type": "uint256"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ]
-  },
-  {
     "stateMutability": "nonpayable",
     "type": "function",
     "name": "gauge_relative_weight_write",
