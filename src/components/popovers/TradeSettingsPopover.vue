@@ -24,24 +24,6 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div v-if="!hideLiquidity" class="mt-6">
-      <div class="flex items-baseline">
-        <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
-        <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
-          </template>
-          <div v-text="$t('whichPools')" />
-        </BalTooltip>
-      </div>
-      <div class="flex mt-1">
-        <BalBtnGroup
-          :options="tradeLiquidityOptions"
-          v-model="appTradeLiquidity"
-          @update:modelValue="setTradeLiquidity"
-        />
-      </div>
-    </div>
     <div v-if="isEIP1559SupportedNetwork" class="mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
@@ -96,23 +78,13 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  computed,
-  toRefs,
-  PropType,
-  Ref
-} from 'vue';
+import { defineComponent, computed, toRefs, PropType, Ref } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 
-import {
-  tradeLiquidityOptions,
-  ethereumTxTypeOptions
-} from '@/constants/options';
+import { ethereumTxTypeOptions } from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useEthereumTxType from '@/composables/useEthereumTxType';
@@ -144,31 +116,16 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const {
-      explorerLinks,
-      isV1Supported,
-      isEIP1559SupportedNetwork
-    } = useWeb3();
+    const { explorerLinks, isEIP1559SupportedNetwork } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
-    // DATA
-    const data = reactive({
-      tradeLiquidityOptions
-    });
-
     // COMPUTED
-    const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTransactionDeadline = computed<number>(
       () => store.state.app.transactionDeadline
     );
-    const hideLiquidity = computed(
-      () => !isV1Supported || context.value === TradeSettingsContext.invest
-    );
 
     // METHODS
-    const setTradeLiquidity = tradeLiquidity =>
-      store.commit('app/setTradeLiquidity', tradeLiquidity);
     const setTransactionDeadline = transactionDeadline =>
       store.commit('app/setTransactionDeadline', transactionDeadline);
 
@@ -181,18 +138,13 @@ export default defineComponent({
     }
 
     return {
-      // data
-      ...toRefs(data),
       Goals,
       // types,
       TradeSettingsContext,
       // computed
-      appTradeLiquidity,
       appTransactionDeadline,
-      hideLiquidity,
       isEIP1559SupportedNetwork,
       // methods
-      setTradeLiquidity,
       setTransactionDeadline,
       fNum,
       explorer: explorerLinks,

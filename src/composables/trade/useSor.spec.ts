@@ -71,13 +71,11 @@ describe('useSor', () => {
 
 describe('setSwapCost', () => {
   const sorManager = new SorManager(
-    false,
     rpcProviderService.jsonProvider,
     BigNumber.from(1),
     1,
     1,
-    '1',
-    'source'
+    '1'
   );
 
   const mockedSorManager = jest.mocked(sorManager);
