@@ -1,4 +1,4 @@
-import { isMainnet } from '@/composables/useNetwork';
+import { isMainnet, networkId } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
 
 export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
@@ -32,7 +32,58 @@ export type Pools = {
   Factories: Record<string, FactoryType>;
 };
 
-export const POOLS: Pools = {
+const POOLS_KOVAN: Pools = {
+  IdsMap: {
+    [Network.MAINNET]: {
+      staBAL:
+        '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+      bbAaveUSD:
+        '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
+    },
+    [Network.KOVAN]: {
+      staBAL:
+        '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e',
+      bbAaveUSD:
+        '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8'
+    }
+  },
+  Pagination: {
+    PerPage: 10
+  },
+  DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
+  ZeroAddress: '0x0000000000000000000000000000000000000000',
+  DynamicFees: {
+    Gauntlet: ['']
+  },
+  BlockList: [''],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear'],
+  Stable: {
+    AllowList: [
+      '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
+      '0xe08590bde837eb9b2d42aa1196469d6e08fe96ec000200000000000000000101', // kovan
+      '0xb4c23af48e79f73e3a7e36c0e54eb38e1ce1755e0002000000000000000000d3', // kovan
+      '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8', // kovan bb-a-USD,
+      '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e' // kovan staBAL3,
+    ]
+  },
+  Investment: {
+    AllowList: [
+      '0x4fd63966879300cafafbb35d157dc5229278ed23000100000000000000000169', // kovan
+      '0x37a6fc079cad790e556baedda879358e076ef1b3000100000000000000000348' // WSB Kovan
+    ]
+  },
+  Factories: {
+    '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
+    '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',
+    '0xc66ba2b6595d3613ccab350c886ace23866ede24': 'stablePool',
+    '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
+    '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
+    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'managedPool', // Kovan Managed
+    '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
+  }
+};
+
+const POOLS_GENERIC: Pools = {
   IdsMap: {
     [Network.MAINNET]: {
       staBAL:
@@ -155,3 +206,6 @@ export const POOLS: Pools = {
     '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
   }
 };
+
+export const POOLS: Pools =
+  networkId.value == Network.KOVAN ? POOLS_KOVAN : POOLS_GENERIC;
