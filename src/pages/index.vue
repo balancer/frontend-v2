@@ -22,6 +22,7 @@
             showPoolShares
             class="mb-8"
           />
+          <StakedPoolsTable :userPools="userPools" />
           <BalStack vertical spacing="sm">
             <h5>{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
@@ -122,14 +123,16 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
+import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 
 export default defineComponent({
   components: {
     TokenSearchInput,
     PoolsTable,
     FeaturedPools,
-    StakePreviewModal
-  },
+    StakePreviewModal,
+    StakedPoolsTable
+},
 
   setup() {
     /**

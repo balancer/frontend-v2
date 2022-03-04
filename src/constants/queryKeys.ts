@@ -130,6 +130,14 @@ const QUERY_KEYS = {
         'user',
         { userAddress }
       ]
+    },
+    StakablePools: {
+      All: (poolAddresses: Ref<string[]>) => [
+        'gauges',
+        'pools',
+        'all',
+        { poolAddresses }
+      ]
     }
   }
 };

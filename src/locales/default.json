@@ -442,6 +442,7 @@
     "poolReturns": "Pool returns",
     "poolSymbol": "Pool symbol",
     "poolsToMigrate": "Pools to migrate",
+    "poolsToStake": "Pools to stake",
     "poolTokenName": "Pool token name",
     "poolTransactions": {
         "title": "Pool transactions",
