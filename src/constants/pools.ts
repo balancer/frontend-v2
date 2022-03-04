@@ -82,7 +82,7 @@ export const POOLS = {
   },
   Factories: {
     '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
-    '0x0Dd2D4eFEaC51E4940376F9AC4D39E284646E574': 'weightedPool', // Celo
+    '0x5463374B7127dcDdfD68B3A437f53CDF1B4A5264': 'weightedPool', // Celo
     '0x8A217be3f8745efc522C49C66e1618699AF5bFAD': 'stablePool', // Celo
     '0x67d27634e44793fe63c467035e31ea8635117cd4': 'stablePool', // Metastable
     '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan

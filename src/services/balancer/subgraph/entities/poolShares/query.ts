@@ -3,7 +3,7 @@ import { merge } from 'lodash';
 const defaultArgs = {
   first: 1000,
   where: {
-    balance_gt: 0
+    // balance_gt: 0 // TODO:
   }
 };
 
