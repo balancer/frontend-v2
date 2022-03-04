@@ -45,10 +45,10 @@ const networkBtns = computed(() => {
         </BalBtn>
       </div>
       <div class="grid gap-4 grid-cols-2 grid-rows-2">
-        <StatCard label="My claimable incentives" value="$10,400.00" />
-        <StatCard label="My 30d yield" value="$480.56" />
-        <StatCard label="My 24h yield" value="$12.6845" />
-        <StatCard label="My 24h APR" value="12.46%" />
+        <StatCard label="My claimable incentives" value="-" />
+        <StatCard label="My 30d yield" value="-" />
+        <StatCard label="My 24h yield" value="-" />
+        <StatCard label="My 24h APR" value="-" />
       </div>
     </div>
   </div>
