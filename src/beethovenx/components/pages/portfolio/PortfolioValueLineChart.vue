@@ -138,7 +138,7 @@ export default defineComponent({
             color: tailwind.theme.colors.gray[300],
             fontSize: 14,
             formatter: value =>
-              `$${numeral(value).format(value > 1000 ? '0a' : '0.[00]')}`
+              `$${numeral(value).format(value > 999 ? '0.0a' : '0.[00]')}`
           },
           splitLine: {
             lineStyle: {
