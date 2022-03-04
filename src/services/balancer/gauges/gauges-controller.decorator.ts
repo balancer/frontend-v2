@@ -4,11 +4,9 @@ import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { AddressZero } from '@ethersproject/constants';
 import {
-  Gauge,
-  OnchainGaugeData,
-  OnchainGaugeDataMap,
-  SubgraphGauge
-} from './types';
+  Pool,
+  PoolWithGauge
+} from '@/services/balancer/subgraph/types';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -27,12 +25,12 @@ export class GaugesControllerDecorator {
    * @summary Decorate subgraph gauge schema with onchain data using multicalls.
    */
   async decorate(
-    subgraphGauges: SubgraphGauge[],
+    pools: PoolWithGauge[],
     userAddress: string
-  ): Promise<Gauge[]> {
+  ): Promise<PoolWithGauge[]> {
     this.resetMulticaller();
-    this.callGaugeVotes(subgraphGauges);
-    this.callUserGaugeVotes(subgraphGauges, userAddress);
+    this.callGaugeVotes(pools);
+    this.callUserGaugeVotes(pools, userAddress);
 
     let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
 
@@ -49,94 +47,36 @@ export class GaugesControllerDecorator {
   }
 
   /**
-   * @summary Format raw onchain data fetched from multicalls.
-   */
-  private format(gaugeData: OnchainGaugeData): OnchainGaugeData {
-    return {
-      ...gaugeData,
-      rewardTokens: this.formatRewardTokens(gaugeData.rewardTokens),
-      claimableTokens: gaugeData.claimableTokens.toString(),
-      claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards)
-    };
-  }
-
-  /**
    * @summary Fetch list of reward token addresses for gauge.
    */
-  private callRewardTokens(subgraphGauges: SubgraphGauge[]) {
-    subgraphGauges.forEach(gauge => {
+  private callGaugeVotes(pools: PoolWithGauge[]) {
+    pools.forEach(pool => {
       for (let i = 0; i < MAX_REWARD_TOKENS; i++) {
         this.multicaller.call(
-          `${gauge.id}.rewardTokens[${i}]`,
-          gauge.id,
-          'reward_tokens',
-          [i]
+          `${pool.id}.gauge.votes`,
+          pool.gauge.address,
+          'gauge_relative_weight',
+          [pool.gauge.address]
         );
       }
     });
   }
 
   /**
-   * @summary The rewardTokens array is filled with the zero address
-   * if no reward tokens have been added.
-   */
-  private formatRewardTokens(rewardTokens: string[]): string[] {
-    return rewardTokens.filter(token => token !== AddressZero);
-  }
-
-  /**
    * @summary Fetch user's claimable BAL for each gauge.
    */
-  private callClaimableTokens(
-    subgraphGauges: SubgraphGauge[],
+  private callUserGaugeVotes(
+    pools: PoolWithGauge[],
     userAddress: string
   ) {
-    subgraphGauges.forEach(gauge => {
+    pools.forEach(pool => {
       this.multicaller.call(
-        `${gauge.id}.claimableTokens`,
-        gauge.id,
-        'claimable_tokens',
-        [userAddress]
+        `${pool.id}.gauge.userVotes`,
+        pool.id,
+        'vote_user_slopes',
+        [userAddress, pool.gauge.address]
       );
     });
-  }
-
-  /**
-   * @summary Fetch claimable amounts for reward tokens,
-   * e.g. non BAL rewards on gauge.
-   */
-  private callClaimableRewards(
-    subgraphGauges: SubgraphGauge[],
-    userAddress: string,
-    gaugesDataMap: OnchainGaugeDataMap
-  ) {
-    subgraphGauges.forEach(gauge => {
-      gaugesDataMap[gauge.id].rewardTokens.forEach(rewardToken => {
-        if (rewardToken === AddressZero) return;
-
-        this.multicaller.call(
-          `${gauge.id}.claimableRewards.${rewardToken}`,
-          gauge.id,
-          'claimable_reward',
-          [userAddress, rewardToken]
-        );
-      });
-    });
-  }
-
-  /**
-   * @summary Convert BigNumbers to strings
-   */
-  private formatClaimableRewards(
-    claimableRewards: Record<string, string>
-  ): Record<string, string> {
-    if (!claimableRewards) return {};
-
-    Object.keys(claimableRewards).forEach(rewardToken => {
-      claimableRewards[rewardToken] = claimableRewards[rewardToken].toString();
-    });
-
-    return claimableRewards;
   }
 
   private resetMulticaller(): Multicaller {

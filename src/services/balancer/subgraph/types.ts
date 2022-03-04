@@ -18,7 +18,7 @@ export enum PoolType {
 }
 export type TimeTravelPeriod = '24h';
 
-export interface Network {
+export interface Chain {
   id: string;
   name: string;
   subdomain?: string;
@@ -185,8 +185,8 @@ export interface GaugeInformation {
   userVotes: string;
 }
 
-export interface DecoratedPoolWithGaugeShares extends DecoratedPoolWithShares {
-  network: Network;
+export interface PoolWithGauge extends Pool {
+  chain: Chain;
   gauge: GaugeInformation;
 }
 

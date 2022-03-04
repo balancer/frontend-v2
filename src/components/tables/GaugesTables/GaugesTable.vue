@@ -4,42 +4,33 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 import {
-  DecoratedPoolWithGaugeShares,
-  PoolToken
+  PoolToken,
+  PoolWithGauge
 } from '@/services/balancer/subgraph/types';
 
 import { getAddress } from '@ethersproject/address';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useFathom from '@/composables/useFathom';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
   isStableLike,
   isStablePhantom,
-  isMigratablePool
 } from '@/composables/usePool';
 
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import GaugeVote from '@/components/vebal/GaugeVote.vue';
-
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 
 /**
  * TYPES
  */
 type Props = {
-  data?: DecoratedPoolWithGaugeShares[];
+  data?: PoolWithGauge[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
-  showPoolShares?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
-  selectedTokens?: string[];
-  showMigrationColumn?: boolean;
 };
 
 /**
@@ -49,7 +40,6 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoadingMore: false,
   showPoolShares: false,
-  showMigrationColumn: false,
   noPoolsLabel: 'No pools',
   isPaginated: false
 });
@@ -62,21 +52,20 @@ const emit = defineEmits(['loadMore']);
 const { fNum2 } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
-const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 /**
  * DATA
  */
-const columns = ref<ColumnDefinition<DecoratedPoolWithGaugeShares>[]>([
+const columns = ref<ColumnDefinition<PoolWithGauge>[]>([
   {
-    name: 'Network',
-    id: 'network',
-    accessor: 'uri',
-    Header: 'networkColumnHeader',
-    Cell: 'networkColumnCell',
-    width: 125,
+    name: t('veBAL.liquidityMining.table.chain'),
+    id: 'chain',
+    accessor: '',
+    Header: 'chainColumnHeader',
+    Cell: 'chainCell',
+    width: 150,
     noGrow: true
   },
   {
@@ -136,12 +125,12 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithGaugeShares>[]>([
 /**
  * METHODS
  */
-function orderedTokenAddressesFor(pool: DecoratedPoolWithGaugeShares) {
+function orderedTokenAddressesFor(pool: PoolWithGauge) {
   const sortedTokens = orderedPoolTokens(pool);
   return sortedTokens.map(token => getAddress(token.address));
 }
 
-function orderedPoolTokens(pool: DecoratedPoolWithGaugeShares): PoolToken[] {
+function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
   if (isStablePhantom(pool.poolType))
     return pool.tokens.filter(token => token.address !== pool.address);
   if (isStableLike(pool.poolType)) return pool.tokens;
@@ -175,7 +164,7 @@ function orderedPoolTokens(pool: DecoratedPoolWithGaugeShares): PoolToken[] {
         sortDirection: 'desc'
       }"
     >
-      <template v-slot:networkColumnHeader>
+      <template v-slot:chainColumnHeader>
         <div class="flex items-center">
           <img
             v-if="darkMode"
@@ -223,7 +212,6 @@ function orderedPoolTokens(pool: DecoratedPoolWithGaugeShares): PoolToken[] {
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
-            :selectedTokens="selectedTokens"
           />
           <BalChip
             v-if="pool.dynamic.isNewPool"

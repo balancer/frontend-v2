@@ -9,13 +9,15 @@ export default function useGauges() {
   // const gaugesQuery = useGaugesQuery();
 
   // COMPUTED
-  const gauges = require('@/constants/gauges.json');
+  const rawGauges = require('@/constants/gauges.json');
 
-  // const gauges = computed(() =>
-  //   gaugesQuery.data.value
-  //     ? flatten(gaugesQuery.data.value.pages.map(page => page.tokens))
-  //     : []
-  // );
+  // const decoratedGauges = 
+
+  const gauges = computed(() =>
+    gaugesQuery.data.value
+      ? flatten(gaugesQuery.data.value.pages.map(page => page.tokens))
+      : []
+  );
 
   const isLoadingGauges = false;
 
