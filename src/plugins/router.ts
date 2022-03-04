@@ -10,6 +10,7 @@ import MigratePoolPage from '@/pages/pool/migrate.vue';
 import TermsOfUsePage from '@/pages/terms-of-use.vue';
 import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
+import ClaimPage from '@/pages/claim.vue';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -103,7 +104,17 @@ const routes: RouteRecordRaw[] = [
 if (
   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
 ) {
-  // routes.push();
+  routes.push({
+    path: '/claim',
+    name: 'claim',
+    component: ClaimPage,
+    meta: {
+      bgColors: {
+        light: 'bg-gray-50',
+        dark: 'bg-gray-800'
+      }
+    }
+  });
 }
 
 const router = createRouter({
