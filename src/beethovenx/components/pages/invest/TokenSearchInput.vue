@@ -12,6 +12,7 @@ import { GqlBeetsConfigPoolFilterItem } from '@/beethovenx/services/beethovenx/b
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
+import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
 
 type Props = {
   modelValue: string[];
@@ -33,6 +34,7 @@ const { fNum } = useNumbers();
 const selectTokenModal = ref(false);
 const { tokens, balances, dynamicDataLoading } = useTokens();
 const { account, appNetworkConfig } = useWeb3();
+const { beethovenxConfig } = useBeethovenxConfig();
 
 // sorted by biggest bag balance, limited to biggest 5
 const sortedBalances = computed(() => {
@@ -52,10 +54,8 @@ const whiteListedTokens = computed(() =>
   Object.values(tokens.value)
     .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
     .filter(token => !isTokenSelected(token.address))
-    // filter out duplicates as well (eg yvUSDC, yvDAI are filtered in somewhere)
     .filter(
-      (token, index, self) =>
-        self.findIndex(t => t.symbol === token.symbol) === index
+      token => !beethovenxConfig.value.blacklistedTokens.includes(token.address)
     )
 );
 
