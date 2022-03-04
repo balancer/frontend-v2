@@ -34,14 +34,13 @@ const networkBtns = computed(() => {
     <div class="grid gap-24 grid-cols-2 grid-rows-1">
       <div class="">
         <h1 class="font-body font-bold text-4xl">
-          Claim all of your liquidity incentives
+          {{ $t('pages.claim.title') }}
         </h1>
         <p class="text-lg text-gray-600 mt-2">
-          The Balancer protocol provides incentives to attract liquidity in
-          eligible pools.
+          {{ $t('pages.claim.description') }}
         </p>
         <BalBtn outline class="mt-4">
-          Learn more
+          {{ $t('learnMore') }}
           <BalIcon name="arrow-up-right" class="ml-2" />
         </BalBtn>
       </div>
@@ -56,11 +55,11 @@ const networkBtns = computed(() => {
   <div class="bg-gray-50">
     <div class="lg:container lg:mx-auto py-12">
       <h2 class="font-body font-bold text-2xl">
-        {{ configService.network.chainName }} liquidity incentives
+        {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
       <h2 class="font-body font-bold text-2xl">
-        Incentives on other networks
+        {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
       </h2>
       <div class="flex mt-4">
         <BalBtn
@@ -76,7 +75,7 @@ const networkBtns = computed(() => {
             alt="Arbitrum"
             class="w-6 h-6 rounded-full shadow-sm mr-2"
           />
-          Claim on {{ network.name }}
+          {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
         </BalBtn>
       </div>
     </div>
