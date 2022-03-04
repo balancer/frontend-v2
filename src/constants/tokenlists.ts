@@ -32,10 +32,10 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     Balancer: {
       Default:
         'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/symmetric-v2/src/data/listed.tokenlist.json',
-        // 'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/develop/src/lib/config/listed.tokenlist.json',
+      // 'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/develop/src/lib/config/listed.tokenlist.json',
       Vetted:
-        'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/symmetric-v2/src/data/listed.tokenlist.json',
-        // 'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/develop/src/lib/config/listed.tokenlist.json'
+        'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/symmetric-v2/src/data/listed.tokenlist.json'
+      // 'https://raw.githubusercontent.com/centfinance/Symmetric.WebInterface-v2/develop/src/lib/config/listed.tokenlist.json'
     },
     External: [
       'ipns://tokens.uniswap.org'
