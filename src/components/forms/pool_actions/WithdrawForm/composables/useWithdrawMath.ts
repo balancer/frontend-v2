@@ -502,15 +502,19 @@ export default function useWithdrawMath(
       });
       batchSwapLoading.value = false;
       return result;
-    } catch (err) {
-      // queryBatchSwapWithSor can fail if amounts are greater than supported by pool balances
-      // in this case we can return 0 amounts which will lead to an attempt via getBatchRelayerSwap()
-      batchSwapLoading.value = false;
-      return {
-        returnAmounts: Array(amounts.length).fill('0'),
-        swaps: [],
-        assets: []
-      };
+    } catch (error) {
+      if ((error as Error).message.includes('SOR Swap returned 0 amount')) {
+        // The batch swap can fail if amounts are greater than supported by pool balances
+        // in this case we can return 0 amounts which will lead to an attempt via getBatchRelayerSwap()
+        batchSwapLoading.value = false;
+        return {
+          returnAmounts: Array(amounts.length).fill('0'),
+          swaps: [],
+          assets: []
+        };
+      } else {
+        throw error;
+      }
     }
   }
 
