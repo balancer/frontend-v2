@@ -52,6 +52,8 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     return flattened;
   });
 
+  const bptAddresses = computed(() => pools.value.map(pool => pool.address));
+
   const decoratedFarms = computed(() => {
     //here we replace the old farm with the fbeets farm on fidellio duetto.
     const mappedFarms = farms.value
@@ -179,6 +181,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   return {
     // computed
     pools,
+    bptAddresses,
     communityPools,
     beethovenPools,
     tokens,

@@ -6,6 +6,7 @@ import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
+import usePools from '@/composables/pools/usePools';
 
 /**
  * TYPES
@@ -92,6 +93,8 @@ const rateLabel = computed(() => {
   return `1 ${inSymbol} = ${fNum(rate, 'token')} ${outSymbol}`;
 });
 
+const { bptAddresses } = usePools();
+
 /**
  * METHODS
  */
@@ -135,7 +138,7 @@ watchEffect(() => {
       name="tokenIn"
       @update:amount="handleInAmountChange"
       @update:address="emit('update:tokenInAddress', $event)"
-      :excludedTokens="[_tokenOutAddress]"
+      :excludedTokens="[_tokenOutAddress, ...bptAddresses]"
       :disabled="tradeLoading"
     />
 

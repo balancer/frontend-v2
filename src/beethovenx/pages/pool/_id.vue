@@ -39,12 +39,8 @@
             <div v-html="poolFeeLabel" class="text-sm" />
             <BalTooltip>
               <template v-slot:activator>
-                <BalLink
-                  v-if="feesManagedByGauntlet"
-                  :href="EXTERNAL_LINKS.Gauntlet.Home"
-                  external
-                >
-                  <GauntletIcon class="ml-2" />
+                <BalLink v-if="hasDefaultOwner">
+                  <LudwigIcon class="ml-2" />
                 </BalLink>
                 <BalIcon
                   v-else
@@ -177,7 +173,7 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
-import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+import LudwigIcon from '@/beethovenx/components/images/LudwigIcon.vue';
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -196,6 +192,7 @@ import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCar
 import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
 import PoolVolumeChart from '@/beethovenx/components/pages/pool/PoolVolumeChart.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import useConfig from '@/composables/useConfig';
 
 interface PoolPageData {
   id: string;
@@ -206,7 +203,7 @@ export default defineComponent({
     BalLoadingBlock,
     PoolVolumeChart,
     ...PoolPageComponents,
-    GauntletIcon,
+    LudwigIcon,
     LiquidityAPRTooltip,
     FarmStatCards,
     FarmStatCardsLoading
@@ -225,6 +222,7 @@ export default defineComponent({
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
     const { balancerTokenListTokens } = useTokens();
+    const { networkConfig } = useConfig();
 
     const { pool, loadingPool, isLoadingFarms } = usePoolWithFarm(
       route.params.id as string
@@ -262,16 +260,10 @@ export default defineComponent({
     const communityManagedFees = computed(
       () => pool.value?.owner == POOLS.DelegateOwner
     );
-    const feesManagedByGauntlet = computed(
-      () =>
-        communityManagedFees.value &&
-        POOLS.DynamicFees.Gauntlet.includes(data.id)
-    );
+
     const feesFixed = computed(() => pool.value?.owner == POOLS.ZeroAddress);
     const swapFeeToolTip = computed(() => {
-      if (feesManagedByGauntlet.value) {
-        return t('feesManagedByGauntlet');
-      } else if (communityManagedFees.value) {
+      if (communityManagedFees.value) {
         return t('delegateFeesTooltip');
       } else if (feesFixed.value) {
         return t('fixedFeesTooltip');
@@ -318,9 +310,7 @@ export default defineComponent({
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
       } else if (communityManagedFees.value) {
-        return feesManagedByGauntlet.value
-          ? t('dynamicSwapFeeLabel', [feeLabel])
-          : t('communitySwapFeeLabel', [feeLabel]);
+        return t('communitySwapFeeLabel', [feeLabel]);
       }
 
       // Must be owner-controlled
@@ -351,6 +341,12 @@ export default defineComponent({
         )
       );
     });
+
+    const hasDefaultOwner = computed(
+      () =>
+        pool.value?.owner ===
+        networkConfig.addresses.defaultPoolOwner.toLowerCase()
+    );
 
     /**
      * METHODS
@@ -399,12 +395,12 @@ export default defineComponent({
       titleTokens,
       isWalletReady,
       missingPrices,
-      feesManagedByGauntlet,
       swapFeeToolTip,
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isLoadingFarms,
       hasCustomToken,
+      hasDefaultOwner,
       // methods
       fNum,
       onNewTx

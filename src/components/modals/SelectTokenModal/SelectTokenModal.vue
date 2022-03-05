@@ -124,6 +124,7 @@ import useTokens from '@/composables/useTokens';
 import { orderBy } from 'lodash';
 import useUrls from '@/composables/useUrls';
 import { TokenInfoMap } from '@/types/TokenList';
+import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
 
 interface ComponentState {
   loading: boolean;
@@ -180,6 +181,7 @@ export default defineComponent({
     } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
+    const { beethovenxConfig } = useBeethovenxConfig();
 
     /**
      * COMPUTED
@@ -214,8 +216,13 @@ export default defineComponent({
       return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
     });
 
+    const blacklistedTokens = computed(
+      () => beethovenxConfig.value.blacklistedTokens
+    );
+
     const excludedTokens = computed(() => [
       ...props.excludedTokens,
+      ...blacklistedTokens.value,
       ...(props.includeEther ? [] : [nativeAsset.address])
     ]);
 
