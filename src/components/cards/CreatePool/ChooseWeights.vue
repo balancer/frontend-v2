@@ -144,17 +144,15 @@ const weightColor = computed(() => {
 /**
  * WATCHERS
  */
-  watch(
-    () => seedTokens,
-    () => {
-      setTokensList(seedTokens.value.map(
-        w => w.tokenAddress
-      ));
-    },
-    {
-      deep: true
-    }
-  );
+watch(
+  () => seedTokens,
+  () => {
+    setTokensList(seedTokens.value.map(w => w.tokenAddress));
+  },
+  {
+    deep: true
+  }
+);
 
 /**
  * LIFECYCLE

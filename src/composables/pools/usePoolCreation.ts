@@ -1,4 +1,4 @@
-import { ref, reactive, toRefs, watch, computed } from 'vue';
+import { ref, reactive, toRefs, computed } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -412,7 +412,7 @@ export default function usePoolCreation() {
           name: poolCreationState.name
         }
       });
-1
+      1;
       txListener(tx, {
         onTxConfirmed: async () => {
           const poolDetails = await balancerService.pools.weighted.details(
