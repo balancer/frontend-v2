@@ -11,7 +11,7 @@ export default class GaugeControllerService {
     protected readonly config: ConfigService = configService,
     private readonly web3: Web3Service = web3Service
   ) {
-    this.abi = GaugeControllerAbi.abi;
+    this.abi = GaugeControllerAbi;
   }
 
   get address() {
@@ -45,7 +45,6 @@ export default class GaugeControllerService {
       options
     );
   }
-
 }
 
 export const gaugeControllerService = new GaugeControllerService();

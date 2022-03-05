@@ -1,20 +1,25 @@
-import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
+import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { AddressZero } from '@ethersproject/constants';
-import {
-  Pool,
-  PoolWithGauge
-} from '@/services/balancer/subgraph/types';
+import { GaugeInformation, PoolWithGauge } from '@/services/balancer/subgraph/types';
 
 const MAX_REWARD_TOKENS = 8;
+
+interface GaugeInfo {
+  userVotes: any;
+  votes: any;
+}
+
+interface GaugesDataMap {
+  gauge: GaugeInfo;
+}
 
 export class GaugesControllerDecorator {
   multicaller: Multicaller;
 
   constructor(
-    private readonly abi = LiquidityGaugeAbi,
+    private readonly abi = GaugeControllerAbi,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly config = configService
   ) {
@@ -28,22 +33,28 @@ export class GaugesControllerDecorator {
     pools: PoolWithGauge[],
     userAddress: string
   ): Promise<PoolWithGauge[]> {
-    this.resetMulticaller();
+    this.multicaller = this.resetMulticaller();
     this.callGaugeVotes(pools);
     this.callUserGaugeVotes(pools, userAddress);
 
-    let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
+    const gaugesDataMap = await this.multicaller.execute();
 
-    this.callClaimableRewards(subgraphGauges, userAddress, gaugesDataMap);
+    return pools.map(pool => {
+      const gauge = this.format(
+        pool.gauge.address,
+        gaugesDataMap[pool.id].gauge
+      );
+      const mergedPool = { ...pool, ...{ gauge } };
+      return mergedPool;
+    });
+  }
 
-    gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
-      gaugesDataMap
-    );
-
-    return subgraphGauges.map(subgraphGauge => ({
-      ...subgraphGauge,
-      ...this.format(gaugesDataMap[subgraphGauge.id])
-    }));
+  private format(gaugeAddress: string, gaugesDatamap): GaugeInformation {
+    return {
+      address: gaugeAddress,
+      votes: gaugesDatamap.votes.toString(),
+      userVotes: gaugesDatamap.userVotes.power.toString()
+    };
   }
 
   /**
@@ -51,14 +62,13 @@ export class GaugesControllerDecorator {
    */
   private callGaugeVotes(pools: PoolWithGauge[]) {
     pools.forEach(pool => {
-      for (let i = 0; i < MAX_REWARD_TOKENS; i++) {
-        this.multicaller.call(
-          `${pool.id}.gauge.votes`,
-          pool.gauge.address,
-          'gauge_relative_weight',
-          [pool.gauge.address]
-        );
-      }
+      console.log("Doing pga: ", pool.gauge.address, " id: ", pool.id);
+      this.multicaller.call(
+        `${pool.id}.gauge.votes`,
+        this.config.network.addresses.gaugeController,
+        'gauge_relative_weight',
+        [pool.gauge.address]
+      );
     });
   }
 
@@ -72,7 +82,7 @@ export class GaugesControllerDecorator {
     pools.forEach(pool => {
       this.multicaller.call(
         `${pool.id}.gauge.userVotes`,
-        pool.id,
+        this.config.network.addresses.gaugeController,
         'vote_user_slopes',
         [userAddress, pool.gauge.address]
       );

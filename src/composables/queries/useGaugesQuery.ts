@@ -2,13 +2,14 @@ import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
-import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { PoolWithGauge } from '@/services/balancer/subgraph/types';
+import { gaugesControllerDecorator } from '@/services/balancer/gauges/gauges-controller.decorator';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
  */
-type QueryResponse = SubgraphGauge[];
+type QueryResponse = PoolWithGauge[];
 
 /**
  * @summary Fetches guages list from subgraph
@@ -16,6 +17,8 @@ type QueryResponse = SubgraphGauge[];
 export default function useGaugesQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
+  const { account } = useWeb3();
+
   /**
    * QUERY KEY
    */
@@ -24,7 +27,11 @@ export default function useGaugesQuery(
   /**
    * QUERY FUNCTION
    */
-  const queryFn = () => gaugesSubgraphService.gauges.get();
+  const queryFn = async () => {
+    const rawGauges = require('@/constants/gauges.json');
+
+    return await gaugesControllerDecorator.decorate(rawGauges, account.value);
+  }
 
   /**
    * QUERY OPTIONS

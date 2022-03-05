@@ -18,6 +18,13 @@ export enum PoolType {
 }
 export type TimeTravelPeriod = '24h';
 
+export interface Network {
+  id: string;
+  name: string;
+  subdomain?: string;
+  key?: string;
+}
+
 export interface Chain {
   id: string;
   name: string;
