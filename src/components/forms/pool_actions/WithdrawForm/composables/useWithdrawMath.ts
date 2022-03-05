@@ -601,29 +601,45 @@ export default function useWithdrawMath(
     return result;
   }
 
-  function getExitPoolBatchSwapTokensOut() {
-    const mainTokens = pool.value.mainTokens || [];
+  function getExitPoolBatchSwapTokensOut(expectedAmountsOut: string[]) {
+    const batchSwapTokens = (pool.value.mainTokens || []).map((token, idx) => {
+      const linearPool = pool.value.linearPools?.find(
+        linearPool => linearPool.mainToken.address === token
+      );
+      const expectedAmountOut = parseFloat(
+        formatUnits(expectedAmountsOut[idx] || '0', 18)
+      );
+
+      if (
+        linearPool &&
+        parseFloat(linearPool.mainToken.balance) < expectedAmountOut
+      ) {
+        return linearPool.wrappedToken.address;
+      }
+
+      return token;
+    });
 
     if (!hasNestedUsdStablePhantomPool.value) {
-      return mainTokens;
+      return batchSwapTokens;
     }
 
     const usdTokens = configService.network.usdTokens;
 
-    return mainTokens.filter((mainToken, idx) => {
-      if (usdTokens.includes(mainToken)) {
+    return batchSwapTokens.filter((batchSwapToken, idx) => {
+      if (usdTokens.includes(batchSwapToken)) {
         if (isProportional.value) {
-          return mainToken.toLowerCase() === usdAsset.value.toLowerCase();
+          return batchSwapToken.toLowerCase() === usdAsset.value.toLowerCase();
         } else if (!usdTokens.includes(tokenOut.value)) {
           return (
-            mainTokens
+            batchSwapTokens
               .slice(0, idx)
               .filter(token => configService.network.usdTokens.includes(token))
               .length === 0
           );
         }
 
-        return tokenOut.value.toLowerCase() === mainToken.toLowerCase();
+        return tokenOut.value.toLowerCase() === batchSwapToken.toLowerCase();
       }
 
       return true;
@@ -633,7 +649,6 @@ export default function useWithdrawMath(
   async function getBatchRelayerExitPoolAndBatchSwap() {
     exitBatchSwapLoading.value = true;
     let expectedAmountsOut: string[];
-    const tokensOut = getExitPoolBatchSwapTokensOut();
 
     //determine expectedAmountsOut based on tokensOut
     if (isProportional.value) {
@@ -666,7 +681,7 @@ export default function useWithdrawMath(
       });
     }
 
-    //TODO: decide whether to unwrap based on pool balances
+    const tokensOut = getExitPoolBatchSwapTokensOut(expectedAmountsOut);
 
     try {
       const response = await balancer.relayer.exitPoolAndBatchSwap({

@@ -16,7 +16,8 @@ export const balancer = new BalancerSDK({
         wrappedNativeAsset: configService.network.addresses.weth
       },
       linearFactories: {
-        '0x1f73ae6ed391a2b1e84ff988a1bb5394b78a4a71': 'yearn'
+        '0x1f73ae6ed391a2b1e84ff988a1bb5394b78a4a71': 'yearn',
+        '0xba306e3cf84751d8ef5e812c18caa6c567c783e8': 'boo'
       }
     },
     urls: {

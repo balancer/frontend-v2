@@ -59,7 +59,7 @@
     "earlyLudwigNft": "0xf2558d6a252C1041a3902870B1FdB0B7524B3098",
     "merkleOrchard": "",
     "copperProxy": "0xbC8a71C75ffbd2807c021F4F81a8832392dEF93c",
-    "batchRelayer": "0x29e9A3FC00511Ab1E17e59e3156d895836F078bD",
+    "batchRelayer": "0xC852F984CA3310AFc596adeB17EfcB0542646920",
     "bbUsd": "0x5ddb92a5340fd0ead3987d3661afcd6104c3b757"
   },
   "usdTokens": ["0x04068DA6C83AFCFA0e13ba15A6696662335D5B75", "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E"],

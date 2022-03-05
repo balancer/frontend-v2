@@ -221,7 +221,11 @@ async function submit(): Promise<TransactionResponse> {
  * CALLBACKS
  */
 onBeforeMount(() => {
-  if (shouldUseBatchRelayer.value && !batchRelayerApproval.isUnlocked.value) {
+  if (
+    (shouldUseBatchRelayer.value ||
+      isWeightedPoolWithNestedLinearPools.value) &&
+    !batchRelayerApproval.isUnlocked.value
+  ) {
     // Prepend relayer approval action if batch relayer not approved
     actions.value.unshift(batchRelayerApproval.action.value);
   }
