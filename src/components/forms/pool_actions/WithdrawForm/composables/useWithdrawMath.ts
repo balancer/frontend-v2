@@ -626,24 +626,47 @@ export default function useWithdrawMath(
 
     const usdTokens = configService.network.usdTokens;
 
-    return batchSwapTokens.filter((batchSwapToken, idx) => {
-      if (usdTokens.includes(batchSwapToken)) {
-        if (isProportional.value) {
-          return batchSwapToken.toLowerCase() === usdAsset.value.toLowerCase();
-        } else if (!usdTokens.includes(tokenOut.value)) {
-          return (
-            batchSwapTokens
-              .slice(0, idx)
-              .filter(token => configService.network.usdTokens.includes(token))
-              .length === 0
-          );
+    return batchSwapTokens
+      .filter((batchSwapToken, idx) => {
+        if (usdTokens.includes(batchSwapToken)) {
+          if (isProportional.value) {
+            return (
+              batchSwapToken.toLowerCase() === usdAsset.value.toLowerCase()
+            );
+          } else if (!usdTokens.includes(tokenOut.value)) {
+            return (
+              batchSwapTokens
+                .slice(0, idx)
+                .filter(token =>
+                  configService.network.usdTokens.includes(token)
+                ).length === 0
+            );
+          }
+
+          return tokenOut.value.toLowerCase() === batchSwapToken.toLowerCase();
         }
 
-        return tokenOut.value.toLowerCase() === batchSwapToken.toLowerCase();
-      }
+        return true;
+      })
+      .map((batchSwapToken, idx) => {
+        if (configService.network.usdTokens.includes(batchSwapToken)) {
+          const linearPool = pool.value.linearPools?.find(
+            linearPool => linearPool.mainToken.address === batchSwapToken
+          );
+          const expectedAmountOut = parseFloat(
+            formatUnits(expectedAmountsOut[idx] || '0', 18)
+          );
 
-      return true;
-    });
+          if (
+            linearPool &&
+            parseFloat(linearPool.mainToken.balance) < expectedAmountOut
+          ) {
+            return linearPool.wrappedToken.address;
+          }
+        }
+
+        return batchSwapToken;
+      });
   }
 
   async function getBatchRelayerExitPoolAndBatchSwap() {
