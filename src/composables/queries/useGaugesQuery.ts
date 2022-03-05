@@ -22,15 +22,18 @@ export default function useGaugesQuery(
   /**
    * QUERY KEY
    */
-  const queryKey = reactive(QUERY_KEYS.Gauges.All());
+  const queryKey = QUERY_KEYS.Gauges.All();
 
   /**
    * QUERY FUNCTION
    */
   const queryFn = async () => {
     const rawGauges = require('@/constants/gauges.json');
-
-    return await gaugesControllerDecorator.decorate(rawGauges, account.value);
+    const decoratedGauges = await gaugesControllerDecorator.decorate(
+      rawGauges,
+      account.value
+    );
+    return decoratedGauges;
   }
 
   /**

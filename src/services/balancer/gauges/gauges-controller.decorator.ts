@@ -62,7 +62,6 @@ export class GaugesControllerDecorator {
    */
   private callGaugeVotes(pools: PoolWithGauge[]) {
     pools.forEach(pool => {
-      console.log("Doing pga: ", pool.gauge.address, " id: ", pool.id);
       this.multicaller.call(
         `${pool.id}.gauge.votes`,
         this.config.network.addresses.gaugeController,
