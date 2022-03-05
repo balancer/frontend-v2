@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, nextTick, onBeforeUpdate } from 'vue';
+import { computed, onMounted, ref, nextTick, onBeforeUpdate, watch } from 'vue';
 
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
@@ -34,13 +34,14 @@ const emptyTokenWeight: PoolSeedToken = {
  * COMPOSABLES
  */
 const {
-  seedTokens,
   updateTokenWeights,
   proceed,
+  acceptCustomTokenDisclaimer,
+  setTokensList,
+  seedTokens,
   tokensList,
   totalLiquidity,
   hasInjectedToken,
-  acceptCustomTokenDisclaimer,
   acceptedCustomTokenDisclaimer
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -139,6 +140,21 @@ const weightColor = computed(() => {
   }
   return darkMode.value ? 'text-gray-300' : 'text-gray-800';
 });
+
+/**
+ * WATCHERS
+ */
+  watch(
+    () => seedTokens,
+    () => {
+      setTokensList(seedTokens.value.map(
+        w => w.tokenAddress
+      ));
+    },
+    {
+      deep: true
+    }
+  );
 
 /**
  * LIFECYCLE
