@@ -1,8 +1,36 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onBeforeMount, watch } from 'vue';
 import StatCard from '@/components/cards/StatCard/StatCard.vue';
 import { configService } from '@/services/config/config.service';
+import useGaugesQuery from '@/composables/queries/useGaugesQuery';
+import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
+import { Gauge } from '@/services/balancer/gauges/types';
+import useTokens from '@/composables/useTokens';
+import useSimplePoolsQuery from '@/composables/queries/useSimplePoolsQuery';
+import { Pool } from '@/services/balancer/subgraph/types';
+import { uniq } from 'lodash';
+import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import { TOKENS } from '@/constants/tokens';
+import { networkId } from '@/composables/useNetwork';
 
+/**
+ * COMPOSABLES
+ */
+const { injectTokens, getTokens, getToken } = useTokens();
+
+const { data: subgraphGauges } = useGaugesQuery();
+const gauges = useGaugesDecorationQuery(subgraphGauges);
+
+const gaugePoolAddresses = computed(() => {
+  if (!gauges.data.value) return [];
+  return gauges.data.value.map(gauge => gauge.poolId);
+});
+
+const pools = useSimplePoolsQuery(gaugePoolAddresses);
+
+/**
+ * CONSTANTS
+ */
 const networks = [
   {
     id: 'ethereum',
@@ -24,8 +52,62 @@ const networks = [
   }
 ];
 
+/**
+ * COMPUTED
+ */
 const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
+});
+
+const gaugeQueryLoading = computed(
+  (): boolean =>
+    gauges.isLoading.value || gauges.isIdle.value || !!gauges.error.value
+);
+
+const poolQueryLoading = computed(
+  (): boolean =>
+    pools.isLoading.value || pools.isIdle.value || !!pools.error.value
+);
+
+const rewardTokens = computed(
+  (): TokenInfoMap => {
+    if (!gauges.data.value) return {};
+
+    const addresses = uniq(
+      gauges.data.value.map(gauge => gauge.rewardTokens).flat()
+    );
+    return getTokens(addresses);
+  }
+);
+
+const balToken = computed(
+  (): TokenInfo => getToken(TOKENS.AddressMap[networkId.value.toString()].BAL)
+);
+
+/**
+ * METHODS
+ */
+async function injectRewardTokens(gauges: Gauge[]): Promise<void> {
+  const allRewardTokens = gauges.map(gauge => gauge.rewardTokens).flat();
+  return await injectTokens(allRewardTokens);
+}
+
+async function injectPoolTokens(pools: Pool[]): Promise<void> {
+  const allPoolTokens = pools.map(pools => pools.tokensList).flat();
+  return await injectTokens(allPoolTokens);
+}
+
+/**
+ * WATCHERS
+ */
+watch(gauges.data, async newGauges => {
+  console.log('newGauges', newGauges);
+  if (newGauges) await injectRewardTokens(newGauges);
+});
+
+watch(pools.data, async newPools => {
+  console.log('pools', newPools);
+  if (newPools) await injectPoolTokens(newPools);
 });
 </script>
 
@@ -57,6 +139,20 @@ const networkBtns = computed(() => {
       <h2 class="font-body font-bold text-2xl">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
+
+      <div class="flex mt-4">
+        <BalAsset :iconURI="balToken?.logoURI" />
+        <h3 class="text-xl ml-2">Balancer (BAL) earnings</h3>
+      </div>
+
+      <div v-for="token in rewardTokens" :key="token.address">
+        <div class="flex mt-4">
+          <BalAsset :iconURI="token?.logoURI" />
+          <h3 class="text-xl ml-2">
+            {{ token?.name }} ({{ token?.symbol }}) earnings
+          </h3>
+        </div>
+      </div>
 
       <h2 class="font-body font-bold text-2xl">
         {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
