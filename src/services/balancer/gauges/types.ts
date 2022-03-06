@@ -9,7 +9,7 @@ export type QueryBuilder = (
 export interface SubgraphGauge {
   id: string;
   symbol: string;
-  pool: string;
+  poolId: string;
   totalSupply: string;
   factory: {
     id: string;
