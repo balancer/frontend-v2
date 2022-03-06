@@ -122,7 +122,12 @@ const QUERY_KEYS = {
         'onchain',
         { gauges }
       ]
-    }
+    },
+    Pools: (poolAddresses: Ref<string[]>) => [
+      'gauges',
+      'pools',
+      { poolAddresses }
+    ]
   }
 };
 
