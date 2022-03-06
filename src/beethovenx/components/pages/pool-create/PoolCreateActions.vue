@@ -179,8 +179,6 @@ export default defineComponent({
     const poolAddress = ref('');
     const poolId = ref('');
 
-    const isWeightedPool2Tokens = props.poolTokens.length === 2;
-
     async function createPool(): Promise<void> {
       createModalVisible.value = false;
 
@@ -191,6 +189,8 @@ export default defineComponent({
         swapFeePercentage,
         poolTokens
       } = props;
+
+      const isWeightedPool2Tokens = props.poolTokens.length === 2;
 
       try {
         emit('createPoolTriggered');
