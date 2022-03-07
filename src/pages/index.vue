@@ -17,8 +17,7 @@
             :data="stakableUserPools"
             :noPoolsLabel="$t('noInvestments')"
             :selectedTokens="selectedTokens"
-            @triggerStake="handleStake"
-            :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
+            :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
             showPoolShares
             class="mb-8"
           />
@@ -96,7 +95,6 @@
     <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
       <FeaturedPools />
     </div>
-    <StakePreviewModal v-if="showStakeModal" :pool="stakePool" />
   </div>
 </template>
 
@@ -118,11 +116,6 @@ import { isMigratablePool } from '@/composables/usePool';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
-import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useGaugesQuery from '@/composables/queries/useGaugesQuery';
-import { useQuery } from 'vue-query';
-import QUERY_KEYS from '@/constants/queryKeys';
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 
 export default defineComponent({
@@ -130,26 +123,14 @@ export default defineComponent({
     TokenSearchInput,
     PoolsTable,
     FeaturedPools,
-    StakePreviewModal,
     StakedPoolsTable
-},
+  },
 
   setup() {
-    /**
-     * STATE
-     */
-    const showStakeModal = ref(false);
-    const stakePool = ref<FullPool | undefined>();
-
     // COMPOSABLES
     const router = useRouter();
     const { t } = useI18n();
-    const {
-      isWalletReady,
-      isV1Supported,
-      appNetworkConfig,
-      account
-    } = useWeb3();
+    const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
     const isElementSupported = appNetworkConfig.supportsElementPools;
     const {
       selectedTokens,
@@ -169,13 +150,6 @@ export default defineComponent({
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
     const { upToMediumBreakpoint } = useBreakpoints();
-    const { data: userGaugeShares } = useQuery(
-      QUERY_KEYS.Gauges.GaugeShares.User(account),
-      () => false,
-      reactive({
-        enabled: isWalletReady
-      })
-    );
 
     // COMPUTED
     const filteredPools = computed(() =>
@@ -192,7 +166,6 @@ export default defineComponent({
 
     const showMigrationColumn = computed(() =>
       userPools.value?.some(pool => {
-        console.log(pool.shares);
         return (
           isMigratablePool(pool) &&
           // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
@@ -238,19 +211,12 @@ export default defineComponent({
       router.push({ name: 'create-pool' });
     }
 
-    function handleStake(pool: FullPool) {
-      showStakeModal.value = true;
-      stakePool.value = pool;
-    }
-
     return {
       // data
       filteredPools,
       userPools,
       isLoadingPools,
       isLoadingUserPools,
-      showStakeModal,
-      stakePool,
 
       // computed
       isWalletReady,
@@ -271,7 +237,6 @@ export default defineComponent({
       addSelectedToken,
       removeSelectedToken,
       navigateToCreatePool,
-      handleStake,
 
       // constants
       EXTERNAL_LINKS
