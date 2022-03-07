@@ -295,7 +295,11 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
+          <div v-if="getStakeState(pool) === StakeState.MaxStaked">
+            <span>100%</span>
+          </div>
           <BalBtn
+            v-if="getStakeState(pool) === StakeState.CanStake"
             color="gradient"
             size="sm"
             @click.prevent="$emit('triggerStake', pool)"
