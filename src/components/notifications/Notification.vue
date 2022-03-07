@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative p-3 border rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850 w-64"
+    class="relative p-3 overflow-hidden rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850 w-64"
   >
     <div class="justify-between group">
       <BalLink
@@ -105,7 +105,7 @@ export default defineComponent({
       }
 
       return `
-          absolute bottom-0 left-0 opacity-80 w-0 transition duration-300 ease-linear h-1 ${bgClasses}
+          progress-bar absolute bottom-0 left-0 opacity-80 w-0 transition duration-300 ease-linear h-1 ${bgClasses}
         `;
     });
 
@@ -133,5 +133,9 @@ export default defineComponent({
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.progress-bar {
+  transition: width 0.3s;
 }
 </style>

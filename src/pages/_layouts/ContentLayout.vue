@@ -17,60 +17,60 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
   min-height: calc(100vh - 140px);
 }
 
-.content-container >>> h1 {
+.content-container :deep(h1) {
   @apply pb-6;
 }
 
-.content-container >>> h2,
-.content-container >>> h3,
-.content-container >>> p,
-.content-container >>> ul,
-.content-container >>> ol,
-.content-container >>> em {
+.content-container :deep(h2),
+.content-container :deep(h3),
+.content-container :deep(p),
+.content-container :deep(ul),
+.content-container :deep(ol),
+.content-container :deep(em) {
   @apply pb-3;
 }
 
-.content-container >>> .subsection {
+.content-container :deep(.subsection) {
   @apply mb-8;
 }
 
-.content-container >>> h1,
-.content-container >>> h2,
-.content-container >>> h3 {
+.content-container :deep(h1),
+.content-container :deep(h2),
+.content-container :deep(h3) {
   @apply font-body tracking-tight;
   font-variation-settings: 'wght' 500;
 }
 
-.content-container >>> h3 {
+.content-container :deep(h3) {
   @apply font-body tracking-tight;
   font-variation-settings: 'wght' 600;
 }
 
-.content-container >>> li {
+.content-container :deep(li) {
   @apply list-disc ml-8 pb-2;
 }
 
-.content-container >>> ol > li {
+.content-container :deep(ol > li) {
   @apply list-decimal;
 }
 
-.content-container >>> em {
+.content-container :deep(em) {
   font-style: italic;
   font-variation-settings: 'ital' 1;
   font-synthesis: none;
 }
 
-.content-container >>> em.font-medium {
+.content-container :deep(em.font-medium) {
   font-variation-settings: 'ital' 1, 'wght' 500;
 }
 
-.content-container >>> table,
-.content-container >>> th,
-.content-container >>> td {
+.content-container :deep(table),
+.content-container :deep(th),
+.content-container :deep(td) {
   @apply p-4 border-gray-500 border text-left align-top;
 }
 
-.content-container >>> table {
+.content-container :deep(table) {
   @apply mt-4 mb-8;
 }
 </style>

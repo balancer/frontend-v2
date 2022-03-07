@@ -45,8 +45,6 @@ export default function useTrading(
   // COMPUTED
   const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
-  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
-
   const wrapType = computed(() =>
     getWrapAction(tokenInAddressInput.value, tokenOutAddressInput.value)
   );
@@ -149,8 +147,7 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     sorConfig: {
-      handleAmountsOnFetchPools: false,
-      refetchPools: false
+      handleAmountsOnFetchPools: false
     },
     tokenIn,
     tokenOut,
@@ -278,18 +275,12 @@ export default function useTrading(
         gnosis.handleAmountChange();
       }
     } else if (isBalancerTrade.value) {
-      sor.fetchPools();
+      sor.updateTradeAmounts();
     }
   });
 
   watch(slippageBufferRate, () => {
     handleAmountChange();
-  });
-
-  watch(liquiditySelection, () => {
-    if (isBalancerTrade.value) {
-      handleAmountChange();
-    }
   });
 
   return {

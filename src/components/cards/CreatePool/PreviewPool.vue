@@ -45,7 +45,8 @@ const {
   setActiveStep,
   sortSeedTokens,
   getScaledAmounts,
-  saveState
+  saveState,
+  getPoolSymbol
 } = usePoolCreation();
 
 const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
@@ -58,6 +59,9 @@ const { userNetworkConfig, account } = useWeb3();
  */
 onBeforeMount(() => {
   sortSeedTokens();
+
+  poolName.value = poolName.value || getPoolSymbol();
+  poolSymbol.value = poolSymbol.value || getPoolSymbol();
 });
 
 /**

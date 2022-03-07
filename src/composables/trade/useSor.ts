@@ -7,13 +7,11 @@ import {
   reactive,
   toRefs
 } from 'vue';
-import { useStore } from 'vuex';
-import { useIntervalFn } from '@vueuse/core';
 import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
 import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
-import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sdk';
+import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
@@ -25,8 +23,7 @@ import {
 } from '@/lib/utils/balancer/wrapper';
 import {
   SorManager,
-  SorReturn,
-  LiquiditySelection
+  SorReturn
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
@@ -44,6 +41,7 @@ import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
 import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { balancer } from '@/lib/balancer.sdk';
 
 type SorState = {
   validationErrors: {
@@ -74,7 +72,6 @@ type Props = {
   tokenInAmountScaled?: ComputedRef<BigNumber>;
   tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
-    refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
   };
   tokenIn: ComputedRef<TokenInfo>;
@@ -95,7 +92,6 @@ export default function useSor({
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
-    refetchPools: true,
     handleAmountsOnFetchPools: true
   },
   tokenIn,
@@ -105,16 +101,13 @@ export default function useSor({
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
   const sorReturn = ref<SorReturn>({
-    isV1swap: false,
-    isV1best: false,
     hasSwaps: false,
     tokenIn: '',
     tokenOut: '',
     returnDecimals: 18,
     returnAmount: Zero,
     marketSpNormalised: '0',
-    v1result: [[], Zero, new OldBigNumber(0)],
-    v2result: {
+    result: {
       tokenAddresses: [],
       swaps: [],
       swapAmount: Zero,
@@ -132,12 +125,7 @@ export default function useSor({
   const poolsLoading = ref(true);
 
   // COMPOSABLES
-  const store = useStore();
-  const {
-    getProvider: getWeb3Provider,
-    isV1Supported,
-    appNetworkConfig
-  } = useWeb3();
+  const { getProvider: getWeb3Provider, appNetworkConfig } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
@@ -145,8 +133,6 @@ export default function useSor({
   const { fNum2 } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor } = useTokens();
-
-  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -164,12 +150,6 @@ export default function useSor({
     await handleAmountChange();
   });
 
-  useIntervalFn(async () => {
-    if (sorConfig.refetchPools && sorManager) {
-      fetchPools();
-    }
-  }, 30 * 1e3);
-
   function resetState() {
     state.validationErrors.highPriceImpact = false;
 
@@ -177,23 +157,12 @@ export default function useSor({
   }
 
   async function initSor(): Promise<void> {
-    const poolsUrlV1 = `${
-      configService.network.poolsUrlV1
-    }?timestamp=${Date.now()}`;
-
-    // If V1 previously selected on another network then it uses this and returns no liquidity.
-    if (!isV1Supported) {
-      store.commit('app/setTradeLiquidity', LiquiditySelection.V2);
-    }
-
     sorManager = new SorManager(
-      isV1Supported,
       rpcProviderService.jsonProvider,
       BigNumber.from(GAS_PRICE),
       Number(MAX_POOLS),
       configService.network.chainId,
-      configService.network.addresses.weth,
-      poolsUrlV1
+      configService.network.addresses.weth
     );
 
     fetchPools();
@@ -211,6 +180,55 @@ export default function useSor({
     // Updates any swaps with up to date pools/balances
     if (sorConfig.handleAmountsOnFetchPools) {
       handleAmountChange();
+    }
+  }
+
+  async function updateTradeAmounts(): Promise<void> {
+    if (!sorManager) {
+      return;
+    }
+
+    if (sorReturn.value.hasSwaps) {
+      const { result } = sorReturn.value;
+
+      const deltas = await balancer.swaps.queryBatchSwap({
+        kind: exactIn.value ? SwapType.SwapExactIn : SwapType.SwapExactOut,
+        swaps: result.swaps,
+        assets: result.tokenAddresses
+      });
+
+      if (deltas.length >= 2) {
+        const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
+        const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
+
+        const tokenInAmountNormalised = bnum(
+          formatFixed(
+            bnum(deltas[0])
+              .abs()
+              .toString(),
+            tokenInDecimals
+          )
+        );
+
+        const tokenOutAmountNormalised = bnum(
+          formatFixed(
+            bnum(deltas[deltas.length - 1])
+              .abs()
+              .toString(),
+            tokenOutDecimals
+          )
+        );
+
+        tokenInAmountInput.value =
+          tokenInAmountNormalised.toNumber() > 0
+            ? formatAmount(tokenInAmountNormalised.toString())
+            : '';
+
+        tokenOutAmountInput.value =
+          tokenOutAmountNormalised.toNumber() > 0
+            ? formatAmount(tokenOutAmountNormalised.toString())
+            : '';
+      }
     }
   }
 
@@ -238,8 +256,8 @@ export default function useSor({
       return;
     }
 
-    const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
-    const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
+    const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
+    const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
     if (wrapType.value !== WrapType.NonWrap) {
       const wrapper =
@@ -297,9 +315,7 @@ export default function useSor({
         tokenInDecimals,
         tokenOutDecimals,
         SwapTypes.SwapExactIn,
-        tokenInAmountScaled,
-        tokenInDecimals,
-        liquiditySelection.value
+        tokenInAmountScaled
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -308,11 +324,7 @@ export default function useSor({
       );
       tokenOutAmountInput.value =
         tokenOutAmountNormalised.toNumber() > 0
-          ? fNum2(tokenOutAmountNormalised.toString(), {
-              maximumSignificantDigits: 6,
-              useGrouping: false,
-              fixedFormat: true
-            })
+          ? formatAmount(tokenOutAmountNormalised.toString())
           : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -353,9 +365,7 @@ export default function useSor({
         tokenInDecimals,
         tokenOutDecimals,
         SwapTypes.SwapExactOut,
-        tokenOutAmount,
-        tokenOutDecimals,
-        liquiditySelection.value
+        tokenOutAmount
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -366,11 +376,7 @@ export default function useSor({
       );
       tokenInAmountInput.value =
         tokenInAmountNormalised.toNumber() > 0
-          ? fNum2(tokenInAmountNormalised.toString(), {
-              maximumSignificantDigits: 6,
-              useGrouping: false,
-              fixedFormat: true
-            })
+          ? formatAmount(tokenInAmountNormalised.toString())
           : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -620,6 +626,18 @@ export default function useSor({
     };
   }
 
+  function formatAmount(amount: string) {
+    return fNum2(amount, {
+      maximumSignificantDigits: 6,
+      useGrouping: false,
+      fixedFormat: true
+    });
+  }
+
+  function getTokenDecimals(tokenAddress: string) {
+    return tokens.value[tokenAddress]?.decimals;
+  }
+
   /**
    * Under certain circumstance we need to adjust an amount
    * for the price impact calc due to background wrapping taking place
@@ -655,6 +673,7 @@ export default function useSor({
     getQuote,
     resetState,
     confirming,
+    updateTradeAmounts,
 
     // For Tests
     setSwapCost
