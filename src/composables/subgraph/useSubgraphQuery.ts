@@ -1,8 +1,9 @@
 import { configService } from '@/services/config/config.service';
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { head, initial, last } from 'lodash';
 import { QueryKey } from 'react-query';
-import { computed, reactive, Ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuery, UseQueryOptions } from 'vue-query';
 
 type Subgraph = 'balancer' | 'gauge';
@@ -14,7 +15,9 @@ type SubgraphQuery = {
 
 type UseSubgraphRequest<T> = {
   subgraph: Subgraph;
-  query: SubgraphQuery;
+  // this needs to be a function as any variables inside the query
+  // will need to be re-accessed when requerying
+  query: () => SubgraphQuery;
   key: QueryKey;
   options?: UseQueryOptions<T>;
 };
@@ -27,7 +30,7 @@ const GraphQLEndpoints: Record<Subgraph, string | undefined> = {
 export default function useSubgraphQuery<T>(request: UseSubgraphRequest<T>) {
   const query = computed(() => {
     return JSON.stringify({
-      query: jsonToGraphQLQuery({ query: request.query })
+      query: jsonToGraphQLQuery({ query: request.query() })
     });
   });
 
@@ -54,5 +57,15 @@ export default function useSubgraphQuery<T>(request: UseSubgraphRequest<T>) {
       throw error;
     }
   }
-  return useQuery(request.key, graphQLRequest, request.options);
+  return useQuery(
+    reactive([
+      ...initial(request.key),
+      {
+        ...(last(request.key) as any),
+        query
+      }
+    ]),
+    graphQLRequest,
+    request.options
+  );
 }
