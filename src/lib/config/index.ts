@@ -23,7 +23,6 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
-  poolsUrlV1: string;
   poolsUrlV2: string;
   subgraphs: {
     aave: string;
@@ -40,7 +39,6 @@ export interface Config {
     minTransactionBuffer: string;
   };
   addresses: {
-    exchangeProxy: string;
     merkleRedeem: string;
     merkleOrchard: string;
     multicall: string;

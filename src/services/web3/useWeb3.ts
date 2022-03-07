@@ -4,7 +4,6 @@ import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { configService } from '../config/config.service';
-import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
@@ -35,9 +34,6 @@ export default function useWeb3() {
     connectWallet
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appNetworkConfig = configService.network;
-  const isV1Supported = isAddress(
-    configService.network.addresses.exchangeProxy
-  );
 
   const { networkId } = useNetwork();
 
@@ -132,7 +128,6 @@ export default function useWeb3() {
     explorerLinks,
     signer,
     blockNumber,
-    isV1Supported,
     isMainnet,
     isKovan,
     isPolygon,

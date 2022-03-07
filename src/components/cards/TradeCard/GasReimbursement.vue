@@ -83,67 +83,35 @@ export default defineComponent({
         props.addressOut.toLowerCase() in eligibleAssets;
       const reimburseAllSwaps = addressInIsEligible && addressOutIsEligible;
 
-      if (props.sorReturn.isV1swap) {
-        let numSwaps = props.sorReturn.v1result[0].flat().length;
-        if (!reimburseAllSwaps) {
-          const eligibleSwaps = props.sorReturn.v1result[0]
-            .flat()
-            .filter(hop => {
-              return (
-                hop.tokenIn in eligibleAssets && hop.tokenOut in eligibleAssets
-              );
-            });
-
-          numSwaps = eligibleSwaps.length;
-        }
-        const gasLimit =
-          numSwaps === 1
-            ? 130000
-            : numSwaps === 2
-            ? 220000
-            : numSwaps === 3
-            ? 300000
-            : numSwaps >= 4
-            ? 400000
-            : 0;
-        const gasLimitNumber = new BigNumber(gasLimit);
-        const gasCostWei = gasLimitNumber.times(gasPrice);
-        const gasCost = gasCostWei.div(1e18);
-        return {
-          bal: gasCost.times(ethPrice).div(balPrice),
-          usd: gasCost.times(ethPrice)
-        };
-      } else {
-        let numSwaps = props.sorReturn.v2result.swaps.length;
-        if (!reimburseAllSwaps) {
-          const tokensList = props.sorReturn.v2result.tokenAddresses;
-          numSwaps = 0;
-          props.sorReturn.v2result.swaps.forEach(swap => {
-            if (
-              tokensList[swap.assetInIndex] in eligibleAssets &&
-              tokensList[swap.assetOutIndex] in eligibleAssets
-            )
-              numSwaps++;
-          });
-        }
-        const gasLimit =
-          numSwaps === 1
-            ? 90000
-            : numSwaps === 2
-            ? 140000
-            : numSwaps === 3
-            ? 140000
-            : numSwaps >= 4
-            ? 140000
-            : 0;
-        const gasLimitNumber = new BigNumber(gasLimit);
-        const gasCostWei = gasLimitNumber.times(gasPrice);
-        const gasCost = gasCostWei.div(1e18);
-        return {
-          bal: gasCost.times(ethPrice).div(balPrice),
-          usd: gasCost.times(ethPrice)
-        };
+      let numSwaps = props.sorReturn.result.swaps.length;
+      if (!reimburseAllSwaps) {
+        const tokensList = props.sorReturn.result.tokenAddresses;
+        numSwaps = 0;
+        props.sorReturn.result.swaps.forEach(swap => {
+          if (
+            tokensList[swap.assetInIndex] in eligibleAssets &&
+            tokensList[swap.assetOutIndex] in eligibleAssets
+          )
+            numSwaps++;
+        });
       }
+      const gasLimit =
+        numSwaps === 1
+          ? 90000
+          : numSwaps === 2
+          ? 140000
+          : numSwaps === 3
+          ? 140000
+          : numSwaps >= 4
+          ? 140000
+          : 0;
+      const gasLimitNumber = new BigNumber(gasLimit);
+      const gasCostWei = gasLimitNumber.times(gasPrice);
+      const gasCost = gasCostWei.div(1e18);
+      return {
+        bal: gasCost.times(ethPrice).div(balPrice),
+        usd: gasCost.times(ethPrice)
+      };
     });
 
     const text = computed(() => {

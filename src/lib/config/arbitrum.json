@@ -29,7 +29,6 @@
     "minTransactionBuffer": "0.05"
   },
   "addresses": {
-    "exchangeProxy": "",
     "merkleRedeem": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
     "merkleOrchard": "0x751A0bC0e3f75b38e01Cf25bFCE7fF36DE1C87DE",
     "multicall": "0x80C7DD17B01855a6D2347444a0FCC36136a314de",

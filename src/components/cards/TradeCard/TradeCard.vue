@@ -71,7 +71,6 @@
   <teleport to="#modal">
     <TradePreviewModal
       v-if="modalTradePreviewIsOpen"
-      :is-v1-swap="sorReturn.isV1swap"
       :address-in="tokenInAddress"
       :amount-in="tokenInAmount"
       :address-out="tokenOutAddress"
@@ -156,8 +155,6 @@ export default defineComponent({
     const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
 
     const tokenOut = computed(() => tokens.value[tokenOutAddress.value]);
-
-    const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -282,11 +279,6 @@ export default defineComponent({
 
     watch(tokenOutAddress, () => {
       store.commit('trade/setOutputAsset', tokenOutAddress.value);
-      handleAmountChange();
-    });
-
-    watch(liquiditySelection, () => {
-      // When the liquidity type is changed we need to update the trade to use that selection
       handleAmountChange();
     });
 
