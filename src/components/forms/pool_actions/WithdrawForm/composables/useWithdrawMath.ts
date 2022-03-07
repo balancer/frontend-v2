@@ -509,8 +509,9 @@ export default function useWithdrawMath(
       return result;
     } catch (error) {
       if (
-        (error as BalancerError).code ===
-        BalancerErrorCode.SWAP_ZERO_RETURN_AMOUNT
+        error instanceof BalancerError &&
+        (error as BalancerError)?.code ===
+          BalancerErrorCode.SWAP_ZERO_RETURN_AMOUNT
       ) {
         // The batch swap can fail if amounts are greater than supported by pool balances
         // in this case we can return 0 amounts which will lead to an attempt via getBatchRelayerSwap()
