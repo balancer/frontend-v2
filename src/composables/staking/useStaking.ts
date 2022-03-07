@@ -1,4 +1,4 @@
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
 
 export enum StakeState {
   CanStake = 'can_stake',
@@ -7,15 +7,12 @@ export enum StakeState {
 }
 
 export default function useStaking() {
-  // TODO INTEGRATE STAKING CONTRACT
-  function getStakeState(pool: DecoratedPoolWithShares) {
+  function getStakeState(pool: DecoratedPoolWithStakedShares) {
     // just random logic for differentiating between stake states // TODO REPLACE
-    if (Number(pool.shares) >= 20000) {
+    if (pool.stakedPct === '1') {
       return StakeState.MaxStaked;
-    } else if (Number(pool.shares) < 20000 && Number(pool.shares) >= 5000) {
-      return StakeState.CanStake;
     } else {
-      return StakeState.NoGuage;
+      return StakeState.CanStake;
     }
   }
 
