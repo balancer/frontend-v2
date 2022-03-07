@@ -25,7 +25,12 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
-import { SwapType, TransactionData } from '@balancer-labs/sdk';
+import {
+  SwapType,
+  TransactionData,
+  BalancerError,
+  BalancerErrorCode
+} from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import { setError, WithdrawalError } from './useWithdrawalState';
@@ -503,7 +508,10 @@ export default function useWithdrawMath(
       batchSwapLoading.value = false;
       return result;
     } catch (error) {
-      if ((error as Error).message.includes('SOR Swap returned 0 amount')) {
+      if (
+        (error as BalancerError).code ===
+        BalancerErrorCode.SWAP_ZERO_RETURN_AMOUNT
+      ) {
         // The batch swap can fail if amounts are greater than supported by pool balances
         // in this case we can return 0 amounts which will lead to an attempt via getBatchRelayerSwap()
         batchSwapLoading.value = false;
