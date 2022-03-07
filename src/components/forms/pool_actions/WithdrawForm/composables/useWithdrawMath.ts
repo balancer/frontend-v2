@@ -25,7 +25,12 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
-import { SwapType, TransactionData } from '@balancer-labs/sdk';
+import {
+  SwapType,
+  TransactionData,
+  BalancerError,
+  BalancerErrorCode
+} from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import { setError, WithdrawalError } from './useWithdrawalState';
@@ -489,19 +494,37 @@ export default function useWithdrawMath(
     const tokensIn = amounts.map(() => pool.value.address);
     const fetchPools = !batchSwap.value; // Only needs to be fetched on first call
 
-    const result = await balancer.swaps.queryBatchSwapWithSor({
-      tokensIn: tokensIn,
-      tokensOut: tokensOut || batchSwapTokensOut.value,
-      swapType,
-      amounts,
-      fetchPools: {
-        fetchPools,
-        fetchOnChain: false
+    try {
+      const result = await balancer.swaps.queryBatchSwapWithSor({
+        tokensIn: tokensIn,
+        tokensOut: tokensOut || batchSwapTokensOut.value,
+        swapType,
+        amounts,
+        fetchPools: {
+          fetchPools,
+          fetchOnChain: false
+        }
+      });
+      batchSwapLoading.value = false;
+      return result;
+    } catch (error) {
+      if (
+        error instanceof BalancerError &&
+        (error as BalancerError)?.code ===
+          BalancerErrorCode.SWAP_ZERO_RETURN_AMOUNT
+      ) {
+        // The batch swap can fail if amounts are greater than supported by pool balances
+        // in this case we can return 0 amounts which will lead to an attempt via getBatchRelayerSwap()
+        batchSwapLoading.value = false;
+        return {
+          returnAmounts: Array(amounts.length).fill('0'),
+          swaps: [],
+          assets: []
+        };
+      } else {
+        throw error;
       }
-    });
-
-    batchSwapLoading.value = false;
-    return result;
+    }
   }
 
   /**
@@ -528,6 +551,7 @@ export default function useWithdrawMath(
       rates[i] = scaledWrappedTokenRateFor(tokenOut);
     });
 
+    // BatchRelayer can be used to swap from bpt>waToken then automatically unwrap to underlying.
     const result = await balancerContractsService.batchRelayer.stableExitStatic(
       account.value,
       pool.value.address,
