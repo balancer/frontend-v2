@@ -2,11 +2,16 @@ import { reactive, toRefs } from 'vue';
 
 // globals
 const tradeState = reactive({
+  initialized: false,
   tokenInAddress: '',
   tokenOutAddress: '',
   tokenInAmount: '',
   tokenOutAmount: ''
 });
+
+function setInitialized(val: boolean) {
+  tradeState.initialized = val;
+}
 
 function setTokenInAddress(address: string) {
   tradeState.tokenInAddress = address;
@@ -30,6 +35,7 @@ export function useTradeState() {
     setTokenInAddress,
     setTokenOutAddress,
     setTokenInAmount,
-    setTokenOutAmount
+    setTokenOutAmount,
+    setInitialized
   };
 }
