@@ -10,10 +10,6 @@ import { SubgraphGauge } from '@/services/balancer/gauges/types';
  */
 type QueryResponse = SubgraphGauge[];
 
-type UseGuageFilters = {
-  userAddress?: string;
-};
-
 /**
  * @summary Fetches guages list from subgraph
  */
@@ -28,11 +24,7 @@ export default function useGaugesQuery(
   /**
    * QUERY FUNCTION
    */
-  const queryFn = async () => {
-    const gauges = await gaugesSubgraphService.gauges.get();
-    console.log(gauges, !!gauges);
-    return gauges;
-  };
+  const queryFn = () => gaugesSubgraphService.gauges.get();
 
   /**
    * QUERY OPTIONS
