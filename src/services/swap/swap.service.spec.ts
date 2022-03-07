@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2 } from '@balancer-labs/sdk';
 import SwapService, { SwapTokenType, SwapToken } from './swap.service';
 import { configService } from '@/services/config/config.service';
@@ -12,7 +11,6 @@ import { AddressZero } from '@ethersproject/constants';
 
 jest.mock('@/lib/utils/balancer/lido');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/services/contracts/exchange-proxy.service');
 jest.mock('@/services/contracts/vault.service');
 jest.mock('@/services/contracts/lido-relayer.service');
 jest.mock('@/services/web3/web3.service');
@@ -75,87 +73,6 @@ describe('swap.service', () => {
 
   it('Should initialize correctly', () => {
     expect(service).toBeTruthy();
-  });
-
-  describe('batchSwapV1', () => {
-    let swaps: Swap[][] = [[]];
-
-    beforeEach(() => {
-      swaps = [
-        [
-          {
-            limitReturnAmount: '0',
-            maxPrice:
-              '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-            pool: '0x8e620e876ae87e26025810c651f42eab84c0b8f2',
-            swapAmount: '1000000',
-            tokenIn: tokens.USDC.address,
-            tokenOut: tokens.DAI.address
-          }
-        ]
-      ];
-    });
-
-    it('Should call exchange-proxy when swapping with exact inputs', async () => {
-      tokens.USDC.type = SwapTokenType.fixed;
-      tokens.DAI.type = SwapTokenType.min;
-      await service.batchSwapV1(tokens.USDC, tokens.DAI, swaps);
-      const exchangeProxyArgs = require('@/services/contracts/exchange-proxy.service')
-        .exchangeProxyService.multihopBatchSwap.mock.calls[0];
-      expect(exchangeProxyArgs[0]).toEqual(swaps);
-      expect(exchangeProxyArgs[1]).toEqual(tokens.USDC);
-      expect(exchangeProxyArgs[2]).toEqual(tokens.DAI);
-      expect(exchangeProxyArgs[3]).toEqual({});
-    });
-
-    it('Should call exchange-proxy when swapping with exact outputs', async () => {
-      tokens.USDC.type = SwapTokenType.max;
-      tokens.DAI.type = SwapTokenType.fixed;
-      await service.batchSwapV1(tokens.USDC, tokens.DAI, swaps);
-      const exchangeProxyArgs = require('@/services/contracts/exchange-proxy.service')
-        .exchangeProxyService.multihopBatchSwap.mock.calls[0];
-      expect(exchangeProxyArgs[0]).toEqual(swaps);
-      expect(exchangeProxyArgs[1]).toEqual(tokens.USDC);
-      expect(exchangeProxyArgs[2]).toEqual(tokens.DAI);
-      expect(exchangeProxyArgs[3]).toEqual({});
-    });
-
-    it('Should call exchange-proxy when swapping with native asset', async () => {
-      tokens.ETH.type = SwapTokenType.fixed;
-      tokens.USDC.type = SwapTokenType.min;
-      swaps = [
-        [
-          {
-            limitReturnAmount: '0',
-            maxPrice:
-              '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-            pool: PoolIdUSDCDAI,
-            tokenIn: tokens.ETH.address,
-            tokenOut: tokens.USDC.address
-          }
-        ]
-      ];
-      await service.batchSwapV1(tokens.ETH, tokens.USDC, swaps);
-      const exchangeProxyArgs = require('@/services/contracts/exchange-proxy.service')
-        .exchangeProxyService.multihopBatchSwap.mock.calls[0];
-      expect(exchangeProxyArgs[0]).toEqual(swaps);
-      expect(exchangeProxyArgs[1]).toEqual(tokens.ETH);
-      expect(exchangeProxyArgs[2]).toEqual(tokens.USDC);
-      expect(exchangeProxyArgs[3]).toEqual({
-        value: tokens.ETH.amount
-      });
-    });
-
-    it('Should return a rejected promise if exchange-proxy throws an error', async () => {
-      require('@/services/contracts/exchange-proxy.service').exchangeProxyService.multihopBatchSwap = jest
-        .fn()
-        .mockImplementation(() => {
-          throw new Error('Failed to swap');
-        });
-      await expect(
-        service.batchSwapV1(tokens.USDC, tokens.DAI, swaps)
-      ).rejects.toThrow('Failed to swap');
-    });
   });
 
   describe('batchSwapV2', () => {

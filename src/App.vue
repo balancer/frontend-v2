@@ -20,8 +20,7 @@ import useAlerts, {
 } from './composables/useAlerts';
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
-import useGaugesQuery from './composables/queries/useGaugesQuery';
-import useGaugesDecorationQuery from './composables/queries/useGaugesDecorationQuery';
+import useBackgroundColor from './composables/useBackgroundColor';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -57,6 +56,7 @@ export default defineComponent({
     const router = useRouter();
     const { addAlert } = useAlerts();
     const { t } = useI18n();
+    const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
 
     // Temporary feature alert for Balancer boosted pools.
     if (isMainnet.value) {
@@ -65,6 +65,7 @@ export default defineComponent({
         priority: AlertPriority.LOW,
         label: t('alerts.boostedPools'),
         type: AlertType.FEATURE,
+        rememberClose: true,
         actionOnClick: true,
         action: () =>
           router.push({
@@ -83,13 +84,6 @@ export default defineComponent({
       addAlert(featureAlert);
     }
 
-    const { data: rawGauges } = useGaugesQuery();
-    const { data: gauges } = useGaugesDecorationQuery(rawGauges);
-
-    watch(gauges, newGauges => {
-      console.log('newGauges', newGauges);
-    });
-
     /**
      * CALLBACKS
      */
@@ -101,6 +95,7 @@ export default defineComponent({
      * WATCHERS
      */
     watch(route, newRoute => {
+      updateBgColorFor(newRoute);
       if (newRoute.meta.layout) {
         layout.value = newRoute.meta.layout as string;
       } else {

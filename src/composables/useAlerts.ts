@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { orderBy } from 'lodash';
+import { lsGet, lsSet } from '@/lib/utils';
 
 export enum AlertType {
   ERROR = 'error',
@@ -22,6 +23,7 @@ export type Alert = {
   action?: () => void;
   actionOnClick?: boolean;
   persistent?: boolean;
+  rememberClose?: boolean;
 };
 
 export const alertsState = ref<Record<string, Alert>>({});
@@ -40,6 +42,9 @@ const currentAlert = computed(() =>
  * METHODS
  */
 function addAlert(alert: Alert) {
+  const wasClosed = lsGet(`alerts.${alert.id}.closed`);
+  if (wasClosed && alert?.rememberClose) return;
+
   alertsState.value[alert.id] = {
     ...alert,
     priority: alert.priority ?? AlertPriority.LOW
@@ -47,6 +52,9 @@ function addAlert(alert: Alert) {
 }
 
 function removeAlert(alertId: string) {
+  const alert = alertsState.value[alertId];
+  if (alert?.rememberClose) lsSet(`alerts.${alertId}.closed`, true);
+
   delete alertsState.value[alertId];
 }
 

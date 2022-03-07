@@ -37,7 +37,6 @@ export default function useTokenApproval(
   const allowanceState = computed(() => {
     if (tokenInAddress.value === networkConfig.nativeAsset.address) {
       return {
-        isUnlockedV1: true,
         isUnlockedV2: true,
         approvedSpenders: {}
       };
@@ -45,16 +44,9 @@ export default function useTokenApproval(
 
     if (!tokenInAddress.value || !amount.value || approved.value === true)
       return {
-        isUnlockedV1: true,
         isUnlockedV2: true,
         approvedSpenders: {}
       };
-
-    const v1ApprovalRequired = approvalRequired(
-      tokenInAddress.value,
-      amount.value,
-      configService.network.addresses.exchangeProxy
-    );
 
     const v2ApprovalRequired = approvalRequired(
       tokenInAddress.value,
@@ -62,12 +54,10 @@ export default function useTokenApproval(
     );
 
     return {
-      isUnlockedV1: !v1ApprovalRequired,
       isUnlockedV2: !v2ApprovalRequired
     };
   });
 
-  const isUnlockedV1 = computed(() => allowanceState.value.isUnlockedV1);
   const isUnlockedV2 = computed(() => allowanceState.value.isUnlockedV2);
 
   /**
@@ -84,11 +74,6 @@ export default function useTokenApproval(
       console.log(e);
       approving.value = false;
     }
-  }
-
-  async function approveV1(): Promise<void> {
-    console.log('[TokenApproval] Unlock V1');
-    approveSpender(configService.network.addresses.exchangeProxy);
   }
 
   async function approveV2(): Promise<void> {
@@ -135,11 +120,9 @@ export default function useTokenApproval(
   return {
     approved,
     approving,
-    approveV1,
     approveV2,
     approveSpender,
     allowanceState,
-    isUnlockedV1,
     isUnlockedV2,
     isLoading: dynamicDataLoading
   };

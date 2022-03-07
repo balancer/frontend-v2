@@ -175,6 +175,7 @@ watchEffect(() => {
       noRules
       noMax
       :disabled="tradeLoading"
+      disableNativeAssetBuffer
     />
   </div>
 </template>
