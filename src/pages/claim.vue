@@ -15,7 +15,6 @@ import { formatUnits } from 'ethers/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 
 import { RewardRow } from '@/components/tables/TokenClaimsTable/TokenClaimsTable.vue';
-import StatCard from '@/components/cards/StatCard/StatCard.vue';
 import TokenClaimsTable from '@/components/tables/TokenClaimsTable/TokenClaimsTable.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 
