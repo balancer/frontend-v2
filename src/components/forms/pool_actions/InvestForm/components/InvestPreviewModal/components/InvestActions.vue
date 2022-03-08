@@ -259,7 +259,7 @@ watch(blockNumber, async () => {
 
 onBeforeMount(() => {
   if (
-    isWeightedPoolWithNestedLinearPools.value &&
+    (isWeightedPoolWithNestedLinearPools.value || stakeBptInFarm.value) &&
     !batchRelayerApproval.isUnlocked.value
   ) {
     // Prepend relayer approval action if batch relayer not approved
