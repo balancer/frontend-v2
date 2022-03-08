@@ -11,29 +11,27 @@ type QueryResponse = Pool[] | undefined;
  * Maybe replace this with useSubgraph call when ready.
  */
 export default function useSimplePoolsQuery(
-  poolAddresses: Ref<string[]>,
+  poolIds: Ref<string[]>,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
    * COMPUTED
    */
-  const enabled = computed(
-    () => poolAddresses?.value && poolAddresses.value?.length > 0
-  );
+  const enabled = computed(() => poolIds?.value && poolIds.value?.length > 0);
 
   /**
    * QUERY KEY
    */
-  const queryKey = QUERY_KEYS.Gauges.Pools(poolAddresses);
+  const queryKey = QUERY_KEYS.Gauges.Pools(poolIds);
 
   /**
    * QUERY FUNCTION
    */
   const queryFn = async () => {
-    if (!poolAddresses.value) return undefined;
+    if (!poolIds.value) return undefined;
     return await balancerSubgraphService.pools.get({
       where: {
-        address_in: poolAddresses.value
+        id_in: poolIds.value
       }
     });
   };
