@@ -30,6 +30,11 @@ export const balancer = new BalancerSDK({
           '0x5ddb92a5340fd0ead3987d3661afcd6104c3b757000000000000000000000187',
         address: '0x5ddb92a5340fd0ead3987d3661afcd6104c3b757'
       }
+    },
+    fBeets: {
+      address: configService.network.fBeets.address,
+      farmId: parseInt(configService.network.fBeets.farmId),
+      poolId: configService.network.fBeets.poolId
     }
   },
   rpcUrl: configService.network.rpc,

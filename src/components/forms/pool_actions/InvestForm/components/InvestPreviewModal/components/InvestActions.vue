@@ -207,7 +207,13 @@ async function submit(): Promise<TransactionResponse> {
           fromInternalBalance: false,
           toInternalBalance: false
         },
-        farmId: props.pool.farm ? parseInt(props.pool.farm.id) : undefined
+        farmId:
+          props.pool.id === networkConfig.fBeets.poolId
+            ? parseInt(networkConfig.fBeets.farmId)
+            : props.pool.farm
+            ? parseInt(props.pool.farm.id)
+            : undefined,
+        mintFBeets: props.pool.id === networkConfig.fBeets.poolId
       });
 
       tx = await balancerContractsService.batchRelayer.stableExit(
