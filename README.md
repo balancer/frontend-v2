@@ -29,6 +29,16 @@ docker-compose up
 
 The app should be live at [http://localhost:8080](http://localhost:8080)
 
+### Change app network
+To change your local development app network, update the network key for
+`VUE_APP_NETWORK` in `.env.development`. Available networks:
+```
+1 - Mainnet
+42 - Kovan
+137 - Polygon
+42161 - Arbitrum
+```
+
 ## Self-Hosting
 
 As we believe in decentralization at all layers, we've made it easy to host your own Balancer Frontend.
