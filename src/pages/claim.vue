@@ -161,35 +161,13 @@ watch(pools, async newPools => {
 </script>
 
 <template>
-  <div class="lg:container lg:mx-auto py-12 px-2 lg:px-0">
-    <div class="grid gap-24 grid-cols-2 grid-rows-1">
-      <div class="">
-        <h1 class="font-body font-bold text-4xl">
-          {{ $t('pages.claim.title') }}
-        </h1>
-        <p class="text-lg text-gray-600 mt-2">
-          {{ $t('pages.claim.description') }}
-        </p>
-        <BalBtn outline class="mt-4">
-          {{ $t('learnMore') }}
-          <BalIcon name="arrow-up-right" class="ml-2" />
-        </BalBtn>
-      </div>
-      <div class="grid gap-4 grid-cols-2 grid-rows-2">
-        <StatCard label="My claimable incentives" value="-" />
-        <StatCard label="My 30d yield" value="-" />
-        <StatCard label="My 24h yield" value="-" />
-        <StatCard label="My 24h APR" value="-" />
-      </div>
-    </div>
-  </div>
   <div class="px-2 lg:px-0">
     <div class="lg:container lg:mx-auto py-12">
       <h2 class="font-body font-bold text-2xl">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
-      <div class="flex mt-4">
+      <div class="flex mt-6">
         <BalAsset :iconURI="balToken?.logoURI" />
         <h3 class="text-xl ml-2 mb-2">Balancer (BAL) earnings</h3>
       </div>
