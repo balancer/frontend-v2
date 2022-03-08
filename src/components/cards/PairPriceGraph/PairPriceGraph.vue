@@ -112,7 +112,7 @@ const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
 const { tokens, wrappedNativeAsset, nativeAsset } = useTokens();
-const { tokenInAddress, tokenOutAddress } = useTradeState();
+const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId } = useWeb3();
 
@@ -162,6 +162,7 @@ const {
       true
     ),
   reactive({
+    enabled: initialized,
     retry: false,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
