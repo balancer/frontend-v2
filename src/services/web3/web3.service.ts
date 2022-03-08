@@ -72,8 +72,8 @@ export default class Web3Service {
     contractAddress: string,
     abi: any,
     action: string,
-    params: any[],
-    options: Record<string, any>,
+    params: any[] = [],
+    options: Record<string, any> = {},
     forceEthereumLegacyTxType = false
   ): Promise<TransactionResponse> {
     const signer = this.userProvider.value.getSigner();
