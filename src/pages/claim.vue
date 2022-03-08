@@ -95,6 +95,7 @@ const balRewardsData = computed((): RewardRow[] => {
 
     if (pool)
       arr.push({
+        gauge,
         pool,
         amount,
         value: toFiat(amount, balToken.value.address)
@@ -136,6 +137,7 @@ function rewardDataFor(token: TokenInfo): RewardRow[] {
 
     if (pool)
       arr.push({
+        gauge,
         pool,
         amount,
         value: toFiat(amount, balToken.value.address)
@@ -184,6 +186,7 @@ watch(pools, async newPools => {
         </div>
         <TokenClaimsTable
           :rewardsData="rewardDataFor(token)"
+          :token="token"
           :isLoading="poolQueryLoading"
         />
       </div>
