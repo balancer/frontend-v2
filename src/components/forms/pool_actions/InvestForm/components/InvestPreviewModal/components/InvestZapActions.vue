@@ -11,6 +11,8 @@ type Props = {
   pool: FullPool;
 };
 
+const fidellioDuettoId =
+  '0xcde5a11a4acb4ee4c805352cec57e236bdbc3837000200000000000000000019';
 const props = withDefaults(defineProps<Props>(), {});
 const { stakeBptInFarm } = useInvestState();
 
@@ -19,7 +21,11 @@ function toggleStakeBptInFarm() {
 }
 
 onBeforeMount(() => {
-  if (props.pool.farm && props.pool.poolType === PoolType.Weighted) {
+  if (
+    props.pool.farm &&
+    props.pool.poolType === PoolType.Weighted &&
+    props.pool.id !== fidellioDuettoId
+  ) {
     stakeBptInFarm.value = true;
   } else {
     stakeBptInFarm.value = false;
@@ -29,7 +35,11 @@ onBeforeMount(() => {
 
 <template>
   <div
-    v-if="props.pool.farm && props.pool.poolType === PoolType.Weighted"
+    v-if="
+      props.pool.farm &&
+        props.pool.poolType === PoolType.Weighted &&
+        props.pool.id !== fidellioDuettoId
+    "
     class="border rounded-lg border-gray-700 mt-3"
   >
     <div class="flex py-3 px-2 highlight items-center leading-5 text-base">
