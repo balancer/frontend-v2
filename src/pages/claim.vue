@@ -35,7 +35,7 @@ const poolsQuery = useSimplePoolsQuery(gaugePoolIds);
 const pools = computed((): Pool[] => poolsQuery.data.value || []);
 
 /**
- * CONSTANTS
+ * STATE
  */
 const networks = [
   {
@@ -65,13 +65,8 @@ const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
 
-const gaugeQueryLoading = computed(
-  (): boolean =>
-    gaugesQuery.isLoading.value ||
-    gaugesQuery.isIdle.value ||
-    !!gaugesQuery.error.value
-);
-
+// Since the pool query is dependent on the gauge query, we only have to wait
+// for the pool query to finish loading.
 const poolQueryLoading = computed(
   (): boolean =>
     poolsQuery.isLoading.value ||
@@ -122,6 +117,10 @@ async function injectPoolTokens(pools: Pool[]): Promise<void> {
   return await injectTokens(allPoolTokens);
 }
 
+/**
+ * @summary Construct RewardRow data for each gauge that includes
+ * given token as a rewardToken.
+ */
 function rewardDataFor(token: TokenInfo): RewardRow[] {
   const relevantGauges = gauges.value.filter(gauge =>
     gauge.rewardTokens.includes(token.address)
