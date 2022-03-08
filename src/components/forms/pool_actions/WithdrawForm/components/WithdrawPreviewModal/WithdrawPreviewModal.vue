@@ -14,6 +14,7 @@ import WithdrawSummary from './components/WithdrawSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import WithdrawActions from './components/WithdrawActions.vue';
 import useWithdrawalState from '../../composables/useWithdrawalState';
+import GasEstimationSelector from '@/components/gas-estimation/GasEstimationSelector.vue';
 
 /**
  * TYPES
@@ -145,6 +146,10 @@ function handleClose(): void {
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
     />
+
+    <div class="mt-2">
+      <GasEstimationSelector />
+    </div>
 
     <WithdrawActions
       :pool="pool"

@@ -11,6 +11,9 @@ import InvestActions from './components/InvestActions.vue';
 import { InvestMathResponse } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
 import useInvestState from '../../composables/useInvestState';
+import BalToggle from '@/components/_global/BalToggle/BalToggle.vue';
+import InvestZapActions from '@/components/forms/pool_actions/InvestForm/components/InvestPreviewModal/components/InvestZapActions.vue';
+import GasEstimationSelector from '@/components/gas-estimation/GasEstimationSelector.vue';
 
 /**
  * TYPES
@@ -142,6 +145,12 @@ function handleClose(): void {
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
     />
+
+    <InvestZapActions :pool="pool" />
+
+    <div class="pt-4">
+      <GasEstimationSelector />
+    </div>
 
     <InvestActions
       :pool="pool"

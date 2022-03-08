@@ -12,6 +12,7 @@ import {
   ethereumTxType
 } from '@/composables/useEthereumTxType';
 import { MetamaskError } from '@/types';
+import useGasEstimationState from '@/components/gas-estimation/useGasEstimationState';
 
 const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
@@ -23,6 +24,8 @@ const RPC_INVALID_PARAMS_ERROR_CODE = -32602;
 const EIP1559_UNSUPPORTED_REGEX = /network does not support EIP-1559/i;
 
 const gasPriceService = new GasPriceService();
+
+const { selectedGasPriceKey } = useGasEstimationState();
 
 export async function sendTransaction(
   web3: Web3Provider | JsonRpcProvider,
@@ -52,28 +55,16 @@ export async function sendTransaction(
     const gasLimit = gasLimitNumber.toNumber();
     paramsOverrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
-    if (
-      USE_BLOCKNATIVE_GAS_PLATFORM &&
-      paramsOverrides.gasPrice == null &&
-      paramsOverrides.maxFeePerGas == null &&
-      paramsOverrides.maxPriorityFeePerGas == null
-    ) {
-      const gasPrice = await gasPriceService.getLatest();
-      if (gasPrice != null) {
-        if (
-          ethereumTxType.value === EthereumTxType.EIP1559 &&
-          gasPrice.maxFeePerGas != null &&
-          gasPrice.maxPriorityFeePerGas != null &&
-          !forceEthereumLegacyTxType
-        ) {
-          paramsOverrides.maxFeePerGas = gasPrice.maxFeePerGas;
-          paramsOverrides.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;
-        } else {
-          paramsOverrides.gasPrice = gasPrice.price;
-        }
-      }
+    const estimates = await gasPriceService.getGasPriceEstimation();
+
+    if (estimates) {
+      return await contractWithSigner[action](...params, {
+        ...paramsOverrides,
+        gasPrice: estimates[selectedGasPriceKey.value] * 1_000_000_000
+      });
+    } else {
+      return await contractWithSigner[action](...params, paramsOverrides);
     }
-    return await contractWithSigner[action](...params, paramsOverrides);
   } catch (e) {
     const error = e as MetamaskError;
 

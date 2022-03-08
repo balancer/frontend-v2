@@ -9,6 +9,7 @@ type InvestState = {
   highPriceImpactAccepted: boolean;
   submitting: boolean;
   sorReady: boolean;
+  stakeBptInFarm: boolean;
 };
 
 /**
@@ -21,7 +22,8 @@ const state = reactive<InvestState>({
   validInputs: [],
   highPriceImpactAccepted: false,
   submitting: false,
-  sorReady: false
+  sorReady: false,
+  stakeBptInFarm: false
 });
 
 const sor = balancer.sor;

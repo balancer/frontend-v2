@@ -10,7 +10,8 @@ export const balancer = new BalancerSDK({
     addresses: {
       contracts: {
         vault: configService.network.addresses.vault,
-        multicall: configService.network.addresses.multicall
+        multicall: configService.network.addresses.multicall,
+        batchRelayer: configService.network.addresses.batchRelayer
       },
       tokens: {
         wrappedNativeAsset: configService.network.addresses.weth

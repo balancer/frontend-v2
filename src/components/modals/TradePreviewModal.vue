@@ -70,6 +70,11 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-4">
+        <GasEstimationSelector />
+      </div>
+
       <BalBtn
         v-if="requiresLidoRelayerApproval && !isLidoRelayerApproved"
         class="mt-5"
@@ -116,8 +121,10 @@ import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { isStETH } from '@/lib/utils/balancer/lido';
+import GasEstimationSelector from '@/components/gas-estimation/GasEstimationSelector.vue';
 
 export default defineComponent({
+  components: { GasEstimationSelector },
   emits: ['trade', 'close'],
   props: {
     open: {

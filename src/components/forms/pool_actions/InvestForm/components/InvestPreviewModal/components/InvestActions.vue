@@ -32,6 +32,7 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { AddressZero } from '@ethersproject/constants';
+import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 /**
  * TYPES
  */
@@ -89,6 +90,7 @@ const {
   fullAmountsScaled
 } = toRefs(props.math);
 
+const { stakeBptInFarm } = useInvestState();
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
@@ -171,7 +173,10 @@ async function submit(): Promise<TransactionResponse> {
     let tx;
     investmentState.init = true;
 
-    if (isWeightedPoolWithNestedLinearPools.value) {
+    if (
+      isWeightedPoolWithNestedLinearPools.value ||
+      (stakeBptInFarm.value && props.pool.farm)
+    ) {
       await balancer.swaps.fetchPools();
       const tokenAddresses = props.tokenAddresses;
       let nativeAssetAmount: string | null = null;
@@ -201,7 +206,8 @@ async function submit(): Promise<TransactionResponse> {
           recipient: account.value,
           fromInternalBalance: false,
           toInternalBalance: false
-        }
+        },
+        farmId: props.pool.farm ? parseInt(props.pool.farm.id) : undefined
       });
 
       tx = await balancerContractsService.batchRelayer.stableExit(
