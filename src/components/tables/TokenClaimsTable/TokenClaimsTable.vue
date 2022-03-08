@@ -1,0 +1,127 @@
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+import {
+  orderedTokenAddresses,
+  orderedPoolTokens,
+  isStableLike
+} from '@/composables/usePool';
+import { Pool } from '@/services/balancer/subgraph/types';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { useRouter } from 'vue-router';
+
+import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+
+/**
+ * TYPES
+ */
+export type RewardRow = {
+  pool: Pool;
+  amount: string;
+  value: string;
+};
+
+type Props = {
+  rewardsData: RewardRow[];
+  isLoading: boolean;
+};
+
+/**
+ * PROPS & EMITS
+ */
+defineProps<Props>();
+
+/**
+ * COMPOSABLES
+ */
+const { upToLargeBreakpoint } = useBreakpoints();
+const { fNum2 } = useNumbers();
+const router = useRouter();
+
+/**
+ * STATE
+ */
+const columns = ref<ColumnDefinition<RewardRow>[]>([
+  {
+    name: 'Pools',
+    id: 'icons',
+    accessor: 'icons',
+    Cell: 'iconsColumnCell',
+    width: 125,
+    noGrow: true
+  },
+  {
+    name: '',
+    id: 'pills',
+    accessor: 'pills',
+    Cell: 'pillsColumnCell',
+    width: 350
+  },
+  {
+    name: 'Amount',
+    id: 'amount',
+    align: 'right',
+    width: 150,
+    accessor: ({ amount }) => fNum2(amount, FNumFormats.token)
+  },
+  {
+    name: 'Value',
+    id: 'value',
+    align: 'right',
+    width: 150,
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+  },
+  {
+    name: '',
+    id: 'claim',
+    accessor: 'claim',
+    Cell: 'claimColumnCell',
+    width: 100
+  }
+]);
+
+/**
+ * METHODS
+ */
+function redirectToPool({ pool }: { pool: Pool }) {
+  router.push({ name: 'pool', params: { id: pool.id } });
+}
+</script>
+
+<template>
+  <BalCard
+    shadow="lg"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
+    <BalTable
+      :columns="columns"
+      :data="rewardsData"
+      :isLoading="isLoading"
+      :on-row-click="redirectToPool"
+      skeleton-class="h-64"
+      :square="upToLargeBreakpoint"
+    >
+      <template #iconsColumnCell="{ pool }">
+        <div class="px-6 py-4">
+          <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
+        </div>
+      </template>
+      <template #pillsColumnCell="{ pool }">
+        <div class="px-6 py-4">
+          <TokenPills
+            :tokens="orderedPoolTokens(pool)"
+            :isStablePool="isStableLike(pool.poolType)"
+          />
+        </div>
+      </template>
+      <template #claimColumnCell>
+        <div class="px-6 py-4">
+          <BalBtn label="Claim" color="gradient" size="xs" />
+        </div>
+      </template>
+    </BalTable>
+  </BalCard>
+</template>
