@@ -19,7 +19,7 @@ export class LiquidityGauge {
   }
 
   /**
-   * @summary Claim user's reward tokens, e.g. not BAL
+   * @summary Claim all user's reward tokens, e.g. everything that's not BAL
    */
   async claimRewards() {
     return await this.web3.sendTransaction(
