@@ -12,11 +12,15 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useRouter } from 'vue-router';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import ClaimTokensBtn from '@/components/btns/ClaimTokensBtn/ClaimTokensBtn.vue';
+import { TokenInfo } from '@/types/TokenList';
+import { Gauge } from '@/services/balancer/gauges/types';
 
 /**
  * TYPES
  */
 export type RewardRow = {
+  gauge: Gauge;
   pool: Pool;
   amount: string;
   value: string;
@@ -24,6 +28,7 @@ export type RewardRow = {
 
 type Props = {
   rewardsData: RewardRow[];
+  token: TokenInfo;
   isLoading: boolean;
 };
 
@@ -117,9 +122,9 @@ function redirectToPool({ pool }: { pool: Pool }) {
           />
         </div>
       </template>
-      <template #claimColumnCell>
+      <template #claimColumnCell="{ gauge }">
         <div class="px-6 py-4">
-          <BalBtn label="Claim" color="gradient" size="xs" />
+          <ClaimTokensBtn :token="token" :gauge="gauge" />
         </div>
       </template>
     </BalTable>
