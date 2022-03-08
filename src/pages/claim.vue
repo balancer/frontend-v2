@@ -17,6 +17,7 @@ import useNumbers from '@/composables/useNumbers';
 import { RewardRow } from '@/components/tables/TokenClaimsTable/TokenClaimsTable.vue';
 import StatCard from '@/components/cards/StatCard/StatCard.vue';
 import TokenClaimsTable from '@/components/tables/TokenClaimsTable/TokenClaimsTable.vue';
+import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 
 /**
  * COMPOSABLES
@@ -160,7 +161,7 @@ watch(pools, async newPools => {
 </script>
 
 <template>
-  <div class="lg:container lg:mx-auto py-12">
+  <div class="lg:container lg:mx-auto py-12 px-2 lg:px-0">
     <div class="grid gap-24 grid-cols-2 grid-rows-1">
       <div class="">
         <h1 class="font-body font-bold text-4xl">
@@ -182,7 +183,7 @@ watch(pools, async newPools => {
       </div>
     </div>
   </div>
-  <div class="bg-gray-50">
+  <div class="px-2 lg:px-0">
     <div class="lg:container lg:mx-auto py-12">
       <h2 class="font-body font-bold text-2xl">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
@@ -230,6 +231,11 @@ watch(pools, async newPools => {
           {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
         </BalBtn>
       </div>
+
+      <h2 class="font-body font-bold text-2xl mt-8">
+        {{ $t('pages.claim.titles.legacyIncentives') }}
+      </h2>
+      <LegacyClaims />
     </div>
   </div>
 </template>
