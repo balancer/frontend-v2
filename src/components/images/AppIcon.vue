@@ -1,16 +1,11 @@
 <template>
   <img
     v-if="darkMode"
-    src="~@/assets/images/symmetricIcon.svg"
+    src="~@/assets/images/logo.svg"
     width="30"
     class="mr-2"
   />
-  <img
-    v-else
-    src="~@/assets/images/symmetricIcon.svg"
-    width="30"
-    class="mr-2"
-  />
+  <img v-else src="~@/assets/images/logo.svg" width="30" class="mr-2" />
 </template>
 
 <script lang="ts">

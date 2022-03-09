@@ -1,5 +1,5 @@
-# Balancer Frontend App (v2)
-Frontend Vue app for Balancer exchange and pool management.
+# Symmetric Frontend App (v2)
+Frontend Vue app for Symmetric exchange and pool management.
 
 ## Development
 To setup the development environment first clone the repo:

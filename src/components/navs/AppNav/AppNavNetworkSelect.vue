@@ -21,7 +21,7 @@
       <div
         class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
       >
-        Select a network (TODO:)
+        Select a network
       </div>
       <a
         v-for="network in networks"
@@ -72,26 +72,8 @@ export default defineComponent({
       {
         id: 'celo',
         name: 'Celo',
-        subdomain: 'app',
+        subdomain: 'celo',
         key: '42220'
-      },
-      {
-        id: 'ethereum',
-        name: 'Ethereum',
-        subdomain: 'app',
-        key: '1'
-      },
-      {
-        id: 'polygon',
-        name: 'Polygon',
-        subdomain: 'polygon',
-        key: '137'
-      },
-      {
-        id: 'arbitrum',
-        name: 'Arbitrum',
-        subdomain: 'arbitrum',
-        key: '42161'
       }
     ];
 
@@ -110,7 +92,7 @@ export default defineComponent({
     }
 
     function appUrl(network: Network): string {
-      return `https://${network.subdomain}.balancer.fi`;
+      return `https://${network.subdomain}.symmetric.exchange`;
     }
 
     function isActive(network: Network): boolean {

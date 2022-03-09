@@ -1,5 +1,5 @@
 <template>
-  <AppNavAlert v-if="currentAlert" :alert="currentAlert" />
+  <!-- <AppNavAlert v-if="currentAlert" :alert="currentAlert" /> -->
   <nav id="app-nav" ref="appNav" class="h-20 px-4 lg:px-6 sticky top-0">
     <div class="h-full flex items-center justify-between">
       <div class="w-2/3 lg:w-1/3 flex items-center">
@@ -10,18 +10,19 @@
           <AppIcon v-if="['xs', 'sm', 'md'].includes(bp)" />
           <AppLogo v-else />
         </router-link>
-        <AppNavNetworkSelect v-if="!hideNetworkSelect" />
-        <DarkModeToggle v-if="!upToLargeBreakpoint" class="ml-2" />
+        <div class="ml-4">
+          <AppNavToggle />
+        </div>
       </div>
 
       <div
         v-if="!upToLargeBreakpoint"
         class="flex-1 md:w-1/3 flex justify-center"
-      >
-        <AppNavToggle />
-      </div>
+      ></div>
 
       <div class="w-1/3 flex justify-end">
+        <AppNavNetworkSelect v-if="!hideNetworkSelect" />
+        <DarkModeToggle v-if="!upToLargeBreakpoint" class="mx-2" />
         <AppNavActions />
       </div>
     </div>
@@ -33,7 +34,7 @@ import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
 import AppIcon from '@/components/images/AppIcon.vue';
-import AppNavAlert from './AppNavAlert.vue';
+// import AppNavAlert from './AppNavAlert.vue';
 import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
@@ -46,7 +47,7 @@ export default defineComponent({
   components: {
     AppLogo,
     AppIcon,
-    AppNavAlert,
+    // AppNavAlert,
     AppNavToggle,
     AppNavActions,
     AppNavNetworkSelect,
