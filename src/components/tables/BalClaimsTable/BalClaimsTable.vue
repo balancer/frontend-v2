@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
@@ -12,9 +12,10 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useRouter } from 'vue-router';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
-import ClaimTokensBtn from '@/components/btns/ClaimTokensBtn/ClaimTokensBtn.vue';
+import ClaimBalBtn from '@/components/btns/ClaimBalBtn/ClaimBalBtn.vue';
 import { TokenInfo } from '@/types/TokenList';
 import { Gauge } from '@/services/balancer/gauges/types';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -35,7 +36,7 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
@@ -68,13 +69,14 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     id: 'amount',
     align: 'right',
     width: 150,
-    accessor: ({ amount }) => fNum2(amount, FNumFormats.token)
+    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`
   },
   {
     name: 'Value',
     id: 'value',
     align: 'right',
     width: 150,
+    totalsCell: 'totalValueCell',
     accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
   },
   {
@@ -82,9 +84,23 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     id: 'claim',
     accessor: 'claim',
     Cell: 'claimColumnCell',
-    width: 100
+    totalsCell: 'claimTotalCell',
+    width: 150
   }
 ]);
+
+/**
+ * COMPUTED
+ */
+const allGauges = computed((): Gauge[] =>
+  props.rewardsData.map(row => row.gauge)
+);
+
+const totalClaimValue = computed((): string =>
+  props.rewardsData
+    .reduce((acc, row) => acc.plus(row.value), bnum('0'))
+    .toString()
+);
 
 /**
  * METHODS
@@ -124,8 +140,16 @@ function redirectToPool({ pool }: { pool: Pool }) {
       </template>
       <template #claimColumnCell="{ gauge }">
         <div class="px-6 py-4">
-          <ClaimTokensBtn :token="token" :gauge="gauge" />
+          <ClaimBalBtn label="Claim" :gauges="[gauge]" />
         </div>
+      </template>
+      <template #totalValueCell>
+        <div class="flex justify-end">
+          {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
+        </div>
+      </template>
+      <template #claimTotalCell>
+        <ClaimBalBtn label="Claim all" :gauges="allGauges" />
       </template>
     </BalTable>
   </BalCard>
