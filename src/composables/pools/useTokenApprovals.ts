@@ -50,8 +50,13 @@ export default function useTokenApprovals(
   /**
    * COMPUTED
    */
-  const requiredApprovals = computed(() =>
-    approvalsRequired(tokenAddresses, amounts.value)
+  const requiredApprovals = computed(() => {
+    console.log('bing', {
+      tokenAddresses,
+      amounts: amounts.value
+    })
+    return approvalsRequired(tokenAddresses, amounts.value)
+  }
   );
 
   /**

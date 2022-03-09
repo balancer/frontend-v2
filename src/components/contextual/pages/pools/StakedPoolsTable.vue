@@ -13,7 +13,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import StakePreviewModal from '../../stake/StakePreviewModal.vue';
+import StakePreview from '../../stake/StakePreview.vue';
 
 /** TYPES */
 type Props = {
@@ -32,7 +32,7 @@ type LiquidityGauge = {
   poolId: string;
 };
 
-type UserGuageSharesResponse = {
+export type UserGuageSharesResponse = {
   gaugeShares: UserGuageShare[];
   liquidityGauges: LiquidityGauge[];
 };
@@ -170,6 +170,10 @@ function handleStake(pool: FullPool) {
   showStakeModal.value = true;
   stakePool.value = pool;
 }
+
+function handleModalClose() {
+  showStakeModal.value = false;
+}
 </script>
 
 <template>
@@ -187,6 +191,13 @@ function handleStake(pool: FullPool) {
         class="mb-8"
       />
     </BalStack>
-    <StakePreviewModal v-if="showStakeModal" :pool="stakePool" />
+    <teleport to="#modal">
+      <BalModal :show="showStakeModal" @close="handleModalClose">
+        <StakePreview
+          :pool="stakePool"
+          @close="handleModalClose"
+        />
+      </BalModal>
+    </teleport>
   </div>
 </template>
