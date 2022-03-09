@@ -18,6 +18,8 @@ import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vu
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
 import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
+import useApp from '@/composables/useApp';
 
 /**
  * COMPOSABLES
@@ -25,6 +27,8 @@ import { bnum } from '@/lib/utils';
 const { injectTokens, getToken } = useTokens();
 const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
+const { isWalletReady } = useWeb3();
+const { appLoading } = useApp();
 
 // Data fetching
 const { data: subgraphGauges } = useGaugesQuery();
@@ -85,6 +89,7 @@ const poolQueryLoading = computed(
 );
 
 const balRewardsData = computed((): RewardRow[] => {
+  if (!isWalletReady.value) return [];
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
@@ -160,12 +165,10 @@ function gaugeTitle(pool: Pool): string {
  * WATCHERS
  */
 watch(gauges, async newGauges => {
-  console.log('newGauges', newGauges);
   if (newGauges) await injectRewardTokens(newGauges);
 });
 
 watch(pools, async newPools => {
-  console.log('pools', newPools);
   if (newPools) await injectPoolTokens(newPools);
 });
 </script>
@@ -177,13 +180,14 @@ watch(pools, async newPools => {
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
-      <div class="flex items-center mt-6 mb-2">
-        <BalAsset :iconURI="balToken?.logoURI" />
+      <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
+      <div v-else class="flex items-center mt-6 mb-2">
+        <BalAsset :address="balToken?.address" />
         <h3 class="text-xl ml-2">Balancer (BAL) earnings</h3>
       </div>
       <BalClaimsTable
         :rewardsData="balRewardsData"
-        :isLoading="poolQueryLoading"
+        :isLoading="poolQueryLoading && isWalletReady"
       />
 
       <template v-if="!poolQueryLoading && gaugesWithRewards.length > 0">
@@ -219,10 +223,12 @@ watch(pools, async newPools => {
         </BalBtn>
       </div>
 
-      <h2 class="font-body font-bold text-2xl mt-8">
-        {{ $t('pages.claim.titles.legacyIncentives') }}
-      </h2>
-      <LegacyClaims />
+      <template v-if="isWalletReady">
+        <h2 class="font-body font-bold text-2xl mt-8">
+          {{ $t('pages.claim.titles.legacyIncentives') }}
+        </h2>
+        <LegacyClaims />
+      </template>
     </div>
   </div>
 </template>
