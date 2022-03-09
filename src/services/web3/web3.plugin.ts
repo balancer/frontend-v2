@@ -40,7 +40,7 @@ export type Wallet =
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
-  'Tally',
+  'tally',
   'gnosis',
   'walletlink',
   'portis'
