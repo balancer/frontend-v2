@@ -28,8 +28,13 @@ type UserGuageShare = {
   balance: string;
 };
 
+type LiquidityGauge = {
+  poolId: string;
+};
+
 type UserGuageSharesResponse = {
   gaugeShares: UserGuageShare[];
+  liquidityGauges: LiquidityGauge[];
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -80,22 +85,23 @@ const {
   })
 });
 
-const { data, isLoading: isLoadingPools } = usePoolsQuery(
+const { data: stakedPoolsRes, isLoading: isLoadingPools } = usePoolsQuery(
   ref([]),
   {},
   {
-    poolAddresses: userStakedPools
+    poolIds: userStakedPools
   }
 );
+
 /** COMPUTED */
-const stakedPools = computed(() => data.value?.pages[0].pools);
+const stakedPools = computed(() => stakedPoolsRes.value?.pages[0].pools);
 
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
   const map: Record<string, string> = {};
   if (!gaugeSharesRes.value) return map;
   for (const gaugeShare of gaugeSharesRes.value?.gaugeShares) {
-    map[getAddress(gaugeShare.gauge.poolId)] = gaugeShare.balance;
+    map[gaugeShare.gauge.poolId] = gaugeShare.balance;
   }
   return map;
 });
@@ -131,7 +137,7 @@ const allStakedPools = computed(() => {
     .map(pool => {
       // calculate the staked percentage by using the staked balance
       // pulled from the gauge subgraph
-      const stakedBalance = stakedBalanceMap.value[getAddress(pool.address)];
+      const stakedBalance = stakedBalanceMap.value[pool.id];
       const unstakedBalance = pool.bpt;
       const stakedPct = bnum(stakedBalance).div(
         bnum(stakedBalance).plus(unstakedBalance)
@@ -142,8 +148,21 @@ const allStakedPools = computed(() => {
       };
     });
 
+  // also include any pools where there is no staked BPT at all
+  const availableGaugePoolIds = (
+    gaugeSharesRes.value?.liquidityGauges || []
+  ).map(gauge => gauge.poolId);
+  const stakablePools = (userPools.value?.pools || [])
+    .filter(pool => {
+      return availableGaugePoolIds?.includes(pool.id);
+    })
+    .map(pool => ({
+      ...pool,
+      stakedPct: '0'
+    }));
+
   // now mash them together
-  return [...partiallyStakedPools, ...maxStakedPools];
+  return [...partiallyStakedPools, ...maxStakedPools, ...stakablePools];
 });
 
 /** METHODS */
