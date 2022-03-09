@@ -69,6 +69,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     id: 'amount',
     align: 'right',
     width: 150,
+    totalsCell: 'totalAmountCell',
     accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`
   },
   {
@@ -94,6 +95,12 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
  */
 const allGauges = computed((): Gauge[] =>
   props.rewardsData.map(row => row.gauge)
+);
+
+const totalClaimAmount = computed((): string =>
+  props.rewardsData
+    .reduce((acc, row) => acc.plus(row.amount), bnum('0'))
+    .toString()
 );
 
 const totalClaimValue = computed((): string =>
@@ -138,9 +145,14 @@ function redirectToPool({ pool }: { pool: Pool }) {
           />
         </div>
       </template>
-      <template #claimColumnCell="{ gauge }">
+      <template #claimColumnCell="{ gauge, amount }">
         <div class="px-6 py-4">
-          <ClaimBalBtn label="Claim" :gauges="[gauge]" />
+          <ClaimBalBtn label="Claim" :gauges="[gauge]" :amount="amount" />
+        </div>
+      </template>
+      <template #totalAmountCell>
+        <div class="flex justify-end">
+          {{ fNum2(totalClaimAmount, FNumFormats.token) }} BAL
         </div>
       </template>
       <template #totalValueCell>
@@ -149,7 +161,11 @@ function redirectToPool({ pool }: { pool: Pool }) {
         </div>
       </template>
       <template #claimTotalCell>
-        <ClaimBalBtn label="Claim all" :gauges="allGauges" />
+        <ClaimBalBtn
+          label="Claim all"
+          :gauges="allGauges"
+          :amount="totalClaimAmount"
+        />
       </template>
     </BalTable>
   </BalCard>

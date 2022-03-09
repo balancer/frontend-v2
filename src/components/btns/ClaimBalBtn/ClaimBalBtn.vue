@@ -3,12 +3,8 @@ import { computed } from 'vue';
 import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer-minter';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { getAddress } from '@ethersproject/address';
-import {
-  TransactionReceipt,
-  TransactionResponse
-} from '@ethersproject/abstract-provider';
 import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
@@ -16,6 +12,7 @@ import useEthers from '@/composables/useEthers';
 type Props = {
   gauges: Gauge[];
   label: string;
+  amount: string;
 };
 
 /**
@@ -27,7 +24,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { addTransaction } = useTransactions();
-const { txListener, getTxConfirmedAt } = useEthers();
+const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
@@ -39,44 +36,22 @@ const gaugeAddresses = computed((): string[] =>
 /**
  * METHODS
  */
-// async function claimTx(): Promise<TransactionResponse> {
-//   if (props.gauges.length === 1) {
-//     return await balancerMinter.mint(gaugeAddresses.value[0]);
-//   } else {
-//     return await balancerMinter.mintMany(gaugeAddresses.value);
-//   }
-// }
-
-// async function handleTransaction(tx: TransactionResponse) {
-//   addTransaction({
-//     id: tx.hash,
-//     type: 'tx',
-//     action: 'claim',
-//     summary: 'Claim BAL',
-//     details: {
-//       total: fiatTotalLabel.value
-//     }
-//   });
-
-//   await txListener(tx, {
-//     onTxConfirmed: async (receipt: TransactionReceipt) => {
-//       investmentState.receipt = receipt;
-
-//       const confirmedAt = await getTxConfirmedAt(receipt);
-//       investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
-//       investmentState.confirmed = true;
-//       investmentState.confirming = false;
-//     },
-//     onTxFailed: () => {
-//       console.error('Invest failed');
-//       investmentState.confirming = false;
-//     }
-//   });
-// }
+async function claimTx() {
+  if (props.gauges.length === 1) {
+    return await balancerMinter.mint(gaugeAddresses.value[0]);
+  } else {
+    return await balancerMinter.mintMany(gaugeAddresses.value);
+  }
+}
 
 async function claim() {
-  // const tx = await claimTx();
-  // handleTransaction(tx);
+  const tx = await claimTx();
+  addTransaction({
+    id: tx.hash,
+    type: 'tx',
+    action: 'claim',
+    summary: `Claim ${fNum2(props.amount, FNumFormats.token)} BAL`
+  });
 }
 </script>
 
