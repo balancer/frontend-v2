@@ -50,7 +50,8 @@ export async function sendTransaction(
     //   paramsOverrides
     // );
 
-    const gasLimit = 52000; // gasLimitNumber.toNumber();
+    // TODO: 
+    const gasLimit = 520000; // gasLimitNumber.toNumber();
     paramsOverrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
     if (
@@ -74,7 +75,9 @@ export async function sendTransaction(
         }
       }
     }
-    return await contractWithSigner[action](...params, paramsOverrides);
+    // TODO:
+    //  return await contractWithSigner[action](...params, paramsOverrides);
+    return await contractWithSigner[action](...params);
   } catch (e) {
     const error = e as MetamaskError;
 

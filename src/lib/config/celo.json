@@ -11,7 +11,7 @@
     "loggingRpc": "https://forno.celo.org",
     "explorer": "https://explorer.celo.org",
     "explorerName": "CeloScan",
-    "subgraph": "https://api.thegraph.com/subgraphs/name/launchdex/symm-celo-v2",
+    "subgraph": "https://api.thegraph.com/subgraphs/name/centfinance/symmetric-v2-celo",
     "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-kovan/pools",
     "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
     "subgraphs": {
