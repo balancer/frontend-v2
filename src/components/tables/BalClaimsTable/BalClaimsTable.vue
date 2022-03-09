@@ -13,7 +13,6 @@ import { useRouter } from 'vue-router';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import ClaimBalBtn from '@/components/btns/ClaimBalBtn/ClaimBalBtn.vue';
-import { TokenInfo } from '@/types/TokenList';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { bnum } from '@/lib/utils';
 
@@ -29,7 +28,6 @@ export type RewardRow = {
 
 type Props = {
   rewardsData: RewardRow[];
-  token: TokenInfo;
   isLoading: boolean;
 };
 
