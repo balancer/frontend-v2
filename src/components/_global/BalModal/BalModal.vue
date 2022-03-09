@@ -29,7 +29,7 @@
             :no-content-pad="noContentPad"
             class="modal-card"
             noBorder
-            overflowYScroll
+            itemsCenter
           >
             <template v-if="$slots.header" v-slot:header>
               <slot name="header" />
@@ -90,7 +90,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-modal {
-  @apply top-0 left-0 fixed h-screen w-full z-40;
+  @apply top-0 left-0 fixed h-screen w-full z-40 overflow-auto;
 }
 
 .content-container {
@@ -98,7 +98,7 @@ export default defineComponent({
 }
 
 .content {
-  @apply relative w-full h-3/4 sm:h-auto max-h-screen overflow-hidden;
+  @apply relative w-full h-3/4 sm:h-auto max-h-screen;
   max-width: 450px;
 }
 

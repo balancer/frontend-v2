@@ -1,20 +1,22 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div v-if="imgSrc" class="feature" :style="featureStyles" />
-    <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
-      <component :is="titleTag" v-if="!!title" v-text="title" />
-      <div
-        v-if="$slots.header"
-        :class="['header-content', headerContentClasses]"
-      >
-        <slot name="header" />
+    <div :class="['card-container', cardContainerClasses]">
+      <div v-if="imgSrc" class="feature" :style="featureStyles" />
+      <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
+        <component :is="titleTag" v-if="!!title" v-text="title" />
+        <div
+          v-if="$slots.header"
+          :class="['header-content', headerContentClasses]"
+        >
+          <slot name="header" />
+        </div>
       </div>
-    </div>
-    <div :class="['content', contentClasses]">
-      <slot />
-    </div>
-    <div v-if="$slots.footer" :class="['footer', footerClasses]">
-      <slot name="footer" />
+      <div :class="['content', contentClasses]">
+        <slot />
+      </div>
+      <div v-if="$slots.footer" :class="['footer', footerClasses]">
+        <slot name="footer" />
+      </div>
     </div>
   </div>
 </template>
@@ -40,6 +42,7 @@ export default defineComponent({
     rightAlignHeader: { type: Boolean, default: false },
     exposeOverflow: { type: Boolean, default: false },
     overflowYScroll: { type: Boolean, default: false },
+    itemsCenter: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -52,6 +55,13 @@ export default defineComponent({
   setup(props) {
     const borderClasses = computed(() => {
       return 'border dark:border-gray-900';
+    });
+
+    const cardContainerClasses = computed(() => {
+      return {
+        'overflow-y-scroll': props.overflowYScroll,
+        'items-center': props.itemsCenter
+      };
     });
 
     const cardClasses = computed(() => {
@@ -97,6 +107,7 @@ export default defineComponent({
     }));
 
     return {
+      cardContainerClasses,
       cardClasses,
       contentClasses,
       headerClasses,
@@ -111,6 +122,13 @@ export default defineComponent({
 <style scoped>
 .bal-card {
   @apply flex flex-col;
+}
+
+.card-container {
+  @apply flex flex-col;
+}
+.card-container::-webkit-scrollbar {
+  width: 0;
 }
 
 .header {
