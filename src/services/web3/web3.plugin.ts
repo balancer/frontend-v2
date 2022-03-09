@@ -39,8 +39,8 @@ export type Wallet =
   | 'tally';
 export const SupportedWallets = [
   'metamask',
-  'tally',
   'walletconnect',
+  'Tally',
   'gnosis',
   'walletlink',
   'portis'
