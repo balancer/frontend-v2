@@ -8,6 +8,7 @@ import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidit
 import { Gauge } from '@/services/balancer/gauges/types';
 import { getAddress } from '@ethersproject/address';
 import { reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -25,6 +26,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { fNum2 } = useNumbers();
 const { txListener } = useEthers();
@@ -51,7 +53,7 @@ async function claim() {
     id: tx.hash,
     type: 'tx',
     action: 'claim',
-    summary: `Claim ${fNum2(props.value, FNumFormats.fiat)}`
+    summary: `${t('claim')} ${fNum2(props.value, FNumFormats.fiat)}`
   });
 
   await txListener(tx, {
@@ -69,8 +71,8 @@ async function claim() {
 
 <template>
   <BalBtn
-    label="Claim all"
-    loadingLabel="Claiming..."
+    :label="$t('claimAll')"
+    :loadingLabel="$t('claiming')"
     color="gradient"
     size="sm"
     :loading="state.confirming"

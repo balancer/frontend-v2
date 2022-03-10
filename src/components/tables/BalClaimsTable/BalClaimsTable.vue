@@ -15,6 +15,7 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 import ClaimBalBtn from '@/components/btns/ClaimBalBtn/ClaimBalBtn.vue';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { bnum } from '@/lib/utils';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -39,6 +40,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
 const router = useRouter();
@@ -48,7 +50,7 @@ const router = useRouter();
  */
 const columns = ref<ColumnDefinition<RewardRow>[]>([
   {
-    name: 'Pools',
+    name: t('pools'),
     id: 'icons',
     accessor: 'icons',
     Cell: 'iconsColumnCell',
@@ -63,7 +65,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     width: 350
   },
   {
-    name: 'Amount',
+    name: t('amount'),
     id: 'amount',
     align: 'right',
     width: 150,
@@ -71,7 +73,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`
   },
   {
-    name: 'Value',
+    name: t('value'),
     id: 'value',
     align: 'right',
     width: 150,
@@ -145,7 +147,11 @@ function redirectToPool({ pool }: { pool: Pool }) {
       </template>
       <template #claimColumnCell="{ gauge, amount }">
         <div class="px-6 py-4">
-          <ClaimBalBtn label="Claim" :gauges="[gauge]" :amount="amount" />
+          <ClaimBalBtn
+            :label="$t('claim')"
+            :gauges="[gauge]"
+            :amount="amount"
+          />
         </div>
       </template>
       <template #totalAmountCell>
@@ -160,7 +166,7 @@ function redirectToPool({ pool }: { pool: Pool }) {
       </template>
       <template #claimTotalCell>
         <ClaimBalBtn
-          label="Claim all"
+          :label="$t('claimAll')"
           :gauges="allGauges"
           :amount="totalClaimAmount"
         />

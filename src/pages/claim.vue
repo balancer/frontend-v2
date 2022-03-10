@@ -183,7 +183,9 @@ watch(pools, async newPools => {
       <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
       <div v-else class="flex items-center mt-6 mb-2">
         <BalAsset :address="balToken?.address" />
-        <h3 class="text-xl ml-2">Balancer (BAL) earnings</h3>
+        <h3 class="text-xl ml-2">
+          Balancer (BAL) {{ $t('earnings').toLowerCase() }}
+        </h3>
       </div>
       <BalClaimsTable
         :rewardsData="balRewardsData"
@@ -191,7 +193,7 @@ watch(pools, async newPools => {
       />
 
       <template v-if="!poolQueryLoading && gaugesWithRewards.length > 0">
-        <h3 class="text-xl mt-8">Other token earnings</h3>
+        <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="flex mt-4">
             <h4 class="text-base mb-2">

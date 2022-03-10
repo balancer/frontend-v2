@@ -8,6 +8,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useEthers from '@/composables/useEthers';
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -26,6 +27,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { fNum2 } = useNumbers();
 const { txListener } = useEthers();
@@ -65,7 +67,7 @@ async function claim() {
     id: tx.hash,
     type: 'tx',
     action: 'claim',
-    summary: `Claim ${fNum2(props.amount, FNumFormats.token)} BAL`
+    summary: `${t('claim')} ${fNum2(props.amount, FNumFormats.token)} BAL`
   });
 
   await txListener(tx, {
@@ -84,7 +86,7 @@ async function claim() {
 <template>
   <BalBtn
     :label="label"
-    loadingLabel="Claiming..."
+    :loadingLabel="$t('claiming')"
     color="gradient"
     size="sm"
     :loading="state.confirming"

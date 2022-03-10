@@ -9,6 +9,7 @@ import useTokens from '@/composables/useTokens';
 import { formatUnits } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
 import ClaimRewardsBtn from '@/components/btns/ClaimRewardsBtn/ClaimRewardsBtn.vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -32,6 +33,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2, toFiat } = useNumbers();
 const { getToken } = useTokens();
@@ -41,7 +43,7 @@ const { getToken } = useTokens();
  */
 const columns = ref<ColumnDefinition<Reward>[]>([
   {
-    name: 'Incentive token',
+    name: t('incentiveToken'),
     id: 'token',
     accessor: 'token',
     Cell: 'tokenColumnCell',
@@ -49,7 +51,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     noGrow: true
   },
   {
-    name: 'Amount',
+    name: t('amount'),
     id: 'amount',
     align: 'right',
     width: 150,
@@ -57,7 +59,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
       `${fNum2(amount, FNumFormats.token)} ${token.symbol}`
   },
   {
-    name: 'Value',
+    name: t('value'),
     id: 'value',
     align: 'right',
     width: 150,
