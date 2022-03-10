@@ -9,32 +9,16 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreview from '../../stake/StakePreview.vue';
 
+import { UserGuageSharesResponse } from './types';
+
 /** TYPES */
 type Props = {
   userPools: FullPool[];
-};
-
-type UserGuageShare = {
-  id: string;
-  gauge: {
-    poolId: string;
-  };
-  balance: string;
-};
-
-type LiquidityGauge = {
-  poolId: string;
-};
-
-export type UserGuageSharesResponse = {
-  gaugeShares: UserGuageShare[];
-  liquidityGauges: LiquidityGauge[];
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -125,7 +109,7 @@ const allStakedPools = computed(() => {
     .map(pool => ({
       // then indicate that those pools are maximal staked with a variable
       ...pool,
-      stakedPct: '100'
+      stakedPct: '1'
     }));
 
   // now get the pools which are both staked, but also have BPT available for staking
@@ -162,7 +146,7 @@ const allStakedPools = computed(() => {
     }));
 
   // now mash them together
-  return [...partiallyStakedPools, ...maxStakedPools, ...stakablePools];
+  return [...stakablePools, ...partiallyStakedPools, ...maxStakedPools];
 });
 
 /** METHODS */
@@ -193,10 +177,7 @@ function handleModalClose() {
     </BalStack>
     <teleport to="#modal">
       <BalModal :show="showStakeModal" @close="handleModalClose">
-        <StakePreview
-          :pool="stakePool"
-          @close="handleModalClose"
-        />
+        <StakePreview :pool="stakePool" @close="handleModalClose" />
       </BalModal>
     </teleport>
   </div>
