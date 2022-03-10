@@ -29,7 +29,6 @@
             :no-content-pad="noContentPad"
             class="modal-card"
             noBorder
-            itemsCenter
           >
             <template v-if="$slots.header" v-slot:header>
               <slot name="header" />
