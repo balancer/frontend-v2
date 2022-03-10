@@ -4,7 +4,7 @@ import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTransactions from '@/composables/useTransactions';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { LiquidityGauge } from '../../../services/balancer/contracts/contracts/liquidity-gauge';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { getAddress } from '@ethersproject/address';
 import { reactive } from 'vue';
