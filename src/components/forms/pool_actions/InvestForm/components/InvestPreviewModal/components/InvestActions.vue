@@ -210,7 +210,7 @@ async function submit(): Promise<TransactionResponse> {
         farmId:
           props.pool.id === networkConfig.fBeets.poolId
             ? parseInt(networkConfig.fBeets.farmId)
-            : props.pool.farm
+            : props.pool.farm && stakeBptInFarm.value
             ? parseInt(props.pool.farm.id)
             : undefined,
         mintFBeets: props.pool.id === networkConfig.fBeets.poolId
