@@ -52,7 +52,7 @@ export interface Config {
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
-    gaugeFactory?: string;
+    gaugeFactory: string;
   };
   keys: {
     infura: string;

@@ -1,13 +1,16 @@
-import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
+
 import { configService } from '@/services/config/config.service';
+import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+
+import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
+
 import { Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
-import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
 import { getAddress } from '@ethersproject/address';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import useWeb3 from '@/services/web3/useWeb3';
 import { parseUnits } from 'ethers/lib/utils';
-import useTokens from '@/composables/useTokens';
 
 export enum StakeState {
   CanStake = 'can_stake',
@@ -40,8 +43,7 @@ export default function useStaking(pool?: DecoratedPoolWithStakedShares) {
     if (!pool) throw new Error(`Pool not loaded.`);
     const gaugeInterface = new Interface(GaugeFactoryABI);
     const contract = new Contract(
-      // TODO REMOVE TYPE AVERSION
-      configService.network.addresses.gaugeFactory!,
+      configService.network.addresses.gaugeFactory,
       gaugeInterface,
       getProvider()
     );

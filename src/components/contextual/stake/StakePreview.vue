@@ -1,25 +1,18 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue';
 
-import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
-import useTransactions from '@/composables/useTransactions';
-import useWeb3 from '@/services/web3/useWeb3';
+import useStaking from '@/composables/staking/useStaking';
 import { useI18n } from 'vue-i18n';
 import { useQueryClient } from 'vue-query';
 
 import { bnum } from '@/lib/utils';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import {
-  DecoratedPoolWithStakedShares,
-  FullPool
-} from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
 import { TransactionActionInfo } from '@/types/transactions';
-import { last } from 'lodash';
 import { UserGuageSharesResponse } from '../pages/pools/types';
-import useStaking from '@/composables/staking/useStaking';
+import { last } from 'lodash';
 
 type Props = {
   pool: DecoratedPoolWithStakedShares;
