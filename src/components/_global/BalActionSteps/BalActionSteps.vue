@@ -149,8 +149,12 @@ async function handleTransaction(
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
 
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      state.confirmedAt = dateTimeLabelFor(confirmedAt);
+      try {
+        const confirmedAt = await getTxConfirmedAt(receipt);
+        state.confirmedAt = dateTimeLabelFor(confirmedAt);
+      } catch (error) {
+        state.confirmedAt = dateTimeLabelFor(new Date());
+      }
 
       if (currentActionIndex.value >= actions.value.length - 1) {
         emit('success', { receipt, confirmedAt: state.confirmedAt });
