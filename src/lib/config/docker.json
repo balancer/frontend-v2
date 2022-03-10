@@ -15,7 +15,8 @@
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
-    "aave": ""
+    "aave": "",
+    "gauge": ""
   },
   "supportsEIP1559": false,
   "nativeAsset": {

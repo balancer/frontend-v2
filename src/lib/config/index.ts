@@ -26,6 +26,7 @@ export interface Config {
   poolsUrlV2: string;
   subgraphs: {
     aave: string;
+    gauge: string;
   };
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
