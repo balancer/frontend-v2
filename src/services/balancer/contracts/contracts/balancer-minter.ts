@@ -14,6 +14,7 @@ export class BalancerMinter {
     private readonly web3 = web3Service,
     public readonly address = config.network.addresses.balancerMinter
   ) {
+    if (!this.address) console.error('BalancerMinter address not set');
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
 
