@@ -26,10 +26,16 @@
       "0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115",
       "0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1"
     ],
-    "totalLiquidity": "1980805999.212541779699482831883849",
-    "totalShares": "11530830.002860964353353786",
-    "totalSwapFee": "5662216.686648264",
-    "totalSwapVolume": "707777085.831033",
+    "tokenAddresses": [
+      "0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115",
+      "0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1"
+    ],
+    "totalLiquidity": "",
+    "miningTotalLiquidity": "",
+    "totalShares": "",
+    "totalSwapFee": "",
+    "totalSwapVolume": "",
+    "hasLiquidityMiningRewards": true,
     "createTime": 1619183152,
     "chain": {
       "id": "kovan",
@@ -74,10 +80,17 @@
       "0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7",
       "0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115"
     ],
-    "totalLiquidity": "29212599.35753229678080541970285139",
-    "totalShares": "1533620.472319392207222824",
-    "totalSwapFee": "1365.059320926242376105278936436971",
-    "totalSwapVolume": "13650593.20926242376105278936436971",
+    "tokenAddresses": [
+      "0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648",
+      "0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7",
+      "0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115"
+    ],
+    "totalLiquidity": "",
+    "miningTotalLiquidity": "",
+    "totalShares": "",
+    "totalSwapFee": "",
+    "totalSwapVolume": "",
+    "hasLiquidityMiningRewards": true,
     "createTime": 1637272240,
     "chain": {
       "id": "kovan",

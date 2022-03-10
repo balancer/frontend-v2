@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, ComputedRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import {
-  PoolToken,
-  PoolWithGauge
-} from '@/services/balancer/subgraph/types';
+import { PoolToken, PoolWithGauge } from '@/services/balancer/subgraph/types';
 
 import { getAddress } from '@ethersproject/address';
+import BigNumber from 'bignumber.js';
+import { scale } from '@/lib/utils';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
-import {
-  isStableLike,
-  isStablePhantom,
-} from '@/composables/usePool';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import GaugeVote from '@/components/vebal/GaugeVote.vue';
@@ -26,7 +21,7 @@ import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: PoolWithGauge[];
+  data?: ComputedRef<PoolWithGauge[]>;
   isLoading?: boolean;
   isLoadingMore?: boolean;
   noPoolsLabel?: string;
@@ -65,11 +60,11 @@ const columns = ref<ColumnDefinition<PoolWithGauge>[]>([
     accessor: '',
     Header: 'chainColumnHeader',
     Cell: 'chainCell',
-    width: 150,
+    width: 50,
     noGrow: true
   },
   {
-    name: 'Icons',
+    name: t('veBAL.liquidityMining.table.assets'),
     id: 'icons',
     accessor: 'uri',
     Header: 'iconColumnHeader',
@@ -78,19 +73,21 @@ const columns = ref<ColumnDefinition<PoolWithGauge>[]>([
     noGrow: true
   },
   {
-    name: t('composition'),
-    id: 'poolName',
+    name: t('veBAL.liquidityMining.table.composition'),
+    id: 'poolComposition',
     accessor: 'id',
-    Cell: 'poolNameCell',
+    Cell: 'poolCompositionCell',
     width: 350
   },
   {
-    name: t('votes'),
-    accessor: pool =>
-      fNum2(pool.gauge.votes, {
+    name: t('veBAL.liquidityMining.table.nextPeriodVotes'),
+    accessor(pool) {
+      const normalizedVotes = scale(new BigNumber(pool.gauge.votes), -18);
+      return fNum2(normalizedVotes.toString(), {
         style: 'percent',
         maximumFractionDigits: 2
-      }),
+      });
+    },
     align: 'right',
     id: 'poolGaugeVotes',
     sortKey: pool => Number(pool.gauge.votes),
@@ -98,21 +95,22 @@ const columns = ref<ColumnDefinition<PoolWithGauge>[]>([
     cellClassName: 'font-numeric'
   },
   {
-    name: t('myVotes'),
-    accessor: pool =>
-      fNum2(pool.gauge.userVotes, {
+    name: t('veBAL.liquidityMining.table.myVotes'),
+    accessor(pool) {
+      const normalizedVotes = scale(new BigNumber(pool.gauge.userVotes), -4);
+      return fNum2(normalizedVotes.toString(), {
         style: 'percent',
         maximumFractionDigits: 2
-      }),
+      });
+    },
     align: 'right',
     id: 'myVotes',
-    hidden: !props.showPoolShares,
     sortKey: pool => Number(pool.gauge.userVotes),
     width: 150,
     cellClassName: 'font-numeric'
   },
   {
-    name: 'Vote',
+    name: t('veBAL.liquidityMining.table.vote'),
     id: 'vote',
     accessor: 'id',
     align: 'right',
@@ -131,10 +129,6 @@ function orderedTokenAddressesFor(pool: PoolWithGauge) {
 }
 
 function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
-  if (isStablePhantom(pool.poolType))
-    return pool.tokens.filter(token => token.address !== pool.address);
-  if (isStableLike(pool.poolType)) return pool.tokens;
-
   const sortedTokens = pool.tokens.slice();
   sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
   return sortedTokens;
@@ -207,21 +201,9 @@ function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
           />
         </div>
       </template>
-      <template v-slot:poolNameCell="pool">
+      <template v-slot:poolCompositionCell="pool">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
-          <TokenPills
-            :tokens="orderedPoolTokens(pool)"
-            :isStablePool="isStableLike(pool.poolType)"
-          />
-          <BalChip
-            v-if="pool.dynamic.isNewPool"
-            color="red"
-            size="sm"
-            class="ml-2 uppercase"
-            :outline="false"
-          >
-            {{ $t('new') }}
-          </BalChip>
+          <TokenPills :tokens="orderedPoolTokens(pool)" />
         </div>
       </template>
       <template v-slot:voteColumnCell="pool">

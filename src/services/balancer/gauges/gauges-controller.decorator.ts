@@ -2,7 +2,10 @@ import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { GaugeInformation, PoolWithGauge } from '@/services/balancer/subgraph/types';
+import {
+  GaugeInformation,
+  PoolWithGauge
+} from '@/services/balancer/subgraph/types';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -39,7 +42,7 @@ export class GaugesControllerDecorator {
 
     const gaugesDataMap = await this.multicaller.execute();
 
-    return pools.map(pool => {
+    const mergedPoolMap = pools.map(pool => {
       const gauge = this.format(
         pool.gauge.address,
         gaugesDataMap[pool.id].gauge
@@ -47,6 +50,8 @@ export class GaugesControllerDecorator {
       const mergedPool = { ...pool, ...{ gauge } };
       return mergedPool;
     });
+    console.log('Merged pool map: ', mergedPoolMap);
+    return mergedPoolMap;
   }
 
   private format(gaugeAddress: string, gaugesDatamap): GaugeInformation {
@@ -74,10 +79,7 @@ export class GaugesControllerDecorator {
   /**
    * @summary Fetch user's claimable BAL for each gauge.
    */
-  private callUserGaugeVotes(
-    pools: PoolWithGauge[],
-    userAddress: string
-  ) {
+  private callUserGaugeVotes(pools: PoolWithGauge[], userAddress: string) {
     pools.forEach(pool => {
       this.multicaller.call(
         `${pool.id}.gauge.userVotes`,

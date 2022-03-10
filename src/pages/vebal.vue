@@ -7,7 +7,6 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 
 import { isVeBalSupported } from '@/composables/useVeBAL';
 
-
 const {
   selectedTokens,
   addSelectedToken,

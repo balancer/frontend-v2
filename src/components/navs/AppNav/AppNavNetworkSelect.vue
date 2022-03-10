@@ -51,7 +51,6 @@ import ConfigService from '@/services/config/config.service';
 import { defineComponent } from 'vue';
 import { Network } from '@/services/balancer/subgraph/types';
 
-
 export default defineComponent({
   name: 'AppNavNetworkSelect',
 

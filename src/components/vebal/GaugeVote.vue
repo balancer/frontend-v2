@@ -45,8 +45,8 @@ function submitVote() {
 <template>
   <BalPopover no-pad>
     <template v-slot:activator>
-      <BalBtn color="transparent" :size="'sm'" class="mr-2 p-1 relative" flat>
-        <VoteIcon />
+      <BalBtn color="blue" outline="true" size="sm" flat>
+        {{ $t('veBAL.liquidityMining.table.vote') }}
       </BalBtn>
     </template>
     <BalCard class="w-72" noPad noBorder>
@@ -54,7 +54,7 @@ function submitVote() {
         <div
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
         >
-          <h5>{{ $t('voteWeight') }}</h5>
+          <h5>{{ $t('veBAL.liquidityMining.popover.title') }}</h5>
         </div>
       </template>
       <div :class="['p-3']">
