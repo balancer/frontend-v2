@@ -29,22 +29,21 @@ export default function useStaking(pool?: DecoratedPoolWithStakedShares) {
   }
 
   async function stakeBPT() {
-    if (!pool) throw new Error(`Pool not loaded.`)
-    const gauge = new LiquidityGauge(
-      '0x5be3bbb5d7497138b9e623506d8b6c6cd72daceb',
-      getProvider()
-    );
+    if (!pool) throw new Error(`Pool not loaded.`);
+    const gaugeAddress = await getGaugeAddress();
+    const gauge = new LiquidityGauge(gaugeAddress, getProvider());
     const tx = await gauge.stake(parseUnits(balanceFor(pool.address), 18));
     return tx;
   }
 
   async function getGaugeAddress(): Promise<string> {
-    if (!pool) throw new Error(`Pool not loaded.`)
+    if (!pool) throw new Error(`Pool not loaded.`);
     const gaugeInterface = new Interface(GaugeFactoryABI);
     const contract = new Contract(
       // TODO REMOVE TYPE AVERSION
       configService.network.addresses.gaugeFactory!,
-      gaugeInterface
+      gaugeInterface,
+      getProvider()
     );
     const gaugeAddress = await contract.getPoolGauge(getAddress(pool.address));
     return gaugeAddress;
