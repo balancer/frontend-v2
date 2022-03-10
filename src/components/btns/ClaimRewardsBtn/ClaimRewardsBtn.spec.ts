@@ -2,7 +2,9 @@ import { render, fireEvent } from '@testing-library/vue';
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
-import LiquidityGauge, { mockClaimRewards } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import LiquidityGauge, {
+  mockClaimRewards
+} from '@/services/balancer/contracts/contracts/liquidity-gauge';
 
 ClaimRewardsBtn.components = { BalBtn };
 
