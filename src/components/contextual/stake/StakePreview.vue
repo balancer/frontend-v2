@@ -12,7 +12,10 @@ import { useQueryClient } from 'vue-query';
 
 import { bnum } from '@/lib/utils';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import { DecoratedPoolWithStakedShares, FullPool } from '@/services/balancer/subgraph/types';
+import {
+  DecoratedPoolWithStakedShares,
+  FullPool
+} from '@/services/balancer/subgraph/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import { last } from 'lodash';
 import { UserGuageSharesResponse } from '../pages/pools/types';
@@ -31,7 +34,7 @@ const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
-const {stakeBPT } = useStaking(props.pool);
+const { stakeBPT, getGaugeAddress } = useStaking(props.pool);
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
   ref([balanceFor(props.pool.address).toString()])
@@ -100,9 +103,8 @@ const poolShareData = computed(() => {
  */
 onBeforeMount(async () => {
   isLoadingApprovalsForGauge.value = true;
-  const approvalActions = await getTokenApprovalActionsForSpender(
-    '0x5BE3BBb5d7497138B9e623506D8b6C6cd72daceb'
-  );
+  const gaugeAddress = await getGaugeAddress();
+  const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;
 });
