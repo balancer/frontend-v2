@@ -129,7 +129,7 @@ const totalRewardValue = computed((): string => {
       </template>
       <template #totalClaimCell>
         <div class="">
-          <ClaimRewardsBtn :gauge="gauge" :value="totalRewardValue" />
+          <ClaimRewardsBtn :gauge="gauge" :fiatValue="totalRewardValue" />
         </div>
       </template>
     </BalTable>

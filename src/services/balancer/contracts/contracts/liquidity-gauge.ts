@@ -5,7 +5,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { web3Service } from '@/services/web3/web3.service';
 import { Contract } from '@ethersproject/contracts';
 
-export default class LiquidityGauge {
+export class LiquidityGauge {
   instance: Contract;
 
   constructor(

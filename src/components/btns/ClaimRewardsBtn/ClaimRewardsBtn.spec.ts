@@ -2,26 +2,34 @@ import { render, fireEvent } from '@testing-library/vue';
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
-import LiquidityGauge, {
-  mockClaimRewards
-} from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { txResponseMock } from '@/__mocks__/transactions';
 
 ClaimRewardsBtn.components = { BalBtn };
 
+jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
 jest.mock('@/composables/useTransactions');
 jest.mock('@/composables/useTokens');
 jest.mock('@/composables/useEthers');
+jest.mock('@/composables/useNumbers');
 jest.mock('@/composables/queries/useGaugesQuery');
 jest.mock('@/composables/queries/useGaugesDecorationQuery');
 jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
+jest.mock('@/services/rpc-provider/rpc-provider.service');
 jest.mock('vue-i18n');
+
+const mockClaimRewards = jest.fn().mockResolvedValue(txResponseMock);
+jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
+  return {
+    LiquidityGauge: jest.fn().mockImplementation(() => {
+      return {
+        claimRewards: mockClaimRewards
+      };
+    })
+  };
+});
 
 describe.only('ClaimRewardsBtn', () => {
   beforeEach(() => {
-    // Clear all instances and calls to constructor and all methods:
-    // @ts-ignore
-    LiquidityGauge.mockClear();
     mockClaimRewards.mockClear();
   });
 
@@ -29,7 +37,7 @@ describe.only('ClaimRewardsBtn', () => {
     const { getByText } = render(ClaimRewardsBtn, {
       props: {
         gauge,
-        value: '1000'
+        fiatValue: '1000'
       }
     });
 
@@ -40,7 +48,7 @@ describe.only('ClaimRewardsBtn', () => {
     const { getByText } = render(ClaimRewardsBtn, {
       props: {
         gauge,
-        value: '1000'
+        fiatValue: '1000'
       }
     });
 
@@ -48,9 +56,6 @@ describe.only('ClaimRewardsBtn', () => {
 
     await fireEvent.click(btn);
 
-    // const mockLiquidityGauge = require('@/services/balancer/contracts/contracts/liquidity-gauge')
-    //   .mock.instances[0];
-    // @ts-ignore
-    expect(LiquidityGauge.mock.instances[0].claimRewards).toBeCalled();
+    expect(mockClaimRewards).toBeCalled();
   });
 });

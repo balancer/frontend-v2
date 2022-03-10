@@ -1,3 +1,5 @@
+export const FNumFormats = jest.fn().mockImplementation();
+
 export default function useNumbers() {
   return {
     toFiat: jest.fn().mockImplementation(),
