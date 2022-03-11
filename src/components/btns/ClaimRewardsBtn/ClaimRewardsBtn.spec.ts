@@ -1,10 +1,12 @@
 import { render, fireEvent } from '@testing-library/vue';
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
+import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 import { txResponseMock } from '@/__mocks__/transactions';
 
-ClaimRewardsBtn.components = { BalBtn };
+ClaimRewardsBtn.components = { TxActionBtn };
+TxActionBtn.components = { BalBtn };
 
 jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
 jest.mock('@/composables/useTransactions');
