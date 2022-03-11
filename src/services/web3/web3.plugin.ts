@@ -238,7 +238,6 @@ export function getConnectorName(connectorId: string): string {
 }
 
 export function getConnectorLogo(connectorId: string): string {
-  console.log('connectorId', connectorId)
   if (connectorId === 'injected') {
     const provider = window.ethereum as any;
     if (provider.isTally) {
