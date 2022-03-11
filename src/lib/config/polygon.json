@@ -14,7 +14,6 @@
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
-  "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
@@ -31,7 +30,6 @@
     "minTransactionBuffer": "0.1"
   },
   "addresses": {
-    "exchangeProxy": "",
     "merkleRedeem": "",
     "merkleOrchard": "0x0F3e0c4218b7b0108a3643cFe9D3ec0d4F57c54e",
     "multicall": "0x275617327c958bD06b5D6b871E7f491D76113dd8",

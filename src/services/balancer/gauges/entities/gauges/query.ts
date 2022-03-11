@@ -7,7 +7,7 @@ const defaultArgs = {
 const defaultAttrs = {
   id: true,
   symbol: true,
-  pool: true,
+  poolId: true,
   totalSupply: true,
   factory: {
     id: true

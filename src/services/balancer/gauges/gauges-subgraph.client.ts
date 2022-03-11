@@ -1,11 +1,10 @@
+import { configService } from '@/services/config/config.service';
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-
-const BALANCER_GAUGES_SUBGRAPH =
-  'https://api.thegraph.com/subgraphs/name/mendesfabio/balancer-gauges';
-
 export class GaugesSubgraphClient {
-  constructor(public readonly url: string = BALANCER_GAUGES_SUBGRAPH) {}
+  constructor(
+    public readonly url: string = configService.network.subgraphs.gauge
+  ) {}
 
   public async get(query) {
     try {

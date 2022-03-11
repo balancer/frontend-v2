@@ -1,0 +1,14 @@
+{
+  "id": "0x5be3bbb5d7497138b9e623506d8b6c6cd72daceb",
+  "symbol": "B-50USDC-50WETH-gauge",
+  "poolId": "0x3a19030ed746bd1c3f2b0f996ff9479af04c5f0a",
+  "totalSupply": "2.098686656699031571",
+  "factory": {
+    "id": "0xa333c704e96fe7117055e56ce95525d1ef11c006"
+  },
+  "rewardTokens": ["0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115"],
+  "claimableTokens": "0",
+  "claimableRewards": {
+    "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115": "0"
+  }
+}

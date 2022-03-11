@@ -2,11 +2,10 @@ import { keyBy } from 'lodash';
 
 import { PoolMigrationType, PoolMigrationInfo } from './types';
 import { POOLS } from '@/constants/pools';
-import { networkId } from '@/composables/useNetwork';
 
 const riskI18nLabelPrefix = 'migratePool.previewModal.riskWarnings.risks';
 
-const poolsIdsMap = POOLS.IdsMap[networkId.value];
+const poolsIdsMap = POOLS.IdsMap;
 
 export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {

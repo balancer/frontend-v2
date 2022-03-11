@@ -1,9 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { exchangeProxyService } from '../contracts/exchange-proxy.service';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Swap } from '@balancer-labs/sor/dist/types';
 import { AddressZero } from '@ethersproject/constants';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { vaultService } from '@/services/contracts/vault.service';
@@ -35,32 +32,6 @@ export default class SwapService {
     private readonly config: ConfigService = configService,
     private readonly web3: Web3Service = web3Service
   ) {}
-
-  public async batchSwapV1(
-    tokenIn: SwapToken,
-    tokenOut: SwapToken,
-    swaps: Swap[][]
-  ): Promise<TransactionResponse> {
-    console.log('[Swap Service] batchSwapV1');
-
-    const options: any = {};
-
-    if (tokenIn.address === NATIVE_ASSET_ADDRESS) {
-      options.value = tokenIn.amount;
-    }
-
-    try {
-      return exchangeProxyService.multihopBatchSwap(
-        swaps,
-        tokenIn,
-        tokenOut,
-        options
-      );
-    } catch (e) {
-      console.log('[Swapper] batchSwapV1 Error:', e);
-      return Promise.reject(e);
-    }
-  }
 
   public async batchSwapV2(
     tokenIn: SwapToken,

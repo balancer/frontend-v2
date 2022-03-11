@@ -21,6 +21,8 @@ import {
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactionErrors from '@/composables/useTransactionErrors';
+import { configService } from '@/services/config/config.service';
+import { ChainId } from '@aave/protocol-js';
 
 /**
  * TYPES
@@ -151,9 +153,15 @@ async function handleTransaction(
   tx: TransactionResponse,
   state: TransactionActionState
 ): Promise<void> {
-  state.confirmed = await txListener(tx, {
+  await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
+
+      // need to explicity wait for a number of confirmations
+      // on polygon
+      if (Number(configService.network.chainId) === ChainId.polygon) {
+        await tx.wait(7);
+      }
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       state.confirmedAt = dateTimeLabelFor(confirmedAt);
@@ -165,6 +173,7 @@ async function handleTransaction(
       }
 
       state.confirming = false;
+      state.confirmed = true;
     },
     onTxFailed: () => {
       state.confirming = false;

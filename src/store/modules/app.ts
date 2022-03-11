@@ -1,6 +1,5 @@
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
-import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import LS_KEYS from '@/constants/local-storage.keys';
 
 export enum TradeInterface {
@@ -12,7 +11,6 @@ export interface AppState {
   loading: boolean;
   modalOpen: boolean;
   locale: string;
-  tradeLiquidity: LiquiditySelection;
   tradeInterface: TradeInterface;
   transactionDeadline: number;
 }
@@ -21,7 +19,6 @@ const state: AppState = {
   loading: true,
   modalOpen: false,
   locale: lsGet(LS_KEYS.App.Locale, 'en-US'),
-  tradeLiquidity: lsGet(LS_KEYS.App.TradeLiquidity, LiquiditySelection.Best),
   transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 20), // minutes
   tradeInterface: lsGet(LS_KEYS.App.TradeInterface, TradeInterface.BALANCER)
 };
@@ -55,11 +52,6 @@ const mutations = {
     state.locale = locale;
     lsSet(LS_KEYS.App.Locale, locale);
     i18n.global.locale = locale;
-  },
-
-  setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection) {
-    state.tradeLiquidity = tradeLiquidity;
-    lsSet(LS_KEYS.App.TradeLiquidity, state.tradeLiquidity);
   },
 
   setTradeInterface(

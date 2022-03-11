@@ -19,7 +19,7 @@ export default function useGaugesQuery(
   /**
    * QUERY KEY
    */
-  const queryKey = reactive(QUERY_KEYS.Gauges.All());
+  const queryKey = reactive(QUERY_KEYS.Gauges.All.Static());
 
   /**
    * QUERY FUNCTION
