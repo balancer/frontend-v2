@@ -238,6 +238,7 @@ export function getConnectorName(connectorId: string): string {
 }
 
 export function getConnectorLogo(connectorId: string): string {
+  console.log('connectorId', connectorId)
   if (connectorId === 'injected') {
     const provider = window.ethereum as any;
     if (provider.isTally) {
@@ -259,6 +260,9 @@ export function getConnectorLogo(connectorId: string): string {
       return frameLogo;
     }
     return defaultLogo;
+  }
+  if (connectorId === 'injectedMetamask') {
+    return metamaskLogo;
   }
   if (connectorId === 'injectedTally') {
     return tallyLogo;
