@@ -52,6 +52,7 @@ export interface Config {
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
+    balancerMinter: string;
   };
   keys: {
     infura: string;

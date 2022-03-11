@@ -117,12 +117,11 @@ const QUERY_KEYS = {
   Gauges: {
     All: {
       Static: () => ['gauges', 'all', 'static'],
-      Onchain: (gauges: Ref<SubgraphGauge[] | undefined>) => [
-        'gauges',
-        'all',
-        'onchain',
-        { gauges }
-      ]
+      Onchain: (
+        gauges: Ref<SubgraphGauge[] | undefined>,
+        account: Ref<string>,
+        networkId: Ref<Network>
+      ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
     }
   },
   Transaction: {
