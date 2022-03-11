@@ -15,7 +15,7 @@ export default function useGraphQuery<T>(
   graphQLEndpoint: string,
   key: QueryKey,
   query: () => string,
-  options: UseQueryOptions<T>
+  options?: UseQueryOptions<T>
 ) {
   async function graphQLRequest() {
     if (!graphQLEndpoint) {
@@ -24,7 +24,9 @@ export default function useGraphQuery<T>(
     try {
       const {
         data: { data }
-      } = await axios.post(graphQLEndpoint, query());
+      } = await axios.post(graphQLEndpoint, {
+        query: query()
+      });
 
       return data;
     } catch (error) {
