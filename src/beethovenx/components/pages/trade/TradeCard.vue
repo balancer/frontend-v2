@@ -72,8 +72,10 @@
       :address-out="tokenOutAddress"
       :amount-out="tokenOutAmount"
       :trading="trading"
+      :submissionError="submissionErrorComputed"
       @trade="trade"
-      @close="modalTradePreviewIsOpen = false"
+      @close="closeTradePreviewModal"
+      @reset="handleResetState"
     />
   </teleport>
 </template>
@@ -201,7 +203,10 @@ export default defineComponent({
       fetchPools,
       poolsLoading,
       sorManagerRef,
-      sorManagerInitialized
+      sorManagerInitialized,
+      submissionError,
+      slippageError,
+      resetState
     } = useSor({
       exactIn,
       tokenInAddressInput: tokenInAddress,
@@ -251,6 +256,16 @@ export default defineComponent({
       }
     });
 
+    const submissionErrorComputed = computed(() => {
+      if (slippageError.value) {
+        return t('tradeSubmissionError.slippageError');
+      } else if (submissionError.value) {
+        return submissionError.value;
+      } else {
+        return '';
+      }
+    });
+
     function handleErrorButtonClick() {
       if (isHighPriceImpact.value) {
         highPiAccepted.value = true;
@@ -279,7 +294,17 @@ export default defineComponent({
     }
 
     function showTradePreviewModal() {
+      resetState();
       modalTradePreviewIsOpen.value = true;
+    }
+
+    function closeTradePreviewModal() {
+      resetState();
+      modalTradePreviewIsOpen.value = false;
+    }
+
+    function handleResetState(): void {
+      resetState();
     }
 
     watch(userNetworkConfig, async () => {
@@ -337,13 +362,16 @@ export default defineComponent({
       TradeSettingsContext,
       poolsLoading,
       showTradePreviewModal,
+      closeTradePreviewModal,
+      handleResetState,
       isLoadingApprovals,
       bp,
       darkMode,
       tradeCardShadow,
       explorer: explorerLinks,
       sorManagerRef,
-      sorManagerInitialized
+      sorManagerInitialized,
+      submissionErrorComputed
     };
   }
 });

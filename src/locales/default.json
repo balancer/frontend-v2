@@ -516,7 +516,8 @@
   "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",
   "tradeSubmissionError": {
     "actionLabel": "Dismiss",
-    "title": "An error has occurred"
+    "title": "An error has occurred",
+    "slippageError": "Your trade failed because of excessive slippage. You can attempt to increase your slippage and try again."
   },
   "tradeSuccess": "Successfully traded your tokens",
   "tradeSummary": {

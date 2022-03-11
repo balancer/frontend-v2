@@ -130,6 +130,7 @@ export default function useSor({
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
+  const slippageError = ref(false);
 
   // COMPOSABLES
   const store = useStore();
@@ -174,8 +175,8 @@ export default function useSor({
 
   function resetState() {
     state.validationErrors.highPriceImpact = false;
-
     state.submissionError = null;
+    slippageError.value = false;
   }
 
   async function initSor(): Promise<void> {
@@ -541,6 +542,9 @@ export default function useSor({
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
+        if (isSlippageError(e)) {
+          slippageError.value = true;
+        }
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -570,6 +574,9 @@ export default function useSor({
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
+        if (isSlippageError(e)) {
+          slippageError.value = true;
+        }
       }
     }
   }
@@ -625,6 +632,10 @@ export default function useSor({
     };
   }
 
+  function isSlippageError(e) {
+    return e.data?.message.includes('BAL#507');
+  }
+
   /**
    * Under certain circumstance we need to adjust an amount
    * for the price impact calc due to background wrapping taking place
@@ -660,6 +671,7 @@ export default function useSor({
     getQuote,
     resetState,
     confirming,
+    slippageError,
 
     // For Tests
     setSwapCost,

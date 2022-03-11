@@ -105,6 +105,17 @@
         block
         @click.prevent="trade"
       />
+      <BalAlert
+        v-if="submissionError != ''"
+        class="p-3 mt-4"
+        type="error"
+        size="md"
+        :title="$t('tradeSubmissionError.title')"
+        :description="submissionError"
+        block
+        :action-label="$t('tradeSubmissionError.actionLabel')"
+        @actionClick="resetSubmissionError"
+      />
     </div>
   </BalModal>
 </template>
@@ -125,7 +136,7 @@ import GasEstimationSelector from '@/components/gas-estimation/GasEstimationSele
 
 export default defineComponent({
   components: { GasEstimationSelector },
-  emits: ['trade', 'close'],
+  emits: ['trade', 'close', 'reset'],
   props: {
     open: {
       type: Boolean,
@@ -153,6 +164,10 @@ export default defineComponent({
     },
     trading: {
       type: Boolean,
+      required: true
+    },
+    submissionError: {
+      type: String,
       required: true
     }
   },
@@ -277,6 +292,10 @@ export default defineComponent({
       emit('close');
     }
 
+    function resetSubmissionError(): void {
+      emit('reset');
+    }
+
     return {
       // methods
       fNum,
@@ -284,6 +303,7 @@ export default defineComponent({
       approveLidoRelayer,
       approveToken,
       trade,
+      resetSubmissionError,
       // computed
       requiresApproval,
       requiresTokenApproval,

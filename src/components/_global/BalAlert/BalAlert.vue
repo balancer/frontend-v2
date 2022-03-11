@@ -22,11 +22,11 @@
             </slot>
           </p>
         </div>
-        <div v-if="actionLabel" :class="[actionClasses]">
-          <BalBtn :color="btnColor" size="xs" @click="$emit('actionClick')">
-            {{ actionLabel }}
-          </BalBtn>
-        </div>
+      </div>
+      <div v-if="actionLabel" :class="[actionClasses]">
+        <BalBtn :color="btnColor" size="xs" @click="$emit('actionClick')">
+          {{ actionLabel }}
+        </BalBtn>
       </div>
     </div>
   </div>
