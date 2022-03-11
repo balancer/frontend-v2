@@ -1,7 +1,7 @@
 import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import { isStablePhantom } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
@@ -35,6 +35,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
   const { usdAsset } = usePoolTransfers();
   const { networkConfig } = useConfig();
+  const { isWeightedPoolWithNestedLinearPools } = usePool(pool);
 
   /**
    * COMPUTED
@@ -58,7 +59,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   });
 
   const withdrawTokens = computed(() => {
-    if (state.isProportional) {
+    if (state.isProportional && isWeightedPoolWithNestedLinearPools.value) {
       return tokensOut.value.filter(
         token =>
           !(
