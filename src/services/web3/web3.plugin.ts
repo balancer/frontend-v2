@@ -260,6 +260,9 @@ export function getConnectorLogo(connectorId: string): string {
     }
     return defaultLogo;
   }
+  if (connectorId === 'injectedMetamask') {
+    return metamaskLogo;
+  }
   if (connectorId === 'injectedTally') {
     return tallyLogo;
   }
