@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps, withDefaults } from 'vue';
-
 type Props = {
   hasBalance: boolean;
   symbol: string;
