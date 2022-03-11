@@ -267,6 +267,8 @@ export default defineComponent({
         return t('delegateFeesTooltip');
       } else if (feesFixed.value) {
         return t('fixedFeesTooltip');
+      } else if (hasDefaultOwner.value) {
+        return t('ownerBeethovenFeesTooltip');
       } else {
         return t('ownerFeesTooltip');
       }

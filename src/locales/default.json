@@ -357,6 +357,7 @@
   "optimizedPrefilled": "Optimized amounts have been pre-filled",
   "oracleWeightedPool": "Oracle Weighted Pool",
   "overview": "Overview",
+  "ownerBeethovenFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the Beethoven X Liquidity Committee Multisig.",
   "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
   "payload": "Payload",
   "pendingClaims": "Pending claims",
