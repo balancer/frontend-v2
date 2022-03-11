@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+/**
+ * Claim Page
+ */
 import { computed, reactive, watch } from 'vue';
 import { configService } from '@/services/config/config.service';
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
