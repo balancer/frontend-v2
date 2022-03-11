@@ -114,7 +114,7 @@ export class PriceService {
     days: number,
     addressesPerRequest = 1,
     aggregateBy: 'hour' | 'day' = 'day'
-  ) {
+  ): Promise<HistoricalPrices> {
     try {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
