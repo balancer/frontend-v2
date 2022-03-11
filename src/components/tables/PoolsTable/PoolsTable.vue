@@ -137,7 +137,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     cellClassName: 'font-numeric'
   },
   {
-    name: t('myApr'),
+    name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
     accessor: pool => pool.dynamic.apr.total,
     align: 'right',
