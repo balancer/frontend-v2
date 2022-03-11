@@ -7,6 +7,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import AppHeaderBg from '@/beethovenx/components/backgrounds/AppHeaderBg.vue';
 import AppHero from '@/beethovenx/components/heroes/AppHero.vue';
 import GlobalStats from '@/beethovenx/components/stats/GlobalStats.vue';
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 /**
  * COMPOSABLES
@@ -45,41 +46,18 @@ const isHomePage = computed(() => route.path === '/');
     <div class="-top-14 xl:top-0 flex flex-col items-center relative">
       <img src="~@/beethovenx/assets/images/community-image.png" />
       <div class="absolute bottom-0 flex justify-center pb-4 xl:pb-6 xl:ml-8">
-        <a href="https://twitter.com/beethoven_x" class="mr-12">
-          <img
-            src="~@/beethovenx/assets/images/twitter-icon.png"
-            width="40"
-            class="mx-auto"
-          />
-        </a>
-        <a href="https://beethovenxio.medium.com/" class="mr-12">
-          <img
-            src="~@/beethovenx/assets/images/medium-icon.png"
-            width="40"
-            class="mx-auto"
-          />
-        </a>
-        <a href="https://discord.gg/jedS4zGk28" class="mr-12">
-          <img
-            src="~@/beethovenx/assets/images/discord-icon.png"
-            width="40"
-            class="mx-auto"
-          />
-        </a>
-        <a href="https://docs.beethovenx.io/" class="mr-12">
-          <img
-            src="~@/beethovenx/assets/images/gitbook-logo.png"
-            width="40"
-            class="mx-auto"
-          />
-        </a>
-        <a href="https://github.com/beethovenxfi">
-          <img
-            src="~@/beethovenx/assets/images/github-logo.png"
-            width="40"
-            class="mx-auto"
-          />
-        </a>
+        <template
+          v-for="(item, index) in EXTERNAL_LINKS.Beethoven.NavOtherItems"
+          :key="index"
+        >
+          <BalLink v-if="item.icon" class="mr-12">
+            <img
+              :src="require(`@/beethovenx/assets/images/${item.icon}.png`)"
+              width="40"
+              class="mx-auto"
+            />
+          </BalLink>
+        </template>
       </div>
     </div>
   </div>

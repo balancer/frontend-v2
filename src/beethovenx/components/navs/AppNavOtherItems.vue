@@ -9,38 +9,19 @@
       </div>
     </template>
     <div class="w-48">
-      <a class="app-nav-other-item" href="https://snapshot.org/#/beets.eth">
-        Vote
-      </a>
-      <a class="app-nav-other-item" href="https://info.beets.fi">Analytics</a>
-      <a class="app-nav-other-item" href="https://docs.beethovenx.io">
-        Docs & Help
-      </a>
-      <a class="app-nav-other-item" href="https://github.com/beethovenxfi">
-        Github
-      </a>
-      <a class="app-nav-other-item" href="https://twitter.com/beethoven_x">
-        Twitter
-      </a>
-      <a class="app-nav-other-item" href="https://beethovenxio.medium.com/">
-        Medium
-      </a>
-      <a class="app-nav-other-item" href="https://discord.gg/jedS4zGk28">
-        Discord
-      </a>
-      <a class="app-nav-other-item" href="https://app.multichain.org/#/router">
-        Multichain Bridge
-        <div class="text-xs text-gray-400">
-          ETH / AVAX / BSC / MATIC
-        </div>
-      </a>
-      <a
+      <div
+        v-for="(link, index) in EXTERNAL_LINKS.Beethoven.NavOtherItems"
+        :key="index"
         class="app-nav-other-item"
-        href="https://app.allbridge.io/bridge?from=SOL&to=FTM&asset=SOL"
       >
-        AllBridge
-        <div class="text-xs text-gray-400">SOL / MATIC / CELO</div>
-      </a>
+        <BalLink :href="link.url" external noStyle>
+          {{ link.title }}
+          <BalIcon name="arrow-up-right" size="sm" class="text-gray-500" />
+          <div v-if="link.subTitle" class="text-xs text-gray-400">
+            {{ link.subTitle }}
+          </div>
+        </BalLink>
+      </div>
     </div>
   </BalPopover>
 </template>
@@ -51,6 +32,7 @@ import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { Alert } from '@/composables/useAlerts';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
   name: 'AppNavOtherItems',
@@ -86,7 +68,10 @@ export default defineComponent({
       tvl,
       circulatingSupply,
       marketCap,
-      loading
+      loading,
+
+      // constants
+      EXTERNAL_LINKS
     };
   }
 });
