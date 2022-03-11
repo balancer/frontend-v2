@@ -12,7 +12,6 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
-import { TokenInfoMap } from '@/types/TokenList';
 import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
 
@@ -38,7 +37,7 @@ export default function useTokenApprovals(
     tokens,
     refetchAllowances,
     approvalsRequired,
-    getToken
+    getTokens
   } = useTokens();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
@@ -124,10 +123,7 @@ export default function useTokenApprovals(
   }
 
   async function getApprovalForSpender(spender: string) {
-    const customTokenMap: TokenInfoMap = {};
-    for (const token of tokenAddresses) {
-      customTokenMap[getAddress(token)] = getToken(getAddress(token));
-    }
+    const customTokenMap = getTokens(tokenAddresses);
 
     const allowances = await tokenService.allowances.get(
       account.value,
