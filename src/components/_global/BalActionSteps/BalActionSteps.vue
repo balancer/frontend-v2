@@ -172,7 +172,7 @@ async function handleTransaction(
   tx: TransactionResponse,
   state: TransactionActionState
 ): Promise<void> {
-  state.confirmed = await txListener(tx, {
+  await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
 
@@ -192,6 +192,7 @@ async function handleTransaction(
       }
 
       state.confirming = false;
+      state.confirmed = true;
     },
     onTxFailed: () => {
       state.confirming = false;

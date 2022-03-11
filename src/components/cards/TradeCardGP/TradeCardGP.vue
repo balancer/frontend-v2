@@ -125,7 +125,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed } from 'vue';
+import { ref, defineComponent, computed, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -184,7 +184,8 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAmount,
       setTokenInAddress,
-      setTokenOutAddress
+      setTokenOutAddress,
+      setInitialized
     } = useTradeState();
 
     // DATA
@@ -355,7 +356,6 @@ export default defineComponent({
       } else if (isAddress(assetOut)) {
         assetOut = getAddress(assetOut);
       }
-
       setTokenInAddress(assetIn || store.state.trade.inputAsset);
       setTokenOutAddress(assetOut || store.state.trade.outputAsset);
     }
@@ -377,7 +377,10 @@ export default defineComponent({
     }
 
     // INIT
-    populateInitialTokens();
+    onBeforeMount(() => {
+      populateInitialTokens();
+      setInitialized(true);
+    });
 
     return {
       // constants

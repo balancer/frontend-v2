@@ -433,7 +433,8 @@
             "title": "Claim all of your liquidity incentives",
             "description": "The Balancer protocol provides incentives to attract liquidity in eligible pools.",
             "titles": {
-                "incentivesOnOtherNetworks": "Incentives on other networks"
+                "incentivesOnOtherNetworks": "Incentives on other networks",
+                "legacyIncentives": "Legacy incentives"
             },
             "btns": {
                 "claimOn": "Claim on"
