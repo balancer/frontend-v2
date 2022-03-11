@@ -9,8 +9,8 @@ type Placement = 'top' | 'left' | 'bottom' | 'right';
 type Props = {
   text?: string;
   placement?: Placement;
-  onShow: () => void;
-  onHide: () => void;
+  onShow?: () => void;
+  onHide?: () => void;
   noPad?: boolean;
   disabled?: boolean;
   iconSize?: IconSize;

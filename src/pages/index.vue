@@ -1,14 +1,41 @@
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
     <template v-if="isWalletReady">
-      <div class="px-4 lg:px-0">
-        <BalStack horizontal justify="between" align="center">
-          <h3>{{ $t('myV2Investments') }}</h3>
-          <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
-            $t('createAPool.title')
-          }}</BalBtn>
+      <BalStack vertical>
+        <div class="px-4 lg:px-0">
+          <BalStack horizontal justify="between" align="center">
+            <h3>{{ $t('myV2Investments') }}</h3>
+            <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
+              $t('createAPool.title')
+            }}</BalBtn>
+          </BalStack>
+        </div>
+        <BalStack vertical spacing="xl">
+          <PoolsTable
+            :key="stakableUserPools"
+            :isLoading="isLoadingUserPools"
+            :data="stakableUserPools"
+            :noPoolsLabel="$t('noInvestments')"
+            :selectedTokens="selectedTokens"
+            :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
+            showPoolShares
+            class="mb-8"
+          />
+          <BalStack vertical spacing="sm">
+            <h5>{{ $t('poolsToMigrate') }}</h5>
+            <PoolsTable
+              :key="migratableUserPools"
+              :isLoading="isLoadingUserPools"
+              :data="migratableUserPools"
+              :noPoolsLabel="$t('noInvestments')"
+              showPoolShares
+              :selectedTokens="selectedTokens"
+              :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
+              class="mb-8"
+            />
+          </BalStack>
         </BalStack>
-      </div>
+      </BalStack>
       <PoolsTable
         :isLoading="isLoadingUserPools"
         :data="userPools"
@@ -26,40 +53,43 @@
       <div class="mb-16" />
     </template>
 
-    <div class="px-4 lg:px-0">
-      <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
-      <div
-        class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
-      >
-        <TokenSearchInput
-          v-model="selectedTokens"
-          :loading="isLoadingPools"
-          @add="addSelectedToken"
-          @remove="removeSelectedToken"
-          class="w-full md:w-2/3"
-        />
-        <BalBtn
-          @click="navigateToCreatePool"
-          color="blue"
-          size="sm"
-          :class="{ 'mt-4': upToMediumBreakpoint }"
-          :block="upToMediumBreakpoint"
+    <BalStack vertical>
+      <div class="px-4 lg:px-0">
+        <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
+        <div
+          class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
         >
-          {{ $t('createAPool.title') }}
-        </BalBtn>
+          <TokenSearchInput
+            v-model="selectedTokens"
+            :loading="isLoadingPools"
+            @add="addSelectedToken"
+            @remove="removeSelectedToken"
+            class="w-full md:w-2/3"
+          />
+          <BalBtn
+            @click="navigateToCreatePool"
+            color="blue"
+            size="sm"
+            :class="{ 'mt-4': upToMediumBreakpoint }"
+            :block="upToMediumBreakpoint"
+          >
+            {{ $t('createAPool.title') }}
+          </BalBtn>
+        </div>
       </div>
-    </div>
 
-    <PoolsTable
-      :isLoading="isLoadingPools"
-      :data="filteredPools"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
-      :isLoadingMore="poolsIsFetchingNextPage"
-      @loadMore="loadMorePools"
-      :selectedTokens="selectedTokens"
-      class="mb-8"
-    />
+      <PoolsTable
+        :isLoading="isLoadingPools"
+        :data="filteredPools"
+        :noPoolsLabel="$t('noPoolsFound')"
+        :isPaginated="poolsHasNextPage"
+        :isLoadingMore="poolsIsFetchingNextPage"
+        :hiddenColumns="['migrate', 'stake']"
+        @loadMore="loadMorePools"
+        :selectedTokens="selectedTokens"
+        class="mb-8"
+      />
+    </BalStack>
     <div class="px-4 lg:px-0" v-if="!hideV1Links">
       <div class="text-black-600">
         {{ $t('tableShowsBalancerV2Pools') }}
@@ -163,6 +193,17 @@ export default defineComponent({
       }
     });
 
+    // TODO STAKING INTEGRATION
+    const areStakingButtonsVisible = computed(() => true);
+
+    const migratableUserPools = computed(() => {
+      return userPools.value.filter(pool => isMigratablePool(pool));
+    });
+
+    const stakableUserPools = computed(() => {
+      return userPools.value.filter(pool => !isMigratablePool(pool));
+    });
+
     watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 
     /**
@@ -187,6 +228,9 @@ export default defineComponent({
       isElementSupported,
       upToMediumBreakpoint,
       showMigrationColumn,
+      areStakingButtonsVisible,
+      migratableUserPools,
+      stakableUserPools,
 
       //methods
       router,

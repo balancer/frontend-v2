@@ -381,6 +381,7 @@
     "mustBeValidEmail": "must be a valid email",
     "mustBeValidNum": "must be a valid number",
     "mustBeValidAddress": "This is not a valid Ethereum address",
+    "myApr": "My APR",
     "myBalance": "My balance",
     "myInvestments": "My V2 Balancer investments",
     "myPortfolio": "My portfolio",
@@ -453,6 +454,7 @@
     "poolPercent": "Pool %",
     "poolReturns": "Pool returns",
     "poolSymbol": "Pool symbol",
+    "poolsToMigrate": "Pools to migrate",
     "poolTokenName": "Pool token name",
     "poolTransactions": {
         "title": "Pool transactions",
@@ -533,6 +535,7 @@
     "slippageTolerance": "Slippage tolerance",
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
+    "stake": "Stake",
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",
