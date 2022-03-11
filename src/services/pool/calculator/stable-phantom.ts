@@ -58,9 +58,9 @@ export default class StablePhantom {
       tokenAmounts,
       this.calc.poolTokenDecimals
     );
-
+    // This function should use pool balances (i.e. without rate conversion)
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
-      this.scaledBalances,
+      this.calc.poolTokenBalances,
       this.calc.poolTokenDecimals,
       denormAmounts,
       this.calc.poolTotalSupply,
