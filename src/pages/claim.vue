@@ -1,25 +1,44 @@
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { configService } from '@/services/config/config.service';
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
 import { Gauge } from '@/services/balancer/gauges/types';
 import useTokens from '@/composables/useTokens';
-import useSimplePoolsQuery from '@/composables/queries/useSimplePoolsQuery';
-import { Pool } from '@/services/balancer/subgraph/types';
+import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 import { formatUnits } from 'ethers/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
 import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
+import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
+import useApp from '@/composables/useApp';
+import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 
 import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
-import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
-import useApp from '@/composables/useApp';
+
+/**
+ * TYPES
+ */
+export type GaugePool = {
+  id: string;
+  poolType: PoolType;
+  tokens: PoolToken[];
+  tokensList: string[];
+};
+
+type GaugePoolQueryResponse = {
+  pools: GaugePool[];
+};
+
+type GaugeTable = {
+  gauge: Gauge;
+  pool: GaugePool;
+};
 
 /**
  * COMPOSABLES
@@ -30,23 +49,39 @@ const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { appLoading } = useApp();
 
-// Data fetching
+/**
+ * QUERIES
+ */
 const { data: subgraphGauges } = useGaugesQuery();
+
 const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
 const gauges = computed((): Gauge[] => gaugesQuery.data.value || []);
 const gaugePoolIds = computed((): string[] => {
   return gauges.value.map(gauge => gauge.poolId);
 });
-const poolsQuery = useSimplePoolsQuery(gaugePoolIds);
-const pools = computed((): Pool[] => poolsQuery.data.value || []);
 
-/**
- * TYPES
- */
-type GaugeTable = {
-  gauge: Gauge;
-  pool: Pool;
-};
+const gaugePoolQueryEnabled = computed(
+  (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0
+);
+const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
+  subgraphs.balancer,
+  ['claim', 'gauge', 'pools'],
+  () => ({
+    pools: {
+      __args: {
+        where: { id_in: gaugePoolIds.value }
+      },
+      id: true,
+      poolType: true,
+      tokensList: true,
+      tokens: {
+        address: true,
+        weight: true
+      }
+    }
+  }),
+  reactive({ enabled: gaugePoolQueryEnabled })
+);
 
 /**
  * STATE
@@ -79,13 +114,17 @@ const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
 
+const pools = computed(
+  (): GaugePool[] => gaugePoolQuery.data.value?.pools || []
+);
+
 // Since the pool query is dependent on the gauge query, we only have to wait
 // for the pool query to finish loading.
 const poolQueryLoading = computed(
   (): boolean =>
-    poolsQuery.isLoading.value ||
-    poolsQuery.isIdle.value ||
-    !!poolsQuery.error.value
+    gaugePoolQuery.isLoading.value ||
+    gaugePoolQuery.isIdle.value ||
+    !!gaugePoolQuery.error.value
 );
 
 const balRewardsData = computed((): RewardRow[] => {
@@ -133,12 +172,12 @@ async function injectRewardTokens(gauges: Gauge[]): Promise<void> {
   return await injectTokens(allRewardTokens);
 }
 
-async function injectPoolTokens(pools: Pool[]): Promise<void> {
+async function injectPoolTokens(pools: GaugePool[]): Promise<void> {
   const allPoolTokens = pools.map(pools => pools.tokensList).flat();
   return await injectTokens(allPoolTokens);
 }
 
-function gaugeTitle(pool: Pool): string {
+function gaugeTitle(pool: GaugePool): string {
   const _tokens = pool.tokens.map(token => ({
     ...token,
     ...getToken(getAddress(token.address))

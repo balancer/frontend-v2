@@ -7,7 +7,6 @@ import {
   orderedPoolTokens,
   isStableLike
 } from '@/composables/usePool';
-import { Pool } from '@/services/balancer/subgraph/types';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useRouter } from 'vue-router';
 
@@ -16,13 +15,14 @@ import ClaimBalBtn from '@/components/btns/ClaimBalBtn/ClaimBalBtn.vue';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
+import { GaugePool } from '@/pages/claim.vue';
 
 /**
  * TYPES
  */
 export type RewardRow = {
   gauge: Gauge;
-  pool: Pool;
+  pool: GaugePool;
   amount: string;
   value: string;
 };
@@ -112,7 +112,7 @@ const totalClaimValue = computed((): string =>
 /**
  * METHODS
  */
-function redirectToPool({ pool }: { pool: Pool }) {
+function redirectToPool({ pool }: { pool: GaugePool }) {
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 </script>

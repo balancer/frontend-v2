@@ -122,12 +122,7 @@ const QUERY_KEYS = {
         account: Ref<string>,
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
-    },
-    Pools: (poolAddresses: Ref<string[]>) => [
-      'gauges',
-      'pools',
-      { poolAddresses }
-    ]
+    }
   },
   Transaction: {
     ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [
