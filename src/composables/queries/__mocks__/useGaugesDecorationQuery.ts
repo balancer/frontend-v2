@@ -1,6 +1,9 @@
 export default function useGaugesDecorationQuery() {
   return {
     data: [],
-    isLoading: false
+    isLoading: false,
+    refetch: {
+      value: jest.fn()
+    }
   };
 }

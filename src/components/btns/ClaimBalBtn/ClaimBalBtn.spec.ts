@@ -1,11 +1,13 @@
 import { render, fireEvent } from '@testing-library/vue';
 import ClaimBalBtn from './ClaimBalBtn.vue';
+import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer-minter';
 import { getAddress } from '@ethersproject/address';
 
-ClaimBalBtn.components = { BalBtn };
+ClaimBalBtn.components = { TxActionBtn };
+TxActionBtn.components = { BalBtn };
 
 jest.mock('@/composables/useTransactions');
 jest.mock('@/composables/useTokens');
