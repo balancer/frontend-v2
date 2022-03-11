@@ -19,7 +19,6 @@
             :selectedTokens="selectedTokens"
             :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
             showPoolShares
-            class="mb-8"
           />
           <StakedPoolsTable :userPools="userPools" />
           <BalStack vertical spacing="sm">
@@ -32,25 +31,10 @@
               showPoolShares
               :selectedTokens="selectedTokens"
               :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
-              class="mb-8"
             />
           </BalStack>
         </BalStack>
       </BalStack>
-      <PoolsTable
-        :isLoading="isLoadingUserPools"
-        :data="userPools"
-        :noPoolsLabel="$t('noInvestments')"
-        showPoolShares
-        :showMigrationColumn="showMigrationColumn"
-        :selectedTokens="selectedTokens"
-        class="mb-8"
-        :key="
-          `userPoolsTable-${
-            showMigrationColumn ? 'withMigrationCol' : 'withoutMigrationCol'
-          }`
-        "
-      />
       <div class="mb-16" />
     </template>
 
@@ -107,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, reactive } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 

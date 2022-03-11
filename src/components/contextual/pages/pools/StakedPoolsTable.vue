@@ -9,7 +9,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
@@ -188,15 +187,11 @@ function handleModalClose() {
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
         @triggerStake="handleStake"
         showPoolShares
-        class="mb-8"
       />
     </BalStack>
     <teleport to="#modal">
       <BalModal :show="showStakeModal" @close="handleModalClose">
-        <StakePreview
-          :pool="stakePool"
-          @close="handleModalClose"
-        />
+        <StakePreview :pool="stakePool" @close="handleModalClose" />
       </BalModal>
     </teleport>
   </div>
