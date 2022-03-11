@@ -13,6 +13,8 @@ import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/type
 import { TransactionActionInfo } from '@/types/transactions';
 import { UserGuageSharesResponse } from '../pages/pools/types';
 import { last } from 'lodash';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 
 type Props = {
   pool: DecoratedPoolWithStakedShares;
@@ -37,6 +39,8 @@ const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
  * STATE
  */
 const isLoadingApprovalsForGauge = ref(false);
+const stakingConfirmed = ref(false);
+const confirmationReceipt = ref<TransactionReceipt>();
 
 /* COMPUTED */
 const stakeActions = ref<TransactionActionInfo[]>([
@@ -95,22 +99,37 @@ const poolShareData = computed(() => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
+  await loadApprovalsForGauge();
+});
+
+/** METHODS */
+function handleSuccess({ receipt }) {
+  stakingConfirmed.value = true;
+  confirmationReceipt.value = receipt;
+}
+
+async function loadApprovalsForGauge() {
   isLoadingApprovalsForGauge.value = true;
   const gaugeAddress = await getGaugeAddress();
   const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;
-});
-
-/** METHODS */
-function handleSuccess() {
-  //
 }
 </script>
 
 <template>
   <BalStack vertical>
-    <h4>{{ $t('staking.stakeLPTokens') }}</h4>
+    <BalStack horizontal spacing="sm" align="center">
+      <BalCircle
+        v-if="stakingConfirmed"
+        size="8"
+        color="green"
+        class="text-white"
+      >
+        <BalIcon name="check" />
+      </BalCircle>
+      <h4>{{ $t('staking.stakeLPTokens') }}</h4>
+    </BalStack>
     <BalCard shadow="none" noPad class="px-4 py-2">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
@@ -171,6 +190,7 @@ function handleSuccess() {
         </BalStack>
       </BalStack>
     </BalCard>
+    <ConfirmationIndicator :txReceipt="confirmationReceipt" />
     <BalActionSteps
       :actions="stakeActions"
       :isLoading="isLoadingApprovalsForGauge"
