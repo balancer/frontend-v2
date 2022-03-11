@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 /** STATE */
 const showStakeModal = ref(false);
+const hasStaked = ref(false);
 const stakePool = ref<FullPool | undefined>();
 
 /** QUERY ARGS */
@@ -157,6 +158,11 @@ function handleStake(pool: FullPool) {
 
 function handleModalClose() {
   showStakeModal.value = false;
+  hasStaked.value = false;
+}
+
+function handleStakeSuccess() {
+  hasStaked.value = true;
 }
 </script>
 
@@ -175,8 +181,16 @@ function handleModalClose() {
       />
     </BalStack>
     <teleport to="#modal">
-      <BalModal :show="showStakeModal" @close="handleModalClose">
-        <StakePreview :pool="stakePool" @close="handleModalClose" />
+      <BalModal
+        :show="showStakeModal"
+        @close="handleModalClose"
+        :fireworks="hasStaked"
+      >
+        <StakePreview
+          :pool="stakePool"
+          @close="handleModalClose"
+          @success="handleStakeSuccess"
+        />
       </BalModal>
     </teleport>
   </div>

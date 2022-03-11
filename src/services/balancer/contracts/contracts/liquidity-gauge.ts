@@ -2,7 +2,6 @@ import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';

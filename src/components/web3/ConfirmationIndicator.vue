@@ -79,7 +79,10 @@ const {
       </BalLink>
     </div>
   </AnimatePresence>
-  <AnimatePresence :isVisible="isIdle && isFetchingConfirmationDate">
+  <AnimatePresence
+    :isVisible="!isIdle && isFetchingConfirmationDate"
+    unmountInstantly
+  >
     <BalLoadingBlock class="h-6" />
   </AnimatePresence>
 </template>

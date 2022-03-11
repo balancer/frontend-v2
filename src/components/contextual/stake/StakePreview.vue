@@ -14,7 +14,9 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { UserGuageSharesResponse } from '../pages/pools/types';
 import { last } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
+
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 type Props = {
   pool: DecoratedPoolWithStakedShares;
@@ -22,6 +24,8 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+const emit = defineEmits(['close', 'success']);
+
 /**
  * COMPOSABLES
  */
@@ -39,8 +43,9 @@ const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
  * STATE
  */
 const isLoadingApprovalsForGauge = ref(false);
-const stakingConfirmed = ref(false);
+const isStakingConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
+const bptBalance = ref(balanceFor(props.pool.address).toString());
 
 /* COMPUTED */
 const stakeActions = ref<TransactionActionInfo[]>([
@@ -104,8 +109,9 @@ onBeforeMount(async () => {
 
 /** METHODS */
 function handleSuccess({ receipt }) {
-  stakingConfirmed.value = true;
+  isStakingConfirmed.value = true;
   confirmationReceipt.value = receipt;
+  emit('success');
 }
 
 async function loadApprovalsForGauge() {
@@ -121,7 +127,7 @@ async function loadApprovalsForGauge() {
   <BalStack vertical>
     <BalStack horizontal spacing="sm" align="center">
       <BalCircle
-        v-if="stakingConfirmed"
+        v-if="isStakingConfirmed"
         size="8"
         color="green"
         class="text-white"
@@ -133,7 +139,7 @@ async function loadApprovalsForGauge() {
     <BalCard shadow="none" noPad class="px-4 py-2">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
-          <h5>{{ fNum2(balanceFor(pool.address)) }} {{ $t('lpTokens') }}</h5>
+          <h5>{{ fNum2(bptBalance) }} {{ $t('lpTokens') }}</h5>
           <span class="text-gray-500">
             {{ getToken(pool.address).symbol }}
           </span>
@@ -190,12 +196,20 @@ async function loadApprovalsForGauge() {
         </BalStack>
       </BalStack>
     </BalCard>
-    <ConfirmationIndicator :txReceipt="confirmationReceipt" />
     <BalActionSteps
+      v-if="!isStakingConfirmed"
       :actions="stakeActions"
       :isLoading="isLoadingApprovalsForGauge"
       @success="handleSuccess"
     />
+    <BalStack vertical v-if="isStakingConfirmed">
+      <ConfirmationIndicator :txReceipt="confirmationReceipt" />
+      <AnimatePresence :isVisible="isStakingConfirmed">
+        <BalBtn @click="$emit('close')" color="gray" outline block class="mt-2">
+          {{ $t('close') }}
+        </BalBtn>
+      </AnimatePresence>
+    </BalStack>
     <BalStack
       horizontal
       align="center"

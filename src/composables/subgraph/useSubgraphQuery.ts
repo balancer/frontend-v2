@@ -1,7 +1,7 @@
 import { configService } from '@/services/config/config.service';
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { head, initial, last } from 'lodash';
+import { initial, last } from 'lodash';
 import { QueryKey } from 'react-query';
 import { computed, reactive } from 'vue';
 import { useQuery, UseQueryOptions } from 'vue-query';
