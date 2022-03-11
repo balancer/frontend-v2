@@ -4,7 +4,6 @@ import { computed, ref } from 'vue';
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import useSubgraphQuery from '@/composables/subgraph/useSubgraphQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
@@ -15,6 +14,7 @@ import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreview from '../../stake/StakePreview.vue';
 
 import { UserGuageSharesResponse } from './types';
+import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 
 /** TYPES */
 type Props = {
@@ -44,31 +44,27 @@ const userStakedPools = computed(() => {
 
 /** COMPOSABLES */
 const { account } = useWeb3();
-const {
-  data: gaugeSharesRes,
-  isLoading: isLoadingGaugeShares
-} = useSubgraphQuery<UserGuageSharesResponse>({
-  subgraph: 'gauge',
-  key: QUERY_KEYS.Gauges.GaugeShares.User(account),
-  query: () => ({
-    gaugeShares: {
-      __args: {
-        where: { user: account.value.toLowerCase() }
-      },
-      balance: 1,
-      gauge: {
-        poolId: 1
-      }
-    },
-    liquidityGauges: {
-      __args: {
-        where: {
-          poolId_in: userPoolsAddresses.value
+const { data: gaugeSharesRes, isLoading: isLoadingGaugeShares } = useGraphQuery<
+  UserGuageSharesResponse
+>(
+  subgraphs.gauge,
+  QUERY_KEYS.Gauges.GaugeShares.User(account),
+  () => `
+    query {
+      gaugeShares(where: { user: "${account.value.toLowerCase()}"}) {
+        balance
+        gauge {
+          poolId
         }
       }
+      liquidityGauges(where: { poolId_in: [${userPoolsAddresses.value
+        .map(address => `"${address}"`)
+        .join(',')}]}) {
+        id
+      }
     }
-  })
-});
+  `
+);
 
 const { data: stakedPoolsRes, isLoading: isLoadingPools } = usePoolsQuery(
   ref([]),
