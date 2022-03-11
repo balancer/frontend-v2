@@ -331,6 +331,7 @@
     "learnMore": "Learn more",
     "light": "Light",
     "liquidityBootstrappingPool": "Liquidity Bootstrapping Pool",
+    "liquidityIncentives": "liquidity incentives",
     "liquidityMining": "Liquidity mining",
     "liquidityMiningAPR": "Liquidity Mining APR",
     "liquidityMiningPopover": {
@@ -424,6 +425,19 @@
     "overview": "Overview",
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
     "payload": "Payload",
+    "pages": {
+        "claim": {
+            "title": "Claim all of your liquidity incentives",
+            "description": "The Balancer protocol provides incentives to attract liquidity in eligible pools.",
+            "titles": {
+                "incentivesOnOtherNetworks": "Incentives on other networks",
+                "legacyIncentives": "Legacy incentives"
+            },
+            "btns": {
+                "claimOn": "Claim on"
+            }
+        }
+    },
     "pendingClaims": "Pending claims",
     "pendingEstimate": "Pending: (estimate)",
     "perWeek": "per week",
@@ -522,6 +536,7 @@
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
     "stake": "Stake",
+<<<<<<< HEAD
     "staking": {
         "stakedLPTokens": "Staked LP Tokens",
         "staking": "Staking",
@@ -530,6 +545,8 @@
         "potentialWeeklyYield": "Potential weekly yield"
     },
     "stakingIncentives": "Staking incentives",
+=======
+>>>>>>> origin/Tokenomics-Base-Branch
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",
@@ -585,6 +602,7 @@
     "totalSupply": "Total supply",
     "totalValue": "Total value",
     "trade": "Trade",
+    "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
     "tradeFromWeth": "Trade from WETH",
     "tradeGaslessToggle": {
@@ -723,7 +741,6 @@
     "unstake": "Unstake",
     "unwrap": "Unwrap",
     "usdValue": "USD Value",
-    "usingLiquidity": "Using {0} liquidity",
     "v1": "V1",
     "v2": "V2",
     "value": "Value",

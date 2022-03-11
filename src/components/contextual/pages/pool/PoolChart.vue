@@ -63,6 +63,8 @@ const supportsPoolLiquidity = computed(() =>
 const appLoading = computed(() => store.state.app.loading);
 
 const history = computed(() => {
+  if (!props.historicalPrices) return [];
+
   const pricesTimestamps = Object.keys(props.historicalPrices);
   const snapshotsTimestamps = Object.keys(props.snapshots);
 
@@ -100,7 +102,8 @@ const history = computed(() => {
         return false;
       }
       return totalShares > 0 && amounts.length > 0;
-    });
+    })
+    .reverse();
 });
 
 const timestamps = computed(() =>

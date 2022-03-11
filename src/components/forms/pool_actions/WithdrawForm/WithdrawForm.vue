@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed, ref, onBeforeMount } from 'vue';
+import { toRef, computed, ref, onBeforeMount, watch } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 // Composables
@@ -85,12 +85,24 @@ const singleAssetRules = computed(() => [
 ]);
 
 /**
+ * WATCHERS
+ */
+watch(isProportional, newVal => {
+  // If user selects to withdraw all tokens proportionally
+  // reset the slider to max.
+  if (newVal) {
+    initMath();
+    maxSlider();
+  }
+});
+
+/**
  * CALLBACKS
  */
 onBeforeMount(() => {
   isProportional.value = true;
-  maxSlider();
   initMath();
+  maxSlider();
 });
 </script>
 

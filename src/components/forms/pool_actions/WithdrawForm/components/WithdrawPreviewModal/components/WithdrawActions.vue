@@ -226,9 +226,9 @@ watch(blockNumber, async () => {
 </script>
 
 <template>
-  <div>
+  <transition>
     <BalActionSteps v-if="!withdrawalState.confirmed" :actions="actions" />
-    <template v-else>
+    <div v-else>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
@@ -262,6 +262,6 @@ watch(blockNumber, async () => {
       >
         {{ $t('returnToPool') }}
       </BalBtn>
-    </template>
-  </div>
+    </div>
+  </transition>
 </template>
