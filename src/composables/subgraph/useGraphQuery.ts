@@ -47,7 +47,7 @@ export default function useGraphQuery<T>(
         // extend the dependencies from the query key and add
         // the current query key as a dependency
         ...(last(key) as any),
-        query
+        query: query()
       }
     ]),
     graphQLRequest,
