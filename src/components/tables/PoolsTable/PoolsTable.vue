@@ -3,12 +3,7 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import {
-  DecoratedPoolWithShares,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
-
-import { getAddress } from '@ethersproject/address';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
@@ -16,8 +11,9 @@ import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
   isStableLike,
-  isStablePhantom,
-  isMigratablePool
+  isMigratablePool,
+  orderedTokenAddresses,
+  orderedPoolTokens
 } from '@/composables/usePool';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
@@ -174,20 +170,6 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
-  const sortedTokens = orderedPoolTokens(pool);
-  return sortedTokens.map(token => getAddress(token.address));
-}
-
-function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-  if (isStablePhantom(pool.poolType))
-    return pool.tokens.filter(token => token.address !== pool.address);
-  if (isStableLike(pool.poolType)) return pool.tokens;
-
-  const sortedTokens = pool.tokens.slice();
-  sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
-  return sortedTokens;
-}
 
 function handleRowClick(pool: DecoratedPoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
@@ -247,10 +229,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:iconColumnCell="pool">
         <div v-if="!isLoading" class="px-6 py-4">
-          <BalAssetSet
-            :addresses="orderedTokenAddressesFor(pool)"
-            :width="100"
-          />
+          <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
