@@ -1,56 +1,51 @@
 <script setup lang="ts">
-import useTokenApprovals from '@/composables/pools/useTokenApprovals';
-import useEthers from '@/composables/useEthers';
+import { computed, onBeforeMount, ref } from 'vue';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
-import useTransactions from '@/composables/useTransactions';
-import QUERY_KEYS from '@/constants/queryKeys';
-import { bnum } from '@/lib/utils';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useWeb3 from '@/services/web3/useWeb3';
-import { TransactionActionInfo } from '@/types/transactions';
-import { MAX_UINT } from '@balancer-labs/sor/dist/sor';
-import { BigNumber, Contract } from 'ethers';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
-import { last } from 'lodash';
-import { computed, ref, toRef } from 'vue';
+import useStaking from '@/composables/staking/useStaking';
 import { useI18n } from 'vue-i18n';
 import { useQueryClient } from 'vue-query';
-import { UserGuageSharesResponse } from '../pages/pools/StakedPoolsTable.vue';
+
+import { bnum } from '@/lib/utils';
+import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
+import { TransactionActionInfo } from '@/types/transactions';
+import { UserGuageSharesResponse } from '../pages/pools/types';
+import { last } from 'lodash';
 
 type Props = {
-  pool: FullPool;
+  pool: DecoratedPoolWithStakedShares;
   isVisible: boolean;
 };
 
 const props = defineProps<Props>();
-const emit = defineEmits(['close']);
 /**
  * COMPOSABLES
  */
 const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
-const { addTransaction } = useTransactions();
 const { t } = useI18n();
-const { account, getProvider } = useWeb3();
-const { txListener } = useEthers();
 const queryClient = useQueryClient();
-const { tokenApprovalActions } = useTokenApprovalActions(
+const { stakeBPT, getGaugeAddress } = useStaking(props.pool);
+const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
   ref([balanceFor(props.pool.address).toString()])
 );
 
+/**
+ * STATE
+ */
+const isLoadingApprovalsForGauge = ref(false);
+
 /* COMPUTED */
-const stakeActions = computed((): TransactionActionInfo[] => [
-  ...tokenApprovalActions,
+const stakeActions = ref<TransactionActionInfo[]>([
   {
     label: t('stake'),
     loadingLabel: t('staking.staking'),
     confirmingLabel: t('confirming'),
     action: stakeBPT,
-    stepTooltip: 'Stake'
+    stepTooltip: t('createPoolTooltip', [''])
   }
 ]);
 
@@ -76,8 +71,12 @@ const poolShareData = computed(() => {
     props.pool.totalShares
   );
 
-  const addedSharePct = bnum(numSharesToStake).div(props.pool.totalShares);
-  const totalSharePct = bnum(existingSharePct).plus(addedSharePct);
+  const addedSharePct = bnum(numSharesToStake)
+    .div(props.pool.totalShares)
+    .toString();
+  const totalSharePct = bnum(existingSharePct)
+    .plus(addedSharePct)
+    .toString();
 
   const addedValueInFiat = bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
@@ -92,60 +91,18 @@ const poolShareData = computed(() => {
   };
 });
 
-async function approveBPT() {
-  const gauge = new LiquidityGauge(
-    '0x5be3bbb5d7497138b9e623506d8b6c6cd72daceb',
-    getProvider()
-  );
-  const tx = await gauge.approve(props.pool.address);
-  addTransaction({
-    id: tx.hash,
-    type: 'tx',
-    action: 'approve',
-    summary: 'approveBPT'
-  });
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(async () => {
+  isLoadingApprovalsForGauge.value = true;
+  const gaugeAddress = await getGaugeAddress();
+  const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
+  stakeActions.value.unshift(...approvalActions);
+  isLoadingApprovalsForGauge.value = false;
+});
 
-  txListener(tx, {
-    onTxConfirmed: async () => {
-      console.log('bingo');
-    },
-    onTxFailed: () => {
-      console.log('bongo');
-    }
-  });
-}
-
-async function unstakeBPT() {
-  //   const gauge = new LiquidityGauge(
-  //   '0x5be3bbb5d7497138b9e623506d8b6c6cd72daceb',
-  //   getProvider()
-  // );
-  // const tx = await gauge.unstake(parseUnits(balanceFor(props.pool.address), 18));
-  // addTransaction({
-  //   id: tx.hash,
-  //   type: 'tx',
-  //   action: 'stake',
-  //   summary: 'stakeBPT'
-  // });
-  // txListener(tx, {
-  //   onTxConfirmed: async () => {
-  //     console.log('bingo');
-  //   },
-  //   onTxFailed: () => {
-  //     console.log('bongo');
-  //   }
-  // });
-}
-
-async function stakeBPT() {
-  const gauge = new LiquidityGauge(
-    '0x5be3bbb5d7497138b9e623506d8b6c6cd72daceb',
-    getProvider()
-  );
-  const tx = await gauge.stake(parseUnits(balanceFor(props.pool.address), 18));
-  return tx;
-}
-/** FUNCTIONS */
+/** METHODS */
 function handleSuccess() {
   //
 }
@@ -204,7 +161,9 @@ function handleSuccess() {
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.potentialWeeklyEarning') }}:</span>
+          <span class="text-sm"
+            >{{ $t('staking.potentialWeeklyEarning') }}:</span
+          >
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">sdfs</span>
             <BalTooltip text="s" width="20" textCenter />
@@ -212,8 +171,17 @@ function handleSuccess() {
         </BalStack>
       </BalStack>
     </BalCard>
-    <BalActionSteps :actions="stakeActions" @success="handleSuccess" />
-    <BalStack horizontal align="center" justify="center" class="text-gray-600 hover:text-gray-800 hover:underline">
+    <BalActionSteps
+      :actions="stakeActions"
+      :isLoading="isLoadingApprovalsForGauge"
+      @success="handleSuccess"
+    />
+    <BalStack
+      horizontal
+      align="center"
+      justify="center"
+      class="text-gray-600 hover:text-gray-800 hover:underline"
+    >
       <router-link :to="{ name: 'pool', params: { id: pool.id } }">
         <BalStack horizontal align="center" spacing="xs">
           <span
