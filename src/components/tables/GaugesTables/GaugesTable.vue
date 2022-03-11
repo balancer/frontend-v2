@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, ComputedRef } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { PoolToken, PoolWithGauge } from '@/services/balancer/subgraph/types';
@@ -9,7 +8,7 @@ import { getAddress } from '@ethersproject/address';
 import BigNumber from 'bignumber.js';
 import { scale } from '@/lib/utils';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 
@@ -21,7 +20,7 @@ import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: ComputedRef<PoolWithGauge[]>;
+  data?: PoolWithGauge[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   noPoolsLabel?: string;
@@ -45,7 +44,6 @@ const emit = defineEmits(['loadMore']);
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const router = useRouter();
 const { t } = useI18n();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -115,10 +113,22 @@ const columns = ref<ColumnDefinition<PoolWithGauge>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 50,
-    noGrow: true
+    width: 50
   }
 ]);
+
+/**
+ * COMPUTED
+ */
+
+const unallocatedVoteWeight = computed(() => {
+  const totalVotes = 1e4;
+  if (props.isLoading || !props.data) return totalVotes;
+  const votesRemaining = props.data.reduce((remainingVotes, pool) => {
+    return remainingVotes - parseFloat(pool.gauge.userVotes);
+  }, totalVotes);
+  return votesRemaining;
+});
 
 /**
  * METHODS
@@ -207,7 +217,10 @@ function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
         </div>
       </template>
       <template v-slot:voteColumnCell="pool">
-        <GaugeVote :pool="pool"></GaugeVote>
+        <GaugeVote
+          :pool="pool"
+          :unallocatedVoteWeight="unallocatedVoteWeight"
+        ></GaugeVote>
       </template>
     </BalTable>
   </BalCard>

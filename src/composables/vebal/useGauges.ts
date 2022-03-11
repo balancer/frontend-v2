@@ -1,4 +1,4 @@
-import { computed, Ref, ref } from 'vue';
+import { computed } from 'vue';
 
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import { PoolWithGauge } from '@/services/balancer/subgraph/types';

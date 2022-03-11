@@ -7,17 +7,6 @@ import {
   PoolWithGauge
 } from '@/services/balancer/subgraph/types';
 
-const MAX_REWARD_TOKENS = 8;
-
-interface GaugeInfo {
-  userVotes: any;
-  votes: any;
-}
-
-interface GaugesDataMap {
-  gauge: GaugeInfo;
-}
-
 export class GaugesControllerDecorator {
   multicaller: Multicaller;
 

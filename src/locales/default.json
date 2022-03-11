@@ -581,7 +581,11 @@
                 "vote": "Vote"
             },
             "popover": {
-                "title": "Vote weight"
+                "title": "Vote weight",
+                "button": {
+                    "vote": "Vote",
+                    "edit": "Edit vote"
+                }
             }
         },
         "notSupported": {
