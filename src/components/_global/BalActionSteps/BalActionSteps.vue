@@ -60,7 +60,7 @@ const defaultActionState: TransactionActionState = {
  * STATE
  */
 const currentActionIndex = ref(0);
-const _actions = ref<TransactionActionInfo[]>([]);
+const _actions = ref<TransactionActionInfo[]>(props.actions);
 
 const actionStates = ref(
   _actions.value.map(() => ({
@@ -231,7 +231,7 @@ async function handleTransaction(
         block
         @click="currentAction.promise()"
       >
-        {{ currentAction.label }}
+        {{ currentAction?.label }}
       </BalBtn>
     </BalStack>
   </AnimatePresence>
