@@ -1,11 +1,7 @@
 import { Ref, computed } from 'vue';
 import { getAddress } from 'ethers/lib/utils';
 
-import {
-  PoolType,
-  AnyPool,
-  Pool
-} from '@/services/balancer/subgraph/types';
+import { PoolType, AnyPool, Pool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
 import { bnum } from '@/lib/utils';

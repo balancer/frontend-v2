@@ -8,9 +8,7 @@ import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useConfig from '@/composables/useConfig';
-import {
-  TransactionReceipt,
-} from '@ethersproject/abstract-provider';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { PoolWithGauge } from '@/services/balancer/subgraph/types';
 import { scale, bnum } from '@/lib/utils';
 import BalForm from '../_global/BalForm/BalForm.vue';
