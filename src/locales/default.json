@@ -585,7 +585,15 @@
                 "button": {
                     "vote": "Vote",
                     "edit": "Edit vote"
-                }
+                },
+                "actions": {
+                    "vote": {
+                        "confirming": "Confirming approval...",
+                        "tooltip": "You must approve {0}.",
+                        "loadingLabel": "Confirm approval in wallet"                    
+                    }
+                },
+                "voteForGauge": "{0} for {1}" 
             }
         },
         "notSupported": {
@@ -867,6 +875,7 @@
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
+        "voteForGauge": "Vote for gauge",
         "withdraw": "Withdraw",
         "wrap": "Wrap",
         "createLock": "Lock",
