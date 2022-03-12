@@ -60,7 +60,7 @@ function submitVote() {
 </script>
 
 <template>
-  <BalPopover no-pad>
+  <BalPopover detached no-pad>
     <template v-slot:activator>
       <BalBtn color="blue" :outline="true" size="sm" flat>
         {{ $t('veBAL.liquidityMining.table.vote') }}

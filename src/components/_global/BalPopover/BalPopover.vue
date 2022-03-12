@@ -6,11 +6,13 @@ type PopoverTrigger = 'click' | 'hover';
 type Props = {
   trigger?: PopoverTrigger;
   align?: string;
+  detached?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   trigger: 'click',
-  align: 'right'
+  align: 'right',
+  detached: false
 });
 
 const emit = defineEmits<{
@@ -28,7 +30,11 @@ const popoverOpened = ref(false);
  */
 const popoverWrapperClasses = computed(() => ({
   'bal-popover-wrapper-visible': popoverOpened.value,
-  [`${props.align}-0`]: true
+  [`${props.align}-0`]: !props.detached
+}));
+
+const popoverActivatorWrapperClasses = computed(() => ({
+  relative: !props.detached
 }));
 
 watch(popoverOpened, () => {
@@ -62,7 +68,10 @@ function handleClickOutside() {
 </script>
 
 <template>
-  <div class="relative" v-click-outside="handleClickOutside">
+  <div
+    :class="[popoverActivatorWrapperClasses]"
+    v-click-outside="handleClickOutside"
+  >
     <div
       class="bal-popover-activator group"
       @click="trigger === 'click' && togglePopover()"
@@ -81,7 +90,7 @@ function handleClickOutside() {
 
 <style scoped>
 .bal-popover-wrapper {
-  @apply top-full invisible opacity-0 absolute z-30 pt-3;
+  @apply invisible opacity-0 absolute z-30 pt-3;
   transition: all 0.2s ease-in-out;
 }
 
