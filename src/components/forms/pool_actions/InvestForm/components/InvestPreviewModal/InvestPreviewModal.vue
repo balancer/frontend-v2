@@ -14,6 +14,7 @@ import useInvestState from '../../composables/useInvestState';
 import BalToggle from '@/components/_global/BalToggle/BalToggle.vue';
 import InvestZapActions from '@/components/forms/pool_actions/InvestForm/components/InvestPreviewModal/components/InvestZapActions.vue';
 import GasEstimationSelector from '@/components/gas-estimation/GasEstimationSelector.vue';
+import BalModal from '@/components/_global/BalModal/BalModal.vue';
 
 /**
  * TYPES
@@ -116,7 +117,14 @@ function handleClose(): void {
 </script>
 
 <template>
-  <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
+  <BalModal
+    show
+    :fireworks="investmentConfirmed"
+    @close="handleClose"
+    selfCenterFooter
+    hCustomContent
+    overflowAutoContent
+  >
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
@@ -152,12 +160,14 @@ function handleClose(): void {
       <GasEstimationSelector />
     </div>
 
-    <InvestActions
-      :pool="pool"
-      :math="math"
-      :tokenAddresses="tokenAddresses"
-      class="mt-4"
-      @success="investmentConfirmed = true"
-    />
+    <template v-slot:footer>
+      <InvestActions
+        :pool="pool"
+        :math="math"
+        :tokenAddresses="tokenAddresses"
+        class="mt-4"
+        @success="investmentConfirmed = true"
+      />
+    </template>
   </BalModal>
 </template>

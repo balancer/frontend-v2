@@ -11,7 +11,10 @@
           <slot name="header" />
         </div>
       </div>
-      <div :class="['content', contentClasses]">
+      <div
+        :class="['content', contentClasses]"
+        :style="hCustomContent ? { height: '75vh' } : ''"
+      >
         <slot />
       </div>
       <div v-if="$slots.footer" :class="['footer', footerClasses]">
@@ -43,6 +46,9 @@ export default defineComponent({
     exposeOverflow: { type: Boolean, default: false },
     overflowYScroll: { type: Boolean, default: false },
     itemsCenter: { type: Boolean, default: false },
+    selfCenterFooter: { type: Boolean, default: false },
+    hCustomContent: { type: Boolean, default: false },
+    overflowAutoContent: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -91,14 +97,16 @@ export default defineComponent({
     const contentClasses = computed(() => {
       return {
         'p-4': !props.noPad && !props.noContentPad,
-        'flex-grow': props.growContent
+        'flex-grow': props.growContent,
+        'overflow-auto': props.overflowAutoContent
       };
     });
 
     const footerClasses = computed(() => {
       return {
         'rounded-b-lg': !props.square,
-        'p-4 pt-0': !props.noPad
+        'p-4 pt-0': !props.noPad,
+        'self-center': props.selfCenterFooter
       };
     });
 
