@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
+import { ref, computed, reactive, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
+import useConfig from '@/composables/useConfig';
 import {
   TransactionReceipt,
-  TransactionResponse
 } from '@ethersproject/abstract-provider';
 import { PoolWithGauge } from '@/services/balancer/subgraph/types';
 import { scale, bnum } from '@/lib/utils';
@@ -36,10 +37,12 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { explorerLinks } = useWeb3();
+const { networkConfig } = useConfig();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
 /**
  * STATE
@@ -71,7 +74,7 @@ const explorerLink = computed((): string =>
 );
 
 const transactionInProgress = computed(
-  (): boolean => voteState.init || voteState.confirming || voteState.confirmed
+  (): boolean => voteState.init || voteState.confirming
 );
 
 /**
@@ -107,8 +110,8 @@ async function handleTransaction(tx) {
     type: 'tx',
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
-      fNum2(voteWeight.value, FNumFormats.percent),
-      '50% DAI, 50% WETH'
+      fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
+      poolWeightsLabel(props.pool)
     ]),
     details: {
       voteWeight: voteWeight.value
@@ -184,7 +187,7 @@ async function handleTransaction(tx) {
             class="mt-6"
             block
             :disabled="voteDisabled"
-            :loading="voteState.init || voteState.confirming"
+            :loading="transactionInProgress"
             :loading-label="
               voteState.init
                 ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
@@ -193,6 +196,20 @@ async function handleTransaction(tx) {
             @click.prevent="submitVote"
             >{{ voteButtonText }}</BalBtn
           >
+          <BalLink
+            v-if="voteState.receipt"
+            :href="explorerLink"
+            external
+            noStyle
+            class="group flex items-center"
+          >
+            {{ networkConfig.explorerName }}
+            <BalIcon
+              name="arrow-up-right"
+              size="sm"
+              class="ml-px group-hover:text-pink-500 transition-colors"
+            />
+          </BalLink>
         </BalForm>
       </div>
     </BalCard>
