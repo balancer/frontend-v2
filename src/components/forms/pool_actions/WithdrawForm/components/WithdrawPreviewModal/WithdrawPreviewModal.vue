@@ -147,9 +147,9 @@ function handleClose(): void {
       :priceImpact="priceImpact"
     />
 
-    <div class="mt-2">
+    <!-- <div class="mt-2">
       <GasEstimationSelector />
-    </div>
+    </div> -->
 
     <WithdrawActions
       :pool="pool"

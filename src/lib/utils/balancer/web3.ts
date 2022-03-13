@@ -55,7 +55,9 @@ export async function sendTransaction(
     const gasLimit = gasLimitNumber.toNumber();
     paramsOverrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
-    const estimates = await gasPriceService.getGasPriceEstimation();
+    // explicitly set to 'false' for the time being
+    //const estimates = await gasPriceService.getGasPriceEstimation();
+    const estimates = false;
 
     if (estimates) {
       return await contractWithSigner[action](...params, {
