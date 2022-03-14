@@ -143,7 +143,7 @@ describe('PoolCreator', () => {
     it('should take a pool create transaction response and return details about the pool', async () => {
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
-        createPoolTransaction
+        'hash'
       );
       expect(poolDetails.id).toEqual(mockPoolId);
       expect(poolDetails.address).toEqual(mockPoolAddress);
@@ -159,7 +159,7 @@ describe('PoolCreator', () => {
         .mockImplementation(() => polygonCreatePoolReceipt);
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
-        mockTransactionResponse
+        'hash'
       );
       expect(poolDetails.address.toLowerCase()).toEqual(
         '0x3bb9d50a0743103f896d823b332ee15e231848d1'
@@ -176,7 +176,7 @@ describe('PoolCreator', () => {
         .mockImplementation(() => polygonCreatePoolReceiptNoEvents);
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
-        mockTransactionResponse
+        'hash'
       );
       expect(poolDetails.address.toLowerCase()).toEqual(
         '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
