@@ -8,9 +8,13 @@ export type UserGuageShare = {
 
 export type LiquidityGauge = {
   poolId: string;
+  shares: {
+    balance: string;
+  }[];
 };
 
 export type UserGuageSharesResponse = {
   gaugeShares: UserGuageShare[];
   liquidityGauges: LiquidityGauge[];
+  liquidityGauge: LiquidityGauge;
 };
