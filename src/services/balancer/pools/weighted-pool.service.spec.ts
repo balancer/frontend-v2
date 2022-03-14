@@ -122,7 +122,7 @@ describe('PoolCreator', () => {
   describe('details', () => {
     const mockPoolAddress = '0xDDD8292cb20a443ba1caaa59c985ce14ca2bdee5';
     let createPoolTransaction: TransactionResponse;
-    const mockProvider = {} as Web3Provider;
+
 
     beforeEach(async () => {
       require('@/lib/utils/balancer/web3').__setMockPoolAddress(
@@ -130,6 +130,9 @@ describe('PoolCreator', () => {
       );
       tokens.WETH.weight = 50;
       tokens.USDT.weight = 50;
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceipt
+      } as any;
       createPoolTransaction = await weightedPoolsService.create(
         mockProvider,
         mockPoolName,
@@ -141,6 +144,9 @@ describe('PoolCreator', () => {
     });
 
     it('should take a pool create transaction response and return details about the pool', async () => {
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceipt
+      } as any;
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
         'hash'
@@ -150,13 +156,9 @@ describe('PoolCreator', () => {
     });
 
     it('should work with a polygon create pool transaction receipt', async () => {
-      const mockTransactionResponse: TransactionResponse = Object.assign(
-        {},
-        createPoolTransaction
-      );
-      mockTransactionResponse.wait = jest
-        .fn()
-        .mockImplementation(() => polygonCreatePoolReceipt);
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceipt
+      } as any;
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
         'hash'
@@ -167,13 +169,9 @@ describe('PoolCreator', () => {
     });
 
     it('should work with a polygon create pool transaction receipt with no events', async () => {
-      const mockTransactionResponse: TransactionResponse = Object.assign(
-        {},
-        createPoolTransaction
-      );
-      mockTransactionResponse.wait = jest
-        .fn()
-        .mockImplementation(() => polygonCreatePoolReceiptNoEvents);
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceiptNoEvents
+      } as any;
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
         'hash'
