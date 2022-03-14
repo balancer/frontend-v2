@@ -8,3 +8,9 @@ declare module '*.svg' {
   const content: any;
   export default content;
 }
+
+declare namespace React {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    class?: any;
+  }
+}

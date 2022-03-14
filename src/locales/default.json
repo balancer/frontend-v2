@@ -102,6 +102,7 @@
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "composition": "Composition",
     "configuration": "Configuration",
+    "confirm": "Confirm",
     "confirming": "Confirming...",
     "confirmTrade": "Confirm trade",
     "confirmUnwrap": "Confirm {0} unwrap",
@@ -216,6 +217,7 @@
     "depositing": "depositing",
     "details": "Details",
     "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <b>{0}</b>",
+    "earnings": "Earnings",
     "earnBAL": "Earn $BAL when swapping eligible tokens",
     "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
     "editoTitle": "Put your money to work",
@@ -281,6 +283,7 @@
     "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Labs is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
     "home": "Home",
     "hourAbbrev": "h",
+    "incentiveToken": "Incentive token",
     "initialBPT": "Initial BPT",
     "initialWeight": "Initial weight",
     "insufficientBalance": "Not enough funds",
@@ -421,6 +424,7 @@
     "optimizedPrefilled": "Optimized amounts have been pre-filled",
     "oops": "Oops",
     "oracleWeightedPool": "Oracle Weighted Pool",
+    "otherTokenEarnings": "Other token earnings",
     "overview": "Overview",
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
     "payload": "Payload",
@@ -429,7 +433,8 @@
             "title": "Claim all of your liquidity incentives",
             "description": "The Balancer protocol provides incentives to attract liquidity in eligible pools.",
             "titles": {
-                "incentivesOnOtherNetworks": "Incentives on other networks"
+                "incentivesOnOtherNetworks": "Incentives on other networks",
+                "legacyIncentives": "Legacy incentives"
             },
             "btns": {
                 "claimOn": "Claim on"
@@ -445,6 +450,7 @@
         "termsOfUse": "Terms of Use"
     },
     "pool": "Pool",
+    "pools": "Pools",
     "poolBalance": "Pool balance",
     "poolComposition": "Pool composition",
     "poolCreated": "Pool created!",

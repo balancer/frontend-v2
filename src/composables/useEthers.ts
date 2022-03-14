@@ -64,9 +64,9 @@ export default function useEthers() {
     shouldRefetchBalances = true,
     shouldRetry = true
   ): Promise<boolean> {
+    console.log('tx', tx);
     let confirmed = false;
     const retries = shouldRetry ? 5 : 1;
-    console.log('dingodng', retries);
     processedTxs.value.add(tx.hash);
 
     try {
