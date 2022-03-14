@@ -14,7 +14,7 @@ import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
 import { PoolType } from '@/services/balancer/subgraph/types';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
-import { TransactionResponse } from '@ethersproject/providers';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { POOLS } from '@/constants/pools';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
@@ -402,6 +402,7 @@ export default function usePoolCreation() {
         poolOwner.value
       );
       poolCreationState.createPoolTxHash = tx.hash;
+      saveState();
 
       addTransaction({
         id: tx.hash,
@@ -507,7 +508,8 @@ export default function usePoolCreation() {
   }
 
   async function retrievePoolDetails(hash: string) {
-    const provider = getProvider();
+    const provider = new JsonRpcProvider(configService.network.publicRpc);
+
     const poolDetails = await balancerService.pools.weighted.details(
       provider,
       hash
