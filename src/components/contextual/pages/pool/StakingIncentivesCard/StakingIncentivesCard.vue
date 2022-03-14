@@ -1,26 +1,36 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { computed, onBeforeMount, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
+
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import useStaking from '@/composables/staking/useStaking';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { bnum } from '@/lib/utils';
+import useTokens from '@/composables/useTokens';
+import { getAddress } from 'ethers/lib/utils';
+import StakePreview from '../../../stake/StakePreview.vue';
 
 type Props = {
-  poolId: string;
-  // TODO STAKING INTEGRATION
-  // remove this after integrating with staking contracts
-  // if the pool does not have a gauge, then this component
-  // should show the no incentive thing
-  hasIncentive: boolean;
+  pool: FullPool;
 };
-defineProps<Props>();
+const props = defineProps<Props>();
 /**
  * STATE
- */
-// TODO INTEGRATE STAKING APR
-const isLoading = ref(false);
+ */const isLoading = ref(false);
+const hasIncentive = true;
+const isStakePreviewVisible = ref(false);
+const stakeAction = ref('');
+const stakedShares = ref('0');
+
 /**
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
+const { balanceFor } = useTokens();
+const { isFetchingStakingData, getStakedShares } = useStaking(
+  props.pool.address
+);
+
 /**
  * COMPUTED
  */
@@ -28,18 +38,54 @@ const { fNum2 } = useNumbers();
 const apr = computed(() => {
   return 0.1245;
 });
+
+const fiatValueOfStakedShares = computed(() => {
+  return bnum(props.pool.totalLiquidity)
+    .div(props.pool.totalShares)
+    .times(stakedShares.value.toString())
+    .toString();
+});
+
+const fiatValueOfUnstakedShares = computed(() => {
+  return bnum(props.pool.totalLiquidity)
+    .div(props.pool.totalShares)
+    .times(balanceFor(getAddress(props.pool.address)))
+    .toString();
+});
+
+/**
+ * METHODS
+ */
+function showStakePreview() {
+  if (fiatValueOfUnstakedShares.value === '0') return;
+  stakeAction.value = 'stake';
+  isStakePreviewVisible.value = true;
+}
+
+function showUnstakePreview() {
+  if (fiatValueOfStakedShares.value === '0') return;
+  stakeAction.value = 'unstake';
+  isStakePreviewVisible.value = true;
+}
+
+function handlePreviewClose() {
+  isStakePreviewVisible.value = false;
+}
+
+async function handleActionSuccess() {
+  stakedShares.value = await getStakedShares();
+}
+
 /**
  * LIFECYCLE
  */
-onBeforeMount(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 4000);
+onBeforeMount(async () => {
+  stakedShares.value = await getStakedShares();
 });
 </script>
 
 <template>
-  <AnimatePresence :isVisible="!isLoading">
+  <AnimatePresence :isVisible="!isFetchingStakingData">
     <div class="relative">
       <BalAccordion
         :class="['shadow-2xl', { handle: hasIncentive }]"
@@ -68,7 +114,7 @@ onBeforeMount(() => {
                   <BalIcon size="sm" name="check" v-if="hasIncentive" />
                   <BalIcon size="sm" name="x" v-else />
                 </div>
-                <h6>{{ $t('stakingIncentives') }}</h6>
+                <h6>{{ $t('staking.stakingIncentives') }}</h6>
               </BalStack>
               <BalStack
                 v-if="hasIncentive"
@@ -90,9 +136,11 @@ onBeforeMount(() => {
               class="px-4 py-4 border-t"
             >
               <BalStack horizontal justify="between">
-                <span>{{ $t('staking.stakedLPTokens') }}</span>
+                <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
-                  <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
+                  <span>
+                    {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
+                  </span>
                   <BalTooltip text="Bingo" />
                 </BalStack>
               </BalStack>
@@ -104,24 +152,39 @@ onBeforeMount(() => {
                 </BalStack>
               </BalStack>
               <BalStack horizontal justify="between">
-                <span>{{ $t('staking.unstakedLPTokens') }}</span>
+                <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
-                  <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
+                  <span>
+                    {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
+                  </span>
                   <BalTooltip text="Bingo" />
                 </BalStack>
               </BalStack>
               <BalStack horizontal justify="between">
-                <span>{{ $t('staking.potentialWeeklyYield') }}</span>
+                <span>{{ $t('staking.potentialWeeklyEarning') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
                   <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
                   <BalTooltip text="Bingo" />
                 </BalStack>
               </BalStack>
               <BalStack horizontal spacing="sm" class="mt-2">
-                <BalBtn color="gradient" size="sm">{{ $t('stake') }}</BalBtn>
-                <BalBtn outline color="gradient" size="sm">{{
-                  $t('unstake')
-                }}</BalBtn>
+                <BalBtn
+                  color="gradient"
+                  size="sm"
+                  @click="showStakePreview"
+                  :disabled="fiatValueOfUnstakedShares === '0'"
+                >
+                  {{ $t('stake') }}
+                </BalBtn>
+                <BalBtn
+                  outline
+                  color="gradient"
+                  size="sm"
+                  @click="showUnstakePreview"
+                  :disabled="fiatValueOfStakedShares === '0'"
+                >
+                  {{ $t('unstake') }}
+                </BalBtn>
               </BalStack>
             </BalStack>
           </div>
@@ -129,9 +192,16 @@ onBeforeMount(() => {
       </BalAccordion>
     </div>
   </AnimatePresence>
-  <AnimatePresence :isVisible="isLoading" unmountInstantly>
+  <AnimatePresence :isVisible="isFetchingStakingData" unmountInstantly>
     <BalLoadingBlock class="h-12" />
   </AnimatePresence>
+  <StakePreview
+    :isVisible="isStakePreviewVisible"
+    :pool="pool"
+    :action="stakeAction"
+    @close="handlePreviewClose"
+    @success="handleActionSuccess"
+  />
 </template>
 
 <style>
