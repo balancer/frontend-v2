@@ -73,9 +73,9 @@ export default class WeightedPoolService {
 
   public async details(
     provider: Web3Provider,
-    createPoolTransaction: TransactionResponse
+    createHash: string
   ): Promise<CreatePoolReturn> {
-    const receipt: any = await createPoolTransaction.wait();
+    const receipt: any = await provider.getTransactionReceipt(createHash);
     let poolAddress;
     if (receipt.events) {
       const events = receipt.events.filter(e => e.event === 'PoolCreated');
