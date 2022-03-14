@@ -2,6 +2,7 @@ import { Network } from '@balancer-labs/sdk';
 import { NativeAsset } from '@/types/TokenList';
 import { Ref } from 'vue';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -11,8 +12,9 @@ const QUERY_KEYS = {
     All: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      poolIds: Ref<string[]> | undefined
-    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds }],
+      poolIds: Ref<string[]> | undefined,
+      poolAddresses: Ref<string[]> | undefined
+    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
     User: (networkId: Ref<Network>, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'user',
@@ -116,13 +118,36 @@ const QUERY_KEYS = {
   Gauges: {
     All: {
       Static: () => ['gauges', 'all', 'static'],
-      Onchain: (gauges: Ref<SubgraphGauge[] | undefined>) => [
+      Onchain: (
+        gauges: Ref<SubgraphGauge[] | undefined>,
+        account: Ref<string>,
+        networkId: Ref<Network>
+      ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
+    },
+    GaugeShares: {
+      User: (userAddress: Ref<string>) => [
         'gauges',
+        'shares',
+        'user',
+        { userAddress }
+      ]
+    },
+    StakablePools: {
+      All: (poolAddresses: Ref<string[]>) => [
+        'gauges',
+        'pools',
         'all',
-        'onchain',
-        { gauges }
+        { poolAddresses }
       ]
     }
+  },
+  Transaction: {
+    ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [
+      'tx',
+      'confirmation',
+      'date',
+      { receipt }
+    ]
   }
 };
 

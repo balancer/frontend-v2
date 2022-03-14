@@ -3,12 +3,7 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import {
-  DecoratedPoolWithShares,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
-
-import { getAddress } from '@ethersproject/address';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
@@ -16,8 +11,9 @@ import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
   isStableLike,
-  isStablePhantom,
-  isMigratablePool
+  isMigratablePool,
+  orderedTokenAddresses,
+  orderedPoolTokens
 } from '@/composables/usePool';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
@@ -54,7 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   hiddenColumns: () => []
 });
 
-const emit = defineEmits(['loadMore']);
+const emit = defineEmits(['loadMore', 'triggerStake']);
 
 /**
  * COMPOSABLES
@@ -137,7 +133,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     cellClassName: 'font-numeric'
   },
   {
-    name: t('myApr'),
+    name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
     accessor: pool => pool.dynamic.apr.total,
     align: 'right',
@@ -174,20 +170,6 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
-  const sortedTokens = orderedPoolTokens(pool);
-  return sortedTokens.map(token => getAddress(token.address));
-}
-
-function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-  if (isStablePhantom(pool.poolType))
-    return pool.tokens.filter(token => token.address !== pool.address);
-  if (isStableLike(pool.poolType)) return pool.tokens;
-
-  const sortedTokens = pool.tokens.slice();
-  sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
-  return sortedTokens;
-}
 
 function handleRowClick(pool: DecoratedPoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
@@ -247,10 +229,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:iconColumnCell="pool">
         <div v-if="!isLoading" class="px-6 py-4">
-          <BalAssetSet
-            :addresses="orderedTokenAddressesFor(pool)"
-            :width="100"
-          />
+          <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
@@ -295,19 +274,17 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
+          <div v-if="getStakeState(pool) === StakeState.MaxStaked">
+            <span>100%</span>
+          </div>
           <BalBtn
+            v-if="getStakeState(pool) === StakeState.CanStake"
             color="gradient"
             size="sm"
-            v-if="getStakeState(pool) === StakeState.CanStake"
+            @click.prevent="$emit('triggerStake', pool)"
           >
             {{ $t('stake') }}
           </BalBtn>
-          <span v-if="getStakeState(pool) === StakeState.MaxStaked">
-            100.00%
-          </span>
-          <span v-if="getStakeState(pool) === StakeState.NoGuage">
-            N/A
-          </span>
         </div>
       </template>
     </BalTable>
