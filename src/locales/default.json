@@ -545,13 +545,16 @@
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
     "stake": "Stake",
+    "staked": "Staked",
     "staking": {
-        "stakeLPTokens": "Stake LP tokens",
         "totalValueToStake": "Total value to stake",
         "newTotalShare": "Your total share",
         "potentialStakingApr": "Potential staking APR",
         "potentialWeeklyEarning": "Potential weekly earning",
-        "staking": "Staking"
+        "staking": "Staking",
+        "stakingIncentives": "Staking incentives",
+        "unclaimedIncentives": "Unclaimed incentives",
+        "unstaking": "Unstaking"
     },
     "strategy": "Strategy",
     "submit": "Submit",
@@ -745,6 +748,7 @@
     "unlock": "Unlock",
     "unlocking": "Unlocking",
     "unstake": "Unstake",
+    "unstaked": "Unstaked",
     "unwrap": "Unwrap",
     "usdValue": "USD Value",
     "v1": "V1",
