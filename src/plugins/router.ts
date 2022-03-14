@@ -107,13 +107,7 @@ if (
   routes.push({
     path: '/claim',
     name: 'claim',
-    component: ClaimPage,
-    meta: {
-      bgColors: {
-        light: 'bg-gray-50',
-        dark: 'bg-gray-800'
-      }
-    }
+    component: ClaimPage
   });
 }
 

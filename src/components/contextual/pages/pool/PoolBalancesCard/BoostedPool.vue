@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 

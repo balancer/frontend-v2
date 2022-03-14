@@ -53,6 +53,7 @@ export interface Config {
     balancerHelpers: string;
     batchRelayer: string;
     gaugeFactory: string;
+    balancerMinter: string;
   };
   keys: {
     infura: string;
