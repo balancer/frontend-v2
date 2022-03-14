@@ -13,7 +13,7 @@
       </div>
       <div
         :class="['content', contentClasses]"
-        :style="hCustomContent ? { height: '75vh' } : ''"
+        :style="hCustomContent ? { maxHeight: '60vh' } : ''"
       >
         <slot />
       </div>
@@ -46,7 +46,6 @@ export default defineComponent({
     exposeOverflow: { type: Boolean, default: false },
     overflowYScroll: { type: Boolean, default: false },
     itemsCenter: { type: Boolean, default: false },
-    selfCenterFooter: { type: Boolean, default: false },
     hCustomContent: { type: Boolean, default: false },
     overflowAutoContent: { type: Boolean, default: false },
     shadow: {
@@ -105,8 +104,7 @@ export default defineComponent({
     const footerClasses = computed(() => {
       return {
         'rounded-b-lg': !props.square,
-        'p-4 pt-0': !props.noPad,
-        'self-center': props.selfCenterFooter
+        'p-4 pt-0': !props.noPad
       };
     });
 

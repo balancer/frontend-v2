@@ -121,7 +121,6 @@ function handleClose(): void {
     show
     :fireworks="investmentConfirmed"
     @close="handleClose"
-    selfCenterFooter
     hCustomContent
     overflowAutoContent
   >
@@ -165,7 +164,7 @@ function handleClose(): void {
         :pool="pool"
         :math="math"
         :tokenAddresses="tokenAddresses"
-        class="mt-4"
+        class="mt-4 w-full"
         @success="investmentConfirmed = true"
       />
     </template>

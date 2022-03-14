@@ -27,7 +27,6 @@
             shadow="lg"
             :no-pad="noPad"
             :no-content-pad="noContentPad"
-            :self-center-footer="selfCenterFooter"
             :h-custom-content="hCustomContent"
             :overflow-auto-content="overflowAutoContent"
             class="modal-card"
@@ -66,7 +65,6 @@ export default defineComponent({
     noPad: { type: Boolean, default: false },
     noContentPad: { type: Boolean, default: false },
     fireworks: { type: Boolean, default: false },
-    selfCenterFooter: { type: Boolean, default: false },
     hCustomContent: { type: Boolean, default: false },
     overflowAutoContent: { type: Boolean, default: false }
   },
