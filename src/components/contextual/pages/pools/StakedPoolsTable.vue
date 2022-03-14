@@ -13,7 +13,6 @@ import StakePreview from '../../stake/StakePreview.vue';
 
 /** STATE */
 const showStakeModal = ref(false);
-const hasStaked = ref(false);
 const stakePool = ref<FullPool | undefined>();
 
 /** COMPOSABLES */
@@ -118,11 +117,6 @@ function handleStake(pool: FullPool) {
 
 function handleModalClose() {
   showStakeModal.value = false;
-  hasStaked.value = false;
-}
-
-function handleStakeSuccess() {
-  hasStaked.value = true;
 }
 </script>
 
@@ -140,18 +134,11 @@ function handleStakeSuccess() {
         showPoolShares
       />
     </BalStack>
-    <teleport to="#modal">
-      <BalModal
-        :show="showStakeModal"
-        @close="handleModalClose"
-        :fireworks="hasStaked"
-      >
-        <StakePreview
-          :pool="stakePool"
-          @close="handleModalClose"
-          @success="handleStakeSuccess"
-        />
-      </BalModal>
-    </teleport>
+    <StakePreview
+      :pool="stakePool"
+      :isVisible="showStakeModal"
+      @close="handleModalClose"
+      action="stake"
+    />
   </div>
 </template>
