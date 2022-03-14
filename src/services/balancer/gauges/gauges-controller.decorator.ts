@@ -59,12 +59,15 @@ export class GaugesControllerDecorator {
     >();
 
     const mergedPoolMap = pools.map(pool => {
-      const poolGaugeDetails = this.format(gaugesDataMap[pool.id]);
-      pool.gauge = {
-        address: pool.gauge.address,
-        ...poolGaugeDetails
+      const poolGaugeDetails = {
+        ...this.format(gaugesDataMap[pool.id]),
+        address: pool.gauge.address
       };
-      return pool;
+      const mergedPool = {
+        ...pool,
+        ...{ gauge: poolGaugeDetails }
+      };
+      return mergedPool;
     });
     console.log('Merged pool map: ', mergedPoolMap);
     return mergedPoolMap;

@@ -199,6 +199,7 @@ async function handleTransaction(tx) {
             name="voteWeight"
             v-model="voteWeight"
             placeholder="100"
+            :isValid="!notEnoughVotes"
           >
             <template v-slot:append>
               %
