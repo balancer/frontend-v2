@@ -415,14 +415,7 @@ export default function usePoolCreation() {
       1;
       txListener(tx, {
         onTxConfirmed: async () => {
-          const poolDetails = await balancerService.pools.weighted.details(
-            provider,
-            tx
-          );
-          poolCreationState.poolId = poolDetails.id;
-          poolCreationState.poolAddress = poolDetails.address;
-          poolCreationState.needsSeeding = true;
-          saveState();
+          retrievePoolDetails(tx.hash);
         },
         onTxFailed: () => {
           console.log('Create failed');
@@ -513,6 +506,18 @@ export default function usePoolCreation() {
     hasRestoredFromSavedState.value = value;
   }
 
+  async function retrievePoolDetails(hash: string) {
+    const provider = getProvider();
+    const poolDetails = await balancerService.pools.weighted.details(
+      provider,
+      hash
+    );
+    poolCreationState.poolId = poolDetails.id;
+    poolCreationState.poolAddress = poolDetails.address;
+    poolCreationState.needsSeeding = true;
+    saveState();
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -540,6 +545,7 @@ export default function usePoolCreation() {
     importState,
     setRestoredState,
     setTokensList,
+    retrievePoolDetails,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
