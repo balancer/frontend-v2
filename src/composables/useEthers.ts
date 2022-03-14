@@ -66,7 +66,6 @@ export default function useEthers() {
   ): Promise<boolean> {
     let confirmed = false;
     const retries = shouldRetry ? 5 : 1;
-    console.log('dingodng', retries);
     processedTxs.value.add(tx.hash);
 
     try {
