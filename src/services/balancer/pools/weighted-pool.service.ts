@@ -4,7 +4,11 @@ import {
   WeightedPool__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  TransactionResponse,
+  Web3Provider
+} from '@ethersproject/providers';
 import { configService } from '@/services/config/config.service';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
@@ -72,7 +76,7 @@ export default class WeightedPoolService {
   }
 
   public async details(
-    provider: Web3Provider,
+    provider: Web3Provider | JsonRpcProvider,
     createHash: string
   ): Promise<CreatePoolReturn> {
     const receipt: any = await provider.getTransactionReceipt(createHash);
