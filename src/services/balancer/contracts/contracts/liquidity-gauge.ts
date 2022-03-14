@@ -7,6 +7,7 @@ import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { web3Service } from '@/services/web3/web3.service';
 import { Contract } from '@ethersproject/contracts';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
+import { getAddress } from '@ethersproject/address';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -48,11 +49,24 @@ export class LiquidityGauge {
   }
 
   async stake(amount: BigNumber) {
-    console.log('amount', amount.toString());
     const tx = this.instance
       .connect(this.provider.getSigner())
       ['deposit(uint256)'](amount);
     return tx;
+  }
+
+  async unstake(amount: BigNumber) {
+    const tx = this.instance
+      .connect(this.provider.getSigner())
+      ['withdraw(uint256)'](amount);
+    return tx;
+  }
+
+  async balance(account: string): Promise<string> {
+    const balance = this.instance
+      .connect(this.provider.getSigner())
+      .balanceOf(getAddress(account));
+    return balance;
   }
 
   /*
