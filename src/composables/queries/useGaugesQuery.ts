@@ -38,12 +38,10 @@ export default function useGaugesQuery(
    */
   const queryFn = async (): Promise<PoolWithGauge[]> => {
     const rawGauges = require('@/constants/gauges/kovan.json');
-    console.log('Got raw gauges', rawGauges);
     const decoratedGauges = await gaugesControllerDecorator.decorate(
       rawGauges,
       account.value
     );
-    console.log('Returning decorated gauges: ', decoratedGauges);
     return decoratedGauges;
   };
 

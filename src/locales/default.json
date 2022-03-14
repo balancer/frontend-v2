@@ -594,10 +594,14 @@
                     }
                 },
                 "voteForGauge": "{0} for {1}",
+                "unallocatedVotes": "Unallocated Votes: {0}",
                 "errors": {
                     "votedTooRecently": {
                         "title": "Voted too recently",
                         "description": "You can only vote for a gauge once every 10 days. You can vote on this gauge again in {0}"
+                    },
+                    "notEnoughVotes": {
+                        "title": "Not enough unallocated votes"
                     }
                 }
             }

@@ -69,7 +69,6 @@ export class GaugesControllerDecorator {
       };
       return mergedPool;
     });
-    console.log('Merged pool map: ', mergedPoolMap);
     return mergedPoolMap;
   }
 

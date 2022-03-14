@@ -63,7 +63,9 @@ const voteState = reactive<TransactionActionState>({
 /**
  * COMPUTED
  */
-const voteDisabled = computed(() => !!votedToRecentlyError.value || notEnoughVotes.value); // Make disabled when not a valid number
+const voteDisabled = computed(
+  () => !!votedToRecentlyError.value || notEnoughVotes.value
+); // Make disabled when not a valid number
 const currentWeight = computed(() => props.pool.gauge.userVotes);
 const voteButtonText = computed(() =>
   parseFloat(currentWeight.value) > 0
@@ -87,7 +89,7 @@ const votedToRecentlyError = computed(() => {
     };
   }
   return null;
-})
+});
 
 const voteError = computed(() => {
   if (voteState.error) return voteState.error;
@@ -113,8 +115,19 @@ const notEnoughVotes = computed((): boolean => {
 });
 
 const unallocatedVotesClass = computed(() => {
-  return notEnoughVotes.value ? ['voteError'] : [];
-})
+  return notEnoughVotes.value ? ['text-red-600'] : [];
+});
+
+const inputRules = [
+  value => {
+    if (value === '' || isNaN(Number(value))) return;
+    const currentValue = scale(value, 2).toNumber();
+    const isValid =
+      currentValue < props.unallocatedVoteWeight + Number(currentWeight.value);
+    if (isValid) return;
+    return t('veBAL.liquidityMining.popover.errors.notEnoughVotes.title');
+  }
+];
 
 /**
  * METHODS
@@ -199,19 +212,21 @@ async function handleTransaction(tx) {
             name="voteWeight"
             v-model="voteWeight"
             placeholder="100"
-            :isValid="!notEnoughVotes"
+            validateOn="input"
+            :rules="inputRules"
           >
             <template v-slot:append>
               %
             </template>
           </BalTextInput>
-          <div :class="unallocatedVotesClass">
-            Unallocated Votes:
+          <div :class="['p-3'].concat(unallocatedVotesClass)">
             {{
-              fNum2(
-                scale(bnum(props.unallocatedVoteWeight), -4).toString(),
-                FNumFormats.percent
-              )
+              $t('veBAL.liquidityMining.popover.unallocatedVotes', [
+                fNum2(
+                  scale(bnum(props.unallocatedVoteWeight), -4).toString(),
+                  FNumFormats.percent
+                )
+              ])
             }}
           </div>
           <BalAlert
@@ -255,9 +270,3 @@ async function handleTransaction(tx) {
     </BalCard>
   </BalPopover>
 </template>
-
-<style scoped>
-.voteError {
-  color: #DC2626;
-}
-</style>
