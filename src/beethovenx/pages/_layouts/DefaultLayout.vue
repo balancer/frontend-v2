@@ -50,7 +50,7 @@ const isHomePage = computed(() => route.path === '/');
           v-for="(item, index) in EXTERNAL_LINKS.Beethoven.NavOtherItems"
           :key="index"
         >
-          <BalLink v-if="item.icon" class="mr-12">
+          <BalLink :href="item.url" v-if="item.icon" external class="mr-12">
             <img
               :src="require(`@/beethovenx/assets/images/${item.icon}.png`)"
               width="40"
