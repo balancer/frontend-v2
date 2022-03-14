@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import QUERY_KEYS from '@/constants/queryKeys';
-
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import useWeb3 from '@/services/web3/useWeb3';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
+import useStaking from '@/composables/staking/useStaking';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
@@ -13,57 +11,24 @@ import { bnum } from '@/lib/utils';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreview from '../../stake/StakePreview.vue';
 
-import { UserGuageSharesResponse } from './types';
-import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
-
-/** TYPES */
-type Props = {
-  userPools: FullPool[];
-};
-
-const props = withDefaults(defineProps<Props>(), {
-  userPools: () => []
-});
-
 /** STATE */
 const showStakeModal = ref(false);
 const hasStaked = ref(false);
 const stakePool = ref<FullPool | undefined>();
 
-/** QUERY ARGS */
-const userPoolsAddresses = computed(() => {
-  return props.userPools.map(pool => pool.address.toLowerCase());
-});
+/** COMPOSABLES */
+const {
+  userGaugeShares,
+  userLiquidityGauges,
+  isFetchingStakingData
+} = useStaking();
 
 const userStakedPools = computed(() => {
-  if (isLoadingGaugeShares.value || !gaugeSharesRes.value) return [];
-  return gaugeSharesRes.value.gaugeShares.map(share => {
+  if (isFetchingStakingData.value || !userGaugeShares.value) return [];
+  return userGaugeShares.value.map(share => {
     return share.gauge.poolId;
   });
 });
-
-/** COMPOSABLES */
-const { account } = useWeb3();
-const { data: gaugeSharesRes, isLoading: isLoadingGaugeShares } = useGraphQuery<
-  UserGuageSharesResponse
->(subgraphs.gauge, QUERY_KEYS.Gauges.GaugeShares.User(account), () => ({
-  gaugeShares: {
-    __args: {
-      where: { user: account.value.toLowerCase() }
-    },
-    balance: 1,
-    gauge: {
-      poolId: 1
-    }
-  },
-  liquidityGauges: {
-    __args: {
-      where: {
-        poolId_in: userPoolsAddresses.value
-      }
-    }
-  }
-}));
 
 const { data: stakedPoolsRes, isLoading: isLoadingPools } = usePoolsQuery(
   ref([]),
@@ -79,8 +44,8 @@ const stakedPools = computed(() => stakedPoolsRes.value?.pages[0].pools);
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
   const map: Record<string, string> = {};
-  if (!gaugeSharesRes.value) return map;
-  for (const gaugeShare of gaugeSharesRes.value?.gaugeShares) {
+  if (!userGaugeShares.value) return map;
+  for (const gaugeShare of userGaugeShares.value) {
     map[gaugeShare.gauge.poolId] = gaugeShare.balance;
   }
   return map;
@@ -129,9 +94,9 @@ const allStakedPools = computed(() => {
     });
 
   // also include any pools where there is no staked BPT at all
-  const availableGaugePoolIds = (
-    gaugeSharesRes.value?.liquidityGauges || []
-  ).map(gauge => gauge.poolId);
+  const availableGaugePoolIds = (userLiquidityGauges.value || []).map(
+    gauge => gauge.poolId
+  );
   const stakablePools = (userPools.value?.pools || [])
     .filter(pool => {
       return availableGaugePoolIds?.includes(pool.id);
@@ -167,7 +132,7 @@ function handleStakeSuccess() {
       <h5>{{ $t('myStakedPools') }}</h5>
       <PoolsTable
         :key="allStakedPools"
-        :isLoading="isLoadingGaugeShares || isLoadingPools"
+        :isLoading="isFetchingStakingData || isLoadingPools"
         :data="allStakedPools"
         :noPoolsLabel="$t('noInvestments')"
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
