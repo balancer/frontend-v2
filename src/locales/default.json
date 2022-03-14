@@ -536,17 +536,6 @@
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
     "stake": "Stake",
-<<<<<<< HEAD
-    "staking": {
-        "stakedLPTokens": "Staked LP Tokens",
-        "staking": "Staking",
-        "unclaimedIncentives": "Unclaimed incentives",
-        "unstakedLPTokens": "Unstaked LP Tokens",
-        "potentialWeeklyYield": "Potential weekly yield"
-    },
-    "stakingIncentives": "Staking incentives",
-=======
->>>>>>> origin/Tokenomics-Base-Branch
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",
@@ -770,7 +759,7 @@
         "preview": {
             "loadingLabel": {
                 "withdraw": "Confirm withdrawal in wallet"
-            },
+            }, 
             "titles": {
                 "confirmed": "Withdrawal confirmed",
                 "default": "Withdrawal preview"
