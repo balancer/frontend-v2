@@ -46,25 +46,24 @@ const userStakedPools = computed(() => {
 const { account } = useWeb3();
 const { data: gaugeSharesRes, isLoading: isLoadingGaugeShares } = useGraphQuery<
   UserGuageSharesResponse
->(
-  subgraphs.gauge,
-  QUERY_KEYS.Gauges.GaugeShares.User(account),
-  () => `
-    query {
-      gaugeShares(where: { user: "${account.value.toLowerCase()}"}) {
-        balance
-        gauge {
-          poolId
-        }
-      }
-      liquidityGauges(where: { poolId_in: [${userPoolsAddresses.value
-        .map(address => `"${address}"`)
-        .join(',')}]}) {
-        id
+>(subgraphs.gauge, QUERY_KEYS.Gauges.GaugeShares.User(account), () => ({
+  gaugeShares: {
+    __args: {
+      where: { user: account.value.toLowerCase() }
+    },
+    balance: 1,
+    gauge: {
+      poolId: 1
+    }
+  },
+  liquidityGauges: {
+    __args: {
+      where: {
+        poolId_in: userPoolsAddresses.value
       }
     }
-  `
-);
+  }
+}));
 
 const { data: stakedPoolsRes, isLoading: isLoadingPools } = usePoolsQuery(
   ref([]),
