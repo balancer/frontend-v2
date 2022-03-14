@@ -120,9 +120,7 @@ describe('PoolCreator', () => {
   });
 
   describe('details', () => {
-    const mockPoolAddress = '0xDDD8292cb20a443ba1caaa59c985ce14ca2bdee5';
-    let createPoolTransaction: TransactionResponse;
-
+    const mockPoolAddress = '0x3bB9d50A0743103F896D823B332EE15E231848D1';
 
     beforeEach(async () => {
       require('@/lib/utils/balancer/web3').__setMockPoolAddress(
@@ -133,7 +131,7 @@ describe('PoolCreator', () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceipt
       } as any;
-      createPoolTransaction = await weightedPoolsService.create(
+      await weightedPoolsService.create(
         mockProvider,
         mockPoolName,
         mockPoolSymbol,
