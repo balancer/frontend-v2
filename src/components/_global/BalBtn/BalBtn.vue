@@ -168,6 +168,7 @@ export default defineComponent({
     });
 
     const textColorClasses = computed(() => {
+      if (props.outline && props.disabled) return 'text-gray-400 dark:text-gray-700';
       if (props.outline && props.color === 'gradient') return 'text-purple-700';
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
@@ -203,10 +204,12 @@ export default defineComponent({
     const wrapperClasses = computed(() => {
       return {
         'bg-gradient-to-tr from-blue-500 to-pink-500':
-          props.color === 'gradient',
+          props.color === 'gradient' && !props.disabled,
+        'bg-gray-300 dark:bg-gray-700': props.disabled,
         'rounded-lg': !props.outline,
         'rounded-outline': props.outline,
-        'p-0.5': true,
+        'p-0.5': props.outline,
+        'flex items-center': true,
         [bgColorClasses.value]: props.color !== 'gradient'
       };
     });
