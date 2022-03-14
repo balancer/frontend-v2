@@ -60,14 +60,6 @@
       :selectedTokens="selectedTokens"
       class="mb-8"
     />
-    <div class="px-4 lg:px-0" v-if="!hideV1Links">
-      <div class="text-black-600">
-        {{ $t('tableShowsBalancerV2Pools') }}
-      </div>
-      <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Explore" external>{{
-        $t('exploreBalancerV1Pools')
-      }}</BalLink>
-    </div>
 
     <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
       <FeaturedPools />
@@ -80,7 +72,6 @@ import { defineComponent, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import { EXTERNAL_LINKS } from '@/constants/links';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import FeaturedPools from '@/components/sections/FeaturedPools.vue';
@@ -193,10 +184,7 @@ export default defineComponent({
       loadMorePools,
       addSelectedToken,
       removeSelectedToken,
-      navigateToCreatePool,
-
-      // constants
-      EXTERNAL_LINKS
+      navigateToCreatePool
     };
   }
 });
