@@ -190,6 +190,7 @@ export interface GaugeInformation {
   address: string;
   votes: string;
   userVotes: string;
+  lastUserVote: number;
 }
 
 export interface PoolWithGauge extends Pool {

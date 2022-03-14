@@ -1,22 +1,28 @@
 <script setup lang="ts">
 import { ref, computed, reactive, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { formatDistanceToNow } from 'date-fns';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
+
 import useWeb3 from '@/services/web3/useWeb3';
+import { PoolWithGauge } from '@/services/balancer/subgraph/types';
+import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useConfig from '@/composables/useConfig';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { PoolWithGauge } from '@/services/balancer/subgraph/types';
+
 import { scale, bnum } from '@/lib/utils';
 import BalForm from '../_global/BalForm/BalForm.vue';
 import BalTextInput from '../_global/BalTextInput/BalTextInput.vue';
-import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
-import { BigNumber } from '@ethersproject/bignumber';
+
 import { TransactionActionState } from '@/types/transactions';
 import { WalletError } from '@/types';
+import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 
 /**
  * TYPES
@@ -57,13 +63,37 @@ const voteState = reactive<TransactionActionState>({
 /**
  * COMPUTED
  */
-const voteDisabled = computed(() => false); // Make disabled when not a valid number
+const voteDisabled = computed(() => !!votedToRecentlyError.value || notEnoughVotes.value); // Make disabled when not a valid number
 const currentWeight = computed(() => props.pool.gauge.userVotes);
 const voteButtonText = computed(() =>
   parseFloat(currentWeight.value) > 0
     ? t('veBAL.liquidityMining.popover.button.edit')
     : t('veBAL.liquidityMining.popover.button.vote')
 );
+
+const votedToRecentlyError = computed(() => {
+  const timestampSeconds = Date.now() / 1000;
+  const lastUserVote = props.pool.gauge.lastUserVote;
+  if (timestampSeconds < lastUserVote + WEIGHT_VOTE_DELAY) {
+    const remainingTime = formatDistanceToNow(
+      (lastUserVote + WEIGHT_VOTE_DELAY) * 1000
+    );
+    return {
+      title: t('veBAL.liquidityMining.popover.errors.votedTooRecently.title'),
+      description: t(
+        'veBAL.liquidityMining.popover.errors.votedTooRecently.description',
+        [remainingTime]
+      )
+    };
+  }
+  return null;
+})
+
+const voteError = computed(() => {
+  if (voteState.error) return voteState.error;
+  if (votedToRecentlyError.value) return votedToRecentlyError.value;
+  return null;
+});
 
 const explorerLink = computed((): string =>
   voteState.receipt
@@ -74,6 +104,17 @@ const explorerLink = computed((): string =>
 const transactionInProgress = computed(
   (): boolean => voteState.init || voteState.confirming
 );
+
+const notEnoughVotes = computed((): boolean => {
+  return (
+    props.unallocatedVoteWeight + Number(currentWeight.value) <
+    scale(voteWeight.value, 2).toNumber()
+  );
+});
+
+const unallocatedVotesClass = computed(() => {
+  return notEnoughVotes.value ? ['voteError'] : [];
+})
 
 /**
  * METHODS
@@ -163,7 +204,7 @@ async function handleTransaction(tx) {
               %
             </template>
           </BalTextInput>
-          <div class="">
+          <div :class="unallocatedVotesClass">
             Unallocated Votes:
             {{
               fNum2(
@@ -173,10 +214,10 @@ async function handleTransaction(tx) {
             }}
           </div>
           <BalAlert
-            v-if="voteState.error"
+            v-if="voteError"
             type="error"
-            :title="voteState.error.title"
-            :description="voteState.error.description"
+            :title="voteError.title"
+            :description="voteError.description"
             block
             class="mb-4"
           />
@@ -213,3 +254,9 @@ async function handleTransaction(tx) {
     </BalCard>
   </BalPopover>
 </template>
+
+<style scoped>
+.voteError {
+  color: #DC2626;
+}
+</style>

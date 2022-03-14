@@ -6,6 +6,30 @@ import {
   GaugeInformation,
   PoolWithGauge
 } from '@/services/balancer/subgraph/types';
+import { BigNumber } from '@ethersproject/bignumber';
+
+export interface UserVotesData {
+  end: BigNumber;
+  power: BigNumber;
+  slope: BigNumber;
+}
+
+export interface OnchainGaugeControllerData {
+  votes: number;
+  userVotes: UserVotesData;
+  lastUserVote: BigNumber;
+}
+
+export interface OnchainGaugeControllerFormattedData {
+  votes: string;
+  userVotes: string;
+  lastUserVote: number;
+}
+
+export type OnchainGaugeControllerDataMap = Record<
+  string,
+  OnchainGaugeControllerData
+>;
 
 export class GaugesControllerDecorator {
   multicaller: Multicaller;
@@ -28,36 +52,41 @@ export class GaugesControllerDecorator {
     this.multicaller = this.resetMulticaller();
     this.callGaugeVotes(pools);
     this.callUserGaugeVotes(pools, userAddress);
+    this.callUserGaugeVoteTime(pools, userAddress);
 
-    const gaugesDataMap = await this.multicaller.execute();
+    const gaugesDataMap = await this.multicaller.execute<
+      OnchainGaugeControllerDataMap
+    >();
 
     const mergedPoolMap = pools.map(pool => {
-      const gauge = this.format(
-        pool.gauge.address,
-        gaugesDataMap[pool.id].gauge
-      );
-      const mergedPool = { ...pool, ...{ gauge } };
-      return mergedPool;
+      const poolGaugeDetails = this.format(gaugesDataMap[pool.id]);
+      pool.gauge = {
+        address: pool.gauge.address,
+        ...poolGaugeDetails
+      };
+      return pool;
     });
     console.log('Merged pool map: ', mergedPoolMap);
     return mergedPoolMap;
   }
 
-  private format(gaugeAddress: string, gaugesDatamap): GaugeInformation {
+  private format(
+    gaugesDatamap: OnchainGaugeControllerData
+  ): OnchainGaugeControllerFormattedData {
     return {
-      address: gaugeAddress,
       votes: gaugesDatamap.votes.toString(),
-      userVotes: gaugesDatamap.userVotes.power.toString()
+      userVotes: gaugesDatamap.userVotes.power.toString(),
+      lastUserVote: gaugesDatamap.lastUserVote.toNumber()
     };
   }
 
   /**
-   * @summary Fetch list of reward token addresses for gauge.
+   * @summary Fetch relative vote weight of each gauge
    */
   private callGaugeVotes(pools: PoolWithGauge[]) {
     pools.forEach(pool => {
       this.multicaller.call(
-        `${pool.id}.gauge.votes`,
+        `${pool.id}.votes`,
         this.config.network.addresses.gaugeController,
         'gauge_relative_weight',
         [pool.gauge.address]
@@ -66,14 +95,28 @@ export class GaugesControllerDecorator {
   }
 
   /**
-   * @summary Fetch user's claimable BAL for each gauge.
+   * @summary Fetch user's vote weight for each gauge
    */
   private callUserGaugeVotes(pools: PoolWithGauge[], userAddress: string) {
     pools.forEach(pool => {
       this.multicaller.call(
-        `${pool.id}.gauge.userVotes`,
+        `${pool.id}.userVotes`,
         this.config.network.addresses.gaugeController,
         'vote_user_slopes',
+        [userAddress, pool.gauge.address]
+      );
+    });
+  }
+
+  /**
+   * @summary Fetch user's vote weight for each gauge
+   */
+  private callUserGaugeVoteTime(pools: PoolWithGauge[], userAddress: string) {
+    pools.forEach(pool => {
+      this.multicaller.call(
+        `${pool.id}.lastUserVote`,
+        this.config.network.addresses.gaugeController,
+        'last_user_vote',
         [userAddress, pool.gauge.address]
       );
     });

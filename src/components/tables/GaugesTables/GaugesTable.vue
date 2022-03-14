@@ -154,6 +154,7 @@ function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
     noPad
   >
     <BalTable
+      :key="data"
       :columns="columns"
       :data="data"
       :is-loading="isLoading"

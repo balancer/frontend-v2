@@ -12,7 +12,7 @@
       <div class="flex mt-1">
         <div class="flex">
           <div class="relative">
-            <Avatar :iconURI="profile?.avatar" :address="account" size="44" />
+            <Avatar :iconURI="profile?.avatar" :address="account" :size="44" />
             <div class="connector-icon-wrapper">
               <img
                 :src="connectorLogo"

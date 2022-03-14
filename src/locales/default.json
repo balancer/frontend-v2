@@ -593,7 +593,13 @@
                         "loadingLabel": "Confirm approval in wallet"                    
                     }
                 },
-                "voteForGauge": "{0} for {1}" 
+                "voteForGauge": "{0} for {1}",
+                "errors": {
+                    "votedTooRecently": {
+                        "title": "Voted too recently",
+                        "description": "You can only vote for a gauge once every 10 days. You can vote on this gauge again in {0}"
+                    }
+                }
             }
         },
         "notSupported": {

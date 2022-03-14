@@ -6,7 +6,7 @@ import { PoolWithGauge } from '@/services/balancer/subgraph/types';
 export default function useGauges() {
   const gaugesQuery = useGaugesQuery();
 
-  const gauges = computed((): PoolWithGauge[] => {
+  const poolsWithGauges = computed((): PoolWithGauge[] => {
     const g = gaugesQuery.data.value ? gaugesQuery.data.value : [];
     console.log('Recomputing gauges to be: ', g);
     return g;
@@ -19,7 +19,7 @@ export default function useGauges() {
   });
 
   return {
-    gauges,
+    poolsWithGauges,
     isLoadingGauges
   };
 }

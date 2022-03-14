@@ -1,10 +1,11 @@
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { PoolWithGauge } from '@/services/balancer/subgraph/types';
 import { gaugesControllerDecorator } from '@/services/balancer/gauges/gauges-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -17,12 +18,20 @@ type QueryResponse = PoolWithGauge[];
 export default function useGaugesQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
-  const { account } = useWeb3();
+  /**
+   * COMPOSABLES
+   */
+   const { account, isWalletReady } = useWeb3();
+   const { networkId } = useNetwork();
 
+  /**
+   * COMPUTED
+   */
+   const enabled = computed(() => isWalletReady.value);
   /**
    * QUERY KEY
    */
-  const queryKey = QUERY_KEYS.Gauges.All();
+  const queryKey = QUERY_KEYS.Gauges.All(networkId, account);
 
   /**
    * QUERY FUNCTION
@@ -42,7 +51,7 @@ export default function useGaugesQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: true,
+    enabled,
     ...options
   });
 
