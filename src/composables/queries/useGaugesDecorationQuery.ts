@@ -5,6 +5,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { Gauge, SubgraphGauge } from '@/services/balancer/gauges/types';
 import { gaugesDecorator } from '@/services/balancer/gauges/gauges.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -22,6 +23,7 @@ export default function useGaugesDecorationQuery(
    * COMPOSABLES
    */
   const { account, isWalletReady } = useWeb3();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -33,7 +35,9 @@ export default function useGaugesDecorationQuery(
   /**
    * QUERY KEY
    */
-  const queryKey = reactive(QUERY_KEYS.Gauges.All.Onchain(gauges));
+  const queryKey = reactive(
+    QUERY_KEYS.Gauges.All.Onchain(gauges, account, networkId)
+  );
 
   /**
    * QUERY FUNCTION
