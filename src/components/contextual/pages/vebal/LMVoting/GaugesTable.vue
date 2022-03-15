@@ -26,6 +26,7 @@ type Props = {
   isLoadingMore?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
+  refetch?: () => void;
 };
 
 /**
@@ -144,6 +145,12 @@ function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
   sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
   return sortedTokens;
 }
+
+async function handleVoteSuccess() {
+  if (props.refetch) {
+    await props.refetch();
+  }
+}
 </script>
 
 <template>
@@ -222,6 +229,7 @@ function orderedPoolTokens(pool: PoolWithGauge): PoolToken[] {
         <GaugeVote
           :pool="pool"
           :unallocatedVoteWeight="unallocatedVoteWeight"
+          @success="handleVoteSuccess"
         ></GaugeVote>
       </template>
     </BalTable>

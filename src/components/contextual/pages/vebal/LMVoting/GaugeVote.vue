@@ -37,6 +37,8 @@ type Props = {
  */
 const props = defineProps<Props>();
 
+const emit = defineEmits(['success']);
+
 /**
  * COMPOSABLES
  */
@@ -64,8 +66,9 @@ const voteState = reactive<TransactionActionState>({
  * COMPUTED
  */
 const voteDisabled = computed(
-  () => !!votedToRecentlyError.value || notEnoughVotes.value
-); // Make disabled when not a valid number
+  () => !!votedToRecentlyError.value || !hasEnoughVotes.value
+);
+
 const currentWeight = computed(() => props.pool.gauge.userVotes);
 const voteButtonText = computed(() =>
   parseFloat(currentWeight.value) > 0
@@ -107,24 +110,18 @@ const transactionInProgress = computed(
   (): boolean => voteState.init || voteState.confirming
 );
 
-const notEnoughVotes = computed((): boolean => {
-  return (
-    props.unallocatedVoteWeight + Number(currentWeight.value) <
-    scale(voteWeight.value, 2).toNumber()
-  );
+const hasEnoughVotes = computed((): boolean => {
+  return isVoteWeightValid(voteWeight.value);
 });
 
 const unallocatedVotesClass = computed(() => {
-  return notEnoughVotes.value ? ['text-red-600'] : [];
+  return hasEnoughVotes.value ? [] : ['text-red-600'];
 });
 
 const inputRules = [
   value => {
-    if (value === '' || isNaN(Number(value))) return;
-    const currentValue = scale(value, 2).toNumber();
-    const isValid =
-      currentValue < props.unallocatedVoteWeight + Number(currentWeight.value);
-    if (isValid) return;
+    if (value !== '' && isNaN(Number(value))) return '';
+    if (isVoteWeightValid(value)) return;
     return t('veBAL.liquidityMining.popover.errors.notEnoughVotes.title');
   }
 ];
@@ -132,6 +129,14 @@ const inputRules = [
 /**
  * METHODS
  */
+function isVoteWeightValid(voteWeight) {
+  if (voteWeight === '') return true;
+  const currentValue = scale(voteWeight, 2).toNumber();
+  const isValid =
+    currentValue <= props.unallocatedVoteWeight + Number(currentWeight.value);
+  return isValid;
+}
+
 async function submitVote() {
   const totalVoteShares = scale(voteWeight.value, 2).toString();
   try {
@@ -178,6 +183,7 @@ async function handleTransaction(tx) {
       voteState.confirmedAt = dateTimeLabelFor(confirmedAt);
       voteState.confirmed = true;
       voteState.confirming = false;
+      emit('success');
     },
     onTxFailed: () => {
       console.error('Vote failed');

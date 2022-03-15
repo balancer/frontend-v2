@@ -5,7 +5,7 @@ import useGauges from '@/composables/vebal/useGauges';
 /**
  * COMPOSABLES
  */
-const { poolsWithGauges, isLoadingGauges } = useGauges();
+const { poolsWithGauges, isLoadingGauges, refetchGauges } = useGauges();
 </script>
 
 <template>
@@ -15,6 +15,7 @@ const { poolsWithGauges, isLoadingGauges } = useGauges();
     :isLoading="isLoadingGauges"
     :data="poolsWithGauges"
     :key="poolsWithGauges"
+    :refetch="refetchGauges"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"
