@@ -198,9 +198,9 @@ async function handleTransaction(tx) {
 </script>
 
 <template>
-  <BalPopover detached align="center" no-pad>
+  <BalPopover detached no-pad>
     <template v-slot:activator>
-      <BalBtn color="blue" :outline="true" size="sm" flat>
+      <BalBtn color="blue" :outline="true" size="sm" flat block>
         {{ $t('veBAL.liquidityMining.table.vote') }}
       </BalBtn>
     </template>

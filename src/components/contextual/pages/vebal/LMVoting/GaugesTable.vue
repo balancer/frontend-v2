@@ -115,7 +115,7 @@ const columns = ref<ColumnDefinition<PoolWithGauge>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 50
+    width: 60
   }
 ]);
 
@@ -226,11 +226,13 @@ async function handleVoteSuccess() {
         </div>
       </template>
       <template v-slot:voteColumnCell="pool">
-        <GaugeVote
-          :pool="pool"
-          :unallocatedVoteWeight="unallocatedVoteWeight"
-          @success="handleVoteSuccess"
-        ></GaugeVote>
+        <div class="px-4">
+          <GaugeVote
+            :pool="pool"
+            :unallocatedVoteWeight="unallocatedVoteWeight"
+            @success="handleVoteSuccess"
+          ></GaugeVote>
+        </div>
       </template>
     </BalTable>
   </BalCard>

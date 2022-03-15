@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 type PopoverTrigger = 'click' | 'hover';
 
@@ -24,6 +24,7 @@ const emit = defineEmits<{
  * STATE
  */
 const popoverOpened = ref(false);
+const activatorWrapper = ref<HTMLDivElement>();
 
 /**
  * COMPUTED
@@ -31,20 +32,17 @@ const popoverOpened = ref(false);
 const popoverWrapperClasses = computed(() => ({
   'bal-popover-wrapper-visible': popoverOpened.value,
   [`${props.align}-0`]: !props.detached,
-  'align-center-transform': props.detached && props.align === 'center'
+  'align-center-transform': props.detached && props.align === 'center',
+  'align-right-transform': props.detached && props.align === 'right'
 }));
 
 const popoverActivatorWrapperClasses = computed(() => ({
   relative: !props.detached
 }));
 
-watch(popoverOpened, () => {
-  if (popoverOpened.value) {
-    emit('show');
-  } else {
-    emit('hide');
-  }
-});
+const activatorWidthPx = computed(
+  (): string => `${activatorWrapper.value?.clientWidth}px` || '0px'
+);
 
 /**
  * METHODS
@@ -66,6 +64,17 @@ function handleClickOutside() {
     hidePopover();
   }
 }
+
+/**
+ * WATCHERS
+ */
+watch(popoverOpened, () => {
+  if (popoverOpened.value) {
+    emit('show');
+  } else {
+    emit('hide');
+  }
+});
 </script>
 
 <template>
@@ -75,6 +84,7 @@ function handleClickOutside() {
   >
     <div
       class="bal-popover-activator group"
+      ref="activatorWrapper"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"
@@ -106,5 +116,10 @@ function handleClickOutside() {
 .align-center-transform {
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
+}
+
+.align-right-transform {
+  -webkit-transform: translateX(-webkit-calc(-100% + v-bind(activatorWidthPx)));
+  transform: translateX(calc(-100% + v-bind(activatorWidthPx)));
 }
 </style>
