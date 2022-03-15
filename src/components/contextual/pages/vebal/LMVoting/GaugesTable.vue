@@ -184,14 +184,7 @@ async function handleVoteSuccess() {
       </template>
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
-          <img
-            v-if="darkMode"
-            :src="require('@/assets/images/icons/tokens_white.svg')"
-          />
-          <img
-            v-else
-            :src="require('@/assets/images/icons/tokens_black.svg')"
-          />
+          <CompositionIcon />
         </div>
       </template>
       <template v-slot:networkColumnCell="pool">
