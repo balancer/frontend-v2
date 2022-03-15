@@ -3,10 +3,9 @@ import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BigNumber } from '@ethersproject/bignumber';
-import { AddressZero, MaxUint256 } from '@ethersproject/constants';
+import { AddressZero } from '@ethersproject/constants';
 import { web3Service } from '@/services/web3/web3.service';
 import { Contract } from '@ethersproject/contracts';
-import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -37,14 +36,6 @@ export class LiquidityGauge {
     const { tokens } = await multicaller.execute();
 
     return tokens.filter(address => address !== AddressZero);
-  }
-
-  async approve(bptAddress: string) {
-    const bptContract = new Contract(bptAddress, ERC20ABI, this.provider);
-    const tx = bptContract
-      .connect(this.provider.getSigner())
-      .approve(this.address, MaxUint256);
-    return tx;
   }
 
   async stake(amount: BigNumber) {
