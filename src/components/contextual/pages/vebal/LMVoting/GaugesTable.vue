@@ -187,13 +187,11 @@ async function handleVoteSuccess() {
           <CompositionIcon />
         </div>
       </template>
-      <template v-slot:networkColumnCell="pool">
+      <template v-slot:networkColumnCell="{ chain }">
         <div v-if="!isLoading" class="px-6 py-4">
           <img
-            :src="
-              require(`@/assets/images/icons/networks/${pool.network.id}.svg`)
-            "
-            :alt="pool.network.name"
+            :src="require(`@/assets/images/icons/networks/${chain}.svg`)"
+            :alt="chain"
             class="w-5 h-5 rounded-full shadow-sm"
           />
         </div>
