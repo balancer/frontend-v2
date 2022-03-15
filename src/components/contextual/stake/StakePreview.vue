@@ -35,7 +35,7 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
 
-const { stakeBPT, unstakeBPT, getGaugeAddress, getStakedShares } = useStaking(
+const { stakeBPT, unstakeBPT, getGaugeAddress, stakedShares, refetchStakingData } = useStaking(
   props.pool.address
 );
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
@@ -66,7 +66,6 @@ const isLoadingApprovalsForGauge = ref(false);
 const isActionConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
-const stakedShares = ref('0');
 
 /**
  * WATCHERS
@@ -135,14 +134,13 @@ const poolShareData = computed(() => {
  */
 onBeforeMount(async () => {
   await loadApprovalsForGauge();
-
-  stakedShares.value = await getStakedShares();
 });
 
 /** METHODS */
-function handleSuccess({ receipt }) {
+async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
+  await refetchStakingData.value();
   emit('success');
 }
 

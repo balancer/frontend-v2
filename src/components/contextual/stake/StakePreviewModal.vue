@@ -10,7 +10,7 @@ type Props = {
 };
 
 defineProps<Props>();
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'success']);
 
 const showFireworks = ref(false);
 
@@ -18,7 +18,13 @@ const showFireworks = ref(false);
  * METHODS
  */
 function handleClose() {
+  showFireworks.value = false;
   emit('close');
+}
+
+function handleSuccess() {
+  showFireworks.value = true;
+  emit('success');
 }
 </script>
 
@@ -29,7 +35,7 @@ function handleClose() {
         :pool="pool"
         :action="action"
         @close="handleClose"
-        @success="showFireworks = true"
+        @success="handleSuccess"
       />
     </BalModal>
   </teleport>

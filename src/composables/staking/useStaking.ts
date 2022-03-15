@@ -14,7 +14,7 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import useGraphQuery, { subgraphs } from '../queries/useGraphQuery';
 import { UserGuageSharesResponse } from '@/components/contextual/pages/pools/types';
 import usePools from '../pools/usePools';
-import { computed, ref } from 'vue';
+import { computed, ref, reactive, watch } from 'vue';
 import usePoolsQuery from '../queries/usePoolsQuery';
 
 export enum StakeState {
@@ -41,6 +41,8 @@ export default function useStaking(poolAddress?: string) {
   const userPoolIds = computed(() => {
     return userPools.value.map(pool => pool.address.toLowerCase());
   });
+
+  const isStakingQueryEnabled = computed(() => userPoolIds.value.length > 0);
 
   /**
    * QUERIES
@@ -88,6 +90,10 @@ export default function useStaking(poolAddress?: string) {
           balance: true
         }
       }
+    }),
+    reactive({
+      refetchOnWindowFocus: false,
+      enabled: isStakingQueryEnabled
     })
   );
 
@@ -172,8 +178,7 @@ export default function useStaking(poolAddress?: string) {
     }
     const gaugeAddress = await getGaugeAddress(poolAddress);
     const gauge = new LiquidityGauge(gaugeAddress, getProvider());
-    const stakedShares = await getStakedShares();
-    const tx = await gauge.unstake(parseUnits(stakedShares, 18));
+    const tx = await gauge.unstake(parseUnits(stakedShares.value, 18));
     return tx;
   }
 
@@ -207,6 +212,7 @@ export default function useStaking(poolAddress?: string) {
     stakedShares,
     stakedPools,
     isFetchingStakedPools,
+    isStakeDataIdle,
     isLoading,
     getGaugeAddress,
     stakeBPT,

@@ -22,16 +22,18 @@ const props = defineProps<Props>();
 const hasIncentive = true;
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref('');
-const stakedShares = ref('0');
 
 /**
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
-const { isFetchingStakingData, getStakedShares } = useStaking(
-  props.pool.address
-);
+const {
+  isFetchingStakingData,
+  stakedShares,
+  refetchStakingData,
+  isLoading
+} = useStaking(props.pool.address);
 
 /**
  * COMPUTED
@@ -44,7 +46,7 @@ const apr = computed(() => {
 const fiatValueOfStakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .times(stakedShares.value.toString())
+    .times((stakedShares.value || 0).toString())
     .toString();
 });
 
@@ -75,19 +77,12 @@ function handlePreviewClose() {
 }
 
 async function handleActionSuccess() {
-  stakedShares.value = await getStakedShares();
+  refetchStakingData.value();
 }
-
-/**
- * LIFECYCLE
- */
-onBeforeMount(async () => {
-  stakedShares.value = await getStakedShares();
-});
 </script>
 
 <template>
-  <AnimatePresence :isVisible="!isFetchingStakingData">
+  <AnimatePresence :isVisible="!isLoading">
     <div class="relative">
       <BalAccordion
         :class="['shadow-2xl', { handle: hasIncentive }]"
@@ -194,7 +189,7 @@ onBeforeMount(async () => {
       </BalAccordion>
     </div>
   </AnimatePresence>
-  <AnimatePresence :isVisible="isFetchingStakingData" unmountInstantly>
+  <AnimatePresence :isVisible="isLoading" unmountInstantly>
     <BalLoadingBlock class="h-12" />
   </AnimatePresence>
   <StakePreviewModal
