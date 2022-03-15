@@ -41,7 +41,7 @@ const popoverActivatorWrapperClasses = computed(() => ({
 }));
 
 const activatorWidthPx = computed(
-  (): string => `${activatorWrapper.value?.clientWidth}px` || '0px'
+  (): string => `${activatorWrapper.value?.clientWidth || 0}px`
 );
 
 /**
