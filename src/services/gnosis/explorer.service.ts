@@ -11,7 +11,7 @@ export default class GnosisExplorerService {
     } else if (IS_STAGING) {
       this.baseURL = 'https://protocol-explorer.staging.gnosisdev.com';
     } else {
-      this.baseURL = 'https://gnosis-protocol.io';
+      this.baseURL = 'https://explorer.cow.fi';
     }
   }
 

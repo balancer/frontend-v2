@@ -23,6 +23,7 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+
 /**
  * TYPES
  */
@@ -198,9 +199,9 @@ watch(blockNumber, async () => {
 </script>
 
 <template>
-  <div>
-    <BalActionSteps :actions="actions" />
-    <template v-if="investmentState.confirmed">
+  <transition>
+    <BalActionSteps v-if="!investmentState.confirmed" :actions="actions" />
+    <div v-else>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
@@ -234,6 +235,6 @@ watch(blockNumber, async () => {
       >
         {{ $t('returnToPool') }}
       </BalBtn>
-    </template>
-  </div>
+    </div>
+  </transition>
 </template>

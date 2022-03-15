@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, ref, computed, reactive } from 'vue';
+import { watch, ref, computed, reactive, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { format } from 'date-fns';
 
@@ -24,6 +24,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -72,10 +73,9 @@ const { networkConfig } = useConfig();
 const { getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { tokenApprovalActions } = useTokenApprovalActions(
+const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.lockablePoolTokenInfo.address],
-  ref([props.lockAmount]),
-  'veBAL'
+  ref([props.lockAmount])
 );
 const { fNum2 } = useNumbers();
 
@@ -89,10 +89,7 @@ const lockActions = props.lockType.map((lockType, actionIndex) => ({
   stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`)
 }));
 
-const actions = ref<TransactionActionInfo[]>([
-  ...tokenApprovalActions,
-  ...lockActions
-]);
+const actions = ref<TransactionActionInfo[]>([...lockActions]);
 
 /**
  * COMPUTED
@@ -181,22 +178,28 @@ async function submit(lockType: LockType, actionIndex: number) {
 }
 
 /**
- * COMPUTED
+ * WATCHERS
  */
 watch(lockActionStatesConfirmed, () => {
   if (lockActionStatesConfirmed.value) {
     emit('success', lockActionStates);
   }
 });
+
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(async () => {
+  const approvalActions = await getTokenApprovalActionsForSpender(
+    configService.network.addresses.veBAL
+  );
+  actions.value.unshift(...approvalActions);
+});
 </script>
 
 <template>
   <div>
-    <BalActionSteps
-      v-if="!lockActionStatesConfirmed"
-      :actions="actions"
-      :disabled="disabled"
-    />
+    <BalActionSteps v-if="!lockActionStatesConfirmed" :actions="actions" />
     <template v-else>
       <div
         v-for="(lockActionState, i) in lockActionStates"

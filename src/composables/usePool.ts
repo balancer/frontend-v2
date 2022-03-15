@@ -1,7 +1,12 @@
 import { Ref, computed } from 'vue';
 import { getAddress } from 'ethers/lib/utils';
 
-import { PoolType, AnyPool, Pool } from '@/services/balancer/subgraph/types';
+import {
+  PoolType,
+  AnyPool,
+  Pool,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
 import { bnum } from '@/lib/utils';
@@ -89,6 +94,28 @@ export function lpTokensFor(pool: AnyPool): string[] {
   } else {
     return pool.tokenAddresses || [];
   }
+}
+
+/**
+ * @summary Orders pool token addresses by weight if weighted pool
+ * @returns Array of checksum addresses
+ */
+export function orderedTokenAddresses(pool: AnyPool): string[] {
+  const sortedTokens = orderedPoolTokens(pool);
+  return sortedTokens.map(token => getAddress(token.address));
+}
+
+/**
+ * @summary Orders pool tokens by weight if weighted pool
+ */
+export function orderedPoolTokens(pool: AnyPool): PoolToken[] {
+  if (isStablePhantom(pool.poolType))
+    return pool.tokens.filter(token => token.address !== pool.address);
+  if (isStableLike(pool.poolType)) return pool.tokens;
+
+  return pool.tokens
+    .slice()
+    .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
 }
 
 /**
@@ -193,6 +220,8 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     noInitLiquidity,
     lpTokensFor,
     isMigratablePool,
-    poolWeightsLabel
+    poolWeightsLabel,
+    orderedTokenAddresses,
+    orderedPoolTokens
   };
 }

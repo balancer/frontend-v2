@@ -1,7 +1,7 @@
 import { WalletError } from '@/types';
 import { Connector } from '../connector';
 export class MetamaskConnector extends Connector {
-  id = 'injected';
+  id = 'injectedMetamask';
   async connect() {
     const provider =
       (window as any).ethereum ||

@@ -29,10 +29,24 @@
             "weekStart": 1
         },
         {
+            "label": "LIDO",
+            "distributor": "0x55c8de1ac17c1a937293416c9bce5789cbbf61d1",
+            "token": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-lido.json",
+            "weekStart": 25
+        },
+        {
             "label": "NEXO",
             "distributor": "0x0000000000000000000000000000000000000000",
             "token": "0xB62132e35a6c13ee1EE0f84dC5d40bad8d815206",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-nexo.json",
+            "weekStart": 1
+        },
+        {
+            "label": "D2D",
+            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+            "token": "0x43D4A3cd90ddD2F8f4f693170C9c8098163502ad",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-d2d.json",
             "weekStart": 1
         }
     ],
