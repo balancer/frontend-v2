@@ -1,16 +1,14 @@
-import { reactive, computed } from 'vue';
+import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { PoolWithGauge } from '@/services/balancer/subgraph/types';
-import { gaugeControllerDecorator } from '@/services/balancer/gauges/gauge-controller.decorator';
-import useWeb3 from '@/services/web3/useWeb3';
-import useNetwork from '../useNetwork';
+import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
 
 /**
  * TYPES
  */
-type QueryResponse = PoolWithGauge[];
+type QueryResponse = SubgraphGauge[];
 
 /**
  * @summary Fetches guages list from subgraph
@@ -19,38 +17,27 @@ export default function useGaugesQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
-   * COMPOSABLES
-   */
-  const { account, isWalletReady } = useWeb3();
-  const { networkId } = useNetwork();
-
-  /**
-   * COMPUTED
-   */
-  const enabled = computed(() => isWalletReady.value);
-
-  /**
    * QUERY KEY
    */
-  const queryKey = QUERY_KEYS.Gauges.All(networkId, account);
+  const queryKey = reactive(QUERY_KEYS.Gauges.All.Static());
 
   /**
    * QUERY FUNCTION
    */
-  const queryFn = async (): Promise<PoolWithGauge[]> => {
-    const rawGauges = require('@/constants/gauges/kovan.json');
-    const decoratedGauges = await gaugeControllerDecorator.decorate(
-      rawGauges,
-      account.value
-    );
-    return decoratedGauges;
+  const queryFn = async () => {
+    try {
+      return await gaugesSubgraphService.gauges.get();
+    } catch (error) {
+      console.error('Failed to fetch gauges', error);
+      return [];
+    }
   };
 
   /**
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled,
+    enabled: true,
     ...options
   });
 

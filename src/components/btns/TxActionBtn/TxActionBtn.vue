@@ -1,0 +1,115 @@
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
+import useTransactions, {
+  TransactionAction
+} from '@/composables/useTransactions';
+import useEthers from '@/composables/useEthers';
+import { useI18n } from 'vue-i18n';
+import {
+  TransactionReceipt,
+  TransactionResponse
+} from '@ethersproject/abstract-provider';
+
+/**
+ * TYPES
+ */
+type Props = {
+  actionFn: () => Promise<TransactionResponse>;
+  action: TransactionAction;
+  summary: string;
+  confirmingLabel: string;
+  onConfirmFn?: () => unknown;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'init'): void;
+  (e: 'confirming', value: TransactionResponse): void;
+  (e: 'confirmed', value: TransactionReceipt): void;
+  (e: 'failed'): void;
+}>();
+
+/**
+ * COMPOSABLES
+ */
+const { t } = useI18n();
+const { addTransaction } = useTransactions();
+const { txListener } = useEthers();
+
+/**
+ * TYPES
+ */
+enum BtnStates {
+  Default,
+  Init,
+  Confirming,
+  Confirmed
+}
+
+/**
+ * STATE
+ */
+const btnState = ref(BtnStates.Default);
+
+/**
+ * COMPUTED
+ */
+const isWaitingOnWallet = computed(() => btnState.value === BtnStates.Init);
+const isConfirming = computed(() => btnState.value === BtnStates.Confirming);
+
+const loadingLabel = computed(() =>
+  isWaitingOnWallet.value ? t('confirm') : props.confirmingLabel
+);
+
+/**
+ * METHODS
+ */
+async function initTx() {
+  try {
+    btnState.value = BtnStates.Init;
+    emit('init');
+
+    const tx = await props.actionFn();
+
+    btnState.value = BtnStates.Confirming;
+    emit('confirming', tx);
+
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: props.action,
+      summary: props.summary
+    });
+
+    await txListener(tx, {
+      onTxConfirmed: async (receipt: TransactionReceipt) => {
+        if (props.onConfirmFn) props.onConfirmFn();
+
+        btnState.value = BtnStates.Confirmed;
+        emit('confirmed', receipt);
+      },
+      onTxFailed: () => {
+        console.error('Tx failed');
+        btnState.value = BtnStates.Default;
+        emit('failed');
+      }
+    });
+  } catch (error) {
+    btnState.value = BtnStates.Default;
+    console.error(error);
+  }
+}
+</script>
+
+<template>
+  <BalBtn
+    :loadingLabel="loadingLabel"
+    :loading="isWaitingOnWallet || isConfirming"
+    :disabled="isWaitingOnWallet || isConfirming"
+    @click.stop="initTx"
+  />
+</template>

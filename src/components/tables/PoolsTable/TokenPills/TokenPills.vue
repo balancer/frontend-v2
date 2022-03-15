@@ -9,6 +9,7 @@ import { PoolToken } from '@/services/balancer/subgraph/types';
 import WeightedTokenPill from './WeightedTokenPill.vue';
 import StableTokenPill from './StableTokenPill.vue';
 import HiddenTokensPills from './HiddenTokensPills.vue';
+import { getAddress } from 'ethers/lib/utils';
 
 type Props = {
   tokens: PoolToken[];
@@ -43,7 +44,9 @@ const isSelectedInHiddenTokens = computed(() =>
  * METHODS
  */
 function symbolFor(token: PoolToken): string {
-  return token.symbol || tokens.value[token.address]?.symbol || '---';
+  return (
+    token.symbol || tokens.value[getAddress(token.address)]?.symbol || '---'
+  );
 }
 
 function weightFor(token: PoolToken): string {

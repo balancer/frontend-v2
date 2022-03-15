@@ -136,7 +136,6 @@ export default {
       allowanceContracts: compact([
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
-        networkConfig.addresses.exchangeProxy,
         configService.network.addresses.veBAL
       ]),
       injectedPrices: {}

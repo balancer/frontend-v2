@@ -215,11 +215,6 @@ export default function usePoolQuery(
       }
     }
 
-    console.log('pool', {
-      onchain: onchainData,
-      unwrappedTokens,
-      ...decoratedPool
-    });
     return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
   };
 

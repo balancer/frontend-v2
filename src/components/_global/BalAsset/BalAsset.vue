@@ -28,8 +28,7 @@ export default defineComponent({
 
   props: {
     address: {
-      type: String,
-      required: true
+      type: String
     },
     iconURI: { type: String },
     size: {

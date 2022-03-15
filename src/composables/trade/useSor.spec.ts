@@ -63,6 +63,7 @@ const mockProps = {
 
 describe('useSor', () => {
   it('Should load', () => {
+    jest.spyOn(console, 'time').mockImplementation();
     const { result } = mount(() => useSor(mockProps));
     expect(result).toBeTruthy();
   });
@@ -70,19 +71,20 @@ describe('useSor', () => {
 
 describe('setSwapCost', () => {
   const sorManager = new SorManager(
-    false,
     rpcProviderService.jsonProvider,
     BigNumber.from(1),
     1,
     1,
-    '1',
-    'source'
+    '1'
   );
 
   const mockedSorManager = jest.mocked(sorManager);
 
   beforeEach(() => {
     mockedSorManager.setCostOutputToken.mockClear();
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'time').mockImplementation();
+    jest.spyOn(console, 'timeEnd').mockImplementation();
   });
 
   it('Should pass a correct gas price to sorManager', async () => {

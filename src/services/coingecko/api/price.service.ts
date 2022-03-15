@@ -114,45 +114,50 @@ export class PriceService {
     days: number,
     addressesPerRequest = 1,
     aggregateBy: 'hour' | 'day' = 'day'
-  ) {
-    if (addresses.length / addressesPerRequest > 10)
-      throw new Error('To many requests for rate limit.');
+  ): Promise<HistoricalPrices> {
+    try {
+      if (addresses.length / addressesPerRequest > 10)
+        throw new Error('To many requests for rate limit.');
 
-    const now = Math.floor(Date.now() / 1000);
-    const end =
-      aggregateBy === 'hour' ? now : now - (now % twentyFourHoursInSecs);
-    const start = end - days * twentyFourHoursInSecs;
+      const now = Math.floor(Date.now() / 1000);
+      const end =
+        aggregateBy === 'hour' ? now : now - (now % twentyFourHoursInSecs);
+      const start = end - days * twentyFourHoursInSecs;
 
-    // TODO - remove once wsteth is supported
-    addresses = addresses.filter(
-      address => address !== this.appAddresses.wstETH
-    );
-
-    addresses = addresses.map(address => this.addressMapIn(address));
-    const requests: Promise<HistoricalPriceResponse>[] = [];
-
-    addresses.forEach(address => {
-      const endpoint = `/coins/${
-        this.platformId
-      }/contract/${address.toLowerCase()}/market_chart/range?vs_currency=${
-        this.fiatParam
-      }&from=${start}&to=${end}`;
-      const request = retryPromiseWithDelay(
-        this.client.get<HistoricalPriceResponse>(endpoint),
-        3, // retryCount
-        2000 // delayTime
+      // TODO - remove once wsteth is supported
+      addresses = addresses.filter(
+        address => address !== this.appAddresses.wstETH
       );
-      requests.push(request);
-    });
 
-    const paginatedResults = await Promise.all(requests);
-    const results = this.parseHistoricalPrices(
-      paginatedResults,
-      addresses,
-      start,
-      aggregateBy
-    );
-    return results;
+      addresses = addresses.map(address => this.addressMapIn(address));
+      const requests: Promise<HistoricalPriceResponse>[] = [];
+
+      addresses.forEach(address => {
+        const endpoint = `/coins/${
+          this.platformId
+        }/contract/${address.toLowerCase()}/market_chart/range?vs_currency=${
+          this.fiatParam
+        }&from=${start}&to=${end}`;
+        const request = retryPromiseWithDelay(
+          this.client.get<HistoricalPriceResponse>(endpoint),
+          2, // retryCount
+          2000 // delayTime
+        );
+        requests.push(request);
+      });
+
+      const paginatedResults = await Promise.all(requests);
+      const results = this.parseHistoricalPrices(
+        paginatedResults,
+        addresses,
+        start,
+        aggregateBy
+      );
+      return results;
+    } catch (error) {
+      console.error('Unable to fetch token prices', addresses, error);
+      throw error;
+    }
   }
 
   private parsePaginatedTokens(paginatedResults: TokenPrices[]): TokenPrices {

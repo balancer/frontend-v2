@@ -1,4 +1,4 @@
-import { ref, reactive, toRefs, watch, computed } from 'vue';
+import { ref, reactive, toRefs, computed } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -38,7 +38,7 @@ type FeeType = 'fixed' | 'dynamic';
 type FeeController = 'self' | 'other';
 
 const emptyPoolCreationState = {
-  name: 'MyPool',
+  name: '',
   seedTokens: [] as PoolSeedToken[],
   activeStep: 0,
   initialFee: '0.003',
@@ -81,24 +81,6 @@ export default function usePoolCreation() {
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-
-  /**
-   * WATCHERS
-   */
-  watch(
-    () => poolCreationState.seedTokens,
-    () => {
-      poolCreationState.tokensList = poolCreationState.seedTokens.map(
-        w => w.tokenAddress
-      );
-
-      poolCreationState.name = poolCreationState.name || getPoolSymbol();
-      poolCreationState.symbol = poolCreationState.symbol || getPoolSymbol();
-    },
-    {
-      deep: true
-    }
-  );
 
   /**
    * COMPUTED
@@ -353,6 +335,10 @@ export default function usePoolCreation() {
     }
   }
 
+  function setTokensList(newList: string[]) {
+    poolCreationState.tokensList = newList;
+  }
+
   function getTokensScaledByBIP(
     bip: BigNumber
   ): Record<string, OptimisedLiquidity> {
@@ -426,7 +412,7 @@ export default function usePoolCreation() {
           name: poolCreationState.name
         }
       });
-
+      1;
       txListener(tx, {
         onTxConfirmed: async () => {
           const poolDetails = await balancerService.pools.weighted.details(
@@ -553,6 +539,7 @@ export default function usePoolCreation() {
     resetState,
     importState,
     setRestoredState,
+    setTokensList,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
