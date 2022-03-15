@@ -115,7 +115,7 @@ const hasEnoughVotes = computed((): boolean => {
 });
 
 const unallocatedVotesClass = computed(() => {
-  return hasEnoughVotes.value ? [] : ['text-red-600'];
+  return hasEnoughVotes.value ? ['text-gray-500'] : ['text-red-600'];
 });
 
 const inputRules = [
@@ -220,12 +220,17 @@ async function handleTransaction(tx) {
             placeholder="100"
             validateOn="input"
             :rules="inputRules"
+            size="sm"
           >
             <template v-slot:append>
-              %
+              <div
+                class="h-full flex flex-row justify-center items-center px-2"
+              >
+                <span class="text-gray-500">%</span>
+              </div>
             </template>
           </BalTextInput>
-          <div :class="['p-3'].concat(unallocatedVotesClass)">
+          <div :class="['mt-2'].concat(unallocatedVotesClass)">
             {{
               $t('veBAL.liquidityMining.popover.unallocatedVotes', [
                 fNum2(
@@ -241,11 +246,11 @@ async function handleTransaction(tx) {
             :title="voteError.title"
             :description="voteError.description"
             block
-            class="mb-4"
+            class="mt-2"
           />
           <BalBtn
             color="gradient"
-            class="mt-6"
+            class="mt-4"
             block
             :disabled="voteDisabled"
             :loading="transactionInProgress"
