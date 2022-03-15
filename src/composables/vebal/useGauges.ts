@@ -22,7 +22,6 @@ export default function useGauges() {
     return isLoading;
   });
 
-
   return {
     poolsWithGauges,
     isLoadingGauges,
