@@ -3,7 +3,7 @@ import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { PoolWithGauge } from '@/services/balancer/subgraph/types';
-import { gaugesControllerDecorator } from '@/services/balancer/gauges/gauges-controller.decorator';
+import { gaugeControllerDecorator } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '../useNetwork';
 
@@ -21,13 +21,14 @@ export default function useGaugesQuery(
   /**
    * COMPOSABLES
    */
-   const { account, isWalletReady } = useWeb3();
-   const { networkId } = useNetwork();
+  const { account, isWalletReady } = useWeb3();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
    */
-   const enabled = computed(() => isWalletReady.value);
+  const enabled = computed(() => isWalletReady.value);
+
   /**
    * QUERY KEY
    */
@@ -38,7 +39,7 @@ export default function useGaugesQuery(
    */
   const queryFn = async (): Promise<PoolWithGauge[]> => {
     const rawGauges = require('@/constants/gauges/kovan.json');
-    const decoratedGauges = await gaugesControllerDecorator.decorate(
+    const decoratedGauges = await gaugeControllerDecorator.decorate(
       rawGauges,
       account.value
     );

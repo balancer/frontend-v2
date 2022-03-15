@@ -30,7 +30,8 @@ const popoverOpened = ref(false);
  */
 const popoverWrapperClasses = computed(() => ({
   'bal-popover-wrapper-visible': popoverOpened.value,
-  [`${props.align}-0`]: !props.detached
+  [`${props.align}-0`]: !props.detached,
+  'align-center-transform': props.detached && props.align === 'center'
 }));
 
 const popoverActivatorWrapperClasses = computed(() => ({
@@ -100,5 +101,10 @@ function handleClickOutside() {
 
 .bal-popover-wrapper:hover {
   @apply visible opacity-100;
+}
+
+.align-center-transform {
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
 }
 </style>

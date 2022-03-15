@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { flatten } from 'lodash';
 import GaugesTable from '@/components/tables/GaugesTables/GaugesTable.vue';
 import useGauges from '@/composables/vebal/useGauges';
-import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * COMPOSABLES

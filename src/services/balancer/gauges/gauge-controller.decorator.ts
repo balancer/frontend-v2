@@ -14,24 +14,21 @@ export interface UserVotesData {
   slope: BigNumber;
 }
 
-export interface OnchainGaugeControllerData {
+export interface GaugeControllerData {
   votes: number;
   userVotes: UserVotesData;
   lastUserVote: BigNumber;
 }
 
-export interface OnchainGaugeControllerFormattedData {
+export interface GaugeControllerFormattedData {
   votes: string;
   userVotes: string;
   lastUserVote: number;
 }
 
-export type OnchainGaugeControllerDataMap = Record<
-  string,
-  OnchainGaugeControllerData
->;
+export type GaugeControllerDataMap = Record<string, GaugeControllerData>;
 
-export class GaugesControllerDecorator {
+export class GaugeControllerDecorator {
   multicaller: Multicaller;
 
   constructor(
@@ -55,15 +52,15 @@ export class GaugesControllerDecorator {
     this.callUserGaugeVoteTime(pools, userAddress);
 
     const gaugesDataMap = await this.multicaller.execute<
-      OnchainGaugeControllerDataMap
+      GaugeControllerDataMap
     >();
 
-    const mergedPoolMap = pools.map(pool => {
-      const poolGaugeDetails = {
+    const mergedPoolMap: PoolWithGauge[] = pools.map(pool => {
+      const poolGaugeDetails: GaugeInformation = {
         ...this.format(gaugesDataMap[pool.id]),
         address: pool.gauge.address
       };
-      const mergedPool = {
+      const mergedPool: PoolWithGauge = {
         ...pool,
         ...{ gauge: poolGaugeDetails }
       };
@@ -73,8 +70,8 @@ export class GaugesControllerDecorator {
   }
 
   private format(
-    gaugesDatamap: OnchainGaugeControllerData
-  ): OnchainGaugeControllerFormattedData {
+    gaugesDatamap: GaugeControllerData
+  ): GaugeControllerFormattedData {
     return {
       votes: gaugesDatamap.votes.toString(),
       userVotes: gaugesDatamap.userVotes.power.toString(),
@@ -129,4 +126,4 @@ export class GaugesControllerDecorator {
   }
 }
 
-export const gaugesControllerDecorator = new GaugesControllerDecorator();
+export const gaugeControllerDecorator = new GaugeControllerDecorator();
