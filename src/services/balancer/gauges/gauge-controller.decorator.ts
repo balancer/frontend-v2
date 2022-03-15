@@ -2,10 +2,6 @@ import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import {
-  GaugeInformation,
-  PoolWithGauge
-} from '@/services/balancer/subgraph/types';
 import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Network } from '@balancer-labs/sdk';
