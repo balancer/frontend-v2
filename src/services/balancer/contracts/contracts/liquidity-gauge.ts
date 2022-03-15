@@ -14,7 +14,7 @@ export class LiquidityGauge {
   instance: Contract;
 
   constructor(
-    public readonly address: string = '0x5be3bbb5d7497138b9e623506d8b6c6cd72daceb',
+    public readonly address: string,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = LiquidityGaugeAbi,
     private readonly config = configService,
@@ -48,10 +48,12 @@ export class LiquidityGauge {
   }
 
   async stake(amount: BigNumber) {
-    console.log('amount', amount.toString());
-    const tx = this.instance
-      .connect(this.provider.getSigner())
-      ['deposit(uint256)'](amount);
+    const tx = this.web3.sendTransaction(
+      this.address,
+      this.abi,
+      'deposit(uint256)',
+      [amount]
+    );
     return tx;
   }
 

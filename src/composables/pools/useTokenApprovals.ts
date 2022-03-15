@@ -61,10 +61,9 @@ export default function useTokenApprovals(
   /**
    * COMPUTED
    */
-  const requiredApprovals = computed(() => {
-    return approvalsRequired(tokenAddresses, amounts.value);
-  });
-
+  const requiredApprovals = computed(() =>
+    approvalsRequired(tokenAddresses, amounts.value)
+  );
   /**
    * METHODS
    */
