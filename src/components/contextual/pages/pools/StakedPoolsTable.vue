@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
@@ -15,6 +15,7 @@ import StakePreview from '../../stake/StakePreview.vue';
 
 import { UserGuageSharesResponse } from './types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
+import { uniqBy } from 'lodash';
 
 /** TYPES */
 type Props = {
@@ -31,37 +32,38 @@ const hasStaked = ref(false);
 const stakePool = ref<FullPool | undefined>();
 
 /** QUERY ARGS */
-const userPoolsAddresses = computed(() => {
-  return props.userPools.map(pool => pool.address.toLowerCase());
+const userPoolIds = computed(() => {
+  return props.userPools.map(pool => pool.id);
 });
 
 const userStakedPools = computed(() => {
-  if (isLoadingGaugeShares.value || !gaugeSharesRes.value) return [];
-  return gaugeSharesRes.value.gaugeShares.map(share => {
+  if (isLoadingStakingData.value || !stakingData.value) return [];
+  return stakingData.value.gaugeShares.map(share => {
     return share.gauge.poolId;
   });
 });
 
 /** COMPOSABLES */
 const { account } = useWeb3();
-const { data: gaugeSharesRes, isLoading: isLoadingGaugeShares } = useGraphQuery<
+const { data: stakingData, isLoading: isLoadingStakingData } = useGraphQuery<
   UserGuageSharesResponse
->(subgraphs.gauge, QUERY_KEYS.Gauges.GaugeShares.User(account), () => ({
+>(subgraphs.gauge, ['staking', 'data', { account, userPoolIds }], () => ({
   gaugeShares: {
     __args: {
       where: { user: account.value.toLowerCase() }
     },
-    balance: 1,
+    balance: true,
     gauge: {
-      poolId: 1
+      poolId: true
     }
   },
   liquidityGauges: {
     __args: {
       where: {
-        poolId_in: userPoolsAddresses.value
+        poolId_in: userPoolIds.value
       }
-    }
+    },
+    poolId: true
   }
 }));
 
@@ -79,8 +81,8 @@ const stakedPools = computed(() => stakedPoolsRes.value?.pages[0].pools);
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
   const map: Record<string, string> = {};
-  if (!gaugeSharesRes.value) return map;
-  for (const gaugeShare of gaugeSharesRes.value?.gaugeShares) {
+  if (!stakingData.value) return map;
+  for (const gaugeShare of stakingData.value?.gaugeShares) {
     map[gaugeShare.gauge.poolId] = gaugeShare.balance;
   }
   return map;
@@ -89,28 +91,24 @@ const stakedBalanceMap = computed(() => {
 // first retrieve all the pools the user has liquidity for
 const { data: userPools } = useUserPoolsQuery();
 
-// if the staked pool (from gauge subgraph) is not in the
-// user pools response, stitch it together. This is because
-// when all the BPT for a pool is staked, then it will not
-// show up in the user pools query
-const allStakedPools = computed(() => {
-  const userPoolIds = userPools.value?.pools.map(pool => pool.id);
-  const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
-
-  // first find the staked pools which are not in the user pools
-  const maxStakedPools = (stakedPools.value || [])
+// The pools which the user has completely staked
+const maxStakedPools = computed(() => {
+  return (stakedPools.value || [])
     .filter(pool => {
-      return !userPoolIds?.includes(pool.id);
+      return !userPoolIds.value.includes(pool.id);
     })
     .map(pool => ({
       // then indicate that those pools are maximal staked with a variable
       ...pool,
       stakedPct: '1'
     }));
+});
 
-  // now get the pools which are both staked, but also have BPT available for staking
+const partiallyStakedPools = computed(() => {
+  const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
+  // The pools which are both staked, but also have BPT available for staking
   // NOTE: we are iterating through user pools here so we can access the bpt var
-  const partiallyStakedPools = (userPools.value?.pools || [])
+  return (userPools.value?.pools || [])
     .filter(pool => {
       return stakedPoolIds?.includes(pool.id);
     })
@@ -127,12 +125,14 @@ const allStakedPools = computed(() => {
         stakedPct: stakedPct.toString()
       };
     });
+});
 
-  // also include any pools where there is no staked BPT at all
-  const availableGaugePoolIds = (
-    gaugeSharesRes.value?.liquidityGauges || []
-  ).map(gauge => gauge.poolId);
-  const stakablePools = (userPools.value?.pools || [])
+// Pools where there is no staked BPT at all
+const unstakedPools = computed(() => {
+  const availableGaugePoolIds = (stakingData.value?.liquidityGauges || []).map(
+    gauge => gauge.poolId
+  );
+  return (userPools.value?.pools || [])
     .filter(pool => {
       return availableGaugePoolIds?.includes(pool.id);
     })
@@ -140,9 +140,20 @@ const allStakedPools = computed(() => {
       ...pool,
       stakedPct: '0'
     }));
+});
 
+// if the staked pool (from gauge subgraph) is not in the
+// user pools response, stitch it together. This is because
+// when all the BPT for a pool is staked, then it will not
+// show up in the user pools query
+const allStakedPools = computed(() => {
   // now mash them together
-  return [...stakablePools, ...partiallyStakedPools, ...maxStakedPools];
+  const allPools = [
+    ...unstakedPools.value,
+    ...partiallyStakedPools.value,
+    ...maxStakedPools.value
+  ];
+  return uniqBy(allPools, pool => pool.id);
 });
 
 /** METHODS */
@@ -167,7 +178,7 @@ function handleStakeSuccess() {
       <h5>{{ $t('myStakedPools') }}</h5>
       <PoolsTable
         :key="allStakedPools"
-        :isLoading="isLoadingGaugeShares || isLoadingPools"
+        :isLoading="isLoadingStakingData || isLoadingPools"
         :data="allStakedPools"
         :noPoolsLabel="$t('noInvestments')"
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
