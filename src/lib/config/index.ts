@@ -23,10 +23,10 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
-  poolsUrlV1: string;
   poolsUrlV2: string;
   subgraphs: {
     aave: string;
+    gauge: string;
   };
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
@@ -40,7 +40,6 @@ export interface Config {
     minTransactionBuffer: string;
   };
   addresses: {
-    exchangeProxy: string;
     merkleRedeem: string;
     merkleOrchard: string;
     multicall: string;
@@ -54,6 +53,7 @@ export interface Config {
     balancerHelpers: string;
     batchRelayer: string;
     veBAL: string;
+    balancerMinter: string;
   };
   keys: {
     infura: string;
@@ -68,7 +68,7 @@ export interface Config {
   >;
 }
 
-const config: Record<Config['chainId'], Config> = {
+const config: Partial<Record<Network | number, Config>> = {
   [Network.MAINNET]: homestead,
   [Network.KOVAN]: kovan,
   [Network.RINKEBY]: rinkeby,

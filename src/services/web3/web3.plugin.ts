@@ -16,6 +16,7 @@ import useFathom from '@/composables/useFathom';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
+import tallyLogo from '@/assets/images/connectors/tally.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
@@ -27,16 +28,19 @@ import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import i18n from '@/plugins/i18n';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { web3Service } from './web3.service';
+import { TallyConnector } from './connectors/tally/tally.connector';
 
 export type Wallet =
   | 'metamask'
   | 'walletconnect'
   | 'gnosis'
   | 'walletlink'
-  | 'portis';
+  | 'portis'
+  | 'tally';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
+  'tally',
   'gnosis',
   'walletlink',
   'portis'
@@ -46,7 +50,8 @@ export const WalletNameMap: Record<Wallet, string> = {
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase',
-  portis: 'Portis'
+  portis: 'Portis',
+  tally: 'Tally'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -67,7 +72,8 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   walletconnect: WalletConnectConnector,
   gnosis: GnosisSafeConnector,
   walletlink: WalletLinkConnector,
-  portis: PortisConnector
+  portis: PortisConnector,
+  tally: TallyConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -191,7 +197,7 @@ export default {
 };
 
 export function getConnectorName(connectorId: string): string {
-  if (connectorId === 'injected') {
+  if (connectorId === 'injectedMetamask') {
     const provider = window.ethereum as any;
     if (provider.isMetaMask) {
       return 'MetaMask';
@@ -209,6 +215,9 @@ export function getConnectorName(connectorId: string): string {
       return 'Frame';
     }
     return i18n.global.t('browserWallet');
+  }
+  if (connectorId === 'injectedTally') {
+    return 'Tally';
   }
   if (connectorId === 'fortmatic') {
     return 'Fortmatic';
@@ -231,6 +240,9 @@ export function getConnectorName(connectorId: string): string {
 export function getConnectorLogo(connectorId: string): string {
   if (connectorId === 'injected') {
     const provider = window.ethereum as any;
+    if (provider.isTally) {
+      return tallyLogo;
+    }
     if (provider.isMetaMask) {
       return metamaskLogo;
     }
@@ -247,6 +259,12 @@ export function getConnectorLogo(connectorId: string): string {
       return frameLogo;
     }
     return defaultLogo;
+  }
+  if (connectorId === 'injectedMetamask') {
+    return metamaskLogo;
+  }
+  if (connectorId === 'injectedTally') {
+    return tallyLogo;
   }
   if (connectorId === 'fortmatic') {
     return fortmaticLogo;

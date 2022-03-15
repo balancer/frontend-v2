@@ -1,5 +1,8 @@
 import nock from 'nock';
 import '@testing-library/jest-dom';
+import { config } from '@vue/test-utils';
+import translations from '@/locales/default.json';
+
 /**
  * HTTP Requests
  *
@@ -10,3 +13,10 @@ import '@testing-library/jest-dom';
 nock.disableNetConnect();
 // Enable for mocked websockets
 nock.enableNetConnect('balancer.fi');
+
+/**
+ * Global template mocks
+ */
+config.global.mocks = {
+  $t: msg => translations[msg]
+};

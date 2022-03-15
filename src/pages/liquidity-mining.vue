@@ -157,10 +157,15 @@ export default defineComponent({
       return totalFiat;
     });
 
+    const weekNumbers = Object.keys(weeksJSON)
+      .map(key => parseInt(key.replace('week_', '')))
+      .sort(function(a, b) {
+        return a - b;
+      });
     // only concerned with past 3 weeks
-    const weeks = takeRight(Object.keys(weeksJSON), 3).map(week => ({
-      week: week,
-      distributions: weeksJSON[week]
+    const weeks = takeRight(weekNumbers, 3).map(weekNumber => ({
+      week: 'week_' + weekNumber,
+      distributions: weeksJSON['week_' + weekNumber]
         .filter(d => d.chainId === networkConfig.chainId)
         .map(d => d.pools)[0]
     }));

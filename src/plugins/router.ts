@@ -12,6 +12,17 @@ import CookiesPolicyPage from '@/pages/cookies-policy.vue';
 import GetVeBalPage from '@/pages/get-vebal.vue';
 import UnlockVeBalPage from '@/pages/unlock-vebal.vue';
 import VeBalPage from '@/pages/vebal.vue';
+import ClaimPage from '@/pages/claim.vue';
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    layout?: string;
+    bgColors?: {
+      dark: string;
+      light: string;
+    };
+  }
+}
 
 const routes: RouteRecordRaw[] = [
   {
@@ -106,6 +117,11 @@ if (
       name: 'unlock',
       component: UnlockVeBalPage,
       meta: { layout: 'FocusedLayout' }
+    },
+    {
+      path: '/claim',
+      name: 'claim',
+      component: ClaimPage
     }
   );
 }

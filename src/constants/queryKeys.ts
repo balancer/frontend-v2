@@ -1,6 +1,8 @@
 import { Network } from '@balancer-labs/sdk';
 import { NativeAsset } from '@/types/TokenList';
 import { Ref } from 'vue';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -116,6 +118,24 @@ const QUERY_KEYS = {
       account: Ref<string>,
       chainId: Ref<number | undefined>
     ) => ['account', 'profile', { networkId, account, chainId }]
+  },
+  Gauges: {
+    All: {
+      Static: () => ['gauges', 'all', 'static'],
+      Onchain: (
+        gauges: Ref<SubgraphGauge[] | undefined>,
+        account: Ref<string>,
+        networkId: Ref<Network>
+      ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
+    }
+  },
+  Transaction: {
+    ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [
+      'tx',
+      'confirmation',
+      'date',
+      { receipt }
+    ]
   }
 };
 

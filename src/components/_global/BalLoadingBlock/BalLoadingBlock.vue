@@ -12,6 +12,7 @@ export default defineComponent({
   props: {
     white: { type: Boolean, default: false },
     darker: { type: Boolean, default: false },
+    square: { type: Boolean, default: false },
     rounded: {
       type: String,
       default: 'lg',
@@ -32,7 +33,7 @@ export default defineComponent({
 
     const classes = computed(() => {
       return {
-        [`rounded-${props.rounded}`]: true,
+        [`rounded-${props.rounded}`]: !props.square,
         [bgClass.value]: true
       };
     });

@@ -14,12 +14,8 @@ export async function swapIn(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
-  const tokenInAddress = sorReturn.isV1swap
-    ? sorReturn.tokenIn
-    : sorReturn.v2result.tokenIn;
-  const tokenOutAddress = sorReturn.isV1swap
-    ? sorReturn.tokenOut
-    : sorReturn.v2result.tokenOut;
+  const tokenInAddress = sorReturn.result.tokenIn;
+  const tokenOutAddress = sorReturn.result.tokenOut;
 
   const tokenIn: SwapToken = {
     address: tokenInAddress,
@@ -33,15 +29,11 @@ export async function swapIn(
     type: SwapTokenType.min
   };
 
-  if (sorReturn.isV1swap) {
-    return swapService.batchSwapV1(tokenIn, tokenOut, sorReturn.v1result[0]);
-  }
-
   return swapService.batchSwapV2(
     tokenIn,
     tokenOut,
-    sorReturn.v2result.swaps,
-    sorReturn.v2result.tokenAddresses
+    sorReturn.result.swaps,
+    sorReturn.result.tokenAddresses
   );
 }
 
@@ -50,12 +42,8 @@ export async function swapOut(
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
 ): Promise<TransactionResponse> {
-  const tokenInAddress = sorReturn.isV1swap
-    ? sorReturn.tokenIn
-    : sorReturn.v2result.tokenIn;
-  const tokenOutAddress = sorReturn.isV1swap
-    ? sorReturn.tokenOut
-    : sorReturn.v2result.tokenOut;
+  const tokenInAddress = sorReturn.result.tokenIn;
+  const tokenOutAddress = sorReturn.result.tokenOut;
 
   const tokenIn: SwapToken = {
     address: tokenInAddress,
@@ -69,15 +57,11 @@ export async function swapOut(
     type: SwapTokenType.fixed
   };
 
-  if (sorReturn.isV1swap) {
-    swapService.batchSwapV1(tokenIn, tokenOut, sorReturn.v1result[0]);
-  }
-
   return swapService.batchSwapV2(
     tokenIn,
     tokenOut,
-    sorReturn.v2result.swaps,
-    sorReturn.v2result.tokenAddresses
+    sorReturn.result.swaps,
+    sorReturn.result.tokenAddresses
   );
 }
 

@@ -7,17 +7,17 @@
   "network": "polygon",
   "portisNetwork": "matic",
   "unknown": false,
-  "rpc": "https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}",
+  "rpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://polygon-rpc.com",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
-  "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
-    "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic"
+    "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
+    "gauge": ""
   },
   "supportsEIP1559": true,
   "nativeAsset": {
@@ -30,7 +30,6 @@
     "minTransactionBuffer": "0.1"
   },
   "addresses": {
-    "exchangeProxy": "",
     "merkleRedeem": "",
     "merkleOrchard": "0x0F3e0c4218b7b0108a3643cFe9D3ec0d4F57c54e",
     "multicall": "0x275617327c958bD06b5D6b871E7f491D76113dd8",
@@ -44,7 +43,8 @@
     "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d",
     "batchRelayer": "0x4574ccBcC09A00C9eE55fB92Fe353699A4fA800e",
-    "veBAL": ""
+    "veBAL": "",
+    "balancerMinter": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
