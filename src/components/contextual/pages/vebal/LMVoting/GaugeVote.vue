@@ -206,13 +206,11 @@ async function handleTransaction(tx) {
     </template>
     <BalCard class="w-72" noPad noBorder>
       <template v-slot:header>
-        <div
-          class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
-        >
+        <div class="px-3 pt-3 w-full flex items-center justify-between">
           <h5>{{ $t('veBAL.liquidityMining.popover.title') }}</h5>
         </div>
       </template>
-      <div :class="['p-3']">
+      <div class="p-3">
         <BalForm>
           <BalTextInput
             name="voteWeight"
@@ -230,7 +228,7 @@ async function handleTransaction(tx) {
               </div>
             </template>
           </BalTextInput>
-          <div :class="['mt-2'].concat(unallocatedVotesClass)">
+          <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
             {{
               $t('veBAL.liquidityMining.popover.unallocatedVotes', [
                 fNum2(
