@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
-
-import QUERY_KEYS from '@/constants/queryKeys';
+import { computed, ref } from 'vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useWeb3 from '@/services/web3/useWeb3';
