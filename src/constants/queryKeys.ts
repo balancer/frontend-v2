@@ -122,7 +122,8 @@ const QUERY_KEYS = {
       'gauges',
       'all',
       { networkId, account }
-    ]
+    ],
+    Voting: (account: Ref<string>) => ['gauges', 'voting', { account }]
   }
 };
 
