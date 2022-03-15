@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import GaugesTable from './GaugesTable.vue';
-import useGauges from '@/composables/vebal/useGauges';
+import useVotingGauges from '@/composables/useVotingGauges';
 
 /**
  * COMPOSABLES
  */
-const { poolsWithGauges, isLoadingGauges, refetchGauges } = useGauges();
+const { poolsWithGauges, isLoadingGauges, refetchGauges } = useVotingGauges();
 </script>
 
 <template>
