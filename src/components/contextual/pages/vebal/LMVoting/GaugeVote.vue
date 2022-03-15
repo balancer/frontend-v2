@@ -17,8 +17,8 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import useConfig from '@/composables/useConfig';
 
 import { scale, bnum } from '@/lib/utils';
-import BalForm from '../_global/BalForm/BalForm.vue';
-import BalTextInput from '../_global/BalTextInput/BalTextInput.vue';
+import BalForm from '@/components/_global/BalForm/BalForm.vue';
+import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 
 import { TransactionActionState } from '@/types/transactions';
 import { WalletError } from '@/types';

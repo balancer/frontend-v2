@@ -13,8 +13,9 @@ import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import GaugeVote from '@/components/vebal/GaugeVote.vue';
-import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
+import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+
+import GaugeVote from './GaugeVote.vue';
 
 /**
  * TYPES

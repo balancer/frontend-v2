@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import GaugesTable from '@/components/tables/GaugesTables/GaugesTable.vue';
+import GaugesTable from './GaugesTable.vue';
 import useGauges from '@/composables/vebal/useGauges';
 
 /**
