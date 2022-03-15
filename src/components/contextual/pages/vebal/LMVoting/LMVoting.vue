@@ -5,17 +5,15 @@ import useVotingGauges from '@/composables/useVotingGauges';
 /**
  * COMPOSABLES
  */
-const { poolsWithGauges, isLoadingGauges, refetchGauges } = useVotingGauges();
+const { isLoading, votingGauges } = useVotingGauges();
 </script>
 
 <template>
   <h3 class="mb-3">{{ $t('veBAL.liquidityMining.title') }}</h3>
   <div class="mb-3">{{ $t('veBAL.liquidityMining.votingPeriod') }}</div>
   <GaugesTable
-    :isLoading="isLoadingGauges"
-    :data="poolsWithGauges"
-    :key="poolsWithGauges"
-    :refetch="refetchGauges"
+    :isLoading="isLoading"
+    :data="votingGauges"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"
