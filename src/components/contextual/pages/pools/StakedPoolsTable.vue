@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import useStaking from '@/composables/staking/useStaking';
 
@@ -9,20 +8,9 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import StakePreview from '../../stake/StakePreview.vue';
+import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
-import { UserGuageSharesResponse } from './types';
-import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import { uniqBy } from 'lodash';
-
-/** TYPES */
-type Props = {
-  userPools: FullPool[];
-};
-
-const props = withDefaults(defineProps<Props>(), {
-  userPools: () => []
-});
 
 /** STATE */
 const showStakeModal = ref(false);
@@ -32,26 +20,11 @@ const stakePool = ref<FullPool | undefined>();
 const {
   userGaugeShares,
   userLiquidityGauges,
-  isFetchingStakingData
+  stakedPools,
+  isLoading: isLoadingStakingData
 } = useStaking();
 
-const userStakedPools = computed(() => {
-  if (isFetchingStakingData.value || !userGaugeShares.value) return [];
-  return userGaugeShares.value.map(share => {
-    return share.gauge.poolId;
-  });
-});
-
-const { data: stakedPoolsRes, isLoading: isLoadingPools } = usePoolsQuery(
-  ref([]),
-  {},
-  {
-    poolIds: userStakedPools
-  }
-);
-
 /** COMPUTED */
-const stakedPools = computed(() => stakedPoolsRes.value?.pages[0].pools);
 
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
@@ -149,7 +122,7 @@ function handleModalClose() {
       <h5>{{ $t('myStakedPools') }}</h5>
       <PoolsTable
         :key="allStakedPools"
-        :isLoading="isFetchingStakingData || isLoadingPools"
+        :isLoading="isLoadingStakingData"
         :data="allStakedPools"
         :noPoolsLabel="$t('noInvestments')"
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
@@ -157,7 +130,7 @@ function handleModalClose() {
         showPoolShares
       />
     </BalStack>
-    <StakePreview
+    <StakePreviewModal
       :pool="stakePool"
       :isVisible="showStakeModal"
       @close="handleModalClose"

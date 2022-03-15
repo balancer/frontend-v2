@@ -12,10 +12,10 @@ import { Contract } from '@ethersproject/contracts';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import useGraphQuery, { subgraphs } from '../queries/useGraphQuery';
-import QUERY_KEYS from '@/constants/queryKeys';
 import { UserGuageSharesResponse } from '@/components/contextual/pages/pools/types';
 import usePools from '../pools/usePools';
 import { computed, ref } from 'vue';
+import usePoolsQuery from '../queries/usePoolsQuery';
 
 export enum StakeState {
   CanStake = 'can_stake',
@@ -38,7 +38,7 @@ export default function useStaking(poolAddress?: string) {
   const { userPools } = usePools(ref([]));
 
   /** QUERY ARGS */
-  const userPoolsAddresses = computed(() => {
+  const userPoolIds = computed(() => {
     return userPools.value.map(pool => pool.address.toLowerCase());
   });
 
@@ -46,12 +46,13 @@ export default function useStaking(poolAddress?: string) {
    * QUERIES
    */
   const {
-    data: gaugeSharesRes,
+    data: stakingData,
     isLoading: isFetchingStakingData,
+    isIdle: isStakeDataIdle,
     refetch: refetchStakingData
   } = useGraphQuery<UserGuageSharesResponse>(
     subgraphs.gauge,
-    QUERY_KEYS.Gauges.GaugeShares.User(account),
+    ['staking', 'data', { account, userPoolIds }],
     () => ({
       gaugeShares: {
         __args: {
@@ -65,7 +66,7 @@ export default function useStaking(poolAddress?: string) {
       liquidityGauges: {
         __args: {
           where: {
-            poolId_in: userPoolsAddresses.value
+            poolId_in: userPoolIds.value
           }
         },
         poolId: true
@@ -97,24 +98,56 @@ export default function useStaking(poolAddress?: string) {
    * when returned by this composable
    */
   const userGaugeShares = computed(() => {
-    if (!gaugeSharesRes.value?.gaugeShares) return [];
-    return gaugeSharesRes.value.gaugeShares;
+    if (!stakingData.value?.gaugeShares) return [];
+    return stakingData.value.gaugeShares;
   });
 
   const userLiquidityGauges = computed(() => {
-    if (!gaugeSharesRes.value?.liquidityGauges) return [];
-    return gaugeSharesRes.value.liquidityGauges;
+    if (!stakingData.value?.liquidityGauges) return [];
+    return stakingData.value.liquidityGauges;
   });
 
+  const stakedPoolIds = computed(() => {
+    if (isFetchingStakingData.value || !userGaugeShares.value) return [];
+    return userGaugeShares.value.map(share => {
+      return share.gauge.poolId;
+    });
+  });
+
+  /** QUERY */
+  const {
+    data: stakedPoolsResponse,
+    isLoading: isFetchingStakedPools,
+    isIdle: isPoolsQueryIdle
+  } = usePoolsQuery(
+    ref([]),
+    {},
+    {
+      poolIds: stakedPoolIds
+    }
+  );
+
+  const isLoading = computed(
+    () =>
+      isFetchingStakedPools.value ||
+      isFetchingStakingData.value ||
+      isStakeDataIdle.value ||
+      isPoolsQueryIdle.value
+  );
+
+  // returns a balance of staked shares for the pool address
+  // that was provided to this composable
   const stakedShares = computed(() => {
     if (!poolAddress || isFetchingStakingData.value) return '0';
 
     // the first share object in the list will be the share for our user
     // as we filtered via pool address and user in the query
     const stakedShares =
-      gaugeSharesRes.value?.liquidityGauge[0]?.shares[0]?.balance;
+      stakingData.value?.liquidityGauge[0]?.shares[0]?.balance;
     return stakedShares;
   });
+
+  const stakedPools = computed(() => stakedPoolsResponse.value?.pages[0].pools);
 
   /**
    * METHODS
@@ -172,6 +205,9 @@ export default function useStaking(poolAddress?: string) {
     userLiquidityGauges,
     isFetchingStakingData,
     stakedShares,
+    stakedPools,
+    isFetchingStakedPools,
+    isLoading,
     getGaugeAddress,
     stakeBPT,
     unstakeBPT,

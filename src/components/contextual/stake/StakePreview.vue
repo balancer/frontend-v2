@@ -18,10 +18,9 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
-type StakeAction = 'stake' | 'unstake';
+export type StakeAction = 'stake' | 'unstake';
 type Props = {
   pool: DecoratedPoolWithStakedShares;
-  isVisible: boolean;
   action: StakeAction;
 };
 
@@ -35,6 +34,7 @@ const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
+
 const { stakeBPT, unstakeBPT, getGaugeAddress, getStakedShares } = useStaking(
   props.pool.address
 );
@@ -162,125 +162,106 @@ function handleClose() {
 </script>
 
 <template>
-  <teleport to="#modal">
-    <BalModal
-      :show="isVisible"
-      @close="handleClose"
-      :fireworks="isActionConfirmed"
-    >
-      <BalStack vertical>
-        <BalStack horizontal spacing="sm" align="center">
-          <BalCircle
-            v-if="isActionConfirmed"
-            size="8"
-            color="green"
-            class="text-white"
-          >
-            <BalIcon name="check" />
-          </BalCircle>
-          <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
+  <BalStack vertical>
+    <BalStack horizontal spacing="sm" align="center">
+      <BalCircle
+        v-if="isActionConfirmed"
+        size="8"
+        color="green"
+        class="text-white"
+      >
+        <BalIcon name="check" />
+      </BalCircle>
+      <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
+    </BalStack>
+    <BalCard shadow="none" noPad class="px-4 py-2">
+      <BalStack horizontal justify="between" align="center">
+        <BalStack vertical spacing="none">
+          <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
+          <span class="text-gray-500">
+            {{ getToken(pool.address).symbol }}
+          </span>
         </BalStack>
-        <BalCard shadow="none" noPad class="px-4 py-2">
-          <BalStack horizontal justify="between" align="center">
-            <BalStack vertical spacing="none">
-              <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
-              <span class="text-gray-500">
-                {{ getToken(pool.address).symbol }}
-              </span>
-            </BalStack>
-            <BalAssetSet
-              :addresses="pool.tokenAddresses"
-              :width="assetRowWidth"
-              :size="32"
-            />
-          </BalStack>
-        </BalCard>
-        <BalCard shadow="none" noPad>
-          <div class="border-b p-2">
-            <h6 class="text-sm">{{ $t('summary') }}</h6>
-          </div>
-          <BalStack vertical spacing="xs" class="p-3">
-            <BalStack horizontal justify="between">
-              <span class="text-sm"
-                >{{ $t('staking.totalValueToStake') }}:</span
-              >
-              <BalStack horizontal spacing="base">
-                <span class="text-sm capitalize"
-                  >~{{
-                    fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat)
-                  }}</span
-                >
-                <BalTooltip text="s" width="20" textCenter />
-              </BalStack>
-            </BalStack>
-            <BalStack horizontal justify="between">
-              <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
-              <BalStack horizontal spacing="base">
-                <span class="text-sm capitalize"
-                  >~{{
-                    fNum2(poolShareData.totalSharePct, FNumFormats.percent)
-                  }}</span
-                >
-                <BalTooltip text="s" width="20" textCenter />
-              </BalStack>
-            </BalStack>
-            <BalStack horizontal justify="between">
-              <span class="text-sm"
-                >{{ $t('staking.potentialStakingApr') }}:</span
-              >
-              <BalStack horizontal spacing="base">
-                <span class="text-sm capitalize">sdfs</span>
-                <BalTooltip text="s" width="20" textCenter />
-              </BalStack>
-            </BalStack>
-            <BalStack horizontal justify="between">
-              <span class="text-sm"
-                >{{ $t('staking.potentialWeeklyEarning') }}:</span
-              >
-              <BalStack horizontal spacing="base">
-                <span class="text-sm capitalize">sdfs</span>
-                <BalTooltip text="s" width="20" textCenter />
-              </BalStack>
-            </BalStack>
-          </BalStack>
-        </BalCard>
-        <BalActionSteps
-          v-if="!isActionConfirmed"
-          :actions="stakeActions"
-          :isLoading="isLoadingApprovalsForGauge"
-          @success="handleSuccess"
+        <BalAssetSet
+          :addresses="pool.tokenAddresses"
+          :width="assetRowWidth"
+          :size="32"
         />
-        <BalStack vertical v-if="isActionConfirmed">
-          <ConfirmationIndicator :txReceipt="confirmationReceipt" />
-          <AnimatePresence :isVisible="isActionConfirmed">
-            <BalBtn
-              @click="handleClose"
-              color="gray"
-              outline
-              block
-              class="mt-2"
+      </BalStack>
+    </BalCard>
+    <BalCard shadow="none" noPad>
+      <div class="border-b p-2">
+        <h6 class="text-sm">{{ $t('summary') }}</h6>
+      </div>
+      <BalStack vertical spacing="xs" class="p-3">
+        <BalStack horizontal justify="between">
+          <span class="text-sm">{{ $t('staking.totalValueToStake') }}:</span>
+          <BalStack horizontal spacing="base">
+            <span class="text-sm capitalize"
+              >~{{
+                fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat)
+              }}</span
             >
-              {{ $t('close') }}
-            </BalBtn>
-          </AnimatePresence>
+            <BalTooltip text="s" width="20" textCenter />
+          </BalStack>
         </BalStack>
-        <BalStack
-          horizontal
-          align="center"
-          justify="center"
-          class="text-gray-600 hover:text-gray-800 hover:underline"
-        >
-          <router-link :to="{ name: 'pool', params: { id: pool.id } }">
-            <BalStack horizontal align="center" spacing="xs">
-              <span
-                >{{ $t('getLpTokens') }}:
-                {{ getToken(pool.address).symbol }}</span
-              >
-              <BalIcon name="arrow-up-right" />
-            </BalStack>
-          </router-link>
+        <BalStack horizontal justify="between">
+          <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
+          <BalStack horizontal spacing="base">
+            <span class="text-sm capitalize"
+              >~{{
+                fNum2(poolShareData.totalSharePct, FNumFormats.percent)
+              }}</span
+            >
+            <BalTooltip text="s" width="20" textCenter />
+          </BalStack>
+        </BalStack>
+        <BalStack horizontal justify="between">
+          <span class="text-sm">{{ $t('staking.potentialStakingApr') }}:</span>
+          <BalStack horizontal spacing="base">
+            <span class="text-sm capitalize">sdfs</span>
+            <BalTooltip text="s" width="20" textCenter />
+          </BalStack>
+        </BalStack>
+        <BalStack horizontal justify="between">
+          <span class="text-sm"
+            >{{ $t('staking.potentialWeeklyEarning') }}:</span
+          >
+          <BalStack horizontal spacing="base">
+            <span class="text-sm capitalize">sdfs</span>
+            <BalTooltip text="s" width="20" textCenter />
+          </BalStack>
         </BalStack>
       </BalStack>
-    </BalModal>
-  </teleport>
+    </BalCard>
+    <BalActionSteps
+      v-if="!isActionConfirmed"
+      :actions="stakeActions"
+      :isLoading="isLoadingApprovalsForGauge"
+      @success="handleSuccess"
+    />
+    <BalStack vertical v-if="isActionConfirmed">
+      <ConfirmationIndicator :txReceipt="confirmationReceipt" />
+      <AnimatePresence :isVisible="isActionConfirmed">
+        <BalBtn @click="handleClose" color="gray" outline block class="mt-2">
+          {{ $t('close') }}
+        </BalBtn>
+      </AnimatePresence>
+    </BalStack>
+    <BalStack
+      horizontal
+      align="center"
+      justify="center"
+      class="text-gray-600 hover:text-gray-800 hover:underline"
+    >
+      <router-link :to="{ name: 'pool', params: { id: pool.id } }">
+        <BalStack horizontal align="center" spacing="xs">
+          <span
+            >{{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}</span
+          >
+          <BalIcon name="arrow-up-right" />
+        </BalStack>
+      </router-link>
+    </BalStack>
+  </BalStack>
 </template>

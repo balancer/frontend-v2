@@ -8,15 +8,17 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from 'ethers/lib/utils';
-import StakePreview from '../../../stake/StakePreview.vue';
+import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 
 type Props = {
   pool: FullPool;
 };
 const props = defineProps<Props>();
+
 /**
  * STATE
- */const isLoading = ref(false);
+ */
+
 const hasIncentive = true;
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref('');
@@ -195,7 +197,7 @@ onBeforeMount(async () => {
   <AnimatePresence :isVisible="isFetchingStakingData" unmountInstantly>
     <BalLoadingBlock class="h-12" />
   </AnimatePresence>
-  <StakePreview
+  <StakePreviewModal
     :isVisible="isStakePreviewVisible"
     :pool="pool"
     :action="stakeAction"
