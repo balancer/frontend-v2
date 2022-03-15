@@ -124,14 +124,6 @@ const QUERY_KEYS = {
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
     },
-    GaugeShares: {
-      User: (userAddress: Ref<string>) => [
-        'gauges',
-        'shares',
-        'user',
-        { userAddress }
-      ]
-    },
     StakablePools: {
       All: (poolAddresses: Ref<string[]>) => [
         'gauges',
