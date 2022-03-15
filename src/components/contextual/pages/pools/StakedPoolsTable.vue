@@ -11,6 +11,19 @@ import { bnum } from '@/lib/utils';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreview from '../../stake/StakePreview.vue';
 
+import { UserGuageSharesResponse } from './types';
+import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
+import { uniqBy } from 'lodash';
+
+/** TYPES */
+type Props = {
+  userPools: FullPool[];
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  userPools: () => []
+});
+
 /** STATE */
 const showStakeModal = ref(false);
 const stakePool = ref<FullPool | undefined>();
@@ -53,16 +66,10 @@ const stakedBalanceMap = computed(() => {
 // first retrieve all the pools the user has liquidity for
 const { data: userPools } = useUserPoolsQuery();
 
-// if the staked pool (from gauge subgraph) is not in the
-// user pools response, stitch it together. This is because
-// when all the BPT for a pool is staked, then it will not
-// show up in the user pools query
-const allStakedPools = computed(() => {
+// The pools which the user has completely staked
+const maxStakedPools = computed(() => {
   const userPoolIds = userPools.value?.pools.map(pool => pool.id);
-  const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
-
-  // first find the staked pools which are not in the user pools
-  const maxStakedPools = (stakedPools.value || [])
+  return (stakedPools.value || [])
     .filter(pool => {
       return !userPoolIds?.includes(pool.id);
     })
@@ -71,10 +78,13 @@ const allStakedPools = computed(() => {
       ...pool,
       stakedPct: '1'
     }));
+});
 
-  // now get the pools which are both staked, but also have BPT available for staking
+const partiallyStakedPools = computed(() => {
+  const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
+  // The pools which are both staked, but also have BPT available for staking
   // NOTE: we are iterating through user pools here so we can access the bpt var
-  const partiallyStakedPools = (userPools.value?.pools || [])
+  return (userPools.value?.pools || [])
     .filter(pool => {
       return stakedPoolIds?.includes(pool.id);
     })
@@ -91,12 +101,14 @@ const allStakedPools = computed(() => {
         stakedPct: stakedPct.toString()
       };
     });
+});
 
-  // also include any pools where there is no staked BPT at all
+// Pools where there is no staked BPT at all
+const unstakedPools = computed(() => {
   const availableGaugePoolIds = (userLiquidityGauges.value || []).map(
     gauge => gauge.poolId
   );
-  const stakablePools = (userPools.value?.pools || [])
+  return (userPools.value?.pools || [])
     .filter(pool => {
       return availableGaugePoolIds?.includes(pool.id);
     })
@@ -104,9 +116,20 @@ const allStakedPools = computed(() => {
       ...pool,
       stakedPct: '0'
     }));
+});
 
+// if the staked pool (from gauge subgraph) is not in the
+// user pools response, stitch it together. This is because
+// when all the BPT for a pool is staked, then it will not
+// show up in the user pools query
+const allStakedPools = computed(() => {
   // now mash them together
-  return [...stakablePools, ...partiallyStakedPools, ...maxStakedPools];
+  const allPools = [
+    ...unstakedPools.value,
+    ...partiallyStakedPools.value,
+    ...maxStakedPools.value
+  ];
+  return uniqBy(allPools, pool => pool.id);
 });
 
 /** METHODS */
