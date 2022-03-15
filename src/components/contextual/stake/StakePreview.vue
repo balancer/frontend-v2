@@ -68,7 +68,7 @@ const poolShareData = computed(() => {
   // grab the existing query response which should have loaded
   // if those modal is openable
   const guageSharesData = (last(
-    queryClient.getQueriesData(['gauges', 'shares'])
+    queryClient.getQueriesData(['staking', 'data'])
   ) || [])[1] as UserGuageSharesResponse;
 
   // gauge for this pool
