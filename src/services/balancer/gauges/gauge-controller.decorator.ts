@@ -7,6 +7,8 @@ import {
   PoolWithGauge
 } from '@/services/balancer/subgraph/types';
 import { BigNumber } from '@ethersproject/bignumber';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { Network } from '@balancer-labs/sdk';
 
 export interface UserVotesData {
   end: BigNumber;
@@ -30,12 +32,15 @@ export type GaugeControllerDataMap = Record<string, GaugeControllerData>;
 
 export class GaugeControllerDecorator {
   multicaller: Multicaller;
+  network: Network;
+  provider: JsonRpcProvider;
 
   constructor(
     private readonly abi = GaugeControllerAbi,
-    private readonly provider = rpcProviderService.jsonProvider,
     private readonly config = configService
   ) {
+    this.network = this.getNetwork();
+    this.provider = rpcProviderService.getJsonProvider(this.network);
     this.multicaller = this.resetMulticaller();
   }
 
@@ -121,8 +126,19 @@ export class GaugeControllerDecorator {
     });
   }
 
+  /**
+   * @summary Get gauge controller network.
+   * @description We only have a testnet and mainnet gauge controller
+   * so the network key can only be kovan (42) or mainnet (1).
+   */
+  private getNetwork(): Network {
+    return this.config.env.NETWORK === Network.KOVAN
+      ? Network.KOVAN
+      : Network.MAINNET;
+  }
+
   private resetMulticaller(): Multicaller {
-    return new Multicaller(this.config.network.key, this.provider, this.abi);
+    return new Multicaller(this.network.toString(), this.provider, this.abi);
   }
 }
 
