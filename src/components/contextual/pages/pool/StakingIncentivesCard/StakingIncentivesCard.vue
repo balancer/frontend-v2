@@ -171,7 +171,9 @@ async function handleActionSuccess() {
                 </BalStack>
               </BalStack>
               <BalStack horizontal justify="between">
-                <span>{{ $t('staking.potentialWeeklyEarning') }}</span>
+                <span>
+                  {{ $t('potential') }} {{ $t('staking.weeklyEarning') }}
+                </span>
                 <BalStack horizontal spacing="sm" align="center">
                   <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
                   <BalTooltip text="Bingo" />
