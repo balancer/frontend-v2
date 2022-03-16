@@ -29,8 +29,7 @@ export type SpenderType = 'vault' | 'veBAL';
 
 export default function useTokenApprovals(
   tokenAddresses: string[],
-  amounts: Ref<string[]>,
-  spenderType?: SpenderType
+  amounts: Ref<string[]>
 ) {
   /**
    * COMPOSABLES
@@ -54,9 +53,7 @@ export default function useTokenApprovals(
       approvalsRequired(
         tokenAddresses,
         amounts.value,
-        spenderType === 'veBAL'
-          ? appNetworkConfig.addresses.veBAL
-          : appNetworkConfig.addresses.vault
+        appNetworkConfig.addresses.vault
       ).map(address => [
         address,
         { init: false, confirming: false, approved: false }
@@ -74,9 +71,7 @@ export default function useTokenApprovals(
     approvalsRequired(
       tokenAddresses,
       amounts.value,
-      spenderType === 'veBAL'
-        ? appNetworkConfig.addresses.veBAL
-        : appNetworkConfig.addresses.vault
+      appNetworkConfig.addresses.vault
     )
   );
 
@@ -92,11 +87,6 @@ export default function useTokenApprovals(
 
     try {
       state.init = true;
-
-      const spender =
-        spenderType === 'veBAL'
-          ? appNetworkConfig.addresses.veBAL
-          : appNetworkConfig.addresses.vault;
 
       const tx = await sendTransaction(
         getProvider(),
@@ -114,7 +104,7 @@ export default function useTokenApprovals(
         type: 'tx',
         action: 'approve',
         summary: t(
-          spenderType === 'veBAL'
+          spender === appNetworkConfig.addresses.veBAL
             ? 'transactionSummary.approveForLocking'
             : 'transactionSummary.approveForInvesting',
           [tokens.value[address]?.symbol]
