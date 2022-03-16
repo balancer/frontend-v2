@@ -253,7 +253,9 @@ async function handleTransaction(tx) {
         </div>
       </template>
       <div class="p-2 pt-0">
-        <div v-if="voteWarning" class="pb-2 text-sm text-orange-500">{{ voteWarning }}</div>
+        <div v-if="voteWarning" class="pb-2 text-sm text-orange-500">
+          {{ voteWarning }}
+        </div>
         <BalForm>
           <BalTextInput
             name="voteWeight"

@@ -13,6 +13,7 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 
 import GaugeVote from './GaugeVote.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { isStableLike } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -132,7 +133,7 @@ const unallocatedVoteWeight = computed(() => {
  * METHODS
  */
 function orderedPoolTokens(gauge: VotingGaugeWithVotes) {
-  const sortedTokens = gauge.tokens.slice();
+  const sortedTokens = gauge.pool.tokens.slice();
   sortedTokens.sort((a, b) => (b.weight || 0) - (a.weight || 0));
   return sortedTokens;
 }
@@ -197,7 +198,10 @@ async function handleVoteSuccess() {
       </template>
       <template v-slot:poolCompositionCell="gauge">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
-          <TokenPills :tokens="orderedPoolTokens(gauge)" />
+          <TokenPills
+            :tokens="orderedPoolTokens(gauge)"
+            :isStablePool="isStableLike(gauge.pool.poolType)"
+          />
         </div>
       </template>
       <template v-slot:voteColumnCell="gauge">
