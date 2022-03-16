@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, reactive, toRef } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 
 import useWeb3 from '@/services/web3/useWeb3';
-import { PoolWithGauge } from '@/services/balancer/subgraph/types';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
@@ -23,12 +21,13 @@ import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import { TransactionActionState } from '@/types/transactions';
 import { WalletError } from '@/types';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: PoolWithGauge;
+  gauge: VotingGaugeWithVotes;
   unallocatedVoteWeight: number;
 };
 
@@ -48,7 +47,6 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
 /**
  * STATE
@@ -69,7 +67,7 @@ const voteDisabled = computed(
   () => !!votedToRecentlyError.value || !hasEnoughVotes.value
 );
 
-const currentWeight = computed(() => props.pool.gauge.userVotes);
+const currentWeight = computed(() => props.gauge.userVotes);
 const voteButtonText = computed(() =>
   parseFloat(currentWeight.value) > 0
     ? t('veBAL.liquidityMining.popover.button.edit')
@@ -78,7 +76,7 @@ const voteButtonText = computed(() =>
 
 const votedToRecentlyError = computed(() => {
   const timestampSeconds = Date.now() / 1000;
-  const lastUserVote = props.pool.gauge.lastUserVote;
+  const lastUserVote = props.gauge.lastUserVote;
   if (timestampSeconds < lastUserVote + WEIGHT_VOTE_DELAY) {
     const remainingTime = formatDistanceToNow(
       (lastUserVote + WEIGHT_VOTE_DELAY) * 1000
@@ -143,7 +141,7 @@ async function submitVote() {
     voteState.init = true;
     voteState.error = null;
     const tx = await gaugeControllerService.voteForGaugeWeights(
-      props.pool.gauge.address,
+      props.gauge.address,
       BigNumber.from(totalVoteShares)
     );
     voteState.init = false;
@@ -168,7 +166,7 @@ async function handleTransaction(tx) {
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
       fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
-      poolWeightsLabel(props.pool)
+      'pool'
     ]),
     details: {
       voteWeight: voteWeight.value

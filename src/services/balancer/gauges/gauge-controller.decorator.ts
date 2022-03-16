@@ -2,11 +2,10 @@ import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import {
-  GaugeInformation,
-  PoolWithGauge
-} from '@/services/balancer/subgraph/types';
 import { BigNumber } from '@ethersproject/bignumber';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { Network } from '@balancer-labs/sdk';
+import { VotingGauge } from '@/constants/voting-gauges';
 
 export interface UserVotesData {
   end: BigNumber;
@@ -14,81 +13,76 @@ export interface UserVotesData {
   slope: BigNumber;
 }
 
-export interface GaugeControllerData {
+export interface RawVotesData {
   votes: number;
   userVotes: UserVotesData;
   lastUserVote: BigNumber;
 }
 
-export interface GaugeControllerFormattedData {
+export interface VotesData {
   votes: string;
   userVotes: string;
   lastUserVote: number;
 }
 
-export type GaugeControllerDataMap = Record<string, GaugeControllerData>;
+export type RawVotesDataMap = Record<string, RawVotesData>;
+
+export type VotingGaugeWithVotes = VotingGauge & VotesData;
 
 export class GaugeControllerDecorator {
   multicaller: Multicaller;
+  network: Network;
+  provider: JsonRpcProvider;
 
   constructor(
     private readonly abi = GaugeControllerAbi,
-    private readonly provider = rpcProviderService.jsonProvider,
     private readonly config = configService
   ) {
+    this.network = this.getNetwork();
+    this.provider = rpcProviderService.getJsonProvider(this.network);
     this.multicaller = this.resetMulticaller();
   }
 
   /**
    * @summary Decorate subgraph gauge schema with onchain data using multicalls.
    */
-  async decorate(
-    pools: PoolWithGauge[],
+  async decorateWithVotes(
+    votingGauges: VotingGauge[],
     userAddress: string
-  ): Promise<PoolWithGauge[]> {
+  ): Promise<VotingGaugeWithVotes[]> {
     this.multicaller = this.resetMulticaller();
-    this.callGaugeVotes(pools);
-    this.callUserGaugeVotes(pools, userAddress);
-    this.callUserGaugeVoteTime(pools, userAddress);
+    this.callGaugeVotes(votingGauges);
+    this.callUserGaugeVotes(votingGauges, userAddress);
+    this.callUserGaugeVoteTime(votingGauges, userAddress);
 
-    const gaugesDataMap = await this.multicaller.execute<
-      GaugeControllerDataMap
-    >();
+    const votesDataMap = await this.multicaller.execute<RawVotesDataMap>();
 
-    const mergedPoolMap: PoolWithGauge[] = pools.map(pool => {
-      const poolGaugeDetails: GaugeInformation = {
-        ...this.format(gaugesDataMap[pool.id]),
-        address: pool.gauge.address
+    return votingGauges.map(gauge => {
+      return {
+        ...gauge,
+        ...this.formatVotes(votesDataMap[gauge.address])
       };
-      const mergedPool: PoolWithGauge = {
-        ...pool,
-        ...{ gauge: poolGaugeDetails }
-      };
-      return mergedPool;
     });
-    return mergedPoolMap;
   }
 
-  private format(
-    gaugesDatamap: GaugeControllerData
-  ): GaugeControllerFormattedData {
+  private formatVotes(votesData: RawVotesData): VotesData {
     return {
-      votes: gaugesDatamap.votes.toString(),
-      userVotes: gaugesDatamap.userVotes.power.toString(),
-      lastUserVote: gaugesDatamap.lastUserVote.toNumber()
+      votes: votesData.votes.toString(),
+      userVotes: votesData.userVotes.power.toString(),
+      lastUserVote: votesData.lastUserVote.toNumber()
     };
   }
 
   /**
    * @summary Fetch relative vote weight of each gauge
    */
-  private callGaugeVotes(pools: PoolWithGauge[]) {
-    pools.forEach(pool => {
+  private callGaugeVotes(votingGauges: VotingGauge[]) {
+    votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${pool.id}.votes`,
+        `${gauge.address}.votes`,
         this.config.network.addresses.gaugeController,
         'gauge_relative_weight',
-        [pool.gauge.address]
+        [gauge.address]
       );
     });
   }
@@ -96,13 +90,13 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch user's vote weight for each gauge
    */
-  private callUserGaugeVotes(pools: PoolWithGauge[], userAddress: string) {
-    pools.forEach(pool => {
+  private callUserGaugeVotes(votingGauges: VotingGauge[], userAddress: string) {
+    votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${pool.id}.userVotes`,
+        `${gauge.address}.userVotes`,
         this.config.network.addresses.gaugeController,
         'vote_user_slopes',
-        [userAddress, pool.gauge.address]
+        [userAddress, gauge.address]
       );
     });
   }
@@ -110,19 +104,33 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch user's vote weight for each gauge
    */
-  private callUserGaugeVoteTime(pools: PoolWithGauge[], userAddress: string) {
-    pools.forEach(pool => {
+  private callUserGaugeVoteTime(
+    votingGauges: VotingGauge[],
+    userAddress: string
+  ) {
+    votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${pool.id}.lastUserVote`,
+        `${gauge.address}.lastUserVote`,
         this.config.network.addresses.gaugeController,
         'last_user_vote',
-        [userAddress, pool.gauge.address]
+        [userAddress, gauge.address]
       );
     });
+  }
+
+  /**
+   * @summary Get gauge controller network.
+   * @description We only have a testnet and mainnet gauge controller
+   * so the network key can only be kovan (42) or mainnet (1).
+   */
+  private getNetwork(): Network {
+    return this.config.env.NETWORK === Network.KOVAN
+      ? Network.KOVAN
+      : Network.MAINNET;
   }
 
   private resetMulticaller(): Multicaller {
-    return new Multicaller(this.config.network.key, this.provider, this.abi);
+    return new Multicaller(this.network.toString(), this.provider, this.abi);
   }
 }
 
