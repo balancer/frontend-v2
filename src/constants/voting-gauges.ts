@@ -8,6 +8,7 @@ export type VotingGauge = {
     id: string;
     address: string;
     poolType: PoolType;
+    symbol: string;
     tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
   };
   tokenLogoURIs: Record<string, string>;
@@ -21,6 +22,7 @@ export const KOVAN_VOTING_GAUGES: VotingGauge[] = [
       id: '0x3a19030ed746bd1c3f2b0f996ff9479af04c5f0a000200000000000000000004',
       address: '0x3a19030ed746bd1c3f2b0f996ff9479af04c5f0a',
       poolType: PoolType.Weighted,
+      symbol: 'B-50USDC-50WETH',
       tokens: [
         {
           address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
@@ -48,6 +50,7 @@ export const KOVAN_VOTING_GAUGES: VotingGauge[] = [
       id: '0xf767f0a3fcf1eafec2180b7de79d0c559d7e7e370001000000000000000003e3',
       address: '0xf767f0a3fcf1eafec2180b7de79d0c559d7e7e37',
       poolType: PoolType.Weighted,
+      symbol: '17WBTC-50BAL-33USDC',
       tokens: [
         {
           address: '0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648',
@@ -82,6 +85,7 @@ export const KOVAN_VOTING_GAUGES: VotingGauge[] = [
       id: '0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f000000000000000000000068',
       address: '0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f',
       poolType: PoolType.Stable,
+      symbol: 'BPSP-TUSD',
       tokens: [
         {
           address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
