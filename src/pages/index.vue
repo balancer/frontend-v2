@@ -20,7 +20,9 @@
             :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
             showPoolShares
           />
-          <StakedPoolsTable :userPools="userPools" />
+          <StakingProvider>
+            <StakedPoolsTable :userPools="userPools" />
+          </StakingProvider>
           <BalStack vertical spacing="sm">
             <h5>{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
@@ -109,13 +111,15 @@ import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
+import StakingProvider from '@/providers/staking.provider';
 
 export default defineComponent({
   components: {
     TokenSearchInput,
     PoolsTable,
     FeaturedPools,
-    StakedPoolsTable
+    StakedPoolsTable,
+    StakingProvider
   },
 
   setup() {

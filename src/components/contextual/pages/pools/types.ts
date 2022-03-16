@@ -7,6 +7,7 @@ export type UserGuageShare = {
 };
 
 export type LiquidityGauge = {
+  id?: string;
   poolId: string;
   shares: {
     balance: string;

@@ -48,6 +48,8 @@ export type StakingProvider = {
   isLoadingStakedShares: Ref<boolean>;
   isStakedSharesIdle: Ref<boolean>;
   isRefetchingStakedShares: Ref<boolean>;
+  isLoadingPoolEligibility: Ref<boolean>;
+  isPoolEligibleForStaking: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
   getGaugeAddress: (poolAddress: string) => Promise<string>;
   stakeBPT: () => Promise<TransactionResponse>;
@@ -100,7 +102,7 @@ export default defineComponent({
       data: stakingData,
       isLoading: isLoadingStakingData,
       isIdle: isStakeDataIdle,
-      refetch: refetchStakingData,
+      refetch: refetchStakingData
     } = useGraphQuery<UserGuageSharesResponse>(
       subgraphs.gauge,
       ['staking', 'data', { account, userPoolIds }],
@@ -139,7 +141,30 @@ export default defineComponent({
       ['staking', 'pool', 'shares'],
       () => getStakedShares(),
       reactive({
-        enabled: isStakedSharesQueryEnabled
+        enabled: isStakedSharesQueryEnabled,
+        refetchOnWindowFocus: false
+      })
+    );
+
+    const {
+      data: poolEligibilityResponse,
+      isLoading: isLoadingPoolEligibility
+    } = useGraphQuery<{ liquidityGauges: TLiquidityGauge[] }>(
+      subgraphs.gauge,
+      ['pool', 'eligibility', { poolAddress: props.poolAddress }],
+      () => ({
+        liquidityGauges: {
+          __args: {
+            where: {
+              poolAddress: (props.poolAddress || '').toLowerCase()
+            }
+          },
+          id: true
+        }
+      }),
+      reactive({
+        enabled: isStakedSharesQueryEnabled,
+        refetchOnWindowFocus: false
       })
     );
 
@@ -167,6 +192,12 @@ export default defineComponent({
         return share.gauge.poolId;
       });
     });
+
+    const isPoolEligibleForStaking = computed(
+      () =>
+        (poolEligibilityResponse.value?.liquidityGauges || [])[0]?.id !==
+        undefined
+    );
 
     /** QUERY */
     const {
@@ -259,9 +290,11 @@ export default defineComponent({
       isLoadingStakedPools,
       isLoading,
       isLoadingStakedShares,
+      isLoadingPoolEligibility,
       isStakeDataIdle,
       isStakedSharesIdle,
       isRefetchingStakedShares,
+      isPoolEligibleForStaking,
       refetchStakedShares,
       getGaugeAddress,
       stakeBPT,

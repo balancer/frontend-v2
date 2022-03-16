@@ -20,7 +20,6 @@ const props = defineProps<Props>();
  * STATE
  */
 
-const hasIncentive = true;
 const isStakePreviewVisible = ref(false);
 const stakeAction = ref('');
 
@@ -34,6 +33,8 @@ const {
   isStakedSharesIdle,
   isLoadingStakedShares,
   isRefetchingStakedShares,
+  isLoadingPoolEligibility,
+  isPoolEligibleForStaking,
   stakedShares
 } = useStaking();
 
@@ -84,16 +85,20 @@ async function handleActionSuccess() {
 </script>
 
 <template>
-  <AnimatePresence :isVisible="!isLoadingStakedShares && !isStakedSharesIdle">
+  <AnimatePresence
+    :isVisible="
+      !isLoadingStakedShares && !isStakedSharesIdle && !isLoadingPoolEligibility
+    "
+  >
     <div class="relative">
       <BalAccordion
-        :class="['shadow-2xl', { handle: hasIncentive }]"
+        :class="['shadow-2xl', { handle: isPoolEligibleForStaking }]"
         :sections="[
           {
             title: $t('stakingIncentives'),
             id: 'staking-incentives',
             handle: 'staking-handle',
-            isDisabled: !hasIncentive
+            isDisabled: !isPoolEligibleForStaking
           }
         ]"
       >
@@ -105,18 +110,22 @@ async function handleActionSuccess() {
                   :class="[
                     'flex items-center p-1 text-white rounded-full',
                     {
-                      'bg-green-500': hasIncentive,
-                      'bg-gray-400': !hasIncentive
+                      'bg-green-500': isPoolEligibleForStaking,
+                      'bg-gray-400': !isPoolEligibleForStaking
                     }
                   ]"
                 >
-                  <BalIcon size="sm" name="check" v-if="hasIncentive" />
+                  <BalIcon
+                    size="sm"
+                    name="check"
+                    v-if="isPoolEligibleForStaking"
+                  />
                   <BalIcon size="sm" name="x" v-else />
                 </div>
                 <h6>{{ $t('staking.stakingIncentives') }}</h6>
               </BalStack>
               <BalStack
-                v-if="hasIncentive"
+                v-if="isPoolEligibleForStaking"
                 horizontal
                 spacing="sm"
                 align="center"
@@ -136,7 +145,6 @@ async function handleActionSuccess() {
             >
               <BalStack horizontal justify="between">
                 <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
-
                 <BalStack horizontal spacing="sm" align="center">
                   <AnimatePresence :isVisible="isRefetchingStakedShares">
                     <BalLoadingBlock class="h-5" />
@@ -205,7 +213,9 @@ async function handleActionSuccess() {
     </div>
   </AnimatePresence>
   <AnimatePresence
-    :isVisible="isLoadingStakedShares || isStakedSharesIdle"
+    :isVisible="
+      isLoadingStakedShares || isStakedSharesIdle || isLoadingPoolEligibility
+    "
     unmountInstantly
   >
     <BalLoadingBlock class="h-12" />

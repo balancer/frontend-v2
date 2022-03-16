@@ -137,8 +137,8 @@
           />
 
           <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
-          <StakingProvider v-if="!loadingPool" :poolAddress="pool?.address">
-            <StakingIncentivesCard :pool="pool" />
+          <StakingProvider :poolAddress="id">
+            <StakingIncentivesCard v-if="!loadingPool" :pool="pool" />
           </StakingProvider>
           <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
