@@ -50,9 +50,12 @@ export class LiquidityGauge {
   }
 
   async unstake(amount: BigNumber) {
-    const tx = this.instance
-      .connect(this.provider.getSigner())
-      ['withdraw(uint256)'](amount);
+    const tx = this.web3.sendTransaction(
+      this.address,
+      this.abi,
+      'withdraw(uint256)',
+      [amount]
+    );
     return tx;
   }
 
