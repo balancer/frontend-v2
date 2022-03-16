@@ -147,13 +147,13 @@ import HomeEducationItems from '@/beethovenx/components/pages/home/HomeEducation
       />
       <HomeNewsItems />
     </div>
-    <!--    <div class="lg:container lg:mx-auto pt-10 md:pt-20">
+    <div class="lg:container lg:mx-auto pt-10 md:pt-20">
       <img
         src="~@/beethovenx/assets/images/learning-the-notes.svg"
         class="mb-8 -ml-4"
       />
       <HomeEducationItems />
-    </div>-->
+    </div>
     <!--    <div class="lg:container lg:mx-auto pt-10 md:pt-20">
       <img
         src="~@/beethovenx/assets/images/our-partners.svg"
