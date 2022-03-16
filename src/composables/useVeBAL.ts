@@ -28,9 +28,7 @@ export default function useVeBal() {
     balanceFor(networkConfig.addresses.veBAL)
   );
 
-  const lockablePoolAddress = computed(
-    () => POOLS.IdsMap[networkId.value]?.['B-80BAL-20WETH']
-  );
+  const lockablePoolAddress = computed(() => POOLS.IdsMap?.['B-80BAL-20WETH']);
 
   return {
     // computed
