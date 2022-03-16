@@ -66,6 +66,11 @@ const isLoadingApprovalsForGauge = ref(false);
 const isActionConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
+const shareBalanceToDisplay = ref(
+  props.action === 'unstake'
+    ? stakedShares.value
+    : balanceFor(props.pool.address)
+);
 
 /**
  * WATCHERS
@@ -83,13 +88,6 @@ watch(
 const assetRowWidth = computed(
   () => (props.pool.tokenAddresses.length * 32) / 1.5
 );
-
-const shareBalanceToDisplay = computed(() => {
-  if (props.action === 'unstake') {
-    return stakedShares.value;
-  }
-  return balanceFor(props.pool.address);
-});
 
 const poolShareData = computed(() => {
   const numSharesToStake = balanceFor(props.pool.address);

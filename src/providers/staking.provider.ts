@@ -23,7 +23,6 @@ import {
   computed,
   InjectionKey,
   reactive,
-  watch,
   ref,
   defineComponent,
   h,
@@ -48,6 +47,7 @@ export type StakingProvider = {
   isLoadingStakingData: Ref<boolean>;
   isLoadingStakedShares: Ref<boolean>;
   isStakedSharesIdle: Ref<boolean>;
+  isRefetchingStakedShares: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
   getGaugeAddress: (poolAddress: string) => Promise<string>;
   stakeBPT: () => Promise<TransactionResponse>;
@@ -101,7 +101,6 @@ export default defineComponent({
       isLoading: isLoadingStakingData,
       isIdle: isStakeDataIdle,
       refetch: refetchStakingData,
-      isFetched: hasFetchedStakingData
     } = useGraphQuery<UserGuageSharesResponse>(
       subgraphs.gauge,
       ['staking', 'data', { account, userPoolIds }],
@@ -134,6 +133,7 @@ export default defineComponent({
       data: stakedSharesResponse,
       isLoading: isLoadingStakedShares,
       isIdle: isStakedSharesIdle,
+      isRefetching: isRefetchingStakedShares,
       refetch: refetchStakedShares
     } = useQuery<string>(
       ['staking', 'pool', 'shares'],
@@ -165,15 +165,6 @@ export default defineComponent({
       if (isLoadingStakingData.value || !userGaugeShares.value) return [];
       return userGaugeShares.value.map(share => {
         return share.gauge.poolId;
-      });
-    });
-
-    watch(isLoadingStakingData, () => {
-      console.log({
-        account: account.value,
-        userPoolIds: userPoolIds.value,
-        isLoadingStakingData: isLoadingStakingData.value,
-        hasFetchedStakingData: hasFetchedStakingData.value
       });
     });
 
@@ -270,6 +261,7 @@ export default defineComponent({
       isLoadingStakedShares,
       isStakeDataIdle,
       isStakedSharesIdle,
+      isRefetchingStakedShares,
       refetchStakedShares,
       getGaugeAddress,
       stakeBPT,

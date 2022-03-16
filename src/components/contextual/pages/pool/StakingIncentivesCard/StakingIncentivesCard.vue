@@ -9,6 +9,7 @@ import { bnum } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from 'ethers/lib/utils';
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 
 type Props = {
   pool: FullPool;
@@ -32,6 +33,7 @@ const {
   refetchStakedShares,
   isStakedSharesIdle,
   isLoadingStakedShares,
+  isRefetchingStakedShares,
   stakedShares
 } = useStaking();
 
@@ -134,10 +136,16 @@ async function handleActionSuccess() {
             >
               <BalStack horizontal justify="between">
                 <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
+
                 <BalStack horizontal spacing="sm" align="center">
-                  <span>
-                    {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
-                  </span>
+                  <AnimatePresence :isVisible="isRefetchingStakedShares">
+                    <BalLoadingBlock class="h-5" />
+                  </AnimatePresence>
+                  <AnimatePresence :isVisible="!isRefetchingStakedShares">
+                    <span>
+                      {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
+                    </span>
+                  </AnimatePresence>
                   <BalTooltip text="Bingo" />
                 </BalStack>
               </BalStack>
@@ -151,9 +159,14 @@ async function handleActionSuccess() {
               <BalStack horizontal justify="between">
                 <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
-                  <span>
-                    {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
-                  </span>
+                  <AnimatePresence :isVisible="isRefetchingStakedShares">
+                    <BalLoadingBlock class="h-5" />
+                  </AnimatePresence>
+                  <AnimatePresence :isVisible="!isRefetchingStakedShares">
+                    <span>
+                      {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
+                    </span>
+                  </AnimatePresence>
                   <BalTooltip text="Bingo" />
                 </BalStack>
               </BalStack>
@@ -193,7 +206,7 @@ async function handleActionSuccess() {
     :isVisible="isLoadingStakedShares || isStakedSharesIdle"
     unmountInstantly
   >
-    isLoadingStakedShares <BalLoadingBlock class="h-12" />
+    <BalLoadingBlock class="h-12" />
   </AnimatePresence>
   <StakePreviewModal
     :isVisible="isStakePreviewVisible"
