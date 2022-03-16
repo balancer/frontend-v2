@@ -20,6 +20,9 @@ import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLi
 import { getAddress } from '@ethersproject/address';
 import useConfig from '@/composables/useConfig';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 /**
  * TYPES
@@ -67,6 +70,13 @@ const investMath = useInvestMath(
 );
 
 const { networkConfig } = useConfig();
+const batchRelayerApprovalQuery = useRelayerApprovalQuery(
+  ref(networkConfig.addresses.batchRelayer)
+);
+
+const isLoadingBatchRelayerApproval = computed(() => {
+  return batchRelayerApprovalQuery.isLoading.value;
+});
 
 const {
   hasAmounts,
@@ -326,7 +336,8 @@ watch(usdAsset, selectedUsdAsset => {
           !hasAmounts ||
             !hasValidInputs ||
             isMismatchedNetwork ||
-            batchSwapLoading
+            batchSwapLoading ||
+            isLoadingBatchRelayerApproval
         "
         block
         @click="showInvestPreview = true"
