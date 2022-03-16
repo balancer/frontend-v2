@@ -159,8 +159,10 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     return poolsTokenList.value.length > 0
       ? poolsWithFarms.value?.filter(pool => {
           return (
-            poolsTokenList.value.every((selectedToken: string) =>
-              pool.tokenAddresses.includes(selectedToken)
+            poolsTokenList.value.every(
+              (selectedToken: string) =>
+                pool.tokenAddresses.includes(selectedToken) ||
+                pool.mainTokens?.includes(selectedToken)
             ) && beethovenxConfig.value.incentivizedPools.includes(pool.id)
           );
         })
