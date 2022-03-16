@@ -137,7 +137,7 @@
           />
 
           <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
-          <StakingProvider :poolAddress="id">
+          <StakingProvider :poolAddress="getAddressFromPoolId(id)">
             <StakingIncentivesCard v-if="!loadingPool" :pool="pool" />
           </StakingProvider>
           <!-- <PoolActionsCard
@@ -204,6 +204,7 @@ import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import StakingProvider from '@/providers/staking.provider';
+import { getAddressFromPoolId } from '@/lib/utils';
 
 interface PoolPageData {
   id: string;
@@ -449,7 +450,8 @@ export default defineComponent({
       hasCustomToken,
       // methods
       fNum2,
-      onNewTx
+      onNewTx,
+      getAddressFromPoolId
     };
   }
 });

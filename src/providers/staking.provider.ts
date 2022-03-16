@@ -236,7 +236,7 @@ export default defineComponent({
       const gaugeAddress = await getGaugeAddress(props.poolAddress);
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
       const tx = await gauge.stake(
-        parseUnits(balanceFor(props.poolAddress), 18)
+        parseUnits(balanceFor(getAddress(props.poolAddress)), 18)
       );
       return tx;
     }
@@ -247,7 +247,7 @@ export default defineComponent({
           `Attempted to call unstake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(props.poolAddress);
+      const gaugeAddress = await getGaugeAddress(getAddress(props.poolAddress));
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
       const tx = await gauge.unstake(parseUnits(stakedShares.value || '0', 18));
       return tx;
@@ -259,7 +259,7 @@ export default defineComponent({
           `Attempted to get staked shares, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(props.poolAddress);
+      const gaugeAddress = await getGaugeAddress(getAddress(props.poolAddress));
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
       const balance = await gauge.balance(account.value);
       return formatUnits(balance.toString(), 18);

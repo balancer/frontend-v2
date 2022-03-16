@@ -134,3 +134,7 @@ export function formatWordListAsSentence(
   // only one word, so just return that
   return words[0];
 }
+
+export function getAddressFromPoolId(poolId: string) {
+  return poolId.substring(0, 42);
+}
