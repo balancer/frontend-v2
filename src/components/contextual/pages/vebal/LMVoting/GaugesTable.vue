@@ -13,10 +13,9 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 
 import GaugeVote from './GaugeVote.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { isStableLike, isStablePhantom, orderedPoolTokens } from '@/composables/usePool';
+import { isStableLike, orderedPoolTokens } from '@/composables/usePool';
 import { Network } from '@balancer-labs/sdk';
 import { networkNameFor } from '@/composables/useNetwork';
-import { AnyPool } from '@/services/balancer/subgraph/types';
 
 /**
  * TYPES
