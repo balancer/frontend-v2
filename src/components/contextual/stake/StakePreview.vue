@@ -179,38 +179,43 @@ function handleClose() {
       </div>
       <BalStack vertical spacing="xs" class="p-3">
         <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.totalValueToStake') }}:</span>
+          <span class="text-sm">
+            {{ $t('totalValueTo') }}
+            <span class="lowercase">
+              {{ action === 'stake' ? $t('stake') : $t('unstake') }}:
+            </span>
+          </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize"
-              >~{{
-                fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat)
-              }}</span
-            >
+            <span class="text-sm capitalize">
+              ~{{ fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat) }}
+            </span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
           <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize"
-              >~{{
-                fNum2(poolShareData.totalSharePct, FNumFormats.percent)
-              }}</span
-            >
+            <span class="text-sm capitalize">
+              ~{{ fNum2(poolShareData.totalSharePct, FNumFormats.percent) }}
+            </span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.potentialStakingApr') }}:</span>
+          <span class="text-sm">
+            {{ action === 'stake' ? $t('potential') : $t('lost') }}
+            {{ $t('staking.stakingApr') }}:
+          </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">sdfs</span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
-          <span class="text-sm"
-            >{{ $t('staking.potentialWeeklyEarning') }}:</span
-          >
+          <span class="text-sm">
+            {{ action === 'stake' ? $t('potential') : $t('lost') }}
+            {{ $t('staking.weeklyEarning') }}:
+          </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">sdfs</span>
             <BalTooltip text="s" width="20" textCenter />
@@ -240,9 +245,9 @@ function handleClose() {
     >
       <router-link :to="{ name: 'pool', params: { id: pool.id } }">
         <BalStack horizontal align="center" spacing="xs">
-          <span
-            >{{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}</span
-          >
+          <span>
+            {{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}
+          </span>
           <BalIcon name="arrow-up-right" />
         </BalStack>
       </router-link>
