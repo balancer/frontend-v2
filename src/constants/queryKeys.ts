@@ -127,7 +127,8 @@ const QUERY_KEYS = {
         account: Ref<string>,
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
-    }
+    },
+    Voting: (account: Ref<string>) => ['gauges', 'voting', { account }]
   },
   Transaction: {
     ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [

@@ -223,7 +223,9 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       <template v-slot:poolNameCell="pool">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
-            :tokens="orderedPoolTokens(pool)"
+            :tokens="
+              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+            "
             :isStablePool="isStableLike(pool.poolType)"
             :selectedTokens="selectedTokens"
           />

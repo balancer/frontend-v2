@@ -53,6 +53,7 @@ export interface Config {
     balancerHelpers: string;
     batchRelayer: string;
     veBAL: string;
+    gaugeController: string;
     balancerMinter: string;
   };
   keys: {
@@ -68,7 +69,7 @@ export interface Config {
   >;
 }
 
-const config: Partial<Record<Network | number, Config>> = {
+const config: Record<Network | number, Config> = {
   [Network.MAINNET]: homestead,
   [Network.KOVAN]: kovan,
   [Network.RINKEBY]: rinkeby,

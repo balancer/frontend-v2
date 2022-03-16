@@ -48,6 +48,7 @@
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E",
     "batchRelayer": "0xAc9f49eF3ab0BbC929f7b1bb0A17E1Fca5786251",
     "veBAL": "",
+    "gaugeController": "",
     "balancerMinter": ""
   },
   "keys": {

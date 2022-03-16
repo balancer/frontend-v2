@@ -8,6 +8,7 @@ interface Env {
   APP_ENV: string;
   NETWORK: Network;
   APP_DOMAIN: string;
+  APP_HOST: string;
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
@@ -22,6 +23,7 @@ export default class ConfigService {
       APP_ENV: process.env.VUE_APP_ENV || 'development',
       NETWORK: networkId.value,
       APP_DOMAIN: process.env.VUE_APP_DOMAIN || 'app.balancer.fi',
+      APP_HOST: process.env.VUE_APP_HOST || 'balancer.fi',
       IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'cloudflare-ipfs.com',
       BLOCKNATIVE_DAPP_ID:
         process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',

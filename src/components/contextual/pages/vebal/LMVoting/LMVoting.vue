@@ -1,36 +1,23 @@
-<script setup lang="ts">
-import { computed } from 'vue';
+<script lang="ts" setup>
+import GaugesTable from './GaugesTable.vue';
+import useVotingGauges from '@/composables/useVotingGauges';
 
-import Table from './Table.vue';
-
-import { Network } from '@balancer-labs/sdk';
-import { PoolType } from '@/services/balancer/subgraph/types';
-
-import { Pool } from './types';
-
-const pools = computed<Pool[]>(() => [
-  {
-    id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
-    poolType: PoolType.Weighted,
-    tokens: [
-      {
-        address: '0xba100000625a3754423978a60c9317c58a424e3D',
-        symbol: 'BAL',
-        weight: '0.8'
-      },
-      {
-        address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-        symbol: 'WETH',
-        weight: '0.2'
-      }
-    ],
-    chain: Network.MAINNET
-  }
-]);
+/**
+ * COMPOSABLES
+ */
+const { isLoading, votingGauges, refetch } = useVotingGauges();
 </script>
 
 <template>
   <h3 class="mb-3">{{ $t('veBAL.liquidityMining.title') }}</h3>
   <div class="mb-3">{{ $t('veBAL.liquidityMining.votingPeriod') }}</div>
-  <Table :pools="pools" />
+  <GaugesTable
+    :isLoading="isLoading"
+    :data="votingGauges"
+    :key="votingGauges"
+    :refetch="refetch"
+    :noPoolsLabel="$t('noInvestments')"
+    showPoolShares
+    class="mb-8"
+  />
 </template>

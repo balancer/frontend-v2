@@ -38,16 +38,15 @@
       </template>
       <template v-slot:iconColumnCell="pool">
         <div class="px-6 py-4">
-          <BalAssetSet
-            :addresses="orderedTokenAddressesFor(pool)"
-            :width="100"
-          />
+          <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
         <div class="px-6 py-4 items-center">
           <TokenPills
-            :tokens="orderedPoolTokens(pool)"
+            :tokens="
+              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+            "
             :isStablePool="isStableLike(pool.poolType)"
           />
           <BalChip
@@ -125,10 +124,6 @@
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { TokenTotal, WeeklyDistributions } from '@/pages/liquidity-mining.vue';
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
-import {
-  DecoratedPoolWithShares,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
 import { getAddress } from '@ethersproject/address';
 import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -136,7 +131,11 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { last, sum } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
-import { isStableLike, isStablePhantom } from '@/composables/usePool';
+import {
+  isStableLike,
+  orderedPoolTokens,
+  orderedTokenAddresses
+} from '@/composables/usePool';
 import { startOfWeek, subWeeks, format, addDays } from 'date-fns';
 
 function getWeekName(week: string) {
@@ -223,21 +222,6 @@ export default defineComponent({
 
     const latestWeek = computed(() => last(weeks.value)?.week);
 
-    function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (isStablePhantom(pool.poolType))
-        return pool.tokens.filter(token => token.address !== pool.address);
-      if (isStableLike(pool.poolType)) return pool.tokens;
-
-      const sortedTokens = pool.tokens.slice();
-      sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
-      return sortedTokens;
-    }
-
-    function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
-      const sortedTokens = orderedPoolTokens(pool);
-      return sortedTokens.map(token => getAddress(token.address));
-    }
-
     function calculatePricesFor(totals: TokenTotal[]) {
       let totalFiat = 0;
       for (const total of totals) {
@@ -256,7 +240,7 @@ export default defineComponent({
     }
 
     return {
-      orderedTokenAddressesFor,
+      orderedTokenAddresses,
       orderedPoolTokens,
       fNum2,
       getAddress,

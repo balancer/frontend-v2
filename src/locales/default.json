@@ -598,6 +598,34 @@
                 "nextPeriodVotes": "Next period votes",
                 "myVotes": "My votes",
                 "vote": "Vote"
+            },
+            "popover": {
+                "title": {
+                    "vote": "Gauge vote",
+                    "edit": "Edit gauge vote"
+                },
+                "button": {
+                    "vote": "Vote",
+                    "edit": "Edit vote"
+                },
+                "actions": {
+                    "vote": {
+                        "confirming": "Confirming approval...",
+                        "tooltip": "You must approve {0}.",
+                        "loadingLabel": "Confirm approval in wallet"                    
+                    }
+                },
+                "voteForGauge": "{0} for {1}",
+                "remainingVotes": "Your remaining votes: {0}",
+                "remainingVotesEditing": "Your remaining votes: {0} (including your current allocation of {1} in this pool)",
+                "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
+                "warnings": {
+                    "votedTooRecently": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation for {0}",
+                    "noVeBal": "You must lock veBAL before voting on gagues."
+                },
+                "errors": {
+                    "notEnoughVotes": "Not enough unallocated votes"
+                }
             }
         },
         "notSupported": {
@@ -880,6 +908,7 @@
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
+        "voteForGauge": "Vote",
         "withdraw": "Withdraw",
         "wrap": "Wrap",
         "createLock": "Lock",
