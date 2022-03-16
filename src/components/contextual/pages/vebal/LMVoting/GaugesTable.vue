@@ -13,9 +13,10 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 
 import GaugeVote from './GaugeVote.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { isStableLike } from '@/composables/usePool';
+import { isStableLike, isStablePhantom, orderedPoolTokens } from '@/composables/usePool';
 import { Network } from '@balancer-labs/sdk';
 import { networkNameFor } from '@/composables/useNetwork';
+import { AnyPool } from '@/services/balancer/subgraph/types';
 
 /**
  * TYPES
@@ -134,10 +135,13 @@ const unallocatedVoteWeight = computed(() => {
 /**
  * METHODS
  */
-function orderedPoolTokens(gauge: VotingGaugeWithVotes) {
-  const sortedTokens = gauge.pool.tokens.slice();
-  sortedTokens.sort((a, b) => (b.weight || 0) - (a.weight || 0));
-  return sortedTokens;
+function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  const sortedTokens = orderedPoolTokens(
+    gauge.pool.poolType,
+    gauge.pool.address,
+    gauge.pool.tokens
+  );
+  return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
 }
 
 async function handleVoteSuccess() {
@@ -196,19 +200,18 @@ function networkSrc(network: Network) {
           </div>
         </div>
       </template>
-      <template #iconColumnCell>
+      <template #iconColumnCell="gauge">
         <div v-if="!isLoading" class="px-6 py-4">
-          <!-- <BalAssetSet
-            :addresses="orderedTokenAddressesFor(gauge)"
-            :width="100"
-          /> -->
+          <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="gauge">
+      <template #poolCompositionCell="{ pool }">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
-            :tokens="orderedPoolTokens(gauge)"
-            :isStablePool="isStableLike(gauge.pool.poolType)"
+            :tokens="
+              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+            "
+            :isStablePool="isStableLike(pool.poolType)"
           />
         </div>
       </template>
