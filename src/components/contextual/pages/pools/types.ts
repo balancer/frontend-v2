@@ -16,5 +16,8 @@ export type LiquidityGauge = {
 export type UserGuageSharesResponse = {
   gaugeShares: UserGuageShare[];
   liquidityGauges: LiquidityGauge[];
+};
+
+export type PoolStakingDataResponse = {
   liquidityGauge: LiquidityGauge;
 };

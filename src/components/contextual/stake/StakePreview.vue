@@ -6,13 +6,10 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import useStaking from '@/composables/staking/useStaking';
 import { useI18n } from 'vue-i18n';
-import { useQueryClient } from 'vue-query';
 
 import { bnum } from '@/lib/utils';
 import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
 import { TransactionActionInfo } from '@/types/transactions';
-import { UserGuageSharesResponse } from '../pages/pools/types';
-import { last } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
@@ -33,11 +30,14 @@ const emit = defineEmits(['close', 'success']);
 const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
-const queryClient = useQueryClient();
 
-const { stakeBPT, unstakeBPT, getGaugeAddress, stakedShares, refetchStakingData } = useStaking(
-  props.pool.address
-);
+const {
+  stakeBPT,
+  unstakeBPT,
+  getGaugeAddress,
+  stakedShares,
+  refetchStakedShares
+} = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
   ref([balanceFor(props.pool.address).toString()])
@@ -93,19 +93,7 @@ const shareBalanceToDisplay = computed(() => {
 
 const poolShareData = computed(() => {
   const numSharesToStake = balanceFor(props.pool.address);
-
-  // grab the existing query response which should have loaded
-  // if those modal is openable
-  const guageSharesData = (last(
-    queryClient.getQueriesData(['staking', 'data'])
-  ) || [])[1] as UserGuageSharesResponse;
-
-  // gauge for this pool
-  const relevantGauge = guageSharesData.gaugeShares.find(
-    ({ gauge }) => gauge.poolId === props.pool.id
-  );
-
-  const existingSharePct = bnum(relevantGauge?.balance || '0').div(
+  const existingSharePct = bnum(stakedShares.value || '0').div(
     props.pool.totalShares
   );
 
@@ -140,7 +128,7 @@ onBeforeMount(async () => {
 async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
-  await refetchStakingData.value();
+  await refetchStakedShares.value();
   emit('success');
 }
 

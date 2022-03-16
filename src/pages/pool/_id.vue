@@ -137,7 +137,9 @@
           />
 
           <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
-          <StakingIncentivesCard v-if="!loadingPool" :pool="pool" />
+          <StakingProvider v-if="!loadingPool" :poolAddress="pool?.address">
+            <StakingIncentivesCard :pool="pool" />
+          </StakingProvider>
           <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
@@ -201,6 +203,7 @@ import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import StakingProvider from '@/providers/staking.provider';
 
 interface PoolPageData {
   id: string;
@@ -211,7 +214,8 @@ export default defineComponent({
     ...PoolPageComponents,
     GauntletIcon,
     LiquidityAPRTooltip,
-    StakingIncentivesCard
+    StakingIncentivesCard,
+    StakingProvider
   },
 
   setup() {

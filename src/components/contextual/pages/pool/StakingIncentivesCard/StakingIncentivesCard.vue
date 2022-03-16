@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { computed, onBeforeMount, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useStaking from '@/composables/staking/useStaking';
@@ -29,11 +29,11 @@ const stakeAction = ref('');
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
 const {
-  isFetchingStakingData,
-  stakedShares,
-  refetchStakingData,
-  isLoading
-} = useStaking(props.pool.address);
+  refetchStakedShares,
+  isStakedSharesIdle,
+  isLoadingStakedShares,
+  stakedShares
+} = useStaking();
 
 /**
  * COMPUTED
@@ -77,12 +77,12 @@ function handlePreviewClose() {
 }
 
 async function handleActionSuccess() {
-  refetchStakingData.value();
+  await refetchStakedShares.value();
 }
 </script>
 
 <template>
-  <AnimatePresence :isVisible="!isLoading">
+  <AnimatePresence :isVisible="!isLoadingStakedShares && !isStakedSharesIdle">
     <div class="relative">
       <BalAccordion
         :class="['shadow-2xl', { handle: hasIncentive }]"
@@ -189,8 +189,11 @@ async function handleActionSuccess() {
       </BalAccordion>
     </div>
   </AnimatePresence>
-  <AnimatePresence :isVisible="isLoading" unmountInstantly>
-    <BalLoadingBlock class="h-12" />
+  <AnimatePresence
+    :isVisible="isLoadingStakedShares || isStakedSharesIdle"
+    unmountInstantly
+  >
+    isLoadingStakedShares <BalLoadingBlock class="h-12" />
   </AnimatePresence>
   <StakePreviewModal
     :isVisible="isStakePreviewVisible"
