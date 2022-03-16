@@ -59,7 +59,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: '',
     Header: 'chainColumnHeader',
     Cell: 'networkColumnCell',
-    width: 50,
+    width: 80,
     noGrow: true
   },
   {
