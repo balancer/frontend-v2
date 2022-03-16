@@ -11,7 +11,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 
-import GaugeVote from './GaugeVote.vue';
+import GaugeVoteModal from './GaugeVoteModal.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { isStableLike, orderedPoolTokens } from '@/composables/usePool';
 import { Network } from '@balancer-labs/sdk';
@@ -34,7 +34,6 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-
 const props = withDefaults(defineProps<Props>(), {
   isLoadingMore: false,
   showPoolShares: false,
@@ -43,6 +42,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['loadMore']);
+
+/**
+ * STATE
+ */
+const activeGaugeVote = ref<VotingGaugeWithVotes | null>(null);
 
 /**
  * COMPOSABLES
@@ -118,7 +122,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 100,
+    width: 80,
     hidden: !isWalletReady.value
   }
 ]);
@@ -126,7 +130,6 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
 /**
  * COMPUTED
  */
-
 const unallocatedVoteWeight = computed(() => {
   const totalVotes = 1e4;
   if (props.isLoading || !props.data) return totalVotes;
@@ -228,13 +231,26 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       </template>
       <template #voteColumnCell="gauge">
         <div v-if="isWalletReady" class="px-4">
-          <GaugeVote
-            :gauge="gauge"
-            :unallocatedVoteWeight="unallocatedVoteWeight"
-            @success="handleVoteSuccess"
-          ></GaugeVote>
+          <BalBtn
+            color="blue"
+            :outline="true"
+            size="sm"
+            flat
+            block
+            @click.stop="activeGaugeVote = gauge"
+          >
+            {{ $t('veBAL.liquidityMining.table.vote') }}
+          </BalBtn>
         </div>
       </template>
     </BalTable>
   </BalCard>
+  <teleport to="#modal">
+    <GaugeVoteModal
+      v-if="!!activeGaugeVote"
+      @close="activeGaugeVote = null"
+      :gauge="activeGaugeVote"
+      :unallocatedVoteWeight="unallocatedVoteWeight"
+    />
+  </teleport>
 </template>

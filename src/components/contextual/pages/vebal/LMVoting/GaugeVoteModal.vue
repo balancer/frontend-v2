@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
+<script lang="ts" setup>
+import { ref, computed, reactive, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
@@ -33,11 +33,14 @@ type Props = {
 };
 
 /**
- * PROPS
+ * PROPS & EMITS
  */
 const props = defineProps<Props>();
 
-const emit = defineEmits(['success']);
+const emit = defineEmits<{
+  (e: 'close'): void;
+  (e: 'success'): void;
+}>();
 
 /**
  * COMPOSABLES
@@ -53,7 +56,6 @@ const { veBalBalance } = useVeBal();
 /**
  * STATE
  */
-
 const voteWeight = ref<string>('');
 const voteState = reactive<TransactionActionState>({
   init: false,
@@ -70,16 +72,19 @@ const voteDisabled = computed(
 );
 
 const currentWeight = computed(() => props.gauge.userVotes);
-const isEditing = computed(() => parseFloat(currentWeight.value) > 0);
+const currentWeightNormalized = computed(() =>
+  scale(bnum(currentWeight.value), -2).toString()
+);
+const hasVotes = computed((): boolean => bnum(currentWeight.value).gt(0));
 
 const voteTitle = computed(() =>
-  isEditing.value
+  hasVotes.value
     ? t('veBAL.liquidityMining.popover.title.edit')
     : t('veBAL.liquidityMining.popover.title.vote')
 );
 
 const voteButtonText = computed(() =>
-  isEditing.value
+  hasVotes.value
     ? t('veBAL.liquidityMining.popover.button.edit')
     : t('veBAL.liquidityMining.popover.button.vote')
 );
@@ -130,6 +135,17 @@ const hasEnoughVotes = computed((): boolean => {
   return isVoteWeightValid(voteWeight.value);
 });
 
+const unallocatedVotesNormalized = computed((): string =>
+  scale(bnum(props.unallocatedVoteWeight), -2).toString()
+);
+
+const unallocatedVotesFormatted = computed((): string =>
+  fNum2(
+    scale(bnum(props.unallocatedVoteWeight), -4).toString(),
+    FNumFormats.percent
+  )
+);
+
 const unallocatedVotesClass = computed(() => {
   return hasEnoughVotes.value ? ['text-gray-500'] : ['text-red-600'];
 });
@@ -139,7 +155,7 @@ const remainingVotes = computed(() => {
   if (!hasEnoughVotes.value) {
     remainingVotesText = 'veBAL.liquidityMining.popover.remainingVotesExceeded';
   } else {
-    remainingVotesText = isEditing.value
+    remainingVotesText = hasVotes.value
       ? 'veBAL.liquidityMining.popover.remainingVotesEditing'
       : 'veBAL.liquidityMining.popover.remainingVotes';
   }
@@ -156,7 +172,8 @@ const remainingVotes = computed(() => {
   );
   return t(remainingVotesText, [
     remainingVotesFormatted,
-    currentVotesFormatted
+    currentVotesFormatted,
+    unallocatedVotesFormatted.value
   ]);
 });
 
@@ -237,89 +254,87 @@ async function handleTransaction(tx) {
     }
   });
 }
+
+/**
+ * LIFECYCLE
+ */
+onMounted(() => {
+  if (hasVotes.value) voteWeight.value = currentWeightNormalized.value;
+});
 </script>
 
 <template>
-  <BalPopover detached no-pad>
-    <template v-slot:activator>
-      <BalBtn color="blue" :outline="true" size="sm" flat block>
-        {{ $t('veBAL.liquidityMining.table.vote') }}
-      </BalBtn>
-    </template>
-    <BalCard class="w-96" noBorder>
-      <template v-slot:header>
-        <div class="px-2 pt-3 w-full flex items-center justify-between">
-          <h4>{{ voteTitle }}</h4>
-        </div>
-      </template>
-      <div class="p-2 pt-0">
-        <div v-if="voteWarning" class="pb-2 text-sm text-orange-500">
-          {{ voteWarning }}
-        </div>
-        <BalForm>
-          <BalTextInput
-            name="voteWeight"
-            v-model="voteWeight"
-            placeholder="100"
-            validateOn="input"
-            :rules="inputRules"
-            size="sm"
-          >
-            <template v-slot:append>
-              <div
-                class="h-full flex flex-row justify-center items-center px-2"
-              >
-                <span class="text-gray-500">%</span>
-              </div>
-            </template>
-          </BalTextInput>
-          <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
-            {{ remainingVotes }}
-          </div>
-          <BalAlert
-            v-if="voteError"
-            type="error"
-            :title="voteError.title"
-            :description="voteError.description"
-            block
-            class="mt-2"
-          />
-          <BalBtn
-            color="gradient"
-            class="mt-4"
-            block
-            :disabled="voteDisabled"
-            :loading="transactionInProgress"
-            :loading-label="
-              voteState.init
-                ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
-                : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
-            "
-            @click.prevent="submitVote"
-            >{{ voteButtonText }}</BalBtn
-          >
-          <BalLink
-            v-if="voteState.receipt"
-            :href="explorerLink"
-            external
-            noStyle
-            class="group flex items-center"
-          >
-            {{ networkConfig.explorerName }}
-            <BalIcon
-              name="arrow-up-right"
-              size="sm"
-              class="ml-px group-hover:text-pink-500 transition-colors"
-            />
-          </BalLink>
-        </BalForm>
+  <BalModal show :fireworks="false" @close="emit('close')">
+    <template v-slot:header>
+      <div class="flex items-center">
+        <BalCircle v-if="false" size="8" color="green" class="text-white mr-2">
+          <BalIcon name="check" />
+        </BalCircle>
+        <h4>
+          {{ voteTitle }}
+        </h4>
       </div>
-    </BalCard>
-  </BalPopover>
+    </template>
+    <div>
+      <div v-if="voteWarning" class="pb-2 text-sm text-yellow-500">
+        {{ voteWarning }}
+      </div>
+      <BalForm>
+        <BalTextInput
+          name="voteWeight"
+          v-model="voteWeight"
+          :placeholder="unallocatedVotesNormalized"
+          validateOn="input"
+          :rules="inputRules"
+          :disabled="voteDisabled"
+          size="sm"
+        >
+          <template v-slot:append>
+            <div class="h-full flex flex-row justify-center items-center px-2">
+              <span class="text-gray-500">%</span>
+            </div>
+          </template>
+        </BalTextInput>
+        <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
+          {{ remainingVotes }}
+        </div>
+        <BalAlert
+          v-if="voteError"
+          type="error"
+          :title="voteError.title"
+          :description="voteError.description"
+          block
+          class="mt-2"
+        />
+        <BalBtn
+          color="gradient"
+          class="mt-4"
+          block
+          :disabled="voteDisabled"
+          :loading="transactionInProgress"
+          :loading-label="
+            voteState.init
+              ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
+              : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
+          "
+          @click.prevent="submitVote"
+          >{{ voteButtonText }}</BalBtn
+        >
+        <BalLink
+          v-if="voteState.receipt"
+          :href="explorerLink"
+          external
+          noStyle
+          class="group flex items-center"
+        >
+          {{ networkConfig.explorerName }}
+          <BalIcon
+            name="arrow-up-right"
+            size="sm"
+            class="ml-px group-hover:text-pink-500 transition-colors"
+          />
+        </BalLink>
+      </BalForm>
+    </div>
+  </BalModal>
 </template>
-
-<style scoped>
-.text-orange-500 {
-  color: #f97316;
-}
-</style>
