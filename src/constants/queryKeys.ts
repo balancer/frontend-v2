@@ -12,8 +12,9 @@ const QUERY_KEYS = {
     All: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      poolIds: Ref<string[]> | undefined
-    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds }],
+      poolIds: Ref<string[]> | undefined,
+      poolAddresses: Ref<string[]> | undefined
+    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
     User: (networkId: Ref<Network>, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'user',
@@ -122,6 +123,14 @@ const QUERY_KEYS = {
         account: Ref<string>,
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
+    },
+    StakablePools: {
+      All: (poolAddresses: Ref<string[]>) => [
+        'gauges',
+        'pools',
+        'all',
+        { poolAddresses }
+      ]
     }
   },
   Transaction: {

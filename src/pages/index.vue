@@ -17,10 +17,10 @@
             :data="stakableUserPools"
             :noPoolsLabel="$t('noInvestments')"
             :selectedTokens="selectedTokens"
-            :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
+            :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
             showPoolShares
-            class="mb-8"
           />
+          <StakedPoolsTable :userPools="userPools" />
           <BalStack vertical spacing="sm">
             <h5>{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
@@ -31,25 +31,10 @@
               showPoolShares
               :selectedTokens="selectedTokens"
               :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
-              class="mb-8"
             />
           </BalStack>
         </BalStack>
       </BalStack>
-      <PoolsTable
-        :isLoading="isLoadingUserPools"
-        :data="userPools"
-        :noPoolsLabel="$t('noInvestments')"
-        showPoolShares
-        :showMigrationColumn="showMigrationColumn"
-        :selectedTokens="selectedTokens"
-        class="mb-8"
-        :key="
-          `userPoolsTable-${
-            showMigrationColumn ? 'withMigrationCol' : 'withoutMigrationCol'
-          }`
-        "
-      />
       <div class="mb-16" />
     </template>
 
@@ -123,11 +108,14 @@ import { isMigratablePool } from '@/composables/usePool';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
+import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
+
 export default defineComponent({
   components: {
     TokenSearchInput,
     PoolsTable,
-    FeaturedPools
+    FeaturedPools,
+    StakedPoolsTable
   },
 
   setup() {

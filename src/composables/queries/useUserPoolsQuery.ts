@@ -238,7 +238,8 @@ export default function useUserPoolsQuery(
       shares: bnum(pool.totalLiquidity)
         .div(pool.totalShares)
         .times(poolSharesMap[pool.id].balance)
-        .toString()
+        .toString(),
+      bpt: poolSharesMap[pool.id].balance
     }));
 
     const totalInvestedAmount = poolsWithShares

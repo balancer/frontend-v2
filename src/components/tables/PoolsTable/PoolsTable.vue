@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   hiddenColumns: () => []
 });
 
-const emit = defineEmits(['loadMore']);
+const emit = defineEmits(['loadMore', 'triggerStake']);
 
 /**
  * COMPOSABLES
@@ -133,7 +133,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     cellClassName: 'font-numeric'
   },
   {
-    name: t('myApr'),
+    name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
     accessor: pool => pool.dynamic.apr.total,
     align: 'right',
@@ -274,19 +274,17 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
+          <div v-if="getStakeState(pool) === StakeState.MaxStaked">
+            <span>100%</span>
+          </div>
           <BalBtn
+            v-if="getStakeState(pool) === StakeState.CanStake"
             color="gradient"
             size="sm"
-            v-if="getStakeState(pool) === StakeState.CanStake"
+            @click.prevent="$emit('triggerStake', pool)"
           >
             {{ $t('stake') }}
           </BalBtn>
-          <span v-if="getStakeState(pool) === StakeState.MaxStaked">
-            100.00%
-          </span>
-          <span v-if="getStakeState(pool) === StakeState.NoGuage">
-            N/A
-          </span>
         </div>
       </template>
     </BalTable>
