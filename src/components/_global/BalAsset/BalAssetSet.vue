@@ -33,7 +33,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import { chunk } from 'lodash';
 
 import BalAsset from './BalAsset.vue';
-import { getAddress, isAddress } from '@ethersproject/address';
+import { isAddress } from '@ethersproject/address';
 
 export default defineComponent({
   components: {
