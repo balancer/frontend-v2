@@ -35,12 +35,16 @@ function navigateToGetVeBAL() {
 
 <template>
   <div class="px-3 md:px-0 md:w-1/2">
-    <h3>{{ $t('veBAL.hero.title') }}</h3>
-    <div v-for="(benefit, i) in benefits" :key="i" class="flex items-center">
+    <h1 class="mb-8">{{ $t('veBAL.hero.title') }}</h1>
+    <div
+      v-for="(benefit, i) in benefits"
+      :key="i"
+      class="flex items-center mb-2 text-gray-600"
+    >
       <BalIcon name="check" class="text-green-500 mr-2" />
       {{ benefit }}
     </div>
-    <div class="flex mt-3">
+    <div class="flex mt-8">
       <BalBtn color="gradient" @click="navigateToGetVeBAL" class="mr-3">
         {{ $t('veBAL.hero.buttons.getVeBAL') }}
       </BalBtn>
