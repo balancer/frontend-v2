@@ -49,7 +49,13 @@
 import useBreakpoints from '@/composables/useBreakpoints';
 import ConfigService from '@/services/config/config.service';
 import { defineComponent } from 'vue';
-import { Network } from '@/services/balancer/subgraph/types';
+
+export interface NetworkOption {
+  id: string;
+  name: string;
+  subdomain?: string;
+  key?: string;
+}
 
 export default defineComponent({
   name: 'AppNavNetworkSelect',
@@ -93,15 +99,15 @@ export default defineComponent({
     });
 
     // METHODS
-    function iconSrc(network: Network): string {
+    function iconSrc(network: NetworkOption): string {
       return require(`@/assets/images/icons/networks/${network.id}.svg`);
     }
 
-    function appUrl(network: Network): string {
+    function appUrl(network: NetworkOption): string {
       return `https://${network.subdomain}.balancer.fi`;
     }
 
-    function isActive(network: Network): boolean {
+    function isActive(network: NetworkOption): boolean {
       if (!appNetworkSupported && network.id === 'ethereum') return true;
       return configService.network.key === network.key;
     }

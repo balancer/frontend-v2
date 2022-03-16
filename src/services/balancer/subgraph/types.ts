@@ -18,20 +18,6 @@ export enum PoolType {
 }
 export type TimeTravelPeriod = '24h';
 
-export interface Network {
-  id: string;
-  name: string;
-  subdomain?: string;
-  key?: string;
-}
-
-export interface Chain {
-  id: string;
-  name: string;
-  subdomain?: string;
-  key?: string;
-}
-
 export interface PoolToken {
   address: string;
   balance: string;
@@ -184,18 +170,6 @@ export interface PoolShare {
 
 export interface DecoratedPoolWithShares extends DecoratedPool {
   shares: string;
-}
-
-export interface GaugeInformation {
-  address: string;
-  votes: string;
-  userVotes: string;
-  lastUserVote: number;
-}
-
-export interface PoolWithGauge extends Pool {
-  chain: Chain;
-  gauge: GaugeInformation;
 }
 
 export type PoolActivityType = 'Join' | 'Exit';
