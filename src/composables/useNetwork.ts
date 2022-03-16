@@ -43,6 +43,21 @@ export function networkNameFor(network: Network): string {
   return config[network].network;
 }
 
+export function subdomainFor(network: Network): string {
+  switch (network) {
+    case Network.MAINNET:
+      return 'app';
+    case Network.KOVAN:
+      return 'kovan';
+    case Network.POLYGON:
+      return 'polygon';
+    case Network.ARBITRUM:
+      return 'arbitrum';
+    default:
+      throw new Error('Network not supported');
+  }
+}
+
 export default function useNetwork() {
   return {
     setNetworkId,

@@ -52,8 +52,10 @@ export class GaugeControllerDecorator {
   ): Promise<VotingGaugeWithVotes[]> {
     this.multicaller = this.resetMulticaller();
     this.callGaugeVotes(votingGauges);
-    this.callUserGaugeVotes(votingGauges, userAddress);
-    this.callUserGaugeVoteTime(votingGauges, userAddress);
+    if (userAddress) {
+      this.callUserGaugeVotes(votingGauges, userAddress);
+      this.callUserGaugeVoteTime(votingGauges, userAddress);
+    }
 
     const votesDataMap = await this.multicaller.execute<RawVotesDataMap>();
 
@@ -68,8 +70,8 @@ export class GaugeControllerDecorator {
   private formatVotes(votesData: RawVotesData): VotesData {
     return {
       votes: votesData.votes.toString(),
-      userVotes: votesData.userVotes.power.toString(),
-      lastUserVote: votesData.lastUserVote.toNumber()
+      userVotes: votesData?.userVotes?.power.toString() || '0',
+      lastUserVote: votesData?.lastUserVote?.toNumber() || 0
     };
   }
 

@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue';
+import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -24,12 +24,7 @@ export default function useGaugeVotesQuery(
   /**
    * COMPOSABLES
    */
-  const { account, isWalletReady } = useWeb3();
-
-  /**
-   * COMPUTED
-   */
-  const enabled = computed(() => isWalletReady.value);
+  const { account } = useWeb3();
 
   /**
    * QUERY KEY
@@ -55,7 +50,7 @@ export default function useGaugeVotesQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled,
+    enabled: true,
     ...options
   });
 

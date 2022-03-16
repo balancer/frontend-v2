@@ -15,7 +15,10 @@ import GaugeVote from './GaugeVote.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { isStableLike, orderedPoolTokens } from '@/composables/usePool';
 import { Network } from '@balancer-labs/sdk';
-import { networkNameFor } from '@/composables/useNetwork';
+import { networkNameFor, subdomainFor } from '@/composables/useNetwork';
+import useWeb3 from '@/services/web3/useWeb3';
+import { useRouter } from 'vue-router';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -48,6 +51,8 @@ const emit = defineEmits(['loadMore']);
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { isWalletReady } = useWeb3();
+const router = useRouter();
 
 /**
  * DATA
@@ -106,7 +111,8 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     id: 'myVotes',
     sortKey: gauge => Number(gauge.userVotes),
     width: 150,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
+    hidden: !isWalletReady.value
   },
   {
     name: t('veBAL.liquidityMining.table.vote'),
@@ -114,7 +120,8 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 100
+    width: 100,
+    hidden: !isWalletReady.value
   }
 ]);
 
@@ -154,6 +161,12 @@ function networkSrc(network: Network) {
     network
   )}.svg`);
 }
+
+function redirectToPool(gauge: VotingGaugeWithVotes) {
+  const subdomain = subdomainFor(gauge.network);
+  const host = configService.env.APP_HOST;
+  window.location.href = `https://${subdomain}.${host}/#/pool/${gauge.pool.id}`;
+}
 </script>
 
 <template>
@@ -174,6 +187,7 @@ function networkSrc(network: Network) {
       sticky="both"
       :square="upToLargeBreakpoint"
       :is-paginated="isPaginated"
+      :on-row-click="redirectToPool"
       @load-more="emit('loadMore')"
       :initial-state="{
         sortColumn: 'poolValue',
@@ -215,7 +229,7 @@ function networkSrc(network: Network) {
         </div>
       </template>
       <template #voteColumnCell="gauge">
-        <div class="px-4">
+        <div v-if="isWalletReady" class="px-4">
           <GaugeVote
             :gauge="gauge"
             :unallocatedVoteWeight="unallocatedVoteWeight"
