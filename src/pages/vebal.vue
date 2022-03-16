@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * veBAL page
+ */
 import Hero from '@/components/contextual/pages/vebal/Hero.vue';
 import MyVeBAL from '@/components/contextual/pages/vebal/MyVeBAL/MyVeBAL.vue';
 import LMVoting from '@/components/contextual/pages/vebal/LMVoting/LMVoting.vue';
