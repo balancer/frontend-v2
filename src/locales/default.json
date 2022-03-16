@@ -610,9 +610,8 @@
                 },
                 "actions": {
                     "vote": {
-                        "confirming": "Confirming approval...",
-                        "tooltip": "You must approve {0}.",
-                        "loadingLabel": "Confirm approval in wallet"                    
+                        "confirming": "Confirming vote...",
+                        "loadingLabel": "Confirm vote in wallet"                    
                     }
                 },
                 "voteForGauge": "{0} for {1}",

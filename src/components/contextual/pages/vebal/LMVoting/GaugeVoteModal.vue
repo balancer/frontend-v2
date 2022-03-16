@@ -5,14 +5,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 
-import useWeb3 from '@/services/web3/useWeb3';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import useConfig from '@/composables/useConfig';
 import useVeBal from '@/composables/useVeBAL';
 
 import { scale, bnum } from '@/lib/utils';
@@ -48,8 +46,6 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { explorerLinks } = useWeb3();
-const { networkConfig } = useConfig();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
@@ -133,12 +129,6 @@ const voteError = computed(() => {
   if (voteState.error) return voteState.error;
   return null;
 });
-
-const explorerLink = computed((): string =>
-  voteState.receipt
-    ? explorerLinks.txLink(voteState.receipt.transactionHash)
-    : ''
-);
 
 const transactionInProgress = computed(
   (): boolean => voteState.init || voteState.confirming
@@ -240,7 +230,7 @@ async function handleTransaction(tx) {
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
       fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
-      'pool'
+      props.gauge.pool.symbol
     ]),
     details: {
       voteWeight: voteWeight.value
@@ -350,32 +340,34 @@ onMounted(() => {
           v-if="voteState.receipt"
           :txReceipt="voteState.receipt"
         />
-        <BalBtn
-          v-if="voteState.receipt"
-          color="gray"
-          outline
-          block
-          class="mt-2"
-          @click="emit('close')"
-        >
-          {{ $t('returnToVeBalPage') }}
-        </BalBtn>
-        <BalBtn
-          v-else
-          color="gradient"
-          class="mt-4"
-          block
-          :disabled="voteDisabled || transactionInProgress"
-          :loading="transactionInProgress"
-          :loading-label="
-            voteState.init
-              ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
-              : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
-          "
-          @click.prevent="submitVote"
-        >
-          {{ voteButtonText }}
-        </BalBtn>
+        <transition>
+          <BalBtn
+            v-if="voteState.receipt"
+            color="gray"
+            outline
+            block
+            class="mt-4"
+            @click="emit('close')"
+          >
+            {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
+          </BalBtn>
+          <BalBtn
+            v-else
+            color="gradient"
+            class="mt-4"
+            block
+            :disabled="voteDisabled"
+            :loading="transactionInProgress"
+            :loading-label="
+              voteState.init
+                ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
+                : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
+            "
+            @click.prevent="submitVote"
+          >
+            {{ voteButtonText }}
+          </BalBtn>
+        </transition>
       </BalForm>
     </div>
   </BalModal>
