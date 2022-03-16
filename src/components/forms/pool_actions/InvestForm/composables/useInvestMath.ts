@@ -17,6 +17,7 @@ import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import useConfig from '@/composables/useConfig';
 import { pickBy } from 'lodash';
 import { getAddress } from '@ethersproject/address';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 export type InvestMathResponse = {
   // computed
@@ -69,7 +70,8 @@ export default function useInvestFormMath(
   const {
     managedPoolWithTradingHalted,
     isStablePhantomPool,
-    hasNestedUsdStablePhantomPool
+    hasNestedUsdStablePhantomPool,
+    isWeightedPoolWithNestedLinearPools
   } = usePool(pool);
   const { currency } = useUserSettings();
   const {
@@ -78,6 +80,8 @@ export default function useInvestFormMath(
     processAll: processBatchSwaps
   } = usePromiseSequence();
   const { networkConfig } = useConfig();
+
+  const { usdAsset } = usePoolTransfers();
 
   /**
    * Services
@@ -358,7 +362,27 @@ export default function useInvestFormMath(
           changedIndex,
           'send'
         );
-        proportionalAmounts.value = send;
+
+        if (
+          hasNestedUsdStablePhantomPool.value &&
+          isWeightedPoolWithNestedLinearPools.value
+        ) {
+          //
+          proportionalAmounts.value = send.map((value, index) => {
+            if (
+              pool.value.tokensList[index].toLowerCase() ===
+              networkConfig.addresses.bbUsd.toLowerCase()
+            ) {
+              const token = getToken(usdAsset.value);
+
+              return value.slice(0, value.indexOf('.') + token.decimals + 1);
+            }
+
+            return value;
+          });
+        } else {
+          proportionalAmounts.value = send;
+        }
       }
     }
   });
