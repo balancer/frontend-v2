@@ -14,6 +14,8 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 import GaugeVote from './GaugeVote.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { isStableLike } from '@/composables/usePool';
+import { Network } from '@balancer-labs/sdk';
+import { networkNameFor } from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -56,7 +58,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     id: 'chain',
     accessor: '',
     Header: 'chainColumnHeader',
-    Cell: 'chainCell',
+    Cell: 'networkColumnCell',
     width: 50,
     noGrow: true
   },
@@ -143,6 +145,12 @@ async function handleVoteSuccess() {
     await props.refetch();
   }
 }
+
+function networkSrc(network: Network) {
+  return require(`@/assets/images/icons/networks/${networkNameFor(
+    network
+  )}.svg`);
+}
 </script>
 
 <template>
@@ -169,26 +177,26 @@ async function handleVoteSuccess() {
         sortDirection: 'desc'
       }"
     >
-      <template v-slot:chainColumnHeader>
+      <template #chainColumnHeader>
         <div class="flex items-center">
           <NetworkIcon />
         </div>
       </template>
-      <template v-slot:iconColumnHeader>
+      <template #iconColumnHeader>
         <div class="flex items-center">
           <CompositionIcon />
         </div>
       </template>
-      <template v-slot:networkColumnCell="{ chain }">
+      <template #networkColumnCell="{ network }">
         <div v-if="!isLoading" class="px-6 py-4">
-          <img
-            :src="require(`@/assets/images/icons/networks/${chain}.svg`)"
-            :alt="chain"
-            class="w-5 h-5 rounded-full shadow-sm"
-          />
+          <div
+            class="w-8 h-8 rounded shadow-sm bg-gray-50 flex items-center justify-center"
+          >
+            <img :src="networkSrc(network)" :alt="network" class="w-6 h-6" />
+          </div>
         </div>
       </template>
-      <template v-slot:iconColumnCell>
+      <template #iconColumnCell>
         <div v-if="!isLoading" class="px-6 py-4">
           <!-- <BalAssetSet
             :addresses="orderedTokenAddressesFor(gauge)"
@@ -196,7 +204,7 @@ async function handleVoteSuccess() {
           /> -->
         </div>
       </template>
-      <template v-slot:poolCompositionCell="gauge">
+      <template #poolCompositionCell="gauge">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
             :tokens="orderedPoolTokens(gauge)"
@@ -204,7 +212,7 @@ async function handleVoteSuccess() {
           />
         </div>
       </template>
-      <template v-slot:voteColumnCell="gauge">
+      <template #voteColumnCell="gauge">
         <div class="px-4">
           <GaugeVote
             :gauge="gauge"

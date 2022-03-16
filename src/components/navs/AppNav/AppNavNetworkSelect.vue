@@ -9,7 +9,7 @@
         <img
           :src="iconSrc(activeNetwork)"
           :alt="activeNetwork.name"
-          class="w-5 h-5 rounded-full shadow-sm"
+          class="w-6 h-6 rounded-full"
         />
         <span class="ml-2">
           {{ activeNetwork.name }}
@@ -33,7 +33,7 @@
           <img
             :src="iconSrc(network)"
             :alt="network.name"
-            class="w-5 h-5 rounded-full mr-2"
+            class="w-6 h-6 rounded-full mr-2"
           />
           <span class="ml-1 font-medium">
             {{ network.name }}

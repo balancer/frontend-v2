@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { Network } from '@balancer-labs/sdk';
+import config from '@/lib/config';
 
 /**
  * STATE
@@ -36,6 +37,10 @@ export function networkFor(key: string | number): Network {
     default:
       throw new Error('Network not supported');
   }
+}
+
+export function networkNameFor(network: Network): string {
+  return config[network].network;
 }
 
 export default function useNetwork() {
