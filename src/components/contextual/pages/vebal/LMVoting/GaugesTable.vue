@@ -257,6 +257,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :logoURIs="orderedTokenURIs(activeGaugeVote)"
       :poolURL="poolURLFor(activeGaugeVote)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
+      @success="handleVoteSuccess"
     />
   </teleport>
 </template>
