@@ -64,37 +64,45 @@ const voteState = reactive<TransactionActionState>({
  * COMPUTED
  */
 const voteDisabled = computed(
-  () => !!votedToRecentlyError.value || !hasEnoughVotes.value
+  () => !!votedToRecentlyWarning.value || !hasEnoughVotes.value
 );
 
 const currentWeight = computed(() => props.gauge.userVotes);
+const isEditing = computed(() => parseFloat(currentWeight.value) > 0);
+
+const voteTitle = computed(() =>
+  isEditing.value
+    ? t('veBAL.liquidityMining.popover.title.edit')
+    : t('veBAL.liquidityMining.popover.title.vote')
+);
+
 const voteButtonText = computed(() =>
-  parseFloat(currentWeight.value) > 0
+  isEditing.value
     ? t('veBAL.liquidityMining.popover.button.edit')
     : t('veBAL.liquidityMining.popover.button.vote')
 );
 
-const votedToRecentlyError = computed(() => {
+const votedToRecentlyWarning = computed(() => {
   const timestampSeconds = Date.now() / 1000;
   const lastUserVote = props.gauge.lastUserVote;
   if (timestampSeconds < lastUserVote + WEIGHT_VOTE_DELAY) {
     const remainingTime = formatDistanceToNow(
       (lastUserVote + WEIGHT_VOTE_DELAY) * 1000
     );
-    return {
-      title: t('veBAL.liquidityMining.popover.errors.votedTooRecently.title'),
-      description: t(
-        'veBAL.liquidityMining.popover.errors.votedTooRecently.description',
-        [remainingTime]
-      )
-    };
+    return t('veBAL.liquidityMining.popover.warnings.votedTooRecently', [
+      remainingTime
+    ]);
   }
+  return null;
+});
+
+const voteWarning = computed(() => {
+  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
   return null;
 });
 
 const voteError = computed(() => {
   if (voteState.error) return voteState.error;
-  if (votedToRecentlyError.value) return votedToRecentlyError.value;
   return null;
 });
 
@@ -116,11 +124,37 @@ const unallocatedVotesClass = computed(() => {
   return hasEnoughVotes.value ? ['text-gray-500'] : ['text-red-600'];
 });
 
+const remainingVotes = computed(() => {
+  let remainingVotesText;
+  if (!hasEnoughVotes.value) {
+    remainingVotesText = 'veBAL.liquidityMining.popover.remainingVotesExceeded';
+  } else {
+    remainingVotesText = isEditing.value
+      ? 'veBAL.liquidityMining.popover.remainingVotesEditing'
+      : 'veBAL.liquidityMining.popover.remainingVotes';
+  }
+  const remainingVotesFormatted = fNum2(
+    scale(
+      bnum(props.unallocatedVoteWeight).plus(bnum(currentWeight.value)),
+      -4
+    ).toString(),
+    FNumFormats.percent
+  );
+  const currentVotesFormatted = fNum2(
+    scale(bnum(currentWeight.value), -4).toString(),
+    FNumFormats.percent
+  );
+  return t(remainingVotesText, [
+    remainingVotesFormatted,
+    currentVotesFormatted
+  ]);
+});
+
 const inputRules = [
   value => {
     if (value !== '' && isNaN(Number(value))) return '';
     if (isVoteWeightValid(value)) return;
-    return t('veBAL.liquidityMining.popover.errors.notEnoughVotes.title');
+    return '';
   }
 ];
 
@@ -202,13 +236,14 @@ async function handleTransaction(tx) {
         {{ $t('veBAL.liquidityMining.table.vote') }}
       </BalBtn>
     </template>
-    <BalCard class="w-72" noPad noBorder>
+    <BalCard class="w-96" noBorder>
       <template v-slot:header>
-        <div class="px-3 pt-3 w-full flex items-center justify-between">
-          <h5>{{ $t('veBAL.liquidityMining.popover.title') }}</h5>
+        <div class="px-2 pt-3 w-full flex items-center justify-between">
+          <h4>{{ voteTitle }}</h4>
         </div>
       </template>
-      <div class="p-3">
+      <div class="p-2 pt-0">
+        <div v-if="voteWarning" class="pb-2 text-sm text-orange-500">{{ voteWarning }}</div>
         <BalForm>
           <BalTextInput
             name="voteWeight"
@@ -227,14 +262,7 @@ async function handleTransaction(tx) {
             </template>
           </BalTextInput>
           <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
-            {{
-              $t('veBAL.liquidityMining.popover.unallocatedVotes', [
-                fNum2(
-                  scale(bnum(props.unallocatedVoteWeight), -4).toString(),
-                  FNumFormats.percent
-                )
-              ])
-            }}
+            {{ remainingVotes }}
           </div>
           <BalAlert
             v-if="voteError"
@@ -277,3 +305,9 @@ async function handleTransaction(tx) {
     </BalCard>
   </BalPopover>
 </template>
+
+<style scoped>
+.text-orange-500 {
+  color: #f97316;
+}
+</style>

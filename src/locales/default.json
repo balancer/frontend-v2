@@ -600,7 +600,10 @@
                 "vote": "Vote"
             },
             "popover": {
-                "title": "Vote weight",
+                "title": {
+                    "vote": "Gauge vote",
+                    "edit": "Edit gauge vote"
+                },
                 "button": {
                     "vote": "Vote",
                     "edit": "Edit vote"
@@ -613,15 +616,14 @@
                     }
                 },
                 "voteForGauge": "{0} for {1}",
-                "unallocatedVotes": "Unallocated Votes: {0}",
+                "remainingVotes": "Your remaining votes: {0}",
+                "remainingVotesEditing": "Your remaining votes: {0} (including your current allocation of {1} in this pool)",
+                "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
+                "warnings": {
+                    "votedTooRecently": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation for {0}"
+                },
                 "errors": {
-                    "votedTooRecently": {
-                        "title": "Voted too recently",
-                        "description": "You can only vote for a gauge once every 10 days. You can vote on this gauge again in {0}"
-                    },
-                    "notEnoughVotes": {
-                        "title": "Not enough unallocated votes"
-                    }
+                    "notEnoughVotes": "Not enough unallocated votes"
                 }
             }
         },
