@@ -20,9 +20,9 @@ export function getTokensErrorFromInputs(
   }
 
   for (const poolToken of poolTokens) {
-    if (!poolToken.weight || parseFloat(poolToken.weight) === 0) {
+    if (!poolToken.weight || parseFloat(poolToken.weight) < 1) {
       return {
-        header: 'All tokens must have a weight',
+        header: 'All tokens must have a minimum weight of 1%',
         body: 'One or more of your tokens does not have a valid weight'
       };
     }
