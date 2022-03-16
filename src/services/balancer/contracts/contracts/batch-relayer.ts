@@ -52,19 +52,6 @@ export default class BatchRelayer {
 
     const method = exactOut ? 'swapUnwrapExactOut' : 'swapUnwrapExactIn';
 
-    console.log('stableExitStatic', {
-      tokensIn,
-      tokensOut,
-      amountsIn,
-      rates,
-      funds,
-      slippage,
-      abc: {
-        fetchPools,
-        fetchOnChain: false
-      }
-    });
-
     return await this.service.sdk.relayer[method](
       tokensIn,
       tokensOut,

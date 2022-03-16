@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { computed, defineProps } from 'vue';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
-
 import useBreakpoints from '@/composables/useBreakpoints';
-
 import AssetRow from './components/AssetRow.vue';
-import { bnum } from '@/lib/utils';
 import { getAddress } from '@ethersproject/address';
+import { keyBy } from 'lodash';
 
 /**
  * TYPES
@@ -31,41 +29,32 @@ const props = withDefaults(defineProps<Props>(), {
 const { upToLargeBreakpoint } = useBreakpoints();
 const { explorerLinks } = useWeb3();
 
+const baseTokens = computed(() => {
+  return props.pool.tokens.filter(token => !token.isBpt && !token.isPhantomBpt);
+});
+
 /**
  * METHODS
  */
 function getUnderlyingTokens(address: string) {
   address = getAddress(address);
-  const linearPools = props.pool.onchain.linearPools;
+  const linearPools = keyBy(props.pool.linearPools, pool =>
+    getAddress(pool.address)
+  );
 
-  if (linearPools == null) {
+  if (!linearPools) {
     return [];
   }
 
   const mainTokenAddress = linearPools[address].mainToken.address;
 
-  return linearPools != null
-    ? [
-        linearPools[address].mainToken,
-        {
-          ...linearPools[address].wrappedToken,
-          mainTokenAddress
-        }
-      ]
-    : [];
-}
-
-function getTokenShare(address: string) {
-  address = getAddress(address);
-  const linearPools = props.pool.onchain.linearPools;
-
-  if (linearPools == null) {
-    return null;
-  }
-
-  return bnum(linearPools[address].balance)
-    .div(linearPools[address].totalSupply)
-    .toString();
+  return [
+    linearPools[address].mainToken,
+    {
+      ...linearPools[address].wrappedToken,
+      mainTokenAddress
+    }
+  ];
 }
 </script>
 
@@ -87,6 +76,13 @@ function getTokenShare(address: string) {
     </template>
 
     <div class="p-4 -mt-2">
+      <div v-for="token in baseTokens" :key="token.address" class="py-4">
+        <AssetRow
+          :address="token.address"
+          :balance="token.balance"
+          :share="1"
+        />
+      </div>
       <div
         v-for="linearPool in pool.linearPools"
         :key="linearPool.address"
@@ -119,7 +115,7 @@ function getTokenShare(address: string) {
               :main-token-address="asset.mainTokenAddress"
               :balance="asset.balance"
               :price-rate="asset.priceRate"
-              :share="getTokenShare(getAddress(linearPool.address))"
+              :share="1"
             />
           </template>
         </BalBreakdown>

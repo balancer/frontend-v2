@@ -32,10 +32,10 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { tokens, balances, balanceFor } = useTokens();
+const { tokens, balances } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
-const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { isBoostedPool } = usePool(toRef(props, 'pool'));
 const { pools } = usePools();
 
 /**
@@ -49,7 +49,7 @@ const poolCalculator = new PoolCalculator(
   ref(false)
 );
 
-const { userBoostedPoolBalance } = useBoostedPool(
+const { userPoolBalance, boostedPoolUserMainTokenBalances } = useBoostedPool(
   toRef(props, 'pool'),
   poolCalculator,
   //@ts-ignore
@@ -70,8 +70,19 @@ const tokenAddresses = computed((): string[] => {
 });
 
 const fiatTotal = computed(() => {
+  if (isBoostedPool.value) {
+    const fiatValue = boostedPoolUserMainTokenBalances.value
+      .map((token, i) => toFiat(token.balance, token.address))
+      .reduce((total, value) =>
+        bnum(total)
+          .plus(value)
+          .toString()
+      );
+    return fNum(fiatValue, currency.value);
+  }
+
   const fiatValue = tokenAddresses.value
-    .map((address, i) => toFiat(userBoostedPoolBalance.value[i], address))
+    .map((address, i) => toFiat(userPoolBalance.value[i], address))
     .reduce((total, value) =>
       bnum(total)
         .plus(value)
@@ -85,15 +96,20 @@ const fiatTotal = computed(() => {
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
-        <h6>
-          {{ $t('poolTransfer.myPoolBalancesCard.title') }}
-        </h6>
+        <h6>{{ $t('poolTransfer.myPoolBalancesCard.title') }}</h6>
       </div>
     </template>
 
     <div class="-mt-2 p-4">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
-        <AssetRow :address="address" :balance="userBoostedPoolBalance[i]" />
+        <AssetRow
+          :address="address"
+          :balance="
+            isBoostedPool
+              ? boostedPoolUserMainTokenBalances[i].balance
+              : userPoolBalance[i]
+          "
+        />
       </div>
       <div class="pt-4 flex justify-between font-medium">
         <span>

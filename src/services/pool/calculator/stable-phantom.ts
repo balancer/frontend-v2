@@ -59,8 +59,9 @@ export default class StablePhantom {
       this.calc.poolTokenDecimals
     );
 
+    // This function should use pool balances (i.e. without rate conversion)
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
-      this.scaledBalances,
+      this.calc.poolTokenBalances,
       this.calc.poolTokenDecimals,
       denormAmounts,
       this.calc.poolTotalSupply,
@@ -68,8 +69,6 @@ export default class StablePhantom {
       this.calc.poolSwapFee,
       this.priceRates
     );
-
-    console.log('bptZeroImpact', bptZeroImpact.toString());
 
     return bnum(bptZeroImpact.toString());
   }
@@ -106,9 +105,13 @@ export default class StablePhantom {
     return amp.times(this.AMP_PRECISION);
   }
 
+  //TODO: make sure this is correct, might need to filter out the pool token
   private get priceRates(): BigNumberish[] {
     const tokenRates = this.calc.pool.value.onchain.tokenRates;
     if (!tokenRates) return [];
-    return tokenRates.map(rate => parseUnits(rate, 18));
+
+    return this.calc.pool.value.tokensList.map((token, index) =>
+      parseUnits(tokenRates[index], 18)
+    );
   }
 }

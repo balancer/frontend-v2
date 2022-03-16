@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -32,7 +33,7 @@ const token = computed(() => getToken(props.address));
 const balanceLabel = computed(() => fNum(props.balance, 'token'));
 
 const fiatLabel = computed(() => {
-  const fiatValue = toFiat(props.balance, props.address);
+  const fiatValue = toFiat(props.balance, getAddress(props.address));
   return fNum(fiatValue, currency.value);
 });
 </script>

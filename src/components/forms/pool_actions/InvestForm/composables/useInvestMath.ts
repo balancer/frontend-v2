@@ -1,10 +1,10 @@
-import { computed, Ref, watch, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useNumbers, { fNum } from '@/composables/useNumbers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
-import { parseUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
@@ -14,6 +14,9 @@ import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
+import useConfig from '@/composables/useConfig';
+import { pickBy } from 'lodash';
+import { getAddress } from '@ethersproject/address';
 
 export type InvestMathResponse = {
   // computed
@@ -53,6 +56,7 @@ export default function useInvestFormMath(
    * STATE
    */
   const proportionalAmounts = ref<string[]>([]);
+  const batchSwapUsd = ref<BatchSwap | null>(null);
   const batchSwap = ref<BatchSwap | null>(null);
   const batchSwapLoading = ref(false);
 
@@ -62,13 +66,18 @@ export default function useInvestFormMath(
   const { toFiat } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
-  const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
+  const {
+    managedPoolWithTradingHalted,
+    isStablePhantomPool,
+    hasNestedUsdStablePhantomPool
+  } = usePool(pool);
   const { currency } = useUserSettings();
   const {
     promises: batchSwapPromises,
     processing: processingBatchSwaps,
     processAll: processBatchSwaps
   } = usePromiseSequence();
+  const { networkConfig } = useConfig();
 
   /**
    * Services
@@ -137,9 +146,52 @@ export default function useInvestFormMath(
     fullAmounts.value.some(amount => bnum(amount).gt(0))
   );
 
+  const fullAmountsWithNestedUsdBpt = computed(() => {
+    if (!hasNestedUsdStablePhantomPool.value || batchSwapUsd.value === null) {
+      return [];
+    }
+
+    const amounts: string[] = [];
+
+    for (const token of pool.value.tokensList) {
+      if (token === pool.value.address) {
+        continue;
+      }
+
+      if (token === networkConfig.addresses.bbUsd.toLowerCase()) {
+        amounts.push(
+          formatUnits(
+            bnum(batchSwapUsd.value.amountTokenOut.toString())
+              .abs()
+              .toString(),
+            18
+          )
+        );
+      } else {
+        const amountIdx = tokenAddresses.value.findIndex(
+          address => address.toLowerCase() === token.toLowerCase()
+        );
+
+        amounts.push(fullAmounts.value[amountIdx]);
+      }
+    }
+
+    return amounts;
+  });
+
   const priceImpact = computed((): number => {
     if (!hasAmounts.value) return 0;
     try {
+      if (hasNestedUsdStablePhantomPool.value && batchSwapUsd.value !== null) {
+        return (
+          poolCalculator
+            .priceImpact(fullAmountsWithNestedUsdBpt.value, {
+              queryBPT: fullBPTOut.value.toString()
+            })
+            .toNumber() || 0
+        );
+      }
+
       return (
         poolCalculator
           .priceImpact(fullAmounts.value, {
@@ -258,12 +310,26 @@ export default function useInvestFormMath(
 
   async function getBatchSwap(): Promise<void> {
     batchSwapLoading.value = true;
-    console.log(
-      'queryBatchSwapTokensIn',
-      Object.keys(batchSwapAmountMap.value),
-      Object.values(batchSwapAmountMap.value).map(value => value.toString()),
-      pool.value.address.toLowerCase()
-    );
+
+    if (hasNestedUsdStablePhantomPool.value) {
+      const usdBatchSwapAmountMap = pickBy(
+        batchSwapAmountMap.value,
+        (item, key) => {
+          return networkConfig.usdTokens.includes(getAddress(key));
+        }
+      );
+
+      batchSwapUsd.value = await queryBatchSwapTokensIn(
+        sor,
+        balancerContractsService.vault.instance as any,
+        Object.keys(usdBatchSwapAmountMap),
+        Object.values(usdBatchSwapAmountMap),
+        networkConfig.addresses.bbUsd.toLowerCase()
+      );
+    } else {
+      batchSwapUsd.value = null;
+    }
+
     batchSwap.value = await queryBatchSwapTokensIn(
       sor,
       balancerContractsService.vault.instance as any,
@@ -272,7 +338,6 @@ export default function useInvestFormMath(
       pool.value.address.toLowerCase()
     );
 
-    console.log('batchswap', batchSwap.value);
     batchSwapLoading.value = false;
   }
 
@@ -287,12 +352,14 @@ export default function useInvestFormMath(
         if (!processingBatchSwaps.value) processBatchSwaps();
       }
 
-      const { send } = poolCalculator.propAmountsGiven(
-        fullAmounts.value[changedIndex],
-        changedIndex,
-        'send'
-      );
-      proportionalAmounts.value = send;
+      if (!isStablePhantomPool.value) {
+        const { send } = poolCalculator.propAmountsGiven(
+          fullAmounts.value[changedIndex],
+          changedIndex,
+          'send'
+        );
+        proportionalAmounts.value = send;
+      }
     }
   });
 

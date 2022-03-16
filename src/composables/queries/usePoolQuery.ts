@@ -180,47 +180,6 @@ export default function usePoolQuery(
 
     let unwrappedTokens: Pool['unwrappedTokens'];
 
-    if (isStablePhantomPool && onchainData.linearPools != null) {
-      unwrappedTokens = Object.entries(onchainData.linearPools).map(
-        ([, linearPool]) => linearPool.unwrappedTokenAddress
-      );
-
-      if (decoratedPool.linearPoolTokensMap != null) {
-        let totalLiquidity = bnum(0);
-
-        Object.entries(onchainData.linearPools).forEach(([address, token]) => {
-          const tokenShare = bnum(onchainData.tokens[address].balance).div(
-            token.totalSupply
-          );
-
-          const mainTokenBalance = token.mainToken.balance;
-          const wrappedTokenBalance = token.wrappedToken.balance;
-
-          const mainTokenPrice =
-            prices.value[token.mainToken.address] != null
-              ? prices.value[token.mainToken.address].usd
-              : null;
-
-          if (mainTokenPrice != null) {
-            const mainTokenValue = bnum(mainTokenBalance)
-              .times(tokenShare)
-              .times(mainTokenPrice);
-
-            const wrappedTokenValue = bnum(wrappedTokenBalance)
-              .times(tokenShare)
-              .times(mainTokenPrice)
-              .times(token.wrappedToken.priceRate);
-
-            totalLiquidity = bnum(totalLiquidity)
-              .plus(mainTokenValue)
-              .plus(wrappedTokenValue);
-          }
-        });
-
-        decoratedPool.totalLiquidity = totalLiquidity.toString();
-      }
-    }
-
     return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
   };
 

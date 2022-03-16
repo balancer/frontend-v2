@@ -33,6 +33,8 @@ export interface PoolToken {
   balance: string;
   weight: string;
   priceRate: string | null;
+  isBpt?: boolean;
+  isPhantomBpt?: boolean;
 }
 
 export interface RawPoolTokens {
@@ -66,6 +68,14 @@ export interface Pool {
   linearPoolToMainTokenMap?: Record<string, string>;
   unwrappedTokens?: string[];
   tokenRates?: string[];
+  stablePhantomPools?: {
+    id: string;
+    address: string;
+    symbol: string;
+    tokens: PoolToken[];
+    totalSupply: string;
+    balance: string;
+  }[];
   linearPools?: {
     id: string;
     symbol: string;
@@ -74,6 +84,7 @@ export interface Pool {
     unwrappedTokenAddress: string;
     totalSupply: string;
     balance: string;
+    mainTokenTotalBalance: string;
     mainToken: {
       address: string;
       index: number;

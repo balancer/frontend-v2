@@ -66,11 +66,7 @@ const investMath = useInvestMath(
   sor
 );
 
-const { hasNestedUsdStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { networkConfig } = useConfig();
-const relayerApproval = useRelayerApprovalQuery(
-  ref(networkConfig.addresses.batchRelayer)
-);
 
 const {
   hasAmounts,
@@ -87,9 +83,13 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const {
+  managedPoolWithTradingHalted,
+  isWethPool,
+  isStableLikePool,
+  isWeightedPoolWithNestedLinearPools,
+  hasNestedUsdStablePhantomPool
+} = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -110,7 +110,10 @@ const forceProportionalInputs = computed(
 
 const investmentTokens = computed((): string[] => {
   if (props.pool.mainTokens) {
-    if (hasNestedUsdStablePhantomPool.value) {
+    if (
+      hasNestedUsdStablePhantomPool.value &&
+      isWeightedPoolWithNestedLinearPools.value
+    ) {
       return props.pool.mainTokens.filter(
         mainToken =>
           !(
@@ -123,7 +126,7 @@ const investmentTokens = computed((): string[] => {
 
     return props.pool.mainTokens;
   }
-  return props.pool.tokenAddresses;
+  return props.pool.tokenAddresses.map(address => getAddress(address));
 });
 
 /**
@@ -188,6 +191,7 @@ function tokenOptions(index: number): string[] {
   if (investmentTokens.value[index] === wrappedNativeAsset.value.address) {
     return [wrappedNativeAsset.value.address, nativeAsset.address];
   } else if (
+    isWeightedPoolWithNestedLinearPools.value &&
     hasNestedUsdStablePhantomPool.value &&
     networkConfig.usdTokens.includes(getAddress(investmentTokens.value[index]))
   ) {

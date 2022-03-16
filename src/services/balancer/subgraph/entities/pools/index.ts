@@ -127,6 +127,9 @@ export default class Pools {
 
       pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
+      pool.mainTokens = pool.mainTokens
+        ? pool.mainTokens.map(t => getAddress(t))
+        : undefined;
       pool.tokens = this.formatPoolTokens(pool);
 
       return pool;

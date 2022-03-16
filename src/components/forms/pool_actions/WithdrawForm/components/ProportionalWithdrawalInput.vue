@@ -52,9 +52,11 @@ const { networkConfig } = useConfig();
 const { isWalletReady } = useWeb3();
 const { missingPrices, usdAsset } = usePoolTransfers();
 const { getTokens } = useTokens();
-const { isStableLikePool, hasNestedUsdStablePhantomPool } = usePool(
-  toRef(props, 'pool')
-);
+const {
+  isStableLikePool,
+  hasNestedUsdStablePhantomPool,
+  isWeightedPoolWithNestedLinearPools
+} = usePool(toRef(props, 'pool'));
 const { fNum } = useNumbers();
 
 /**
@@ -63,7 +65,10 @@ const { fNum } = useNumbers();
 const tokens = computed(
   (): TokenInfoMap => {
     if (props.pool.mainTokens) {
-      if (hasNestedUsdStablePhantomPool.value) {
+      if (
+        isWeightedPoolWithNestedLinearPools.value &&
+        hasNestedUsdStablePhantomPool.value
+      ) {
         return getTokens(
           props.pool.mainTokens.filter(
             mainToken =>
@@ -115,7 +120,6 @@ function handleSliderChange(newVal: number): void {
 
 async function handleSliderEnd(): Promise<void> {
   if (shouldFetchBatchSwap.value || shouldFetchExitBatchSwap.value) {
-    console.log('flag 1');
     await props.math.getSwap();
   }
 }

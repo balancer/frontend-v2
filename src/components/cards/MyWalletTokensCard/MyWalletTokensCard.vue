@@ -38,9 +38,11 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool, hasNestedUsdStablePhantomPool } = usePool(
-  toRef(props, 'pool')
-);
+const {
+  isWethPool,
+  hasNestedUsdStablePhantomPool,
+  isWeightedPoolWithNestedLinearPools
+} = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset, usdAssets } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -54,7 +56,10 @@ const pageContext = computed(() => route.name);
 
 const tokenAddresses = computed((): string[] => {
   if (props.pool.mainTokens) {
-    if (hasNestedUsdStablePhantomPool.value) {
+    if (
+      hasNestedUsdStablePhantomPool.value &&
+      isWeightedPoolWithNestedLinearPools.value
+    ) {
       return [
         ...props.pool.mainTokens.filter(
           mainToken => !networkConfig.usdTokens.includes(mainToken)

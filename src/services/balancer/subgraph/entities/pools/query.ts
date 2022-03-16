@@ -77,15 +77,34 @@ const defaultAttrs = {
     address: true,
     balance: true,
     weight: true,
-    priceRate: true
+    priceRate: true,
+    isBpt: true,
+    isPhantomBpt: true
   },
-  //TODO: uncomment for linear support
   wrappedIndex: true,
   mainIndex: true,
   lowerTarget: true,
   upperTarget: true,
   tokenRates: true,
   expiryTime: true,
+  stablePhantomPools: {
+    id: true,
+    address: true,
+    symbol: true,
+    totalSupply: true,
+    balance: true,
+    tokens: {
+      name: true,
+      symbol: true,
+      decimals: true,
+      address: true,
+      balance: true,
+      weight: true,
+      priceRate: true,
+      isBpt: true,
+      isPhantomBpt: true
+    }
+  },
   linearPools: {
     id: true,
     symbol: true,
@@ -93,6 +112,7 @@ const defaultAttrs = {
     priceRate: true,
     totalSupply: true,
     balance: true,
+    mainTokenTotalBalance: true,
     unwrappedTokenAddress: true,
     mainToken: {
       index: true,

@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
-import { toRef, computed, ref } from 'vue';
-import { FullPool, FullPoolWithFarm } from '@/services/balancer/subgraph/types';
+import { computed, ref, toRef } from 'vue';
+import { FullPoolWithFarm } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { usePool } from '@/composables/usePool';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
 import { useBoostedPool } from '@/composables/useBoostedPool';
-import usePools from '@/composables/pools/usePools';
-import useConfig from '@/composables/useConfig';
-import { sum } from 'lodash';
 
 /**
  * TYPES
@@ -31,13 +26,11 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { tokens, balances, balanceFor, getTokens } = useTokens();
+const { tokens, balances, balanceFor, getTokens, priceFor } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
-const { pools } = usePools();
-const { networkConfig } = useConfig();
 
 /**
  * SERVICES
@@ -65,28 +58,17 @@ const poolTokens = computed(() =>
   Object.values(getTokens(props.pool.tokenAddresses))
 );
 
-const { userBoostedPoolBalance } = useBoostedPool(
+const { userPoolBalance } = useBoostedPool(
   toRef(props, 'pool'),
-  poolCalculator,
-  //@ts-ignore
-  pools
+  poolCalculator
 );
 
 const propTokenAmounts = computed((): string[] => {
-  return userBoostedPoolBalance.value;
-});
-
-const tokenAddresses = computed((): string[] => {
-  if (props.pool.mainTokens) {
-    // We're using mainToken balances for StablePhantom pools
-    // so return mainTokens here so that fiat values are correct.
-    return props.pool.mainTokens || [];
-  }
-  return props.pool.tokenAddresses;
+  return userPoolBalance.value;
 });
 
 const fiatTotal = computed(() => {
-  const fiatValue = tokenAddresses.value
+  const fiatValue = props.pool.tokenAddresses
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
     .reduce((total, value) =>
       bnum(total)
@@ -104,37 +86,6 @@ function weightLabelFor(address: string): string {
 }
 
 function fiatLabelFor(index: number, address: string): string {
-  const mainTokens = props.pool.mainTokens || [];
-  if (address.toLowerCase() === networkConfig.addresses.bbUsd.toLowerCase()) {
-    //pool has bbUsd nested
-    const fiatValue = sum(
-      mainTokens.map((mainToken, index) => {
-        if (networkConfig.usdTokens.includes(mainToken)) {
-          return parseFloat(toFiat(propTokenAmounts.value[index], mainToken));
-        }
-      })
-    );
-
-    return fNum(fiatValue, currency.value);
-  } else if (
-    props.pool.linearPoolToMainTokenMap &&
-    props.pool.linearPoolToMainTokenMap[address.toLowerCase()]
-  ) {
-    const mainToken = props.pool.linearPoolToMainTokenMap[
-      address.toLowerCase()
-    ].toLowerCase();
-
-    const mainTokenIndex = mainTokens.findIndex(
-      token => token.toLowerCase() === mainToken
-    );
-
-    const fiatValue = toFiat(
-      propTokenAmounts.value[mainTokenIndex],
-      props.pool.linearPoolToMainTokenMap[address.toLowerCase()]
-    );
-    return fNum(fiatValue, currency.value);
-  }
-
   const fiatValue = toFiat(propTokenAmounts.value[index], address);
   return fNum(fiatValue, currency.value);
 }
