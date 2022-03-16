@@ -5,7 +5,7 @@ import useVotingGauges from '@/composables/useVotingGauges';
 /**
  * COMPOSABLES
  */
-const { isLoading, votingGauges } = useVotingGauges();
+const { isLoading, votingGauges, refetch } = useVotingGauges();
 </script>
 
 <template>
@@ -14,6 +14,8 @@ const { isLoading, votingGauges } = useVotingGauges();
   <GaugesTable
     :isLoading="isLoading"
     :data="votingGauges"
+    :key="votingGauges"
+    :refetch="refetch"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"

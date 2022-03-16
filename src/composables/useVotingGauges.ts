@@ -27,6 +27,7 @@ export default function useVotingGauges() {
 
   return {
     isLoading,
-    votingGauges
+    votingGauges,
+    refetch: gaugeVotesQuery.refetch
   };
 }
