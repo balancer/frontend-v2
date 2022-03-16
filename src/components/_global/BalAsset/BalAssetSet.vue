@@ -4,7 +4,7 @@
     :key="assetChunkIndex"
   >
     <div
-      class="addresses-row"
+      :class="['addresses-row', assetRowClasses]"
       :style="{
         width: `${width}px`,
         height: `${size}px`
@@ -95,6 +95,10 @@ export default defineComponent({
       }
     });
 
+    const assetRowClasses = computed(() => ({
+      'mb-3': assetChunks.value.length > 1
+    }));
+
     const radius = computed(() => props.size / 2);
 
     const spacer = computed(
@@ -123,6 +127,7 @@ export default defineComponent({
     return {
       // computed
       assetChunks,
+      assetRowClasses,
 
       // methods
       leftOffsetFor,
@@ -134,7 +139,7 @@ export default defineComponent({
 
 <style scoped>
 .addresses-row {
-  @apply relative mb-3 flex;
+  @apply relative flex;
 }
 .addresses-row:last-child {
   @apply mb-0;

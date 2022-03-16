@@ -23,6 +23,7 @@ import { TransactionActionState } from '@/types/transactions';
 import { WalletError } from '@/types';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 
 /**
  * TYPES
@@ -30,6 +31,8 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 type Props = {
   gauge: VotingGaugeWithVotes;
   unallocatedVoteWeight: number;
+  logoURIs: string[];
+  poolURL: string;
 };
 
 /**
@@ -96,9 +99,13 @@ const votedToRecentlyWarning = computed(() => {
     const remainingTime = formatDistanceToNow(
       (lastUserVote + WEIGHT_VOTE_DELAY) * 1000
     );
-    return t('veBAL.liquidityMining.popover.warnings.votedTooRecently', [
-      remainingTime
-    ]);
+    return {
+      title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
+      description: t(
+        'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
+        [remainingTime]
+      )
+    };
   }
   return null;
 });
@@ -107,10 +114,16 @@ const noVeBalWarning = computed(() => {
   if (Number(veBalBalance.value) > 0) {
     return null;
   }
-  return t('veBAL.liquidityMining.popover.warnings.noVeBal');
+  return {
+    title: t('veBAL.liquidityMining.popover.warnings.noVeBal.title'),
+    description: t('veBAL.liquidityMining.popover.warnings.noVeBal.description')
+  };
 });
 
-const voteWarning = computed(() => {
+const voteWarning = computed((): {
+  title: string;
+  description: string;
+} | null => {
   if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
   if (noVeBalWarning.value) return noVeBalWarning.value;
   return null;
@@ -264,10 +277,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <BalModal show :fireworks="false" @close="emit('close')">
+  <BalModal show :fireworks="voteState.confirmed" @close="emit('close')">
     <template v-slot:header>
       <div class="flex items-center">
-        <BalCircle v-if="false" size="8" color="green" class="text-white mr-2">
+        <BalCircle
+          v-if="voteState.confirmed"
+          size="8"
+          color="green"
+          class="text-white mr-2"
+        >
           <BalIcon name="check" />
         </BalCircle>
         <h4>
@@ -276,8 +294,30 @@ onMounted(() => {
       </div>
     </template>
     <div>
-      <div v-if="voteWarning" class="pb-2 text-sm text-yellow-500">
-        {{ voteWarning }}
+      <BalAlert
+        v-if="voteWarning"
+        type="warning"
+        :title="voteWarning.title"
+        :description="voteWarning.description"
+        class="mb-4"
+      />
+
+      <div class="border p-2 rounded-lg mb-4 flex items-center justify-between">
+        <div class="flex items-center h-full">
+          <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
+          <span class="text-gray-500">{{ gauge.pool.symbol }}</span>
+        </div>
+        <BalLink
+          :href="poolURL"
+          external
+          noStyle
+          class="flex items-center group"
+        >
+          <BalIcon
+            name="arrow-up-right"
+            class="text-gray-500 group-hover:text-pink-500 transition-colors"
+          />
+        </BalLink>
       </div>
       <BalForm>
         <BalTextInput
@@ -286,7 +326,7 @@ onMounted(() => {
           :placeholder="unallocatedVotesNormalized"
           validateOn="input"
           :rules="inputRules"
-          :disabled="voteDisabled"
+          :disabled="voteDisabled || transactionInProgress || voteState.receipt"
           size="sm"
         >
           <template v-slot:append>
@@ -306,11 +346,26 @@ onMounted(() => {
           block
           class="mt-2"
         />
+        <ConfirmationIndicator
+          v-if="voteState.receipt"
+          :txReceipt="voteState.receipt"
+        />
         <BalBtn
+          v-if="voteState.receipt"
+          color="gray"
+          outline
+          block
+          class="mt-2"
+          @click="emit('close')"
+        >
+          {{ $t('returnToVeBalPage') }}
+        </BalBtn>
+        <BalBtn
+          v-else
           color="gradient"
           class="mt-4"
           block
-          :disabled="voteDisabled"
+          :disabled="voteDisabled || transactionInProgress"
           :loading="transactionInProgress"
           :loading-label="
             voteState.init
@@ -318,22 +373,9 @@ onMounted(() => {
               : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
           "
           @click.prevent="submitVote"
-          >{{ voteButtonText }}</BalBtn
         >
-        <BalLink
-          v-if="voteState.receipt"
-          :href="explorerLink"
-          external
-          noStyle
-          class="group flex items-center"
-        >
-          {{ networkConfig.explorerName }}
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="ml-px group-hover:text-pink-500 transition-colors"
-          />
-        </BalLink>
+          {{ voteButtonText }}
+        </BalBtn>
       </BalForm>
     </div>
   </BalModal>

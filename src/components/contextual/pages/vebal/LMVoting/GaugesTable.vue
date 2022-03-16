@@ -163,10 +163,14 @@ function networkSrc(network: Network) {
   )}.svg`);
 }
 
-function redirectToPool(gauge: VotingGaugeWithVotes) {
+function poolURLFor(gauge: VotingGaugeWithVotes): string {
   const subdomain = subdomainFor(gauge.network);
   const host = configService.env.APP_HOST;
-  window.location.href = `https://${subdomain}.${host}/#/pool/${gauge.pool.id}`;
+  return `https://${subdomain}.${host}/#/pool/${gauge.pool.id}`;
+}
+
+function redirectToPool(gauge: VotingGaugeWithVotes) {
+  window.location.href = poolURLFor(gauge);
 }
 </script>
 
@@ -250,6 +254,8 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       v-if="!!activeGaugeVote"
       @close="activeGaugeVote = null"
       :gauge="activeGaugeVote"
+      :logoURIs="orderedTokenURIs(activeGaugeVote)"
+      :poolURL="poolURLFor(activeGaugeVote)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
     />
   </teleport>

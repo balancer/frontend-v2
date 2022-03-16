@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
-
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useQuery } from 'vue-query';
-
 import QUERY_KEYS from '@/constants/queryKeys';
-
 import AnimatePresence from '../animate/AnimatePresence.vue';
-
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { dateTimeLabelFor } from '@/composables/useTime';
 
 type Props = {
   txReceipt: TransactionReceipt;
 };
 
 type ConfirmationData = {
-  confirmedAt: Date;
+  confirmedAt: string;
   explorerLink: string;
 };
 
@@ -45,7 +42,7 @@ const {
     const confirmedAt = await getTxConfirmedAt(receipt.value);
     const explorerLink = explorerLinks.txLink(receipt.value.transactionHash);
     return {
-      confirmedAt,
+      confirmedAt: dateTimeLabelFor(confirmedAt),
       explorerLink
     };
   },

@@ -620,8 +620,14 @@
                 "remainingVotesEditing": "Your remaining votes: {0} ({1} current allocation in this pool + {2} unallocated votes)",
                 "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
                 "warnings": {
-                    "votedTooRecently": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation for {0}",
-                    "noVeBal": "You must lock veBAL before voting on gagues."
+                    "votedTooRecently": {
+                        "title": "Votes are locked for 10 days.",
+                        "description": "You won't be able to make any edits to this vote allocation for {0}"
+                    },
+                    "noVeBal": {
+                        "title": "No veBAL",
+                        "description": "You must lock veBAL before voting on gagues."
+                    }
                 },
                 "errors": {
                     "notEnoughVotes": "Not enough unallocated votes"
@@ -733,7 +739,7 @@
                     "loadingLabel": "Confirm lock in wallet"                    
                 }
             },
-            "returnToVeBalPage": "Return to veBAL lock page"
+            "returnToVeBalPage": "Return to veBAL page"
         },
         "notSupported": {
             "title": "Locking is unavailable on this network",
