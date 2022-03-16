@@ -17,7 +17,6 @@ import { isStableLike, orderedPoolTokens } from '@/composables/usePool';
 import { Network } from '@balancer-labs/sdk';
 import { networkNameFor, subdomainFor } from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
-import { useRouter } from 'vue-router';
 import { configService } from '@/services/config/config.service';
 
 /**
@@ -52,7 +51,6 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
-const router = useRouter();
 
 /**
  * DATA
