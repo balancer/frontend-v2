@@ -34,7 +34,7 @@ function navigateToGetVeBAL() {
 </script>
 
 <template>
-  <div class="px-3 md:px-0 md:w-1/2">
+  <div class="px-2 lg:px-0 w-full lg:w-1/2">
     <h1 class="mb-8">{{ $t('veBAL.hero.title') }}</h1>
     <div
       v-for="(benefit, i) in benefits"
