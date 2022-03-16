@@ -114,7 +114,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 60
+    width: 100
   }
 ]);
 
