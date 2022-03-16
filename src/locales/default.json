@@ -620,7 +620,8 @@
                 "remainingVotesEditing": "Your remaining votes: {0} (including your current allocation of {1} in this pool)",
                 "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
                 "warnings": {
-                    "votedTooRecently": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation for {0}"
+                    "votedTooRecently": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation for {0}",
+                    "noVeBal": "You must lock veBAL before voting on gagues."
                 },
                 "errors": {
                     "notEnoughVotes": "Not enough unallocated votes"

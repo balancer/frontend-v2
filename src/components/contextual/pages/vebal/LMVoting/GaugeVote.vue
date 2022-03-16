@@ -13,6 +13,7 @@ import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useConfig from '@/composables/useConfig';
+import useVeBal from '@/composables/useVeBAL';
 
 import { scale, bnum } from '@/lib/utils';
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
@@ -47,6 +48,7 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { veBalBalance } = useVeBal();
 
 /**
  * STATE
@@ -64,7 +66,7 @@ const voteState = reactive<TransactionActionState>({
  * COMPUTED
  */
 const voteDisabled = computed(
-  () => !!votedToRecentlyWarning.value || !hasEnoughVotes.value
+  () => !!voteWarning.value || !hasEnoughVotes.value
 );
 
 const currentWeight = computed(() => props.gauge.userVotes);
@@ -96,8 +98,16 @@ const votedToRecentlyWarning = computed(() => {
   return null;
 });
 
+const noVeBalWarning = computed(() => {
+  if (Number(veBalBalance.value) > 0) {
+    return null;
+  }
+  return t('veBAL.liquidityMining.popover.warnings.noVeBal');
+});
+
 const voteWarning = computed(() => {
   if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
+  if (noVeBalWarning.value) return noVeBalWarning.value;
   return null;
 });
 
