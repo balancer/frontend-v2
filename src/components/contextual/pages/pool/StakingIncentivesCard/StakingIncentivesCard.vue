@@ -41,11 +41,6 @@ const {
 /**
  * COMPUTED
  */
-// TODO INTEGRATE STAKING APR
-const apr = computed(() => {
-  return 0.1245;
-});
-
 const fiatValueOfStakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
