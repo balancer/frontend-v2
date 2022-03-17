@@ -203,7 +203,7 @@ function handleClose() {
             {{ $t('staking.stakingApr') }}:
           </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">sdfs</span>
+            <span class="text-sm capitalize">0</span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
@@ -213,7 +213,7 @@ function handleClose() {
             {{ $t('staking.weeklyEarning') }}:
           </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">sdfs</span>
+            <span class="text-sm capitalize">0</span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
