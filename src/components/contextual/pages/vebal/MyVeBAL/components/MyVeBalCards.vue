@@ -91,7 +91,7 @@ const cards = computed(() => {
       label: t('veBAL.myVeBAL.cards.myLpToken', [
         props.lockablePoolTokenInfo.symbol
       ]),
-      value: hasExistingLock ? fNum2(fiatTotal.value, FNumFormats.fiat) : '—',
+      value: fNum2(fiatTotal.value, FNumFormats.fiat),
       showLockIcon: hasExistingLock ? true : false
     },
     {
