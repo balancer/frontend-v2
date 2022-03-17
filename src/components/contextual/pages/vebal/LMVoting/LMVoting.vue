@@ -1,18 +1,12 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { scale, bnum } from '@/lib/utils';
-import {
-  formatDuration,
-  intervalToDuration,
-  Interval,
-  Duration
-} from 'date-fns';
+import { intervalToDuration, Interval, Duration } from 'date-fns';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVotingGauges from '@/composables/useVotingGauges';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import GaugesTable from './GaugesTable.vue';
 
 /**
@@ -21,6 +15,15 @@ import GaugesTable from './GaugesTable.vue';
 
 const EPOCH_GENESIS = 1596636000000;
 const WEEK_IN_MS = 86_400_000 * 7;
+
+/**
+ * DATA
+ */
+const now = ref(Date.now());
+
+setInterval(() => {
+  now.value = Date.now();
+}, 1000);
 
 /**
  * COMPOSABLES
@@ -45,7 +48,7 @@ const votingPeriodEnd = computed<number[]>(() => {
   if (!veBalLockInfoQuery.data.value) return [];
   const currentEpoch = Number(veBalLockInfoQuery.data.value.epoch);
   const periodEnd = EPOCH_GENESIS + currentEpoch * WEEK_IN_MS;
-  const interval: Interval = { start: Date.now(), end: periodEnd };
+  const interval: Interval = { start: now.value, end: periodEnd };
   const timeUntilEnd: Duration = intervalToDuration(interval);
   const formattedTime = [
     timeUntilEnd.days || 0,
