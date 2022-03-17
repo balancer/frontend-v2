@@ -16,7 +16,6 @@ interface Env {
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
 }
-
 export default class ConfigService {
   public get env(): Env {
     return {
@@ -45,7 +44,7 @@ export default class ConfigService {
   }
 
   public getNetworkConfig(key: Network): Config {
-    if (!Object.keys(configs).includes(key.toString()))
+    if (!Object.keys(configs).includes(key?.toString()))
       throw new Error(`No config for network key: ${key}`);
     return configs[key];
   }

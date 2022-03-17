@@ -7,6 +7,7 @@ import { scale } from '@/lib/utils';
 
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
@@ -18,6 +19,7 @@ import { Network } from '@balancer-labs/sdk';
 import { networkNameFor, subdomainFor } from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 /**
  * TYPES
@@ -55,6 +57,7 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
+const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**
  * DATA
@@ -137,6 +140,10 @@ const unallocatedVoteWeight = computed(() => {
     return remainingVotes - parseFloat(gauge.userVotes);
   }, totalVotes);
   return votesRemaining;
+});
+
+const veBalLockInfo = computed<VeBalLockInfo | undefined>(() => {
+  return veBalLockInfoQuery.data.value;
 });
 
 /**
@@ -257,6 +264,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :logoURIs="orderedTokenURIs(activeGaugeVote)"
       :poolURL="poolURLFor(activeGaugeVote)"
       :unallocatedVoteWeight="unallocatedVoteWeight"
+      :veBalLockInfo="veBalLockInfo"
       @success="handleVoteSuccess"
     />
   </teleport>

@@ -35,6 +35,7 @@ const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 const prevWrapperHeight = ref(0);
 const isUnknownTokenModalVisible = ref(false);
+const isRestoring = ref(false);
 
 /**
  * COMPOSABLES
@@ -51,7 +52,8 @@ const {
   setRestoredState,
   importState,
   totalLiquidity,
-  resetPoolCreationState
+  resetPoolCreationState,
+  retrievePoolDetails
 } = usePoolCreation();
 const { removeAlert } = useAlerts();
 const { t } = useI18n();
@@ -81,17 +83,23 @@ onBeforeMount(async () => {
     POOL_CREATION_STATE_VERSION
   );
   if (activeStep.value === 0 && previouslySavedState !== null) {
+    isRestoring.value = true;
+
     // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
     setActiveStep(previouslySavedState.activeStep);
+    if (previouslySavedState.createPoolTxHash) {
+      await retrievePoolDetails(previouslySavedState.createPoolTxHash);
+    }
   }
   // make sure to inject any custom tokens we cannot inject
   // after tokens have finished loading as it will attempt to
   // inject 'known' tokens too, as during mount, tokens are still loading
   injectUnknownPoolTokens();
+  isRestoring.value = false;
 });
 
 /**
@@ -225,7 +233,8 @@ function injectUnknownPoolTokens() {
   if (!isLoadingTokens.value) {
     const uninjectedTokens = seedTokens.value
       .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
-      .map(seedToken => seedToken.tokenAddress);
+      .map(seedToken => seedToken.tokenAddress)
+      .filter(token => token !== '');
     injectTokens(uninjectedTokens);
   }
 }
@@ -289,6 +298,9 @@ watch(isLoadingTokens, () => {
             {{ $t('clickHere') }}
           </button>
         </BalAlert>
+      </AnimatePresence>
+      <AnimatePresence :isVisible="isRestoring" unmountInstantly>
+        <BalLoadingBlock class="h-64" />
       </AnimatePresence>
       <AnimatePresence
         :isVisible="
