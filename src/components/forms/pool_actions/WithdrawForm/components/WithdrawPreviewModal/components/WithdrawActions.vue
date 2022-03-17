@@ -23,7 +23,6 @@ import useEthers from '@/composables/useEthers';
 import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
-import useConfig from '@/composables/useConfig';
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
@@ -31,6 +30,7 @@ import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 
 /**
  * TYPES
@@ -72,8 +72,7 @@ const withdrawalState = reactive<WithdrawalState>({
  */
 const route = useRoute();
 const { t } = useI18n();
-const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
+const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
@@ -113,12 +112,6 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
 /**
  * COMPUTED
  */
-const explorerLink = computed((): string =>
-  withdrawalState.receipt
-    ? explorerLinks.txLink(withdrawalState.receipt.transactionHash)
-    : ''
-);
-
 const transactionInProgress = computed(
   (): boolean =>
     withdrawalState.init ||
@@ -229,29 +222,7 @@ watch(blockNumber, async () => {
   <transition>
     <BalActionSteps v-if="!withdrawalState.confirmed" :actions="actions" />
     <div v-else>
-      <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
-      >
-        <div class="flex items-center">
-          <BalIcon name="clock" />
-          <span class="ml-2">
-            {{ withdrawalState.confirmedAt }}
-          </span>
-        </div>
-        <BalLink
-          :href="explorerLink"
-          external
-          noStyle
-          class="group flex items-center"
-        >
-          {{ networkConfig.explorerName }}
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="ml-px group-hover:text-pink-500 transition-colors"
-          />
-        </BalLink>
-      </div>
+      <ConfirmationIndicator :txReceipt="withdrawalState.receipt" />
       <BalBtn
         tag="router-link"
         :to="{ name: 'pool', params: { id: route.params.id } }"
