@@ -23,6 +23,7 @@ import useVeBal from '@/composables/useVeBAL';
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import { isGreaterThan, isPositive } from '@/lib/utils/validations';
 /**
  * TYPES
  */
@@ -199,11 +200,9 @@ const remainingVotes = computed(() => {
 });
 
 const inputRules = [
-  value => {
-    if (value !== '' && isNaN(Number(value))) return '';
-    if (isVoteWeightValid(value)) return;
-    return '';
-  }
+  v => !v || isVoteWeightValid(v) || '',
+  isPositive(),
+  isGreaterThan(0)
 ];
 
 /**
