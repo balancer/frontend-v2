@@ -30,7 +30,7 @@ export class GaugesDecorator {
     subgraphGauges: SubgraphGauge[],
     userAddress: string
   ): Promise<Gauge[]> {
-    this.resetMulticaller();
+    this.multicaller = this.resetMulticaller();
     this.callRewardTokens(subgraphGauges);
     this.callClaimableTokens(subgraphGauges, userAddress);
 

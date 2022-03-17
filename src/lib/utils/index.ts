@@ -45,7 +45,6 @@ export function lsGet<T = any>(
   if (rawValue != null) {
     try {
       const value = JSON.parse(rawValue);
-
       if (version != null) {
         return value._version === version ? value.data : defaultValue;
       }
