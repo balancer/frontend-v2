@@ -4,7 +4,11 @@ import { computed, ref } from 'vue';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import useStaking from '@/composables/staking/useStaking';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
+import {
+  DecoratedPool,
+  DecoratedPoolWithShares,
+  FullPool
+} from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
@@ -49,7 +53,11 @@ const maxStakedPools = computed(() => {
     .map(pool => ({
       // then indicate that those pools are maximal staked with a variable
       ...pool,
-      stakedPct: '1'
+      stakedPct: '1',
+      stakedShares: calculateFiatValueOfShares(
+        pool,
+        stakedBalanceMap.value[pool.id]
+      )
     }));
 });
 
@@ -71,7 +79,8 @@ const partiallyStakedPools = computed(() => {
       );
       return {
         ...pool,
-        stakedPct: stakedPct.toString()
+        stakedPct: stakedPct.toString(),
+        stakedShares: calculateFiatValueOfShares(pool, stakedBalance)
       };
     });
 });
@@ -87,7 +96,8 @@ const unstakedPools = computed(() => {
     })
     .map(pool => ({
       ...pool,
-      stakedPct: '0'
+      stakedPct: '0',
+      stakedShares: '0'
     }));
 });
 
@@ -113,6 +123,16 @@ function handleStake(pool: FullPool) {
 
 function handleModalClose() {
   showStakeModal.value = false;
+}
+
+function calculateFiatValueOfShares(
+  pool: DecoratedPoolWithShares | DecoratedPool,
+  stakedBalance: string
+) {
+  return bnum(pool.totalLiquidity)
+    .div(pool.totalShares)
+    .times((stakedBalance || '0').toString())
+    .toString();
 }
 </script>
 
