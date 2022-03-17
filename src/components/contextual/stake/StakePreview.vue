@@ -37,7 +37,8 @@ const {
   unstakeBPT,
   getGaugeAddress,
   stakedShares,
-  refetchStakedShares
+  refetchStakedShares,
+  refetchStakingData
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -123,6 +124,7 @@ async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
+  await refetchStakingData.value();
   emit('success');
 }
 
