@@ -25,11 +25,11 @@ const {
   userGaugeShares,
   userLiquidityGauges,
   stakedPools,
-  isLoading: isLoadingStakingData
+  isLoading: isLoadingStakingData,
+  setPoolAddress
 } = useStaking();
 
 /** COMPUTED */
-
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
   const map: Record<string, string> = {};
@@ -117,6 +117,7 @@ const allStakedPools = computed(() => {
 
 /** METHODS */
 function handleStake(pool: FullPool) {
+  setPoolAddress(pool.address);
   showStakeModal.value = true;
   stakePool.value = pool;
 }

@@ -55,7 +55,7 @@ export type StakingProvider = {
   stakeBPT: () => Promise<TransactionResponse>;
   unstakeBPT: () => Promise<TransactionResponse>;
   getStakedShares: () => Promise<string>;
-  refreshData: () => Promise<void>;
+  setPoolAddress: (address: string) => void;
 };
 
 /**
@@ -73,6 +73,11 @@ export default defineComponent({
   },
   setup(props) {
     /**
+     * STATE
+     */
+    const _poolAddress = ref();
+
+    /**
      * COMPOSABLES
      */
     const { getProvider, account } = useWeb3();
@@ -83,26 +88,25 @@ export default defineComponent({
       return userPools.value.map(pool => pool.address.toLowerCase());
     });
 
+    const poolAddress = computed(() => {
+      return _poolAddress.value || props.poolAddress;
+    });
     const isStakingQueryEnabled = computed(() => userPoolIds.value.length > 0);
     const isStakedSharesQueryEnabled = computed(
-      () => !!props.poolAddress && props.poolAddress != ''
+      () => !!poolAddress.value && poolAddress.value != ''
     );
 
     /**
      * QUERIES
      */
-    const {
-      data: userPoolsResponse,
-      refetch: refetchUserPools
-    } = useUserPoolsQuery();
+    const { data: userPoolsResponse } = useUserPoolsQuery();
 
     const userPools = computed(() => userPoolsResponse.value?.pools || []);
 
     const {
       data: stakingData,
       isLoading: isLoadingStakingData,
-      isIdle: isStakeDataIdle,
-      refetch: refetchStakingData
+      isIdle: isStakeDataIdle
     } = useGraphQuery<UserGuageSharesResponse>(
       subgraphs.gauge,
       ['staking', 'data', { account, userPoolIds }],
@@ -151,12 +155,12 @@ export default defineComponent({
       isLoading: isLoadingPoolEligibility
     } = useGraphQuery<{ liquidityGauges: TLiquidityGauge[] }>(
       subgraphs.gauge,
-      ['pool', 'eligibility', { poolAddress: props.poolAddress }],
+      ['pool', 'eligibility', { poolAddress: poolAddress.value }],
       () => ({
         liquidityGauges: {
           __args: {
             where: {
-              poolAddress: (props.poolAddress || '').toLowerCase()
+              poolAddress: (poolAddress.value || '').toLowerCase()
             }
           },
           id: true
@@ -228,38 +232,38 @@ export default defineComponent({
      * METHODS
      */
     async function stakeBPT() {
-      if (!props.poolAddress) {
+      if (!poolAddress.value) {
         throw new Error(
           `Attempted to call stake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(props.poolAddress);
+      const gaugeAddress = await getGaugeAddress(poolAddress.value);
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
       const tx = await gauge.stake(
-        parseUnits(balanceFor(getAddress(props.poolAddress)), 18)
+        parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
       );
       return tx;
     }
 
     async function unstakeBPT() {
-      if (!props.poolAddress) {
+      if (!poolAddress.value) {
         throw new Error(
           `Attempted to call unstake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(getAddress(props.poolAddress));
+      const gaugeAddress = await getGaugeAddress(getAddress(poolAddress.value));
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
       const tx = await gauge.unstake(parseUnits(stakedShares.value || '0', 18));
       return tx;
     }
 
     async function getStakedShares() {
-      if (!props.poolAddress) {
+      if (!poolAddress.value) {
         throw new Error(
           `Attempted to get staked shares, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(getAddress(props.poolAddress));
+      const gaugeAddress = await getGaugeAddress(getAddress(poolAddress.value));
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
       const balance = await gauge.balance(account.value);
       return formatUnits(balance.toString(), 18);
@@ -276,9 +280,8 @@ export default defineComponent({
       return gaugeAddress;
     }
 
-    async function refreshData() {
-      await refetchUserPools.value();
-      await refetchStakingData.value();
+    function setPoolAddress(address: string) {
+      _poolAddress.value = address;
     }
 
     provide(StakingProviderSymbol, {
@@ -300,7 +303,7 @@ export default defineComponent({
       stakeBPT,
       unstakeBPT,
       getStakedShares,
-      refreshData
+      setPoolAddress
     });
   },
 
