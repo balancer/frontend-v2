@@ -16,6 +16,7 @@ import { usePool } from '@/composables/usePool';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
+import PoolActionsCard from './PoolActionsCard.vue';
 
 /**
  * TYPES
@@ -142,7 +143,7 @@ function navigateToPoolMigration(pool: FullPool) {
 </script>
 
 <template>
-  <BalCard noPad>
+  <BalCard shadow="2xl" noPad class="rounded-xl">
     <template #header>
       <div class="card-header">
         <h5>
@@ -199,6 +200,9 @@ function navigateToPoolMigration(pool: FullPool) {
         {{ $t('migratePool.migrateToBoostedPool') }}
       </BalBtn>
     </div>
+    <template #footer>
+      <PoolActionsCard :pool="pool" :missingPrices="missingPrices" />
+    </template>
   </BalCard>
 </template>
 

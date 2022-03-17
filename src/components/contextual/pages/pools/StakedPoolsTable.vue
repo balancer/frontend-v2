@@ -1,86 +1,36 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import useWeb3 from '@/services/web3/useWeb3';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
+import useStaking from '@/composables/staking/useStaking';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import StakePreview from '../../stake/StakePreview.vue';
+import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
-import { UserGuageSharesResponse } from './types';
-import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import { uniqBy } from 'lodash';
-
-/** TYPES */
-type Props = {
-  userPools: FullPool[];
-};
-
-const props = withDefaults(defineProps<Props>(), {
-  userPools: () => []
-});
 
 /** STATE */
 const showStakeModal = ref(false);
-const hasStaked = ref(false);
 const stakePool = ref<FullPool | undefined>();
 
-/** QUERY ARGS */
-const userPoolIds = computed(() => {
-  return props.userPools.map(pool => pool.id);
-});
-
-const userStakedPools = computed(() => {
-  if (isLoadingStakingData.value || !stakingData.value) return [];
-  return stakingData.value.gaugeShares.map(share => {
-    return share.gauge.poolId;
-  });
-});
-
 /** COMPOSABLES */
-const { account } = useWeb3();
-const { data: stakingData, isLoading: isLoadingStakingData } = useGraphQuery<
-  UserGuageSharesResponse
->(subgraphs.gauge, ['staking', 'data', { account, userPoolIds }], () => ({
-  gaugeShares: {
-    __args: {
-      where: { user: account.value.toLowerCase() }
-    },
-    balance: true,
-    gauge: {
-      poolId: true
-    }
-  },
-  liquidityGauges: {
-    __args: {
-      where: {
-        poolId_in: userPoolIds.value
-      }
-    },
-    poolId: true
-  }
-}));
-
-const { data: stakedPoolsRes, isLoading: isLoadingPools } = usePoolsQuery(
-  ref([]),
-  {},
-  {
-    poolIds: userStakedPools
-  }
-);
+const {
+  userGaugeShares,
+  userLiquidityGauges,
+  stakedPools,
+  isLoading: isLoadingStakingData
+} = useStaking();
 
 /** COMPUTED */
-const stakedPools = computed(() => stakedPoolsRes.value?.pages[0].pools);
 
 // a map of poolId-stakedBPT for the connected user
 const stakedBalanceMap = computed(() => {
   const map: Record<string, string> = {};
-  if (!stakingData.value) return map;
-  for (const gaugeShare of stakingData.value?.gaugeShares) {
+  if (!userGaugeShares.value) return map;
+  for (const gaugeShare of userGaugeShares.value) {
     map[gaugeShare.gauge.poolId] = gaugeShare.balance;
   }
   return map;
@@ -91,9 +41,10 @@ const { data: userPools } = useUserPoolsQuery();
 
 // The pools which the user has completely staked
 const maxStakedPools = computed(() => {
+  const userPoolIds = userPools.value?.pools.map(pool => pool.id);
   return (stakedPools.value || [])
     .filter(pool => {
-      return !userPoolIds.value.includes(pool.id);
+      return !userPoolIds?.includes(pool.id);
     })
     .map(pool => ({
       // then indicate that those pools are maximal staked with a variable
@@ -127,7 +78,7 @@ const partiallyStakedPools = computed(() => {
 
 // Pools where there is no staked BPT at all
 const unstakedPools = computed(() => {
-  const availableGaugePoolIds = (stakingData.value?.liquidityGauges || []).map(
+  const availableGaugePoolIds = (userLiquidityGauges.value || []).map(
     gauge => gauge.poolId
   );
   return (userPools.value?.pools || [])
@@ -162,11 +113,6 @@ function handleStake(pool: FullPool) {
 
 function handleModalClose() {
   showStakeModal.value = false;
-  hasStaked.value = false;
-}
-
-function handleStakeSuccess() {
-  hasStaked.value = true;
 }
 </script>
 
@@ -176,7 +122,7 @@ function handleStakeSuccess() {
       <h5>{{ $t('myStakedPools') }}</h5>
       <PoolsTable
         :key="allStakedPools"
-        :isLoading="isLoadingStakingData || isLoadingPools"
+        :isLoading="isLoadingStakingData"
         :data="allStakedPools"
         :noPoolsLabel="$t('noInvestments')"
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
@@ -184,18 +130,11 @@ function handleStakeSuccess() {
         showPoolShares
       />
     </BalStack>
-    <teleport to="#modal">
-      <BalModal
-        :show="showStakeModal"
-        @close="handleModalClose"
-        :fireworks="hasStaked"
-      >
-        <StakePreview
-          :pool="stakePool"
-          @close="handleModalClose"
-          @success="handleStakeSuccess"
-        />
-      </BalModal>
-    </teleport>
+    <StakePreviewModal
+      :pool="stakePool"
+      :isVisible="showStakeModal"
+      @close="handleModalClose"
+      action="stake"
+    />
   </div>
 </template>

@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import useStaking from '@/composables/staking/useStaking';
 import { useI18n } from 'vue-i18n';
-import { useQueryClient } from 'vue-query';
 
 import { bnum } from '@/lib/utils';
 import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
 import { TransactionActionInfo } from '@/types/transactions';
-import { UserGuageSharesResponse } from '../pages/pools/types';
-import { last } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
+export type StakeAction = 'stake' | 'unstake';
 type Props = {
   pool: DecoratedPoolWithStakedShares;
-  isVisible: boolean;
+  action: StakeAction;
 };
 
 const props = defineProps<Props>();
@@ -32,51 +30,68 @@ const emit = defineEmits(['close', 'success']);
 const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
-const queryClient = useQueryClient();
-const { stakeBPT, getGaugeAddress } = useStaking(props.pool);
+
+const {
+  stakeBPT,
+  unstakeBPT,
+  getGaugeAddress,
+  stakedShares,
+  refetchStakedShares
+} = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
   ref([balanceFor(props.pool.address).toString()])
 );
 
+const stakeAction = {
+  label: t('stake'),
+  loadingLabel: t('staking.staking'),
+  confirmingLabel: t('confirming'),
+  action: stakeBPT,
+  stepTooltip: t('staking.stakeTooltip')
+};
+
+const unstakeAction = {
+  label: t('unstake'),
+  loadingLabel: t('staking.unstaking'),
+  confirmingLabel: t('confirming'),
+  action: unstakeBPT,
+  stepTooltip: t('staking.unstakeTooltip')
+};
+
 /**
  * STATE
  */
 const isLoadingApprovalsForGauge = ref(false);
-const isStakingConfirmed = ref(false);
+const isActionConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
-const bptBalance = ref(balanceFor(props.pool.address).toString());
+const stakeActions = ref<TransactionActionInfo[]>([]);
+const shareBalanceToDisplay = ref(
+  props.action === 'unstake'
+    ? stakedShares.value
+    : balanceFor(props.pool.address)
+);
+
+/**
+ * WATCHERS
+ */
+watch(
+  () => props.action,
+  () => {
+    stakeActions.value =
+      props.action === 'stake' ? [stakeAction] : [unstakeAction];
+  },
+  { immediate: true }
+);
 
 /* COMPUTED */
-const stakeActions = ref<TransactionActionInfo[]>([
-  {
-    label: t('stake'),
-    loadingLabel: t('staking.staking'),
-    confirmingLabel: t('confirming'),
-    action: stakeBPT,
-    stepTooltip: t('createPoolTooltip', [''])
-  }
-]);
-
 const assetRowWidth = computed(
   () => (props.pool.tokenAddresses.length * 32) / 1.5
 );
 
 const poolShareData = computed(() => {
   const numSharesToStake = balanceFor(props.pool.address);
-
-  // grab the existing query response which should have loaded
-  // if those modal is openable
-  const guageSharesData = (last(
-    queryClient.getQueriesData(['staking', 'data'])
-  ) || [])[1] as UserGuageSharesResponse;
-
-  // gauge for this pool
-  const relevantGauge = guageSharesData.gaugeShares.find(
-    ({ gauge }) => gauge.poolId === props.pool.id
-  );
-
-  const existingSharePct = bnum(relevantGauge?.balance || '0').div(
+  const existingSharePct = bnum(stakedShares.value || '0').div(
     props.pool.totalShares
   );
 
@@ -108,18 +123,25 @@ onBeforeMount(async () => {
 });
 
 /** METHODS */
-function handleSuccess({ receipt }) {
-  isStakingConfirmed.value = true;
+async function handleSuccess({ receipt }) {
+  isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
+  await refetchStakedShares.value();
   emit('success');
 }
 
 async function loadApprovalsForGauge() {
   isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress();
+  const gaugeAddress = await getGaugeAddress(props.pool.address);
   const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;
+}
+
+function handleClose() {
+  isActionConfirmed.value = false;
+  confirmationReceipt.value = undefined;
+  emit('close');
 }
 </script>
 
@@ -127,19 +149,19 @@ async function loadApprovalsForGauge() {
   <BalStack vertical>
     <BalStack horizontal spacing="sm" align="center">
       <BalCircle
-        v-if="isStakingConfirmed"
+        v-if="isActionConfirmed"
         size="8"
         color="green"
         class="text-white"
       >
         <BalIcon name="check" />
       </BalCircle>
-      <h4>{{ $t('staking.stakeLPTokens') }}</h4>
+      <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
     </BalStack>
     <BalCard shadow="none" noPad class="px-4 py-2">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
-          <h5>{{ fNum2(bptBalance) }} {{ $t('lpTokens') }}</h5>
+          <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
           <span class="text-gray-500">
             {{ getToken(pool.address).symbol }}
           </span>
@@ -157,38 +179,43 @@ async function loadApprovalsForGauge() {
       </div>
       <BalStack vertical spacing="xs" class="p-3">
         <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.totalValueToStake') }}:</span>
+          <span class="text-sm">
+            {{ $t('totalValueTo') }}
+            <span class="lowercase">
+              {{ action === 'stake' ? $t('stake') : $t('unstake') }}:
+            </span>
+          </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize"
-              >~{{
-                fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat)
-              }}</span
-            >
+            <span class="text-sm capitalize">
+              ~{{ fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat) }}
+            </span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
           <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize"
-              >~{{
-                fNum2(poolShareData.totalSharePct, FNumFormats.percent)
-              }}</span
-            >
+            <span class="text-sm capitalize">
+              ~{{ fNum2(poolShareData.totalSharePct, FNumFormats.percent) }}
+            </span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
-          <span class="text-sm">{{ $t('staking.potentialStakingApr') }}:</span>
+          <span class="text-sm">
+            {{ action === 'stake' ? $t('potential') : $t('lost') }}
+            {{ $t('staking.stakingApr') }}:
+          </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">sdfs</span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
-          <span class="text-sm"
-            >{{ $t('staking.potentialWeeklyEarning') }}:</span
-          >
+          <span class="text-sm">
+            {{ action === 'stake' ? $t('potential') : $t('lost') }}
+            {{ $t('staking.weeklyEarning') }}:
+          </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">sdfs</span>
             <BalTooltip text="s" width="20" textCenter />
@@ -197,15 +224,15 @@ async function loadApprovalsForGauge() {
       </BalStack>
     </BalCard>
     <BalActionSteps
-      v-if="!isStakingConfirmed"
+      v-if="!isActionConfirmed"
       :actions="stakeActions"
       :isLoading="isLoadingApprovalsForGauge"
       @success="handleSuccess"
     />
-    <BalStack vertical v-if="isStakingConfirmed">
+    <BalStack vertical v-if="isActionConfirmed">
       <ConfirmationIndicator :txReceipt="confirmationReceipt" />
-      <AnimatePresence :isVisible="isStakingConfirmed">
-        <BalBtn @click="$emit('close')" color="gray" outline block class="mt-2">
+      <AnimatePresence :isVisible="isActionConfirmed">
+        <BalBtn @click="handleClose" color="gray" outline block class="mt-2">
           {{ $t('close') }}
         </BalBtn>
       </AnimatePresence>
@@ -218,9 +245,9 @@ async function loadApprovalsForGauge() {
     >
       <router-link :to="{ name: 'pool', params: { id: pool.id } }">
         <BalStack horizontal align="center" spacing="xs">
-          <span
-            >{{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}</span
-          >
+          <span>
+            {{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}
+          </span>
           <BalIcon name="arrow-up-right" />
         </BalStack>
       </router-link>

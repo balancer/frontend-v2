@@ -124,23 +124,28 @@
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-1 lg:px-0"
       >
-        <BalLoadingBlock
-          v-if="loadingPool"
-          class="pool-actions-card h-60 mb-4"
-        />
-        <MyPoolBalancesCard
-          v-else-if="!noInitLiquidity"
-          :pool="pool"
-          :missingPrices="missingPrices"
-          class="mb-4"
-        />
+        <BalStack vertical>
+          <BalLoadingBlock
+            v-if="loadingPool"
+            class="pool-actions-card h-60 mb-4"
+          />
+          <MyPoolBalancesCard
+            v-else-if="!noInitLiquidity"
+            :pool="pool"
+            :missingPrices="missingPrices"
+            class="mb-4"
+          />
 
-        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
-        <PoolActionsCard
+          <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
+          <StakingProvider :poolAddress="getAddressFromPoolId(id)">
+            <StakingIncentivesCard v-if="!loadingPool" :pool="pool" />
+          </StakingProvider>
+          <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
           :missingPrices="missingPrices"
-        />
+        /> -->
+        </BalStack>
       </div>
       <!-- <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
         <BalCard
@@ -197,6 +202,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import StakingProvider from '@/providers/staking.provider';
+import { getAddressFromPoolId } from '@/lib/utils';
 
 interface PoolPageData {
   id: string;
@@ -206,7 +214,9 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityAPRTooltip
+    LiquidityAPRTooltip,
+    StakingIncentivesCard,
+    StakingProvider
   },
 
   setup() {
@@ -440,7 +450,8 @@ export default defineComponent({
       hasCustomToken,
       // methods
       fNum2,
-      onNewTx
+      onNewTx,
+      getAddressFromPoolId
     };
   }
 });

@@ -5,6 +5,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { web3Service } from '@/services/web3/web3.service';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
+import { getAddress } from 'ethers/lib/utils';
 
 const MAX_REWARD_TOKENS = 8;
 
@@ -29,6 +30,23 @@ export class LiquidityGauge {
       [amount]
     );
     return tx;
+  }
+
+  async unstake(amount: BigNumber) {
+    const tx = this.web3.sendTransaction(
+      this.address,
+      this.abi,
+      'withdraw(uint256)',
+      [amount]
+    );
+    return tx;
+  }
+
+  async balance(account: string): Promise<string> {
+    const balance = this.instance
+      .connect(this.provider.getSigner())
+      .balanceOf(getAddress(account));
+    return balance;
   }
 
   /*

@@ -22,7 +22,7 @@ import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
-import useStaking, { StakeState } from '@/composables/staking/useStaking';
+import { getStakeState, StakeState } from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -61,7 +61,6 @@ const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { getStakeState } = useStaking();
 
 /**
  * DATA

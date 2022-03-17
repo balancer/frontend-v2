@@ -1,26 +1,29 @@
 <template>
-  <component
-    :is="tag"
-    :class="['bal-btn', btnClasses]"
-    :disabled="disabled || loading"
-  >
-    <div v-if="loading" class="flex items-center justify-center">
-      <BalLoadingIcon :size="size" :color="iconColor" />
-      <span v-if="loadingLabel" class="ml-2">
-        {{ loadingLabel }}
-      </span>
-    </div>
-    <div v-else class="content">
-      <span v-if="label">
-        {{ label }}
-      </span>
-      <slot v-else />
-    </div>
-  </component>
+  <div :class="[wrapperClasses]">
+    <component
+      :is="tag"
+      :class="['bal-btn', btnClasses]"
+      :disabled="disabled || loading"
+      :to="to"
+    >
+      <div v-if="loading" class="flex items-center justify-center">
+        <BalLoadingIcon :size="size" :color="iconColor" />
+        <span v-if="loadingLabel" class="ml-2">
+          {{ loadingLabel }}
+        </span>
+      </div>
+      <div v-else class="content">
+        <span v-if="label">
+          {{ label }}
+        </span>
+        <slot v-else />
+      </div>
+    </component>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import BalLoadingIcon from '../BalLoadingIcon/BalLoadingIcon.vue';
 
 export default defineComponent({
@@ -36,6 +39,10 @@ export default defineComponent({
       default: 'button',
       validator: (val: string): boolean =>
         ['button', 'a', 'div', 'router-link'].includes(val)
+    },
+    to: {
+      type: Object as PropType<{ name: string }>,
+      default: null
     },
     size: {
       type: String,
@@ -99,6 +106,7 @@ export default defineComponent({
     });
 
     const bgGradientClasses = computed(() => {
+      if (props.outline && props.color === 'gradient ') return 'bg-white';
       if (props.outline) return 'bg-transparent';
 
       let fromColor = 'blue';
@@ -127,12 +135,13 @@ export default defineComponent({
     const bgFlatClasses = computed(() => {
       return `
         bg-${props.color}-50 hover:bg-${props.color}-100
-        dark:bg-${props.color}-800 dark:hover:bg-${props.color}-700
       `;
     });
 
     const bgColorClasses = computed(() => {
-      if (props.color.includes('gradient')) return bgGradientClasses.value;
+      if (props.color.includes('gradient') && !props.outline)
+        return bgGradientClasses.value;
+      else if (props.outline && props.color === 'gradient') return 'bg-white';
       else if (props.outline) return 'bg-transparent';
       else if (props.flat) return bgFlatClasses.value;
       else if (props.color === 'white') {
@@ -159,6 +168,9 @@ export default defineComponent({
     });
 
     const textColorClasses = computed(() => {
+      if (props.outline && props.disabled)
+        return 'text-gray-400 dark:text-gray-700';
+      if (props.outline && props.color === 'gradient') return 'text-purple-700';
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
         else return 'text-gray-800 dark:text-gray-100';
@@ -190,6 +202,19 @@ export default defineComponent({
       return 'shadow hover:shadow-none';
     });
 
+    const wrapperClasses = computed(() => {
+      return {
+        'bg-gradient-to-tr from-blue-500 to-pink-500':
+          props.color === 'gradient' && !props.disabled,
+        'bg-gray-300 dark:bg-gray-700': props.disabled,
+        'rounded-lg': !props.outline,
+        'rounded-outline': props.outline,
+        'p-0.5': props.outline,
+        'flex items-center': true,
+        [bgColorClasses.value]: props.color !== 'gradient'
+      };
+    });
+
     const btnClasses = computed(() => {
       return {
         [sizeClasses.value]: !props.circle,
@@ -212,6 +237,7 @@ export default defineComponent({
 
     return {
       btnClasses,
+      wrapperClasses,
       iconColor
     };
   }
@@ -220,7 +246,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-btn {
-  @apply overflow-hidden tracking-tight;
+  @apply overflow-hidden tracking-tight relative;
   font-variation-settings: 'wght' 500;
   transition: all 0.2s ease;
   text-decoration: none !important;
@@ -234,5 +260,9 @@ export default defineComponent({
 
 .content {
   @apply flex justify-center items-center w-full h-full;
+}
+
+.rounded-outline {
+  border-radius: 0.625rem;
 }
 </style>
