@@ -40,7 +40,6 @@ export class LiquidityGauge {
   }
 
   async stake(amount: BigNumber) {
-    console.log('amt', amount.toString())
     const tx = this.web3.sendTransaction(
       this.address,
       this.abi,
