@@ -24,7 +24,8 @@ export default function useBeethovenxConfig() {
             homeNewsItems: [],
             poolFilters: [],
             homeEducationItems: [],
-            blacklistedTokens: []
+            blacklistedTokens: [],
+            boostedPools: []
           }
   );
 

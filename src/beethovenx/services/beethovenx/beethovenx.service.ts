@@ -30,6 +30,18 @@ export type HistoricalPrices = { [timestamp: string]: number[] };
 export default class BeethovenxService {
   private readonly url: string;
   private tokenPrices: TokenPrices = {};
+  private config: GqlBeetsConfig = {
+    blacklistedTokens: [],
+    blacklistedPools: [],
+    homeEducationItems: [],
+    homeNewsItems: [],
+    homeFeaturedPools: [],
+    featuredPools: [],
+    incentivizedPools: [],
+    poolFilters: [],
+    pausedPools: [],
+    boostedPools: []
+  };
 
   constructor(private readonly configService = _configService) {
     this.url =
@@ -96,6 +108,10 @@ export default class BeethovenxService {
     return this.tokenPrices;
   }
 
+  public getCachedConfig(): GqlBeetsConfig {
+    return this.config;
+  }
+
   public async getHistoricalTokenPrices(
     addresses: string[]
   ): Promise<HistoricalPrices> {
@@ -146,6 +162,7 @@ export default class BeethovenxService {
           blacklistedPools: true,
           blacklistedTokens: true,
           featuredPools: true,
+          boostedPools: true,
           homeFeaturedPools: {
             poolId: true,
             image: true,
@@ -175,6 +192,8 @@ export default class BeethovenxService {
     });
 
     const response = await this.get<{ beetsGetConfig: GqlBeetsConfig }>(query);
+
+    this.config = response.beetsGetConfig;
 
     return response.beetsGetConfig;
   }

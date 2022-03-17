@@ -14,6 +14,7 @@ import OldBigNumber from 'bignumber.js';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 export enum LiquiditySelection {
@@ -227,7 +228,8 @@ export class SorManager {
       swapGas: BigNumber.from(SWAP_COST),
       poolTypeFilter: PoolFilter.All,
       timestamp: timestampSeconds,
-      forceRefresh: true
+      forceRefresh: true,
+      boostedPools: beethovenxService.getCachedConfig().boostedPools
     };
 
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
