@@ -590,7 +590,8 @@
         },
         "liquidityMining": {
             "title": "Pools eligible for liquidity mining",
-            "votingPeriod": "Current voting period ends: {0}",
+            "unallocatedVotes": "My unallocated votes: {0}.",
+            "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
             "table": {
                 "chain": "Chain",
                 "assets": "Assets",
@@ -626,6 +627,10 @@
                     "noVeBal": {
                         "title": "No veBAL",
                         "description": "You must lock veBAL before voting on gagues."
+                    },
+                    "veBalLockTooShort": {
+                        "title": "veBAL not locked for 7 days.",
+                        "description": "You must have veBAL locked for more than 7 days to vote on gagues."
                     }
                 },
                 "errors": {

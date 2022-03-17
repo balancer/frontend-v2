@@ -5,7 +5,14 @@ import { formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 
+import { scale, bnum } from '@/lib/utils';
+import { WalletError } from '@/types';
+import { TransactionActionState } from '@/types/transactions';
+import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
+
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTransactions from '@/composables/useTransactions';
@@ -13,16 +20,9 @@ import useEthers from '@/composables/useEthers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useVeBal from '@/composables/useVeBAL';
 
-import { scale, bnum } from '@/lib/utils';
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
-
-import { TransactionActionState } from '@/types/transactions';
-import { WalletError } from '@/types';
-import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-
 /**
  * TYPES
  */
@@ -31,7 +31,10 @@ type Props = {
   unallocatedVoteWeight: number;
   logoURIs: string[];
   poolURL: string;
+  veBalLockInfo?: VeBalLockInfo;
 };
+
+const MINIMUM_LOCK_TIME = 86_400_000 * 7;
 
 /**
  * PROPS & EMITS
@@ -116,12 +119,31 @@ const noVeBalWarning = computed(() => {
   };
 });
 
+const veBalLockTooShortWarning = computed(() => {
+  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
+    const lockEndDate = props.veBalLockInfo.lockedEndDate;
+    if (lockEndDate < Date.now() + MINIMUM_LOCK_TIME) {
+      return {
+        title: t(
+          'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.title'
+        ),
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.description'
+        )
+      };
+    }
+  }
+
+  return null;
+});
+
 const voteWarning = computed((): {
   title: string;
   description: string;
 } | null => {
   if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
   if (noVeBalWarning.value) return noVeBalWarning.value;
+  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
   return null;
 });
 
