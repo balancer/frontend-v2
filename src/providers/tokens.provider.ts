@@ -361,7 +361,7 @@ export default {
       if (tokenAddress === nativeAsset.address) return false;
 
       const allowance = bnum(
-        allowances.value[contractAddress][getAddress(tokenAddress)]
+        (allowances.value[contractAddress] || {})[getAddress(tokenAddress)]
       );
       return allowance.lt(amount);
     }

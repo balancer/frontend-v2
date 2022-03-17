@@ -14,7 +14,7 @@ import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
 import { PoolType } from '@/services/balancer/subgraph/types';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
-import { TransactionResponse } from '@ethersproject/providers';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { POOLS } from '@/constants/pools';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
@@ -402,6 +402,7 @@ export default function usePoolCreation() {
         poolOwner.value
       );
       poolCreationState.createPoolTxHash = tx.hash;
+      saveState();
 
       addTransaction({
         id: tx.hash,
@@ -415,14 +416,7 @@ export default function usePoolCreation() {
       1;
       txListener(tx, {
         onTxConfirmed: async () => {
-          const poolDetails = await balancerService.pools.weighted.details(
-            provider,
-            tx
-          );
-          poolCreationState.poolId = poolDetails.id;
-          poolCreationState.poolAddress = poolDetails.address;
-          poolCreationState.needsSeeding = true;
-          saveState();
+          retrievePoolDetails(tx.hash);
         },
         onTxFailed: () => {
           console.log('Create failed');
@@ -513,6 +507,19 @@ export default function usePoolCreation() {
     hasRestoredFromSavedState.value = value;
   }
 
+  async function retrievePoolDetails(hash: string) {
+    const provider = new JsonRpcProvider(configService.network.publicRpc);
+
+    const poolDetails = await balancerService.pools.weighted.details(
+      provider,
+      hash
+    );
+    poolCreationState.poolId = poolDetails.id;
+    poolCreationState.poolAddress = poolDetails.address;
+    poolCreationState.needsSeeding = true;
+    saveState();
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -540,6 +547,7 @@ export default function usePoolCreation() {
     importState,
     setRestoredState,
     setTokensList,
+    retrievePoolDetails,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
