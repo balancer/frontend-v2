@@ -88,7 +88,8 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
 }
 
-function handleVoteSuccess() {
+function handleModalClose() {
+  activeVotingGauge.value = null;
   refetchVotingGauges.value();
 }
 </script>
@@ -122,8 +123,7 @@ function handleVoteSuccess() {
       "
       :unallocatedVoteWeight="unallocatedVoteWeight"
       :veBalLockInfo="veBalLockInfoQuery.data"
-      @close="activeVotingGauge = null"
-      @success="handleVoteSuccess"
+      @close="handleModalClose"
     />
   </teleport>
 </template>
