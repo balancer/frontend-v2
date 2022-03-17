@@ -32,6 +32,7 @@ import {
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useQuery } from 'vue-query';
+import { QueryObserverResult, RefetchOptions } from 'react-query';
 
 /**
  * TYPES
@@ -56,6 +57,9 @@ export type StakingProvider = {
   unstakeBPT: () => Promise<TransactionResponse>;
   getStakedShares: () => Promise<string>;
   setPoolAddress: (address: string) => void;
+  refetchStakingData: Ref<
+    (options?: RefetchOptions) => Promise<QueryObserverResult>
+  >;
 };
 
 /**
@@ -106,7 +110,8 @@ export default defineComponent({
     const {
       data: stakingData,
       isLoading: isLoadingStakingData,
-      isIdle: isStakeDataIdle
+      isIdle: isStakeDataIdle,
+      refetch: refetchStakingData
     } = useGraphQuery<UserGuageSharesResponse>(
       subgraphs.gauge,
       ['staking', 'data', { account, userPoolIds }],
@@ -303,7 +308,8 @@ export default defineComponent({
       stakeBPT,
       unstakeBPT,
       getStakedShares,
-      setPoolAddress
+      setPoolAddress,
+      refetchStakingData
     });
   },
 
