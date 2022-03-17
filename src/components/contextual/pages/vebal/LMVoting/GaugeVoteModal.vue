@@ -160,10 +160,6 @@ const hasEnoughVotes = computed((): boolean => {
   return isVoteWeightValid(voteWeight.value);
 });
 
-const unallocatedVotesNormalized = computed((): string =>
-  scale(bnum(props.unallocatedVoteWeight), -2).toString()
-);
-
 const unallocatedVotesFormatted = computed((): string =>
   fNum2(
     scale(bnum(props.unallocatedVoteWeight), -4).toString(),
@@ -336,14 +332,19 @@ onMounted(() => {
       <BalForm>
         <BalTextInput
           name="voteWeight"
+          type="number"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          step="any"
           v-model="voteWeight"
-          :placeholder="unallocatedVotesNormalized"
           validateOn="input"
           :rules="inputRules"
           :disabled="
             !!voteWarning || transactionInProgress || voteState.receipt
           "
           size="sm"
+          autoFocus
         >
           <template v-slot:append>
             <div class="h-full flex flex-row justify-center items-center px-2">
