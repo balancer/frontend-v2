@@ -16,6 +16,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -43,6 +44,7 @@ const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
 const { veBalBalance } = useVeBal();
 const { t } = useI18n();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -91,7 +93,9 @@ const cards = computed(() => {
       label: t('veBAL.myVeBAL.cards.myLpToken', [
         props.lockablePoolTokenInfo.symbol
       ]),
-      value: fNum2(fiatTotal.value, FNumFormats.fiat),
+      value: isWalletReady.value
+        ? fNum2(fiatTotal.value, FNumFormats.fiat)
+        : '—',
       showLockIcon: hasExistingLock ? true : false
     },
     {
@@ -136,7 +140,11 @@ const cards = computed(() => {
           class="pr-2 cursor-pointer"
           @click="showUnlockPreviewModal = true"
         />
-        <router-link :to="{ name: 'get-vebal' }" v-if="card.showLockIcon">
+        <router-link
+          v-if="card.showLockIcon"
+          :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
+          class="text-blue-500"
+        >
           <BalIcon name="plus-circle" class="cursor-pointer" />
         </router-link>
       </span>
