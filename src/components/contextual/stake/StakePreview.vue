@@ -14,6 +14,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import { getAddress } from 'ethers/lib/utils';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
@@ -89,31 +90,26 @@ const assetRowWidth = computed(
   () => (props.pool.tokenAddresses.length * 32) / 1.5
 );
 
-const poolShareData = computed(() => {
-  const numSharesToStake = balanceFor(props.pool.address);
-  const existingSharePct = bnum(stakedShares.value || '0').div(
-    props.pool.totalShares
-  );
+const numSharesToModify = ref(
+  props.action === 'stake'
+    ? balanceFor(getAddress(props.pool.address))
+    : stakedShares.value
+);
 
-  const addedSharePct = bnum(numSharesToStake)
+const fiatValueOfModifiedShares = ref(
+  bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .toString();
-  const totalSharePct = bnum(existingSharePct)
-    .plus(addedSharePct)
-    .toString();
+    .times(numSharesToModify.value)
+    .toString()
+);
 
-  const addedValueInFiat = bnum(props.pool.totalLiquidity)
+const totalUserPoolSharePct = ref(
+  bnum(
+    bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
+  )
     .div(props.pool.totalShares)
-    .times(numSharesToStake)
-
-    .toString();
-  return {
-    existingSharePct,
-    addedValueInFiat,
-    addedSharePct,
-    totalSharePct
-  };
-});
+    .toString()
+);
 
 /**
  * LIFECYCLE
@@ -187,7 +183,7 @@ function handleClose() {
           </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">
-              ~{{ fNum2(poolShareData.addedValueInFiat, FNumFormats.fiat) }}
+              ~{{ fNum2(fiatValueOfModifiedShares, FNumFormats.fiat) }}
             </span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
@@ -196,7 +192,7 @@ function handleClose() {
           <span class="text-sm">{{ $t('staking.newTotalShare') }}:</span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">
-              ~{{ fNum2(poolShareData.totalSharePct, FNumFormats.percent) }}
+              ~{{ fNum2(totalUserPoolSharePct, FNumFormats.percent) }}
             </span>
             <BalTooltip text="s" width="20" textCenter />
           </BalStack>
@@ -232,7 +228,7 @@ function handleClose() {
     <BalStack vertical v-if="isActionConfirmed">
       <ConfirmationIndicator :txReceipt="confirmationReceipt" />
       <AnimatePresence :isVisible="isActionConfirmed">
-        <BalBtn @click="handleClose" color="gray" outline block class="mt-2">
+        <BalBtn @click="handleClose" color="gray" outline block>
           {{ $t('close') }}
         </BalBtn>
       </AnimatePresence>
