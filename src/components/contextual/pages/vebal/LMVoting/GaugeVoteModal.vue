@@ -314,7 +314,9 @@ onMounted(() => {
         class="mb-4"
       />
 
-      <div class="border p-2 rounded-lg mb-4 flex items-center justify-between">
+      <div
+        class="border dark:border-gray-800 p-2 rounded-lg mb-4 flex items-center justify-between"
+      >
         <div class="flex items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
           <span class="text-gray-500">{{ gauge.pool.symbol }}</span>
