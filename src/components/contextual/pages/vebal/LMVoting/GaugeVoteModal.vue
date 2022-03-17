@@ -340,7 +340,9 @@ onMounted(() => {
           :placeholder="unallocatedVotesNormalized"
           validateOn="input"
           :rules="inputRules"
-          :disabled="voteDisabled || transactionInProgress || voteState.receipt"
+          :disabled="
+            !!voteWarning || transactionInProgress || voteState.receipt
+          "
           size="sm"
         >
           <template v-slot:append>
