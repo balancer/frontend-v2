@@ -44,6 +44,7 @@ async function toggleSection(section: string, collapse = true) {
   if (_section?.isDisabled) return;
 
   const collapseCurrentSection = activeSection.value === section && collapse;
+
   if (collapseCurrentSection) {
     activeSection.value = '';
     isContentVisible.value = false;
@@ -52,6 +53,7 @@ async function toggleSection(section: string, collapse = true) {
     isContentVisible.value = true;
   }
   await nextTick();
+
   if (activeSectionElement.value && accordionHeightSetterElement.value) {
     height.value = activeSectionElement.value.clientHeight;
     isContentVisible.value = false;
@@ -73,17 +75,19 @@ async function toggleSection(section: string, collapse = true) {
     handleBarElements.value.length - (activeSectionIndex + 1)
   );
 
-  // unfortunately this does introduce reflow (animating height of total)
-  // but it way better than having to animate the height of 2 sections
-  // the one minimising + the one maximising
+  // // unfortunately this does introduce reflow (animating height of total)
+  // // but it way better than having to animate the height of 2 sections
+  // // the one minimising + the one maximising
   const heightToAnimate = collapseCurrentSection
     ? minimisedWrapperHeight.value
     : minimisedWrapperHeight.value + height.value;
+  await nextTick();
   anime({
     targets: wrapperElement.value,
     height: `${heightToAnimate}px`,
     easing
   });
+
   handleBarsToTransform.forEach(handleBar => {
     const y = collapseCurrentSection ? 0 : height.value;
     anime({
