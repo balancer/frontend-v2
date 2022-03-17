@@ -211,18 +211,18 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
           <NetworkIcon />
         </div>
       </template>
-      <template #iconColumnHeader>
-        <div class="flex items-center">
-          <CompositionIcon />
-        </div>
-      </template>
       <template #networkColumnCell="{ network }">
         <div v-if="!isLoading" class="px-6 py-4">
           <div
-            class="w-8 h-8 rounded shadow-sm bg-gray-50 flex items-center justify-center"
+            class="w-8 h-8 rounded shadow-sm bg-gray-50 dark:bg-gray-800 flex items-center justify-center"
           >
             <img :src="networkSrc(network)" :alt="network" class="w-6 h-6" />
           </div>
+        </div>
+      </template>
+      <template #iconColumnHeader>
+        <div class="flex items-center">
+          <CompositionIcon />
         </div>
       </template>
       <template #iconColumnCell="gauge">
