@@ -75,9 +75,9 @@ async function toggleSection(section: string, collapse = true) {
     handleBarElements.value.length - (activeSectionIndex + 1)
   );
 
-  // // unfortunately this does introduce reflow (animating height of total)
-  // // but it way better than having to animate the height of 2 sections
-  // // the one minimising + the one maximising
+  // unfortunately this does introduce reflow (animating height of total)
+  // but it way better than having to animate the height of 2 sections
+  // the one minimising + the one maximising
   const heightToAnimate = collapseCurrentSection
     ? minimisedWrapperHeight.value
     : minimisedWrapperHeight.value + height.value;
