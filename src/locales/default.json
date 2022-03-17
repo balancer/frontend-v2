@@ -626,6 +626,10 @@
                     "noVeBal": {
                         "title": "No veBAL",
                         "description": "You must lock veBAL before voting on gagues."
+                    },
+                    "veBalLockTooShort": {
+                        "title": "veBAL not locked for 7 days.",
+                        "description": "You must have veBAL locked for more than 7 days to vote on gagues."
                     }
                 },
                 "errors": {
