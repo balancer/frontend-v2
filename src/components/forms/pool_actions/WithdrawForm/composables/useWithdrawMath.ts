@@ -143,7 +143,7 @@ export default function useWithdrawMath(
    * COMPUTED
    */
   const tokenAddresses = computed((): string[] => {
-    if (isStablePhantom(pool.value.poolType)) {
+    if (pool.value.mainTokens) {
       return pool.value.mainTokens || [];
     }
     return pool.value.tokenAddresses;
@@ -891,8 +891,7 @@ export default function useWithdrawMath(
       );
 
       batchSwapSingleAssetMaxes.value[tokenOutIndex.value] = amountOut;
-    } else {
-      console.log('batchRelayerTokenOut.value', batchRelayerTokenOut.value);
+    } else if (pool.value.linearPools && pool.value.linearPools.length > 0) {
       const _batchRelayerSwap = await getBatchRelayerSwap(
         [bptBalanceScaled.value.toString()],
         [batchRelayerTokenOut.value]
