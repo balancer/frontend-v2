@@ -132,12 +132,7 @@ async function handleActionSuccess() {
         </template>
         <template v-slot:staking-incentives>
           <div class="bg-white relative">
-            <BalStack
-              ref="contentWrapper"
-              vertical
-              spacing="sm"
-              class="px-4 py-4 border-t"
-            >
+            <BalStack vertical spacing="sm" class="px-4 py-4 border-t">
               <BalStack horizontal justify="between">
                 <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
