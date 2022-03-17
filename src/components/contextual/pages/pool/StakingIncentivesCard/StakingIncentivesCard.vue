@@ -98,7 +98,7 @@ async function handleActionSuccess() {
         ]"
       >
         <template v-slot:staking-handle>
-          <button class="p-4 rounded-xl w-full">
+          <button class="p-4 rounded-xl w-full hover:bg-gray-50">
             <BalStack horizontal justify="between" align="center">
               <BalStack spacing="sm" align="center">
                 <div

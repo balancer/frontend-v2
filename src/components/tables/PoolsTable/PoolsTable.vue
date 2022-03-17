@@ -3,7 +3,10 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import {
+  DecoratedPoolWithShares,
+  DecoratedPoolWithStakedShares
+} from '@/services/balancer/subgraph/types';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
@@ -23,12 +26,13 @@ import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/t
 
 import TokenPills from './TokenPills/TokenPills.vue';
 import { getStakeState, StakeState } from '@/composables/staking/useStaking';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
  */
 type Props = {
-  data?: DecoratedPoolWithShares[];
+  data?: DecoratedPoolWithShares[] | DecoratedPoolWithStakedShares[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -85,7 +89,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(pool.shares, {
+      fNum2(getAggregatePoolShares(pool), {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true
@@ -169,6 +173,14 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
+// returns the total number of staked
+// and unstaked shares the user has for
+// a pool
+function getAggregatePoolShares(pool: DecoratedPoolWithStakedShares) {
+  return bnum(pool.shares)
+    .plus(pool.stakedShares || 0)
+    .toString();
+}
 
 function handleRowClick(pool: DecoratedPoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);

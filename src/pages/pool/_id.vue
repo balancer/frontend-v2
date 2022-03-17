@@ -124,28 +124,31 @@
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-1 lg:px-0"
       >
-        <BalStack vertical>
-          <BalLoadingBlock
-            v-if="loadingPool"
-            class="pool-actions-card h-60 mb-4"
-          />
-          <MyPoolBalancesCard
-            v-else-if="!noInitLiquidity"
-            :pool="pool"
-            :missingPrices="missingPrices"
-            class="mb-4"
-          />
+        <StakingProvider :poolAddress="getAddressFromPoolId(id)">
+          <BalStack vertical>
+            <BalLoadingBlock
+              v-if="loadingPool"
+              class="pool-actions-card h-60 mb-4"
+            />
+            <MyPoolBalancesCard
+              v-else-if="!noInitLiquidity"
+              :pool="pool"
+              :missingPrices="missingPrices"
+              class="mb-4"
+            />
 
-          <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
-          <StakingProvider :poolAddress="getAddressFromPoolId(id)">
+            <BalLoadingBlock
+              v-if="loadingPool"
+              class="pool-actions-card h-40"
+            />
             <StakingIncentivesCard v-if="!loadingPool" :pool="pool" />
-          </StakingProvider>
-          <!-- <PoolActionsCard
+            <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
           :missingPrices="missingPrices"
         /> -->
-        </BalStack>
+          </BalStack>
+        </StakingProvider>
       </div>
       <!-- <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
         <BalCard
