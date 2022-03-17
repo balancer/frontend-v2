@@ -143,7 +143,7 @@ export default function useWithdrawMath(
    * COMPUTED
    */
   const tokenAddresses = computed((): string[] => {
-    if (pool.value.mainTokens) {
+    if (isStablePhantom(pool.value.poolType) && pool.value.mainTokens) {
       return pool.value.mainTokens || [];
     }
     return pool.value.tokenAddresses;
