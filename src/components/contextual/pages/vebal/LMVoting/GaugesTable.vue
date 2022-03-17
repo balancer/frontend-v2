@@ -1,25 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-
 import BigNumber from 'bignumber.js';
 import { scale } from '@/lib/utils';
-
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
-
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
-
-import GaugeVoteModal from './GaugeVoteModal.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { isStableLike, orderedPoolTokens } from '@/composables/usePool';
 import { Network } from '@balancer-labs/sdk';
-import { networkNameFor, subdomainFor } from '@/composables/useNetwork';
+import { networkNameFor } from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import {
+  isStableLike,
+  orderedPoolTokens,
+  poolURLFor
+} from '@/composables/usePool';
 
 /**
  * TYPES
@@ -27,28 +23,22 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 type Props = {
   data?: VotingGaugeWithVotes[];
   isLoading?: boolean;
-  isLoadingMore?: boolean;
   noPoolsLabel?: string;
   isPaginated?: boolean;
-  refetch?: () => void;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {
-  isLoadingMore: false,
+withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false
 });
 
-const emit = defineEmits(['loadMore']);
-
-/**
- * STATE
- */
-const activeGaugeVote = ref<VotingGaugeWithVotes | null>(null);
+const emit = defineEmits<{
+  (e: 'clickedVote', value: VotingGaugeWithVotes): void;
+}>();
 
 /**
  * COMPOSABLES
@@ -57,7 +47,6 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
-const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**
  * DATA
@@ -131,22 +120,6 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
 ]);
 
 /**
- * COMPUTED
- */
-const unallocatedVoteWeight = computed(() => {
-  const totalVotes = 1e4;
-  if (props.isLoading || !props.data) return totalVotes;
-  const votesRemaining = props.data.reduce((remainingVotes, gauge) => {
-    return remainingVotes - parseFloat(gauge.userVotes);
-  }, totalVotes);
-  return votesRemaining;
-});
-
-const veBalLockInfo = computed<VeBalLockInfo | undefined>(() => {
-  return veBalLockInfoQuery.data.value;
-});
-
-/**
  * METHODS
  */
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
@@ -158,26 +131,14 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
 }
 
-async function handleVoteSuccess() {
-  if (props.refetch) {
-    await props.refetch();
-  }
-}
-
 function networkSrc(network: Network) {
   return require(`@/assets/images/icons/networks/${networkNameFor(
     network
   )}.svg`);
 }
 
-function poolURLFor(gauge: VotingGaugeWithVotes): string {
-  const subdomain = subdomainFor(gauge.network);
-  const host = configService.env.APP_HOST;
-  return `https://${subdomain}.${host}/#/pool/${gauge.pool.id}`;
-}
-
 function redirectToPool(gauge: VotingGaugeWithVotes) {
-  window.location.href = poolURLFor(gauge);
+  window.location.href = poolURLFor(gauge.pool.id, gauge.network);
 }
 </script>
 
@@ -194,13 +155,11 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :columns="columns"
       :data="data"
       :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
       :is-paginated="isPaginated"
       :on-row-click="redirectToPool"
-      @load-more="emit('loadMore')"
       :initial-state="{
         sortColumn: 'poolValue',
         sortDirection: 'desc'
@@ -248,7 +207,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
             size="sm"
             flat
             block
-            @click.stop="activeGaugeVote = gauge"
+            @click.stop="emit('clickedVote', gauge)"
           >
             {{ $t('veBAL.liquidityMining.table.vote') }}
           </BalBtn>
@@ -256,16 +215,4 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       </template>
     </BalTable>
   </BalCard>
-  <teleport to="#modal">
-    <GaugeVoteModal
-      v-if="!!activeGaugeVote"
-      @close="activeGaugeVote = null"
-      :gauge="activeGaugeVote"
-      :logoURIs="orderedTokenURIs(activeGaugeVote)"
-      :poolURL="poolURLFor(activeGaugeVote)"
-      :unallocatedVoteWeight="unallocatedVoteWeight"
-      :veBalLockInfo="veBalLockInfo"
-      @success="handleVoteSuccess"
-    />
-  </teleport>
 </template>

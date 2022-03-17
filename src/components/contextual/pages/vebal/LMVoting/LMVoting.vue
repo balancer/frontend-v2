@@ -8,19 +8,22 @@ import useVotingGauges from '@/composables/useVotingGauges';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import GaugesTable from './GaugesTable.vue';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
+import GaugeVoteModal from './GaugeVoteModal.vue';
 
 /**
  * CONSTANTS
  */
-
 const EPOCH_GENESIS = 1596636000000;
 const WEEK_IN_MS = 86_400_000 * 7;
 
 /**
- * DATA
+ * STATE
  */
-const now = ref(Date.now());
+const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
+const now = ref(Date.now());
 setInterval(() => {
   now.value = Date.now();
 }, 1000);
@@ -32,7 +35,7 @@ const {
   isLoading,
   votingGauges,
   unallocatedVotes,
-  refetch
+  refetch: refetchVotingGauges
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
@@ -58,6 +61,36 @@ const votingPeriodEnd = computed<number[]>(() => {
   ];
   return formattedTime;
 });
+
+const unallocatedVoteWeight = computed(() => {
+  const totalVotes = 1e4;
+  if (isLoading.value || !votingGauges.value) return totalVotes;
+
+  const votesRemaining = votingGauges.value.reduce((remainingVotes, gauge) => {
+    return remainingVotes - parseFloat(gauge.userVotes);
+  }, totalVotes);
+  return votesRemaining;
+});
+
+/**
+ * METHODS
+ */
+function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
+  activeVotingGauge.value = votingGauge;
+}
+
+function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  const sortedTokens = orderedPoolTokens(
+    gauge.pool.poolType,
+    gauge.pool.address,
+    gauge.pool.tokens
+  );
+  return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
+}
+
+function handleVoteSuccess() {
+  refetchVotingGauges.value();
+}
 </script>
 
 <template>
@@ -74,9 +107,23 @@ const votingPeriodEnd = computed<number[]>(() => {
     :isLoading="isLoading"
     :data="votingGauges"
     :key="votingGauges"
-    :refetch="refetch"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"
+    @clickedVote="setActiveGaugeVote"
   />
+  <teleport to="#modal">
+    <GaugeVoteModal
+      v-if="!!activeVotingGauge"
+      :gauge="activeVotingGauge"
+      :logoURIs="orderedTokenURIs(activeVotingGauge)"
+      :poolURL="
+        poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
+      "
+      :unallocatedVoteWeight="unallocatedVoteWeight"
+      :veBalLockInfo="veBalLockInfoQuery.data"
+      @close="activeVotingGauge = null"
+      @success="handleVoteSuccess"
+    />
+  </teleport>
 </template>

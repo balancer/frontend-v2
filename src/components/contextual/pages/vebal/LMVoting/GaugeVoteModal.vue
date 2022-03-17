@@ -24,6 +24,7 @@ import BalForm from '@/components/_global/BalForm/BalForm.vue';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import { isGreaterThan, isPositive } from '@/lib/utils/validations';
+
 /**
  * TYPES
  */
@@ -362,25 +363,25 @@ onMounted(() => {
           block
           class="mt-2"
         />
-        <ConfirmationIndicator
-          v-if="voteState.receipt"
-          :txReceipt="voteState.receipt"
-        />
-        <transition>
-          <BalBtn
-            v-if="voteState.receipt"
-            color="gray"
-            outline
-            block
-            class="mt-4"
-            @click="emit('close')"
-          >
-            {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
-          </BalBtn>
+        <div class="mt-4">
+          <template v-if="voteState.receipt">
+            <ConfirmationIndicator
+              :txReceipt="voteState.receipt"
+              class="mb-2"
+            />
+            <BalBtn
+              v-if="voteState.receipt"
+              color="gray"
+              outline
+              block
+              @click="emit('close')"
+            >
+              {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
+            </BalBtn>
+          </template>
           <BalBtn
             v-else
             color="gradient"
-            class="mt-4"
             block
             :disabled="voteDisabled"
             :loading="transactionInProgress"
@@ -393,7 +394,7 @@ onMounted(() => {
           >
             {{ voteButtonText }}
           </BalBtn>
-        </transition>
+        </div>
       </BalForm>
     </div>
   </BalModal>
