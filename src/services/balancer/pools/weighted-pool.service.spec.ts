@@ -120,9 +120,7 @@ describe('PoolCreator', () => {
   });
 
   describe('details', () => {
-    const mockPoolAddress = '0xDDD8292cb20a443ba1caaa59c985ce14ca2bdee5';
-    let createPoolTransaction: TransactionResponse;
-    const mockProvider = {} as Web3Provider;
+    const mockPoolAddress = '0x3bB9d50A0743103F896D823B332EE15E231848D1';
 
     beforeEach(async () => {
       require('@/lib/utils/balancer/web3').__setMockPoolAddress(
@@ -130,7 +128,10 @@ describe('PoolCreator', () => {
       );
       tokens.WETH.weight = 50;
       tokens.USDT.weight = 50;
-      createPoolTransaction = await weightedPoolsService.create(
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceipt
+      } as any;
+      await weightedPoolsService.create(
         mockProvider,
         mockPoolName,
         mockPoolSymbol,
@@ -141,25 +142,24 @@ describe('PoolCreator', () => {
     });
 
     it('should take a pool create transaction response and return details about the pool', async () => {
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceipt
+      } as any;
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
-        createPoolTransaction
+        'hash'
       );
       expect(poolDetails.id).toEqual(mockPoolId);
       expect(poolDetails.address).toEqual(mockPoolAddress);
     });
 
     it('should work with a polygon create pool transaction receipt', async () => {
-      const mockTransactionResponse: TransactionResponse = Object.assign(
-        {},
-        createPoolTransaction
-      );
-      mockTransactionResponse.wait = jest
-        .fn()
-        .mockImplementation(() => polygonCreatePoolReceipt);
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceipt
+      } as any;
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
-        mockTransactionResponse
+        'hash'
       );
       expect(poolDetails.address.toLowerCase()).toEqual(
         '0x3bb9d50a0743103f896d823b332ee15e231848d1'
@@ -167,16 +167,12 @@ describe('PoolCreator', () => {
     });
 
     it('should work with a polygon create pool transaction receipt with no events', async () => {
-      const mockTransactionResponse: TransactionResponse = Object.assign(
-        {},
-        createPoolTransaction
-      );
-      mockTransactionResponse.wait = jest
-        .fn()
-        .mockImplementation(() => polygonCreatePoolReceiptNoEvents);
+      const mockProvider = {
+        getTransactionReceipt: () => polygonCreatePoolReceiptNoEvents
+      } as any;
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
-        mockTransactionResponse
+        'hash'
       );
       expect(poolDetails.address.toLowerCase()).toEqual(
         '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
