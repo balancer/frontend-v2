@@ -4,8 +4,8 @@ import { getAddress } from 'ethers/lib/utils';
 import {
   PoolType,
   AnyPool,
-  Pool,
-  PoolToken
+  PoolToken,
+  FullPool
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
@@ -135,14 +135,14 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   /**
    * Returns pool weights label
    */
-  function poolWeightsLabel(pool: Pool): string {
+  function poolWeightsLabel(pool: FullPool): string {
     if (isStableLike(pool.poolType)) {
       return Object.values(pool.tokens)
         .map(token => token.symbol)
         .join(', ');
     }
 
-    return Object.values(pool.tokens)
+    return Object.values(pool.onchain.tokens)
       .map(
         token =>
           `${fNum2(token.weight, {
