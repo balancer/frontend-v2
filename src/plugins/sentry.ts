@@ -40,7 +40,11 @@ export default function initSentry(app: App) {
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
       environment,
-      release
+      release,
+      beforeSend: event => {
+        console.error(event);
+        return event;
+      }
     });
   }
 }
