@@ -65,20 +65,21 @@
         </div>
       </div>
 
-    <PoolsTable
-      :isLoading="isLoadingPools"
-      :data="filteredPools"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
-      :isLoadingMore="poolsIsFetchingNextPage"
-      @loadMore="loadMorePools"
-      :selectedTokens="selectedTokens"
-      class="mb-8"
-    />
+      <PoolsTable
+        :isLoading="isLoadingPools"
+        :data="filteredPools"
+        :noPoolsLabel="$t('noPoolsFound')"
+        :isPaginated="poolsHasNextPage"
+        :isLoadingMore="poolsIsFetchingNextPage"
+        @loadMore="loadMorePools"
+        :selectedTokens="selectedTokens"
+        class="mb-8"
+      />
 
-    <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
-      <FeaturedPools />
-    </div>
+      <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
+        <FeaturedPools />
+      </div>
+    </BalStack>
   </div>
 </template>
 
