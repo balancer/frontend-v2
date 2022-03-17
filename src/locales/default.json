@@ -590,7 +590,8 @@
         },
         "liquidityMining": {
             "title": "Pools eligible for liquidity mining",
-            "votingPeriod": "Current voting period ends: {0}",
+            "unallocatedVotes": "My unallocated votes: {0}.",
+            "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
             "table": {
                 "chain": "Chain",
                 "assets": "Assets",

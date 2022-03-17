@@ -25,9 +25,22 @@ export default function useVotingGauges() {
 
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);
 
+  const unallocatedVotes = computed(() => {
+    const totalVotes = 1e4;
+    if (isLoading.value || !votingGauges.value) return totalVotes;
+    const votesRemaining = votingGauges.value.reduce(
+      (remainingVotes, gauge) => {
+        return remainingVotes - parseFloat(gauge.userVotes);
+      },
+      totalVotes
+    );
+    return votesRemaining;
+  });
+
   return {
     isLoading,
     votingGauges,
+    unallocatedVotes,
     refetch: gaugeVotesQuery.refetch
   };
 }
