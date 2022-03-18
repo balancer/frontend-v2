@@ -724,12 +724,12 @@ export default function useWithdrawMath(
         formatUnits(expectedAmountsOut[idx] || '0', 18)
       );
 
-      if (
+      /*if (
         linearPool &&
         parseFloat(linearPool.mainToken.balance) < expectedAmountOut
       ) {
         return linearPool.wrappedToken.address;
-      }
+      }*/
 
       return token;
     });
@@ -774,12 +774,12 @@ export default function useWithdrawMath(
             formatUnits(expectedAmountsOut[idx] || '0', 18)
           );
 
-          if (
+          /*if (
             linearPool &&
             parseFloat(linearPool.mainToken.balance) < expectedAmountOut
           ) {
             return linearPool.wrappedToken.address;
-          }
+          }*/
         }
 
         return batchSwapToken;
@@ -822,6 +822,8 @@ export default function useWithdrawMath(
     }
 
     const tokensOut = getExitPoolBatchSwapTokensOut(expectedAmountsOut);
+
+    console.log('tokens out', tokensOut);
 
     try {
       const response = await balancer.relayer.exitPoolAndBatchSwap({
