@@ -10,13 +10,6 @@ import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import GaugesTable from './GaugesTable.vue';
 
 /**
- * CONSTANTS
- */
-
-const EPOCH_GENESIS = 1596636000000;
-const WEEK_IN_MS = 86_400_000 * 7;
-
-/**
  * DATA
  */
 const now = ref(Date.now());
