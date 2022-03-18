@@ -2,13 +2,10 @@
 /**
  * Claim Page
  */
-import { computed, reactive, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { configService } from '@/services/config/config.service';
-import useGaugesQuery from '@/composables/queries/useGaugesQuery';
-import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
 import { Gauge } from '@/services/balancer/gauges/types';
 import useTokens from '@/composables/useTokens';
-import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 import { formatUnits } from 'ethers/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
@@ -17,7 +14,7 @@ import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useApp from '@/composables/useApp';
-import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
+import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 
 import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
@@ -27,17 +24,6 @@ import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeReward
 /**
  * TYPES
  */
-export type GaugePool = {
-  id: string;
-  poolType: PoolType;
-  tokens: PoolToken[];
-  tokensList: string[];
-};
-
-type GaugePoolQueryResponse = {
-  pools: GaugePool[];
-};
-
 type GaugeTable = {
   gauge: Gauge;
   pool: GaugePool;
@@ -51,40 +37,7 @@ const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { appLoading } = useApp();
-
-/**
- * QUERIES
- */
-const { data: subgraphGauges } = useGaugesQuery();
-
-const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
-const gauges = computed((): Gauge[] => gaugesQuery.data.value || []);
-const gaugePoolIds = computed((): string[] => {
-  return gauges.value.map(gauge => gauge.poolId);
-});
-
-const gaugePoolQueryEnabled = computed(
-  (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0
-);
-const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
-  subgraphs.balancer,
-  ['claim', 'gauge', 'pools'],
-  () => ({
-    pools: {
-      __args: {
-        where: { id_in: gaugePoolIds.value }
-      },
-      id: true,
-      poolType: true,
-      tokensList: true,
-      tokens: {
-        address: true,
-        weight: true
-      }
-    }
-  }),
-  reactive({ enabled: gaugePoolQueryEnabled })
-);
+const { gauges, gaugePools, queriesLoading } = useClaimsData();
 
 /**
  * STATE
@@ -117,25 +70,12 @@ const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
 
-const pools = computed(
-  (): GaugePool[] => gaugePoolQuery.data.value?.pools || []
-);
-
-// Since the pool query is dependent on the gauge query, we only have to wait
-// for the pool query to finish loading.
-const poolQueryLoading = computed(
-  (): boolean =>
-    gaugePoolQuery.isLoading.value ||
-    gaugePoolQuery.isIdle.value ||
-    !!gaugePoolQuery.error.value
-);
-
 const balRewardsData = computed((): RewardRow[] => {
   if (!isWalletReady.value) return [];
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
-    const pool = pools.value.find(pool => pool.id === gauge.poolId);
+    const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
 
     if (pool && bnum(amount).gt(0))
       arr.push({
@@ -155,7 +95,7 @@ const gaugesWithRewards = computed((): Gauge[] => {
 
 const gaugeTables = computed((): GaugeTable[] => {
   return gaugesWithRewards.value.reduce<GaugeTable[]>((arr, gauge) => {
-    const pool = pools.value.find(pool => pool.id === gauge.poolId);
+    const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
 
     if (pool)
       arr.push({
@@ -210,7 +150,7 @@ watch(gauges, async newGauges => {
   if (newGauges) await injectRewardTokens(newGauges);
 });
 
-watch(pools, async newPools => {
+watch(gaugePools, async newPools => {
   if (newPools) await injectPoolTokens(newPools);
 });
 </script>
@@ -231,10 +171,10 @@ watch(pools, async newPools => {
       </div>
       <BalClaimsTable
         :rewardsData="balRewardsData"
-        :isLoading="poolQueryLoading && isWalletReady"
+        :isLoading="queriesLoading"
       />
 
-      <template v-if="!poolQueryLoading && gaugesWithRewards.length > 0">
+      <template v-if="!queriesLoading && gaugesWithRewards.length > 0">
         <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="flex mt-4">
@@ -242,7 +182,7 @@ watch(pools, async newPools => {
               {{ gaugeTitle(pool) }}
             </h4>
           </div>
-          <GaugeRewardsTable :gauge="gauge" :isLoading="poolQueryLoading" />
+          <GaugeRewardsTable :gauge="gauge" :isLoading="queriesLoading" />
         </div>
       </template>
 
