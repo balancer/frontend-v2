@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { differenceInDays } from 'date-fns';
+import { differenceInSeconds } from 'date-fns';
 
 import { bnum } from '@/lib/utils';
 
@@ -23,10 +23,10 @@ import useLockState from '../../composables/useLockState';
 import useLockAmount from '../../composables/useLockAmount';
 import useLockEndDate from '../../composables/useLockEndDate';
 
-import { MAX_LOCK_PERIOD_IN_DAYS } from '@/components/forms/lock_actions/constants';
-
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { getPreviousThursday } from '@/composables/useTime';
+import { expectedVeBal } from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -101,13 +101,14 @@ const expectedVeBalAmount = computed(() => {
     return '0';
   }
 
-  const lockEndDateInDays =
-    differenceInDays(new Date(lockEndDate.value), todaysDate) + 1;
+  const chosenLockDate = new Date(lockEndDate.value);
+  const previousThursdayBeforeLockDate = getPreviousThursday(chosenLockDate);
+  const lockTime = differenceInSeconds(
+    previousThursdayBeforeLockDate,
+    todaysDate
+  );
 
-  return bnum(totalLpTokens.value)
-    .times(lockEndDateInDays)
-    .div(MAX_LOCK_PERIOD_IN_DAYS)
-    .toString();
+  return expectedVeBal(totalLpTokens.value, lockTime);
 });
 
 const lockType = computed(() => {

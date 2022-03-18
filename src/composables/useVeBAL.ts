@@ -5,10 +5,25 @@ import { POOLS } from '@/constants/pools';
 
 import useTokens from './useTokens';
 import useConfig from './useConfig';
+import { bnum } from '@/lib/utils';
+import { oneYearInSecs } from './useTime';
 
 export const isVeBalSupported = computed(
   () => isMainnet.value || isKovan.value
 );
+
+/**
+ * @summary Calculate expected veBAL given BPT being locked and lock time in seconds.
+ * @param {string} bpt - BPT amount being locked up
+ * @param {number} lockTime - Time in seconds from now to last epoch before
+ * chosen lock date
+ */
+export function expectedVeBal(bpt: string, lockTime: number): string {
+  return bnum(bpt)
+    .times(lockTime)
+    .div(oneYearInSecs)
+    .toString();
+}
 
 export default function useVeBal() {
   /**
