@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { scale, bnum } from '@/lib/utils';
-import { intervalToDuration, Interval, Duration } from 'date-fns';
+import { intervalToDuration, Interval, Duration, add } from 'date-fns';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVotingGauges from '@/composables/useVotingGauges';
@@ -13,13 +13,7 @@ import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 
 /**
- * CONSTANTS
- */
-const EPOCH_GENESIS = 1596636000000;
-const WEEK_IN_MS = 86_400_000 * 7;
-
-/**
- * STATE
+ * DATA
  */
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
@@ -49,8 +43,7 @@ const unallocatedVotesFormatted = computed<string>(() =>
 
 const votingPeriodEnd = computed<number[]>(() => {
   if (!veBalLockInfoQuery.data.value) return [];
-  const currentEpoch = Number(veBalLockInfoQuery.data.value.epoch);
-  const periodEnd = EPOCH_GENESIS + currentEpoch * WEEK_IN_MS;
+  const periodEnd = getVotePeriodEndTime();
   const interval: Interval = { start: now.value, end: periodEnd };
   const timeUntilEnd: Duration = intervalToDuration(interval);
   const formattedTime = [
@@ -91,6 +84,26 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
 function handleModalClose() {
   activeVotingGauge.value = null;
   refetchVotingGauges.value();
+}
+
+function getVotePeriodEndTime(): number {
+  var d = new Date();
+  const dayOfWeek = d.getDay();
+  let daysUntilThursday = 4 - dayOfWeek;
+  if (daysUntilThursday <= 0) {
+    daysUntilThursday += 7;
+  }
+  const nextThursdayTimestamp = add(d, { days: daysUntilThursday });
+  const n = new Date(nextThursdayTimestamp);
+  const epochEndTime = Date.UTC(
+    n.getFullYear(),
+    n.getMonth(),
+    n.getDate(),
+    0,
+    0,
+    0
+  );
+  return epochEndTime;
 }
 </script>
 
