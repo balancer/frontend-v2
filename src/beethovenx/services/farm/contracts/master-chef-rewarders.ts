@@ -45,12 +45,15 @@ export default class MasterChefRewarders {
     result = await rewarderMulticaller.execute(result);
 
     //each farm can have only one rewarder
-    const mapped = mapValues(result, farm => {
+    const mapped = mapValues(result, (farm, farmId) => {
       for (const _item of Object.values(farm)) {
         const item = _item as any;
 
         const pendingToken = item.pendingToken
-          ? scale(new BigNumber(item.pendingToken.toString()), -18).toNumber()
+          ? scale(
+              new BigNumber(item.pendingToken.toString()),
+              farmId === '66' ? -6 : -18
+            ).toNumber()
           : 0;
 
         if (pendingToken > 0) {
