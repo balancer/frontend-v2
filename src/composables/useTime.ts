@@ -29,7 +29,9 @@ export function toJsTimestamp(unixTimestamp: number): number {
 }
 
 export function getPreviousThursday(date: Date): Date {
-  const daysSinceThursday = (date.getDay() - 4) % 7;
+  let daysSinceThursday = date.getDay() - 4;
+  if (daysSinceThursday < 0) daysSinceThursday += 7;
+
   return sub(date, {
     days: daysSinceThursday,
     hours: date.getHours(),
