@@ -21,6 +21,7 @@ import useAlerts, {
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useBackgroundColor from './composables/useBackgroundColor';
+import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -29,7 +30,8 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
-    Notifications
+    Notifications,
+    AppSidebar
   },
 
   setup() {
@@ -125,6 +127,7 @@ export default defineComponent({
       @close="toggleWalletSelectModal"
     />
     <Notifications />
+    <AppSidebar />
   </div>
 </template>
 
