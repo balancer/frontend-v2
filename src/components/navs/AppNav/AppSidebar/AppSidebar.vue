@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import AppLogo from '@/components/images/AppLogo.vue';
-import SidebarLinks from './SidebarLinks/SidebarLinks.vue';
 </script>
 
 <template>
