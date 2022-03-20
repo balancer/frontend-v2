@@ -1,28 +1,22 @@
+<script lang="ts" setup>
+import useBreakpoints from '@/composables/useBreakpoints';
+import useDarkMode from '@/composables/useDarkMode';
+
+/**
+ * COMPOSABLES
+ */
+const { isMobile } = useBreakpoints();
+const { darkMode, toggleDarkMode } = useDarkMode();
+</script>
+
 <template>
   <BalBtn
     color="white"
-    :size="upToLargeBreakpoint ? 'md' : 'sm'"
+    :size="isMobile ? 'md' : 'sm'"
+    :circle="isMobile"
     @click="toggleDarkMode"
   >
     <MoonIcon v-if="darkMode" />
     <SunIcon v-else />
   </BalBtn>
 </template>
-
-<script lang="ts">
-import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'DarkModeToggle',
-
-  setup() {
-    // COMPOSABLES
-    const { upToLargeBreakpoint } = useBreakpoints();
-    const { darkMode, toggleDarkMode } = useDarkMode();
-
-    return { darkMode, toggleDarkMode, upToLargeBreakpoint };
-  }
-});
-</script>

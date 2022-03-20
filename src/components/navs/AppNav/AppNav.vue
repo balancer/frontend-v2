@@ -17,7 +17,7 @@ const appNav = ref<HTMLDivElement>();
 /**
  * COMPOSABLES
  */
-const { bp } = useBreakpoints();
+const { bp, isDesktop } = useBreakpoints();
 const { trackGoal, Goals } = useFathom();
 const { currentAlert } = useAlerts();
 
@@ -59,7 +59,7 @@ onUnmounted(() => {
           <AppLogo v-else />
         </router-link>
 
-        <DesktopLinks class="ml-8" />
+        <DesktopLinks v-if="isDesktop" class="ml-8" />
       </div>
 
       <AppNavActions />
