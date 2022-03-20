@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <div v-if="account" class="flex items-center">
-      <AppNavActivityBtn />
-      <AppNavClaimBtn v-if="liquidityMiningSupported" />
-      <AppNavAccountBtn />
-    </div>
+  <div class="grid gap-2 grid-rows-1 grid-flow-col">
+    <DarkModeToggle />
+    <AppNavActivityBtn v-if="account" />
+    <AppNavAccountBtn v-if="account" />
     <BalBtn
       v-else
       color="white"
@@ -15,6 +13,7 @@
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <span class="lg:hidden" v-text="$t('connect')" />
     </BalBtn>
+    <AppNavNetworkSelect v-if="!hideNetworkSelect" />
   </div>
 </template>
 
@@ -28,17 +27,19 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
-import AppNavClaimBtn from './AppNavClaimBtn.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
+import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
+import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 
 export default defineComponent({
   name: 'AppNavActions',
 
   components: {
     AppNavAccountBtn,
-    AppNavClaimBtn,
-    AppNavActivityBtn
+    AppNavActivityBtn,
+    DarkModeToggle,
+    AppNavNetworkSelect
   },
 
   setup() {
@@ -49,6 +50,7 @@ export default defineComponent({
     const {
       connectWallet,
       account,
+      connector,
       toggleWalletSelectModal,
       isMainnet,
       isKovan,
@@ -62,6 +64,8 @@ export default defineComponent({
         isMainnet.value || isPolygon.value || isArbitrum.value || isKovan.value
     );
 
+    const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
+
     // METHODS
     function onClickConnect() {
       trackGoal(Goals.ClickNavConnectWallet);
@@ -73,6 +77,7 @@ export default defineComponent({
       account,
       upToSmallBreakpoint,
       upToLargeBreakpoint,
+      hideNetworkSelect,
       // methods
       fNum,
       onClickConnect,
