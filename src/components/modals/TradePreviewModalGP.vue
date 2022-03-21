@@ -677,10 +677,7 @@ export default defineComponent({
           props.trading.tokenOut.value.address
         );
       } else if (props.trading.requiresTokenApproval.value) {
-        return (
-          props.trading.isBalancerTrade.value &&
-          !tokenApproval.isUnlockedV2.value
-        );
+        return !tokenApproval.isUnlockedV2.value;
       }
       return false;
     });
