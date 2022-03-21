@@ -62,6 +62,11 @@ export const EXTERNAL_LINKS = {
         icon: 'discord-icon'
       },
       {
+        title: 'Olympus Bonds',
+        subtitle: 'olympus pro',
+        url: 'https://pro.olympusdao.finance/#/bond'
+      },
+      {
         title: 'Multichain Bridge',
         subTitle: 'ETH / AVAX / BSC / MATIC',
         url: 'https://app.multichain.org/#/router'
