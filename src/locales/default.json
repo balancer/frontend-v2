@@ -551,8 +551,8 @@
         "hero": {
             "title": "Get veBAL to earn extra and get voting power",
             "benefits": {
-                "earn": "Earn 50% of protocol revenue from swap fees",
-                "boost": "Boost yield from liquidity mining—up to 2.5x",
+                "earn": "Earn part of all protocol revenues",
+                "boost": "Boost your liquidity mining yield by up to 2.5x",
                 "vote": "Vote on liquidity mining incentive allocations"
             },
             "buttons": {
