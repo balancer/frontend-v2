@@ -65,6 +65,10 @@ const unallocatedVoteWeight = computed(() => {
   return votesRemaining;
 });
 
+const hasLockedAmount = computed((): boolean =>
+  bnum(veBalLockInfoQuery.data.value?.lockedAmount || 0).gt(0)
+);
+
 /**
  * METHODS
  */
@@ -110,11 +114,19 @@ function getVotePeriodEndTime(): number {
 <template>
   <h3 class="mb-3">{{ $t('veBAL.liquidityMining.title') }}</h3>
   <div class="mb-3">
-    {{
-      $t('veBAL.liquidityMining.unallocatedVotes', [unallocatedVotesFormatted])
-    }}
+    <span v-if="hasLockedAmount">
+      {{
+        $t('veBAL.liquidityMining.unallocatedVotes', [unallocatedVotesFormatted])
+      }}
+    </span>
+    <BalLink
+      v-else
+      :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
+    >
+      Get veBAL to vote
+    </BalLink>
     <span v-if="votingPeriodEnd.length">
-      {{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
+      &nbsp;{{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
     </span>
   </div>
   <GaugesTable
