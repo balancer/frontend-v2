@@ -219,11 +219,28 @@ export default function useWithdrawMath(
 
         return linearPool?.mainTokenTotalBalance || '0';
       }
+    } else if (
+      isWeightedPoolWithNestedLinearPools.value &&
+      pool.value.mainTokens &&
+      pool.value.mainTokens[tokenOutIndex.value]
+    ) {
+      const tokenAddress = getAddress(
+        pool.value.mainTokens[tokenOutIndex.value]
+      );
+
+      const linearPool = pool.value.linearPools?.find(
+        linearPool =>
+          linearPool.mainToken.address.toLowerCase() ===
+          tokenAddress.toLowerCase()
+      );
+
+      return linearPool?.mainTokenTotalBalance || '0';
     }
 
     const balances = Object.values(pool.value.onchain.tokens).map(
       token => token.balance
     );
+
     return balances[tokenOutIndex.value];
   });
 
@@ -300,16 +317,31 @@ export default function useWithdrawMath(
 
   const fullAmounts = computed(() => {
     if (isProportional.value) return proportionalAmounts.value;
+
+    if (isWeightedPoolWithNestedLinearPools.value) {
+      return withdrawalTokens.value.map((withdrawToken, i) => {
+        return withdrawToken.address.toLowerCase() ===
+          tokenOut.value.toLowerCase()
+          ? tokenOutAmount.value || '0'
+          : '0';
+      });
+    }
+
     return new Array(tokenCount.value).fill('0').map((_, i) => {
       return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
     });
   });
 
-  const fullAmountsScaled = computed((): string[] =>
-    fullAmounts.value.map((amount, i) =>
-      parseUnits(amount, withdrawalTokens.value[i].decimals).toString()
-    )
-  );
+  const fullAmountsScaled = computed((): string[] => {
+    return fullAmounts.value.map((amount, i) => {
+      const indexOfDecimal = amount.indexOf('.');
+
+      return parseUnits(
+        amount.slice(0, indexOfDecimal + withdrawalTokens.value[i].decimals),
+        withdrawalTokens.value[i].decimals
+      ).toString();
+    });
+  });
 
   const fullAmountsWithNestedUsdBpt = computed(() => {
     if (!hasNestedUsdStablePhantomPool.value || batchSwapUsd.value === null) {
@@ -371,6 +403,21 @@ export default function useWithdrawMath(
         return batchRelayerSwap.value?.outputs?.amountsIn || '0';
       }
       return batchSwap.value?.returnAmounts?.[0]?.toString() || '0';
+    } else if (
+      isWeightedPoolWithNestedLinearPools.value &&
+      hasNestedUsdStablePhantomPool.value
+    ) {
+      const withdrawTokenIndex = withdrawalTokens.value.findIndex(
+        withdrawToken =>
+          withdrawToken.address.toLowerCase() === tokenOut.value.toLowerCase()
+      );
+
+      return (
+        poolCalculator
+          //TODO: this is wrong, mixing main token and phantom BPT
+          .bptInForExactTokenOut(tokenOutAmount.value, withdrawTokenIndex)
+          .toString()
+      );
     }
 
     return poolCalculator
@@ -810,7 +857,7 @@ export default function useWithdrawMath(
 
   async function getBatchRelayerExitPoolAndBatchSwap() {
     exitBatchSwapLoading.value = true;
-    let expectedAmountsOut: string[];
+    let expectedAmountsOut: string[] = fullAmountsScaled.value;
 
     //determine expectedAmountsOut based on tokensOut
     if (isProportional.value) {
@@ -999,6 +1046,12 @@ export default function useWithdrawMath(
     tokenOutAmount.value = '';
     if (isStablePhantomPool.value) getSingleAssetMaxOut();
 
+    if (isWeightedPoolWithNestedLinearPools.value) {
+      getBatchRelayerExitPoolAndBatchSwap().catch();
+    }
+  });
+
+  watch(usdAsset, () => {
     if (isWeightedPoolWithNestedLinearPools.value) {
       getBatchRelayerExitPoolAndBatchSwap().catch();
     }

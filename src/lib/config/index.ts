@@ -66,6 +66,7 @@ export interface Config {
     bbUsd: string;
   };
   usdTokens: string[];
+  usdTokenToWrappedTokenMap: { [mainToken: string]: string };
   keys: {
     infura: string;
     alchemy: string;

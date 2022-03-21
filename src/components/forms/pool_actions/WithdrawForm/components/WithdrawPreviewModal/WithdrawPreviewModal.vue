@@ -66,6 +66,7 @@ const amountMap = computed(
     fullAmounts.value.forEach((amount, i) => {
       if (hasAmount(i)) amountMap[withdrawTokens.value[i]] = amount;
     });
+
     return amountMap;
   }
 );
@@ -76,6 +77,7 @@ const tokenMap = computed(
     Object.keys(amountMap.value).forEach(address => {
       tokenMap[address] = getToken(address);
     });
+
     return tokenMap;
   }
 );

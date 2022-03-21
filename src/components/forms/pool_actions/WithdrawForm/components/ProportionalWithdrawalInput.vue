@@ -16,6 +16,8 @@ import useWithdrawalState from '../composables/useWithdrawalState';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
 import useConfig from '@/composables/useConfig';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+import WithdrawalUsdTokenSelect from '@/components/forms/pool_actions/WithdrawForm/components/WithdrawalUsdTokenSelect.vue';
 
 /**
  * TYPES
@@ -180,15 +182,25 @@ onBeforeMount(() => {
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <BalAsset :address="address" class="mr-2" />
-            <div class="flex flex-col leading-none">
-              <span class="text-lg font-medium">
-                {{ token.symbol }}
-                <span v-if="!isStableLikePool">
-                  {{ fNum(seedTokens[i], 'percent_lg') }}
+            <WithdrawalUsdTokenSelect
+              v-if="
+                isWeightedPoolWithNestedLinearPools &&
+                  hasNestedUsdStablePhantomPool &&
+                  networkConfig.usdTokens.includes(address)
+              "
+              :pool="pool"
+            />
+            <template v-else>
+              <BalAsset :address="address" class="mr-2" />
+              <div class="flex flex-col leading-none">
+                <span class="text-lg font-medium">
+                  {{ token.symbol }}
+                  <span v-if="!isStableLikePool">
+                    {{ fNum(seedTokens[i], 'percent_lg') }}
+                  </span>
                 </span>
-              </span>
-            </div>
+              </div>
+            </template>
           </div>
           <div
             class="flex flex-col flex-grow items-end text-right pl-2 font-numeric"

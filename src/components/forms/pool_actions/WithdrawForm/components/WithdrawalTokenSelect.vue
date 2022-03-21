@@ -33,7 +33,9 @@ const selectedOption = ref(props.initToken);
  */
 const { getTokens, getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
-const { isWethPool } = usePool(toRef(props, 'pool'));
+const { isWethPool, isWeightedPoolWithNestedLinearPools } = usePool(
+  toRef(props, 'pool')
+);
 
 /**
  * COMPUTED
@@ -47,7 +49,13 @@ const tokenAddresses = computed(() => {
 
 const tokens = computed(() => getTokens(tokenAddresses.value));
 
-const options = computed(() => ['all', ...tokenAddresses.value]);
+const options = computed(() => {
+  if (isWeightedPoolWithNestedLinearPools.value) {
+    return ['all'];
+  }
+
+  return ['all', ...tokenAddresses.value];
+});
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
@@ -73,7 +81,7 @@ function handleSelected(newToken: string): void {
 <template>
   <BalDropdown :options="options" minWidth="44" @selected="handleSelected">
     <template #activator>
-      <div class="token-select-input selected group selectable">
+      <div class="token-select-input selected group selectable select-none">
         <div>
           <BalAssetSet
             v-if="isProportional"
@@ -91,6 +99,7 @@ function handleSelected(newToken: string): void {
           <span v-else>{{ selectedToken.symbol }}</span>
         </span>
         <BalIcon
+          v-if="options.length > 1"
           name="chevron-down"
           size="sm"
           class="text-green-500 group-hover:text-pink-500 ml-2"

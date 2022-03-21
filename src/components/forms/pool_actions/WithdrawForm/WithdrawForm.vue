@@ -77,9 +77,18 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
   highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
 
-const hasValidInputs = computed(
-  (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
-);
+const hasValidInputs = computed((): boolean => {
+  return validInput.value && hasAcceptedHighPriceImpact.value;
+});
+
+const disabled = computed(() => {
+  return (
+    !hasAmounts.value ||
+    !hasValidInputs.value ||
+    isMismatchedNetwork.value ||
+    loadingAmountsOut.value
+  );
+});
 
 const singleAssetRules = computed(() => [
   isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance'))
@@ -148,12 +157,7 @@ onBeforeMount(() => {
         v-else
         :label="$t('preview')"
         color="gradient"
-        :disabled="
-          !hasAmounts ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            loadingAmountsOut
-        "
+        :disabled="disabled"
         block
         @click="showPreview = true"
       />

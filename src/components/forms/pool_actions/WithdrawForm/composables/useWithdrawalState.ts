@@ -59,7 +59,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   });
 
   const withdrawTokens = computed(() => {
-    if (state.isProportional && isWeightedPoolWithNestedLinearPools.value) {
+    if (isWeightedPoolWithNestedLinearPools.value) {
       return tokensOut.value.filter(
         token =>
           !(
