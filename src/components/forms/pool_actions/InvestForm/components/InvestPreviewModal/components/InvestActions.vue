@@ -16,13 +16,13 @@ import useEthers from '@/composables/useEthers';
 import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
-import useConfig from '@/composables/useConfig';
 import { BigNumber } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 
 /**
  * TYPES
@@ -65,8 +65,7 @@ const investmentState = reactive<InvestmentState>({
  */
 const route = useRoute();
 const { t } = useI18n();
-const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
+const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
@@ -102,12 +101,6 @@ const actions = computed((): TransactionActionInfo[] => [
     stepTooltip: t('investmentTooltip')
   }
 ]);
-
-const explorerLink = computed((): string =>
-  investmentState.receipt
-    ? explorerLinks.txLink(investmentState.receipt.transactionHash)
-    : ''
-);
 
 const transactionInProgress = computed(
   (): boolean =>
@@ -202,29 +195,7 @@ watch(blockNumber, async () => {
   <transition>
     <BalActionSteps v-if="!investmentState.confirmed" :actions="actions" />
     <div v-else>
-      <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
-      >
-        <div class="flex items-center">
-          <BalIcon name="clock" />
-          <span class="ml-2">
-            {{ investmentState.confirmedAt }}
-          </span>
-        </div>
-        <BalLink
-          :href="explorerLink"
-          external
-          noStyle
-          class="group flex items-center"
-        >
-          {{ networkConfig.explorerName }}
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="ml-px group-hover:text-pink-500 transition-colors"
-          />
-        </BalLink>
-      </div>
+      <ConfirmationIndicator :txReceipt="investmentState.receipt" />
       <BalBtn
         tag="router-link"
         :to="{ name: 'pool', params: { id: route.params.id } }"
