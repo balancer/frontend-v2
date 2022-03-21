@@ -38,7 +38,8 @@ export default function useFarmUserQuery(
 
     try {
       const farms = await beethovenxService.getBeetsFarms();
-      const farm = farms.find(farm => (farm.id = farmId));
+      const farm = farms.find(farm => farm.id === farmId);
+
       let pendingRewardToken = 0;
       let rewardTokenPrice = 0;
 
