@@ -15,7 +15,7 @@
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2-kovan",
-    "gauge": "https://api.thegraph.com/subgraphs/name/mendesfabio/balancer-gauges"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-kovan"
   },
   "supportsEIP1559": true,
   "nativeAsset": {
@@ -45,7 +45,7 @@
     "lidoRelayer": "0x41B953164995c11C81DA73D212ED8Af25741b7Ac",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d",
     "batchRelayer": "0x6bfd48F3873E21F7686982d352b610E1523c218B",
-    "balancerMinter": "0x762F8ba904f16382A230b2A0284dc5f202821ce1"
+    "balancerMinter": "0xE1008f2871F5f5c3da47f806dEbA3cD83Fe0E55B"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
