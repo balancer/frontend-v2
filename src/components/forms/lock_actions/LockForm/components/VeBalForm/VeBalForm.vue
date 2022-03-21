@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { differenceInSeconds } from 'date-fns';
+import { computed, ref, toRef } from 'vue';
 
 import { bnum } from '@/lib/utils';
 
@@ -25,7 +24,6 @@ import useLockEndDate from '../../composables/useLockEndDate';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { getPreviousThursday } from '@/composables/useTime';
 import { expectedVeBal } from '@/composables/useVeBAL';
 
 /**
@@ -58,10 +56,9 @@ const {
   isValidLockAmount,
   isIncreasedLockAmount,
   totalLpTokens
-} = useLockAmount(props.veBalLockInfo);
+} = useLockAmount(toRef(props, 'veBalLockInfo'));
 
 const {
-  todaysDate,
   minLockEndDateTimestamp,
   maxLockEndDateTimestamp,
   isValidLockEndDate,
@@ -101,14 +98,7 @@ const expectedVeBalAmount = computed(() => {
     return '0';
   }
 
-  const chosenLockDate = new Date(lockEndDate.value);
-  const previousThursdayBeforeLockDate = getPreviousThursday(chosenLockDate);
-  const lockTime = differenceInSeconds(
-    previousThursdayBeforeLockDate,
-    todaysDate
-  );
-
-  return expectedVeBal(totalLpTokens.value, lockTime);
+  return expectedVeBal(totalLpTokens.value, lockEndDate.value);
 });
 
 const lockType = computed(() => {
@@ -181,7 +171,6 @@ const lockType = computed(() => {
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :lockAmount="lockAmount"
       :lockEndDate="lockEndDate"
-      :expectedVeBalAmount="expectedVeBalAmount"
       :lockType="lockType"
       :veBalLockInfo="veBalLockInfo"
       :totalLpTokens="totalLpTokens"
