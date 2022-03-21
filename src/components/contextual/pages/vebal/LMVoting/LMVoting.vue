@@ -42,7 +42,6 @@ const unallocatedVotesFormatted = computed<string>(() =>
 );
 
 const votingPeriodEnd = computed<number[]>(() => {
-  if (!veBalLockInfoQuery.data.value) return [];
   const periodEnd = getVotePeriodEndTime();
   const interval: Interval = { start: now.value, end: periodEnd };
   const timeUntilEnd: Duration = intervalToDuration(interval);
@@ -121,12 +120,15 @@ function getVotePeriodEndTime(): number {
         ])
       }}
     </span>
-    <BalLink
-      v-else
-      :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
-    >
-      Get veBAL to vote
-    </BalLink>
+    <span v-else>
+      <BalLink
+        tag="router-link"
+        :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
+        class="inline-block"
+      >
+        Get veBAL to vote </BalLink
+      >.
+    </span>
     <span v-if="votingPeriodEnd.length">
       &nbsp;{{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
     </span>
