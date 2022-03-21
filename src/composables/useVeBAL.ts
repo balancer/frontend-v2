@@ -6,7 +6,8 @@ import { POOLS } from '@/constants/pools';
 import useTokens from './useTokens';
 import useConfig from './useConfig';
 import { bnum } from '@/lib/utils';
-import { oneYearInSecs } from './useTime';
+import { getPreviousThursday, oneYearInSecs } from './useTime';
+import { differenceInSeconds } from 'date-fns';
 
 export const isVeBalSupported = computed(
   () => isMainnet.value || isKovan.value
@@ -15,10 +16,14 @@ export const isVeBalSupported = computed(
 /**
  * @summary Calculate expected veBAL given BPT being locked and lock time in seconds.
  * @param {string} bpt - BPT amount being locked up
- * @param {number} lockTime - Time in seconds from now to last epoch before
- * chosen lock date
+ * @param {str} lockDateStr - Date in string format used to create Date of lock
  */
-export function expectedVeBal(bpt: string, lockTime: number): string {
+export function expectedVeBal(bpt: string, lockDateStr: string): string {
+  const now = new Date();
+  const lockDate = new Date(lockDateStr);
+  const previousThursdayBeforeLockDate = getPreviousThursday(lockDate);
+  const lockTime = differenceInSeconds(previousThursdayBeforeLockDate, now);
+
   return bnum(bpt)
     .times(lockTime)
     .div(oneYearInSecs)

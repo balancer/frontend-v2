@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import LockAmount from './components/LockAmount.vue';
 import LockSummary from './components/LockSummary.vue';
@@ -11,6 +12,7 @@ import LockActions from './components/LockActions.vue';
 
 import { TokenInfo } from '@/types/TokenList';
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
+import { expectedVeBal } from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -20,7 +22,6 @@ type Props = {
   lockablePoolTokenInfo: TokenInfo;
   lockAmount: string;
   lockEndDate: string;
-  expectedVeBalAmount: string;
   lockType: LockType[];
   veBalLockInfo: VeBalLockInfo;
   totalLpTokens: string;
@@ -40,10 +41,17 @@ const emit = defineEmits<{
  */
 const lockConfirmed = ref(false);
 
+// This value should be static when modal is opened.
+const expectedVeBalAmount = expectedVeBal(
+  props.totalLpTokens,
+  props.lockEndDate
+);
+
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
+const { refetch: refetchLockInfo } = useVeBalLockInfoQuery();
 
 /**
  * COMPUTED
@@ -64,6 +72,11 @@ const title = computed(() => {
  */
 function handleClose() {
   emit('close');
+}
+
+function handleSuccess() {
+  refetchLockInfo.value();
+  lockConfirmed.value = true;
 }
 </script>
 
@@ -103,7 +116,7 @@ function handleClose() {
       :lockEndDate="lockEndDate"
       :lockType="lockType"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      @success="lockConfirmed = true"
+      @success="handleSuccess"
       class="mt-4"
     />
   </BalModal>
