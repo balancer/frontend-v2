@@ -116,7 +116,9 @@ function getVotePeriodEndTime(): number {
   <div class="mb-3">
     <span v-if="hasLockedAmount">
       {{
-        $t('veBAL.liquidityMining.unallocatedVotes', [unallocatedVotesFormatted])
+        $t('veBAL.liquidityMining.unallocatedVotes', [
+          unallocatedVotesFormatted
+        ])
       }}
     </span>
     <BalLink
