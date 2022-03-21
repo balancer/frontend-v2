@@ -68,6 +68,7 @@ export type WithdrawMathResponse = {
   shouldUseBatchRelayer: Ref<boolean>;
   batchRelayerSwap: Ref<any | null>;
   exitPoolAndBatchSwap: Ref<any | null>;
+  exitPoolBatchSwapWrappedTokensOut: Ref<{ token: string; amount: string }[]>;
   loadingAmountsOut: Ref<boolean>;
   initMath: () => Promise<void>;
   resetMath: () => void;
@@ -89,6 +90,9 @@ export default function useWithdrawMath(
   const exitPoolAndBatchSwapAmountsOut = ref<string[]>([]);
   const exitPoolAndBatchSwapSingleAssetMaxes = ref<string[]>([]);
   const exitPoolAndBatchSwap = ref<TransactionData | null>(null);
+  const exitPoolBatchSwapWrappedTokensOut = ref<
+    { token: string; amount: string }[]
+  >([]);
 
   const batchSwap = ref<BatchSwapOut | null>(null);
   const batchSwapUsd = ref<BatchSwapOut | null>(null);
@@ -463,11 +467,11 @@ export default function useWithdrawMath(
     bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
   );
 
-  const fiatAmounts = computed((): string[] =>
-    fullAmounts.value.map((amount, i) =>
+  const fiatAmounts = computed((): string[] => {
+    return fullAmounts.value.map((amount, i) =>
       toFiat(amount, withdrawalTokens.value[i].address)
-    )
-  );
+    );
+  });
 
   const fiatTotal = computed((): string =>
     fiatAmounts.value.reduce(
@@ -724,12 +728,12 @@ export default function useWithdrawMath(
         formatUnits(expectedAmountsOut[idx] || '0', 18)
       );
 
-      /*if (
+      if (
         linearPool &&
         parseFloat(linearPool.mainToken.balance) < expectedAmountOut
       ) {
         return linearPool.wrappedToken.address;
-      }*/
+      }
 
       return token;
     });
@@ -742,25 +746,43 @@ export default function useWithdrawMath(
     }
 
     const usdTokens = configService.network.usdTokens;
+    const usdTokenToWrappedTokenMap =
+      configService.network.usdTokenToWrappedTokenMap;
+    const wrappedUsdTokens = Object.values(usdTokenToWrappedTokenMap);
 
     return batchSwapTokens
       .filter((batchSwapToken, idx) => {
-        if (usdTokens.includes(batchSwapToken)) {
+        if (
+          usdTokens.includes(batchSwapToken) ||
+          wrappedUsdTokens.includes(batchSwapToken)
+        ) {
           if (isProportional.value) {
             return (
-              batchSwapToken.toLowerCase() === usdAsset.value.toLowerCase()
+              batchSwapToken.toLowerCase() === usdAsset.value.toLowerCase() ||
+              usdTokenToWrappedTokenMap[
+                getAddress(usdAsset.value)
+              ]?.toLowerCase() === batchSwapToken.toLowerCase()
             );
-          } else if (!usdTokens.includes(tokenOut.value)) {
+          } else if (
+            !usdTokens.includes(tokenOut.value) &&
+            !wrappedUsdTokens.includes(tokenOut.value)
+          ) {
             return (
               batchSwapTokens
                 .slice(0, idx)
-                .filter(token =>
-                  configService.network.usdTokens.includes(token)
+                .filter(
+                  token =>
+                    usdTokens.includes(token) ||
+                    wrappedUsdTokens.includes(token)
                 ).length === 0
             );
           }
 
-          return tokenOut.value.toLowerCase() === batchSwapToken.toLowerCase();
+          return (
+            tokenOut.value.toLowerCase() === batchSwapToken.toLowerCase() ||
+            usdTokenToWrappedTokenMap[tokenOut.value]?.toLowerCase() ===
+              batchSwapToken.toLowerCase()
+          );
         }
 
         return true;
@@ -774,12 +796,12 @@ export default function useWithdrawMath(
             formatUnits(expectedAmountsOut[idx] || '0', 18)
           );
 
-          /*if (
+          if (
             linearPool &&
             parseFloat(linearPool.mainToken.balance) < expectedAmountOut
           ) {
             return linearPool.wrappedToken.address;
-          }*/
+          }
         }
 
         return batchSwapToken;
@@ -822,8 +844,14 @@ export default function useWithdrawMath(
     }
 
     const tokensOut = getExitPoolBatchSwapTokensOut(expectedAmountsOut);
-
-    console.log('tokens out', tokensOut);
+    exitPoolBatchSwapWrappedTokensOut.value = tokensOut
+      .map((token, idx) => ({ token, amount: expectedAmountsOut[idx] }))
+      .filter(
+        item =>
+          !!(pool.value.linearPools || []).find(
+            linearPool => linearPool.wrappedToken.address === item.token
+          )
+      );
 
     try {
       const response = await balancer.relayer.exitPoolAndBatchSwap({
@@ -1030,6 +1058,7 @@ export default function useWithdrawMath(
     batchRelayerSwap,
     loadingAmountsOut,
     exitPoolAndBatchSwap,
+    exitPoolBatchSwapWrappedTokensOut,
     // methods
     initMath,
     resetMath,

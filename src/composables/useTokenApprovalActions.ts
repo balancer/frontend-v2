@@ -6,7 +6,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
-  amounts: Ref<string[]>
+  amounts: Ref<string[]>,
+  type: 'invest' | 'unwrap' = 'invest'
 ) {
   const { t } = useI18n();
   const { getToken } = useTokens();
@@ -20,10 +21,20 @@ export default function useTokenApprovalActions(
   ).map(address => {
     const token = getToken(address);
     return {
-      label: t('transactionSummary.approveForInvesting', [token.symbol]),
+      label: t(
+        type === 'unwrap'
+          ? 'transactionSummary.approveForUnwrapping'
+          : 'transactionSummary.approveForInvesting',
+        [token.symbol]
+      ),
       loadingLabel: t('investment.preview.loadingLabel.approval'),
       confirmingLabel: t('confirming'),
-      stepTooltip: t('investment.preview.tooltips.approval', [token.symbol]),
+      stepTooltip: t(
+        type === 'unwrap'
+          ? 'withdraw.preview.tooltips.unwrap'
+          : 'investment.preview.tooltips.approval',
+        [token.symbol]
+      ),
       action: () => {
         return approveToken(token.address);
       }

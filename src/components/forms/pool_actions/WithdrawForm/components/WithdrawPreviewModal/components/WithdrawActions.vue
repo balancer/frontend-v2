@@ -34,6 +34,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancer } from '@/lib/balancer.sdk';
 import { WeightedPoolEncoder } from '@balancer-labs/sdk';
+import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 
 /**
  * TYPES
@@ -97,8 +98,15 @@ const {
   shouldUseBatchRelayer,
   batchRelayerSwap,
   shouldFetchBatchSwap,
-  exitPoolAndBatchSwap
+  exitPoolAndBatchSwap,
+  exitPoolBatchSwapWrappedTokensOut
 } = toRefs(props.math);
+
+const { tokenApprovalActions } = useTokenApprovalActions(
+  exitPoolBatchSwapWrappedTokensOut.value.map(item => item.token),
+  ref(exitPoolBatchSwapWrappedTokensOut.value.map(item => item.amount)),
+  'unwrap'
+);
 
 const withdrawalAction: TransactionActionInfo = {
   label: t('withdraw.label'),
@@ -221,6 +229,8 @@ async function submit(): Promise<TransactionResponse> {
  * CALLBACKS
  */
 onBeforeMount(() => {
+  actions.value = [...tokenApprovalActions, ...actions.value];
+
   if (
     (shouldUseBatchRelayer.value ||
       isWeightedPoolWithNestedLinearPools.value) &&

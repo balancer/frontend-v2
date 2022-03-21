@@ -624,7 +624,8 @@
     "fundPool": "Fund pool",
     "investInPool": "{0} in {1}",
     "withdrawFromPool": "{0} from {1}",
-    "wrapUnwrap": "{0} {1} to {2}"
+    "wrapUnwrap": "{0} {1} to {2}",
+    "approveForUnwrapping": "Approve {0} for unwrapping"
   },
   "transactionType": "Transaction type",
   "unallocated": "Unallocated",
@@ -672,7 +673,8 @@
         "default": "Withdrawal preview"
       },
       "tooltips": {
-        "withdrawStep": "Confirm withdrawal from this pool"
+        "withdrawStep": "Confirm withdrawal from this pool",
+        "unwrap": "Your withdraw requires unwrapping {0} from the underlying boosted pool. You must approve {0} to unwrap this token on Beethoven X. Approvals are required once per token, per wallet."
       }
     }
   },
