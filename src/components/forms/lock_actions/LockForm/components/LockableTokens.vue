@@ -60,12 +60,10 @@ const fiatTotal = computed(() =>
         <div>{{ fNum2(fiatTotal, FNumFormats.fiat) }}</div>
       </div>
       <BalLink
-        rel="noreferrer"
-        target="_blank"
-        :href="`/#/pool/${lockablePool.id}`"
+        tag="router-link"
+        :to="{ name: 'invest', params: { id: lockablePool.id } }"
         external
-        noStyle
-        class="mt-2 block text-sm text-blue-600 dark:text-blue-400"
+        class="mt-2 block text-sm"
       >
         {{
           $t('getVeBAL.lockableTokens.getMoreVeBAL', [
