@@ -64,12 +64,16 @@ const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
-const { upToLargeBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+
+const wideCompositionWidth = computed(() =>
+  upToMediumBreakpoint.value ? 900 : undefined
+);
 
 /**
  * DATA
  */
-const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
+const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -84,7 +88,7 @@ const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
     id: 'poolName',
     accessor: 'id',
     Cell: 'poolNameCell',
-    width: props.hiddenColumns.length >= 2 ? 900 : 350
+    width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350
   },
   {
     name: t('myBalance'),
