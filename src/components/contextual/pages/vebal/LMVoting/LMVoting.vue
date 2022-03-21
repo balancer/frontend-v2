@@ -126,7 +126,7 @@ function getVotePeriodEndTime(): number {
         :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
         class="inline-block"
       >
-        Get veBAL to vote </BalLink
+        {{ $t('getVeBALToVote') }}</BalLink
       >.
     </span>
     <span v-if="votingPeriodEnd.length">

@@ -750,6 +750,7 @@
             "description": "Get veBAL on Ethereum Mainnet"
         }
     },
+    "getVeBALToVote": "Get veBAL to vote",
     "unlockVeBAL": {
         "expiredLockableTokens": {
             "title": "Expired locked tokens"
@@ -790,7 +791,6 @@
         }
     },
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
-    
     "theme": "Theme",
     "thirdPartyRewards": {
         "apr": {
