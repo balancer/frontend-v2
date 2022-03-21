@@ -1,25 +1,23 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div :class="['card-container', cardContainerClasses]">
-      <div v-if="imgSrc" class="feature" :style="featureStyles" />
-      <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
-        <component :is="titleTag" v-if="!!title" v-text="title" />
-        <div
-          v-if="$slots.header"
-          :class="['header-content', headerContentClasses]"
-        >
-          <slot name="header" />
-        </div>
-      </div>
+    <div v-if="imgSrc" class="feature" :style="featureStyles" />
+    <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
+      <component :is="titleTag" v-if="!!title" v-text="title" />
       <div
-        :class="['content', contentClasses]"
-        :style="hCustomContent ? { maxHeight: '60vh' } : ''"
+        v-if="$slots.header"
+        :class="['header-content', headerContentClasses]"
       >
-        <slot />
+        <slot name="header" />
       </div>
-      <div v-if="$slots.footer" :class="['footer', footerClasses]">
-        <slot name="footer" />
-      </div>
+    </div>
+    <div
+      :class="['content', contentClasses]"
+      :style="hCustomContent ? { maxHeight: '60vh' } : ''"
+    >
+      <slot />
+    </div>
+    <div v-if="$slots.footer" :class="['footer', footerClasses]">
+      <slot name="footer" />
     </div>
   </div>
 </template>
@@ -44,8 +42,6 @@ export default defineComponent({
     growContent: { type: Boolean, default: false },
     rightAlignHeader: { type: Boolean, default: false },
     exposeOverflow: { type: Boolean, default: false },
-    overflowYScroll: { type: Boolean, default: false },
-    itemsCenter: { type: Boolean, default: false },
     hCustomContent: { type: Boolean, default: false },
     overflowAutoContent: { type: Boolean, default: false },
     shadow: {
@@ -60,13 +56,6 @@ export default defineComponent({
   setup(props) {
     const borderClasses = computed(() => {
       return 'border dark:border-gray-900';
-    });
-
-    const cardContainerClasses = computed(() => {
-      return {
-        'overflow-y-scroll': props.overflowYScroll,
-        'items-center': props.itemsCenter
-      };
     });
 
     const cardClasses = computed(() => {
@@ -113,7 +102,6 @@ export default defineComponent({
     }));
 
     return {
-      cardContainerClasses,
       cardClasses,
       contentClasses,
       headerClasses,
@@ -128,13 +116,6 @@ export default defineComponent({
 <style scoped>
 .bal-card {
   @apply flex flex-col;
-}
-
-.card-container {
-  @apply flex flex-col;
-}
-.card-container::-webkit-scrollbar {
-  width: 0;
 }
 
 .header {
