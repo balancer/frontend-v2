@@ -42,7 +42,7 @@ const showUnlockPreviewModal = ref(false);
  */
 const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
-const { veBalBalance } = useVeBal();
+const { veBalBalance, lockablePoolAddress } = useVeBal();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
 
@@ -96,7 +96,11 @@ const cards = computed(() => {
       value: isWalletReady.value
         ? fNum2(fiatTotal.value, FNumFormats.fiat)
         : '—',
-      showLockIcon: hasExistingLock ? true : false
+      showPlusIcon: hasExistingLock ? true : false,
+      plusIconTo: {
+        name: 'invest',
+        params: { id: lockablePoolAddress.value }
+      }
     },
     {
       id: 'myLockedLpToken',
@@ -106,14 +110,16 @@ const cards = computed(() => {
       value: hasExistingLock
         ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
         : '—',
-      showLockIcon: hasExistingLock ? true : false,
+      showPlusIcon: hasExistingLock ? true : false,
+      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
       showUnlockIcon: isExpired ? true : false
     },
     {
       id: 'lockedEndDate',
       label: t('veBAL.myVeBAL.cards.lockedEndDate'),
       value: lockedUntil.value,
-      showLockIcon: hasExistingLock ? true : false
+      showPlusIcon: hasExistingLock ? true : false,
+      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } }
     },
     {
       id: 'myVeBAL',
@@ -141,8 +147,8 @@ const cards = computed(() => {
           @click="showUnlockPreviewModal = true"
         />
         <router-link
-          v-if="card.showLockIcon"
-          :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
+          v-if="card.showPlusIcon"
+          :to="card.plusIconTo"
           class="text-blue-500"
         >
           <BalIcon name="plus-circle" class="cursor-pointer" />
