@@ -48,14 +48,6 @@ const balance = computed(() => {
 });
 
 const balanceLabel = computed(() => {
-  if (props.priceRate && props.mainTokenAddress) {
-    const equivMainTokenBalance = bnum(balance.value)
-      .times(props.priceRate)
-      .toString();
-
-    return fNum(equivMainTokenBalance, 'token');
-  }
-
   return fNum(balance.value, 'token');
 });
 
