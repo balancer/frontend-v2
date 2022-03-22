@@ -54,6 +54,8 @@ export interface Config {
     batchRelayer: string;
     gaugeFactory: string;
     balancerMinter: string;
+    gaugeController: string;
+    tokenAdmin: string;
   };
   keys: {
     infura: string;

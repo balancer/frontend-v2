@@ -46,7 +46,9 @@
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d",
     "batchRelayer": "0x6bfd48F3873E21F7686982d352b610E1523c218B",
     "gaugeFactory": "0xd561043759495414813103fD73928edeDbA3a29c",
-    "balancerMinter": "0xE1008f2871F5f5c3da47f806dEbA3cD83Fe0E55B"
+    "balancerMinter": "0xE1008f2871F5f5c3da47f806dEbA3cD83Fe0E55B",
+    "gaugeController": "0x28be1a58a534b281c3a22df28d3720323bff331d",
+    "tokenAdmin": "0x955A85C79B6A249e0Ffe679766DAd4C10Cc3F9fB"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
