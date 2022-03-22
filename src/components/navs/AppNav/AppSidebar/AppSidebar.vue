@@ -16,9 +16,9 @@ const { setSidebarOpen } = useSidebar();
 
 <template>
   <Transition name="overlay" @afterEnter="showSidebar = true" appear>
-    <div class="sidebar-overlay" @click="showSidebar = false">
+    <div class="sidebar-overlay">
       <Transition name="sidebar" @afterLeave="setSidebarOpen(false)">
-        <div v-if="showSidebar" class="app-sidebar" @click.stop>
+        <div v-if="showSidebar" class="app-sidebar">
           <SidebarContent />
         </div>
       </Transition>
@@ -39,7 +39,7 @@ const { setSidebarOpen } = useSidebar();
 }
 
 .app-sidebar {
-  @apply text-white shadow-xl h-full w-3/4 max-w-sm bg-gray-900 cursor-default;
+  @apply text-white shadow-xl h-full w-3/4 max-w-sm bg-gray-900 cursor-default overflow-y-auto pb-4;
 }
 
 .overlay-enter-active,
@@ -54,7 +54,7 @@ const { setSidebarOpen } = useSidebar();
 
 .sidebar-enter-active,
 .sidebar-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 
 .sidebar-enter-from,
