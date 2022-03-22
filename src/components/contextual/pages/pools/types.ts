@@ -2,6 +2,7 @@ export type UserGuageShare = {
   id: string;
   gauge: {
     poolId: string;
+    id: string;
   };
   balance: string;
 };

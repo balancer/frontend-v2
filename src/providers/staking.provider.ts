@@ -33,6 +33,11 @@ import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useQuery } from 'vue-query';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
+import { BalancerTokenAdmin } from '@/services/balancer/contracts/contracts/token-admin';
+import { GaugeController } from '@/services/balancer/contracts/contracts/gauge-controller';
+import { getUnixTime } from 'date-fns';
+import { mapValues, times, uniq } from 'lodash';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -53,6 +58,7 @@ export type StakingProvider = {
   isPoolEligibleForStaking: Ref<boolean>;
   isStakedPoolsQueryEnabled: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
+  poolPayouts: any;
   getGaugeAddress: (poolAddress: string) => Promise<string>;
   stakeBPT: () => Promise<TransactionResponse>;
   unstakeBPT: () => Promise<TransactionResponse>;
@@ -62,6 +68,16 @@ export type StakingProvider = {
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
 };
+
+/**
+ * CONTRACTS
+ */
+const tokenAdmin = new BalancerTokenAdmin(
+  configService.network.addresses.tokenAdmin
+);
+const controller = new GaugeController(
+  configService.network.addresses.gaugeController
+);
 
 /**
  * SETUP
@@ -86,7 +102,7 @@ export default defineComponent({
      * COMPOSABLES
      */
     const { getProvider, account } = useWeb3();
-    const { balanceFor } = useTokens();
+    const { balanceFor, priceFor } = useTokens();
 
     /** QUERY ARGS */
     const userPoolIds = computed(() => {
@@ -121,9 +137,10 @@ export default defineComponent({
           __args: {
             where: { user: account.value.toLowerCase() }
           },
-          balance: 1,
+          balance: true,
           gauge: {
-            poolId: 1
+            poolId: true,
+            id: true
           }
         },
         liquidityGauges: {
@@ -132,7 +149,8 @@ export default defineComponent({
               poolId_in: userPoolIds.value
             }
           },
-          poolId: true
+          poolId: true,
+          id: true
         }
       }),
       reactive({
@@ -178,6 +196,42 @@ export default defineComponent({
       })
     );
 
+    const userGaugeAddresses = computed(() => {
+      const stakedGauges = (stakingData.value?.gaugeShares || []).map(
+        gaugeShare => gaugeShare.gauge.id
+      );
+      const userPoolGauges = (stakingData.value?.liquidityGauges || [])
+        .map(gauge => gauge.id)
+        .filter(id => id !== undefined) as string[];
+      const gaugeAddresses = uniq([...stakedGauges, ...userPoolGauges]);
+      return gaugeAddresses;
+    });
+
+    const {
+      data: inflationRate,
+      isLoading: isLoadingInflationRate
+    } = useQuery(['inflation_rate'], () => tokenAdmin.getInflationRate());
+
+    const {
+      data: gaugeRelativeWeights,
+      isLoading: isLoadingRelativeWeight
+    } = useQuery(
+      reactive([
+        'pool',
+        'gauge_relative_weight',
+        { poolAddress, userGaugeAddresses }
+      ]),
+      async () => {
+        const timestamp = getUnixTime(new Date());
+        const result = await controller.getRelativeWeights(
+          userGaugeAddresses.value,
+          timestamp
+        );
+        console.log('res', result);
+        return result;
+      }
+    );
+
     /**
      * COMPUTED
      * Need to wrap the extracted query response vars into
@@ -212,6 +266,28 @@ export default defineComponent({
     const isStakedPoolsQueryEnabled = computed(
       () => stakedPoolIds.value.length > 0
     );
+
+    const poolPayouts = computed(() => {
+      const payouts = {};
+      const rate = inflationRate.value ?? '0';
+      const relativeWeights = gaugeRelativeWeights.value || {};
+      for (const gaugeAddress of userGaugeAddresses.value) {
+        const relativeWeight = relativeWeights[gaugeAddress] || '0';
+        payouts[gaugeAddress] = bnum(rate)
+          .times(7)
+          .times(86400)
+          .times(bnum(relativeWeight));
+      }
+      return payouts;
+    });
+
+    const poolAprs = computed(() => {
+      return mapValues(poolPayouts.value, payout =>
+        bnum(payout).times(
+          priceFor('0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7')
+        )
+      );
+    });
 
     /** QUERY */
     const {
@@ -248,7 +324,7 @@ export default defineComponent({
         );
       }
       const gaugeAddress = await getGaugeAddress(poolAddress.value);
-      const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+      const gauge = new LiquidityGauge(gaugeAddress);
       const tx = await gauge.stake(
         parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
       );
@@ -262,7 +338,7 @@ export default defineComponent({
         );
       }
       const gaugeAddress = await getGaugeAddress(getAddress(poolAddress.value));
-      const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+      const gauge = new LiquidityGauge(gaugeAddress);
       const tx = await gauge.unstake(parseUnits(stakedShares.value || '0', 18));
       return tx;
     }
@@ -274,7 +350,7 @@ export default defineComponent({
         );
       }
       const gaugeAddress = await getGaugeAddress(getAddress(poolAddress.value));
-      const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+      const gauge = new LiquidityGauge(gaugeAddress);
       const balance = await gauge.balance(account.value);
       return formatUnits(balance.toString(), 18);
     }
@@ -310,6 +386,7 @@ export default defineComponent({
       isPoolEligibleForStaking,
       refetchStakedShares,
       isStakedPoolsQueryEnabled,
+      poolPayouts,
       getGaugeAddress,
       stakeBPT,
       unstakeBPT,

@@ -27,7 +27,8 @@ const {
   userLiquidityGauges,
   stakedPools,
   isLoading: isLoadingStakingData,
-  setPoolAddress
+  setPoolAddress,
+  poolPayouts
 } = useStaking();
 
 /** COMPUTED */
@@ -139,6 +140,7 @@ function calculateFiatValueOfShares(
 </script>
 
 <template>
+  {{ poolPayouts }}
   <AnimatePresence :isVisible="!isLoadingStakingData">
     <BalStack vertical spacing="sm">
       <h5>{{ $t('myStakedPools') }}</h5>
