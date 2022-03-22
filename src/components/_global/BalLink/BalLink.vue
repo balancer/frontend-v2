@@ -1,56 +1,72 @@
-<template>
-  <a v-if="!disabled" :class="[classes]" v-bind="attrs_">
-    <slot />
-  </a>
-  <div v-if="disabled" :class="[classes]" v-bind="attrs_">
-    <slot />
-  </div>
-</template>
+<script lang="ts">
+export default {
+  inheritAttrs: false
+};
+</script>
 
-<script>
-import { defineComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { computed, useAttrs } from 'vue';
 
-export default defineComponent({
-  name: 'BalLink',
+/**
+ * TYPES
+ */
+type LinkTag = 'a' | 'router-link';
 
-  inheritAttrs: false,
-  props: {
-    external: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    noStyle: {
-      type: Boolean,
-      default: false
-    }
-  },
+type Props = {
+  tag: LinkTag;
+  external: boolean;
+  disabled: boolean;
+  noStyle: boolean;
+};
 
-  setup(props, { attrs }) {
-    const attrs_ = computed(() => {
-      let attrs_ = attrs;
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  tag: 'a',
+  external: false,
+  disabled: false,
+  noStyle: false
+});
 
-      if (props.external) {
-        attrs_ = {
-          ...attrs_,
-          target: '_blank',
-          rel: 'noopener noreferrer'
-        };
-      }
+/**
+ * COMPOSABLES
+ */
+const attrs = useAttrs();
 
-      return attrs_;
-    });
+/**
+ * COMPUTED
+ */
+const attrs_ = computed(() => {
+  let attrs_ = attrs;
 
-    const classes = computed(() => {
-      return {
-        link: !props.noStyle
-      };
-    });
-
-    return { attrs_, classes };
+  if (props.external) {
+    attrs_ = {
+      ...attrs_,
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    };
   }
+
+  return attrs_;
+});
+
+const classes = computed(() => {
+  return {
+    link: !props.noStyle,
+    'disabled-link': props.disabled
+  };
 });
 </script>
+
+<template>
+  <component :is="tag" :class="[classes]" v-bind="attrs_">
+    <slot />
+  </component>
+</template>
+
+<style scoped>
+.disabled-link {
+  pointer-events: none;
+}
+</style>
