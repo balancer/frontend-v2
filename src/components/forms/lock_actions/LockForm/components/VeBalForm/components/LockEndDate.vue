@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed, onBeforeMount } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { format, addWeeks } from 'date-fns';
+
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { onBeforeMount } from '@vue/runtime-core';
-import { format } from 'date-fns';
 
 import useLockState from '../../../composables/useLockState';
 
@@ -17,6 +19,12 @@ type Props = {
 };
 
 /**
+ * COMPOSABLES
+ */
+
+const { t } = useI18n();
+
+/**
  * PROPS
  */
 const props = defineProps<Props>();
@@ -27,13 +35,54 @@ const props = defineProps<Props>();
 const { lockEndDate } = useLockState();
 
 /**
+ * COMPUTED
+ */
+const lockDates = computed(() => [
+  {
+    label: t('getVeBAL.lockForm.lockPeriods.2w'),
+    action: () => {
+      lockEndDate.value = formatDateInput(props.minLockEndDateTimestamp);
+    }
+  },
+  {
+    label: t('getVeBAL.lockForm.lockPeriods.1m'),
+    action: () => {
+      lockEndDate.value = formatDateInput(
+        addWeeks(props.minLockEndDateTimestamp, 2)
+      );
+    }
+  },
+  {
+    label: t('getVeBAL.lockForm.lockPeriods.6m'),
+    action: () => {
+      lockEndDate.value = formatDateInput(
+        addWeeks(props.minLockEndDateTimestamp, 24)
+      );
+    }
+  },
+  {
+    label: t('getVeBAL.lockForm.lockPeriods.1y'),
+    action: () => {
+      lockEndDate.value = formatDateInput(props.maxLockEndDateTimestamp);
+    }
+  }
+]);
+
+/**
  * CALLBACKS
  */
 onBeforeMount(() => {
   lockEndDate.value = props.veBalLockInfo?.hasExistingLock
-    ? format(props.veBalLockInfo.lockedEndDate, INPUT_DATE_FORMAT)
-    : format(props.maxLockEndDateTimestamp, INPUT_DATE_FORMAT);
+    ? formatDateInput(props.veBalLockInfo.lockedEndDate)
+    : formatDateInput(props.maxLockEndDateTimestamp);
 });
+
+/**
+ * METHODS
+ */
+function formatDateInput(date: number | Date) {
+  return format(date, INPUT_DATE_FORMAT);
+}
 </script>
 
 <template>
@@ -45,8 +94,19 @@ onBeforeMount(() => {
       name="lockEndDate"
       type="date"
       v-model="lockEndDate"
-      :min="format(minLockEndDateTimestamp, INPUT_DATE_FORMAT)"
-      :max="format(maxLockEndDateTimestamp, INPUT_DATE_FORMAT)"
+      :min="formatDateInput(minLockEndDateTimestamp)"
+      :max="formatDateInput(maxLockEndDateTimestamp)"
+      step="7"
     />
+    <div class="flex text-sm mt-2 px-1 text-gray-500 dark:text-gray-400">
+      <div
+        v-for="(lockDate, index) in lockDates"
+        :key="index"
+        class="mr-3 cursor-pointer"
+        @click="lockDate.action"
+      >
+        {{ lockDate.label }}
+      </div>
+    </div>
   </div>
 </template>

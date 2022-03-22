@@ -25,8 +25,6 @@ export type ApprovalStateMap = {
   [address: string]: ApprovalState;
 };
 
-export type SpenderType = 'vault' | 'veBAL';
-
 export default function useTokenApprovals(
   tokenAddresses: string[],
   amounts: Ref<string[]>

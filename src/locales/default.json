@@ -705,10 +705,10 @@
             },
             "lockPeriods": {
                 "1w": "1 week",
+                "2w": "2 weeks",
                 "1m": "1 month",
                 "6m": "6 months",
-                "1y": "1 year",
-                "4y": "4 years"
+                "1y": "1 year"
             }
         },
         "previewModal": {
