@@ -60,7 +60,7 @@ const POOLS_KOVAN: Pools = {
     '0x28efa7f86341aa0ad534bdfb033edb4f4ac6adf700020000000000000000067e',
     '0x10ee90b9ff4b9a44a773107280c0ce083619286800020000000000000000067b'
   ],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear'],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
       '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
@@ -143,7 +143,7 @@ const POOLS_MAINNET: Pools = {
     ]
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear'],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063', // staBAL3 (DAI-USD-USDC)
@@ -189,7 +189,7 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: ['']
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear'],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon MAI/DAI/USDC/USDT
@@ -232,7 +232,7 @@ const POOLS_ARBITRUM: Pools = {
     Gauntlet: ['']
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear'],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
       '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
@@ -272,7 +272,7 @@ const POOLS_GENERIC: Pools = {
     Gauntlet: ['']
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear'],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
