@@ -47,6 +47,7 @@ onBeforeMount(() => {
       v-model="lockEndDate"
       :min="format(minLockEndDateTimestamp, INPUT_DATE_FORMAT)"
       :max="format(maxLockEndDateTimestamp, INPUT_DATE_FORMAT)"
+      step="7"
     />
   </div>
 </template>
