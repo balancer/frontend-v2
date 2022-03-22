@@ -1,21 +1,34 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+import AppIcon from './AppIcon.vue';
+
+/**
+ * TYPES
+ */
+type Props = {
+  forceDark: boolean;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  forceDark: false
+});
+
+/**
+ * COMPUTED
+ */
+const textColor = computed(() =>
+  props.forceDark ? 'text-white' : 'text-black dark:text-white'
+);
+</script>
+
 <template>
   <div class="flex items-center">
-    <AppIcon />
-    <span class="mr-1 font-secondary text-xl font-semibold">
+    <AppIcon :forceDark="forceDark" />
+    <span :class="['mr-1 font-secondary text-xl font-semibold', textColor]">
       Balancer
     </span>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import AppIcon from './AppIcon.vue';
-
-export default defineComponent({
-  name: 'AppLogo',
-
-  components: {
-    AppIcon
-  }
-});
-</script>

@@ -1,11 +1,7 @@
 <template>
-  <BalPopover align="left" no-pad>
+  <BalPopover no-pad>
     <template v-slot:activator>
-      <BalBtn
-        color="white"
-        :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        class="ml-4"
-      >
+      <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
         <img
           :src="iconSrc(activeNetwork)"
           :alt="activeNetwork.name"

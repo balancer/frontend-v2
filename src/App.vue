@@ -21,6 +21,8 @@ import useAlerts, {
 import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useBackgroundColor from './composables/useBackgroundColor';
+import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import { useSidebar } from './composables/useSidebar';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -29,7 +31,8 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
-    Notifications
+    Notifications,
+    AppSidebar
   },
 
   setup() {
@@ -57,6 +60,7 @@ export default defineComponent({
     const { addAlert } = useAlerts();
     const { t } = useI18n();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
+    const { sidebarOpen } = useSidebar();
 
     // Temporary feature alert for Balancer boosted pools.
     if (isMainnet.value) {
@@ -108,6 +112,7 @@ export default defineComponent({
       layout,
       // computed
       isWalletSelectVisible,
+      sidebarOpen,
       // methods
       toggleWalletSelectModal
     };
@@ -125,6 +130,7 @@ export default defineComponent({
       @close="toggleWalletSelectModal"
     />
     <Notifications />
+    <AppSidebar v-if="sidebarOpen" />
   </div>
 </template>
 
