@@ -1,5 +1,60 @@
 <script lang="ts" setup>
 import AppLogo from '@/components/images/AppLogo.vue';
+import useApp from '@/composables/useApp';
+import useConfig from '@/composables/useConfig';
+import useDarkMode from '@/composables/useDarkMode';
+import { sleep } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
+import { ref, watch } from 'vue';
+
+/**
+ * STATE
+ */
+const blockIcon = ref<HTMLDivElement>();
+
+const navLinks = [
+  { label: 'Invest', path: '/' },
+  { label: 'Trade', path: '/trade' },
+  { label: 'Vest+Vote', path: '/vebal' },
+  { label: 'Claim', path: '/claim' }
+];
+
+const ecosystemLinks = [
+  { label: 'Build', url: 'https://balancer.fi/build' },
+  { label: 'Blog', url: 'https://medium.com/balancer-protocol' },
+  { label: 'Docs', url: 'https://docs.balancer.fi/' },
+  { label: 'Governance', url: 'https://vote.balancer.fi/#/' },
+  { label: 'Analytics', url: 'https://dune.xyz/balancerlabs' },
+  { label: 'Forum', url: 'https://forum.balancer.fi/' },
+  {
+    label: 'Grants',
+    url: 'https://balancer.community/balancer-community-grants'
+  }
+];
+
+const socialLinks = [
+  { component: 'TwitterIcon', url: 'https://twitter.com/BalancerLabs' },
+  { component: 'DiscordIcon', url: 'https://discord.balancer.fi/' },
+  { component: 'MediumIcon', url: 'https://medium.com/balancer-protocol' },
+  { component: 'GithubIcon', url: 'https://github.com/balancer-labs/' }
+];
+
+/**
+ * COMPOSABLES
+ */
+const { darkMode, toggleDarkMode } = useDarkMode();
+const { blockNumber } = useWeb3();
+const { networkConfig } = useConfig();
+const { version } = useApp();
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, async () => {
+  blockIcon.value?.classList.add('block-change');
+  await sleep(300);
+  blockIcon.value?.classList.remove('block-change');
+});
 </script>
 
 <template>
@@ -10,33 +65,84 @@ import AppLogo from '@/components/images/AppLogo.vue';
       <AppLogo forceDark />
     </div>
 
-    <div class="grid grid-col-1 text-lg mt-8">
-      <routerLink to="/" class="side-bar-link">Invest</routerLink>
-      <routerLink to="/trade" class="side-bar-link">Trade</routerLink>
-      <routerLink to="/vebal" class="side-bar-link">Vest+Vote</routerLink>
-      <routerLink to="/claim" class="side-bar-link">Claim</routerLink>
-      <div class="side-bar-link">Support</div>
+    <div class="grid grid-col-1 text-lg">
+      <routerLink
+        v-for="link in navLinks"
+        :key="link.label"
+        :to="link.path"
+        class="side-bar-link"
+      >
+        {{ link.label }}
+      </routerLink>
+    </div>
+
+    <div class="grid grid-col-1 text-sm mt-6">
+      <span class="text-gray-500 px-4 font-medium">Ecosystem</span>
       <BalLink
-        href="https://balancer.fi/build"
+        v-for="link in ecosystemLinks"
+        :key="link.url"
+        :href="link.url"
         class="side-bar-link flex items-center"
         external
         noStyle
       >
-        Build
-        <BalIcon name="arrow-up-right" class="ml-2 text-gray-500" />
+        {{ link.label }}
+        <BalIcon name="arrow-up-right" size="sm" class="ml-2 text-gray-500" />
       </BalLink>
     </div>
 
-    <div class="grid grid-col-1 text-sm mt-8">
-      <span class="text-gray-500 px-4 font-medium">Ecosystem</span>
+    <div class="mt-6 px-4">
+      <div id="intercom-activator" class="side-bar-btn">
+        <IntercomIcon />
+        <span class="ml-2">Chat for help</span>
+      </div>
+      <div class="side-bar-btn mt-2" @click="toggleDarkMode">
+        <MoonIcon v-if="!darkMode" class="mr-2" />
+        <SunIcon v-else class="mr-2" />
+        <span>{{ darkMode ? 'Light' : 'Dark' }} mode</span>
+      </div>
+    </div>
+
+    <div class="mt-6 px-4 grid grid-rows-1 grid-flow-col auto-cols-min gap-2">
       <BalLink
-        href="https://medium.com/balancer-protocol"
-        class="side-bar-link flex items-center"
+        v-for="link in socialLinks"
+        :key="link.component"
+        :href="link.url"
+        class="social-link"
+        noStyle
+        external
+      >
+        <component :is="link.component" />
+      </BalLink>
+      <BalLink
+        href="mailto:contact@balancer.finance"
+        class="social-link"
+        noStyle
+      >
+        <EmailIcon />
+      </BalLink>
+    </div>
+
+    <div class="mt-6 px-4 text-xs">
+      <div class="flex items-center">
+        <div
+          ref="blockIcon"
+          class="block-icon w-2 h-2 rounded-full bg-green-500"
+        />
+        <span class="ml-2 text-gray-300">
+          {{ networkConfig.name }}: Block {{ blockNumber }}
+        </span>
+      </div>
+      <BalLink
+        :href="
+          `https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`
+        "
+        class="text-gray-300 flex items-center mt-2"
         external
         noStyle
       >
-        Blog
-        <BalIcon name="arrow-up-right" class="ml-2 text-gray-500" />
+        App: v{{ version }}
+        <BalIcon name="arrow-up-right" size="xs" class="ml-1" />
       </BalLink>
     </div>
   </div>
@@ -45,5 +151,31 @@ import AppLogo from '@/components/images/AppLogo.vue';
 <style scoped>
 .side-bar-link {
   @apply transition duration-300 p-4 py-2 hover:bg-gray-850 cursor-pointer;
+}
+
+.side-bar-btn {
+  @apply flex items-center bg-gray-850 hover:bg-gray-800 rounded-lg p-2 cursor-pointer transition;
+}
+
+.social-link {
+  @apply w-12 h-12 rounded-full bg-gray-850 hover:bg-gray-800 flex items-center justify-center text-white cursor-pointer;
+}
+
+.social-link > svg {
+  @apply w-6 h-6;
+  fill: white;
+}
+
+#intercom-activator {
+  z-index: 2147483004;
+}
+
+.block-icon {
+  box-shadow: 0px 0px 3px 2px theme('colors.green.500');
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.block-change {
+  box-shadow: 0px 0px 6px 4px theme('colors.green.500');
 }
 </style>
