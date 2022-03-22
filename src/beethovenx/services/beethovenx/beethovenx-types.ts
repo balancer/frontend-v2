@@ -355,3 +355,62 @@ export interface GqlBalancerPoolActivity {
 }
 
 export type GqlBalancerPoolActivityType = 'Exit' | 'Join';
+
+export interface GqlSorGetSwapsInput {
+  swapAmount: Scalars['BigDecimal'];
+  swapOptions: GqlSorSwapOptionsInput;
+  swapType: GqlSorSwapType;
+  tokenIn: Scalars['String'];
+  tokenOut: Scalars['String'];
+}
+
+export interface GqlSorGetSwapsResponse {
+  __typename?: 'GqlSorGetSwapsResponse';
+  marketSp: Scalars['String'];
+  returnAmount: Scalars['BigDecimal'];
+  returnAmountConsideringFees: Scalars['BigDecimal'];
+  returnAmountFromSwaps?: Scalars['BigDecimal'];
+  routes: Array<GqlSorSwapRoute>;
+  swapAmount: Scalars['BigDecimal'];
+  swapAmountForSwaps?: Scalars['BigDecimal'];
+  swaps: Array<GqlSorSwap>;
+  tokenAddresses: Array<Scalars['String']>;
+  tokenIn: Scalars['String'];
+  tokenOut: Scalars['String'];
+}
+
+export interface GqlSorSwap {
+  __typename?: 'GqlSorSwap';
+  amount: Scalars['String'];
+  assetInIndex: Scalars['Int'];
+  assetOutIndex: Scalars['Int'];
+  poolId: Scalars['String'];
+  userData: Scalars['String'];
+}
+
+export interface GqlSorSwapOptionsInput {
+  forceRefresh?: Scalars['Boolean'];
+  maxPools?: Scalars['Int'];
+  timestamp?: Scalars['Int'];
+}
+
+export interface GqlSorSwapRoute {
+  __typename?: 'GqlSorSwapRoute';
+  hops: Array<GqlSorSwapRouteHop>;
+  share: Scalars['Float'];
+  tokenIn: Scalars['String'];
+  tokenInAmount: Scalars['BigDecimal'];
+  tokenOut: Scalars['String'];
+  tokenOutAmount: Scalars['BigDecimal'];
+}
+
+export interface GqlSorSwapRouteHop {
+  __typename?: 'GqlSorSwapRouteHop';
+  poolId: Scalars['String'];
+  tokenIn: Scalars['String'];
+  tokenInAmount: Scalars['BigDecimal'];
+  tokenOut: Scalars['String'];
+  tokenOutAmount: Scalars['BigDecimal'];
+}
+
+export type GqlSorSwapType = 'EXACT_IN' | 'EXACT_OUT';

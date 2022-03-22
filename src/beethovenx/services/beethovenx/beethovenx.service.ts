@@ -11,6 +11,8 @@ import {
   GqlHistoricalTokenPrice,
   GqlLge,
   GqlLgeCreateInput,
+  GqlSorGetSwapsInput,
+  GqlSorGetSwapsResponse,
   GqlTokenPrice,
   GqlUserPortfolioData,
   GqlUserTokenData,
@@ -21,7 +23,9 @@ import {
 import { getAddress, isAddress } from '@ethersproject/address';
 import { keyBy } from 'lodash';
 import { Web3Provider } from '@ethersproject/providers';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { SwapInfo } from '@balancer-labs/sdk';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };
@@ -42,6 +46,11 @@ export default class BeethovenxService {
     pausedPools: [],
     boostedPools: []
   };
+
+  private farms: GqlBeetsFarm[] = [];
+  private lastFarmsFetch: null | number = null;
+  private farmUsers: GqlBeetsFarmUser[] = [];
+  private lastFarmUsersFetch: null | number = null;
 
   constructor(private readonly configService = _configService) {
     this.url =
@@ -403,6 +412,16 @@ export default class BeethovenxService {
   }
 
   public async getBeetsFarms(): Promise<GqlBeetsFarm[]> {
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    if (
+      this.farms.length > 0 &&
+      this.lastFarmsFetch &&
+      timestamp < this.lastFarmsFetch + 30
+    ) {
+      return this.farms;
+    }
+
     const query = jsonToGraphQLQuery({
       query: {
         beetsGetBeetsFarms: {
@@ -433,6 +452,9 @@ export default class BeethovenxService {
     const { beetsGetBeetsFarms } = await this.get<{
       beetsGetBeetsFarms: GqlBeetsFarm[];
     }>(query);
+
+    this.lastFarmsFetch = timestamp;
+    this.farms = beetsGetBeetsFarms;
 
     return beetsGetBeetsFarms;
   }
@@ -476,6 +498,16 @@ export default class BeethovenxService {
   public async getUserDataForAllFarms(
     userAddress: string
   ): Promise<GqlBeetsFarmUser[]> {
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    if (
+      this.farmUsers.length > 0 &&
+      this.lastFarmUsersFetch &&
+      timestamp < this.lastFarmUsersFetch + 10
+    ) {
+      return this.farmUsers;
+    }
+
     const query = jsonToGraphQLQuery({
       query: {
         beetsGetUserDataForAllFarms: {
@@ -494,7 +526,71 @@ export default class BeethovenxService {
       beetsGetUserDataForAllFarms: GqlBeetsFarmUser[];
     }>(query, userAddress);
 
+    this.lastFarmsFetch = timestamp;
+    this.farmUsers = beetsGetUserDataForAllFarms;
+
     return beetsGetUserDataForAllFarms;
+  }
+
+  public async sorGetSwaps(input: GqlSorGetSwapsInput): Promise<SwapInfo> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        sorGetSwaps: {
+          __args: {
+            input: { ...input, swapType: new EnumType(input.swapType) }
+          },
+          tokenIn: true,
+          tokenOut: true,
+          tokenAddresses: true,
+          swapAmount: true,
+          swapAmountForSwaps: true,
+          returnAmount: true,
+          returnAmountFromSwaps: true,
+          returnAmountConsideringFees: true,
+          marketSp: true,
+          swaps: {
+            poolId: true,
+            amount: true,
+            userData: true,
+            assetInIndex: true,
+            assetOutIndex: true
+          },
+          routes: {
+            tokenIn: true,
+            tokenOut: true,
+            tokenInAmount: true,
+            tokenOutAmount: true,
+            share: true,
+            hops: {
+              poolId: true,
+              tokenIn: true,
+              tokenOut: true,
+              tokenInAmount: true,
+              tokenOutAmount: true
+            }
+          }
+        }
+      }
+    });
+
+    const { sorGetSwaps } = await this.get<{
+      sorGetSwaps: GqlSorGetSwapsResponse;
+    }>(query);
+
+    return {
+      ...sorGetSwaps,
+      swapAmount: BigNumber.from(sorGetSwaps.swapAmount),
+      swapAmountForSwaps: sorGetSwaps.swapAmountForSwaps
+        ? BigNumber.from(sorGetSwaps.swapAmountForSwaps)
+        : undefined,
+      returnAmount: BigNumber.from(sorGetSwaps.returnAmount),
+      returnAmountFromSwaps: sorGetSwaps.returnAmountFromSwaps
+        ? BigNumber.from(sorGetSwaps.returnAmountFromSwaps)
+        : undefined,
+      returnAmountConsideringFees: BigNumber.from(
+        sorGetSwaps.returnAmountConsideringFees
+      )
+    };
   }
 
   private get userProfileDataFragment() {
