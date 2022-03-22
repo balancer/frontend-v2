@@ -16,6 +16,8 @@ export default class Pools {
   service: Service;
   query: QueryBuilder;
   networkId: Network;
+  pools: Pool[] = [];
+  lastPoolsFetch: number | null = null;
 
   constructor(
     service: Service,
@@ -29,6 +31,16 @@ export default class Pools {
   }
 
   public async get(): Promise<Pool[]> {
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    if (
+      this.pools.length > 0 &&
+      this.lastPoolsFetch &&
+      timestamp < this.lastPoolsFetch + 15
+    ) {
+      return this.pools;
+    }
+
     const query = this.query();
 
     try {
@@ -38,6 +50,9 @@ export default class Pools {
         query: jsonToGraphQLQuery({ query })
       });
 
+      this.pools = data.pools;
+
+      this.lastPoolsFetch = timestamp;
       return data.pools;
     } catch (error) {
       console.error(error);
