@@ -3,11 +3,13 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * COMPOSABLES
  */
 const route = useRoute();
+const { isDesktop } = useBreakpoints();
 
 /**
  * COMPUTED
@@ -23,6 +25,7 @@ const isHomePage = computed(() => route.path === '/');
       <router-view :key="$route.path" />
     </div>
     <BalBtn
+      v-if="isDesktop"
       id="intercom-activator"
       circle
       size="lg"
