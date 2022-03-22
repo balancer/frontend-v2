@@ -6,12 +6,14 @@ import useWeb3 from '@/services/web3/useWeb3';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
 import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
+import { useSidebar } from '@/composables/useSidebar';
 
 /**
  * COMPOSABLES
  */
 const { isMobile } = useBreakpoints();
 const { account, connector, toggleWalletSelectModal } = useWeb3();
+const { setSidebarOpen } = useSidebar();
 
 /**
  * COMPUTED
@@ -35,7 +37,13 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
       <span class="lg:hidden" v-text="$t('connect')" />
     </BalBtn>
     <AppNavNetworkSelect v-if="!hideNetworkSelect" />
-    <BalBtn v-if="isMobile" color="white" flat circle>
+    <BalBtn
+      v-if="isMobile"
+      color="white"
+      @click="setSidebarOpen(true)"
+      flat
+      circle
+    >
       <BalIcon name="menu" size="lg" />
     </BalBtn>
   </div>
