@@ -277,6 +277,10 @@
       {
         "name": "addr",
         "type": "address"
+      },
+      {
+        "name": "time",
+        "type": "uint256"
       }
     ],
     "outputs": [

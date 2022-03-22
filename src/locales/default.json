@@ -619,6 +619,11 @@
                 "myVotes": "My votes",
                 "vote": "Vote"
             },
+            "votesTooltip": {
+                "title": "Voting breakdown",
+                "thisPeriod": "This period: {0}",
+                "nextPeriod": "Next period: {0}"
+            },
             "popover": {
                 "title": {
                     "vote": "Gauge vote",
