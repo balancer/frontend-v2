@@ -11,6 +11,7 @@ import { configService as _configService } from '@/services/config/config.servic
 import PoolService from '@/services/pool/pool.service';
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { cloneDeep } from 'lodash';
 
 export default class Pools {
   service: Service;
@@ -38,7 +39,7 @@ export default class Pools {
       this.lastPoolsFetch &&
       timestamp < this.lastPoolsFetch + 15
     ) {
-      return this.pools;
+      return cloneDeep(this.pools);
     }
 
     const query = this.query();
@@ -50,7 +51,7 @@ export default class Pools {
         query: jsonToGraphQLQuery({ query })
       });
 
-      this.pools = data.pools;
+      this.pools = cloneDeep(data.pools);
 
       this.lastPoolsFetch = timestamp;
       return data.pools;
