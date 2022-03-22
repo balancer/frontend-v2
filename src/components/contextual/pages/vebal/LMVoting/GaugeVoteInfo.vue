@@ -70,18 +70,26 @@ function formatVotesAsPercent(votes: string): string {
     <template v-slot:activator>
       <span :class="voteTextClass">{{ votesNextPeriod }}</span>
     </template>
-    <div class="p-1">
-      <h5>{{ $t('veBAL.liquidityMining.votesTooltip.title') }}</h5>
-      <div>
-        {{
-          $t('veBAL.liquidityMining.votesTooltip.thisPeriod', [votesThisPeriod])
-        }}
+    <div>
+      <div class="mb-2 text-sm font-semibold">
+        {{ $t('veBAL.liquidityMining.votesTooltip.title') }}
       </div>
-      <div>
-        {{
-          $t('veBAL.liquidityMining.votesTooltip.nextPeriod', [votesNextPeriod])
-        }}
-        <span :class="voteTextClass">{{ voteDifferenceText }}</span>
+      <div class="text-xs font-normal">
+        <div class="mb-2">
+          {{
+            $t('veBAL.liquidityMining.votesTooltip.thisPeriod', [
+              votesThisPeriod
+            ])
+          }}
+        </div>
+        <div class="mb-2">
+          {{
+            $t('veBAL.liquidityMining.votesTooltip.nextPeriod', [
+              votesNextPeriod
+            ])
+          }}
+          <span :class="voteTextClass">{{ voteDifferenceText }}</span>
+        </div>
       </div>
     </div>
   </BalTooltip>
