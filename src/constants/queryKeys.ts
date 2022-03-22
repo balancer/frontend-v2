@@ -85,7 +85,12 @@ const QUERY_KEYS = {
       tokens: Ref<string[]>,
       pricesToInject: Ref<Record<string, number>>
     ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
-    AllPrices: ['tokens', 'prices']
+    AllPrices: ['tokens', 'prices'],
+    VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [
+      'tokens',
+      'veBAL',
+      { networkId, account }
+    ]
   },
   Account: {
     Balances: (
@@ -122,7 +127,8 @@ const QUERY_KEYS = {
         account: Ref<string>,
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
-    }
+    },
+    Voting: (account: Ref<string>) => ['gauges', 'voting', { account }]
   },
   Transaction: {
     ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [

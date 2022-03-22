@@ -201,7 +201,7 @@
         "errorLoadingMigration": {
             "title": "Something went wrong",
             "description": "An error occurred while trying to show pool migration."
-        }      
+        }
     },
     "creating": "Creating",
     "createPool": "Create pool",
@@ -519,7 +519,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "restoring": "Restoring...",
     "returnToPool": "Return to pool page",
-    "returnToPoolCreation": "Return to pool creation",
+    "returnToPoolCreation": "Return to pool creation",    
     "saveGas": " to save gas.",
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
@@ -547,6 +547,248 @@
     "swapFeeManager": "Swap fee manager",
     "switchNetwork": "Switch Network",
     "symbol": "Symbol",
+    "veBAL": {
+        "hero": {
+            "title": "Get veBAL to earn extra and get voting power",
+            "benefits": {
+                "earn": "Earn part of all protocol revenues",
+                "boost": "Boost your liquidity mining yield by up to 2.5x",
+                "vote": "Vote on liquidity mining incentive allocations"
+            },
+            "buttons": {
+                "getVeBAL": "Get veBAL",
+                "learnMore": "Learn more"
+            }
+        },
+        "myVeBAL": {
+            "title": "My veBAL",
+            "cards": {
+                "myLpToken": "My {0}",
+                "myLockedLpToken": "My locked {0}",
+                "lockedEndDate": "Locked until",
+                "myVeBAL": "My veBAL"
+            }
+        },
+        "communityVeBAL": {
+            "title": "Community veBAL",
+            "cards": {
+                "totalVeBAL": "Total veBAL",
+                "avgLockUpPeriod": "Ave. lock-up period",
+                "effectiveBalLocked": "Effective BAL locked",
+                "shareOfBalLocked": "Share of BAL locked"
+            },
+            "stats": {
+                "currentWeekVoting": "Current week voting",
+                "nextWeekVoting": "Next week voting",
+                "balIncentives": "BAL incentives"                
+            },
+            "table": {
+                "poolGauge": "Pool gauge",
+                "vote": "Vote",
+                "viewMore": "View more"
+            }
+        },
+        "liquidityMining": {
+            "title": "Pools eligible for liquidity mining",
+            "unallocatedVotes": "My unallocated votes: {0}.",
+            "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
+            "table": {
+                "chain": "Chain",
+                "assets": "Assets",
+                "composition": "Composition",
+                "nextPeriodVotes": "Next period votes",
+                "myVotes": "My votes",
+                "vote": "Vote"
+            },
+            "popover": {
+                "title": {
+                    "vote": "Gauge vote",
+                    "edit": "Edit gauge vote"
+                },
+                "button": {
+                    "vote": "Vote",
+                    "edit": "Edit vote"
+                },
+                "actions": {
+                    "vote": {
+                        "confirming": "Confirming vote...",
+                        "loadingLabel": "Confirm vote in wallet"                    
+                    }
+                },
+                "voteForGauge": "{0} for {1}",
+                "remainingVotes": "Your remaining votes: {0}",
+                "remainingVotesEditing": "Your remaining votes: {0} ({1} current allocation in this pool + {2} unallocated votes)",
+                "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
+                "warnings": {
+                    "votedTooRecently": {
+                        "title": "Votes are locked for 10 days.",
+                        "description": "You won't be able to make any edits to this vote allocation for {0}"
+                    },
+                    "noVeBal": {
+                        "title": "No veBAL",
+                        "description": "You must lock veBAL before voting on gagues."
+                    },
+                    "veBalLockTooShort": {
+                        "title": "veBAL not locked for 7 days.",
+                        "description": "You must have veBAL locked for more than 7 days to vote on gagues."
+                    }
+                },
+                "errors": {
+                    "notEnoughVotes": "Not enough unallocated votes"
+                }
+            }
+        },
+        "notSupported": {
+            "title": "Locking is unavailable on this network",
+            "description": "Get veBAL on Ethereum Mainnet"
+        }
+    },
+    "getVeBAL": {
+        "lockableTokens": {
+            "title": "Lockable tokens in my wallet",
+            "getMoreVeBAL": "Get {0}"
+        },
+        "howToLock": {
+            "title": "How to lock and earn?",
+            "steps": {
+                "invest": "Invest in the {0} pool",
+                "lock": "Lock-up the resulting LP token ({0}). The longer you lock ({1} max), the more veBAL you get."
+            },
+            "earn": {
+                "boost": "veBAL holders get boosted liquidity mining yields (up to {1}) and increased voting power.",
+                "voting": "Use this voting power to choose which pool gauges get allocated liquidity mining incentives. Vote on the pools where you have added liquidity to earn more yield."
+            }
+        },
+        "myVeBAL": {
+            "title": "My veBAL",
+            "lockedEndDate": "Locked until",
+            "expiredOn": "Expired on",
+            "percentVeBAL": "% of total veBAL"
+        },
+        "lockForm": {
+            "title": "Lock to get veBAL",
+            "lockAmount": {
+                "title": "How much do you want to lock?"
+            },
+            "lockEndDate": {
+                "title": "Lock until",
+                "tooltip": "The longer you lock your stake, the more veBAL voting power you get (up to 4 years). You can extend the lock later. Be careful, locking is not reversible."
+            },
+            "summary": {
+                "receive": {
+                    "title": "Total voting escrow",
+                    "tooltip": ""
+                },
+                "weeklyYield": {
+                    "title": "Potential weekly staking yield",
+                    "tooltip": ""
+                }
+            },
+            "lockPeriods": {
+                "1w": "1 week",
+                "1m": "1 month",
+                "6m": "6 months",
+                "1y": "1 year",
+                "4y": "4 years"
+            }
+        },
+        "previewModal": {
+            "titles": {
+                "createLock": {
+                    "default": "Locking preview",
+                    "confirmed": "Locking confirmed"
+                },
+                "extendLock": {
+                    "default": "Extend lock preview preview",
+                    "confirmed": "Extend lock preview confirmed"
+                },
+                "increaseLock": {
+                    "default": "Increase lock amount",
+                    "confirmed": "Increase lock amount confirmed"
+                }                
+            },
+            "lpTokens": "{0} LP tokens",
+            "summary": {
+                "title": "Locking summary",
+                "totalToLock": "Total to lock",
+                "totalAlreadyLocked": "Total already locked",
+                "lockEndDate": "Lock-up end date",
+                "newLockEndDate": "New lock-up end date",
+                "totalVotingEscrow": "Total voting escrow",
+                "increasedLockAmount" : "Increased lock amount",
+                "potentialWeeklyYield": "Potential weekly yield"
+            },
+            "actions": {
+                "approve": {
+                    "confirming": "Confirming approval...",
+                    "tooltip": "You must approve {0}.",
+                    "loadingLabel": "Confirm approval in wallet"                    
+                },
+                "createLock": {
+                    "label": "Confirm lock until {0}",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm locking.",
+                    "loadingLabel": "Confirm lock in wallet"                    
+                },
+                "extendLock": {
+                    "label": "Extend lock period",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm extending lock period.",
+                    "loadingLabel": "Confirm lock in wallet"                    
+                },
+                "increaseLock": {
+                    "label": "Increase lock amount",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm increasing lock amount.",
+                    "loadingLabel": "Confirm lock in wallet"                    
+                }
+            },
+            "returnToVeBalPage": "Return to veBAL page"
+        },
+        "notSupported": {
+            "title": "Locking is unavailable on this network",
+            "description": "Get veBAL on Ethereum Mainnet"
+        }
+    },
+    "unlockVeBAL": {
+        "expiredLockableTokens": {
+            "title": "Expired locked tokens"
+        },
+        "unlockForm": {
+            "title": "Unlock",
+            "lockedAmount": {
+                "title": "Available tokens to unlock:"
+            }
+        },
+        "previewModal": {
+            "titles": {
+                "unlock": {
+                    "default": "Unlocking preview",
+                    "confirmed": "Unlocking confirmed"
+                }
+            },
+            "lpTokens": "{0} LP tokens",
+            "summary": {
+                "title": "Unlocking summary",
+                "totalToUnlock": "Total to unlock",
+                "totalVotingEscrow": "Total voting escrow",
+                "expiredOn": "Expired on"
+            },
+            "actions": {
+                "unlock": {
+                    "label": "Confirm unlock",
+                    "confirming": "Confirming...",
+                    "tooltip": "Confirm unlocking.",
+                    "loadingLabel": "Confirm unlock in wallet"                    
+                }
+            },
+            "returnToVeBalPage": "Return to veBAL lock page"
+        },
+        "notSupported": {
+            "title": "Unlocking is unavailable on this network",
+            "description": "Unlock on Ethereum Mainnet"
+        }
+    },
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
     
     "theme": "Theme",
@@ -676,8 +918,13 @@
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
+        "voteForGauge": "Vote",
         "withdraw": "Withdraw",
-        "wrap": "Wrap"
+        "wrap": "Wrap",
+        "createLock": "Lock",
+        "extendLock": "Extend lock",
+        "increaseLock": "Increase lock",
+        "unlock": "Unlock"
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
@@ -711,6 +958,9 @@
     "transactionSummary": {
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
+        "approveForLocking": "Approve {0} for locking",
+        "extendLock": "Lock until {0}",
+        "unlock": "Unlock {0}",
         "approveRelayer": "Approve {0} relayer",
         "createPool": "Create pool",
         "fundPool": "Fund pool",

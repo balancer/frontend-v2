@@ -4,8 +4,8 @@ import { getAddress } from 'ethers/lib/utils';
 import {
   PoolType,
   AnyPool,
-  FullPool,
-  PoolToken
+  PoolToken,
+  FullPool
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
@@ -101,19 +101,27 @@ export function lpTokensFor(pool: AnyPool): string[] {
  * @returns Array of checksum addresses
  */
 export function orderedTokenAddresses(pool: AnyPool): string[] {
-  const sortedTokens = orderedPoolTokens(pool);
-  return sortedTokens.map(token => getAddress(token.address));
+  const sortedTokens = orderedPoolTokens(
+    pool.poolType,
+    pool.address,
+    pool.tokens
+  );
+  return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
 /**
  * @summary Orders pool tokens by weight if weighted pool
  */
-export function orderedPoolTokens(pool: AnyPool): PoolToken[] {
-  if (isStablePhantom(pool.poolType))
-    return pool.tokens.filter(token => token.address !== pool.address);
-  if (isStableLike(pool.poolType)) return pool.tokens;
+export function orderedPoolTokens(
+  poolType: PoolType,
+  poolAddress: string,
+  tokens: Pick<PoolToken, 'address' | 'weight'>[]
+): Partial<PoolToken>[] {
+  if (isStablePhantom(poolType))
+    return tokens.filter(token => token.address !== poolAddress);
+  if (isStableLike(poolType)) return tokens;
 
-  return pool.tokens
+  return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
 }
@@ -129,7 +137,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
    */
   function poolWeightsLabel(pool: FullPool): string {
     if (isStableLike(pool.poolType)) {
-      return Object.values(pool.onchain.tokens)
+      return Object.values(pool.tokens)
         .map(token => token.symbol)
         .join(', ');
     }

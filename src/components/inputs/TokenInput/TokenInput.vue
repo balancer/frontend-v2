@@ -43,6 +43,7 @@ type Props = {
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
   ignoreWalletBalance?: boolean;
+  tokenValue?: string;
 };
 
 /**
@@ -141,7 +142,7 @@ const token = computed((): TokenInfo | undefined => {
 });
 
 const tokenValue = computed(() => {
-  return toFiat(_amount.value, _address.value);
+  return props.tokenValue ?? toFiat(_amount.value, _address.value);
 });
 
 const inputRules = computed(() => {

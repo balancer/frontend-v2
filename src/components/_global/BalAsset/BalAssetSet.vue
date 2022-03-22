@@ -1,21 +1,21 @@
 <template>
   <template
-    v-for="(addressesChunk, addressChunkIndex) in addressesChunks"
-    :key="addressChunkIndex"
+    v-for="(assetChunk, assetChunkIndex) in assetChunks"
+    :key="assetChunkIndex"
   >
     <div
-      class="addresses-row"
+      :class="['addresses-row', assetRowClasses]"
       :style="{
         width: `${width}px`,
         height: `${size}px`
       }"
     >
       <BalAsset
-        v-for="(address, i) in addressesChunk"
+        v-for="(addressOrURI, i) in assetChunk"
         :key="i"
-        :address="address"
+        v-bind="assetAttrsFor(addressOrURI)"
         :size="size"
-        @click="$emit('click', address)"
+        @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
@@ -33,6 +33,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import { chunk } from 'lodash';
 
 import BalAsset from './BalAsset.vue';
+import { isAddress } from '@ethersproject/address';
 
 export default defineComponent({
   components: {
@@ -41,8 +42,10 @@ export default defineComponent({
   emits: ['click'],
   props: {
     addresses: {
-      type: Array as PropType<string[]>,
-      required: true
+      type: Array as PropType<string[]>
+    },
+    logoURIs: {
+      type: Array as PropType<string[]>
     },
     width: {
       type: Number,
@@ -65,16 +68,42 @@ export default defineComponent({
     /**
      * COMPUTED
      */
-    const addressesChunks = computed(() =>
-      chunk(props.addresses, props.maxAssetsPerLine)
+    const hasAddresses = computed(
+      (): boolean => !!props.addresses && props.addresses.length > 0
     );
+    const hasURIs = computed(
+      (): boolean => !!props.logoURIs && props.logoURIs.length > 0
+    );
+
+    const assetLength = computed((): number => {
+      if (hasAddresses.value) {
+        return props.addresses?.length || 0;
+      } else if (hasURIs.value) {
+        return props.logoURIs?.length || 0;
+      } else {
+        return 0;
+      }
+    });
+
+    const assetChunks = computed(() => {
+      if (hasAddresses.value) {
+        return chunk(props.addresses, props.maxAssetsPerLine);
+      } else if (hasURIs.value) {
+        return chunk(props.logoURIs, props.maxAssetsPerLine);
+      } else {
+        return [];
+      }
+    });
+
+    const assetRowClasses = computed(() => ({
+      'mb-3': assetChunks.value.length > 1
+    }));
 
     const radius = computed(() => props.size / 2);
 
     const spacer = computed(
       () =>
-        (props.maxAssetsPerLine / props.addresses.length - 1) *
-        (radius.value * 2)
+        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2)
     );
 
     /**
@@ -89,12 +118,20 @@ export default defineComponent({
       );
     }
 
+    function assetAttrsFor(addressOrURI: string) {
+      return isAddress(addressOrURI)
+        ? { address: addressOrURI }
+        : { iconURI: addressOrURI };
+    }
+
     return {
       // computed
-      addressesChunks,
+      assetChunks,
+      assetRowClasses,
 
       // methods
-      leftOffsetFor
+      leftOffsetFor,
+      assetAttrsFor
     };
   }
 });
@@ -102,7 +139,7 @@ export default defineComponent({
 
 <style scoped>
 .addresses-row {
-  @apply relative mb-3 flex;
+  @apply relative flex;
 }
 .addresses-row:last-child {
   @apply mb-0;

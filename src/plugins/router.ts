@@ -6,10 +6,12 @@ import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
-import MigratePoolPage from '@/pages/pool/migrate.vue';
 import TermsOfUsePage from '@/pages/terms-of-use.vue';
 import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
+import GetVeBalPage from '@/pages/get-vebal.vue';
+import UnlockVeBalPage from '@/pages/unlock-vebal.vue';
+import VeBalPage from '@/pages/vebal.vue';
 import ClaimPage from '@/pages/claim.vue';
 
 declare module 'vue-router' {
@@ -63,12 +65,6 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'PoolTransferLayout' }
   },
   {
-    path: '/pool/migrate/:from/:to',
-    name: 'migrate-pool',
-    component: MigratePoolPage,
-    meta: { layout: 'FocusedLayout' }
-  },
-  {
     path: '/liquidity-mining',
     name: 'liquidity-mining',
     component: LiquidityMiningPage
@@ -104,11 +100,30 @@ const routes: RouteRecordRaw[] = [
 if (
   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
 ) {
-  routes.push({
-    path: '/claim',
-    name: 'claim',
-    component: ClaimPage
-  });
+  routes.push(
+    {
+      path: '/vebal',
+      name: 'vebal',
+      component: VeBalPage
+    },
+    {
+      path: '/get-vebal',
+      name: 'get-vebal',
+      component: GetVeBalPage,
+      meta: { layout: 'FocusedLayout' }
+    },
+    {
+      path: '/unlock',
+      name: 'unlock',
+      component: UnlockVeBalPage,
+      meta: { layout: 'FocusedLayout' }
+    },
+    {
+      path: '/claim',
+      name: 'claim',
+      component: ClaimPage
+    }
+  );
 }
 
 const router = createRouter({
