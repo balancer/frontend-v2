@@ -14,6 +14,8 @@ import { bnum } from '@/lib/utils';
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 
 import useNumbers from './useNumbers';
+import { Network } from '@balancer-labs/sdk';
+import { subdomainFor } from './useNetwork';
 
 /**
  * METHODS
@@ -124,6 +126,15 @@ export function orderedPoolTokens(
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+}
+
+/**
+ * @summary returns full URL for pool id, given network.
+ */
+export function poolURLFor(poolId: string, network: Network): string {
+  const subdomain = subdomainFor(network);
+  const host = configService.env.APP_HOST;
+  return `https://${subdomain}.${host}/#/pool/${poolId}`;
 }
 
 /**

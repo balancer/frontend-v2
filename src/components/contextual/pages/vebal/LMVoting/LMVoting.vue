@@ -8,12 +8,16 @@ import useVotingGauges from '@/composables/useVotingGauges';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import GaugesTable from './GaugesTable.vue';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
+import GaugeVoteModal from './GaugeVoteModal.vue';
 
 /**
  * DATA
  */
-const now = ref(Date.now());
+const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
+const now = ref(Date.now());
 setInterval(() => {
   now.value = Date.now();
 }, 1000);
@@ -25,7 +29,7 @@ const {
   isLoading,
   votingGauges,
   unallocatedVotes,
-  refetch
+  refetch: refetchVotingGauges
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
@@ -38,7 +42,6 @@ const unallocatedVotesFormatted = computed<string>(() =>
 );
 
 const votingPeriodEnd = computed<number[]>(() => {
-  if (!veBalLockInfoQuery.data.value) return [];
   const periodEnd = getVotePeriodEndTime();
   const interval: Interval = { start: now.value, end: periodEnd };
   const timeUntilEnd: Duration = intervalToDuration(interval);
@@ -51,9 +54,40 @@ const votingPeriodEnd = computed<number[]>(() => {
   return formattedTime;
 });
 
+const unallocatedVoteWeight = computed(() => {
+  const totalVotes = 1e4;
+  if (isLoading.value || !votingGauges.value) return totalVotes;
+
+  const votesRemaining = votingGauges.value.reduce((remainingVotes, gauge) => {
+    return remainingVotes - parseFloat(gauge.userVotes);
+  }, totalVotes);
+  return votesRemaining;
+});
+
+const hasLockedAmount = computed((): boolean =>
+  bnum(veBalLockInfoQuery.data.value?.lockedAmount || 0).gt(0)
+);
+
 /**
  * METHODS
- **/
+ */
+function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
+  activeVotingGauge.value = votingGauge;
+}
+
+function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  const sortedTokens = orderedPoolTokens(
+    gauge.pool.poolType,
+    gauge.pool.address,
+    gauge.pool.tokens
+  );
+  return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
+}
+
+function handleModalClose() {
+  activeVotingGauge.value = null;
+  refetchVotingGauges.value();
+}
 
 function getVotePeriodEndTime(): number {
   var d = new Date();
@@ -79,20 +113,46 @@ function getVotePeriodEndTime(): number {
 <template>
   <h3 class="mb-3">{{ $t('veBAL.liquidityMining.title') }}</h3>
   <div class="mb-3">
-    {{
-      $t('veBAL.liquidityMining.unallocatedVotes', [unallocatedVotesFormatted])
-    }}
+    <span v-if="hasLockedAmount">
+      {{
+        $t('veBAL.liquidityMining.unallocatedVotes', [
+          unallocatedVotesFormatted
+        ])
+      }}
+    </span>
+    <span v-else>
+      <BalLink
+        tag="router-link"
+        :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
+        class="inline-block"
+      >
+        {{ $t('getVeBALToVote') }}</BalLink
+      >.
+    </span>
     <span v-if="votingPeriodEnd.length">
-      {{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
+      &nbsp;{{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
     </span>
   </div>
   <GaugesTable
     :isLoading="isLoading"
     :data="votingGauges"
     :key="votingGauges"
-    :refetch="refetch"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"
+    @clickedVote="setActiveGaugeVote"
   />
+  <teleport to="#modal">
+    <GaugeVoteModal
+      v-if="!!activeVotingGauge"
+      :gauge="activeVotingGauge"
+      :logoURIs="orderedTokenURIs(activeVotingGauge)"
+      :poolURL="
+        poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
+      "
+      :unallocatedVoteWeight="unallocatedVoteWeight"
+      :veBalLockInfo="veBalLockInfoQuery.data"
+      @close="handleModalClose"
+    />
+  </teleport>
 </template>
