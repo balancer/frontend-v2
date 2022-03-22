@@ -252,6 +252,7 @@
     "flashLoanFee": "Flash loan fee",
     "fundPool": "Fund pool",
     "fundPoolTooltip": "Add the initial liquidity for this pool.",
+    "getLpTokens": "Get LP tokens",
     "gnosisErrors": {
         "lowAmount": {
             "header": "Your trade amount is too low",
@@ -360,7 +361,9 @@
     "loadingBestPrice": "Looking for the best price...",
     "loadMore": "Load more",
     "logOut": "Log out",
+    "lost": "Lost",
     "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
+    "lpTokens": "LP tokens",
     "managedPool": "Managed pool",
     "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
@@ -384,10 +387,12 @@
     "mustBeValidEmail": "must be a valid email",
     "mustBeValidNum": "must be a valid number",
     "mustBeValidAddress": "This is not a valid Ethereum address",
+    "myApr": "My APR",
     "myBalance": "My balance",
     "myInvestments": "My V2 Balancer investments",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
+    "myStakedPools": "My staked pools",
     "myV2Investments": "My V2 investments",
     "myWallet": "My Ethereum wallet",
     "myWallet2": "My wallet",
@@ -458,6 +463,8 @@
     "poolPercent": "Pool %",
     "poolReturns": "Pool returns",
     "poolSymbol": "Pool symbol",
+    "poolsToMigrate": "Pools to migrate",
+    "poolsToStake": "Pools to stake",
     "poolTokenName": "Pool token name",
     "poolTransactions": {
         "title": "Pool transactions",
@@ -491,6 +498,7 @@
     "poolValue": "Pool value",
     "popularBases": "Popular:",
     "portfolio": "Portfolio",
+    "potential": "Potential",
     "potentialWeeklyYield": "Potential weekly yield",
     "preview": "Preview",
     "previewPool": "Preview new {0} pool",
@@ -538,6 +546,17 @@
     "slippageTolerance": "Slippage tolerance",
     "somethingWentWrong": "Something went wrong",
     "stablePool": "Stable pool",
+    "stake": "Stake",
+    "staked": "Staked",
+    "staking": {
+        "newTotalShare": "Your total share",
+        "stakingApr": "staking APR",
+        "weeklyEarning": "weekly earning",
+        "staking": "Staking",
+        "stakingIncentives": "Staking incentives",
+        "unclaimedIncentives": "Unclaimed incentives",
+        "unstaking": "Unstaking"
+    },
     "strategy": "Strategy",
     "submit": "Submit",
     "summary": "Summary",
@@ -834,6 +853,7 @@
     "totalAPR": "Total APR",
     "totalSupply": "Total supply",
     "totalValue": "Total value",
+    "totalValueTo": "Total value to",
     "trade": "Trade",
     "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
@@ -979,6 +999,8 @@
     "unknownTokenPrice": "Unknown token price",
     "unlock": "Unlock",
     "unlocking": "Unlocking",
+    "unstake": "Unstake",
+    "unstaked": "Unstaked",
     "unwrap": "Unwrap",
     "usdValue": "USD Value",
     "v1": "V1",
@@ -1010,7 +1032,7 @@
         "preview": {
             "loadingLabel": {
                 "withdraw": "Confirm withdrawal in wallet"
-            },
+            }, 
             "titles": {
                 "confirmed": "Withdrawal confirmed",
                 "default": "Withdrawal preview"

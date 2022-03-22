@@ -16,6 +16,8 @@ import { usePool } from '@/composables/usePool';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
+import PoolActionsCard from './PoolActionsCard.vue';
+import useStaking from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -39,6 +41,7 @@ const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
   toRef(props, 'pool')
 );
+const { stakedShares } = useStaking();
 const router = useRouter();
 
 /**
@@ -63,7 +66,9 @@ const poolTokens = computed(() =>
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bptBalance.value,
+    bnum(bptBalance.value)
+      .plus(stakedShares.value)
+      .toString(),
     0,
     'send'
   );
@@ -142,7 +147,7 @@ function navigateToPoolMigration(pool: FullPool) {
 </script>
 
 <template>
-  <BalCard noPad>
+  <BalCard shadow="2xl" noPad class="rounded-xl">
     <template #header>
       <div class="card-header">
         <h5>
@@ -199,6 +204,9 @@ function navigateToPoolMigration(pool: FullPool) {
         {{ $t('migratePool.migrateToBoostedPool') }}
       </BalBtn>
     </div>
+    <template #footer>
+      <PoolActionsCard :pool="pool" :missingPrices="missingPrices" />
+    </template>
   </BalCard>
 </template>
 

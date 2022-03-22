@@ -49,6 +49,7 @@
     "batchRelayer": "0xAc9f49eF3ab0BbC929f7b1bb0A17E1Fca5786251",
     "veBAL": "",
     "gaugeController": "",
+    "gaugeFactory": "",
     "balancerMinter": ""
   },
   "keys": {

@@ -33,12 +33,7 @@
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
           >
-            <div
-              :class="[
-                'flex',
-                column.align === 'right' ? 'justify-end' : 'justify-start'
-              ]"
-            >
+            <div :class="['flex', getAlignProperty(column.align)]">
               <slot
                 v-if="column.Header"
                 v-bind="column"
@@ -262,7 +257,7 @@ export type ColumnDefinition<T = Data> = {
   // Extra classes to supply to the column. E.g. min width
   className?: string;
   // Left or right aligned content. E.g. Numbers should be right aligned
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
   // Should the column width grow to fit available space?
   noGrow?: boolean;
   // Set to true to hide the column
@@ -400,6 +395,19 @@ export default defineComponent({
       tableData.value = props.data;
     };
 
+    function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
+      switch (align) {
+        case 'left':
+          return 'justify-start';
+        case 'right':
+          return 'justify-end';
+        case 'center':
+          return 'justify-center';
+        default:
+          return 'justify-start';
+      }
+    }
+
     onMounted(() => {
       if (bodyRef.value) {
         bodyRef.value.onscroll = () => {
@@ -454,6 +462,7 @@ export default defineComponent({
       handleRowClick,
       tail,
       compact,
+      getAlignProperty,
 
       //data
       isColumnStuck,

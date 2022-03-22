@@ -23,7 +23,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
       : []
   );
 
-  const userPools = computed(() => userPoolsQuery.data.value?.pools);
+  const userPools = computed(() => userPoolsQuery.data.value?.pools || []);
 
   const totalInvestedAmount = computed(
     () => userPoolsQuery.data.value?.totalInvestedAmount
