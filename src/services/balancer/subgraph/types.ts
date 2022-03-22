@@ -115,6 +115,8 @@ export interface LinearPool extends Pool {
   mainIndex: number;
   wrappedIndex: number;
   swapEnabled: boolean;
+  lowerTarget: string;
+  upperTarget: string;
 }
 
 export type DecoratedPool = Pool;
