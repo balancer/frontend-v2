@@ -735,6 +735,14 @@
                 "lockEndDate": "Lock-up end date",
                 "newLockEndDate": "New lock-up end date",
                 "totalVotingEscrow": "Total voting escrow",
+                "totalVotingEscrowTooltip": {
+                    "title": "LP tokens x Proportion of year locked {0} x ({1} / 365)",
+                    "explainer": "Lock-up end dates can only be on Thursdays at 0:00 UTC. To get as close as possible to a 1 year lock, locking on Thursday is recommended.",
+                    "table": {
+                        "lockPeriod": "Lock period",
+                        "totalVeBAL": "Total veBAL"
+                    }
+                },
                 "increasedLockAmount" : "Increased lock amount",
                 "potentialWeeklyYield": "Potential weekly yield"
             },

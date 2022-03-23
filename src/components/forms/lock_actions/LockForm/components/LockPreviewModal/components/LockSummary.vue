@@ -14,6 +14,8 @@ import useVeBal from '@/composables/useVeBAL';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 
+import VeBalTooltipExplainer from './VeBalTooltipExplainer';
+
 /**
  * TYPES
  */
@@ -112,9 +114,14 @@ const isIncreaseLockOnly = computed(
       </div>
       <div class="summary-item-row">
         <div>{{ $t('getVeBAL.previewModal.summary.totalVotingEscrow') }}</div>
-        <div>
+        <div class="flex items-center">
           {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
+          <VeBalTooltipExplainer
+            :expectedVeBalAmount="expectedVeBalAmount"
+            :lockEndDate="lockEndDate"
+            :totalLpTokens="totalLpTokens"
+          />
         </div>
       </div>
       <!-- <div class="summary-item-row">
