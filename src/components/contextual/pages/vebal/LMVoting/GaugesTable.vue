@@ -7,6 +7,9 @@ import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+
+import GaugeVoteInfo from './GaugeVoteInfo.vue';
+
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { Network } from '@balancer-labs/sdk';
 import { networkNameFor } from '@/composables/useNetwork';
@@ -79,16 +82,11 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
   },
   {
     name: t('veBAL.liquidityMining.table.nextPeriodVotes'),
-    accessor(gauge) {
-      const normalizedVotes = scale(new BigNumber(gauge.votes), -18);
-      return fNum2(normalizedVotes.toString(), {
-        style: 'percent',
-        maximumFractionDigits: 2
-      });
-    },
+    accessor: 'id',
     align: 'right',
-    id: 'poolGaugeVotes',
-    sortKey: gauge => Number(gauge.votes),
+    id: 'nextPeriodVotes',
+    Cell: 'nextPeriodVotesCell',
+    sortKey: gauge => Number(gauge.votesNextPeriod),
     width: 150,
     cellClassName: 'font-numeric'
   },
@@ -197,6 +195,11 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
             "
             :isStablePool="isStableLike(pool.poolType)"
           />
+        </div>
+      </template>
+      <template #nextPeriodVotesCell="gauge">
+        <div v-if="!isLoading" class="px-6 py-4 text-right">
+          <GaugeVoteInfo :gauge="gauge" />
         </div>
       </template>
       <template #voteColumnCell="gauge">

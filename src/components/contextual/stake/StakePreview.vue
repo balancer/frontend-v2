@@ -187,7 +187,7 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(fiatValueOfModifiedShares, FNumFormats.fiat) }}
             </span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
@@ -196,7 +196,7 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(totalUserPoolSharePct, FNumFormats.percent) }}
             </span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
@@ -206,7 +206,7 @@ function handleClose() {
           </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">0</span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
@@ -216,7 +216,7 @@ function handleClose() {
           </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">0</span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
       </BalStack>

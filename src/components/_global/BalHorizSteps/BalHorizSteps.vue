@@ -66,7 +66,7 @@ function stateClasses(state: StepState): string {
         v-if="i !== 0"
         :class="['h-px bg-gray-100 dark:bg-gray-700', `w-${spacerWidth}`]"
       />
-      <BalTooltip :text="step.tooltip" width="44" textCenter>
+      <BalTooltip :text="step.tooltip" width="44" textAlign="center">
         <template v-slot:activator>
           <div :class="['step', stateClasses(step.state)]">
             <BalIcon v-if="step.state === stepState.Success" name="check" />
