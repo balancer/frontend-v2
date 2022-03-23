@@ -36,6 +36,10 @@ const socialLinks = [
   { component: 'TwitterIcon', url: 'https://twitter.com/BalancerLabs' },
   { component: 'DiscordIcon', url: 'https://discord.balancer.fi/' },
   { component: 'MediumIcon', url: 'https://medium.com/balancer-protocol' },
+  {
+    component: 'YoutubeIcon',
+    url: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow'
+  },
   { component: 'GithubIcon', url: 'https://github.com/balancer-labs/' }
 ];
 
