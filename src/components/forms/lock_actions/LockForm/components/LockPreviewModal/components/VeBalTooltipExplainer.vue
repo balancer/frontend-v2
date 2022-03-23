@@ -53,12 +53,12 @@ const conversationTableRows = computed(() => [
       <BalIcon name="info" size="sm" class="text-gray-400 dark:text-gray-500" />
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
-      <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
+      <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-700 rounded-t">
         <h5>
           {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
         </h5>
-        <div class="text-gray-500">
+        <div class="text-gray-500 dark:text-gray-400">
           {{
             $t('getVeBAL.previewModal.summary.totalVotingEscrowTooltip.title', [
               fNum2(totalLpTokens, FNumFormats.token),
@@ -69,7 +69,7 @@ const conversationTableRows = computed(() => [
         <div class="text-lg"></div>
       </div>
       <div class="p-3">
-        <div class="text-gray-500 mb-3">
+        <div class="text-gray-500 dark:text-gray-400 mb-3">
           {{
             $t(
               'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.explainer'
@@ -113,10 +113,10 @@ const conversationTableRows = computed(() => [
 
 <style scoped>
 .table-header-cell {
-  @apply border p-2 text-left;
+  @apply border dark:border-gray-700 p-2 text-left;
 }
 
 .table-body-cell {
-  @apply border p-2;
+  @apply border dark:border-gray-700 p-2;
 }
 </style>
