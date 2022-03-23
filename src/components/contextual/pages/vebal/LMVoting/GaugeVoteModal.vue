@@ -95,10 +95,10 @@ const voteButtonText = computed(() =>
 
 const votedToRecentlyWarning = computed(() => {
   const timestampSeconds = Date.now() / 1000;
-  const lastUserVote = props.gauge.lastUserVote;
-  if (timestampSeconds < lastUserVote + WEIGHT_VOTE_DELAY) {
+  const lastUserVoteTime = props.gauge.lastUserVoteTime;
+  if (timestampSeconds < lastUserVoteTime + WEIGHT_VOTE_DELAY) {
     const remainingTime = formatDistanceToNow(
-      (lastUserVote + WEIGHT_VOTE_DELAY) * 1000
+      (lastUserVoteTime + WEIGHT_VOTE_DELAY) * 1000
     );
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),

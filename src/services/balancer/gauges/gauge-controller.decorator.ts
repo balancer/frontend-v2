@@ -132,7 +132,7 @@ export class GaugeControllerDecorator {
   ) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${gauge.address}.lastUserVote`,
+        `${gauge.address}.lastUserVoteTime`,
         this.config.network.addresses.gaugeController,
         'last_user_vote',
         [userAddress, gauge.address]

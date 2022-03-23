@@ -83,11 +83,11 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
   },
   {
     name: t('veBAL.liquidityMining.table.nextPeriodVotes'),
-    acessor: 'id',
+    accessor: 'id',
     align: 'right',
     id: 'nextPeriodVotes',
     Cell: 'nextPeriodVotesCell',
-    sortKey: gauge => Number(gauge.votesNextWeek),
+    sortKey: gauge => Number(gauge.votesNextPeriod),
     width: 150,
     cellClassName: 'font-numeric'
   },
@@ -199,7 +199,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
         </div>
       </template>
       <template #nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="px-6 py-4">
+        <div v-if="!isLoading" class="px-6 py-4 text-right">
           <GaugeVoteInfo :gauge="gauge" />
         </div>
       </template>
