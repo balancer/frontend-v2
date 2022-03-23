@@ -376,6 +376,12 @@
     "missingPoolNameOrSymbolInfo": "There is a missing pool name or symbol, fill it in before creating the pool.",
     "menu": "Menu",
     "migrate": "Migrate",
+    "modals": {
+        "veBalRedirectModal": {
+            "title": "Proceed to mainnet",
+            "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by staking your LP tokens in eligible pool gauges on those networks. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80-BAL-20-WETH."
+        }
+    },
     "month": "month",
     "months": "months",
     "mustBeAtLeast": "must be at least {0} characters",
@@ -516,6 +522,7 @@
         "description": "The trade price has updated by more than {0}",
         "title": "Price updated"
     },
+    "Proceed": "Proceed",
     "profit": "Profit (1{0})",
     "proportionalSuggestion": "Proportional suggestion",
     "proportionalWithdrawal": "Proportional withdrawal",

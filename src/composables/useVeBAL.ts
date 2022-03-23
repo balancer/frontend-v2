@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { isMainnet, isKovan } from '@/composables/useNetwork';
 
 import { POOLS } from '@/constants/pools';
@@ -9,9 +9,24 @@ import { bnum } from '@/lib/utils';
 import { getPreviousThursday, oneYearInSecs } from './useTime';
 import { differenceInSeconds } from 'date-fns';
 
+/**
+ * STATE
+ */
+const showRedirectModal = ref(false);
+
+/**
+ * COMPUTED
+ */
 export const isVeBalSupported = computed(
   () => isMainnet.value || isKovan.value
 );
+
+/**
+ * METHODS
+ */
+function setShowRedirectModal(newVal: boolean) {
+  showRedirectModal.value = newVal;
+}
 
 /**
  * @summary Calculate expected veBAL given BPT being locked and lock time in seconds.
@@ -55,6 +70,9 @@ export default function useVeBal() {
     isVeBalSupported,
     veBalTokenInfo,
     veBalBalance,
-    lockablePoolAddress
+    lockablePoolAddress,
+    showRedirectModal,
+    // methods
+    setShowRedirectModal
   };
 }

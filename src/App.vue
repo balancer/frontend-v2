@@ -23,6 +23,8 @@ import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useBackgroundColor from './composables/useBackgroundColor';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
 import { useSidebar } from './composables/useSidebar';
+import useNavigationGaurds from './composables/useNavigationGaurds';
+import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -32,7 +34,8 @@ export default defineComponent({
     VueQueryDevTools,
     WalletSelectModal,
     Notifications,
-    AppSidebar
+    AppSidebar,
+    GlobalModalContainer
   },
 
   setup() {
@@ -49,6 +52,7 @@ export default defineComponent({
     useGlobalQueryWatchers();
     useGnosisSafeApp();
     useExploitWatcher();
+    useNavigationGaurds();
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal,
@@ -132,6 +136,7 @@ export default defineComponent({
     <Notifications />
     <AppSidebar v-if="sidebarOpen" />
   </div>
+  <GlobalModalContainer />
 </template>
 
 <style>
