@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { Network } from '@balancer-labs/sdk';
 import config from '@/lib/config';
+import { configService } from '@/services/config/config.service';
 
 /**
  * STATE
@@ -56,6 +57,12 @@ export function subdomainFor(network: Network): string {
     default:
       throw new Error('Network not supported');
   }
+}
+
+export function urlFor(network: Network): string {
+  const subdomain = subdomainFor(network);
+  const host = configService.env.APP_HOST;
+  return `https://${subdomain}.${host}/#`;
 }
 
 export default function useNetwork() {
