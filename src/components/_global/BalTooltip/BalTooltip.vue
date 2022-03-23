@@ -5,7 +5,7 @@ import { createPopper, Instance as PopperInstance } from '@popperjs/core';
 import BalIcon, { IconSize } from '../BalIcon/BalIcon.vue';
 
 type Placement = 'top' | 'left' | 'bottom' | 'right';
-type TextAlign = 'left' | 'center' | 'right';
+type TextAlign = 'left' | 'center' | 'right' | '';
 
 type Props = {
   text?: string;
@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   noPad: false,
   disabled: false,
   width: '52',
-  textAlign: 'left',
+  textAlign: '',
   iconName: 'info',
   iconSize: 'md',
   iconClass: 'text-gray-300'
@@ -41,7 +41,7 @@ const tooltipClasses = computed(() => {
   return {
     'p-3': !props.noPad,
     [`w-${props.width}`]: true,
-    [`text-${props.textAlign}`]: true
+    [`text-${props.textAlign}`]: props.textAlign !== ''
   };
 });
 
