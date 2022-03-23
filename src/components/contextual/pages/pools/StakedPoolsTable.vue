@@ -13,6 +13,7 @@ import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import { uniqBy } from 'lodash';
 
@@ -138,7 +139,7 @@ function calculateFiatValueOfShares(
 </script>
 
 <template>
-  <div>
+  <AnimatePresence :isVisible="!isLoadingStakingData">
     <BalStack vertical spacing="sm">
       <h5>{{ $t('myStakedPools') }}</h5>
       <PoolsTable
@@ -157,5 +158,5 @@ function calculateFiatValueOfShares(
       @close="handleModalClose"
       action="stake"
     />
-  </div>
+  </AnimatePresence>
 </template>
