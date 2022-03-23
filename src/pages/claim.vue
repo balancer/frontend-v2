@@ -192,7 +192,7 @@ watch(gaugePools, async newPools => {
       <div class="flex mt-4">
         <BalBtn
           tag="a"
-          :href="`https://${network.subdomain}.balancer.fi/#/claims`"
+          :href="`https://${network.subdomain}.balancer.fi/#/claim`"
           v-for="network in networkBtns"
           :key="network.id"
           color="white"
