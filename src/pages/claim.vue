@@ -20,6 +20,7 @@ import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * TYPES
@@ -189,23 +190,22 @@ watch(gaugePools, async newPools => {
       <h2 class="font-body font-bold text-2xl mt-8">
         {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
       </h2>
-      <div class="flex mt-4">
+      <BalFlexGrid flexWrap>
         <BalBtn
           tag="a"
-          :href="`https://${network.subdomain}.balancer.fi/#/claim`"
           v-for="network in networkBtns"
           :key="network.id"
+          :href="`https://${network.subdomain}.balancer.fi/#/claim`"
           color="white"
-          class="mr-4"
         >
           <img
             :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
-            alt="Arbitrum"
+            :alt="network.id"
             class="w-6 h-6 rounded-full shadow-sm mr-2"
           />
           {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
         </BalBtn>
-      </div>
+      </BalFlexGrid>
 
       <template v-if="isWalletReady">
         <h2 class="font-body font-bold text-2xl mt-8">

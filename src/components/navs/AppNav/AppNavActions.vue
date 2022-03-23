@@ -11,7 +11,7 @@ import { useSidebar } from '@/composables/useSidebar';
 /**
  * COMPOSABLES
  */
-const { isMobile } = useBreakpoints();
+const { isMobile, isDesktop } = useBreakpoints();
 const { account, connector, toggleWalletSelectModal } = useWeb3();
 const { setSidebarOpen } = useSidebar();
 
@@ -23,7 +23,7 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
 
 <template>
   <div class="grid gap-2 grid-rows-1 grid-flow-col">
-    <DarkModeToggle />
+    <DarkModeToggle v-if="isDesktop" />
     <AppNavActivityBtn v-if="account" />
     <AppNavAccountBtn v-if="account" />
     <BalBtn
