@@ -66,7 +66,7 @@ export default defineComponent({
     fireworks: { type: Boolean, default: false }
   },
 
-  setup(props) {
+  setup(props, { expose }) {
     const { show } = toRefs(props);
     const showContent = ref(show.value);
 
@@ -79,6 +79,8 @@ export default defineComponent({
     function hide(): void {
       showContent.value = false;
     }
+
+    expose({ hide });
 
     return {
       showContent,
