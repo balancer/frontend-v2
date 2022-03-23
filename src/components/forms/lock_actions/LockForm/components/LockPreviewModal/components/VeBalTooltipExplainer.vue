@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { differenceInDays } from 'date-fns';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import useVeBal from '@/composables/useVeBAL';
@@ -53,20 +51,11 @@ const conversationTableRows = computed(() => [
       <BalIcon name="info" size="sm" class="text-gray-400 dark:text-gray-500" />
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
-      <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-700 rounded-t">
+      <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-t">
         <h5>
           {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
         </h5>
-        <div class="text-gray-500 dark:text-gray-400">
-          {{
-            $t('getVeBAL.previewModal.summary.totalVotingEscrowTooltip.title', [
-              fNum2(totalLpTokens, FNumFormats.token),
-              differenceInDays(new Date(lockEndDate), new Date())
-            ])
-          }}
-        </div>
-        <div class="text-lg"></div>
       </div>
       <div class="p-3">
         <div class="text-gray-500 dark:text-gray-400 mb-3">

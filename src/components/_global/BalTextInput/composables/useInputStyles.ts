@@ -61,7 +61,7 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const inputContainerClasses = computed(() => ({
     border: !props.noBorder,
     [extPaddingClass()]: true,
-    'border-grey-100 dark:border-grey-800': !isInvalid.value,
+    'border-gray-100 dark:border-gray-800': !isInvalid.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
     'shadow-inner': !props.noShadow
   }));
