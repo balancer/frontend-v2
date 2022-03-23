@@ -40,25 +40,22 @@ const { lockEndDate } = useLockState();
 const lockDates = computed(() => [
   {
     label: t('getVeBAL.lockForm.lockPeriods.2w'),
-    action: () => {
-      lockEndDate.value = formatDateInput(props.minLockEndDateTimestamp);
-    }
+    action: () => updateLockEndDate(props.minLockEndDateTimestamp)
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.1m'),
-    action: () => {
-      lockEndDate.value = formatDateInput(
-        addWeeks(props.minLockEndDateTimestamp, 2)
-      );
-    }
+    action: () =>
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 4).getTime())
+  },
+  {
+    label: t('getVeBAL.lockForm.lockPeriods.3m'),
+    action: () =>
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 12).getTime())
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.6m'),
-    action: () => {
-      lockEndDate.value = formatDateInput(
-        addWeeks(props.minLockEndDateTimestamp, 24)
-      );
-    }
+    action: () =>
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 24).getTime())
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.1y'),
@@ -80,7 +77,13 @@ onBeforeMount(() => {
 /**
  * METHODS
  */
-function formatDateInput(date: number | Date) {
+function updateLockEndDate(timestamp: number) {
+  lockEndDate.value = formatDateInput(
+    Math.min(timestamp, props.maxLockEndDateTimestamp)
+  );
+}
+
+function formatDateInput(date: Date | number) {
   return format(date, INPUT_DATE_FORMAT);
 }
 </script>
