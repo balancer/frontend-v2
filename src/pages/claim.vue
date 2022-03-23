@@ -20,7 +20,6 @@ import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * TYPES
