@@ -189,7 +189,7 @@ watch(gaugePools, async newPools => {
       <h2 class="font-body font-bold text-2xl mt-8">
         {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
       </h2>
-      <BalFlexGrid flexWrap>
+      <BalFlexGrid class="mt-4" flexWrap>
         <BalBtn
           tag="a"
           v-for="network in networkBtns"
