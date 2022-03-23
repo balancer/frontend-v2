@@ -3,9 +3,8 @@ import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
-import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { formatUnits, getAddress } from 'ethers/lib/utils';
+import { formatUnits } from 'ethers/lib/utils';
 import { mapValues } from 'lodash';
 
 export class GaugeController {

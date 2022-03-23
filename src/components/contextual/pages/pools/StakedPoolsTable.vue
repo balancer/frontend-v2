@@ -27,8 +27,11 @@ const {
   userLiquidityGauges,
   stakedPools,
   isLoading: isLoadingStakingData,
+  isStakedPoolsQueryEnabled,
   setPoolAddress,
-  poolPayouts
+  balPayableMap,
+  weeklyRewards,
+  gaugeAprMap
 } = useStaking();
 
 /** COMPUTED */
@@ -48,6 +51,10 @@ const { data: userPools } = useUserPoolsQuery();
 // The pools which the user has completely staked
 const maxStakedPools = computed(() => {
   const userPoolIds = userPools.value?.pools.map(pool => pool.id);
+  console.log({
+    stakedPools: stakedPools.value,
+    userPoolIds
+  })
   return (stakedPools.value || [])
     .filter(pool => {
       return !userPoolIds?.includes(pool.id);
@@ -108,6 +115,11 @@ const unstakedPools = computed(() => {
 // when all the BPT for a pool is staked, then it will not
 // show up in the user pools query
 const allStakedPools = computed(() => {
+  console.log({
+    unstakedPools: unstakedPools.value,
+    partiallyStakedPools: partiallyStakedPools.value,
+    maxStakedPools: maxStakedPools.value
+  })
   // now mash them together
   const allPools = [
     ...unstakedPools.value,
@@ -140,7 +152,7 @@ function calculateFiatValueOfShares(
 </script>
 
 <template>
-  {{ poolPayouts }}
+{{ gaugeAprMap }}
   <AnimatePresence :isVisible="!isLoadingStakingData">
     <BalStack vertical spacing="sm">
       <h5>{{ $t('myStakedPools') }}</h5>

@@ -5,7 +5,9 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { web3Service } from '@/services/web3/web3.service';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { getAddress } from 'ethers/lib/utils';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { getAddress, formatUnits } from 'ethers/lib/utils';
+import { mapValues } from 'lodash';
 
 export class LiquidityGauge {
   instance: Contract;
@@ -58,7 +60,25 @@ export class LiquidityGauge {
     );
   }
 
+  async workingSupplies(gaugeAddresses: string[]) {
+    const multicaller = this.getMulticaller();
+    for (const gaugeAddress of gaugeAddresses) {
+      multicaller.call(gaugeAddress, this.address, 'working_supply');
+    }
+    const result = await multicaller.execute();
+    const supplies = mapValues(result, weight => formatUnits(weight, 18));
+    return supplies;
+  }
+
   private getMulticaller(): Multicaller {
     return new Multicaller(this.config.network.key, this.provider, this.abi);
+  }
+
+  static getMulticaller(provider?: JsonRpcProvider): Multicaller {
+    return new Multicaller(
+      configService.network.key,
+      provider || rpcProviderService.jsonProvider,
+      LiquidityGaugeAbi
+    );
   }
 }
