@@ -8,7 +8,6 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 
-import GaugeVoteModal from './GaugeVoteModal.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
