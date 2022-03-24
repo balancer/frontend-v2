@@ -15,6 +15,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { getAddress } from 'ethers/lib/utils';
+import { useQueryClient } from 'vue-query';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
@@ -31,6 +32,7 @@ const emit = defineEmits(['close', 'success']);
 const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
+const queryClient = useQueryClient();
 
 const {
   stakeBPT,
@@ -125,6 +127,7 @@ async function handleSuccess({ receipt }) {
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
   await refetchStakingData.value();
+  await queryClient.refetchQueries(['staking', 'data']);
   emit('success');
 }
 

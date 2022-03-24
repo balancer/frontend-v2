@@ -398,7 +398,6 @@
     "myInvestments": "My V2 Balancer investments",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
-    "myStakedPools": "My staked pools",
     "myV2Investments": "My V2 investments",
     "myWallet": "My Ethereum wallet",
     "myWallet2": "My wallet",
@@ -562,7 +561,9 @@
         "staking": "Staking",
         "stakingIncentives": "Staking incentives",
         "unclaimedIncentives": "Unclaimed incentives",
-        "unstaking": "Unstaking"
+        "unstaking": "Unstaking",
+        "stakedPools": "Staked pools",
+        "unstakedPools": "Unstaked pools"
     },
     "strategy": "Strategy",
     "submit": "Submit",
