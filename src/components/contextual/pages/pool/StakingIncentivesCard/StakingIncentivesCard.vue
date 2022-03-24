@@ -35,7 +35,8 @@ const {
   isRefetchingStakedShares,
   isLoadingPoolEligibility,
   isPoolEligibleForStaking,
-  stakedShares
+  stakedShares,
+  hideAprInfo,
 } = useStaking();
 
 /**
@@ -146,10 +147,10 @@ async function handleActionSuccess() {
                       {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
                     </span>
                   </AnimatePresence>
-                  <BalTooltip text="Bingo" />
+                  <BalTooltip :text="$t('staking.stakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between">
+              <BalStack horizontal justify="between" v-if="!hideAprInfo">
                 <span>{{ $t('staking.unclaimedIncentives') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
                   <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
@@ -167,10 +168,10 @@ async function handleActionSuccess() {
                       {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
                     </span>
                   </AnimatePresence>
-                  <BalTooltip text="Bingo" />
+                  <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between">
+              <BalStack horizontal justify="between" v-if="!hideAprInfo">
                 <span>
                   {{ $t('potential') }} {{ $t('staking.weeklyEarning') }}
                 </span>

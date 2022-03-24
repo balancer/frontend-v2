@@ -53,6 +53,7 @@ export type StakingProvider = {
   isPoolEligibleForStaking: Ref<boolean>;
   isStakedPoolsQueryEnabled: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
+  hideAprInfo: boolean;
   getGaugeAddress: (poolAddress: string) => Promise<string>;
   stakeBPT: () => Promise<TransactionResponse>;
   unstakeBPT: () => Promise<TransactionResponse>;
@@ -310,6 +311,7 @@ export default defineComponent({
       isPoolEligibleForStaking,
       refetchStakedShares,
       isStakedPoolsQueryEnabled,
+      hideAprInfo: true,
       getGaugeAddress,
       stakeBPT,
       unstakeBPT,
