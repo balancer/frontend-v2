@@ -23,7 +23,7 @@ import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useBackgroundColor from './composables/useBackgroundColor';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
 import { useSidebar } from './composables/useSidebar';
-import useNavigationGaurds from './composables/useNavigationGaurds';
+import useNavigationGuards from './composables/useNavigationGuards';
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
@@ -52,7 +52,7 @@ export default defineComponent({
     useGlobalQueryWatchers();
     useGnosisSafeApp();
     useExploitWatcher();
-    useNavigationGaurds();
+    useNavigationGuards();
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal,
