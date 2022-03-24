@@ -35,8 +35,8 @@ const {
   isRefetchingStakedShares,
   isLoadingPoolEligibility,
   isPoolEligibleForStaking,
-  stakedShares,
-  hideAprInfo
+  hideAprInfo,
+  stakedSharesForProvidedPool
 } = useStaking();
 
 /**
@@ -45,7 +45,7 @@ const {
 const fiatValueOfStakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .times((stakedShares.value || 0).toString())
+    .times((stakedSharesForProvidedPool.value || 0).toString())
     .toString();
 });
 
