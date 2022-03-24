@@ -40,7 +40,8 @@ const {
   getGaugeAddress,
   stakedSharesForProvidedPool,
   refetchStakedShares,
-  refetchStakingData
+  refetchStakingData,
+  hideAprInfo
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -192,7 +193,15 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(fiatValueOfModifiedShares, FNumFormats.fiat) }}
             </span>
-            <BalTooltip text="s" width="20" textAlign="center" />
+            <BalTooltip
+              :text="
+                action === 'stake'
+                  ? $t('staking.stakeValueTooltip')
+                  : $t('staking.unstakeValueTooltip')
+              "
+              width="20"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
@@ -201,10 +210,14 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(totalUserPoolSharePct, FNumFormats.percent) }}
             </span>
-            <BalTooltip text="s" width="20" textAlign="center" />
+            <BalTooltip
+              :text="$t('staking.totalShareTooltip')"
+              width="20"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between">
+        <BalStack horizontal justify="between" v-if="!hideAprInfo">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
@@ -214,7 +227,7 @@ function handleClose() {
             <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between">
+        <BalStack horizontal justify="between" v-if="!hideAprInfo">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:
