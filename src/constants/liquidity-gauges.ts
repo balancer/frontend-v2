@@ -2,23 +2,23 @@ import { networkId } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
 
 type LiquidityGauges = {
-  StakableAllowList: string[];
+  StakeableAllowList: string[];
 };
 
 export const MAINNET_LIQUIDITY_GAUGES: LiquidityGauges = {
-  StakableAllowList: []
+  StakeableAllowList: []
 };
 
 export const POLYGON_LIQUIDITY_GAUGES: LiquidityGauges = {
-  StakableAllowList: []
+  StakeableAllowList: []
 };
 
 export const ARBITRUM_LIQUIDITY_GAUGES: LiquidityGauges = {
-  StakableAllowList: []
+  StakeableAllowList: []
 };
 
 export const KOVAN_LIQUIDITY_GAUGES: LiquidityGauges = {
-  StakableAllowList: [
+  StakeableAllowList: [
     '0x5e7b7b41377ce4b76d6008f7a91ff9346551c853',
     '0xc8e2c44d6afa8ecc98c6a556fc50ede5776ec0bd',
     '0xe190e5363c925513228bf25e4633c8cca4809c9a',

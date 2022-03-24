@@ -136,7 +136,7 @@ export default defineComponent({
           __args: {
             where: {
               poolId_in: userPoolIds.value,
-              id_in: LIQUIDITY_GAUGES.StakableAllowList.map(gauge =>
+              id_in: LIQUIDITY_GAUGES.StakeableAllowList.map(gauge =>
                 gauge.toLowerCase()
               )
             }
