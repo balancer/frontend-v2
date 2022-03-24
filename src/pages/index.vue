@@ -22,7 +22,7 @@ import StakingProvider from '@/providers/staking.provider';
 // COMPOSABLES
 const router = useRouter();
 const { t } = useI18n();
-const { isWalletReady, appNetworkConfig } = useWeb3();
+const { isWalletReady, appNetworkConfig, isWalletConnecting } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const {
   selectedTokens,
@@ -85,10 +85,6 @@ const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
 
-const stakableUserPools = computed(() => {
-  return userPools.value.filter(pool => !isMigratablePool(pool));
-});
-
 watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 
 /**
@@ -101,7 +97,7 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <template v-if="isWalletReady">
+    <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">
           <BalStack horizontal justify="between" align="center">
@@ -112,15 +108,6 @@ function navigateToCreatePool() {
           </BalStack>
         </div>
         <BalStack vertical spacing="xl">
-          <PoolsTable
-            :key="stakableUserPools"
-            :isLoading="isLoadingUserPools"
-            :data="stakableUserPools"
-            :noPoolsLabel="$t('noInvestments')"
-            :selectedTokens="selectedTokens"
-            :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
-            showPoolShares
-          />
           <StakingProvider>
             <UnstakedPoolsTable :userPools="userPools" />
             <StakedPoolsTable :userPools="userPools" />

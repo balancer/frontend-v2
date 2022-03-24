@@ -40,6 +40,7 @@ type Props = {
   isPaginated?: boolean;
   selectedTokens?: string[];
   hiddenColumns?: string[];
+  onlyStakedPct?: boolean;
 };
 
 /**
@@ -51,7 +52,8 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  hiddenColumns: () => []
+  hiddenColumns: () => [],
+  onlyStakedPct: false
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -291,11 +293,13 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
-          <div v-if="getStakeState(pool) === StakeState.MaxStaked">
-            <span>100%</span>
+          <div
+            v-if="getStakeState(pool) === StakeState.MaxStaked || onlyStakedPct"
+          >
+            <span>{{ fNum2(pool.stakedPct, FNumFormats.percent) }}</span>
           </div>
           <BalBtn
-            v-if="getStakeState(pool) === StakeState.CanStake"
+            v-if="getStakeState(pool) === StakeState.CanStake && !onlyStakedPct"
             color="gradient"
             size="sm"
             @click.prevent="$emit('triggerStake', pool)"

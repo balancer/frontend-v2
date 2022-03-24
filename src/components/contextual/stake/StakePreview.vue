@@ -38,7 +38,7 @@ const {
   stakeBPT,
   unstakeBPT,
   getGaugeAddress,
-  stakedShares,
+  stakedSharesForProvidedPool,
   refetchStakedShares,
   refetchStakingData
 } = useStaking();
@@ -72,7 +72,7 @@ const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
 const shareBalanceToDisplay = ref(
   props.action === 'unstake'
-    ? stakedShares.value
+    ? stakedSharesForProvidedPool.value
     : balanceFor(props.pool.address)
 );
 
@@ -96,7 +96,7 @@ const assetRowWidth = computed(
 const numSharesToModify = ref(
   props.action === 'stake'
     ? balanceFor(getAddress(props.pool.address))
-    : stakedShares.value
+    : stakedSharesForProvidedPool.value
 );
 
 const fiatValueOfModifiedShares = ref(
@@ -108,7 +108,9 @@ const fiatValueOfModifiedShares = ref(
 
 const totalUserPoolSharePct = ref(
   bnum(
-    bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
+    bnum(stakedSharesForProvidedPool.value).plus(
+      balanceFor(getAddress(props.pool.address))
+    )
   )
     .div(props.pool.totalShares)
     .toString()
@@ -127,7 +129,7 @@ async function handleSuccess({ receipt }) {
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
   await refetchStakingData.value();
-  await queryClient.refetchQueries(['staking', 'data']);
+  await queryClient.refetchQueries(['staking']);
   emit('success');
 }
 

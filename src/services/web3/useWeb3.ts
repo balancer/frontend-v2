@@ -48,6 +48,7 @@ export default function useWeb3() {
     }
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
+  const isWalletConnecting = computed(() => walletState.value === 'connecting');
   const isMainnet = computed(
     () => appNetworkConfig.chainId === Network.MAINNET
   );
@@ -133,6 +134,7 @@ export default function useWeb3() {
     isPolygon,
     isArbitrum,
     isEIP1559SupportedNetwork,
+    isWalletConnecting,
 
     // methods
     connectWallet,
