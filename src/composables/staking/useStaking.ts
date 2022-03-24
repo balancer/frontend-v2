@@ -12,7 +12,7 @@ export function getStakeState(pool: DecoratedPoolWithStakedShares) {
   // just random logic for differentiating between stake states // TODO REPLACE
   if (pool.stakedPct === '1') {
     return StakeState.MaxStaked;
-  } else {
+  } else if (pool.stakedPct !== undefined) {
     return StakeState.CanStake;
   }
 }
