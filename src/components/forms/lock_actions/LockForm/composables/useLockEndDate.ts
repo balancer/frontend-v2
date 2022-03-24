@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { addDays, nextThursday, startOfDay } from 'date-fns';
+import { addDays, nextThursday, startOfDay, previousThursday } from 'date-fns';
 
 import useLockState from './useLockState';
 
@@ -28,7 +28,7 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   ).getTime();
 
   const maxLockEndDateTimestamp = startOfDay(
-    addDays(todaysDate, MAX_LOCK_PERIOD_IN_DAYS)
+    previousThursday(addDays(todaysDate, MAX_LOCK_PERIOD_IN_DAYS))
   ).getTime();
 
   /**
