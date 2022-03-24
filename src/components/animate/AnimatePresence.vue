@@ -1,11 +1,15 @@
 <template>
-  <div class="relative">
-    <transition appear @enter="enter" @leave="leave" :css="false">
-      <div id="animateContainer" ref="animateContainer" v-if="isVisible">
-        <slot></slot>
-      </div>
-    </transition>
-  </div>
+  <transition
+    class="relative"
+    appear
+    @enter="enter"
+    @leave="leave"
+    :css="false"
+  >
+    <div id="animateContainer" ref="animateContainer" v-if="isVisible">
+      <slot></slot>
+    </div>
+  </transition>
 </template>
 
 <script lang="ts">
@@ -109,8 +113,6 @@ export default defineComponent({
       }
       anime.set(el, {
         'pointer-events': 'none',
-        position: 'absolute',
-        top: 0
       });
       anime({
         targets: el,
