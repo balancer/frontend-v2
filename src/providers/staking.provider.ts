@@ -38,6 +38,7 @@ import { useQuery } from 'vue-query';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -134,7 +135,8 @@ export default defineComponent({
         liquidityGauges: {
           __args: {
             where: {
-              poolId_in: userPoolIds.value
+              poolId_in: userPoolIds.value,
+              id_in: POOLS.Gauges.AllowList.map(gauge => gauge.toLowerCase())
             }
           },
           poolId: true
