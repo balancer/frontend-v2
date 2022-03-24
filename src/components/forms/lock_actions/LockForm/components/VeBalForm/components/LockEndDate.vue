@@ -108,7 +108,7 @@ function formatDateInput(date: Date | number) {
         class="mr-3 cursor-pointer"
         @click="lockDate.action"
       >
-        {{ lockDate.label }}
+        ~{{ lockDate.label }}
       </div>
     </div>
   </div>
