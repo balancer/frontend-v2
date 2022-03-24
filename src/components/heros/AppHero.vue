@@ -1,7 +1,7 @@
 <template>
   <div :class="['app-hero', classes]">
     <div class="w-full max-w-2xl mx-auto">
-      <template v-if="isWalletReady">
+      <template v-if="isWalletReady || isWalletConnecting">
         <h1
           v-text="$t('myInvestments')"
           class="text-base font-medium text-white opacity-90 font-body mb-2"
@@ -68,14 +68,18 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const { fNum2 } = useNumbers();
-    const { isWalletReady, toggleWalletSelectModal } = useWeb3();
+    const {
+      isWalletReady,
+      toggleWalletSelectModal,
+      isWalletConnecting
+    } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { totalInvestedAmount, isLoadingUserPools } = usePools();
     const { darkMode } = useDarkMode();
 
     const classes = computed(() => ({
-      ['h-72']: !isWalletReady.value,
-      ['h-40']: isWalletReady.value
+      ['h-72']: !isWalletReady.value && !isWalletConnecting.value,
+      ['h-40']: isWalletReady.value || isWalletConnecting.value
     }));
 
     function onClickConnect() {
@@ -91,6 +95,7 @@ export default defineComponent({
 
       // computed
       isWalletReady,
+      isWalletConnecting,
       classes,
       darkMode,
 
