@@ -44,7 +44,11 @@ const stakedBalanceMap = computed(() => {
 });
 
 // first retrieve all the pools the user has liquidity for
-const { data: userPools } = useUserPoolsQuery();
+const {
+  data: userPools,
+  isLoading: isLoadingUserPools,
+  isIdle: isUserPoolsQueryIdle
+} = useUserPoolsQuery();
 
 const partiallyStakedPools = computed(() => {
   const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
@@ -131,7 +135,14 @@ function calculateFiatValueOfShares(
       />
     </BalStack>
   </AnimatePresence>
-  <AnimatePresence :isVisible="isLoadingStakingData || isStakeDataIdle">
+  <AnimatePresence
+    :isVisible="
+      isLoadingStakingData ||
+        isStakeDataIdle ||
+        isLoadingUserPools ||
+        isUserPoolsQueryIdle
+    "
+  >
     <div class="mb-8">
       <BalLoadingBlock class="h-32" />
     </div>
