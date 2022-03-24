@@ -36,7 +36,7 @@ const {
   isLoadingPoolEligibility,
   isPoolEligibleForStaking,
   stakedShares,
-  hideAprInfo,
+  hideAprInfo
 } = useStaking();
 
 /**
