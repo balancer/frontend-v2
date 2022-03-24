@@ -30,8 +30,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
  */
 type Props = {
   actions: TransactionActionInfo[];
-  disabled: boolean;
-  errorMessage: string;
+  disabled?: boolean;
   // override action state loading prop and show
   // loading for all steps
   isLoading?: boolean;
@@ -43,7 +42,11 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  isLoading: false,
+  loadingLabel: ''
+});
 
 const emit = defineEmits<{
   (e: 'success', value: any): void;
