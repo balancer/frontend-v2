@@ -1,7 +1,53 @@
+<script lang="ts" setup>
+import { ref, defineExpose } from 'vue';
+import BalCard from '../BalCard/BalCard.vue';
+
+/**
+ * TYPES
+ */
+type Props = {
+  show: boolean;
+  title: string;
+  noPad: boolean;
+  noContentPad: boolean;
+  fireworks: boolean;
+};
+
+/**
+ * PROPS & EMITS
+ */
+withDefaults(defineProps<Props>(), {
+  show: false,
+  title: '',
+  noPad: false,
+  noContentPad: false,
+  fireworks: false
+});
+
+defineEmits(['close']);
+
+/**
+ * STATE
+ */
+const showContent = ref(false);
+
+/**
+ * METHODS
+ */
+function hide(): void {
+  showContent.value = false;
+}
+
+/**
+ * EXPOSE
+ */
+defineExpose({ hide });
+</script>
+
 <template>
-  <div v-if="show" class="bal-modal" @click="hide" @keyup.esc="hide">
-    <transition name="modal-bg" mode="out-in" appear>
-      <div v-if="showContent" class="modal-bg" @click="hide">
+  <div v-if="show" class="bal-modal" @keyup.esc="hide">
+    <transition name="overlay" @afterEnter="showContent = true" appear>
+      <div class="modal-bg" @click="hide">
         <div v-if="fireworks" class="fireworks">
           <div class="before"></div>
           <div class="after"></div>
@@ -9,19 +55,8 @@
       </div>
     </transition>
     <div class="content-container">
-      <AnimatePresence
-        :initial="{ opacity: 0, translateY: 7.5 }"
-        :animate="{
-          opacity: 1,
-          translateY: 0,
-          delay: 100
-        }"
-        :exit="{ opacity: 0, translateY: 15 }"
-        :isVisible="showContent"
-        @on-exit="$emit('close')"
-        class="flex justify-center w-full"
-      >
-        <div class="content" @click.stop>
+      <Transition name="modal" @afterLeave="$emit('close')">
+        <div v-if="showContent" class="content">
           <BalCard
             :title="title"
             shadow="lg"
@@ -40,55 +75,10 @@
             </template>
           </BalCard>
         </div>
-      </AnimatePresence>
+      </Transition>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import BalCard from '../BalCard/BalCard.vue';
-import AnimatePresence from '../../animate/AnimatePresence.vue';
-import { defineComponent, ref, toRefs, watch } from 'vue';
-
-export default defineComponent({
-  name: 'BalModal',
-
-  components: {
-    BalCard,
-    AnimatePresence
-  },
-
-  props: {
-    show: { type: Boolean, default: false },
-    title: { type: String, default: '' },
-    noPad: { type: Boolean, default: false },
-    noContentPad: { type: Boolean, default: false },
-    fireworks: { type: Boolean, default: false }
-  },
-
-  setup(props, { expose }) {
-    const { show } = toRefs(props);
-    const showContent = ref(show.value);
-
-    // Watchers
-    watch(show, newVal => {
-      showContent.value = newVal;
-    });
-
-    // Methods
-    function hide(): void {
-      showContent.value = false;
-    }
-
-    expose({ hide });
-
-    return {
-      showContent,
-      hide
-    };
-  }
-});
-</script>
 
 <style scoped>
 .bal-modal {
@@ -101,7 +91,7 @@ export default defineComponent({
 
 .content {
   @apply relative w-full h-3/4 sm:h-auto max-h-screen;
-  width: 450px;
+  max-width: 450px;
 }
 
 .modal-bg {
@@ -112,16 +102,25 @@ export default defineComponent({
   @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border dark:border-gray-800;
 }
 
-.modal-bg-enter-active {
-  transition: all 0.3s ease-in-out;
+/* Overlay animation */
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: all 0.2s ease-in-out;
 }
 
-.modal-bg-leave-active {
-  transition: all 0.3s ease-in-out;
+.overlay-enter-from,
+.overlay-leave-to {
+  opacity: 0;
 }
 
-.modal-bg-enter-from,
-.modal-bg-leave-to {
-  background: transparent;
+/* Modal animation */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.2s ease-in-out;
+}
+.modal-enter-from,
+.modal-leave-to {
+  transform: translateY(50px);
+  opacity: 0;
 }
 </style>
