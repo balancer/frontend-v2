@@ -11,6 +11,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import LockableTokens from './components/LockableTokens.vue';
+import HowToLock from './components/HowToLock.vue';
 import MyVeBAL from './components/MyVeBAL.vue';
 import VeBalForm from './components/VeBalForm/VeBalForm.vue';
 
@@ -62,6 +63,12 @@ const isLoading = computed(() =>
     <template #gutterLeft>
       <BalLoadingBlock v-if="isLoading" class="h-36" />
       <LockableTokens
+        v-else
+        :lockablePool="lockablePool"
+        :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      />
+      <BalLoadingBlock v-if="isLoading" class="h-36 mt-4" />
+      <HowToLock
         v-else
         :lockablePool="lockablePool"
         :lockablePoolTokenInfo="lockablePoolTokenInfo"
