@@ -656,8 +656,8 @@
                         "description": "You won't be able to make any edits to this vote allocation for {0}"
                     },
                     "noVeBal": {
-                        "title": "No veBAL",
-                        "description": "You must lock veBAL before voting on gagues."
+                        "title": "You need some veBAL to vote on gauges",
+                        "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool."
                     },
                     "veBalLockTooShort": {
                         "title": "veBAL not locked for 7 days.",

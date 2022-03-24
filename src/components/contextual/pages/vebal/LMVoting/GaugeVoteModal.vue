@@ -307,7 +307,7 @@ onMounted(() => {
         type="warning"
         :title="voteWarning.title"
         :description="voteWarning.description"
-        class="mb-4"
+        class="w-full rounded mb-4"
       />
 
       <div
