@@ -29,10 +29,15 @@ import {
   ComputedRef,
   Ref
 } from 'vue';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import {
+  DecoratedPool,
+  DecoratedPoolWithStakedShares
+} from '@/services/balancer/subgraph/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useQuery } from 'vue-query';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
+import { bnum } from '@/lib/utils';
+import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 
 /**
  * TYPES
@@ -40,7 +45,7 @@ import { QueryObserverResult, RefetchOptions } from 'react-query';
 export type StakingProvider = {
   userGaugeShares: ComputedRef<UserGuageShare[]>;
   userLiquidityGauges: ComputedRef<TLiquidityGauge[]>;
-  stakedShares: Ref<string>;
+  stakedSharesForProvidedPool: Ref<string>;
   stakedPools: Ref<DecoratedPool[]>;
   isLoadingStakedPools: Ref<boolean>;
   isStakeDataIdle: Ref<boolean>;
@@ -119,7 +124,7 @@ export default defineComponent({
       () => ({
         gaugeShares: {
           __args: {
-            where: { user: account.value.toLowerCase() }
+            where: { user: account.value.toLowerCase(), balance_gt: '0' }
           },
           balance: 1,
           gauge: {
@@ -184,7 +189,9 @@ export default defineComponent({
      * computed properties so they retain reactivity
      * when returned by this composable
      */
-    const stakedShares = computed(() => stakedSharesResponse.value || '0');
+    const stakedSharesForProvidedPool = computed(
+      () => stakedSharesResponse.value || '0'
+    );
 
     const userGaugeShares = computed(() => {
       if (!stakingData.value?.gaugeShares) return [];
@@ -213,6 +220,15 @@ export default defineComponent({
       () => stakedPoolIds.value.length > 0
     );
 
+    const stakedSharesMap = computed(() => {
+      return Object.fromEntries(
+        userGaugeShares.value.map(gaugeShare => [
+          gaugeShare.gauge.poolId,
+          gaugeShare.balance
+        ])
+      );
+    });
+
     /** QUERY */
     const {
       data: stakedPoolsResponse,
@@ -223,7 +239,8 @@ export default defineComponent({
         enabled: isStakedPoolsQueryEnabled
       }),
       {
-        poolIds: stakedPoolIds
+        poolIds: stakedPoolIds,
+        pageSize: 999
       }
     );
 
@@ -234,9 +251,24 @@ export default defineComponent({
         isStakeDataIdle.value
     );
 
-    const stakedPools = computed(
-      () => stakedPoolsResponse.value?.pages[0].pools || []
-    );
+    const stakedPools = computed<DecoratedPoolWithStakedShares[]>(() => {
+      const decoratedPools = (
+        stakedPoolsResponse.value?.pages[0].pools || []
+      ).map(pool => {
+        const unstakedBpt = balanceFor(getAddress(pool.address));
+        const stakedBpt = stakedSharesMap.value[pool.id];
+        const totalBpt = bnum(unstakedBpt).plus(stakedBpt);
+        const stakedPct = bnum(stakedBpt).div(totalBpt);
+        return {
+          ...pool,
+          stakedShares: stakedBpt,
+          stakedPct: stakedPct.toString(),
+          shares: getBptBalanceFiatValue(pool, unstakedBpt),
+          bpt: unstakedBpt
+        };
+      });
+      return decoratedPools;
+    });
 
     /**
      * METHODS
@@ -263,7 +295,9 @@ export default defineComponent({
       }
       const gaugeAddress = await getGaugeAddress(getAddress(poolAddress.value));
       const gauge = new LiquidityGauge(gaugeAddress, getProvider());
-      const tx = await gauge.unstake(parseUnits(stakedShares.value || '0', 18));
+      const tx = await gauge.unstake(
+        parseUnits(stakedSharesForProvidedPool.value || '0', 18)
+      );
       return tx;
     }
 
@@ -297,7 +331,7 @@ export default defineComponent({
     provide(StakingProviderSymbol, {
       userGaugeShares,
       userLiquidityGauges,
-      stakedShares,
+      stakedSharesForProvidedPool,
       stakedPools,
       isLoadingStakingData,
       isLoadingStakedPools,
