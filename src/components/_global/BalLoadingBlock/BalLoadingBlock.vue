@@ -8,10 +8,10 @@ import { computed } from 'vue';
 type RoundedOpts = 'sm' | 'md' | 'lg';
 
 type Props = {
-  white: boolean;
-  darker: boolean;
-  square: boolean;
-  rounded: RoundedOpts;
+  white?: boolean;
+  darker?: boolean;
+  square?: boolean;
+  rounded?: RoundedOpts;
 };
 
 /**

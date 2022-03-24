@@ -9,8 +9,8 @@ export type IconSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 type Props = {
   name: string;
-  size: IconSize;
-  filled: boolean;
+  size?: IconSize;
+  filled?: boolean;
 };
 
 /**

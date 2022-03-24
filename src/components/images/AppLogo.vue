@@ -6,7 +6,7 @@ import AppIcon from './AppIcon.vue';
  * TYPES
  */
 type Props = {
-  forceDark: boolean;
+  forceDark?: boolean;
 };
 
 /**
