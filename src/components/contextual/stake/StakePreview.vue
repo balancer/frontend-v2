@@ -108,7 +108,9 @@ const fiatValueOfModifiedShares = ref(
 
 const totalUserPoolSharePct = ref(
   bnum(
-    bnum(stakedSharesForProvidedPool.value).plus(balanceFor(getAddress(props.pool.address)))
+    bnum(stakedSharesForProvidedPool.value).plus(
+      balanceFor(getAddress(props.pool.address))
+    )
   )
     .div(props.pool.totalShares)
     .toString()
