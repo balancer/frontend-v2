@@ -96,7 +96,7 @@ const cards = computed(() => {
       value: isWalletReady.value
         ? fNum2(fiatTotal.value, FNumFormats.fiat)
         : '—',
-      showPlusIcon: hasExistingLock ? true : false,
+      showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: {
         name: 'invest',
         params: { id: lockablePoolAddress.value }
@@ -110,7 +110,7 @@ const cards = computed(() => {
       value: hasExistingLock
         ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
         : '—',
-      showPlusIcon: hasExistingLock ? true : false,
+      showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
       showUnlockIcon: isExpired ? true : false
     },
@@ -124,6 +124,7 @@ const cards = computed(() => {
     {
       id: 'myVeBAL',
       label: t('veBAL.myVeBAL.cards.myVeBAL'),
+      showPlusIcon: false,
       value: hasExistingLock
         ? fNum2(veBalBalance.value, FNumFormats.token)
         : '—'
