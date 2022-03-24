@@ -2,7 +2,7 @@ import { useRouter } from 'vue-router';
 import { useSidebar } from './useSidebar';
 import useVeBal from './useVeBAL';
 
-export default function useNavigationGaurds() {
+export default function useNavigationGuards() {
   const router = useRouter();
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
   const { setSidebarOpen } = useSidebar();

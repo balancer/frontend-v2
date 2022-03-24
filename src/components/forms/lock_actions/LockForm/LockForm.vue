@@ -11,10 +11,12 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import LockableTokens from './components/LockableTokens.vue';
+import HowToLock from './components/HowToLock.vue';
 import MyVeBAL from './components/MyVeBAL.vue';
 import VeBalForm from './components/VeBalForm/VeBalForm.vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * COMPOSABLES
@@ -22,6 +24,7 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 const { tokens } = useTokens();
 const { isWalletReady } = useWeb3();
 const { lockablePoolAddress } = useVeBal();
+const { isDesktop, isMobile } = useBreakpoints();
 
 /**
  * QUERIES
@@ -66,6 +69,14 @@ const isLoading = computed(() =>
         :lockablePool="lockablePool"
         :lockablePoolTokenInfo="lockablePoolTokenInfo"
       />
+      <template v-if="isDesktop">
+        <BalLoadingBlock v-if="isLoading" class="h-36 mt-4" />
+        <HowToLock
+          v-else
+          :lockablePool="lockablePool"
+          :lockablePoolTokenInfo="lockablePoolTokenInfo"
+        />
+      </template>
     </template>
 
     <BalLoadingBlock v-if="isLoading" class="h-96" />
@@ -84,6 +95,14 @@ const isLoading = computed(() =>
     <template #gutterRight>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
       <MyVeBAL v-else :veBalLockInfo="veBalLockInfo" />
+      <template v-if="isMobile">
+        <BalLoadingBlock v-if="isLoading" class="h-36 mt-4" />
+        <HowToLock
+          v-else
+          :lockablePool="lockablePool"
+          :lockablePoolTokenInfo="lockablePoolTokenInfo"
+        />
+      </template>
     </template>
   </Col3Layout>
 </template>
