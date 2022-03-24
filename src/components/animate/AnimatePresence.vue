@@ -112,7 +112,7 @@ export default defineComponent({
         emit('on-exit', { isCompleted: true });
       }
       anime.set(el, {
-        'pointer-events': 'none',
+        'pointer-events': 'none'
       });
       anime({
         targets: el,
