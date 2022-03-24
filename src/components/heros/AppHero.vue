@@ -3,7 +3,7 @@
     <div class="w-full max-w-2xl mx-auto">
       <template v-if="isWalletReady || isWalletConnecting">
         <h1
-          v-text="$t('myInvestments')"
+          v-text="$t('totalInvested')"
           class="text-base font-medium text-white opacity-90 font-body mb-2"
         />
         <BalLoadingBlock
