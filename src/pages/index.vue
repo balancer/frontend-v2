@@ -1,3 +1,104 @@
+<script setup lang="ts">
+import { computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
+import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
+import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
+import FeaturedPools from '@/components/sections/FeaturedPools.vue';
+import usePools from '@/composables/pools/usePools';
+import useWeb3 from '@/services/web3/useWeb3';
+import usePoolFilters from '@/composables/pools/usePoolFilters';
+import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import useBreakpoints from '@/composables/useBreakpoints';
+import { isMigratablePool } from '@/composables/usePool';
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+
+import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
+import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
+import StakingProvider from '@/providers/staking.provider';
+
+// COMPOSABLES
+const router = useRouter();
+const { t } = useI18n();
+const { isWalletReady, appNetworkConfig } = useWeb3();
+const isElementSupported = appNetworkConfig.supportsElementPools;
+const {
+  selectedTokens,
+  addSelectedToken,
+  removeSelectedToken
+} = usePoolFilters();
+
+const {
+  pools,
+  userPools,
+  isLoadingPools,
+  isLoadingUserPools,
+  loadMorePools,
+  poolsHasNextPage,
+  poolsIsFetchingNextPage,
+  poolsQuery
+} = usePools(selectedTokens);
+const { addAlert, removeAlert } = useAlerts();
+const { upToMediumBreakpoint } = useBreakpoints();
+
+// COMPUTED
+const filteredPools = computed(() =>
+  selectedTokens.value.length > 0
+    ? pools.value?.filter(pool => {
+        return selectedTokens.value.every((selectedToken: string) =>
+          pool.tokenAddresses.includes(selectedToken)
+        );
+      })
+    : pools?.value
+);
+
+const showMigrationColumn = computed(() =>
+  userPools.value?.some(pool => {
+    return (
+      isMigratablePool(pool) &&
+      // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
+      bnum(pool.shares).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+    );
+  })
+);
+
+// userPools.value[0].shares
+watch(poolsQuery.error, () => {
+  if (poolsQuery.error.value) {
+    addAlert({
+      id: 'pools-fetch-error',
+      label: t('alerts.pools-fetch-error'),
+      type: AlertType.ERROR,
+      persistent: true,
+      action: poolsQuery.refetch.value,
+      actionLabel: t('alerts.retry-label'),
+      priority: AlertPriority.MEDIUM
+    });
+  } else {
+    removeAlert('pools-fetch-error');
+  }
+});
+
+const migratableUserPools = computed(() => {
+  return userPools.value.filter(pool => isMigratablePool(pool));
+});
+
+const stakableUserPools = computed(() => {
+  return userPools.value.filter(pool => !isMigratablePool(pool));
+});
+
+watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
+
+/**
+ * METHODS
+ */
+function navigateToCreatePool() {
+  router.push({ name: 'create-pool' });
+}
+</script>
+
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
     <template v-if="isWalletReady">
@@ -21,9 +122,10 @@
             showPoolShares
           />
           <StakingProvider>
+            <UnstakedPoolsTable :userPools="userPools" />
             <StakedPoolsTable :userPools="userPools" />
           </StakingProvider>
-          <BalStack vertical spacing="sm">
+          <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
             <h5>{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
               :key="migratableUserPools"
@@ -74,6 +176,7 @@
         @loadMore="loadMorePools"
         :selectedTokens="selectedTokens"
         class="mb-8"
+        :hiddenColumns="['migrate', 'stake']"
       />
 
       <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
@@ -82,145 +185,3 @@
     </BalStack>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-
-import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
-import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import FeaturedPools from '@/components/sections/FeaturedPools.vue';
-import usePools from '@/composables/pools/usePools';
-import useWeb3 from '@/services/web3/useWeb3';
-import usePoolFilters from '@/composables/pools/usePoolFilters';
-import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import useBreakpoints from '@/composables/useBreakpoints';
-import { isMigratablePool } from '@/composables/usePool';
-import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
-import { bnum } from '@/lib/utils';
-
-import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
-import StakingProvider from '@/providers/staking.provider';
-
-export default defineComponent({
-  components: {
-    TokenSearchInput,
-    PoolsTable,
-    FeaturedPools,
-    StakedPoolsTable,
-    StakingProvider
-  },
-
-  setup() {
-    // COMPOSABLES
-    const router = useRouter();
-    const { t } = useI18n();
-    const { isWalletReady, appNetworkConfig } = useWeb3();
-    const isElementSupported = appNetworkConfig.supportsElementPools;
-    const {
-      selectedTokens,
-      addSelectedToken,
-      removeSelectedToken
-    } = usePoolFilters();
-
-    const {
-      pools,
-      userPools,
-      isLoadingPools,
-      isLoadingUserPools,
-      loadMorePools,
-      poolsHasNextPage,
-      poolsIsFetchingNextPage,
-      poolsQuery
-    } = usePools(selectedTokens);
-    const { addAlert, removeAlert } = useAlerts();
-    const { upToMediumBreakpoint } = useBreakpoints();
-
-    // COMPUTED
-    const filteredPools = computed(() =>
-      selectedTokens.value.length > 0
-        ? pools.value?.filter(pool => {
-            return selectedTokens.value.every((selectedToken: string) =>
-              pool.tokenAddresses.includes(selectedToken)
-            );
-          })
-        : pools?.value
-    );
-
-    const showMigrationColumn = computed(() =>
-      userPools.value?.some(pool => {
-        return (
-          isMigratablePool(pool) &&
-          // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
-          bnum(pool.shares).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
-        );
-      })
-    );
-
-    // userPools.value[0].shares
-    watch(poolsQuery.error, () => {
-      if (poolsQuery.error.value) {
-        addAlert({
-          id: 'pools-fetch-error',
-          label: t('alerts.pools-fetch-error'),
-          type: AlertType.ERROR,
-          persistent: true,
-          action: poolsQuery.refetch.value,
-          actionLabel: t('alerts.retry-label'),
-          priority: AlertPriority.MEDIUM
-        });
-      } else {
-        removeAlert('pools-fetch-error');
-      }
-    });
-
-    // TODO STAKING INTEGRATION
-    const areStakingButtonsVisible = computed(() => true);
-
-    const migratableUserPools = computed(() => {
-      return userPools.value.filter(pool => isMigratablePool(pool));
-    });
-
-    const stakableUserPools = computed(() => {
-      return userPools.value.filter(pool => !isMigratablePool(pool));
-    });
-
-    watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
-
-    /**
-     * METHODS
-     */
-    function navigateToCreatePool() {
-      router.push({ name: 'create-pool' });
-    }
-
-    return {
-      // data
-      filteredPools,
-      userPools,
-      isLoadingPools,
-      isLoadingUserPools,
-
-      // computed
-      isWalletReady,
-      poolsHasNextPage,
-      poolsIsFetchingNextPage,
-      selectedTokens,
-      isElementSupported,
-      upToMediumBreakpoint,
-      showMigrationColumn,
-      areStakingButtonsVisible,
-      migratableUserPools,
-      stakableUserPools,
-
-      //methods
-      router,
-      loadMorePools,
-      addSelectedToken,
-      removeSelectedToken,
-      navigateToCreatePool
-    };
-  }
-});
-</script>
