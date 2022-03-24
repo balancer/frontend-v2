@@ -22,7 +22,7 @@ import StakingProvider from '@/providers/staking.provider';
 // COMPOSABLES
 const router = useRouter();
 const { t } = useI18n();
-const { isWalletReady, appNetworkConfig } = useWeb3();
+const { isWalletReady, appNetworkConfig, isWalletConnecting } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const {
   selectedTokens,
@@ -97,7 +97,7 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <template v-if="isWalletReady">
+    <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">
           <BalStack horizontal justify="between" align="center">
