@@ -24,7 +24,6 @@ const stakePool = ref<FullPool | undefined>();
 
 /** COMPOSABLES */
 const {
-  userGaugeShares,
   stakedPools,
   isLoading: isLoadingStakingData,
   setPoolAddress
@@ -32,18 +31,6 @@ const {
 const { account } = useWeb3();
 
 /** COMPUTED */
-// a map of poolId-stakedBPT for the connected user
-const stakedBalanceMap = computed(() => {
-  const map: Record<string, string> = {};
-  if (!userGaugeShares.value) return map;
-  for (const gaugeShare of userGaugeShares.value) {
-    map[gaugeShare.gauge.poolId] = gaugeShare.balance;
-  }
-  return map;
-});
-
-// first retrieve all the pools the user has liquidity for
-const { data: userPools } = useUserPoolsQuery();
 
 // a fast query to let us determine if we should show
 // the staked pools table and while loading, the height
@@ -58,7 +45,7 @@ const {
   () => ({
     gaugeShares: {
       __args: {
-        where: { user: account.value.toLowerCase() }
+        where: { user: account.value.toLowerCase(), balance_gt: '0' }
       },
       balance: 1,
       gauge: {
@@ -72,29 +59,8 @@ const {
 );
 
 const numStakedPools = computed(
-  () =>
-    (gaugeShares.value?.gaugeShares || []).filter(share =>
-      bnum(share.balance).gt(0)
-    ).length
+  () => (gaugeShares.value?.gaugeShares || []).length
 );
-
-// The pools which the user has completely staked
-const maxStakedPools = computed(() => {
-  const userPoolIds = userPools.value?.pools.map(pool => pool.id);
-  return (stakedPools.value || [])
-    .filter(pool => {
-      return !userPoolIds?.includes(pool.id);
-    })
-    .map(pool => ({
-      // then indicate that those pools are maximal staked with a variable
-      ...pool,
-      stakedPct: '1',
-      stakedShares: calculateFiatValueOfShares(
-        pool,
-        stakedBalanceMap.value[pool.id]
-      )
-    }));
-});
 
 /** METHODS */
 function handleStake(pool: FullPool) {
@@ -106,32 +72,28 @@ function handleStake(pool: FullPool) {
 function handleModalClose() {
   showStakeModal.value = false;
 }
-
-function calculateFiatValueOfShares(
-  pool: DecoratedPoolWithShares | DecoratedPool,
-  stakedBalance: string
-) {
-  return bnum(pool.totalLiquidity)
-    .div(pool.totalShares)
-    .times((stakedBalance || '0').toString())
-    .toString();
-}
 </script>
 
 <template>
-  <AnimatePresence :isVisible="!isLoadingStakingData && numStakedPools > 0">
-    <BalStack vertical spacing="sm">
-      <h5>{{ $t('staking.stakedPools') }}</h5>
-      <PoolsTable
-        :key="maxStakedPools"
-        :isLoading="isLoadingStakingData"
-        :data="maxStakedPools"
-        :noPoolsLabel="$t('noInvestments')"
-        :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
-        @triggerStake="handleStake"
-        showPoolShares
-      />
-    </BalStack>
+  <AnimatePresence
+    :isVisible="
+      !isLoadingStakingData && (numStakedPools > 0 || stakedPools.length > 0)
+    "
+  >
+    <div class="mt-8">
+      <BalStack vertical spacing="sm">
+        <h5>{{ $t('staking.stakedPools') }}</h5>
+        <PoolsTable
+          :key="stakedPools"
+          :data="stakedPools"
+          :noPoolsLabel="$t('noInvestments')"
+          :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
+          @triggerStake="handleStake"
+          showPoolShares
+          onlyStakedPct
+        />
+      </BalStack>
+    </div>
     <StakePreviewModal
       :pool="stakePool"
       :isVisible="showStakeModal"
@@ -146,7 +108,7 @@ function calculateFiatValueOfShares(
         isGaugeSharesIdle
     "
   >
-    <div>
+    <div class="mt-8">
       <BalLoadingBlock class="staked-pools-table-loading" />
     </div>
   </AnimatePresence>
