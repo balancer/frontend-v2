@@ -102,9 +102,6 @@ function navigateToCreatePool() {
         <div class="px-4 lg:px-0">
           <BalStack horizontal justify="between" align="center">
             <h3>{{ $t('myV2Investments') }}</h3>
-            <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
-              $t('createAPool.title')
-            }}</BalBtn>
           </BalStack>
         </div>
         <BalStack vertical spacing="xl">
