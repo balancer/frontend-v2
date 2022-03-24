@@ -85,10 +85,6 @@ const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
 
-const stakableUserPools = computed(() => {
-  return userPools.value.filter(pool => !isMigratablePool(pool));
-});
-
 watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 
 /**
@@ -112,15 +108,6 @@ function navigateToCreatePool() {
           </BalStack>
         </div>
         <BalStack vertical spacing="xl">
-          <PoolsTable
-            :key="stakableUserPools"
-            :isLoading="isLoadingUserPools"
-            :data="stakableUserPools"
-            :noPoolsLabel="$t('noInvestments')"
-            :selectedTokens="selectedTokens"
-            :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
-            showPoolShares
-          />
           <StakingProvider>
             <UnstakedPoolsTable :userPools="userPools" />
             <StakedPoolsTable :userPools="userPools" />

@@ -16,6 +16,7 @@ import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import { uniqBy } from 'lodash';
+import { isMigratablePool } from '@/composables/usePool';
 
 /** STATE */
 const showStakeModal = ref(false);
@@ -86,9 +87,13 @@ const unstakedPools = computed(() => {
 });
 
 const poolsToRender = computed(() => {
+  const stakablePools = [...partiallyStakedPools.value, ...unstakedPools.value];
+  const stakableUserPoolIds = stakablePools.map(pool => pool.id);
+  const nonMigratableUserPools = (userPools.value?.pools || [])
+    .filter(pool => !isMigratablePool(pool))
+    .filter(pool => !stakableUserPoolIds.includes(pool.id));
   // now mash them together
-  const allPools = [...unstakedPools.value, ...partiallyStakedPools.value];
-  return uniqBy(allPools, pool => pool.id);
+  return uniqBy([...nonMigratableUserPools, ...stakablePools], pool => pool.id);
 });
 
 /** METHODS */
