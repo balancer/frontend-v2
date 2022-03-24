@@ -107,6 +107,10 @@ function calculateFiatValueOfShares(
     .times((stakedBalance || '0').toString())
     .toString();
 }
+
+function handleModalClose() {
+  showStakeModal.value = false;
+}
 </script>
 
 <template>
