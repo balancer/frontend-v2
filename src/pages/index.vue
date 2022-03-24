@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, computed, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -80,9 +80,6 @@ watch(poolsQuery.error, () => {
     removeAlert('pools-fetch-error');
   }
 });
-
-// TODO STAKING INTEGRATION
-const areStakingButtonsVisible = computed(() => true);
 
 const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
