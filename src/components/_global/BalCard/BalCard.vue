@@ -62,7 +62,7 @@ export default defineComponent({
 
   setup(props) {
     const borderClasses = computed(() => {
-      return 'border border-gray-200 dark:border-gray-900';
+      return 'border dark:border-gray-900';
     });
 
     const cardClasses = computed(() => {
