@@ -74,6 +74,7 @@
         @loadMore="loadMorePools"
         :selectedTokens="selectedTokens"
         class="mb-8"
+        :hiddenColumns="['migrate', 'stake']"
       />
 
       <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
