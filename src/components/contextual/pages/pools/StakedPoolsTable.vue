@@ -52,11 +52,10 @@ function handleModalClose() {
         :key="stakedPools"
         :data="stakedPools"
         :noPoolsLabel="$t('noInvestments')"
-        :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
+        :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
         @triggerStake="handleStake"
         :isLoading="isLoading"
         showPoolShares
-        onlyStakedPct
       />
     </BalStack>
   </div>
