@@ -442,8 +442,12 @@
     "payload": "Payload",
     "pages": {
         "claim": {
-            "title": "Claim all of your liquidity incentives",
-            "description": "The Balancer protocol provides incentives to attract liquidity in eligible pools.",
+            "title": "Claim your liquidity mining incentives",
+            "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
+            "transitionInfo": {
+                "title": "Transition to new veBAL tokenomics",
+                "description": "Liquidity mining incentives start on 7 April 2022 at 0:00 UTC. Token earnings accumulate every block and can be claimed at any time. In the meantime, you can prepare by getting veBAL, providing liquidity, staking and voting on eligible pools."
+            },
             "titles": {
                 "incentivesOnOtherNetworks": "Incentives on other networks",
                 "legacyIncentives": "Legacy incentives"
