@@ -13,7 +13,6 @@ import { bnum } from '@/lib/utils';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import { uniqBy } from 'lodash';
 import { isMigratablePool } from '@/composables/usePool';
@@ -27,8 +26,7 @@ const {
   userGaugeShares,
   userLiquidityGauges,
   stakedPools,
-  isLoading: isLoadingStakingData,
-  isStakeDataIdle,
+  isLoadingStakingData,
   setPoolAddress
 } = useStaking();
 
@@ -47,7 +45,7 @@ const stakedBalanceMap = computed(() => {
 const {
   data: userPools,
   isLoading: isLoadingUserPools,
-  isIdle: isUserPoolsQueryIdle
+  isIdle: isUserPoolsIdle
 } = useUserPoolsQuery();
 
 const partiallyStakedPools = computed(() => {
@@ -123,34 +121,18 @@ function handleModalClose() {
 </script>
 
 <template>
-  <AnimatePresence
-    :isVisible="!isLoadingStakingData && poolsToRender.length > 0"
-  >
-    <BalStack vertical spacing="sm">
-      <h5>{{ $t('staking.unstakedPools') }}</h5>
-      <PoolsTable
-        :key="poolsToRender"
-        :isLoading="isLoadingStakingData"
-        :data="poolsToRender"
-        :noPoolsLabel="$t('noInvestments')"
-        :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
-        @triggerStake="handleStake"
-        showPoolShares
-      />
-    </BalStack>
-  </AnimatePresence>
-  <AnimatePresence
-    :isVisible="
-      isLoadingStakingData ||
-        isStakeDataIdle ||
-        isLoadingUserPools ||
-        isUserPoolsQueryIdle
-    "
-  >
-    <div class="mb-8">
-      <BalLoadingBlock class="h-32" />
-    </div>
-  </AnimatePresence>
+  <BalStack vertical spacing="sm">
+    <h5>{{ $t('staking.unstakedPools') }}</h5>
+    <PoolsTable
+      :key="poolsToRender"
+      :isLoading="isLoadingStakingData || isLoadingUserPools || isUserPoolsIdle"
+      :data="poolsToRender"
+      :noPoolsLabel="$t('noInvestments')"
+      :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
+      @triggerStake="handleStake"
+      showPoolShares
+    />
+  </BalStack>
   <StakePreviewModal
     :pool="stakePool"
     :isVisible="showStakeModal"
