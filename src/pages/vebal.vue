@@ -10,10 +10,12 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 </script>
 
 <template>
-  <div v-if="isVeBalSupported" class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <div class="pb-24 px-1 lg:px-0">
+  <div v-if="isVeBalSupported" class="max-w-screen-2xl xl:mx-auto">
+    <div class="pb-24">
       <Hero />
     </div>
+  </div>
+  <div v-if="isVeBalSupported" class="lg:container lg:mx-auto">  
     <div class="mb-16 px-1 lg:px-0">
       <MyVeBAL />
     </div>
