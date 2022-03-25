@@ -111,6 +111,14 @@ function getVotePeriodEndTime(): number {
 </script>
 
 <template>
+  <div
+    class="bg-yellow-500 flex items-center rounded-lg p-4 mb-8 text-gray-900"
+  >
+    <LightBulbIcon width="36" height="36" />
+    <p class="ml-4">
+      {{ $t('veBAL.votingTransitionDescription') }}
+    </p>
+  </div>
   <h3 class="mb-3">{{ $t('veBAL.liquidityMining.title') }}</h3>
   <div class="mb-3">
     <span v-if="hasLockedAmount">

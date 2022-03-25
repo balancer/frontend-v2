@@ -692,7 +692,8 @@
         "notSupported": {
             "title": "Locking is unavailable on this network",
             "description": "Get veBAL on Ethereum Mainnet"
-        }
+        },
+        "votingTransitionDescription": "Voting is live! The first voting period directing liquidity mining emissions ends at 7 April 2022 at 0:00 UTC. Prepare by getting veBAL and voting. Your votes on pool gauges will persist until you change them."
     },
     "getVeBAL": {
         "lockableTokens": {

@@ -77,7 +77,7 @@ function onClickConnect() {
           />
           <div
             v-else
-            class="h-8 flex items-center px-3 bg-yellow-500 text-navy-500 rounded-sm
+            class="h-8 flex items-center px-3 bg-yellow-500 text-gray-900 rounded-sm
           text-sm font-medium cursor-pointer"
             @click="router.push({ name: 'vebal' })"
           >
