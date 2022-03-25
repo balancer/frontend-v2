@@ -19,12 +19,12 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
  */
 const { tokens } = useTokens();
 const { isWalletReady } = useWeb3();
-const { lockablePoolAddress } = useVeBal();
+const { lockablePoolId } = useVeBal();
 
 /**
  * QUERIES
  */
-const lockablePoolQuery = usePoolQuery(lockablePoolAddress.value as string);
+const lockablePoolQuery = usePoolQuery(lockablePoolId.value as string);
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**

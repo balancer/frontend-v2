@@ -42,7 +42,7 @@ const showUnlockPreviewModal = ref(false);
  */
 const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
-const { veBalBalance, lockablePoolAddress } = useVeBal();
+const { veBalBalance, lockablePoolId } = useVeBal();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
 
@@ -99,7 +99,7 @@ const cards = computed(() => {
       showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: {
         name: 'invest',
-        params: { id: lockablePoolAddress.value }
+        params: { id: lockablePoolId.value }
       }
     },
     {

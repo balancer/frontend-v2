@@ -2,6 +2,7 @@
 import { toRef, toRefs, computed, reactive, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { usePool } from '@/composables/usePool';
+
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -23,6 +24,8 @@ import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import useVeBal from '@/composables/useVeBAL';
+import useStaking from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -48,6 +51,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
+  (e: 'showStakeModal'): void;
 }>();
 
 /**
@@ -68,6 +72,9 @@ const { t } = useI18n();
 const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { lockablePoolId } = useVeBal();
+const { isPoolEligibleForStaking } = useStaking();
+
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   fullAmounts,
@@ -196,6 +203,28 @@ watch(blockNumber, async () => {
     <BalActionSteps v-if="!investmentState.confirmed" :actions="actions" />
     <div v-else>
       <ConfirmationIndicator :txReceipt="investmentState.receipt" />
+      <BalBtn
+        v-if="lockablePoolId === pool.id"
+        tag="router-link"
+        :to="{ name: 'get-vebal' }"
+        color="gradient"
+        block
+        class="mt-2 mb-4 flex"
+      >
+        <StarsIcon class="h-5 text-yellow-300 mr-2" />{{ $t('lockToGetVeBAL') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="isPoolEligibleForStaking"
+        color="gradient"
+        block
+        class="mt-2 mb-4 flex"
+        @click="emit('showStakeModal')"
+      >
+        <StarsIcon class="h-5 text-yellow-300 mr-2" />{{
+          $t('stakeToGetExtra')
+        }}
+      </BalBtn>
+
       <BalBtn
         tag="router-link"
         :to="{ name: 'pool', params: { id: route.params.id } }"

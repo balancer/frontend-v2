@@ -17,12 +17,12 @@ import MyVeBalCards from './components/MyVeBalCards.vue';
  */
 const { tokens } = useTokens();
 const { isWalletReady } = useWeb3();
-const { lockablePoolAddress } = useVeBal();
+const { lockablePoolId } = useVeBal();
 
 /**
  * QUERIES
  */
-const lockablePoolQuery = usePoolQuery(lockablePoolAddress.value as string);
+const lockablePoolQuery = usePoolQuery(lockablePoolId.value as string);
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**
