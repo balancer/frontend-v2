@@ -26,7 +26,7 @@
     "amountToInvest": "Amount to invest",
     "amountToWithdraw": "Amount to withdraw",
     "amplification": "Amplification",
-    "and": "and",
+    "analytics": "Analytics",
     "apiErrorCodeDetails": {
         "DuplicateOrder": "There was another identical order already submitted. Please try again.",
         "InsufficientFee": "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
@@ -83,6 +83,8 @@
     "browseLists": "Browse lists",
     "browserWallet": "Browser Wallet",
     "buy": "Buy",
+    "build": "Build",
+    "blog": "Blog",
     "boostedPool": "Balancer Boosted pool",
     "byConnectingWallet": "By connecting a wallet, I agree to Balancer Labs’",
     "cancel": "Cancel",
@@ -217,6 +219,7 @@
     "depositing": "depositing",
     "details": "Details",
     "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <b>{0}</b>",
+    "docs": "Docs",
     "earnings": "Earnings",
     "earnBAL": "Earn $BAL when swapping eligible tokens",
     "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
@@ -252,6 +255,7 @@
     "flashLoanFee": "Flash loan fee",
     "fundPool": "Fund pool",
     "fundPoolTooltip": "Add the initial liquidity for this pool.",
+    "forum": "Forum",
     "getLpTokens": "Get LP tokens",
     "gnosisErrors": {
         "lowAmount": {
@@ -278,6 +282,8 @@
     },
     "goToBalancerV1Site": "Go to the Balancer V1 site ->",
     "goToMigratedPool": "Go to migrated pool",
+    "governance": "Governance",
+    "grants": "Grants",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
     "highPriceImpactDetailed": "This trade is significantly moving the market price.",

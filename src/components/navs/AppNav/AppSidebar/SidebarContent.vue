@@ -6,6 +6,16 @@ import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+/**
+ * COMPOSABLES
+ */
+const { darkMode, toggleDarkMode } = useDarkMode();
+const { blockNumber } = useWeb3();
+const { networkConfig } = useConfig();
+const { version } = useApp();
+const { t } = useI18n();
 
 /**
  * STATE
@@ -13,21 +23,21 @@ import { ref, watch } from 'vue';
 const blockIcon = ref<HTMLDivElement>();
 
 const navLinks = [
-  { label: 'Invest', path: '/' },
-  { label: 'Trade', path: '/trade' },
-  { label: 'Vest+Vote', path: '/vebal' },
-  { label: 'Claim', path: '/claim' }
+  { label: t('invest'), path: '/' },
+  { label: t('trade'), path: '/trade' },
+  { label: 'veBAL', path: '/vebal' },
+  { label: t('claim'), path: '/claim' }
 ];
 
 const ecosystemLinks = [
-  { label: 'Build', url: 'https://balancer.fi/build' },
-  { label: 'Blog', url: 'https://medium.com/balancer-protocol' },
-  { label: 'Docs', url: 'https://docs.balancer.fi/' },
-  { label: 'Governance', url: 'https://vote.balancer.fi/#/' },
-  { label: 'Analytics', url: 'https://dune.xyz/balancerlabs' },
-  { label: 'Forum', url: 'https://forum.balancer.fi/' },
+  { label: t('build'), url: 'https://balancer.fi/build' },
+  { label: t('blog'), url: 'https://medium.com/balancer-protocol' },
+  { label: t('docs'), url: 'https://docs.balancer.fi/' },
+  { label: t('governance'), url: 'https://vote.balancer.fi/#/' },
+  { label: t('analytics'), url: 'https://dune.xyz/balancerlabs' },
+  { label: t('forum'), url: 'https://forum.balancer.fi/' },
   {
-    label: 'Grants',
+    label: t('grants'),
     url: 'https://balancer.community/balancer-community-grants'
   }
 ];
@@ -42,14 +52,6 @@ const socialLinks = [
   },
   { component: 'GithubIcon', url: 'https://github.com/balancer-labs/' }
 ];
-
-/**
- * COMPOSABLES
- */
-const { darkMode, toggleDarkMode } = useDarkMode();
-const { blockNumber } = useWeb3();
-const { networkConfig } = useConfig();
-const { version } = useApp();
 
 /**
  * WATCHERS

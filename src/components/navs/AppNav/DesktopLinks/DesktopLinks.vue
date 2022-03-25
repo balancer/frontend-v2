@@ -25,7 +25,7 @@ function isActive(page: string): boolean {
       {{ $t('trade') }}
     </DesktopLinkItem>
     <DesktopLinkItem to="/vebal" :active="isActive('vebal')">
-      {{ $t('vestVote') }}
+      veBAL
     </DesktopLinkItem>
     <DesktopLinkItem to="/claim" :active="isActive('claim')">
       <div class="flex items-center">
