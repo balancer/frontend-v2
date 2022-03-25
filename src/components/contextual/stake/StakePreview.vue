@@ -253,20 +253,5 @@ function handleClose() {
         </BalBtn>
       </AnimatePresence>
     </BalStack>
-    <BalStack
-      horizontal
-      align="center"
-      justify="center"
-      class="text-gray-600 hover:text-gray-800 hover:underline"
-    >
-      <router-link :to="{ name: 'pool', params: { id: pool.id } }">
-        <BalStack horizontal align="center" spacing="xs">
-          <span>
-            {{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}
-          </span>
-          <BalIcon name="arrow-up-right" />
-        </BalStack>
-      </router-link>
-    </BalStack>
   </BalStack>
 </template>
