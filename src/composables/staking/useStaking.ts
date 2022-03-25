@@ -1,6 +1,6 @@
 import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
 import { inject } from 'vue';
-import { StakingProviderSymbol } from '@/providers/staking.provider';
+import { StakingProviderSymbol } from '@/providers/local/staking.provider';
 
 export enum StakeState {
   CanStake = 'can_stake',

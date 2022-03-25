@@ -206,7 +206,7 @@ import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
-import StakingProvider from '@/providers/staking.provider';
+import StakingProvider from '@/providers/local/staking.provider';
 import { getAddressFromPoolId } from '@/lib/utils';
 
 interface PoolPageData {
