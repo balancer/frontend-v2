@@ -88,7 +88,7 @@ function onClickConnect() {
       <template v-else>
         <h1
           v-text="$t('ammPlatform')"
-          class="text-white text-center text-4xl md:text-5xl pb-2"
+          class="text-white text-center text-4xl md:text-5xl pb-2 font-display font-black"
         />
         <div class="flex justify-center mt-4">
           <BalBtn
