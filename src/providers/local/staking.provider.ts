@@ -44,10 +44,23 @@ import { LIQUIDITY_GAUGES } from '@/constants/liquidity-gauges';
  * TYPES
  */
 export type StakingProvider = {
+  // a list of the gauge shares owned by that user
+  // a gauge share represents the amount of staked
+  // BPT a user has in a pool, given balance >= 0
   userGaugeShares: ComputedRef<UserGuageShare[]>;
+  // a list of eligible gauges the user can stake into
+  // this list is pulled against the users invested
+  // pool ids
   userLiquidityGauges: ComputedRef<TLiquidityGauge[]>;
+  // the amount of staked shares a user has for the
+  // provided pool address to this instance, if there
+  // is one. otherwise 0
   stakedSharesForProvidedPool: Ref<string>;
+  // a list of pools the user has a stake in
   stakedPools: Ref<DecoratedPool[]>;
+  // loading flag for pulling actual pool data for the
+  // staked pools, not to be confused with isLoadingStakingData
+  // which is the flag for pulling gauge data
   isLoadingStakedPools: Ref<boolean>;
   isStakeDataIdle: Ref<boolean>;
   isLoading: Ref<boolean>;
@@ -89,6 +102,10 @@ export default defineComponent({
     /**
      * STATE
      */
+    // this provider can be initialised with a poolAddress
+    // or the pool address can be set after initialisation.
+    // it makes some of the tailored data for a specific pool
+    // available for consumption
     const _poolAddress = ref();
 
     /**
@@ -118,7 +135,6 @@ export default defineComponent({
       isLoading: isLoadingUserPools,
       isIdle: isUserPoolsIdle
     } = useUserPoolsQuery();
-
     const userPools = computed(() => userPoolsResponse.value?.pools || []);
 
     const {
@@ -157,6 +173,10 @@ export default defineComponent({
       })
     );
 
+    // we pull staked shares for a specific pool manually do to the
+    // fact that the subgraph is too slow, so we gotta rely on the
+    // contract. We want users to receive instant feedback that their
+    // staked balances are updated
     const {
       data: stakedSharesResponse,
       isLoading: isLoadingStakedShares,
@@ -172,6 +192,8 @@ export default defineComponent({
       })
     );
 
+    // this query is responsible for checking if the given pool
+    // is eligible for staking rewards or not
     const {
       data: poolEligibilityResponse,
       isLoading: isLoadingPoolEligibility
