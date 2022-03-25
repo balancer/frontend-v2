@@ -45,7 +45,7 @@ const POOLS_KOVAN: Pools = {
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
-    Gauntlet: ['']
+    Gauntlet: []
   },
   BlockList: [
     '0x22d398c68030ef6b1c55321cca6e0cecc5c93b2f000200000000000000000678',
@@ -101,7 +101,7 @@ const POOLS_MAINNET: Pools = {
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
-    Gauntlet: ['']
+    Gauntlet: []
   },
   BlockList: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
@@ -147,7 +147,7 @@ const POOLS_POLYGON: Pools = {
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
-    Gauntlet: ['']
+    Gauntlet: []
   },
   BlockList: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
@@ -191,7 +191,7 @@ const POOLS_ARBITRUM: Pools = {
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
-    Gauntlet: ['']
+    Gauntlet: []
   },
   BlockList: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
@@ -231,7 +231,7 @@ const POOLS_GENERIC: Pools = {
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
-    Gauntlet: ['']
+    Gauntlet: []
   },
   BlockList: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
