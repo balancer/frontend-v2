@@ -1,55 +1,29 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-
-import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
-
-import useTokens from '@/composables/useTokens';
-import useVeBal from '@/composables/useVeBAL';
-
-import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
-
 import MyVeBalCards from './components/MyVeBalCards.vue';
+import { useLock } from '@/composables/useLock';
 
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const {
+  isLoadingLockPool,
+  isLoadingLockInfo,
+  lockPool,
+  lockPoolToken,
+  lock
+} = useLock();
 const { isWalletReady } = useWeb3();
-const { lockablePoolId } = useVeBal();
-
-/**
- * QUERIES
- */
-const lockablePoolQuery = usePoolQuery(lockablePoolId.value as string);
-const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**
  * COMPUTED
  */
-const lockablePoolLoading = computed(
-  () => lockablePoolQuery.isLoading.value || lockablePoolQuery.isIdle.value
-);
-
-const veBalQueryLoading = computed(
-  () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value
-);
-
-const lockablePool = computed<FullPool | undefined>(
-  () => lockablePoolQuery.data.value
-);
-
-const lockablePoolTokenInfo = computed(() =>
-  lockablePool.value != null ? tokens.value[lockablePool.value.address] : null
-);
-
-const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);
 
 const isLoading = computed(() =>
   isWalletReady.value
-    ? lockablePoolLoading.value || veBalQueryLoading.value
-    : lockablePoolLoading.value
+    ? isLoadingLockPool.value || isLoadingLockInfo.value
+    : isLoadingLockPool.value
 );
 </script>
 
@@ -61,9 +35,9 @@ const isLoading = computed(() =>
     </template>
     <MyVeBalCards
       v-else
-      :veBalLockInfo="veBalLockInfo"
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="lock"
+      :lockablePool="lockPool"
+      :lockablePoolTokenInfo="lockPoolToken"
     />
   </div>
 </template>
