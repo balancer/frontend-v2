@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import useStaking from '@/composables/staking/useStaking';
 
@@ -18,8 +18,19 @@ const {
   isLoadingStakingData,
   isLoadingStakedPools,
   setPoolAddress,
-  isStakeDataIdle
+  isLoadingUserPools,
+  isUserPoolsIdle
 } = useStaking();
+
+/** COMPUTED */
+const isLoading = computed(() => {
+  return (
+    isLoadingStakingData.value ||
+    isLoadingStakedPools.value ||
+    isLoadingUserPools.value ||
+    isUserPoolsIdle.value
+  );
+});
 
 /** METHODS */
 function handleStake(pool: FullPool) {
@@ -43,9 +54,7 @@ function handleModalClose() {
         :noPoolsLabel="$t('noInvestments')"
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
         @triggerStake="handleStake"
-        :isLoading="
-          isLoadingStakingData || isStakeDataIdle || isLoadingStakedPools
-        "
+        :isLoading="isLoading"
         showPoolShares
         onlyStakedPct
       />
