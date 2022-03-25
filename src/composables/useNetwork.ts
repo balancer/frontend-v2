@@ -18,6 +18,8 @@ export const isPolygon = computed(() => networkId.value === Network.POLYGON);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isKovan = computed(() => networkId.value === Network.KOVAN);
 
+export const isL2 = computed(() => isPolygon.value || isArbitrum.value);
+
 /**
  * METHODS
  */

@@ -20,7 +20,7 @@ import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
-import { isKovan, isMainnet } from '@/composables/useNetwork';
+import { isKovan, isL2, isMainnet } from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -175,7 +175,11 @@ watch(gaugePools, async newPools => {
         <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
           <h3 class="mb-3">{{ $t('pages.claim.transitionInfo.title') }}</h3>
           <p>
-            {{ $t('pages.claim.transitionInfo.description') }}
+            {{
+              isL2
+                ? $t('pages.claim.transitionInfo.descriptionL2')
+                : $t('pages.claim.transitionInfo.description')
+            }}
           </p>
         </div>
       </div>
