@@ -58,6 +58,8 @@ export type StakingProvider = {
   isLoadingPoolEligibility: Ref<boolean>;
   isPoolEligibleForStaking: Ref<boolean>;
   isStakedPoolsQueryEnabled: Ref<boolean>;
+  isLoadingUserPools: Ref<boolean>;
+  isUserPoolsIdle: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
   hideAprInfo: boolean;
   getGaugeAddress: (poolAddress: string) => Promise<string>;
@@ -111,7 +113,11 @@ export default defineComponent({
     /**
      * QUERIES
      */
-    const { data: userPoolsResponse } = useUserPoolsQuery();
+    const {
+      data: userPoolsResponse,
+      isLoading: isLoadingUserPools,
+      isIdle: isUserPoolsIdle
+    } = useUserPoolsQuery();
 
     const userPools = computed(() => userPoolsResponse.value?.pools || []);
 
@@ -350,6 +356,8 @@ export default defineComponent({
       refetchStakedShares,
       isStakedPoolsQueryEnabled,
       hideAprInfo: true,
+      isLoadingUserPools,
+      isUserPoolsIdle,
       getGaugeAddress,
       stakeBPT,
       unstakeBPT,
