@@ -6,11 +6,11 @@ import BalCard from '../BalCard/BalCard.vue';
  * TYPES
  */
 type Props = {
-  show: boolean;
-  title: string;
-  noPad: boolean;
-  noContentPad: boolean;
-  fireworks: boolean;
+  show?: boolean;
+  title?: string;
+  noPad?: boolean;
+  noContentPad?: boolean;
+  fireworks?: boolean;
 };
 
 /**
