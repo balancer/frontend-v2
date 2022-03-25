@@ -163,6 +163,24 @@ watch(gaugePools, async newPools => {
 <template>
   <div class="px-2 lg:px-0">
     <div class="lg:container lg:mx-auto py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <h1 class="mb-4">
+            {{ $t('pages.claim.title') }}
+          </h1>
+          <p>
+            {{ $t('pages.claim.description') }}
+          </p>
+        </div>
+        <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
+          <h3 class="mb-3">{{ $t('pages.claim.transitionInfo.title') }}</h3>
+          <p>
+            {{ $t('pages.claim.transitionInfo.description') }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="lg:container lg:mx-auto py-12">
       <template v-if="supportsContractBasedClaiming">
         <h2 class="font-body font-bold text-2xl">
           {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
