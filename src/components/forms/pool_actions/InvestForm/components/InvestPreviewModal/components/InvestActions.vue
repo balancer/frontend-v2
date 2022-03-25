@@ -23,6 +23,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import useVeBal from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -68,6 +69,7 @@ const { t } = useI18n();
 const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { lockablePoolId } = useVeBal();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   fullAmounts,
@@ -196,6 +198,16 @@ watch(blockNumber, async () => {
     <BalActionSteps v-if="!investmentState.confirmed" :actions="actions" />
     <div v-else>
       <ConfirmationIndicator :txReceipt="investmentState.receipt" />
+      <BalBtn
+        v-if="lockablePoolId === pool.id"
+        tag="router-link"
+        :to="{ name: 'get-vebal' }"
+        color="gradient"
+        block
+        class="mt-2 mb-4 flex"
+      >
+        <StarsIcon class="h-5 text-yellow-300 mr-2" />{{ $t('lockToGetVeBAL') }}
+      </BalBtn>
       <BalBtn
         tag="router-link"
         :to="{ name: 'pool', params: { id: route.params.id } }"

@@ -23,13 +23,13 @@ import useBreakpoints from '@/composables/useBreakpoints';
  */
 const { tokens } = useTokens();
 const { isWalletReady } = useWeb3();
-const { lockablePoolAddress } = useVeBal();
+const { lockablePoolId } = useVeBal();
 const { isDesktop, isMobile } = useBreakpoints();
 
 /**
  * QUERIES
  */
-const lockablePoolQuery = usePoolQuery(lockablePoolAddress.value as string);
+const lockablePoolQuery = usePoolQuery(lockablePoolId.value as string);
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 /**
