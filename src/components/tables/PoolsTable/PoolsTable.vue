@@ -25,8 +25,6 @@ import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
-import { getStakeState, StakeState } from '@/composables/staking/useStaking';
-import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -40,7 +38,7 @@ type Props = {
   isPaginated?: boolean;
   selectedTokens?: string[];
   hiddenColumns?: string[];
-  onlyStakedPct?: boolean;
+  stakeablePoolIds?: string[];
 };
 
 /**
@@ -53,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
   noPoolsLabel: 'No pools',
   isPaginated: false,
   hiddenColumns: () => [],
-  onlyStakedPct: false
+  stakeablePoolIds: () => []
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -95,7 +93,7 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(getAggregatePoolShares(pool), {
+      fNum2(pool.shares, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true
@@ -179,15 +177,6 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-// returns the total number of staked
-// and unstaked shares the user has for
-// a pool
-function getAggregatePoolShares(pool: DecoratedPoolWithStakedShares) {
-  return bnum(pool.shares)
-    .plus(pool.stakedShares || 0)
-    .toString();
-}
-
 function handleRowClick(pool: DecoratedPoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
@@ -293,13 +282,8 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
-          <div
-            v-if="getStakeState(pool) === StakeState.MaxStaked || onlyStakedPct"
-          >
-            <span>{{ fNum2(pool.stakedPct, FNumFormats.percent) }}</span>
-          </div>
           <BalBtn
-            v-if="getStakeState(pool) === StakeState.CanStake && !onlyStakedPct"
+            v-if="stakeablePoolIds.includes(pool.id)"
             color="gradient"
             size="sm"
             @click.prevent="$emit('triggerStake', pool)"

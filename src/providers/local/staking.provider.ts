@@ -29,16 +29,13 @@ import {
   ComputedRef,
   Ref
 } from 'vue';
-import {
-  DecoratedPool,
-  DecoratedPoolWithStakedShares
-} from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useQuery } from 'vue-query';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
-import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { LIQUIDITY_GAUGES } from '@/constants/liquidity-gauges';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -57,7 +54,9 @@ export type StakingProvider = {
   // is one. otherwise 0
   stakedSharesForProvidedPool: Ref<string>;
   // a list of pools the user has a stake in
-  stakedPools: Ref<DecoratedPool[]>;
+  stakedPools: Ref<DecoratedPoolWithShares[]>;
+  // Total fiat value of all staked pools for user
+  totalStakedFiatValue: Ref<string>;
   // loading flag for pulling actual pool data for the
   // staked pools, not to be confused with isLoadingStakingData
   // which is the flag for pulling gauge data
@@ -80,6 +79,7 @@ export type StakingProvider = {
   unstakeBPT: () => Promise<TransactionResponse>;
   getStakedShares: () => Promise<string>;
   setPoolAddress: (address: string) => void;
+  canStake: (poolAddress: string) => boolean;
   refetchStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
@@ -284,24 +284,25 @@ export default defineComponent({
         isStakeDataIdle.value
     );
 
-    const stakedPools = computed<DecoratedPoolWithStakedShares[]>(() => {
+    const stakedPools = computed<DecoratedPoolWithShares[]>(() => {
       const decoratedPools = (
         stakedPoolsResponse.value?.pages[0].pools || []
       ).map(pool => {
-        const unstakedBpt = balanceFor(getAddress(pool.address));
         const stakedBpt = stakedSharesMap.value[pool.id];
-        const totalBpt = bnum(unstakedBpt).plus(stakedBpt);
-        const stakedPct = bnum(stakedBpt).div(totalBpt);
         return {
           ...pool,
-          stakedShares: stakedBpt,
-          stakedPct: stakedPct.toString(),
-          shares: getBptBalanceFiatValue(pool, unstakedBpt),
-          bpt: unstakedBpt
+          shares: getBptBalanceFiatValue(pool, stakedBpt),
+          bpt: stakedBpt
         };
       });
       return decoratedPools;
     });
+
+    const totalStakedFiatValue = computed((): string =>
+      stakedPools.value
+        .reduce((acc, { shares }) => acc.plus(shares), bnum(0))
+        .toString()
+    );
 
     /**
      * METHODS
@@ -361,11 +362,19 @@ export default defineComponent({
       _poolAddress.value = address;
     }
 
+    /**
+     * @summary Check if a pool is stakeable.
+     */
+    function canStake(poolAddress: string): boolean {
+      return stakedPools.value.map(pool => pool.id).includes(poolAddress);
+    }
+
     provide(StakingProviderSymbol, {
       userGaugeShares,
       userLiquidityGauges,
       stakedSharesForProvidedPool,
       stakedPools,
+      totalStakedFiatValue,
       isLoadingStakingData,
       isLoadingStakedPools,
       isLoading,
@@ -385,6 +394,7 @@ export default defineComponent({
       unstakeBPT,
       getStakedShares,
       setPoolAddress,
+      canStake,
       refetchStakingData
     });
   },
