@@ -17,7 +17,7 @@ const { darkMode } = useDarkMode();
 const benefits = computed(() => [
   t('veBAL.hero.benefits.boost'),
   t('veBAL.hero.benefits.vote'),
-  t('veBAL.hero.benefits.earn'),
+  t('veBAL.hero.benefits.earn')
 ]);
 
 /**
@@ -27,8 +27,8 @@ function navigateToGetVeBAL() {
   router.push({
     name: 'get-vebal',
     query: {
-      returnRoute: 'vebal',
-    },
+      returnRoute: 'vebal'
+    }
   });
 }
 </script>
@@ -36,10 +36,10 @@ function navigateToGetVeBAL() {
 <template>
   <div class="px-2 lg:px-0 w-full bg-gray-850">
     <div class="flex flex-col md:flex-row md:items-center">
-      <div class="md:order-2 py-4 px-4">
+      <div class="py-4 px-4">
         <img src="~@/assets/images/hero-veBAL.png" class="max-w-full" />
       </div>
-      <div class="pt-4 md:pt-8 xl:pt-0 px-4 lg:px-8 py-8 lg:py-4">
+      <div class="pt-4 md:pt-8 xl:pt-0 px-4 lg:px-12 xl:pl-0 py-8 lg:py-4">
         <h1 class="title mb-6 text-white">{{ $t('veBAL.hero.title') }}</h1>
         <div
           v-for="(benefit, i) in benefits"
@@ -50,7 +50,11 @@ function navigateToGetVeBAL() {
           {{ benefit }}
         </div>
         <div class="flex mt-6">
-          <BalBtn color="gradient" @click="navigateToGetVeBAL" class="mr-3 primary-btn">
+          <BalBtn
+            color="gradient"
+            @click="navigateToGetVeBAL"
+            class="mr-3 primary-btn"
+          >
             {{ $t('veBAL.hero.buttons.getVeBAL') }}
           </BalBtn>
           <BalBtn
@@ -59,7 +63,7 @@ function navigateToGetVeBAL() {
             target="_blank"
             rel="noreferrer"
             color="white"
-            outline            
+            outline
           >
             {{ $t('veBAL.hero.buttons.learnMore') }}
             <BalIcon
