@@ -79,7 +79,6 @@ export type StakingProvider = {
   unstakeBPT: () => Promise<TransactionResponse>;
   getStakedShares: () => Promise<string>;
   setPoolAddress: (address: string) => void;
-  canStake: (poolAddress: string) => boolean;
   refetchStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
@@ -362,13 +361,6 @@ export default defineComponent({
       _poolAddress.value = address;
     }
 
-    /**
-     * @summary Check if a pool is stakeable.
-     */
-    function canStake(poolAddress: string): boolean {
-      return stakedPools.value.map(pool => pool.id).includes(poolAddress);
-    }
-
     provide(StakingProviderSymbol, {
       userGaugeShares,
       userLiquidityGauges,
@@ -394,7 +386,6 @@ export default defineComponent({
       unstakeBPT,
       getStakedShares,
       setPoolAddress,
-      canStake,
       refetchStakingData
     });
   },
