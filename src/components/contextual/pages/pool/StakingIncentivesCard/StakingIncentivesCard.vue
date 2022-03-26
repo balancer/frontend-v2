@@ -134,8 +134,12 @@ async function handleActionSuccess() {
           </button>
         </template>
         <template v-slot:staking-incentives>
-          <div class="bg-white relative">
-            <BalStack vertical spacing="sm" class="px-4 py-4 border-t">
+          <div class="bg-white dark:bg-gray-850 relative">
+            <BalStack
+              vertical
+              spacing="sm"
+              class="px-4 py-4 border-t dark:border-gray-900"
+            >
               <BalStack horizontal justify="between">
                 <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
@@ -191,7 +195,7 @@ async function handleActionSuccess() {
                 </BalBtn>
                 <BalBtn
                   outline
-                  color="gradient"
+                  color="gray"
                   size="sm"
                   @click="showUnstakePreview"
                   :disabled="fiatValueOfStakedShares === '0'"
