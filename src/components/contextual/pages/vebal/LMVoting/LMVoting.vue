@@ -65,7 +65,9 @@ const unallocatedVoteWeight = computed(() => {
 });
 
 const hasLock = computed(
-  (): boolean => !!veBalLockInfoQuery.data.value?.hasExistingLock
+  (): boolean =>
+    !!veBalLockInfoQuery.data.value?.hasExistingLock &&
+    !veBalLockInfoQuery.data.value?.isExpired
 );
 
 /**
