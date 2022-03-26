@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import useDarkMode from '@/composables/useDarkMode';
 
 /**
  * COMPOSABLES
