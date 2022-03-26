@@ -3,10 +3,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import {
-  DecoratedPoolWithShares,
-  DecoratedPoolWithStakedShares
-} from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
@@ -30,7 +27,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: DecoratedPoolWithShares[] | DecoratedPoolWithStakedShares[];
+  data?: DecoratedPoolWithShares[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
