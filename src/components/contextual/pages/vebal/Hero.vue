@@ -9,7 +9,6 @@ import useDarkMode from '@/composables/useDarkMode';
  */
 const { t } = useI18n();
 const router = useRouter();
-const { darkMode } = useDarkMode();
 
 /**
  * COMPUTED
