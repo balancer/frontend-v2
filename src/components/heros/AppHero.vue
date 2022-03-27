@@ -52,7 +52,8 @@ const totalVeBalLabel = computed((): string =>
   fNum2(lockFiatValue.value, FNumFormats.fiat)
 );
 
-const isLoadingLockAndStaking = computed((): boolean =>
+const isLoadingLockAndStaking = computed(
+  (): boolean =>
     !isL2.value &&
     (isLoadingLock.value ||
       (isStakingQueryEnabled.value && isStakingLoading.value))
