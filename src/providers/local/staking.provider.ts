@@ -37,6 +37,7 @@ import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { bnum } from '@/lib/utils';
 import { intersection } from 'lodash';
 import { POOLS } from '@/constants/pools';
+import { isL2 } from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -127,7 +128,9 @@ export default defineComponent({
     const poolAddress = computed(() => {
       return _poolAddress.value || props.poolAddress;
     });
-    const isStakingQueryEnabled = computed(() => userPoolIds.value.length > 0);
+    const isStakingQueryEnabled = computed(
+      () => userPoolIds.value.length > 0 && !isL2.value
+    );
     const isStakedSharesQueryEnabled = computed(
       () => !!poolAddress.value && poolAddress.value != ''
     );

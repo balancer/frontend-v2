@@ -10,6 +10,7 @@ import { useLock } from '@/composables/useLock';
 import { bnum } from '@/lib/utils';
 import { useRouter } from 'vue-router';
 import useStaking from '@/composables/staking/useStaking';
+import { isL2 } from '@/composables/useNetwork';
 
 /**
  * COMPOSABLES
@@ -51,11 +52,14 @@ const totalVeBalLabel = computed((): string =>
   fNum2(lockFiatValue.value, FNumFormats.fiat)
 );
 
+const isLoadingLockAndStaking = computed((): boolean =>
+    !isL2.value &&
+    (isLoadingLock.value ||
+      (isStakingQueryEnabled.value && isStakingLoading.value))
+);
+
 const isLoadingTotalValue = computed(
-  (): boolean =>
-    isLoadingUserPools.value ||
-    isLoadingLock.value ||
-    (isStakingQueryEnabled.value && isStakingLoading.value)
+  (): boolean => isLoadingUserPools.value || isLoadingLockAndStaking.value
 );
 
 /**
@@ -83,7 +87,7 @@ function onClickConnect() {
         <div v-else class="text-3xl font-bold text-white">
           {{ totalInvestedLabel }}
         </div>
-        <div class="mt-2 inline-block">
+        <div v-if="!isL2" class="mt-2 inline-block">
           <BalLoadingBlock
             v-if="isLoadingTotalValue"
             class="h-8 w-40 mx-auto"

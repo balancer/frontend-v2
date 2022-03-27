@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
 import usePoolQuery from './queries/usePoolQuery';
 import useVeBalLockInfoQuery from './queries/useVeBalLockInfoQuery';
+import { isL2 } from './useNetwork';
 import useTokens from './useTokens';
 import useVeBal from './useVeBAL';
 
@@ -18,7 +19,11 @@ export function useLock() {
   /**
    * QUERIES
    */
-  const lockPoolQuery = usePoolQuery(lockablePoolId.value as string);
+  const shouldFetchLockPool = computed((): boolean => !isL2.value);
+  const lockPoolQuery = usePoolQuery(
+    lockablePoolId.value as string,
+    shouldFetchLockPool
+  );
   const lockQuery = useVeBalLockInfoQuery();
 
   /**
