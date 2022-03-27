@@ -91,6 +91,10 @@ function handleModalClose() {
   refetchVotingGauges.value();
 }
 
+function handleVoteSuccess() {
+  refetchVotingGauges.value();
+}
+
 function getVotePeriodEndTime(): number {
   var d = new Date();
   const dayOfWeek = d.getDay();
@@ -162,6 +166,7 @@ function getVotePeriodEndTime(): number {
       "
       :unallocatedVoteWeight="unallocatedVoteWeight"
       :veBalLockInfo="veBalLockInfoQuery.data"
+      @success="handleVoteSuccess"
       @close="handleModalClose"
     />
   </teleport>
