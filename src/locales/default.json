@@ -17,7 +17,7 @@
     },
     "allow": "Allow",
     "allowing": "Allowing...",
-    "allPools": "All pools",    
+    "allPools": "All pools",
     "allTokens": "All tokens",
     "and": "and",
     "ammPlatform": "Automated portfolio manager and trading platform",
@@ -152,7 +152,7 @@
         "recoveredStateInfo": "You last left off before finishing creating this pool. We've restored all your choices from before. Want to start over?",
         "similarPoolsExist": "Similar pools exist",
         "setAnAddress": "Set an address to control fees",
-        "setPoolFees": "Set pool fees",    
+        "setPoolFees": "Set pool fees",
         "swapFeeSuggestion": "0.30% is best for most weighted pools with established tokens. Go higher for more exotic pairs.",
         "title": "Create a pool",
         "tokensAndSeedLiquidity": "Tokens and initial seed liquidity",
@@ -168,7 +168,7 @@
         "aaveBoostedPool": {
             "whyMigrate": {
                 "title": "Why migrate?",
-                "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."                
+                "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."
             },
             "migrateToPool": {
                 "title": "Migrate to a boosted pool"
@@ -192,10 +192,10 @@
             "summary": {
                 "title": "Migrate summary"
             },
-            "actions": {                
+            "actions": {
                 "title": "Migrate pool",
                 "loading": "Confirm pool migration in wallet",
-                "migrationStep": "Confirm pool migration"                
+                "migrationStep": "Confirm pool migration"
             },
             "priceImpactAccept": "I accept the high price impact from pool migration."
         },
@@ -546,7 +546,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "restoring": "Restoring...",
     "returnToPool": "Return to pool page",
-    "returnToPoolCreation": "Return to pool creation",    
+    "returnToPoolCreation": "Return to pool creation",
     "saveGas": " to save gas.",
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
@@ -595,11 +595,12 @@
     "symbol": "Symbol",
     "veBAL": {
         "hero": {
-            "title": "Get veBAL to earn extra and get voting power",
+            "eyebrow": "Introducing veBAL",
+            "title": "Extra earnings & voting power",
             "benefits": {
-                "earn": "Earn part of all protocol revenues",
-                "boost": "Boost your liquidity mining yield by up to 2.5x",
-                "vote": "Vote on liquidity mining incentive allocations"
+                "earn": "Earn your share of protocol revenue",
+                "boost": "Boost liquidity mining yield up to 2.5x",
+                "vote": "Vote to direct liquidity mining emissions"
             },
             "buttons": {
                 "getVeBAL": "Get veBAL",
@@ -626,7 +627,7 @@
             "stats": {
                 "currentWeekVoting": "Current week voting",
                 "nextWeekVoting": "Next week voting",
-                "balIncentives": "BAL incentives"                
+                "balIncentives": "BAL incentives"
             },
             "table": {
                 "poolGauge": "Pool gauge",
@@ -663,7 +664,7 @@
                 "actions": {
                     "vote": {
                         "confirming": "Confirming vote...",
-                        "loadingLabel": "Confirm vote in wallet"                    
+                        "loadingLabel": "Confirm vote in wallet"
                     }
                 },
                 "voteForGauge": "{0} for {1}",
@@ -759,7 +760,7 @@
                 "increaseLock": {
                     "default": "Increase lock amount",
                     "confirmed": "Increase lock amount confirmed"
-                }                
+                }
             },
             "lpTokens": "{0} LP tokens",
             "summary": {
@@ -776,32 +777,32 @@
                         "totalVeBAL": "Total veBAL"
                     }
                 },
-                "increasedLockAmount" : "Increased lock amount",
+                "increasedLockAmount": "Increased lock amount",
                 "potentialWeeklyYield": "Potential weekly yield"
             },
             "actions": {
                 "approve": {
                     "confirming": "Confirming approval...",
                     "tooltip": "You must approve {0}.",
-                    "loadingLabel": "Confirm approval in wallet"                    
+                    "loadingLabel": "Confirm approval in wallet"
                 },
                 "createLock": {
                     "label": "Confirm lock until {0}",
                     "confirming": "Confirming...",
                     "tooltip": "Confirm locking.",
-                    "loadingLabel": "Confirm lock in wallet"                    
+                    "loadingLabel": "Confirm lock in wallet"
                 },
                 "extendLock": {
                     "label": "Extend lock period",
                     "confirming": "Confirming...",
                     "tooltip": "Confirm extending lock period.",
-                    "loadingLabel": "Confirm lock in wallet"                    
+                    "loadingLabel": "Confirm lock in wallet"
                 },
                 "increaseLock": {
                     "label": "Increase lock amount",
                     "confirming": "Confirming...",
                     "tooltip": "Confirm increasing lock amount.",
-                    "loadingLabel": "Confirm lock in wallet"                    
+                    "loadingLabel": "Confirm lock in wallet"
                 }
             },
             "returnToVeBalPage": "Return to veBAL page"
@@ -841,7 +842,7 @@
                     "label": "Confirm unlock",
                     "confirming": "Confirming...",
                     "tooltip": "Confirm unlocking.",
-                    "loadingLabel": "Confirm unlock in wallet"                    
+                    "loadingLabel": "Confirm unlock in wallet"
                 }
             },
             "returnToVeBalPage": "Return to veBAL lock page"
@@ -1076,7 +1077,7 @@
         "preview": {
             "loadingLabel": {
                 "withdraw": "Confirm withdrawal in wallet"
-            }, 
+            },
             "titles": {
                 "confirmed": "Withdrawal confirmed",
                 "default": "Withdrawal preview"
