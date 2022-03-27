@@ -15,7 +15,7 @@ const router = useRouter();
 const benefits = computed(() => [
   t('veBAL.hero.benefits.boost'),
   t('veBAL.hero.benefits.vote'),
-  t('veBAL.hero.benefits.earn')
+  t('veBAL.hero.benefits.earn'),
 ]);
 
 /**
@@ -25,22 +25,16 @@ function navigateToGetVeBAL() {
   router.push({
     name: 'get-vebal',
     query: {
-      returnRoute: 'vebal'
-    }
+      returnRoute: 'vebal',
+    },
   });
 }
 </script>
 
 <template>
-  <div class="px-2 lg:px-0 w-full bg-gray-850 hero-container">
-    <div class="flex flex-col md:flex-row md:items-center max-w-7xl mx-auto">
-      <div class="py-8 px-4 md:order-2">
-        <img
-          src="~@/assets/images/hero-veBAL.png"
-          class="max-w-full aspect-video"
-        />
-      </div>
-      <div class="py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 max-w-md">
+  <div class="w-full bg-gray-850 hero-container">
+    <div class="hero-content">
+      <div class="py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 xl:px-0 max-w-md">
         <p class="text-white font-medium mb-3">
           {{ $t('veBAL.hero.eyebrow') }}
         </p>
@@ -79,6 +73,37 @@ function navigateToGetVeBAL() {
           </BalBtn>
         </div>
       </div>
+      <div class="py-8 px-4">
+        <div class="coins flex">
+          <div class="coin group">
+            <img class="graphic" src="~@/assets/images/coins-1.png" alt="" />
+            <div class="caption">
+              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
+              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+                {{ $t('veBAL.hero.tokenInfo.balWETH') }}
+              </BalTooltip>
+            </div>
+          </div>
+          <div class="coin group">
+            <img class="graphic" src="~@/assets/images/coins-2.png" alt="" />
+            <div class="caption">
+              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
+              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+                {{ $t('veBAL.hero.tokenInfo.lpToken') }}
+              </BalTooltip>
+            </div>
+          </div>
+          <div class="coin group">
+            <img class="graphic" src="~@/assets/images/coins-3.png" alt="" />
+            <div class="caption">
+              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
+              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+                {{ $t('veBAL.hero.tokenInfo.veBAL') }}
+              </BalTooltip>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -89,10 +114,25 @@ function navigateToGetVeBAL() {
   background-position-x: right;
   background-size: cover;
 }
+.hero-content {
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto;
+  min-height: 400px;
+}
 .title {
   max-width: 820px;
 }
 .hero-btn {
   min-width: 140px;
+}
+.coin:hover img {
+  transform: translateY(-8px);
+}
+.graphic {
+  @apply mb-4 lg:px-8;
+  transition: 0.3s all ease-out;
+  max-height: 420px;
+}
+.caption {
+  @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
 }
 </style>
