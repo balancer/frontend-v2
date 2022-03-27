@@ -209,7 +209,7 @@ watch(blockNumber, async () => {
         :to="{ name: 'get-vebal' }"
         color="gradient"
         block
-        class="mt-2 mb-4 flex"
+        class="mt-2 flex"
       >
         <StarsIcon class="h-5 text-yellow-300 mr-2" />{{ $t('lockToGetVeBAL') }}
       </BalBtn>
@@ -217,7 +217,7 @@ watch(blockNumber, async () => {
         v-else-if="isPoolEligibleForStaking"
         color="gradient"
         block
-        class="mt-2 mb-4 flex"
+        class="mt-2 flex"
         @click="emit('showStakeModal')"
       >
         <StarsIcon class="h-5 text-yellow-300 mr-2" />{{
