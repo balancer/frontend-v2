@@ -22,6 +22,7 @@ import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -35,7 +36,6 @@ type Props = {
   isPaginated?: boolean;
   selectedTokens?: string[];
   hiddenColumns?: string[];
-  stakeablePoolIds?: string[];
 };
 
 /**
@@ -47,8 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  hiddenColumns: () => [],
-  stakeablePoolIds: () => []
+  hiddenColumns: () => []
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -170,6 +169,8 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
 const visibleColumns = computed(() =>
   columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
+
+const stakeablePoolIds = computed((): string[] => POOLS.Stakeable.AllowList);
 
 /**
  * METHODS

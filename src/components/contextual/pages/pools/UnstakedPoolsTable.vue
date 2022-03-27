@@ -131,7 +131,6 @@ function handleModalClose() {
       :hiddenColumns="['poolVolume', 'poolValue', 'migrate']"
       @triggerStake="handleStake"
       showPoolShares
-      :stakeablePoolIds="stakedPools.map(pool => pool.id)"
     />
   </BalStack>
   <StakePreviewModal

@@ -34,8 +34,9 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useQuery } from 'vue-query';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
-import { LIQUIDITY_GAUGES } from '@/constants/liquidity-gauges';
 import { bnum } from '@/lib/utils';
+import { intersection } from 'lodash';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -119,6 +120,10 @@ export default defineComponent({
       return userPools.value.map(pool => pool.id);
     });
 
+    const stakeableUserPoolIds = computed(() =>
+      intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
+    );
+
     const poolAddress = computed(() => {
       return _poolAddress.value || props.poolAddress;
     });
@@ -158,10 +163,7 @@ export default defineComponent({
         liquidityGauges: {
           __args: {
             where: {
-              poolId_in: userPoolIds.value,
-              id_in: LIQUIDITY_GAUGES.StakeableAllowList.map(gauge =>
-                gauge.toLowerCase()
-              )
+              poolId_in: stakeableUserPoolIds.value
             }
           },
           poolId: true

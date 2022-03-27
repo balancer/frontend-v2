@@ -30,6 +30,9 @@ export type Pools = {
     AllowList: string[];
   };
   Factories: Record<string, FactoryType>;
+  Stakeable: {
+    AllowList: string[];
+  };
 };
 
 const POOLS_KOVAN: Pools = {
@@ -87,6 +90,14 @@ const POOLS_KOVAN: Pools = {
     '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'managedPool', // Kovan Managed
     '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
+  },
+  Stakeable: {
+    AllowList: [
+      '0xf767f0a3fcf1eafec2180b7de79d0c559d7e7e370001000000000000000003e3',
+      '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701',
+      '0x647c1fd457b95b75d0972ff08fe01d7d7bda05df000200000000000000000001',
+      '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8'
+    ]
   }
 };
 
@@ -174,6 +185,9 @@ const POOLS_MAINNET: Pools = {
     '0x0f3e0c4218b7b0108a3643cfe9d3ec0d4f57c54e': 'liquidityBootstrappingPool', // Mainnet LBP (zero protocol fee)
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool' // mainnet stablephantom
+  },
+  Stakeable: {
+    AllowList: []
   }
 };
 
@@ -212,6 +226,9 @@ const POOLS_POLYGON: Pools = {
     '0x41b953164995c11c81da73d212ed8af25741b7ac': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
     '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool' // polygon stablephantom
+  },
+  Stakeable: {
+    AllowList: []
   }
 };
 
@@ -247,6 +264,9 @@ const POOLS_ARBITRUM: Pools = {
     '0x1802953277fd955f9a254b80aa0582f193cf1d77': 'liquidityBootstrappingPool', // Arbitrum LBP (new)
     '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // arbitrum managed
     '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool' // arbitrum stablephantom
+  },
+  Stakeable: {
+    AllowList: []
   }
 };
 
@@ -319,6 +339,9 @@ const POOLS_GENERIC: Pools = {
     '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool', // arbitrum stablephantom
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool', // polygon stablephantom
     '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
+  },
+  Stakeable: {
+    AllowList: []
   }
 };
 
