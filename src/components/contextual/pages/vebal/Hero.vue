@@ -36,7 +36,7 @@ function navigateToGetVeBAL() {
     <div class="flex flex-col md:flex-row md:items-center max-w-7xl mx-auto">
       <div class="py-8 px-4 md:order-2">
         <img
-          src="~@/assets/images/hero-veBAL.png"
+          src="@/assets/images/hero-veBAL.png"
           class="max-w-full aspect-video"
         />
       </div>
