@@ -10,7 +10,7 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 </script>
 
 <template>
-  <div v-if="isVeBalSupported" class="max-w-screen-2xl xl:mx-auto">
+  <div v-if="isVeBalSupported" class="">
     <div class="pb-24">
       <Hero />
     </div>

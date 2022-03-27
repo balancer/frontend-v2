@@ -15,7 +15,7 @@ const router = useRouter();
 const benefits = computed(() => [
   t('veBAL.hero.benefits.boost'),
   t('veBAL.hero.benefits.vote'),
-  t('veBAL.hero.benefits.earn')
+  t('veBAL.hero.benefits.earn'),
 ]);
 
 /**
@@ -25,19 +25,25 @@ function navigateToGetVeBAL() {
   router.push({
     name: 'get-vebal',
     query: {
-      returnRoute: 'vebal'
-    }
+      returnRoute: 'vebal',
+    },
   });
 }
 </script>
 
 <template>
-  <div class="px-2 lg:px-0 w-full bg-gray-850">
-    <div class="flex flex-col md:flex-row md:items-center">
-      <div class="py-4 px-4">
-        <img src="~@/assets/images/hero-veBAL.png" class="max-w-full" />
+  <div class="px-2 lg:px-0 w-full bg-gray-850 hero-container">
+    <div class="flex flex-col md:flex-row md:items-center max-w-7xl mx-auto">
+      <div class="py-8 px-4 md:order-2">
+        <img
+          src="~@/assets/images/hero-veBAL.png"
+          class="max-w-full aspect-video"
+        />
       </div>
-      <div class="pt-4 md:pt-8 xl:pt-0 px-4 lg:px-12 xl:pl-0 py-8 lg:py-4">
+      <div class="py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 max-w-md">
+        <p class="text-white font-medium mb-3">
+          {{ $t('veBAL.hero.eyebrow') }}
+        </p>
         <h1 class="title mb-6 text-white">{{ $t('veBAL.hero.title') }}</h1>
         <div
           v-for="(benefit, i) in benefits"
@@ -51,7 +57,7 @@ function navigateToGetVeBAL() {
           <BalBtn
             color="gradient"
             @click="navigateToGetVeBAL"
-            class="mr-3 primary-btn"
+            class="mr-3 hero-btn"
           >
             {{ $t('veBAL.hero.buttons.getVeBAL') }}
           </BalBtn>
@@ -61,6 +67,7 @@ function navigateToGetVeBAL() {
             target="_blank"
             rel="noreferrer"
             color="white"
+            class="hero-btn"
             outline
           >
             {{ $t('veBAL.hero.buttons.learnMore') }}
@@ -76,10 +83,16 @@ function navigateToGetVeBAL() {
   </div>
 </template>
 <style scoped>
+.hero-container {
+  background-image: url('/images/backgrounds/spirograph.svg');
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-size: cover;
+}
 .title {
   max-width: 820px;
 }
-.primary-btn {
-  min-width: 132px;
+.hero-btn {
+  min-width: 140px;
 }
 </style>
