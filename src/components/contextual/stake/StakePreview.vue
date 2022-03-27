@@ -8,7 +8,7 @@ import useStaking from '@/composables/staking/useStaking';
 import { useI18n } from 'vue-i18n';
 
 import { bnum } from '@/lib/utils';
-import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
@@ -19,7 +19,7 @@ import { useQueryClient } from 'vue-query';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
-  pool: DecoratedPoolWithStakedShares;
+  pool: DecoratedPoolWithShares;
   action: StakeAction;
 };
 

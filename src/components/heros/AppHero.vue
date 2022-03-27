@@ -9,6 +9,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import { useLock } from '@/composables/useLock';
 import { bnum } from '@/lib/utils';
 import { useRouter } from 'vue-router';
+import useStaking from '@/composables/staking/useStaking';
 
 /**
  * COMPOSABLES
@@ -24,6 +25,7 @@ const { trackGoal, Goals } = useFathom();
 const { totalInvestedAmount, isLoadingUserPools } = usePools();
 const { darkMode } = useDarkMode();
 const { lockFiatValue, isLoadingLock } = useLock();
+const { totalStakedFiatValue, isLoading: isStakingLoading } = useStaking();
 
 /**
  * COMPUTED
@@ -36,12 +38,18 @@ const classes = computed(() => ({
 const totalInvestedLabel = computed((): string => {
   const value = bnum(totalInvestedAmount.value || '0')
     .plus(lockFiatValue.value)
+    .plus(totalStakedFiatValue.value)
     .toString();
   return fNum2(value, FNumFormats.fiat);
 });
 
 const totalVeBalLabel = computed((): string =>
   fNum2(lockFiatValue.value, FNumFormats.fiat)
+);
+
+const isLoadingTotalValue = computed(
+  (): boolean =>
+    isLoadingUserPools.value || isLoadingLock.value || isStakingLoading.value
 );
 
 /**
@@ -62,7 +70,7 @@ function onClickConnect() {
           class="text-base font-medium text-white opacity-90 font-body mb-2"
         />
         <BalLoadingBlock
-          v-if="isLoadingUserPools || isLoadingLock"
+          v-if="isLoadingTotalValue"
           class="h-10 w-40 mx-auto"
           white
         />
@@ -71,7 +79,7 @@ function onClickConnect() {
         </div>
         <div class="mt-2 inline-block">
           <BalLoadingBlock
-            v-if="isLoadingUserPools || isLoadingLock"
+            v-if="isLoadingTotalValue"
             class="h-8 w-40 mx-auto"
             white
           />
