@@ -7,6 +7,12 @@ import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
+/**
+ * PROPS & EMITS
+ */
+const emit = defineEmits(['close']);
 
 /**
  * COMPOSABLES
@@ -16,6 +22,7 @@ const { blockNumber } = useWeb3();
 const { networkConfig } = useConfig();
 const { version } = useApp();
 const { t } = useI18n();
+const router = useRouter();
 
 /**
  * STATE
@@ -54,6 +61,14 @@ const socialLinks = [
 ];
 
 /**
+ * METHODS
+ */
+async function navTo(path: string) {
+  router.push(path);
+  emit('close');
+}
+
+/**
  * WATCHERS
  */
 watch(blockNumber, async () => {
@@ -72,14 +87,14 @@ watch(blockNumber, async () => {
     </div>
 
     <div class="grid grid-col-1 text-lg">
-      <routerLink
+      <div
         v-for="link in navLinks"
         :key="link.label"
-        :to="link.path"
         class="side-bar-link"
+        @click="navTo(link.path)"
       >
         {{ link.label }}
-      </routerLink>
+      </div>
     </div>
 
     <div class="grid grid-col-1 text-sm mt-6">

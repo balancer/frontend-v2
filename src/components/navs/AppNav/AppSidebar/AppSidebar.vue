@@ -19,7 +19,7 @@ const { setSidebarOpen } = useSidebar();
     <div class="sidebar-overlay">
       <Transition name="sidebar" @afterLeave="setSidebarOpen(false)">
         <div v-if="showSidebar" class="app-sidebar">
-          <SidebarContent />
+          <SidebarContent @close="showSidebar = false" />
         </div>
       </Transition>
       <BalIcon
