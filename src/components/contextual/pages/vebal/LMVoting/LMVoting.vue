@@ -116,7 +116,7 @@ function getVotePeriodEndTime(): number {
   <div
     class="bg-yellow-500 flex items-center rounded-lg p-4 mb-8 text-gray-900"
   >
-    <LightBulbIcon width="36" height="36" />
+    <LightBulbIcon width="36" height="36" class="w-36 lg:w-16" />
     <p class="ml-4">
       {{ $t('veBAL.votingTransitionDescription') }}
     </p>
