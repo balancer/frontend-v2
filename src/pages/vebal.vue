@@ -11,7 +11,7 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 
 <template>
   <div v-if="isVeBalSupported" class="">
-    <div class="pb-24">
+    <div class="pb-12">
       <Hero />
     </div>
   </div>

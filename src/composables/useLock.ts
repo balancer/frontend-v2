@@ -1,6 +1,5 @@
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
@@ -15,15 +14,11 @@ export function useLock() {
    */
   const { lockablePoolId } = useVeBal();
   const { tokens } = useTokens();
-  const { isWalletReady } = useWeb3();
 
   /**
    * QUERIES
    */
-  const lockPoolQuery = usePoolQuery(
-    lockablePoolId.value as string,
-    isWalletReady
-  );
+  const lockPoolQuery = usePoolQuery(lockablePoolId.value as string);
   const lockQuery = useVeBalLockInfoQuery();
 
   /**

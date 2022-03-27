@@ -91,7 +91,7 @@ const cards = computed(() => {
     {
       id: 'myLpToken',
       label: t('veBAL.myVeBAL.cards.myLpToken', [
-        props.lockablePoolTokenInfo.symbol
+        props.lockablePoolTokenInfo?.symbol
       ]),
       value: isWalletReady.value
         ? fNum2(fiatTotal.value, FNumFormats.fiat)
@@ -105,7 +105,7 @@ const cards = computed(() => {
     {
       id: 'myLockedLpToken',
       label: t('veBAL.myVeBAL.cards.myLockedLpToken', [
-        props.lockablePoolTokenInfo.symbol
+        props.lockablePoolTokenInfo?.symbol
       ]),
       value: hasExistingLock
         ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
