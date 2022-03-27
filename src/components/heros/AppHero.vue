@@ -25,7 +25,11 @@ const { trackGoal, Goals } = useFathom();
 const { totalInvestedAmount, isLoadingUserPools } = usePools();
 const { darkMode } = useDarkMode();
 const { lockFiatValue, isLoadingLock } = useLock();
-const { totalStakedFiatValue, isLoading: isStakingLoading } = useStaking();
+const {
+  totalStakedFiatValue,
+  isLoading: isStakingLoading,
+  isStakingQueryEnabled
+} = useStaking();
 
 /**
  * COMPUTED
@@ -49,7 +53,9 @@ const totalVeBalLabel = computed((): string =>
 
 const isLoadingTotalValue = computed(
   (): boolean =>
-    isLoadingUserPools.value || isLoadingLock.value || isStakingLoading.value
+    isLoadingUserPools.value ||
+    isLoadingLock.value ||
+    (isStakingQueryEnabled.value && isStakingLoading.value)
 );
 
 /**
