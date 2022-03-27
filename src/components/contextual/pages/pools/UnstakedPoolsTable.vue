@@ -16,6 +16,7 @@ import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
 import { uniqBy } from 'lodash';
 import { isMigratablePool } from '@/composables/usePool';
+import { isL2 } from '@/composables/useNetwork';
 
 /** STATE */
 const showStakeModal = ref(false);
@@ -122,7 +123,7 @@ function handleModalClose() {
 
 <template>
   <BalStack vertical spacing="sm">
-    <h5>{{ $t('staking.unstakedPools') }}</h5>
+    <h5 v-if="!isL2">{{ $t('staking.unstakedPools') }}</h5>
     <PoolsTable
       :key="poolsToRender"
       :isLoading="isLoadingStakingData || isLoadingUserPools || isUserPoolsIdle"
