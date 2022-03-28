@@ -1,6 +1,6 @@
 import { differenceInWeeks } from 'date-fns';
 import { bnum } from '@/lib/utils';
-import { toUtcTime } from '@/lib/utils/date';
+import { toUtcTime } from '@/composables/useTime';
 import { Network } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';

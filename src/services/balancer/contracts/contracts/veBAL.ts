@@ -1,6 +1,7 @@
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
-import { toUtcTime } from '@/lib/utils/date';
+
+import { toUtcTime, toJsTimestamp } from '@/composables/useTime';
 
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
@@ -10,7 +11,7 @@ import { parseUnits } from '@ethersproject/units';
 import veBalAbi from '@/lib/abi/veBalAbi.json';
 
 import Service from '../balancer-contracts.service';
-import { unixToJsTime } from '@/lib/utils/date';
+
 
 export type VeBalLockInfo = {
   lockedEndDate: number;
@@ -58,7 +59,7 @@ export default class VeBAL {
     const [lockedAmount, lockedEndDate] = lockInfo.locked;
 
     const hasExistingLock = lockedAmount.gt(0);
-    const lockedEndDateNormalised = unixToJsTime(lockedEndDate.toNumber());
+    const lockedEndDateNormalised = toJsTimestamp(lockedEndDate.toNumber());
     const isExpired = hasExistingLock && Date.now() > lockedEndDateNormalised;
 
     return {
