@@ -387,7 +387,7 @@
     "modals": {
         "veBalRedirectModal": {
             "title": "Proceed to mainnet",
-            "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by staking your LP tokens in eligible pool gauges on those networks. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
+            "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by investing in eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
         }
     },
     "month": "month",
@@ -604,12 +604,12 @@
                 "vote": "Vote to direct liquidity mining emissions"
             },
             "tokens": {
-                "balWETH": "BAL + WETH/ETH",
-                "lpToken": "B-80-BAL-20-WETH",
+                "balWETH": "BAL + WETH",
+                "lpToken": "B-80BAL-20WETH",
                 "veBAL": "veBAL"
             },
             "tokenInfo": {
-                "balWETH": "First off, invest / add liquidity to the 80% BAL / 20% WETH pool",
+                "balWETH": "Invest / add liquidity to the 80% BAL / 20% WETH pool to get the B-80BAL-20WETH LP token.",
                 "lpToken": "Lock up the LP tokens from the 80% BAL / 20% WETH pool for up to a year to get veBAL. The longer you lock, the more veBAL you get.",
                 "veBAL": "Use veBAL to earn extra on your staked pools. Only some pools are eligible for staking. Check any pools that you are in, and stake it to earn liquidity mining incentives. You can also use veBAL to vote to direct future liquidity mining emissions"
             },
@@ -707,7 +707,7 @@
             "title": "Locking is unavailable on this network",
             "description": "Get veBAL on Ethereum Mainnet"
         },
-        "votingTransitionDescription": "Voting is live! The first voting period directing liquidity mining emissions ends at 7 April 2022 at 0:00 UTC. Prepare by getting veBAL and voting. Your votes on pool gauges will persist until you change them."
+        "votingTransitionDescription": "Liquidity mining emissions as directed by veBAL holders start on 7 April 2022 at 0:00 UTC! Voting is now live, so get veBAL and vote for pools. Your vote will persist until you edit. Editing can only be done once in 10 days."
     },
     "getVeBAL": {
         "lockableTokens": {
