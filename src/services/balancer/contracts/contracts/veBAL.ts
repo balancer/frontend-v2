@@ -12,7 +12,6 @@ import veBalAbi from '@/lib/abi/veBalAbi.json';
 
 import Service from '../balancer-contracts.service';
 
-
 export type VeBalLockInfo = {
   lockedEndDate: number;
   lockedAmount: string;

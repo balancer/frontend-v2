@@ -17,7 +17,11 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
-import { dateTimeLabelFor, toJsTimestamp, toUnixTimestamp, toUtcTime } from '@/composables/useTime';
+import {
+  dateTimeLabelFor,
+  toJsTimestamp,
+  toUtcTime
+} from '@/composables/useTime';
 import useVeBal from '@/composables/useVeBAL';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
