@@ -55,7 +55,7 @@ const percentVeBAL = computed(() => {
       </h6>
     </div>
     <div class="-mt-2 p-10 flex items-center justify-center">
-      <div>
+      <div class="text-2xl font-semibold">
         {{ fNum2(veBalBalance, FNumFormats.token) }}
         {{ veBalTokenInfo?.symbol }}
       </div>
