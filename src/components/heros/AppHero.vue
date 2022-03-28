@@ -17,11 +17,8 @@ import { isL2 } from '@/composables/useNetwork';
  */
 const router = useRouter();
 const { fNum2 } = useNumbers();
-const {
-  isWalletReady,
-  toggleWalletSelectModal,
-  isWalletConnecting
-} = useWeb3();
+const { isWalletReady, toggleWalletSelectModal, isWalletConnecting } =
+  useWeb3();
 const { trackGoal, Goals } = useFathom();
 const { totalInvestedAmount, isLoadingUserPools } = usePools();
 const { darkMode } = useDarkMode();
@@ -29,7 +26,7 @@ const { lockFiatValue, isLoadingLock } = useLock();
 const {
   totalStakedFiatValue,
   isLoading: isStakingLoading,
-  isStakingQueryEnabled
+  isStakingQueryEnabled,
 } = useStaking();
 
 /**
@@ -37,7 +34,7 @@ const {
  */
 const classes = computed(() => ({
   ['h-72']: !isWalletReady.value && !isWalletConnecting.value,
-  ['h-40']: isWalletReady.value || isWalletConnecting.value
+  ['h-40']: isWalletReady.value || isWalletConnecting.value,
 }));
 
 const totalInvestedLabel = computed((): string => {
@@ -85,10 +82,10 @@ function onClickConnect() {
           class="h-10 w-40 mx-auto"
           white
         />
-        <div v-else class="text-3xl font-bold text-white">
+        <div v-else class="text-3xl font-bold text-white mb-1">
           {{ totalInvestedLabel }}
         </div>
-        <div v-if="!isL2" class="mt-2 inline-block">
+        <div v-if="!isL2" class="relative mt-2 inline-block">
           <BalLoadingBlock
             v-if="isLoadingTotalValue"
             class="h-8 w-40 mx-auto"
@@ -96,8 +93,18 @@ function onClickConnect() {
           />
           <div
             v-else
-            class="h-8 flex items-center px-3 bg-yellow-500 text-gray-900 rounded-sm
-          text-sm font-medium cursor-pointer"
+            class="
+              vebal-banner
+              h-8
+              flex
+              items-center
+              px-3
+              text-yellow-500 text-sm
+              font-medium
+              cursor-pointer
+              border border-yellow-500
+              rounded-bl rounded-tr
+            "
             @click="router.push({ name: 'vebal' })"
           >
             {{ $t('inclXInVeBal', [totalVeBalLabel]) }}
@@ -107,7 +114,12 @@ function onClickConnect() {
       <template v-else>
         <h1
           v-text="$t('ammPlatform')"
-          class="text-white text-center text-4xl md:text-5xl pb-2 font-display font-black"
+          class="
+            text-white text-center text-4xl
+            md:text-5xl
+            pb-2
+            font-display font-black
+          "
         />
         <div class="flex justify-center mt-4">
           <BalBtn
@@ -140,5 +152,26 @@ function onClickConnect() {
   @apply bg-cover bg-center flex items-center justify-center text-center px-4;
   transition: all 0.3s ease-in-out;
   background-image: url('/images/backgrounds/bg-header.svg');
+}
+
+.vebal-banner::before {
+  @apply border border-yellow-500;
+  content: '';
+  width: 16px;
+  height: 6px;
+  left: 0;
+  top: -5px;
+  position: absolute;
+  border-top-left-radius: 8px;
+}
+.vebal-banner::after {
+  @apply border border-yellow-500;
+  content: '';
+  width: 16px;
+  height: 6px;
+  bottom: -5px;
+  right: 0;
+  position: absolute;
+  border-bottom-right-radius: 8px;
 }
 </style>
