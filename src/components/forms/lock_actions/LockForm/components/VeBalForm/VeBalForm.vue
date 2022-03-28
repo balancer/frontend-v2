@@ -23,8 +23,10 @@ import useLockAmount from '../../composables/useLockAmount';
 import useLockEndDate from '../../composables/useLockEndDate';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
+
 import useWeb3 from '@/services/web3/useWeb3';
 import { expectedVeBal } from '@/composables/useVeBAL';
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 /**
  * TYPES
@@ -64,6 +66,7 @@ const {
   isValidLockEndDate,
   isExtendedLockEndDate
 } = useLockEndDate(props.veBalLockInfo);
+const { refetch: refetchLockInfo } = useVeBalLockInfoQuery();
 
 /**
  * COMPOSABLES
@@ -115,6 +118,14 @@ const lockType = computed(() => {
   }
   return [LockType.CREATE_LOCK];
 });
+
+/**
+ * METHODS
+ */
+function handleClosePreviewModal() {
+  showPreviewModal.value = false;
+  refetchLockInfo.value();
+}
 </script>
 
 <template>
@@ -174,7 +185,7 @@ const lockType = computed(() => {
       :lockType="lockType"
       :veBalLockInfo="veBalLockInfo"
       :totalLpTokens="totalLpTokens"
-      @close="showPreviewModal = false"
+      @close="handleClosePreviewModal"
     />
   </teleport>
 </template>

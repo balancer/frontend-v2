@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 
 import LockAmount from './components/LockAmount.vue';
 import LockSummary from './components/LockSummary.vue';
@@ -51,7 +50,6 @@ const expectedVeBalAmount = expectedVeBal(
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { refetch: refetchLockInfo } = useVeBalLockInfoQuery();
 
 /**
  * COMPUTED
@@ -75,7 +73,6 @@ function handleClose() {
 }
 
 function handleSuccess() {
-  refetchLockInfo.value();
   lockConfirmed.value = true;
 }
 </script>
