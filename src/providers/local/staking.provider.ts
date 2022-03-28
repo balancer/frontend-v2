@@ -121,11 +121,9 @@ export default defineComponent({
       return userPools.value.map(pool => pool.id);
     });
 
-    const stakeableUserPoolIds = computed(() =>{
-      const ids = intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
-      console.log(ids);
-      return ids;
-    });
+    const stakeableUserPoolIds = computed(() =>
+      intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
+    );
 
     const poolAddress = computed(() => {
       return _poolAddress.value || props.poolAddress;
