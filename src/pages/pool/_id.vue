@@ -105,10 +105,13 @@
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div v-if="!loadingPool" class="mb-3 cursor-pointer w-fit">
+          <div
+            v-if="!loadingPool"
+            class="mb-7 cursor-pointer w-fit h-fit flex items-center"
+          >
             <a
               v-text="$t('More insights by APY.vision')"
-              class="px-4 lg:px-0 mb-4 font-bold text-xl"
+              class="px-4 lg:px-0 font-bold text-xl"
               :href="
                 'https://app.apy.vision/pools/balancerv2_' +
                   networkName +
@@ -119,7 +122,7 @@
               "
               external
               target="_blank"
-            /><BalIcon name="arrow-up-right" size="sm" class="ml-1" />
+            /><BalIcon name="arrow-up-right" size="lg" class="ml-1" />
           </div>
 
           <div class="mb-4">
