@@ -67,7 +67,7 @@ const percentVeBAL = computed(() => {
             veBalLockInfo?.hasExistingLock
               ? fNum2(percentVeBAL, {
                   style: 'percent',
-                  maximumFractionDigits: 2
+                  maximumFractionDigits: 4
                 })
               : '-'
           }}
