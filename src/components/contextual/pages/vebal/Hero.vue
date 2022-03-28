@@ -82,7 +82,7 @@ function navigateToGetVeBAL() {
               class="graphic"
               width="724"
               height="800"
-              src="~@/assets/images/coins-1.png"
+              src="@/assets/images/coins-1.png"
               alt=""
             />
             <div class="caption">
@@ -97,7 +97,7 @@ function navigateToGetVeBAL() {
               class="graphic"
               width="696"
               height="800"
-              src="~@/assets/images/coins-2.png"
+              src="@/assets/images/coins-2.png"
               alt=""
             />
             <div class="caption">
@@ -112,7 +112,7 @@ function navigateToGetVeBAL() {
               class="graphic"
               width="696"
               height="800"
-              src="~@/assets/images/coins-3.png"
+              src="@/assets/images/coins-3.png"
               alt=""
             />
             <div class="caption">
