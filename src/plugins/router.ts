@@ -119,11 +119,11 @@ const routes: RouteRecordRaw[] = [
 /**
  * DEV/STAGING ONLY ROUTES
  */
-if (
-  ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
-) {
-  routes.push();
-}
+// if (
+//   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
+// ) {
+//   routes.push();
+// }
 
 const router = createRouter({
   history: createWebHashHistory(),
