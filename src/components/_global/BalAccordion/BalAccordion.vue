@@ -19,9 +19,12 @@ type Props = {
   // determine whether to re-render the height
   // of an accordion section
   dependencies: Ref<unknown>;
+  showSectionBorder?: boolean;
 };
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showSectionBorder: true
+});
 
 const activeSection = ref('');
 const activeSectionElement = ref<HTMLElement>();
@@ -206,7 +209,7 @@ watch(
           <!-- content -->
           <div
             ref="activeSectionElement"
-            :class="{ 'border-b': isContentVisible }"
+            :class="{ 'border-b': isContentVisible && showSectionBorder }"
             v-if="isContentVisible"
           >
             <slot :name="section.id" />

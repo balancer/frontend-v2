@@ -35,31 +35,46 @@ const steps = computed(() => [
 </script>
 
 <template>
-  <BalCard noPad shadow="none" class="mt-4">
-    <div class="p-4 w-full border-b dark:border-gray-900">
-      <h6>
-        {{ $t('getVeBAL.howToLock.title') }}
-      </h6>
-    </div>
-    <div class="-mt-2 p-4">
-      <div class="text-gray-500">
-        <ol class="steps text-sm">
-          <li>
-            {{ $t('getVeBAL.howToLock.steps.investPart1') }}
-            <BalLink
-              tag="router-link"
-              :to="{ name: 'invest', params: { id: lockablePool.id } }"
-              external
-            >
-              {{ lockablePoolTokenInfo.symbol }}
-            </BalLink>
-            {{ $t('getVeBAL.howToLock.steps.investPart2') }}
-          </li>
-          <li v-for="(step, i) in steps" :key="i" v-html="step" />
-        </ol>
+  <BalAccordion
+    class="mt-4"
+    :showSectionBorder="false"
+    :sections="[
+      {
+        title: $t('getVeBAL.howToLock.title'),
+        id: 'how-to-lock',
+        handle: 'how-to-lock-handle'
+      }
+    ]"
+  >
+    <template v-slot:how-to-lock-handle>
+      <button class="p-4 rounded-xl w-full flex justify-between items-center">
+        <h6>
+          {{ $t('getVeBAL.howToLock.title') }}
+        </h6>
+        <BalIcon name="chevron-down" class="text-blue-500" />
+      </button>
+    </template>
+    <template v-slot:how-to-lock>
+      <div class="p-4 border-t dark:border-gray-900">
+        <div class="text-gray-500">
+          <ol class="steps text-sm">
+            <li>
+              {{ $t('getVeBAL.howToLock.steps.investPart1') }}
+              <BalLink
+                tag="router-link"
+                :to="{ name: 'invest', params: { id: lockablePool.id } }"
+                external
+              >
+                {{ lockablePoolTokenInfo.symbol }}
+              </BalLink>
+              {{ $t('getVeBAL.howToLock.steps.investPart2') }}
+            </li>
+            <li v-for="(step, i) in steps" :key="i" v-html="step" />
+          </ol>
+        </div>
       </div>
-    </div>
-  </BalCard>
+    </template>
+  </BalAccordion>
 </template>
 <style scoped>
 .steps {
