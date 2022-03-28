@@ -121,16 +121,16 @@ export default defineComponent({
       return userPools.value.map(pool => pool.id);
     });
 
-    const stakeableUserPoolIds = computed(() =>
-      intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
-    );
+    const stakeableUserPoolIds = computed(() =>{
+      const ids = intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
+      console.log(ids);
+      return ids;
+    });
 
     const poolAddress = computed(() => {
       return _poolAddress.value || props.poolAddress;
     });
-    const isStakingQueryEnabled = computed(
-      () => userPoolIds.value.length > 0 && !isL2.value
-    );
+    const isStakingQueryEnabled = computed(() => !isL2.value);
     const isStakedSharesQueryEnabled = computed(
       () => !!poolAddress.value && poolAddress.value != ''
     );
