@@ -105,7 +105,7 @@
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div v-if="!loadingPool" class="mb-3 cursor-pointer">
+          <div v-if="!loadingPool" class="mb-3 cursor-pointer w-fit">
             <a
               v-text="$t('More insights by APY.vision')"
               class="px-4 lg:px-0 mb-4 font-bold text-xl"
@@ -119,7 +119,7 @@
               "
               external
               target="_blank"
-            />
+            /><BalIcon name="arrow-up-right" size="sm" class="ml-1" />
           </div>
 
           <div class="mb-4">
