@@ -108,7 +108,7 @@ watch(blockNumber, async () => {
         noStyle
       >
         {{ link.label }}
-        <BalIcon name="arrow-up-right" size="sm" class="ml-2 text-gray-500" />
+        <BalIcon name="arrow-up-right" size="sm" class="ml-1 text-gray-500" />
       </BalLink>
     </div>
 
