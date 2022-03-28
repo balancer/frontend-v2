@@ -141,7 +141,8 @@
               v-if="loadingPool"
               class="pool-actions-card h-40"
             />
-            <StakingIncentivesCard v-if="!loadingPool" :pool="pool" />
+            <StakingIncentivesCard v-if="!loadingPool && !isL2" :pool="pool" />
+            <LMIncentivesCard v-if="isL2" />
             <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
@@ -206,8 +207,10 @@ import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
 import StakingProvider from '@/providers/local/staking.provider';
 import { getAddressFromPoolId } from '@/lib/utils';
+import useNetwork, { isL2 } from '@/composables/useNetwork';
 
 interface PoolPageData {
   id: string;
@@ -219,7 +222,8 @@ export default defineComponent({
     GauntletIcon,
     LiquidityAPRTooltip,
     StakingIncentivesCard,
-    StakingProvider
+    StakingProvider,
+    LMIncentivesCard
   },
 
   setup() {
@@ -451,6 +455,7 @@ export default defineComponent({
       isStablePhantomPool,
       copperNetworkPrefix,
       hasCustomToken,
+      isL2,
       // methods
       fNum2,
       onNewTx,
