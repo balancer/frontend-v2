@@ -25,6 +25,7 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import { configService } from '@/services/config/config.service';
+import { parseUnits } from '@ethersproject/units';
 
 /**
  * TYPES
@@ -191,7 +192,8 @@ watch(lockActionStatesConfirmed, () => {
  */
 onBeforeMount(async () => {
   const approvalActions = await getTokenApprovalActionsForSpender(
-    configService.network.addresses.veBAL
+    configService.network.addresses.veBAL,
+    parseUnits(props.lockAmount, 18).toString()
   );
   actions.value.unshift(...approvalActions);
 });
