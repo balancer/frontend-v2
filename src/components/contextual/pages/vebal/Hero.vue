@@ -15,7 +15,7 @@ const router = useRouter();
 const benefits = computed(() => [
   t('veBAL.hero.benefits.boost'),
   t('veBAL.hero.benefits.vote'),
-  t('veBAL.hero.benefits.earn'),
+  t('veBAL.hero.benefits.earn')
 ]);
 
 /**
@@ -25,8 +25,8 @@ function navigateToGetVeBAL() {
   router.push({
     name: 'get-vebal',
     query: {
-      returnRoute: 'vebal',
-    },
+      returnRoute: 'vebal'
+    }
   });
 }
 </script>
