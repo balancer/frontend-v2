@@ -608,7 +608,7 @@
                 "veBAL": "veBAL"
             }, 
             "tokenInfo": {
-                "balWETH": "First off, invest / add liquidity to the 80% BAL / 20% WETH pool",
+                "balWETH": "Invest / add liquidity to the 80% BAL / 20% WETH pool. Unlike other veToken models, this step not only locks up tokens but also retains liquidity for the BAL token.",
                 "lpToken": "Lock up the LP tokens from the 80% BAL / 20% WETH pool for up to a year to get veBAL. The longer you lock, the more veBAL you get.",
                 "veBAL": "Use veBAL to earn extra on your staked pools. Only some pools are eligible for staking. Check any pools that you are in, and stake it to earn liquidity mining incentives. You can also use veBAL to vote to direct future liquidity mining emissions"
             },                        
