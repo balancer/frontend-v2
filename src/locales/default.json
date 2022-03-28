@@ -603,7 +603,7 @@
                 "vote": "Vote to direct liquidity mining emissions"
             },
             "tokens": {
-                "balWETH": "BAL + WETH/ETH",
+                "balWETH": "BAL + WETH",
                 "lpToken": "B-80-BAL-20-WETH",
                 "veBAL": "veBAL"
             }, 
