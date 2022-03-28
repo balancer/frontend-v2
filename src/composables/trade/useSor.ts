@@ -191,8 +191,12 @@ export default function useSor({
     if (sorReturn.value.hasSwaps) {
       const { result } = sorReturn.value;
 
+      const swapType: SwapType = exactIn.value
+        ? SwapType.SwapExactIn
+        : SwapType.SwapExactOut;
+
       const deltas = await balancer.swaps.queryBatchSwap({
-        kind: exactIn.value ? SwapType.SwapExactIn : SwapType.SwapExactOut,
+        kind: swapType,
         swaps: result.swaps,
         assets: result.tokenAddresses
       });
@@ -219,15 +223,19 @@ export default function useSor({
           )
         );
 
-        tokenInAmountInput.value =
-          tokenInAmountNormalised.toNumber() > 0
-            ? formatAmount(tokenInAmountNormalised.toString())
-            : '';
+        if (swapType === SwapType.SwapExactOut) {
+          tokenInAmountInput.value =
+            tokenInAmountNormalised.toNumber() > 0
+              ? formatAmount(tokenInAmountNormalised.toString())
+              : '';
+        }
 
-        tokenOutAmountInput.value =
-          tokenOutAmountNormalised.toNumber() > 0
-            ? formatAmount(tokenOutAmountNormalised.toString())
-            : '';
+        if (swapType === SwapType.SwapExactIn) {
+          tokenOutAmountInput.value =
+            tokenOutAmountNormalised.toNumber() > 0
+              ? formatAmount(tokenOutAmountNormalised.toString())
+              : '';
+        }
       }
     }
   }
