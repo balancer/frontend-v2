@@ -4,7 +4,7 @@ import Service from '../../balancer-subgraph.service';
 import { PoolSwap, QueryBuilder } from '../../types';
 
 import queryBuilder from './query';
-import { unixToJsTime } from '@/lib/utils/date';
+import { toJsTimestamp } from '@/composables/useTime';
 
 export default class PoolSwaps {
   service: Service;
@@ -27,7 +27,7 @@ export default class PoolSwaps {
       ...swap,
       tokenIn: getAddress(swap.tokenIn),
       tokenOut: getAddress(swap.tokenOut),
-      timestamp: unixToJsTime(swap.timestamp)
+      timestamp: toJsTimestamp(swap.timestamp)
     }));
   }
 }

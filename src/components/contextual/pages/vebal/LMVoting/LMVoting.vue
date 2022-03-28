@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { scale, bnum } from '@/lib/utils';
-import { intervalToDuration, Interval, Duration, add } from 'date-fns';
+import { intervalToDuration, Interval, Duration, nextThursday } from 'date-fns';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVotingGauges from '@/composables/useVotingGauges';
@@ -96,14 +96,7 @@ function handleVoteSuccess() {
 }
 
 function getVotePeriodEndTime(): number {
-  var d = new Date();
-  const dayOfWeek = d.getDay();
-  let daysUntilThursday = 4 - dayOfWeek;
-  if (daysUntilThursday <= 0) {
-    daysUntilThursday += 7;
-  }
-  const nextThursdayTimestamp = add(d, { days: daysUntilThursday });
-  const n = new Date(nextThursdayTimestamp);
+  const n = nextThursday(new Date());
   const epochEndTime = Date.UTC(
     n.getFullYear(),
     n.getMonth(),

@@ -34,6 +34,17 @@ export function toUnixTimestamp(jsTimestamp: number): number {
   return Math.round(jsTimestamp / oneSecondInMs);
 }
 
+export function toUtcTime(date: Date) {
+  return Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+}
+
 export function getPreviousThursday(date: Date): Date {
   let daysSinceThursday = date.getDay() - 4;
   if (daysSinceThursday < 0) daysSinceThursday += 7;

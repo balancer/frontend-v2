@@ -659,7 +659,7 @@
                     "edit": "Edit gauge vote"
                 },
                 "button": {
-                    "vote": "Vote",
+                    "vote": "Confirm Vote",
                     "edit": "Edit vote"
                 },
                 "actions": {
@@ -668,10 +668,12 @@
                         "loadingLabel": "Confirm vote in wallet"
                     }
                 },
+                "emissionsInfo": "Your vote will direct future liquidity mining emissions starting with the next period on Thursday at 0:00 UTC.",
                 "voteForGauge": "{0} for {1}",
                 "remainingVotes": "Your remaining votes: {0}",
                 "remainingVotesEditing": "Your remaining votes: {0} ({1} current allocation in this pool + {2} unallocated votes)",
                 "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
+                "voteLockInfo": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation until {0}",
                 "warnings": {
                     "votedTooRecently": {
                         "title": "Votes are locked for 10 days.",

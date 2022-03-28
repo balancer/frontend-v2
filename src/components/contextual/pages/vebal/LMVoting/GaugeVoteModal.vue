@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, reactive, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 
@@ -17,7 +17,11 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
-import { dateTimeLabelFor } from '@/composables/useTime';
+import {
+  dateTimeLabelFor,
+  toJsTimestamp,
+  toUtcTime
+} from '@/composables/useTime';
 import useVeBal from '@/composables/useVeBAL';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
@@ -94,11 +98,10 @@ const voteButtonText = computed(() =>
 );
 
 const votedToRecentlyWarning = computed(() => {
-  const timestampSeconds = Date.now() / 1000;
-  const lastUserVoteTime = props.gauge.lastUserVoteTime;
-  if (timestampSeconds < lastUserVoteTime + WEIGHT_VOTE_DELAY) {
+  const lastUserVoteTime = toJsTimestamp(props.gauge.lastUserVoteTime);
+  if (Date.now() < lastUserVoteTime + WEIGHT_VOTE_DELAY) {
     const remainingTime = formatDistanceToNow(
-      (lastUserVoteTime + WEIGHT_VOTE_DELAY) * 1000
+      lastUserVoteTime + WEIGHT_VOTE_DELAY
     );
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
@@ -109,6 +112,11 @@ const votedToRecentlyWarning = computed(() => {
     };
   }
   return null;
+});
+
+const voteLockedUntilText = computed<string>(() => {
+  const unlockTime = Date.now() + WEIGHT_VOTE_DELAY;
+  return format(toUtcTime(new Date(unlockTime)), 'd LLLL y');
 });
 
 const noVeBalWarning = computed(() => {
@@ -302,6 +310,9 @@ onMounted(() => {
       </div>
     </template>
     <div>
+      <div class="mb-4 text-sm" v-if="!voteWarning">
+        {{ t('veBAL.liquidityMining.popover.emissionsInfo') }}
+      </div>
       <BalAlert
         v-if="voteWarning"
         type="warning"
@@ -396,6 +407,11 @@ onMounted(() => {
           </BalBtn>
         </div>
       </BalForm>
+      <div class="text-gray-500 text-sm mt-4" v-if="!voteWarning">
+        {{
+          t('veBAL.liquidityMining.popover.voteLockInfo', [voteLockedUntilText])
+        }}
+      </div>
     </div>
   </BalModal>
 </template>
