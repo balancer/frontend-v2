@@ -158,7 +158,7 @@ function navigateToGetVeBAL() {
 
 @media (min-width: 768px) {
   .hero-text {
-    min-width: 380px;
+    min-width: 400px;
   }
 }
 </style>
