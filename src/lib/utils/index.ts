@@ -137,3 +137,12 @@ export function formatWordListAsSentence(
 export function getAddressFromPoolId(poolId: string) {
   return poolId.substring(0, 42);
 }
+
+export function turnTokensIntoString(tokenMeta: any) {
+  const renderTokenMetaData = tokenMeta.map((token: any) => {
+    return token[1].symbol;
+  });
+  const tokens = renderTokenMetaData.map(token => token);
+
+  return tokens?.join('-');
+}

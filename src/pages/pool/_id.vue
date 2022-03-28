@@ -105,6 +105,23 @@
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
+          <div v-if="!loadingPool" class="mb-3 cursor-pointer">
+            <a
+              v-text="$t('More insights by APY.vision')"
+              class="px-4 lg:px-0 mb-4 font-bold text-xl"
+              :href="
+                'https://app.apy.vision/pools/balancerv2_' +
+                  networkName +
+                  '-' +
+                  turnTokensIntoString(titleTokens) +
+                  '-' +
+                  getAddressFromPoolId(id)
+              "
+              external
+              target="_blank"
+            />
+          </div>
+
           <div class="mb-4">
             <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
@@ -207,7 +224,7 @@ import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import StakingProvider from '@/providers/local/staking.provider';
-import { getAddressFromPoolId } from '@/lib/utils';
+import { getAddressFromPoolId, turnTokensIntoString } from '@/lib/utils';
 
 interface PoolPageData {
   id: string;
@@ -232,7 +249,13 @@ export default defineComponent({
     const { fNum2 } = useNumbers();
     const { isWalletReady } = useWeb3();
     const { prices } = useTokens();
-    const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
+    const {
+      blockNumber,
+      isKovan,
+      isArbitrum,
+      isMainnet,
+      isPolygon
+    } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
     const { balancerTokenListTokens } = useTokens();
 
@@ -321,6 +344,18 @@ export default defineComponent({
       const key = POOLS.Factories[pool.value.factory];
 
       return key ? t(key) : t('unknownPoolType');
+    });
+
+    const networkName = computed(() => {
+      if (isMainnet.value) {
+        return 'eth';
+      } else if (isPolygon.value) {
+        return 'matic';
+      } else if (isArbitrum.value) {
+        return 'arbitrum';
+      } else {
+        return 'eth';
+      }
     });
 
     const poolFeeLabel = computed(() => {
@@ -454,7 +489,9 @@ export default defineComponent({
       // methods
       fNum2,
       onNewTx,
-      getAddressFromPoolId
+      getAddressFromPoolId,
+      turnTokensIntoString,
+      networkName
     };
   }
 });
