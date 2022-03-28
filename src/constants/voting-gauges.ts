@@ -117,7 +117,7 @@ export const KOVAN_VOTING_GAUGES: VotingGauge[] = [
 
 export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
   {
-    address: '',
+    address: '0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac',
     network: Network.MAINNET,
     pool: {
       id: '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
@@ -152,7 +152,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x605eA53472A496c3d483869Fe8F355c12E861e19',
     network: Network.MAINNET,
     pool: {
       id: '0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027',
@@ -180,7 +180,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x4ca6AC0509E6381Ca7CD872a6cdC0Fbf00600Fa1',
     network: Network.MAINNET,
     pool: {
       id: '0x0b09dea16768f0799065c475be02919503cb2a3500020000000000000000001a',
@@ -208,7 +208,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x5F4d57fd9Ca75625e4B7520c71c02948A48595d0',
     network: Network.MAINNET,
     pool: {
       id: '0x186084ff790c65088ba694df11758fae4943ee9e000200000000000000000013',
@@ -236,7 +236,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x79eF6103A513951a3b25743DB509E267685726B7',
     network: Network.MAINNET,
     pool: {
       id: '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112',
@@ -264,7 +264,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x5A481455E62D5825429C8c416f3B8D2938755B64',
     network: Network.MAINNET,
     pool: {
       id: '0x27c9f71cc31464b906e0006d4fcbc8900f48f15f00020000000000000000010f',
@@ -292,7 +292,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xcD4722B7c24C29e0413BDCd9e51404B4539D14aE',
     network: Network.MAINNET,
     pool: {
       id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080',
@@ -320,7 +320,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xb154d9D7f6C5d618c08D276f94239c03CFBF4575',
     network: Network.MAINNET,
     pool: {
       id: '0x350196326aeaa9b98f1903fb5e8fc2686f85318c000200000000000000000084',
@@ -348,7 +348,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xdB7D7C535B4081Bb8B719237bdb7DB9f23Cc0b83',
     network: Network.MAINNET,
     pool: {
       id: '0x3e5fa9518ea95c3e533eb377c001702a9aacaa32000200000000000000000052',
@@ -376,7 +376,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xaB5ea78c8323212cC5736bfe4874557Bc778Bfbf',
     network: Network.MAINNET,
     pool: {
       id: '0x4bd6d86debdb9f5413e631ad386c4427dc9d01b20002000000000000000000ec',
@@ -403,7 +403,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x8F4a5C19A74D7111bC0e1486640F0aAB537dE5A1',
     network: Network.MAINNET,
     pool: {
       id: '0x51735bdfbfe3fc13dea8dc6502e2e958989429610002000000000000000000a0',
@@ -431,7 +431,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xD61dc7452C852B866c0Ae49F4e87C38884AE231d',
     network: Network.MAINNET,
     pool: {
       id: '0x5d66fff62c17d841935b60df5f07f6cf79bd0f4700020000000000000000014c',
@@ -459,7 +459,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xC5f8B1de80145e3a74524a3d1a772a31eD2B50cc',
     network: Network.MAINNET,
     pool: {
       id: '0x5f7fa48d765053f8dd85e052843e12d23e3d7bc50002000000000000000000c0',
@@ -487,7 +487,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x7A89f34E976285b7b885b32b2dE566389C2436a0',
     network: Network.MAINNET,
     pool: {
       id: '0x702605f43471183158938c1a3e5f5a359d7b31ba00020000000000000000009f',
@@ -515,7 +515,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x68d019f64A7aa97e2D4e7363AEE42251D08124Fb',
     network: Network.MAINNET,
     pool: {
       id: '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
@@ -550,7 +550,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x78DF155d6d75Ca2a1b1B2027f37414Ac1e7A1Ed8',
     network: Network.MAINNET,
     pool: {
       id: '0x7edde0cb05ed19e03a9a47cd5e53fc57fde1c80c0002000000000000000000c8',
@@ -577,7 +577,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xc43d32BC349cea7e0fe829F53E26096c184756fa',
     network: Network.MAINNET,
     pool: {
       id: '0x8f4205e1604133d1875a3e771ae7e4f2b086563900020000000000000000010e',
@@ -605,7 +605,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x4f9463405F5bC7b4C1304222c1dF76EFbD81a407',
     network: Network.MAINNET,
     pool: {
       id: '0x90291319f1d4ea3ad4db0dd8fe9e12baf749e84500020000000000000000013c',
@@ -633,7 +633,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x9AB7B0C7b154f626451c9e8a68dC04f58fb6e5Ce',
     network: Network.MAINNET,
     pool: {
       id: '0x96646936b91d6b9d7d0c47c496afbf3d6ec7b6f8000200000000000000000019',
@@ -661,7 +661,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xE273d4aCC555A245a80cB494E9E0dE5cD18Ed530',
     network: Network.MAINNET,
     pool: {
       id: '0x96ba9025311e2f47b840a1f68ed57a3df1ea8747000200000000000000000160',
@@ -689,7 +689,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x4e311e207CEAaaed421F17E909DA16527565Daef',
     network: Network.MAINNET,
     pool: {
       id: '0xa02e4b3d18d4e6b8d18ac421fbc3dfff8933c40a00020000000000000000004b',
@@ -717,7 +717,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x4E3c048BE671852277Ad6ce29Fd5207aA12fabff',
     network: Network.MAINNET,
     pool: {
       id: '0xa6f548df93de924d73be7d25dc02554c6bd66db500020000000000000000000e',
@@ -745,7 +745,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x055d483D00b0FFe0c1123c96363889Fb03fa13a4',
     network: Network.MAINNET,
     pool: {
       id: '0xbaeec99c90e3420ec6c1e7a769d2a856d2898e4d00020000000000000000008a',
@@ -773,7 +773,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x942CB1Ed80D3FF8028B3DD726e0E2A9671bc6202',
     network: Network.MAINNET,
     pool: {
       id: '0xbf96189eee9357a95c7719f4f5047f76bde804e5000200000000000000000087',
@@ -801,7 +801,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xbeC2d02008Dc64A6AD519471048CF3D3aF5ca0C5',
     network: Network.MAINNET,
     pool: {
       id: '0xe2469f47ab58cf9cf59f9822e3c5de4950a41c49000200000000000000000089',
@@ -829,7 +829,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x31e7F53D27BFB324656FACAa69Fe440169522E1C',
     network: Network.MAINNET,
     pool: {
       id: '0xe99481dc77691d8e2456e5f3f61c1810adfc1503000200000000000000000018',
@@ -857,7 +857,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xD6E4d70bdA78FBa018c2429e1b84153b9284298e',
     network: Network.MAINNET,
     pool: {
       id: '0xec60a5fef79a92c741cb74fdd6bfc340c0279b01000200000000000000000015',
@@ -885,7 +885,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x78259f2e946B11a0bE404d29d3cc017eCddE84C6',
     network: Network.MAINNET,
     pool: {
       id: '0xedf085f65b4f6c155e13155502ef925c9a756003000200000000000000000123',
@@ -912,7 +912,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xAFc28B2412B343574E8673D4fb6b220473677602',
     network: Network.MAINNET,
     pool: {
       id: '0xefaa1604e82e1b3af8430b90192c1b9e8197e377000200000000000000000021',
@@ -940,7 +940,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xCB664132622f29943f67FA56CCfD1e24CC8B4995',
     network: Network.MAINNET,
     pool: {
       id: '0xf4c0dd9b82da36c07605df83c8a416f11724d88b000200000000000000000026',
@@ -968,7 +968,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0xf4339872Ad09B34a29Be76EE81D4F30BCf7dbf9F',
     network: Network.MAINNET,
     pool: {
       id: '0xf5aaf7ee8c39b651cebf5f1f50c10631e78e0ef9000200000000000000000069',
@@ -996,7 +996,7 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
     }
   },
   {
-    address: '',
+    address: '0x57d40FF4cF7441A04A05628911F57bb940B6C238',
     network: Network.MAINNET,
     pool: {
       id: '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
