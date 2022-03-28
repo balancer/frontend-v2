@@ -1,23 +1,7 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useReturnRoute } from '@/composables/useReturnRoute';
 
-const route = useRoute();
-
-function getReturnRoute() {
-  const queryReturnRoute = route.query?.returnRoute as string;
-
-  if (queryReturnRoute) {
-    const queryReturnParams = route.query?.returnParams as string;
-
-    if (queryReturnParams) {
-      return { name: queryReturnRoute, params: JSON.parse(queryReturnParams) };
-    }
-
-    return { name: queryReturnRoute };
-  }
-
-  return { name: 'home' };
-}
+const { getReturnRoute } = useReturnRoute();
 </script>
 <template>
   <div class="pb-16">
