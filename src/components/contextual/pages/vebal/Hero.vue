@@ -34,7 +34,9 @@ function navigateToGetVeBAL() {
 <template>
   <div class="w-full bg-gray-850 hero-container">
     <div class="hero-content">
-      <div class="py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 xl:px-0 max-w-md">
+      <div
+        class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
+      >
         <p class="text-white font-medium mb-3">
           {{ $t('veBAL.hero.eyebrow') }}
         </p>
@@ -73,7 +75,7 @@ function navigateToGetVeBAL() {
           </BalBtn>
         </div>
       </div>
-      <div class="py-8 px-4">
+      <div class="py-8 px-4 lg:pl-8">
         <div class="coins flex">
           <div class="coin group">
             <img class="graphic" src="~@/assets/images/coins-1.png" alt="" />
@@ -134,5 +136,11 @@ function navigateToGetVeBAL() {
 }
 .caption {
   @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
+}
+
+@media (min-width: 768px) {
+  .hero-text {
+    min-width: 380px;
+  }
 }
 </style>
