@@ -17,8 +17,11 @@ import { isL2 } from '@/composables/useNetwork';
  */
 const router = useRouter();
 const { fNum2 } = useNumbers();
-const { isWalletReady, toggleWalletSelectModal, isWalletConnecting } =
-  useWeb3();
+const {
+  isWalletReady,
+  toggleWalletSelectModal,
+  isWalletConnecting
+} = useWeb3();
 const { trackGoal, Goals } = useFathom();
 const { totalInvestedAmount, isLoadingUserPools } = usePools();
 const { darkMode } = useDarkMode();
@@ -26,7 +29,7 @@ const { lockFiatValue, isLoadingLock } = useLock();
 const {
   totalStakedFiatValue,
   isLoading: isStakingLoading,
-  isStakingQueryEnabled,
+  isStakingQueryEnabled
 } = useStaking();
 
 /**
@@ -34,7 +37,7 @@ const {
  */
 const classes = computed(() => ({
   ['h-72']: !isWalletReady.value && !isWalletConnecting.value,
-  ['h-40']: isWalletReady.value || isWalletConnecting.value,
+  ['h-40']: isWalletReady.value || isWalletConnecting.value
 }));
 
 const totalInvestedLabel = computed((): string => {
