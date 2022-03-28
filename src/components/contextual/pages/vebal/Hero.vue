@@ -15,7 +15,7 @@ const router = useRouter();
 const benefits = computed(() => [
   t('veBAL.hero.benefits.boost'),
   t('veBAL.hero.benefits.vote'),
-  t('veBAL.hero.benefits.earn')
+  t('veBAL.hero.benefits.earn'),
 ]);
 
 /**
@@ -25,8 +25,8 @@ function navigateToGetVeBAL() {
   router.push({
     name: 'get-vebal',
     query: {
-      returnRoute: 'vebal'
-    }
+      returnRoute: 'vebal',
+    },
   });
 }
 </script>
@@ -34,7 +34,9 @@ function navigateToGetVeBAL() {
 <template>
   <div class="w-full bg-gray-850 hero-container">
     <div class="hero-content">
-      <div class="py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md">
+      <div
+        class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
+      >
         <p class="text-white font-medium mb-3">
           {{ $t('veBAL.hero.eyebrow') }}
         </p>
@@ -73,7 +75,7 @@ function navigateToGetVeBAL() {
           </BalBtn>
         </div>
       </div>
-      <div class="py-8 px-4">
+      <div class="py-8 px-4 lg:pl-8">
         <div class="coins flex">
           <div class="coin group">
             <img
@@ -135,6 +137,12 @@ function navigateToGetVeBAL() {
 .hero-content {
   @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto;
   min-height: 440px;
+}
+
+@media (min-width: 768px) {
+  .hero-text {
+    min-width: 380px;
+  }
 }
 .title {
   max-width: 820px;
