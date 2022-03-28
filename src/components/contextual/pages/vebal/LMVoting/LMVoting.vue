@@ -96,7 +96,11 @@ function handleVoteSuccess() {
 }
 
 function getVotePeriodEndTime(): number {
-  const n = nextThursday(new Date());
+  let n = nextThursday(new Date());
+  // April 5th 2022, for launch, remove after this date
+  if (n.getTime() < 1649116800000) {
+    n = nextThursday(n);
+  }
   const epochEndTime = Date.UTC(
     n.getFullYear(),
     n.getMonth(),
