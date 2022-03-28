@@ -76,7 +76,7 @@ function navigateToGetVeBAL() {
       <div class="py-8 px-4">
         <div class="coins flex">
           <div class="coin group">
-            <img class="graphic" src="~@/assets/images/coins-1.png" alt="" />
+            <img class="graphic" width="724" height="800" src="~@/assets/images/coins-1.png" alt="" />
             <div class="caption">
               <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
               <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
@@ -85,7 +85,7 @@ function navigateToGetVeBAL() {
             </div>
           </div>
           <div class="coin group">
-            <img class="graphic" src="~@/assets/images/coins-2.png" alt="" />
+            <img class="graphic" width="696" height="800" src="~@/assets/images/coins-2.png" alt="" />
             <div class="caption">
               <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
               <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
@@ -94,7 +94,7 @@ function navigateToGetVeBAL() {
             </div>
           </div>
           <div class="coin group">
-            <img class="graphic" src="~@/assets/images/coins-3.png" alt="" />
+            <img class="graphic" width="696" height="800" src="~@/assets/images/coins-3.png" alt="" />
             <div class="caption">
               <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
               <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
