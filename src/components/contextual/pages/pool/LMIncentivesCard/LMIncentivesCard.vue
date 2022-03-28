@@ -55,7 +55,11 @@ const isEligibleForLM = (relevantDistribution.pools[props.poolId] || []).some(
                 <h6>{{ $t('liquidityMiningIncentives') }}</h6>
               </BalStack>
               <BalStack horizontal spacing="sm" align="center">
-                <BalIcon name="chevron-down" class="text-blue-500" />
+                <BalIcon
+                  name="chevron-down"
+                  class="text-blue-500"
+                  v-if="isEligibleForLM"
+                />
               </BalStack>
             </BalStack>
           </button>
