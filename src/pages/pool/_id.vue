@@ -142,7 +142,7 @@
               class="pool-actions-card h-40"
             />
             <StakingIncentivesCard v-if="!loadingPool && !isL2" :pool="pool" />
-            <LMIncentivesCard v-if="isL2" />
+            <LMIncentivesCard v-if="isL2" :poolId="id" />
             <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"

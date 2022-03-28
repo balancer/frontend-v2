@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { configService } from '@/services/config/config.service';
+import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
+import { last } from 'lodash';
+
+type Props = {
+  poolId: string;
+};
+
+const props = defineProps<Props>();
+
+const latestWeek = last(Object.keys(LiquidityMiningDistributions)) as string;
+const relevantDistribution = LiquidityMiningDistributions[latestWeek].find(
+  distribution => distribution.chainId === configService.network.chainId
+);
+
+const isEligibleForLM = (relevantDistribution.pools[props.poolId] || []).some(
+  token => token.amount > 0
+);
 </script>
 
 <template>
@@ -12,7 +29,8 @@ import { configService } from '@/services/config/config.service';
           {
             title: $t('liquidityMiningIncentives'),
             id: 'lm-incentives',
-            handle: 'lm-handle'
+            handle: 'lm-handle',
+            isDisabled: !isEligibleForLM
           }
         ]"
       >
@@ -23,9 +41,16 @@ import { configService } from '@/services/config/config.service';
             <BalStack horizontal justify="between" align="center">
               <BalStack spacing="sm" align="center">
                 <div
-                  class="flex items-center p-1 text-white rounded-full bg-green-500"
+                  :class="[
+                    'flex items-center p-1 text-white rounded-full',
+                    {
+                      'bg-green-500': isEligibleForLM,
+                      'bg-gray-400': !isEligibleForLM
+                    }
+                  ]"
                 >
-                  <BalIcon size="sm" name="check" />
+                  <BalIcon size="sm" name="check" v-if="isEligibleForLM" />
+                  <BalIcon size="sm" name="x" v-else />
                 </div>
                 <h6>{{ $t('liquidityMiningIncentives') }}</h6>
               </BalStack>
