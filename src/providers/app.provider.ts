@@ -3,11 +3,13 @@ import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
 import { provide, computed, InjectionKey, ComputedRef } from 'vue';
 import { useStore } from 'vuex';
+import { version } from '../../package.json';
 
 /**
  * TYPES
  */
 export interface AppProviderResponse {
+  version: string;
   appLoading: ComputedRef<boolean>;
 }
 
@@ -38,6 +40,7 @@ export default {
     );
 
     provide(AppProviderSymbol, {
+      version,
       // computed
       appLoading
     });

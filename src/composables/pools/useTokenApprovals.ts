@@ -48,7 +48,11 @@ export default function useTokenApprovals(
    */
   const requiredApprovalState = ref<ApprovalStateMap>(
     Object.fromEntries(
-      approvalsRequired(tokenAddresses, amounts.value).map(address => [
+      approvalsRequired(
+        tokenAddresses,
+        amounts.value,
+        appNetworkConfig.addresses.vault
+      ).map(address => [
         address,
         { init: false, confirming: false, approved: false }
       ])
@@ -62,9 +66,12 @@ export default function useTokenApprovals(
    * COMPUTED
    */
   const requiredApprovals = computed(() =>
-    approvalsRequired(tokenAddresses, amounts.value)
+    approvalsRequired(
+      tokenAddresses,
+      amounts.value,
+      appNetworkConfig.addresses.vault
+    )
   );
-
   /**
    * METHODS
    */
@@ -93,9 +100,12 @@ export default function useTokenApprovals(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: t('transactionSummary.approveForInvesting', [
-          tokens.value[address]?.symbol
-        ]),
+        summary: t(
+          spender === appNetworkConfig.addresses.veBAL
+            ? 'transactionSummary.approveForLocking'
+            : 'transactionSummary.approveForInvesting',
+          [tokens.value[address]?.symbol]
+        ),
         details: {
           contractAddress: address,
           spender: spender || appNetworkConfig.addresses.vault

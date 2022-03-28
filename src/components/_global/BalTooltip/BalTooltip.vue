@@ -5,19 +5,20 @@ import { createPopper, Instance as PopperInstance } from '@popperjs/core';
 import BalIcon, { IconSize } from '../BalIcon/BalIcon.vue';
 
 type Placement = 'top' | 'left' | 'bottom' | 'right';
+type TextAlign = 'left' | 'center' | 'right' | '';
 
 type Props = {
   text?: string;
   placement?: Placement;
-  onShow: () => void;
-  onHide: () => void;
+  onShow?: () => void;
+  onHide?: () => void;
   noPad?: boolean;
   disabled?: boolean;
   iconSize?: IconSize;
   iconName?: string;
   iconClass?: string;
   width?: string;
-  textCenter?: boolean;
+  textAlign?: TextAlign;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   noPad: false,
   disabled: false,
   width: '52',
-  textCenter: false,
+  textAlign: '',
   iconName: 'info',
   iconSize: 'md',
   iconClass: 'text-gray-300'
@@ -40,7 +41,7 @@ const tooltipClasses = computed(() => {
   return {
     'p-3': !props.noPad,
     [`w-${props.width}`]: true,
-    'text-center': props.textCenter
+    [`text-${props.textAlign}`]: props.textAlign !== ''
   };
 });
 

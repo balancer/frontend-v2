@@ -6,6 +6,11 @@ import { takeRight } from 'lodash';
 type Section = {
   title: string;
   id: string;
+  // custom renderer slot id for handle
+  handle?: string;
+  // prevent this accordion section from
+  // being expanded
+  isDisabled?: boolean;
 };
 
 type Props = {
@@ -14,9 +19,12 @@ type Props = {
   // determine whether to re-render the height
   // of an accordion section
   dependencies: Ref<unknown>;
+  showSectionBorder?: boolean;
 };
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showSectionBorder: true
+});
 
 const activeSection = ref('');
 const activeSectionElement = ref<HTMLElement>();
@@ -35,7 +43,11 @@ const totalHeight = ref(0);
 const easing = 'spring(0.2, 150, 18, 0)';
 
 async function toggleSection(section: string, collapse = true) {
+  const _section = props.sections.find(s => (s.id = section));
+  if (_section?.isDisabled) return;
+
   const collapseCurrentSection = activeSection.value === section && collapse;
+
   if (collapseCurrentSection) {
     activeSection.value = '';
     isContentVisible.value = false;
@@ -44,6 +56,7 @@ async function toggleSection(section: string, collapse = true) {
     isContentVisible.value = true;
   }
   await nextTick();
+
   if (activeSectionElement.value && accordionHeightSetterElement.value) {
     height.value = activeSectionElement.value.clientHeight;
     isContentVisible.value = false;
@@ -71,11 +84,13 @@ async function toggleSection(section: string, collapse = true) {
   const heightToAnimate = collapseCurrentSection
     ? minimisedWrapperHeight.value
     : minimisedWrapperHeight.value + height.value;
+  await nextTick();
   anime({
     targets: wrapperElement.value,
     height: `${heightToAnimate}px`,
     easing
   });
+
   handleBarsToTransform.forEach(handleBar => {
     const y = collapseCurrentSection ? 0 : height.value;
     anime({
@@ -158,14 +173,22 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard hFull no-pad>
+    <BalCard hFull no-pad shadow="none" class="rounded-xl">
       <div
         class="flex flex-col"
         v-for="(section, i) in sections"
         :key="section.id"
         :ref="setHandleBars"
       >
+        <div
+          ref="handleBarElement"
+          @click="toggleSection(section.id)"
+          v-if="section.handle"
+        >
+          <slot :name="section.handle" />
+        </div>
         <button
+          v-else
           ref="handleBarElement"
           @click="toggleSection(section.id)"
           :class="[
@@ -186,7 +209,7 @@ watch(
           <!-- content -->
           <div
             ref="activeSectionElement"
-            :class="{ 'border-b': isContentVisible }"
+            :class="{ 'border-b': isContentVisible && showSectionBorder }"
             v-if="isContentVisible"
           >
             <slot :name="section.id" />

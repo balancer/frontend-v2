@@ -55,7 +55,6 @@ export default class AllowancesConcern {
   ): Promise<AllowanceMap> {
     const network = this.service.configService.network.key;
     const provider = this.service.rpcProviderService.jsonProvider;
-
     const allowances: BigNumber[] = (
       await multicall<BigNumberish>(
         network,

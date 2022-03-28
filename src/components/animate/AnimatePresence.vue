@@ -1,5 +1,11 @@
 <template>
-  <transition appear @enter="enter" @leave="leave" :css="false">
+  <transition
+    class="relative"
+    appear
+    @enter="enter"
+    @leave="leave"
+    :css="false"
+  >
     <div id="animateContainer" ref="animateContainer" v-if="isVisible">
       <slot></slot>
     </div>
@@ -112,6 +118,7 @@ export default defineComponent({
         targets: el,
         ...props.exit,
         easing: 'spring(0.2, 80, 10, 0)',
+
         complete: () => {
           done();
           emit('on-exit', { isCompleted: true });

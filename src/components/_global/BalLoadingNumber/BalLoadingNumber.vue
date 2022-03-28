@@ -1,3 +1,46 @@
+<script lang="ts" setup>
+import useUserSettings from '@/composables/useUserSettings';
+import { FiatSymbol } from '@/constants/currency';
+import { computed } from 'vue';
+import BalLoadingBlock from '../BalLoadingBlock/BalLoadingBlock.vue';
+
+/**
+ * TYPES
+ */
+type NumberType = 'token' | 'fiat';
+
+type Props = {
+  type: NumberType;
+  numberWidth: string;
+  numberHeight: string;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  type: 'token',
+  numberWidth: '3',
+  numberHeight: '5'
+});
+
+/**
+ * COMPOSABLES
+ */
+const { currency } = useUserSettings();
+
+/**
+ * COMPUTED
+ */
+const currencySymbol = computed(() => FiatSymbol[currency.value]);
+
+const blockClasses = computed(() => [
+  `w-${props.numberWidth}`,
+  `h-${props.numberHeight}`,
+  'mr-px'
+]);
+</script>
+
 <template>
   <div class="flex items-center">
     <template v-if="type === 'token'">
@@ -21,42 +64,3 @@
     </template>
   </div>
 </template>
-
-<script lang="ts">
-import useUserSettings from '@/composables/useUserSettings';
-import { FiatSymbol } from '@/constants/currency';
-import { defineComponent, computed } from 'vue';
-import BalLoadingBlock from '../BalLoadingBlock/BalLoadingBlock.vue';
-
-export default defineComponent({
-  name: 'BalLoadingNumber',
-
-  components: {
-    BalLoadingBlock
-  },
-
-  props: {
-    type: {
-      type: String,
-      default: 'token',
-      validator: (val: string): boolean => ['token', 'fiat'].includes(val)
-    },
-    numberWidth: { type: String, default: '3' },
-    numberHeight: { type: String, default: '5' }
-  },
-
-  setup(props) {
-    const { currency } = useUserSettings();
-
-    const currencySymbol = computed(() => FiatSymbol[currency.value]);
-
-    const blockClasses = computed(() => [
-      `w-${props.numberWidth}`,
-      `h-${props.numberHeight}`,
-      'mr-px'
-    ]);
-
-    return { blockClasses, currencySymbol };
-  }
-});
-</script>

@@ -29,6 +29,7 @@ type PoolsQueryResponse = {
 
 type FilterOptions = {
   poolIds?: Ref<string[]>;
+  poolAddresses?: Ref<string[]>;
   isExactTokensList?: boolean;
   pageSize?: number;
 };
@@ -48,7 +49,8 @@ export default function usePoolsQuery(
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     tokenList,
-    filterOptions?.poolIds
+    filterOptions?.poolIds,
+    filterOptions?.poolAddresses
   );
 
   // COMPUTED
@@ -128,7 +130,9 @@ export default function usePoolsQuery(
     if (filterOptions?.poolIds?.value.length) {
       queryArgs.where.id_in = filterOptions.poolIds.value;
     }
-
+    if (filterOptions?.poolAddresses?.value.length) {
+      queryArgs.where.address_in = filterOptions.poolAddresses.value;
+    }
     const pools = await balancerSubgraphService.pools.get(queryArgs);
 
     for (let i = 0; i < pools.length; i++) {
@@ -246,9 +250,9 @@ export default function usePoolsQuery(
   };
 
   const queryOptions = reactive({
-    enabled,
+    ...options,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
-    ...options
+    enabled
   });
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);

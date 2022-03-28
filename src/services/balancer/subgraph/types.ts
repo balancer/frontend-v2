@@ -170,6 +170,7 @@ export interface PoolShare {
 
 export interface DecoratedPoolWithShares extends DecoratedPool {
   shares: string;
+  bpt: string;
 }
 
 export type PoolActivityType = 'Join' | 'Exit';

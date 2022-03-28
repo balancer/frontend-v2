@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, reactive, watch } from 'vue';
+/**
+ * Claim Page
+ */
+import { computed, watch } from 'vue';
 import { configService } from '@/services/config/config.service';
-import useGaugesQuery from '@/composables/queries/useGaugesQuery';
-import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
 import { Gauge } from '@/services/balancer/gauges/types';
 import useTokens from '@/composables/useTokens';
-import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 import { formatUnits } from 'ethers/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
@@ -14,27 +14,17 @@ import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useApp from '@/composables/useApp';
-import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
+import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 
 import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
+import { isKovan, isL2, isMainnet } from '@/composables/useNetwork';
 
 /**
  * TYPES
  */
-export type GaugePool = {
-  id: string;
-  poolType: PoolType;
-  tokens: PoolToken[];
-  tokensList: string[];
-};
-
-type GaugePoolQueryResponse = {
-  pools: GaugePool[];
-};
-
 type GaugeTable = {
   gauge: Gauge;
   pool: GaugePool;
@@ -48,40 +38,7 @@ const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { appLoading } = useApp();
-
-/**
- * QUERIES
- */
-const { data: subgraphGauges } = useGaugesQuery();
-
-const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
-const gauges = computed((): Gauge[] => gaugesQuery.data.value || []);
-const gaugePoolIds = computed((): string[] => {
-  return gauges.value.map(gauge => gauge.poolId);
-});
-
-const gaugePoolQueryEnabled = computed(
-  (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0
-);
-const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
-  subgraphs.balancer,
-  ['claim', 'gauge', 'pools'],
-  () => ({
-    pools: {
-      __args: {
-        where: { id_in: gaugePoolIds.value }
-      },
-      id: true,
-      poolType: true,
-      tokensList: true,
-      tokens: {
-        address: true,
-        weight: true
-      }
-    }
-  }),
-  reactive({ enabled: gaugePoolQueryEnabled })
-);
+const { gauges, gaugePools, queriesLoading } = useClaimsData();
 
 /**
  * STATE
@@ -114,17 +71,8 @@ const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
 
-const pools = computed(
-  (): GaugePool[] => gaugePoolQuery.data.value?.pools || []
-);
-
-// Since the pool query is dependent on the gauge query, we only have to wait
-// for the pool query to finish loading.
-const poolQueryLoading = computed(
-  (): boolean =>
-    gaugePoolQuery.isLoading.value ||
-    gaugePoolQuery.isIdle.value ||
-    !!gaugePoolQuery.error.value
+const supportsContractBasedClaiming = computed(
+  (): boolean => isMainnet.value || isKovan.value
 );
 
 const balRewardsData = computed((): RewardRow[] => {
@@ -132,7 +80,7 @@ const balRewardsData = computed((): RewardRow[] => {
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
-    const pool = pools.value.find(pool => pool.id === gauge.poolId);
+    const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
 
     if (pool && bnum(amount).gt(0))
       arr.push({
@@ -152,7 +100,7 @@ const gaugesWithRewards = computed((): Gauge[] => {
 
 const gaugeTables = computed((): GaugeTable[] => {
   return gaugesWithRewards.value.reduce<GaugeTable[]>((arr, gauge) => {
-    const pool = pools.value.find(pool => pool.id === gauge.poolId);
+    const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
 
     if (pool)
       arr.push({
@@ -207,7 +155,7 @@ watch(gauges, async newGauges => {
   if (newGauges) await injectRewardTokens(newGauges);
 });
 
-watch(pools, async newPools => {
+watch(gaugePools, async newPools => {
   if (newPools) await injectPoolTokens(newPools);
 });
 </script>
@@ -215,58 +163,92 @@ watch(pools, async newPools => {
 <template>
   <div class="px-2 lg:px-0">
     <div class="lg:container lg:mx-auto py-12">
-      <h2 class="font-body font-bold text-2xl">
-        {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
-      </h2>
-
-      <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
-      <div v-else class="flex items-center mt-6 mb-2">
-        <BalAsset :address="balToken?.address" />
-        <h3 class="text-xl ml-2">
-          Balancer (BAL) {{ $t('earnings').toLowerCase() }}
-        </h3>
-      </div>
-      <BalClaimsTable
-        :rewardsData="balRewardsData"
-        :isLoading="poolQueryLoading && isWalletReady"
-      />
-
-      <template v-if="!poolQueryLoading && gaugesWithRewards.length > 0">
-        <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
-        <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
-          <div class="flex mt-4">
-            <h4 class="text-base mb-2">
-              {{ gaugeTitle(pool) }}
-            </h4>
-          </div>
-          <GaugeRewardsTable :gauge="gauge" :isLoading="poolQueryLoading" />
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <h1 class="mb-4">
+            {{ $t('pages.claim.title') }}
+          </h1>
+          <p>
+            {{ $t('pages.claim.description') }}
+          </p>
         </div>
+        <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
+          <h3 class="mb-3">{{ $t('pages.claim.transitionInfo.title') }}</h3>
+          <p>
+            {{
+              isL2
+                ? $t('pages.claim.transitionInfo.descriptionL2')
+                : $t('pages.claim.transitionInfo.description')
+            }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="lg:container lg:mx-auto py-12">
+      <template v-if="supportsContractBasedClaiming">
+        <h2 class="font-body font-bold text-2xl">
+          {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
+        </h2>
+
+        <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
+        <div v-else class="flex items-center mt-6 mb-2">
+          <BalAsset :address="balToken?.address" />
+          <h3 class="text-xl ml-2">
+            Balancer (BAL) {{ $t('earnings').toLowerCase() }}
+          </h3>
+        </div>
+        <BalClaimsTable
+          :rewardsData="balRewardsData"
+          :isLoading="queriesLoading"
+        />
+
+        <template v-if="!queriesLoading && gaugesWithRewards.length > 0">
+          <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
+          <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
+            <div class="flex mt-4">
+              <h4 class="text-base mb-2">
+                {{ gaugeTitle(pool) }}
+              </h4>
+            </div>
+            <GaugeRewardsTable :gauge="gauge" :isLoading="queriesLoading" />
+          </div>
+        </template>
+
+        <h2 class="font-body font-bold text-2xl mt-8">
+          {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
+        </h2>
+        <BalFlexGrid class="mt-4" flexWrap>
+          <BalBtn
+            tag="a"
+            v-for="network in networkBtns"
+            :key="network.id"
+            :href="`https://${network.subdomain}.balancer.fi/#/claim`"
+            color="white"
+          >
+            <img
+              :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
+              :alt="network.id"
+              class="w-6 h-6 rounded-full shadow-sm mr-2"
+            />
+            {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
+          </BalBtn>
+        </BalFlexGrid>
       </template>
 
-      <h2 class="font-body font-bold text-2xl mt-8">
-        {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
-      </h2>
-      <div class="flex mt-4">
-        <BalBtn
-          tag="a"
-          :href="`https://${network.subdomain}.balancer.fi/#/claims`"
-          v-for="network in networkBtns"
-          :key="network.id"
-          color="white"
-          class="mr-4"
-        >
-          <img
-            :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
-            alt="Arbitrum"
-            class="w-6 h-6 rounded-full shadow-sm mr-2"
-          />
-          {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
-        </BalBtn>
-      </div>
-
       <template v-if="isWalletReady">
-        <h2 class="font-body font-bold text-2xl mt-8">
-          {{ $t('pages.claim.titles.legacyIncentives') }}
+        <h2
+          :class="[
+            'font-body font-bold text-2xl',
+            { 'mt-8': supportsContractBasedClaiming }
+          ]"
+        >
+          {{
+            !supportsContractBasedClaiming
+              ? `${configService.network.chainName} ${$t(
+                  'liquidityIncentives'
+                )}`
+              : $t('pages.claim.titles.legacyIncentives')
+          }}
         </h2>
         <LegacyClaims />
       </template>

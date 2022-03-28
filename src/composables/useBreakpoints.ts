@@ -26,11 +26,16 @@ export default function useBreakpoints() {
     ['xs', 'sm', 'md'].includes(bp.value)
   );
 
+  const isMobile = computed(() => ['xs', 'sm', 'md', 'lg'].includes(bp.value));
+  const isDesktop = computed(() => ['xl', '2xl'].includes(bp.value));
+
   const upToSmallBreakpoint = computed(() => ['xs', 'sm'].includes(bp.value));
 
   return {
     width,
     bp,
+    isMobile,
+    isDesktop,
     upToLargeBreakpoint,
     upToMediumBreakpoint,
     upToSmallBreakpoint

@@ -42,7 +42,13 @@ export type TransactionAction =
   | 'withdraw'
   | 'createPool'
   | 'fundPool'
-  | 'migratePool';
+  | 'migratePool'
+  | 'createLock'
+  | 'extendLock'
+  | 'increaseLock'
+  | 'unlock'
+  | 'voteForGauge'
+  | 'stake';
 
 export type TransactionType = 'order' | 'tx';
 

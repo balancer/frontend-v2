@@ -21,6 +21,10 @@ import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatche
 // import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useBackgroundColor from './composables/useBackgroundColor';
+import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import { useSidebar } from './composables/useSidebar';
+import useNavigationGuards from './composables/useNavigationGuards';
+import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -29,7 +33,9 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
-    Notifications
+    Notifications,
+    AppSidebar,
+    GlobalModalContainer
   },
 
   setup() {
@@ -46,6 +52,7 @@ export default defineComponent({
     useGlobalQueryWatchers();
     useGnosisSafeApp();
     useExploitWatcher();
+    useNavigationGuards();
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal
@@ -57,6 +64,7 @@ export default defineComponent({
     // const { addAlert } = useAlerts();
     // const { t } = useI18n();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
+    const { sidebarOpen } = useSidebar();
 
     // Temporary feature alert for Balancer boosted pools.
     // commented out until veBAL launch, then change details for veBAL alert
@@ -109,6 +117,7 @@ export default defineComponent({
       layout,
       // computed
       isWalletSelectVisible,
+      sidebarOpen,
       // methods
       toggleWalletSelectModal
     };
@@ -126,7 +135,9 @@ export default defineComponent({
       @close="toggleWalletSelectModal"
     />
     <Notifications />
+    <AppSidebar v-if="sidebarOpen" />
   </div>
+  <GlobalModalContainer />
 </template>
 
 <style>
