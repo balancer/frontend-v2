@@ -60,7 +60,9 @@ const fiatTotal = computed(() => {
 </script>
 
 <template>
-  <BalCard>
+  <div
+    class="p-4 w-full bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-900"
+  >
     <div class="text-gray-500 text-sm">
       {{ $t('basedOnTokensInWallet') }}
     </div>
@@ -96,5 +98,5 @@ const fiatTotal = computed(() => {
         block
       />
     </div>
-  </BalCard>
+  </div>
 </template>

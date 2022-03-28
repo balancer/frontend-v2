@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
@@ -22,6 +22,7 @@ import {
 
 export default function usePoolQuery(
   id: string,
+  isEnabled: Ref<boolean> = ref(true),
   options: QueryObserverOptions<FullPool> = {}
 ) {
   /**
@@ -36,7 +37,7 @@ export default function usePoolQuery(
    * COMPUTED
    */
   const enabled = computed(
-    () => !appLoading.value && !dynamicDataLoading.value
+    () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value
   );
 
   /**

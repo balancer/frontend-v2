@@ -6,7 +6,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useAttrs, computed } from 'vue';
+import { useAttrs, computed, onMounted, ref } from 'vue';
 import { HtmlInputEvent } from '@/types';
 import useInputStyles from './composables/useInputStyles';
 import useInputEvents from './composables/useInputEvents';
@@ -38,6 +38,7 @@ type Props = {
   noRadius?: boolean;
   noShadow?: boolean;
   noBorder?: boolean;
+  autoFocus?: boolean;
   format?: (input: string | number) => string | number;
 };
 
@@ -56,7 +57,8 @@ const props = withDefaults(defineProps<Props>(), {
   rules: () => [],
   noRadius: false,
   noShadow: false,
-  noBorder: false
+  noBorder: false,
+  autoFocus: false
 });
 
 const emit = defineEmits<{
@@ -66,6 +68,11 @@ const emit = defineEmits<{
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
 }>();
+
+/**
+ * STATE
+ */
+const textInput = ref<HTMLInputElement>();
 
 /**
  * COMPOSABLES
@@ -88,10 +95,16 @@ const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 /**
  * COMPUTED
  */
-
 // We don't want to pass on parent level classes to the html
 // input element. So we need to remove it from the attrs object.
 const inputAttrs = computed(() => omit(attrs, 'class'));
+
+/**
+ * LIFECYCLE
+ */
+onMounted(() => {
+  textInput.value?.focus();
+});
 </script>
 
 <template>
@@ -111,6 +124,7 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
           <slot name="prepend" />
         </div>
         <input
+          ref="textInput"
           :type="type"
           :name="name"
           :value="modelValue"
@@ -128,7 +142,7 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
       <div v-if="$slots.footer" :class="['footer', footerClasses]">
         <slot name="footer" />
       </div>
-      <div v-if="isInvalid" :class="['error']">
+      <div v-if="isInvalid && !!errors[0]" :class="['error']">
         {{ errors[0] }}
       </div>
     </div>

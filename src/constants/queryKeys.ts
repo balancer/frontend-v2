@@ -12,8 +12,9 @@ const QUERY_KEYS = {
     All: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      poolIds: Ref<string[]> | undefined
-    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds }],
+      poolIds: Ref<string[]> | undefined,
+      poolAddresses: Ref<string[]> | undefined
+    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
     User: (networkId: Ref<Network>, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'user',
@@ -85,7 +86,12 @@ const QUERY_KEYS = {
       tokens: Ref<string[]>,
       pricesToInject: Ref<Record<string, number>>
     ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
-    AllPrices: ['tokens', 'prices']
+    AllPrices: ['tokens', 'prices'],
+    VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [
+      'tokens',
+      'veBAL',
+      { networkId, account }
+    ]
   },
   Account: {
     Balances: (
@@ -122,7 +128,8 @@ const QUERY_KEYS = {
         account: Ref<string>,
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
-    }
+    },
+    Voting: (account: Ref<string>) => ['gauges', 'voting', { account }]
   },
   Transaction: {
     ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [

@@ -135,7 +135,8 @@ export default {
       },
       allowanceContracts: compact([
         networkConfig.addresses.vault,
-        networkConfig.addresses.wstETH
+        networkConfig.addresses.wstETH,
+        configService.network.addresses.veBAL
       ]),
       injectedPrices: {}
     });
@@ -443,7 +444,8 @@ export default {
       const tokensToInject = compact([
         ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,
-        configService.network.addresses.wstETH
+        configService.network.addresses.wstETH,
+        configService.network.addresses.veBAL
       ]);
 
       await forChange(loadingTokenLists, false);

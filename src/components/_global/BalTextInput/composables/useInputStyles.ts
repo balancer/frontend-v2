@@ -59,8 +59,9 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   }));
 
   const inputContainerClasses = computed(() => ({
-    'border border-gray-100 dark:border-gray-800': !props.noBorder,
+    border: !props.noBorder,
     [extPaddingClass()]: true,
+    'border-gray-100 dark:border-gray-800': !isInvalid.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
     'shadow-inner': !props.noShadow
   }));
@@ -81,7 +82,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
     [inputHeightClass()]: true,
     [inputTextSize()]: true,
     'text-right': props.inputAlignRight,
-    'font-numeric': props.type === 'number'
+    'font-numeric': props.type === 'number',
+    'text-red-500': isInvalid.value
   }));
 
   const prependClasses = computed(() => ({

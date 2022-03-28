@@ -26,7 +26,6 @@ input {
 
 #app {
   @apply text-gray-900 dark:text-gray-50;
-  min-height: calc(100vh + 1px);
 }
 
 #storybook-app {
@@ -48,8 +47,8 @@ input[type=number] {
 }
 
 *::-webkit-scrollbar {
-  @apply dark:bg-gray-900;
+  @apply bg-gray-50 dark:bg-gray-900;
 }
 *::-webkit-scrollbar-thumb {
-  @apply dark:bg-gray-700;
+  @apply bg-gray-200 dark:bg-gray-700;
 }

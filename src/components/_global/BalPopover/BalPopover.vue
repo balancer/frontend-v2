@@ -6,11 +6,13 @@ type PopoverTrigger = 'click' | 'hover';
 type Props = {
   trigger?: PopoverTrigger;
   align?: string;
+  detached?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   trigger: 'click',
-  align: 'right'
+  align: 'right',
+  detached: false
 });
 
 const emit = defineEmits<{
@@ -22,22 +24,25 @@ const emit = defineEmits<{
  * STATE
  */
 const popoverOpened = ref(false);
+const activatorWrapper = ref<HTMLDivElement>();
 
 /**
  * COMPUTED
  */
 const popoverWrapperClasses = computed(() => ({
   'bal-popover-wrapper-visible': popoverOpened.value,
-  [`${props.align}-0`]: true
+  [`${props.align}-0`]: !props.detached,
+  'align-center-transform': props.detached && props.align === 'center',
+  'align-right-transform': props.detached && props.align === 'right'
 }));
 
-watch(popoverOpened, () => {
-  if (popoverOpened.value) {
-    emit('show');
-  } else {
-    emit('hide');
-  }
-});
+const popoverActivatorWrapperClasses = computed(() => ({
+  relative: !props.detached
+}));
+
+const activatorWidthPx = computed(
+  (): string => `${activatorWrapper.value?.clientWidth || 0}px`
+);
 
 /**
  * METHODS
@@ -59,12 +64,27 @@ function handleClickOutside() {
     hidePopover();
   }
 }
+
+/**
+ * WATCHERS
+ */
+watch(popoverOpened, () => {
+  if (popoverOpened.value) {
+    emit('show');
+  } else {
+    emit('hide');
+  }
+});
 </script>
 
 <template>
-  <div class="relative" v-click-outside="handleClickOutside">
+  <div
+    :class="[popoverActivatorWrapperClasses]"
+    v-click-outside="handleClickOutside"
+  >
     <div
       class="bal-popover-activator group"
+      ref="activatorWrapper"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"
@@ -81,7 +101,7 @@ function handleClickOutside() {
 
 <style scoped>
 .bal-popover-wrapper {
-  @apply top-full invisible opacity-0 absolute z-30 pt-3;
+  @apply invisible opacity-0 absolute z-30 pt-3;
   transition: all 0.2s ease-in-out;
 }
 
@@ -91,5 +111,15 @@ function handleClickOutside() {
 
 .bal-popover-wrapper:hover {
   @apply visible opacity-100;
+}
+
+.align-center-transform {
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+.align-right-transform {
+  -webkit-transform: translateX(-webkit-calc(-100% + v-bind(activatorWidthPx)));
+  transform: translateX(calc(-100% + v-bind(activatorWidthPx)));
 }
 </style>

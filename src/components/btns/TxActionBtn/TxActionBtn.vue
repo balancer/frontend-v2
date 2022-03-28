@@ -9,6 +9,7 @@ import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -39,6 +40,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener } = useEthers();
+const { isMismatchedNetwork } = useWeb3();
 
 /**
  * TYPES
@@ -109,7 +111,7 @@ async function initTx() {
   <BalBtn
     :loadingLabel="loadingLabel"
     :loading="isWaitingOnWallet || isConfirming"
-    :disabled="isWaitingOnWallet || isConfirming"
+    :disabled="isMismatchedNetwork"
     @click.stop="initTx"
   />
 </template>

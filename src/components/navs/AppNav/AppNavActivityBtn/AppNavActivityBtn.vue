@@ -4,7 +4,7 @@
       <BalBtn
         color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        class="mr-2 p-1 relative"
+        class="p-1 relative"
         :circle="upToLargeBreakpoint"
       >
         <ActivityIcon v-if="pendingTransactions.length === 0" />

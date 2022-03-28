@@ -13,10 +13,10 @@ import { computed, useAttrs } from 'vue';
 type LinkTag = 'a' | 'router-link';
 
 type Props = {
-  tag: LinkTag;
-  external: boolean;
-  disabled: boolean;
-  noStyle: boolean;
+  tag?: LinkTag;
+  external?: boolean;
+  disabled?: boolean;
+  noStyle?: boolean;
 };
 
 /**

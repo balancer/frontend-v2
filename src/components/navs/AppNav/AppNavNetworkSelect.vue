@@ -1,15 +1,11 @@
 <template>
-  <BalPopover align="left" no-pad>
+  <BalPopover no-pad>
     <template v-slot:activator>
-      <BalBtn
-        color="white"
-        :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        class="ml-4"
-      >
+      <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
         <img
           :src="iconSrc(activeNetwork)"
           :alt="activeNetwork.name"
-          class="w-5 h-5 rounded-full shadow-sm"
+          class="w-6 h-6 rounded-full"
         />
         <span class="ml-2">
           {{ activeNetwork.name }}
@@ -33,7 +29,7 @@
           <img
             :src="iconSrc(network)"
             :alt="network.name"
-            class="w-5 h-5 rounded-full mr-2"
+            class="w-6 h-6 rounded-full mr-2"
           />
           <span class="ml-1 font-medium">
             {{ network.name }}
@@ -50,11 +46,11 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import ConfigService from '@/services/config/config.service';
 import { defineComponent } from 'vue';
 
-interface Network {
+export interface NetworkOption {
   id: string;
   name: string;
-  subdomain: string;
-  key: string;
+  subdomain?: string;
+  key?: string;
 }
 
 export default defineComponent({
@@ -99,15 +95,15 @@ export default defineComponent({
     });
 
     // METHODS
-    function iconSrc(network: Network): string {
+    function iconSrc(network: NetworkOption): string {
       return require(`@/assets/images/icons/networks/${network.id}.svg`);
     }
 
-    function appUrl(network: Network): string {
+    function appUrl(network: NetworkOption): string {
       return `https://${network.subdomain}.balancer.fi`;
     }
 
-    function isActive(network: Network): boolean {
+    function isActive(network: NetworkOption): boolean {
       if (!appNetworkSupported && network.id === 'ethereum') return true;
       return configService.network.key === network.key;
     }

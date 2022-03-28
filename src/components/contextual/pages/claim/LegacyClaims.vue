@@ -235,7 +235,7 @@ async function claimAvailableRewards() {
             <BalTabs
               v-model="activeTab"
               :tabs="tabs"
-              class="whitespace-nowrap p-0 m-0"
+              class="whitespace-nowrap p-0 m-0 -mb-px"
               no-pad
             />
           </div>

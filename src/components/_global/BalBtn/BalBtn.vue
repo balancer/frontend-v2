@@ -159,6 +159,9 @@ export default defineComponent({
     });
 
     const textColorClasses = computed(() => {
+      if (props.outline && props.disabled)
+        return 'text-gray-400 dark:text-gray-700';
+      if (props.outline && props.color === 'gradient') return 'text-purple-700';
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
         else return 'text-gray-800 dark:text-gray-100';
