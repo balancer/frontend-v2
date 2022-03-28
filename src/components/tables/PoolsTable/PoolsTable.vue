@@ -288,6 +288,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
           >
             {{ $t('stake') }}
           </BalBtn>
+          <div v-else>{{ $t('notAvailable') }}</div>
         </div>
       </template>
     </BalTable>
