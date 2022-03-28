@@ -210,7 +210,7 @@ import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingInc
 import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
 import StakingProvider from '@/providers/local/staking.provider';
 import { getAddressFromPoolId } from '@/lib/utils';
-import useNetwork, { isL2 } from '@/composables/useNetwork';
+import { isL2 } from '@/composables/useNetwork';
 
 interface PoolPageData {
   id: string;
