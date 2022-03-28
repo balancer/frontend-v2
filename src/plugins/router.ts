@@ -91,6 +91,28 @@ const routes: RouteRecordRaw[] = [
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: '/'
+  },
+  {
+    path: '/vebal',
+    name: 'vebal',
+    component: VeBalPage
+  },
+  {
+    path: '/get-vebal',
+    name: 'get-vebal',
+    component: GetVeBalPage,
+    meta: { layout: 'FocusedLayout' }
+  },
+  {
+    path: '/unlock',
+    name: 'unlock',
+    component: UnlockVeBalPage,
+    meta: { layout: 'FocusedLayout' }
+  },
+  {
+    path: '/claim',
+    name: 'claim',
+    component: ClaimPage
   }
 ];
 
@@ -100,30 +122,7 @@ const routes: RouteRecordRaw[] = [
 if (
   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
 ) {
-  routes.push(
-    {
-      path: '/vebal',
-      name: 'vebal',
-      component: VeBalPage
-    },
-    {
-      path: '/get-vebal',
-      name: 'get-vebal',
-      component: GetVeBalPage,
-      meta: { layout: 'FocusedLayout' }
-    },
-    {
-      path: '/unlock',
-      name: 'unlock',
-      component: UnlockVeBalPage,
-      meta: { layout: 'FocusedLayout' }
-    },
-    {
-      path: '/claim',
-      name: 'claim',
-      component: ClaimPage
-    }
-  );
+  routes.push();
 }
 
 const router = createRouter({
