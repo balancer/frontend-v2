@@ -2,11 +2,13 @@ import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Network } from '@balancer-labs/sdk';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { oneWeekInMs, toUnixTimestamp } from '@/composables/useTime';
+
+const VOTE_MULTIPLIER = parseFixed("56", 34);
 
 export interface UserVotesData {
   end: BigNumber;
@@ -14,9 +16,14 @@ export interface UserVotesData {
   slope: BigNumber;
 }
 
+export interface Point {
+  bias: BigNumber;
+  slope: BigNumber;
+}
+
 export interface RawVotesData {
-  votes: number;
-  votesNextPeriod: number;
+  gaugeWeightThisPeriod: Point;
+  gaugeWeightNextPeriod: Point;
   userVotes: UserVotesData;
   lastUserVoteTime: BigNumber;
 }
@@ -28,7 +35,11 @@ export interface VotesData {
   lastUserVoteTime: number;
 }
 
-export type RawVotesDataMap = Record<string, RawVotesData>;
+export interface RawVotesDataMap {
+  totalWeightThisPeriod: BigNumber;
+  totalWeightNextPeriod: BigNumber;
+  gauges: Record<string, RawVotesData>;
+}
 
 export type VotingGaugeWithVotes = VotingGauge & VotesData;
 
@@ -54,8 +65,10 @@ export class GaugeControllerDecorator {
     userAddress: string
   ): Promise<VotingGaugeWithVotes[]> {
     this.multicaller = this.resetMulticaller();
-    this.callGaugeVotes(votingGauges);
-    this.callGaugeVotesNextPeriod(votingGauges);
+    this.callGaugeWeightThisPeriod(votingGauges);
+    this.callGaugeWeightNextPeriod(votingGauges);
+    this.callTotalWeightThisPeriod();
+    this.callTotalWeightNextPeriod();
     if (userAddress) {
       this.callUserGaugeVotes(votingGauges, userAddress);
       this.callUserGaugeVoteTime(votingGauges, userAddress);
@@ -63,18 +76,33 @@ export class GaugeControllerDecorator {
 
     const votesDataMap = await this.multicaller.execute<RawVotesDataMap>();
 
-    return votingGauges.map(gauge => {
+    const decoratedGauges = votingGauges.map(gauge => {
       return {
         ...gauge,
-        ...this.formatVotes(votesDataMap[gauge.address])
+        ...this.formatVotes(
+          votesDataMap.totalWeightThisPeriod,
+          votesDataMap.totalWeightNextPeriod,
+          votesDataMap.gauges[gauge.address]
+        )
       };
     });
+    return decoratedGauges;
   }
 
-  private formatVotes(votesData: RawVotesData): VotesData {
+  private formatVotes(
+    totalWeightThisPeriod: BigNumber,
+    totalWeightNextPeriod: BigNumber,
+    votesData: RawVotesData
+  ): VotesData {
     return {
-      votes: votesData.votes.toString(),
-      votesNextPeriod: votesData.votesNextPeriod.toString(),
+      votes: votesData.gaugeWeightThisPeriod.bias
+        .mul(VOTE_MULTIPLIER)
+        .div(totalWeightThisPeriod)
+        .toString(),
+      votesNextPeriod: votesData.gaugeWeightNextPeriod.bias
+        .mul(VOTE_MULTIPLIER)
+        .div(totalWeightNextPeriod)
+        .toString(),
       userVotes: votesData?.userVotes?.power.toString() || '0',
       lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0
     };
@@ -83,13 +111,16 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch relative vote weight of each gauge
    */
-  private callGaugeVotes(votingGauges: VotingGauge[]) {
+  private callGaugeWeightThisPeriod(votingGauges: VotingGauge[]) {
+    const thisWeekTimestamp = toUnixTimestamp(
+      Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
+    );
     votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${gauge.address}.votes`,
+        `gauges.${gauge.address}.gaugeWeightThisPeriod`,
         this.config.network.addresses.gaugeController,
-        'gauge_relative_weight',
-        [gauge.address, toUnixTimestamp(Date.now())]
+        'points_weight',
+        [gauge.address, thisWeekTimestamp]
       );
     });
   }
@@ -97,16 +128,42 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch relative vote weight of each gauge for next period (1 week)
    */
-  private callGaugeVotesNextPeriod(votingGauges: VotingGauge[]) {
-    const oneWeekFromNow = toUnixTimestamp(Date.now() + oneWeekInMs);
+  private callGaugeWeightNextPeriod(votingGauges: VotingGauge[]) {
+    const nextWeekTimestamp = toUnixTimestamp(
+      Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
+    );
     votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${gauge.address}.votesNextPeriod`,
+        `gauges.${gauge.address}.gaugeWeightNextPeriod`,
         this.config.network.addresses.gaugeController,
-        'gauge_relative_weight',
-        [gauge.address, oneWeekFromNow]
+        'points_weight',
+        [gauge.address, nextWeekTimestamp]
       );
     });
+  }
+
+  private callTotalWeightThisPeriod() {
+    const nextWeekTimestamp = toUnixTimestamp(
+      Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
+    );
+    this.multicaller.call(
+      `totalWeightThisPeriod`,
+      this.config.network.addresses.gaugeController,
+      'points_total',
+      [nextWeekTimestamp]
+    );
+  }
+
+  private callTotalWeightNextPeriod() {
+    const nextWeekTimestamp = toUnixTimestamp(
+      Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
+    );
+    this.multicaller.call(
+      `totalWeightNextPeriod`,
+      this.config.network.addresses.gaugeController,
+      'points_total',
+      [nextWeekTimestamp]
+    );
   }
 
   /**
@@ -115,7 +172,7 @@ export class GaugeControllerDecorator {
   private callUserGaugeVotes(votingGauges: VotingGauge[], userAddress: string) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${gauge.address}.userVotes`,
+        `gauges.${gauge.address}.userVotes`,
         this.config.network.addresses.gaugeController,
         'vote_user_slopes',
         [userAddress, gauge.address]
@@ -132,7 +189,7 @@ export class GaugeControllerDecorator {
   ) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
-        `${gauge.address}.lastUserVoteTime`,
+        `gauges.${gauge.address}.lastUserVoteTime`,
         this.config.network.addresses.gaugeController,
         'last_user_vote',
         [userAddress, gauge.address]
