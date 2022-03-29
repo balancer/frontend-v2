@@ -127,7 +127,14 @@ const thirdPartyAPRLabel = computed(() => {
           <div class="flex items-center">
             {{ fNum2(pool.dynamic.apr.liquidityMining, FNumFormats.percent) }}
             <span class="ml-1 text-gray-500 text-xs flex items-center">
-              {{ $t('liquidityMiningAPR') }}
+              {{
+                [
+                  '0xde8c195aa41c11a0c4787372defbbddaa31306d2000200000000000000000181',
+                  '0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182'
+                ].includes(pool.id)
+                  ? $t('staking.stakingApr')
+                  : $t('liquidityMiningAPR')
+              }}
             </span>
           </div>
           <template v-if="lmMultiRewardPool" #item="{ item }">
