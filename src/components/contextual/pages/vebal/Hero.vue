@@ -78,11 +78,11 @@ function navigateToGetVeBAL() {
       <div class="py-8 px-4 lg:pl-8">
         <div class="coins flex">
           <div class="coin group">
-            <img
+            <BalImage
               class="graphic"
               width="724"
               height="800"
-              src="@/assets/images/coins-1.png"
+              :src="require('@/assets/images/coins-1.png')"
               alt=""
             />
             <div class="caption">
@@ -93,11 +93,11 @@ function navigateToGetVeBAL() {
             </div>
           </div>
           <div class="coin group">
-            <img
+            <BalImage
               class="graphic"
               width="696"
               height="800"
-              src="@/assets/images/coins-2.png"
+              :src="require('@/assets/images/coins-2.png')"
               alt=""
             />
             <div class="caption">
@@ -108,11 +108,11 @@ function navigateToGetVeBAL() {
             </div>
           </div>
           <div class="coin group">
-            <img
+            <BalImage
               class="graphic"
               width="696"
               height="800"
-              src="@/assets/images/coins-3.png"
+              :src="require('@/assets/images/coins-3.png')"
               alt=""
             />
             <div class="caption">
@@ -158,7 +158,7 @@ function navigateToGetVeBAL() {
 
 @media (min-width: 768px) {
   .hero-text {
-    min-width: 380px;
+    min-width: 400px;
   }
 }
 </style>
