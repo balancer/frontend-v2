@@ -46,7 +46,7 @@ export default function useTokenApprovalActions(
 
   function getTokenApprovalActions(
     customApprovalState?: Record<string, ApprovalState>,
-    spender?: string,
+    spender: string = appNetworkConfig.addresses.vault,
     amount: string = MaxUint256.toString()
   ): TransactionActionInfo[] {
     const approvalStates = customApprovalState || requiredApprovalState.value;

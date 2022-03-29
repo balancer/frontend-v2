@@ -191,10 +191,16 @@ watch(lockActionStatesConfirmed, () => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
+  const approvalAmount = parseUnits(
+    props.lockAmount,
+    props.lockablePoolTokenInfo.decimals
+  ).toString();
+
   const approvalActions = await getTokenApprovalActionsForSpender(
     configService.network.addresses.veBAL,
-    parseUnits(props.lockAmount, 18).toString()
+    approvalAmount
   );
+
   actions.value.unshift(...approvalActions);
 });
 </script>

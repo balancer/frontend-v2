@@ -101,7 +101,7 @@ export default function useTokenApprovals(
         address,
         ERC20ABI,
         'approve',
-        [spender || appNetworkConfig.addresses.vault, amount]
+        [spender, amount]
       );
 
       state.init = false;
@@ -119,7 +119,7 @@ export default function useTokenApprovals(
         ),
         details: {
           contractAddress: address,
-          spender: spender || appNetworkConfig.addresses.vault
+          spender: spender
         }
       });
 
