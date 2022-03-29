@@ -9,6 +9,7 @@ import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { TransactionActionInfo } from '@/types/transactions';
+import { MaxUint256 } from '@ethersproject/constants';
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
@@ -28,42 +29,46 @@ export default function useTokenApprovalActions(
   /**
    * METHODS
    */
-  async function getTokenApprovalActionsForSpender(spender: string) {
+  async function getTokenApprovalActionsForSpender(
+    spender: string,
+    amount: string = MaxUint256.toString()
+  ) {
     const requiredApprovalStateForSpender = await getApprovalForSpender(
       spender
     );
     const actions = getTokenApprovalActions(
       requiredApprovalStateForSpender,
-      spender
+      spender,
+      amount
     );
     return actions;
   }
 
   function getTokenApprovalActions(
     customApprovalState?: Record<string, ApprovalState>,
-    spender?: string
+    spender: string = appNetworkConfig.addresses.vault,
+    amount: string = MaxUint256.toString()
   ): TransactionActionInfo[] {
-    return Object.keys(customApprovalState || requiredApprovalState.value).map(
-      address => {
-        const token = getToken(address);
-        return {
-          label: t(
-            spender === appNetworkConfig.addresses.veBAL
-              ? 'transactionSummary.approveForLocking'
-              : 'transactionSummary.approveForInvesting',
-            [token.symbol]
-          ),
-          loadingLabel: t('investment.preview.loadingLabel.approval'),
-          confirmingLabel: t('confirming'),
-          stepTooltip: t('investment.preview.tooltips.approval', [
-            token.symbol
-          ]),
-          action: () => {
-            return approveToken(token.address, spender, customApprovalState);
-          }
-        };
-      }
-    );
+    const approvalStates = customApprovalState || requiredApprovalState.value;
+
+    return Object.keys(approvalStates).map(address => {
+      const token = getToken(address);
+      const state = approvalStates[address];
+      return {
+        label: t(
+          spender === appNetworkConfig.addresses.veBAL
+            ? 'transactionSummary.approveForLocking'
+            : 'transactionSummary.approveForInvesting',
+          [token.symbol]
+        ),
+        loadingLabel: t('investment.preview.loadingLabel.approval'),
+        confirmingLabel: t('confirming'),
+        stepTooltip: t('investment.preview.tooltips.approval', [token.symbol]),
+        action: () => {
+          return approveToken(token.address, { spender, state, amount });
+        }
+      };
+    });
   }
 
   return {

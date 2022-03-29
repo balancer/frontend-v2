@@ -25,6 +25,7 @@ import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import { configService } from '@/services/config/config.service';
+import { parseUnits } from '@ethersproject/units';
 
 /**
  * TYPES
@@ -190,9 +191,16 @@ watch(lockActionStatesConfirmed, () => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
+  const approvalAmount = parseUnits(
+    props.lockAmount,
+    props.lockablePoolTokenInfo.decimals
+  ).toString();
+
   const approvalActions = await getTokenApprovalActionsForSpender(
-    configService.network.addresses.veBAL
+    configService.network.addresses.veBAL,
+    approvalAmount
   );
+
   actions.value.unshift(...approvalActions);
 });
 </script>
