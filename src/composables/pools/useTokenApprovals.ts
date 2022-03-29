@@ -25,6 +25,12 @@ export type ApprovalStateMap = {
   [address: string]: ApprovalState;
 };
 
+export type ApprovalOptions = {
+  spender: string;
+  amount: string;
+  state: ApprovalState;
+};
+
 export default function useTokenApprovals(
   tokenAddresses: string[],
   amounts: Ref<string[]>
@@ -72,15 +78,20 @@ export default function useTokenApprovals(
       appNetworkConfig.addresses.vault
     )
   );
+
   /**
    * METHODS
    */
   async function approveToken(
     address: string,
-    spender?: string,
-    customApprovalState?: Record<string, ApprovalState>
+    options: Partial<ApprovalOptions> = {}
   ): Promise<TransactionResponse> {
-    const state = customApprovalState || requiredApprovalState.value[address];
+    const defaultOptions: ApprovalOptions = {
+      spender: appNetworkConfig.addresses.vault,
+      amount: MaxUint256.toString(),
+      state: requiredApprovalState.value[address]
+    };
+    const { spender, amount, state } = Object.assign(defaultOptions, options);
 
     try {
       state.init = true;
@@ -90,7 +101,7 @@ export default function useTokenApprovals(
         address,
         ERC20ABI,
         'approve',
-        [spender || appNetworkConfig.addresses.vault, MaxUint256.toString()]
+        [spender, amount]
       );
 
       state.init = false;
@@ -108,7 +119,7 @@ export default function useTokenApprovals(
         ),
         details: {
           contractAddress: address,
-          spender: spender || appNetworkConfig.addresses.vault
+          spender: spender
         }
       });
 
