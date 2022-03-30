@@ -22,60 +22,58 @@ const isEligibleForLM = (relevantDistribution.pools[props.poolId] || []).some(
 
 <template>
   <AnimatePresence isVisible>
-    <div class="relative">
-      <BalAccordion
-        class="shadow-2xl"
-        :sections="[
-          {
-            title: $t('liquidityMiningIncentives'),
-            id: 'lm-incentives',
-            handle: 'lm-handle',
-            isDisabled: !isEligibleForLM
-          }
-        ]"
-      >
-        <template v-slot:lm-handle>
-          <button
-            class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
-          >
-            <BalStack horizontal justify="between" align="center">
-              <BalStack spacing="sm" align="center">
-                <div
-                  :class="[
-                    'flex items-center p-1 text-white rounded-full',
-                    {
-                      'bg-green-500': isEligibleForLM,
-                      'bg-gray-400': !isEligibleForLM
-                    }
-                  ]"
-                >
-                  <BalIcon size="sm" name="check" v-if="isEligibleForLM" />
-                  <BalIcon size="sm" name="x" v-else />
-                </div>
-                <h6>{{ $t('liquidityMiningIncentives') }}</h6>
-              </BalStack>
-              <BalStack horizontal spacing="sm" align="center">
-                <BalIcon
-                  name="chevron-down"
-                  class="text-blue-500"
-                  v-if="isEligibleForLM"
-                />
-              </BalStack>
+    <BalAccordion
+      class="shadow-2xl rounded-xl"
+      :sections="[
+        {
+          title: $t('liquidityMiningIncentives'),
+          id: 'lm-incentives',
+          handle: 'lm-handle',
+          isDisabled: !isEligibleForLM
+        }
+      ]"
+    >
+      <template v-slot:lm-handle>
+        <button
+          class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
+        >
+          <BalStack horizontal justify="between" align="center">
+            <BalStack spacing="sm" align="center">
+              <div
+                :class="[
+                  'flex items-center p-1 text-white rounded-full',
+                  {
+                    'bg-green-500': isEligibleForLM,
+                    'bg-gray-400': !isEligibleForLM
+                  }
+                ]"
+              >
+                <BalIcon size="sm" name="check" v-if="isEligibleForLM" />
+                <BalIcon size="sm" name="x" v-else />
+              </div>
+              <h6>{{ $t('liquidityMiningIncentives') }}</h6>
             </BalStack>
-          </button>
-        </template>
-        <template v-slot:lm-incentives>
-          <div class="p-4">
-            <p>
-              {{
-                $t('liquidityMiningIncentivesCopy', [
-                  configService.network.shortName
-                ])
-              }}
-            </p>
-          </div>
-        </template>
-      </BalAccordion>
-    </div>
+            <BalStack horizontal spacing="sm" align="center">
+              <BalIcon
+                name="chevron-down"
+                class="text-blue-500"
+                v-if="isEligibleForLM"
+              />
+            </BalStack>
+          </BalStack>
+        </button>
+      </template>
+      <template v-slot:lm-incentives>
+        <div class="p-4">
+          <p>
+            {{
+              $t('liquidityMiningIncentivesCopy', [
+                configService.network.shortName
+              ])
+            }}
+          </p>
+        </div>
+      </template>
+    </BalAccordion>
   </AnimatePresence>
 </template>
