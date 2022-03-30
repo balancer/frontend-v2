@@ -141,7 +141,10 @@
               v-if="loadingPool"
               class="pool-actions-card h-40"
             />
-            <StakingIncentivesCard v-if="!loadingPool && !isL2" :pool="pool" />
+            <StakingIncentivesCard
+              v-if="isStakeablePool && !loadingPool && !isL2"
+              :pool="pool"
+            />
             <LMIncentivesCard v-if="isL2" :poolId="id" />
             <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
@@ -400,6 +403,10 @@ export default defineComponent({
       );
     });
 
+    const isStakeablePool = computed((): boolean =>
+      POOLS.Stakeable.AllowList.includes(route.params.id as string)
+    );
+
     /**
      * METHODS
      */
@@ -456,6 +463,7 @@ export default defineComponent({
       copperNetworkPrefix,
       hasCustomToken,
       isL2,
+      isStakeablePool,
       // methods
       fNum2,
       onNewTx,
