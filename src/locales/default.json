@@ -346,6 +346,8 @@
     "liquidityIncentives": "liquidity incentives",
     "liquidityMining": "Liquidity mining",
     "liquidityMiningAPR": "Liquidity Mining APR",
+    "liquidityMiningIncentives": "Liquidity mining incentives",
+    "liquidityMiningIncentivesCopy": "People who invest in this pool receive liquidity mining incentives. Unlike on Ethereum Mainnet, no staking is required for eligible pools on {0}",
     "liquidityMiningPopover": {
         "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
         "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
