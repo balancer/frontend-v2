@@ -7,11 +7,14 @@ import queryBuilder, { pastPoolsQuery } from './query';
 import { DecoratedPool, Pool, PoolToken, QueryBuilder } from '../../types';
 
 import { Network } from '@/composables/useNetwork';
-import { configService as _configService } from '@/services/config/config.service';
+import {
+  configService,
+  configService as _configService
+} from '@/services/config/config.service';
 import PoolService from '@/services/pool/pool.service';
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, orderBy } from 'lodash';
 
 export default class Pools {
   service: Service;
@@ -143,9 +146,39 @@ export default class Pools {
 
       pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
-      pool.mainTokens = pool.mainTokens
-        ? pool.mainTokens.map(t => getAddress(t))
-        : undefined;
+
+      if (pool.mainTokens) {
+        const bbUsd = configService.network.addresses.bbUsd.toLowerCase();
+        const linearPools = pool.linearPools || [];
+
+        pool.mainTokens = orderBy(
+          pool.mainTokens,
+          mainToken => {
+            if (pool.tokensList.includes(mainToken)) {
+              return pool.tokensList.indexOf(mainToken);
+            } else if (
+              configService.network.usdTokens.includes(getAddress(mainToken)) &&
+              pool.tokensList.includes(bbUsd)
+            ) {
+              return pool.tokensList.indexOf(bbUsd);
+            }
+
+            const linearPool = linearPools.find(
+              linearPool => linearPool.mainToken.address === mainToken
+            );
+
+            if (linearPool) {
+              return pool.tokensList.indexOf(linearPool.address);
+            }
+
+            return 0;
+          },
+          'asc'
+        );
+
+        pool.mainTokens = pool.mainTokens.map(t => getAddress(t));
+      }
+
       pool.tokens = this.formatPoolTokens(pool);
 
       return pool;

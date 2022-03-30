@@ -861,8 +861,12 @@ export default function useWithdrawMath(
 
     //determine expectedAmountsOut based on tokensOut
     if (isProportional.value) {
-      expectedAmountsOut = proportionalPoolTokenAmounts.value.map(amount =>
-        parseUnits(amount).toString()
+      expectedAmountsOut = proportionalPoolTokenAmounts.value.map(
+        (amount, index) => {
+          const token = getToken(pool.value.tokensList[index]);
+
+          return parseUnits(amount, token.decimals).toString();
+        }
       );
     } else {
       expectedAmountsOut = tokenAddresses.value.map((tokenAddress, index) => {
@@ -891,6 +895,7 @@ export default function useWithdrawMath(
     }
 
     const tokensOut = getExitPoolBatchSwapTokensOut(expectedAmountsOut);
+    //TODO: this might now be broken for weighted boosted with 1 base token
     exitPoolBatchSwapWrappedTokensOut.value = tokensOut
       .map((token, idx) => ({ token, amount: expectedAmountsOut[idx] }))
       .filter(
@@ -901,16 +906,40 @@ export default function useWithdrawMath(
       );
 
     try {
+      const bbUsd = configService.network.addresses.bbUsd.toLowerCase();
+      const usdTokens = configService.network.usdTokens;
+      const linearPools = pool.value.linearPools || [];
+      hasNestedUsdStablePhantomPool.value;
+
+      const exits = pool.value.tokensList.map((exitToken, index) => {
+        const linearPool = linearPools.find(
+          linearPool => exitToken === linearPool.address
+        );
+
+        return {
+          exitToken,
+          exitExpectedAmountOut: expectedAmountsOut[index],
+          batchSwapTokenOut:
+            exitToken === bbUsd
+              ? tokensOut.find(tokenOut => usdTokens.includes(tokenOut))
+              : linearPool
+              ? tokensOut.find(
+                  tokenOut =>
+                    tokenOut === linearPool.mainToken.address ||
+                    tokenOut === linearPool.wrappedToken.address
+                )
+              : undefined
+        };
+      });
+
       const response = await balancer.relayer.exitPoolAndBatchSwap({
         poolId: pool.value.id,
         exiter: account.value,
         swapRecipient: account.value,
-        exitTokens: pool.value.tokensList,
-        expectedAmountsOut,
+        exits,
         userData: WeightedPoolEncoder.exitExactBPTInForTokensOut(
           isProportional.value ? fullBPTIn.value : bptBalanceScaled.value
         ),
-        batchSwapTokensOut: tokensOut,
         slippage: slippageScaled.value,
         fetchPools: {
           fetchPools: true,
@@ -921,7 +950,9 @@ export default function useWithdrawMath(
 
       const amountsOut = (response.outputs?.amountsOut ?? []).map(
         (amount, index) => {
-          const token = getToken(tokensOut[index]);
+          const token = getToken(
+            exits[index].batchSwapTokenOut || exits[index].exitToken
+          );
 
           return scaleDown(bnum(amount).abs(), token.decimals).toString();
         }

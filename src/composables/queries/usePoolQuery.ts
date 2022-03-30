@@ -22,6 +22,7 @@ import {
   lpTokensFor
 } from '../usePool';
 import { keyBy } from 'lodash';
+import { configService } from '@/services/config/config.service';
 
 export default function usePoolQuery(
   id: string,
@@ -88,10 +89,20 @@ export default function usePoolQuery(
     linearPools.forEach(linearPool => {
       if (!pool.wrappedTokens) pool.wrappedTokens = [];
 
-      const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
+      const index = pool.tokensList.findIndex(token => {
+        if (
+          token === configService.network.addresses.bbUsd &&
+          configService.network.usdTokens.includes(linearPool.mainToken.address)
+        ) {
+          return true;
+        }
+
+        return linearPool.address.toLowerCase() === token;
+      });
       const mainToken = getAddress(linearPool.mainToken.address);
       const wrappedToken = getAddress(linearPool.wrappedToken.address);
 
+      //console.log('linear pool index', linearPool.symbol, index);
       pool.wrappedTokens[index] = wrappedToken;
 
       linearPoolTokensMap[mainToken] = {
