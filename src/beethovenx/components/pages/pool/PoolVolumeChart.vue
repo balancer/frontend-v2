@@ -179,7 +179,7 @@ function setCurrentChart(chartType: ChartType) {
         :update-options="{ replaceMerge: 'series' }"
       />
     </template>
-    <BalBlankSlate v-else>
+    <BalBlankSlate v-else class="mb-4">
       <BalIcon name="bar-chart" />
       <span class="dark:text-white">
         {{ $t('insufficientData') }}
