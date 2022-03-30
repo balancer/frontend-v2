@@ -577,6 +577,7 @@
         "stakeValueTooltip": "The approximate value of the LP tokens you will stake.",
         "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
         "staking": "Staking",
+        "stakeTooltip": "Stake LP tokens",
         "stakingApr": "staking APR",
         "stakingIncentives": "Staking incentives",
         "totalShareTooltip": "Your current total share of LP tokens in the pool",
@@ -584,6 +585,7 @@
         "unstakedPools": "Unstaked pools",
         "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
         "unstaking": "Unstaking",
+        "unstakeTooltip": "Unstake LP tokens",
         "weeklyEarning": "weekly earning"
     },
     "stakeToGetExtra": "Stake this to earn extra",
