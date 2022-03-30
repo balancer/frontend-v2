@@ -162,7 +162,18 @@ export default function useInvestFormMath(
         continue;
       }
 
-      if (token === networkConfig.addresses.bbUsd.toLowerCase()) {
+      const linearPool = pool.value.linearPools?.find(
+        linearPool => linearPool.address === token
+      );
+
+      if (linearPool) {
+        const amountIdx = tokenAddresses.value.findIndex(
+          address =>
+            address.toLowerCase() === linearPool.mainToken.address.toLowerCase()
+        );
+
+        amounts.push(fullAmounts.value[amountIdx]);
+      } else if (token === networkConfig.addresses.bbUsd.toLowerCase()) {
         amounts.push(
           formatUnits(
             bnum(batchSwapUsd.value.amountTokenOut.toString())
