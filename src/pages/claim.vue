@@ -99,10 +99,15 @@ const gaugesWithRewards = computed((): Gauge[] => {
 });
 
 const gaugeTables = computed((): GaugeTable[] => {
+  // Only return gauges if we have a corresponding pool and rewards > 0
   return gaugesWithRewards.value.reduce<GaugeTable[]>((arr, gauge) => {
     const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
+    const totalRewardValue = Object.values(gauge.claimableRewards).reduce(
+      (acc, reward) => acc.plus(reward),
+      bnum(0)
+    );
 
-    if (pool)
+    if (pool && totalRewardValue.gt(0))
       arr.push({
         gauge,
         pool
