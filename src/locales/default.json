@@ -330,6 +330,12 @@
                 "description": "Add assets proportionally to the pool weights or the price impact will be high and you will likely get REKT and lose money.",
                 "title": "Be careful: This pool has low liquidity"
             }
+        },
+        "error": {
+            "rektPriceImpact": {
+                "description": "The likelyhood of you losing money is too high. For your protection, you can’t perform this transaction on this interface.",
+                "title": "This price impact is too high. You cannot proceed"
+            }
         }
     },
     "investmentPool": "Investment pool",

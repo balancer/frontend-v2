@@ -51,7 +51,9 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact, highPriceImpact } = toRefs(props.math);
+const { fullAmounts, priceImpact, highPriceImpact, rektPriceImpact } = toRefs(
+  props.math
+);
 const { resetAmounts } = useInvestState();
 
 /**
@@ -151,10 +153,19 @@ function handleShowStakeModal() {
       :highPriceImpact="highPriceImpact"
     />
 
+    <BalAlert
+      v-if="rektPriceImpact"
+      type="error"
+      :title="$t('investment.error.rektPriceImpact.title')"
+      :description="$t('investment.error.rektPriceImpact.description')"
+      class="mt-6 mb-2"
+    />
+
     <InvestActions
       :pool="pool"
       :math="math"
       :tokenAddresses="tokenAddresses"
+      :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"
       @showStakeModal="handleShowStakeModal"

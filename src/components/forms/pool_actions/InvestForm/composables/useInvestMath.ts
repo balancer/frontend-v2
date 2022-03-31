@@ -13,6 +13,10 @@ import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import usePromiseSequence from '@/composables/usePromiseSequence';
+import {
+  HIGH_PRICE_IMPACT,
+  REKT_PRICE_IMPACT
+} from '@/constants/poolLiquidity';
 
 export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
@@ -127,7 +131,13 @@ export default function useInvestMath(
 
   const highPriceImpact = computed((): boolean => {
     if (batchSwapLoading.value) return false;
-    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
+  });
+
+  const rektPriceImpact = computed((): boolean => {
+    if (batchSwapLoading.value) return false;
+    console.log(priceImpact.value);
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
   });
 
   const maximized = computed(() =>
@@ -274,6 +284,7 @@ export default function useInvestMath(
     fiatTotalLabel,
     priceImpact,
     highPriceImpact,
+    rektPriceImpact,
     maximized,
     optimized,
     proportionalAmounts,
