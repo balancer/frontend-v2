@@ -52,7 +52,7 @@ export default function useTokenApprovals(
   /**
    * STATE
    */
-  const requiredApprovalState = ref<ApprovalStateMap>(
+  const vaultApprovalStateMap = ref<ApprovalStateMap>(
     Object.fromEntries(
       approvalsRequired(
         tokenAddresses,
@@ -89,7 +89,7 @@ export default function useTokenApprovals(
     const defaultOptions: ApprovalOptions = {
       spender: appNetworkConfig.addresses.vault,
       amount: MaxUint256.toString(),
-      state: requiredApprovalState.value[address]
+      state: vaultApprovalStateMap.value[address]
     };
     const { spender, amount, state } = Object.assign(defaultOptions, options);
 
@@ -143,7 +143,9 @@ export default function useTokenApprovals(
     }
   }
 
-  async function getApprovalForSpender(spender: string) {
+  async function getApprovalStateMapFor(
+    spender: string
+  ): Promise<ApprovalStateMap> {
     const customTokenMap = getTokens(tokenAddresses);
 
     const allowances = await tokenService.allowances.get(
@@ -170,12 +172,12 @@ export default function useTokenApprovals(
 
   return {
     // state
-    requiredApprovalState,
+    vaultApprovalStateMap,
     approving,
     // computed
     requiredApprovals,
     // methods
     approveToken,
-    getApprovalForSpender
+    getApprovalStateMapFor
   };
 }
