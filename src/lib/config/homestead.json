@@ -47,11 +47,11 @@
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E",
     "batchRelayer": "0xAc9f49eF3ab0BbC929f7b1bb0A17E1Fca5786251",
-    "gaugeFactory": "",
-    "balancerMinter": "",
-    "gaugeController": "",
-    "tokenAdmin": "",
-    "veBAL": "0xC128a9954e6c874eA3d62ce62B468bA073093F25"
+    "veBAL": "0xC128a9954e6c874eA3d62ce62B468bA073093F25",
+    "gaugeController": "0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD",
+    "gaugeFactory": "0x4E7bBd911cf1EFa442BC1b2e9Ea01ffE785412EC",
+    "balancerMinter": "0x239e55F427D44C3cc793f49bFB507ebe76638a2b",
+    "tokenAdmin": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
