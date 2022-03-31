@@ -16,6 +16,8 @@ import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { getAddress } from 'ethers/lib/utils';
 import { useQueryClient } from 'vue-query';
+import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
@@ -33,14 +35,16 @@ const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
+const { getProvider } = useWeb3();
 
 const {
+  userData: {
+    stakedSharesForProvidedPool,
+    refetchStakedShares,
+    refetchUserStakingData
+  },
   stakeBPT,
   unstakeBPT,
-  getGaugeAddress,
-  stakedSharesForProvidedPool,
-  refetchStakedShares,
-  refetchStakingData,
   hideAprInfo
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
@@ -129,14 +133,14 @@ async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
-  await refetchStakingData.value();
+  await refetchUserStakingData.value();
   await queryClient.refetchQueries(['staking']);
   emit('success');
 }
 
 async function loadApprovalsForGauge() {
   isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress(props.pool.address);
+  const gaugeAddress = await getGaugeAddress(props.pool.address, getProvider());
   const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;

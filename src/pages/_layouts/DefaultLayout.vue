@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import StakingProvider from '@/providers/local/staking.provider';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 
 /**
  * COMPOSABLES

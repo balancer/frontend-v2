@@ -211,7 +211,7 @@ import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
-import StakingProvider from '@/providers/local/staking.provider';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 import { getAddressFromPoolId } from '@/lib/utils';
 import { isL2 } from '@/composables/useNetwork';
 
