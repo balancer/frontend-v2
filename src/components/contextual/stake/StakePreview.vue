@@ -199,7 +199,7 @@ function handleClose() {
                   ? $t('staking.stakeValueTooltip')
                   : $t('staking.unstakeValueTooltip')
               "
-              width="20"
+              width="40"
               textAlign="center"
             />
           </BalStack>
@@ -212,7 +212,7 @@ function handleClose() {
             </span>
             <BalTooltip
               :text="$t('staking.totalShareTooltip')"
-              width="20"
+              width="40"
               textAlign="center"
             />
           </BalStack>

@@ -76,7 +76,7 @@ const supportsContractBasedClaiming = computed(
 );
 
 const balRewardsData = computed((): RewardRow[] => {
-  if (!isWalletReady.value) return [];
+  if (!isWalletReady.value || appLoading.value) return [];
   // Using reduce to filter out gauges we don't have corresponding pools for
   return gauges.value.reduce<RewardRow[]>((arr, gauge) => {
     const amount = formatUnits(gauge.claimableTokens, balToken.value.decimals);
@@ -99,10 +99,15 @@ const gaugesWithRewards = computed((): Gauge[] => {
 });
 
 const gaugeTables = computed((): GaugeTable[] => {
+  // Only return gauges if we have a corresponding pool and rewards > 0
   return gaugesWithRewards.value.reduce<GaugeTable[]>((arr, gauge) => {
     const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
+    const totalRewardValue = Object.values(gauge.claimableRewards).reduce(
+      (acc, reward) => acc.plus(reward),
+      bnum(0)
+    );
 
-    if (pool)
+    if (pool && totalRewardValue.gt(0))
       arr.push({
         gauge,
         pool
@@ -199,10 +204,12 @@ watch(gaugePools, async newPools => {
         </div>
         <BalClaimsTable
           :rewardsData="balRewardsData"
-          :isLoading="queriesLoading"
+          :isLoading="queriesLoading || appLoading"
         />
 
-        <template v-if="!queriesLoading && gaugesWithRewards.length > 0">
+        <template
+          v-if="!queriesLoading && !appLoading && gaugesWithRewards.length > 0"
+        >
           <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
           <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
             <div class="flex mt-4">
@@ -210,7 +217,10 @@ watch(gaugePools, async newPools => {
                 {{ gaugeTitle(pool) }}
               </h4>
             </div>
-            <GaugeRewardsTable :gauge="gauge" :isLoading="queriesLoading" />
+            <GaugeRewardsTable
+              :gauge="gauge"
+              :isLoading="queriesLoading || appLoading"
+            />
           </div>
         </template>
 

@@ -346,6 +346,8 @@
     "liquidityIncentives": "liquidity incentives",
     "liquidityMining": "Liquidity mining",
     "liquidityMiningAPR": "Liquidity Mining APR",
+    "liquidityMiningIncentives": "Liquidity mining incentives",
+    "liquidityMiningIncentivesCopy": "People who invest in this pool receive liquidity mining incentives. Unlike on Ethereum Mainnet, no staking is required for eligible pools on {0}",
     "liquidityMiningPopover": {
         "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
         "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
@@ -575,6 +577,7 @@
         "stakeValueTooltip": "The approximate value of the LP tokens you will stake.",
         "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
         "staking": "Staking",
+        "stakeTooltip": "Confirm staking of LP tokens to earn liquidity mining incentives on this pool",
         "stakingApr": "staking APR",
         "stakingIncentives": "Staking incentives",
         "totalShareTooltip": "Your current total share of LP tokens in the pool",
@@ -582,6 +585,7 @@
         "unstakedPools": "Unstaked pools",
         "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
         "unstaking": "Unstaking",
+        "unstakeTooltip": "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
         "weeklyEarning": "weekly earning"
     },
     "stakeToGetExtra": "Stake this to earn extra",
