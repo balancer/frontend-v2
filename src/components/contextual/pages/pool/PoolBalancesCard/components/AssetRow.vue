@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { formatUnits } from '@ethersproject/units';
+import { computed } from 'vue';
 
-import useTokens from '@/composables/useTokens';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
-
+import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES

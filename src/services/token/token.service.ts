@@ -1,9 +1,10 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
+
 import { configService as _configService } from '../config/config.service';
-import MetadataConcern from './concerns/metadata.concern';
-import BalancesConcern from './concerns/balances.concern';
+import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import AllowancesConcern from './concerns/allowances.concern';
+import BalancesConcern from './concerns/balances.concern';
+import MetadataConcern from './concerns/metadata.concern';
 
 export default class TokenService {
   provider: JsonRpcProvider;

@@ -6,33 +6,35 @@
  * TODO:
  * Requires major refactor following Boosted pools (StablePhantom) logic additions.
  */
-import { computed, Ref, ref, watch } from 'vue';
-import { bnSum, bnum, forChange } from '@/lib/utils';
-import { formatUnits, parseUnits } from '@ethersproject/units';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
-// Services
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-// Composables
-import useUserSettings from '@/composables/useUserSettings';
-import useSlippage from '@/composables/useSlippage';
-import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
-import { isStablePhantom, usePool } from '@/composables/usePool';
-import { BatchSwapOut } from '@/types';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import OldBigNumber from 'bignumber.js';
-import { TokenInfo } from '@/types/TokenList';
-import { balancer } from '@/lib/balancer.sdk';
+import { SwapKind } from '@balancer-labs/balancer-js';
 import {
   BalancerError,
   BalancerErrorCode,
   SwapType,
   TransactionData
 } from '@balancer-labs/sdk';
-import { SwapKind } from '@balancer-labs/balancer-js';
+import { formatUnits, parseUnits } from '@ethersproject/units';
+import OldBigNumber from 'bignumber.js';
+import { computed, Ref, ref, watch } from 'vue';
+
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { isStablePhantom, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
+import useSlippage from '@/composables/useSlippage';
+import useTokens from '@/composables/useTokens';
+// Composables
+import useUserSettings from '@/composables/useUserSettings';
+import { balancer } from '@/lib/balancer.sdk';
+import { bnSum, bnum, forChange } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+// Services
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import useWeb3 from '@/services/web3/useWeb3';
+import { BatchSwapOut } from '@/types';
+import { TokenInfo } from '@/types/TokenList';
+
 import { setError, WithdrawalError } from './useWithdrawalState';
 
 /**

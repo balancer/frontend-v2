@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
+
 import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
-import { computed } from 'vue';
 
 const { theme } = useTailwind();
 const { darkMode } = useDarkMode();

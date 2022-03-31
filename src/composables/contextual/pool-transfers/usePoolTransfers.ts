@@ -1,10 +1,11 @@
 import { computed, ref } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { useRoute } from 'vue-router';
+
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { useRoute } from 'vue-router';
-import useTokens from '@/composables/useTokens';
 import { isStablePhantom } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 /**
  * STATE

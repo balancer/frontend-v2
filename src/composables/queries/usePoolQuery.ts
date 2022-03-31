@@ -1,24 +1,26 @@
+import { getAddress, isAddress } from '@ethersproject/address';
+import { formatUnits } from 'ethers/lib/utils';
+import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
-import { QueryObserverOptions } from 'react-query/core';
+
 import useTokens from '@/composables/useTokens';
+import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { formatUnits } from 'ethers/lib/utils';
-import { getAddress, isAddress } from '@ethersproject/address';
+import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
-import { POOLS } from '@/constants/pools';
-import useApp from '../useApp';
-import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
-import { bnum, forChange } from '@/lib/utils';
+
+import useApp from '../useApp';
 import {
   isManaged,
   isStableLike,
   isStablePhantom,
   lpTokensFor
 } from '../usePool';
+import useUserSettings from '../useUserSettings';
 
 export default function usePoolQuery(
   id: string,

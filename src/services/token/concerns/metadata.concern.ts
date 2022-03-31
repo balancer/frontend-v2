@@ -1,14 +1,16 @@
-import TokenService from '../token.service';
+import { getAddress } from '@ethersproject/address';
+import { set } from 'lodash';
+
+import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   TokenInfo,
   TokenInfoMap,
   TokenList,
   TokenListMap
 } from '@/types/TokenList';
-import { getAddress } from '@ethersproject/address';
-import { Multicaller } from '@/lib/utils/balancer/contract';
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
-import { set } from 'lodash';
+
+import TokenService from '../token.service';
 
 export default class MetadataConcern {
   constructor(private readonly service: TokenService) {}

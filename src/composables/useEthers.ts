@@ -1,19 +1,20 @@
-import { ref } from 'vue';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/providers';
+import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
+import { ref } from 'vue';
+
 import {
   retryPromiseWithDelay,
   tryPromiseWithTimeout
 } from '@/lib/utils/promise';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import useBlocknative from './useBlocknative';
-import useTransactions from './useTransactions';
-import useTokens from './useTokens';
-import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { toJsTimestamp } from './useTime';
+import useTokens from './useTokens';
+import useTransactions from './useTransactions';
 
 type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
 type FailedTxCallback = (txData: TransactionResponse) => void;

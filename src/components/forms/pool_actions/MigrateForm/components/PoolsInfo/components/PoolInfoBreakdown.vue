@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
-
 import useTokens from '@/composables/useTokens';
+import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
 
 type Props = {

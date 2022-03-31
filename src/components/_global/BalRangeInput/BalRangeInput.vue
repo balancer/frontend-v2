@@ -25,9 +25,11 @@
 </template>
 
 <script>
+import 'vue-slider-component/theme/antd.css';
+
 import { computed, defineComponent, ref, watch } from 'vue';
 import VueSlider from 'vue-slider-component';
-import 'vue-slider-component/theme/antd.css';
+
 import { theme } from '@/../tailwind.config';
 import useDarkMode from '@/composables/useDarkMode';
 

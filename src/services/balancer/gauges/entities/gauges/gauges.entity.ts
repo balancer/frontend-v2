@@ -1,6 +1,6 @@
 import { GaugesSubgraphService } from '../../gauges-subgraph.service';
-import { gaugeQueryBuilder } from './query';
 import { QueryBuilder, SubgraphGauge } from '../../types';
+import { gaugeQueryBuilder } from './query';
 
 export class GaugesEntity {
   constructor(

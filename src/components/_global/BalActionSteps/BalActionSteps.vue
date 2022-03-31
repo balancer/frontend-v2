@@ -7,23 +7,24 @@
  * Useful if there are an arbitrary number of actions the user must take such as
  * "approve n tokens, then invest in a pool.""
  */
-import { computed, ref, watch } from 'vue';
+import { ChainId } from '@aave/protocol-js';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
+import { computed, ref, watch } from 'vue';
+
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import useEthers from '@/composables/useEthers';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTransactionErrors from '@/composables/useTransactionErrors';
+import { configService } from '@/services/config/config.service';
 import { Step, StepState } from '@/types';
 import {
   TransactionAction,
   TransactionActionInfo,
   TransactionActionState
 } from '@/types/transactions';
-import useEthers from '@/composables/useEthers';
-import { dateTimeLabelFor } from '@/composables/useTime';
-import useTransactionErrors from '@/composables/useTransactionErrors';
-import { configService } from '@/services/config/config.service';
-import { ChainId } from '@aave/protocol-js';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 /**
  * TYPES

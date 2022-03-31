@@ -1,10 +1,11 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { networkId } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   GPv2Settlement,
   GPv2VaultRelayer
 } from '@gnosis.pm/gp-v2-contracts/networks.json';
+
+import { networkId } from '@/composables/useNetwork';
 
 export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber(); // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 

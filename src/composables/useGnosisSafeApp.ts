@@ -1,8 +1,9 @@
-import { onBeforeMount } from 'vue';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
+import { onBeforeMount } from 'vue';
+
 import useDarkMode from '@/composables/useDarkMode';
-import useWeb3 from '@/services/web3/useWeb3';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const isGnosisSafeApp = async (): Promise<boolean> => {
   // Can't be a Safe app if we're not running in an iframe

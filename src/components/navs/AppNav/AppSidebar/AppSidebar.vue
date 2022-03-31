@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+
 import { useSidebar } from '@/composables/useSidebar';
+
 import SidebarContent from './SidebarContent.vue';
 
 /**

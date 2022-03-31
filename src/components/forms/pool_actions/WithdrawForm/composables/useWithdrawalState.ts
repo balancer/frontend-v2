@@ -1,12 +1,13 @@
 import { computed, reactive, Ref, toRefs } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useTokens from '@/composables/useTokens';
-import { isStablePhantom } from '@/composables/usePool';
+
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
-import { BaseContent } from '@/types';
+import { isStablePhantom } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
 import i18n from '@/plugins/i18n';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { BaseContent } from '@/types';
 
 /**
  * TYPES

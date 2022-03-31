@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
+
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import TradePairToggle from './TradePairToggle.vue';
-import { bnum } from '@/lib/utils';
+import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { UseTrading } from '@/composables/trade/useTrading';
+import { bnum } from '@/lib/utils';
+
+import TradePairToggle from './TradePairToggle.vue';
 
 /**
  * TYPES

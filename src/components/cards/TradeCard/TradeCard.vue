@@ -83,35 +83,34 @@
 </template>
 
 <script lang="ts">
-import { isRequired } from '@/lib/utils/validations';
-import { computed, defineComponent, ref, watch } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { getAddress, isAddress } from '@ethersproject/address';
-
-import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useValidation, {
-  TradeValidation
-} from '@/composables/trade/useValidation';
-import useSor from '@/composables/trade/useSor';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
-import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
+import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
-import GasReimbursement from './GasReimbursement.vue';
-import { useI18n } from 'vue-i18n';
-import useWeb3 from '@/services/web3/useWeb3';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
-import useDarkMode from '@/composables/useDarkMode';
-
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import useSor from '@/composables/trade/useSor';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
 import { useTradeState } from '@/composables/trade/useTradeState';
+import useValidation, {
+  TradeValidation
+} from '@/composables/trade/useValidation';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useDarkMode from '@/composables/useDarkMode';
+import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { isRequired } from '@/lib/utils/validations';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import GasReimbursement from './GasReimbursement.vue';
 
 export default defineComponent({
   components: {

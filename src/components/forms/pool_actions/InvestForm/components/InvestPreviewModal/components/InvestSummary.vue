@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES

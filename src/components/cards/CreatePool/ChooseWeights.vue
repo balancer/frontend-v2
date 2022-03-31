@@ -1,24 +1,21 @@
 <script setup lang="ts">
+import anime from 'animejs';
+import { sum, sumBy, uniqueId } from 'lodash';
 import { computed, nextTick, onBeforeUpdate, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
-
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
   PoolSeedToken
 } from '@/composables/pools/usePoolCreation';
-import useTokens from '@/composables/useTokens';
-
-import { configService } from '@/services/config/config.service';
-
-import { sum, sumBy, uniqueId } from 'lodash';
-import anime from 'animejs';
-import { bnum } from '@/lib/utils';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import { useI18n } from 'vue-i18n';
+import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const emit = defineEmits(['update:height', 'trigger:alert']);
 

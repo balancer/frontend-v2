@@ -1,47 +1,46 @@
+import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sor/dist/types';
+import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
+import { TransactionResponse } from '@ethersproject/providers';
+import { BigNumber as OldBigNumber } from 'bignumber.js';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import {
   computed,
   ComputedRef,
   onMounted,
   reactive,
-  ref,
   Ref,
+  ref,
   toRefs
 } from 'vue';
-import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
-import { BigNumber as OldBigNumber } from 'bignumber.js';
-import { Pool } from '@balancer-labs/sor/dist/types';
-import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { useI18n } from 'vue-i18n';
 
+import { balancer } from '@/lib/balancer.sdk';
 import { bnum, scale } from '@/lib/utils';
+import {
+  SorManager,
+  SorReturn
+} from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
+import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
   unwrap,
   wrap,
   WrapType
 } from '@/lib/utils/balancer/wrapper';
-import {
-  SorManager,
-  SorReturn
-} from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-
-import useFathom from '../useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
-
-import { TransactionResponse } from '@ethersproject/providers';
-import useEthers from '../useEthers';
-import { TradeQuote } from './types';
-import useTransactions, { TransactionAction } from '../useTransactions';
-import useNumbers, { FNumFormats } from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+
+import useEthers from '../useEthers';
+import useFathom from '../useFathom';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
-import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
-import { balancer } from '@/lib/balancer.sdk';
+import useTransactions, { TransactionAction } from '../useTransactions';
+import { TradeQuote } from './types';
 
 type SorState = {
   validationErrors: {

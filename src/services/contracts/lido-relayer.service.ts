@@ -1,4 +1,5 @@
 import { LidoRelayer__factory } from '@balancer-labs/typechain';
+
 import VaultService from '@/services/contracts/vault.service';
 
 export default class LidoRelayerService extends VaultService {

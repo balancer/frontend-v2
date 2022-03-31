@@ -1,17 +1,15 @@
+import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { UseQueryOptions } from 'react-query/types';
 
+import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
-
 import { claimService } from '@/services/claim/claim.service';
 import {
   MultiTokenCurrentRewardsEstimate,
   MultiTokenPendingClaims
 } from '@/services/claim/types';
-
 import useWeb3 from '@/services/web3/useWeb3';
-import useNetwork from '@/composables/useNetwork';
 
 type UserClaimsQueryResponse = {
   multiTokenPendingClaims: MultiTokenPendingClaims[];

@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { format } from 'date-fns';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
-
 import { bnum } from '@/lib/utils';
-
-import { FullPool } from '@/services/balancer/subgraph/types';
-
-import { TokenInfo } from '@/types/TokenList';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
-import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
-import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES

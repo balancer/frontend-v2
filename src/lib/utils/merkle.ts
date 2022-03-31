@@ -1,6 +1,7 @@
 // Shamelessly adapted from OpenZeppelin-contracts test utils
 import { bufferToHex, keccak256, keccakFromString } from 'ethereumjs-util';
 import { hexToBytes, soliditySha3 } from 'web3-utils';
+
 import { scale } from '@/lib/utils';
 
 // Merkle tree called with 32 byte hex values

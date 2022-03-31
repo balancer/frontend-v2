@@ -194,26 +194,27 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
-import * as PoolPageComponents from '@/components/contextual/pages/pool';
-import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import useNumbers from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
+
+import * as PoolPageComponents from '@/components/contextual/pages/pool';
+import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
+import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
-import { POOLS } from '@/constants/pools';
-import { EXTERNAL_LINKS } from '@/constants/links';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
-import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
-import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
-import StakingProvider from '@/providers/local/staking.provider';
-import { getAddressFromPoolId } from '@/lib/utils';
+import useApp from '@/composables/useApp';
 import { isL2 } from '@/composables/useNetwork';
+import useNumbers from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { POOLS } from '@/constants/pools';
+import { getAddressFromPoolId } from '@/lib/utils';
+import StakingProvider from '@/providers/local/staking.provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 interface PoolPageData {
   id: string;

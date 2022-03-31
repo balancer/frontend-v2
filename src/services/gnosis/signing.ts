@@ -1,5 +1,4 @@
 import { Signer } from '@ethersproject/abstract-signer';
-
 import {
   domain as domainGp,
   EcdsaSignature,
@@ -13,10 +12,11 @@ import {
   signOrder as signOrderGp,
   TypedDataV3Signer
 } from '@gnosis.pm/gp-v2-contracts';
+
 import { networkId } from '@/composables/useNetwork';
+import { WalletError } from '@/types';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
-import { WalletError } from '@/types';
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal

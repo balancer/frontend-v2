@@ -1,8 +1,10 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
+
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import ConfigService, { configService } from '@/services/config/config.service';
+
 import Web3Service, { web3Service } from '../web3/web3.service';
-import { BigNumber } from '@ethersproject/bignumber';
 
 export default class GaugeControllerService {
   abi: any;

@@ -34,8 +34,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import BalIcon from '../BalIcon/BalIcon.vue';
+
 import BalBtn from '../BalBtn/BalBtn.vue';
+import BalIcon from '../BalIcon/BalIcon.vue';
 
 type AlertType = 'warning' | 'error' | 'info';
 

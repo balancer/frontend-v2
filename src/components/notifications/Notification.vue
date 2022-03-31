@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import { TransitionPresets, useTransition } from '@vueuse/core';
 import {
   computed,
   defineComponent,
@@ -46,7 +47,6 @@ import {
   PropType,
   ref
 } from 'vue';
-import { TransitionPresets, useTransition } from '@vueuse/core';
 
 import useNotifications, { Notification } from '@/composables/useNotifications';
 

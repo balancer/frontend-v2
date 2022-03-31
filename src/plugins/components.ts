@@ -1,5 +1,5 @@
-import { App } from 'vue';
 import parsePath from 'parse-filepath';
+import { App } from 'vue';
 
 export function registerGlobalComponents(app: App): void {
   // Load global components from @/components/_global

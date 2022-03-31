@@ -1,5 +1,5 @@
-import BalTextInput from './BalTextInput.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalTextInput from './BalTextInput.vue';
 
 export default {
   component: BalTextInput,

@@ -1,9 +1,11 @@
-import { App } from 'vue';
+import { Network } from '@balancer-labs/sdk';
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { version } from '../../package.json';
+import { App } from 'vue';
+
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
+
+import { version } from '../../package.json';
 
 // Using Sentry's vanila JS package (@sentry/browser) here instead of
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.

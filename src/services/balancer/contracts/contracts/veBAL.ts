@@ -1,14 +1,12 @@
-import { Multicaller } from '@/lib/utils/balancer/contract';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
-
-import { toJsTimestamp, toUtcTime } from '@/composables/useTime';
-
 import { BigNumber } from '@ethersproject/bignumber';
-import { formatUnits } from '@ethersproject/units';
 import { Web3Provider } from '@ethersproject/providers';
+import { formatUnits } from '@ethersproject/units';
 import { parseUnits } from '@ethersproject/units';
 
+import { toJsTimestamp, toUtcTime } from '@/composables/useTime';
 import veBalAbi from '@/lib/abi/veBalAbi.json';
+import { Multicaller } from '@/lib/utils/balancer/contract';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 import Service from '../balancer-contracts.service';
 

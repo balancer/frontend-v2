@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
+
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useTokens from '@/composables/useTokens';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
 import { lpTokensFor } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES

@@ -1,23 +1,10 @@
-import {
-  LiquidityGauge as TLiquidityGauge,
-  UserGuageShare,
-  UserGuageSharesResponse
-} from '@/components/contextual/pages/pools/types';
-import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
-import useTokens from '@/composables/useTokens';
-import symbolKeys from '@/constants/symbol.keys';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import { configService } from '@/services/config/config.service';
-import useWeb3 from '@/services/web3/useWeb3';
-import { Contract } from '@ethersproject/contracts';
-import { getAddress } from '@ethersproject/address';
-
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { Interface } from '@ethersproject/abi';
-import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
-
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { getAddress } from '@ethersproject/address';
+import { Contract } from '@ethersproject/contracts';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { intersection } from 'lodash';
+import { QueryObserverResult, RefetchOptions } from 'react-query';
 import {
   computed,
   ComputedRef,
@@ -29,15 +16,27 @@ import {
   Ref,
   ref
 } from 'vue';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { useQuery } from 'vue-query';
-import { QueryObserverResult, RefetchOptions } from 'react-query';
-import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
-import { bnum } from '@/lib/utils';
-import { intersection } from 'lodash';
-import { POOLS } from '@/constants/pools';
+
+import {
+  LiquidityGauge as TLiquidityGauge,
+  UserGuageShare,
+  UserGuageSharesResponse
+} from '@/components/contextual/pages/pools/types';
+import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import { isL2 } from '@/composables/useNetwork';
+import useTokens from '@/composables/useTokens';
+import { POOLS } from '@/constants/pools';
+import symbolKeys from '@/constants/symbol.keys';
+import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
+import { bnum } from '@/lib/utils';
+import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES

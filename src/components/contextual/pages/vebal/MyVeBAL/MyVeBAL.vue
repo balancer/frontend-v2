@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import MyVeBalCards from './components/MyVeBalCards.vue';
+
 import { useLock } from '@/composables/useLock';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import MyVeBalCards from './components/MyVeBalCards.vue';
 
 /**
  * COMPOSABLES

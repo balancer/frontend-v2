@@ -20,8 +20,9 @@
 </template>
 
 <script lang="ts">
-import useAlerts, { Alert, AlertType } from '@/composables/useAlerts';
 import { computed, defineComponent, PropType } from 'vue';
+
+import useAlerts, { Alert, AlertType } from '@/composables/useAlerts';
 
 export default defineComponent({
   name: 'NavAlert',

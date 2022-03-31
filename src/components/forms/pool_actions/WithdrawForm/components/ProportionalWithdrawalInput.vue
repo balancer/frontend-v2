@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
-import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { TokenInfoMap } from '@/types/TokenList';
+import { computed, onBeforeMount, toRef, toRefs, watch } from 'vue';
+
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { WithdrawMathResponse } from '../composables/useWithdrawMath';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
+import { bnum } from '@/lib/utils';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfoMap } from '@/types/TokenList';
+
 import useWithdrawalState from '../composables/useWithdrawalState';
+import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
 

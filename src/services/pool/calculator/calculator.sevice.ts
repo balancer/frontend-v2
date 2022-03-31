@@ -1,16 +1,18 @@
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import Weighted from './weighted';
-import Stable from './stable';
-import { TokenInfoMap } from '@/types/TokenList';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { Ref, ref } from 'vue';
+
 import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
+import { TokenInfoMap } from '@/types/TokenList';
+
+import Stable from './stable';
 import StablePhantom from './stable-phantom';
+import Weighted from './weighted';
 
 interface Amounts {
   send: string[];

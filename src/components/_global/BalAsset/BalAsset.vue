@@ -15,9 +15,11 @@
 
 <script>
 import { computed, defineComponent, ref, toRefs, watch } from 'vue';
+
 import useTokens from '@/composables/useTokens';
-import Avatar from '../../images/Avatar.vue';
 import useUrls from '@/composables/useUrls';
+
+import Avatar from '../../images/Avatar.vue';
 
 export default defineComponent({
   name: 'BalAsset',

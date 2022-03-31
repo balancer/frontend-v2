@@ -1,8 +1,21 @@
-import Service from '../balancer-contracts.service';
-import { Multicaller } from '@/lib/utils/balancer/contract';
+import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { Vault__factory } from '@balancer-labs/typechain';
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
+import { Contract } from 'ethers';
+import { pick } from 'lodash';
+
+import {
+  isStableLike,
+  isStablePhantom,
+  isTradingHaltable,
+  isWeightedLike
+} from '@/composables/usePool';
+import VaultAbi from '@/lib/abi/VaultAbi.json';
+import { Multicaller } from '@/lib/utils/balancer/contract';
+import { TokenInfoMap } from '@/types/TokenList';
+
 import {
   LinearPoolDataMap,
   OnchainPoolData,
@@ -13,18 +26,7 @@ import {
   RawOnchainPoolData,
   RawPoolTokens
 } from '../../subgraph/types';
-import { TokenInfoMap } from '@/types/TokenList';
-import {
-  isStableLike,
-  isStablePhantom,
-  isTradingHaltable,
-  isWeightedLike
-} from '@/composables/usePool';
-import { toNormalizedWeights } from '@balancer-labs/balancer-js';
-import { pick } from 'lodash';
-import { Vault__factory } from '@balancer-labs/typechain';
-import { Contract } from 'ethers';
-import VaultAbi from '@/lib/abi/VaultAbi.json';
+import Service from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 
 export default class Vault {

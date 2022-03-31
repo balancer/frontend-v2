@@ -1,5 +1,5 @@
-import BalChip from './BalChip.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalChip from './BalChip.vue';
 
 export default {
   component: BalChip,

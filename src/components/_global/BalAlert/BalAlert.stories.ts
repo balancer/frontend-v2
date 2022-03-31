@@ -1,5 +1,5 @@
-import BalAlert from './BalAlert.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalAlert from './BalAlert.vue';
 
 export default {
   component: BalAlert,

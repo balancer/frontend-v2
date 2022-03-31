@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
-import { useStore } from 'vuex';
-import useTokens from '@/composables/useTokens';
-import { coingeckoService } from '@/services/coingecko/coingecko.service';
-import { useQuery } from 'vue-query';
+import { getAddress } from '@ethersproject/address';
+import { format, fromUnixTime } from 'date-fns';
 import {
   Dictionary,
   mapKeys,
@@ -13,12 +10,16 @@ import {
   pickBy,
   toPairs
 } from 'lodash';
-import { format, fromUnixTime } from 'date-fns';
-import useTailwind from '@/composables/useTailwind';
-import useBreakpoints from '@/composables/useBreakpoints';
+import { computed, reactive, ref } from 'vue';
+import { useQuery } from 'vue-query';
+import { useStore } from 'vuex';
+
 import { useTradeState } from '@/composables/trade/useTradeState';
-import { getAddress } from '@ethersproject/address';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useTailwind from '@/composables/useTailwind';
+import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

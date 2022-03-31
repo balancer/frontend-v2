@@ -1,13 +1,13 @@
-import { computed, ref } from 'vue';
-import { isKovan, isMainnet } from '@/composables/useNetwork';
-
-import { POOLS } from '@/constants/pools';
-
-import useTokens from './useTokens';
-import useConfig from './useConfig';
-import { bnum } from '@/lib/utils';
-import { getPreviousThursday, oneYearInSecs } from './useTime';
 import { differenceInSeconds } from 'date-fns';
+import { computed, ref } from 'vue';
+
+import { isKovan, isMainnet } from '@/composables/useNetwork';
+import { POOLS } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+
+import useConfig from './useConfig';
+import { getPreviousThursday, oneYearInSecs } from './useTime';
+import useTokens from './useTokens';
 
 /**
  * STATE

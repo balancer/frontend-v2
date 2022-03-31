@@ -1,32 +1,30 @@
 <script setup lang="ts">
+import anime from 'animejs';
 import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
-import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
-import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
-import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
-import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
-import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
-import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
+import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
+import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
+import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
+import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
+import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
+import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
+import TokenPrices from '@/components/cards/CreatePool/TokenPrices.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import UnknownTokenPriceModal from '@/components/modals/UnknownTokenPrice/UnknownTokenPriceModal.vue';
-import TokenPrices from '@/components/cards/CreatePool/TokenPrices.vue';
-
-import anime from 'animejs';
-
-import useApp from '@/composables/useApp';
 import usePoolCreation, {
   POOL_CREATION_STATE_KEY,
   POOL_CREATION_STATE_VERSION
 } from '@/composables/pools/usePoolCreation';
-import { StepState } from '@/types';
-import useBreakpoints from '@/composables/useBreakpoints';
 import useAlerts from '@/composables/useAlerts';
-import { lsGet } from '@/lib/utils';
+import useApp from '@/composables/useApp';
+import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
+import { lsGet } from '@/lib/utils';
+import { StepState } from '@/types';
 
 /**
  * STATE

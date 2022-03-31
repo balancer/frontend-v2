@@ -21,12 +21,10 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
-
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
   components: {

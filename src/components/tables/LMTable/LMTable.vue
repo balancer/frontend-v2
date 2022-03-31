@@ -121,22 +121,24 @@
 </template>
 
 <script lang="ts">
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import { TokenTotal, WeeklyDistributions } from '@/pages/liquidity-mining.vue';
-import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 import { getAddress } from '@ethersproject/address';
+import { addDays, format, startOfWeek, subWeeks } from 'date-fns';
+import { last, sum } from 'lodash';
 import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
-import { last, sum } from 'lodash';
+
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
+import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
   orderedPoolTokens,
   orderedTokenAddresses
 } from '@/composables/usePool';
-import { addDays, format, startOfWeek, subWeeks } from 'date-fns';
+import useTokens from '@/composables/useTokens';
+import { TokenTotal, WeeklyDistributions } from '@/pages/liquidity-mining.vue';
+
+import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 
 function getWeekName(week: string) {
   const parts = week.split('_');

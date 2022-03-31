@@ -1,24 +1,25 @@
+import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import {
   Vault__factory,
   WeightedPool__factory,
   WeightedPoolFactory__factory
 } from '@balancer-labs/typechain';
+import { defaultAbiCoder } from '@ethersproject/abi';
+import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import {
   JsonRpcProvider,
   TransactionResponse,
   Web3Provider
 } from '@ethersproject/providers';
-import { configService } from '@/services/config/config.service';
 import BigNumber from 'bignumber.js';
-import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
-import { defaultAbiCoder } from '@ethersproject/abi';
-import { AddressZero } from '@ethersproject/constants';
+
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
-import { toNormalizedWeights } from '@balancer-labs/balancer-js';
-import { scale } from '@/lib/utils';
 import TOPICS from '@/constants/topics';
+import { scale } from '@/lib/utils';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { configService } from '@/services/config/config.service';
 
 type Address = string;
 

@@ -1,8 +1,10 @@
+import { computed, ComputedRef, InjectionKey, provide } from 'vue';
+import { useStore } from 'vuex';
+
 import useTokenLists from '@/composables/useTokenLists';
 import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
-import { computed, ComputedRef, InjectionKey, provide } from 'vue';
-import { useStore } from 'vuex';
+
 import { version } from '../../package.json';
 
 /**

@@ -1,4 +1,5 @@
 import { WalletError } from '@/types';
+
 import { Connector } from '../connector';
 export class MetamaskConnector extends Connector {
   id = 'injectedMetamask';

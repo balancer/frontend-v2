@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-
-import useTokens from '@/composables/useTokens';
-import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useI18n } from 'vue-i18n';
 
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useTokens from '@/composables/useTokens';
 import { bnum, formatWordListAsSentence } from '@/lib/utils';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 

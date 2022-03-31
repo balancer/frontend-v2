@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { getAddress } from '@ethersproject/address';
+import { getUnixTime } from 'date-fns';
+import { computed } from 'vue';
+import { useQuery } from 'vue-query';
+
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { getAddress } from '@ethersproject/address';
-import { getUnixTime } from 'date-fns';
-import { computed } from 'vue';
-import { useQuery } from 'vue-query';
 
 type TrendingPair = {
   symbol: string;

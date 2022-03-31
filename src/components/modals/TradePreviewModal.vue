@@ -108,16 +108,16 @@
 
 <script lang="ts">
 import { computed, defineComponent, toRefs } from 'vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
+
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { isStETH } from '@/lib/utils/balancer/lido';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 export default defineComponent({
   emits: ['trade', 'close'],

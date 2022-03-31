@@ -223,6 +223,7 @@
 </template>
 
 <script lang="ts">
+import { compact, sortBy, sumBy, tail } from 'lodash';
 import {
   computed,
   defineComponent,
@@ -231,7 +232,6 @@ import {
   ref,
   watch
 } from 'vue';
-import { compact, sortBy, sumBy, tail } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;

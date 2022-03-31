@@ -1,3 +1,4 @@
+import { pick } from 'lodash';
 import {
   computed,
   ComputedRef,
@@ -7,13 +8,13 @@ import {
   Ref,
   toRefs
 } from 'vue';
-import symbolKeys from '@/constants/symbol.keys';
-import localStorageKeys from '@/constants/local-storage.keys';
-import { TokenList, TokenListMap } from '@/types/TokenList';
-import { tokenListService } from '@/services/token-list/token-list.service';
-import { lsSet } from '@/lib/utils';
-import { pick } from 'lodash';
+
 import useTokenListsQuery from '@/composables/queries/useTokenListsQuery';
+import localStorageKeys from '@/constants/local-storage.keys';
+import symbolKeys from '@/constants/symbol.keys';
+import { lsSet } from '@/lib/utils';
+import { tokenListService } from '@/services/token-list/token-list.service';
+import { TokenList, TokenListMap } from '@/types/TokenList';
 
 /** TYPES */
 export interface TokenListsState {

@@ -29,11 +29,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { isAddress } from '@ethersproject/address';
 import { chunk } from 'lodash';
+import { computed, defineComponent, PropType } from 'vue';
 
 import BalAsset from './BalAsset.vue';
-import { isAddress } from '@ethersproject/address';
 
 export default defineComponent({
   components: {

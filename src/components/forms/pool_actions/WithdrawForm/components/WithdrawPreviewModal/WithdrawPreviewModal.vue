@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { computed, ref, toRef, toRefs } from 'vue';
-import { bnum } from '@/lib/utils';
-// Types
-import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { TokenInfoMap } from '@/types/TokenList';
+import { useI18n } from 'vue-i18n';
+
 // Composables
 import useNumbers from '@/composables/useNumbers';
-import { useI18n } from 'vue-i18n';
 import useTokens from '@/composables/useTokens';
-// Components
-import WithdrawSummary from './components/WithdrawSummary.vue';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { TokenInfoMap } from '@/types/TokenList';
+
+import useWithdrawalState from '../../composables/useWithdrawalState';
+// Types
+import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
 import TokenAmounts from './components/TokenAmounts.vue';
 import WithdrawActions from './components/WithdrawActions.vue';
-import useWithdrawalState from '../../composables/useWithdrawalState';
+// Components
+import WithdrawSummary from './components/WithdrawSummary.vue';
 
 /**
  * TYPES

@@ -1,7 +1,9 @@
-import { Connector } from '../connector';
 import WalletLink from 'walletlink';
+
 import ConfigService from '@/services/config/config.service';
 import { WalletError } from '@/types';
+
+import { Connector } from '../connector';
 
 export class WalletLinkConnector extends Connector {
   id = 'walletlink';

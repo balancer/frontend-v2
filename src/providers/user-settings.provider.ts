@@ -1,3 +1,4 @@
+import { parseUnits } from '@ethersproject/units';
 import {
   computed,
   ComputedRef,
@@ -7,11 +8,11 @@ import {
   Ref,
   toRefs
 } from 'vue';
-import symbolKeys from '@/constants/symbol.keys';
-import LS_KEYS from '@/constants/local-storage.keys';
+
 import { FiatCurrency } from '@/constants/currency';
+import LS_KEYS from '@/constants/local-storage.keys';
+import symbolKeys from '@/constants/symbol.keys';
 import { lsGet, lsSet } from '@/lib/utils';
-import { parseUnits } from '@ethersproject/units';
 
 /**
  * TYPES

@@ -3,12 +3,11 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
-
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 /**
  * TYPES

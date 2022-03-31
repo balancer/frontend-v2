@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import { HtmlInputEvent } from '@/types';
 import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
-
-import { bnum } from '@/lib/utils';
-import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
-
-import useWeb3 from '@/services/web3/useWeb3';
-
 import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
-
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
+import useWeb3 from '@/services/web3/useWeb3';
+import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**

@@ -2,22 +2,19 @@
 import { computed, ref, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { bnum } from '@/lib/utils';
-
-import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
-
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useWeb3 from '@/services/web3/useWeb3';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-
-import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
-
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
-import PoolActionsCard from './PoolActionsCard.vue';
 import useStaking from '@/composables/staking/useStaking';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import PoolActionsCard from './PoolActionsCard.vue';
 
 /**
  * TYPES

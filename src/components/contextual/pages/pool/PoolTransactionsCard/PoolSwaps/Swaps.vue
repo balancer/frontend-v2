@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { flatten } from 'lodash';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { flatten } from 'lodash';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
 
 import Table from './Table.vue';

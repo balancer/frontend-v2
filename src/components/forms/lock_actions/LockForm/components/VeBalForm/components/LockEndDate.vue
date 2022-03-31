@@ -1,13 +1,12 @@
 <script setup lang="ts">
+import { addWeeks, format } from 'date-fns';
 import { computed, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { addWeeks, format } from 'date-fns';
 
+import { INPUT_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useLockState from '../../../composables/useLockState';
-
-import { INPUT_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 
 /**
  * TYPES

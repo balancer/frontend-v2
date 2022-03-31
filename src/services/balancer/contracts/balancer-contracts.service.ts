@@ -1,20 +1,22 @@
-import Vault from './contracts/vault';
 import {
   InvestmentPool__factory,
   StablePool__factory,
   WeightedPool__factory
 } from '@balancer-labs/typechain';
-import LinearPoolAbi from '@/lib/abi/LinearPool.json';
-import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
-import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
-import { Config } from '@/lib/config';
 import { JsonRpcProvider } from '@ethersproject/providers';
+
 import ERC20_ABI from '@/lib/abi/ERC20.json';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { configService as _configService } from '@/services/config/config.service';
-import BatchRelayer from './contracts/batch-relayer';
-import veBAL from './contracts/veBAL';
+import LinearPoolAbi from '@/lib/abi/LinearPool.json';
+import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
+import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
 import { balancer } from '@/lib/balancer.sdk';
+import { Config } from '@/lib/config';
+import { configService as _configService } from '@/services/config/config.service';
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+
+import BatchRelayer from './contracts/batch-relayer';
+import Vault from './contracts/vault';
+import veBAL from './contracts/veBAL';
 
 export default class BalancerContractsService {
   vault: Vault;

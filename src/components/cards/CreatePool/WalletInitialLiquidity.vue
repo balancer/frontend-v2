@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import useTokens from '@/composables/useTokens';
-import { computed } from 'vue';
 import { sumBy } from 'lodash';
+import { computed } from 'vue';
+
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 
 /**
  * COMPOSABLES

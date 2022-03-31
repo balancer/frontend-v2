@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
-// Composables
-import useWithdrawMath from './composables/useWithdrawMath';
-import useWithdrawalState from './composables/useWithdrawalState';
-import useWeb3 from '@/services/web3/useWeb3';
 import { useI18n } from 'vue-i18n';
+
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import WithdrawTotals from './components/WithdrawTotals.vue';
-import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
+import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
+
 import ProportionalWithdrawalInput from './components/ProportionalWithdrawalInput.vue';
 import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
+import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
+import WithdrawTotals from './components/WithdrawTotals.vue';
+import useWithdrawalState from './composables/useWithdrawalState';
+// Composables
+import useWithdrawMath from './composables/useWithdrawMath';
 
 /**
  * TYPES

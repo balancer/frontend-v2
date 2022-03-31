@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import { getAddress } from '@ethersproject/address';
+import { useI18n } from 'vue-i18n';
+
 import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
 import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { Gauge } from '@/services/balancer/gauges/types';
-import { getAddress } from '@ethersproject/address';
-import { useI18n } from 'vue-i18n';
+
 import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
 
 /**

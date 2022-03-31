@@ -1,18 +1,23 @@
 <script lang="ts">
+import BigNumber from 'bignumber.js';
 import { defineComponent, onBeforeMount, ref, watch } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
-import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
-import BigNumber from 'bignumber.js';
-import * as Layouts from '@/pages/_layouts';
-import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
-import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+import { useStore } from 'vuex';
+
 import Notifications from '@/components/notifications/Notifications.vue';
+import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
+import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
+import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+import * as Layouts from '@/pages/_layouts';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
+import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import useBackgroundColor from './composables/useBackgroundColor';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
-import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
-import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
+import useNavigationGuards from './composables/useNavigationGuards';
+import { useSidebar } from './composables/useSidebar';
 // import useAlerts, {
 //   Alert,
 //   AlertPriority,
@@ -20,11 +25,8 @@ import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatche
 // } from './composables/useAlerts';
 // import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
-import useBackgroundColor from './composables/useBackgroundColor';
-import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
-import { useSidebar } from './composables/useSidebar';
-import useNavigationGuards from './composables/useNavigationGuards';
-import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
+import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
+import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 

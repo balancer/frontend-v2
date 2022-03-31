@@ -1,5 +1,6 @@
-import { ref, Ref } from 'vue';
 import { getAddress } from '@ethersproject/address';
+import { Ref, ref } from 'vue';
+
 import { lsRemove } from '@/lib/utils';
 
 export type ConnectorPayload = {

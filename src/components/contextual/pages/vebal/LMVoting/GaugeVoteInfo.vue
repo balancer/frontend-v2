@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { bnum, scale } from '@/lib/utils';
 
 import useNumbers from '@/composables/useNumbers';
-
+import { bnum, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 /**

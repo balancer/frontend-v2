@@ -1,5 +1,5 @@
-import BalBtn from './BalBtn.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalBtn from './BalBtn.vue';
 
 export default {
   component: BalBtn,

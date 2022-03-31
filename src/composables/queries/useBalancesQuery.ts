@@ -1,13 +1,15 @@
+import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
-import { UseQueryOptions } from 'react-query/types';
+
 import QUERY_KEYS from '@/constants/queryKeys';
-import { tokenService } from '@/services/token/token.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
+import { tokenService } from '@/services/token/token.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokenLists from '../useTokenLists';
 import { TokenInfoMap } from '@/types/TokenList';
+
 import useNetwork from '../useNetwork';
+import useTokenLists from '../useTokenLists';
 
 /**
  * TYPES

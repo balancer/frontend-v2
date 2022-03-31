@@ -1,36 +1,34 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { StablePoolEncoder, WeightedPoolEncoder } from '@balancer-labs/sdk';
-import { BigNumber, BigNumberish } from 'ethers';
-
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
-import { TransactionActionInfo } from '@/types/transactions';
-import { TokenInfo } from '@/types/TokenList';
+import { BigNumber, BigNumberish } from 'ethers';
+import { computed, onBeforeMount, reactive, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-// Composables
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { dateTimeLabelFor } from '@/composables/useTime';
-import useConfig from '@/composables/useConfig';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import useConfig from '@/composables/useConfig';
+import useEthers from '@/composables/useEthers';
+import { isStableLike } from '@/composables/usePool';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTransactions from '@/composables/useTransactions';
 import useUserSettings from '@/composables/useUserSettings';
-import { MigrateMathResponse } from '../../../composables/useMigrateMath';
-
-// Services
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-
 // Libs
 import { balancer } from '@/lib/balancer.sdk';
-import { isStableLike } from '@/composables/usePool';
+// Services
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+// Composables
+import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfo } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
+
+import { MigrateMathResponse } from '../../../composables/useMigrateMath';
 
 /**
  * TYPES

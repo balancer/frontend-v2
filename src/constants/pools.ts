@@ -1,5 +1,6 @@
-import { isMainnet, networkId } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
+
+import { isMainnet, networkId } from '@/composables/useNetwork';
 
 export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
 

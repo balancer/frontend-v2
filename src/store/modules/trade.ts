@@ -1,6 +1,6 @@
-import { lsGet, lsSet } from '@/lib/utils';
-import initialTokens from '@/constants/initialTokens.json';
 import { networkId } from '@/composables/useNetwork';
+import initialTokens from '@/constants/initialTokens.json';
+import { lsGet, lsSet } from '@/lib/utils';
 
 export interface TradeState {
   inputAsset: string;

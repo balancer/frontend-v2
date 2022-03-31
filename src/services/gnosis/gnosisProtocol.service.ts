@@ -1,8 +1,7 @@
+import { Network } from '@balancer-labs/sdk';
 import axios from 'axios';
 
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
-
 import { IS_DEV } from '@/constants/env';
 
 import OperatorError from './errors/OperatorError';

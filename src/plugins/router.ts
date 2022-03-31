@@ -1,18 +1,19 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import HomePage from '@/pages/index.vue';
-import PoolPage from '@/pages/pool/_id.vue';
-import PoolInvestPage from '@/pages/pool/invest.vue';
-import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
-import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
-import TradePage from '@/pages/trade.vue';
-import CreatePoolPage from '@/pages/pool/create.vue';
-import TermsOfUsePage from '@/pages/terms-of-use.vue';
-import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
+
+import ClaimPage from '@/pages/claim.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
 import GetVeBalPage from '@/pages/get-vebal.vue';
+import HomePage from '@/pages/index.vue';
+import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
+import PoolPage from '@/pages/pool/_id.vue';
+import CreatePoolPage from '@/pages/pool/create.vue';
+import PoolInvestPage from '@/pages/pool/invest.vue';
+import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
+import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
+import TermsOfUsePage from '@/pages/terms-of-use.vue';
+import TradePage from '@/pages/trade.vue';
 import UnlockVeBalPage from '@/pages/unlock-vebal.vue';
 import VeBalPage from '@/pages/vebal.vue';
-import ClaimPage from '@/pages/claim.vue';
 
 declare module 'vue-router' {
   interface RouteMeta {

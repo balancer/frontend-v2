@@ -1,18 +1,16 @@
+import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { QueryObserverOptions } from 'react-query/core';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
-import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { configService } from '@/services/config/config.service';
 
 import useNetwork from '../useNetwork';
 import { isStablePhantom } from '../usePool';
-
 import usePoolQuery from './usePoolQuery';
 
 /**

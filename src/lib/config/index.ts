@@ -1,11 +1,12 @@
-import homestead from './homestead.json';
-import kovan from './kovan.json';
-import rinkeby from './rinkeby.json';
-import polygon from './polygon.json';
+import { Network } from '@balancer-labs/sdk';
+
 import arbitrum from './arbitrum.json';
 import docker from './docker.json';
+import homestead from './homestead.json';
+import kovan from './kovan.json';
+import polygon from './polygon.json';
+import rinkeby from './rinkeby.json';
 import test from './test.json';
-import { Network } from '@balancer-labs/sdk';
 
 export interface Config {
   key: string;

@@ -1,9 +1,11 @@
-import { Contract } from 'ethers';
-import ContractService from '../balancer-contracts.service';
-import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import { FundManagement, TransactionData } from '@balancer-labs/sdk';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { Contract } from 'ethers';
+
+import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
+
+import ContractService from '../balancer-contracts.service';
 
 export default class BatchRelayer {
   service: ContractService;

@@ -3,11 +3,8 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-
 import { bnum } from '@/lib/utils';
-
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
 

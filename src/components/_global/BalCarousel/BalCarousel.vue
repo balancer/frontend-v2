@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import 'swiper/swiper-bundle.css';
+
 import Swiper from 'swiper';
 import SwiperCore, { Pagination } from 'swiper/core';
-import 'swiper/swiper-bundle.css';
+import { onMounted } from 'vue';
 
 type Props = { height: string };
 defineProps<Props>();

@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
+
 import BalLoadingIcon from '../BalLoadingIcon/BalLoadingIcon.vue';
 
 export default defineComponent({

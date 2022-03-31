@@ -42,9 +42,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
+
 import useBreakpoints from '@/composables/useBreakpoints';
 import ConfigService from '@/services/config/config.service';
-import { defineComponent } from 'vue';
 
 export interface NetworkOption {
   id: string;

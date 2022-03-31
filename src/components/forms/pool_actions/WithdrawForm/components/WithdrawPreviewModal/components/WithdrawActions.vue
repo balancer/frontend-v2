@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import {
+  TransactionReceipt,
+  TransactionResponse
+} from '@ethersproject/abstract-provider';
+import { formatUnits } from '@ethersproject/units';
+import {
   computed,
   onBeforeMount,
   reactive,
@@ -8,29 +13,26 @@ import {
   toRefs,
   watch
 } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTransactions from '@/composables/useTransactions';
+import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
-import {
-  TransactionReceipt,
-  TransactionResponse
-} from '@ethersproject/abstract-provider';
-import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
-// Composables
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { useI18n } from 'vue-i18n';
-import { dateTimeLabelFor } from '@/composables/useTime';
-import { useRoute } from 'vue-router';
-import useWithdrawalState from '../../../composables/useWithdrawalState';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
-import { formatUnits } from '@ethersproject/units';
+// Composables
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+
+import useWithdrawalState from '../../../composables/useWithdrawalState';
+import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 
 /**
  * TYPES
