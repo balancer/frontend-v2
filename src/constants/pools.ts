@@ -30,7 +30,7 @@ export type Pools = {
     AllowList: string[];
   };
   Factories: Record<string, FactoryType>;
-  Stakeable: {
+  Stakable: {
     AllowList: string[];
   };
 };
@@ -91,7 +91,7 @@ const POOLS_KOVAN: Pools = {
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'managedPool', // Kovan Managed
     '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
   },
-  Stakeable: {
+  Stakable: {
     AllowList: [
       '0xf767f0a3fcf1eafec2180b7de79d0c559d7e7e370001000000000000000003e3',
       '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701',
@@ -147,7 +147,7 @@ const POOLS_MAINNET: Pools = {
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool' // mainnet stablephantom
   },
-  Stakeable: {
+  Stakable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
       '0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027',
@@ -224,7 +224,7 @@ const POOLS_POLYGON: Pools = {
     '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool' // polygon stablephantom
   },
-  Stakeable: {
+  Stakable: {
     AllowList: []
   }
 };
@@ -262,7 +262,7 @@ const POOLS_ARBITRUM: Pools = {
     '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // arbitrum managed
     '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool' // arbitrum stablephantom
   },
-  Stakeable: {
+  Stakable: {
     AllowList: []
   }
 };
@@ -337,7 +337,7 @@ const POOLS_GENERIC: Pools = {
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool', // polygon stablephantom
     '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
   },
-  Stakeable: {
+  Stakable: {
     AllowList: []
   }
 };
