@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { useRoute } from 'vue-router';
+import { useReturnRoute } from '@/composables/useReturnRoute';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
@@ -20,6 +21,7 @@ const id = ref<string>(route.params.id as string);
 /**
  * COMPOSABLES
  */
+const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
 const {
   pool,
@@ -34,7 +36,7 @@ usePoolTransfersGuard();
   <div class="pb-16">
     <div class="layout-header mb-12">
       <div></div>
-      <router-link :to="{ name: 'pool', params: { id } }">
+      <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
         <BalIcon name="x" size="lg" />
       </router-link>
     </div>
