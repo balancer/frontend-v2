@@ -17,7 +17,7 @@ import { bnum } from '@/lib/utils';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
-import StakingProvider from '@/providers/local/staking.provider';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 import { isL2 } from '@/composables/useNetwork';
 
 // COMPOSABLES

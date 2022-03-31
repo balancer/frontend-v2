@@ -19,7 +19,7 @@ import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewMod
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
 
-import StakingProvider from '@/providers/local/staking.provider';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 
 /**
  * TYPES

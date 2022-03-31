@@ -41,7 +41,9 @@ const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
   toRef(props, 'pool')
 );
-const { stakedSharesForProvidedPool } = useStaking();
+const {
+  userData: { stakedSharesForProvidedPool }
+} = useStaking();
 const router = useRouter();
 
 /**

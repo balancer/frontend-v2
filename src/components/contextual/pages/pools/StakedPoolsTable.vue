@@ -14,18 +14,20 @@ const stakePool = ref<FullPool | undefined>();
 
 /** COMPOSABLES */
 const {
-  stakedPools,
-  isLoadingStakingData,
-  isLoadingStakedPools,
-  setPoolAddress,
-  isLoadingUserPools,
-  isUserPoolsIdle
+  userData: {
+    stakedPools,
+    isLoadingUserStakingData,
+    isLoadingStakedPools,
+    isLoadingUserPools,
+    isUserPoolsIdle
+  },
+  setPoolAddress
 } = useStaking();
 
 /** COMPUTED */
 const isLoading = computed(() => {
   return (
-    isLoadingStakingData.value ||
+    isLoadingUserStakingData.value ||
     isLoadingStakedPools.value ||
     isLoadingUserPools.value ||
     isUserPoolsIdle.value
