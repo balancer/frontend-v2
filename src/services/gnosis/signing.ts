@@ -8,8 +8,8 @@ import {
   OrderCancellation as OrderCancellationGp,
   Signature,
   SigningScheme,
-  signOrderCancellation as signOrderCancellationGp,
   signOrder as signOrderGp,
+  signOrderCancellation as signOrderCancellationGp,
   TypedDataV3Signer
 } from '@gnosis.pm/gp-v2-contracts';
 

@@ -39,7 +39,6 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
-    'sort-imports': ['warn', { ignoreCase: true }],
     'simple-import-sort/imports': 'warn',
     'simple-import-sort/exports': 'warn'
   },
