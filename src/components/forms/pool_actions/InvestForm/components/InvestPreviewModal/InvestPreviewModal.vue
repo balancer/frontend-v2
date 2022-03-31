@@ -67,7 +67,7 @@ const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[props.tokenAddresses[i]] = amount;
+      amountMap[props.tokenAddresses[i]] = amount;
     });
     return amountMap;
   }
@@ -106,10 +106,6 @@ const fiatTotal = computed((): string =>
 /**
  * METHODS
  */
-function hasAmount(index: number): boolean {
-  return bnum(fullAmounts.value[index]).gt(0);
-}
-
 function handleClose(): void {
   if (investmentConfirmed.value) {
     resetAmounts();
