@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeMount, ref, computed } from 'vue';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';

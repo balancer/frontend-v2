@@ -1,10 +1,10 @@
 import {
+  PoolFilter,
   SOR as SORV2,
-  SwapInfo,
   SubgraphPoolBase,
-  SwapTypes,
+  SwapInfo,
   SwapOptions,
-  PoolFilter
+  SwapTypes
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Provider } from '@ethersproject/providers';

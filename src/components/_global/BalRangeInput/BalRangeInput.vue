@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch, computed } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
 import { theme } from '@/../tailwind.config';

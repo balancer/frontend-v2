@@ -1,4 +1,4 @@
-import { Ref, computed, reactive, toRefs } from 'vue';
+import { computed, reactive, Ref, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom } from '@/composables/usePool';

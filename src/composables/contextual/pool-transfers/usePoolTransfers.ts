@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';

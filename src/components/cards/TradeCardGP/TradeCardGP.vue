@@ -125,12 +125,12 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, onBeforeMount } from 'vue';
+import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
 import { useI18n } from 'vue-i18n';
-import { isAddress, getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import useValidation, {
   TradeValidation

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect, computed } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TradePairToggle from './TradePairToggle.vue';
 import { bnum } from '@/lib/utils';

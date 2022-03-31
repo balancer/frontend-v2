@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed } from 'vue';
+import { computed, toRef } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';

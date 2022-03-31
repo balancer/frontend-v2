@@ -2,16 +2,16 @@ import { Signer } from '@ethersproject/abstract-signer';
 
 import {
   domain as domainGp,
-  signOrder as signOrderGp,
-  signOrderCancellation as signOrderCancellationGp,
-  Order,
+  EcdsaSignature,
   EcdsaSigningScheme,
+  IntChainIdTypedDataV4Signer,
+  Order,
+  OrderCancellation as OrderCancellationGp,
   Signature,
   SigningScheme,
-  EcdsaSignature,
-  TypedDataV3Signer,
-  OrderCancellation as OrderCancellationGp,
-  IntChainIdTypedDataV4Signer
+  signOrderCancellation as signOrderCancellationGp,
+  signOrder as signOrderGp,
+  TypedDataV3Signer
 } from '@gnosis.pm/gp-v2-contracts';
 import { networkId } from '@/composables/useNetwork';
 

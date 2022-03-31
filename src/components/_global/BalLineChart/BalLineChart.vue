@@ -32,12 +32,12 @@
 
 <script lang="ts">
 import {
+  computed,
   defineComponent,
+  onMounted,
   PropType,
   ref,
-  computed,
-  watch,
-  onMounted
+  watch
 } from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';

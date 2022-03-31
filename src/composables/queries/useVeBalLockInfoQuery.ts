@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 

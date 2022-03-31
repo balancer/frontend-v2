@@ -13,9 +13,9 @@ import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
-  currentLiquidityMiningRewards,
+  computeAPRsForPool,
   computeTotalAPRForPool,
-  computeAPRsForPool
+  currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
 
 import { Network } from '@balancer-labs/sdk';
@@ -28,11 +28,11 @@ import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
 
 import {
-  Pool,
-  QueryBuilder,
-  TimeTravelPeriod,
   DecoratedPool,
-  PoolToken
+  Pool,
+  PoolToken,
+  QueryBuilder,
+  TimeTravelPeriod
 } from '../../types';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';

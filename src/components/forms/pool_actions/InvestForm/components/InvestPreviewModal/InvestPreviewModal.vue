@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRefs, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';

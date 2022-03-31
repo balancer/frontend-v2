@@ -1,4 +1,4 @@
-import { parseUnits, formatUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { FullPool } from '@/services/balancer/subgraph/types';

@@ -410,7 +410,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';

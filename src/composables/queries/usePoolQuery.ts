@@ -14,10 +14,10 @@ import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { bnum, forChange } from '@/lib/utils';
 import {
-  lpTokensFor,
   isManaged,
   isStableLike,
-  isStablePhantom
+  isStablePhantom,
+  lpTokensFor
 } from '../usePool';
 
 export default function usePoolQuery(

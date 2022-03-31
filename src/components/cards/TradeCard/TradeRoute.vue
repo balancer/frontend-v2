@@ -122,11 +122,11 @@
 
 <script lang="ts">
 import BigNumber from 'bignumber.js';
-import { PropType, defineComponent, ref, computed } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import { Pool } from '@balancer-labs/sor/dist/types';
-import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sdk';
+import { SubgraphPoolBase, SwapV2 } from '@balancer-labs/sdk';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';

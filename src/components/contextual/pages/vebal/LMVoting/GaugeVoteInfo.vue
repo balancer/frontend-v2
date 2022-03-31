@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { scale, bnum } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
 
 import useNumbers from '@/composables/useNumbers';
 

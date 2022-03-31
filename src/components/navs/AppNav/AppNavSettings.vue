@@ -156,11 +156,11 @@
 </template>
 
 <script>
-import { defineComponent, reactive, computed, toRefs } from 'vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import {
-  getConnectorName,
-  getConnectorLogo
+  getConnectorLogo,
+  getConnectorName
 } from '@/services/web3/web3.plugin';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
@@ -168,8 +168,8 @@ import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import {
-  tradeInterfaceOptions,
-  ethereumTxTypeOptions
+  ethereumTxTypeOptions,
+  tradeInterfaceOptions
 } from '@/constants/options';
 import { TradeInterface } from '@/store/modules/app';
 import useEthereumTxType from '@/composables/useEthereumTxType';

@@ -1,4 +1,4 @@
-import { reactive, computed, Ref } from 'vue';
+import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import { Contract } from 'ethers/lib/ethers';

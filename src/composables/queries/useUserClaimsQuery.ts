@@ -6,8 +6,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import { claimService } from '@/services/claim/claim.service';
 import {
-  MultiTokenPendingClaims,
-  MultiTokenCurrentRewardsEstimate
+  MultiTokenCurrentRewardsEstimate,
+  MultiTokenPendingClaims
 } from '@/services/claim/types';
 
 import useWeb3 from '@/services/web3/useWeb3';

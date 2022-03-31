@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { SwapV2 } from '@balancer-labs/sdk';
-import SwapService, { SwapTokenType, SwapToken } from './swap.service';
+import SwapService, { SwapToken, SwapTokenType } from './swap.service';
 import { configService } from '@/services/config/config.service';
 import {
   FundManagement,

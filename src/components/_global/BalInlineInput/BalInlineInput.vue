@@ -6,7 +6,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useAttrs, computed, ref } from 'vue';
+import { computed, ref, useAttrs } from 'vue';
 import { HtmlInputEvent } from '@/types';
 import useInputStyles from './composables/useInlineInputStyles';
 import useInputEvents from '@/components/_global/BalTextInput/composables/useInputEvents';

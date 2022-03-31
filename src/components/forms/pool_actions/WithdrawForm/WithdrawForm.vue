@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed, ref, onBeforeMount, watch } from 'vue';
+import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 // Composables

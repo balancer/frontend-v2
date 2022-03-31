@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 

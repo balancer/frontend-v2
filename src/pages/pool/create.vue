@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, nextTick, onBeforeMount } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';

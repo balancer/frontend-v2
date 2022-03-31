@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, ref, computed, reactive, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { format } from 'date-fns';
 

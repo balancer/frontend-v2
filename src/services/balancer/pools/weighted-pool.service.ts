@@ -1,7 +1,7 @@
 import {
   Vault__factory,
-  WeightedPoolFactory__factory,
-  WeightedPool__factory
+  WeightedPool__factory,
+  WeightedPoolFactory__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
 import {

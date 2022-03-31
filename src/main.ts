@@ -10,16 +10,16 @@ import registerDirectives from '@/plugins/directives';
 import { registerGlobalComponents } from '@/plugins/components';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import { use } from 'echarts/core';
-import { LineChart, PieChart, BarChart } from 'echarts/charts';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
 import {
-  TitleComponent,
-  TooltipComponent,
   GridComponent,
   LegendComponent,
-  ToolboxComponent,
-  MarkPointComponent,
   MarkLineComponent,
-  PolarComponent
+  MarkPointComponent,
+  PolarComponent,
+  TitleComponent,
+  ToolboxComponent,
+  TooltipComponent
 } from 'echarts/components';
 import VueVirtualScroller from 'vue3-virtual-scroller';
 import { CanvasRenderer } from 'echarts/renderers';

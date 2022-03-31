@@ -1,6 +1,6 @@
 import Service from '../../balancer-subgraph.service';
 import poolQueryBuilder from './query';
-import { PoolSnapshots, PoolSnapshot, QueryBuilder } from '../../types';
+import { PoolSnapshot, PoolSnapshots, QueryBuilder } from '../../types';
 import { toJsTimestamp } from '@/composables/useTime';
 
 const DAY = 60 * 60 * 24;

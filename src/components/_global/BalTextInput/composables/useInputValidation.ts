@@ -1,5 +1,5 @@
 import { RuleFunction } from '@/types';
-import { ref, computed, watch, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 
 export default function useInputValidation(props, emit) {
   /**

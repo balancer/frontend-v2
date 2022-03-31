@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { mount } from 'vue-composable-tester';
 import { BigNumber } from '@ethersproject/bignumber';
 

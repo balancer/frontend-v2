@@ -10,10 +10,10 @@ import useFathom from '@/composables/useFathom';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
-  isStableLike,
   isMigratablePool,
-  orderedTokenAddresses,
-  orderedPoolTokens
+  isStableLike,
+  orderedPoolTokens,
+  orderedTokenAddresses
 } from '@/composables/usePool';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';

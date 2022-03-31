@@ -1,4 +1,4 @@
-import { ref, computed, Ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useWeb3 from '@/services/web3/useWeb3';

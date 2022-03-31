@@ -136,7 +136,7 @@ import {
   orderedPoolTokens,
   orderedTokenAddresses
 } from '@/composables/usePool';
-import { startOfWeek, subWeeks, format, addDays } from 'date-fns';
+import { addDays, format, startOfWeek, subWeeks } from 'date-fns';
 
 function getWeekName(week: string) {
   const parts = week.split('_');

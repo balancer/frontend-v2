@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/vue';
+import { fireEvent, render } from '@testing-library/vue';
 import ClaimBalBtn from './ClaimBalBtn.vue';
 import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';

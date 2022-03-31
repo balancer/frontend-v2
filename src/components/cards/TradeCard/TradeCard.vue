@@ -84,10 +84,10 @@
 
 <script lang="ts">
 import { isRequired } from '@/lib/utils/validations';
-import { ref, defineComponent, computed, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { isAddress, getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation, {

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import useUrls from '@/composables/useUrls';
 

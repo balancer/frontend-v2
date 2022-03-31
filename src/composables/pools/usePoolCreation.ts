@@ -1,4 +1,4 @@
-import { ref, reactive, toRefs, computed } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';

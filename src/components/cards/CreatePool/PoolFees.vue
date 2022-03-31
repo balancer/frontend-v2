@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, nextTick } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';

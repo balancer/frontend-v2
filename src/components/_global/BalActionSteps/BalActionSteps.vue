@@ -7,7 +7,7 @@
  * Useful if there are an arbitrary number of actions the user must take such as
  * "approve n tokens, then invest in a pool.""
  */
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
   TransactionReceipt,
   TransactionResponse

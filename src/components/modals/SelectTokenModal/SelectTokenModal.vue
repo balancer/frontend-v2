@@ -107,13 +107,13 @@
 
 <script lang="ts">
 import {
-  defineComponent,
-  reactive,
-  toRefs,
   computed,
+  defineComponent,
   PropType,
-  watch,
-  toRef
+  reactive,
+  toRef,
+  toRefs,
+  watch
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useTokenLists from '@/composables/useTokenLists';

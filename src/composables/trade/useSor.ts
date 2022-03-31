@@ -1,20 +1,20 @@
 import {
-  Ref,
-  onMounted,
-  ref,
   computed,
   ComputedRef,
+  onMounted,
   reactive,
+  ref,
+  Ref,
   toRefs
 } from 'vue';
-import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
-import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
+import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { useI18n } from 'vue-i18n';
 
-import { scale, bnum } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
 import {
   getWrapOutput,
   unwrap,

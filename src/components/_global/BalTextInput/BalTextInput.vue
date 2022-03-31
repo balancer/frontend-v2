@@ -6,7 +6,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useAttrs, computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, useAttrs } from 'vue';
 import { HtmlInputEvent } from '@/types';
 import useInputStyles from './composables/useInputStyles';
 import useInputEvents from './composables/useInputEvents';

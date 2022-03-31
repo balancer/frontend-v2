@@ -2,8 +2,8 @@ import { Ref } from 'vue';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import {
-  Vault__factory,
-  BalancerHelpers__factory
+  BalancerHelpers__factory,
+  Vault__factory
 } from '@balancer-labs/typechain';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';

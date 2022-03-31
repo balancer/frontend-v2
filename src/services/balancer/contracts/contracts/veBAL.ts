@@ -1,7 +1,7 @@
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 
-import { toUtcTime, toJsTimestamp } from '@/composables/useTime';
+import { toJsTimestamp, toUtcTime } from '@/composables/useTime';
 
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';

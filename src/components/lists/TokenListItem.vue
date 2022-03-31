@@ -49,7 +49,7 @@
 <script lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import anime from 'animejs';
-import { onMounted, onUnmounted, PropType, ref, computed } from 'vue';
+import { computed, onMounted, onUnmounted, PropType, ref } from 'vue';
 import { TokenInfo } from '@/types/TokenList';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';

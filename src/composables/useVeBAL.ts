@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { isMainnet, isKovan } from '@/composables/useNetwork';
+import { isKovan, isMainnet } from '@/composables/useNetwork';
 
 import { POOLS } from '@/constants/pools';
 

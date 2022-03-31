@@ -8,8 +8,8 @@ import { IS_DEV } from '@/constants/env';
 import OperatorError from './errors/OperatorError';
 import {
   getSigningSchemeApiValue,
-  OrderCreation,
-  OrderCancellation
+  OrderCancellation,
+  OrderCreation
 } from './signing';
 import {
   FeeInformation,

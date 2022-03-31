@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType, Ref } from 'vue';
+import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';

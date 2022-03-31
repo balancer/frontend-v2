@@ -1,8 +1,8 @@
 import Vault from './contracts/vault';
 import {
-  WeightedPool__factory,
+  InvestmentPool__factory,
   StablePool__factory,
-  InvestmentPool__factory
+  WeightedPool__factory
 } from '@balancer-labs/typechain';
 import LinearPoolAbi from '@/lib/abi/LinearPool.json';
 import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';

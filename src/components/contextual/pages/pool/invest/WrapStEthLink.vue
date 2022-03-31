@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { usePool } from '@/composables/usePool';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useConfig from '@/composables/useConfig';

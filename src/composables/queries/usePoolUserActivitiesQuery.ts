@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue';
+import { computed, reactive } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { bnum } from '@/lib/utils';

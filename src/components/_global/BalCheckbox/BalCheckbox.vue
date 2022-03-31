@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from 'vue';
-import { Rules, RuleFunction } from '@/types';
+import { computed, defineComponent, PropType, ref } from 'vue';
+import { RuleFunction, Rules } from '@/types';
 
 export default defineComponent({
   name: 'BalCheckbox',

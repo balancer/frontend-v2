@@ -13,7 +13,7 @@ import {
   pickBy,
   toPairs
 } from 'lodash';
-import { fromUnixTime, format } from 'date-fns';
+import { format, fromUnixTime } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useTradeState } from '@/composables/trade/useTradeState';

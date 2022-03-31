@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { scale, bnum } from '@/lib/utils';
-import { intervalToDuration, Interval, Duration, nextThursday } from 'date-fns';
+import { bnum, scale } from '@/lib/utils';
+import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVotingGauges from '@/composables/useVotingGauges';

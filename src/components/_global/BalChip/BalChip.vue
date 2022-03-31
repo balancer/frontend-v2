@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { withDefaults, defineEmits } from 'vue';
+import { defineEmits, withDefaults } from 'vue';
 
 import {
   useChipClasses,

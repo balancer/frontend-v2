@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, reactive, ref } from 'vue';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { TransactionActionInfo } from '@/types/transactions';
 

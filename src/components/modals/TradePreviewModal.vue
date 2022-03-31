@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
+import { computed, defineComponent, toRefs } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useRelayerApproval, {

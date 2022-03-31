@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { format, formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 
-import { scale, bnum } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
 import { WalletError } from '@/types';
 import { TransactionActionState } from '@/types/transactions';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';

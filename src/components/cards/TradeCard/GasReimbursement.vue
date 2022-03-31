@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, computed, onBeforeMount, ref } from 'vue';
+import { computed, defineComponent, onBeforeMount, PropType, ref } from 'vue';
 import { useStore } from 'vuex';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';

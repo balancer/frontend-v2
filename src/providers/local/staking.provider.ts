@@ -1,7 +1,7 @@
 import {
+  LiquidityGauge as TLiquidityGauge,
   UserGuageShare,
-  UserGuageSharesResponse,
-  LiquidityGauge as TLiquidityGauge
+  UserGuageSharesResponse
 } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -19,15 +19,15 @@ import { Interface } from '@ethersproject/abi';
 import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
 
 import {
-  provide,
   computed,
-  InjectionKey,
-  reactive,
-  ref,
+  ComputedRef,
   defineComponent,
   h,
-  ComputedRef,
-  Ref
+  InjectionKey,
+  provide,
+  reactive,
+  Ref,
+  ref
 } from 'vue';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';

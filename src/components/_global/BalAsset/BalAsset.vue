@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { defineComponent, toRefs, ref, computed, watch } from 'vue';
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import useTokens from '@/composables/useTokens';
 import Avatar from '../../images/Avatar.vue';
 import useUrls from '@/composables/useUrls';

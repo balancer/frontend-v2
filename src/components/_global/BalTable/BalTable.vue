@@ -224,14 +224,14 @@
 
 <script lang="ts">
 import {
+  computed,
   defineComponent,
   onMounted,
   PropType,
   ref,
-  watch,
-  computed
+  watch
 } from 'vue';
-import { sortBy, sumBy, tail, compact } from 'lodash';
+import { compact, sortBy, sumBy, tail } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;

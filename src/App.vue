@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onBeforeMount, watch, ref } from 'vue';
+import { defineComponent, onBeforeMount, ref, watch } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';

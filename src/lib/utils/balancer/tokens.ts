@@ -1,4 +1,4 @@
-import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as abi } from '@/lib/abi/ERC20.json';

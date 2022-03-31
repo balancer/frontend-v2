@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, toRefs, computed, reactive, watch } from 'vue';
+import { computed, reactive, toRef, toRefs, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { usePool } from '@/composables/usePool';
 

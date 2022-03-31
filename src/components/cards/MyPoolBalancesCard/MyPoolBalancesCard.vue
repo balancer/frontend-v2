@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';

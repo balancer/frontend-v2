@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
-  orderedTokenAddresses,
+  isStableLike,
   orderedPoolTokens,
-  isStableLike
+  orderedTokenAddresses
 } from '@/composables/usePool';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useRouter } from 'vue-router';

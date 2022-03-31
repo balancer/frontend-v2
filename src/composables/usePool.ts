@@ -1,11 +1,11 @@
-import { Ref, computed } from 'vue';
+import { computed, Ref } from 'vue';
 import { getAddress } from 'ethers/lib/utils';
 
 import {
-  PoolType,
   AnyPool,
+  FullPool,
   PoolToken,
-  FullPool
+  PoolType
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 

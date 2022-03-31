@@ -193,7 +193,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
+import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { HtmlInputEvent } from '@/types';
-import { ref, computed, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 
 import { bnum } from '@/lib/utils';
-import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
+import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 
 import useWeb3 from '@/services/web3/useWeb3';
 

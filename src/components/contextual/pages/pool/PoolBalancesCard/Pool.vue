@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
+import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';

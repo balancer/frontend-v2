@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { parseUnits, formatUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import useUserSettings from './useUserSettings';
 import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';

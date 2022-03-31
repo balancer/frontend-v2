@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { format, addWeeks } from 'date-fns';
+import { addWeeks, format } from 'date-fns';
 
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 

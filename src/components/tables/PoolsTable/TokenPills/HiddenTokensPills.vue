@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { withDefaults, defineProps } from 'vue';
+import { defineProps, withDefaults } from 'vue';
 
 import { PoolToken } from '@/services/balancer/subgraph/types';
 

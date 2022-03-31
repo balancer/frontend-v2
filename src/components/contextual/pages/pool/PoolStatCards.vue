@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, computed } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';

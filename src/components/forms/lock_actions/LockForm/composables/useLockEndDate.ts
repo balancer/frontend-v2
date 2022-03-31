@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { addDays, nextThursday, startOfDay, previousThursday } from 'date-fns';
+import { addDays, nextThursday, previousThursday, startOfDay } from 'date-fns';
 
 import useLockState from './useLockState';
 

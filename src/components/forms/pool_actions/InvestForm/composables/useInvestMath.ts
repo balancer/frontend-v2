@@ -1,4 +1,4 @@
-import { computed, Ref, watch, ref } from 'vue';
+import { computed, ref, Ref, watch } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';

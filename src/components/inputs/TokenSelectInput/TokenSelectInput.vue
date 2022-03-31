@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';

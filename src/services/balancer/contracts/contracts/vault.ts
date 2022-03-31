@@ -15,10 +15,10 @@ import {
 } from '../../subgraph/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import {
-  isWeightedLike,
   isStableLike,
+  isStablePhantom,
   isTradingHaltable,
-  isStablePhantom
+  isWeightedLike
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
