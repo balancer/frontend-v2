@@ -1,47 +1,56 @@
+<script lang="ts" setup>
+import useDarkMode from '@/composables/useDarkMode';
+import { computed } from 'vue';
+
+/**
+ * TYPES
+ */
+type RoundedOpts = 'sm' | 'md' | 'lg';
+
+type Props = {
+  white?: boolean;
+  darker?: boolean;
+  square?: boolean;
+  rounded?: RoundedOpts;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  white: false,
+  darker: false,
+  square: false,
+  rounded: 'lg'
+});
+
+/**
+ * COMPOSABLES
+ */
+const { darkMode } = useDarkMode();
+
+/**
+ * COMPUTED
+ */
+const bgClass = computed(() => {
+  if (props.white) return 'shimmer-white';
+  if (darkMode.value) {
+    return props.darker ? 'shimmer-dark-mode-darker' : 'shimmer-dark-mode';
+  }
+  return props.darker ? 'shimmer-light-mode-darker' : 'shimmer-light-mode';
+});
+
+const classes = computed(() => {
+  return {
+    [`rounded-${props.rounded}`]: !props.square,
+    [bgClass.value]: true
+  };
+});
+</script>
+
 <template>
   <div :class="['bal-loading-block', classes]" />
 </template>
-
-<script lang="ts">
-import useDarkMode from '@/composables/useDarkMode';
-import { defineComponent, computed } from 'vue';
-
-export default defineComponent({
-  name: 'BalLoadingBlock',
-
-  props: {
-    white: { type: Boolean, default: false },
-    darker: { type: Boolean, default: false },
-    square: { type: Boolean, default: false },
-    rounded: {
-      type: String,
-      default: 'lg',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
-    }
-  },
-
-  setup(props) {
-    const { darkMode } = useDarkMode();
-
-    const bgClass = computed(() => {
-      if (props.white) return 'shimmer-white';
-      if (darkMode.value) {
-        return props.darker ? 'shimmer-dark-mode-darker' : 'shimmer-dark-mode';
-      }
-      return props.darker ? 'shimmer-light-mode-darker' : 'shimmer-light-mode';
-    });
-
-    const classes = computed(() => {
-      return {
-        [`rounded-${props.rounded}`]: !props.square,
-        [bgClass.value]: true
-      };
-    });
-
-    return { classes };
-  }
-});
-</script>
 
 <style>
 .bal-loading-block {

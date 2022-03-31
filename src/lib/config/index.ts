@@ -52,9 +52,10 @@ export interface Config {
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
+    veBAL: string;
+    gaugeController: string;
     gaugeFactory: string;
     balancerMinter: string;
-    gaugeController: string;
     tokenAdmin: string;
   };
   keys: {
@@ -70,7 +71,7 @@ export interface Config {
   >;
 }
 
-const config: Record<Config['chainId'], Config> = {
+const config: Record<Network | number, Config> = {
   [Network.MAINNET]: homestead,
   [Network.KOVAN]: kovan,
   [Network.RINKEBY]: rinkeby,

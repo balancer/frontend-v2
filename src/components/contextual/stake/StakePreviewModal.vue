@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import StakePreview, { StakeAction } from './StakePreview.vue';
 
 type Props = {
   isVisible: boolean;
-  pool: DecoratedPoolWithStakedShares;
+  pool: DecoratedPoolWithShares;
   action: StakeAction;
 };
 

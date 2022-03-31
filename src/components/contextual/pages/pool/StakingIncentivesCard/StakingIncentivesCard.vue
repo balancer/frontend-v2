@@ -35,7 +35,8 @@ const {
   isRefetchingStakedShares,
   isLoadingPoolEligibility,
   isPoolEligibleForStaking,
-  stakedShares
+  hideAprInfo,
+  stakedSharesForProvidedPool
 } = useStaking();
 
 /**
@@ -44,7 +45,7 @@ const {
 const fiatValueOfStakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .times((stakedShares.value || 0).toString())
+    .times((stakedSharesForProvidedPool.value || 0).toString())
     .toString();
 });
 
@@ -98,7 +99,9 @@ async function handleActionSuccess() {
         ]"
       >
         <template v-slot:staking-handle>
-          <button class="p-4 rounded-xl w-full hover:bg-gray-50">
+          <button
+            class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
+          >
             <BalStack horizontal justify="between" align="center">
               <BalStack spacing="sm" align="center">
                 <div
@@ -131,8 +134,12 @@ async function handleActionSuccess() {
           </button>
         </template>
         <template v-slot:staking-incentives>
-          <div class="bg-white relative">
-            <BalStack vertical spacing="sm" class="px-4 py-4 border-t">
+          <div class="bg-white dark:bg-gray-850 relative">
+            <BalStack
+              vertical
+              spacing="sm"
+              class="px-4 py-4 border-t dark:border-gray-900"
+            >
               <BalStack horizontal justify="between">
                 <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
@@ -144,10 +151,10 @@ async function handleActionSuccess() {
                       {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
                     </span>
                   </AnimatePresence>
-                  <BalTooltip text="Bingo" />
+                  <BalTooltip :text="$t('staking.stakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between">
+              <BalStack horizontal justify="between" v-if="!hideAprInfo">
                 <span>{{ $t('staking.unclaimedIncentives') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
                   <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
@@ -165,10 +172,10 @@ async function handleActionSuccess() {
                       {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
                     </span>
                   </AnimatePresence>
-                  <BalTooltip text="Bingo" />
+                  <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between">
+              <BalStack horizontal justify="between" v-if="!hideAprInfo">
                 <span>
                   {{ $t('potential') }} {{ $t('staking.weeklyEarning') }}
                 </span>
@@ -188,7 +195,7 @@ async function handleActionSuccess() {
                 </BalBtn>
                 <BalBtn
                   outline
-                  color="gradient"
+                  color="gray"
                   size="sm"
                   @click="showUnstakePreview"
                   :disabled="fiatValueOfStakedShares === '0'"

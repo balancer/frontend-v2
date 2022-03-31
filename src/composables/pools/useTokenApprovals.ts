@@ -25,6 +25,12 @@ export type ApprovalStateMap = {
   [address: string]: ApprovalState;
 };
 
+export type ApprovalOptions = {
+  spender: string;
+  amount: string;
+  state: ApprovalState;
+};
+
 export default function useTokenApprovals(
   tokenAddresses: string[],
   amounts: Ref<string[]>
@@ -48,7 +54,11 @@ export default function useTokenApprovals(
    */
   const requiredApprovalState = ref<ApprovalStateMap>(
     Object.fromEntries(
-      approvalsRequired(tokenAddresses, amounts.value).map(address => [
+      approvalsRequired(
+        tokenAddresses,
+        amounts.value,
+        appNetworkConfig.addresses.vault
+      ).map(address => [
         address,
         { init: false, confirming: false, approved: false }
       ])
@@ -62,17 +72,25 @@ export default function useTokenApprovals(
    * COMPUTED
    */
   const requiredApprovals = computed(() =>
-    approvalsRequired(tokenAddresses, amounts.value)
+    approvalsRequired(
+      tokenAddresses,
+      amounts.value,
+      appNetworkConfig.addresses.vault
+    )
   );
   /**
    * METHODS
    */
   async function approveToken(
     address: string,
-    spender?: string,
-    customApprovalState?: Record<string, ApprovalState>
+    options: Partial<ApprovalOptions> = {}
   ): Promise<TransactionResponse> {
-    const state = customApprovalState || requiredApprovalState.value[address];
+    const defaultOptions: ApprovalOptions = {
+      spender: appNetworkConfig.addresses.vault,
+      amount: MaxUint256.toString(),
+      state: requiredApprovalState.value[address]
+    };
+    const { spender, amount, state } = Object.assign(defaultOptions, options);
 
     try {
       state.init = true;
@@ -82,7 +100,7 @@ export default function useTokenApprovals(
         address,
         ERC20ABI,
         'approve',
-        [spender || appNetworkConfig.addresses.vault, MaxUint256.toString()]
+        [spender, amount]
       );
 
       state.init = false;
@@ -92,12 +110,15 @@ export default function useTokenApprovals(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: t('transactionSummary.approveForInvesting', [
-          tokens.value[address]?.symbol
-        ]),
+        summary: t(
+          spender === appNetworkConfig.addresses.veBAL
+            ? 'transactionSummary.approveForLocking'
+            : 'transactionSummary.approveForInvesting',
+          [tokens.value[address]?.symbol]
+        ),
         details: {
           contractAddress: address,
-          spender: spender || appNetworkConfig.addresses.vault
+          spender: spender
         }
       });
 

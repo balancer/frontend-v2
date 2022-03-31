@@ -43,6 +43,11 @@ export type TransactionAction =
   | 'createPool'
   | 'fundPool'
   | 'migratePool'
+  | 'createLock'
+  | 'extendLock'
+  | 'increaseLock'
+  | 'unlock'
+  | 'voteForGauge'
   | 'stake';
 
 export type TransactionType = 'order' | 'tx';

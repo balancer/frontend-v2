@@ -250,9 +250,9 @@ export default function usePoolsQuery(
   };
 
   const queryOptions = reactive({
-    getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options,
-    enabled,
+    getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
+    enabled
   });
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);

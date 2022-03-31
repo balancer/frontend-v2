@@ -2,7 +2,7 @@
 import { defineComponent, onBeforeMount, watch, ref } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import BigNumber from 'bignumber.js';
 import * as Layouts from '@/pages/_layouts';
 import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
@@ -13,14 +13,18 @@ import Notifications from '@/components/notifications/Notifications.vue';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
-import useAlerts, {
-  Alert,
-  AlertPriority,
-  AlertType
-} from './composables/useAlerts';
-import { useI18n } from 'vue-i18n';
+// import useAlerts, {
+//   Alert,
+//   AlertPriority,
+//   AlertType
+// } from './composables/useAlerts';
+// import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useBackgroundColor from './composables/useBackgroundColor';
+import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import { useSidebar } from './composables/useSidebar';
+import useNavigationGuards from './composables/useNavigationGuards';
+import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -29,7 +33,9 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
-    Notifications
+    Notifications,
+    AppSidebar,
+    GlobalModalContainer
   },
 
   setup() {
@@ -46,43 +52,46 @@ export default defineComponent({
     useGlobalQueryWatchers();
     useGnosisSafeApp();
     useExploitWatcher();
+    useNavigationGuards();
     const {
       isWalletSelectVisible,
-      toggleWalletSelectModal,
-      isMainnet
+      toggleWalletSelectModal
+      // isMainnet
     } = useWeb3();
     const route = useRoute();
     const store = useStore();
-    const router = useRouter();
-    const { addAlert } = useAlerts();
-    const { t } = useI18n();
+    // const router = useRouter();
+    // const { addAlert } = useAlerts();
+    // const { t } = useI18n();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
+    const { sidebarOpen } = useSidebar();
 
     // Temporary feature alert for Balancer boosted pools.
-    if (isMainnet.value) {
-      const featureAlert: Alert = {
-        id: 'boosted-pools',
-        priority: AlertPriority.LOW,
-        label: t('alerts.boostedPools'),
-        type: AlertType.FEATURE,
-        rememberClose: true,
-        actionOnClick: true,
-        action: () =>
-          router.push({
-            name: 'pool',
-            params: {
-              id:
-                '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
-            },
-            query: {
-              utm_source: 'website',
-              utm_medium: 'banner',
-              utm_campaign: 'aaveboostedpools'
-            }
-          })
-      };
-      addAlert(featureAlert);
-    }
+    // commented out until veBAL launch, then change details for veBAL alert
+    // if (isMainnet.value) {
+    //   const featureAlert: Alert = {
+    //     id: 'boosted-pools',
+    //     priority: AlertPriority.LOW,
+    //     label: t('alerts.boostedPools'),
+    //     type: AlertType.FEATURE,
+    //     rememberClose: true,
+    //     actionOnClick: true,
+    //     action: () =>
+    //       router.push({
+    //         name: 'pool',
+    //         params: {
+    //           id:
+    //             '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
+    //         },
+    //         query: {
+    //           utm_source: 'website',
+    //           utm_medium: 'banner',
+    //           utm_campaign: 'aaveboostedpools'
+    //         }
+    //       })
+    //   };
+    //   addAlert(featureAlert);
+    // }
 
     /**
      * CALLBACKS
@@ -108,6 +117,7 @@ export default defineComponent({
       layout,
       // computed
       isWalletSelectVisible,
+      sidebarOpen,
       // methods
       toggleWalletSelectModal
     };
@@ -125,7 +135,9 @@ export default defineComponent({
       @close="toggleWalletSelectModal"
     />
     <Notifications />
+    <AppSidebar v-if="sidebarOpen" />
   </div>
+  <GlobalModalContainer />
 </template>
 
 <style>

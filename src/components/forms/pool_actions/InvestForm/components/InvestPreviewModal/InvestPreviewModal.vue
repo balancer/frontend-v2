@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { computed, toRefs, ref } from 'vue';
-import useTokens from '@/composables/useTokens';
+import { useI18n } from 'vue-i18n';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
+
 import { TokenInfoMap } from '@/types/TokenList';
+
 import { bnum } from '@/lib/utils';
+
 import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { InvestMathResponse } from '../../composables/useInvestMath';
+import useInvestState from '../../composables/useInvestState';
+
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActions from './components/InvestActions.vue';
-import { InvestMathResponse } from '../../composables/useInvestMath';
-import { useI18n } from 'vue-i18n';
-import useInvestState from '../../composables/useInvestState';
 
 /**
  * TYPES
@@ -32,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {});
 
 const emit = defineEmits<{
   (e: 'close'): void;
+  (e: 'showStakeModal'): void;
 }>();
 
 /**
@@ -110,6 +116,11 @@ function handleClose(): void {
   }
   emit('close');
 }
+
+function handleShowStakeModal() {
+  handleClose();
+  emit('showStakeModal');
+}
 </script>
 
 <template>
@@ -150,6 +161,7 @@ function handleClose(): void {
       :tokenAddresses="tokenAddresses"
       class="mt-4"
       @success="investmentConfirmed = true"
+      @showStakeModal="handleShowStakeModal"
     />
   </BalModal>
 </template>

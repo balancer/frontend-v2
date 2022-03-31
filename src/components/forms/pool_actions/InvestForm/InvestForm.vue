@@ -17,6 +17,9 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
+import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+
+import StakingProvider from '@/providers/local/staking.provider';
 
 /**
  * TYPES
@@ -39,6 +42,7 @@ const props = defineProps<Props>();
  * STATE
  */
 const showInvestPreview = ref(false);
+const showStakeModal = ref(false);
 
 /**
  * COMPOSABLES
@@ -274,14 +278,23 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       />
     </div>
 
-    <teleport to="#modal">
-      <InvestPreviewModal
-        v-if="showInvestPreview"
-        :pool="pool"
-        :math="investMath"
-        :tokenAddresses="tokenAddresses"
-        @close="showInvestPreview = false"
-      />
-    </teleport>
+    <StakingProvider :poolAddress="pool.address">
+      <teleport to="#modal">
+        <InvestPreviewModal
+          v-if="showInvestPreview"
+          :pool="pool"
+          :math="investMath"
+          :tokenAddresses="tokenAddresses"
+          @close="showInvestPreview = false"
+          @showStakeModal="showStakeModal = true"
+        />
+        <StakePreviewModal
+          :pool="pool"
+          :isVisible="showStakeModal"
+          @close="showStakeModal = false"
+          action="stake"
+        />
+      </teleport>
+    </StakingProvider>
   </div>
 </template>

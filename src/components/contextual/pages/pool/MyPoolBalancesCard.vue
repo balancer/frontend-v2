@@ -41,7 +41,7 @@ const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
   toRef(props, 'pool')
 );
-const { stakedShares } = useStaking();
+const { stakedSharesForProvidedPool } = useStaking();
 const router = useRouter();
 
 /**
@@ -67,7 +67,7 @@ const poolTokens = computed(() =>
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
     bnum(bptBalance.value)
-      .plus(stakedShares.value)
+      .plus(stakedSharesForProvidedPool.value)
       .toString(),
     0,
     'send'

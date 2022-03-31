@@ -8,17 +8,18 @@ import useStaking from '@/composables/staking/useStaking';
 import { useI18n } from 'vue-i18n';
 
 import { bnum } from '@/lib/utils';
-import { DecoratedPoolWithStakedShares } from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { getAddress } from 'ethers/lib/utils';
+import { useQueryClient } from 'vue-query';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
-  pool: DecoratedPoolWithStakedShares;
+  pool: DecoratedPoolWithShares;
   action: StakeAction;
 };
 
@@ -31,14 +32,16 @@ const emit = defineEmits(['close', 'success']);
 const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
+const queryClient = useQueryClient();
 
 const {
   stakeBPT,
   unstakeBPT,
   getGaugeAddress,
-  stakedShares,
+  stakedSharesForProvidedPool,
   refetchStakedShares,
-  refetchStakingData
+  refetchStakingData,
+  hideAprInfo
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -70,7 +73,7 @@ const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
 const shareBalanceToDisplay = ref(
   props.action === 'unstake'
-    ? stakedShares.value
+    ? stakedSharesForProvidedPool.value
     : balanceFor(props.pool.address)
 );
 
@@ -94,7 +97,7 @@ const assetRowWidth = computed(
 const numSharesToModify = ref(
   props.action === 'stake'
     ? balanceFor(getAddress(props.pool.address))
-    : stakedShares.value
+    : stakedSharesForProvidedPool.value
 );
 
 const fiatValueOfModifiedShares = ref(
@@ -106,7 +109,9 @@ const fiatValueOfModifiedShares = ref(
 
 const totalUserPoolSharePct = ref(
   bnum(
-    bnum(stakedShares.value).plus(balanceFor(getAddress(props.pool.address)))
+    bnum(stakedSharesForProvidedPool.value).plus(
+      balanceFor(getAddress(props.pool.address))
+    )
   )
     .div(props.pool.totalShares)
     .toString()
@@ -125,6 +130,7 @@ async function handleSuccess({ receipt }) {
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
   await refetchStakingData.value();
+  await queryClient.refetchQueries(['staking']);
   emit('success');
 }
 
@@ -187,7 +193,15 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(fiatValueOfModifiedShares, FNumFormats.fiat) }}
             </span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip
+              :text="
+                action === 'stake'
+                  ? $t('staking.stakeValueTooltip')
+                  : $t('staking.unstakeValueTooltip')
+              "
+              width="40"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between">
@@ -196,27 +210,31 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(totalUserPoolSharePct, FNumFormats.percent) }}
             </span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip
+              :text="$t('staking.totalShareTooltip')"
+              width="40"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between">
+        <BalStack horizontal justify="between" v-if="!hideAprInfo">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
           </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">0</span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between">
+        <BalStack horizontal justify="between" v-if="!hideAprInfo">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:
           </span>
           <BalStack horizontal spacing="base">
             <span class="text-sm capitalize">0</span>
-            <BalTooltip text="s" width="20" textCenter />
+            <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
       </BalStack>
@@ -234,21 +252,6 @@ function handleClose() {
           {{ $t('close') }}
         </BalBtn>
       </AnimatePresence>
-    </BalStack>
-    <BalStack
-      horizontal
-      align="center"
-      justify="center"
-      class="text-gray-600 hover:text-gray-800 hover:underline"
-    >
-      <router-link :to="{ name: 'pool', params: { id: pool.id } }">
-        <BalStack horizontal align="center" spacing="xs">
-          <span>
-            {{ $t('getLpTokens') }}: {{ getToken(pool.address).symbol }}
-          </span>
-          <BalIcon name="arrow-up-right" />
-        </BalStack>
-      </router-link>
     </BalStack>
   </BalStack>
 </template>

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import {
-  DecoratedPoolWithShares,
-  DecoratedPoolWithStakedShares
-} from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
@@ -25,14 +22,13 @@ import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
-import { getStakeState, StakeState } from '@/composables/staking/useStaking';
-import { bnum } from '@/lib/utils';
+import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
  */
 type Props = {
-  data?: DecoratedPoolWithShares[] | DecoratedPoolWithStakedShares[];
+  data?: DecoratedPoolWithShares[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -93,7 +89,7 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBalance'),
     accessor: pool =>
-      fNum2(getAggregatePoolShares(pool), {
+      fNum2(pool.shares, {
         style: 'currency',
         maximumFractionDigits: 0,
         fixedFormat: true
@@ -174,18 +170,11 @@ const visibleColumns = computed(() =>
   columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
 
+const stakeablePoolIds = computed((): string[] => POOLS.Stakeable.AllowList);
+
 /**
  * METHODS
  */
-// returns the total number of staked
-// and unstaked shares the user has for
-// a pool
-function getAggregatePoolShares(pool: DecoratedPoolWithStakedShares) {
-  return bnum(pool.shares)
-    .plus(pool.stakedShares || 0)
-    .toString();
-}
-
 function handleRowClick(pool: DecoratedPoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
@@ -250,7 +239,9 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       <template v-slot:poolNameCell="pool">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
-            :tokens="orderedPoolTokens(pool)"
+            :tokens="
+              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+            "
             :isStablePool="isStableLike(pool.poolType)"
             :selectedTokens="selectedTokens"
           />
@@ -289,17 +280,15 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
-          <div v-if="getStakeState(pool) === StakeState.MaxStaked">
-            <span>100%</span>
-          </div>
           <BalBtn
-            v-if="getStakeState(pool) === StakeState.CanStake"
+            v-if="stakeablePoolIds.includes(pool.id)"
             color="gradient"
             size="sm"
             @click.prevent="$emit('triggerStake', pool)"
           >
             {{ $t('stake') }}
           </BalBtn>
+          <div v-else>{{ $t('notAvailable') }}</div>
         </div>
       </template>
     </BalTable>
