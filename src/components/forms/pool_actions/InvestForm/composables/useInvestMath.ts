@@ -136,7 +136,6 @@ export default function useInvestMath(
 
   const rektPriceImpact = computed((): boolean => {
     if (batchSwapLoading.value) return false;
-    console.log(priceImpact.value);
     return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
   });
 
