@@ -19,6 +19,7 @@ import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTab
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { isL2 } from '@/composables/useNetwork';
+import useStakingRewards from '@/providers/local/staking/useStakingRewards';
 
 // COMPOSABLES
 const router = useRouter();
@@ -30,6 +31,7 @@ const {
   addSelectedToken,
   removeSelectedToken
 } = usePoolFilters();
+const { gaugeAprMap, stakingData } = useStakingRewards();
 
 const {
   pools,
@@ -98,6 +100,7 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
+    {{ gaugeAprMap }}
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">
