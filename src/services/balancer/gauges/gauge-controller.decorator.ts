@@ -16,6 +16,8 @@ export interface UserVotesData {
 
 export interface RawVotesData {
   votes: number;
+  absVotes: number;
+  totalVotes: number;
   votesNextPeriod: number;
   userVotes: UserVotesData;
   lastUserVoteTime: BigNumber;
@@ -55,6 +57,8 @@ export class GaugeControllerDecorator {
   ): Promise<VotingGaugeWithVotes[]> {
     this.multicaller = this.resetMulticaller();
     this.callGaugeVotes(votingGauges);
+    this.callGaugeAbsoluteVotes(votingGauges);
+    this.callTotalVotes(votingGauges);
     this.callGaugeVotesNextPeriod(votingGauges);
     if (userAddress) {
       this.callUserGaugeVotes(votingGauges, userAddress);
@@ -74,7 +78,14 @@ export class GaugeControllerDecorator {
   private formatVotes(votesData: RawVotesData): VotesData {
     return {
       votes: votesData.votes.toString(),
-      votesNextPeriod: votesData.votesNextPeriod.toString(),
+      // votesNextPeriod: votesData.votesNextPeriod.toString(),
+      votesNextPeriod: (
+        (1000000000000000000 * // scaling factor
+        0.56 * // mainnet gauge type weight
+          votesData.absVotes) / // gauge weight
+        votesData.totalVotes
+      ) // sum of weights of all mainnet gauges
+        .toString(),
       userVotes: votesData?.userVotes?.power.toString() || '0',
       lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0
     };
@@ -90,6 +101,34 @@ export class GaugeControllerDecorator {
         this.config.network.addresses.gaugeController,
         'gauge_relative_weight',
         [gauge.address, toUnixTimestamp(Date.now())]
+      );
+    });
+  }
+
+  /**
+   * @summary Fetch number of votes of each gauge
+   */
+  private callGaugeAbsoluteVotes(votingGauges: VotingGauge[]) {
+    votingGauges.forEach(gauge => {
+      this.multicaller.call(
+        `${gauge.address}.absVotes`,
+        this.config.network.addresses.gaugeController,
+        'get_gauge_weight',
+        [gauge.address]
+      );
+    });
+  }
+
+  /**
+   * @summary Fetch total number of votes of all gauges of type 2
+   */
+  private callTotalVotes(votingGauges: VotingGauge[]) {
+    votingGauges.forEach(gauge => {
+      this.multicaller.call(
+        `${gauge.address}.totalVotes`,
+        this.config.network.addresses.gaugeController,
+        'get_weights_sum_per_type',
+        [2]
       );
     });
   }
