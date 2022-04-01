@@ -6,9 +6,14 @@ import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Network } from '@balancer-labs/sdk';
 import { VotingGauge } from '@/constants/voting-gauges';
-import { oneWeekInMs, toUnixTimestamp } from '@/composables/useTime';
+import {
+  oneWeekInMs,
+  oneWeekInSecs,
+  toUnixTimestamp
+} from '@/composables/useTime';
 
 const VOTE_MULTIPLIER = parseFixed('1', 18);
+const FIRST_WEEK_TIMESTAMP = 1648684800;
 
 export interface UserVotesData {
   end: BigNumber;
@@ -115,9 +120,15 @@ export class GaugeControllerDecorator {
    * @summary Fetch total points allocated towards each gauge for this period
    */
   private callGaugeWeightThisPeriod(votingGauges: VotingGauge[]) {
-    const thisWeekTimestamp = toUnixTimestamp(
+    let thisWeekTimestamp = toUnixTimestamp(
       Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
     );
+    // this makes sure we don't compute votes from before Mar31 in the "This period" entry,
+    // since the system is not fully active between Mar31 and Apr6
+    // (ie the first period starts on Apr7)
+    if (thisWeekTimestamp == FIRST_WEEK_TIMESTAMP) {
+      thisWeekTimestamp = thisWeekTimestamp - oneWeekInSecs;
+    }
     votingGauges.forEach(gauge => {
       this.multicaller.call(
         `gauges.${gauge.address}.gaugeWeightThisPeriod`,
