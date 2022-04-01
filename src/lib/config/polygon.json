@@ -20,6 +20,7 @@
     "gauge": ""
   },
   "supportsEIP1559": true,
+  "supportsElementPools": false,
   "nativeAsset": {
     "name": "Matic",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
@@ -66,6 +67,8 @@
       "name": "weightedPool"
     }
   },
-  "supportsElementPools": false,
-  "gaugeTypeWeight": "0"
+  "gauges": {
+    "type": 4,
+    "weight": 0
+  }
 }

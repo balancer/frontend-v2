@@ -95,7 +95,7 @@ export class GaugeControllerDecorator {
     votesData: RawVotesData
   ): VotesData {
     const multiplier = VOTE_MULTIPLIER.mul(
-      this.config.network.gaugeTypeWeight
+      this.config.network.gauges.weight
     ).div(100);
     return {
       votes: votesData.gaugeWeightThisPeriod.bias
@@ -112,7 +112,7 @@ export class GaugeControllerDecorator {
   }
 
   /**
-   * @summary Fetch relative vote weight of each gauge
+   * @summary Fetch total points allocated towards each gauge for this period
    */
   private callGaugeWeightThisPeriod(votingGauges: VotingGauge[]) {
     const thisWeekTimestamp = toUnixTimestamp(
@@ -129,7 +129,7 @@ export class GaugeControllerDecorator {
   }
 
   /**
-   * @summary Fetch relative vote weight of each gauge for next period (1 week)
+   * @summary Fetch total points allocated towards each gauge for next period (+1 week)
    */
   private callGaugeWeightNextPeriod(votingGauges: VotingGauge[]) {
     const nextWeekTimestamp = toUnixTimestamp(
@@ -145,6 +145,9 @@ export class GaugeControllerDecorator {
     });
   }
 
+  /**
+   * @summary Fetch total points allocated towards all gauges on this network for this period
+   */
   private callTotalWeightThisPeriod() {
     const thisWeekTimestamp = toUnixTimestamp(
       Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
@@ -153,10 +156,13 @@ export class GaugeControllerDecorator {
       `totalWeightThisPeriod`,
       this.config.network.addresses.gaugeController,
       'points_sum',
-      [2, thisWeekTimestamp]
+      [this.config.network.gauges.type, thisWeekTimestamp]
     );
   }
 
+  /**
+   * @summary Fetch total points allocated towards all gauges on this network for next period (+1 week)
+   */
   private callTotalWeightNextPeriod() {
     const nextWeekTimestamp = toUnixTimestamp(
       Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
@@ -165,7 +171,7 @@ export class GaugeControllerDecorator {
       `totalWeightNextPeriod`,
       this.config.network.addresses.gaugeController,
       'points_sum',
-      [2, nextWeekTimestamp]
+      [this.config.network.gauges.type, nextWeekTimestamp]
     );
   }
 

@@ -22,7 +22,6 @@ export interface Config {
   loggingRpc: string;
   explorer: string;
   explorerName: string;
-  gaugeTypeWeight: string;
   subgraph: string;
   poolsUrlV2: string;
   subgraphs: {
@@ -69,6 +68,10 @@ export interface Config {
       name: string;
     }
   >;
+  gauges: {
+    type: number;
+    weight: number;
+  };
 }
 
 const config: Record<Network | number, Config> = {
