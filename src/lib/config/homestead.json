@@ -19,6 +19,7 @@
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges"
   },
   "supportsEIP1559": true,
+  "supportsElementPools": true,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
@@ -70,5 +71,8 @@
       "name": "weightedPool"
     }
   },
-  "supportsElementPools": true
+  "gauges": {
+    "type": 2,
+    "weight": 100
+  }
 }

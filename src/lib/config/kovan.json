@@ -18,6 +18,7 @@
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-kovan"
   },
   "supportsEIP1559": true,
+  "supportsElementPools": true,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
@@ -68,5 +69,8 @@
       "name": "weightedPool"
     }
   },
-  "supportsElementPools": true
+  "gauges": {
+    "type": 1,
+    "weight": 100
+  }
 }
