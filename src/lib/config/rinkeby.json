@@ -18,6 +18,7 @@
     "gauge": ""
   },
   "supportsEIP1559": true,
+  "supportsElementPools": false,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
@@ -68,5 +69,8 @@
       "name": "weightedPool"
     }
   },
-  "supportsElementPools": false
+  "gauges": {
+    "type": 1,
+    "weight": 100
+  }
 }

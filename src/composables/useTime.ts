@@ -12,6 +12,7 @@ export const twentyFourHoursInSecs = twentyFourHoursInMs / oneSecondInMs;
 export const timeNowInMs = Math.floor(Date.now() / oneSecondInMs);
 
 export const oneYearInSecs = twentyFourHoursInSecs * 365;
+export const oneWeekInSecs = twentyFourHoursInSecs * 7;
 
 export function dateTimeLabelFor(date: Date): string {
   return date.toLocaleString(undefined, {
