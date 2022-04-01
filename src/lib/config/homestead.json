@@ -70,5 +70,6 @@
       "name": "weightedPool"
     }
   },
-  "supportsElementPools": true
+  "supportsElementPools": true,
+  "gaugeTypeWeight": "100"
 }

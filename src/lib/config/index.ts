@@ -22,6 +22,7 @@ export interface Config {
   loggingRpc: string;
   explorer: string;
   explorerName: string;
+  gaugeTypeWeight: string;
   subgraph: string;
   poolsUrlV2: string;
   subgraphs: {

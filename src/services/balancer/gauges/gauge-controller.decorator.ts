@@ -8,7 +8,7 @@ import { Network } from '@balancer-labs/sdk';
 import { VotingGauge } from '@/constants/voting-gauges';
 import { oneWeekInMs, toUnixTimestamp } from '@/composables/useTime';
 
-const VOTE_MULTIPLIER = parseFixed("56", 34);
+const VOTE_MULTIPLIER = parseFixed('1', 18);
 
 export interface UserVotesData {
   end: BigNumber;
@@ -36,8 +36,8 @@ export interface VotesData {
 }
 
 export interface RawVotesDataMap {
-  totalWeightThisPeriod: BigNumber;
-  totalWeightNextPeriod: BigNumber;
+  totalWeightThisPeriod: Point;
+  totalWeightNextPeriod: Point;
   gauges: Record<string, RawVotesData>;
 }
 
@@ -80,8 +80,8 @@ export class GaugeControllerDecorator {
       return {
         ...gauge,
         ...this.formatVotes(
-          votesDataMap.totalWeightThisPeriod,
-          votesDataMap.totalWeightNextPeriod,
+          votesDataMap.totalWeightThisPeriod.bias,
+          votesDataMap.totalWeightNextPeriod.bias,
           votesDataMap.gauges[gauge.address]
         )
       };
@@ -94,13 +94,16 @@ export class GaugeControllerDecorator {
     totalWeightNextPeriod: BigNumber,
     votesData: RawVotesData
   ): VotesData {
+    const multiplier = VOTE_MULTIPLIER.mul(
+      this.config.network.gaugeTypeWeight
+    ).div(100);
     return {
       votes: votesData.gaugeWeightThisPeriod.bias
-        .mul(VOTE_MULTIPLIER)
+        .mul(multiplier)
         .div(totalWeightThisPeriod)
         .toString(),
       votesNextPeriod: votesData.gaugeWeightNextPeriod.bias
-        .mul(VOTE_MULTIPLIER)
+        .mul(multiplier)
         .div(totalWeightNextPeriod)
         .toString(),
       userVotes: votesData?.userVotes?.power.toString() || '0',
@@ -143,14 +146,14 @@ export class GaugeControllerDecorator {
   }
 
   private callTotalWeightThisPeriod() {
-    const nextWeekTimestamp = toUnixTimestamp(
-      Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
+    const thisWeekTimestamp = toUnixTimestamp(
+      Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
     );
     this.multicaller.call(
       `totalWeightThisPeriod`,
       this.config.network.addresses.gaugeController,
-      'points_total',
-      [nextWeekTimestamp]
+      'points_sum',
+      [2, thisWeekTimestamp]
     );
   }
 
@@ -161,8 +164,8 @@ export class GaugeControllerDecorator {
     this.multicaller.call(
       `totalWeightNextPeriod`,
       this.config.network.addresses.gaugeController,
-      'points_total',
-      [nextWeekTimestamp]
+      'points_sum',
+      [2, nextWeekTimestamp]
     );
   }
 
