@@ -22,6 +22,8 @@ import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewMod
 import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
 
+import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
+
 /**
  * TYPES
  */
@@ -102,6 +104,10 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 
 const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value
+);
+
+const poolHasLowLiquidity = computed((): boolean =>
+  bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
 const investmentTokens = computed((): string[] => {
@@ -211,10 +217,18 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
-      :title="$t('investment.warning.managedPoolTradingHaulted.title')"
+      :title="$t('investment.warning.managedPoolTradingHalted.title')"
       :description="
-        $t('investment.warning.managedPoolTradingHaulted.description')
+        $t('investment.warning.managedPoolTradingHalted.description')
       "
+      class="mb-4"
+    />
+
+    <BalAlert
+      v-if="poolHasLowLiquidity"
+      type="warning"
+      :title="$t('investment.warning.lowLiquidity.title')"
+      :description="$t('investment.warning.lowLiquidity.description')"
       class="mb-4"
     />
 

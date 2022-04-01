@@ -35,6 +35,7 @@ type Props = {
   pool: FullPool;
   math: InvestMathResponse;
   tokenAddresses: string[];
+  disabled: boolean;
 };
 
 type InvestmentState = {
@@ -201,7 +202,11 @@ watch(blockNumber, async () => {
 
 <template>
   <transition>
-    <BalActionSteps v-if="!investmentState.confirmed" :actions="actions" />
+    <BalActionSteps
+      v-if="!investmentState.confirmed"
+      :actions="actions"
+      :disabled="disabled"
+    />
     <div v-else>
       <ConfirmationIndicator :txReceipt="investmentState.receipt" />
       <BalBtn
@@ -212,7 +217,7 @@ watch(blockNumber, async () => {
         block
         class="mt-2 flex"
       >
-        <StarsIcon class="h-5 text-yellow-300 mr-2" />{{ $t('lockToGetVeBAL') }}
+        <StarsIcon class="h-5 text-orange-300 mr-2" />{{ $t('lockToGetVeBAL') }}
       </BalBtn>
       <BalBtn
         v-else-if="isPoolEligibleForStaking"
@@ -221,7 +226,7 @@ watch(blockNumber, async () => {
         class="mt-2 flex"
         @click="emit('showStakeModal')"
       >
-        <StarsIcon class="h-5 text-yellow-300 mr-2" />{{
+        <StarsIcon class="h-5 text-orange-300 mr-2" />{{
           $t('stakeToGetExtra')
         }}
       </BalBtn>

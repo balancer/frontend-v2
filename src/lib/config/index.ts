@@ -69,6 +69,10 @@ export interface Config {
       name: string;
     }
   >;
+  gauges: {
+    type: number;
+    weight: number;
+  };
 }
 
 const config: Record<Network | number, Config> = {

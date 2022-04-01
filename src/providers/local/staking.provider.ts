@@ -120,8 +120,8 @@ export default defineComponent({
       return userPools.value.map(pool => pool.id);
     });
 
-    const stakeableUserPoolIds = computed(() =>
-      intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
+    const stakableUserPoolIds = computed(() =>
+      intersection(userPoolIds.value, POOLS.Stakable.AllowList)
     );
 
     const poolAddress = computed(() => {
@@ -163,7 +163,7 @@ export default defineComponent({
         liquidityGauges: {
           __args: {
             where: {
-              poolId_in: stakeableUserPoolIds.value
+              poolId_in: stakableUserPoolIds.value
             }
           },
           poolId: true

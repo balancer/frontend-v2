@@ -12,6 +12,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { BatchSwap } from '@/types';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 
@@ -131,7 +132,7 @@ export default function useMigrateMath(
 
   const highPriceImpact = computed(() => {
     if (!batchSwapLoaded.value) return false;
-    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
   });
 
   const batchSwapAmountMap = computed(

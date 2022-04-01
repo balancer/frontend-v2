@@ -76,7 +76,7 @@ const thirdPartyAPRLabel = computed(() => {
       <div class="ml-1">
         <StarsIcon
           v-if="pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
-          class="h-5 text-yellow-300"
+          class="h-5 text-orange-300"
           v-bind="$attrs"
         />
         <BalIcon

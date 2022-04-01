@@ -48,7 +48,9 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact, highPriceImpact } = toRefs(props.math);
+const { fullAmounts, priceImpact, highPriceImpact, rektPriceImpact } = toRefs(
+  props.math
+);
 const { resetAmounts } = useInvestState();
 
 /**
@@ -64,7 +66,7 @@ const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[props.tokenAddresses[i]] = amount;
+      amountMap[props.tokenAddresses[i]] = amount;
     });
     return amountMap;
   }
@@ -103,10 +105,6 @@ const fiatTotal = computed((): string =>
 /**
  * METHODS
  */
-function hasAmount(index: number): boolean {
-  return bnum(fullAmounts.value[index]).gt(0);
-}
-
 function handleClose(): void {
   if (investmentConfirmed.value) {
     resetAmounts();
@@ -152,10 +150,19 @@ function handleShowStakeModal() {
       :highPriceImpact="highPriceImpact"
     />
 
+    <BalAlert
+      v-if="rektPriceImpact"
+      type="error"
+      :title="$t('investment.error.rektPriceImpact.title')"
+      :description="$t('investment.error.rektPriceImpact.description')"
+      class="mt-6 mb-2"
+    />
+
     <InvestActions
       :pool="pool"
       :math="math"
       :tokenAddresses="tokenAddresses"
+      :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"
       @showStakeModal="handleShowStakeModal"

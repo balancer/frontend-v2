@@ -8,6 +8,10 @@ import { usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
+import {
+  HIGH_PRICE_IMPACT,
+  REKT_PRICE_IMPACT
+} from '@/constants/poolLiquidity';
 import { bnum } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -128,7 +132,12 @@ export default function useInvestMath(
 
   const highPriceImpact = computed((): boolean => {
     if (batchSwapLoading.value) return false;
-    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
+  });
+
+  const rektPriceImpact = computed((): boolean => {
+    if (batchSwapLoading.value) return false;
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
   });
 
   const maximized = computed(() =>
@@ -275,6 +284,7 @@ export default function useInvestMath(
     fiatTotalLabel,
     priceImpact,
     highPriceImpact,
+    rektPriceImpact,
     maximized,
     optimized,
     proportionalAmounts,

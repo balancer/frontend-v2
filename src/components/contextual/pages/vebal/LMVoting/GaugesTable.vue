@@ -159,7 +159,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :is-paginated="isPaginated"
       :on-row-click="redirectToPool"
       :initial-state="{
-        sortColumn: 'poolValue',
+        sortColumn: 'nextPeriodVotes',
         sortDirection: 'desc'
       }"
     >

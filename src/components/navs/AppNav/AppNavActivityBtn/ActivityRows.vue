@@ -34,7 +34,7 @@
         <div>
           <SpinnerIcon
             v-if="isPendingTransactionStatus(transaction.status)"
-            class="animate-spin text-yellow-500"
+            class="animate-spin text-orange-500"
           />
           <template v-else>
             <CheckIcon

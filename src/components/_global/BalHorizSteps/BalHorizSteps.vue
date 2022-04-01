@@ -49,7 +49,7 @@ function stateClasses(state: StepState): string {
     case StepState.Success:
       return 'border-green-500 dark:border-green-500 text-green-500';
     case StepState.Pending:
-      return 'border-none dark:border-none text-yellow-500';
+      return 'border-none dark:border-none text-orange-500';
     case StepState.Active:
       return 'border-purple-500 dark:border-purple-500 text-gradient';
     case StepState.WalletOpen:

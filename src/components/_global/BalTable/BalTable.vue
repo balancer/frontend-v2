@@ -428,6 +428,8 @@ export default defineComponent({
           }
         });
       }
+
+      handleSort(currentSortColumn.value, false);
     });
 
     const filteredColumns = computed(() =>
