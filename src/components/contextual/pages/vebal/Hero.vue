@@ -80,6 +80,8 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
+              width="724"
+              height="800"
               :src="require('@/assets/images/coins-1.png')"
               alt=""
             />
@@ -148,7 +150,7 @@ function navigateToGetVeBAL() {
 .graphic {
   @apply mb-4 lg:px-8;
   transition: 0.3s all ease-out;
-  max-height: 420px;
+  max-height: 290px;
 }
 .caption {
   @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
