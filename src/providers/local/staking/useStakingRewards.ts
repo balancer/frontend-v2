@@ -1,7 +1,8 @@
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
-import { bnum } from '@/lib/utils';
+import { bnum, getBalAddress } from '@/lib/utils';
 import { getBptPrice } from '@/lib/utils/balancer/pool';
 import { GaugeController } from '@/services/balancer/contracts/contracts/gauge-controller';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
@@ -9,8 +10,8 @@ import { BalancerTokenAdmin } from '@/services/balancer/contracts/contracts/toke
 import { configService } from '@/services/config/config.service';
 import BigNumber from 'bignumber.js';
 import { getUnixTime } from 'date-fns';
-import { formatUnits } from 'ethers/lib/utils';
-import { mapValues } from 'lodash';
+import { formatUnits, getAddress } from 'ethers/lib/utils';
+import { isNil, mapValues } from 'lodash';
 import { computed, reactive, ref, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 
@@ -33,7 +34,13 @@ type StakingDataResponse = {
   liquidityGauges: TLiquidityGauge[];
 };
 
+const MIN_BOOST = 1;
+const MAX_BOOST = 2.5;
+
 export default function useStakingRewards() {
+  /** COMPOSABLES */
+  const { priceFor } = useTokens();
+
   const { data: stakingData, isLoading: isLoadingStakingData } = useGraphQuery<
     StakingDataResponse
   >(subgraphs.gauge, ['staking', 'data', {}], () => ({
@@ -85,6 +92,11 @@ export default function useStakingRewards() {
     }
   );
 
+  const { data: inflationRate, isLoading: isLoadingInflationRate } = useQuery(
+    ['inflation_rate'],
+    () => tokenAdmin.getInflationRate()
+  );
+
   const {
     data: gaugeRelativeWeights,
     isLoading: isLoadingRelativeWeight
@@ -100,78 +112,107 @@ export default function useStakingRewards() {
     }
   );
 
-  const weeklyRewards = computed(() => {
-    const workingBalance = 0.4;
-    console.log('working supplies are', gaugeWorkingSupplies.value);
-    const rewards = mapValues(
-      gaugeWorkingSupplies.value,
-      (supply, gaugeAddress) => {
-        const shareForOneBpt = bnum(workingBalance).div(
-          bnum(bnum(supply).plus(workingBalance))
-        );
-        const weeklyReward = shareForOneBpt.times(
-          balPayableMap.value[gaugeAddress]
-        );
-        return weeklyReward;
-      }
-    );
-    return rewards;
-  });
-
-  const { data: inflationRate, isLoading: isLoadingInflationRate } = useQuery(
-    ['inflation_rate'],
-    () => tokenAdmin.getInflationRate()
-  );
-
-  // a map of <gaugeid>-<bal payable to gauge>
-  // for a week
-  const balPayableMap = computed(() => {
-    const payouts: Record<string, BigNumber> = {};
-    const rate = inflationRate.value ?? '0';
-    console.log('inflation rate is', inflationRate.value);
-    const relativeWeights = gaugeRelativeWeights.value || {};
-    console.log('relative weights are', relativeWeights);
-    for (const gaugeAddress of Object.keys(gaugePoolMap.value)) {
-      const relativeWeight = relativeWeights[gaugeAddress] || '0';
-      payouts[gaugeAddress] = bnum(rate)
-        .times(7)
-        .times(86400)
-        .times(bnum(relativeWeight));
-    }
-    console.log(
-      'payouts',
-      mapValues(payouts, payout => payout.toString())
-    );
-    return payouts;
-  });
-
   const gaugeAprMap = computed(() => {
-    console.log(
-      'weekly rewards are',
-      mapValues(weeklyRewards.value, reward => reward.toString())
-    );
-    const aprs = mapValues(
-      weeklyRewards.value,
-      (weeklyReward, gaugeAddress) => {
-        const poolId = gaugePoolMap.value[gaugeAddress];
-        const pool = stakeablePools.value.find(pool => pool.id === poolId);
-        const bptPrice = getBptPrice(pool);
-        console.log('week', {
-          weeklyReward: weeklyReward.toString(),
-          bptPrice: bptPrice.toString()
-        })
-        return bnum(weeklyReward)
-          .times(1)
-          .times(52)
-          .times(16.48)
-          .div(bptPrice);
-      }
-    );
-    console.log('aprs', mapValues(aprs, apr => apr.toString()));
-    return aprs;
+    if (
+      isLoadingInflationRate.value ||
+      isLoadingStakingData.value ||
+      isLoadingRelativeWeight.value ||
+      isLoadingGaugeWorkingSupplies.value
+    )
+      return {};
+    const aprs = Object.keys(gaugePoolMap.value).map(gaugeAddress => {
+      const poolId = gaugePoolMap.value[gaugeAddress];
+      const pool = stakeablePools.value.find(pool => pool.id === poolId);
+      if (!pool) return [poolId, '0'];
+      if (isNil(inflationRate)) return [poolId, '0'];
+
+      const bptPrice = getBptPrice(pool);
+      const balAddress = getBalAddress();
+      if (!balAddress) return [poolId, '0'];
+
+      const balPrice = priceFor(getAddress(balAddress));
+      const apr = calculateGaugeApr({
+        gaugeAddress: gaugeAddress,
+        bptPrice: bptPrice.toString(),
+        balPrice: String(balPrice),
+        // undefined inflation rate is guarded above
+        inflationRate: inflationRate.value as string,
+        boost: '1'
+      });
+
+      return [poolId, apr];
+    });
+    return Object.fromEntries(aprs);
   });
+
+  /** METHODS */
+
+  function calculateWeeklyReward(
+    workingSupply: BigNumber,
+    balPayableToGauge: BigNumber
+  ) {
+    const workingBalance = 0.4;
+    const shareForOneBpt = bnum(workingBalance).div(
+      workingSupply.plus(workingBalance)
+    );
+    const weeklyReward = shareForOneBpt.times(balPayableToGauge);
+    return weeklyReward;
+  }
+
+  function calculateBalPayableToGauge(
+    inflationRate: BigNumber,
+    gaugeRelativeWeight: BigNumber
+  ) {
+    return bnum(inflationRate)
+      .times(7)
+      .times(86400)
+      .times(gaugeRelativeWeight);
+  }
+
+  function calculateGaugeApr({
+    gaugeAddress,
+    inflationRate,
+    balPrice,
+    bptPrice,
+    boost = '1'
+  }: {
+    gaugeAddress: string;
+    inflationRate: string;
+    balPrice: string;
+    bptPrice: string;
+    boost: string;
+  }) {
+    const workingSupply =
+      bnum((gaugeWorkingSupplies.value || {})[gaugeAddress]) || '0';
+    const relativeWeight =
+      bnum((gaugeRelativeWeights.value || {})[gaugeAddress]) || '0';
+    const balPayable = calculateBalPayableToGauge(
+      bnum(inflationRate),
+      relativeWeight
+    );
+    const weeklyReward = calculateWeeklyReward(workingSupply, balPayable);
+    const yearlyReward = weeklyReward
+      .times(boost)
+      .times(52)
+      .times(balPrice);
+
+    const apr = yearlyReward.div(bptPrice);
+    return apr;
+  }
+
+  function getAprRange(apr: string) {
+    const min = bnum(apr).times(MIN_BOOST);
+    const max = bnum(apr).times(MAX_BOOST);
+    return {
+      min,
+      max
+    };
+  }
+
   return {
     gaugeAprMap,
-    stakingData
+    stakingData,
+    getAprRange,
+    calculateGaugeApr
   };
 }
