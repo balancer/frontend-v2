@@ -1,5 +1,5 @@
-import { gaugesSubgraphClient } from './gauges-subgraph.client';
 import { GaugesEntity } from './entities/gauges/gauges.entity';
+import { gaugesSubgraphClient } from './gauges-subgraph.client';
 
 export class GaugesSubgraphService {
   gauges: GaugesEntity;

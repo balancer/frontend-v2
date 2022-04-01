@@ -1,4 +1,5 @@
 import { ExternalProvider } from '@ethersproject/providers';
+
 import { configService } from '@/services/config/config.service';
 import { WalletError } from '@/types';
 

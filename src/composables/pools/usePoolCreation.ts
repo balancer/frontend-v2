@@ -1,21 +1,20 @@
-import { ref, reactive, toRefs, computed } from 'vue';
-
-import { useI18n } from 'vue-i18n';
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import useTokens from '../useTokens';
-import useWeb3 from '@/services/web3/useWeb3';
-
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { flatten, sumBy } from 'lodash';
-import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
+import { computed, reactive, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import { PoolType } from '@/services/balancer/subgraph/types';
-import { balancerService } from '@/services/balancer/balancer.service';
-import { configService } from '@/services/config/config.service';
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import useEthers from '@/composables/useEthers';
+import useTransactions from '@/composables/useTransactions';
 import { POOLS } from '@/constants/pools';
+import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
+import { balancerService } from '@/services/balancer/balancer.service';
+import { PoolType } from '@/services/balancer/subgraph/types';
+import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import useTokens from '../useTokens';
 
 export const POOL_CREATION_STATE_VERSION = '1.0';
 export const POOL_CREATION_STATE_KEY = 'poolCreationState';

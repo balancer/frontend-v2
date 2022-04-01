@@ -410,29 +410,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { formatUnits } from '@ethersproject/units';
-import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import { UseTrading } from '@/composables/trade/useTrading';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
+import { TradeQuote } from '@/composables/trade/types';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
+import { UseTrading } from '@/composables/trade/useTrading';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { TradeQuote } from '@/composables/trade/types';
-import useWeb3 from '@/services/web3/useWeb3';
-
-import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
-
-import { bnum } from '@/lib/utils';
-
-import { FiatCurrency } from '@/constants/currency';
 import useUserSettings from '@/composables/useUserSettings';
+import { FiatCurrency } from '@/constants/currency';
+import { bnum } from '@/lib/utils';
 import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 

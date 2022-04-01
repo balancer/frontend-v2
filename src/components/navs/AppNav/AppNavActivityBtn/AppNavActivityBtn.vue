@@ -60,12 +60,11 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTransactions from '@/composables/useTransactions';
 import useNotifications from '@/composables/useNotifications';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { signOrderCancellation } from '@/services/gnosis/signing';
+import useTransactions from '@/composables/useTransactions';
 import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
+import { signOrderCancellation } from '@/services/gnosis/signing';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import ActivityCounter from './ActivityCounter.vue';
 import ActivityRows from './ActivityRows.vue';

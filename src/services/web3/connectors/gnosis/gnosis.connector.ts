@@ -1,5 +1,6 @@
-import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider';
+import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
+
 import { Connector } from '../connector';
 export class GnosisSafeConnector extends Connector {
   id = 'gnosis';

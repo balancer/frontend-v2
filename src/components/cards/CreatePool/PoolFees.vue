@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { computed, ref, nextTick } from 'vue';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import useNumbers from '@/composables/useNumbers';
-import usePoolCreation from '@/composables/pools/usePoolCreation';
-
-import { isRequired, isValidAddress } from '@/lib/utils/validations';
 import { isAddress } from 'ethers/lib/utils';
+import { computed, nextTick, ref } from 'vue';
+
+import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useNumbers from '@/composables/useNumbers';
+import { isRequired, isValidAddress } from '@/lib/utils/validations';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const emit = defineEmits(['update:height']);
 

@@ -1,13 +1,14 @@
+import { UseQueryOptions } from 'react-query/types';
 import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { UseQueryOptions } from 'react-query/types';
+
 import QUERY_KEYS from '@/constants/queryKeys';
+import { VotingGauge } from '@/constants/voting-gauges';
 import {
   gaugeControllerDecorator,
   VotingGaugeWithVotes
 } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
-import { VotingGauge } from '@/constants/voting-gauges';
 
 /**
  * TYPES

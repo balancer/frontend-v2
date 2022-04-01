@@ -15,18 +15,19 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, computed, onBeforeMount, ref } from 'vue';
-import { useStore } from 'vuex';
-import BigNumber from 'bignumber.js';
-import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
 import eligibleAssetList from '@balancer-labs/assets/generated/bal-for-gas.json';
+import BigNumber from 'bignumber.js';
+import { computed, defineComponent, onBeforeMount, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { EXTERNAL_LINKS } from '@/constants/links';
-import useWeb3 from '@/services/web3/useWeb3';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import { useStore } from 'vuex';
+
 import useTokens from '@/composables/useTokens';
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
+import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   props: {

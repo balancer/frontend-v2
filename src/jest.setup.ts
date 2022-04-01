@@ -1,6 +1,8 @@
-import nock from 'nock';
 import '@testing-library/jest-dom';
+
 import { config } from '@vue/test-utils';
+import nock from 'nock';
+
 import translations from '@/locales/default.json';
 
 /**

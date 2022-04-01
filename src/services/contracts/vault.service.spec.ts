@@ -1,12 +1,13 @@
-import { vaultService } from './vault.service';
-import { SwapToken, SwapTokenType } from '../swap/swap.service';
-import { SwapV2 } from '@balancer-labs/sdk';
-import { BigNumber } from '@ethersproject/bignumber';
 import {
   FundManagement,
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
+import { SwapV2 } from '@balancer-labs/sdk';
+import { BigNumber } from '@ethersproject/bignumber';
+
+import { SwapToken, SwapTokenType } from '../swap/swap.service';
+import { vaultService } from './vault.service';
 
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 jest.mock('@/services/web3/web3.service');

@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { computed, reactive } from 'vue';
+import { useQuery } from 'vue-query';
+
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
-import useWeb3 from '@/services/web3/useWeb3';
-import { useQuery } from 'vue-query';
-import QUERY_KEYS from '@/constants/queryKeys';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { dateTimeLabelFor } from '@/composables/useTime';
+import QUERY_KEYS from '@/constants/queryKeys';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
   txReceipt: TransactionReceipt;

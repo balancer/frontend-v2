@@ -2,25 +2,25 @@
 /**
  * Claim Page
  */
-import { computed, watch } from 'vue';
-import { configService } from '@/services/config/config.service';
-import { Gauge } from '@/services/balancer/gauges/types';
-import useTokens from '@/composables/useTokens';
-import { formatUnits } from 'ethers/lib/utils';
-import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
-import { isStableLike } from '@/composables/usePool';
-import { useTokenHelpers } from '@/composables/useTokenHelpers';
-import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
-import useApp from '@/composables/useApp';
-import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
+import { formatUnits } from 'ethers/lib/utils';
+import { computed, watch } from 'vue';
 
+import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
 import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
-import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
+import useApp from '@/composables/useApp';
+import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { isKovan, isL2, isMainnet } from '@/composables/useNetwork';
+import useNumbers from '@/composables/useNumbers';
+import { isStableLike } from '@/composables/usePool';
+import { useTokenHelpers } from '@/composables/useTokenHelpers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+import { Gauge } from '@/services/balancer/gauges/types';
+import { configService } from '@/services/config/config.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES

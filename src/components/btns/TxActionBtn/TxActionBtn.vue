@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import useTransactions, {
-  TransactionAction
-} from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { useI18n } from 'vue-i18n';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import useEthers from '@/composables/useEthers';
+import useTransactions, {
+  TransactionAction
+} from '@/composables/useTransactions';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

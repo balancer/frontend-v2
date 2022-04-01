@@ -1,10 +1,12 @@
-import { render, fireEvent } from '@testing-library/vue';
-import ClaimBalBtn from './ClaimBalBtn.vue';
-import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
-import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
-import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
-import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer-minter';
 import { getAddress } from '@ethersproject/address';
+import { fireEvent, render } from '@testing-library/vue';
+
+import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
+import TxActionBtn from '@/components/btns/TxActionBtn/TxActionBtn.vue';
+import { balancerMinter } from '@/services/balancer/contracts/contracts/balancer-minter';
+import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
+
+import ClaimBalBtn from './ClaimBalBtn.vue';
 
 ClaimBalBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };

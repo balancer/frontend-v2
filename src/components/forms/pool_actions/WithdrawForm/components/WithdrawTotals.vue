@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
-import { WithdrawMathResponse } from '../composables/useWithdrawMath';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+
+import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 
 /**
  * TYPES

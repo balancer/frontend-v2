@@ -1,24 +1,22 @@
-import axios from 'axios';
-import { chunk, flatten, groupBy } from 'lodash';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
-import { ethers } from 'ethers';
-
 import { getAddress } from '@ethersproject/address';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import axios from 'axios';
+import { ethers } from 'ethers';
+import { chunk, flatten, groupBy } from 'lodash';
 
 import { networkId } from '@/composables/useNetwork';
-
-import { sendTransaction } from '@/lib/utils/balancer/web3';
-import { multicall } from '@/lib/utils/balancer/contract';
-import { bnum } from '@/lib/utils';
+import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
 import configs from '@/lib/config';
-
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { bnum } from '@/lib/utils';
+import { multicall } from '@/lib/utils/balancer/contract';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { ipfsService } from '@/services/ipfs/ipfs.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
+import { configService } from '../config/config.service';
+import { claimWorkerPoolService } from './claim-worker-pool.service';
 import MultiTokenClaim from './MultiTokenClaim.json';
 import TokenDecimals from './TokenDecimals.json';
-
 import {
   ClaimProofTuple,
   ClaimStatus,
@@ -31,9 +29,6 @@ import {
   Snapshot,
   TokenClaimInfo
 } from './types';
-import { claimWorkerPoolService } from './claim-worker-pool.service';
-
-import { configService } from '../config/config.service';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(

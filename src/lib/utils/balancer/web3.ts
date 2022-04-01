@@ -1,16 +1,17 @@
 import { Contract } from '@ethersproject/contracts';
+import { ErrorCode } from '@ethersproject/logger';
 import {
   JsonRpcProvider,
   TransactionResponse,
   Web3Provider
 } from '@ethersproject/providers';
-import { ErrorCode } from '@ethersproject/logger';
-import { logFailedTx } from '@/lib/utils/logging';
-import GasPriceService from '@/services/gas-price/gas-price.service';
+
 import {
   EthereumTxType,
   ethereumTxType
 } from '@/composables/useEthereumTxType';
+import { logFailedTx } from '@/lib/utils/logging';
+import GasPriceService from '@/services/gas-price/gas-price.service';
 import { WalletError } from '@/types';
 
 const ENV = process.env.VUE_APP_ENV || 'development';

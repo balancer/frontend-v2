@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+
 import StakePreview, { StakeAction } from './StakePreview.vue';
 
 type Props = {

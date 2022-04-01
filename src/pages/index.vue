@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-
-import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
-import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-import FeaturedPools from '@/components/sections/FeaturedPools.vue';
-import usePools from '@/composables/pools/usePools';
-import useWeb3 from '@/services/web3/useWeb3';
-import usePoolFilters from '@/composables/pools/usePoolFilters';
-import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import useBreakpoints from '@/composables/useBreakpoints';
-import { isMigratablePool } from '@/composables/usePool';
-import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
-import { bnum } from '@/lib/utils';
+import { useRouter } from 'vue-router';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
-import StakingProvider from '@/providers/local/staking.provider';
+import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
+import FeaturedPools from '@/components/sections/FeaturedPools.vue';
+import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
+import usePoolFilters from '@/composables/pools/usePoolFilters';
+import usePools from '@/composables/pools/usePools';
+import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import useBreakpoints from '@/composables/useBreakpoints';
 import { isL2 } from '@/composables/useNetwork';
+import { isMigratablePool } from '@/composables/usePool';
+import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+import StakingProvider from '@/providers/local/staking.provider';
+import useWeb3 from '@/services/web3/useWeb3';
 
 // COMPOSABLES
 const router = useRouter();

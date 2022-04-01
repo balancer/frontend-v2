@@ -3,17 +3,14 @@ import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
-
-import { MigrateMathResponse } from '../../composables/useMigrateMath';
-
-import MigratePoolRisks from './components/MigratePoolRisks.vue';
-import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
-import MigrateActions from './components/MigrateActions.vue';
-import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
-
 import { TokenInfo } from '@/types/TokenList';
 
+import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
+import { MigrateMathResponse } from '../../composables/useMigrateMath';
 import { PoolMigrationInfo } from '../../types';
+import MigrateActions from './components/MigrateActions.vue';
+import MigratePoolRisks from './components/MigratePoolRisks.vue';
+import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
 
 /**
  * TYPES

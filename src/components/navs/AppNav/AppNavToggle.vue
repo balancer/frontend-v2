@@ -24,9 +24,10 @@
 </template>
 
 <script lang="ts">
-import useFathom from '@/composables/useFathom';
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
+
+import useFathom from '@/composables/useFathom';
 
 export default defineComponent({
   name: 'AppNavToggle',

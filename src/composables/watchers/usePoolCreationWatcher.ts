@@ -1,11 +1,13 @@
-import { lsGet } from '@/lib/utils';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+
+import { lsGet } from '@/lib/utils';
+
 import {
-  poolCreationState,
   POOL_CREATION_STATE_KEY,
-  POOL_CREATION_STATE_VERSION
+  POOL_CREATION_STATE_VERSION,
+  poolCreationState
 } from '../pools/usePoolCreation';
 import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 

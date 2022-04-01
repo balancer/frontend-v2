@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useVeBal from '@/composables/useVeBAL';
-
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useVeBal from '@/composables/useVeBAL';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 /**
  * TYPES

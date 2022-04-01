@@ -1,41 +1,37 @@
-import {
-  toRefs,
-  toRef,
-  computed,
-  reactive,
-  provide,
-  InjectionKey,
-  Ref,
-  ComputedRef,
-  onBeforeMount
-} from 'vue';
-import { compact, pick } from 'lodash';
 import { getAddress, isAddress } from '@ethersproject/address';
+import { compact, pick } from 'lodash';
+import {
+  computed,
+  ComputedRef,
+  InjectionKey,
+  onBeforeMount,
+  provide,
+  reactive,
+  Ref,
+  toRef,
+  toRefs
+} from 'vue';
 
+import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
+import useBalancesQuery from '@/composables/queries/useBalancesQuery';
+import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
+import useConfig from '@/composables/useConfig';
+import useTokenLists from '@/composables/useTokenLists';
+import useUserSettings from '@/composables/useUserSettings';
+import symbolKeys from '@/constants/symbol.keys';
 import { bnum, forChange } from '@/lib/utils';
 import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
-
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { configService } from '@/services/config/config.service';
+import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
+import { tokenService } from '@/services/token/token.service';
 import {
   NativeAsset,
   TokenInfo,
   TokenInfoMap,
   TokenList
 } from '@/types/TokenList';
-
-import symbolKeys from '@/constants/symbol.keys';
-
-import useTokenLists from '@/composables/useTokenLists';
-import useConfig from '@/composables/useConfig';
-import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
-import useBalancesQuery from '@/composables/queries/useBalancesQuery';
-import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
-import useUserSettings from '@/composables/useUserSettings';
-
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
-import { tokenService } from '@/services/token/token.service';
-import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES

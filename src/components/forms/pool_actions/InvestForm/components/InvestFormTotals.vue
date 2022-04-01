@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { InvestMathResponse } from '../composables/useInvestMath';
 import useWeb3 from '@/services/web3/useWeb3';
+
+import { InvestMathResponse } from '../composables/useInvestMath';
 
 /**
  * TYPES

@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import useBreakpoints from '@/composables/useBreakpoints';
-import AppLogo from '@/components/images/AppLogo.vue';
+
 import AppIcon from '@/components/images/AppIcon.vue';
-import AppNavAlert from './AppNavAlert.vue';
-import AppNavActions from './AppNavActions.vue';
-import useFathom from '@/composables/useFathom';
+import AppLogo from '@/components/images/AppLogo.vue';
 import useAlerts from '@/composables/useAlerts';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useFathom from '@/composables/useFathom';
+
+import AppNavActions from './AppNavActions.vue';
+import AppNavAlert from './AppNavAlert.vue';
 import DesktopLinks from './DesktopLinks/DesktopLinks.vue';
 
 /**

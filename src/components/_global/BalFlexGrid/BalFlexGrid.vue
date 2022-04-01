@@ -1,5 +1,5 @@
 <script lang="ts">
-import { h, computed, defineComponent, VNodeArrayChildren } from 'vue';
+import { computed, defineComponent, h, VNodeArrayChildren } from 'vue';
 
 export default defineComponent({
   name: 'BalFlexGrid',

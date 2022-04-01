@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch, Ref } from 'vue';
 import anime from 'animejs';
 import { takeRight } from 'lodash';
+import { nextTick, onMounted, Ref, ref, watch } from 'vue';
 
 type Section = {
   title: string;

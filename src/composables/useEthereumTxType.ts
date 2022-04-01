@@ -1,6 +1,7 @@
 import { ref } from 'vue';
-import { lsGet, lsSet } from '@/lib/utils';
+
 import LS_KEYS from '@/constants/local-storage.keys';
+import { lsGet, lsSet } from '@/lib/utils';
 
 export enum EthereumTxType {
   LEGACY = 'Legacy',

@@ -1,7 +1,8 @@
+import nock from 'nock';
+
+import gaugesResponse from './__mocks__/gauges-response.schema.json';
 import { gaugeQueryBuilder } from './entities/gauges/query';
 import { gaugesSubgraphClient } from './gauges-subgraph.client';
-import gaugesResponse from './__mocks__/gauges-response.schema.json';
-import nock from 'nock';
 
 describe('GaugesSubgraphClient', () => {
   beforeEach(() => {

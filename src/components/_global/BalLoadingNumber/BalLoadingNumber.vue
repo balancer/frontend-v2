@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
+
 import useUserSettings from '@/composables/useUserSettings';
 import { FiatSymbol } from '@/constants/currency';
-import { computed } from 'vue';
+
 import BalLoadingBlock from '../BalLoadingBlock/BalLoadingBlock.vue';
 
 /**

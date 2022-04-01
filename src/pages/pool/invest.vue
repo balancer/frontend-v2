@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount } from 'vue';
-import { configService } from '@/services/config/config.service';
+
+import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 // Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
@@ -10,7 +11,7 @@ import TradeSettingsPopover, {
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
-import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
+import { configService } from '@/services/config/config.service';
 
 /**
  * STATE

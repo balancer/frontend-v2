@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue';
-import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-
-import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
-
-import { useI18n } from 'vue-i18n';
-import { bnum, shortenLabel } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
+import { computed, onBeforeMount, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum, shortenLabel } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * PROPS & EMITS

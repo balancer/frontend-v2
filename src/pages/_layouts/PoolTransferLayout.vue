@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-// Composables
-import useBreakpoints from '@/composables/useBreakpoints';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { useRoute } from 'vue-router';
-import { useReturnRoute } from '@/composables/useReturnRoute';
+
+import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
-import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
+// Composables
+import useBreakpoints from '@/composables/useBreakpoints';
+import { useReturnRoute } from '@/composables/useReturnRoute';
 
 /**
  * STATE

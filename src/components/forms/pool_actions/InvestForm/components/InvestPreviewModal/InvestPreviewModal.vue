@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import { computed, toRefs, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import { FullPool } from '@/services/balancer/subgraph/types';
-
-import { TokenInfoMap } from '@/types/TokenList';
-
-import { bnum } from '@/lib/utils';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { TokenInfoMap } from '@/types/TokenList';
+
 import { InvestMathResponse } from '../../composables/useInvestMath';
 import useInvestState from '../../composables/useInvestState';
-
+import InvestActions from './components/InvestActions.vue';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
-import InvestActions from './components/InvestActions.vue';
 
 /**
  * TYPES

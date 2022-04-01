@@ -21,4 +21,4 @@ function __setMockPoolAddress(address) {
   mockPoolAddress = address;
 }
 
-export { sendTransaction, __setMockPoolAddress };
+export { __setMockPoolAddress, sendTransaction };

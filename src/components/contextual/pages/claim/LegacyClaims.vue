@@ -1,29 +1,25 @@
 <script setup lang="ts">
+import { useIntervalFn } from '@vueuse/core';
+import { differenceInSeconds } from 'date-fns';
+import { getAddress } from 'ethers/lib/utils';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getAddress } from 'ethers/lib/utils';
-import { differenceInSeconds } from 'date-fns';
-import { useIntervalFn } from '@vueuse/core';
-
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
-import useEthers from '@/composables/useEthers';
-import useTransactions from '@/composables/useTransactions';
-import useTokens from '@/composables/useTokens';
-import { networkId } from '@/composables/useNetwork';
-import { oneSecondInMs } from '@/composables/useTime';
-
-import { bnum } from '@/lib/utils';
-
-import { claimService } from '@/services/claim/claim.service';
-import useWeb3 from '@/services/web3/useWeb3';
 
 import BalLink from '@/components/_global/BalLink/BalLink.vue';
-
-import { TOKENS } from '@/constants/tokens';
+import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
+import useEthers from '@/composables/useEthers';
+import { networkId } from '@/composables/useNetwork';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { oneSecondInMs } from '@/composables/useTime';
+import useTokens from '@/composables/useTokens';
 import useTranasactionErrors, {
   TransactionError
 } from '@/composables/useTransactionErrors';
+import useTransactions from '@/composables/useTransactions';
+import { TOKENS } from '@/constants/tokens';
+import { bnum } from '@/lib/utils';
+import { claimService } from '@/services/claim/claim.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type ClaimableToken = {
   token: string;

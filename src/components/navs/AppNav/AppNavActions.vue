@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import useBreakpoints from '@/composables/useBreakpoints';
-import AppNavAccountBtn from './AppNavAccountBtn.vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
+
 import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
-import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 import { useSidebar } from '@/composables/useSidebar';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import AppNavAccountBtn from './AppNavAccountBtn.vue';
+import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
+import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 
 /**
  * COMPOSABLES

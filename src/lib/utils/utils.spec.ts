@@ -1,4 +1,5 @@
 import { Path } from 'vue-i18n';
+
 import { formatWordListAsSentence } from '.';
 
 describe('Utils', () => {

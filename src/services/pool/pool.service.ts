@@ -1,4 +1,5 @@
 import { FiatCurrency } from '@/constants/currency';
+
 import { AnyPool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import LiquidityConcern from './concerns/liquidity.concern';

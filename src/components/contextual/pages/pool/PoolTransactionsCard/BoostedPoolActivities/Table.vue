@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
 import { groupBy } from 'lodash';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { FullPool, PoolSwap } from '@/services/balancer/subgraph/types';
-
-import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useBreakpoints from '@/composables/useBreakpoints';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-
+import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import { FullPool, PoolSwap } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES

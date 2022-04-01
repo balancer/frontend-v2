@@ -1,5 +1,5 @@
-import Tooltip from './BalTooltip.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import Tooltip from './BalTooltip.vue';
 
 export default {
   component: Tooltip,

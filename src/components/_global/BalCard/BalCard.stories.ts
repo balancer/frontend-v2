@@ -1,5 +1,5 @@
-import BalCard from './BalCard.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalCard from './BalCard.vue';
 
 export default {
   component: BalCard,

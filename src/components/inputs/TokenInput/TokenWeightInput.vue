@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { HtmlInputEvent } from '@/types';
-import { ref, computed, watchEffect } from 'vue';
-import useTokens from '@/composables/useTokens';
+import { computed, ref, watchEffect } from 'vue';
+
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
+import useTokens from '@/composables/useTokens';
+import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**

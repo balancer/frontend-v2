@@ -1,24 +1,21 @@
-import { computed, ref } from 'vue';
-import { merge, orderBy } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
+import { merge, orderBy } from 'lodash';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import LS_KEYS from '@/constants/local-storage.keys';
-
-import { configService } from '@/services/config/config.service';
-import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import useWeb3 from '@/services/web3/useWeb3';
-import { OrderMetaData } from '@/services/gnosis/types';
-import { gnosisExplorer } from '@/services/gnosis/explorer.service';
-
 import { lsGet, lsSet } from '@/lib/utils';
-
-import useNotifications from './useNotifications';
-import { processedTxs } from './useEthers';
-import useNumbers, { FNumFormats } from './useNumbers';
+import { configService } from '@/services/config/config.service';
+import { gnosisExplorer } from '@/services/gnosis/explorer.service';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
+import { OrderMetaData } from '@/services/gnosis/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import { GnosisTransactionDetails } from './trade/useGnosis';
+import { processedTxs } from './useEthers';
+import useNotifications from './useNotifications';
+import useNumbers, { FNumFormats } from './useNumbers';
 
 const WEEK_MS = 86_400_000 * 7;
 // Please update the schema version when making changes to the transaction structure.

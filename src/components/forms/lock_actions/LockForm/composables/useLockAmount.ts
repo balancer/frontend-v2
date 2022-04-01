@@ -1,10 +1,9 @@
 import { computed, Ref } from 'vue';
 
 import { bnum } from '@/lib/utils';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useLockState from './useLockState';
-
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 export default function useLockAmount(
   veBalLockInfo?: Ref<VeBalLockInfo> | Ref<undefined>

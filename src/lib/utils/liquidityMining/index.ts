@@ -1,12 +1,14 @@
-import { differenceInWeeks } from 'date-fns';
-import { bnum } from '@/lib/utils';
-import { toUtcTime } from '@/composables/useTime';
 import { Network } from '@balancer-labs/sdk';
-import { configService } from '@/services/config/config.service';
-import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { getAddress } from '@ethersproject/address';
+import { differenceInWeeks } from 'date-fns';
+
+import { toUtcTime } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
+import { bnum } from '@/lib/utils';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { configService } from '@/services/config/config.service';
+
+import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 
 type PoolId = string;
 

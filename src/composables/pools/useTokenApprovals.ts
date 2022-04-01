@@ -1,19 +1,18 @@
-import { ref, computed, Ref } from 'vue';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { getAddress } from '@ethersproject/address';
+import { MaxUint256 } from '@ethersproject/constants';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
-import useTransactions from '../useTransactions';
-
-import { tokenService } from '@/services/token/token.service';
-
-import { MaxUint256 } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
+import useTokens from '@/composables/useTokens';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
-import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { tokenService } from '@/services/token/token.service';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import useTransactions from '../useTransactions';
 
 export type ApprovalState = {
   init: boolean;

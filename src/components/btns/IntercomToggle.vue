@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+
 import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({

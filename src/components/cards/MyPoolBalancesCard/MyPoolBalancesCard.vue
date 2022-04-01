@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed, toRef, ref } from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { bnum } from '@/lib/utils';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { computed, ref, toRef } from 'vue';
+
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
 // Composables
 import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+
 // Components
 import AssetRow from './components/AssetRow.vue';
-import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES

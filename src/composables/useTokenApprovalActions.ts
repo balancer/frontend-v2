@@ -1,3 +1,4 @@
+import { MaxUint256 } from '@ethersproject/constants';
 import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -5,11 +6,8 @@ import useTokenApprovals, {
   ApprovalStateMap
 } from '@/composables/pools/useTokenApprovals';
 import useTokens from '@/composables/useTokens';
-
 import useWeb3 from '@/services/web3/useWeb3';
-
 import { TransactionActionInfo } from '@/types/transactions';
-import { MaxUint256 } from '@ethersproject/constants';
 
 /**
  * TYPES

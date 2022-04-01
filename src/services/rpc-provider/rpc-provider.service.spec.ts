@@ -1,5 +1,6 @@
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
+
+import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 
 jest.mock('@ethersproject/providers', () => {
   return {

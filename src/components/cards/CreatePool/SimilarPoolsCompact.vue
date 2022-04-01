@@ -2,7 +2,6 @@
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-
 import { Pool } from '@/services/balancer/subgraph/types';
 
 /**

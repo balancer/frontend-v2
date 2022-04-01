@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import useWeb3 from '@/services/web3/useWeb3';
 import { getConnectorLogo } from '@/services/web3/web3.plugin';
 import { Step, StepState } from '@/types';

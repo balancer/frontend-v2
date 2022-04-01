@@ -1,5 +1,6 @@
-import gaugesResponse from './__mocks__/gauges-response.schema.json';
 import nock from 'nock';
+
+import gaugesResponse from './__mocks__/gauges-response.schema.json';
 import { gaugesSubgraphService } from './gauges-subgraph.service';
 
 describe('GaugesSubgraphService', () => {

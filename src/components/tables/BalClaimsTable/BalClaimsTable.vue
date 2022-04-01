@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
-import {
-  orderedTokenAddresses,
-  orderedPoolTokens,
-  isStableLike
-} from '@/composables/usePool';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import ClaimBalBtn from '@/components/btns/ClaimBalBtn/ClaimBalBtn.vue';
-import { Gauge } from '@/services/balancer/gauges/types';
+import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import {
+  isStableLike,
+  orderedPoolTokens,
+  orderedTokenAddresses
+} from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { useI18n } from 'vue-i18n';
 import { GaugePool } from '@/pages/claim.vue';
+import { Gauge } from '@/services/balancer/gauges/types';
 
 /**
  * TYPES

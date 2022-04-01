@@ -1,10 +1,12 @@
-import axios from 'axios';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { TokenList, TokenListMap } from '@/types/TokenList';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { ipfsService as _ipfsService } from '../ipfs/ipfs.service';
+import axios from 'axios';
+
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { TokenList, TokenListMap } from '@/types/TokenList';
+
 import { configService as _configService } from '../config/config.service';
+import { ipfsService as _ipfsService } from '../ipfs/ipfs.service';
 
 interface TokenListUris {
   All: string[];

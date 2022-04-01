@@ -1,10 +1,12 @@
+import { phantomStableBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sdk';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { formatUnits, parseUnits } from '@ethersproject/units';
+import OldBigNumber from 'bignumber.js';
+
+import { bnum } from '@/lib/utils';
+
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { parseUnits, formatUnits } from '@ethersproject/units';
-import { phantomStableBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sdk';
-import { bnum } from '@/lib/utils';
-import OldBigNumber from 'bignumber.js';
 
 export default class StablePhantom {
   calc: Calculator;

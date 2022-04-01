@@ -1,8 +1,9 @@
 import { Network } from '@balancer-labs/sdk';
-import { NativeAsset } from '@/types/TokenList';
-import { Ref } from 'vue';
-import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { Ref } from 'vue';
+
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { NativeAsset } from '@/types/TokenList';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';

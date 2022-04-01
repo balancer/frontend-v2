@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
+import { computed, onMounted, ref } from 'vue';
 
 import BalIcon, { IconSize } from '../BalIcon/BalIcon.vue';
 

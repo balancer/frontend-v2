@@ -1,5 +1,7 @@
-import { bnum } from '@/lib/utils';
 import axios from 'axios';
+
+import { bnum } from '@/lib/utils';
+
 import { Pool } from '../balancer/subgraph/types';
 import ConfigService, { configService } from '../config/config.service';
 

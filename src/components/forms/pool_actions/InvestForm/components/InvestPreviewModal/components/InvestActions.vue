@@ -1,31 +1,32 @@
 <script setup lang="ts">
-import { toRef, toRefs, computed, reactive, watch } from 'vue';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { usePool } from '@/composables/usePool';
-
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
-import { InvestMathResponse } from '../../../composables/useInvestMath';
+import { formatUnits } from '@ethersproject/units';
+import { BigNumber } from 'ethers';
+import { computed, reactive, toRef, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+
+import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import useStaking from '@/composables/staking/useStaking';
+import useEthers from '@/composables/useEthers';
+import { usePool } from '@/composables/usePool';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useTransactions from '@/composables/useTransactions';
+import useVeBal from '@/composables/useVeBAL';
+import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { useI18n } from 'vue-i18n';
-import { dateTimeLabelFor } from '@/composables/useTime';
-import { useRoute } from 'vue-router';
-import { BigNumber } from 'ethers';
-import { formatUnits } from '@ethersproject/units';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';
-import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
-import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
-import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import useVeBal from '@/composables/useVeBAL';
-import useStaking from '@/composables/staking/useStaking';
+
+import { InvestMathResponse } from '../../../composables/useInvestMath';
 
 /**
  * TYPES

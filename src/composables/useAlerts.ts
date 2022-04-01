@@ -1,5 +1,6 @@
-import { computed, ref } from 'vue';
 import { orderBy } from 'lodash';
+import { computed, ref } from 'vue';
+
 import { lsGet, lsSet } from '@/lib/utils';
 
 export enum AlertType {

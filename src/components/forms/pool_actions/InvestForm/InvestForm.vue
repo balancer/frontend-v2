@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { toRef, computed, ref, nextTick, onBeforeMount, watch } from 'vue';
-import { isRequired } from '@/lib/utils/validations';
-import { bnum } from '@/lib/utils';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { computed, nextTick, onBeforeMount, ref, toRef, watch } from 'vue';
 // Composables
 import { useI18n } from 'vue-i18n';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import useInvestState from './composables/useInvestState';
-import useInvestMath from './composables/useInvestMath';
-import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
-// Components
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import InvestFormTotals from './components/InvestFormTotals.vue';
-import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
+
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
-
-import StakingProvider from '@/providers/local/staking.provider';
-
+// Components
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
+import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
+import { bnum } from '@/lib/utils';
+import { isRequired } from '@/lib/utils/validations';
+import StakingProvider from '@/providers/local/staking.provider';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import InvestFormTotals from './components/InvestFormTotals.vue';
+import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
+import useInvestMath from './composables/useInvestMath';
+import useInvestState from './composables/useInvestState';
 
 /**
  * TYPES
