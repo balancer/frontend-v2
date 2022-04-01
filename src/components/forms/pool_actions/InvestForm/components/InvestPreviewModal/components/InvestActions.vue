@@ -34,6 +34,7 @@ type Props = {
   pool: FullPool;
   math: InvestMathResponse;
   tokenAddresses: string[];
+  disabled: boolean;
 };
 
 type InvestmentState = {
@@ -200,7 +201,11 @@ watch(blockNumber, async () => {
 
 <template>
   <transition>
-    <BalActionSteps v-if="!investmentState.confirmed" :actions="actions" />
+    <BalActionSteps
+      v-if="!investmentState.confirmed"
+      :actions="actions"
+      :disabled="disabled"
+    />
     <div v-else>
       <ConfirmationIndicator :txReceipt="investmentState.receipt" />
       <BalBtn

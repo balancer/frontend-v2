@@ -34,6 +34,7 @@ import {
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import { setError, WithdrawalError } from './useWithdrawalState';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 
 /**
  * TYPES
@@ -340,7 +341,7 @@ export default function useWithdrawMath(
   });
 
   const highPriceImpact = computed(() =>
-    bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
+    bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT)
   );
 
   const fiatAmounts = computed((): string[] =>
