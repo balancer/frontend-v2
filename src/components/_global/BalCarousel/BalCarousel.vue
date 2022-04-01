@@ -59,7 +59,7 @@ onMounted(() => {
 <style>
 .bal-bullet {
   @apply bg-gradient-to-tr;
-  @apply from-yellow-400;
+  @apply from-orange-400;
   @apply to-pink-500;
   @apply mr-3;
   width: 10px;

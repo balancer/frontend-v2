@@ -1,5 +1,5 @@
 <template>
-  <span class="text-yellow-500 relative">
+  <span class="text-orange-500 relative">
     <span
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm"
     >
