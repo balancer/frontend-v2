@@ -24,6 +24,7 @@ import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 // Composables
 import useUserSettings from '@/composables/useUserSettings';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnSum, bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -36,7 +37,6 @@ import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
-import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 
 /**
  * TYPES

@@ -6,13 +6,13 @@ import { computed, Ref, ref } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnSum, bnum } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { BatchSwap } from '@/types';
-import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 

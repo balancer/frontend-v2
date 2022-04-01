@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { orderBy } from 'lodash';
+import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
 import { bnum } from '@/lib/utils';
-
 import { TokenInfoMap } from '@/types/TokenList';
 
 /**
