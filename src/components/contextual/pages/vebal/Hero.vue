@@ -80,8 +80,6 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="724"
-              height="800"
               :src="require('@/assets/images/coins-1.png')"
               alt=""
             />
