@@ -170,7 +170,7 @@ const visibleColumns = computed(() =>
   columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
 
-const stakeablePoolIds = computed((): string[] => POOLS.Stakeable.AllowList);
+const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 
 /**
  * METHODS
@@ -281,7 +281,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
           <BalBtn
-            v-if="stakeablePoolIds.includes(pool.id)"
+            v-if="stakablePoolIds.includes(pool.id)"
             color="gradient"
             size="sm"
             @click.prevent="$emit('triggerStake', pool)"
