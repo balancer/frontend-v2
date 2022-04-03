@@ -3,7 +3,6 @@ import HomePage from '@/pages/index.vue';
 import PoolPage from '@/pages/pool/_id.vue';
 import PoolInvestPage from '@/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
-import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
 import TermsOfUsePage from '@/pages/terms-of-use.vue';
@@ -63,11 +62,6 @@ const routes: RouteRecordRaw[] = [
     name: 'withdraw',
     component: PoolWithdrawPage,
     meta: { layout: 'PoolTransferLayout' }
-  },
-  {
-    path: '/liquidity-mining',
-    name: 'liquidity-mining',
-    component: LiquidityMiningPage
   },
   {
     path: '/terms-of-use',
