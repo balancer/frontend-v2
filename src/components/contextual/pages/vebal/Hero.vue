@@ -80,9 +80,9 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="724"
-              height="800"
-              :src="require('@/assets/images/coins-1.png')"
+              width="320"
+              height="366"
+              :src="require('@/assets/images/coins/coins-1.png')"
               alt=""
             />
             <div class="caption">
@@ -95,9 +95,9 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="696"
-              height="800"
-              :src="require('@/assets/images/coins-2.png')"
+              width="320"
+              height="366"
+              :src="require('@/assets/images/coins/coins-2.png')"
               alt=""
             />
             <div class="caption">
@@ -110,9 +110,9 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="696"
-              height="800"
-              :src="require('@/assets/images/coins-3.png')"
+              width="320"
+              height="366"
+              :src="require('@/assets/images/coins/coins-3.png')"
               alt=""
             />
             <div class="caption">
