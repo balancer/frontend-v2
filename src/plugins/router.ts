@@ -1,9 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
+import { isL2 } from '@/composables/useNetwork';
 import ClaimPage from '@/pages/claim.vue';
 import CookiesPolicyPage from '@/pages/cookies-policy.vue';
 import GetVeBalPage from '@/pages/get-vebal.vue';
 import HomePage from '@/pages/index.vue';
+import LiquidityMiningPage from '@/pages/LiquidityMiningPage.vue';
 import PoolPage from '@/pages/pool/_id.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
 import PoolInvestPage from '@/pages/pool/invest.vue';
@@ -110,6 +112,17 @@ const routes: RouteRecordRaw[] = [
     component: ClaimPage
   }
 ];
+
+/**
+ * NETWORK SPECIFIC ROUTES
+ */
+if (isL2.value) {
+  routes.push({
+    path: '/liquidity-mining',
+    name: 'liquidity-mining',
+    component: LiquidityMiningPage
+  });
+}
 
 /**
  * DEV/STAGING ONLY ROUTES
