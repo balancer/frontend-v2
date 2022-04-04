@@ -103,28 +103,33 @@
           </div>
           <div class="mb-4 px-1 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
+            <div
+              v-if="!loadingPool"
+              class="mt-6 w-fit h-fit flex items-center group"
+            >              
+              <BalLink
+                  :href="
+                    'https://app.apy.vision/pools/balancerv2_' +
+                      networkName +
+                      '-' +
+                      turnTokensIntoString(titleTokens) +
+                      '-' +
+                      getAddressFromPoolId(id)
+                  "
+                external
+                noStyle
+                class="flex items-center font-medium link link-black"
+              >                
+              <img width="32" height="32" class="mr-2 rounded-full group-hover:shadow-lg transition" src="@/assets/images/icons/apy-vision.svg" alt="">              
+              {{ $t('apyvisionPoolInsights') }}
+              <BalIcon
+                  name="arrow-up-right"
+                  size="sm"
+                  class="ml-0.5 text-gray-500 hover:text-blue-400 transition-colors group-hover:text-blue-500"
+                />
+              </BalLink>
+            </div>
           </div>
-
-          <div
-            v-if="!loadingPool"
-            class="mb-7 cursor-pointer w-fit h-fit flex items-center"
-          >
-            <a
-              v-text="$t('More insights by APY.vision')"
-              class="px-4 lg:px-0 font-bold text-xl"
-              :href="
-                'https://app.apy.vision/pools/balancerv2_' +
-                  networkName +
-                  '-' +
-                  turnTokensIntoString(titleTokens) +
-                  '-' +
-                  getAddressFromPoolId(id)
-              "
-              external
-              target="_blank"
-            /><BalIcon name="arrow-up-right" size="lg" class="ml-1" />
-          </div>
-
           <div class="mb-4">
             <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
@@ -234,6 +239,7 @@ import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCar
 import StakingProvider from '@/providers/local/staking.provider';
 import { getAddressFromPoolId, turnTokensIntoString } from '@/lib/utils';
 import { isL2 } from '@/composables/useNetwork';
+import apyVisionIcon from '@/assets/images/icons/apy-vision.svg';
 
 interface PoolPageData {
   id: string;
@@ -528,4 +534,9 @@ export default defineComponent({
     @apply sticky top-24;
   }
 }
+
+.insights-logo {
+
+}
+
 </style>
