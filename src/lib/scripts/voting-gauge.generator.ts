@@ -13,7 +13,7 @@
  *      },
  *      ...
  *    ]
- * 2. Generate a json file for each network represented in the list with same schema currently used in src/constants/voting-gauges.ts
+ * 2. Generate a json file with same schema currently used in src/constants/voting-gauges.ts
  */
 
 (async () => {
