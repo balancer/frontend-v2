@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
+
 import DesktopLinkItem from './DesktopLinkItem.vue';
 
 /**

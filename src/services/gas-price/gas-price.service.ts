@@ -1,12 +1,14 @@
 import { Contract } from '@ethersproject/contracts';
-import ConfigService from '../config/config.service';
-import BlocknativeProvider from './providers/blocknative.provider';
-import PolygonProvider from './providers/polygon.provider';
-import { GasPrice, GasSettings } from './providers/types';
+
 import {
   EthereumTxType,
   ethereumTxType
 } from '@/composables/useEthereumTxType';
+
+import ConfigService from '../config/config.service';
+import BlocknativeProvider from './providers/blocknative.provider';
+import PolygonProvider from './providers/polygon.provider';
+import { GasPrice, GasSettings } from './providers/types';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;

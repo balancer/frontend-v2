@@ -1,7 +1,9 @@
-import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
-import useTokens from './useTokens';
+import numeral from 'numeral';
+
 import useUserSettings from '@/composables/useUserSettings';
+
+import useTokens from './useTokens';
 
 interface Options {
   format?: string;

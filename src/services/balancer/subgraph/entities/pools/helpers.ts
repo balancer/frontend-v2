@@ -1,6 +1,7 @@
-import { bnum } from '@/lib/utils';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
+
+import { bnum } from '@/lib/utils';
 
 import { Pool } from '../../types';
 

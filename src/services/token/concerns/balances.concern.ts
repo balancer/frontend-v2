@@ -1,12 +1,14 @@
-import TokenService from '../token.service';
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
-import { multicall } from '@/lib/utils/balancer/contract';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
-import { TokenInfoMap } from '@/types/TokenList';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { chunk } from 'lodash';
-import { JsonRpcProvider } from '@ethersproject/providers';
+
+import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import { multicall } from '@/lib/utils/balancer/contract';
+import { TokenInfoMap } from '@/types/TokenList';
+
+import TokenService from '../token.service';
 
 // TYPES
 export type BalanceMap = { [address: string]: string };

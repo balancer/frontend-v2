@@ -1,8 +1,10 @@
-import { computed } from 'vue';
-import { parseUnits, formatUnits } from '@ethersproject/units';
-import useUserSettings from './useUserSettings';
-import { bnum } from '@/lib/utils';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import BigNumber from 'bignumber.js';
+import { computed } from 'vue';
+
+import { bnum } from '@/lib/utils';
+
+import useUserSettings from './useUserSettings';
 
 export default function useSlippage() {
   const { slippage } = useUserSettings();

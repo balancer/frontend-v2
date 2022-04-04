@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
-
+import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useTokens from '@/composables/useTokens';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
-
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import useTokens from '@/composables/useTokens';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 import MigrateExplainer from './components/MigrateExplainer.vue';
 import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
 import PoolStats from './components/PoolStats.vue';
-
 import { PoolMigrationInfo } from './types';
 
 type Props = {

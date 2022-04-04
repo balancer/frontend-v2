@@ -2,7 +2,6 @@
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-
 import { Pool } from '@/services/balancer/subgraph/types';
 
 /**
@@ -34,7 +33,7 @@ function getPoolLabel(pool: Pool) {
       spacing="sm"
       align="center"
       horizontal
-      class="p-2 px-3 border-b dark:border-gray-600 text-yellow-500"
+      class="p-2 px-3 border-b dark:border-gray-600 text-orange-500"
     >
       <BalIcon class="mt-1" name="alert-circle" size="md" />
       <h6>{{ $t('createAPool.similarPoolsExist') }}</h6>

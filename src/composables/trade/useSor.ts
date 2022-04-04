@@ -1,47 +1,46 @@
+import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sor/dist/types';
+import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
+import { TransactionResponse } from '@ethersproject/providers';
+import { BigNumber as OldBigNumber } from 'bignumber.js';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import {
-  Ref,
-  onMounted,
-  ref,
   computed,
   ComputedRef,
+  onMounted,
   reactive,
+  Ref,
+  ref,
   toRefs
 } from 'vue';
-import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
-import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
-import { BigNumber as OldBigNumber } from 'bignumber.js';
-import { Pool } from '@balancer-labs/sor/dist/types';
-import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { useI18n } from 'vue-i18n';
 
-import { scale, bnum } from '@/lib/utils';
+import { balancer } from '@/lib/balancer.sdk';
+import { bnum, scale } from '@/lib/utils';
+import {
+  SorManager,
+  SorReturn
+} from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
+import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
   unwrap,
   wrap,
   WrapType
 } from '@/lib/utils/balancer/wrapper';
-import {
-  SorManager,
-  SorReturn
-} from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-
-import useFathom from '../useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
-
-import { TransactionResponse } from '@ethersproject/providers';
-import useEthers from '../useEthers';
-import { TradeQuote } from './types';
-import useTransactions, { TransactionAction } from '../useTransactions';
-import useNumbers, { FNumFormats } from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+
+import useEthers from '../useEthers';
+import useFathom from '../useFathom';
+import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
-import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
-import { balancer } from '@/lib/balancer.sdk';
+import useTransactions, { TransactionAction } from '../useTransactions';
+import { TradeQuote } from './types';
 
 type SorState = {
   validationErrors: {
@@ -191,8 +190,12 @@ export default function useSor({
     if (sorReturn.value.hasSwaps) {
       const { result } = sorReturn.value;
 
+      const swapType: SwapType = exactIn.value
+        ? SwapType.SwapExactIn
+        : SwapType.SwapExactOut;
+
       const deltas = await balancer.swaps.queryBatchSwap({
-        kind: exactIn.value ? SwapType.SwapExactIn : SwapType.SwapExactOut,
+        kind: swapType,
         swaps: result.swaps,
         assets: result.tokenAddresses
       });
@@ -219,15 +222,19 @@ export default function useSor({
           )
         );
 
-        tokenInAmountInput.value =
-          tokenInAmountNormalised.toNumber() > 0
-            ? formatAmount(tokenInAmountNormalised.toString())
-            : '';
+        if (swapType === SwapType.SwapExactOut) {
+          tokenInAmountInput.value =
+            tokenInAmountNormalised.toNumber() > 0
+              ? formatAmount(tokenInAmountNormalised.toString())
+              : '';
+        }
 
-        tokenOutAmountInput.value =
-          tokenOutAmountNormalised.toNumber() > 0
-            ? formatAmount(tokenOutAmountNormalised.toString())
-            : '';
+        if (swapType === SwapType.SwapExactIn) {
+          tokenOutAmountInput.value =
+            tokenOutAmountNormalised.toNumber() > 0
+              ? formatAmount(tokenOutAmountNormalised.toString())
+              : '';
+        }
       }
     }
   }

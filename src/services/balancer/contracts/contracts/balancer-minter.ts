@@ -8,9 +8,7 @@ export class BalancerMinter {
     private readonly config = configService,
     private readonly web3 = web3Service,
     public readonly address = config.network.addresses.balancerMinter
-  ) {
-    if (!this.address) console.error('BalancerMinter address not set');
-  }
+  ) {}
 
   /**
    * @summary Claim BAL rewards for gauge

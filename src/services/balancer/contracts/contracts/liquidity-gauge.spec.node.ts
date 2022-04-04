@@ -1,5 +1,6 @@
-import { LiquidityGauge } from './liquidity-gauge';
 import GaugesResponse from '@/services/balancer/gauges/__mocks__/gauges-response.schema.json';
+
+import { LiquidityGauge } from './liquidity-gauge';
 
 jest.mock('@/services/web3/web3.service');
 jest.mock('@/services/rpc-provider/rpc-provider.service');

@@ -1,14 +1,13 @@
+import { addDays, nextThursday, previousThursday, startOfDay } from 'date-fns';
 import { computed } from 'vue';
-import { addDays, nextThursday, startOfDay, previousThursday } from 'date-fns';
-
-import useLockState from './useLockState';
-
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import {
   MAX_LOCK_PERIOD_IN_DAYS,
   MIN_LOCK_PERIOD_IN_DAYS
 } from '@/components/forms/lock_actions/constants';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+
+import useLockState from './useLockState';
 
 export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   /**

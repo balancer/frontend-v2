@@ -1,38 +1,35 @@
-import { computed, ComputedRef, reactive, ref, Ref, toRefs } from 'vue';
-import { useStore } from 'vuex';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE } from '@ethersproject/constants';
-import { formatUnits } from '@ethersproject/units';
-import OldBigNumber from 'bignumber.js';
 import { AddressZero } from '@ethersproject/constants';
+import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
+import OldBigNumber from 'bignumber.js';
+import { computed, ComputedRef, reactive, Ref, ref, toRefs } from 'vue';
+import { useStore } from 'vuex';
 
-import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { bnum } from '@/lib/utils';
+import { tryPromiseWithTimeout } from '@/lib/utils/promise';
+import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
+import { match0xService } from '@/services/gnosis/match0x.service';
+import { paraSwapService } from '@/services/gnosis/paraswap.service';
+import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import {
   FeeInformation,
   FeeQuoteParams,
   OrderMetaData,
   PriceQuoteParams
 } from '@/services/gnosis/types';
-import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
-import useWeb3 from '@/services/web3/useWeb3';
 import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
-import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import { match0xService } from '@/services/gnosis/match0x.service';
-import { paraSwapService } from '@/services/gnosis/paraswap.service';
-
-import useTransactions from '../useTransactions';
-
+import useWeb3 from '@/services/web3/useWeb3';
 import { Token } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
-import { TradeQuote } from './types';
-
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
-import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
+import useTransactions from '../useTransactions';
+import { TradeQuote } from './types';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =

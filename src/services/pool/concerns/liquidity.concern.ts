@@ -1,3 +1,5 @@
+import { getAddress } from '@ethersproject/address';
+
 import {
   isStableLike,
   isStablePhantom,
@@ -11,7 +13,7 @@ import {
   PoolType
 } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { getAddress } from '@ethersproject/address';
+
 import PoolService from '../pool.service';
 
 interface OnchainTokenInfo extends OnchainTokenData {

@@ -1,5 +1,5 @@
-import ProtocolFeesCollector from './protocol-fees-collector';
 import { balancerContractsService } from '../balancer-contracts.service';
+import ProtocolFeesCollector from './protocol-fees-collector';
 import Vault from './vault';
 
 jest.mock('../balancer-contracts.service');

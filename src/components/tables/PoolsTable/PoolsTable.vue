@@ -1,28 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useFathom from '@/composables/useFathom';
-import useDarkMode from '@/composables/useDarkMode';
-import useBreakpoints from '@/composables/useBreakpoints';
-import {
-  isStableLike,
-  isMigratablePool,
-  orderedTokenAddresses,
-  orderedPoolTokens
-} from '@/composables/usePool';
-
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useDarkMode from '@/composables/useDarkMode';
+import useFathom from '@/composables/useFathom';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import {
+  isMigratablePool,
+  isStableLike,
+  orderedPoolTokens,
+  orderedTokenAddresses
+} from '@/composables/usePool';
+import { POOLS } from '@/constants/pools';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
-import { POOLS } from '@/constants/pools';
 
 /**
  * TYPES
@@ -170,7 +168,7 @@ const visibleColumns = computed(() =>
   columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
 
-const stakeablePoolIds = computed((): string[] => POOLS.Stakeable.AllowList);
+const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 
 /**
  * METHODS
@@ -281,7 +279,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       <template v-slot:stakeCell="pool">
         <div class="px-2 py-4 flex justify-center">
           <BalBtn
-            v-if="stakeablePoolIds.includes(pool.id)"
+            v-if="stakablePoolIds.includes(pool.id)"
             color="gradient"
             size="sm"
             @click.prevent="$emit('triggerStake', pool)"

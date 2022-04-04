@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { formatUnits } from 'ethers/lib/utils';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import ClaimRewardsBtn from '@/components/btns/ClaimRewardsBtn/ClaimRewardsBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { TokenInfo } from '@/types/TokenList';
-import useTokens from '@/composables/useTokens';
-import { formatUnits } from 'ethers/lib/utils';
-import { bnum } from '@/lib/utils';
-import ClaimRewardsBtn from '@/components/btns/ClaimRewardsBtn/ClaimRewardsBtn.vue';
-import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES

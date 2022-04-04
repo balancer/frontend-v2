@@ -1,6 +1,7 @@
-import { configService } from '@/services/config/config.service';
 import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
+
+import { configService } from '@/services/config/config.service';
 
 const { stETH: stEthAddress } = configService.network.addresses;
 

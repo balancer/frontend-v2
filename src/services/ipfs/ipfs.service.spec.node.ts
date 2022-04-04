@@ -1,5 +1,6 @@
-import { ipfsService } from '@/services/ipfs/ipfs.service';
 import nock from 'nock';
+
+import { ipfsService } from '@/services/ipfs/ipfs.service';
 
 describe('IPFS service', () => {
   describe('Get data given IPFS hash', () => {

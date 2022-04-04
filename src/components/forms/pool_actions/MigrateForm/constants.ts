@@ -1,7 +1,8 @@
 import { keyBy } from 'lodash';
 
-import { PoolMigrationType, PoolMigrationInfo } from './types';
 import { POOLS } from '@/constants/pools';
+
+import { PoolMigrationInfo, PoolMigrationType } from './types';
 
 const riskI18nLabelPrefix = 'migratePool.previewModal.riskWarnings.risks';
 

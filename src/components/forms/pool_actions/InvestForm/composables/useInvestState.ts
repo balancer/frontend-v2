@@ -1,4 +1,5 @@
 import { reactive, toRefs } from 'vue';
+
 import { balancer } from '@/lib/balancer.sdk';
 
 type InvestState = {

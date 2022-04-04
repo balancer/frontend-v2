@@ -1,11 +1,12 @@
-import Calculator from './calculator.sevice';
-import { PiOptions } from './calculator.sevice';
+import { weightedBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sdk';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import { bnum } from '@/lib/utils';
+import * as SDK from '@georgeroman/balancer-v2-pools';
 import OldBigNumber from 'bignumber.js';
 
-import * as SDK from '@georgeroman/balancer-v2-pools';
-import { weightedBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sdk';
+import { bnum } from '@/lib/utils';
+
+import Calculator from './calculator.sevice';
+import { PiOptions } from './calculator.sevice';
 
 export default class Weighted {
   calc: Calculator;

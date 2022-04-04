@@ -1,5 +1,7 @@
-import { AnyPool } from '@/services/balancer/subgraph/types';
 import { getAddress } from 'ethers/lib/utils';
+
+import { AnyPool } from '@/services/balancer/subgraph/types';
+
 import { bnum } from '..';
 
 export function getPoolAddress(poolId: string) {

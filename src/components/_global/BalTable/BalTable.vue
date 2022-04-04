@@ -223,15 +223,15 @@
 </template>
 
 <script lang="ts">
+import { compact, sortBy, sumBy, tail } from 'lodash';
 import {
+  computed,
   defineComponent,
   onMounted,
   PropType,
   ref,
-  watch,
-  computed
+  watch
 } from 'vue';
-import { sortBy, sumBy, tail, compact } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;

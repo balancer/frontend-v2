@@ -1,10 +1,10 @@
+import { Network } from '@balancer-labs/sdk';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import axios from 'axios';
+
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
-
 import { PriceInformation, PriceQuoteParams } from './types';
 import { toErc20Address } from './utils';
 

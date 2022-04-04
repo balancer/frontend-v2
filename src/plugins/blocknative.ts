@@ -1,6 +1,7 @@
-import { networkId } from '@/composables/useNetwork';
 import BlocknativeSdk from 'bnc-sdk';
 import { InitializationOptions } from 'bnc-sdk/dist/types/src/interfaces';
+
+import { networkId } from '@/composables/useNetwork';
 
 export const bnSdkSymbol = Symbol();
 

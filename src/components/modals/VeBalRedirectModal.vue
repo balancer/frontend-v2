@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { urlFor } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
 import { computed, ref } from 'vue';
-import useVeBAL from '@/composables/useVeBAL';
+
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
+import { urlFor } from '@/composables/useNetwork';
+import useVeBAL from '@/composables/useVeBAL';
 
 /**
  * STATE

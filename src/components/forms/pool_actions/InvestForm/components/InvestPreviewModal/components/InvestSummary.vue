@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -156,7 +157,7 @@ function weeklyYieldForAPR(apr: string): string {
             <template v-slot:activator>
               <StarsIcon
                 v-if="props.pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
-                class="h-4 text-yellow-300"
+                class="h-4 text-orange-300"
               />
               <BalIcon
                 v-else

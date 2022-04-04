@@ -1,13 +1,15 @@
-import PoolExchange from '../exchange.service';
+import { BigNumberish } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
+import { parseUnits } from '@ethersproject/units';
+import { Ref } from 'vue';
+
+import { isManaged, isStableLike } from '@/composables/usePool';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
-import { parseUnits } from '@ethersproject/units';
-import { BigNumberish } from '@ethersproject/bignumber';
-import { Ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { isManaged, isStableLike } from '@/composables/usePool';
 import ConfigService from '@/services/config/config.service';
-import { AddressZero } from '@ethersproject/constants';
+
+import PoolExchange from '../exchange.service';
 
 export default class JoinParams {
   private pool: Ref<FullPool>;

@@ -1,18 +1,17 @@
+import { Vault__factory } from '@balancer-labs/typechain';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Vault__factory } from '@balancer-labs/typechain';
-
-import useWeb3 from '@/services/web3/useWeb3';
-
-import useTransactions from '../useTransactions';
-import useEthers from '../useEthers';
-import { configService } from '@/services/config/config.service';
 
 import { sendTransaction } from '@/lib/utils/balancer/web3';
-import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
+import { configService } from '@/services/config/config.service';
 import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+
+import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
+import useEthers from '../useEthers';
+import useTransactions from '../useTransactions';
 
 const vaultAddress = configService.network.addresses.vault;
 

@@ -1,5 +1,5 @@
-import BalModal from './BalModal.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalModal from './BalModal.vue';
 
 export default {
   component: BalModal,

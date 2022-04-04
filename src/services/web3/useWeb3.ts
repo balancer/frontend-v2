@@ -1,14 +1,16 @@
+import { Network } from '@balancer-labs/sdk';
+import { Web3Provider } from '@ethersproject/providers';
 import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
-import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
-import { Web3Provider } from '@ethersproject/providers';
+
+import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
+
 import { configService } from '../config/config.service';
-import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
-import useNetwork from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
+import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
+import { web3Service } from './web3.service';
 
 /** STATE */
 const blockNumber = ref(0);

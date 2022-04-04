@@ -1,5 +1,6 @@
-import { POOLS } from '@/constants/pools';
 import { merge } from 'lodash';
+
+import { POOLS } from '@/constants/pools';
 
 const defaultArgs = {
   first: 1000,

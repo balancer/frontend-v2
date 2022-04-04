@@ -1,5 +1,7 @@
-import { FiatCurrency } from '@/constants/currency';
 import { mount } from 'vue-composable-tester';
+
+import { FiatCurrency } from '@/constants/currency';
+
 import useNumbers, { FNumFormats } from './useNumbers';
 
 const mockTokens = {

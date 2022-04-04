@@ -1,13 +1,15 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { SwapV2 } from '@balancer-labs/sdk';
-import SwapService, { SwapTokenType, SwapToken } from './swap.service';
-import { configService } from '@/services/config/config.service';
 import {
   FundManagement,
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
+import { SwapV2 } from '@balancer-labs/sdk';
+import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
+
+import { configService } from '@/services/config/config.service';
+
+import SwapService, { SwapToken, SwapTokenType } from './swap.service';
 
 jest.mock('@/lib/utils/balancer/lido');
 jest.mock('@/services/rpc-provider/rpc-provider.service');

@@ -1,9 +1,10 @@
 // Shamelessly adapted from OpenZeppelin-contracts test utils
+import registerPromiseWorker from 'promise-worker/register';
 import { soliditySha3 } from 'web3-utils';
-import { loadTree } from '../../lib/utils/merkle';
+
 import { scale } from '@/lib/utils';
 
-import registerPromiseWorker from 'promise-worker/register';
+import { loadTree } from '../../lib/utils/merkle';
 import { ClaimWorkerMessage, ComputeClaimProofPayload } from './types';
 
 registerPromiseWorker((message: ClaimWorkerMessage) => {

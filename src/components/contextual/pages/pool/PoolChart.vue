@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
+import { zip } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
-import { zip } from 'lodash';
-import { format } from 'date-fns';
 
-import { FullPool, PoolSnapshots } from '@/services/balancer/subgraph/types';
-import { HistoricalPrices } from '@/services/coingecko/api/price.service';
-
-import useTailwind from '@/composables/useTailwind';
 import useDarkMode from '@/composables/useDarkMode';
 import { isStablePhantom } from '@/composables/usePool';
+import useTailwind from '@/composables/useTailwind';
+import { FullPool, PoolSnapshots } from '@/services/balancer/subgraph/types';
+import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 
 /**
  * TYPES

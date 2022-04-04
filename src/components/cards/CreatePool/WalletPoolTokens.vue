@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useTokens from '@/composables/useTokens';
-import { computed } from 'vue';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { sumBy } from 'lodash';
+import { computed } from 'vue';
+
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 
 /**
  * STATIC

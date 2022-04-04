@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { configService as _configService } from '../config/config.service';
 
 export default class IpfsService {

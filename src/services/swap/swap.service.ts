@@ -1,17 +1,19 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { AddressZero } from '@ethersproject/constants';
-import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
-import ConfigService, { configService } from '@/services/config/config.service';
-import { vaultService } from '@/services/contracts/vault.service';
-import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import {
   FundManagement,
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
-import Web3Service, { web3Service } from '../web3/web3.service';
 import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
+
+import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
+import ConfigService, { configService } from '@/services/config/config.service';
+import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
+import { vaultService } from '@/services/contracts/vault.service';
+
+import Web3Service, { web3Service } from '../web3/web3.service';
 
 export type Address = string;
 

@@ -1,5 +1,6 @@
-import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 import { Network } from '@balancer-labs/sdk';
+
+import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 
 export type VotingGauge = {
   address: string;

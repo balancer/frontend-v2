@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
+
+import { usePool } from '@/composables/usePool';
+// Composables
+import useTokens from '@/composables/useTokens';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
-// Composables
-import useTokens from '@/composables/useTokens';
+
 import useWithdrawalState from '../composables/useWithdrawalState';
-import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES

@@ -1,8 +1,10 @@
+import { AddressZero } from '@ethersproject/constants';
+
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { AddressZero } from '@ethersproject/constants';
+
 import {
   Gauge,
   OnchainGaugeData,

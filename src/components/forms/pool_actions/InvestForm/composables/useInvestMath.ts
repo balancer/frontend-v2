@@ -1,18 +1,23 @@
-import { computed, Ref, watch, ref } from 'vue';
-import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import useTokens from '@/composables/useTokens';
-import { parseUnits } from '@ethersproject/units';
-import useSlippage from '@/composables/useSlippage';
-import { usePool } from '@/composables/usePool';
-import { BigNumber } from 'ethers';
-import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
-import { BatchSwap } from '@/types';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { parseUnits } from '@ethersproject/units';
+import { BigNumber } from 'ethers';
+import { computed, Ref, ref, watch } from 'vue';
+
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
+import useSlippage from '@/composables/useSlippage';
+import useTokens from '@/composables/useTokens';
+import {
+  HIGH_PRICE_IMPACT,
+  REKT_PRICE_IMPACT
+} from '@/constants/poolLiquidity';
+import { bnum } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { BatchSwap } from '@/types';
+import { TokenInfo } from '@/types/TokenList';
 
 export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
@@ -127,7 +132,12 @@ export default function useInvestMath(
 
   const highPriceImpact = computed((): boolean => {
     if (batchSwapLoading.value) return false;
-    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
+  });
+
+  const rektPriceImpact = computed((): boolean => {
+    if (batchSwapLoading.value) return false;
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
   });
 
   const maximized = computed(() =>
@@ -274,6 +284,7 @@ export default function useInvestMath(
     fiatTotalLabel,
     priceImpact,
     highPriceImpact,
+    rektPriceImpact,
     maximized,
     optimized,
     proportionalAmounts,

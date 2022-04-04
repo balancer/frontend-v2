@@ -1,25 +1,27 @@
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from 'ethers/lib/utils';
+import { flatten, keyBy } from 'lodash';
+import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { UseQueryOptions } from 'react-query/types';
-import { flatten, keyBy } from 'lodash';
-import { bnum, forChange } from '@/lib/utils';
-import { formatUnits } from 'ethers/lib/utils';
+
+import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { bnum, forChange } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import {
   DecoratedPoolWithShares,
   LinearPool,
   Pool
 } from '@/services/balancer/subgraph/types';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import useWeb3 from '@/services/web3/useWeb3';
+
+import useNetwork from '../useNetwork';
+import { isStablePhantom, lpTokensFor } from '../usePool';
 import useTokenLists from '../useTokenLists';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
-import useNetwork from '../useNetwork';
-import { isStablePhantom, lpTokensFor } from '../usePool';
-import { getAddress } from '@ethersproject/address';
-import { POOLS } from '@/constants/pools';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];

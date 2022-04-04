@@ -13,9 +13,10 @@
 </template>
 
 <script lang="ts">
-import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
 import { defineComponent, PropType } from 'vue';
+
 import useWeb3 from '@/services/web3/useWeb3';
+import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
 export default defineComponent({
   props: {
     wallet: {

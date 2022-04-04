@@ -1,13 +1,15 @@
-import PoolExchange from '../exchange.service';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { AddressZero } from '@ethersproject/constants';
+import { parseUnits } from '@ethersproject/units';
+import { Ref } from 'vue';
+
+import { isStableLike } from '@/composables/usePool';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
-import { parseUnits } from '@ethersproject/units';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { isStableLike } from '@/composables/usePool';
-import { Ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import ConfigService from '@/services/config/config.service';
-import { AddressZero } from '@ethersproject/constants';
+
+import PoolExchange from '../exchange.service';
 
 export default class ExitParams {
   private pool: Ref<FullPool>;

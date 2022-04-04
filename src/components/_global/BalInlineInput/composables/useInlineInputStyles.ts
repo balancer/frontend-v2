@@ -1,4 +1,4 @@
-import { Ref, computed } from 'vue';
+import { computed, Ref } from 'vue';
 
 export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const extPaddingClass = (): string => {
