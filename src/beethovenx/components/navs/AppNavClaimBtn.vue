@@ -31,9 +31,6 @@
         <div class="text-sm text-gray-500 font-medium mb-2 text-left">
           Pending Rewards
         </div>
-        <div class="text-xl font-medium truncate flex items-center">
-          {{ data.pendingBeets }}
-        </div>
         <template v-for="(token, idx) in data.rewardTokens" :key="idx">
           <div class="text-xl font-medium truncate flex items-center">
             {{ numeral(token.amount).format('0,0.[0000]') }} {{ token.symbol }}
@@ -86,11 +83,10 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { sumBy, groupBy, map } from 'lodash';
+import { groupBy, map, sumBy } from 'lodash';
 import numeral from 'numeral';
 import usePools from '@/composables/pools/usePools';
 import useEthers from '@/composables/useEthers';
-import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { Alert } from '@/composables/useAlerts';
 
@@ -102,7 +98,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { isWalletReady, appNetworkConfig } = useWeb3();
     const { txListener } = useEthers();
     const { fNum } = useNumbers();
     const {
@@ -118,20 +113,21 @@ export default defineComponent({
     const data = computed(() => {
       const farms = onlyPoolsWithFarms.value.map(pool => pool.decoratedFarm);
       const farmsWithRewardTokens = farms.filter(
-        farm => farm.rewardTokenSymbol !== null
+        farm => farm.pendingRewardTokens !== null
       );
-
       const rewardTokens = map(
-        groupBy(farmsWithRewardTokens, farm => farm.rewardTokenSymbol),
+        groupBy(
+          farmsWithRewardTokens.map(farm => farm.pendingRewardTokens).flat(),
+          rewardToken => rewardToken.symbol
+        ),
         group => ({
-          symbol: group[0].rewardTokenSymbol || '',
-          amount: sumBy(group, item => item.pendingRewardToken) || 0,
-          value: sumBy(group, item => item.pendingRewardTokenValue)
+          symbol: group[0].symbol || '',
+          amount: sumBy(group, item => parseFloat(item.balance)) || 0,
+          value: sumBy(group, item => parseFloat(item.balanceUSD))
         })
       ).filter(token => token.value > 0);
 
       const pendingRewardTokenValue = sumBy(rewardTokens, token => token.value);
-      const pendingBeetsValue = sumBy(farms, farm => farm.pendingBeetsValue);
 
       const averageApr =
         sumBy(farms, farm => farm.apr * (farm.stake || 0)) /
@@ -143,14 +139,7 @@ export default defineComponent({
           sumBy(farms, farm => farm.stake || 0),
           'usd'
         ),
-        pendingBeets:
-          numeral(sumBy(farms, farm => farm.pendingBeets)).format(
-            '0,0.[0000]'
-          ) + ' BEETS',
-        pendingRewardValue: fNum(
-          pendingBeetsValue + pendingRewardTokenValue,
-          'usd'
-        ),
+        pendingRewardValue: fNum(pendingRewardTokenValue, 'usd'),
         apr: fNum(averageApr, 'percent'),
         dailyApr: fNum(averageApr / 365, 'percent'),
         rewardTokens

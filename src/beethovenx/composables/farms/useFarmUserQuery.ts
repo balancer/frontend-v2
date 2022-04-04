@@ -11,12 +11,15 @@ import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDa
 import { FarmUser } from '@/beethovenx/services/subgraph/subgraph-types';
 import { AddressZero } from '@ethersproject/constants';
 import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { MasterChefRewarderPendingToken } from '@/beethovenx/services/farm/contracts/master-chef-rewarders';
+import useConfig from '@/composables/useConfig';
 
 export default function useFarmUserQuery(
   farmId: string,
   options: QueryObserverOptions<FarmUser | null> = {}
 ) {
   const { account, isWalletReady } = useWeb3();
+  const { networkConfig } = useConfig();
   const { appLoading } = useApp();
   const protocolDataQuery = useProtocolDataQuery();
   const beetsPrice = computed(
@@ -40,9 +43,6 @@ export default function useFarmUserQuery(
       const farms = await beethovenxService.getBeetsFarms();
       const farm = farms.find(farm => farm.id === farmId);
 
-      let pendingRewardToken = 0;
-      let rewardTokenPrice = 0;
-
       const userData = await beethovenxService.getUserDataForFarm(
         farmId,
         address
@@ -52,15 +52,19 @@ export default function useFarmUserQuery(
         address
       );
 
+      let pendingRewardTokens: MasterChefRewarderPendingToken[] = [];
+
       if (farm && farm.rewarder) {
         const pendingRewards = await masterChefContractsService.rewarders.getPendingRewards(
           [farmId],
           [farm.rewarder.id],
-          account.value
+          account.value,
+          farms
         );
 
-        pendingRewardToken = pendingRewards[farmId] || 0;
-        rewardTokenPrice = farm.rewarder.tokens[0]?.tokenPrice || 0;
+        if (pendingRewards[farmId]) {
+          pendingRewardTokens = pendingRewards[farmId];
+        }
       }
 
       return {
@@ -70,8 +74,15 @@ export default function useFarmUserQuery(
         beetsHarvested: parseFloat(userData.beetsHarvested),
         pendingBeets,
         pendingBeetsValue: pendingBeets * beetsPrice.value,
-        pendingRewardToken,
-        pendingRewardTokenValue: rewardTokenPrice * pendingRewardToken
+        pendingRewardTokens: [
+          {
+            address: networkConfig.addresses.beets,
+            symbol: 'BEETS',
+            balance: `${pendingBeets}`,
+            balanceUSD: `${pendingBeets * beetsPrice.value}`
+          },
+          ...pendingRewardTokens
+        ]
       };
     } catch (e) {
       console.log('ERROR', e);

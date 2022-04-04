@@ -1,12 +1,16 @@
 import { configService as _configService } from '@/services/config/config.service';
 import axios from 'axios';
 import {
+  CreateLgeTypes,
+  GqlBalancerPool,
   GqlBalancerPoolActivity,
   GqlBalancerPoolSnapshot,
+  GqlBalancerPoolToken,
   GqlBeetsConfig,
   GqlBeetsFarm,
   GqlBeetsFarmUser,
   GqlBeetsProtocolData,
+  GqlBeetsUserPendingAllFarmRewards,
   GqlBeetsUserPendingRewards,
   GqlBeetsUserPoolData,
   GqlHistoricalTokenPrice,
@@ -28,6 +32,8 @@ import { Web3Provider } from '@ethersproject/providers';
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { Pool, PoolToken } from '@/services/balancer/subgraph/types';
+import { isStable } from '@/composables/usePool';
 
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };
@@ -462,6 +468,15 @@ export default class BeethovenxService {
               tokenPrice: true,
               rewardPerSecond: true
             }
+          },
+          rewardTokens: {
+            decimals: true,
+            address: true,
+            rewardPerDay: true,
+            rewardPerSecond: true,
+            tokenPrice: true,
+            isBeets: true,
+            symbol: true
           }
         }
       }
@@ -550,6 +565,181 @@ export default class BeethovenxService {
     return beetsGetUserDataForAllFarms;
   }
 
+  public async getPool(id: string): Promise<GqlBalancerPool> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        pool: {
+          __args: { id },
+          id: true,
+          name: true,
+          address: true,
+          poolType: true,
+          swapFee: true,
+          tokensList: true,
+          mainTokens: true,
+          totalLiquidity: true,
+          farmTotalLiquidity: true,
+          totalSwapVolume: true,
+          totalSwapFee: true,
+          totalShares: true,
+          totalWeight: true,
+          owner: true,
+          factory: true,
+          amp: true,
+          createTime: true,
+          swapEnabled: true,
+          farm: {
+            id: true,
+            pair: true,
+            allocPoint: true,
+            slpBalance: true,
+            rewardTokens: {
+              decimals: true,
+              address: true,
+              rewardPerDay: true,
+              rewardPerSecond: true,
+              tokenPrice: true,
+              isBeets: true,
+              symbol: true
+            },
+            masterChef: {
+              id: true,
+              totalAllocPoint: true,
+              beetsPerBlock: true
+            },
+            rewarder: {
+              id: true,
+              rewardToken: true,
+              rewardPerSecond: true,
+              tokens: {
+                rewardPerSecond: true,
+                symbol: true,
+                token: true,
+                tokenPrice: true
+              }
+            }
+          },
+          volume24h: true,
+          fees24h: true,
+          isNewPool: true,
+          apr: {
+            total: true,
+            hasRewardApr: true,
+            swapApr: true,
+            beetsApr: true,
+            thirdPartyApr: true,
+            items: {
+              title: true,
+              apr: true,
+              subItems: {
+                title: true,
+                apr: true
+              }
+            }
+          },
+          tokens: {
+            name: true,
+            symbol: true,
+            decimals: true,
+            address: true,
+            balance: true,
+            weight: true,
+            priceRate: true,
+            isBpt: true,
+            isPhantomBpt: true
+          },
+          wrappedIndex: true,
+          mainIndex: true,
+          lowerTarget: true,
+          upperTarget: true,
+          tokenRates: true,
+          expiryTime: true,
+          stablePhantomPools: {
+            id: true,
+            address: true,
+            symbol: true,
+            totalSupply: true,
+            balance: true,
+            tokens: {
+              name: true,
+              symbol: true,
+              decimals: true,
+              address: true,
+              balance: true,
+              weight: true,
+              priceRate: true,
+              isBpt: true,
+              isPhantomBpt: true
+            }
+          },
+          linearPools: {
+            id: true,
+            symbol: true,
+            address: true,
+            priceRate: true,
+            totalSupply: true,
+            balance: true,
+            mainTokenTotalBalance: true,
+            unwrappedTokenAddress: true,
+            mainToken: {
+              index: true,
+              address: true,
+              balance: true,
+              name: true,
+              symbol: true,
+              decimals: true
+            },
+            wrappedToken: {
+              index: true,
+              address: true,
+              balance: true,
+              priceRate: true,
+              name: true,
+              symbol: true,
+              decimals: true
+            },
+            poolToken: true
+          },
+          composition: {
+            tokens: {
+              nestedTokens: {
+                balance: true,
+                symbol: true,
+                address: true,
+                valueUSD: true,
+                weight: true,
+                nestedTokens: {
+                  balance: true,
+                  symbol: true,
+                  address: true,
+                  valueUSD: true,
+                  weight: true
+                }
+              },
+              balance: true,
+              symbol: true,
+              address: true,
+              valueUSD: true,
+              weight: true
+            }
+          }
+        }
+      }
+    });
+
+    const { pool } = await this.get<{ pool: GqlBalancerPool }>(query);
+
+    //TODO: not ideal to do this here, but moving it to the backend will likely break other stuff
+    pool.tokens = this.formatPoolTokens(pool);
+    pool.address = getAddress(pool.address);
+    pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
+    pool.mainTokens = pool.mainTokens
+      ? pool.mainTokens.map(t => getAddress(t))
+      : undefined;
+
+    return pool;
+  }
+
   public async getPoolList(): Promise<PoolListItem[]> {
     const query = jsonToGraphQLQuery({
       query: {
@@ -618,6 +808,7 @@ export default class BeethovenxService {
           pools: {
             poolId: true,
             balanceUSD: true,
+            farmBalanceUSD: true,
             balance: true,
             balanceScaled: true,
             hasUnstakedBpt: true,
@@ -660,6 +851,16 @@ export default class BeethovenxService {
               address: true,
               balanceUSD: true,
               balance: true
+            },
+            farms: {
+              tokens: {
+                symbol: true,
+                address: true,
+                balance: true,
+                balanceUSD: true
+              },
+              farmId: true,
+              balanceUSD: true
             }
           }
         }
@@ -840,6 +1041,20 @@ export default class BeethovenxService {
       pricePerToken: parseFloat(token.pricePerToken),
       totalValue: parseFloat(token.totalValue)
     };
+  }
+
+  private formatPoolTokens(pool: GqlBalancerPool): GqlBalancerPoolToken[] {
+    const tokens = pool.tokens.map(token => ({
+      ...token,
+      address: getAddress(token.address)
+    }));
+
+    if (pool.poolType === 'Stable' || pool.poolType === 'StablePhanotm')
+      return tokens;
+
+    return tokens.sort(
+      (a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0')
+    );
   }
 }
 

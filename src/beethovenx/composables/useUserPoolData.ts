@@ -1,57 +1,21 @@
-import { computed } from 'vue';
-import useUserPoolDataQuery from '@/beethovenx/composables/queries/useUserPoolDataQuery';
-import usePoolList from '@/beethovenx/composables/usePoolList';
-import {
-  GqlBeetsUserPoolData,
-  GqlBeetsUserPoolPoolData,
-  UserPoolListItem
-} from '@/beethovenx/services/beethovenx/beethovenx-types';
+import { computed, Ref } from 'vue';
+import { GqlBeetsUserPoolPoolData } from '@/beethovenx/services/beethovenx/beethovenx-types';
+import useUserPoolsData from '@/beethovenx/composables/useUserPoolsData';
 
-export default function useUserPoolData() {
-  const userPoolDataQuery = useUserPoolDataQuery();
-  const { poolList, poolListLoading } = usePoolList();
+export default function useUserPoolData(poolId: Ref<string>) {
+  const { userPoolsData, userPoolDataLoading } = useUserPoolsData();
 
-  const userPoolDataLoading = computed(
-    () =>
-      userPoolDataQuery.isLoading.value ||
-      userPoolDataQuery.isIdle.value ||
-      poolListLoading.value
-  );
+  const isLoadingUserPoolData = computed(() => userPoolDataLoading.value);
 
-  const userPoolData = computed<GqlBeetsUserPoolData>(
-    () =>
-      userPoolDataQuery.data.value ?? {
-        totalBalanceUSD: '0',
-        totalFarmBalanceUSD: '0',
-        averageFarmApr: '0',
-        averageApr: '0',
-        pools: []
-      }
-  );
-
-  const userPools = computed<GqlBeetsUserPoolPoolData[]>(
-    () => userPoolData.value.pools
-  );
-
-  const userPoolList = computed<UserPoolListItem[]>(() => {
-    const userPoolIds = userPools.value.map(item => item.poolId);
-
-    return poolList.value
-      .filter(pool => userPoolIds.includes(pool.id))
-      .map(pool => {
-        const data = userPools.value.find(item => item.poolId === pool.id);
-
-        return {
-          ...pool,
-          userBalance: data?.balanceUSD || '0',
-          hasUnstakedBpt: data?.hasUnstakedBpt
-        };
-      });
+  const userPoolData = computed<GqlBeetsUserPoolPoolData | null>(() => {
+    return (
+      userPoolsData.value.pools.find(pool => pool.poolId === poolId.value) ||
+      null
+    );
   });
 
   return {
-    userPoolDataLoading,
-    userPoolList,
+    isLoadingUserPoolData,
     userPoolData
   };
 }

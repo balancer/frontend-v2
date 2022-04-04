@@ -115,9 +115,6 @@ export function decorateFarm(
     parseFloat(farm.slpBalance) > 0
       ? new BigNumber(farmUser?.amount || 0).div(farm.slpBalance).toNumber()
       : 0;
-  const rewardTokenPerSecond = parseFloat(
-    pool.farm?.rewarder?.tokens[0]?.rewardPerSecond || '0'
-  );
 
   return {
     ...farm,
@@ -128,11 +125,8 @@ export function decorateFarm(
     pendingBeets: farmUser?.pendingBeets || 0,
     pendingBeetsValue: (farmUser?.pendingBeets || 0) * beetsPrice,
     share: userShare,
-    pendingRewardToken: farmUser?.pendingRewardToken || 0,
-    pendingRewardTokenValue: farmUser?.pendingRewardTokenValue || 0,
-    userBpt: new BigNumber(farmUser?.amount || 0).div(1e18).toNumber(),
-    rewardTokenPerDay: rewardTokenPerSecond * 86400,
-    rewardTokenSymbol: pool.farm?.rewarder?.tokens[0]?.symbol || null
+    pendingRewardTokens: farmUser?.pendingRewardTokens || [],
+    userBpt: new BigNumber(farmUser?.amount || 0).div(1e18).toNumber()
   };
 }
 

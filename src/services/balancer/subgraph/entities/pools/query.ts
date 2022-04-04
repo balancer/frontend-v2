@@ -20,6 +20,7 @@ const defaultAttrs = {
   swapFee: true,
   tokensList: true,
   mainTokens: true,
+  farmTotalLiquidity: true,
   totalLiquidity: true,
   totalSwapVolume: true,
   totalSwapFee: true,
@@ -50,6 +51,15 @@ const defaultAttrs = {
         token: true,
         tokenPrice: true
       }
+    },
+    rewardTokens: {
+      decimals: true,
+      address: true,
+      rewardPerDay: true,
+      rewardPerSecond: true,
+      tokenPrice: true,
+      isBeets: true,
+      symbol: true
     }
   },
   volume24h: true,

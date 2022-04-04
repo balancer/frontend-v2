@@ -12,7 +12,7 @@ import InvestFeaturedPoolsCard from '@/beethovenx/components/pages/invest/Invest
 import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
 import TokenSearchInput from '@/beethovenx/components/pages/invest/TokenSearchInput.vue';
 import usePoolList from '@/beethovenx/composables/usePoolList';
-import useUserPoolData from '@/beethovenx/composables/useUserPoolData';
+import useUserPoolsData from '@/beethovenx/composables/useUserPoolsData';
 
 const tabs = [
   { value: 'beethovenx-pools', label: 'Incentivized Pools' },
@@ -42,7 +42,7 @@ const {
   poolListQuery
 } = usePoolList(activeFilters, selectedTokens);
 
-const { userPoolList, userPoolDataLoading } = useUserPoolData();
+const { userPoolList, userPoolDataLoading } = useUserPoolsData();
 
 const hasUnstakedBpt = computed(
   () => userPoolList.value.filter(item => item.hasUnstakedBpt).length > 0

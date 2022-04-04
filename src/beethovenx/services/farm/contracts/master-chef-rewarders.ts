@@ -5,7 +5,15 @@ import { default as TimeBasedRewarder } from '@/beethovenx/abi/TimeBasedRewarder
 import { getAddress, isAddress } from '@ethersproject/address';
 import { scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
-import { mapValues } from 'lodash';
+import { mapValues, uniqBy } from 'lodash';
+import { GqlBeetsFarm } from '@/beethovenx/services/beethovenx/beethovenx-types';
+
+export interface MasterChefRewarderPendingToken {
+  address: string;
+  balance: string;
+  balanceUSD: string;
+  symbol: string;
+}
 
 export default class MasterChefRewarders {
   service: Service;
@@ -17,8 +25,15 @@ export default class MasterChefRewarders {
   public async getPendingRewards(
     farmIds: string[],
     rewarders: string[],
-    user: string
-  ): Promise<{ [id: string]: number }> {
+    user: string,
+    farms: GqlBeetsFarm[]
+  ): Promise<{
+    [farmId: string]: MasterChefRewarderPendingToken[];
+  }> {
+    const rewardTokens = uniqBy(
+      farms.map(farm => farm.rewardTokens).flat(),
+      token => token.address
+    );
     let result = {} as Record<any, any>;
 
     if (!isAddress(user)) {
@@ -39,6 +54,13 @@ export default class MasterChefRewarders {
           'pendingToken',
           [id, getAddress(user)]
         );
+
+        rewarderMulticaller.call(
+          `${id}.${rewarder}.pendingTokens`,
+          rewarder,
+          'pendingTokens',
+          [id, getAddress(user), 0]
+        );
       }
     }
 
@@ -49,19 +71,39 @@ export default class MasterChefRewarders {
       for (const _item of Object.values(farm)) {
         const item = _item as any;
 
-        const pendingToken = item.pendingToken
-          ? scale(
-              new BigNumber(item.pendingToken.toString()),
-              farmId === '66' ? -6 : -18
-            ).toNumber()
-          : 0;
+        const rewards: MasterChefRewarderPendingToken[] = [];
 
-        if (pendingToken > 0) {
-          return pendingToken;
+        item.pendingTokens.rewardTokens.forEach(
+          (address: string, idx: number) => {
+            const rewardToken = rewardTokens.find(
+              rewardToken =>
+                rewardToken.address.toLowerCase() === address.toLowerCase()
+            );
+            const rewardAmount = item.pendingTokens.rewardAmounts[idx];
+
+            if (rewardAmount && rewardAmount.toString() !== '0') {
+              const balance = scale(
+                new BigNumber(rewardAmount.toString()),
+                farmId === '66' ? -6 : -18
+              ).toString();
+
+              rewards.push({
+                address: getAddress(address),
+                symbol: rewardToken?.symbol || '',
+                balance,
+                balanceUSD: `${parseFloat(balance) *
+                  parseFloat(rewardToken?.tokenPrice || '0')}`
+              });
+            }
+          }
+        );
+
+        if (rewards.length > 0) {
+          return rewards;
         }
       }
 
-      return 0;
+      return [];
     });
 
     return mapped;

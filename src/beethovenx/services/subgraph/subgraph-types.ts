@@ -25,8 +25,12 @@ export interface FarmUser {
   rewardDebt: number;
   beetsHarvested: number;
   farmId: string;
-  pendingRewardToken: number;
-  pendingRewardTokenValue: number;
+  pendingRewardTokens: {
+    address: string;
+    symbol: string;
+    balance: string;
+    balanceUSD: string;
+  }[];
 }
 
 export interface DecoratedFarm extends Farm {
@@ -39,10 +43,12 @@ export interface DecoratedFarm extends Farm {
   share: number;
   userBpt: number;
 
-  rewardTokenSymbol: string | null;
-  rewardTokenPerDay: number;
-  pendingRewardToken: number;
-  pendingRewardTokenValue: number;
+  pendingRewardTokens: {
+    address: string;
+    symbol: string;
+    balance: string;
+    balanceUSD: string;
+  }[];
 }
 
 export interface DecoratedPoolWithFarm extends Pool {

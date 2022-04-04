@@ -10,11 +10,14 @@ import { FarmUser } from '@/beethovenx/services/subgraph/subgraph-types';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 import { uniq } from 'lodash';
+import useNetwork from '@/composables/useNetwork';
+import useConfig from '@/composables/useConfig';
 
 export default function useAllFarmsForUserQuery(
   options: QueryObserverOptions<FarmUser[]> = {}
 ) {
   const { account, isWalletReady } = useWeb3();
+  const { networkConfig } = useConfig();
   const { appLoading } = useApp();
   const { dynamicDataLoading, loading } = useTokens();
   const protocolDataQuery = useProtocolDataQuery();
@@ -57,15 +60,12 @@ export default function useAllFarmsForUserQuery(
       const pendingRewardTokenForFarms = await masterChefContractsService.rewarders.getPendingRewards(
         farmIds,
         rewarders,
-        account.value
+        account.value,
+        farms
       );
 
       for (const userFarm of userFarms) {
-        const farm = farms.find(farm => farm.id === userFarm.farmId);
         const pendingBeets = pendingBeetsForFarms[userFarm.farmId] || 0;
-        const pendingRewardToken =
-          pendingRewardTokenForFarms[userFarm.farmId] || 0;
-        const rewardTokenPrice = farm?.rewarder?.tokens[0]?.tokenPrice || 0;
 
         decoratedUserFarms.push({
           ...userFarm,
@@ -74,8 +74,15 @@ export default function useAllFarmsForUserQuery(
           beetsHarvested: parseFloat(userFarm.beetsHarvested),
           pendingBeets,
           pendingBeetsValue: pendingBeets * beetsPrice.value,
-          pendingRewardToken,
-          pendingRewardTokenValue: pendingRewardToken * rewardTokenPrice
+          pendingRewardTokens: [
+            {
+              address: networkConfig.addresses.beets,
+              symbol: 'BEETS',
+              balance: `${pendingBeets}`,
+              balanceUSD: `${pendingBeets * beetsPrice.value}`
+            },
+            ...pendingRewardTokenForFarms[userFarm.farmId]
+          ]
         });
       }
 

@@ -234,6 +234,14 @@ export interface GqlBalancerPoolToken {
   __typename?: 'GqlBalancerPoolToken';
   address: Scalars['String'];
   balance: Scalars['BigDecimal'];
+  decimals: Scalars['Int'];
+  id: Scalars['ID'];
+  isBpt?: Scalars['Boolean'];
+  isPhantomBpt?: Scalars['Boolean'];
+  name: Scalars['String'];
+  priceRate: Scalars['BigDecimal'];
+  symbol: Scalars['String'];
+  weight?: Scalars['BigDecimal'];
 }
 
 export interface GqlBeetsFarm {
@@ -248,6 +256,18 @@ export interface GqlBeetsFarm {
   slpBalance: Scalars['BigInt'];
   timestamp: Scalars['BigInt'];
   userCount: Scalars['BigInt'];
+  rewardTokens: Array<GqlBeetsFarmRewardToken>;
+}
+
+export interface GqlBeetsFarmRewardToken {
+  __typename?: 'GqlBeetsFarmRewardToken';
+  address: Scalars['String'];
+  decimals: Scalars['Int'];
+  isBeets?: Scalars['Boolean'];
+  rewardPerDay: Scalars['BigDecimal'];
+  rewardPerSecond: Scalars['BigDecimal'];
+  symbol: Scalars['String'];
+  tokenPrice: Scalars['BigDecimal'];
 }
 
 export interface GqlBeetsFarmUser {
@@ -471,17 +491,25 @@ export interface GqlBeetsUserPoolTokenData {
   symbol: Scalars['String'];
 }
 
-export interface GqlBeetsUserPendingRewards {
-  __typename?: 'GqlBeetsUserPendingRewards';
-  farm: GqlBeetsUserPendingFarmRewards;
+export interface GqlBeetsUserPendingAllFarmRewards {
+  __typename?: 'GqlBeetsUserPendingAllFarmRewards';
+  farmIds: Array<Scalars['String']>;
+  farms: Array<GqlBeetsUserPendingFarmRewards>;
+  numFarms: Scalars['BigInt'];
+  tokens: Array<GqlBeetsUserPendingRewardsToken>;
+  totalBalanceUSD: Scalars['BigDecimal'];
 }
 
 export interface GqlBeetsUserPendingFarmRewards {
   __typename?: 'GqlBeetsUserPendingFarmRewards';
-  numFarms: Scalars['BigInt'];
+  balanceUSD: Scalars['BigDecimal'];
+  farmId: Scalars['String'];
   tokens: Array<GqlBeetsUserPendingRewardsToken>;
-  totalBalanceUSD: Scalars['BigDecimal'];
-  farmIds: string[];
+}
+
+export interface GqlBeetsUserPendingRewards {
+  __typename?: 'GqlBeetsUserPendingRewards';
+  farm: GqlBeetsUserPendingAllFarmRewards;
 }
 
 export interface GqlBeetsUserPendingRewardsToken {
@@ -490,4 +518,116 @@ export interface GqlBeetsUserPendingRewardsToken {
   balance: Scalars['BigDecimal'];
   balanceUSD: Scalars['BigDecimal'];
   symbol: Scalars['String'];
+}
+
+export interface GqlBalancerPoolComposition {
+  __typename?: 'GqlBalancerPoolComposition';
+  tokens: Array<GqlBalancerPoolCompositionToken>;
+}
+
+export interface GqlBalancerPoolCompositionToken {
+  __typename?: 'GqlBalancerPoolCompositionToken';
+  address: Scalars['String'];
+  balance: Scalars['BigDecimal'];
+  decimals: Scalars['Int'];
+  nestedTokens?: Array<GqlBalancerPoolCompositionToken>;
+  symbol: Scalars['String'];
+  valueUSD: Scalars['BigDecimal'];
+  weight?: Scalars['BigDecimal'];
+}
+
+export interface GqlBalancerPool {
+  __typename?: 'GqlBalancerPool';
+  address: Scalars['Bytes'];
+  tokenAddresses: string[];
+  amp?: Scalars['BigInt'];
+  apr: GqlBalancePoolApr;
+  baseToken?: Scalars['Bytes'];
+  composition: GqlBalancerPoolComposition;
+  createTime: Scalars['Int'];
+  expiryTime?: Scalars['BigInt'];
+  factory?: Scalars['Bytes'];
+  farm?: GqlBeetsFarm;
+  farmTotalLiquidity: Scalars['BigDecimal'];
+  fees24h: Scalars['BigDecimal'];
+  holdersCount: Scalars['BigInt'];
+  id: Scalars['ID'];
+  isNewPool?: Scalars['Boolean'];
+  linearPools?: Array<GqlBalancerPoolLinearPoolData>;
+  lowerTarget?: Scalars['String'];
+  mainIndex?: Scalars['Int'];
+  mainTokens?: Array<Scalars['String']>;
+  name?: Scalars['String'];
+  owner?: Scalars['Bytes'];
+  poolType?: Scalars['String'];
+  principalToken?: Scalars['Bytes'];
+  stablePhantomPools?: Array<GqlBalancerPoolStablePhantomPoolData>;
+  swapEnabled: Scalars['Boolean'];
+  swapFee: Scalars['BigDecimal'];
+  swapsCount: Scalars['BigInt'];
+  symbol: Scalars['String'];
+  tokenRates?: Array<Scalars['String']>;
+  tokens: Array<GqlBalancerPoolToken>;
+  tokensList: Array<Scalars['Bytes']>;
+  totalLiquidity: Scalars['BigDecimal'];
+  totalShares: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+  totalWeight?: Scalars['BigDecimal'];
+  unitSeconds?: Scalars['BigInt'];
+  upperTarget?: Scalars['String'];
+  volume24h: Scalars['BigDecimal'];
+  wrappedIndex?: Scalars['Int'];
+}
+
+export interface GqlBalancerPoolWithRequiredFarm extends GqlBalancerPool {
+  farm: GqlBeetsFarm;
+}
+
+export interface GqlBalancerPoolLinearPoolData {
+  __typename?: 'GqlBalancerPoolLinearPoolData';
+  address: Scalars['String'];
+  balance: Scalars['String'];
+  id: Scalars['ID'];
+  mainToken: GqlBalancerPoolLinearPoolMainToken;
+  mainTokenTotalBalance: Scalars['String'];
+  poolToken: Scalars['String'];
+  priceRate: Scalars['String'];
+  symbol: Scalars['String'];
+  totalSupply: Scalars['String'];
+  unwrappedTokenAddress: Scalars['String'];
+  wrappedToken: GqlBalancerPoolLinearPoolWrappedToken;
+}
+
+export interface GqlBalancerPoolLinearPoolMainToken {
+  __typename?: 'GqlBalancerPoolLinearPoolMainToken';
+  address: Scalars['String'];
+  balance: Scalars['String'];
+  decimals: Scalars['Int'];
+  index: Scalars['Int'];
+  name: Scalars['String'];
+  symbol: Scalars['String'];
+  totalSupply: Scalars['String'];
+}
+
+export interface GqlBalancerPoolLinearPoolWrappedToken {
+  __typename?: 'GqlBalancerPoolLinearPoolWrappedToken';
+  address: Scalars['String'];
+  balance: Scalars['String'];
+  decimals: Scalars['Int'];
+  index: Scalars['Int'];
+  name: Scalars['String'];
+  priceRate: Scalars['String'];
+  symbol: Scalars['String'];
+  totalSupply: Scalars['String'];
+}
+
+export interface GqlBalancerPoolStablePhantomPoolData {
+  __typename?: 'GqlBalancerPoolStablePhantomPoolData';
+  address: Scalars['String'];
+  balance: Scalars['String'];
+  id: Scalars['ID'];
+  symbol: Scalars['String'];
+  tokens: Array<GqlBalancerPoolToken>;
+  totalSupply: Scalars['String'];
 }
