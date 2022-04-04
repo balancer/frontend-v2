@@ -540,5 +540,4 @@ export default defineComponent({
     @apply sticky top-24;
   }
 }
-
 </style>
