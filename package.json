@@ -15,7 +15,8 @@
     "lint:fix": "vue-cli-service lint",
     "prepare": "node ./prepare.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
-    "tailwind:view": "tailwind-config-viewer -o"
+    "tailwind:view": "tailwind-config-viewer -o",
+    "script": "ts-node"
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
