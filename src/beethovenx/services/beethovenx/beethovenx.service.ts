@@ -1,13 +1,14 @@
 import { configService as _configService } from '@/services/config/config.service';
 import axios from 'axios';
 import {
-  CreateLgeTypes,
   GqlBalancerPoolActivity,
   GqlBalancerPoolSnapshot,
   GqlBeetsConfig,
   GqlBeetsFarm,
   GqlBeetsFarmUser,
   GqlBeetsProtocolData,
+  GqlBeetsUserPendingRewards,
+  GqlBeetsUserPoolData,
   GqlHistoricalTokenPrice,
   GqlLge,
   GqlLgeCreateInput,
@@ -16,6 +17,7 @@ import {
   GqlTokenPrice,
   GqlUserPortfolioData,
   GqlUserTokenData,
+  PoolListItem,
   UserPortfolio,
   UserPortfolioData,
   UserTokenData
@@ -55,6 +57,22 @@ export default class BeethovenxService {
   constructor(private readonly configService = _configService) {
     this.url =
       configService.env.BACKEND_URL || configService.network.backendUrl;
+  }
+
+  public async getUserPortfolioValue(address: string): Promise<string> {
+    const query = `
+      query {
+        portfolioGetUserPortfolio {
+          totalValue
+        }
+      }
+    `;
+
+    const response = await this.get<{
+      portfolioGetUserPortfolio: { totalValue: string };
+    }>(query, address);
+
+    return response.portfolioGetUserPortfolio.totalValue;
   }
 
   public async getUserPortfolio(address: string): Promise<UserPortfolio> {
@@ -530,6 +548,129 @@ export default class BeethovenxService {
     this.farmUsers = beetsGetUserDataForAllFarms;
 
     return beetsGetUserDataForAllFarms;
+  }
+
+  public async getPoolList(): Promise<PoolListItem[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        pools: {
+          id: true,
+          name: true,
+          address: true,
+          poolType: true,
+          swapFee: true,
+          owner: true,
+          factory: true,
+          amp: true,
+          tokensList: true,
+          totalLiquidity: true,
+          mainTokens: true,
+          isNewPool: true,
+          volume24h: true,
+          fees24h: true,
+          tokens: {
+            name: true,
+            symbol: true,
+            decimals: true,
+            address: true,
+            balance: true,
+            weight: true,
+            priceRate: true,
+            isBpt: true,
+            isPhantomBpt: true
+          },
+          apr: {
+            total: true,
+            hasRewardApr: true,
+            swapApr: true,
+            beetsApr: true,
+            thirdPartyApr: true,
+            items: {
+              title: true,
+              apr: true,
+              subItems: {
+                title: true,
+                apr: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const { pools } = await this.get<{
+      pools: PoolListItem[];
+    }>(query);
+
+    return pools;
+  }
+
+  public async getUserPoolData(
+    userAddress: string
+  ): Promise<GqlBeetsUserPoolData> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetUserPoolData: {
+          averageApr: true,
+          averageFarmApr: true,
+          totalBalanceUSD: true,
+          totalFarmBalanceUSD: true,
+          pools: {
+            poolId: true,
+            balanceUSD: true,
+            balance: true,
+            balanceScaled: true,
+            hasUnstakedBpt: true,
+            tokens: {
+              symbol: true,
+              address: true,
+              balanceUSD: true,
+              balance: true
+            },
+            mainTokens: {
+              symbol: true,
+              address: true,
+              balanceUSD: true,
+              balance: true
+            }
+          }
+        }
+      }
+    });
+
+    const { beetsGetUserPoolData } = await this.get<{
+      beetsGetUserPoolData: GqlBeetsUserPoolData;
+    }>(query, userAddress);
+
+    return beetsGetUserPoolData;
+  }
+
+  public async getUserPendingRewards(
+    userAddress: string
+  ): Promise<GqlBeetsUserPendingRewards> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetUserPendingRewards: {
+          farm: {
+            totalBalanceUSD: true,
+            numFarms: true,
+            farmIds: true,
+            tokens: {
+              symbol: true,
+              address: true,
+              balanceUSD: true,
+              balance: true
+            }
+          }
+        }
+      }
+    });
+
+    const { beetsGetUserPendingRewards } = await this.get<{
+      beetsGetUserPendingRewards: GqlBeetsUserPendingRewards;
+    }>(query, userAddress);
+
+    return beetsGetUserPendingRewards;
   }
 
   public async sorGetSwaps(input: GqlSorGetSwapsInput): Promise<SwapInfo> {

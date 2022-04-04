@@ -53,11 +53,11 @@
         />
       </div>
     </div>
-    <template v-if="isWalletReady && userPools && userPools.length > 0">
+    <template v-if="isWalletReady && userPoolList.length > 0">
       <h4 class="mb-4">My Investment Pools</h4>
       <PoolsTable
-        :isLoading="isLoadingUserPools"
-        :data="userPools"
+        :isLoading="userPoolDataLoading"
+        :data="userPoolList"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
         class="mb-8"
@@ -84,6 +84,7 @@ import { orderBy, sum } from 'lodash';
 import useNumbers from '@/composables/useNumbers';
 import PortfolioPoolsStatCards from '@/beethovenx/components/pages/portfolio/PortfolioPoolsStatCards.vue';
 import usePortfolio from '@/beethovenx/composables/usePortfolio';
+import useUserPoolData from '@/beethovenx/composables/useUserPoolData';
 
 export default defineComponent({
   components: {
@@ -103,15 +104,14 @@ export default defineComponent({
 
     const {
       onlyPoolsWithFarms,
-      userPools,
       isLoadingPools,
-      isLoadingUserPools,
       isLoadingFarms,
       loadMorePools,
       poolsHasNextPage,
       poolsIsFetchingNextPage
     } = usePools();
     const { portfolio, portfolioHistory, isLoadingPortfolio } = usePortfolio();
+    const { userPoolList, userPoolDataLoading } = useUserPoolData();
 
     const { fNum } = useNumbers();
 
@@ -148,9 +148,7 @@ export default defineComponent({
     return {
       // data
       poolsWithUserInFarm,
-      userPools,
       isLoadingPools,
-      isLoadingUserPools,
       isLoadingFarms,
 
       // computed
@@ -171,6 +169,8 @@ export default defineComponent({
       volume,
       fNum,
       avgFees,
+      userPoolList,
+      userPoolDataLoading,
 
       // constants
       EXTERNAL_LINKS

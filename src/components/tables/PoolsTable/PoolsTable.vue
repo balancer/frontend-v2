@@ -38,7 +38,7 @@
       </template>
       <template v-slot:iconColumnCell="pool">
         <div
-          v-if="pool.farm && parseFloat(pool.shares) > 0"
+          v-if="pool.hasUnstakedBpt"
           class="rounded-br-xl h-4 w-4 flex bg-yellow-500 absolute top-0 left-0 bg-opacity-80"
         />
         <div v-if="!isLoading" class="px-6 py-4">
@@ -189,16 +189,11 @@ export default defineComponent({
       {
         name: t('myBalance'),
         accessor: pool =>
-          fNum(
-            parseFloat(pool.shares || '0') + (pool.decoratedFarm?.stake || 0),
-            'usd',
-            { forcePreset: true }
-          ),
+          fNum(pool.userBalance ?? '0', 'usd', { forcePreset: true }),
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
-        sortKey: pool =>
-          Number(pool.shares || 0) + (pool.decoratedFarm?.stake || 0),
+        sortKey: pool => Number(pool.userBalance || 0),
         width: 150
       },
       {

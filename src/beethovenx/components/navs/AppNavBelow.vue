@@ -3,14 +3,13 @@ import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDa
 import { computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
-import usePortfolio from '@/beethovenx/composables/usePortfolio';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import useUserPoolData from '@/beethovenx/composables/useUserPoolData';
 
 const { fNum } = useNumbers();
 const { account } = useWeb3();
 const protocolDataQuery = useProtocolDataQuery();
-
-const { portfolio, isLoadingPortfolio } = usePortfolio();
+const { userPoolData, userPoolDataLoading } = useUserPoolData();
 
 const procotolDataLoading = computed(() => protocolDataQuery.isLoading.value);
 
@@ -63,9 +62,9 @@ const swapVolume24h = computed(
         ><BalBtn size="sm" color="blue">
           <BalIcon name="bar-chart-2" class="mr-2" />
           My Portfolio:&nbsp;<span>
-            <BalLoadingBlock class="w-16 h-4" v-if="isLoadingPortfolio" />
+            <BalLoadingBlock class="w-16 h-4" v-if="userPoolDataLoading" />
             <template v-else>
-              {{ fNum(portfolio.totalValue, 'usd') }}
+              {{ fNum(userPoolData.totalBalanceUSD, 'usd') }}
             </template>
           </span>
         </BalBtn>

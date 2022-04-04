@@ -1,38 +1,18 @@
 <script setup lang="ts">
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
-import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
-import usePools from '@/composables/pools/usePools';
 import { computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
-//import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { Pool } from '@/services/balancer/subgraph/types';
 import { useRouter } from 'vue-router';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import usePoolList from '@/beethovenx/composables/usePoolList';
 
 const { fNum } = useNumbers();
-const { beethovenxConfig, beethovenxConfigLoading } = useBeethovenxConfig();
-const { poolsWithFarms, isLoadingPools, isLoadingFarms } = usePools();
+const { homeFeaturedPools, poolListLoading } = usePoolList();
 const router = useRouter();
-const featuredPools = computed(() => {
-  const mapped = beethovenxConfig.value.homeFeaturedPools
-    .filter(data => poolsWithFarms.value.find(pool => pool.id === data.poolId))
-    .map(data => {
-      return {
-        data,
-        pool: poolsWithFarms.value.find(pool => pool.id === data.poolId)
-      };
-    });
-
-  return mapped.slice(0, 4);
-});
-
-const isLoading = computed(
-  () =>
-    beethovenxConfigLoading.value ||
-    isLoadingPools.value ||
-    isLoadingFarms.value
-);
+const isLoading = computed(() => poolListLoading.value);
 
 function handleRowClick(pool: Pool) {
   router.push({ name: 'pool', params: { id: pool.id } });
@@ -45,7 +25,7 @@ function handleRowClick(pool: Pool) {
     v-if="!isLoading"
   >
     <router-link
-      v-for="featuredPool in featuredPools"
+      v-for="featuredPool in homeFeaturedPools"
       :key="featuredPool.data.poolId"
       :to="{ name: 'pool', params: { id: featuredPool.data.poolId } }"
       class="block flex"
@@ -70,7 +50,7 @@ function handleRowClick(pool: Pool) {
             />
             <div class="text-xl font-medium truncate flex items-center mt-4">
               {{ fNum(featuredPool.pool.apr.total, 'percent') }} APR
-              <!--              <LiquidityMiningTooltip :pool="featuredPool.pool" />-->
+              <LiquidityAPRTooltip :pool="featuredPool.pool" />
             </div>
             <div class="text-sm text-gray-500">
               {{ fNum(featuredPool.pool.apr.total / 365, 'percent') }}
