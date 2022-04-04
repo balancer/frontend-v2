@@ -541,6 +541,4 @@ export default defineComponent({
   }
 }
 
-.insights-logo {
-}
 </style>
