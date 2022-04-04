@@ -106,23 +106,29 @@
             <div
               v-if="!loadingPool"
               class="mt-6 w-fit h-fit flex items-center group"
-            >              
+            >
               <BalLink
-                  :href="
-                    'https://app.apy.vision/pools/balancerv2_' +
-                      networkName +
-                      '-' +
-                      turnTokensIntoString(titleTokens) +
-                      '-' +
-                      getAddressFromPoolId(id)
-                  "
+                :href="
+                  'https://app.apy.vision/pools/balancerv2_' +
+                    networkName +
+                    '-' +
+                    turnTokensIntoString(titleTokens) +
+                    '-' +
+                    getAddressFromPoolId(id)
+                "
                 external
                 noStyle
                 class="flex items-center font-medium link link-black"
-              >                
-              <img width="32" height="32" class="mr-2 rounded-full group-hover:shadow-lg transition" src="@/assets/images/icons/apy-vision.svg" alt="">              
-              {{ $t('apyvisionPoolInsights') }}
-              <BalIcon
+              >
+                <img
+                  width="32"
+                  height="32"
+                  class="mr-2 rounded-full group-hover:shadow-lg transition"
+                  src="@/assets/images/icons/apy-vision.svg"
+                  alt=""
+                />
+                {{ $t('apyvisionPoolInsights') }}
+                <BalIcon
                   name="arrow-up-right"
                   size="sm"
                   class="ml-0.5 text-gray-500 hover:text-blue-400 transition-colors group-hover:text-blue-500"
@@ -536,7 +542,5 @@ export default defineComponent({
 }
 
 .insights-logo {
-
 }
-
 </style>
