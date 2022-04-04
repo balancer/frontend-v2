@@ -124,7 +124,7 @@ export default defineComponent({
 }
 
 .card-container {
-  @apply flex flex-col;
+  @apply flex flex-col max-h-screen;
 }
 .card-container::-webkit-scrollbar {
   width: 0;
