@@ -48,6 +48,10 @@ export default function useRelayerApprovalQuery(
   );
 
   const queryFn = async (): Promise<boolean> => {
+    if (!relayer.value) {
+      return true;
+    }
+
     const approved = await vaultContract.value.hasApprovedRelayer(
       account.value,
       relayer.value
