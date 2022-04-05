@@ -36,7 +36,7 @@
           </BalBtn>
           <BalBtn
             tag="a"
-            href="https://docs.beethovenx.io/"
+            href="https://docs.beets.fi/"
             target="_blank"
             rel="noreferrer"
             color="white"

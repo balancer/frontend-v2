@@ -22,7 +22,7 @@ const hidden = ref(false);
     <div class="flex items-end mt-4">
       <div class="flex-1">
         <a
-          href="https://docs.beethovenx.io/balancer-v2-1/lbps-for-token-launches"
+          href="https://docs.beets.fi/balancer-v2-1/lbps-for-token-launches"
           target="_blank"
           class="text-green-500"
         >

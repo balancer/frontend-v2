@@ -122,7 +122,7 @@ const tokensLoaded = computed(() => {
         $20,600 (2%) with Beethoven X from total funds raised at auction end.
       </p>
       <a
-        href="https://docs.beethovenx.io/balancer-v2-1/lbps-for-token-launches"
+        href="https://docs.beets.fi/balancer-v2-1/lbps-for-token-launches"
         target="_blank"
         class="text-green-500"
       >

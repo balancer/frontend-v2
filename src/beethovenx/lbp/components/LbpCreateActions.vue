@@ -138,7 +138,7 @@ function goToLge() {
         the auction page once you’ve created the auction.
       </p>
       <a
-        href="https://docs.beethovenx.io/balancer-v2-1/lbps-for-token-launches"
+        href="https://docs.beets.fi/balancer-v2-1/lbps-for-token-launches"
         target="_blank"
         class="text-green-500"
       >
@@ -239,7 +239,7 @@ function goToLge() {
   <div v-if="lgeSaved" class="mt-8">
     <div class="mb-2">
       <a
-        href="https://docs.beethovenx.io/developers/pool-verification"
+        href="https://docs.beets.fi/developers/pool-verification"
         target="_blank"
         class="text-green-500"
       >
@@ -248,7 +248,7 @@ function goToLge() {
     </div>
     <div>
       <a
-        href="https://docs.beethovenx.io/developers/pool-verification"
+        href="https://docs.beets.fi/developers/pool-verification"
         target="_blank"
         class="text-green-500"
       >
