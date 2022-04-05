@@ -75,13 +75,13 @@ function navigateToGetVeBAL() {
           </BalBtn>
         </div>
       </div>
-      <div class="py-8 px-4 lg:pl-8">
-        <div class="coins flex">
+      <div class="py-8 px-4 lg:pl-8 w-full">
+        <div class="coins flex justify-between content-between">
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="320"
-              height="366"
+              width="283"
+              height="323"
               :src="require('@/assets/images/coins/coins-1.png')"
               alt=""
             />
@@ -95,8 +95,8 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="320"
-              height="366"
+              width="283"
+              height="323"
               :src="require('@/assets/images/coins/coins-2.png')"
               alt=""
             />
@@ -110,8 +110,8 @@ function navigateToGetVeBAL() {
           <div class="coin group">
             <BalImage
               class="graphic"
-              width="320"
-              height="366"
+              width="283"
+              height="323"
               :src="require('@/assets/images/coins/coins-3.png')"
               alt=""
             />
@@ -136,7 +136,11 @@ function navigateToGetVeBAL() {
 }
 .hero-content {
   @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto;
-  min-height: 400px;
+  min-height: 430px;
+}
+.hero-text {
+  opacity: 0;
+  animation: fadeIn 1s ease-out 0.1s both;
 }
 .title {
   max-width: 820px;
@@ -144,16 +148,15 @@ function navigateToGetVeBAL() {
 .hero-btn {
   min-width: 140px;
 }
-.coin:hover img {
+.coin:hover .graphic {
   transform: translateY(-8px);
 }
 .graphic {
-  @apply mb-4 lg:px-8;
-  transition: 0.3s all ease-out;
-  max-height: 420px;
+  @apply mb-4 lg:px-8 transition-transform duration-300;
 }
 .caption {
   @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
+  animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
 
 @media (min-width: 768px) {
