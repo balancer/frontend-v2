@@ -37,7 +37,7 @@ export const EXTERNAL_LINKS = {
       },
       {
         title: 'Docs & Help',
-        url: 'https://docs.beethovenx.io',
+        url: 'https://docs.beets.fi',
         icon: 'gitbook-logo'
       },
       {
