@@ -380,6 +380,7 @@
     "max": "Max",
     "maxed": "Maxed",
     "maximum": "Maximum",
+    "minimumTotalApr": "Minimum total APR",
     "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
     "missingPoolNameOrSymbol": "Missing pool name or symbol",
     "missingTokenPrices": "Missing token prices",
@@ -571,6 +572,7 @@
     "stake": "Stake",
     "staked": "Staked",
     "staking": {
+        "minimumStakingApr": "Minimum staking APR",
         "newTotalShare": "Your total share",
         "stakedPools": "Staked pools",
         "stakedLpTokensTooltip": "The fiat value of LP tokens you have staked in this pool.",

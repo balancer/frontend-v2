@@ -72,6 +72,10 @@ export interface DecoratedPool extends Pool {
       liquidityMining: string;
       liquidityMiningBreakdown: { [address: string]: string };
       total: string;
+      staking?: {
+        min: string;
+        max: string;
+      };
     };
     fees: string;
     isNewPool: boolean;

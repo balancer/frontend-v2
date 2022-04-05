@@ -41,6 +41,8 @@ import {
   ExcludedAddresses,
   removeAddressesFromTotalLiquidity
 } from './helpers';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -75,7 +77,8 @@ export default class Pools {
     pools: Pool[],
     period: TimeTravelPeriod,
     prices: TokenPrices,
-    currency: FiatCurrency
+    currency: FiatCurrency,
+    gauges: SubgraphGauge[]
   ): Promise<DecoratedPool[]> {
     // Get past state of pools
     const blockNumber = await this.timeTravelBlock(period);
@@ -97,7 +100,7 @@ export default class Pools {
       this.excludedAddresses = await this.getExcludedAddresses();
     }
 
-    return this.serialize(pools, pastPools, period, prices, currency);
+    return this.serialize(pools, pastPools, period, prices, currency, gauges);
   }
 
   public removeExcludedAddressesFromTotalLiquidity(
@@ -116,10 +119,15 @@ export default class Pools {
     pastPools: Pool[],
     period: TimeTravelPeriod,
     prices: TokenPrices,
-    currency: FiatCurrency
+    currency: FiatCurrency,
+    gauges: SubgraphGauge[]
   ): Promise<DecoratedPool[]> {
     const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
-
+    const gaugeAprs = await stakingRewardsService.getGaugeAprForPools({
+      prices,
+      gauges,
+      pools
+    });
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
 
@@ -151,6 +159,9 @@ export default class Pools {
         currency,
         protocolFeePercentage
       );
+
+      const stakingApr = gaugeAprs[pool.id];
+
       const totalAPR = this.calcTotalAPR(
         poolAPR,
         liquidityMiningAPR,
@@ -174,6 +185,7 @@ export default class Pools {
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
             liquidityMining: liquidityMiningAPR,
             liquidityMiningBreakdown,
+            staking: stakingApr,
             total: totalAPR
           },
           isNewPool

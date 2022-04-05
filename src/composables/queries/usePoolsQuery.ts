@@ -19,6 +19,7 @@ import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { isStablePhantom, lpTokensFor } from '../usePool';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import useGaugesQuery from './useGaugesQuery';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -44,13 +45,19 @@ export default function usePoolsQuery(
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
+  const { data: subgraphGauges } = useGaugesQuery();
+
+  const gaugeAddresses = computed(() =>
+    (subgraphGauges.value || []).map(gauge => gauge.id)
+  );
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     tokenList,
     filterOptions?.poolIds,
-    filterOptions?.poolAddresses
+    filterOptions?.poolAddresses,
+    gaugeAddresses
   );
 
   // COMPUTED
@@ -158,7 +165,8 @@ export default function usePoolsQuery(
       pools,
       '24h',
       prices.value,
-      currency.value
+      currency.value,
+      subgraphGauges.value || []
     );
 
     // TODO - cleanup and extract elsewhere in refactor

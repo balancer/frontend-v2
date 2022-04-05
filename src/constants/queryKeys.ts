@@ -13,14 +13,23 @@ const QUERY_KEYS = {
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
       poolIds: Ref<string[]> | undefined,
-      poolAddresses: Ref<string[]> | undefined
-    ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds, poolAddresses }],
-    User: (networkId: Ref<Network>, account: Ref<string>) => [
+      poolAddresses: Ref<string[]> | undefined,
+      gaugeAddresses: Ref<string[]>
+    ) => [
       POOLS_ROOT_KEY,
-      'user',
-      { networkId, account }
+      'all',
+      { networkId, tokens, poolIds, poolAddresses, gaugeAddresses }
     ],
-    Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
+    User: (
+      networkId: Ref<Network>,
+      account: Ref<string>,
+      gaugeAddresses: Ref<string[]>
+    ) => [POOLS_ROOT_KEY, 'user', { networkId, account, gaugeAddresses }],
+    Current: (id: string, gaugeAddresses: Ref<string[]>) => [
+      POOLS_ROOT_KEY,
+      'current',
+      { id, gaugeAddresses }
+    ],
     Snapshot: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'snapshot',

@@ -20,6 +20,7 @@ import useNetwork from '../useNetwork';
 import { isStablePhantom, lpTokensFor } from '../usePool';
 import { getAddress } from '@ethersproject/address';
 import { POOLS } from '@/constants/pools';
+import useGaugesQuery from './useGaugesQuery';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -38,7 +39,11 @@ export default function useUserPoolsQuery(
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
   const { networkId } = useNetwork();
+  const { data: subgraphGauges } = useGaugesQuery();
 
+  const gaugeAddresses = computed(() =>
+    (subgraphGauges.value || []).map(gauge => gauge.id)
+  );
   /**
    * COMPUTED
    */
@@ -108,7 +113,9 @@ export default function useUserPoolsQuery(
   /**
    * QUERY PROPERTIES
    */
-  const queryKey = reactive(QUERY_KEYS.Pools.User(networkId, account));
+  const queryKey = reactive(
+    QUERY_KEYS.Pools.User(networkId, account, gaugeAddresses)
+  );
 
   const queryFn = async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({
@@ -152,7 +159,8 @@ export default function useUserPoolsQuery(
       pools,
       '24h',
       prices.value,
-      currency.value
+      currency.value,
+      subgraphGauges.value || []
     );
 
     // TODO - cleanup and extract elsewhere in refactor

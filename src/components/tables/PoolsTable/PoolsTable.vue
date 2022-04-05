@@ -55,7 +55,7 @@ const emit = defineEmits(['loadMore', 'triggerStake']);
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
+const { fNum2, fNum } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
@@ -258,11 +258,21 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
-          {{
-            Number(pool.dynamic.apr.pool) > 10000
-              ? '-'
-              : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
-          }}
+          <span
+            v-if="Number(pool.dynamic.apr.staking?.min) > 0"
+            class="text-sm text-right"
+          >
+            {{ fNum(pool.dynamic.apr.staking.min, 'percent_lg') }}-{{
+              fNum(pool.dynamic.apr.staking.max, 'percent_lg')
+            }}
+          </span>
+          <span v-else>
+            {{
+              Number(pool.dynamic.apr.pool) > 10000
+                ? '-'
+                : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
+            }}
+          </span>
           <LiquidityAPRTooltip :pool="pool" />
         </div>
       </template>

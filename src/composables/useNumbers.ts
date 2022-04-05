@@ -20,6 +20,12 @@ export const FNumFormats: Record<string, FNumOptions> = {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   },
+  percent_rounded: {
+    style: 'percent',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: true
+  },
   token: {
     maximumFractionDigits: 4
   },
@@ -40,7 +46,7 @@ enum PresetFormats {
   usd_m = '$0,0.00a',
   percent = '0.00%',
   percent_variable = '0.[0000]%',
-  percent_lg = '0%'
+  percent_lg = '0,0%'
 }
 
 export type Preset = keyof typeof PresetFormats;
