@@ -2,8 +2,8 @@ import { TokenInfo } from '@/types/TokenList';
 import { computed } from 'vue';
 import { isArbitrum, isMainnet, isPolygon } from '../useNetwork';
 
-type TitleToken = [string, Partial<TokenInfo>];
-type TitleTokens = Array<TitleToken>;
+export type TitleToken = [string, Partial<TokenInfo>];
+export type TitleTokens = Array<TitleToken>;
 
 export function poolPathSymbolSegment(titleTokens: TitleTokens) {
   return titleTokens.map(titleToken => titleToken[1]?.symbol).join('-');

@@ -103,38 +103,11 @@
           </div>
           <div class="mb-4 px-1 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
-            <div
+            <ApyVisionPoolLink
               v-if="!loadingPool"
-              class="mt-6 w-fit h-fit flex items-center group"
-            >
-              <BalLink
-                :href="
-                  'https://app.apy.vision/pools/balancerv2_' +
-                    apyVisionNetworkName +
-                    '-' +
-                    poolPathSymbolSegment(titleTokens) +
-                    '-' +
-                    getAddressFromPoolId(id)
-                "
-                external
-                noStyle
-                class="flex items-center font-medium link link-black"
-              >
-                <img
-                  width="32"
-                  height="32"
-                  class="mr-2 rounded-full group-hover:shadow-lg transition"
-                  src="@/assets/images/icons/apy-vision.svg"
-                  alt=""
-                />
-                {{ $t('apyvisionPoolInsights') }}
-                <BalIcon
-                  name="arrow-up-right"
-                  size="sm"
-                  class="ml-0.5 text-gray-500 hover:text-blue-400 transition-colors group-hover:text-blue-500"
-                />
-              </BalLink>
-            </div>
+              :poolId="pool?.id"
+              :titleTokens="titleTokens"
+            />
           </div>
           <div class="mb-4">
             <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
@@ -245,7 +218,7 @@ import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCar
 import StakingProvider from '@/providers/local/staking.provider';
 import { getAddressFromPoolId } from '@/lib/utils';
 import { isL2 } from '@/composables/useNetwork';
-import { useApyVisionHelpers } from '@/composables/external/useApyVisionHelpers';
+import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 
 interface PoolPageData {
   id: string;
@@ -258,7 +231,8 @@ export default defineComponent({
     LiquidityAPRTooltip,
     StakingIncentivesCard,
     StakingProvider,
-    LMIncentivesCard
+    LMIncentivesCard,
+    ApyVisionPoolLink
   },
 
   setup() {
@@ -274,10 +248,6 @@ export default defineComponent({
     const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
     const { balancerTokenListTokens } = useTokens();
-    const {
-      poolPathSymbolSegment,
-      apyVisionNetworkName
-    } = useApyVisionHelpers();
 
     /**
      * QUERIES
@@ -503,9 +473,7 @@ export default defineComponent({
       // methods
       fNum2,
       onNewTx,
-      getAddressFromPoolId,
-      poolPathSymbolSegment,
-      apyVisionNetworkName
+      getAddressFromPoolId
     };
   }
 });
