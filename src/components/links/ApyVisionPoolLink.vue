@@ -9,7 +9,7 @@ import { getAddressFromPoolId } from '@/lib/utils';
  * TYPES
  */
 type Props = {
-  id: string;
+  poolId: string;
   titleTokens: TitleTokens;
 };
 
@@ -33,7 +33,7 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
           '-' +
           poolPathSymbolSegment(titleTokens) +
           '-' +
-          getAddressFromPoolId(id)
+          getAddressFromPoolId(poolId)
       "
       external
       noStyle
