@@ -75,52 +75,56 @@ function navigateToGetVeBAL() {
           </BalBtn>
         </div>
       </div>
-      <div class="py-8 px-4 lg:pl-8 w-full">
-        <div class="coins flex justify-between content-between">
-          <div class="coin group">
+      <div class="coins">
+        <div class="coin group">
+          <div class="coin-wrapper w-full">
             <BalImage
               class="graphic"
-              width="283"
-              height="323"
+              width="330"
+              height="377"
               :src="require('@/assets/images/coins/coins-1.png')"
-              alt=""
+              alt="BAL and WETH tokens"
             />
-            <div class="caption">
-              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
-              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-                {{ $t('veBAL.hero.tokenInfo.balWETH') }}
-              </BalTooltip>
-            </div>
           </div>
-          <div class="coin group">
+          <div class="caption">
+            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+              {{ $t('veBAL.hero.tokenInfo.balWETH') }}
+            </BalTooltip>
+          </div>
+        </div>
+        <div class="coin group">
+          <div class="coin-wrapper">
             <BalImage
               class="graphic"
-              width="283"
-              height="323"
+              width="330"
+              height="377"
               :src="require('@/assets/images/coins/coins-2.png')"
-              alt=""
+              alt="B-80BAL-20WETH LP token"
             />
-            <div class="caption">
-              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
-              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-                {{ $t('veBAL.hero.tokenInfo.lpToken') }}
-              </BalTooltip>
-            </div>
           </div>
-          <div class="coin group">
+          <div class="caption">
+            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+              {{ $t('veBAL.hero.tokenInfo.lpToken') }}
+            </BalTooltip>
+          </div>
+        </div>
+        <div class="coin group">
+          <div class="coin-wrapper">
             <BalImage
               class="graphic"
-              width="283"
-              height="323"
+              width="330"
+              height="377"
               :src="require('@/assets/images/coins/coins-3.png')"
-              alt=""
+              alt="veBAL token"
             />
-            <div class="caption">
-              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
-              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-                {{ $t('veBAL.hero.tokenInfo.veBAL') }}
-              </BalTooltip>
-            </div>
+          </div>
+          <div class="caption">
+            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+              {{ $t('veBAL.hero.tokenInfo.veBAL') }}
+            </BalTooltip>
           </div>
         </div>
       </div>
@@ -133,10 +137,11 @@ function navigateToGetVeBAL() {
   background-repeat: no-repeat;
   background-position-x: right;
   background-size: cover;
+  min-height: 440px;
+  @apply flex content-center;
 }
 .hero-content {
-  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto;
-  min-height: 430px;
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full;
 }
 .hero-text {
   opacity: 0;
@@ -148,11 +153,22 @@ function navigateToGetVeBAL() {
 .hero-btn {
   min-width: 140px;
 }
+.coins {
+  @apply flex lg:gap-8;
+  flex-grow: 1;
+}
+.coin-wrapper {
+  aspect-ratio: 7 / 8;
+}
+.coin {
+  @apply w-full flex flex-col items-center justify-end;
+}
+
 .coin:hover .graphic {
   transform: translateY(-8px);
 }
 .graphic {
-  @apply mb-4 lg:px-8 transition-transform duration-300;
+  @apply transition-transform duration-300;
 }
 .caption {
   @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
