@@ -4,7 +4,7 @@ import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
 import { Contract } from '@ethersproject/contracts';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { mapValues } from 'lodash';
 
 export class GaugeController {
@@ -24,10 +24,10 @@ export class GaugeController {
     const multicaller = this.getMulticaller();
     for (const gaugeAddress of gaugeAddresses) {
       multicaller.call(
-        gaugeAddress,
+        getAddress(gaugeAddress),
         this.address,
         'gauge_relative_weight(address, uint256)',
-        [gaugeAddress, timestamp]
+        [getAddress(gaugeAddress), 1649427628]
       );
     }
     const result = await multicaller.execute();
