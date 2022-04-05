@@ -1,5 +1,7 @@
-import { TokenInfo } from '@/types/TokenList';
 import { computed } from 'vue';
+
+import { TokenInfo } from '@/types/TokenList';
+
 import { isArbitrum, isMainnet, isPolygon } from '../useNetwork';
 
 export type TitleToken = [string, Partial<TokenInfo>];

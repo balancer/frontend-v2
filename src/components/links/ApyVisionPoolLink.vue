@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
-  useApyVisionHelpers,
-  TitleTokens
+  TitleTokens,
+  useApyVisionHelpers
 } from '@/composables/external/useApyVisionHelpers';
 import { getAddressFromPoolId } from '@/lib/utils';
 
