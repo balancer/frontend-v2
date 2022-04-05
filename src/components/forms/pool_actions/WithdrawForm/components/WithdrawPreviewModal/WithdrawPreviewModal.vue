@@ -119,7 +119,13 @@ function handleClose(): void {
 </script>
 
 <template>
-  <BalModal show :fireworks="withdrawalConfirmed" @close="handleClose">
+  <BalModal
+    show
+    :fireworks="withdrawalConfirmed"
+    @close="handleClose"
+    hCustomContent
+    overflowAutoContent
+  >
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
@@ -153,11 +159,13 @@ function handleClose(): void {
       <GasEstimationSelector />
     </div> -->
 
-    <WithdrawActions
-      :pool="pool"
-      :math="math"
-      class="mt-4"
-      @success="withdrawalConfirmed = true"
-    />
+    <template v-slot:footer>
+      <WithdrawActions
+        :pool="pool"
+        :math="math"
+        class="mt-4 w-full"
+        @success="withdrawalConfirmed = true"
+      />
+    </template>
   </BalModal>
 </template>
