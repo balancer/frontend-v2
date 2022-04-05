@@ -110,7 +110,7 @@ function navigateToCreatePool() {
             <StakedPoolsTable v-if="!isL2" :userPools="userPools" />
           </StakingProvider>
           <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
-            <h5>{{ $t('poolsToMigrate') }}</h5>
+            <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
               :key="migratableUserPools"
               :isLoading="isLoadingUserPools"

@@ -46,7 +46,7 @@ function handleModalClose() {
 <template>
   <div class="mt-8">
     <BalStack vertical spacing="sm">
-      <h5>{{ $t('staking.stakedPools') }}</h5>
+      <h5 class="px-4 lg:px-0">{{ $t('staking.stakedPools') }}</h5>
       <PoolsTable
         :key="stakedPools"
         :data="stakedPools"
