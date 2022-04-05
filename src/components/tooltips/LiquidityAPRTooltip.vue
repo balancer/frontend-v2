@@ -50,6 +50,10 @@ const hasThirdPartyAPR = computed(() =>
   bnum(props.pool.dynamic.apr.thirdParty).gt(0)
 );
 
+const hasStakingRewards = computed(() =>
+  bnum(props.pool.dynamic.apr.staking?.min || '0').gt(0)
+);
+
 const thirdPartyBreakdown = computed(
   () => props.pool.dynamic.apr.thirdPartyBreakdown
 );
@@ -76,8 +80,12 @@ const thirdPartyAPRLabel = computed(() => {
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
-          class="h-5 text-yellow-300"
+          v-if="
+            pool.hasLiquidityMiningRewards ||
+              hasThirdPartyAPR ||
+              hasStakingRewards
+          "
+          class="h-4 text-yellow-300 -mr-1"
           v-bind="$attrs"
         />
         <BalIcon
@@ -120,6 +128,23 @@ const thirdPartyAPRLabel = computed(() => {
           </template>
         </BalBreakdown>
         <BalBreakdown
+          :items="Object.entries(pool.dynamic.apr.staking || {})"
+          v-if="hasStakingRewards"
+        >
+          <div class="flex items-center">
+            {{ fNum2(pool.dynamic.apr.staking?.min, FNumFormats.percent) }}
+            <span class="ml-1 text-gray-500 text-xs">
+              {{ $t('staking.minimumStakingApr') }}
+            </span>
+          </div>
+          <template #item="{ item }">
+            {{ fNum2(item[1], FNumFormats.percent) }}
+            <span class="text-gray-500 text-xs ml-1 capitalize">
+              {{ item[0] }} {{ $t('apr') }}
+            </span>
+          </template>
+        </BalBreakdown>
+        <BalBreakdown
           v-if="pool.hasLiquidityMiningRewards"
           :items="Object.entries(lmBreakdown)"
           :hideItems="!lmMultiRewardPool"
@@ -132,7 +157,7 @@ const thirdPartyAPRLabel = computed(() => {
                   '0xde8c195aa41c11a0c4787372defbbddaa31306d2000200000000000000000181',
                   '0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182'
                 ].includes(pool.id)
-                  ? $t('staking.stakingApr')
+                  ? $t('staking.minimumStakingAPR')
                   : $t('liquidityMiningAPR')
               }}
             </span>
