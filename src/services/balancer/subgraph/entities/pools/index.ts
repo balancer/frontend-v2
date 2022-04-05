@@ -50,9 +50,18 @@ export default class Pools {
     try {
       const {
         data: { data }
-      } = await axios.post(this.configService.network.poolsUrlV2, {
-        query: jsonToGraphQLQuery({ query })
-      });
+      } = await axios.post(
+        this.configService.network.poolsUrlV2,
+        {
+          query: jsonToGraphQLQuery({ query })
+        },
+        {
+          headers: {
+            'apollographql-client-name': 'web',
+            'apollographql-client-version': '1.0'
+          }
+        }
+      );
 
       this.pools = cloneDeep(data.pools);
 
