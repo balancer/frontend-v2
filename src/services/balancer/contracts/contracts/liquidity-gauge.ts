@@ -49,6 +49,11 @@ export class LiquidityGauge {
     return balance;
   }
 
+  async totalSupply(): Promise<string> {
+    const supply = await this.instance.totalSupply();
+    return formatUnits(supply, 18);
+  }
+
   /*
    * @summary Claim all user's reward tokens, e.g. everything that's not BAL
    */
