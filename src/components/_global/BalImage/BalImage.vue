@@ -61,4 +61,9 @@ function onLoaded() {
   opacity: 0;
   transform: scale(0.97) translateY(10px);
 }
+
+img.graphic {
+  aspect-ratio: 283 / 323;
+  width: 100%;  
+}
 </style>

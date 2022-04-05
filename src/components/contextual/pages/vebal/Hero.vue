@@ -165,3 +165,9 @@ function navigateToGetVeBAL() {
   }
 }
 </style>
+
+<style>
+.caption .bal-icon {
+  animation: fadeInMoveUp 0.5s ease-out 0.15s both;
+}
+</style>
