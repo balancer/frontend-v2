@@ -68,6 +68,7 @@
     "approvingGnosisRelayer": "Approving Gnosis relayer",
     "approvingLidoRelayer": "Approving Lido relayer",
     "apr": "APR",
+    "apyvisionPoolInsights": "More insights on APY.vision",
     "autoOptimiseLiquidityToggle": {
         "label": "Auto optimize liquidity",
         "tooltip": "Optimise token values automatically to match the token weights you specified."
