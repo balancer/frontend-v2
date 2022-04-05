@@ -15,7 +15,8 @@
  *    ]
  * 2. Generate a json file with same schema currently used in src/constants/voting-gauges.ts
  */
+import { MAINNET_VOTING_GAUGES } from '@/constants/voting-gauges';
 
 (async () => {
-  console.log('Run script');
+  console.log('Run script', MAINNET_VOTING_GAUGES);
 })();
