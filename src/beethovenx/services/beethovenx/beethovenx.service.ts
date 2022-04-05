@@ -308,7 +308,9 @@ export default class BeethovenxService {
         {
           headers: {
             'Content-Type': 'application/json',
-            AccountAddress: address
+            AccountAddress: address,
+            'apollographql-client-name': 'web',
+            'apollographql-client-version': '1.0'
           }
         }
       );
