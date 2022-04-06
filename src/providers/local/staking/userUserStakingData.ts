@@ -272,8 +272,8 @@ export default function useUserStakingData(
     return formatUnits(balance.toString(), 18);
   }
 
-  function getBoostFor(poolAddress: string) {
-    return (poolBoosts.value || {})[getAddress(poolAddress)] || '1';
+  function getBoostFor(poolId: string) {
+    return (poolBoosts.value || {})[poolId] || '1';
   }
 
   return {

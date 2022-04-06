@@ -2,8 +2,8 @@ import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { isNil, mapValues } from 'lodash';
 
+import { FiatCurrency } from '@/constants/currency';
 import { bnum, getBalAddress } from '@/lib/utils';
-import { getBptPrice } from '@/lib/utils/balancer/pool';
 import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -16,6 +16,7 @@ import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { SubgraphGauge } from '../balancer/gauges/types';
 import { Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
+import PoolService from '../pool/pool.service';
 import { calculateGaugeApr, getAprRange } from './utils';
 
 export type PoolAPRs = Record<
@@ -100,7 +101,10 @@ export class StakingRewardsService {
       if (!pool) return nilApr;
       if (isNil(inflationRate)) return nilApr;
 
-      const bptPrice = getBptPrice(pool);
+      const poolService = new PoolService(pool);
+      const bptPrice = bnum(
+        poolService.calcTotalLiquidity(prices, FiatCurrency.usd)
+      ).div(pool.totalShares);
       if (!balAddress) return nilApr;
 
       const balPrice = prices[getAddress(balAddress)].usd;

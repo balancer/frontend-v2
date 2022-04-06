@@ -99,6 +99,12 @@ export function calculateGaugeApr({
         .times(52)
         .times(prices[rewardTokenAddress].usd);
       const apr = yearlyReward.div(bptPrice);
+      console.log('dingding', {
+        apr: apr.toString(),
+        bptPrice,
+        price: prices[rewardTokenAddress].usd,
+        weeklyReward: weeklyReward.toString()
+      })
       return [rewardTokenAddress, apr.toString()];
     }
   );
