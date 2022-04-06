@@ -218,7 +218,7 @@ import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId } from '@/lib/utils';
-import StakingProvider from '@/providers/local/staking.provider';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
 interface PoolPageData {

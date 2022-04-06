@@ -12,7 +12,9 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 export type StakeAction = 'stake' | 'unstake';
@@ -31,14 +33,16 @@ const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
+const { getProvider } = useWeb3();
 
 const {
+  userData: {
+    stakedSharesForProvidedPool,
+    refetchStakedShares,
+    refetchUserStakingData
+  },
   stakeBPT,
   unstakeBPT,
-  getGaugeAddress,
-  stakedSharesForProvidedPool,
-  refetchStakedShares,
-  refetchStakingData,
   hideAprInfo
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
@@ -127,14 +131,14 @@ async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
-  await refetchStakingData.value();
+  await refetchUserStakingData.value();
   await queryClient.refetchQueries(['staking']);
   emit('success');
 }
 
 async function loadApprovalsForGauge() {
   isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress(props.pool.address);
+  const gaugeAddress = await getGaugeAddress(props.pool.address, getProvider());
   const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;

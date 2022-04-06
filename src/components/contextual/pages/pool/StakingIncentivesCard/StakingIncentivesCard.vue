@@ -30,14 +30,16 @@ const stakeAction = ref('');
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
 const {
-  refetchStakedShares,
-  isStakedSharesIdle,
-  isLoadingStakedShares,
-  isRefetchingStakedShares,
-  isLoadingPoolEligibility,
+  userData: {
+    refetchStakedShares,
+    isStakedSharesIdle,
+    isLoadingStakedShares,
+    isRefetchingStakedShares,
+    stakedSharesForProvidedPool
+  },
   isPoolEligibleForStaking,
-  hideAprInfo,
-  stakedSharesForProvidedPool
+  isLoadingPoolEligibility,
+  hideAprInfo
 } = useStaking();
 
 /**
