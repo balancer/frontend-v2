@@ -48,6 +48,25 @@ export class StakingRewardsService {
     return supplies;
   }
 
+  private async getTotalSupplyForGauges(gaugeAddresses: string[]) {
+    // start with a fresh multicaller
+    const multicaller = LiquidityGauge.getMulticaller();
+
+    for (const gaugeAddress of gaugeAddresses) {
+      console.log('gaugeAddress', gaugeAddress)
+      multicaller.call(
+        getAddress(gaugeAddress),
+        getAddress(gaugeAddress),
+        'totalSupply'
+      );
+    }
+    const result = await multicaller.execute();
+    const supplies = mapValues(result, totalSupply =>
+      formatUnits(totalSupply, 18)
+    );
+    return supplies;
+  }
+
   private async getRelativeWeightsForGauges(
     gaugeAddresses: string[],
     customTimestamp?: number
@@ -93,6 +112,9 @@ export class StakingRewardsService {
     const workingSupplies = await this.getWorkingSupplyForGauges(
       gaugeAddresses
     );
+
+    const totalSupplies = await this.getTotalSupplyForGauges(gaugeAddresses);
+
     const aprs = gauges.map(async gauge => {
       const poolId = gauge.poolId;
       const pool = pools.find(pool => pool.id === poolId);
@@ -116,6 +138,7 @@ export class StakingRewardsService {
         inflationRate: inflationRate as string,
         boost: '1',
         workingSupplies,
+        totalSupplies,
         relativeWeights,
         rewardTokenData: rewardTokenData[getAddress(gauge.id)],
         prices,
