@@ -53,7 +53,6 @@ export class StakingRewardsService {
     const multicaller = LiquidityGauge.getMulticaller();
 
     for (const gaugeAddress of gaugeAddresses) {
-      console.log('gaugeAddress', gaugeAddress)
       multicaller.call(
         getAddress(gaugeAddress),
         getAddress(gaugeAddress),
