@@ -6,6 +6,7 @@ import { bnum, getBalAddress } from '@/lib/utils';
 import { getBptPrice } from '@/lib/utils/balancer/pool';
 import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
+import { TokenInfoMap } from '@/types/TokenList';
 
 import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
 import { GaugeController } from '../balancer/contracts/contracts/gauge-controller';
@@ -61,20 +62,33 @@ export class StakingRewardsService {
   async getGaugeAprForPools({
     prices,
     gauges,
-    pools
+    pools,
+    tokens
   }: {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
     pools: Pool[];
+    tokens: TokenInfoMap;
   }): Promise<PoolAPRs> {
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const inflationRate = await new BalancerTokenAdmin(
       configService.network.addresses.tokenAdmin
     ).getInflationRate();
+    const balAddress = getBalAddress();
     const relativeWeights = await this.getRelativeWeightsForGauges(
       gaugeAddresses
     );
 
+    const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
+      gaugeAddresses
+    );
+    const rewardTokenData = await LiquidityGauge.getRewardTokenDataForGauges(
+      rewardTokensForGauges
+    );
+
+    const workingSupplies = await this.getWorkingSupplyForGauges(
+      gaugeAddresses
+    );
     const aprs = gauges.map(async gauge => {
       const poolId = gauge.poolId;
       const pool = pools.find(pool => pool.id === poolId);
@@ -84,15 +98,10 @@ export class StakingRewardsService {
       if (isNil(inflationRate)) return nilApr;
 
       const bptPrice = getBptPrice(pool);
-      const balAddress = getBalAddress();
       if (!balAddress) return nilApr;
 
-      const workingSupplies = await this.getWorkingSupplyForGauges(
-        gaugeAddresses
-      );
       const balPrice = prices[getAddress(balAddress)].usd;
-
-      const apr = calculateGaugeApr({
+      const gaugeAprMap = calculateGaugeApr({
         gaugeAddress: getAddress(gauge.id),
         bptPrice: bptPrice.toString(),
         balPrice: String(balPrice),
@@ -100,10 +109,20 @@ export class StakingRewardsService {
         inflationRate: inflationRate as string,
         boost: '1',
         workingSupplies,
-        relativeWeights
+        relativeWeights,
+        rewardTokenData: rewardTokenData[getAddress(gauge.id)],
+        prices,
+        tokens
       });
 
-      const range = getAprRange(apr.toString());
+      // TODO BETTER INTEGRATION OF REWARD TOKEN APRS
+      let totalRewardStakingAPR = bnum(0);
+      for (const rewardApr of Object.values(gaugeAprMap.rewardTokenAprs)) {
+        totalRewardStakingAPR = totalRewardStakingAPR.plus(rewardApr);
+      }
+      const totalStakingAPR = totalRewardStakingAPR.plus(gaugeAprMap.apr);
+      const range = getAprRange(totalStakingAPR.toString());
+
       return [poolId, range];
     });
 

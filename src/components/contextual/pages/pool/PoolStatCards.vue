@@ -24,6 +24,8 @@ import { useI18n } from 'vue-i18n';
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
+import { bnum } from '@/lib/utils';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
@@ -40,6 +42,19 @@ export default defineComponent({
     // COMPOSABLES
     const { fNum2 } = useNumbers();
     const { t } = useI18n();
+
+    const aprValueToRender = computed(() => {
+      if (
+        showStakingRewards.value &&
+        bnum(props.pool?.dynamic.apr.staking?.min || 0).gt(0)
+      ) {
+        return `${fNum2(
+          getAprRange(props.pool).min,
+          FNumFormats.percent
+        )} - ${fNum2(getAprRange(props.pool).max, FNumFormats.percent)}`;
+      }
+      return fNum2(props.pool?.dynamic?.apr?.total || '0', FNumFormats.percent);
+    });
 
     // COMPUTED
     const stats = computed(() => {
@@ -67,10 +82,24 @@ export default defineComponent({
           value:
             Number(props.pool.dynamic.apr.total) > APR_THRESHOLD
               ? '-'
-              : fNum2(props.pool.dynamic.apr.total, FNumFormats.percent)
+              : aprValueToRender.value
         }
       ];
     });
+
+    function getAprRange(pool: DecoratedPool | undefined) {
+      if (!pool) return { min: '0', max: '0' };
+      const minTotalAPR = bnum(pool.dynamic.apr.total).plus(
+        pool.dynamic.apr.staking?.min || 0
+      );
+      const maxTotalAPR = bnum(pool.dynamic.apr.total).plus(
+        pool.dynamic.apr.staking?.max || 0
+      );
+      return {
+        min: minTotalAPR.toString(),
+        max: maxTotalAPR.toString()
+      };
+    }
 
     return {
       stats

@@ -23,6 +23,7 @@ import { configService as _configService } from '@/services/config/config.servic
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../../balancer-subgraph.service';
 import {
@@ -72,7 +73,8 @@ export default class Pools {
     period: TimeTravelPeriod,
     prices: TokenPrices,
     currency: FiatCurrency,
-    gauges: SubgraphGauge[]
+    gauges: SubgraphGauge[],
+    tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
     // Get past state of pools
     const blockNumber = await this.timeTravelBlock(period);
@@ -94,7 +96,15 @@ export default class Pools {
       this.excludedAddresses = await this.getExcludedAddresses();
     }
 
-    return this.serialize(pools, pastPools, period, prices, currency, gauges);
+    return this.serialize(
+      pools,
+      pastPools,
+      period,
+      prices,
+      currency,
+      gauges,
+      tokens
+    );
   }
 
   public removeExcludedAddressesFromTotalLiquidity(
@@ -114,13 +124,15 @@ export default class Pools {
     period: TimeTravelPeriod,
     prices: TokenPrices,
     currency: FiatCurrency,
-    gauges: SubgraphGauge[]
+    gauges: SubgraphGauge[],
+    tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
     const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
     const gaugeAprs = await stakingRewardsService.getGaugeAprForPools({
       prices,
       gauges,
-      pools
+      pools,
+      tokens
     });
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);

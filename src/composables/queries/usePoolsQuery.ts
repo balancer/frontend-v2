@@ -43,12 +43,17 @@ export default function usePoolsQuery(
   filterOptions?: FilterOptions
 ) {
   // COMPOSABLES
-  const { injectTokens, dynamicDataLoading, prices, getTokens } = useTokens();
+  const {
+    injectTokens,
+    dynamicDataLoading,
+    prices,
+    getTokens,
+    tokens: tokenMeta
+  } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
-
   const gaugeAddresses = computed(() =>
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
@@ -168,7 +173,8 @@ export default function usePoolsQuery(
       '24h',
       prices.value,
       currency.value,
-      subgraphGauges.value || []
+      subgraphGauges.value || [],
+      tokenMeta.value
     );
 
     // TODO - cleanup and extract elsewhere in refactor

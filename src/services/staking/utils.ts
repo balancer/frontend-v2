@@ -1,15 +1,20 @@
 import BigNumber from 'bignumber.js';
+import { formatUnits, getAddress } from 'ethers/lib/utils';
 
 import { bnum } from '@/lib/utils';
+import { TokenInfoMap } from '@/types/TokenList';
+
+import { RewardTokenData } from '../balancer/contracts/contracts/liquidity-gauge';
+import { TokenPrices } from '../coingecko/api/price.service';
 
 const MIN_BOOST = 1;
 const MAX_BOOST = 2.5;
 
 export function calculateWeeklyReward(
+  workingBalance = 0.4,
   workingSupply: BigNumber,
   balPayableToGauge: BigNumber
 ) {
-  const workingBalance = 0.4;
   const shareForOneBpt = bnum(workingBalance).div(
     workingSupply.plus(workingBalance)
   );
@@ -17,7 +22,7 @@ export function calculateWeeklyReward(
   return weeklyReward;
 }
 
-export function calculateBalPayableToGauge(
+export function calculateTokenPayableToGauge(
   inflationRate: BigNumber,
   gaugeRelativeWeight: BigNumber
 ) {
@@ -34,7 +39,10 @@ export function calculateGaugeApr({
   bptPrice,
   workingSupplies,
   relativeWeights,
-  boost = '1'
+  boost = '1',
+  rewardTokenData = {},
+  prices,
+  tokens
 }: {
   gaugeAddress: string;
   inflationRate: string;
@@ -43,20 +51,61 @@ export function calculateGaugeApr({
   boost: string;
   workingSupplies: Record<string, string>;
   relativeWeights: Record<string, string>;
-}) {
+  rewardTokenData: Record<string, RewardTokenData>;
+  prices: TokenPrices;
+  tokens: TokenInfoMap;
+}): {
+  apr: string;
+  rewardTokenAprs: Record<string, string>;
+} {
   const workingSupply = bnum((workingSupplies || {})[gaugeAddress]) || '0';
   const relativeWeight = bnum((relativeWeights || {})[gaugeAddress]) || '0';
-  const balPayable = calculateBalPayableToGauge(
+  const balPayable = calculateTokenPayableToGauge(
     bnum(inflationRate),
     relativeWeight
   );
-  const weeklyReward = calculateWeeklyReward(workingSupply, balPayable);
+  // 0.4 is the working balance for 1 BPT
+  const weeklyReward = calculateWeeklyReward(0.4, workingSupply, balPayable);
   const yearlyReward = weeklyReward
     .times(boost)
     .times(52)
     .times(balPrice);
-  const apr = yearlyReward.div(bptPrice);
-  return apr;
+
+  // bal apr
+  const balApr = yearlyReward.div(bptPrice).toString();
+
+  const rewardTokenAprs = Object.keys(rewardTokenData).map(
+    rewardTokenAddress => {
+      const data = rewardTokenData[rewardTokenAddress];
+      const inflationRate = formatUnits(
+        data.rate,
+        tokens[getAddress(rewardTokenAddress)].decimals
+      );
+      // for reward tokens, there is no relative weight
+      // all tokens go to the gauge depositors
+      const tokenPayable = calculateTokenPayableToGauge(
+        bnum(inflationRate),
+        bnum(1)
+      );
+      // for reward tokens we need to use the raw balance (1BPT = 1)
+      const weeklyReward = calculateWeeklyReward(
+        1,
+        workingSupply,
+        tokenPayable
+      );
+      const yearlyReward = weeklyReward
+        .times(boost)
+        .times(52)
+        .times(prices[rewardTokenAddress].usd);
+      const apr = yearlyReward.div(bptPrice);
+      return [rewardTokenAddress, apr.toString()];
+    }
+  );
+
+  return {
+    apr: balApr,
+    rewardTokenAprs: Object.fromEntries(rewardTokenAprs)
+  };
 }
 
 export function getAprRange(apr: string) {

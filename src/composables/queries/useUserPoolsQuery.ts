@@ -36,7 +36,13 @@ export default function useUserPoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, prices, dynamicDataLoading, getTokens } = useTokens();
+  const {
+    injectTokens,
+    prices,
+    dynamicDataLoading,
+    getTokens,
+    tokens: tokenMeta
+  } = useTokens();
   const { loadingTokenLists } = useTokenLists();
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
@@ -162,7 +168,8 @@ export default function useUserPoolsQuery(
       '24h',
       prices.value,
       currency.value,
-      subgraphGauges.value || []
+      subgraphGauges.value || [],
+      tokenMeta.value
     );
 
     // TODO - cleanup and extract elsewhere in refactor
