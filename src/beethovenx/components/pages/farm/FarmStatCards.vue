@@ -46,20 +46,20 @@ async function harvestRewards(): Promise<void> {
 const farmPendingRewards = computed(() => {
   const data = farmUser.value;
   const tokens = props.pool.farm.rewardTokens.map(rewardToken => {
-    const balance = rewardToken.isBeets
-      ? data?.pendingBeets
-      : data?.pendingRewardToken;
+    const pending = data?.pendingRewardTokens.find(
+      token => token.address.toLowerCase() === rewardToken.address.toLowerCase()
+    );
 
     return {
-      balance: balance ? `${balance}` : '0',
-      balanceUSD: parseFloat(rewardToken.tokenPrice) * (balance ?? 0),
+      balance: pending ? `${pending.balance}` : '0',
+      balanceUSD: pending ? pending.balanceUSD : '0',
       symbol: rewardToken.symbol
     };
   });
 
   return {
     tokens,
-    balanceUSD: sumBy(tokens, token => token.balanceUSD)
+    balanceUSD: sumBy(tokens, token => parseFloat(token.balanceUSD))
   };
 });
 </script>

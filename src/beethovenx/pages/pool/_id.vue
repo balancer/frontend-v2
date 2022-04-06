@@ -100,10 +100,7 @@
           <div
             class="mb-4"
             v-if="
-              loadingPool ||
-                (!!pool.decoratedFarm &&
-                  (pool.decoratedFarm.rewards > 0 ||
-                    pool.decoratedFarm.rewardTokenPerDay > 0))
+              loadingPool || (pool.farm && pool.farm.rewardTokens.length > 0)
             "
           >
             <h4 class="px-4 lg:px-0 mb-4">Farm</h4>
