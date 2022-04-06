@@ -160,7 +160,7 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
       if (apr === Infinity || isNaN(apr)) return 0;
       return apr;
     },
-    width: 150
+    width: 200
   },
   {
     name: t('migrate'),
@@ -192,6 +192,26 @@ const stakeablePoolIds = computed((): string[] => POOLS.Stakeable.AllowList);
 function handleRowClick(pool: DecoratedPoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
+}
+
+function getAprRange(pool: DecoratedPoolWithShares) {
+  const minTotalAPR = bnum(pool.dynamic.apr.total).plus(
+    pool.dynamic.apr.staking?.min || 0
+  );
+  const maxTotalAPR = bnum(pool.dynamic.apr.total).plus(
+    pool.dynamic.apr.staking?.max || 0
+  );
+  return {
+    min: minTotalAPR.toString(),
+    max: maxTotalAPR.toString()
+  };
+}
+
+function getTotalBoostedApr(pool: DecoratedPoolWithShares) {
+  return bnum(pool.dynamic.apr.staking?.min || '0')
+    .times(pool.dynamic.boost || '1')
+    .plus(pool.dynamic.apr.total)
+    .toString();
 }
 
 function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
@@ -277,19 +297,11 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
             class="text-right"
           >
             <span v-if="pool.dynamic.boost">
-              {{
-                fNum(
-                  bnum(pool.dynamic.apr.staking.min)
-                    .times(pool.dynamic.boost)
-                    .toString(),
-                  'percent_lg'
-                )
-              }}
+              {{ fNum(getTotalBoostedApr, 'percent_lg') }}
             </span>
-            <span v-else class="text-sm">
-              {{ fNum(pool.dynamic.apr.staking.min, 'percent_lg') }}-{{
-                fNum(pool.dynamic.apr.staking.max, 'percent_lg')
-              }}
+            <span v-else>
+              {{ fNum(getAprRange(pool).min, 'percent_lg') }} -
+              {{ fNum(getAprRange(pool).max, 'percent_lg') }}
             </span>
           </span>
           <span v-else>

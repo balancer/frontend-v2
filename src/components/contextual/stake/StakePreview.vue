@@ -41,11 +41,11 @@ const {
   userData: {
     stakedSharesForProvidedPool,
     refetchStakedShares,
-    refetchUserStakingData
+    refetchUserStakingData,
+    poolBoosts
   },
   stakeBPT,
-  unstakeBPT,
-  hideAprInfo
+  unstakeBPT
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -120,6 +120,20 @@ const totalUserPoolSharePct = ref(
     .div(props.pool.totalShares)
     .toString()
 );
+
+const stakingApr = computed(() => {
+  return bnum(props.pool.dynamic.apr.staking?.min || 0).times(
+    poolBoosts.value[props.pool.id] || '1'
+  );
+});
+
+const potentialyWeeklyYield = computed(() => {
+  return bnum(props.pool.dynamic.apr.staking?.min || '0')
+    .times(poolBoosts.value[props.pool.id])
+    .times(fiatValueOfModifiedShares.value)
+    .div(52)
+    .toString();
+});
 
 /**
  * LIFECYCLE
@@ -221,23 +235,27 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="!hideAprInfo">
+        <BalStack horizontal justify="between">
           <span class="text-sm">
-            {{ action === 'stake' ? $t('potential') : $t('lost') }}
+            {{ action === 'stake' ? $t('your') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
           </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">0</span>
+            <span class="text-sm capitalize">
+              ~{{ fNum2(stakingApr, FNumFormats.percent) }}</span
+            >
             <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="!hideAprInfo">
+        <BalStack horizontal justify="between">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:
           </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">0</span>
+            <span class="text-sm capitalize"
+              >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
+            >
             <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>

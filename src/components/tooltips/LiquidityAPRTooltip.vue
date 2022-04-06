@@ -73,6 +73,19 @@ const thirdPartyAPRLabel = computed(() => {
 
   return '';
 });
+
+const totalAPRRange = computed(() => {
+  const minTotalAPR = bnum(props.pool.dynamic.apr.total).plus(
+    props.pool.dynamic.apr.staking?.min || 0
+  );
+  const maxTotalAPR = bnum(props.pool.dynamic.apr.total).plus(
+    props.pool.dynamic.apr.staking?.max || 0
+  );
+  return {
+    min: minTotalAPR,
+    max: maxTotalAPR
+  };
+});
 </script>
 
 <template v-slot:aprCell="pool">
@@ -101,7 +114,8 @@ const thirdPartyAPRLabel = computed(() => {
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
         <div class="text-gray-500">{{ $t('totalAPR') }}</div>
         <div class="text-lg">
-          {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
+          {{ fNum2(totalAPRRange.min, FNumFormats.percent) }}-
+          {{ fNum2(totalAPRRange.max, FNumFormats.percent) }}
         </div>
       </div>
       <div class="p-3">
