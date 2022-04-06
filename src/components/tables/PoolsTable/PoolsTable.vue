@@ -21,6 +21,12 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import {
+  getAprRangeWithRewardEmissions,
+  getBoostAdjustedTotalAPR,
+  hasBALEmissions,
+  hasStakingRewards
+} from '@/services/staking/utils';
 
 import TokenPills from './TokenPills/TokenPills.vue';
 
@@ -194,23 +200,13 @@ function handleRowClick(pool: DecoratedPoolWithShares) {
 }
 
 function getAprRange(pool: DecoratedPoolWithShares) {
-  const minTotalAPR = bnum(pool.dynamic.apr.total).plus(
-    pool.dynamic.apr.staking?.min || 0
-  );
-  const maxTotalAPR = bnum(pool.dynamic.apr.total).plus(
-    pool.dynamic.apr.staking?.max || 0
-  );
-  return {
-    min: minTotalAPR.toString(),
-    max: maxTotalAPR.toString()
-  };
+  const adjustedRange = getAprRangeWithRewardEmissions(pool);
+  return adjustedRange;
 }
 
 function getTotalBoostedApr(pool: DecoratedPoolWithShares) {
-  return bnum(pool.dynamic.apr.staking?.min || '0')
-    .times(pool.dynamic.boost || '1')
-    .plus(pool.dynamic.apr.total)
-    .toString();
+  const boostedAPR = getBoostAdjustedTotalAPR(pool, pool.dynamic.boost || '1');
+  return boostedAPR;
 }
 
 function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
@@ -222,6 +218,12 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
     },
     query: { returnRoute: 'home' }
   });
+}
+
+function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
+  return bnum(pool.dynamic.apr.staking?.Rewards || '0').plus(
+    pool.dynamic.apr.total
+  );
 }
 </script>
 
@@ -292,13 +294,14 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
           <span
-            v-if="
-              Number(pool.dynamic.apr.staking?.min) > 0 && showStakingRewards
-            "
+            v-if="hasStakingRewards(pool) && showStakingRewards"
             class="text-right"
           >
             <span v-if="pool.dynamic.boost">
               {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
+            </span>
+            <span v-else-if="!hasBALEmissions(pool)">
+              {{ fNum2(getTotalRewardsAPR(pool), FNumFormats.percent) }}
             </span>
             <span v-else>
               {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -

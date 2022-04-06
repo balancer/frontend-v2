@@ -18,7 +18,10 @@ import { Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import { calculateGaugeApr, getAprRange } from './utils';
 
-export type PoolAPRs = Record<string, { min: string; max: string }>;
+export type PoolAPRs = Record<
+  string,
+  { BAL: { min: string; max: string }; Rewards: string }
+>;
 
 export class StakingRewardsService {
   private gaugeController = new GaugeController(
@@ -120,10 +123,16 @@ export class StakingRewardsService {
       for (const rewardApr of Object.values(gaugeAprMap.rewardTokenAprs)) {
         totalRewardStakingAPR = totalRewardStakingAPR.plus(rewardApr);
       }
-      const totalStakingAPR = totalRewardStakingAPR.plus(gaugeAprMap.apr);
-      const range = getAprRange(totalStakingAPR.toString());
 
-      return [poolId, range];
+      const range = getAprRange(gaugeAprMap.apr.toString());
+
+      return [
+        poolId,
+        {
+          BAL: range,
+          Rewards: totalRewardStakingAPR.toString()
+        }
+      ];
     });
 
     const resolvedAprs = await Promise.all(aprs);

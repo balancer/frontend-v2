@@ -17,6 +17,7 @@ import {
   showStakingRewards
 } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
@@ -43,7 +44,7 @@ const {
     stakedSharesForProvidedPool,
     refetchStakedShares,
     refetchUserStakingData,
-    poolBoosts
+    getBoostFor
   },
   stakeBPT,
   unstakeBPT
@@ -123,14 +124,14 @@ const totalUserPoolSharePct = ref(
 );
 
 const stakingApr = computed(() => {
-  return bnum(props.pool.dynamic.apr.staking?.min || 0).times(
-    poolBoosts.value[props.pool.id] || '1'
+  return bnum(getAprRangeWithRewardEmissions(props.pool).min).times(
+    getBoostFor(props.pool.id)
   );
 });
 
 const potentialyWeeklyYield = computed(() => {
-  return bnum(props.pool.dynamic.apr.staking?.min || '0')
-    .times(poolBoosts.value[props.pool.id])
+  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
+    .times(getBoostFor(props.pool.id))
     .times(fiatValueOfModifiedShares.value)
     .div(52)
     .toString();

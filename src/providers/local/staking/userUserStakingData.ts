@@ -83,6 +83,7 @@ export type UserStakingDataResponse = {
   stakedSharesMap: Ref<Record<string, string>>;
   poolBoosts: Ref<Record<string, string>>;
   isLoadingBoosts: Ref<boolean>;
+  getBoostFor: (poolAddress: string) => string;
 };
 
 export default function useUserStakingData(
@@ -271,6 +272,10 @@ export default function useUserStakingData(
     return formatUnits(balance.toString(), 18);
   }
 
+  function getBoostFor(poolAddress: string) {
+    return (poolBoosts.value || {})[getAddress(poolAddress)] || '1';
+  }
+
   return {
     userGaugeShares,
     userLiquidityGauges,
@@ -292,6 +297,7 @@ export default function useUserStakingData(
     totalStakedFiatValue,
     poolBoosts,
     isLoadingBoosts,
-    getStakedShares
+    getStakedShares,
+    getBoostFor
   };
 }

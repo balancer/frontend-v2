@@ -117,7 +117,8 @@ export default defineComponent({
       totalStakedFiatValue,
       poolBoosts,
       isLoadingBoosts,
-      getStakedShares
+      getStakedShares,
+      getBoostFor
     } = useUserStakingData(poolAddress);
 
     const isPoolAddressRegistered = computed(
@@ -220,7 +221,8 @@ export default defineComponent({
         totalStakedFiatValue,
         isLoadingBoosts,
         poolBoosts,
-        getStakedShares
+        getStakedShares,
+        getBoostFor
       },
       stakeBPT,
       unstakeBPT,

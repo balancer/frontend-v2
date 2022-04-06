@@ -27,6 +27,11 @@ import { APR_THRESHOLD } from '@/constants/poolAPR';
 import { bnum } from '@/lib/utils';
 import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import {
+  getAprRangeWithRewardEmissions,
+  hasBALEmissions,
+  hasStakingRewards
+} from '@/services/staking/utils';
 
 export default defineComponent({
   components: {
@@ -44,10 +49,16 @@ export default defineComponent({
     const { t } = useI18n();
 
     const aprValueToRender = computed(() => {
-      if (
-        showStakingRewards.value &&
-        bnum(props.pool?.dynamic.apr.staking?.min || 0).gt(0)
-      ) {
+      if (showStakingRewards.value && hasStakingRewards(props.pool)) {
+        // cannot show a range if there are no bal emissions
+        if (!hasBALEmissions(props.pool)) {
+          return fNum2(
+            props.pool?.dynamic.apr.staking?.Rewards || '0',
+            FNumFormats.percent
+          );
+        }
+        // show a range if there are bal emissions, min and max
+        // are adjusted to show rewards emissions apr included
         return `${fNum2(
           getAprRange(props.pool).min,
           FNumFormats.percent
@@ -89,12 +100,9 @@ export default defineComponent({
 
     function getAprRange(pool: DecoratedPool | undefined) {
       if (!pool) return { min: '0', max: '0' };
-      const minTotalAPR = bnum(pool.dynamic.apr.total).plus(
-        pool.dynamic.apr.staking?.min || 0
-      );
-      const maxTotalAPR = bnum(pool.dynamic.apr.total).plus(
-        pool.dynamic.apr.staking?.max || 0
-      );
+      const adjustedRange = getAprRangeWithRewardEmissions(pool);
+      const minTotalAPR = bnum(pool.dynamic.apr.total).plus(adjustedRange.min);
+      const maxTotalAPR = bnum(pool.dynamic.apr.total).plus(adjustedRange.max);
       return {
         min: minTotalAPR.toString(),
         max: maxTotalAPR.toString()

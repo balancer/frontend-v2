@@ -10,6 +10,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 
@@ -37,7 +38,7 @@ const {
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
-    poolBoosts,
+    getBoostFor,
     isLoadingBoosts
   },
   isPoolEligibleForStaking,
@@ -62,8 +63,8 @@ const fiatValueOfUnstakedShares = computed(() => {
 });
 
 const potentialyWeeklyYield = computed(() => {
-  return bnum(props.pool.dynamic.apr.staking?.min || '0')
-    .times((poolBoosts.value || {})[props.pool.id])
+  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
+    .times(getBoostFor(props.pool.id))
     .times(fiatValueOfStakedShares.value)
     .div(52)
     .toString();
