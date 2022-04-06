@@ -507,8 +507,7 @@ export default function usePoolCreation() {
   }
 
   async function retrievePoolDetails(hash: string) {
-    const provider = new JsonRpcProvider(configService.network.publicRpc);
-
+    const provider = new JsonRpcProvider(configService.network.rpc);
     const poolDetails = await balancerService.pools.weighted.details(
       provider,
       hash
