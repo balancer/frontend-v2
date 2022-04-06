@@ -22,6 +22,7 @@ import { getGaugeAddress } from './staking.provider';
 export type UserGuageShare = {
   id: string;
   gauge: {
+    id: string;
     poolId: string;
     totalSupply: string;
   };
@@ -129,6 +130,7 @@ export default function useUserStakingData(
         },
         balance: true,
         gauge: {
+          id: true,
           poolId: true,
           totalSupply: true
         }

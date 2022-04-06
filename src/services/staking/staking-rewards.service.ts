@@ -32,7 +32,7 @@ export class StakingRewardsService {
     configService.network.addresses.tokenAdmin
   );
 
-  private async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
+  async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
     // start with a fresh multicaller
     const multicaller = LiquidityGauge.getMulticaller();
 
@@ -184,6 +184,11 @@ export class StakingRewardsService {
     const veBALBalance = await veBalProxy.getAdjustedBalance(userAddress);
     const veBALTotalSupply = veBALInfo.totalSupply;
 
+    const gaugeAddresses = gaugeShares.map(gaugeShare => gaugeShare.gauge.id);
+    const workingSupplies = await this.getWorkingSupplyForGauges(
+      gaugeAddresses
+    );
+
     const boosts = gaugeShares.map(gaugeShare => {
       const gaugeBalance = bnum(gaugeShare.balance);
       const adjustedGaugeBalance = bnum(0.4)
@@ -201,7 +206,11 @@ export class StakingRewardsService {
         ? gaugeBalance
         : adjustedGaugeBalance;
 
-      const boost = workingBalance.div(bnum(0.4).times(gaugeBalance));
+      const boostedFraction = workingBalance.div(
+        workingSupplies[gaugeShare.gauge.id]
+      );
+      const unboostedFraction = gaugeBalance.div(gaugeShare.gauge.totalSupply);
+      const boost = boostedFraction.div(unboostedFraction);
       return [gaugeShare.gauge.poolId, boost.toString()];
     });
 
