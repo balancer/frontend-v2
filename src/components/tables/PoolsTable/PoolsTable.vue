@@ -57,7 +57,7 @@ const emit = defineEmits(['loadMore', 'triggerStake']);
 /**
  * COMPOSABLES
  */
-const { fNum2, fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const router = useRouter();
 const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
@@ -159,7 +159,7 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
       if (apr === Infinity || isNaN(apr)) return 0;
       return apr;
     },
-    width: 200
+    width: 250
   },
   {
     name: t('migrate'),
@@ -298,11 +298,11 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
             class="text-right"
           >
             <span v-if="pool.dynamic.boost">
-              {{ fNum(getTotalBoostedApr(pool), 'percent_lg') }}
+              {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
             </span>
             <span v-else>
-              {{ fNum(getAprRange(pool).min, 'percent_lg') }} -
-              {{ fNum(getAprRange(pool).max, 'percent_lg') }}
+              {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
+              {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
             </span>
           </span>
           <span v-else>

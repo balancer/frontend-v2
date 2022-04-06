@@ -145,7 +145,6 @@ function handleModalClose() {
       :hiddenColumns="hiddenColumns"
       @triggerStake="handleStake"
       showPoolShares
-      showBoost
     />
   </BalStack>
   <StakePreviewModal
