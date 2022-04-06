@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -19,11 +19,12 @@ import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTab
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { isL2 } from '@/composables/useNetwork';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 
 // COMPOSABLES
 const router = useRouter();
 const { t } = useI18n();
-const { isWalletReady, appNetworkConfig, isWalletConnecting } = useWeb3();
+const { isWalletReady, appNetworkConfig, isWalletConnecting, account } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const {
   selectedTokens,
@@ -94,6 +95,10 @@ watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 function navigateToCreatePool() {
   router.push({ name: 'create-pool' });
 }
+
+onMounted(async () => {
+  await stakingRewardsService.calculateUserBoost(account.value)
+})
 </script>
 
 <template>

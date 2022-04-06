@@ -15,6 +15,8 @@ import { SubgraphGauge } from '../balancer/gauges/types';
 import { calculateGaugeApr, getAprRange } from './utils';
 import { AnyPool, DecoratedPool, Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
+import VeBAL from '../balancer/contracts/contracts/veBAL';
+import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
 
 export type PoolAPRs = Record<string, { min: string; max: string }>;
 
@@ -111,6 +113,16 @@ export class StakingRewardsService {
     const resolvedAprs = await Promise.all(aprs);
 
     return Object.fromEntries(resolvedAprs);
+  }
+
+  async calculateUserBoost(userAddress: string, gaugeAddress: string) {
+    const gauge = new LiquidityGauge(gaugeAddress);
+    const userBalance = await gauge.balance(getAddress(userAddress));
+    const totalSupply = await gauge.totalSupply();
+
+    const veBALInfo = balancerContractsService.veBAL.getLockInfo(userAddress);
+    console.log('ve', veBALInfo)
+
   }
 }
 

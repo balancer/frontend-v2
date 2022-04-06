@@ -50,7 +50,8 @@
     "balancerMinter": "",
     "gaugeController": "",
     "tokenAdmin": "",
-    "veBAL": ""
+    "veBAL": "",
+    "veDelegationProxy": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
