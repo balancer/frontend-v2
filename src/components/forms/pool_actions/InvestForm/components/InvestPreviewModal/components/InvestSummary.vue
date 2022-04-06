@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+import { isL2 } from '@/composables/useNetwork';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { isStablePhantom, isWstETH } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
+import useUserSettings from '@/composables/useUserSettings';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
 /**
  * TYPES
  */
@@ -13,85 +19,69 @@ type Props = {
   isLoadingPriceImpact?: boolean;
   highPriceImpact?: boolean;
 };
-
 /**
  * PROPS & EMITS
  */
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
   highPriceImpact: false
 });
-
 /**
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
 const { currency } = useUserSettings();
-// const { t } = useI18n();
-// const { getTokens } = useTokens();
-
+const { t } = useI18n();
+const { getTokens } = useTokens();
 /**
  * COMPUTED
  */
-// const totalWeeklyYield = computed((): string =>
-//   weeklyYieldForAPR(props.pool.dynamic.apr.total)
-// );
-
-// const swapFeeWeeklyYield = computed((): string =>
-//   weeklyYieldForAPR(props.pool.dynamic.apr.pool)
-// );
-
-// const thirdPartyWeeklyYield = computed((): string =>
-//   weeklyYieldForAPR(props.pool.dynamic.apr.thirdParty)
-// );
-
-// const lmWeeklyYield = computed((): string =>
-//   weeklyYieldForAPR(props.pool.dynamic.apr.liquidityMining)
-// );
-
-// const lmBreakdown = computed(
-//   () => props.pool.dynamic.apr.liquidityMiningBreakdown
-// );
-
-// const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
-
-// const lmMultiRewardPool = computed(
-//   () => Object.keys(lmTokens.value).length > 1
-// );
-
-// const hasThirdPartyAPR = computed(() =>
-//   bnum(props.pool.dynamic.apr.thirdParty).gt(0)
-// );
-
-// const thirdPartyBreakdown = computed(
-//   () => props.pool.dynamic.apr.thirdPartyBreakdown
-// );
-
-// const thirdPartyTokens = computed(() =>
-//   getTokens(Object.keys(thirdPartyBreakdown.value))
-// );
-
-// const thirdPartyMultiRewardPool = computed(
-//   () => Object.keys(thirdPartyTokens.value).length > 1
-// );
-
-// const thirdPartyFiatLabel = computed(() => {
-//   if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
-//   if (isStablePhantom(props.pool.poolType))
-//     return t('thirdPartyRewards.fiat.aaveBoosted');
-
-//   return '';
-// });
-
+const totalWeeklyYield = computed((): string =>
+  weeklyYieldForAPR(props.pool.dynamic.apr.total)
+);
+const swapFeeWeeklyYield = computed((): string =>
+  weeklyYieldForAPR(props.pool.dynamic.apr.pool)
+);
+const thirdPartyWeeklyYield = computed((): string =>
+  weeklyYieldForAPR(props.pool.dynamic.apr.thirdParty)
+);
+const lmWeeklyYield = computed((): string =>
+  weeklyYieldForAPR(props.pool.dynamic.apr.liquidityMining)
+);
+const lmBreakdown = computed(
+  () => props.pool.dynamic.apr.liquidityMiningBreakdown
+);
+const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
+const lmMultiRewardPool = computed(
+  () => Object.keys(lmTokens.value).length > 1
+);
+const hasThirdPartyAPR = computed(() =>
+  bnum(props.pool.dynamic.apr.thirdParty).gt(0)
+);
+const thirdPartyBreakdown = computed(
+  () => props.pool.dynamic.apr.thirdPartyBreakdown
+);
+const thirdPartyTokens = computed(() =>
+  getTokens(Object.keys(thirdPartyBreakdown.value))
+);
+const thirdPartyMultiRewardPool = computed(
+  () => Object.keys(thirdPartyTokens.value).length > 1
+);
+const thirdPartyFiatLabel = computed(() => {
+  if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
+  if (isStablePhantom(props.pool.poolType))
+    return t('thirdPartyRewards.fiat.aaveBoosted');
+  return '';
+});
 /**
  * METHODS
  */
-// function weeklyYieldForAPR(apr: string): string {
-//   return bnum(apr)
-//     .times(props.fiatTotal)
-//     .div(52)
-//     .toString();
-// }
+function weeklyYieldForAPR(apr: string): string {
+  return bnum(apr)
+    .times(props.fiatTotal)
+    .div(52)
+    .toString();
+}
 </script>
 
 <template>
@@ -143,9 +133,9 @@ const { currency } = useUserSettings();
           </template>
         </div>
       </div>
-      <div class="summary-table-row">
+      <div class="summary-table-row" v-if="isL2">
         <div class="summary-table-label" v-text="$t('potentialWeeklyYield')" />
-        <!-- <div class="summary-table-number">
+        <div class="summary-table-number">
           {{ fNum2(totalWeeklyYield, FNumFormats.fiat) }}
           <BalTooltip icon-size="sm" width="72" noPad>
             <template v-slot:activator>
@@ -217,7 +207,7 @@ const { currency } = useUserSettings();
               </BalBreakdown>
             </div>
           </BalTooltip>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -227,15 +217,12 @@ const { currency } = useUserSettings();
 .summary-table {
   @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg mt-4;
 }
-
 .summary-table-row {
   @apply grid grid-cols-2 px-2 py-1;
 }
-
 .summary-table-label {
   @apply flex items-center;
 }
-
 .summary-table-number {
   @apply flex items-center justify-end;
 }
