@@ -103,12 +103,7 @@ export default defineComponent({
     function getAprRange(pool: DecoratedPool | undefined) {
       if (!pool) return { min: '0', max: '0' };
       const adjustedRange = getAprRangeWithRewardEmissions(pool);
-      const minTotalAPR = bnum(pool.dynamic.apr.total).plus(adjustedRange.min);
-      const maxTotalAPR = bnum(pool.dynamic.apr.total).plus(adjustedRange.max);
-      return {
-        min: minTotalAPR.toString(),
-        max: maxTotalAPR.toString()
-      };
+      return adjustedRange;
     }
 
     return {
