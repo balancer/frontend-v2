@@ -1,7 +1,9 @@
-import { Connector } from '../connector';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+
 import ConfigService from '@/services/config/config.service';
 import { WalletError } from '@/types';
+
+import { Connector } from '../connector';
 
 export class WalletConnectConnector extends Connector {
   id = 'walletconnect';

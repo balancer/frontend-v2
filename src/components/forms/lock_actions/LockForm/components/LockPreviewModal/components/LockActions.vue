@@ -1,31 +1,26 @@
 <script setup lang="ts">
-import { watch, ref, computed, reactive, onBeforeMount } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { format } from 'date-fns';
-
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
-import { TransactionActionInfo } from '@/types/transactions';
-import { TokenInfo } from '@/types/TokenList';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { dateTimeLabelFor } from '@/composables/useTime';
-import useConfig from '@/composables/useConfig';
-
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { parseUnits } from '@ethersproject/units';
+import { format } from 'date-fns';
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
+import useConfig from '@/composables/useConfig';
+import useEthers from '@/composables/useEthers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useTransactions from '@/composables/useTransactions';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { configService } from '@/services/config/config.service';
-import { parseUnits } from '@ethersproject/units';
+import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfo } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 
 /**
  * TYPES

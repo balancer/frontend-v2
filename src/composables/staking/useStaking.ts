@@ -1,4 +1,5 @@
 import { inject } from 'vue';
+
 import { StakingProviderSymbol } from '@/providers/local/staking/staking.provider';
 
 export default function useStaking() {

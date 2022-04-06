@@ -1,48 +1,41 @@
-import { differenceInWeeks } from 'date-fns';
-import axios from 'axios';
-
+import { Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
+import axios from 'axios';
+import { differenceInWeeks } from 'date-fns';
 
-import { lidoService } from '@/services/lido/lido.service';
-import PoolService from '@/services/pool/pool.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { configService as _configService } from '@/services/config/config.service';
-
+import { networkId } from '@/composables/useNetwork';
+import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
+import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
-
 import { bnum } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
-  currentLiquidityMiningRewards,
+  computeAPRsForPool,
   computeTotalAPRForPool,
-  computeAPRsForPool
+  currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
-
-import { Network } from '@balancer-labs/sdk';
-import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
-import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
-import { networkId } from '@/composables/useNetwork';
-
-import Service from '../../balancer-subgraph.service';
-
-import queryBuilder from './query';
-
-import {
-  Pool,
-  QueryBuilder,
-  TimeTravelPeriod,
-  DecoratedPool,
-  PoolToken
-} from '../../types';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { configService as _configService } from '@/services/config/config.service';
+import { lidoService } from '@/services/lido/lido.service';
+import PoolService from '@/services/pool/pool.service';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 
+import Service from '../../balancer-subgraph.service';
+import {
+  DecoratedPool,
+  Pool,
+  PoolToken,
+  QueryBuilder,
+  TimeTravelPeriod
+} from '../../types';
 import {
   ExcludedAddresses,
   removeAddressesFromTotalLiquidity
 } from './helpers';
-import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
-import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import queryBuilder from './query';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 

@@ -1,7 +1,8 @@
-import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BigNumberish, Contract } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
+
+import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 const {
   stETH: stEthAddress,
@@ -10,6 +11,7 @@ const {
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;
+  console.log('stETH: ', stEthAddress, ' is null: ', stEthAddress == null);
 
   return [tokenInAddress, tokenOutAddress]
     .map(getAddress)

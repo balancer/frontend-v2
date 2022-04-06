@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { getAddress } from 'ethers/lib/utils';
 import { computed, ref } from 'vue';
 
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useStaking from '@/composables/staking/useStaking';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { bnum } from '@/lib/utils';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { getAddress } from 'ethers/lib/utils';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
-import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 
 type Props = {
   pool: FullPool;

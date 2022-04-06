@@ -1,7 +1,9 @@
-import i18n from '@/plugins/i18n';
-import { bnum } from '.';
-import numeral from 'numeral';
 import { isAddress } from '@ethersproject/address';
+import numeral from 'numeral';
+
+import i18n from '@/plugins/i18n';
+
+import { bnum } from '.';
 
 export function isRequired(field = '') {
   const _field = field ? `${field} ` : 'Input ';

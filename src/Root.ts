@@ -1,4 +1,5 @@
 import { defineComponent, h } from 'vue';
+
 import App from './App.vue';
 import * as providerMap from './providers';
 

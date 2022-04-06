@@ -1,15 +1,17 @@
-import { Ref } from 'vue';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import {
-  Vault__factory,
-  BalancerHelpers__factory
+  BalancerHelpers__factory,
+  Vault__factory
 } from '@balancer-labs/typechain';
-import JoinParams from './serializers/JoinParams';
-import ExitParams from './serializers/ExitParams';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { Ref } from 'vue';
+
+import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
+import { FullPool } from '@/services/balancer/subgraph/types';
 import ConfigService, { configService } from '@/services/config/config.service';
+
+import ExitParams from './serializers/ExitParams';
+import JoinParams from './serializers/JoinParams';
 
 export default class ExchangeService {
   pool: Ref<FullPool>;

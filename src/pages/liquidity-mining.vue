@@ -75,16 +75,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import LMTable from '@/components/tables/LMTable/LMTable.vue';
-import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import { flatten, last, takeRight, uniq } from 'lodash';
 import { Network } from '@balancer-labs/sdk';
+import { getAddress } from '@ethersproject/address';
+import { flatten, last, takeRight, uniq } from 'lodash';
+import { computed, defineComponent } from 'vue';
+
+import LMTable from '@/components/tables/LMTable/LMTable.vue';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import useConfig from '@/composables/useConfig';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { getAddress } from '@ethersproject/address';
-import useConfig from '@/composables/useConfig';
+import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
 
 type TokenDistribution = {
   tokenAddress: string;

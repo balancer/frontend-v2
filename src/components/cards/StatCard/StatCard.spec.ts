@@ -1,6 +1,8 @@
 import { render } from '@testing-library/vue';
-import StatCard from './StatCard.vue';
+
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
+
+import StatCard from './StatCard.vue';
 
 StatCard.components = { BalCard };
 

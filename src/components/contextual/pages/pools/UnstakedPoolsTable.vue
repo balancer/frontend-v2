@@ -1,22 +1,20 @@
 <script setup lang="ts">
+import { uniqBy } from 'lodash';
 import { computed, ref } from 'vue';
 
+import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import useStaking from '@/composables/staking/useStaking';
-
+import { isL2 } from '@/composables/useNetwork';
+import { isMigratablePool } from '@/composables/usePool';
+import { bnum } from '@/lib/utils';
 import {
   DecoratedPool,
   DecoratedPoolWithShares,
   FullPool
 } from '@/services/balancer/subgraph/types';
-import { bnum } from '@/lib/utils';
 
-import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
-
-import { uniqBy } from 'lodash';
-import { isMigratablePool } from '@/composables/usePool';
-import { isL2 } from '@/composables/useNetwork';
 
 /** STATE */
 const showStakeModal = ref(false);

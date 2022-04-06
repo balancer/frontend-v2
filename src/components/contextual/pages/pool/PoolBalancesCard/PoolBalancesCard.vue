@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import Pool from './Pool';
 import BoostedPool from './BoostedPool';
+import Pool from './Pool';
 
 /**
  * TYPES

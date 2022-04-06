@@ -2,16 +2,15 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
-import LockAmount from './components/LockAmount.vue';
-import LockSummary from './components/LockSummary.vue';
-import LockActions from './components/LockActions.vue';
-
-import { TokenInfo } from '@/types/TokenList';
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import { expectedVeBal } from '@/composables/useVeBAL';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { TokenInfo } from '@/types/TokenList';
+
+import LockActions from './components/LockActions.vue';
+import LockAmount from './components/LockAmount.vue';
+import LockSummary from './components/LockSummary.vue';
 
 /**
  * TYPES

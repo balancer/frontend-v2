@@ -1,22 +1,24 @@
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from 'ethers/lib/utils';
+import { intersection } from 'lodash';
+import { QueryObserverResult, RefetchOptions } from 'react-query';
+import { computed, ComputedRef, reactive, Ref, ref } from 'vue';
+import { useQuery } from 'vue-query';
+
+import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import { isL2 } from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
-import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import useWeb3 from '@/services/web3/useWeb3';
-import { getAddress } from '@ethersproject/address';
-import { formatUnits } from 'ethers/lib/utils';
-import { intersection } from 'lodash';
-import { computed, ComputedRef, reactive, ref, Ref } from 'vue';
-import { useQuery } from 'vue-query';
-import { getGaugeAddress } from './staking.provider';
-import { QueryObserverResult, RefetchOptions } from 'react-query';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
-import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { bnum } from '@/lib/utils';
+import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
+import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import { getGaugeAddress } from './staking.provider';
 export type UserGuageShare = {
   id: string;
   gauge: {
@@ -105,7 +107,7 @@ export default function useUserStakingData(
     () => !!poolAddress.value && poolAddress.value != ''
   );
   const stakeableUserPoolIds = computed(() =>
-    intersection(userPoolIds.value, POOLS.Stakeable.AllowList)
+    intersection(userPoolIds.value, POOLS.Stakable.AllowList)
   );
   const userPoolIds = computed(() => {
     return userPools.value.map(pool => pool.id);

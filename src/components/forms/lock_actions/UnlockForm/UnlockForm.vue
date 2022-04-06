@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
-import useVeBal from '@/composables/useVeBAL';
 import useTokens from '@/composables/useTokens';
-
+import useVeBal from '@/composables/useVeBAL';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import MyVeBAL from '../LockForm/components/MyVeBAL.vue';
 import VeBalUnlockForm from './components/VeBalUnlockForm/VeBalUnlockForm.vue';
-
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
 /**
  * COMPOSABLES

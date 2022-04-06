@@ -1,33 +1,30 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { format, formatDistanceToNow } from 'date-fns';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
+import { format, formatDistanceToNow } from 'date-fns';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import { scale, bnum } from '@/lib/utils';
-import { WalletError } from '@/types';
-import { TransactionActionState } from '@/types/transactions';
-import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
-
-import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTransactions from '@/composables/useTransactions';
+import BalForm from '@/components/_global/BalForm/BalForm.vue';
+import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   dateTimeLabelFor,
   toJsTimestamp,
   toUtcTime
 } from '@/composables/useTime';
+import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
-
-import BalForm from '@/components/_global/BalForm/BalForm.vue';
-import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
-import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
+import { bnum, scale } from '@/lib/utils';
 import { isGreaterThan, isPositive } from '@/lib/utils/validations';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
+import { WalletError } from '@/types';
+import { TransactionActionState } from '@/types/transactions';
 
 /**
  * TYPES

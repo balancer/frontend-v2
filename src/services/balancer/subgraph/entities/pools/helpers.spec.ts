@@ -1,7 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
 
 import decoratedPool from './__mocks__/decoratedPool';
-
 import {
   ExcludedAddresses,
   removeAddressesFromTotalLiquidity

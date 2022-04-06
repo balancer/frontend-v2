@@ -1,10 +1,12 @@
+import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
-import { UseQueryOptions } from 'react-query/types';
+
 import QUERY_KEYS from '@/constants/queryKeys';
-import { Gauge, SubgraphGauge } from '@/services/balancer/gauges/types';
 import { gaugesDecorator } from '@/services/balancer/gauges/gauges.decorator';
+import { Gauge, SubgraphGauge } from '@/services/balancer/gauges/types';
 import useWeb3 from '@/services/web3/useWeb3';
+
 import useNetwork from '../useNetwork';
 
 /**

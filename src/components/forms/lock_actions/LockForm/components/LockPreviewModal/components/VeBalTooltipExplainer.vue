@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
-import useVeBal from '@/composables/useVeBAL';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useVeBal from '@/composables/useVeBAL';
 
 /**
  * TYPES

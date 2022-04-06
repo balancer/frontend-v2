@@ -1,13 +1,13 @@
-import { reactive, computed } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
+import { computed, reactive } from 'vue';
+import { useInfiniteQuery } from 'vue-query';
 
-import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
-
+import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
+
 import useNetwork from '../useNetwork';
 
 type UserPoolActivitiesQueryResponse = {

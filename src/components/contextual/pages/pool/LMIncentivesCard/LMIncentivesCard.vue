@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import { configService } from '@/services/config/config.service';
-import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
 import { last } from 'lodash';
+
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
+import { configService } from '@/services/config/config.service';
 
 type Props = {
   poolId: string;

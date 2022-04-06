@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, defineExpose } from 'vue';
+import { defineExpose, ref } from 'vue';
+
 import BalCard from '../BalCard/BalCard.vue';
 
 /**

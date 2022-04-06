@@ -46,10 +46,11 @@
 </template>
 
 <script lang="ts">
-import { SupportedWallets } from '@/services/web3/web3.plugin';
+import { defineComponent } from 'vue';
+
 import WalletButton from '@/components/web3/WalletButton.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { defineComponent } from 'vue';
+import { SupportedWallets } from '@/services/web3/web3.plugin';
 export default defineComponent({
   emits: ['close'],
   components: {

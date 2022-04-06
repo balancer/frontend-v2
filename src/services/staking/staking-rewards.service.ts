@@ -1,24 +1,21 @@
-import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
-import { bnum, getBalAddress } from '@/lib/utils';
-import { Multicaller } from '@/lib/utils/balancer/contract';
-import { getBptPrice } from '@/lib/utils/balancer/pool';
-import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { AddressZero } from '@ethersproject/constants';
 import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
-import { isNil, mapValues, min } from 'lodash';
+import { isNil, mapValues } from 'lodash';
+
+import { bnum, getBalAddress } from '@/lib/utils';
+import { getBptPrice } from '@/lib/utils/balancer/pool';
+import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
+import { configService } from '@/services/config/config.service';
+
+import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
 import { GaugeController } from '../balancer/contracts/contracts/gauge-controller';
 import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge';
 import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin';
-import { SubgraphGauge } from '../balancer/gauges/types';
-import { calculateGaugeApr, getAprRange } from './utils';
-import { AnyPool, DecoratedPool, Pool } from '../balancer/subgraph/types';
-import { TokenPrices } from '../coingecko/api/price.service';
-import VeBAL from '../balancer/contracts/contracts/veBAL';
-import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
-import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
+import { SubgraphGauge } from '../balancer/gauges/types';
+import { Pool } from '../balancer/subgraph/types';
+import { TokenPrices } from '../coingecko/api/price.service';
+import { calculateGaugeApr, getAprRange } from './utils';
 
 export type PoolAPRs = Record<string, { min: string; max: string }>;
 
@@ -151,7 +148,7 @@ export class StakingRewardsService {
         : adjustedGaugeBalance;
 
       const boost = workingBalance.div(bnum(0.4).times(gaugeBalance));
-      return [gaugeShare.gauge.poolId, boost.toString()]
+      return [gaugeShare.gauge.poolId, boost.toString()];
     });
 
     return Object.fromEntries(boosts);

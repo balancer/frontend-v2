@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
-import pkg from '@/../package.json';
-import { Ref } from 'vue';
 import { initial } from 'lodash';
+import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
+
+import pkg from '@/../package.json';
 import { TOKENS } from '@/constants/tokens';
 import { configService } from '@/services/config/config.service';
 

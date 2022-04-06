@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { orderBy } from 'lodash';
+import { computed } from 'vue';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -28,6 +31,21 @@ const props = defineProps<Props>();
 const { fNum2 } = useNumbers();
 
 /**
+ * COMPUTED
+ */
+const sortedAmounts = computed(() =>
+  orderBy(
+    Object.entries(props.fiatAmountMap),
+    ([, fiatAmount]) => Number(fiatAmount),
+    'desc'
+  ).map(([address, fiatAmount]) => ({
+    amount: props.amountMap[address],
+    fiatAmount,
+    address
+  }))
+);
+
+/**
  * METHODS
  */
 // The investment amount's relative percentage of the total fiat investment value.
@@ -41,19 +59,25 @@ function amountShare(address: string): string {
 
 <template>
   <div class="token-amount-table">
-    <div v-for="(amount, address) in amountMap" :key="address" class="relative">
+    <div
+      v-for="sortedAmount in sortedAmounts"
+      :key="sortedAmount.address"
+      class="relative"
+    >
       <div class="token-amount-table-content">
-        <BalAsset :address="address" :size="36" />
+        <BalAsset :address="sortedAmount.address" :size="36" />
         <div class="flex flex-col ml-3">
           <div class="font-medium text-lg">
             <span class="font-numeric">
-              {{ fNum2(amount, FNumFormats.token) }}
+              {{ fNum2(sortedAmount.amount, FNumFormats.token) }}
             </span>
-            {{ tokenMap[address].symbol }}
+            {{ tokenMap[sortedAmount.address].symbol }}
           </div>
           <div class="text-sm text-gray-500 font-numeric">
-            {{ fNum2(fiatAmountMap[address], FNumFormats.fiat) }}
-            ({{ fNum2(amountShare(address), FNumFormats.percent) }})
+            {{ fNum2(sortedAmount.fiatAmount, FNumFormats.fiat) }}
+            ({{
+              fNum2(amountShare(sortedAmount.address), FNumFormats.percent)
+            }})
           </div>
         </div>
       </div>

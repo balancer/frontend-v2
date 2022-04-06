@@ -2,14 +2,13 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
-import UnlockAmount from './components/UnlockAmount.vue';
-import UnlockActions from './components/UnlockActions.vue';
-import UnlockSummary from './components/UnlockSummary.vue';
-
+import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
+
+import UnlockActions from './components/UnlockActions.vue';
+import UnlockAmount from './components/UnlockAmount.vue';
+import UnlockSummary from './components/UnlockSummary.vue';
 
 /**
  * TYPES

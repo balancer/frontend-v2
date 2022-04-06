@@ -2,14 +2,12 @@
 import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { usePool } from '@/composables/usePool';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import { usePool } from '@/composables/usePool';
-
-import Activities from './PoolActivities/Activities.vue';
 import BoostedActivities from './BoostedPoolActivities/Activities.vue';
+import Activities from './PoolActivities/Activities.vue';
 import Swaps from './PoolSwaps/Swaps.vue';
-
 import { PoolTransactionsTab } from './types';
 
 /**

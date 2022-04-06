@@ -31,21 +31,22 @@
 </template>
 
 <script lang="ts">
+import * as echarts from 'echarts/core';
+import { last } from 'lodash';
+import numeral from 'numeral';
 import {
+  computed,
   defineComponent,
+  onMounted,
   PropType,
   ref,
-  computed,
-  watch,
-  onMounted
+  watch
 } from 'vue';
-import numeral from 'numeral';
-import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
-import { last } from 'lodash';
+
+import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumOptions } from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
-import useDarkMode from '@/composables/useDarkMode';
 
 type AxisMoveEvent = {
   seriesIndex: number;

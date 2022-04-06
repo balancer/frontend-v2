@@ -3,22 +3,19 @@ import { onBeforeMount, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { configService } from '@/services/config/config.service';
-
-import useMigrateMath from '../../composables/useMigrateMath';
-
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
-
-import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
-import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
-
-import { TokenInfo } from '@/types/TokenList';
-import { PoolMigrationInfo } from '../../types';
-import { bnum } from '@/lib/utils';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { configService } from '@/services/config/config.service';
+import { TokenInfo } from '@/types/TokenList';
+
+import useMigrateMath from '../../composables/useMigrateMath';
+import { PoolMigrationInfo } from '../../types';
+import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
+import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;

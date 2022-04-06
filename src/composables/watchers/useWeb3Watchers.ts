@@ -1,16 +1,14 @@
+import { EthereumTransactionData } from 'bnc-sdk/dist/types/src/interfaces';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { BLOCKED_ADDRESSES } from '@/constants/blocked';
-
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { EthereumTransactionData } from 'bnc-sdk/dist/types/src/interfaces';
-
+import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 import useBlocknative from '../useBlocknative';
 import useTokens from '../useTokens';
 import useTransactions, { ReplacementReason } from '../useTransactions';
-import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 
 export default function useWeb3Watchers() {
   // COMPOSABLES

@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import { TransitionPresets, useTransition } from '@vueuse/core';
 import {
   computed,
   defineComponent,
@@ -46,7 +47,6 @@ import {
   PropType,
   ref
 } from 'vue';
-import { TransitionPresets, useTransition } from '@vueuse/core';
 
 import useNotifications, { Notification } from '@/composables/useNotifications';
 
@@ -96,7 +96,7 @@ export default defineComponent({
 
     // COMPUTED
     const progressClasses = computed(() => {
-      let bgClasses = 'bg-yellow-600 dark:bg-yellow-500';
+      let bgClasses = 'bg-orange-600 dark:bg-orange-500';
 
       if (props.notification.type === 'success') {
         bgClasses = 'bg-green-500 dark:bg-green-500';

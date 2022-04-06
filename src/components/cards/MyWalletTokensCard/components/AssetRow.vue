@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import useTokens from '@/composables/useTokens';
+
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES

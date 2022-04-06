@@ -29,8 +29,9 @@
 </template>
 
 <script lang="ts">
-import useTailwind from '@/composables/useTailwind';
 import { defineComponent } from 'vue';
+
+import useTailwind from '@/composables/useTailwind';
 
 export default defineComponent({
   name: 'StarsIcon',

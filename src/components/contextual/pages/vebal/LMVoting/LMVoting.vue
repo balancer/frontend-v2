@@ -1,15 +1,15 @@
 <script lang="ts" setup>
+import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
 import { computed, ref } from 'vue';
-import { scale, bnum } from '@/lib/utils';
-import { intervalToDuration, Interval, Duration, nextThursday } from 'date-fns';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useVotingGauges from '@/composables/useVotingGauges';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
+import useVotingGauges from '@/composables/useVotingGauges';
+import { bnum, scale } from '@/lib/utils';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 import GaugesTable from './GaugesTable.vue';
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 
 /**

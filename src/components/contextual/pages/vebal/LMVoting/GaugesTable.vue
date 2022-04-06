@@ -1,24 +1,24 @@
 <script setup lang="ts">
+import { Network } from '@balancer-labs/sdk';
+import BigNumber from 'bignumber.js';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import BigNumber from 'bignumber.js';
-import { scale } from '@/lib/utils';
-import useNumbers from '@/composables/useNumbers';
-import useBreakpoints from '@/composables/useBreakpoints';
+
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
-
-import GaugeVoteInfo from './GaugeVoteInfo.vue';
-
-import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { Network } from '@balancer-labs/sdk';
+import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
-import useWeb3 from '@/services/web3/useWeb3';
+import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
   orderedPoolTokens,
   poolURLFor
 } from '@/composables/usePool';
+import { scale } from '@/lib/utils';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import GaugeVoteInfo from './GaugeVoteInfo.vue';
 
 /**
  * TYPES
@@ -159,7 +159,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :is-paginated="isPaginated"
       :on-row-click="redirectToPool"
       :initial-state="{
-        sortColumn: 'poolValue',
+        sortColumn: 'nextPeriodVotes',
         sortDirection: 'desc'
       }"
     >

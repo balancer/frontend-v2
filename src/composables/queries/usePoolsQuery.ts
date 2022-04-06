@@ -1,24 +1,26 @@
-import { computed, reactive, ref, Ref } from 'vue';
-import { useInfiniteQuery } from 'vue-query';
-import { UseInfiniteQueryOptions } from 'react-query/types';
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 import { flatten } from 'lodash';
-import QUERY_KEYS from '@/constants/queryKeys';
+import { UseInfiniteQueryOptions } from 'react-query/types';
+import { computed, reactive, Ref, ref } from 'vue';
+import { useInfiniteQuery } from 'vue-query';
+
 import { POOLS } from '@/constants/pools';
+import QUERY_KEYS from '@/constants/queryKeys';
+import { bnum, forChange } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import {
   DecoratedPool,
   LinearPool,
   Pool
 } from '@/services/balancer/subgraph/types';
+
+import useApp from '../useApp';
+import useNetwork from '../useNetwork';
+import { isStablePhantom, lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
-import useApp from '../useApp';
-import { bnum, forChange } from '@/lib/utils';
-import useNetwork from '../useNetwork';
-import { getAddress } from '@ethersproject/address';
-import { formatUnits } from '@ethersproject/units';
-import { isStablePhantom, lpTokensFor } from '../usePool';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import useGaugesQuery from './useGaugesQuery';
 
 type PoolsQueryResponse = {

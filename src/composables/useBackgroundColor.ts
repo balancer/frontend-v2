@@ -9,8 +9,9 @@
  * @dev to use, set route meta.bgColors attribute in router.ts for page.
  */
 import { ref, watch } from 'vue';
-import useDarkMode from '@/composables/useDarkMode';
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router';
+
+import useDarkMode from '@/composables/useDarkMode';
 
 /**
  * CONSTANTS

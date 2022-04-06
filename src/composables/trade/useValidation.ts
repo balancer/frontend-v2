@@ -1,7 +1,9 @@
 import { computed, Ref } from 'vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '../useTokens';
+
 import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import useTokens from '../useTokens';
 
 export enum TradeValidation {
   VALID,

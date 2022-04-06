@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { withDefaults, defineEmits } from 'vue';
+import { defineEmits, withDefaults } from 'vue';
 
+import BalIcon from '../BalIcon/BalIcon.vue';
 import {
   useChipClasses,
   useCloseIconClasses
 } from './composables/useChipStyles';
-
-import BalIcon from '../BalIcon/BalIcon.vue';
 
 type Props = {
   label?: string;

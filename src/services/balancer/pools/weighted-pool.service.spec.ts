@@ -1,11 +1,13 @@
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import { AddressZero } from '@ethersproject/constants';
-import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
-import WeightedPoolsService, { JoinPoolRequest } from './weighted-pool.service';
-import BigNumber from 'bignumber.js';
 import { WeightedPoolEncoder } from '@balancer-labs/balancer-js';
-import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
+import { AddressZero } from '@ethersproject/constants';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import BigNumber from 'bignumber.js';
+
+import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
+
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
+import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
+import WeightedPoolsService, { JoinPoolRequest } from './weighted-pool.service';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();

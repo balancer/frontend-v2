@@ -1,13 +1,14 @@
 <script lang="ts" setup>
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import AppLogo from '@/components/images/AppLogo.vue';
 import useApp from '@/composables/useApp';
 import useConfig from '@/composables/useConfig';
 import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 /**
  * PROPS & EMITS

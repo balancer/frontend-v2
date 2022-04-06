@@ -1,6 +1,6 @@
 import Service from '../../balancer-subgraph.service';
+import { QueryBuilder, TradePairSnapshot } from '../../types';
 import tradePairSnapshotQueryBuilder from './query';
-import { TradePairSnapshot, QueryBuilder } from '../../types';
 
 export default class TradePairSnapshots {
   service: Service;

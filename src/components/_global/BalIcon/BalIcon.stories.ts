@@ -1,5 +1,5 @@
-import BalIcon from './BalIcon.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
+import BalIcon from './BalIcon.vue';
 
 export default {
   component: BalIcon,

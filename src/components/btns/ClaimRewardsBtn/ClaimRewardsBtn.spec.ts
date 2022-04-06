@@ -1,9 +1,11 @@
-import { render, fireEvent } from '@testing-library/vue';
-import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
-import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
+import { fireEvent, render } from '@testing-library/vue';
+
+import { txResponseMock } from '@/__mocks__/transactions';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
-import { txResponseMock } from '@/__mocks__/transactions';
+
+import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
+import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
 
 ClaimRewardsBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };

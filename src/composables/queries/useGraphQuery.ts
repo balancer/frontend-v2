@@ -1,11 +1,11 @@
-import { reactive } from 'vue';
-import { QueryKey } from 'react-query';
-import { useQuery, UseQueryOptions } from 'vue-query';
 import axios from 'axios';
-
-import { initial, last } from 'lodash';
-import { configService } from '@/services/config/config.service';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { initial, last } from 'lodash';
+import { QueryKey } from 'react-query';
+import { reactive } from 'vue';
+import { useQuery, UseQueryOptions } from 'vue-query';
+
+import { configService } from '@/services/config/config.service';
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,

@@ -1,13 +1,12 @@
 <script lang="ts" setup>
+import { orderBy, take } from 'lodash';
 import { computed } from 'vue';
-
-import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useWeb3 from '@/services/web3/useWeb3';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { useI18n } from 'vue-i18n';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
-import { useI18n } from 'vue-i18n';
-import { orderBy, take } from 'lodash';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * COMPOSABLES

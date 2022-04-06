@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
+import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
 /** STATE */

@@ -1,5 +1,6 @@
-import { isPolygon } from '@/composables/useNetwork';
 import { merge } from 'lodash';
+
+import { isPolygon } from '@/composables/useNetwork';
 
 const defaultAttrs = {
   pool: {

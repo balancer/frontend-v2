@@ -151,7 +151,7 @@ const { currency } = useUserSettings();
             <template v-slot:activator>
               <StarsIcon
                 v-if="props.pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
-                class="h-4 text-yellow-300"
+                class="h-4 text-orange-300"
               />
               <BalIcon
                 v-else

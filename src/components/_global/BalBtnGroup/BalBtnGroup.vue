@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
 import omit from 'lodash/omit';
+import { computed, defineComponent, PropType } from 'vue';
 
 interface Option {
   value: string | number;

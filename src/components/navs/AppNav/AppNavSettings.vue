@@ -156,25 +156,25 @@
 </template>
 
 <script>
-import { defineComponent, reactive, computed, toRefs } from 'vue';
+import { Network } from '@balancer-labs/sdk';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import { useStore } from 'vuex';
-import {
-  getConnectorName,
-  getConnectorLogo
-} from '@/services/web3/web3.plugin';
-import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
+
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
-import useWeb3 from '@/services/web3/useWeb3';
-
-import {
-  tradeInterfaceOptions,
-  ethereumTxTypeOptions
-} from '@/constants/options';
-import { TradeInterface } from '@/store/modules/app';
-import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
-import { Network } from '@balancer-labs/sdk';
+import useEthereumTxType from '@/composables/useEthereumTxType';
+import {
+  ethereumTxTypeOptions,
+  tradeInterfaceOptions
+} from '@/constants/options';
+import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
+import useWeb3 from '@/services/web3/useWeb3';
+import {
+  getConnectorLogo,
+  getConnectorName
+} from '@/services/web3/web3.plugin';
+import { TradeInterface } from '@/store/modules/app';
 
 const locales = {
   'en-US': 'English',

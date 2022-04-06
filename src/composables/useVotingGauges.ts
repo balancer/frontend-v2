@@ -1,11 +1,13 @@
 import { computed } from 'vue';
+
 import {
   KOVAN_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
   VotingGauge
 } from '@/constants/voting-gauges';
-import { isKovan } from './useNetwork';
+
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
+import { isKovan } from './useNetwork';
 
 export default function useVotingGauges() {
   // Hard coded list of voting gauges

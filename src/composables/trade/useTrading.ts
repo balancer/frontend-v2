@@ -1,24 +1,21 @@
-import { computed, onMounted, ref, Ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import { parseFixed } from '@ethersproject/bignumber';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
-
-import useNumbers, { FNumFormats } from '../useNumbers';
-import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
-import { networkId } from '../useNetwork';
-
-import { bnum, lsGet, lsSet } from '@/lib/utils';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { computed, onMounted, Ref, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { bnum, lsGet, lsSet } from '@/lib/utils';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
+import useWeb3 from '@/services/web3/useWeb3';
 
-import useSor from './useSor';
-import useGnosis from './useGnosis';
+import { networkId } from '../useNetwork';
+import useNumbers, { FNumFormats } from '../useNumbers';
+import useTokens from '../useTokens';
+import useUserSettings from '../useUserSettings';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from './constants';
+import useGnosis from './useGnosis';
+import useSor from './useSor';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 

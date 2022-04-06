@@ -1,11 +1,9 @@
 import { getAddress } from '@ethersproject/address';
 
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { Pool } from '@/services/balancer/subgraph/types';
-
 import { FiatCurrency } from '@/constants/currency';
-
 import { bnum } from '@/lib/utils';
+import { Pool } from '@/services/balancer/subgraph/types';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 import AaveSubgraphService, {
   aaveSubgraphService

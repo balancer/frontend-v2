@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { take } from 'lodash';
+import { computed } from 'vue';
+
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { take } from 'lodash';
-import { computed } from 'vue';
 
 const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();

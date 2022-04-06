@@ -56,16 +56,17 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { useI18n } from 'vue-i18n';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
-import { shortenLabel } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
+import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
+import { shortenLabel } from '@/lib/utils';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   props: {

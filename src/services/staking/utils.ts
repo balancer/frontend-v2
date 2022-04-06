@@ -1,5 +1,6 @@
-import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
+
+import { bnum } from '@/lib/utils';
 
 const MIN_BOOST = 1;
 const MAX_BOOST = 2.5;

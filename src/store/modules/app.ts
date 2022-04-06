@@ -1,6 +1,6 @@
+import LS_KEYS from '@/constants/local-storage.keys';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
-import LS_KEYS from '@/constants/local-storage.keys';
 
 export enum TradeInterface {
   GNOSIS = 'gnosis',

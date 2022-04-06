@@ -1,4 +1,5 @@
 import { WalletError } from '@/types';
+
 import { Connector } from '../connector';
 export class TallyConnector extends Connector {
   id = 'injectedTally';

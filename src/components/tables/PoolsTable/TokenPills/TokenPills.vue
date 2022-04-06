@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { getAddress } from 'ethers/lib/utils';
 import { computed, defineProps, withDefaults } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-
 import { PoolToken } from '@/services/balancer/subgraph/types';
 
-import WeightedTokenPill from './WeightedTokenPill.vue';
-import StableTokenPill from './StableTokenPill.vue';
 import HiddenTokensPills from './HiddenTokensPills.vue';
-import { getAddress } from 'ethers/lib/utils';
+import StableTokenPill from './StableTokenPill.vue';
+import WeightedTokenPill from './WeightedTokenPill.vue';
 
 type Props = {
   tokens: PoolToken[];

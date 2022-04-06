@@ -1,4 +1,5 @@
 import { mount } from 'vue-composable-tester';
+
 import useBreakpoints from './useBreakpoints';
 
 describe('useBreakpoints', () => {
