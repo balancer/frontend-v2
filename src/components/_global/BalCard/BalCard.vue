@@ -1,6 +1,11 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div :class="['card-container', { 'overflow-y-scroll': overflowYScroll }]">
+    <div
+      :class="[
+        'card-container',
+        { 'overflow-y-scroll max-h-screen': overflowYScroll }
+      ]"
+    >
       <div v-if="imgSrc" class="feature" :style="featureStyles" />
       <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
         <component :is="titleTag" v-if="!!title" v-text="title" />
@@ -22,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'BalCard',

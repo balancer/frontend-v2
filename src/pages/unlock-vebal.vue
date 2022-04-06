@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import UnlockForm from '@/components/forms/lock_actions/UnlockForm/UnlockForm.vue';
-
 import { isVeBalSupported } from '@/composables/useVeBAL';
 </script>
 

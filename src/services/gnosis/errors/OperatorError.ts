@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+
 import i18n from '@/plugins/i18n';
 
 type ApiActionType = 'get' | 'create' | 'delete';

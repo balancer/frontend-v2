@@ -1,14 +1,16 @@
-import { ContractInterface } from '@ethersproject/contracts';
-import { MaxUint256 } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Vault__factory } from '@balancer-labs/typechain';
-import { SwapV2 } from '@balancer-labs/sdk';
-import ConfigService, { configService } from '@/services/config/config.service';
 import {
   FundManagement,
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
+import { SwapV2 } from '@balancer-labs/sdk';
+import { Vault__factory } from '@balancer-labs/typechain';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { MaxUint256 } from '@ethersproject/constants';
+import { ContractInterface } from '@ethersproject/contracts';
+
+import ConfigService, { configService } from '@/services/config/config.service';
+
 import Web3Service, { web3Service } from '../web3/web3.service';
 
 export default class VaultService {

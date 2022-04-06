@@ -16,11 +16,11 @@
 import anime, { AnimeParams } from 'animejs';
 import {
   defineComponent,
+  nextTick,
   onMounted,
   PropType,
   ref,
-  watch,
-  nextTick
+  watch
 } from 'vue';
 export default defineComponent({
   emits: ['on-exit', 'update-dimensions', 'on-presence'],

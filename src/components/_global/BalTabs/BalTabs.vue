@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 
 interface Tab {
   value: string;

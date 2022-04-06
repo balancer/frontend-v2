@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onBeforeMount } from 'vue';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { TransactionActionInfo } from '@/types/transactions';
+import { computed, onBeforeMount, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import useConfig from '@/composables/useConfig';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
-import { useI18n } from 'vue-i18n';
+import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionActionInfo } from '@/types/transactions';
 
 /**
  * TYPES

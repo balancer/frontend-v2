@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { bnum } from '@/lib/utils';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
-
 import { TokenInfo } from '@/types/TokenList';
-import { computed } from 'vue';
 
 import useLockState from '../../../composables/useLockState';
 

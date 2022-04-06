@@ -1,16 +1,18 @@
+import { fromUnixTime, getUnixTime, startOfHour } from 'date-fns';
+import { groupBy, invert, last } from 'lodash';
+
+import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { TOKENS } from '@/constants/tokens';
+import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
+import { retryPromiseWithDelay } from '@/lib/utils/promise';
+import { configService as _configService } from '@/services/config/config.service';
+
 import { CoingeckoClient } from '../coingecko.client';
 import {
   CoingeckoService,
   getNativeAssetId,
   getPlatformId
 } from '../coingecko.service';
-import { TOKENS } from '@/constants/tokens';
-import { configService as _configService } from '@/services/config/config.service';
-import { groupBy, invert, last } from 'lodash';
-import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
-import { retryPromiseWithDelay } from '@/lib/utils/promise';
-import { twentyFourHoursInSecs } from '@/composables/useTime';
-import { fromUnixTime, getUnixTime, startOfHour } from 'date-fns';
 
 /**
  * TYPES

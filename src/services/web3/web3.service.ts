@@ -1,5 +1,4 @@
-import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
-import { ComputedRef } from 'vue';
+import { Network } from '@balancer-labs/sdk';
 import { Contract } from '@ethersproject/contracts';
 import { ErrorCode } from '@ethersproject/logger';
 import {
@@ -7,12 +6,15 @@ import {
   TransactionResponse,
   Web3Provider
 } from '@ethersproject/providers';
-import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
+import { ComputedRef } from 'vue';
+
 import { logFailedTx } from '@/lib/utils/logging';
-import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import ConfigService, { configService } from '@/services/config/config.service';
+import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { WalletError } from '@/types';
-import { Network } from '@balancer-labs/sdk';
+
+import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 interface Web3Profile {
   ens: string | null;

@@ -1,34 +1,35 @@
-import { MetamaskConnector } from './connectors/metamask/metamask.connector';
-import { Connector } from './connectors/connector';
-import { computed, reactive, ref, Ref, toRefs } from 'vue';
-import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
-import { lsGet, lsSet } from '@/lib/utils';
 import {
   JsonRpcProvider,
   JsonRpcSigner,
   Web3Provider
 } from '@ethersproject/providers';
-import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
-import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
-import { PortisConnector } from './connectors/portis/portis.connector';
-import useFathom from '@/composables/useFathom';
+import { computed, reactive, Ref, ref, toRefs } from 'vue';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
-import tallyLogo from '@/assets/images/connectors/tally.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
 import portisLogo from '@/assets/images/connectors/portis.svg';
 import statusLogo from '@/assets/images/connectors/status.svg';
+import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
+import useFathom from '@/composables/useFathom';
+import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
+
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
-import { web3Service } from './web3.service';
+import { Connector } from './connectors/connector';
+import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
+import { MetamaskConnector } from './connectors/metamask/metamask.connector';
+import { PortisConnector } from './connectors/portis/portis.connector';
 import { TallyConnector } from './connectors/tally/tally.connector';
+import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
+import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
+import { web3Service } from './web3.service';
 
 export type Wallet =
   | 'metamask'

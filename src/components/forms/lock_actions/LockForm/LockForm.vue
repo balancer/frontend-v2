@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
-
+import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import LockableTokens from './components/LockableTokens.vue';
 import HowToLock from './components/HowToLock.vue';
+import LockableTokens from './components/LockableTokens.vue';
 import MyVeBAL from './components/MyVeBAL.vue';
 import VeBalForm from './components/VeBalForm/VeBalForm.vue';
-
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
 
 /**
  * COMPOSABLES

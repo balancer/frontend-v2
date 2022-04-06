@@ -1,22 +1,22 @@
 import { Signer } from '@ethersproject/abstract-signer';
-
 import {
   domain as domainGp,
-  signOrder as signOrderGp,
-  signOrderCancellation as signOrderCancellationGp,
-  Order,
+  EcdsaSignature,
   EcdsaSigningScheme,
+  IntChainIdTypedDataV4Signer,
+  Order,
+  OrderCancellation as OrderCancellationGp,
   Signature,
   SigningScheme,
-  EcdsaSignature,
-  TypedDataV3Signer,
-  OrderCancellation as OrderCancellationGp,
-  IntChainIdTypedDataV4Signer
+  signOrder as signOrderGp,
+  signOrderCancellation as signOrderCancellationGp,
+  TypedDataV3Signer
 } from '@gnosis.pm/gp-v2-contracts';
+
 import { networkId } from '@/composables/useNetwork';
+import { WalletError } from '@/types';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
-import { WalletError } from '@/types';
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal

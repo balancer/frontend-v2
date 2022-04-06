@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import usePools from '@/composables/pools/usePools';
-import { EXTERNAL_LINKS } from '@/constants/links';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
-import useDarkMode from '@/composables/useDarkMode';
-import { useLock } from '@/composables/useLock';
-import { bnum } from '@/lib/utils';
 import { useRouter } from 'vue-router';
+
+import usePools from '@/composables/pools/usePools';
 import useStaking from '@/composables/staking/useStaking';
+import useDarkMode from '@/composables/useDarkMode';
+import useFathom from '@/composables/useFathom';
+import { useLock } from '@/composables/useLock';
 import { isL2 } from '@/composables/useNetwork';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * COMPOSABLES

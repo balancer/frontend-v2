@@ -1,13 +1,14 @@
-import { TransactionResponse } from '@ethersproject/providers';
+import { SwapKind } from '@balancer-labs/balancer-js';
+import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionResponse } from '@ethersproject/providers';
+
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import {
   swapService,
   SwapToken,
   SwapTokenType
 } from '@/services/swap/swap.service';
-import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
-import { SwapKind } from '@balancer-labs/balancer-js';
 
 export async function swapIn(
   sorReturn: SorReturn,

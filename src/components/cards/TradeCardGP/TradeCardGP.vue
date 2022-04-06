@@ -125,40 +125,36 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, onBeforeMount } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-
-import { useI18n } from 'vue-i18n';
-import { isAddress, getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import useValidation, {
-  TradeValidation
-} from '@/composables/trade/useValidation';
-import useTrading from '@/composables/trade/useTrading';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
-import useTokens from '@/composables/useTokens';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
-import { TOKENS } from '@/constants/tokens';
-
-import { isRequired } from '@/lib/utils/validations';
-import { WrapType } from '@/lib/utils/balancer/wrapper';
-import { lsGet } from '@/lib/utils';
+import { computed, defineComponent, onBeforeMount, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
-
+import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
+import { useTradeState } from '@/composables/trade/useTradeState';
+import useTrading from '@/composables/trade/useTrading';
+import useValidation, {
+  TradeValidation
+} from '@/composables/trade/useValidation';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { TOKENS } from '@/constants/tokens';
+import { lsGet } from '@/lib/utils';
+import { WrapType } from '@/lib/utils/balancer/wrapper';
+import { isRequired } from '@/lib/utils/validations';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import TradeRoute from '../TradeCard/TradeRoute.vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import { useTradeState } from '@/composables/trade/useTradeState';
 
 export default defineComponent({
   components: {

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/vue';
+
 import BalStack from './BalStack.vue';
 
 describe.only('BalStack', () => {

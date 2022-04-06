@@ -1,22 +1,17 @@
-import { computed, ref, Ref } from 'vue';
-import { parseUnits } from 'ethers/lib/utils';
+import { queryBatchSwapTokensIn } from '@balancer-labs/sdk';
 import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
+import { computed, Ref, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import { usePool } from '@/composables/usePool';
-
+import useTokens from '@/composables/useTokens';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
+import { balancer } from '@/lib/balancer.sdk';
+import { bnSum, bnum } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-
-import { bnSum, bnum } from '@/lib/utils';
-
-import { balancer } from '@/lib/balancer.sdk';
-
-import { queryBatchSwapTokensIn } from '@balancer-labs/sdk';
-
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-
 import { BatchSwap } from '@/types';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
@@ -137,7 +132,7 @@ export default function useMigrateMath(
 
   const highPriceImpact = computed(() => {
     if (!batchSwapLoaded.value) return false;
-    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
   });
 
   const batchSwapAmountMap = computed(

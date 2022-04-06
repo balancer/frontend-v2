@@ -1,19 +1,18 @@
-import { ref, computed, Ref } from 'vue';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { getAddress } from '@ethersproject/address';
+import { MaxUint256 } from '@ethersproject/constants';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
-import useTransactions from '../useTransactions';
-
-import { tokenService } from '@/services/token/token.service';
-
-import { MaxUint256 } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
+import useTokens from '@/composables/useTokens';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
-import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { tokenService } from '@/services/token/token.service';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import useTransactions from '../useTransactions';
 
 export type ApprovalState = {
   init: boolean;
@@ -52,7 +51,7 @@ export default function useTokenApprovals(
   /**
    * STATE
    */
-  const requiredApprovalState = ref<ApprovalStateMap>(
+  const vaultApprovalStateMap = ref<ApprovalStateMap>(
     Object.fromEntries(
       approvalsRequired(
         tokenAddresses,
@@ -89,7 +88,7 @@ export default function useTokenApprovals(
     const defaultOptions: ApprovalOptions = {
       spender: appNetworkConfig.addresses.vault,
       amount: MaxUint256.toString(),
-      state: requiredApprovalState.value[address]
+      state: vaultApprovalStateMap.value[address]
     };
     const { spender, amount, state } = Object.assign(defaultOptions, options);
 
@@ -143,7 +142,9 @@ export default function useTokenApprovals(
     }
   }
 
-  async function getApprovalForSpender(spender: string) {
+  async function getApprovalStateMapFor(
+    spender: string
+  ): Promise<ApprovalStateMap> {
     const customTokenMap = getTokens(tokenAddresses);
 
     const allowances = await tokenService.allowances.get(
@@ -170,12 +171,12 @@ export default function useTokenApprovals(
 
   return {
     // state
-    requiredApprovalState,
+    vaultApprovalStateMap,
     approving,
     // computed
     requiredApprovals,
     // methods
     approveToken,
-    getApprovalForSpender
+    getApprovalStateMapFor
   };
 }

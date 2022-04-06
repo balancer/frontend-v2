@@ -6,12 +6,14 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useAttrs, computed, onMounted, ref } from 'vue';
-import { HtmlInputEvent } from '@/types';
-import useInputStyles from './composables/useInputStyles';
-import useInputEvents from './composables/useInputEvents';
-import useInputValidation from './composables/useInputValidation';
 import { omit } from 'lodash';
+import { computed, onMounted, ref, useAttrs } from 'vue';
+
+import { HtmlInputEvent } from '@/types';
+
+import useInputEvents from './composables/useInputEvents';
+import useInputStyles from './composables/useInputStyles';
+import useInputValidation from './composables/useInputValidation';
 
 /**
  * TYPES

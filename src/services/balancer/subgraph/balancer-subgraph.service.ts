@@ -1,14 +1,15 @@
-import { balancerSubgraphClient } from './balancer-subgraph.client';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import Pools from './entities/pools';
-import PoolShares from './entities/poolShares';
-import PoolActivities from './entities/poolActivities';
-import PoolSwaps from './entities/poolSwaps';
-import PoolSnapshots from './entities/poolSnapshots';
-import TradePairSnapshots from './entities/tradePairs';
+import { Network } from '@balancer-labs/sdk';
 
 import { networkId } from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+
+import { balancerSubgraphClient } from './balancer-subgraph.client';
+import PoolActivities from './entities/poolActivities';
+import Pools from './entities/pools';
+import PoolShares from './entities/poolShares';
+import PoolSnapshots from './entities/poolSnapshots';
+import PoolSwaps from './entities/poolSwaps';
+import TradePairSnapshots from './entities/tradePairs';
 
 export default class BalancerSubgraphService {
   pools: Pools;

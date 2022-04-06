@@ -1,32 +1,24 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 
+import { LockType } from '@/components/forms/lock_actions/LockForm/types';
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
+import useTokens from '@/composables/useTokens';
+import { expectedVeBal } from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
-
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
-
-import LockPreviewModal from '../LockPreviewModal/LockPreviewModal.vue';
-
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-
-import useTokens from '@/composables/useTokens';
-
+import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
-import Summary from './components/Summary.vue';
-import LockAmount from './components/LockAmount.vue';
-import LockEndDate from './components/LockEndDate.vue';
-
-import useLockState from '../../composables/useLockState';
 import useLockAmount from '../../composables/useLockAmount';
 import useLockEndDate from '../../composables/useLockEndDate';
-
-import { LockType } from '@/components/forms/lock_actions/LockForm/types';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { expectedVeBal } from '@/composables/useVeBAL';
-import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
+import useLockState from '../../composables/useLockState';
+import LockPreviewModal from '../LockPreviewModal/LockPreviewModal.vue';
+import LockAmount from './components/LockAmount.vue';
+import LockEndDate from './components/LockEndDate.vue';
+import Summary from './components/Summary.vue';
 
 /**
  * TYPES

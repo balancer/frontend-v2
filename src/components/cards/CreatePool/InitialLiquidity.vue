@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { onMounted, onBeforeMount, ref, computed } from 'vue';
-import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-
-import { useI18n } from 'vue-i18n';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
 import { isGreaterThan } from '@/lib/utils/validations';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const emit = defineEmits(['update:height']);
 

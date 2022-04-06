@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import { HtmlInputEvent } from '@/types';
-import { ref, computed, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
-
-import { bnum } from '@/lib/utils';
-import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
-
-import useWeb3 from '@/services/web3/useWeb3';
 
 import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
-
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
+import useWeb3 from '@/services/web3/useWeb3';
+import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -44,6 +40,7 @@ type Props = {
   hideFooter?: boolean;
   ignoreWalletBalance?: boolean;
   tokenValue?: string;
+  placeholder?: string;
 };
 
 /**
@@ -220,7 +217,7 @@ watchEffect(() => {
 <template>
   <BalTextInput
     v-model="_amount"
-    :placeholder="hintAmount || '0.0'"
+    :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"
     :decimalLimit="token?.decimals || 18"
@@ -305,7 +302,7 @@ watchEffect(() => {
         />
         <div
           v-if="shouldShowTxBufferMessage"
-          class="mt-2 text-yellow-600 dark:text-yellow-400 text-xs"
+          class="mt-2 text-orange-600 dark:text-orange-400 text-xs"
         >
           {{
             t('minTransactionBuffer', [

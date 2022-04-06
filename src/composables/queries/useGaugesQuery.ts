@@ -1,6 +1,7 @@
+import { UseQueryOptions } from 'react-query/types';
 import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { UseQueryOptions } from 'react-query/types';
+
 import QUERY_KEYS from '@/constants/queryKeys';
 import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';

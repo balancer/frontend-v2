@@ -1,5 +1,6 @@
-import { computed, ref } from 'vue';
 import { Network } from '@balancer-labs/sdk';
+import { computed, ref } from 'vue';
+
 import config from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 

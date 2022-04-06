@@ -1,23 +1,21 @@
 <script setup lang="ts">
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { getAddress } from 'ethers/lib/utils';
 import { computed, onBeforeMount, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useQueryClient } from 'vue-query';
 
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
+import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
-import useStaking from '@/composables/staking/useStaking';
-import { useI18n } from 'vue-i18n';
-
 import { bnum } from '@/lib/utils';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import { TransactionActionInfo } from '@/types/transactions';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
-
-import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import { getAddress } from 'ethers/lib/utils';
-import { useQueryClient } from 'vue-query';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionActionInfo } from '@/types/transactions';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {

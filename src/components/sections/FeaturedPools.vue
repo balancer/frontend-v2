@@ -66,9 +66,10 @@
 </template>
 
 <script lang="ts">
-import { EXTERNAL_LINKS } from '@/constants/links';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
   setup() {

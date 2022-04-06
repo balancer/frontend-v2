@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import 'swiper/swiper-bundle.css';
+
 import Swiper from 'swiper';
 import SwiperCore, { Pagination } from 'swiper/core';
-import 'swiper/swiper-bundle.css';
+import { onMounted } from 'vue';
 
 type Props = { height: string };
 defineProps<Props>();
@@ -59,7 +60,7 @@ onMounted(() => {
 <style>
 .bal-bullet {
   @apply bg-gradient-to-tr;
-  @apply from-yellow-400;
+  @apply from-orange-400;
   @apply to-pink-500;
   @apply mr-3;
   width: 10px;

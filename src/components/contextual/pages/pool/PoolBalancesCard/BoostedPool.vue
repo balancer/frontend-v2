@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import useBreakpoints from '@/composables/useBreakpoints';
+import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import useBreakpoints from '@/composables/useBreakpoints';
-
 import AssetRow from './components/AssetRow';
-import { bnum } from '@/lib/utils';
 
 /**
  * TYPES

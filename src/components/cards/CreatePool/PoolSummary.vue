@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
-
-import ECharts from 'vue-echarts';
+import { prominent } from 'color.js';
 import echarts from 'echarts';
+import { computed, nextTick, ref, watch } from 'vue';
+import ECharts from 'vue-echarts';
 
-import useTokens from '@/composables/useTokens';
-import useUrls from '@/composables/useUrls';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-
-import { prominent } from 'color.js';
 import useDarkMode from '@/composables/useDarkMode';
-import useTailwind from '@/composables/useTailwind';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTailwind from '@/composables/useTailwind';
+import useTokens from '@/composables/useTokens';
+import useUrls from '@/composables/useUrls';
 
 /**
  * CONSTANTS

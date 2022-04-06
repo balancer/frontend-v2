@@ -1,29 +1,44 @@
+import { MaxUint256 } from '@ethersproject/constants';
 import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useTokenApprovals, {
-  ApprovalState
+  ApprovalStateMap
 } from '@/composables/pools/useTokenApprovals';
 import useTokens from '@/composables/useTokens';
-
 import useWeb3 from '@/services/web3/useWeb3';
-
 import { TransactionActionInfo } from '@/types/transactions';
-import { MaxUint256 } from '@ethersproject/constants';
+
+/**
+ * TYPES
+ */
+type ApprovalActionOptions = {
+  spender: string;
+  amount: string;
+  stateMap: ApprovalStateMap;
+};
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
   amounts: Ref<string[]>
 ) {
+  /**
+   * COMPOSABLES
+   */
   const { t } = useI18n();
   const { getToken } = useTokens();
   const {
-    requiredApprovalState,
+    vaultApprovalStateMap,
     approveToken,
-    getApprovalForSpender
+    getApprovalStateMapFor
   } = useTokenApprovals(tokenAddresses, amounts);
   const { appNetworkConfig } = useWeb3();
+  const vaultAddress = appNetworkConfig.addresses.vault;
 
+  /**
+   * STATE
+   */
+  // Approval actions based on Vault approvals for tokenAddresses
   const tokenApprovalActions: TransactionActionInfo[] = getTokenApprovalActions();
 
   /**
@@ -33,27 +48,26 @@ export default function useTokenApprovalActions(
     spender: string,
     amount: string = MaxUint256.toString()
   ) {
-    const requiredApprovalStateForSpender = await getApprovalForSpender(
-      spender
-    );
-    const actions = getTokenApprovalActions(
-      requiredApprovalStateForSpender,
-      spender,
-      amount
-    );
-    return actions;
+    const stateMap = await getApprovalStateMapFor(spender);
+    return getTokenApprovalActions({ spender, amount, stateMap });
   }
 
   function getTokenApprovalActions(
-    customApprovalState?: Record<string, ApprovalState>,
-    spender: string = appNetworkConfig.addresses.vault,
-    amount: string = MaxUint256.toString()
+    options: Partial<ApprovalActionOptions> = {}
   ): TransactionActionInfo[] {
-    const approvalStates = customApprovalState || requiredApprovalState.value;
+    const defaultOptions: ApprovalActionOptions = {
+      spender: vaultAddress,
+      amount: MaxUint256.toString(),
+      stateMap: vaultApprovalStateMap.value
+    };
+    const { spender, amount, stateMap } = Object.assign(
+      defaultOptions,
+      options
+    );
 
-    return Object.keys(approvalStates).map(address => {
+    return Object.keys(stateMap).map(address => {
       const token = getToken(address);
-      const state = approvalStates[address];
+      const state = stateMap[address];
       return {
         label: t(
           spender === appNetworkConfig.addresses.veBAL

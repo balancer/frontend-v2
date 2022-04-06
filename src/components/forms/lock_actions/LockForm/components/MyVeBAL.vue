@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { format } from 'date-fns';
-
-import { bnum } from '@/lib/utils';
-
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useVeBal from '@/composables/useVeBAL';
-
-import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import { computed } from 'vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useVeBal from '@/composables/useVeBAL';
+import { bnum } from '@/lib/utils';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 /**
  * TYPES

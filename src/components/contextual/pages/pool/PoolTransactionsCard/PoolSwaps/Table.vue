@@ -1,17 +1,14 @@
 <script setup lang="ts">
+import { formatDistanceToNow } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { formatDistanceToNow } from 'date-fns';
-
-import useTokens from '@/composables/useTokens';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useBreakpoints from '@/composables/useBreakpoints';
-
-import { PoolSwap } from '@/services/balancer/subgraph/types';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-
+import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import { PoolSwap } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

@@ -1,14 +1,16 @@
-import { computed, Ref, ref, watch } from 'vue';
 import { TransactionResponse } from '@ethersproject/providers';
+import { computed, Ref, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { configService } from '@/services/config/config.service';
-import { TokenInfoMap } from '@/types/TokenList';
-import useTokens from '../useTokens';
-import useConfig from '../useConfig';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '../useTransactions';
+import { TokenInfoMap } from '@/types/TokenList';
+
+import useConfig from '../useConfig';
 import useEthers from '../useEthers';
-import { useI18n } from 'vue-i18n';
+import useTokens from '../useTokens';
+import useTransactions from '../useTransactions';
 
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,

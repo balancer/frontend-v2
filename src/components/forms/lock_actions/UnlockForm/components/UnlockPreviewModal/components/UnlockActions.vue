@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
-import { TransactionActionInfo } from '@/types/transactions';
-import { TokenInfo } from '@/types/TokenList';
+import { reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { dateTimeLabelFor } from '@/composables/useTime';
 import useConfig from '@/composables/useConfig';
-
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-
+import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTransactions from '@/composables/useTransactions';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfo } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 
 /**
  * TYPES

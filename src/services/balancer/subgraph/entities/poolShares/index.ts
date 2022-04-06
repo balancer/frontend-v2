@@ -1,6 +1,6 @@
 import Service from '../../balancer-subgraph.service';
-import poolQueryBuilder from './query';
 import { PoolShare, QueryBuilder } from '../../types';
+import poolQueryBuilder from './query';
 
 export default class PoolShares {
   service: Service;

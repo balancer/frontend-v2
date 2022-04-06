@@ -34,8 +34,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import BalIcon from '../BalIcon/BalIcon.vue';
+
 import BalBtn from '../BalBtn/BalBtn.vue';
+import BalIcon from '../BalIcon/BalIcon.vue';
 
 type AlertType = 'warning' | 'error' | 'info';
 
@@ -67,7 +68,7 @@ export default defineComponent({
     const bgColorClass = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'bg-yellow-50 dark:bg-yellow-500 border border-yellow-200 dark:border-0 text-black dark:text-white';
+          return 'bg-orange-50 dark:bg-orange-500 border border-orange-200 dark:border-0 text-black dark:text-white';
         case 'error':
           return 'bg-red-50 dark:bg-red-500 border border-red-200 dark:border-0 text-black dark:text-white';
         default:
@@ -127,7 +128,7 @@ export default defineComponent({
     const iconColorClasses = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'text-yellow-500 dark:text-white bg-yellow-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-orange-500 dark:text-white bg-orange-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         case 'error':
           return 'text-red-500 dark:text-white bg-red-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         default:

@@ -1,9 +1,9 @@
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import {
   APIError,
+  NetworkID,
   OptimalRatesWithPartnerFees,
   ParaSwap,
-  NetworkID,
   SwapSide
 } from 'paraswap';
 import { RateOptions } from 'paraswap/build/types';

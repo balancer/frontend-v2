@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-
-import { FullPool } from '@/services/balancer/subgraph/types';
-
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/types';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;

@@ -1,8 +1,10 @@
+import BigNumber from 'bignumber.js';
+import { computed } from 'vue';
+
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
-import BigNumber from 'bignumber.js';
-import { computed } from 'vue';
+
 import usePoolQuery from './queries/usePoolQuery';
 import useVeBalLockInfoQuery from './queries/useVeBalLockInfoQuery';
 import { isL2 } from './useNetwork';

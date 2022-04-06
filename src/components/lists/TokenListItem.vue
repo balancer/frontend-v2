@@ -47,12 +47,13 @@
 </template>
 
 <script lang="ts">
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import anime from 'animejs';
-import { onMounted, onUnmounted, PropType, ref, computed } from 'vue';
-import { TokenInfo } from '@/types/TokenList';
+import { computed, onMounted, onUnmounted, PropType, ref } from 'vue';
+
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
+import { TokenInfo } from '@/types/TokenList';
 
 export default {
   name: 'TokenListItem',

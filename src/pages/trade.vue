@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
-// Types
-import { TradeInterface } from '@/store/modules/app';
 // Composables
 import { useStore } from 'vuex';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useTokenLists from '@/composables/useTokenLists';
-import usePoolFilters from '@/composables/pools/usePoolFilters';
+
 // Components
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
-import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
+import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import usePoolFilters from '@/composables/pools/usePoolFilters';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useTokenLists from '@/composables/useTokenLists';
+// Types
+import { TradeInterface } from '@/store/modules/app';
 
 /**
  * STATE

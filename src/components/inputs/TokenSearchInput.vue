@@ -57,13 +57,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import { pick, take } from 'lodash';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import { getAddress } from '@ethersproject/address';
-import useWeb3 from '@/services/web3/useWeb3';
+import { pick, take } from 'lodash';
+import { computed, defineComponent, PropType, ref } from 'vue';
+
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'TokenSearchInput',

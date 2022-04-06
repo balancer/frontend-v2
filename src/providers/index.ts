@@ -1,3 +1,4 @@
+/* eslint-disable simple-import-sort/exports */
 /**
  * Order is important here!
  * If a provider is dependent on another it must be imported/exported below

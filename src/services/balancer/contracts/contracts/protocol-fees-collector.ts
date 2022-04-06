@@ -1,7 +1,9 @@
-import Vault from './vault';
-import { Contract } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
+import { Contract } from 'ethers';
+
 import ProtocolFeesCollectorAbi from '@/lib/abi/ProtocolFeesCollector.json';
+
+import Vault from './vault';
 
 /**
  * @summary Interface to the vaults protocol fees collector contract.
