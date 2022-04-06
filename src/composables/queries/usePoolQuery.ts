@@ -21,6 +21,7 @@ import {
   lpTokensFor
 } from '../usePool';
 import useUserSettings from '../useUserSettings';
+import useGaugesQuery from './useGaugesQuery';
 
 export default function usePoolQuery(
   id: string,
@@ -34,6 +35,12 @@ export default function usePoolQuery(
   const { appLoading } = useApp();
   const { account } = useWeb3();
   const { currency } = useUserSettings();
+  const { data: subgraphGauges } = useGaugesQuery();
+  const { tokens } = useTokens();
+
+  const gaugeAddresses = computed(() =>
+    (subgraphGauges.value || []).map(gauge => gauge.id)
+  );
 
   /**
    * COMPUTED
@@ -119,7 +126,7 @@ export default function usePoolQuery(
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Pools.Current(id);
+  const queryKey = QUERY_KEYS.Pools.Current(id, gaugeAddresses);
 
   const queryFn = async () => {
     let [pool] = await balancerSubgraphService.pools.get({
@@ -162,7 +169,9 @@ export default function usePoolQuery(
       [{ ...pool, onchain: onchainData }],
       '24h',
       prices.value,
-      currency.value
+      currency.value,
+      subgraphGauges.value || [],
+      tokens.value
     );
 
     let unwrappedTokens: Pool['unwrappedTokens'];

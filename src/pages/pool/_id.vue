@@ -103,8 +103,12 @@
           </div>
           <div class="mb-4 px-1 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
+            <ApyVisionPoolLink
+              v-if="!loadingPool"
+              :poolId="pool?.id"
+              :titleTokens="titleTokens"
+            />
           </div>
-
           <div class="mb-4">
             <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
@@ -201,6 +205,7 @@ import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
@@ -213,7 +218,7 @@ import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId } from '@/lib/utils';
-import StakingProvider from '@/providers/local/staking.provider';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
 interface PoolPageData {
@@ -227,7 +232,8 @@ export default defineComponent({
     LiquidityAPRTooltip,
     StakingIncentivesCard,
     StakingProvider,
-    LMIncentivesCard
+    LMIncentivesCard,
+    ApyVisionPoolLink
   },
 
   setup() {

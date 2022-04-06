@@ -12,7 +12,13 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import {
+  getGaugeAddress,
+  showStakingRewards
+} from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 export type StakeAction = 'stake' | 'unstake';
@@ -31,15 +37,17 @@ const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
+const { getProvider } = useWeb3();
 
 const {
+  userData: {
+    stakedSharesForProvidedPool,
+    refetchStakedShares,
+    refetchUserStakingData,
+    getBoostFor
+  },
   stakeBPT,
-  unstakeBPT,
-  getGaugeAddress,
-  stakedSharesForProvidedPool,
-  refetchStakedShares,
-  refetchStakingData,
-  hideAprInfo
+  unstakeBPT
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -115,6 +123,20 @@ const totalUserPoolSharePct = ref(
     .toString()
 );
 
+const stakingApr = computed(() => {
+  return bnum(getAprRangeWithRewardEmissions(props.pool).min).times(
+    getBoostFor(props.pool.id)
+  );
+});
+
+const potentialyWeeklyYield = computed(() => {
+  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
+    .times(getBoostFor(props.pool.id))
+    .times(fiatValueOfModifiedShares.value)
+    .div(52)
+    .toString();
+});
+
 /**
  * LIFECYCLE
  */
@@ -127,14 +149,14 @@ async function handleSuccess({ receipt }) {
   isActionConfirmed.value = true;
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
-  await refetchStakingData.value();
+  await refetchUserStakingData.value();
   await queryClient.refetchQueries(['staking']);
   emit('success');
 }
 
 async function loadApprovalsForGauge() {
   isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress(props.pool.address);
+  const gaugeAddress = await getGaugeAddress(props.pool.address, getProvider());
   const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;
@@ -215,23 +237,27 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="!hideAprInfo">
+        <BalStack horizontal justify="between" v-if="showStakingRewards">
           <span class="text-sm">
-            {{ action === 'stake' ? $t('potential') : $t('lost') }}
+            {{ action === 'stake' ? $t('your') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
           </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">0</span>
+            <span class="text-sm capitalize">
+              ~{{ fNum2(stakingApr, FNumFormats.percent) }}</span
+            >
             <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="!hideAprInfo">
+        <BalStack horizontal justify="between" v-if="showStakingRewards">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:
           </span>
           <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">0</span>
+            <span class="text-sm capitalize"
+              >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
+            >
             <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>

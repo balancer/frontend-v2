@@ -18,7 +18,15 @@ import {
   orderedTokenAddresses
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import {
+  getAprRangeWithRewardEmissions,
+  getBoostAdjustedTotalAPR,
+  hasBALEmissions,
+  hasStakingRewards
+} from '@/services/staking/utils';
 
 import TokenPills from './TokenPills/TokenPills.vue';
 
@@ -34,6 +42,7 @@ type Props = {
   isPaginated?: boolean;
   selectedTokens?: string[];
   hiddenColumns?: string[];
+  showBoost?: boolean;
 };
 
 /**
@@ -45,7 +54,8 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  hiddenColumns: () => []
+  hiddenColumns: () => [],
+  showBoost: false
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -134,6 +144,17 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
     cellClassName: 'font-numeric'
   },
   {
+    name: t('myBoost'),
+    accessor: pool =>
+      pool.dynamic.boost ? `${bnum(pool.dynamic.boost).toFixed(3)}x` : 'N/A',
+    align: 'right',
+    id: 'myBoost',
+    hidden: !props.showBoost,
+    sortKey: pool => Number(pool.dynamic.boost),
+    width: 150,
+    cellClassName: 'font-numeric'
+  },
+  {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
     accessor: pool => pool.dynamic.apr.total,
@@ -144,7 +165,7 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
       if (apr === Infinity || isNaN(apr)) return 0;
       return apr;
     },
-    width: 150
+    width: 250
   },
   {
     name: t('migrate'),
@@ -178,6 +199,16 @@ function handleRowClick(pool: DecoratedPoolWithShares) {
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 
+function getAprRange(pool: DecoratedPoolWithShares) {
+  const adjustedRange = getAprRangeWithRewardEmissions(pool);
+  return adjustedRange;
+}
+
+function getTotalBoostedApr(pool: DecoratedPoolWithShares) {
+  const boostedAPR = getBoostAdjustedTotalAPR(pool, pool.dynamic.boost || '1');
+  return boostedAPR;
+}
+
 function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
   router.push({
     name: 'migrate-pool',
@@ -187,6 +218,12 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
     },
     query: { returnRoute: 'home' }
   });
+}
+
+function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
+  return bnum(pool.dynamic.apr.staking?.Rewards || '0').plus(
+    pool.dynamic.apr.total
+  );
 }
 </script>
 
@@ -256,11 +293,28 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
-          {{
-            Number(pool.dynamic.apr.pool) > 10000
-              ? '-'
-              : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
-          }}
+          <span
+            v-if="hasStakingRewards(pool) && showStakingRewards"
+            class="text-right"
+          >
+            <span v-if="pool.dynamic.boost">
+              {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
+            </span>
+            <span v-else-if="!hasBALEmissions(pool)">
+              {{ fNum2(getTotalRewardsAPR(pool), FNumFormats.percent) }}
+            </span>
+            <span v-else>
+              {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
+              {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
+            </span>
+          </span>
+          <span v-else>
+            {{
+              Number(pool.dynamic.apr.pool) > 10000
+                ? '-'
+                : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
+            }}
+          </span>
           <LiquidityAPRTooltip :pool="pool" />
         </div>
       </template>
