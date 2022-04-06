@@ -295,7 +295,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
             class="text-right"
           >
             <span v-if="pool.dynamic.boost">
-              {{ fNum(getTotalBoostedApr, 'percent_lg') }}
+              {{ fNum(getTotalBoostedApr(pool), 'percent_lg') }}
             </span>
             <span v-else>
               {{ fNum(getAprRange(pool).min, 'percent_lg') }} -
