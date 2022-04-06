@@ -24,6 +24,8 @@
     "amountToInvest":"投资金额",
     "amountToWithdraw":"提款金额",
     "amplification":"放大",
+    "analytics":"分析",
+    "and":"和",
     "apiErrorCodeDetails":{
        "DuplicateOrder":"已经提交了另一个相同的订单。请再试一次。",
        "InsufficientFee":"签字费不足。由于天然气价格、以太币价格或出售代币价格的变化，现在可能会更高。请重试以获取更新的费用报价。",
@@ -61,9 +63,11 @@
     "approvedGnosisRelayer":"批准的 Gnosis 中继器",
     "approvedLidoRelayer":"经批准的丽都中继器",
     "approving":"批准中",
+    "approvingBatchRelayer":"批准批量中继器",
     "approvingGnosisRelayer":"批准 Gnosis 中继器",
     "approvingLidoRelayer":"批准 Lido Relayer",
     "apr":"年利率",
+    "apyvisionPoolInsights":"更多关于 APY.vision 的见解",
     "autoOptimiseLiquidityToggle":{
        "label":"自动优化流动性",
        "tooltip":"自动优化令牌值以匹配您指定的令牌权重。"
@@ -76,10 +80,13 @@
     "basedOnLast24h":"基于过去 24 小时",
     "basedOnTokensInWallet":"基于您钱包中的池代币",
     "best":"最好的",
+    "blog":"博客",
     "boostedPool":"平衡器增强池",
     "browseLists":"浏览清单",
     "browserWallet":"浏览器钱包",
+    "build":"建造",
     "buy":"购买",
+    "byConnectingWallet":"通过连接钱包，我同意 Balancer Labs'",
     "cancel":"取消",
     "cancelling":"取消",
     "changeTheme":"更改主题",
@@ -94,9 +101,11 @@
     "clearTransactions":"清除交易",
     "clickHere":"点击这里",
     "close":"关闭",
+    "coingeckoPricingTooltip":"该图表的数据来自我们的定价提供商 CoinGecko。",
     "communitySwapFeeLabel":"委托掉期费；目前已修正： <b>{0}</b>",
     "composition":"作品",
     "configuration":"配置",
+    "confirm":"确认",
     "confirmTrade":"确认交易",
     "confirmUnwrap":"确认 {0} 解包",
     "confirmWrap":"确认{0}换行",
@@ -113,6 +122,7 @@
        "buttonLabel":"在铜上查看本次拍卖"
     },
     "copyAddress":"复制地址",
+    "correctTokenPricing":"正确的代币定价可以帮助您避免向套利者赔钱。如果您不按目标权重的比例添加池资产，则可能会发生损失。",
     "create":"创造",
     "createAPool":{
        "title":"创建池",
@@ -160,13 +170,16 @@
     "delegateFeesTooltip":"利用该池中的流动性，该池中的流动性提供者会为每笔交易赚取固定掉期费。控制权已下放给社区，因此如果对该池进行积极管理，将来的费用可能会发生变化。",
     "depositing":"存款",
     "details":"细节",
+    "docs":"文档",
     "dynamicSwapFeeLabel":"动态掉期费用：目前为<b>{0}</b>",
     "earnBAL":"交换合格令牌时赚取BAL",
+    "earnings":"收益",
     "editoAbout":"在基于以太坊的资产上赚取更多。当人们利用您的流动性在交易所进行交易时，将代币添加到池中并赚取复利费用。",
     "editoTitle":"让你的钱去工作",
     "effectivePrice":"有效价格：",
     "emptyInvestmentPools":"您尚未加入任何Balancer投资池。",
     "emptyInvestmentPoolsLink":"查看投资池 ->;",
+    "enterAPrice":"输入价格",
     "enterAmount":"输入金额",
     "errorCancellingOrder":"取消订单时出错",
     "errorNoLists":"抱歉，我们找不到任何清单",
@@ -192,8 +205,127 @@
     "fixedFeesTooltip":"利用该池中的流动性，该池中的流动性提供者会为每笔交易赚取固定掉期费。",
     "fixedSwapFeeLabel":"固定掉期费用： <b>{0}</b>",
     "flashLoanFee":"短期贷款费用",
+    "forum":"论坛",
     "fundPool":"资金池",
     "fundPoolTooltip":"为该池添加初始流动性。",
+    "getLpTokens":"获取 LP 代币",
+    "getVeBAL":{
+       "lockableTokens":{
+          "title":"我钱包里的可锁定代币",
+          "getMoreVeBAL":"获取{0}"
+       },
+       "howToLock":{
+          "title":"如何锁定和赚钱？",
+          "steps":{
+             "investPart1":"投资于",
+             "investPart2":"水池。",
+             "lock":"锁定生成的 LP 令牌 ({0})。您锁定的时间越长（最长 1 年），您获得的 veBAL 就越多。"
+          },
+          "earn":{
+             "boost":"veBAL 持有者获得更高的流动性挖矿收益（高达 2.5 倍）和增加的投票权。",
+             "voting":"使用此投票权来选择哪些池量表获得分配的流动性挖矿激励。对您增加流动性以赚取更多收益的矿池进行投票。"
+          }
+       },
+       "myVeBAL":{
+          "title":"我的 veBAL",
+          "lockedEndDate":"锁定到",
+          "expiredOn":"过期时间",
+          "percentVeBAL":"占总 veBAL 的百分比"
+       },
+       "lockForm":{
+          "title":"锁定获取veBAL",
+          "lockAmount":{
+             "title":"你想锁多少？"
+          },
+          "lockEndDate":{
+             "title":"锁定直到",
+             "tooltip":"您锁定股份的时间越长，您获得的 veBAL 投票权就越多（最多 4 年）。您可以稍后延长锁。小心，锁定是不可逆的。"
+          },
+          "summary":{
+             "receive":{
+                "title":"总投票托管",
+                "tooltip":""
+             },
+             "weeklyYield":{
+                "title":"潜在的每周质押收益率",
+                "tooltip":""
+             }
+          },
+          "lockPeriods":{
+             "1w":"1周",
+             "2w":"2周",
+             "1m":"1个月",
+             "3m":"3个月",
+             "6m":"6个月",
+             "1y":"1年"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "createLock":{
+                "default":"锁定预览",
+                "confirmed":"锁定确认"
+             },
+             "extendLock":{
+                "default":"扩展锁定预览预览",
+                "confirmed":"延长锁定预览确认"
+             },
+             "increaseLock":{
+                "default":"增加锁定量",
+                "confirmed":"确认增加锁仓量"
+             }
+          },
+          "lpTokens":"{0} 个 LP 令牌",
+          "summary":{
+             "title":"锁定摘要",
+             "totalToLock":"总锁定",
+             "totalAlreadyLocked":"总计已锁定",
+             "lockEndDate":"锁定结束日期",
+             "newLockEndDate":"新的锁定结束日期",
+             "totalVotingEscrow":"总投票托管",
+             "totalVotingEscrowTooltip":{
+                "explainer":"锁定结束日期只能在星期四 0:00 UTC。为了尽可能接近 1 年的锁定，建议在星期四锁定。",
+                "table":{
+                   "lockPeriod":"锁定期",
+                   "totalVeBAL":"总veBAL"
+                }
+             },
+             "increasedLockAmount":"增加锁定量",
+             "potentialWeeklyYield":"潜在的每周产量"
+          },
+          "actions":{
+             "approve":{
+                "confirming":"确认批准...",
+                "tooltip":"您必须批准 {0}。",
+                "loadingLabel":"在钱包中确认批准"
+             },
+             "createLock":{
+                "label":"确认锁定直到 {0}",
+                "confirming":"正在确认...",
+                "tooltip":"确认锁定。",
+                "loadingLabel":"确认锁定钱包"
+             },
+             "extendLock":{
+                "label":"延长锁定期",
+                "confirming":"正在确认...",
+                "tooltip":"确认延长锁定期。",
+                "loadingLabel":"确认锁定钱包"
+             },
+             "increaseLock":{
+                "label":"增加锁定量",
+                "confirming":"正在确认...",
+                "tooltip":"确认增加锁定量。",
+                "loadingLabel":"确认锁定钱包"
+             }
+          },
+          "returnToVeBalPage":"返回 veBAL 页面"
+       },
+       "notSupported":{
+          "title":"锁定在此网络上不可用",
+          "description":"在以太坊主网上获取 veBAL"
+       }
+    },
+    "getVeBALToVote":"让 veBAL 投票",
     "gnosisErrors":{
        "lowAmount":{
           "header":"您的交易金额过低",
@@ -211,6 +343,9 @@
        }
     },
     "goToBalancerV1Site":"转到Balancer V1站点->",
+    "goToMigratedPool":"转到迁移的池",
+    "governance":"治理",
+    "grants":"赠款",
     "highGasFees":"高油费？这是帮手",
     "highPriceImpact":"高价影响",
     "highPriceImpactDetailed":"这笔交易显着影响了市场价格。",
@@ -218,6 +353,8 @@
     "home":"主页",
     "hourAbbrev":"小时",
     "inYourWallet":"在您的钱包中：",
+    "incentiveToken":"激励代币",
+    "inclXInVeBal":"包括。 veBAL 中的 {0}",
     "initialBPT":"初始BPT",
     "initialWeight":"初始重量",
     "insufficientBalance":"余额不足",
@@ -244,8 +381,11 @@
     "learnMore":"学到更多",
     "light":"光明",
     "liquidityBootstrappingPool":"流动性引导池",
+    "liquidityIncentives":"流动性激励",
     "liquidityMining":"流动性挖掘",
     "liquidityMiningAPR":"流动性挖矿APR",
+    "liquidityMiningIncentives":"流动性挖矿奖励",
+    "liquidityMiningIncentivesCopy":"投资该矿池的人会获得流动性挖矿奖励。与以太坊主网不同，{0} 上符合条件的矿池不需要抵押",
     "liquidityMiningPopover":{
        "airdropEligibility":"为符合条件的投资池提供流动性或在符合条件的代币对上进行交易的人每周都会收到 $BAL 分配作为奖励。 $BAL 代币持有者拥有 Balancer 协议，可以通过对治理提案进行投票来帮助塑造其未来。",
        "airdropExplainer":"{0} 流动性挖掘的每周分配在周三空投，使用 disperse.app 直接发送到您的钱包",
@@ -268,7 +408,10 @@
     "loadMore":"装载更多",
     "loading":"载入中...",
     "loadingBestPrice":"寻找最优惠的价格...",
+    "lockToGetVeBAL":"锁定它以获得 veBAL",
     "logOut":"登出",
+    "lost":"丢失",
+    "lpTokens":"LP代币",
     "lpsEarnFee":"有限合伙人赚取{0}的费用",
     "manageLists":"管理清单",
     "managedPool":"托管池",
@@ -277,25 +420,75 @@
     "maxed":"最大",
     "maximum":"最大值",
     "menu":"菜单",
+    "migrate":"迁移",
+    "migratePool":{
+       "aaveBoostedPool":{
+          "whyMigrate":{
+             "title":"为什么要迁移？",
+             "description":"增强型矿池还可以通过持有有息 aToken 获得额外收益。当标的资产在 Aave 上借给借款人时，aToken 会实时产生利息。"
+          },
+          "migrateToPool":{
+             "title":"迁移到增强池"
+          },
+          "poolStats":{
+             "title":"提升池统计"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "default":"迁移预览",
+             "confirmed":"迁移确认"
+          },
+          "riskWarnings":{
+             "title":"一些风险 - 如果出现以下情况，您可能会损失资金池中的资金：",
+             "risks":{
+                "loseUSDPeg":"此池中的任何代币都将永久失去 1 美元的目标挂钩。",
+                "aaveStableExploit":"Aave 出现问题。这是因为，大部分稳定币都将投资于 Aave aTokens 以赚取额外收益。"
+             }
+          },
+          "summary":{
+             "title":"迁移摘要"
+          },
+          "actions":{
+             "title":"迁移池",
+             "loading":"确认钱包中的矿池迁移",
+             "migrationStep":"确认池迁移"
+          },
+          "priceImpactAccept":"我接受池迁移带来的高价格影响。"
+       },
+       "migrateToBoostedPool":"迁移到增强池",
+       "errorLoadingMigration":{
+          "title":"出问题了",
+          "description":"尝试显示池迁移时出错。"
+       }
+    },
     "minTransactionBuffer":"为确保交易顺利进行，您的钱包中必须至少留有 {0} {1} 以支付加油费。",
     "missingPoolNameOrSymbol":"缺少池名称或符号",
-    "missingTokenPrices":"缺少代币价格",
     "missingPoolNameOrSymbolInfo":"缺少池名称或符号，请在创建池之前填写。",
+    "missingTokenPrices":"缺少代币价格",
+    "modals":{
+       "veBalRedirectModal":{
+          "title":"进入主网",
+          "description":"获取和使用 veBAL 进行归属和投票必须在以太坊主网上进行。您仍然可以通过投资符合条件的矿池在 Arbitrum 和 Polygon 上获得流动性挖矿奖励。但是，要投票将排放引导至您喜欢的池并赚取协议费用，您需要通过锁定 B-80BAL-20WETH 在以太坊主网上使用 veBAL。"
+       }
+    },
     "month":"月",
     "months":"月",
     "mustBeAtLeast":"必须至少为{0}个字符",
     "mustBeInt":"必须是整数",
     "mustBeLessThan":"必须小于{0}",
+    "mustBeMoreThan":"必须大于 {0}",
     "mustBePositive":"必须为正数",
     "mustBeSame":"必须与{0}相同",
     "mustBeValidAddress":"这不是有效的以太坊地址",
     "mustBeValidEmail":"必须是有效的电子邮件",
     "mustBeValidNum":"必须是有效数字",
+    "myApr":"我的四月",
     "myBalance":"我的余额",
+    "myBalancerInvestments":"我的平衡器投资",
     "myInvestments":"我的均衡器投资",
     "myPortfolio":"我的投资组合",
     "myShare":"我的份额",
-    "myV2Investments":"我的V2投资",
     "myWallet":"我的以太坊钱包",
     "myWallet2":"我的钱包",
     "name":"名称",
@@ -305,6 +498,7 @@
     "networkMismatch":"请切换到{0}",
     "new":"新的",
     "newInvestment":"新投资",
+    "newToEthereum":"以太坊新手？",
     "newTrade":"新贸易",
     "newWithdrawal":"新的提款",
     "next":"下一个",
@@ -321,20 +515,46 @@
     "noRecentActivity":"您的活动将显示在此处...",
     "noResults":"没结果。",
     "noSwapsPool":"此池中没有掉期。",
+    "notAvailable":"不适用",
     "numberOfPools":"池数量",
     "oneDay":"一天",
     "oneMonth":"一个月",
     "oneWeek":"一周",
+    "oops":"哎呀",
     "optimize":"优化",
     "optimized":"优化",
     "optimizedPrefilled":"已预填优化金额",
     "oracleWeightedPool":"Oracle加权池",
+    "otherTokenEarnings":"其他代币收益",
     "overview":"总览",
     "ownerFeesTooltip":"流动性提供者利用此池中的流动性在每笔交易中赚取动态掉期费。动态交换费由池所有者控制。",
+    "pages":{
+       "claim":{
+          "title":"领取您的流动性挖矿奖励",
+          "description":"Balancer 协议和合作伙伴提供激励措施以吸引合格池中的流动性。这些矿池中的质押者在每个区块中累积激励。使用 veBAL 的人获得了更高的比率——高达 2.5 倍。",
+          "transitionInfo":{
+             "title":"过渡到新的 veBAL 代币组学",
+             "description":"流动性挖矿奖励将于 2022 年 4 月 7 日 0:00 UTC 开始。代币收益在每个区块累积，可以随时领取。同时，您可以通过获取 veBAL、提供流动性、质押和对合格矿池进行投票来做好准备。",
+             "descriptionL2":"流动性挖矿激励将于 2022 年 4 月 7 日 0:00 UTC 开始。从 4 月 14 日起，每周四可以领取 Polygon 和 Arbitrum 的收益。同时，您可以通过获取 veBAL、提供流动性、质押和对合格矿池进行投票来做好准备。"
+          },
+          "titles":{
+             "incentivesOnOtherNetworks":"其他网络上的激励措施",
+             "legacyIncentives":"传统激励措施"
+          },
+          "btns":{
+             "claimOn":"索赔"
+          }
+       }
+    },
     "payload":"有效载荷",
     "pendingClaims":"待处理的版权声明",
     "pendingEstimate":"待定：（估计）",
     "perWeek":"每个星期",
+    "policies":{
+       "cookiesPolicy":"Cookie 政策",
+       "privacyPolicy":"隐私政策",
+       "termsOfUse":"使用条款"
+    },
     "pool":"池",
     "poolBalance":"池余额",
     "poolComposition":"泳池组成",
@@ -358,10 +578,15 @@
     },
     "poolType":"池类型",
     "poolValue":"池数值",
+    "pools":"游泳池",
+    "poolsToMigrate":"要迁移的池",
+    "poolsToStake":"质押池",
     "popularBases":"受欢迎的基地：",
     "portfolio":"作品集",
+    "potential":"潜在的",
     "potentialWeeklyYield":"潜在每周收益率",
     "preview":"预习",
+    "previewMigrate":"预览迁移",
     "previewPool":"预览新的 {0} 池",
     "previewTrade":"预览交易",
     "previewTradeTransactions":"预览贸易交易",
@@ -376,6 +601,7 @@
        "description":"交易价格已更新超过 {0}",
        "actionLabel":"接受"
     },
+    "proceed":"继续",
     "profit":"利润 (1{0})",
     "proportionalSuggestion":"比例建议",
     "proportionalWithdrawal":"按比例提款",
@@ -385,6 +611,7 @@
     "receive":"接收",
     "recentActivityTitle":"近期活动",
     "requiresTransactions":"需要 1 笔交易 |需要 {txCount} 笔交易",
+    "restoring":"正在恢复...",
     "returnToPool":"返回泳池页面",
     "returnToPoolCreation":"返回池创建",
     "saveGas":"以节省燃气。",
@@ -398,11 +625,34 @@
     "selectToken":"选择一个代币",
     "sell":"卖",
     "send":"发送",
+    "setUpEthereumWallet":"Balancer 是以太坊上的 DeFi 应用。在此处设置以太坊钱包进行投资和交易。",
     "settings":"设定值",
     "singleToken":"单令牌",
     "singleTokenMax":"单令牌最大",
     "slippageTolerance":"滑移公差",
+    "somethingWentWrong":"出问题了",
     "stablePool":"稳定池",
+    "stake":"赌注",
+    "stakeToGetExtra":"赌注以赚取额外收入",
+    "staked":"质押",
+    "staking":{
+       "newTotalShare":"您的总份额",
+       "stakedPools":"质押池",
+       "stakedLpTokensTooltip":"您在此池中质押的 LP 代币的法定价值。",
+       "stakeValueTooltip":"您将质押的 LP 代币的近似值。",
+       "unstakedLpTokensTooltip":"您可以质押的 LP 代币的法定价值。",
+       "staking":"质押",
+       "stakeTooltip":"确认质押 LP 代币以获得该矿池的流动性挖矿奖励",
+       "stakingApr":"质押 APR",
+       "stakingIncentives":"质押激励",
+       "totalShareTooltip":"您当前在池中的 LP 代币总份额",
+       "unclaimedIncentives":"无人认领的奖励",
+       "unstakedPools":"未抵押的矿池",
+       "unstakeValueTooltip":"您将取消质押的 LP 代币的近似值。",
+       "unstaking":"取消抵押",
+       "unstakeTooltip":"确认取消 LP 代币。您将失去获得该矿池流动性挖矿奖励的资格。",
+       "weeklyEarning":"每周收入"
+    },
     "strategy":"战略",
     "submit":"提交",
     "summary":"概括",
@@ -432,6 +682,7 @@
     "tokenPills":{
        "hiddenTokens":"+{0} 个令牌"
     },
+    "tokenPrices":"代币价格",
     "tokenSearch":"代币搜索",
     "tokenWarning":"Balancer Labs 不对您因向该池增加流动性而直接或间接导致的任何损失负责。不要添加通货紧缩代币、带有转账费用的代币或任何其他不符合 ERC20 的代币。请在继续之前确认。",
     "tokenWarningTitle":"您已添加自定义令牌",
@@ -451,8 +702,10 @@
     "total":"全部的",
     "totalAPR":"总年收入",
     "totalAllocated":"分配总额",
+    "totalInvested":"总投资",
     "totalSupply":"总供应",
     "totalValue":"总价值",
+    "totalValueTo":"总价值",
     "trade":"交易",
     "tradeEarns":"这笔交易为您赚钱",
     "tradeFromWeth":"来自 WETH 的交易",
@@ -467,6 +720,7 @@
     "tradeInterface":"交易界面",
     "tradeInterfaceTooltip":"选择 Balancer 以获得跨 Balancer V1 和 V2 池的最佳流动性。选择 Gnosis 使用无燃料订单买卖代币，同时享受 MEV 保护。",
     "tradeLiquidity":"贸易流动性",
+    "tradeRoute":"商路",
     "tradeSettled":"您的交易已经结算",
     "tradeSubmissionError":{
        "title":"发生了错误",
@@ -556,16 +810,173 @@
     "unavailableOnNetworkWithName":"对不起！平衡器不适用于 {0}",
     "unknown":"未知",
     "unknownPoolType":"未知的泳池类型",
+    "unknownTokenPrice":"未知代币价格",
     "unlock":"开锁",
+    "unlockVeBAL":{
+       "expiredLockableTokens":{
+          "title":"过期的锁定令牌"
+       },
+       "unlockForm":{
+          "title":"开锁",
+          "lockedAmount":{
+             "title":"可解锁的代币："
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "unlock":{
+                "default":"解锁预览",
+                "confirmed":"解锁确认"
+             }
+          },
+          "lpTokens":"{0} 个 LP 令牌",
+          "summary":{
+             "title":"解锁摘要",
+             "totalToUnlock":"总解锁",
+             "totalVotingEscrow":"总投票托管",
+             "expiredOn":"过期时间"
+          },
+          "actions":{
+             "unlock":{
+                "label":"确认解锁",
+                "confirming":"正在确认...",
+                "tooltip":"确认解锁。",
+                "loadingLabel":"确认在钱包中解锁"
+             }
+          },
+          "returnToVeBalPage":"返回veBAL锁定页面"
+       },
+       "notSupported":{
+          "title":"此网络无法解锁",
+          "description":"在以太坊主网上解锁"
+       }
+    },
     "unlocking":"解锁",
+    "unstake":"取消抵押",
+    "unstaked":"未赌注",
     "unsupportedNetwork":"不支持的网络",
     "unwrap":"开卷",
     "usdValue":"美元价值",
-    "usingLiquidity":"使用{0}流动性",
     "v1":"V1",
     "v2":"V2",
     "value":"价值",
     "vault":"金库",
+    "veBAL":{
+       "hero":{
+          "eyebrow":"介绍 veBAL",
+          "title":"额外收入和投票权",
+          "benefits":{
+             "earn":"赚取您的协议收入份额",
+             "boost":"将流动性挖矿收益提高 2.5 倍",
+             "vote":"投票直接流动性挖矿排放"
+          },
+          "tokens":{
+             "balWETH":"BAL + WETH",
+             "lpToken":"B-80BAL-20WETH",
+             "veBAL":"veBAL"
+          },
+          "tokenInfo":{
+             "balWETH":"向 80% BAL / 20% WETH 池投资/增加流动性以获得 B-80BAL-20WETH LP 代币。",
+             "lpToken":"锁定 80% BAL / 20% WETH 池中的 LP 代币长达一年以获得 veBAL。锁定的时间越长，获得的 veBAL 就越多。",
+             "veBAL":"使用 veBAL 在您的质押池中赚取额外收益。只有一些矿池有资格进行质押。检查您所在的任何矿池，并将其质押以获得流动性挖矿奖励。您还可以使用 veBAL 投票指导未来的流动性挖矿排放"
+          },
+          "buttons":{
+             "getVeBAL":"获取 veBAL",
+             "learnMore":"学到更多"
+          }
+       },
+       "myVeBAL":{
+          "title":"我的 veBAL",
+          "cards":{
+             "myLpToken":"我的{0}",
+             "myLockedLpToken":"我的锁定{0}",
+             "lockedEndDate":"锁定到",
+             "myVeBAL":"我的 veBAL"
+          }
+       },
+       "communityVeBAL":{
+          "title":"社区 veBAL",
+          "cards":{
+             "totalVeBAL":"总veBAL",
+             "avgLockUpPeriod":"平均锁定期",
+             "effectiveBalLocked":"有效 BAL 锁定",
+             "shareOfBalLocked":"锁定的 BAL 份额"
+          },
+          "stats":{
+             "currentWeekVoting":"本周投票",
+             "nextWeekVoting":"下周投票",
+             "balIncentives":"BAL 激励措施"
+          },
+          "table":{
+             "poolGauge":"池规",
+             "vote":"投票",
+             "viewMore":"查看更多"
+          }
+       },
+       "liquidityMining":{
+          "title":"符合流动性挖矿条件的矿池",
+          "unallocatedVotes":"我的未分配票数：{0}。",
+          "votingPeriod":"投票期结束：{0}d {1}h {2}m {3}s",
+          "table":{
+             "chain":"链",
+             "assets":"资产",
+             "composition":"作品",
+             "nextPeriodVotes":"下期票",
+             "myVotes":"我的选票",
+             "vote":"投票"
+          },
+          "votesTooltip":{
+             "title":"投票明细",
+             "thisPeriod":"本期：{0}",
+             "nextPeriod":"下一期：{0}"
+          },
+          "popover":{
+             "title":{
+                "vote":"计票",
+                "edit":"编辑仪表投票"
+             },
+             "button":{
+                "vote":"确认投票",
+                "edit":"编辑投票"
+             },
+             "actions":{
+                "vote":{
+                   "confirming":"确认投票...",
+                   "loadingLabel":"在钱包中确认投票"
+                }
+             },
+             "emissionsInfo":"您的投票将指导未来的流动性挖矿排放量，从周四 0:00 UTC 的下一个时期开始。",
+             "voteForGauge":"{0} 代表 {1}",
+             "remainingVotes":"您的剩余票数：{0}",
+             "remainingVotesEditing":"您的剩余票数：{0}（此池中当前分配的 {1} 个 + {2} 个未分配的票数）",
+             "remainingVotesExceeded":"这超出了您的剩余投票数：{0}",
+             "voteLockInfo":"投票被锁定 10 天。在 {0}之前，您将无法对此投票分配进行任何修改",
+             "warnings":{
+                "votedTooRecently":{
+                   "title":"投票被锁定 10 天。",
+                   "description":"您将无法对 {0} 的投票分配进行任何修改"
+                },
+                "noVeBal":{
+                   "title":"你需要一些 veBAL 来对仪表进行投票",
+                   "description":"通过锁定 80% BAL / 20% WETH 池中的 LP 代币获得 veBAL。"
+                },
+                "veBalLockTooShort":{
+                   "title":"veBAL 7 天未锁定。",
+                   "description":"您必须将 veBAL 锁定超过 7 天才能对 gagues 进行投票。"
+                }
+             },
+             "errors":{
+                "notEnoughVotes":"没有足够的未分配选票"
+             }
+          }
+       },
+       "notSupported":{
+          "title":"锁定在此网络上不可用",
+          "description":"在以太坊主网上获取 veBAL"
+       },
+       "votingTransitionDescription":"veBAL 持有者指示的流动性挖矿排放从 2022 年 4 月 7 日 0:00 UTC 开始！投票现已上线，因此请获取 veBAL 并为矿池投票。您的投票将持续到您编辑为止。编辑只能在 10 天内进行一次。"
+    },
+    "vestVote":"背心+投票",
     "viewAllAssets":"查看所有资产（{0}",
     "viewAndManangeOnElement":"查看和管理 Element.fi 上的所有池",
     "viewFullWallet":"查看完整的钱包",
@@ -577,6 +988,7 @@
     "volume24hShort":"体积（24 小时）",
     "volumeTime":"音量（{0}）",
     "wallet":"钱包",
+    "warning":"警告",
     "week":"周",
     "weekAbbrev":"周",
     "weight":"重量",
@@ -597,6 +1009,7 @@
     "yieldEarnings":"收益收益",
     "youCanInvest":"你可以投资",
     "youDidIt":"你做到了！",
+    "yourBalanceInPool":"您在此池中的余额",
     "yourTransactions":"您在该池中的交易"
  }
  
