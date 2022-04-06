@@ -1,29 +1,29 @@
+import { Interface } from '@ethersproject/abi';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { getAddress } from '@ethersproject/address';
+import { Contract } from '@ethersproject/contracts';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { parseUnits } from 'ethers/lib/utils';
+import {
+  computed,
+  defineComponent,
+  h,
+  InjectionKey,
+  provide,
+  reactive,
+  Ref,
+  ref
+} from 'vue';
+
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
+import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { Contract } from '@ethersproject/contracts';
-import { getAddress } from '@ethersproject/address';
 
-import { parseUnits } from 'ethers/lib/utils';
-import { Interface } from '@ethersproject/abi';
-import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
-
-import {
-  provide,
-  computed,
-  InjectionKey,
-  reactive,
-  ref,
-  defineComponent,
-  h,
-  Ref
-} from 'vue';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import useUserStakingData, {
   UserStakingDataResponse
 } from './userUserStakingData';
