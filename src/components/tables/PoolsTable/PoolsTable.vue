@@ -19,6 +19,7 @@ import {
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -291,7 +292,9 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
           <span
-            v-if="Number(pool.dynamic.apr.staking?.min) > 0"
+            v-if="
+              Number(pool.dynamic.apr.staking?.min) > 0 && showStakingRewards
+            "
             class="text-right"
           >
             <span v-if="pool.dynamic.boost">

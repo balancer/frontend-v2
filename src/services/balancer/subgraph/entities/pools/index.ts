@@ -14,6 +14,7 @@ import {
   computeTotalAPRForPool,
   currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
@@ -155,9 +156,16 @@ export default class Pools {
 
       const stakingApr = gaugeAprs[pool.id];
 
+      const networkAdjustedLMApr = showStakingRewards.value
+        ? '0'
+        : liquidityMiningAPR;
+      const networkAdjustedLMEligibility = showStakingRewards.value
+        ? false
+        : hasLiquidityMiningRewards;
+
       const totalAPR = this.calcTotalAPR(
         poolAPR,
-        liquidityMiningAPR,
+        networkAdjustedLMApr,
         thirdPartyAPR
       );
       const isNewPool = this.isNewPool(pool);
@@ -167,7 +175,7 @@ export default class Pools {
       // checks what rewards are available.
       return {
         ...pool,
-        hasLiquidityMiningRewards,
+        hasLiquidityMiningRewards: networkAdjustedLMEligibility,
         dynamic: {
           period,
           volume,
@@ -176,7 +184,7 @@ export default class Pools {
             pool: poolAPR,
             thirdParty: thirdPartyAPR,
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
-            liquidityMining: liquidityMiningAPR,
+            liquidityMining: networkAdjustedLMApr,
             liquidityMiningBreakdown,
             staking: stakingApr,
             total: totalAPR

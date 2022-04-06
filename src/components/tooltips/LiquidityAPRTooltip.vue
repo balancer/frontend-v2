@@ -7,6 +7,7 @@ import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
 import { bnum } from '@/lib/utils';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 /**
@@ -112,9 +113,12 @@ const totalAPRRange = computed(() => {
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
         <div class="text-gray-500">{{ $t('totalAPR') }}</div>
-        <div class="text-lg">
+        <div class="text-lg" v-if="hasStakingRewards">
           {{ fNum2(totalAPRRange.min, FNumFormats.percent) }}-
           {{ fNum2(totalAPRRange.max, FNumFormats.percent) }}
+        </div>
+        <div class="text-lg" v-else>
+          {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
         </div>
       </div>
       <div class="p-3">
@@ -142,7 +146,7 @@ const totalAPRRange = computed(() => {
         </BalBreakdown>
         <BalBreakdown
           :items="Object.entries(pool.dynamic.apr.staking || {})"
-          v-if="hasStakingRewards"
+          v-if="hasStakingRewards && showStakingRewards"
         >
           <div class="flex items-center">
             {{ fNum2(pool.dynamic.apr.staking?.min, FNumFormats.percent) }}
