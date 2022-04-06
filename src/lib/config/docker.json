@@ -45,7 +45,8 @@
     "merkleOrchard": "",
     "batchRelayer": "",
     "veBAL": "",
-    "balancerMinter": ""
+    "balancerMinter": "",
+    "veDelegationProxy": ""
   },
   "keys": {},
   "strategies": {

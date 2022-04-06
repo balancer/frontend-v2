@@ -391,6 +391,7 @@
     "max": "Max",
     "maxed": "Maxed",
     "maximum": "Maximum",
+    "minimumTotalApr": "Minimum total APR",
     "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
     "missingPoolNameOrSymbol": "Missing pool name or symbol",
     "missingTokenPrices": "Missing token prices",
@@ -417,6 +418,7 @@
     "myApr": "My APR",
     "myBalance": "My balance",
     "myBalancerInvestments": "My Balancer investments",
+    "myBoost": "My boost",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
     "myInvestments": "My investments",
@@ -582,17 +584,19 @@
     "stake": "Stake",
     "staked": "Staked",
     "staking": {
+        "minimumStakingApr": "Minimum staking APR",
         "newTotalShare": "Your total share",
+        "potentialWeeklyEarningTooltip": "The approximate weekly earning based on your staked balance",
         "stakedPools": "Staked pools",
         "stakedLpTokensTooltip": "The fiat value of LP tokens you have staked in this pool.",
         "stakeValueTooltip": "The approximate value of the LP tokens you will stake.",
-        "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
         "staking": "Staking",
         "stakeTooltip": "Confirm staking of LP tokens to earn liquidity mining incentives on this pool",
-        "stakingApr": "staking APR",
+        "stakingApr": "Staking APR",
         "stakingIncentives": "Staking incentives",
         "totalShareTooltip": "Your current total share of LP tokens in the pool",
         "unclaimedIncentives": "Unclaimed incentives",
+        "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
         "unstakedPools": "Unstaked pools",
         "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
         "unstaking": "Unstaking",
@@ -1105,7 +1109,7 @@
         "preview": {
             "loadingLabel": {
                 "withdraw": "Confirm withdrawal in wallet"
-            },
+            }, 
             "titles": {
                 "confirmed": "Withdrawal confirmed",
                 "default": "Withdrawal preview"
@@ -1131,6 +1135,7 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
+    "your": "Your",
     "yourTransactions": "Your transactions in this pool",
     "yourBalanceInPool": "Your balance in this pool",
     "trendingPairs": "Trending pairs",

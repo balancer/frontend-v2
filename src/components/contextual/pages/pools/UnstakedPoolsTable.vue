@@ -26,7 +26,8 @@ const {
     userGaugeShares,
     userLiquidityGauges,
     stakedPools,
-    isLoadingUserStakingData
+    isLoadingUserStakingData,
+    poolBoosts
   },
   setPoolAddress
 } = useStaking();
@@ -68,7 +69,11 @@ const partiallyStakedPools = computed(() => {
       return {
         ...pool,
         stakedPct: stakedPct.toString(),
-        stakedShares: calculateFiatValueOfShares(pool, stakedBalance)
+        stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
+        dynamic: {
+          ...pool.dynamic,
+          boost: poolBoosts.value[pool.id]
+        }
       };
     });
 });

@@ -18,7 +18,8 @@ const {
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
-    isUserPoolsIdle
+    isUserPoolsIdle,
+    poolBoosts
   },
   setPoolAddress
 } = useStaking();
@@ -31,6 +32,16 @@ const isLoading = computed(() => {
     isLoadingUserPools.value ||
     isUserPoolsIdle.value
   );
+});
+
+const poolsWithBoost = computed(() => {
+  return stakedPools.value.map(pool => ({
+    ...pool,
+    dynamic: {
+      ...pool.dynamic,
+      boost: poolBoosts.value[pool.id]
+    }
+  }));
 });
 
 /** METHODS */
@@ -50,13 +61,14 @@ function handleModalClose() {
     <BalStack vertical spacing="sm">
       <h5>{{ $t('staking.stakedPools') }}</h5>
       <PoolsTable
-        :key="stakedPools"
-        :data="stakedPools"
+        :key="poolsWithBoost"
+        :data="poolsWithBoost"
         :noPoolsLabel="$t('noInvestments')"
         :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
         @triggerStake="handleStake"
         :isLoading="isLoading"
         showPoolShares
+        showBoost
       />
     </BalStack>
   </div>

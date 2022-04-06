@@ -21,6 +21,7 @@ import useNetwork from '../useNetwork';
 import { isStablePhantom, lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
+import useGaugesQuery from './useGaugesQuery';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -42,17 +43,28 @@ export default function usePoolsQuery(
   filterOptions?: FilterOptions
 ) {
   // COMPOSABLES
-  const { injectTokens, dynamicDataLoading, prices, getTokens } = useTokens();
+  const {
+    injectTokens,
+    dynamicDataLoading,
+    prices,
+    getTokens,
+    tokens: tokenMeta
+  } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
+  const { data: subgraphGauges } = useGaugesQuery();
+  const gaugeAddresses = computed(() =>
+    (subgraphGauges.value || []).map(gauge => gauge.id)
+  );
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     tokenList,
     filterOptions?.poolIds,
-    filterOptions?.poolAddresses
+    filterOptions?.poolAddresses,
+    gaugeAddresses
   );
 
   // COMPUTED
@@ -160,7 +172,9 @@ export default function usePoolsQuery(
       pools,
       '24h',
       prices.value,
-      currency.value
+      currency.value,
+      subgraphGauges.value || [],
+      tokenMeta.value
     );
 
     // TODO - cleanup and extract elsewhere in refactor

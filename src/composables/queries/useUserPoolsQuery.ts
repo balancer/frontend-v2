@@ -22,6 +22,7 @@ import { isStablePhantom, lpTokensFor } from '../usePool';
 import useTokenLists from '../useTokenLists';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
+import useGaugesQuery from './useGaugesQuery';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -35,12 +36,22 @@ export default function useUserPoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, prices, dynamicDataLoading, getTokens } = useTokens();
+  const {
+    injectTokens,
+    prices,
+    dynamicDataLoading,
+    getTokens,
+    tokens: tokenMeta
+  } = useTokens();
   const { loadingTokenLists } = useTokenLists();
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
   const { networkId } = useNetwork();
+  const { data: subgraphGauges } = useGaugesQuery();
 
+  const gaugeAddresses = computed(() =>
+    (subgraphGauges.value || []).map(gauge => gauge.id)
+  );
   /**
    * COMPUTED
    */
@@ -110,7 +121,9 @@ export default function useUserPoolsQuery(
   /**
    * QUERY PROPERTIES
    */
-  const queryKey = reactive(QUERY_KEYS.Pools.User(networkId, account));
+  const queryKey = reactive(
+    QUERY_KEYS.Pools.User(networkId, account, gaugeAddresses)
+  );
 
   const queryFn = async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({
@@ -154,7 +167,9 @@ export default function useUserPoolsQuery(
       pools,
       '24h',
       prices.value,
-      currency.value
+      currency.value,
+      subgraphGauges.value || [],
+      tokenMeta.value
     );
 
     // TODO - cleanup and extract elsewhere in refactor

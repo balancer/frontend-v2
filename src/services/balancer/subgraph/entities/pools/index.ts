@@ -14,12 +14,16 @@ import {
   computeTotalAPRForPool,
   currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService as _configService } from '@/services/config/config.service';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../../balancer-subgraph.service';
 import {
@@ -68,7 +72,9 @@ export default class Pools {
     pools: Pool[],
     period: TimeTravelPeriod,
     prices: TokenPrices,
-    currency: FiatCurrency
+    currency: FiatCurrency,
+    gauges: SubgraphGauge[],
+    tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
     // Get past state of pools
     const blockNumber = await this.timeTravelBlock(period);
@@ -90,7 +96,15 @@ export default class Pools {
       this.excludedAddresses = await this.getExcludedAddresses();
     }
 
-    return this.serialize(pools, pastPools, period, prices, currency);
+    return this.serialize(
+      pools,
+      pastPools,
+      period,
+      prices,
+      currency,
+      gauges,
+      tokens
+    );
   }
 
   public removeExcludedAddressesFromTotalLiquidity(
@@ -109,10 +123,17 @@ export default class Pools {
     pastPools: Pool[],
     period: TimeTravelPeriod,
     prices: TokenPrices,
-    currency: FiatCurrency
+    currency: FiatCurrency,
+    gauges: SubgraphGauge[],
+    tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
     const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
-
+    const gaugeAprs = await stakingRewardsService.getGaugeAprForPools({
+      prices,
+      gauges,
+      pools,
+      tokens
+    });
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
 
@@ -144,9 +165,19 @@ export default class Pools {
         currency,
         protocolFeePercentage
       );
+
+      const stakingApr = gaugeAprs[pool.id];
+
+      const networkAdjustedLMApr = showStakingRewards.value
+        ? '0'
+        : liquidityMiningAPR;
+      const networkAdjustedLMEligibility = showStakingRewards.value
+        ? false
+        : hasLiquidityMiningRewards;
+
       const totalAPR = this.calcTotalAPR(
         poolAPR,
-        liquidityMiningAPR,
+        networkAdjustedLMApr,
         thirdPartyAPR
       );
       const isNewPool = this.isNewPool(pool);
@@ -156,7 +187,7 @@ export default class Pools {
       // checks what rewards are available.
       return {
         ...pool,
-        hasLiquidityMiningRewards,
+        hasLiquidityMiningRewards: networkAdjustedLMEligibility,
         dynamic: {
           period,
           volume,
@@ -165,8 +196,9 @@ export default class Pools {
             pool: poolAPR,
             thirdParty: thirdPartyAPR,
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
-            liquidityMining: liquidityMiningAPR,
+            liquidityMining: networkAdjustedLMApr,
             liquidityMiningBreakdown,
+            staking: stakingApr,
             total: totalAPR
           },
           isNewPool
