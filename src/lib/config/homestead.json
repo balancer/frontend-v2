@@ -53,7 +53,7 @@
     "gaugeFactory": "0x4E7bBd911cf1EFa442BC1b2e9Ea01ffE785412EC",
     "balancerMinter": "0x239e55F427D44C3cc793f49bFB507ebe76638a2b",
     "tokenAdmin": "0xf302f9F50958c5593770FDf4d4812309fF77414f",
-    "veDelegationProxy": ""
+    "veDelegationProxy": "0x6f5a2eE11E7a772AeB5114A20d0D7c0ff61EB8A0"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
