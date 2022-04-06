@@ -39,6 +39,7 @@ export function calculateGaugeApr({
   balPrice,
   bptPrice,
   workingSupplies,
+  totalSupplies,
   relativeWeights,
   boost = '1',
   rewardTokenData = {},
@@ -51,6 +52,7 @@ export function calculateGaugeApr({
   bptPrice: string;
   boost: string;
   workingSupplies: Record<string, string>;
+  totalSupplies: Record<string, string>;
   relativeWeights: Record<string, string>;
   rewardTokenData: Record<string, RewardTokenData>;
   prices: TokenPrices;
@@ -60,6 +62,7 @@ export function calculateGaugeApr({
   rewardTokenAprs: Record<string, string>;
 } {
   const workingSupply = bnum((workingSupplies || {})[gaugeAddress]) || '0';
+  const totalSupply = bnum((totalSupplies || {})[gaugeAddress]) || '0';
   const relativeWeight = bnum((relativeWeights || {})[gaugeAddress]) || '0';
   const balPayable = calculateTokenPayableToGauge(
     bnum(inflationRate),
@@ -89,11 +92,7 @@ export function calculateGaugeApr({
         bnum(1)
       );
       // for reward tokens we need to use the raw balance (1BPT = 1)
-      const weeklyReward = calculateWeeklyReward(
-        1,
-        workingSupply,
-        tokenPayable
-      );
+      const weeklyReward = calculateWeeklyReward(1, totalSupply, tokenPayable);
       const yearlyReward = weeklyReward
         .times(boost)
         .times(52)
