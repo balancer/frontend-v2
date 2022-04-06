@@ -40,6 +40,7 @@ type Props = {
   hideFooter?: boolean;
   ignoreWalletBalance?: boolean;
   tokenValue?: string;
+  placeholder?: string;
 };
 
 /**
@@ -216,7 +217,7 @@ watchEffect(() => {
 <template>
   <BalTextInput
     v-model="_amount"
-    :placeholder="hintAmount || '0.0'"
+    :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"
     :decimalLimit="token?.decimals || 18"
