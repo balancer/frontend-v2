@@ -840,12 +840,12 @@ export const MAINNET_VOTING_GAUGES: VotingGauge[] = [
       tokens: [
         {
           address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-          weight: '0.8',
+          weight: '0.5',
           symbol: 'LINK'
         },
         {
           address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-          weight: '0.2',
+          weight: '0.5',
           symbol: 'WETH'
         }
       ]
