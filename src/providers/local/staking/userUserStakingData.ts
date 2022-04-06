@@ -16,10 +16,12 @@ import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { bnum } from '@/lib/utils';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 export type UserGuageShare = {
   id: string;
   gauge: {
     poolId: string;
+    totalSupply: string;
   };
   balance: string;
 };
@@ -77,13 +79,15 @@ export type UserStakingDataResponse = {
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
   stakedSharesMap: Ref<Record<string, string>>;
+  poolBoosts: Ref<Record<string, string>>;
+  isLoadingBoosts: Ref<boolean>;
 };
 
 export default function useUserStakingData(
   poolAddress: Ref<string>
 ): UserStakingDataResponse {
   /** COMPOSABLES */
-  const { account, getProvider } = useWeb3();
+  const { account, getProvider, isWalletReady } = useWeb3();
 
   /**
    * QUERIES
@@ -120,9 +124,10 @@ export default function useUserStakingData(
         __args: {
           where: { user: account.value.toLowerCase(), balance_gt: '0' }
         },
-        balance: 1,
+        balance: true,
         gauge: {
-          poolId: 1
+          poolId: true,
+          totalSupply: true
         }
       },
       liquidityGauges: {
@@ -213,10 +218,26 @@ export default function useUserStakingData(
     }
   );
 
+  const isBoostQueryEnabled = computed(
+    () => isWalletReady.value && userGaugeShares.value.length > 0
+  );
+
+  const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery(
+    ['gauges', 'boosts', { account, userGaugeShares }],
+    async () => {
+      const boosts = stakingRewardsService.getUserBoosts({
+        userAddress: account.value,
+        gaugeShares: userGaugeShares.value
+      });
+      return boosts;
+    },
+    reactive({
+      enabled: isBoostQueryEnabled
+    })
+  );
+
   const stakedPools = computed<DecoratedPoolWithShares[]>(() => {
-    const decoratedPools = (
-      stakedPoolsResponse.value?.pages[0].pools || []
-    ).map(pool => {
+    return (stakedPoolsResponse.value?.pages[0].pools || []).map(pool => {
       const stakedBpt = stakedSharesMap.value[pool.id];
       return {
         ...pool,
@@ -224,7 +245,6 @@ export default function useUserStakingData(
         bpt: stakedBpt
       };
     });
-    return decoratedPools;
   });
 
   const totalStakedFiatValue = computed((): string =>
@@ -268,6 +288,8 @@ export default function useUserStakingData(
     refetchUserStakingData,
     stakedPools,
     totalStakedFiatValue,
+    poolBoosts,
+    isLoadingBoosts,
     getStakedShares
   };
 }

@@ -105,6 +105,8 @@ export default defineComponent({
       refetchUserStakingData,
       stakedPools,
       totalStakedFiatValue,
+      poolBoosts,
+      isLoadingBoosts,
       getStakedShares
     } = useUserStakingData(poolAddress);
 
@@ -206,6 +208,8 @@ export default defineComponent({
         refetchUserStakingData,
         stakedPools,
         totalStakedFiatValue,
+        isLoadingBoosts,
+        poolBoosts,
         getStakedShares
       },
       stakeBPT,

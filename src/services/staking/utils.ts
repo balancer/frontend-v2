@@ -54,19 +54,6 @@ export function calculateGaugeApr({
     .times(boost)
     .times(52)
     .times(balPrice);
-
-  console.log('hey', {
-    workingSupplies,
-    relativeWeights,
-    gaugeAddress,
-    workingSupply: workingSupply.toString(),
-    relativeWeight: relativeWeight.toString(),
-    balPayable: balPayable.toString(),
-    weeklyReward: weeklyReward.toString(),
-    yearlyReward: yearlyReward.toString(),
-    inflationRate: inflationRate.toString(),
-    bptPrice: bptPrice.toString()
-  });
   const apr = yearlyReward.div(bptPrice);
   return apr;
 }

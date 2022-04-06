@@ -48,7 +48,6 @@ export default class VeBAL {
     veBalMulticaller.call('locked', this.address, 'locked', [account]);
     veBalMulticaller.call('epoch', this.address, 'epoch');
     veBalMulticaller.call('totalSupply', this.address, 'totalSupply()');
-    veBalMulticaller.call('balance', this.address, 'balanceOf', [account]);
 
     const result = await veBalMulticaller.execute<VeBalLockInfoResult>();
 

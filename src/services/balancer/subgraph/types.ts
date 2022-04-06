@@ -79,6 +79,7 @@ export interface DecoratedPool extends Pool {
     };
     fees: string;
     isNewPool: boolean;
+    boost?: string;
   };
 }
 

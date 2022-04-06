@@ -1,5 +1,5 @@
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
-import { getBalAddress } from '@/lib/utils';
+import { bnum, getBalAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getBptPrice } from '@/lib/utils/balancer/pool';
 import { configService } from '@/services/config/config.service';
@@ -7,7 +7,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { AddressZero } from '@ethersproject/constants';
 import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
-import { isNil, mapValues } from 'lodash';
+import { isNil, mapValues, min } from 'lodash';
 import { GaugeController } from '../balancer/contracts/contracts/gauge-controller';
 import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge';
 import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin';
@@ -17,6 +17,8 @@ import { AnyPool, DecoratedPool, Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import VeBAL from '../balancer/contracts/contracts/veBAL';
 import { balancerContractsService } from '../balancer/contracts/balancer-contracts.service';
+import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
+import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
 
 export type PoolAPRs = Record<string, { min: string; max: string }>;
 
@@ -104,8 +106,6 @@ export class StakingRewardsService {
         relativeWeights
       });
 
-      console.log([poolId, apr.toString()]);
-
       const range = getAprRange(apr.toString());
       return [poolId, range];
     });
@@ -115,14 +115,46 @@ export class StakingRewardsService {
     return Object.fromEntries(resolvedAprs);
   }
 
-  async calculateUserBoost(userAddress: string, gaugeAddress: string) {
-    const gauge = new LiquidityGauge(gaugeAddress);
-    const userBalance = await gauge.balance(getAddress(userAddress));
-    const totalSupply = await gauge.totalSupply();
+  async getUserBoosts({
+    userAddress,
+    gaugeShares
+  }: {
+    userAddress: string;
+    gaugeShares: UserGuageShare[];
+  }) {
+    const veBalProxy = new VeBALProxy(
+      configService.network.addresses.veDelegationProxy
+    );
+    const veBALInfo = await balancerContractsService.veBAL.getLockInfo(
+      userAddress
+    );
+    // need to use veBAL balance from the proxy as the balance from the proxy takes
+    // into account the amount of delegated veBAL as well
+    const veBALBalance = await veBalProxy.getAdjustedBalance(userAddress);
+    const veBALTotalSupply = veBALInfo.totalSupply;
 
-    const veBALInfo = balancerContractsService.veBAL.getLockInfo(userAddress);
-    console.log('ve', veBALInfo)
+    const boosts = gaugeShares.map(gaugeShare => {
+      const gaugeBalance = bnum(gaugeShare.balance);
+      const adjustedGaugeBalance = bnum(0.4)
+        .times(gaugeBalance)
+        .plus(
+          bnum(0.6).times(
+            bnum(veBALBalance)
+              .div(veBALTotalSupply)
+              .times(gaugeShare.gauge.totalSupply)
+          )
+        );
 
+      // choose the minimum of either gauge balance or the adjusted gauge balance
+      const workingBalance = gaugeBalance.lt(adjustedGaugeBalance)
+        ? gaugeBalance
+        : adjustedGaugeBalance;
+
+      const boost = workingBalance.div(bnum(0.4).times(gaugeBalance));
+      return [gaugeShare.gauge.poolId, boost.toString()]
+    });
+
+    return Object.fromEntries(boosts);
   }
 }
 

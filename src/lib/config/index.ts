@@ -57,6 +57,7 @@ export interface Config {
     gaugeFactory: string;
     balancerMinter: string;
     tokenAdmin: string;
+    veDelegationProxy: string;
   };
   keys: {
     infura: string;

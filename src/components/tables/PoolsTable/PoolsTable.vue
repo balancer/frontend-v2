@@ -23,6 +23,7 @@ import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/t
 
 import TokenPills from './TokenPills/TokenPills.vue';
 import { POOLS } from '@/constants/pools';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -36,6 +37,7 @@ type Props = {
   isPaginated?: boolean;
   selectedTokens?: string[];
   hiddenColumns?: string[];
+  showBoost?: boolean;
 };
 
 /**
@@ -47,7 +49,8 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
-  hiddenColumns: () => []
+  hiddenColumns: () => [],
+  showBoost: false
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -133,6 +136,17 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
       return apr;
     },
     width: 175,
+    cellClassName: 'font-numeric'
+  },
+  {
+    name: t('myBoost'),
+    accessor: pool =>
+      pool.dynamic.boost ? `${bnum(pool.dynamic.boost).toFixed(2)}x` : 'N/A',
+    align: 'right',
+    id: 'myBoost',
+    hidden: !props.showBoost,
+    sortKey: pool => Number(pool.dynamic.boost),
+    width: 150,
     cellClassName: 'font-numeric'
   },
   {

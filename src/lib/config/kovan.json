@@ -50,7 +50,7 @@
     "gaugeController": "0x28be1a58a534b281c3a22df28d3720323bff331d",
     "tokenAdmin": "0x955A85C79B6A249e0Ffe679766DAd4C10Cc3F9fB",
     "veBAL": "0x0BA4d28a89b0aB0c48253f4f36B204DE24354651",
-    "veDelegationProxy": "0x98D0d0a65cBeCCaa647a5a95cf27Cf2f00E1231C"
+    "veDelegationProxy": "0x5C7c4bdfEf212F3154156A84e8e44abed73D104b"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
