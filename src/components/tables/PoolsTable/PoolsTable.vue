@@ -141,7 +141,7 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBoost'),
     accessor: pool =>
-      pool.dynamic.boost ? `${bnum(pool.dynamic.boost).toFixed(2)}x` : 'N/A',
+      pool.dynamic.boost ? `${bnum(pool.dynamic.boost).toFixed(3)}x` : 'N/A',
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
@@ -274,11 +274,23 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
           <span
             v-if="Number(pool.dynamic.apr.staking?.min) > 0"
-            class="text-sm text-right"
+            class="text-right"
           >
-            {{ fNum(pool.dynamic.apr.staking.min, 'percent_lg') }}-{{
-              fNum(pool.dynamic.apr.staking.max, 'percent_lg')
-            }}
+            <span v-if="pool.dynamic.boost">
+              {{
+                fNum(
+                  bnum(pool.dynamic.apr.staking.min)
+                    .times(pool.dynamic.boost)
+                    .toString(),
+                  'percent_lg'
+                )
+              }}
+            </span>
+            <span v-else class="text-sm">
+              {{ fNum(pool.dynamic.apr.staking.min, 'percent_lg') }}-{{
+                fNum(pool.dynamic.apr.staking.max, 'percent_lg')
+              }}
+            </span>
           </span>
           <span v-else>
             {{
