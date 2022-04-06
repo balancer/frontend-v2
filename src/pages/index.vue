@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -98,7 +98,6 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    {{ gaugeAprMap }}
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">

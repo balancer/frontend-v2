@@ -3,22 +3,17 @@ import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
-import { Contract } from '@ethersproject/contracts';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { mapValues } from 'lodash';
 
 export class GaugeController {
-  instance: Contract;
-
   constructor(
     public readonly address: string,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = GaugeControllerAbi,
     private readonly config = configService,
     private readonly web3 = web3Service
-  ) {
-    this.instance = new Contract(this.address, this.abi, this.provider);
-  }
+  ) {}
 
   async getRelativeWeights(gaugeAddresses: string[], timestamp: number) {
     const multicaller = this.getMulticaller();
@@ -27,7 +22,7 @@ export class GaugeController {
         getAddress(gaugeAddress),
         this.address,
         'gauge_relative_weight(address, uint256)',
-        [getAddress(gaugeAddress), 1649427628]
+        [getAddress(gaugeAddress), 1649427628 || timestamp]
       );
     }
     const result = await multicaller.execute();
