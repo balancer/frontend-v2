@@ -3,7 +3,6 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { fromUnixTime, isAfter } from 'date-fns';
 import { parseUnits } from 'ethers/lib/utils';
 import {
   computed,
@@ -20,7 +19,6 @@ import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import { isL2 } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
-import { IS_DEV, IS_STAGING } from '@/constants/env';
 import symbolKeys from '@/constants/symbol.keys';
 import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
@@ -31,12 +29,7 @@ import useUserStakingData, {
   UserStakingDataResponse
 } from './userUserStakingData';
 
-export const showStakingRewards = computed(
-  () =>
-    IS_STAGING ||
-    IS_DEV ||
-    (!isL2.value && isAfter(new Date(), fromUnixTime(1649289600)))
-);
+export const showStakingRewards = computed(() => !isL2.value);
 
 /**
  * TYPES
