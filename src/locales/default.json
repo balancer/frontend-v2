@@ -584,7 +584,7 @@
     "stake": "Stake",
     "staked": "Staked",
     "staking": {
-        "minimumStakingApr": "Minimum staking APR",
+        "minimumStakingApr": "Min staking APR",
         "newTotalShare": "Your total share",
         "potentialWeeklyEarningTooltip": "The approximate weekly earning based on your staked balance",
         "stakedPools": "Staked pools",

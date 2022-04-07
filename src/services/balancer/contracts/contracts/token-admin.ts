@@ -8,20 +8,18 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { web3Service } from '@/services/web3/web3.service';
 
 export class BalancerTokenAdmin {
-  instance: Contract;
-
   constructor(
     public readonly address: string,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = TokenAdminAbi,
     private readonly config = configService,
     private readonly web3 = web3Service
-  ) {
-    this.instance = new Contract(this.address, this.abi, this.provider);
-  }
+  ) {}
 
   async getInflationRate() {
-    const rate = await this.instance.getInflationRate();
+    if (!this.address) return '0';
+    const instance = new Contract(this.address, this.abi, this.provider);
+    const rate = await instance.getInflationRate();
     return formatUnits(rate, 18);
   }
 
