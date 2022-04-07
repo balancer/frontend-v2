@@ -103,15 +103,26 @@ export class GaugeControllerDecorator {
     const multiplier = VOTE_MULTIPLIER.mul(
       this.config.network.gauges.weight
     ).div(100);
-    return {
-      votes: votesData.gaugeWeightThisPeriod.bias
+
+    let votes = '0';
+    if (totalWeightThisPeriod.gt(0)) {
+      votes = votesData.gaugeWeightThisPeriod.bias
         .mul(multiplier)
         .div(totalWeightThisPeriod)
-        .toString(),
-      votesNextPeriod: votesData.gaugeWeightNextPeriod.bias
+        .toString();
+    }
+
+    let votesNextPeriod = '0';
+    if (totalWeightNextPeriod.gt(0)) {
+      votesNextPeriod = votesData.gaugeWeightNextPeriod.bias
         .mul(multiplier)
         .div(totalWeightNextPeriod)
-        .toString(),
+        .toString();
+    }
+
+    return {
+      votes,
+      votesNextPeriod,
       userVotes: votesData?.userVotes?.power.toString() || '0',
       lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0
     };
