@@ -4,7 +4,7 @@ import { isNil, mapValues } from 'lodash';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, getBalAddress } from '@/lib/utils';
-import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
+import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -171,7 +171,7 @@ export class StakingRewardsService {
     gaugeShares
   }: {
     userAddress: string;
-    gaugeShares: UserGuageShare[];
+    gaugeShares: UserGaugeShare[];
   }) {
     const veBalProxy = new VeBALProxy(
       configService.network.addresses.veDelegationProxy

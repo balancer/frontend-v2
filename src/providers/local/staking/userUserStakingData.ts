@@ -19,7 +19,7 @@ import { stakingRewardsService } from '@/services/staking/staking-rewards.servic
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { getGaugeAddress } from './staking.provider';
-export type UserGuageShare = {
+export type UserGaugeShare = {
   id: string;
   gauge: {
     id: string;
@@ -37,8 +37,8 @@ export type UserLiquidityGauge = {
   }[];
 };
 
-export type UserGuageSharesResponse = {
-  gaugeShares: UserGuageShare[];
+export type UserGaugeSharesResponse = {
+  gaugeShares: UserGaugeShare[];
   liquidityGauges: UserLiquidityGauge[];
 };
 
@@ -50,7 +50,7 @@ export type UserStakingDataResponse = {
   // a list of the gauge shares owned by that user
   // a gauge share represents the amount of staked
   // BPT a user has in a pool, given balance >= 0
-  userGaugeShares: ComputedRef<UserGuageShare[]>;
+  userGaugeShares: ComputedRef<UserGaugeShare[]>;
   // a list of eligible gauges the user can stake into
   // this list is pulled against the users invested
   // pool ids
@@ -120,7 +120,7 @@ export default function useUserStakingData(
     isLoading: isLoadingUserStakingData,
     isIdle: isUserStakeDataIdle,
     refetch: refetchUserStakingData
-  } = useGraphQuery<UserGuageSharesResponse>(
+  } = useGraphQuery<UserGaugeSharesResponse>(
     subgraphs.gauge,
     ['staking', 'data', { account, userPoolIds }],
     () => ({
