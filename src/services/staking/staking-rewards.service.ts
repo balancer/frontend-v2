@@ -190,6 +190,7 @@ export class StakingRewardsService {
     );
 
     const boosts = gaugeShares.map(gaugeShare => {
+      const gaugeWorkingSupply = bnum(workingSupplies[gaugeShare.gauge.id]);
       const gaugeBalance = bnum(gaugeShare.balance);
       const adjustedGaugeBalance = bnum(0.4)
         .times(gaugeBalance)
@@ -206,11 +207,18 @@ export class StakingRewardsService {
         ? gaugeBalance
         : adjustedGaugeBalance;
 
-      const boostedFraction = workingBalance.div(
-        workingSupplies[gaugeShare.gauge.id]
+      const zeroBoostWorkingBalance = bnum(0.4).times(gaugeBalance);
+      const zeroBoostWorkingSupply = gaugeWorkingSupply
+        .minus(workingBalance)
+        .plus(zeroBoostWorkingBalance);
+
+      const boostedFraction = workingBalance.div(gaugeWorkingSupply);
+      const unboostedFraction = zeroBoostWorkingBalance.div(
+        zeroBoostWorkingSupply
       );
-      const unboostedFraction = gaugeBalance.div(gaugeShare.gauge.totalSupply);
+
       const boost = boostedFraction.div(unboostedFraction);
+
       return [gaugeShare.gauge.poolId, boost.toString()];
     });
 
