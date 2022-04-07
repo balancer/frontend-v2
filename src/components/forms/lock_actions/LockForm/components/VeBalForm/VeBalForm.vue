@@ -2,7 +2,6 @@
 import { computed, ref, toRef } from 'vue';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
-import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useTokens from '@/composables/useTokens';
 import { expectedVeBal } from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
@@ -58,7 +57,6 @@ const {
   isValidLockEndDate,
   isExtendedLockEndDate
 } = useLockEndDate(props.veBalLockInfo);
-const { refetch: refetchLockInfo } = useVeBalLockInfoQuery();
 
 /**
  * COMPOSABLES
@@ -116,7 +114,6 @@ const lockType = computed(() => {
  */
 function handleClosePreviewModal() {
   showPreviewModal.value = false;
-  refetchLockInfo.value();
 }
 </script>
 
