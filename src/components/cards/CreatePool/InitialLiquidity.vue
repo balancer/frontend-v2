@@ -167,6 +167,8 @@ function setNativeAssetIfRequired(): void {
     useNativeAsset.value ||
     bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)
   ) {
+    // the native asset flag may not be set
+    useNativeAsset.value = true;
     tokenAddresses.value = tokenAddresses.value.map(address => {
       if (address == wrappedNativeAsset.value.address) {
         return nativeAsset.address;
