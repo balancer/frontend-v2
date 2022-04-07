@@ -468,8 +468,9 @@
             "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
             "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, you just need to invest in these pools to receive incentives. No staking is required for now.",
             "transitionInfo": {
-                "title": "Transition to new veBAL tokenomics",
-                "description": "Liquidity mining incentives start on 7 April 2022 at 0:00 UTC. Token earnings accumulate every block and can be claimed at any time. In the meantime, you can prepare by getting veBAL, providing liquidity, staking and voting on eligible pools.",
+                "title": "veBAL liquidity mining incentives are live!",
+                "titleL2": "Transition to new veBAL tokenomics",
+                "description": "Token earnings accumulate every block and can be claimed at any time. Stake LP tokens in eligible pools to get incentives. Get veBAL to boost your yield and to vote on which pool should get token emissions for the next week.",
                 "descriptionL2": "Liquidity mining on Polygon & Arbitrum will be soon moving to the veBAL emission's system. When this happens, you'll need to stake your LP tokens in eligible pools to continue receiving liquidity mining incentives."
             },
             "titles": {
