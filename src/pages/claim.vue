@@ -174,7 +174,11 @@ watch(gaugePools, async newPools => {
             {{ $t('pages.claim.title') }}
           </h1>
           <p>
-            {{ $t('pages.claim.description') }}
+            {{
+              isL2
+                ? $t('pages.claim.descriptionL2')
+                : $t('pages.claim.description')
+            }}
           </p>
         </div>
         <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
