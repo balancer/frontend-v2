@@ -1,10 +1,12 @@
 import { UseQueryOptions } from 'react-query/types';
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { gaugesSubgraphService } from '@/services/balancer/gauges/gauges-subgraph.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
+
+import { isL2 } from '../useNetwork';
 
 /**
  * TYPES
@@ -17,6 +19,8 @@ type QueryResponse = SubgraphGauge[];
 export default function useGaugesQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
+  const enabled = computed(() => !isL2.value);
+
   /**
    * QUERY KEY
    */
@@ -38,7 +42,7 @@ export default function useGaugesQuery(
    * QUERY OPTIONS
    */
   const queryOptions = reactive({
-    enabled: true,
+    enabled,
     ...options
   });
 
