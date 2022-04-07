@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -23,12 +23,17 @@ const cardWrapper = ref<HTMLElement>();
  * COMPOSBALES
  */
 const { userNetworkConfig } = useWeb3();
-const { balanceFor, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const {
+  balanceFor,
+  priceFor,
+  nativeAsset,
+  wrappedNativeAsset,
+  dynamicDataLoading
+} = useTokens();
 const { fNum2 } = useNumbers();
 const {
   seedTokens,
   tokensList,
-  optimisedLiquidity,
   totalLiquidity,
   scaledLiquidity,
   manuallySetToken,
@@ -37,6 +42,7 @@ const {
   isWethPool,
   useNativeAsset,
   poolLiquidity,
+  getOptimisedLiquidity,
   goBack,
   updateManuallySetToken,
   proceed,
@@ -96,8 +102,23 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  optimiseLiquidity();
-  scaleLiquidity();
+  // these functions need access to pricing data
+  // do not attempt to optimise if there is no data
+  if (!dynamicDataLoading.value) {
+    optimiseLiquidity();
+    scaleLiquidity();
+  }
+});
+
+// these functions need access to pricing data
+// do not attempt to optimise if there is no data
+// but once we have that data, optimise away
+watch(dynamicDataLoading, () => {
+  if (!dynamicDataLoading.value) {
+    setNativeAssetIfRequired();
+    optimiseLiquidity();
+    scaleLiquidity();
+  }
 });
 
 /**
@@ -107,8 +128,9 @@ function optimiseLiquidity(force = false) {
   if (manuallySetToken.value && !force) return;
   isOptimised.value = true;
 
+  const optimisedLiquidity = getOptimisedLiquidity();
   for (const token of seedTokens.value) {
-    token.amount = optimisedLiquidity.value[token.tokenAddress].balanceRequired;
+    token.amount = optimisedLiquidity[token.tokenAddress].balanceRequired;
   }
 }
 

@@ -2,6 +2,7 @@
 import anime from 'animejs';
 import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -24,6 +25,7 @@ import useApp from '@/composables/useApp';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { lsGet } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 import { StepState } from '@/types';
 
 /**
@@ -51,6 +53,7 @@ const {
   importState,
   totalLiquidity,
   resetPoolCreationState,
+  retrievePoolAddress,
   retrievePoolDetails
 } = usePoolCreation();
 const { removeAlert } = useAlerts();
@@ -64,6 +67,8 @@ const {
   injectedPrices,
   loading: isLoadingTokens
 } = useTokens();
+const route = useRoute();
+const { isWalletReady } = useWeb3();
 
 /**
  * LIFECYCLE
@@ -90,7 +95,7 @@ onBeforeMount(async () => {
     await nextTick();
     setActiveStep(previouslySavedState.activeStep);
     if (previouslySavedState.createPoolTxHash) {
-      await retrievePoolDetails(previouslySavedState.createPoolTxHash);
+      await retrievePoolAddress(previouslySavedState.createPoolTxHash);
     }
   }
   // make sure to inject any custom tokens we cannot inject
@@ -103,6 +108,7 @@ onBeforeMount(async () => {
 /**
  * COMPUTED
  */
+const poolCreateTx = computed(() => route.params.tx || '');
 const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
@@ -167,6 +173,10 @@ const exitAnimateProps = computed(() => ({
   left: 0,
   right: 0
 }));
+
+const isLoading = computed(
+  () => appLoading.value || dynamicDataLoading.value || isRestoring.value
+);
 
 /**
  * FUNCTIONS
@@ -259,6 +269,20 @@ watch(activeStep, () => {
 watch(isLoadingTokens, () => {
   injectUnknownPoolTokens();
 });
+
+// we need to wait for a ready wallet before executing this
+// as we need that getProvider() call to suceed
+watch(
+  isWalletReady,
+  async () => {
+    if (isWalletReady.value && poolCreateTx.value) {
+      await retrievePoolDetails(poolCreateTx.value as string);
+    }
+  },
+  {
+    immediate: true
+  }
+);
 </script>
 
 <template>
@@ -297,7 +321,7 @@ watch(isLoadingTokens, () => {
           </button>
         </BalAlert>
       </AnimatePresence>
-      <AnimatePresence :isVisible="isRestoring" unmountInstantly>
+      <AnimatePresence :isVisible="isLoading" unmountInstantly>
         <BalLoadingBlock class="h-64" />
       </AnimatePresence>
       <AnimatePresence
@@ -329,7 +353,7 @@ watch(isLoadingTokens, () => {
         <SimilarPools />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 3"
+        :isVisible="!isLoading && activeStep === 3"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"

@@ -9,6 +9,7 @@ import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import PoolPage from '@/pages/pool/_id.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
 import PoolInvestPage from '@/pages/pool/invest.vue';
+import SeedPoolPage from '@/pages/pool/seed.vue';
 import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import TermsOfUsePage from '@/pages/terms-of-use.vue';
@@ -44,9 +45,15 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/pool/create',
+    path: '/pool/create/:tx?',
     name: 'create-pool',
     component: CreatePoolPage,
+    meta: { layout: 'FocusedLayout' }
+  },
+  {
+    path: '/pool/seed/:tx',
+    name: 'seed-pool',
+    component: SeedPoolPage,
     meta: { layout: 'FocusedLayout' }
   },
   {
