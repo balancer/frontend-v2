@@ -171,7 +171,6 @@ watch(gaugePools, async newPools => {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div>
           <h1 class="mb-4">
-            {{ isL2 ? $t('pages.claim.titleL2') : $t('pages.claim.title') }}
             {{ $t('pages.claim.title') }}
           </h1>
           <p>
@@ -183,7 +182,13 @@ watch(gaugePools, async newPools => {
           </p>
         </div>
         <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
-          <h3 class="mb-3">{{ $t('pages.claim.transitionInfo.title') }}</h3>
+          <h3 class="mb-3">
+            {{
+              isL2
+                ? $t('pages.claim.transitionInfo.titleL2')
+                : $t('pages.claim.transitionInfo.title')
+            }}
+          </h3>
           <p>
             {{
               isL2
