@@ -190,7 +190,8 @@ export class StakingRewardsService {
     );
 
     const boosts = gaugeShares.map(gaugeShare => {
-      const gaugeWorkingSupply = bnum(workingSupplies[gaugeShare.gauge.id]);
+      const gaugeAddress = getAddress(gaugeShare.gauge.id);
+      const gaugeWorkingSupply = bnum(workingSupplies[gaugeAddress]);
       const gaugeBalance = bnum(gaugeShare.balance);
       const adjustedGaugeBalance = bnum(0.4)
         .times(gaugeBalance)
