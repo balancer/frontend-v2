@@ -59,7 +59,7 @@ function navigateToGetVeBAL() {
           </BalBtn>
           <BalBtn
             tag="a"
-            href="https://forum.balancer.fi/t/introducing-vebal-tokenomics/2512"
+            href="https://docs.balancer.fi/ecosystem/vebal-and-gauges"
             target="_blank"
             rel="noreferrer"
             color="white"
