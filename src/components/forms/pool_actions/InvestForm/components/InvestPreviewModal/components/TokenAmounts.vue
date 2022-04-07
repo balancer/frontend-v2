@@ -2,7 +2,6 @@
 import { groupBy, orderBy } from 'lodash';
 import { computed } from 'vue';
 
-import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
