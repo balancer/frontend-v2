@@ -37,6 +37,7 @@ import { configService } from '@/services/config/config.service';
 import { fp } from '@/beethovenx/utils/numbers';
 import { isEqual } from 'lodash';
 import useConfig from '@/composables/useConfig';
+import BigNumber from 'bignumber.js';
 
 /**
  * TYPES
@@ -621,7 +622,8 @@ export default function useWithdrawMath(
         linearPool.mainToken.address.toLowerCase() === mainToken.toLowerCase()
     );
 
-    return linearPool?.wrappedToken.address || '';
+    return linearPool?.mainToken.address || '';
+    //return linearPool?.wrappedToken.address || '';
   });
 
   const loadingAmountsOut = computed(
@@ -640,6 +642,7 @@ export default function useWithdrawMath(
     if (shouldFetchBatchSwap.value) {
       batchSwap.value = await getBatchSwap();
       if (shouldUseBatchRelayer.value) {
+        await balancer.swaps.fetchPools();
         batchRelayerSwap.value = await getBatchRelayerSwap();
       }
     }
@@ -741,12 +744,56 @@ export default function useWithdrawMath(
     exactOut = false
   ): Promise<TransactionData> {
     batchRelayerSwapLoading.value = true;
-
     amounts = amounts || batchSwapBPTIn.value.map(amount => amount.toString());
-    tokensOut = tokensOut || pool.value.wrappedTokens || [];
-    const fetchPools = !batchRelayerSwap.value; // Only needs to be fetched on first call
+    tokensOut = tokensOut || pool.value.mainTokens || [];
+    //const fetchPools = !batchRelayerSwap.value; // Only needs to be fetched on first call
 
-    const rates: string[] = [];
+    const exits = tokensOut.map((tokenOut, index) => {
+      const linearPool = pool.value.linearPools?.find(
+        linearPool =>
+          linearPool.mainToken.address.toLowerCase() === tokenOut.toLowerCase()
+      );
+      const amount = (amounts || [])[index];
+
+      const amountHumanReadable = scaleDown(
+        new BigNumber(amount),
+        18
+      ).toString();
+
+      return {
+        tokenOut,
+        bptAmountIn: amount,
+        //TODO: this is an approximation
+        unwrap:
+          linearPool &&
+          parseFloat(amountHumanReadable) >
+            parseFloat(linearPool.mainToken.balance)
+      };
+    });
+
+    const linearPools = pool.value.linearPools || [];
+    exitPoolBatchSwapWrappedTokensOut.value = exits
+      .filter(exit => exit.unwrap)
+      .map(exit => ({
+        token:
+          linearPools.find(
+            linearPool =>
+              linearPool.mainToken.address.toLowerCase() ===
+              exit.tokenOut.toLowerCase()
+          )?.wrappedToken.address || '',
+        amount: exit.bptAmountIn
+      }));
+
+    const result = await balancerContractsService.batchRelayer.service.sdk.relayer.swapAndUnwrapStablePhantomPool(
+      {
+        poolId: pool.value.id,
+        exits,
+        slippage: slippageScaled.value,
+        account: account.value
+      }
+    );
+
+    /*const rates: string[] = [];
     tokensOut.forEach((tokenOut, i) => {
       rates[i] = scaledWrappedTokenRateFor(tokenOut);
     });
@@ -760,7 +807,7 @@ export default function useWithdrawMath(
       slippageScaled.value,
       exactOut,
       fetchPools
-    );
+    );*/
 
     batchRelayerSwapLoading.value = false;
     return result;
