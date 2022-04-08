@@ -9,9 +9,7 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 // Components
 import AssetRow from './components/AssetRow.vue';
-import { getAddress } from '@ethersproject/address';
 import { usePool } from '@/composables/usePool';
-import { keyBy } from 'lodash';
 import usePools from '@/composables/pools/usePools';
 import { useBoostedPool } from '@/composables/useBoostedPool';
 
@@ -49,17 +47,21 @@ const poolCalculator = new PoolCalculator(
   ref(false)
 );
 
-const { userPoolBalance, boostedPoolUserMainTokenBalances } = useBoostedPool(
+const { userPoolBalance } = useBoostedPool(
   toRef(props, 'pool'),
   poolCalculator,
   //@ts-ignore
   pools
 );
 
+const propTokenAmounts = computed((): string[] => {
+  return userPoolBalance.value;
+});
+
 /**
  * COMPUTED
  */
-
+/*
 const tokenAddresses = computed((): string[] => {
   if (props.pool.mainTokens) {
     // We're using mainToken balances for StablePhantom pools
@@ -89,27 +91,47 @@ const fiatTotal = computed(() => {
         .toString()
     );
   return fNum(fiatValue, currency.value);
+});*/
+
+const fiatTotal = computed(() => {
+  const fiatValue = props.pool.tokenAddresses
+    .map((address, i) => toFiat(propTokenAmounts.value[i], address))
+    .reduce((total, value) =>
+      bnum(total)
+        .plus(value)
+        .toString()
+    );
+  return fNum(fiatValue, currency.value);
 });
+
+/**
+ * METHODS
+ */
+function weightLabelFor(address: string): string {
+  return fNum(props.pool.onchain.tokens[address].weight, 'percent_lg');
+}
+
+function fiatLabelFor(index: number, address: string): string {
+  const fiatValue = toFiat(propTokenAmounts.value[index], address);
+  return fNum(fiatValue, currency.value);
+}
 </script>
 
 <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
-        <h6>{{ $t('poolTransfer.myPoolBalancesCard.title') }}</h6>
+        <h6>{{ $t('poolTransfer.myPoolBalancesCard.title') }} abc</h6>
       </div>
     </template>
 
     <div class="-mt-2 p-4">
-      <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
-        <AssetRow
-          :address="address"
-          :balance="
-            isBoostedPool
-              ? boostedPoolUserMainTokenBalances[i].balance
-              : userPoolBalance[i]
-          "
-        />
+      <div
+        v-for="(address, index) in pool.tokenAddresses"
+        :key="address"
+        class="py-2"
+      >
+        <AssetRow :address="address" :balance="propTokenAmounts[index]" />
       </div>
       <div class="pt-4 flex justify-between font-medium">
         <span>
