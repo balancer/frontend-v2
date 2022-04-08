@@ -127,13 +127,16 @@ export default class Pools {
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
-    const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
-    const gaugeAprs = await stakingRewardsService.getGaugeAprForPools({
-      prices,
-      gauges,
-      pools,
-      tokens
-    });
+    const [protocolFeePercentage, gaugeAprs] = await Promise.all([
+      this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
+      await stakingRewardsService.getGaugeAprForPools({
+        prices,
+        gauges,
+        pools,
+        tokens
+      })
+    ]);
+
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
 
