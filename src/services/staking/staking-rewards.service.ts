@@ -4,7 +4,7 @@ import { isNil, mapValues } from 'lodash';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, getBalAddress } from '@/lib/utils';
-import { UserGuageShare } from '@/providers/local/staking/userUserStakingData';
+import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -32,7 +32,7 @@ export class StakingRewardsService {
     configService.network.addresses.tokenAdmin
   );
 
-  private async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
+  async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
     // start with a fresh multicaller
     const multicaller = LiquidityGauge.getMulticaller();
 
@@ -171,7 +171,7 @@ export class StakingRewardsService {
     gaugeShares
   }: {
     userAddress: string;
-    gaugeShares: UserGuageShare[];
+    gaugeShares: UserGaugeShare[];
   }) {
     const veBalProxy = new VeBALProxy(
       configService.network.addresses.veDelegationProxy
@@ -184,7 +184,14 @@ export class StakingRewardsService {
     const veBALBalance = await veBalProxy.getAdjustedBalance(userAddress);
     const veBALTotalSupply = veBALInfo.totalSupply;
 
+    const gaugeAddresses = gaugeShares.map(gaugeShare => gaugeShare.gauge.id);
+    const workingSupplies = await this.getWorkingSupplyForGauges(
+      gaugeAddresses
+    );
+
     const boosts = gaugeShares.map(gaugeShare => {
+      const gaugeAddress = getAddress(gaugeShare.gauge.id);
+      const gaugeWorkingSupply = bnum(workingSupplies[gaugeAddress]);
       const gaugeBalance = bnum(gaugeShare.balance);
       const adjustedGaugeBalance = bnum(0.4)
         .times(gaugeBalance)
@@ -201,7 +208,18 @@ export class StakingRewardsService {
         ? gaugeBalance
         : adjustedGaugeBalance;
 
-      const boost = workingBalance.div(bnum(0.4).times(gaugeBalance));
+      const zeroBoostWorkingBalance = bnum(0.4).times(gaugeBalance);
+      const zeroBoostWorkingSupply = gaugeWorkingSupply
+        .minus(workingBalance)
+        .plus(zeroBoostWorkingBalance);
+
+      const boostedFraction = workingBalance.div(gaugeWorkingSupply);
+      const unboostedFraction = zeroBoostWorkingBalance.div(
+        zeroBoostWorkingSupply
+      );
+
+      const boost = boostedFraction.div(unboostedFraction);
+
       return [gaugeShare.gauge.poolId, boost.toString()];
     });
 
