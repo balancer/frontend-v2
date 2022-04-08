@@ -53,10 +53,12 @@ function onLoaded() {
 /* Image fade animation */
 .bal-image-fade-enter-active,
 .bal-image-fade-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.5s ease-in-out 0.1s;
+  transform: scale(1) translateY(0px);
 }
 .bal-image-fade-enter-from,
 .bal-image-fade-leave-to {
   opacity: 0;
+  transform: scale(0.97) translateY(10px);
 }
 </style>
