@@ -72,7 +72,7 @@ onMounted(() => {
         <TradeCardGP />
       </template>
     </template>
-    <div class="mt-8 p-4 sm:p-0 lg:p-0">
+    <div class="mt-8 p-4 lg:p-0 ">
       <BalAccordion
         class="accordion-mw w-full"
         v-if="upToLargeBreakpoint"

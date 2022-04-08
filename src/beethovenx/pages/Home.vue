@@ -6,7 +6,9 @@ import HomeEducationItems from '@/beethovenx/components/pages/home/HomeEducation
 
 <template>
   <div>
-    <div class="hero-container pt-10 sm:pt-16 lg:pt-8 overflow-hidden">
+    <div
+      class="hero-container lg:container lg:mx-auto pt-10 sm:pt-16 lg:pt-8 overflow-hidden"
+    >
       <div class="mx-auto max-w-7xl">
         <div class="lg:grid lg:grid-cols-2 lg:gap-8">
           <div

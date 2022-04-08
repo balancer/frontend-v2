@@ -36,7 +36,7 @@ const isHomePage = computed(() => route.path === '/');
   <div>
     <AppNav />
     <AppHeaderBg />
-    <div class="z-10 pb-16 relative">
+    <div class="z-10 pb-16 relative px-4 lg:px-6">
       <router-view :key="$route.path" />
     </div>
     <AppFooterNav v-if="upToMediumBreakpoint" />
@@ -47,7 +47,7 @@ const isHomePage = computed(() => route.path === '/');
           v-for="(item, index) in EXTERNAL_LINKS.Beethoven.NavOtherItems"
           :key="index"
         >
-          <BalLink :href="item.url" v-if="item.icon" external class="mr-12">
+          <BalLink :href="item.url" v-if="item.icon" external class="mx-6">
             <img
               :src="require(`@/beethovenx/assets/images/${item.icon}.png`)"
               width="40"
