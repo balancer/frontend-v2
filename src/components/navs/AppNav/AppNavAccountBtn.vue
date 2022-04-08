@@ -1,5 +1,9 @@
 <template>
-  <BalPopover no-pad>
+  <BalPopover
+    no-pad
+    :align="isMobile ? 'right' : undefined"
+    :detached="isMobile ? true : undefined"
+  >
     <template v-slot:activator>
       <BalBtn
         class="text-base"
@@ -49,7 +53,7 @@ export default defineComponent({
   },
 
   setup() {
-    const { bp, upToLargeBreakpoint } = useBreakpoints();
+    const { bp, upToLargeBreakpoint, isMobile } = useBreakpoints();
     const { isLoadingProfile, profile, account } = useWeb3();
 
     const avatarSize = computed(() => {
@@ -69,7 +73,8 @@ export default defineComponent({
       profile,
       avatarSize,
       upToLargeBreakpoint,
-      isLoadingProfile
+      isLoadingProfile,
+      isMobile
     };
   }
 });
