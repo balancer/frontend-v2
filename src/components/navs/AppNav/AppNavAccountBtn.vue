@@ -1,7 +1,7 @@
 <template>
   <BalPopover
     no-pad
-    :align="isMobile ? 'right' : undefined"
+    :align="isMobile ? 'center' : undefined"
     :detached="isMobile ? true : undefined"
   >
     <template v-slot:activator>
