@@ -36,7 +36,7 @@ const isHomePage = computed(() => route.path === '/');
   <div>
     <AppNav />
     <AppHeaderBg />
-    <div class="z-10 pb-16 relative px-4 lg:px-6">
+    <div class="z-10 pb-16 relative">
       <router-view :key="$route.path" />
     </div>
     <AppFooterNav v-if="upToMediumBreakpoint" />
