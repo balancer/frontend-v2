@@ -1,9 +1,4 @@
-import {
-  FundManagement,
-  SingleSwap,
-  SwapKind
-} from '@balancer-labs/balancer-js';
-import { SwapV2 } from '@balancer-labs/sdk';
+import { FundManagement, SingleSwap, SwapType, SwapV2 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
@@ -56,7 +51,7 @@ describe('vault.service', () => {
         amount: '10',
         assetIn: tokens.USDC.address,
         assetOut: tokens.DAI.address,
-        kind: SwapKind.GivenIn,
+        kind: SwapType.SwapExactIn,
         userData: ''
       };
       const tokenOutAmount = '10';
@@ -76,7 +71,7 @@ describe('vault.service', () => {
 
   describe('batchSwap', () => {
     it('Should call the contract with correct params', async () => {
-      const swapKind = SwapKind.GivenIn;
+      const swapKind = SwapType.SwapExactIn;
       const tokenAddresses = [tokens.USDC.address, tokens.DAI.address];
       const limits = ['10', '10'];
       await vaultService.batchSwap(

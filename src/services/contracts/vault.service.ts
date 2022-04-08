@@ -1,9 +1,9 @@
 import {
   FundManagement,
   SingleSwap,
-  SwapKind
-} from '@balancer-labs/balancer-js';
-import { SwapV2 } from '@balancer-labs/sdk';
+  SwapType,
+  SwapV2
+} from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { MaxUint256 } from '@ethersproject/constants';
@@ -43,7 +43,7 @@ export default class VaultService {
   }
 
   public batchSwap(
-    swapKind: SwapKind,
+    swapKind: SwapType,
     swaps: SwapV2[],
     tokenAddresses: string[],
     funds: FundManagement,

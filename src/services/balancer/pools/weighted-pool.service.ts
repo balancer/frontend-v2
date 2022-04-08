@@ -1,4 +1,4 @@
-import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { toNormalizedWeights } from '@balancer-labs/sdk';
 import {
   Vault__factory,
   WeightedPool__factory,

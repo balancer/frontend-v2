@@ -1,9 +1,10 @@
 import {
+  BatchSwapStep,
   FundManagement,
   SingleSwap,
-  SwapKind
-} from '@balancer-labs/balancer-js';
-import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
+  SwapType,
+  SwapV2
+} from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
@@ -53,8 +54,8 @@ export default class SwapService {
 
     const swapKind =
       tokenOut.type === SwapTokenType.min
-        ? SwapKind.GivenIn
-        : SwapKind.GivenOut;
+        ? SwapType.SwapExactIn
+        : SwapType.SwapExactOut;
 
     const funds = await this.getFundManagement();
 
@@ -128,8 +129,8 @@ export default class SwapService {
 
     const swapKind =
       tokenOut.type === SwapTokenType.min
-        ? SwapKind.GivenIn
-        : SwapKind.GivenOut;
+        ? SwapType.SwapExactIn
+        : SwapType.SwapExactOut;
 
     const funds = await this.getFundManagement();
 
@@ -192,7 +193,7 @@ export default class SwapService {
       );
 
       return vaultService.batchSwap(
-        SwapKind.GivenIn,
+        SwapType.SwapExactIn,
         swaps,
         tokenAddresses,
         funds,
@@ -213,7 +214,7 @@ export default class SwapService {
     tokensOut: SwapToken[],
     swaps: BatchSwapStep[],
     tokenAddresses: string[],
-    swapKind: SwapKind
+    swapKind: SwapType
   ): Promise<TransactionResponse> {
     try {
       const overrides: any = {};

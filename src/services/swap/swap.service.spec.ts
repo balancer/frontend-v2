@@ -1,9 +1,9 @@
-import {
+import { 
   FundManagement,
   SingleSwap,
-  SwapKind
-} from '@balancer-labs/balancer-js';
-import { SwapV2 } from '@balancer-labs/sdk';
+  SwapType,
+  SwapV2
+} from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 
@@ -111,7 +111,7 @@ describe('swap.service', () => {
           .vaultService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = vaultSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
-        expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
+        expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
         expect(singleSwapArg.assetIn).toEqual(tokens.USDC.address);
         expect(singleSwapArg.assetOut).toEqual(tokens.DAI.address);
         expect(singleSwapArg.amount).toEqual(amount);
@@ -140,7 +140,7 @@ describe('swap.service', () => {
           .vaultService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = vaultSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
-        expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
+        expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
         expect(singleSwapArg.assetIn).toEqual(tokens.ETHv2.address);
         expect(singleSwapArg.assetOut).toEqual(tokens.DAI.address);
         expect(singleSwapArg.amount).toEqual(amount);
@@ -178,7 +178,7 @@ describe('swap.service', () => {
           .lidoRelayerService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = lidoRelayerSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdETHstETH);
-        expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
+        expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
         expect(singleSwapArg.assetIn).toEqual(tokens.ETHv2.address);
         expect(singleSwapArg.assetOut).toEqual(tokens.wstETH.address);
         expect(singleSwapArg.amount).toEqual(amount);
@@ -231,7 +231,7 @@ describe('swap.service', () => {
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];
-        expect(vaultBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(vaultBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(vaultBatchSwapArgs[1]).toEqual(swaps);
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
 
@@ -302,7 +302,7 @@ describe('swap.service', () => {
         );
         const lidoBatchSwapArgs = require('@/services/contracts/lido-relayer.service')
           .lidoRelayerService.batchSwap.mock.calls[0];
-        expect(lidoBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(lidoBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(lidoBatchSwapArgs[1]).toEqual(swaps);
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
 
@@ -334,7 +334,7 @@ describe('swap.service', () => {
         );
         const lidoBatchSwapArgs = require('@/services/contracts/lido-relayer.service')
           .lidoRelayerService.batchSwap.mock.calls[0];
-        expect(lidoBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(lidoBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(lidoBatchSwapArgs[1]).toEqual(swaps);
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
 
@@ -487,7 +487,7 @@ describe('swap.service', () => {
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];
-        expect(vaultBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(vaultBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(vaultBatchSwapArgs[1]).toEqual(swaps);
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
 
@@ -573,11 +573,11 @@ describe('swap.service', () => {
           [tokens.USDC, tokens.USDT, tokens.DAI],
           swaps,
           tokenAddresses,
-          SwapKind.GivenIn
+          SwapType.SwapExactIn
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];
-        expect(vaultBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(vaultBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(vaultBatchSwapArgs[1]).toEqual(swaps);
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
 
