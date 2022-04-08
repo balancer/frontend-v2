@@ -302,6 +302,7 @@ async function onChangeFeeController(val: string) {
           block
           color="gradient"
           @click="proceed"
+          :loading="isLoadingSimilarPools"
           >{{ $t('next') }}</BalBtn
         >
       </BalStack>
