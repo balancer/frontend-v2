@@ -904,6 +904,8 @@ export default function useWithdrawMath(
 
   async function getBatchRelayerExitPoolAndBatchSwap() {
     exitBatchSwapLoading.value = true;
+    await balancer.swaps.fetchPools();
+
     let expectedAmountsOut: string[] = fullAmountsScaled.value;
 
     //determine expectedAmountsOut based on tokensOut
