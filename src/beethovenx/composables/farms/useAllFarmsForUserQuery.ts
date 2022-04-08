@@ -68,8 +68,6 @@ export default function useAllFarmsForUserQuery(
         farms
       );
 
-      console.log('pendingRewardTokenForFarms', pendingRewardTokenForFarms);
-
       for (const userFarm of userFarms) {
         const pendingBeets = pendingBeetsForFarms[userFarm.farmId] || 0;
 

@@ -48,12 +48,12 @@ export default class MasterChefRewarders {
 
     for (const rewarder of rewarders) {
       for (const id of farmIds) {
-        rewarderMulticaller.call(
+        /*rewarderMulticaller.call(
           `${id}.${rewarder}.pendingToken`,
           rewarder,
           'pendingToken',
           [id, getAddress(user)]
-        );
+        );*/
 
         rewarderMulticaller.call(
           `${id}.${rewarder}.pendingTokens`,
@@ -84,7 +84,7 @@ export default class MasterChefRewarders {
             if (rewardAmount && rewardAmount.toString() !== '0') {
               const balance = scale(
                 new BigNumber(rewardAmount.toString()),
-                farmId === '66' ? -6 : -18
+                -(rewardToken?.decimals || 18)
               ).toString();
 
               rewards.push({
