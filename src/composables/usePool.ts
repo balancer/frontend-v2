@@ -3,7 +3,9 @@ import {
   PoolType,
   AnyPool,
   FullPool,
-  FullPoolWithFarm
+  FullPoolWithFarm,
+  DecoratedPoolWithShares,
+  PoolToken
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
@@ -96,6 +98,21 @@ export function poolWeightsLabel(pool: FullPool): string {
   return Object.values(pool.onchain.tokens)
     .map(token => `${fNum(token.weight, 'percent_lg')} ${token.symbol}`)
     .join(', ');
+}
+
+export function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
+  const sortedTokens = orderedPoolTokens(pool);
+  return sortedTokens.map(token => getAddress(token.address));
+}
+
+function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
+  if (isStablePhantom(pool.poolType))
+    return pool.tokens.filter(token => token.address !== pool.address);
+  if (isStableLike(pool.poolType)) return pool.tokens;
+
+  const sortedTokens = pool.tokens.slice();
+  sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+  return sortedTokens;
 }
 
 /**
@@ -197,6 +214,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeth,
     noInitLiquidity,
     lpTokensFor,
+    orderedTokenAddressesFor,
     hasNestedLinearPools,
     hasNestedUsdStablePhantomPool,
     isWeightedPoolWithNestedLinearPools,

@@ -6,6 +6,7 @@ import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBloc
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
 import { useRouter } from 'vue-router';
+import { orderedTokenAddressesFor } from '@/composables/usePool';
 
 type Props = {
   pools: FullPool[];
@@ -43,7 +44,7 @@ function navigateToPool(pool: FullPool) {
           {{ pool.name }}
         </div>
         <BalAssetSet
-          :addresses="pool.tokens.map(token => token.address)"
+          :addresses="orderedTokenAddressesFor(pool)"
           :size="40"
           :width="150"
         />

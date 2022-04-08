@@ -90,10 +90,7 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import {
-  DecoratedPoolWithShares,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 
 import { getAddress } from '@ethersproject/address';
 
@@ -110,7 +107,7 @@ import {
 } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isStableLike, isStablePhantom } from '@/composables/usePool';
+import { isStableLike, orderedTokenAddressesFor } from '@/composables/usePool';
 import useWeb3 from '@/services/web3/useWeb3';
 import { sortBy } from 'lodash';
 
@@ -256,21 +253,6 @@ export default defineComponent({
     });
 
     // METHODS
-    function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
-      const sortedTokens = orderedPoolTokens(pool);
-      return sortedTokens.map(token => getAddress(token.address));
-    }
-
-    function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (isStablePhantom(pool.poolType))
-        return pool.tokens.filter(token => token.address !== pool.address);
-      if (isStableLike(pool.poolType)) return pool.tokens;
-
-      const sortedTokens = pool.tokens.slice();
-      sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
-      return sortedTokens;
-    }
-
     function handleRowClick(pool: DecoratedPoolWithShares) {
       trackGoal(Goals.ClickPoolsTableRow);
 
@@ -299,7 +281,6 @@ export default defineComponent({
       getAddress,
       fNum,
       orderedTokenAddressesFor,
-      orderedPoolTokens,
       isStableLike,
       handleSort,
       handleLoadMore
