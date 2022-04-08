@@ -1,15 +1,8 @@
 <template>
   <div class="app-nav-footer">
     <div class="app-nav-footer-container">
-      <!--      <div class="w-1/3 pl-2">
-        <DarkModeToggle circle />
-      </div>-->
-      <div class="w-full flex justify-center">
-        <AppNavToggle darkModeBg="700" />
-      </div>
-      <!--      <div class="w-1/3 flex justify-end pr-2">
-        <IntercomToggle circle />
-      </div>-->
+      <AppNavToggle />
+      <AppNavOtherItems verticalAlign="bottom" align="right" />
     </div>
   </div>
 </template>
@@ -17,12 +10,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import AppNavToggle from '@/beethovenx/components/navs/AppNavToggle.vue';
+import AppNavOtherItems from '@/beethovenx/components/navs/AppNavOtherItems.vue';
 
 export default defineComponent({
   name: 'AppFooterNav',
 
   components: {
-    AppNavToggle
+    AppNavToggle,
+    AppNavOtherItems
   }
 });
 </script>
@@ -33,8 +28,13 @@ export default defineComponent({
 }
 
 .app-nav-footer-container {
-  @apply w-full py-2;
-  @apply bg-white dark:bg-gray-800 shadow-xl;
-  @apply flex justify-between items-center;
+  @apply w-full;
+  @apply bg-white dark:bg-gray-900;
+  @apply flex justify-center items-center;
+
+  /* @apply w-full z-50;
+  @apply bg-white dark:bg-gray-900;
+  @apply border-b border-transparent;
+  transition: all 0.2s ease-in-out; */
 }
 </style>

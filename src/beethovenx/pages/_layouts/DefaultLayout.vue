@@ -13,7 +13,7 @@ import { EXTERNAL_LINKS } from '@/constants/links';
  * COMPOSABLES
  */
 const route = useRoute();
-const { upToXLargeBreakpoint } = useBreakpoints();
+const { upToMediumBreakpoint } = useBreakpoints();
 
 /**
  * COMPUTED
@@ -39,7 +39,7 @@ const isHomePage = computed(() => route.path === '/');
     <div class="z-10 pb-16 relative">
       <router-view :key="$route.path" />
     </div>
-    <AppFooterNav v-if="upToXLargeBreakpoint" />
+    <AppFooterNav v-if="upToMediumBreakpoint" />
     <div class="-top-14 xl:top-0 flex flex-col items-center relative">
       <img src="~@/beethovenx/assets/images/community-image.png" />
       <div class="absolute bottom-0 flex justify-center pb-4 xl:pb-6 xl:ml-8">

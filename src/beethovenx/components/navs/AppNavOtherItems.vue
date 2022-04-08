@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad align="left">
+  <BalPopover align="left">
     <template v-slot:activator>
       <div
         class="flex items-center px-4 cursor-pointer relative"

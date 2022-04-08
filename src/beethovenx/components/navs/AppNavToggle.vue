@@ -2,37 +2,30 @@
   <div :class="`app-nav-toggle`">
     <router-link
       :to="{ name: 'trade' }"
-      :class="['toggle-link px-6', { [activeClasses]: isTradePage }]"
+      :class="['toggle-link px-5', { [activeClasses]: isTradePage }]"
       @click="trackGoal(Goals.ClickNavTrade)"
     >
       Swap
     </router-link>
     <router-link
       :to="{ name: 'pools' }"
-      :class="['toggle-link px-6', { [activeClasses]: isInvestPage }]"
+      :class="['toggle-link px-5', { [activeClasses]: isInvestPage }]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
-      Invest /&nbsp;Farm
+      Invest{{ upToXLargeBreakpoint ? '' : '&nbsp;/&nbsp;Farm' }}
     </router-link>
     <router-link
       :to="{ name: 'stake' }"
-      :class="['toggle-link px-4', { [activeClasses]: isStakePage }]"
+      :class="['toggle-link px-5', { [activeClasses]: isStakePage }]"
     >
       Stake
     </router-link>
     <router-link
       :to="{ name: 'launch' }"
-      :class="['toggle-link px-4', { [activeClasses]: isLaunchPage }]"
+      :class="['toggle-link px-5', { [activeClasses]: isLaunchPage }]"
     >
       Launch
     </router-link>
-    <!--    <router-link
-      :to="{ name: 'my-portfolio' }"
-      :class="['toggle-link px-4', { [activeClasses]: isPortfolioPage }]"
-      v-if="isLoggedIn"
-    >
-      My Portfolio
-    </router-link>-->
   </div>
 </template>
 
@@ -42,6 +35,7 @@ import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import useApp from '@/composables/useApp';
 import useWeb3 from '@/services/web3/useWeb3';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   name: 'AppNavToggle',
@@ -54,6 +48,7 @@ export default defineComponent({
     const route = useRoute();
     const { appLoading } = useApp();
     const { account } = useWeb3();
+    const { upToXLargeBreakpoint } = useBreakpoints();
     const activeClasses = 'bg-black text-green-500 dark:bg-gray-800';
     const isTradePage = computed(() => route.name === 'trade');
     const isPortfolioPage = computed(() => route.name === 'my-portfolio');
@@ -81,7 +76,8 @@ export default defineComponent({
       isPortfolioPage,
       isStakePage,
       isInvestPage,
-      isLaunchPage
+      isLaunchPage,
+      upToXLargeBreakpoint
     };
   }
 });
@@ -94,6 +90,6 @@ export default defineComponent({
 }
 
 .toggle-link {
-  @apply h-full flex items-center;
+  @apply h-full flex items-center text-center;
 }
 </style>

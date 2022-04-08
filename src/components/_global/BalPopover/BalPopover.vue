@@ -6,11 +6,13 @@ type PopoverTrigger = 'click' | 'hover';
 type Props = {
   trigger?: PopoverTrigger;
   align?: string;
+  verticalAlign?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   trigger: 'click',
-  align: 'right'
+  align: 'right',
+  verticalAlign: 'top'
 });
 
 const emit = defineEmits<{
@@ -28,7 +30,8 @@ const popoverOpened = ref(false);
  */
 const popoverWrapperClasses = computed(() => ({
   'bal-popover-wrapper-visible': popoverOpened.value,
-  [`${props.align}-0`]: true
+  [`${props.align}-0`]: true,
+  [`${props.verticalAlign}-full`]: true
 }));
 
 watch(popoverOpened, () => {
@@ -81,7 +84,7 @@ function handleClickOutside() {
 
 <style scoped>
 .bal-popover-wrapper {
-  @apply top-full invisible opacity-0 absolute z-30 pt-3;
+  @apply invisible opacity-0 absolute z-30 pt-3;
   transition: all 0.2s ease-in-out;
 }
 

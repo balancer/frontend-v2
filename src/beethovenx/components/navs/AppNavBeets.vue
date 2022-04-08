@@ -4,14 +4,14 @@
       <BalBtn
         color="transparent"
         flat
-        class="text-base"
+        class="text-base mr-2"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
         <img
           src="~@/beethovenx/assets/images/beets-icon-large.png"
           width="28"
-          :class="{ 'mr-2': !upToLargeBreakpoint }"
+          class="mr-2"
           v-if="upToLargeBreakpoint ? !loading : true"
         />
         <BalLoadingIcon size="sm" v-if="loading" />

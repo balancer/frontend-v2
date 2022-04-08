@@ -1,5 +1,9 @@
 <template>
-  <img src="~@/beethovenx/assets/images/logo.svg" width="180" class="-ml-4" />
+  <img
+    src="~@/beethovenx/assets/images/logo.svg"
+    width="175"
+    class="pl-2 xl:pl-6 "
+  />
 </template>
 
 <script lang="ts">

@@ -1,6 +1,6 @@
 <template>
   <AppNavAlert v-if="currentAlert" :alert="currentAlert" />
-  <nav id="app-nav" ref="appNav" class="h-12 px-4 lg:px-6 sticky top-0">
+  <nav id="app-nav" ref="appNav" class="h-12 pr-3 xl:pr-6 sticky top-0">
     <div class="h-full flex items-center">
       <div class="flex items-center">
         <router-link
@@ -10,9 +10,8 @@
           <AppIcon />
         </router-link>
       </div>
-
-      <AppNavToggle v-if="!upToXLargeBreakpoint" />
-      <AppNavOtherItems v-if="!upToXLargeBreakpoint" />
+      <AppNavToggle v-if="!upToMediumBreakpoint" />
+      <AppNavOtherItems v-if="!upToMediumBreakpoint" />
 
       <div class="flex-1 flex justify-end">
         <AppNavActions />
@@ -47,7 +46,7 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const { bp, upToXLargeBreakpoint, upToLargeBreakpoint } = useBreakpoints();
+    const { bp, upToMediumBreakpoint } = useBreakpoints();
     const { trackGoal, Goals } = useFathom();
     const { connector } = useWeb3();
     const { currentAlert } = useAlerts();
@@ -81,13 +80,12 @@ export default defineComponent({
       appNav,
       // computed
       bp,
+      upToMediumBreakpoint,
       currentAlert,
-      upToXLargeBreakpoint,
       hideNetworkSelect,
       // methods
       trackGoal,
-      Goals,
-      upToLargeBreakpoint
+      Goals
     };
   }
 });
