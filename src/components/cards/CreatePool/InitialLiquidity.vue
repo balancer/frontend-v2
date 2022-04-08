@@ -42,6 +42,7 @@ const {
   isWethPool,
   useNativeAsset,
   poolLiquidity,
+  createPoolTxHash,
   getOptimisedLiquidity,
   goBack,
   updateManuallySetToken,
@@ -227,6 +228,7 @@ function saveAndProceed() {
           }}</span>
           <BalStack horizontal spacing="xs" align="center">
             <button
+              v-if="!createPoolTxHash"
               @click="goBack"
               class="text-blue-500 hover:text-blue-700 flex"
             >

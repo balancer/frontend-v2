@@ -85,7 +85,11 @@ onBeforeMount(async () => {
     null,
     POOL_CREATION_STATE_VERSION
   );
-  if (activeStep.value === 0 && previouslySavedState !== null) {
+  if (
+    activeStep.value === 0 &&
+    previouslySavedState !== null &&
+    !poolCreateTx.value
+  ) {
     isRestoring.value = true;
 
     // need to make sure to inject any tokens that were chosen
