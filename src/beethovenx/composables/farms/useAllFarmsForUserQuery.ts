@@ -49,7 +49,11 @@ export default function useAllFarmsForUserQuery(
       const farmIds = userFarms.map(farm => farm.farmId);
       const rewarders = uniq(
         farms
-          .filter(farm => !!farm.rewarder)
+          .filter(
+            farm =>
+              !!farm.rewarder &&
+              farm.rewarder.id !== '0x0000000000000000000000000000000000000000'
+          )
           .map(farm => farm.rewarder?.id || '')
       );
       const pendingBeetsForFarms = await masterChefContractsService.masterChef.getPendingBeetsForFarms(
@@ -63,6 +67,8 @@ export default function useAllFarmsForUserQuery(
         account.value,
         farms
       );
+
+      console.log('pendingRewardTokenForFarms', pendingRewardTokenForFarms);
 
       for (const userFarm of userFarms) {
         const pendingBeets = pendingBeetsForFarms[userFarm.farmId] || 0;
