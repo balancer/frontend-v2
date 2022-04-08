@@ -93,26 +93,27 @@ export class StakingRewardsService {
     tokens: TokenInfoMap;
   }): Promise<PoolAPRs> {
     const gaugeAddresses = gauges.map(gauge => gauge.id);
-    const inflationRate = await new BalancerTokenAdmin(
-      configService.network.addresses.tokenAdmin
-    ).getInflationRate();
     const balAddress = getBalAddress();
-    const relativeWeights = await this.getRelativeWeightsForGauges(
-      gaugeAddresses
-    );
 
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses
     );
-    const rewardTokenData = await LiquidityGauge.getRewardTokenDataForGauges(
-      rewardTokensForGauges
-    );
 
-    const workingSupplies = await this.getWorkingSupplyForGauges(
-      gaugeAddresses
-    );
-
-    const totalSupplies = await this.getTotalSupplyForGauges(gaugeAddresses);
+    const [
+      inflationRate,
+      relativeWeights,
+      rewardTokenData,
+      workingSupplies,
+      totalSupplies
+    ] = await Promise.all([
+      new BalancerTokenAdmin(
+        configService.network.addresses.tokenAdmin
+      ).getInflationRate(),
+      this.getRelativeWeightsForGauges(gaugeAddresses),
+      LiquidityGauge.getRewardTokenDataForGauges(rewardTokensForGauges),
+      this.getWorkingSupplyForGauges(gaugeAddresses),
+      this.getTotalSupplyForGauges(gaugeAddresses)
+    ]);
 
     const aprs = gauges.map(async gauge => {
       const poolId = gauge.poolId;
