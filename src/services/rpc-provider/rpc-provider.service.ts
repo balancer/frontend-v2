@@ -1,5 +1,9 @@
 import { Network } from '@balancer-labs/sdk';
-import { JsonRpcBatchProvider, JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
+import {
+  JsonRpcBatchProvider,
+  JsonRpcProvider,
+  WebSocketProvider
+} from '@ethersproject/providers';
 
 import template from '@/lib/utils/template';
 import ConfigService, { configService } from '@/services/config/config.service';
