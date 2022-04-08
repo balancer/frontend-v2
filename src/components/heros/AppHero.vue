@@ -116,10 +116,7 @@ function onClickConnect() {
         </div>
       </template>
       <template v-else>
-        <h1
-          v-text="$t('ammPlatform')"
-          class="headline"
-        />
+        <h1 v-text="$t('ammPlatform')" class="headline" />
         <div class="flex justify-center mt-4">
           <BalBtn
             :color="darkMode ? 'gray' : 'white'"
@@ -178,5 +175,4 @@ function onClickConnect() {
   font-weight: 600;
   font-variation-settings: 'wght' 700;
 }
-
 </style>

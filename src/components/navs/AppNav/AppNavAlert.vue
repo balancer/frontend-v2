@@ -1,20 +1,26 @@
 <template>
   <div :class="['app-nav-alert', classes]" @click="handleClick">
-    <div class="w-8" />
-    <div class="flex-1 text-center flex items-center justify-center">
-      <BalIcon v-if="iconName" :name="iconName" size="lg" class="mr-4" />
-      <span>{{ alert.label }}</span>
-      <BalBtn
-        v-if="alert.action && alert.actionLabel"
-        class="ml-4 cursor-pointer"
-        color="white"
-        size="xs"
-        :label="alert.actionLabel"
-        @click="alert.action"
-      />
+    <div class="flex-1 flex md:justify-center">
+      <BalIcon v-if="iconName" :name="iconName" class="mr-3" />
+      <div>
+        <p class="alert-label fade0=">{{ alert.label }}</p>
+        <BalBtn
+          v-if="alert.action && alert.actionLabel"
+          class="cursor-pointer"
+          color="white"
+          size="xs"
+          :label="alert.actionLabel"
+          @click="alert.action"
+        />
+      </div>
     </div>
-    <div v-if="!alert.persistent" class="w-8">
-      <BalIcon name="x" class="cursor-pointer" @click.stop="handleClose" />
+
+    <div v-if="!alert.persistent" class="flex items-start">
+      <BalIcon
+        name="x"
+        class="cursor-pointer mt-0.5"
+        @click.stop="handleClose"
+      />
     </div>
   </div>
 </template>
@@ -78,6 +84,10 @@ export default defineComponent({
 
 <style>
 .app-nav-alert {
-  @apply flex items-center justify-between py-4 px-6;
+  @apply flex content-start justify-between py-2 xs:py-4 px-4;
+  min-height: 54px;
+}
+.alert-label {
+  @apply font-medium pb-1 block md:inline pr-4;
 }
 </style>
