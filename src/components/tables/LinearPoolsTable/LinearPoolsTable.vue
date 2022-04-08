@@ -49,17 +49,20 @@
       <template v-slot:variance="pool">
         <div
           :class="
-            calculatePoolVariance(pool).isEqualTo(0)
+            calculatePoolVariance(pool) === 0
               ? 'text-green-500'
               : 'text-red-500'
           "
           class="px-6 py-4 -mt-1 flex justify-end font-numeric "
         >
           {{
-            calculatePoolVariance(pool).isEqualTo(0)
+            calculatePoolVariance(pool) === 0
               ? 'in range'
-              : fNum(calculatePoolVariance(pool).toString(), null, {
-                  format: '+0,0'
+              : fNum(calculatePoolVariance(pool), null, {
+                  format:
+                    calculatePoolVariance(pool) >= 10000
+                      ? '+0,0'
+                      : '+0,0.[0000]'
                 })
           }}
         </div>
@@ -129,7 +132,7 @@ export default defineComponent({
 
   setup(props) {
     // COMPOSABLES
-    const { fNum } = useNumbers();
+    const { fNum, toFiat } = useNumbers();
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
@@ -162,10 +165,7 @@ export default defineComponent({
       {
         name: 'Variance',
         accessor: 'variance',
-        sortKey: pool =>
-          calculatePoolVariance(pool)
-            .abs()
-            .toNumber(),
+        sortKey: pool => Math.abs(calculatePoolVariance(pool)),
         align: 'right',
         id: 'variance',
         Cell: 'variance',
@@ -173,9 +173,8 @@ export default defineComponent({
       },
       {
         name: 'Main Token',
-        accessor: pool =>
-          fNum(getMainTokenBalance(pool).toString(), 'token_lg'),
-        sortKey: pool => bnum(getMainTokenBalance(pool)).toNumber(),
+        accessor: pool => fNum(getMainTokenBalance(pool), 'token'),
+        sortKey: pool => getMainTokenBalance(pool),
         align: 'right',
         id: 'mainTokenBalance',
         width: 150,
@@ -183,9 +182,8 @@ export default defineComponent({
       },
       {
         name: 'Wrapped Token',
-        accessor: pool =>
-          fNum(getWrappedTokenBalance(pool).toString(), 'token_lg'),
-        sortKey: pool => bnum(getWrappedTokenBalance(pool)).toNumber(),
+        accessor: pool => fNum(getWrappedTokenBalance(pool), 'token'),
+        sortKey: pool => getWrappedTokenBalance(pool),
         align: 'right',
         id: 'wrappedTokenBalance',
         width: 150,
@@ -193,9 +191,8 @@ export default defineComponent({
       },
       {
         name: 'Boost',
-        accessor: pool =>
-          fNum(calculateBoostPercent(pool).toString(), 'percent_lg'),
-        sortKey: pool => calculateBoostPercent(pool).toNumber(),
+        accessor: pool => fNum(calculateBoostPercent(pool), 'percent_lg'),
+        sortKey: pool => calculateBoostPercent(pool),
         align: 'right',
         id: 'percentBoost',
         width: 100,
@@ -204,7 +201,7 @@ export default defineComponent({
       {
         name: 'Lower Target',
         accessor: pool => fNum(pool.lowerTarget, 'default'),
-        sortKey: pool => bnum(pool.lowerTarget).toNumber(),
+        sortKey: pool => Number(pool.lowerTarget),
         align: 'right',
         id: 'lowerTarget',
         width: 140,
@@ -213,7 +210,7 @@ export default defineComponent({
       {
         name: 'Upper Target',
         accessor: pool => fNum(pool.upperTarget, 'default'),
-        sortKey: pool => bnum(pool.upperTarget).toNumber(),
+        sortKey: pool => Number(pool.upperTarget),
         align: 'right',
         id: 'upperTarget',
         width: 140,
@@ -221,8 +218,8 @@ export default defineComponent({
       },
       {
         name: t('poolValue'),
-        accessor: pool => fNum(calculatePoolValue(pool).toString(), 'usd'),
-        sortKey: pool => calculatePoolValue(pool).toNumber(),
+        accessor: pool => fNum(calculatePoolValue(pool), 'usd'),
+        sortKey: pool => Number(calculatePoolValue(pool)),
         align: 'right',
         id: 'poolValue',
         width: 150,
@@ -248,43 +245,48 @@ export default defineComponent({
 
     // METHODS
     function calculatePoolValue(pool: LinearPool) {
-      const linearPool = pool.linearPools?.find(
-        lp => lp.address === pool.address.toLowerCase()
-      );
-      return linearPool
-        ? bnum(linearPool.totalSupply).times(linearPool.priceRate)
-        : bnum(0);
+      return bnum(
+        toFiat(
+          pool.tokens[pool.mainIndex].balance,
+          pool.tokens[pool.mainIndex].address
+        )
+      )
+        .plus(
+          toFiat(
+            getWrappedTokenBalance(pool),
+            pool.tokens[pool.mainIndex].address
+          )
+        )
+        .toNumber();
     }
 
     function getMainTokenBalance(pool: LinearPool) {
-      return bnum(pool.tokens[pool.mainIndex].balance);
+      return Number(pool.tokens[pool.mainIndex].balance);
     }
 
     function getWrappedTokenBalance(pool: LinearPool) {
-      return bnum(pool.tokens[pool.wrappedIndex].balance).multipliedBy(
-        pool.tokens[pool.wrappedIndex].priceRate || 0
-      );
+      return Number(pool.tokens[pool.wrappedIndex].balance);
     }
 
     function calculateBoostPercent(pool: LinearPool) {
-      const percentBoosted = getWrappedTokenBalance(pool).dividedBy(
-        getMainTokenBalance(pool).plus(getWrappedTokenBalance(pool))
-      );
+      const percentBoosted =
+        getWrappedTokenBalance(pool) /
+        (getMainTokenBalance(pool) + getWrappedTokenBalance(pool));
       return percentBoosted;
     }
 
     function calculatePoolVariance(pool: LinearPool) {
-      const lowerTarget = bnum(pool.lowerTarget);
-      const upperTarget = bnum(pool.upperTarget);
+      const lowerTarget = Number(pool.lowerTarget);
+      const upperTarget = Number(pool.upperTarget);
       const mainTokenBalance = getMainTokenBalance(pool);
 
-      let belowAboveValue = bnum(0);
-      if (mainTokenBalance.comparedTo(lowerTarget) === -1) {
+      let belowAboveValue = 0;
+      if (mainTokenBalance < lowerTarget) {
         // below target
-        belowAboveValue = mainTokenBalance.minus(lowerTarget);
-      } else if (mainTokenBalance.comparedTo(upperTarget) === 1) {
+        belowAboveValue = mainTokenBalance - lowerTarget;
+      } else if (mainTokenBalance > upperTarget) {
         // above target
-        belowAboveValue = mainTokenBalance.minus(upperTarget);
+        belowAboveValue = mainTokenBalance - upperTarget;
       }
       return belowAboveValue;
     }
