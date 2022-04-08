@@ -22,13 +22,13 @@ withDefaults(defineProps<Props>(), {
     ]"
   >
     <div v-if="hasBalance" class="balance-indicator" />
-    <span     
-      :class="[        
+    <span
+      :class="[
         {
           'font-medium': isSelected
         }
       ]"
-    >      
+    >
       {{ symbol }}
     </span>
     <span class="pill-weight">

@@ -21,14 +21,14 @@ withDefaults(defineProps<Props>(), {
     ]"
   >
     <div v-if="hasBalance" class="balance-indicator" />
-      <div
+    <div
       :class="[
         'pill-text',
-          {
-            'font-medium': isSelected
-          }
-        ]"
-      >
+        {
+          'font-medium': isSelected
+        }
+      ]"
+    >
       {{ symbol }}
     </div>
   </div>
