@@ -391,6 +391,7 @@
     "max": "Max",
     "maxed": "Maxed",
     "maximum": "Maximum",
+    "minimumTotalApr": "Minimum total APR",
     "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
     "missingPoolNameOrSymbol": "Missing pool name or symbol",
     "missingTokenPrices": "Missing token prices",
@@ -417,6 +418,7 @@
     "myApr": "My APR",
     "myBalance": "My balance",
     "myBalancerInvestments": "My Balancer investments",
+    "myBoost": "My boost",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
     "myInvestments": "My investments",
@@ -464,10 +466,12 @@
         "claim": {
             "title": "Claim your liquidity mining incentives",
             "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
+            "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, you just need to invest in these pools to receive incentives. No staking is required for now.",
             "transitionInfo": {
-                "title": "Transition to new veBAL tokenomics",
-                "description": "Liquidity mining incentives start on 7 April 2022 at 0:00 UTC. Token earnings accumulate every block and can be claimed at any time. In the meantime, you can prepare by getting veBAL, providing liquidity, staking and voting on eligible pools.",
-                "descriptionL2": "Liquidity mining incentives start on 7 April 2022 at 0:00 UTC. Earnings on Polygon and Arbitrum can be claimed weekly on Thursdays from 14 April. In the meantime, you can prepare by getting veBAL, providing liquidity, staking and voting on eligible pools."
+                "title": "veBAL liquidity mining incentives are live!",
+                "titleL2": "Transition to new veBAL tokenomics",
+                "description": "Token earnings accumulate every block and can be claimed at any time. Stake LP tokens in eligible pools to get incentives. Get veBAL to boost your yield and to vote on which pool should get token emissions for the next week.",
+                "descriptionL2": "Liquidity mining on Polygon & Arbitrum will be soon moving to the veBAL emission's system. When this happens, you'll need to stake your LP tokens in eligible pools to continue receiving liquidity mining incentives."
             },
             "titles": {
                 "incentivesOnOtherNetworks": "Incentives on other networks",
@@ -582,17 +586,19 @@
     "stake": "Stake",
     "staked": "Staked",
     "staking": {
+        "minimumStakingApr": "Min staking APR",
         "newTotalShare": "Your total share",
+        "potentialWeeklyEarningTooltip": "The approximate weekly earning based on your staked balance",
         "stakedPools": "Staked pools",
         "stakedLpTokensTooltip": "The fiat value of LP tokens you have staked in this pool.",
         "stakeValueTooltip": "The approximate value of the LP tokens you will stake.",
-        "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
         "staking": "Staking",
         "stakeTooltip": "Confirm staking of LP tokens to earn liquidity mining incentives on this pool",
-        "stakingApr": "staking APR",
+        "stakingApr": "Staking APR",
         "stakingIncentives": "Staking incentives",
         "totalShareTooltip": "Your current total share of LP tokens in the pool",
         "unclaimedIncentives": "Unclaimed incentives",
+        "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
         "unstakedPools": "Unstaked pools",
         "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
         "unstaking": "Unstaking",
@@ -1105,7 +1111,7 @@
         "preview": {
             "loadingLabel": {
                 "withdraw": "Confirm withdrawal in wallet"
-            },
+            }, 
             "titles": {
                 "confirmed": "Withdrawal confirmed",
                 "default": "Withdrawal preview"
@@ -1131,6 +1137,7 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
+    "your": "Your",
     "yourTransactions": "Your transactions in this pool",
     "yourBalanceInPool": "Your balance in this pool",
     "trendingPairs": "Trending pairs",

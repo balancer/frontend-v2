@@ -8,7 +8,9 @@ import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
+import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 
@@ -30,14 +32,17 @@ const stakeAction = ref('');
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
 const {
-  refetchStakedShares,
-  isStakedSharesIdle,
-  isLoadingStakedShares,
-  isRefetchingStakedShares,
-  isLoadingPoolEligibility,
+  userData: {
+    refetchStakedShares,
+    isStakedSharesIdle,
+    isLoadingStakedShares,
+    isRefetchingStakedShares,
+    stakedSharesForProvidedPool,
+    getBoostFor,
+    isLoadingBoosts
+  },
   isPoolEligibleForStaking,
-  hideAprInfo,
-  stakedSharesForProvidedPool
+  isLoadingPoolEligibility
 } = useStaking();
 
 /**
@@ -54,6 +59,14 @@ const fiatValueOfUnstakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
+    .toString();
+});
+
+const potentialyWeeklyYield = computed(() => {
+  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
+    .times(getBoostFor(props.pool.id))
+    .times(fiatValueOfStakedShares.value)
+    .div(52)
     .toString();
 });
 
@@ -84,7 +97,10 @@ async function handleActionSuccess() {
 <template>
   <AnimatePresence
     :isVisible="
-      !isLoadingStakedShares && !isStakedSharesIdle && !isLoadingPoolEligibility
+      !isLoadingStakedShares &&
+        !isStakedSharesIdle &&
+        !isLoadingPoolEligibility &&
+        !isLoadingBoosts
     "
   >
     <div class="relative">
@@ -155,13 +171,6 @@ async function handleActionSuccess() {
                   <BalTooltip :text="$t('staking.stakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between" v-if="!hideAprInfo">
-                <span>{{ $t('staking.unclaimedIncentives') }}</span>
-                <BalStack horizontal spacing="sm" align="center">
-                  <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
-                  <BalTooltip text="Bingo" />
-                </BalStack>
-              </BalStack>
               <BalStack horizontal justify="between">
                 <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
                 <BalStack horizontal spacing="sm" align="center">
@@ -176,13 +185,17 @@ async function handleActionSuccess() {
                   <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between" v-if="!hideAprInfo">
+              <BalStack horizontal justify="between" v-if="showStakingRewards">
                 <span>
                   {{ $t('potential') }} {{ $t('staking.weeklyEarning') }}
                 </span>
                 <BalStack horizontal spacing="sm" align="center">
-                  <span>{{ fNum2(1, FNumFormats.fiat) }}</span>
-                  <BalTooltip text="Bingo" />
+                  <span>
+                    {{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}
+                  </span>
+                  <BalTooltip
+                    :text="$t('staking.potentialWeeklyEarningTooltip')"
+                  />
                 </BalStack>
               </BalStack>
               <BalStack horizontal spacing="sm" class="mt-2">
@@ -212,7 +225,10 @@ async function handleActionSuccess() {
   </AnimatePresence>
   <AnimatePresence
     :isVisible="
-      isLoadingStakedShares || isStakedSharesIdle || isLoadingPoolEligibility
+      isLoadingStakedShares ||
+        isStakedSharesIdle ||
+        isLoadingPoolEligibility ||
+        isLoadingBoosts
     "
     unmountInstantly
   >

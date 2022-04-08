@@ -1,5 +1,9 @@
 import { Network } from '@balancer-labs/sdk';
-import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
+import {
+  JsonRpcBatchProvider,
+  JsonRpcProvider,
+  WebSocketProvider
+} from '@ethersproject/providers';
 
 import template from '@/lib/utils/template';
 import ConfigService, { configService } from '@/services/config/config.service';
@@ -14,9 +18,9 @@ export default class RpcProviderService {
 
   constructor(private readonly config: ConfigService = configService) {
     this.network = this.config.network.shortName;
-    this.jsonProvider = new JsonRpcProvider(this.config.rpc);
+    this.jsonProvider = new JsonRpcBatchProvider(this.config.rpc);
     this.wsProvider = new WebSocketProvider(this.config.ws);
-    this.loggingProvider = new JsonRpcProvider(this.config.loggingRpc);
+    this.loggingProvider = new JsonRpcBatchProvider(this.config.loggingRpc);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
@@ -34,7 +38,7 @@ export default class RpcProviderService {
       INFURA_KEY: this.config.env.INFURA_PROJECT_ID,
       ALCHEMY_KEY: this.config.env.ALCHEMY_KEY
     });
-    return new JsonRpcProvider(rpcUrl);
+    return new JsonRpcBatchProvider(rpcUrl);
   }
 }
 

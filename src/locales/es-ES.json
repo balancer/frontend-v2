@@ -24,6 +24,8 @@
     "amountToInvest":"Monto a invertir",
     "amountToWithdraw":"Cantidad a retirar",
     "amplification":"Amplificación",
+    "analytics":"Analítica",
+    "and":"y",
     "apiErrorCodeDetails":{
        "DuplicateOrder":"Ya se envió otro pedido idéntico. Inténtalo de nuevo.",
        "InsufficientFee":"La tarifa firmada es insuficiente. Es posible que ahora sea más alto debido a un cambio en el precio del gas, el precio del éter o el precio del token de venta. Vuelva a intentarlo para obtener una cotización actualizada.",
@@ -61,9 +63,11 @@
     "approvedGnosisRelayer":"Retransmisor de Gnosis aprobado",
     "approvedLidoRelayer":"Relevador Lido aprobado",
     "approving":"Aprobatorio",
+    "approvingBatchRelayer":"Aprobación del repetidor por lotes",
     "approvingGnosisRelayer":"Aprobación del relé de Gnosis",
     "approvingLidoRelayer":"Aprobación del relé Lido",
     "apr":"ABR",
+    "apyvisionPoolInsights":"Más información sobre APY.vision",
     "autoOptimiseLiquidityToggle":{
        "label":"Optimización automática de liquidez",
        "tooltip":"Optimice los valores de los tokens automáticamente para que coincidan con los pesos de los tokens que especificó."
@@ -76,10 +80,13 @@
     "basedOnLast24h":"basado en las últimas 24 horas",
     "basedOnTokensInWallet":"Basado en tokens de pool en su billetera",
     "best":"Mejor",
+    "blog":"Blog",
     "boostedPool":"Pool potenciado por equilibrador",
     "browseLists":"Navegar listas",
     "browserWallet":"Billetera del navegador",
+    "build":"Construir",
     "buy":"Comprar",
+    "byConnectingWallet":"Al conectar una billetera, acepto las condiciones de Balancer Labs.",
     "cancel":"Cancelar",
     "cancelling":"Cancelado",
     "changeTheme":"Cambiar tema",
@@ -94,9 +101,11 @@
     "clearTransactions":"Transacciones claras",
     "clickHere":"haga clic aquí",
     "close":"Cerca",
+    "coingeckoPricingTooltip":"Los datos de este gráfico provienen de nuestro proveedor de precios, CoinGecko.",
     "communitySwapFeeLabel":"Comisiones de swap delegadas; actualmente corregido: <b>{0}</b>",
     "composition":"Composición",
     "configuration":"Configuración",
+    "confirm":"Confirmar",
     "confirmTrade":"Confirmar comercio",
     "confirmUnwrap":"Confirmar {0} desenvolver",
     "confirmWrap":"Confirmar ajuste de {0}",
@@ -113,6 +122,7 @@
        "buttonLabel":"Ver esta subasta de cobre"
     },
     "copyAddress":"Copiar dirección",
+    "correctTokenPricing":"El precio correcto de los tokens puede ayudarlo a evitar perder dinero con los arbitrajistas. Podrían producirse pérdidas si no agrega activos de pool en proporción a sus pesos objetivo.",
     "create":"Crear",
     "createAPool":{
        "title":"Crea un pool",
@@ -160,13 +170,16 @@
     "delegateFeesTooltip":"Los proveedores de liquidez de este pool obtienen comisiones de intercambio fijas en cada operación que utiliza la liquidez de este pool. El control se ha delegado a la comunidad, por lo que las tarifas podrían cambiar en el futuro si este pool se administra activamente.",
     "depositing":"depositando",
     "details":"Detalles",
+    "docs":"Documentos",
     "dynamicSwapFeeLabel":"Tarifas de intercambio dinámico: actualmente <b>{0}</b>",
     "earnBAL":"Gana BAL al intercambiar tokens elegibles",
+    "earnings":"Ganancias",
     "editoAbout":"Gane más con sus activos basados en Ethereum. Agregue tokens a los pools y gane tarifas de capitalización cuando las personas operen en el intercambio utilizando su liquidez.",
     "editoTitle":"Pon tu dinero a trabajar",
     "effectivePrice":"Precio efectivo:",
     "emptyInvestmentPools":"No se ha unido a ningún pool de inversión de Balancer.",
     "emptyInvestmentPoolsLink":"Ver pools de inversión ->",
+    "enterAPrice":"Introduce un precio",
     "enterAmount":"Ingrese la cantidad",
     "errorCancellingOrder":"Error al cancelar el pedido",
     "errorNoLists":"Lo sentimos, no podemos encontrar ninguna lista.",
@@ -192,8 +205,127 @@
     "fixedFeesTooltip":"Los proveedores de liquidez de este pool obtienen comisiones de intercambio fijas en cada operación que utiliza la liquidez de este pool.",
     "fixedSwapFeeLabel":"Tarifas de intercambio fijas: <b>{0}</b>",
     "flashLoanFee":"Tarifa de préstamo flash",
+    "forum":"Foro",
     "fundPool":"Fondo común",
     "fundPoolTooltip":"Agregue la liquidez inicial para este pool.",
+    "getLpTokens":"Obtenga fichas LP",
+    "getVeBAL":{
+       "lockableTokens":{
+          "title":"Fichas bloqueables en mi billetera",
+          "getMoreVeBAL":"Obtener {0}"
+       },
+       "howToLock":{
+          "title":"¿Cómo bloquear y ganar?",
+          "steps":{
+             "investPart1":"Invierte en el",
+             "investPart2":"piscina.",
+             "lock":"Bloquee el token LP resultante ({0}). Cuanto más tiempo bloquees (1 año como máximo), más veBAL obtendrás."
+          },
+          "earn":{
+             "boost":"Los tenedores de veBAL obtienen rendimientos de minería de liquidez mejorados (hasta 2.5x) y mayor poder de voto.",
+             "voting":"Use este poder de voto para elegir a qué medidores de pool se les asignan incentivos de minería de liquidez. Vote en los pools en los que haya agregado liquidez para obtener más rendimiento."
+          }
+       },
+       "myVeBAL":{
+          "title":"mi vebal",
+          "lockedEndDate":"Bloqueado hasta",
+          "expiredOn":"Expiró el",
+          "percentVeBAL":"% del total veBAL"
+       },
+       "lockForm":{
+          "title":"Bloquear para obtener veBAL",
+          "lockAmount":{
+             "title":"¿Cuánto quieres bloquear?"
+          },
+          "lockEndDate":{
+             "title":"bloquear hasta",
+             "tooltip":"Cuanto más tiempo bloquee su participación, más poder de voto veBAL obtendrá (hasta 4 años). Puede extender el bloqueo más tarde. Tenga cuidado, el bloqueo no es reversible."
+          },
+          "summary":{
+             "receive":{
+                "title":"depósito total de votos",
+                "tooltip":""
+             },
+             "weeklyYield":{
+                "title":"Rendimiento potencial de participación semanal",
+                "tooltip":""
+             }
+          },
+          "lockPeriods":{
+             "1w":"1 semana",
+             "2w":"2 semanas",
+             "1m":"1 mes",
+             "3m":"3 meses",
+             "6m":"6 meses",
+             "1y":"1 año"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "createLock":{
+                "default":"Vista previa de bloqueo",
+                "confirmed":"Bloqueo confirmado"
+             },
+             "extendLock":{
+                "default":"Vista previa de vista previa de bloqueo ampliado",
+                "confirmed":"Ampliar vista previa de bloqueo confirmada"
+             },
+             "increaseLock":{
+                "default":"Aumentar cantidad de bloqueo",
+                "confirmed":"Aumentar cantidad de bloqueo confirmado"
+             }
+          },
+          "lpTokens":"{0} fichas de LP",
+          "summary":{
+             "title":"Resumen de bloqueo",
+             "totalToLock":"Total para bloquear",
+             "totalAlreadyLocked":"Total ya bloqueado",
+             "lockEndDate":"Fecha de finalización del bloqueo",
+             "newLockEndDate":"Nueva fecha de finalización del bloqueo",
+             "totalVotingEscrow":"depósito total de votos",
+             "totalVotingEscrowTooltip":{
+                "explainer":"Las fechas de finalización del bloqueo solo pueden ser los jueves a las 0:00 UTC. Para acercarse lo más posible a un bloqueo de 1 año, se recomienda bloquear el jueves.",
+                "table":{
+                   "lockPeriod":"Período de bloqueo",
+                   "totalVeBAL":"veBAL total"
+                }
+             },
+             "increasedLockAmount":"Aumento de la cantidad de bloqueo",
+             "potentialWeeklyYield":"Rendimiento semanal potencial"
+          },
+          "actions":{
+             "approve":{
+                "confirming":"Confirmando aprobación...",
+                "tooltip":"Debe aprobar {0}.",
+                "loadingLabel":"Confirmar aprobación en billetera"
+             },
+             "createLock":{
+                "label":"Confirmar bloqueo hasta {0}",
+                "confirming":"Confirmando...",
+                "tooltip":"Confirmar bloqueo.",
+                "loadingLabel":"Confirmar bloqueo en billetera"
+             },
+             "extendLock":{
+                "label":"Extender el período de bloqueo",
+                "confirming":"Confirmando...",
+                "tooltip":"Confirme la extensión del período de bloqueo.",
+                "loadingLabel":"Confirmar bloqueo en billetera"
+             },
+             "increaseLock":{
+                "label":"Aumentar cantidad de bloqueo",
+                "confirming":"Confirmando...",
+                "tooltip":"Confirme el aumento de la cantidad de bloqueo.",
+                "loadingLabel":"Confirmar bloqueo en billetera"
+             }
+          },
+          "returnToVeBalPage":"Volver a la página de veBAL"
+       },
+       "notSupported":{
+          "title":"El bloqueo no está disponible en esta red",
+          "description":"Obtenga veBAL en Ethereum Mainnet"
+       }
+    },
+    "getVeBALToVote":"Obtener veBAL para votar",
     "gnosisErrors":{
        "lowAmount":{
           "header":"El monto de su operación es demasiado bajo",
@@ -211,6 +343,9 @@
        }
     },
     "goToBalancerV1Site":"Vaya al sitio de Balancer V1 ->",
+    "goToMigratedPool":"Ir al pool migrado",
+    "governance":"Gobernancia",
+    "grants":"Subsidios",
     "highGasFees":"¿Altas tarifas de gas? Aquí tienes una mano de ayuda",
     "highPriceImpact":"Alto impacto en los precios",
     "highPriceImpactDetailed":"Este comercio está moviendo significativamente el precio de mercado.",
@@ -218,6 +353,8 @@
     "home":"Home",
     "hourAbbrev":"h",
     "inYourWallet":"En tu billetera:",
+    "incentiveToken":"ficha de incentivo",
+    "inclXInVeBal":"incluido {0} en veBAL",
     "initialBPT":"BPT inicial",
     "initialWeight":"Peso inicial",
     "insufficientBalance":"Saldo insuficiente",
@@ -244,8 +381,11 @@
     "learnMore":"Aprende más",
     "light":"Claro",
     "liquidityBootstrappingPool":"Fondo de liquidez bootstrapping",
+    "liquidityIncentives":"incentivos de liquidez",
     "liquidityMining":"Minería de liquidez",
     "liquidityMiningAPR":"APR de minería de liquidez",
+    "liquidityMiningIncentives":"Incentivos a la minería de liquidez",
+    "liquidityMiningIncentivesCopy":"Las personas que invierten en este pool reciben incentivos de minería de liquidez. A diferencia de Ethereum Mainnet, no se requiere participación para los pools elegibles en {0}",
     "liquidityMiningPopover":{
        "airdropEligibility":"Las personas que brindan liquidez a pools de inversión elegibles o comercian con pares de tokens elegibles reciben distribuciones semanales de $ BAL como incentivos. Los titulares de tokens de $ BAL poseen el Protocolo Balancer y pueden ayudar a dar forma a su futuro votando propuestas de gobernanza.",
        "airdropExplainer":"Las distribuciones semanales de la extracción de liquidez en {0} se envían desde el aire los miércoles y se envían directamente a su billetera mediante disperse.app.",
@@ -268,7 +408,10 @@
     "loadMore":"Carga más",
     "loading":"Cargando...",
     "loadingBestPrice":"Buscando el mejor precio ...",
+    "lockToGetVeBAL":"Bloquee esto para obtener veBAL",
     "logOut":"Cerrar sesión",
+    "lost":"Perdió",
+    "lpTokens":"fichas LP",
     "lpsEarnFee":"Los LP ganan {0} en tarifas",
     "manageLists":"Administrar listas",
     "managedPool":"pool administrado",
@@ -277,25 +420,75 @@
     "maxed":"Maxed",
     "maximum":"Máximo",
     "menu":"Menú",
+    "migrate":"Emigrar",
+    "migratePool":{
+       "aaveBoostedPool":{
+          "whyMigrate":{
+             "title":"¿Por qué migrar?",
+             "description":"Los pools potenciados también obtienen un rendimiento adicional al mantener aTokens que devengan intereses. aLos tokens acumulan intereses en tiempo real cuando los activos subyacentes se prestan a los prestatarios en Aave."
+          },
+          "migrateToPool":{
+             "title":"Migrar a un pool potenciado"
+          },
+          "poolStats":{
+             "title":"Estadísticas de pool mejoradas"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "default":"Migrar vista previa",
+             "confirmed":"Migración confirmada"
+          },
+          "riskWarnings":{
+             "title":"Algunos riesgos: puede perder fondos en el pool si:",
+             "risks":{
+                "loseUSDPeg":"Cualquiera de los tokens en este pool pierde permanentemente su paridad objetivo de 1 USD.",
+                "aaveStableExploit":"Surgen problemas en Aave. Esto se debe a que la mayoría de las monedas estables se invertirán en Aave aTokens para obtener un rendimiento adicional."
+             }
+          },
+          "summary":{
+             "title":"Resumen de migración"
+          },
+          "actions":{
+             "title":"Pool de migración",
+             "loading":"Confirme la migración del pool en la billetera",
+             "migrationStep":"Confirmar la migración del pool"
+          },
+          "priceImpactAccept":"Acepto el impacto de alto precio de la migración del pool."
+       },
+       "migrateToBoostedPool":"Migrar a un pool potenciado",
+       "errorLoadingMigration":{
+          "title":"Algo salió mal",
+          "description":"Se produjo un error al intentar mostrar la migración del pool."
+       }
+    },
     "minTransactionBuffer":"Para garantizar una transacción sin problemas, debe dejar al menos {0} {1} en su billetera para pagar las tarifas del combustible.",
     "missingPoolNameOrSymbol":"Falta el nombre o el símbolo de pool",
-    "missingTokenPrices":"Faltan los precios de los tokens",
     "missingPoolNameOrSymbolInfo":"Falta un nombre o símbolo de pool, rellénelo antes de crear el pool.",
+    "missingTokenPrices":"Faltan los precios de los tokens",
+    "modals":{
+       "veBalRedirectModal":{
+          "title":"Ir a la red principal",
+          "description":"Obtener y usar veBAL para otorgar y votar debe realizarse en la red principal de Ethereum. Todavía puede ganar incentivos de minería de liquidez en Arbitrum y Polygon invirtiendo en pools elegibles. Sin embargo, para votar por emisiones directas a sus pools favoritos y ganar las tarifas de protocolo, deberá usar veBAL en Ethereum Mainnet bloqueando B-80BAL-20WETH."
+       }
+    },
     "month":"mes",
     "months":"meses",
     "mustBeAtLeast":"debe tener al menos {0} caracteres",
     "mustBeInt":"debe ser un entero",
     "mustBeLessThan":"debe ser menor que {0}",
+    "mustBeMoreThan":"debe ser mayor que {0}",
     "mustBePositive":"Debe ser un número positivo",
     "mustBeSame":"debe ser igual que {0}",
     "mustBeValidAddress":"Esta no es una dirección Ethereum válida",
     "mustBeValidEmail":"debe ser un correo electrónico válido",
     "mustBeValidNum":"debe ser un número válido",
+    "myApr":"mi TAE",
     "myBalance":"Mi balance",
+    "myBalancerInvestments":"Mis inversiones de Balancer",
     "myInvestments":"Mis inversiones en Balancer",
     "myPortfolio":"Mi cartera",
     "myShare":"Mi parte",
-    "myV2Investments":"Mis inversiones V2",
     "myWallet":"Mi billetera Ethereum",
     "myWallet2":"Mi billetera",
     "name":"Nombre",
@@ -305,6 +498,7 @@
     "networkMismatch":"Cambie a {0}",
     "new":"Nuevo",
     "newInvestment":"Nueva inversión",
+    "newToEthereum":"¿Nuevo en Ethereum?",
     "newTrade":"Nuevo comercio",
     "newWithdrawal":"Nuevo retiro",
     "next":"próximo",
@@ -321,20 +515,46 @@
     "noRecentActivity":"Tu actividad aparecerá aquí ...",
     "noResults":"No hay resultados.",
     "noSwapsPool":"No hay permutas en este pool.",
+    "notAvailable":"N / A",
     "numberOfPools":"Numero de pool",
     "oneDay":"1D",
     "oneMonth":"1 M",
     "oneWeek":"1s",
+    "oops":"UPS",
     "optimize":"Optimizar",
     "optimized":"Optimizado",
     "optimizedPrefilled":"Se han llenado previamente cantidades optimizadas",
     "oracleWeightedPool":"Pool ponderado de Oracle",
+    "otherTokenEarnings":"Otras ganancias simbólicas",
     "overview":"Descripción general",
     "ownerFeesTooltip":"Los proveedores de liquidez ganan comisiones de swap dinámicas en cada operación que utiliza Liquidez en este pool. Las tarifas de intercambio dinámico son controladas por el propietario del pool.",
+    "pages":{
+       "claim":{
+          "title":"Reclama tus incentivos de minería de liquidez",
+          "description":"El protocolo Balancer y los socios brindan incentivos para atraer liquidez en pools elegibles. Los participantes en estos pools acumulan incentivos en cada bloque. Las personas con veBAL obtienen una tarifa mejorada, hasta 2,5 veces más.",
+          "transitionInfo":{
+             "title":"Transición a la nueva tokenómica veBAL",
+             "description":"Los incentivos de minería de liquidez comienzan el 7 de abril de 2022 a las 0:00 UTC. Las ganancias del token se acumulan en cada bloque y se pueden reclamar en cualquier momento. Mientras tanto, puede prepararse obteniendo veBAL, proporcionando liquidez, apostando y votando en pools elegibles.",
+             "descriptionL2":"Los incentivos de minería de liquidez comienzan el 7 de abril de 2022 a las 0:00 UTC. Las ganancias en Polygon y Arbitrum se pueden reclamar semanalmente los jueves a partir del 14 de abril. Mientras tanto, puede prepararse obteniendo veBAL, proporcionando liquidez, apostando y votando en pools elegibles."
+          },
+          "titles":{
+             "incentivesOnOtherNetworks":"Incentivos en otras redes",
+             "legacyIncentives":"Incentivos heredados"
+          },
+          "btns":{
+             "claimOn":"Reclamar en"
+          }
+       }
+    },
     "payload":"Carga",
     "pendingClaims":"Reclamaciones pendientes",
     "pendingEstimate":"Pendiente: (estimación)",
     "perWeek":"por semana",
+    "policies":{
+       "cookiesPolicy":"Política de cookies",
+       "privacyPolicy":"Política de privacidad",
+       "termsOfUse":"Términos de Uso"
+    },
     "pool":"Pool",
     "poolBalance":"Balance de la pool",
     "poolComposition":"Composición de la pool",
@@ -358,10 +578,15 @@
     },
     "poolType":"Tipo de pool",
     "poolValue":"Valor del pool",
+    "pools":"Quinielas",
+    "poolsToMigrate":"Pools para migrar",
+    "poolsToStake":"Piscinas para apostar",
     "popularBases":"Bases populares:",
     "portfolio":"Cartera",
+    "potential":"Potencial",
     "potentialWeeklyYield":"Rendimiento potencial semanal",
     "preview":"Avance",
+    "previewMigrate":"Vista previa de migración",
     "previewPool":"Vista previa del nuevo pool de {0}",
     "previewTrade":"Vista previa del comercio",
     "previewTradeTransactions":"Vista previa de transacciones comerciales",
@@ -376,6 +601,7 @@
        "description":"El precio comercial se ha actualizado en más de {0}",
        "actionLabel":"Aceptar"
     },
+    "proceed":"Proceder",
     "profit":"Beneficio (1 {0})",
     "proportionalSuggestion":"Sugerencia proporcional",
     "proportionalWithdrawal":"Retiro proporcional",
@@ -385,6 +611,7 @@
     "receive":"Recibir",
     "recentActivityTitle":"Actividad reciente",
     "requiresTransactions":"Requiere 1 transacción | Requiere transacciones de {txCount}",
+    "restoring":"Restaurando...",
     "returnToPool":"Volver a la página de pool",
     "returnToPoolCreation":"Volver a la creación de pool",
     "saveGas":"para ahorrar gas.",
@@ -398,11 +625,34 @@
     "selectToken":"Búsqueda de tokens",
     "sell":"Vender",
     "send":"Enviar",
+    "setUpEthereumWallet":"Balancer es una aplicación DeFi en Ethereum. Configure una billetera Ethereum para invertir y comerciar aquí.",
     "settings":"Ajustes",
     "singleToken":"Token único",
     "singleTokenMax":"Token único máximo",
     "slippageTolerance":"Tolerancia al deslizamiento",
+    "somethingWentWrong":"Algo salió mal",
     "stablePool":"Pool estable",
+    "stake":"Apostar",
+    "stakeToGetExtra":"Apuesta esto para ganar extra",
+    "staked":"apostado",
+    "staking":{
+       "newTotalShare":"Su parte total",
+       "stakedPools":"pools apostados",
+       "stakedLpTokensTooltip":"El valor fiduciario de los tokens LP que ha apostado en este pool.",
+       "stakeValueTooltip":"El valor aproximado de los tokens LP que apostarás.",
+       "unstakedLpTokensTooltip":"El valor fiduciario de los tokens LP que puede apostar.",
+       "staking":"replanteo",
+       "stakeTooltip":"Confirme la participación de tokens LP para obtener incentivos de minería de liquidez en este pool",
+       "stakingApr":"APR de apuesta",
+       "stakingIncentives":"Incentivos de participación",
+       "totalShareTooltip":"Su participación total actual de tokens LP en el pool",
+       "unclaimedIncentives":"Incentivos no reclamados",
+       "unstakedPools":"pools no apostados",
+       "unstakeValueTooltip":"El valor aproximado de los tokens LP que dejarás de apostar.",
+       "unstaking":"desquiciar",
+       "unstakeTooltip":"Confirme la eliminación de tokens LP. Perderá la elegibilidad para ganar incentivos de minería de liquidez para este pool.",
+       "weeklyEarning":"ganancias semanales"
+    },
     "strategy":"Estrategia",
     "submit":"Entregar",
     "summary":"Resumen",
@@ -432,6 +682,7 @@
     "tokenPills":{
        "hiddenTokens":"+ {0} tokens"
     },
+    "tokenPrices":"Precios de fichas",
     "tokenSearch":"Búsqueda de tokens",
     "tokenWarning":"Balancer Labs no es responsable de las pérdidas en las que pueda incurrir como resultado directo o indirecto de agregar liquidez a este pool. No agregue tokens deflacionarios, tokens con tarifas de transferencia o cualquier otro token que no cumpla con ERC20. Por favor reconozca antes de continuar.",
     "tokenWarningTitle":"Has agregado un token personalizado",
@@ -451,8 +702,10 @@
     "total":"Total",
     "totalAPR":"APR total",
     "totalAllocated":"Total asignado",
+    "totalInvested":"total invertido",
     "totalSupply":"Suministro total",
     "totalValue":"Valor total",
+    "totalValueTo":"Valor total a",
     "trade":"Comercio",
     "tradeEarns":"Este comercio te hace ganar",
     "tradeFromWeth":"Comercio desde WETH",
@@ -467,6 +720,7 @@
     "tradeInterface":"Interfaz comercial",
     "tradeInterfaceTooltip":"Elija Balancer para obtener la mejor liquidez en los pools de Balancer V1 y V2. Elija Gnosis para comprar y vender tokens utilizando pedidos sin gas mientras disfruta de la protección MEV.",
     "tradeLiquidity":"Liquidez comercial",
+    "tradeRoute":"Ruta comercial",
     "tradeSettled":"Tu comercio se ha asentado",
     "tradeSubmissionError":{
        "title":"Se ha producido un error",
@@ -556,16 +810,173 @@
     "unavailableOnNetworkWithName":"¡lo siento! balancer no está disponible en {0}",
     "unknown":"Desconocido",
     "unknownPoolType":"Tipo de pool desconocido",
+    "unknownTokenPrice":"Precio del token desconocido",
     "unlock":"desbloquear",
+    "unlockVeBAL":{
+       "expiredLockableTokens":{
+          "title":"Tokens bloqueados vencidos"
+       },
+       "unlockForm":{
+          "title":"desbloquear",
+          "lockedAmount":{
+             "title":"Fichas disponibles para desbloquear:"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "unlock":{
+                "default":"Vista previa de desbloqueo",
+                "confirmed":"Desbloqueo confirmado"
+             }
+          },
+          "lpTokens":"{0} fichas de LP",
+          "summary":{
+             "title":"Resumen de desbloqueo",
+             "totalToUnlock":"Total para desbloquear",
+             "totalVotingEscrow":"depósito total de votos",
+             "expiredOn":"Expiró el"
+          },
+          "actions":{
+             "unlock":{
+                "label":"Confirmar desbloqueo",
+                "confirming":"Confirmando...",
+                "tooltip":"Confirmar desbloqueo.",
+                "loadingLabel":"Confirmar desbloqueo en billetera"
+             }
+          },
+          "returnToVeBalPage":"Volver a la página de bloqueo de veBAL"
+       },
+       "notSupported":{
+          "title":"El desbloqueo no está disponible en esta red",
+          "description":"Desbloqueo en Ethereum Mainnet"
+       }
+    },
     "unlocking":"Desbloqueo",
+    "unstake":"Dejar de apostar",
+    "unstaked":"sin apostar",
     "unsupportedNetwork":"Red no admitida",
     "unwrap":"Desenvolver",
     "usdValue":"Valor en USD",
-    "usingLiquidity":"Usando {0} liquidez",
     "v1":"V1",
     "v2":"V2",
     "value":"Valor",
     "vault":"Bóveda",
+    "veBAL":{
+       "hero":{
+          "eyebrow":"Introduciendo veBAL",
+          "title":"Ganancias adicionales y poder de voto",
+          "benefits":{
+             "earn":"Gane su parte de los ingresos del protocolo",
+             "boost":"Aumente el rendimiento de la minería de liquidez hasta 2,5 veces",
+             "vote":"Votar para dirigir las emisiones de minería de liquidez"
+          },
+          "tokens":{
+             "balWETH":"BAL + WETH",
+             "lpToken":"B-80BAL-20WETH",
+             "veBAL":"VEBAL"
+          },
+          "tokenInfo":{
+             "balWETH":"Invierta / agregue liquidez al pool 80% BAL / 20% WETH para obtener el token B-80BAL-20WETH LP.",
+             "lpToken":"Guarde los tokens LP del pool 80 % BAL / 20 % WETH hasta por un año para obtener veBAL. Cuanto más tiempo bloqueas, más veBAL obtienes.",
+             "veBAL":"Usa veBAL para ganar más en tus pools apostados. Solo algunos pools son elegibles para apostar. Verifique los pools en los que se encuentra y apueste para obtener incentivos de minería de liquidez. También puede usar veBAL para votar para dirigir futuras emisiones de minería de liquidez"
+          },
+          "buttons":{
+             "getVeBAL":"Obtener veBAL",
+             "learnMore":"Aprende más"
+          }
+       },
+       "myVeBAL":{
+          "title":"mi vebal",
+          "cards":{
+             "myLpToken":"mi {0}",
+             "myLockedLpToken":"Mi bloqueado {0}",
+             "lockedEndDate":"Bloqueado hasta",
+             "myVeBAL":"mi vebal"
+          }
+       },
+       "communityVeBAL":{
+          "title":"VeBAL comunitario",
+          "cards":{
+             "totalVeBAL":"veBAL total",
+             "avgLockUpPeriod":"Ave. período de bloqueo",
+             "effectiveBalLocked":"BAL efectivo bloqueado",
+             "shareOfBalLocked":"Porcentaje de BAL bloqueado"
+          },
+          "stats":{
+             "currentWeekVoting":"Votación de la semana actual",
+             "nextWeekVoting":"Votaciones de la semana que viene",
+             "balIncentives":"incentivos BAL"
+          },
+          "table":{
+             "poolGauge":"Medidor de piscina",
+             "vote":"Votar",
+             "viewMore":"Ver más"
+          }
+       },
+       "liquidityMining":{
+          "title":"Pools elegibles para minería de liquidez",
+          "unallocatedVotes":"Mis votos no asignados: {0}.",
+          "votingPeriod":"Finaliza el período de votación: {0}d {1}h {2}m {3}s",
+          "table":{
+             "chain":"Cadena",
+             "assets":"Activos",
+             "composition":"Composición",
+             "nextPeriodVotes":"Votos del próximo período",
+             "myVotes":"mis votos",
+             "vote":"Votar"
+          },
+          "votesTooltip":{
+             "title":"desglose de votaciones",
+             "thisPeriod":"Este período: {0}",
+             "nextPeriod":"Próximo período: {0}"
+          },
+          "popover":{
+             "title":{
+                "vote":"Voto calibre",
+                "edit":"Editar voto de indicador"
+             },
+             "button":{
+                "vote":"Confirmar voto",
+                "edit":"editar voto"
+             },
+             "actions":{
+                "vote":{
+                   "confirming":"Confirmando voto...",
+                   "loadingLabel":"Confirmar voto en billetera"
+                }
+             },
+             "emissionsInfo":"Su voto dirigirá las futuras emisiones de minería de liquidez a partir del próximo período del jueves a las 0:00 UTC.",
+             "voteForGauge":"{0} para {1}",
+             "remainingVotes":"Tus votos restantes: {0}",
+             "remainingVotesEditing":"Tus votos restantes: {0} ({1} asignación actual en este pool + {2} votos no asignados)",
+             "remainingVotesExceeded":"Esto supera sus votos restantes de: {0}",
+             "voteLockInfo":"Los votos están bloqueados durante 10 días. No podrá modificar esta asignación de votos hasta el {0}",
+             "warnings":{
+                "votedTooRecently":{
+                   "title":"Los votos están bloqueados durante 10 días.",
+                   "description":"No podrá realizar ninguna edición en esta asignación de votos para {0}"
+                },
+                "noVeBal":{
+                   "title":"Necesitas algo de veBAL para votar los calibres",
+                   "description":"Obtenga veBAL bloqueando tokens LP del pool 80% BAL / 20% WETH."
+                },
+                "veBalLockTooShort":{
+                   "title":"veBAL no bloqueado durante 7 días.",
+                   "description":"Debe tener veBAL bloqueado por más de 7 días para votar en los gagues."
+                }
+             },
+             "errors":{
+                "notEnoughVotes":"No hay suficientes votos sin asignar"
+             }
+          }
+       },
+       "notSupported":{
+          "title":"El bloqueo no está disponible en esta red",
+          "description":"Obtenga veBAL en Ethereum Mainnet"
+       },
+       "votingTransitionDescription":"¡Las emisiones de minería de liquidez según las indicaciones de los titulares de veBAL comienzan el 7 de abril de 2022 a las 0:00 UTC! La votación ahora está en vivo, así que obtenga veBAL y vote por los pools. Tu voto persistirá hasta que lo edites. La edición solo se puede hacer una vez cada 10 días."
+    },
+    "vestVote":"Chaleco + Voto",
     "viewAllAssets":"Ver todos los activos ({0})",
     "viewAndManangeOnElement":"Ver y administrar todos los pools en Element.fi",
     "viewFullWallet":"Ver cartera completa",
@@ -577,6 +988,7 @@
     "volume24hShort":"Vol (24h)",
     "volumeTime":"Volumen ({0})",
     "wallet":"Cartera",
+    "warning":"Advertencia",
     "week":"Semana",
     "weekAbbrev":"w",
     "weight":"Peso",
@@ -597,5 +1009,6 @@
     "yieldEarnings":"Ganancias de rendimiento",
     "youCanInvest":"Puedes invertir",
     "youDidIt":"¡Lo hiciste!",
+    "yourBalanceInPool":"Su saldo en este pool",
     "yourTransactions":"Tus transacciones en este pool"
  }

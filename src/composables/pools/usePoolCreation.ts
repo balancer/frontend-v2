@@ -1,4 +1,4 @@
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { flatten, sumBy } from 'lodash';
 import { computed, reactive, ref, toRefs } from 'vue';
@@ -507,10 +507,8 @@ export default function usePoolCreation() {
   }
 
   async function retrievePoolDetails(hash: string) {
-    const provider = new JsonRpcProvider(configService.network.publicRpc);
-
     const poolDetails = await balancerService.pools.weighted.details(
-      provider,
+      getProvider(),
       hash
     );
     poolCreationState.poolId = poolDetails.id;

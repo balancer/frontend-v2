@@ -22,10 +22,13 @@ const stakePool = ref<FullPool | undefined>();
 
 /** COMPOSABLES */
 const {
-  userGaugeShares,
-  userLiquidityGauges,
-  stakedPools,
-  isLoadingStakingData,
+  userData: {
+    userGaugeShares,
+    userLiquidityGauges,
+    stakedPools,
+    isLoadingUserStakingData,
+    poolBoosts
+  },
   setPoolAddress
 } = useStaking();
 
@@ -66,7 +69,11 @@ const partiallyStakedPools = computed(() => {
       return {
         ...pool,
         stakedPct: stakedPct.toString(),
-        stakedShares: calculateFiatValueOfShares(pool, stakedBalance)
+        stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
+        dynamic: {
+          ...pool.dynamic,
+          boost: poolBoosts.value[pool.id]
+        }
       };
     });
 });
@@ -130,7 +137,9 @@ function handleModalClose() {
     <h5 class="px-4 lg:px-0" v-if="!isL2">{{ $t('staking.unstakedPools') }}</h5>
     <PoolsTable
       :key="poolsToRender"
-      :isLoading="isLoadingStakingData || isLoadingUserPools || isUserPoolsIdle"
+      :isLoading="
+        isLoadingUserStakingData || isLoadingUserPools || isUserPoolsIdle
+      "
       :data="poolsToRender"
       :noPoolsLabel="$t('noInvestments')"
       :hiddenColumns="hiddenColumns"

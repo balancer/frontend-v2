@@ -28,9 +28,13 @@ const { totalInvestedAmount, isLoadingUserPools } = usePools();
 const { darkMode } = useDarkMode();
 const { lockFiatValue, isLoadingLock } = useLock();
 const {
-  totalStakedFiatValue,
-  isLoading: isStakingLoading,
-  isStakingQueryEnabled
+  userData: {
+    totalStakedFiatValue,
+    isStakingQueryEnabled,
+    isLoadingUserStakingData,
+    isLoadingStakedPools,
+    isUserStakeDataIdle
+  }
 } = useStaking();
 
 /**
@@ -40,6 +44,14 @@ const classes = computed(() => ({
   ['h-72']: !isWalletReady.value && !isWalletConnecting.value,
   ['h-40']: isWalletReady.value || isWalletConnecting.value
 }));
+
+const isStakingLoading = computed(() => {
+  return (
+    isLoadingStakedPools.value ||
+    isLoadingUserStakingData.value ||
+    isUserStakeDataIdle.value
+  );
+});
 
 const totalInvestedLabel = computed((): string => {
   const value = bnum(totalInvestedAmount.value || '0')

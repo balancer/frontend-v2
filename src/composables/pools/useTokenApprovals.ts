@@ -77,7 +77,6 @@ export default function useTokenApprovals(
       appNetworkConfig.addresses.vault
     )
   );
-
   /**
    * METHODS
    */

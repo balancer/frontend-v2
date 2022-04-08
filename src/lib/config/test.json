@@ -47,10 +47,12 @@
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E",
     "batchRelayer": "",
-    "veBAL": "",
-    "gaugeController": "",
     "gaugeFactory": "",
-    "balancerMinter": ""
+    "balancerMinter": "",
+    "gaugeController": "",
+    "tokenAdmin": "",
+    "veBAL": "",
+    "veDelegationProxy": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

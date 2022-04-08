@@ -4,6 +4,8 @@ import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
 
 import pkg from '@/../package.json';
+import { TOKENS } from '@/constants/tokens';
+import { configService } from '@/services/config/config.service';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -137,4 +139,8 @@ export function formatWordListAsSentence(
 
 export function getAddressFromPoolId(poolId: string) {
   return poolId.substring(0, 42);
+}
+
+export function getBalAddress() {
+  return TOKENS.AddressMap[configService.network.chainId]?.BAL;
 }
