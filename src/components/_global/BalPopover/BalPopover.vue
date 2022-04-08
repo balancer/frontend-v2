@@ -40,9 +40,11 @@ const popoverActivatorWrapperClasses = computed(() => ({
   relative: !props.detached
 }));
 
-const activatorWidthPx = computed(
-  (): string => `${activatorWrapper.value?.clientWidth || 0}px`
-);
+const activatorWidth = computed(() => activatorWrapper.value?.clientWidth || 0);
+
+const activatorWidthPx = computed(() => `${activatorWidth.value}px`);
+
+const activatorHalfWidthPx = computed(() => `${activatorWidth.value / 2}px`);
 
 /**
  * METHODS
@@ -114,8 +116,10 @@ watch(popoverOpened, () => {
 }
 
 .align-center-transform {
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
+  -webkit-transform: translateX(
+    -webkit-calc(-50% + v-bind(activatorHalfWidthPx))
+  );
+  transform: translateX(calc(-50% + v-bind(activatorHalfWidthPx)));
 }
 
 .align-right-transform {

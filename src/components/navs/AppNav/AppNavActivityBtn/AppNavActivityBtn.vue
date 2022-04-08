@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad>
+  <BalPopover no-pad :align="isMobile ? 'left' : undefined">
     <template v-slot:activator>
       <BalBtn
         color="white"
@@ -81,7 +81,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { upToLargeBreakpoint } = useBreakpoints();
+    const { upToLargeBreakpoint, isMobile } = useBreakpoints();
     const { isLoadingProfile, profile, account, getSigner } = useWeb3();
     const { t } = useI18n();
 
@@ -145,7 +145,8 @@ export default defineComponent({
       isLoadingProfile,
       transactions,
       pendingTransactions,
-      finalizedTransactions
+      finalizedTransactions,
+      isMobile
     };
   }
 });
