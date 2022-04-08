@@ -54,7 +54,11 @@ export default function useFarmUserQuery(
 
       let pendingRewardTokens: MasterChefRewarderPendingToken[] = [];
 
-      if (farm && farm.rewarder) {
+      if (
+        farm &&
+        farm.rewarder &&
+        farm.rewarder.id !== '0x0000000000000000000000000000000000000000'
+      ) {
         const pendingRewards = await masterChefContractsService.rewarders.getPendingRewards(
           [farmId],
           [farm.rewarder.id],
