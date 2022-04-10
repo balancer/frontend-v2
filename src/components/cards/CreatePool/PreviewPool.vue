@@ -48,7 +48,13 @@ const {
   getPoolSymbol
 } = usePoolCreation();
 
-const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const {
+  tokens,
+  priceFor,
+  nativeAsset,
+  wrappedNativeAsset,
+  balanceFor
+} = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { userNetworkConfig, account } = useWeb3();
@@ -111,6 +117,29 @@ const hasInvalidInitialWeight = computed(() => {
   return Object.values(initialWeights.value).some(initialWeight =>
     initialWeight.lt(0.01)
   );
+});
+
+const showNativeAssetWarning = computed(() => {
+  const nativeAssetBalance = balanceFor(nativeAsset.address);
+  const wrappedNativeAssetBalance = balanceFor(
+    wrappedNativeAsset.value.address
+  );
+
+  const seedAmount =
+    seedTokens.value.find(
+      token => token.tokenAddress === wrappedNativeAsset.value.address
+    )?.amount || '0';
+  // when the UI is set to use the native asset and the user does
+  // not have the required native asset amount to cover the fund
+  if (useNativeAsset.value && bnum(nativeAssetBalance).lt(seedAmount)) {
+    return true;
+    // in the reverse case, if the user does not have the required
+    // wrapped amount as well
+  }
+  if (!useNativeAsset.value && bnum(wrappedNativeAssetBalance).lt(seedAmount)) {
+    return true;
+  }
+  return false;
 });
 
 /**
@@ -305,6 +334,14 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             type="warning"
           >
             {{ $t('createAPool.invalidInitialWeightsInfo') }}
+          </BalAlert>
+        </AnimatePresence>
+        <AnimatePresence :isVisible="showNativeAssetWarning" unmountInstantly>
+          <BalAlert
+            :title="$t('createAPool.invalidInitialWeightsTitle')"
+            type="warning"
+          >
+            {{ $t('createAPool.nativeAssetWarning') }}
           </BalAlert>
         </AnimatePresence>
         <!-- <BalAlert

@@ -13,9 +13,9 @@ import useTokens from '@/composables/useTokens';
 const { tokens } = useTokens();
 const {
   seedTokens,
-  optimisedLiquidity,
   maxInitialLiquidity,
-  tokenColors
+  tokenColors,
+  getOptimisedLiquidity
 } = usePoolCreation();
 const { fNum2 } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -37,6 +37,8 @@ const totalsClass = computed(() => ({
   'text-gray-700 ': maxInitialLiquidity.value >= 20000,
   'text-orange-500': maxInitialLiquidity.value < 20000
 }));
+
+const optimisedLiquidity = computed(() => getOptimisedLiquidity());
 </script>
 
 <template>

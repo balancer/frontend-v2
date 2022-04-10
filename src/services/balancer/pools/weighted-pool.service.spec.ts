@@ -147,7 +147,7 @@ describe('PoolCreator', () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceipt
       } as any;
-      const poolDetails = await weightedPoolsService.details(
+      const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
         'hash'
       );
@@ -159,7 +159,7 @@ describe('PoolCreator', () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceipt
       } as any;
-      const poolDetails = await weightedPoolsService.details(
+      const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
         'hash'
       );
@@ -172,7 +172,7 @@ describe('PoolCreator', () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceiptNoEvents
       } as any;
-      const poolDetails = await weightedPoolsService.details(
+      const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
         'hash'
       );

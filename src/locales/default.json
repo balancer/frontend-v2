@@ -145,6 +145,7 @@
         "maxInitialLiquidity": "Max initial liquidity",
         "maxLiquidityTooltip": "This is the max amount of liquidity you can provide to the pool with the current token selection.",
         "myAddressOption": "My address: {0}",
+        "nativeAssetWarning": "Your ETH/WETH balance may not be sufficient for seed this pool and may cause pool funding to fail. You can adjust whether you use ETH or WETH for seed liquidity in the previous step.",
         "poolSummary": "Pool summary",
         "poolAlreadyExists": "This pool already exists",
         "previewPool": "Preview new {0} pool",
