@@ -3,11 +3,13 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { LockType } from '@/components/forms/lock_actions/LockForm/types';
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { expectedVeBal } from '@/composables/useVeBAL';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
 
+import useLockState from '../../composables/useLockState';
 import LockActions from './components/LockActions.vue';
 import LockAmount from './components/LockAmount.vue';
 import LockSummary from './components/LockSummary.vue';
@@ -38,26 +40,35 @@ const emit = defineEmits<{
  * STATE
  */
 const lockConfirmed = ref(false);
+const lockablePool = ref(props.lockablePool);
+const lockablePoolTokenInfo = ref(props.lockablePoolTokenInfo);
+const lockAmount = ref(props.lockAmount);
+const lockEndDate = ref(props.lockEndDate);
+const lockType = ref(props.lockType);
+const veBalLockInfo = ref(props.veBalLockInfo);
+const totalLpTokens = ref(props.totalLpTokens);
 
 // This value should be static when modal is opened.
 const expectedVeBalAmount = expectedVeBal(
-  props.totalLpTokens,
-  props.lockEndDate
+  totalLpTokens.value,
+  lockEndDate.value
 );
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
+const { refetch: refetchLockInfo } = useVeBalLockInfoQuery();
+const { resetState } = useLockState();
 
 /**
  * COMPUTED
  */
 const title = computed(() => {
-  if (props.lockType.length === 1) {
+  if (lockType.value.length === 1) {
     return lockConfirmed.value
-      ? t(`getVeBAL.previewModal.titles.${props.lockType[0]}.confirmed`)
-      : t(`getVeBAL.previewModal.titles.${props.lockType[0]}.default`);
+      ? t(`getVeBAL.previewModal.titles.${lockType.value[0]}.confirmed`)
+      : t(`getVeBAL.previewModal.titles.${lockType.value[0]}.default`);
   }
   return lockConfirmed.value
     ? t(`getVeBAL.previewModal.titles.${LockType.CREATE_LOCK}.confirmed`)
@@ -73,6 +84,8 @@ function handleClose() {
 
 function handleSuccess() {
   lockConfirmed.value = true;
+  refetchLockInfo.value();
+  resetState();
 }
 </script>
 

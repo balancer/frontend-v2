@@ -75,52 +75,56 @@ function navigateToGetVeBAL() {
           </BalBtn>
         </div>
       </div>
-      <div class="py-8 px-4 lg:pl-8">
-        <div class="coins flex">
-          <div class="coin group">
+      <div class="coins">
+        <div class="coin group">
+          <div class="coin-wrapper w-full">
             <BalImage
               class="graphic"
-              width="724"
-              height="800"
-              :src="require('@/assets/images/coins-1.png')"
-              alt=""
+              width="330"
+              height="377"
+              :src="require('@/assets/images/coins/coins-1.png')"
+              alt="BAL and WETH tokens"
             />
-            <div class="caption">
-              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
-              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-                {{ $t('veBAL.hero.tokenInfo.balWETH') }}
-              </BalTooltip>
-            </div>
           </div>
-          <div class="coin group">
-            <BalImage
-              class="graphic"
-              width="696"
-              height="800"
-              :src="require('@/assets/images/coins-2.png')"
-              alt=""
-            />
-            <div class="caption">
-              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
-              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-                {{ $t('veBAL.hero.tokenInfo.lpToken') }}
-              </BalTooltip>
-            </div>
+          <div class="caption">
+            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+              {{ $t('veBAL.hero.tokenInfo.balWETH') }}
+            </BalTooltip>
           </div>
-          <div class="coin group">
+        </div>
+        <div class="coin group">
+          <div class="coin-wrapper">
             <BalImage
               class="graphic"
-              width="696"
-              height="800"
-              :src="require('@/assets/images/coins-3.png')"
-              alt=""
+              width="330"
+              height="377"
+              :src="require('@/assets/images/coins/coins-2.png')"
+              alt="B-80BAL-20WETH LP token"
             />
-            <div class="caption">
-              <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
-              <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
-                {{ $t('veBAL.hero.tokenInfo.veBAL') }}
-              </BalTooltip>
-            </div>
+          </div>
+          <div class="caption">
+            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+              {{ $t('veBAL.hero.tokenInfo.lpToken') }}
+            </BalTooltip>
+          </div>
+        </div>
+        <div class="coin group">
+          <div class="coin-wrapper">
+            <BalImage
+              class="graphic"
+              width="330"
+              height="377"
+              :src="require('@/assets/images/coins/coins-3.png')"
+              alt="veBAL token"
+            />
+          </div>
+          <div class="caption">
+            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+              {{ $t('veBAL.hero.tokenInfo.veBAL') }}
+            </BalTooltip>
           </div>
         </div>
       </div>
@@ -133,10 +137,15 @@ function navigateToGetVeBAL() {
   background-repeat: no-repeat;
   background-position-x: right;
   background-size: cover;
+  min-height: 440px;
+  @apply flex content-center;
 }
 .hero-content {
-  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto;
-  min-height: 400px;
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full;
+}
+.hero-text {
+  opacity: 0;
+  animation: fadeIn 1s ease-out 0.1s both;
 }
 .title {
   max-width: 820px;
@@ -144,21 +153,37 @@ function navigateToGetVeBAL() {
 .hero-btn {
   min-width: 140px;
 }
-.coin:hover img {
+.coins {
+  @apply flex lg:gap-8;
+  flex-grow: 1;
+}
+.coin-wrapper {
+  aspect-ratio: 7 / 8;
+}
+.coin {
+  @apply w-full flex flex-col items-center justify-end;
+}
+
+.coin:hover .graphic {
   transform: translateY(-8px);
 }
 .graphic {
-  @apply mb-4 lg:px-8;
-  transition: 0.3s all ease-out;
-  max-height: 420px;
+  @apply transition-transform duration-300;
 }
 .caption {
   @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
+  animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
 
 @media (min-width: 768px) {
   .hero-text {
     min-width: 400px;
   }
+}
+</style>
+
+<style>
+.caption .bal-icon {
+  animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
 </style>
