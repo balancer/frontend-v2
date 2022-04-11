@@ -434,7 +434,7 @@ export default function useWithdrawMath(
 
   const batchSwapKind = computed(
     (): SwapType =>
-      exactOut.value ? SwapType.SwapExactIn : SwapType.SwapExactOut
+      exactOut.value ? SwapType.SwapExactOut : SwapType.SwapExactIn
   );
 
   const batchRelayerTokenOut = computed(
