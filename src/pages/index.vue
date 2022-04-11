@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { useQueries } from 'react-query';
+import { computed, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -10,6 +11,8 @@ import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import usePools from '@/composables/pools/usePools';
+import useQueryStreams from '@/composables/queries/useQueryStream';
+import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isL2 } from '@/composables/useNetwork';
@@ -18,6 +21,7 @@ import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 // COMPOSABLES
 const router = useRouter();
@@ -42,6 +46,7 @@ const {
 } = usePools(selectedTokens);
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
+const { loading: isLoadingTokens, dynamicDataLoading } = useTokens();
 
 // COMPUTED
 const filteredPools = computed(() =>
@@ -93,10 +98,52 @@ watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 function navigateToCreatePool() {
   router.push({ name: 'create-pool' });
 }
+
+const { data, dataStates, result } = useStreamedPoolsQuery();
+
+// const { data, result, dataStates } = useQueryStreams('esk', {
+//   poolNames: {
+//     init: true,
+//     queryFn: (pools: Ref<any>) => {
+//       console.log('dingle', pools.value);
+//       return new Promise(resolve => {
+//         setTimeout(() => {
+//           pools.value = 0;
+//           resolve('fetched');
+//         }, 2500);
+//       });
+//     }
+//   },
+//   dingles: {
+//     dependencies: {},
+//     queryFn: (pools: Ref<any>) => {
+//       console.log('dingle', pools.value);
+//       return new Promise(resolve => {
+//         setTimeout(() => {
+//           pools.value = pools.value += 5;
+//           resolve('fetched');
+//         }, 7000);
+//       });
+//     }
+//   }
+// });
 </script>
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
+    <PoolsTable
+      :key="result"
+      :isLoading="dataStates['basic'] === 'loading'"
+      :data="result"
+      :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="false"
+      :isLoadingMore="false"
+      @loadMore="loadMorePools"
+      :selectedTokens="selectedTokens"
+      class="mb-8"
+      :hiddenColumns="['migrate', 'stake']"
+    >
+    </PoolsTable>
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">

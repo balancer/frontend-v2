@@ -31,7 +31,8 @@ const defaultAttrs = {
     address: true,
     balance: true,
     weight: true,
-    priceRate: true
+    priceRate: true,
+    symbol: true
   }
 };
 

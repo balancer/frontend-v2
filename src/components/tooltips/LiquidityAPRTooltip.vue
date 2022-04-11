@@ -39,11 +39,11 @@ const { t } = useI18n();
  * COMPUTED
  */
 const lmBreakdown = computed(
-  () => props.pool.dynamic.apr.liquidityMiningBreakdown
+  () => props.pool?.dynamic?.apr?.liquidityMiningBreakdown
 );
 
 const validAPR = computed(
-  () => Number(props.pool.dynamic.apr.total) * 100 <= APR_THRESHOLD
+  () => Number(props.pool?.dynamic?.apr?.total) * 100 <= APR_THRESHOLD
 );
 
 const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
@@ -53,11 +53,11 @@ const lmMultiRewardPool = computed(
 );
 
 const hasThirdPartyAPR = computed(() =>
-  bnum(props.pool.dynamic.apr.thirdParty).gt(0)
+  bnum(props.pool?.dynamic?.apr?.thirdParty).gt(0)
 );
 
 const thirdPartyBreakdown = computed(
-  () => props.pool.dynamic.apr.thirdPartyBreakdown
+  () => props.pool?.dynamic?.apr?.thirdPartyBreakdown
 );
 
 const thirdPartyTokens = computed(() =>

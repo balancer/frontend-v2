@@ -124,8 +124,8 @@ export function getAprRange(apr: string) {
 export function hasStakingRewards(pool: DecoratedPool | undefined) {
   if (!pool) return false;
   return (
-    bnum(pool.dynamic.apr.staking?.BAL.min || 0).gt(0) ||
-    bnum(pool.dynamic.apr.staking?.Rewards || 0).gt(0)
+    bnum(pool?.dynamic?.apr?.staking?.BAL?.min || 0).gt(0) ||
+    bnum(pool?.dynamic?.apr?.staking?.Rewards || 0).gt(0)
   );
 }
 

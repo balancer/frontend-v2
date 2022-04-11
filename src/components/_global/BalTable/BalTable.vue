@@ -382,7 +382,7 @@ export default defineComponent({
       }
 
       const sortedData = sortBy(
-        (props.data as any).value || props.data,
+        (props.data as any)?.value || props.data,
         column.sortKey
       );
       if (currentSortDirection.value === 'asc') {

@@ -117,6 +117,11 @@ export function orderedPoolTokens(
   poolAddress: string,
   tokens: Pick<PoolToken, 'address' | 'weight'>[]
 ): Partial<PoolToken>[] {
+  console.log({
+    poolType,
+    poolAddress,
+    tokens
+  })
   if (isStablePhantom(poolType))
     return tokens.filter(token => token.address !== poolAddress);
   if (isStableLike(poolType)) return tokens;
