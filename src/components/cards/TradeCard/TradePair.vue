@@ -5,6 +5,7 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 
 import TradePairToggle from './TradePairToggle.vue';
@@ -42,6 +43,7 @@ const emit = defineEmits<{
  */
 const { fNum2 } = useNumbers();
 const { getToken } = useTokens();
+const { veBalTokenInfo } = useVeBal();
 
 /**
  * STATE
@@ -154,6 +156,7 @@ watchEffect(() => {
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
       :disabled="tradeLoading"
+      :excludedTokens="[veBalTokenInfo?.address]"
     />
 
     <div class="flex items-center my-2">
