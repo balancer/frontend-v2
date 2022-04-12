@@ -14,6 +14,7 @@ import {
   Web3Provider
 } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
+import { formatUnits } from 'ethers/lib/utils';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import TOPICS from '@/constants/topics';
@@ -76,7 +77,7 @@ export default class WeightedPoolService {
     );
   }
 
-  public async details(
+  public async retrievePoolIdAndAddress(
     provider: Web3Provider | JsonRpcProvider,
     createHash: string
   ): Promise<CreatePoolReturn> {
@@ -105,6 +106,29 @@ export default class WeightedPoolService {
     };
 
     return poolDetails;
+  }
+
+  public async retrievePoolDetailsFromCall(
+    provider: Web3Provider | JsonRpcProvider,
+    hash: string
+  ) {
+    if (!hash) return;
+    const transaction = await provider.getTransaction(hash);
+
+    const weightedPoolInterface = WeightedPoolFactory__factory.createInterface();
+    const decodedInputData = weightedPoolInterface.decodeFunctionData(
+      'create',
+      transaction.data
+    );
+
+    const details = {
+      weights: decodedInputData.weights.map(weight => formatUnits(weight, 18)),
+      name: decodedInputData.name,
+      owner: decodedInputData.owner,
+      symbol: decodedInputData.symbol,
+      tokens: decodedInputData.tokens
+    };
+    return details;
   }
 
   public async initJoin(

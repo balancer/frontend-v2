@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { orderBy } from 'lodash';
+import { groupBy, orderBy } from 'lodash';
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -45,6 +45,21 @@ const sortedAmounts = computed(() =>
   }))
 );
 
+const groupedAmounts = computed(() =>
+  groupBy(sortedAmounts.value, amounts =>
+    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
+  )
+);
+
+const shouldShowCompactViewForZeroAmounts = computed(
+  () => groupedAmounts.value.zeroAmounts.length > 3
+);
+
+const amountsToShow = computed(() =>
+  shouldShowCompactViewForZeroAmounts.value
+    ? groupedAmounts.value.nonZeroAmounts
+    : sortedAmounts.value
+);
 /**
  * METHODS
  */
@@ -59,27 +74,42 @@ function amountShare(address: string): string {
 
 <template>
   <div class="token-amount-table">
-    <div
-      v-for="sortedAmount in sortedAmounts"
-      :key="sortedAmount.address"
-      class="relative"
-    >
-      <div class="token-amount-table-content">
-        <BalAsset :address="sortedAmount.address" :size="36" />
-        <div class="flex flex-col ml-3">
-          <div class="font-medium text-lg">
-            <span class="font-numeric">
-              {{ fNum2(sortedAmount.amount, FNumFormats.token) }}
-            </span>
-            {{ tokenMap[sortedAmount.address].symbol }}
-          </div>
-          <div class="text-sm text-gray-500 font-numeric">
-            {{ fNum2(sortedAmount.fiatAmount, FNumFormats.fiat) }}
-            ({{
-              fNum2(amountShare(sortedAmount.address), FNumFormats.percent)
-            }})
+    <div v-for="token in amountsToShow" :key="token.address" class="relative">
+      <div class="token-amount-table-content items-center">
+        <div class="flex items-center">
+          <BalAsset :address="token.address" :size="36" />
+          <div class="flex flex-col ml-3">
+            <div class="font-medium text-lg">
+              <span class="font-numeric">
+                {{ fNum2(token.amount, FNumFormats.token) }}
+              </span>
+              {{ tokenMap[token.address].symbol }}
+            </div>
           </div>
         </div>
+        <div class="text-sm text-gray-500 font-numeric">
+          {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
+          ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="shouldShowCompactViewForZeroAmounts"
+      class="token-amount-table-content -mb-2 items-start"
+    >
+      <div class="flex flex-wrap mr-6">
+        <div
+          class="token"
+          v-for="token in groupedAmounts.zeroAmounts"
+          :key="token.address"
+        >
+          <BalAsset :address="token.address" class="mr-2" />
+          <span>{{ tokenMap[token.address].symbol }}</span>
+        </div>
+      </div>
+      <div class="text-sm text-gray-500 font-numeric whitespace-nowrap">
+        {{ fNum2(0, FNumFormats.fiat) }}
+        ({{ fNum2(0, FNumFormats.percent) }})
       </div>
     </div>
   </div>
@@ -91,6 +121,10 @@ function amountShare(address: string): string {
 }
 
 .token-amount-table-content {
-  @apply p-3 flex items-center;
+  @apply p-3 flex justify-between;
+}
+
+.token {
+  @apply flex items-center px-2 py-1 mr-2 mb-2 rounded-lg bg-gray-100 dark:bg-gray-700;
 }
 </style>

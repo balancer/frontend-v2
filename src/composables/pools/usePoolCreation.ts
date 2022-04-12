@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { flatten, sumBy } from 'lodash';
@@ -74,7 +75,8 @@ export default function usePoolCreation() {
     getToken,
     nativeAsset,
     wrappedNativeAsset,
-    injectedTokens
+    injectedTokens,
+    dynamicDataLoading
   } = useTokens();
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
@@ -96,39 +98,56 @@ export default function usePoolCreation() {
     );
   });
 
-  const optimisedLiquidity = computed(
-    (): Record<string, OptimisedLiquidity> => {
-      // need to filter out the empty tokens just in case
-      const validTokens = tokensList.value.filter(t => t !== '');
-      const optimisedLiquidity = {};
+  function getOptimisedLiquidity(): Record<string, OptimisedLiquidity> {
+    // need to filter out the empty tokens just in case
+    const validTokens = tokensList.value.filter(t => t !== '');
+    const optimisedLiquidity = {};
+    if (dynamicDataLoading.value) return optimisedLiquidity;
+    // token with the lowest balance is the bottleneck
+    let bottleneckToken = validTokens[0];
+    // keeping track of the lowest amt
+    let currentMin = bnum(balanceFor(validTokens[0])).times(
+      priceFor(validTokens[0])
+    );
 
-      // token with the lowest balance is the bottleneck
-      let bottleneckToken = validTokens[0];
-      // keeping track of the lowest amt
-      let currentMin = bnum(balanceFor(validTokens[0])).times(
-        priceFor(validTokens[0])
-      );
-      for (const token of validTokens) {
-        const value = bnum(balanceFor(token)).times(priceFor(token));
-        if (value.lt(currentMin)) {
-          currentMin = value;
-          bottleneckToken = token;
-        }
+    // find the bottleneck token
+    for (const token of validTokens) {
+      const value = bnum(balanceFor(token)).times(priceFor(token));
+      if (value.lt(currentMin)) {
+        currentMin = value;
+        bottleneckToken = token;
       }
-      if (!bottleneckToken) return optimisedLiquidity;
-
-      const bottleneckWeight =
-        poolCreationState.seedTokens.find(
-          t => t.tokenAddress === bottleneckToken
-        )?.weight || 0;
-
-      const bip = bnum(priceFor(bottleneckToken || '0'))
-        .times(balanceFor(bottleneckToken))
-        .div(bottleneckWeight);
-
-      return getTokensScaledByBIP(bip);
     }
-  );
+    let bottleneckWeight =
+      poolCreationState.seedTokens.find(t => t.tokenAddress === bottleneckToken)
+        ?.weight || 0;
+    let bottleneckPrice = priceFor(bottleneckToken || '0');
+
+    // make sure that once we recognise that we are
+    // using the nativeAsset for optimisation of liquidity
+    // that we use the appropriate weights and balances
+    // since we do not want to change the original seedTokens array
+    // as the wrapped native asset there is what will
+    // be sent to the contract for creation
+    if (
+      poolCreationState.useNativeAsset &&
+      bottleneckToken === wrappedNativeAsset.value.address
+    ) {
+      bottleneckToken = nativeAsset.address;
+      bottleneckWeight =
+        poolCreationState.seedTokens.find(
+          t => t.tokenAddress === wrappedNativeAsset.value.address
+        )?.weight || 0;
+      bottleneckPrice = priceFor(wrappedNativeAsset.value.address);
+    }
+    if (!bottleneckToken) return optimisedLiquidity;
+
+    const bip = bnum(bottleneckPrice)
+      .times(balanceFor(bottleneckToken))
+      .div(bottleneckWeight);
+
+    return getTokensScaledByBIP(bip);
+  }
 
   const scaledLiquidity = computed(
     (): Record<string, OptimisedLiquidity> => {
@@ -149,7 +168,7 @@ export default function usePoolCreation() {
   );
 
   const maxInitialLiquidity = computed(() => {
-    return sumBy(Object.values(optimisedLiquidity.value), (liq: any) =>
+    return sumBy(Object.values(getOptimisedLiquidity()), (liq: any) =>
       Number(liq.liquidityRequired)
     );
   });
@@ -415,7 +434,7 @@ export default function usePoolCreation() {
       1;
       txListener(tx, {
         onTxConfirmed: async () => {
-          retrievePoolDetails(tx.hash);
+          retrievePoolAddress(tx.hash);
         },
         onTxFailed: () => {
           console.log('Create failed');
@@ -506,15 +525,39 @@ export default function usePoolCreation() {
     hasRestoredFromSavedState.value = value;
   }
 
-  async function retrievePoolDetails(hash: string) {
-    const poolDetails = await balancerService.pools.weighted.details(
+  async function retrievePoolAddress(hash: string) {
+    const response = await balancerService.pools.weighted.retrievePoolIdAndAddress(
       getProvider(),
       hash
     );
-    poolCreationState.poolId = poolDetails.id;
-    poolCreationState.poolAddress = poolDetails.address;
+    poolCreationState.poolId = response.id;
+    poolCreationState.poolAddress = response.address;
     poolCreationState.needsSeeding = true;
     saveState();
+  }
+
+  // when restoring from a pool creation transaction (not from localstorage)
+  async function retrievePoolDetails(hash: string) {
+    const details = await balancerService.pools.weighted.retrievePoolDetailsFromCall(
+      getProvider(),
+      hash
+    );
+    if (!details) return;
+    poolCreationState.seedTokens = details.tokens.map((token, i) => {
+      return {
+        tokenAddress: getAddress(token),
+        weight: Number(details.weights[i]) * 100,
+        isLocked: true,
+        amount: '0',
+        id: i
+      };
+    });
+    poolCreationState.tokensList = details.tokens;
+    poolCreationState.createPoolTxHash = hash;
+    poolCreationState.activeStep = 3;
+    hasRestoredFromSavedState.value = true;
+
+    await retrievePoolAddress(hash);
   }
 
   return {
@@ -544,9 +587,10 @@ export default function usePoolCreation() {
     importState,
     setRestoredState,
     setTokensList,
+    retrievePoolAddress,
     retrievePoolDetails,
+    getOptimisedLiquidity,
     currentLiquidity,
-    optimisedLiquidity,
     scaledLiquidity,
     tokensWithNoPrice,
     similarPools,
