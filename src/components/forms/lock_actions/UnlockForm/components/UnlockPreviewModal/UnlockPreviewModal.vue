@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfo } from '@/types/TokenList';
@@ -24,16 +25,26 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
 /**
+ * COMPOSABLES
+ */
+const { refetch: refetchLockInfo } = useVeBalLockInfoQuery();
+
+/**
  * STATE
  */
 const unlockConfirmed = ref(false);
+const lockablePool = ref(props.lockablePool);
+const lockablePoolTokenInfo = ref(props.lockablePoolTokenInfo);
+const veBalLockInfo = ref(props.veBalLockInfo);
+const totalLpTokens = ref(props.totalLpTokens);
+const fiatTotalLpTokens = ref(props.fiatTotalLpTokens);
 
 /**
  * COMPOSABLES
@@ -54,6 +65,11 @@ const title = computed(() => {
  */
 function handleClose() {
   emit('close');
+}
+
+function handleSuccess() {
+  unlockConfirmed.value = true;
+  refetchLockInfo.value();
 }
 </script>
 
@@ -87,7 +103,7 @@ function handleClose() {
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :totalLpTokens="totalLpTokens"
       :veBalLockInfo="veBalLockInfo"
-      @success="unlockConfirmed = true"
+      @success="handleSuccess"
       class="mt-4"
     />
   </BalModal>
