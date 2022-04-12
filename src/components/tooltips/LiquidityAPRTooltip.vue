@@ -171,9 +171,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           </template>
         </BalBreakdown>
         <BalBreakdown
-          v-if="
-            hasStakingRewards(pool) && stakingEnabled && pool.dynamic.boost
-          "
+          v-if="hasStakingRewards(pool) && stakingEnabled && pool.dynamic.boost"
         >
           <div class="flex items-center">
             {{
