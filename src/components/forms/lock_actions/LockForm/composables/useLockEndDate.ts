@@ -1,19 +1,36 @@
-import { addDays, nextThursday, previousThursday, startOfDay } from 'date-fns';
+import {
+  addDays,
+  isThursday,
+  nextThursday,
+  previousThursday,
+  startOfDay
+} from 'date-fns';
 import { computed } from 'vue';
 
 import {
   MAX_LOCK_PERIOD_IN_DAYS,
   MIN_LOCK_PERIOD_IN_DAYS
 } from '@/components/forms/lock_actions/constants';
+import { toUtcTime } from '@/composables/useTime';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 import useLockState from './useLockState';
+
+function getMaxLockEndDateTimestamp(date: number) {
+  const maxLockTimestamp = addDays(date, MAX_LOCK_PERIOD_IN_DAYS);
+
+  const timestamp = isThursday(date)
+    ? maxLockTimestamp
+    : previousThursday(maxLockTimestamp);
+
+  return startOfDay(timestamp).getTime();
+}
 
 export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   /**
    * STATE
    */
-  const todaysDate = new Date();
+  const todaysDate = toUtcTime(new Date());
 
   const minLockEndDateTimestamp = startOfDay(
     nextThursday(
@@ -26,9 +43,7 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
     )
   ).getTime();
 
-  const maxLockEndDateTimestamp = startOfDay(
-    previousThursday(addDays(todaysDate, MAX_LOCK_PERIOD_IN_DAYS))
-  ).getTime();
+  const maxLockEndDateTimestamp = getMaxLockEndDateTimestamp(todaysDate);
 
   /**
    * COMPOSABLES
