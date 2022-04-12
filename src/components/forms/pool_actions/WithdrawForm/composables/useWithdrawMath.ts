@@ -595,13 +595,16 @@ export default function useWithdrawMath(
         [batchRelayerTokenOut.value]
       );
 
-      const batchRelayerAmountOut = bnum(
-        _batchRelayerSwap.outputs.amountsOut[0].toString()
-      ).abs();
-      const amountOut = formatUnits(
-        batchRelayerAmountOut.toString(),
-        tokenOutDecimals.value
-      );
+      let amountOut = '0';
+      if (_batchRelayerSwap.outputs && _batchRelayerSwap.outputs.amountsOut) {
+        const batchRelayerAmountOut = bnum(
+          _batchRelayerSwap.outputs.amountsOut[0].toString()
+        ).abs();
+        amountOut = formatUnits(
+          batchRelayerAmountOut.toString(),
+          tokenOutDecimals.value
+        );
+      }
 
       batchSwapSingleAssetMaxes.value[tokenOutIndex.value] = amountOut;
     }
