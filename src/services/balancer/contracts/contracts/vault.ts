@@ -277,7 +277,9 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
+        unwrappedTokenAddress: unwrappedTokenAddress
+          ? getAddress(unwrappedTokenAddress)
+          : '',
         totalSupply: formatUnits(totalSupply, 18)
       };
     });
