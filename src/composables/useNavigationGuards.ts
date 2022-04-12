@@ -6,13 +6,13 @@ import useVeBal from './useVeBAL';
 export default function useNavigationGuards() {
   const router = useRouter();
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
-  const { setSidebarOpen } = useSidebar();
+  const { setSidebarState } = useSidebar();
 
   router.beforeEach((to, from, next) => {
     if (to.name == 'vebal') {
       if (isVeBalSupported.value) next();
       else {
-        setSidebarOpen(false);
+        setSidebarState(false);
         setShowRedirectModal(true);
         return false;
       }

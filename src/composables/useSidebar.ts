@@ -3,18 +3,18 @@ import { ref } from 'vue';
 /**
  * STATE
  */
-const sidebarOpen = ref(false);
+const isSidebarOpen = ref(false);
 
 /**
  * METHODS
  */
-function setSidebarOpen(newVal: boolean) {
-  sidebarOpen.value = newVal;
+function setSidebarState(newVal: boolean): void {
+  isSidebarOpen.value = newVal;
 }
 
 export function useSidebar() {
   return {
-    sidebarOpen,
-    setSidebarOpen
+    isSidebarOpen,
+    setSidebarState
   };
 }
