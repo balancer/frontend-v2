@@ -6,7 +6,6 @@
  * TODO:
  * Requires major refactor following Boosted pools (StablePhantom) logic additions.
  */
-import { SwapKind } from '@balancer-labs/balancer-js';
 import {
   BalancerError,
   BalancerErrorCode,
@@ -434,7 +433,8 @@ export default function useWithdrawMath(
   });
 
   const batchSwapKind = computed(
-    (): SwapKind => (exactOut.value ? SwapKind.GivenOut : SwapKind.GivenIn)
+    (): SwapType =>
+      exactOut.value ? SwapType.SwapExactOut : SwapType.SwapExactIn
   );
 
   const batchRelayerTokenOut = computed(

@@ -1,5 +1,4 @@
-import { SwapKind } from '@balancer-labs/balancer-js';
-import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
+import { BatchSwapStep, SwapType, SwapV2 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 
@@ -101,7 +100,7 @@ export async function boostedExitBatchSwap(
   tokenInAddress: string,
   amountIn: string,
   amountsOutMap: Record<string, string>,
-  swapKind: SwapKind = SwapKind.GivenIn
+  swapKind: SwapType = SwapType.SwapExactIn
 ): Promise<TransactionResponse> {
   const tokenIn: SwapToken = {
     address: tokenInAddress,
