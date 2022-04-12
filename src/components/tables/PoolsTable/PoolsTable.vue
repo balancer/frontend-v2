@@ -19,7 +19,7 @@ import {
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
+import { stakingEnabled } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import {
   getAprRangeWithRewardEmissions,
@@ -294,7 +294,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
           <span
-            v-if="hasStakingRewards(pool) && showStakingRewards"
+            v-if="hasStakingRewards(pool) && stakingEnabled"
             class="text-right"
           >
             <span v-if="pool.dynamic.boost">

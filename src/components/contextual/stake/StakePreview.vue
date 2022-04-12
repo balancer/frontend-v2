@@ -14,7 +14,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import {
   getGaugeAddress,
-  showStakingRewards
+  stakingEnabled
 } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
@@ -237,7 +237,7 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="showStakingRewards">
+        <BalStack horizontal justify="between" v-if="stakingEnabled">
           <span class="text-sm">
             {{ action === 'stake' ? $t('your') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
@@ -249,7 +249,7 @@ function handleClose() {
             <BalTooltip text="s" width="20" textAlign="center" />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="showStakingRewards">
+        <BalStack horizontal justify="between" v-if="stakingEnabled">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:

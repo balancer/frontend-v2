@@ -29,7 +29,7 @@ import useUserStakingData, {
   UserStakingDataResponse
 } from './userUserStakingData';
 
-export const showStakingRewards = computed(() => !isL2.value);
+export const stakingEnabled = computed(() => !isL2.value);
 
 /**
  * TYPES
@@ -118,6 +118,10 @@ export default defineComponent({
       () => !!poolAddress.value && poolAddress.value != ''
     );
 
+    const isPoolEligibleQueryEnabled = computed(
+      (): boolean => isPoolAddressRegistered.value && stakingEnabled.value
+    );
+
     // this query is responsible for checking if the given pool
     // is eligible for staking rewards or not
     const {
@@ -137,7 +141,7 @@ export default defineComponent({
         }
       }),
       reactive({
-        enabled: isPoolAddressRegistered,
+        enabled: isPoolEligibleQueryEnabled,
         refetchOnWindowFocus: false
       })
     );

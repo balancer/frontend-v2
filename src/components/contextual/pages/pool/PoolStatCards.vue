@@ -25,7 +25,7 @@ import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
 import { bnum } from '@/lib/utils';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
+import { stakingEnabled } from '@/providers/local/staking/staking.provider';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import {
   getAprRangeWithRewardEmissions,
@@ -49,7 +49,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const aprValueToRender = computed(() => {
-      if (showStakingRewards.value && hasStakingRewards(props.pool)) {
+      if (stakingEnabled.value && hasStakingRewards(props.pool)) {
         // cannot show a range if there are no bal emissions
         if (!hasBALEmissions(props.pool)) {
           return fNum2(

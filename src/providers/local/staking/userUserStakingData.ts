@@ -106,7 +106,10 @@ export default function useUserStakingData(
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
   const isStakingQueryEnabled = computed(() => !isL2.value);
   const isStakedSharesQueryEnabled = computed(
-    () => !!poolAddress.value && poolAddress.value != ''
+    () =>
+      !!poolAddress.value &&
+      poolAddress.value != '' &&
+      isStakingQueryEnabled.value
   );
   const stakeableUserPoolIds = computed(() =>
     intersection(userPoolIds.value, POOLS.Stakable.AllowList)
