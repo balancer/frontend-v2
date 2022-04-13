@@ -13,13 +13,13 @@ const showSidebar = ref(false);
 /**
  * COMPOSABLES
  */
-const { setSidebarState } = useSidebar();
+const { setSidebarOpen } = useSidebar();
 </script>
 
 <template>
   <Transition name="overlay" @afterEnter="showSidebar = true" appear>
     <div class="sidebar-overlay">
-      <Transition name="sidebar" @afterLeave="setSidebarState(false)">
+      <Transition name="sidebar" @afterLeave="setSidebarOpen(false)">
         <div v-if="showSidebar" class="app-sidebar">
           <SidebarContent @close="showSidebar = false" />
         </div>

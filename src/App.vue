@@ -66,7 +66,7 @@ export default defineComponent({
     // const { addAlert } = useAlerts();
     // const { t } = useI18n();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
-    const { isSidebarOpen } = useSidebar();
+    const { sidebarOpen } = useSidebar();
 
     // Temporary feature alert for Balancer boosted pools.
     // commented out until veBAL launch, then change details for veBAL alert
@@ -119,7 +119,7 @@ export default defineComponent({
       layout,
       // computed
       isWalletSelectVisible,
-      isSidebarOpen,
+      sidebarOpen,
       // methods
       toggleWalletSelectModal
     };
@@ -137,7 +137,7 @@ export default defineComponent({
       @close="toggleWalletSelectModal"
     />
     <Notifications />
-    <AppSidebar v-if="isSidebarOpen" />
+    <AppSidebar v-if="sidebarOpen" />
   </div>
   <GlobalModalContainer />
 </template>

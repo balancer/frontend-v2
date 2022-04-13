@@ -15,7 +15,7 @@ import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
  */
 const { isMobile, isDesktop } = useBreakpoints();
 const { account, connector, toggleWalletSelectModal } = useWeb3();
-const { setSidebarState } = useSidebar();
+const { setSidebarOpen } = useSidebar();
 
 /**
  * COMPUTED
@@ -42,7 +42,7 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
     <BalBtn
       v-if="isMobile"
       color="white"
-      @click="setSidebarState(true)"
+      @click="setSidebarOpen(true)"
       flat
       circle
     >
