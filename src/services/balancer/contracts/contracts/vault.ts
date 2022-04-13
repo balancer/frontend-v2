@@ -145,11 +145,23 @@ export default class Vault {
       });
 
       Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
-        poolMulticaller.call(
-          `linearPools.${address}.unwrappedTokenAddress`,
-          wrappedToken,
-          'ATOKEN'
-        );
+        const usdPlusLinearPool = '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425';
+        if (address === usdPlusLinearPool) {
+          // If USD+ IERC4626 use different call, this is a very temporary hack
+          // TODO needs to be generalised for all IERC4626 linear pool tokens
+          poolMulticaller.call(
+            `linearPools.${address}.unwrappedTokenAddress`,
+            wrappedToken,
+            'asset'
+          );
+        } else {
+          poolMulticaller.call(
+            `linearPools.${address}.unwrappedTokenAddress`,
+            wrappedToken,
+            'ATOKEN'
+          );
+        }
+
         poolMulticaller.call(
           `linearPools.${address}.totalSupply`,
           address,
@@ -277,9 +289,7 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: unwrappedTokenAddress
-          ? getAddress(unwrappedTokenAddress)
-          : '',
+        unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
         totalSupply: formatUnits(totalSupply, 18)
       };
     });
