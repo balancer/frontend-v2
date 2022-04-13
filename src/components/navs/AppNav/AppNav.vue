@@ -61,7 +61,7 @@ onUnmounted(() => {
           <AppLogo v-else />
         </router-link>
 
-        <DesktopLinks v-if="isDesktop" class="ml-8" />
+        <DesktopLinks v-if="isDesktop" class="ml-8 font-medium" />
       </div>
 
       <AppNavActions />

@@ -21,7 +21,14 @@ withDefaults(defineProps<Props>(), {
     ]"
   >
     <div v-if="hasBalance" class="balance-indicator" />
-    <div class="pill-text">
+    <div
+      :class="[
+        'pill-text',
+        {
+          'font-medium': isSelected
+        }
+      ]"
+    >
       {{ symbol }}
     </div>
   </div>
@@ -59,17 +66,13 @@ withDefaults(defineProps<Props>(), {
 }
 
 .pill-selected::before {
-  @apply bg-blue-600 dark:bg-blue-600;
-}
-
-.pill-selected .pill-text {
-  @apply text-white;
+  @apply ring-2 ring-blue-500 dark:ring-blue-400;
 }
 
 .balance-indicator {
   @apply w-3 h-3;
   @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
   @apply bg-green-200 dark:bg-green-500;
-  @apply absolute top-0 right-0 -mt-1 -mr-1;
+  @apply absolute top-0 right-0 -mt-1 -mr-2;
 }
 </style>
