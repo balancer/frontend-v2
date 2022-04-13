@@ -161,9 +161,21 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
-      const apr = Number(pool.dynamic.apr.total);
-      if (apr === Infinity || isNaN(apr)) return 0;
-      return apr;
+      let apr = 0;
+
+      if (hasStakingRewards(pool)) {
+        if (pool.dynamic.boost) {
+          apr = Number(getTotalBoostedApr(pool));
+        } else if (!hasBALEmissions(pool)) {
+          apr = Number(getTotalRewardsAPR(pool));
+        } else {
+          apr = Number(getAprRange(pool).max);
+        }
+      } else {
+        apr = Number(pool.dynamic.apr.total);
+      }
+
+      return isFinite(apr) ? apr : 0;
     },
     width: 250
   },
