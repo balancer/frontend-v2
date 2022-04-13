@@ -880,7 +880,7 @@
                     "loadingLabel": "Confirm unlock in wallet"
                 }
             },
-            "returnToVeBalPage": "Return to veBAL lock page"
+            "returnToVeBalPage": "Return to veBAL page"
         },
         "notSupported": {
             "title": "Unlocking is unavailable on this network",

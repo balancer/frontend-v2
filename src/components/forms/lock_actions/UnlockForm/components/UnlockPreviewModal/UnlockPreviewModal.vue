@@ -104,6 +104,7 @@ function handleSuccess() {
       :totalLpTokens="totalLpTokens"
       :veBalLockInfo="veBalLockInfo"
       @success="handleSuccess"
+      @close="handleClose"
       class="mt-4"
     />
   </BalModal>
