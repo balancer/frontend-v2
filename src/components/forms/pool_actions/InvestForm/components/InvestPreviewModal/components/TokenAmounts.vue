@@ -52,7 +52,7 @@ const groupedAmounts = computed(() =>
 );
 
 const shouldShowCompactViewForZeroAmounts = computed(
-  () => groupedAmounts.value.zeroAmounts.length > 3
+  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3
 );
 
 const amountsToShow = computed(() =>
