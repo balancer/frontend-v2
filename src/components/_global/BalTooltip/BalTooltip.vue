@@ -66,7 +66,7 @@ onMounted(() => {
   if (activator.value && content.value) {
     popper.value = createPopper(activator.value, content.value, {
       placement: props.placement,
-      modifiers: [{ name: 'offset', options: { offset: [0, 5] } }]
+      modifiers: [{ name: 'offset', options: { offset: [0, 8] } }]
     });
   }
 });
@@ -85,7 +85,7 @@ onMounted(() => {
   </button>
   <div
     ref="content"
-    class="tooltip text-xs text-black dark:text-white bg-white dark:bg-gray-800 font-medium shadow rounded-md border dark:border-gray-900 z-50"
+    class="tooltip text-xs text-black dark:text-white bg-white dark:bg-gray-800 font-medium shadow-2xl rounded-md border dark:border-gray-900 z-50"
     :class="tooltipClasses"
     v-bind="$attrs"
   >
@@ -96,9 +96,64 @@ onMounted(() => {
 <style>
 .tooltip {
   display: none;
+  position: relative;
 }
 
 .tooltip[data-show] {
   display: block;
 }
+
+.tooltip[data-popper-placement='top']:before {
+  border-left: solid transparent 8px;
+  border-right: solid transparent 8px;
+  border-top: solid rgba(234, 240, 246, 1) 8px;
+  bottom: 0;
+  content: ' ';
+  height: 0;
+  bottom: -9px;
+  left: calc(50% - 7px);
+  position: absolute;
+  width: 0;
+}
+
+.tooltip[data-popper-placement='top']:after {
+  border-left: solid transparent 8px;
+  border-right: solid transparent 8px;
+  border-top: solid #fff 8px;
+  bottom: -8px;
+  content: ' ';
+  height: 0;
+  left: calc(50% - 7px);
+  position: absolute;
+  width: 0;
+}
+
+.tooltip[data-popper-placement='bottom']:before {
+  border-left: solid transparent 8px;
+  border-right: solid transparent 8px;
+  border-bottom: solid rgba(234, 240, 246, 1) 8px;
+  bottom: 0;
+  content: ' ';
+  height: 0;
+  top: -9px;
+  left: calc(50% - 7px);
+  position: absolute;
+  width: 0;
+}
+
+.tooltip[data-popper-placement='bottom']:after {
+  border-left: solid transparent 8px;
+  border-right: solid transparent 8px;
+  border-bottom: solid #fff 8px;
+  top: -8px;
+  content: ' ';
+  height: 0;
+  left: calc(50% - 7px);
+  position: absolute;
+  width: 0;
+}
+
+/* .tooltip[data-popper-placement="bottom"] {
+  background: green;
+} */
 </style>
