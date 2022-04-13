@@ -39,6 +39,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'success', value: UnlockActionState): void;
+  (e: 'close'): void;
 }>();
 
 /**
@@ -159,14 +160,7 @@ async function submit() {
           />
         </BalLink>
       </div>
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'vebal' }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
+      <BalBtn color="gray" outline block class="mt-2" @click="emit('close')">
         {{ $t('unlockVeBAL.previewModal.returnToVeBalPage') }}
       </BalBtn>
     </template>
