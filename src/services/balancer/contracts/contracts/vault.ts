@@ -145,22 +145,19 @@ export default class Vault {
       });
 
       Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
-        const usdPlusLinearPool = '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425';
-        if (address === usdPlusLinearPool) {
-          // If USD+ IERC4626 use different call, this is a very temporary hack
-          // TODO needs to be generalised for all IERC4626 linear pool tokens
-          poolMulticaller.call(
-            `linearPools.${address}.unwrappedTokenAddress`,
-            wrappedToken,
-            'asset'
-          );
-        } else {
-          poolMulticaller.call(
-            `linearPools.${address}.unwrappedTokenAddress`,
-            wrappedToken,
-            'ATOKEN'
-          );
-        }
+        // The method to fetch the unwrapped asset of a linear pool can be
+        // different depending on if it's an ERC4626 or StaticAToken interface.
+        // Here we just try both methods and merge the result in formatting.
+        poolMulticaller.call(
+          `linearPools.${address}.unwrappedTokenAddress`,
+          wrappedToken,
+          'ATOKEN'
+        );
+        poolMulticaller.call(
+          `linearPools.${address}.unwrappedERC4626Address`,
+          wrappedToken,
+          'asset'
+        );
 
         poolMulticaller.call(
           `linearPools.${address}.totalSupply`,
@@ -271,9 +268,12 @@ export default class Vault {
         wrappedToken,
         priceRate,
         unwrappedTokenAddress,
+        unwrappedERC4626Address,
         tokenData,
         totalSupply
       } = linearPools[address];
+
+      const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
 
       _linearPools[address] = {
         id,
@@ -289,7 +289,7 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
+        unwrappedTokenAddress: getAddress(unwrappedAddress),
         totalSupply: formatUnits(totalSupply, 18)
       };
     });
