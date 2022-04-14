@@ -263,7 +263,7 @@ function handleClose() {
               >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
             >
             <BalTooltip
-              :text="$t('potentialWeeklyEarningTooltip')"
+              :text="$t('staking.potentialWeeklyEarningTooltip')"
               width="20"
               textAlign="center"
             />
