@@ -1,3 +1,4 @@
+import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { mapValues } from 'lodash';
 
@@ -23,7 +24,7 @@ export class GaugeController {
         getAddress(gaugeAddress),
         this.address,
         'gauge_relative_weight(address, uint256)',
-        [getAddress(gaugeAddress), 1649427628 || timestamp]
+        [getAddress(gaugeAddress), timestamp || getUnixTime(new Date())]
       );
     }
     const result = await multicaller.execute();
