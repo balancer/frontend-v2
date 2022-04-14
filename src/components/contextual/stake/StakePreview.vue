@@ -246,7 +246,11 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(stakingApr, FNumFormats.percent) }}</span
             >
-            <BalTooltip text="s" width="20" textAlign="center" />
+            <BalTooltip
+              :text="$t('staking.stakingAprTooltip')"
+              width="20"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
         <BalStack horizontal justify="between" v-if="showStakingRewards">
@@ -258,7 +262,11 @@ function handleClose() {
             <span class="text-sm capitalize"
               >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
             >
-            <BalTooltip text="s" width="20" textAlign="center" />
+            <BalTooltip
+              :text="$t('potentialWeeklyEarningTooltip')"
+              width="20"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
       </BalStack>
