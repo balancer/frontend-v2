@@ -115,6 +115,13 @@
             "token": "0x580a84c73811e1839f75d86d75d88cca0c241ff4",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-qi-polygon.json",
             "weekStart": 1
+        },
+        {
+            "label": "LDO",
+            "distributor": "0x87D93d9B2C672bf9c9642d853a8682546a5012B5",
+            "token": "0xC3C7d422809852031b44ab29EEC9F1EfF2A58756",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/blob/master/reports/_current-ldo-polygon.json",
+            "weekStart": 1
         }
       ],
     "42161": [
