@@ -596,6 +596,7 @@
         "staking": "Staking",
         "stakeTooltip": "Confirm staking of LP tokens to earn liquidity mining incentives on this pool",
         "stakingApr": "Staking APR",
+        "stakingAprTooltip": "Your potential staking APR",
         "stakingIncentives": "Staking incentives",
         "totalShareTooltip": "Your current total share of LP tokens in the pool",
         "unclaimedIncentives": "Unclaimed incentives",
