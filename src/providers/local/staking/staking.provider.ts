@@ -17,7 +17,6 @@ import {
 
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
-import { isL2 } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
 import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
@@ -28,8 +27,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useUserStakingData, {
   UserStakingDataResponse
 } from './userUserStakingData';
-
-export const showStakingRewards = computed(() => !isL2.value);
 
 /**
  * TYPES
@@ -103,7 +100,6 @@ export default defineComponent({
       isStakedPoolsQueryEnabled,
       isLoadingUserPools,
       isUserPoolsIdle,
-      isStakingQueryEnabled,
       stakedSharesMap,
       refetchUserStakingData,
       stakedPools,
@@ -207,7 +203,6 @@ export default defineComponent({
         isStakedPoolsQueryEnabled,
         isLoadingUserPools,
         isUserPoolsIdle,
-        isStakingQueryEnabled,
         stakedSharesMap,
         refetchUserStakingData,
         stakedPools,

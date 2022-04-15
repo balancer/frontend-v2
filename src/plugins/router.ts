@@ -114,17 +114,6 @@ const routes: RouteRecordRaw[] = [
 ];
 
 /**
- * NETWORK SPECIFIC ROUTES
- */
-if (isL2.value) {
-  routes.push({
-    path: '/liquidity-mining',
-    name: 'liquidity-mining',
-    component: LiquidityMiningPage
-  });
-}
-
-/**
  * DEV/STAGING ONLY ROUTES
  */
 // if (

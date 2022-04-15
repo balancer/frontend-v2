@@ -9,7 +9,6 @@ import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
-import { isL2 } from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
@@ -76,7 +75,6 @@ export type UserStakingDataResponse = {
   isLoadingUserPools: Ref<boolean>;
   isUserPoolsIdle: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
-  isStakingQueryEnabled: Ref<boolean>;
   getStakedShares: () => Promise<string>;
   refetchUserStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
@@ -104,7 +102,6 @@ export default function useUserStakingData(
 
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
-  const isStakingQueryEnabled = computed(() => !isL2.value);
   const isStakedSharesQueryEnabled = computed(
     () => !!poolAddress.value && poolAddress.value != ''
   );
@@ -146,7 +143,7 @@ export default function useUserStakingData(
     }),
     reactive({
       refetchOnWindowFocus: false,
-      enabled: isStakingQueryEnabled
+      enabled: true
     })
   );
 
@@ -292,7 +289,6 @@ export default function useUserStakingData(
     isStakedPoolsQueryEnabled,
     isLoadingUserPools,
     isUserPoolsIdle,
-    isStakingQueryEnabled,
     stakedSharesMap,
     refetchUserStakingData,
     stakedPools,

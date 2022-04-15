@@ -12,10 +12,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import {
-  getGaugeAddress,
-  showStakingRewards
-} from '@/providers/local/staking/staking.provider';
+import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -237,7 +234,7 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="showStakingRewards">
+        <BalStack horizontal justify="between">
           <span class="text-sm">
             {{ action === 'stake' ? $t('your') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
@@ -253,7 +250,7 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="showStakingRewards">
+        <BalStack horizontal justify="between">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:

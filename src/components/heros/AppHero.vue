@@ -30,7 +30,6 @@ const { lockFiatValue, isLoadingLock } = useLock();
 const {
   userData: {
     totalStakedFiatValue,
-    isStakingQueryEnabled,
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isUserStakeDataIdle
@@ -66,10 +65,7 @@ const totalVeBalLabel = computed((): string =>
 );
 
 const isLoadingLockAndStaking = computed(
-  (): boolean =>
-    !isL2.value &&
-    (isLoadingLock.value ||
-      (isStakingQueryEnabled.value && isStakingLoading.value))
+  (): boolean => isLoadingLock.value || isStakingLoading.value
 );
 
 const isLoadingTotalValue = computed(
