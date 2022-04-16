@@ -186,8 +186,7 @@ export default function useSor({
     if (!sorManager) {
       return;
     }
-
-    if (sorReturn.value.hasSwaps) {
+    if (sorReturn.value.hasSwaps && !confirming.value) {
       const { result } = sorReturn.value;
 
       const swapType: SwapType = exactIn.value
