@@ -239,6 +239,14 @@ export default function useSor({
     }
   }
 
+  function resetInputAmounts(amount: string): void {
+    tokenInAmountInput.value = amount;
+    tokenOutAmountInput.value = amount;
+    priceImpact.value = 0;
+    sorReturn.value.hasSwaps = false;
+    sorReturn.value.returnAmount = Zero;
+  }
+
   async function handleAmountChange(): Promise<void> {
     const amount = exactIn.value
       ? tokenInAmountInput.value
@@ -246,11 +254,7 @@ export default function useSor({
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || amount === '0';
     if (zeroValueTrade) {
-      tokenInAmountInput.value = amount;
-      tokenOutAmountInput.value = amount;
-      priceImpact.value = 0;
-      sorReturn.value.hasSwaps = false;
-      sorReturn.value.returnAmount = Zero;
+      resetInputAmounts(amount);
       return;
     }
 
@@ -681,7 +685,7 @@ export default function useSor({
     resetState,
     confirming,
     updateTradeAmounts,
-
+    resetInputAmounts,
     // For Tests
     setSwapCost
   };
