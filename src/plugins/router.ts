@@ -1,20 +1,18 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
-import { isL2 } from '@/composables/useNetwork';
-const ClaimPage = () => import('@/pages/claim.vue');
-const CookiesPolicyPage = () => import('@/pages/cookies-policy.vue');
-const GetVeBalPage = () => import('@/pages/get-vebal.vue');
-const HomePage = () => import('@/pages/index.vue');
-const LiquidityMiningPage = () => import('@/pages/liquidity-mining.vue');
-const PoolPage = () => import('@/pages/pool/_id.vue');
-const CreatePoolPage = () => import('@/pages/pool/create.vue');
-const PoolInvestPage = () => import('@/pages/pool/invest.vue');
-const PoolWithdrawPage = () => import('@/pages/pool/withdraw.vue');
-const PrivacyPolicyPage = () => import('@/pages/privacy-policy.vue');
-const TermsOfUsePage = () => import('@/pages/terms-of-use.vue');
-const TradePage = () => import('@/pages/trade.vue');
-const UnlockVeBalPage = () => import('@/pages/unlock-vebal.vue');
-const VeBalPage = () => import('@/pages/vebal.vue');
+import ClaimPage from '@/pages/claim.vue';
+import CookiesPolicyPage from '@/pages/cookies-policy.vue';
+import GetVeBalPage from '@/pages/get-vebal.vue';
+import HomePage from '@/pages/index.vue';
+import PoolPage from '@/pages/pool/_id.vue';
+import CreatePoolPage from '@/pages/pool/create.vue';
+import PoolInvestPage from '@/pages/pool/invest.vue';
+import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
+import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
+import TermsOfUsePage from '@/pages/terms-of-use.vue';
+import TradePage from '@/pages/trade.vue';
+import UnlockVeBalPage from '@/pages/unlock-vebal.vue';
+import VeBalPage from '@/pages/vebal.vue';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -112,17 +110,6 @@ const routes: RouteRecordRaw[] = [
     component: ClaimPage
   }
 ];
-
-/**
- * NETWORK SPECIFIC ROUTES
- */
-if (isL2.value) {
-  routes.push({
-    path: '/liquidity-mining',
-    name: 'liquidity-mining',
-    component: LiquidityMiningPage
-  });
-}
 
 /**
  * DEV/STAGING ONLY ROUTES
