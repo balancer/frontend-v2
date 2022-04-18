@@ -14,7 +14,6 @@ import {
   computeTotalAPRForPool,
   currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
@@ -155,8 +154,8 @@ export default class Pools {
 
       const fees = this.calcFees(pool, pastPool);
       const {
-        hasLiquidityMiningRewards,
-        liquidityMiningAPR,
+        // hasLiquidityMiningRewards,
+        // liquidityMiningAPR,
         liquidityMiningBreakdown
       } = this.calcLiquidityMiningAPR(pool, prices, currency);
       const {
@@ -171,12 +170,13 @@ export default class Pools {
 
       const stakingApr = gaugeAprs[pool.id];
 
-      const networkAdjustedLMApr = showStakingRewards.value
-        ? '0'
-        : liquidityMiningAPR;
-      const networkAdjustedLMEligibility = showStakingRewards.value
-        ? false
-        : hasLiquidityMiningRewards;
+      // TODO - We might need to include staking + LM APRs for L2s?
+      const networkAdjustedLMApr = '0';
+      // ? '0'
+      // : liquidityMiningAPR;
+      const networkAdjustedLMEligibility = false;
+      // ? false
+      // : hasLiquidityMiningRewards;
 
       const totalAPR = this.calcTotalAPR(
         poolAPR,

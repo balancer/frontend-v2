@@ -7,7 +7,6 @@ import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
 import { bnum } from '@/lib/utils';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import {
   getAprRangeWithRewardEmissions,
@@ -170,11 +169,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
             </span>
           </template>
         </BalBreakdown>
-        <BalBreakdown
-          v-if="
-            hasStakingRewards(pool) && showStakingRewards && pool.dynamic.boost
-          "
-        >
+        <BalBreakdown v-if="hasStakingRewards(pool) && pool.dynamic.boost">
           <div class="flex items-center">
             {{
               fNum2(
@@ -190,7 +185,6 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
         <BalBreakdown
           v-if="
             hasStakingRewards(pool) &&
-              showStakingRewards &&
               !pool.dynamic.boost &&
               !hasBALEmissions(pool)
           "
@@ -211,7 +205,6 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           :items="Object.entries(getFlattenedStakingAPRItems(pool))"
           v-if="
             hasStakingRewards(pool) &&
-              showStakingRewards &&
               !pool.dynamic.boost &&
               hasBALEmissions(pool)
           "
