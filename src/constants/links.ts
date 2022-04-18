@@ -75,6 +75,11 @@ export const EXTERNAL_LINKS = {
         title: 'AllBridge',
         subTitle: 'SOL / MATIC / CELO',
         url: 'https://app.allbridge.io/bridge?from=SOL&to=FTM&asset=SOL'
+      },
+      {
+        title: 'Wormhole Bridge',
+        subTitle: 'TERRA / SOL / OTHERS',
+        url: 'https://portalbridge.com/#/transfer'
       }
     ]
   }
