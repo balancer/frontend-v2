@@ -121,7 +121,7 @@ function fiatLabelFor(index: number, address: string): string {
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
-        <h6>{{ $t('poolTransfer.myPoolBalancesCard.title') }} abc</h6>
+        <h6>{{ $t('poolTransfer.myPoolBalancesCard.title') }}</h6>
       </div>
     </template>
 
