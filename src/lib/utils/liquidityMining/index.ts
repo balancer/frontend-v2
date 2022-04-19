@@ -1,13 +1,17 @@
 import { Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
+import axios from 'axios';
 import { differenceInWeeks } from 'date-fns';
 
+import { networkId } from '@/composables/useNetwork';
 import { toUtcTime } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 
+import { Multicaller } from '../balancer/contract';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 
 type PoolId = string;
@@ -120,3 +124,40 @@ tokenAddresses = [...new Set(tokenAddresses)].map(address =>
   getAddress(address)
 );
 export const currentLiquidityMiningRewardTokens = tokenAddresses;
+
+export async function getExcludedAddresses() {
+  try {
+    const { data } = await axios.get<Record<Network, Record<string, string[]>>>(
+      'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/config/exclude.json'
+    );
+
+    if (data[networkId.value]) {
+      const poolMulticaller = new Multicaller(
+        balancerContractsService.config.key,
+        balancerContractsService.provider,
+        balancerContractsService.allPoolABIs
+      );
+
+      Object.entries(data[networkId.value]).forEach(
+        ([poolAddress, accounts]) => {
+          accounts.forEach(account => {
+            const poolAddressNormalized = getAddress(poolAddress);
+
+            poolMulticaller.call(
+              `${poolAddressNormalized}.${account}`,
+              poolAddressNormalized,
+              'balanceOf',
+              [account]
+            );
+          });
+        }
+      );
+
+      return await poolMulticaller.execute();
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  return null;
+}

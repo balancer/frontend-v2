@@ -128,11 +128,13 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
-    accessor: pool =>
-      fNum2(pool?.dynamic?.volume, {
+    accessor: pool => {
+      if (!pool?.dynamic?.volume) return '-';
+      return fNum2(pool?.dynamic?.volume, {
         style: 'currency',
         maximumFractionDigits: 0
-      }),
+      });
+    },
     align: 'right',
     id: 'poolVolume',
     sortKey: pool => {
@@ -146,7 +148,9 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBoost'),
     accessor: pool =>
-      pool?.dynamic?.boost ? `${bnum(pool?.dynamic?.boost).toFixed(3)}x` : 'N/A',
+      pool?.dynamic?.boost
+        ? `${bnum(pool?.dynamic?.boost).toFixed(3)}x`
+        : 'N/A',
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
@@ -307,6 +311,9 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
               {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
               {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
             </span>
+          </span>
+          <span v-if="!pool.dynamic?.apr?.total">
+            -
           </span>
           <span v-else>
             {{

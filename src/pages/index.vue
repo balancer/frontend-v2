@@ -4,6 +4,7 @@ import { computed, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
@@ -17,11 +18,11 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
 
 // COMPOSABLES
 const router = useRouter();
@@ -46,7 +47,12 @@ const {
 } = usePools(selectedTokens);
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
-const { loading: isLoadingTokens, dynamicDataLoading } = useTokens();
+const {
+  loading: isLoadingTokens,
+  dynamicDataLoading,
+  priceQueryLoading,
+  prices
+} = useTokens();
 
 // COMPUTED
 const filteredPools = computed(() =>
@@ -131,19 +137,29 @@ const { data, dataStates, result } = useStreamedPoolsQuery();
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <PoolsTable
-      :key="result"
-      :isLoading="dataStates['basic'] === 'loading'"
-      :data="result"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="false"
-      :isLoadingMore="false"
-      @loadMore="loadMorePools"
-      :selectedTokens="selectedTokens"
-      class="mb-8"
-      :hiddenColumns="['migrate', 'stake']"
-    >
-    </PoolsTable>
+    {{ { dynamicDataLoading, priceQueryLoading } }}
+    {{ dataStates }}
+    {{ Object.keys(prices).length }}
+    <!-- <AnimatePresence
+      :isVisible="
+        dataStates['basic'] === 'success' &&
+          dataStates['liquidity'] === 'success'
+      "
+    > -->
+      <PoolsTable
+        :key="result"
+        v-if="dataStates['basic'] !== 'loading' && !priceQueryLoading"
+        :data="result"
+        :noPoolsLabel="$t('noPoolsFound')"
+        :isPaginated="false"
+        :isLoadingMore="false"
+        @loadMore="loadMorePools"
+        :selectedTokens="selectedTokens"
+        class="mb-8"
+        :hiddenColumns="['migrate', 'stake']"
+      >
+      </PoolsTable>
+    <!-- </AnimatePresence> -->
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">

@@ -33,6 +33,8 @@ import {
   TokenList
 } from '@/types/TokenList';
 
+import balTokenList from './balancer.json';
+
 /**
  * TYPES
  */
@@ -251,7 +253,9 @@ export default {
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
-      const tokens = tokenLists.map(list => list.tokens).flat();
+      const tokens = [...tokenLists, balTokenList]
+        .map(list => list.tokens)
+        .flat();
 
       tokens.forEach(token => {
         const address: string = getAddress(token.address);

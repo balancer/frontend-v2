@@ -5,8 +5,12 @@ import {
   WebSocketProvider
 } from '@ethersproject/providers';
 
+import { networkId } from '@/composables/useNetwork';
+import { twentyFourHoursInSecs } from '@/composables/useTime';
 import template from '@/lib/utils/template';
 import ConfigService, { configService } from '@/services/config/config.service';
+
+import { TimeTravelPeriod } from '../balancer/subgraph/types';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
@@ -39,6 +43,34 @@ export default class RpcProviderService {
       ALCHEMY_KEY: this.config.env.ALCHEMY_KEY
     });
     return new JsonRpcBatchProvider(rpcUrl);
+  }
+
+  public async getTimeTravelBlock(period: TimeTravelPeriod): Promise<number> {
+    const currentBlock = await rpcProviderService.getBlockNumber();
+    const blocksInDay = Math.round(twentyFourHoursInSecs / this.blockTime);
+
+    switch (period) {
+      case '24h':
+        return currentBlock - blocksInDay;
+      default:
+        return currentBlock - blocksInDay;
+    }
+  }
+
+  public get blockTime(): number {
+    switch (networkId.value) {
+      case Network.MAINNET:
+        return 13;
+      case Network.POLYGON:
+        return 2;
+      case Network.ARBITRUM:
+        return 3;
+      case Network.KOVAN:
+        // Should be ~4s but this causes subgraph to return with unindexed block error.
+        return 1;
+      default:
+        return 13;
+    }
   }
 }
 

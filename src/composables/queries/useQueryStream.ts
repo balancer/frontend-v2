@@ -1,14 +1,35 @@
+import EventEmitter from 'events';
+import { isArray } from 'lodash';
 import { QueryKey, QueryOptions } from 'react-query';
-import { computed, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useQueries } from 'vue-query';
+
+export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
+  const emitter = new EventEmitter();
+  if (isArray(promises)) {
+    promises.map(promise =>
+      promise.then(value => {
+        emitter.emit('resolved', value);
+      })
+    );
+    return emitter;
+  }
+  promises.then(value => {
+    emitter.emit('resolved', value);
+  });
+  return emitter;
+}
 
 type Promises = Record<
   string,
   {
-    queryFn: (...args: any[]) => Promise<any>;
+    queryFn: (...args: any[]) => Promise<any> | Promise<any>[];
     dependencies?: Record<string, Ref>;
     init?: boolean;
     enabled?: Ref<boolean>;
+    waitFor?: string[];
+    streamResponses?: boolean;
+    independent?: boolean;
   }
 >;
 
@@ -19,6 +40,18 @@ export default function useQueryStreams(
 ) {
   const result = ref<any>();
 
+  const successStates = ref(
+    Object.fromEntries(
+      Object.keys(promises).map(promiseKey => [promiseKey, false])
+    )
+  );
+
+  const internalData = ref(
+    Object.fromEntries(
+      Object.keys(promises).map(promiseKey => [promiseKey, undefined])
+    )
+  );
+
   const queries: {
     queryFn: (...args: any[]) => Promise<any>;
     queryKey: Ref<QueryKey>;
@@ -27,14 +60,33 @@ export default function useQueryStreams(
   Object.keys(promises).forEach(promiseKey => {
     const query = promises[promiseKey];
     const template: any = {
-      queryFn: () => query.queryFn(result),
+      queryFn: async () => {
+        if (!query.streamResponses) {
+          return query.queryFn(result, internalData);
+        }
+        const emitter = promisesEmitter(await query.queryFn(result, internalData));
+        emitter.on('resolved', value => {
+          result.value = value;
+        });
+      },
       queryKey: [id, promiseKey, query.dependencies || {}] as any,
-      enabled: query.enabled
+      enabled: computed(
+        () =>
+          (query.enabled?.value ?? true) &&
+          (promises[promiseKey].waitFor || []).every(
+            otherQueryId => successStates.value[otherQueryId] === true
+          )
+      ),
+      refetchOnWindowFocus: false
     };
     template.onSuccess = response => {
-      result.value = response;
+      if (!query.streamResponses && !query.independent) {
+        result.value = response;
+      }
+      successStates.value[promiseKey] = true;
+      internalData.value[promiseKey] = response;
     };
-    queries.push(template);
+    queries.push(reactive(template));
   });
   const responses = useQueries(queries as any);
   const dataStates = computed(() => {
