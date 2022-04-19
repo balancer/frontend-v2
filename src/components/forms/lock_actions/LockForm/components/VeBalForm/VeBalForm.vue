@@ -117,7 +117,7 @@ function handleClosePreviewModal() {
 }
 
 function handleShowPreviewModal() {
-  if (!isValidLockEndDate.value) return;
+  if (submissionDisabled.value) return;
   showPreviewModal.value = true;
 }
 </script>
