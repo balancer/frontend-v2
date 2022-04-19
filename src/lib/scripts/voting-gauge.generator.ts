@@ -85,7 +85,7 @@ async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
   };
 }
 
-async function getLayer1GaugeAddress(
+async function getLiquidityGaugeAddress(
   poolId: string,
   network: Network
 ): Promise<string> {
@@ -113,14 +113,68 @@ async function getLayer1GaugeAddress(
 
   const { data } = await response.json();
 
-  return data.liquidityGauges[0].id || '';
+  return data.liquidityGauges[0].id;
 }
 
-async function getLayer2GaugeAddress(
+async function getStreamerAddress(
   poolId: string,
   network: Network
 ): Promise<string> {
-  return '0x0000000000000000000000000000000000000000';
+  const subgraphEndpoint = config[network.toString()].subgraphs.gauge;
+
+  const streamerQuery = `
+    {
+      liquidityGauges(
+        where: {
+          poolId: "${poolId}"
+        }
+      ) {
+        streamer
+      }
+    }
+  `;
+
+  const response = await fetch(subgraphEndpoint, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ streamerQuery })
+  });
+
+  const { data } = await response.json();
+
+  return data.liquidityGauges[0].streamer;
+}
+
+async function getRootGaugeAddress(streamer: string): Promise<string> {
+  const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
+
+  const gaugeQuery = `
+    {
+      rootGauges(
+        where: {
+          recipient: "${streamer}"
+        }
+      ) {
+        id
+      }
+    }
+  `;
+
+  const response = await fetch(subgraphEndpoint, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ gaugeQuery })
+  });
+
+  const { data } = await response.json();
+
+  return data.rootGauges[0].id;
 }
 
 async function getGaugeAddress(
@@ -128,9 +182,12 @@ async function getGaugeAddress(
   network: Network
 ): Promise<string> {
   if ([Network.MAINNET, Network.KOVAN].includes(network)) {
-    return await getLayer1GaugeAddress(poolId, network);
+    const gauge = await getLiquidityGaugeAddress(poolId, network);
+    return gauge;
   } else {
-    return await getLayer2GaugeAddress(poolId, network);
+    const streamer = await getStreamerAddress(poolId, network);
+    const gauge = await getRootGaugeAddress(streamer);
+    return gauge;
   }
 }
 
