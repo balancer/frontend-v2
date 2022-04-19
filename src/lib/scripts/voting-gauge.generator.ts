@@ -69,9 +69,7 @@ async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
   const tokensList = tokens.map(token => {
     return {
       address: token.address,
-      balance: token.balance,
-      weight: token.weight,
-      priceRate: token.priceRate,
+      weight: token.weight || 'null',
       symbol: token.symbol
     };
   });
