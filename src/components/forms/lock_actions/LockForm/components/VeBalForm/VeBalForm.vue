@@ -115,6 +115,11 @@ const lockType = computed(() => {
 function handleClosePreviewModal() {
   showPreviewModal.value = false;
 }
+
+function handleShowPreviewModal() {
+  if (!isValidLockEndDate.value) return;
+  showPreviewModal.value = true;
+}
 </script>
 
 <template>
@@ -158,7 +163,7 @@ function handleClosePreviewModal() {
         color="gradient"
         block
         :disabled="submissionDisabled"
-        @click="showPreviewModal = true"
+        @click="handleShowPreviewModal"
       >
         {{ $t('preview') }}
       </BalBtn>
