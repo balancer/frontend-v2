@@ -73,17 +73,16 @@ export class StakingRewardsService {
 
   private async getRelativeWeightsForGauges(gaugeAddresses: string[]) {
     const timestamp = getUnixTime(new Date());
-    // the ve bal helpers contract for gauge weights calls
-    // the checkpoint function which is necesary for returning
-    // the correct value.
-    let result = await this.veBALHelpers.getRelativeWeights(gaugeAddresses);
     if (configService.network.chainId === Network.KOVAN) {
-      result = await this.gaugeController.getRelativeWeights(
+      return await this.gaugeController.getRelativeWeights(
         gaugeAddresses,
         timestamp
       );
     }
-    return result;
+    // the ve bal helpers contract for gauge weights calls
+    // the checkpoint function which is necesary for returning
+    // the correct value.
+    return await this.veBALHelpers.getRelativeWeights(gaugeAddresses);
   }
 
   /**
