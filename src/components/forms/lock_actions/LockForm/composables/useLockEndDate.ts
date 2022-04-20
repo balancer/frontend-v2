@@ -1,6 +1,6 @@
 import {
   addDays,
-  isWednesday,
+  isThursday,
   nextThursday,
   previousThursday,
   startOfDay
@@ -19,7 +19,7 @@ import useLockState from './useLockState';
 function getMaxLockEndDateTimestamp(date: number) {
   const maxLockTimestamp = addDays(date, MAX_LOCK_PERIOD_IN_DAYS);
 
-  const timestamp = isWednesday(date)
+  const timestamp = isThursday(date)
     ? maxLockTimestamp
     : previousThursday(maxLockTimestamp);
 
