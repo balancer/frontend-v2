@@ -71,7 +71,7 @@ const thirdPartyMultiRewardPool = computed(
 const thirdPartyAPRLabel = computed(() => {
   if (isWstETH(props.pool)) return t('thirdPartyRewards.apr.steth');
   if (isStablePhantom(props.pool.poolType))
-    return t('thirdPartyRewards.apr.aaveBoosted');
+    return t('thirdPartyRewards.apr.boosted');
 
   return '';
 });
