@@ -206,6 +206,14 @@ export default function useWithdrawMath(
       pool.value.mainTokens &&
       pool.value.mainTokens[tokenOutIndex.value]
     ) {
+      const poolToken = pool.value.tokens.find(
+        token => token.address === tokenOut.value
+      );
+
+      if (poolToken) {
+        return poolToken.balance;
+      }
+
       const tokenAddress = getAddress(
         pool.value.mainTokens[tokenOutIndex.value]
       );
