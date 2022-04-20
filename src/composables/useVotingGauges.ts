@@ -2,8 +2,7 @@ import { computed } from 'vue';
 
 import {
   KOVAN_VOTING_GAUGES,
-  MAINNET_VOTING_GAUGES,
-  VotingGauge
+  MAINNET_VOTING_GAUGES
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
@@ -11,7 +10,7 @@ import { isKovan } from './useNetwork';
 
 export default function useVotingGauges() {
   // Hard coded list of voting gauges
-  const _votingGauges = computed((): VotingGauge[] =>
+  const _votingGauges = computed(() =>
     isKovan.value ? KOVAN_VOTING_GAUGES : MAINNET_VOTING_GAUGES
   );
 
