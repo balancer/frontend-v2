@@ -21,14 +21,13 @@ type Pool = {
 };
 
 function getBalancerAssetsURI(tokenAdress: string): string {
-  return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress}.png`;
+  return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
 function getTrustWalletAssetsURI(
   tokenAdress: string,
   network: Network
 ): string {
-  const checksummedAddress = getAddress(tokenAdress);
   const networksMap = {
     [Network.MAINNET]: 'ethereum',
     [Network.ARBITRUM]: 'arbitrum',
@@ -36,7 +35,7 @@ function getTrustWalletAssetsURI(
     [Network.KOVAN]: 'kovan'
   };
 
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${checksummedAddress}/logo.png`;
+  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAdress}/logo.png`;
 }
 
 async function getTokenLogoURI(
