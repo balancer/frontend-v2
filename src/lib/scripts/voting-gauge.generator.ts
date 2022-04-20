@@ -8,6 +8,7 @@ import path from 'path';
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
 import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
+import { getPlatformId } from '@/services/coingecko/coingecko.service';
 
 import config from '../config';
 
@@ -51,6 +52,24 @@ async function getAssetURIFromTokenlists(
   return token?.logoURI ? token.logoURI : '';
 }
 
+async function getMainnetTokenAddresss(
+  tokenAdress: string,
+  network: Network
+): Promise<string> {
+  const coingeckoEndpoint = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
+    network.toString()
+  )}/contract/${tokenAdress.toLowerCase()}`;
+
+  const response = await fetch(coingeckoEndpoint);
+
+  if (response.status === 200) {
+    const data = await response.json();
+    return getAddress(data.platforms.ethereum);
+  } else {
+    return '';
+  }
+}
+
 function getTrustWalletAssetsURI(
   tokenAdress: string,
   network: Network
@@ -89,6 +108,13 @@ async function getTokenLogoURI(
   logoUri = await getAssetURIFromTokenlists(tokenAdress, network);
   if (logoUri) response = await fetch(logoUri);
   if (logoUri && response.status === 200) return logoUri;
+
+  if (network === Network.ARBITRUM || network === Network.POLYGON) {
+    const mainnetAddress = await getMainnetTokenAddresss(tokenAdress, network);
+    logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
+    response = await fetch(logoUri);
+    if (logoUri && response.status === 200) return logoUri;
+  }
 
   return '';
 }
