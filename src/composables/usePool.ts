@@ -36,6 +36,10 @@ export function isStableLike(poolType: PoolType): boolean {
   );
 }
 
+export function isUnknownType(poolType: any): boolean {
+  return !Object.values(PoolType).includes(poolType);
+}
+
 export function isLiquidityBootstrapping(poolType: PoolType): boolean {
   return poolType === PoolType.LiquidityBootstrapping;
 }
