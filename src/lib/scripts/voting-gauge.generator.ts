@@ -5,7 +5,7 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
-import { POOLS } from '@/constants/pools-gauges';
+import { POOLS } from '@/constants/voting-gauge-pools';
 import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 
 import config from '../config';
