@@ -10,23 +10,17 @@
       "tokens": [
         {
           "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-          "balance": "92658178.116449579182658955",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "DAI"
         },
         {
           "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-          "balance": "89098058.094764",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         },
         {
           "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
-          "balance": "70402572.024847",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         }
       ]
@@ -48,16 +42,12 @@
       "tokens": [
         {
           "address": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
-          "balance": "1316140.618837825783103626",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "SNX"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "2217.783466616649868944",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -78,16 +68,12 @@
       "tokens": [
         {
           "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-          "balance": "26238659.497950046825673208",
           "weight": "0.4",
-          "priceRate": "1",
           "symbol": "DAI"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "13525.8073183413048896",
           "weight": "0.6",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -108,16 +94,12 @@
       "tokens": [
         {
           "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
-          "balance": "1588.430119051748229838",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "YFI"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "10074.556113230170651444",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -138,16 +120,12 @@
       "tokens": [
         {
           "address": "0xae78736cd615f374d3085123a210448e74fc6393",
-          "balance": "705.954842854415333944",
-          "weight": null,
-          "priceRate": "1.021750104183649654",
+          "weight": "null",
           "symbol": "rETH"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "778.669594654158660227",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "WETH"
         }
       ]
@@ -168,16 +146,12 @@
       "tokens": [
         {
           "address": "0x43d4a3cd90ddd2f8f4f693170c9c8098163502ad",
-          "balance": "5520901.790498715858575942",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "D2D"
         },
         {
           "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-          "balance": "368326.364774",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "USDC"
         }
       ]
@@ -198,16 +172,12 @@
       "tokens": [
         {
           "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
-          "balance": "69565.872875909131554074",
-          "weight": null,
-          "priceRate": "1.068493564817995109",
+          "weight": "null",
           "symbol": "wstETH"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "72852.579589443852774218",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "WETH"
         }
       ]
@@ -228,16 +198,12 @@
       "tokens": [
         {
           "address": "0x81f8f0bb1cb2a06649e51913a151f0e7ef6fa321",
-          "balance": "451022.222747650901897578",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "VITA"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "77.938107099479433234",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -258,16 +224,12 @@
       "tokens": [
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "34.134109890362396743",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
-          "balance": "99197.038571",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "USDT"
         }
       ]
@@ -288,16 +250,12 @@
       "tokens": [
         {
           "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-          "balance": "19.23431609",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "WBTC"
         },
         {
           "address": "0x49e9e169f0b661ea0a883f490564f4cc275123ed",
-          "balance": "62.07466694",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "ePyvWBTC-29APR22"
         }
       ]
@@ -318,16 +276,12 @@
       "tokens": [
         {
           "address": "0x226f7b842e0f0120b7e194d05432b3fd14773a9d",
-          "balance": "86780754.666924207011521628",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "UNN"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "10.656478995105109317",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -348,16 +302,12 @@
       "tokens": [
         {
           "address": "0x6f80310ca7f2c654691d1383149fa1a57d8ab1f8",
-          "balance": "0.000000000036630802",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "Silo"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "0.000000000000006875",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -378,16 +328,12 @@
       "tokens": [
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "83.537346981982309141",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xcfeaead4947f0705a14ec42ac3d44129e1ef3ed5",
-          "balance": "267883.06508782",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "NOTE"
         }
       ]
@@ -408,16 +354,12 @@
       "tokens": [
         {
           "address": "0x3ec8798b81485a254928b70cda1cf0a2bb0b74d7",
-          "balance": "467739.438013081142405274",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "GRO"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "68.884388334576609688",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -438,30 +380,22 @@
       "tokens": [
         {
           "address": "0x2bbf681cc4eb09218bee85ea2a5d3d13fa40fc0c",
-          "balance": "103943089.317087382949789637",
-          "weight": null,
-          "priceRate": "1.0084306582897871",
+          "weight": "null",
           "symbol": "bb-a-USDT"
         },
         {
           "address": "0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2",
-          "balance": "5192296496931937.619373588600412649",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "bb-a-USD"
         },
         {
           "address": "0x804cdb9116a10bb78768d3252355a1b18067bf8f",
-          "balance": "122383883.453518374601388763",
-          "weight": null,
-          "priceRate": "1.006696139820581071",
+          "weight": "null",
           "symbol": "bb-a-DAI"
         },
         {
           "address": "0x9210f1204b5a24742eba12f710636d76240df3d0",
-          "balance": "135945057.782789889279025753",
-          "weight": null,
-          "priceRate": "1.007043393574667653",
+          "weight": "null",
           "symbol": "bb-a-USDC"
         }
       ]
@@ -484,16 +418,12 @@
       "tokens": [
         {
           "address": "0x52c9886d5d87b0f06ebacbeff750b5ffad5d17d9",
-          "balance": "19852434.301107",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "ePyvUSDC-29APR22"
         },
         {
           "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-          "balance": "10077826.53684",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         }
       ]
@@ -514,16 +444,12 @@
       "tokens": [
         {
           "address": "0x43d4a3cd90ddd2f8f4f693170c9c8098163502ad",
-          "balance": "940161.515914648071083583",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "D2D"
         },
         {
           "address": "0xba100000625a3754423978a60c9317c58a424e3d",
-          "balance": "17592.557118825100408121",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "BAL"
         }
       ]
@@ -544,16 +470,12 @@
       "tokens": [
         {
           "address": "0x956f47f50a910163d8bf957cf5846d573e7f87ca",
-          "balance": "22346190.879994500421403882",
           "weight": "0.3",
-          "priceRate": "1",
           "symbol": "FEI"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "17905.544006127694500637",
           "weight": "0.7",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -574,16 +496,12 @@
       "tokens": [
         {
           "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-          "balance": "77732918.260674",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "26694.226845682134942358",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -604,16 +522,12 @@
       "tokens": [
         {
           "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-          "balance": "142988.881986317923509414",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "DAI"
         },
         {
           "address": "0x9c4a4204b79dd291d6b6571c5be8bbcd0622f050",
-          "balance": "3738547.399400413958215974",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "TCR"
         }
       ]
@@ -634,16 +548,12 @@
       "tokens": [
         {
           "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
-          "balance": "1134358.778331812916280995",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "MATIC"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "527.605227625863986072",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -664,16 +574,12 @@
       "tokens": [
         {
           "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-          "balance": "2598.72816221",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WBTC"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "34973.972446706725129986",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -694,16 +600,12 @@
       "tokens": [
         {
           "address": "0x81f8f0bb1cb2a06649e51913a151f0e7ef6fa321",
-          "balance": "304877.348670547526299734",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "VITA"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "211.008290953782713968",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -724,16 +626,12 @@
       "tokens": [
         {
           "address": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
-          "balance": "1247869.661337613765297697",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "LDO"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "283.821160631503570049",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -754,16 +652,12 @@
       "tokens": [
         {
           "address": "0xa3bed4e1c75d00fa6f4e5e6922db7261b5e9acd2",
-          "balance": "4526422.775616657942270143",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "MTA"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "151.702164977586837636",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -784,16 +678,12 @@
       "tokens": [
         {
           "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
-          "balance": "377829.377545915982274035",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "LINK"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "1729.824168465153803429",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -814,16 +704,12 @@
       "tokens": [
         {
           "address": "0x408e41876cccdc0f92210600ef50372656052a38",
-          "balance": "3825674.921187951876100335",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "REN"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "414.62918555523534116",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -844,16 +730,12 @@
       "tokens": [
         {
           "address": "0x2c72692e94e757679289ac85d3556b2c0f717e0e",
-          "balance": "2141521.551770707692815764",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "ePyvDAI-29APR22"
         },
         {
           "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-          "balance": "3146254.826709311176403989",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "DAI"
         }
       ]
@@ -874,16 +756,12 @@
       "tokens": [
         {
           "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
-          "balance": "18379.908760821498353005",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "COMP"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "846.828304303208138764",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -904,16 +782,12 @@
       "tokens": [
         {
           "address": "0x6810e776880c02933d47db1b9fc05908e5386b96",
-          "balance": "119248.092120803838538659",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "GNO"
         },
         {
           "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-          "balance": "3428.281240422306057952",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -934,16 +808,12 @@
       "tokens": [
         {
           "address": "0x04fa0d235c4abf4bcf4787af4cf447de572ef828",
-          "balance": "125082.181747189432656017",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "UMA"
         },
         {
           "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-          "balance": "778249.678289",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "USDC"
         }
       ]
@@ -964,23 +834,17 @@
       "tokens": [
         {
           "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-          "balance": "169.4855146",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "WBTC"
         },
         {
           "address": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
-          "balance": "313.34761653",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "renBTC"
         },
         {
           "address": "0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6",
-          "balance": "282.281048365009487724",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "sBTC"
         }
       ]
@@ -992,7 +856,85 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xa57453737849a4029325dfab3f6034656644e104",
+    "network": 1,
+    "pool": {
+      "id": "0x17ddd9646a69c9445cd8a9f921d4cd93bf50d108000200000000000000000159",
+      "address": "0x17ddd9646a69c9445cd8a9f921d4cd93bf50d108",
+      "poolType": "Weighted",
+      "symbol": "20WETH-80HAUS",
+      "tokens": [
+        {
+          "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "weight": "0.2",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xf2051511b9b121394fa75b8f7d4e7424337af687",
+          "weight": "0.8",
+          "symbol": "HAUS"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "0xf2051511b9b121394fa75b8f7d4e7424337af687": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xf2051511b9b121394fa75b8f7d4e7424337af687.png"
+    }
+  },
+  {
+    "address": "0xa6468eca7633246dcb24e5599681767d27d1f978",
+    "network": 1,
+    "pool": {
+      "id": "0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182",
+      "address": "0x92762b42a06dcdddc5b7362cfb01e631c4d44b40",
+      "poolType": "Weighted",
+      "symbol": "50COW-50GNO",
+      "tokens": [
+        {
+          "address": "0x6810e776880c02933d47db1b9fc05908e5386b96",
+          "weight": "0.5",
+          "symbol": "GNO"
+        },
+        {
+          "address": "0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab",
+          "weight": "0.5",
+          "symbol": "COW"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x6810e776880c02933d47db1b9fc05908e5386b96": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png",
+      "0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab.png"
+    }
+  },
+  {
+    "address": "0x158772f59fe0d3b75805fc11139b46cbc89f70e5",
+    "network": 1,
+    "pool": {
+      "id": "0xde8c195aa41c11a0c4787372defbbddaa31306d2000200000000000000000181",
+      "address": "0xde8c195aa41c11a0c4787372defbbddaa31306d2",
+      "poolType": "Weighted",
+      "symbol": "50COW-50WETH",
+      "tokens": [
+        {
+          "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "weight": "0.5",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab",
+          "weight": "0.5",
+          "symbol": "COW"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab.png"
+    }
+  },
+  {
+    "address": "0xc77e5645dbe48d54afc06655e39d3fe17eb76c1c",
     "network": 42161,
     "pool": {
       "id": "0xb340b6b1a34019853cb05b2de6ee8ffd0b89a008000100000000000000000036",
@@ -1002,23 +944,17 @@
       "tokens": [
         {
           "address": "0x32eb7902d4134bf98a28b963d26de779af92a212",
-          "balance": "724.577085907243173443",
           "weight": "0.3333",
-          "priceRate": "1",
           "symbol": "RDPX"
         },
         {
           "address": "0x6c2c06790b3e3e3c38e12ee22f8183b37a13ee55",
-          "balance": "68.525966072638864256",
           "weight": "0.3334",
-          "priceRate": "1",
           "symbol": "DPX"
         },
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "28.989804911866440946",
           "weight": "0.3333",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1030,7 +966,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x359ea8618c405023fc4b98dab1b01f373792a126",
     "network": 42161,
     "pool": {
       "id": "0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002",
@@ -1040,23 +976,17 @@
       "tokens": [
         {
           "address": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
-          "balance": "155.11307119",
           "weight": "0.333333333333333333",
-          "priceRate": "1",
           "symbol": "WBTC"
         },
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "2089.598848828579200447",
           "weight": "0.333333333333333334",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-          "balance": "6074873.821685",
           "weight": "0.333333333333333333",
-          "priceRate": "1",
           "symbol": "USDC"
         }
       ]
@@ -1068,7 +998,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xb0de49429fbb80c635432bbad0b3965b28560177",
     "network": 42161,
     "pool": {
       "id": "0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f",
@@ -1078,30 +1008,22 @@
       "tokens": [
         {
           "address": "0x64343594ab9b56e99087bfa6f2335db24c2d1f17",
-          "balance": "115080.767733981631048938",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "VST"
         },
         {
           "address": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
-          "balance": "34199.172266229918660881",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "DAI"
         },
         {
           "address": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
-          "balance": "33531.79708",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         },
         {
           "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-          "balance": "34574.888501",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         }
       ]
@@ -1114,7 +1036,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x785f08fb77ec934c01736e30546f87b4daccbe50",
     "network": 42161,
     "pool": {
       "id": "0x1779900c7707885720d39aa741f4086886307e9e00020000000000000000004b",
@@ -1124,16 +1046,12 @@
       "tokens": [
         {
           "address": "0x539bde0d7dbd336b79148aa742883198bbf60342",
-          "balance": "21822.5329152892159739",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "MAGIC"
         },
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "3.94834639685351264",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1144,7 +1062,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x899f737750db562b88c1e412ee1902980d3a4844",
     "network": 42161,
     "pool": {
       "id": "0xc2f082d33b5b8ef3a7e3de30da54efd3114512ac000200000000000000000017",
@@ -1154,16 +1072,12 @@
       "tokens": [
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "44.591963000808662414",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0x965772e0e9c84b6f359c8597c891108dcf1c5b1a",
-          "balance": "135533.476983067193343527",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "PICKLE"
         }
       ]
@@ -1174,7 +1088,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x435272180a4125f3b47c92826f482fc6cc165958",
     "network": 42161,
     "pool": {
       "id": "0x651e00ffd5ecfa7f3d4f33d62ede0a97cf62ede2000200000000000000000006",
@@ -1184,16 +1098,12 @@
       "tokens": [
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "208.339587562284722759",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
-          "balance": "182032.844476870534220836",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "LINK"
         }
       ]
@@ -1204,7 +1114,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x3fdb6fb126521a28f06893f9629da12f7b7266eb",
     "network": 42161,
     "pool": {
       "id": "0x0adeb25cb5920d4f7447af4a0428072edc2cee2200020000000000000000004a",
@@ -1214,16 +1124,12 @@
       "tokens": [
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "13.608214602656563668",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
-          "balance": "4531.242203250376163108",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "GMX"
         }
       ]
@@ -1234,7 +1140,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xf0ea3559cf098455921d74173da83ff2f6979495",
     "network": 42161,
     "pool": {
       "id": "0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d",
@@ -1244,23 +1150,17 @@
       "tokens": [
         {
           "address": "0x3f56e0c36d275367b8c502090edf38289b3dea0d",
-          "balance": "848265.01321298257998649",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "MAI"
         },
         {
           "address": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
-          "balance": "733414.674035",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         },
         {
           "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-          "balance": "737651.790705",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         }
       ]
@@ -1272,7 +1172,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x6cb1a77ab2e54d4560fda893e9c738ad770da0b0",
     "network": 42161,
     "pool": {
       "id": "0xc61ff48f94d801c1ceface0289085197b5ec44f000020000000000000000004d",
@@ -1282,16 +1182,12 @@
       "tokens": [
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "405.224903266222044608",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xa684cd057951541187f288294a1e1c2646aa2d24",
-          "balance": "1141336.444649225590176258",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "VSTA"
         }
       ]
@@ -1302,7 +1198,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x05e7732bf9ae5592e6aa05afe8cd80f7ab0a7bea",
     "network": 42161,
     "pool": {
       "id": "0xb28670b3e7ad27bd41fb5938136bf9e9cba90d6500020000000000000000001e",
@@ -1312,16 +1208,12 @@
       "tokens": [
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "29.816584651386765112",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xa72159fc390f0e3c6d415e658264c7c4051e9b87",
-          "balance": "2436828.647608032417403899",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "TCR"
         }
       ]
@@ -1332,7 +1224,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xe0b50b0635b90f7021d2618f76ab9a31b92d0094",
     "network": 42161,
     "pool": {
       "id": "0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016",
@@ -1342,23 +1234,17 @@
       "tokens": [
         {
           "address": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
-          "balance": "8987060.077684303821054186",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "DAI"
         },
         {
           "address": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
-          "balance": "6885207.770497",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         },
         {
           "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-          "balance": "6838950.66419",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         }
       ]
@@ -1370,7 +1256,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x981fb05b738e981ac532a99e77170ecb4bc27aef",
     "network": 42161,
     "pool": {
       "id": "0x4a3a22a3e7fee0ffbb66f1c28bfac50f75546fc7000200000000000000000008",
@@ -1380,16 +1266,12 @@
       "tokens": [
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "109.785988445122668458",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xa0b862f60edef4452f25b4160f177db44deb6cf1",
-          "balance": "3961.243167522386470079",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "GNO"
         }
       ]
@@ -1400,7 +1282,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xf30db0ca4605e5115df91b56bd299564dca02666",
     "network": 42161,
     "pool": {
       "id": "0xb5b77f1ad2b520df01612399258e7787af63025d000200000000000000000010",
@@ -1410,16 +1292,12 @@
       "tokens": [
         {
           "address": "0x4e352cf164e64adcbad318c3a1e222e9eba4ce42",
-          "balance": "305741.255064028428632199",
           "weight": "0.6",
-          "priceRate": "1",
           "symbol": "MCB"
         },
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "290.968045776598253662",
           "weight": "0.4",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1430,7 +1308,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x6823dca6d70061f2ae2aaa21661795a2294812bf",
     "network": 42161,
     "pool": {
       "id": "0xcc65a812ce382ab909a11e434dbf75b34f1cc59d000200000000000000000001",
@@ -1440,16 +1318,12 @@
       "tokens": [
         {
           "address": "0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8",
-          "balance": "495402.357664705099251284",
           "weight": "0.6",
-          "priceRate": "1",
           "symbol": "BAL"
         },
         {
           "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-          "balance": "1603.967306865799889538",
           "weight": "0.4",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1460,7 +1334,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xa5a0b6598b90d214eaf4d7a6b72d5a89c3b9a72c",
     "network": 137,
     "pool": {
       "id": "0x0297e37f1873d2dab4487aa67cd56b58e2f27875000100000000000000000002",
@@ -1470,30 +1344,22 @@
       "tokens": [
         {
           "address": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-          "balance": "3321634.332896096062122189",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "WMATIC"
         },
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "4499466.315754",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "1545.656028212262540654",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
-          "balance": "317546.538251093448713172",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "BAL"
         }
       ]
@@ -1506,7 +1372,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x88d07558470484c03d3bb44c3ecc36cafcf43253",
     "network": 137,
     "pool": {
       "id": "0x03cd191f589d12b0582a99808cf19851e468e6b500010000000000000000000a",
@@ -1516,23 +1382,17 @@
       "tokens": [
         {
           "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-          "balance": "130.79351166",
           "weight": "0.333333333333333333",
-          "priceRate": "1",
           "symbol": "WBTC"
         },
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "5115224.172072",
           "weight": "0.333333333333333333",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "1759.904061203885652576",
           "weight": "0.333333333333333334",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1544,7 +1404,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xc6fb8c72d3bd24fc4891c51c2cb3a13f49c11335",
     "network": 137,
     "pool": {
       "id": "0x186084ff790c65088ba694df11758fae4943ee9e000200000000000000000032",
@@ -1554,16 +1414,12 @@
       "tokens": [
         {
           "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
-          "balance": "41023.172647592317187318",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "BAL"
         },
         {
           "address": "0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
-          "balance": "104442962.44",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "TEL"
         }
       ]
@@ -1574,7 +1430,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xe32080a12723e5b8f1b0ced1f308fe2f9cf7e3c9",
     "network": 137,
     "pool": {
       "id": "0x614b5038611729ed49e0ded154d8a5d3af9d1d9e00010000000000000000001d",
@@ -1584,23 +1440,17 @@
       "tokens": [
         {
           "address": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-          "balance": "265680.393071767690312911",
           "weight": "0.4",
-          "priceRate": "1",
           "symbol": "WMATIC"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "61.882388752762253945",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xf501dd45a1198c2e1b5aef5314a68b9006d842e0",
-          "balance": "913601.667338716875463655",
           "weight": "0.4",
-          "priceRate": "1",
           "symbol": "MTA"
         }
       ]
@@ -1612,7 +1462,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xcbbd866835433c620059129aaf12ee9c59dbc0d7",
     "network": 137,
     "pool": {
       "id": "0x7c9cf12d783821d5c63d8e9427af5c44bad92445000100000000000000000051",
@@ -1622,23 +1472,17 @@
       "tokens": [
         {
           "address": "0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b",
-          "balance": "14486.398078629334478526",
           "weight": "0.333333333333333333",
-          "priceRate": "1",
           "symbol": "AVAX"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "376.658305375663710209",
           "weight": "0.333333333333333333",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0x7dff46370e9ea5f0bad3c4e29711ad50062ea7a4",
-          "balance": "11162.517052194928439598",
           "weight": "0.333333333333333334",
-          "priceRate": "1",
           "symbol": "SOL"
         }
       ]
@@ -1650,7 +1494,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xa6359eb485d23412eb40f1f0dbd80e1a4fe87e6b",
     "network": 137,
     "pool": {
       "id": "0xc31a37105b94ab4efca1954a14f059af11fcd9bb000000000000000000000455",
@@ -1660,30 +1504,22 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "183121.833428",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         },
         {
           "address": "0x45c32fa6df82ead1e2ef74d17b76547eddfaff89",
-          "balance": "186248.359283503720894184",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "FRAX"
         },
         {
           "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-          "balance": "178312.942169",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         },
         {
           "address": "0xe6469ba6d2fd6130788e0ea9c0a0515900563b59",
-          "balance": "148901.990817",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "UST"
         }
       ]
@@ -1696,7 +1532,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xb5ad7d6d6f92a77f47f98c28c84893fbccc94809",
     "network": 137,
     "pool": {
       "id": "0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f000000000000000000000068",
@@ -1706,30 +1542,22 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "15465210.362141",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         },
         {
           "address": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
-          "balance": "19357800.390856914104524779",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "TUSD"
         },
         {
           "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-          "balance": "16691844.665430495345054141",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "DAI"
         },
         {
           "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-          "balance": "13933085.048381",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         }
       ]
@@ -1742,7 +1570,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xfbf87d2c22d1d298298ab5b0ec957583a2731d15",
     "network": 137,
     "pool": {
       "id": "0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012",
@@ -1752,30 +1580,22 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "9591097.568934",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDC"
         },
         {
           "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-          "balance": "9687524.095156059710471151",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "DAI"
         },
         {
           "address": "0xa3fa99a148fa48d14ed51d610c367c61876997f1",
-          "balance": "10728229.543383078696661535",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "miMATIC"
         },
         {
           "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-          "balance": "9442187.272799",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "USDT"
         }
       ]
@@ -1788,7 +1608,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xc3bb46b8196c3f188c6a373a6c4fde792ca78653",
     "network": 137,
     "pool": {
       "id": "0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366",
@@ -1798,16 +1618,12 @@
       "tokens": [
         {
           "address": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-          "balance": "4692986.048752701375443351",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "WMATIC"
         },
         {
           "address": "0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4",
-          "balance": "4346768.780193816473379546",
-          "weight": null,
-          "priceRate": "1.009057008404989775",
+          "weight": "null",
           "symbol": "stMATIC"
         }
       ]
@@ -1818,7 +1634,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xd27cb689083e97847dc91c64efc91c4445d46d47",
     "network": 137,
     "pool": {
       "id": "0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e",
@@ -1828,16 +1644,12 @@
       "tokens": [
         {
           "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-          "balance": "167.04588176",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "WBTC"
         },
         {
           "address": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
-          "balance": "290.34860892",
-          "weight": null,
-          "priceRate": "1",
+          "weight": "null",
           "symbol": "renBTC"
         }
       ]
@@ -1848,7 +1660,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x211c27a32e686659566c3cee6035c2343d823aab",
     "network": 137,
     "pool": {
       "id": "0xcf354603a9aebd2ff9f33e1b04246d8ea204ae9500020000000000000000005a",
@@ -1858,16 +1670,12 @@
       "tokens": [
         {
           "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-          "balance": "257.62068015",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WBTC"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "3462.640934202111980337",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1878,7 +1686,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x022a843ffee5a6fe1646c980b94286ef0d05f759",
     "network": 137,
     "pool": {
       "id": "0x5a6ae1fd70d04ba4a279fc219dfabc53825cb01d00020000000000000000020e",
@@ -1888,16 +1696,12 @@
       "tokens": [
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "19.674300909535073601",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0xdb7cb471dd0b49b29cab4a1c14d070f27216a0ab",
-          "balance": "4972758.995449142517424907",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "BANK"
         }
       ]
@@ -1908,7 +1712,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xdae03cd2ec908710e98ffc5f4ff540fe2c5c1e17",
     "network": 137,
     "pool": {
       "id": "0xea4e073c8ac859f2994c07e627178719c8002dc00002000000000000000003dc",
@@ -1918,16 +1722,12 @@
       "tokens": [
         {
           "address": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-          "balance": "15889.424780079649721141",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WMATIC"
         },
         {
           "address": "0xbbba073c31bf03b8acf7c28ef0738decf3695683",
-          "balance": "32730.745001818071352634",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "SAND"
         }
       ]
@@ -1938,7 +1738,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x45012035a728b0a9b344036e6bff6c775ee09769",
     "network": 137,
     "pool": {
       "id": "0x10f21c9bd8128a29aa785ab2de0d044dcdd79436000200000000000000000059",
@@ -1948,16 +1748,12 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "3606024.187654",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "1238.513203838443808641",
           "weight": "0.5",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -1968,7 +1764,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x5a3970e3145bbba4838d1a3a31c79bcd35a16a9e",
     "network": 137,
     "pool": {
       "id": "0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008",
@@ -1978,37 +1774,27 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "2290382.514452",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
-          "balance": "172493.603811772685240218",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "LINK"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "786.059824600469863946",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
-          "balance": "161151.063265240739750864",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "BAL"
         },
         {
           "address": "0xd6df932a45c0f255f85145f286ea0b292b21c90b",
-          "balance": "14386.316262942248368591",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "AAVE"
         }
       ]
@@ -2022,7 +1808,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xab6efd2882bb25c732bf0a5f8d98be752f0ddaaf",
     "network": 137,
     "pool": {
       "id": "0x805ca3ccc61cc231851dee2da6aabff0a7714aa7000200000000000000000361",
@@ -2032,16 +1818,12 @@
       "tokens": [
         {
           "address": "0x034b2090b579228482520c589dbd397c53fc51cc",
-          "balance": "298027.025888371648775276",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "VISION"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "35.789822065687568508",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "WETH"
         }
       ]
@@ -2052,7 +1834,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x6d73df7afc4e0144dec3be083dfa3882e53c5ba5",
     "network": 137,
     "pool": {
       "id": "0xb204bf10bc3a5435017d3db247f56da601dfe08a0002000000000000000000fe",
@@ -2062,16 +1844,12 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "201086.705484",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0x2934b36ca9a4b31e633c5be670c8c8b28b6aa015",
-          "balance": "15346157.862976172298666854",
           "weight": "0.8",
-          "priceRate": "1",
           "symbol": "THX"
         }
       ]
@@ -2082,7 +1860,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0x397649ff00de6d90578144103768aaa929ef683d",
     "network": 137,
     "pool": {
       "id": "0xdb1db6e248d7bb4175f6e5a382d0a03fe3dcc813000100000000000000000035",
@@ -2092,23 +1870,17 @@
       "tokens": [
         {
           "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-          "balance": "248943.437212",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "USDC"
         },
         {
           "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
-          "balance": "17589.948170282141336394",
           "weight": "0.2",
-          "priceRate": "1",
           "symbol": "BAL"
         },
         {
           "address": "0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
-          "balance": "134588637.07",
           "weight": "0.6",
-          "priceRate": "1",
           "symbol": "TEL"
         }
       ]
@@ -2120,7 +1892,7 @@
     }
   },
   {
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xa80d514734e57691f45af76bb44d1202858fd1f0",
     "network": 137,
     "pool": {
       "id": "0xce66904b68f1f070332cbc631de7ee98b650b499000100000000000000000009",
@@ -2130,30 +1902,22 @@
       "tokens": [
         {
           "address": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
-          "balance": "40776.001247529263631948",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "LINK"
         },
         {
           "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-          "balance": "186.097790795045900324",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "WETH"
         },
         {
           "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
-          "balance": "38115.566452299198506512",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "BAL"
         },
         {
           "address": "0xd6df932a45c0f255f85145f286ea0b292b21c90b",
-          "balance": "3406.041706749192625705",
           "weight": "0.25",
-          "priceRate": "1",
           "symbol": "AAVE"
         }
       ]
@@ -2175,15 +1939,11 @@
       "tokens": [
         {
           "address": "0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648",
-          "balance": "2601.37003978",
-          "weight": "0.5",
-          "priceRate": "1"
+          "weight": "0.5"
         },
         {
           "address": "0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1",
-          "balance": "92225.008212439126206626",
-          "weight": "0.5",
-          "priceRate": "1"
+          "weight": "0.5"
         }
       ]
     },
@@ -2202,21 +1962,15 @@
       "tokens": [
         {
           "address": "0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648",
-          "balance": "61.02356767",
-          "weight": "0.1667",
-          "priceRate": "1"
+          "weight": "0.1667"
         },
         {
           "address": "0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7",
-          "balance": "1460959.248178761362598607",
-          "weight": "0.5",
-          "priceRate": "1"
+          "weight": "0.5"
         },
         {
           "address": "0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115",
-          "balance": "9697132.769452",
-          "weight": "0.3333",
-          "priceRate": "1"
+          "weight": "0.3333"
         }
       ]
     },
@@ -2236,27 +1990,19 @@
       "tokens": [
         {
           "address": "0x0bbd32b14a6503ee20f87df38cf2d5d3b59ea2f5",
-          "balance": "948138.669994675913194451",
-          "weight": null,
-          "priceRate": "1.000000126760617778"
+          "weight": "null"
         },
         {
           "address": "0x8fd162f338b770f7e879030830cde9173367f301",
-          "balance": "5192296855540689.459620244758136633",
-          "weight": null,
-          "priceRate": "1"
+          "weight": "null"
         },
         {
           "address": "0xe667d48618e71c2a02e4a1b66ed9def1426938b6",
-          "balance": "1023263.355045231400895157",
-          "weight": null,
-          "priceRate": "1.000000000004760008"
+          "weight": "null"
         },
         {
           "address": "0xfcccb77a946b6a3bd59d149f083b5bfbb8004d6d",
-          "balance": "1022836.292914374102695713",
-          "weight": null,
-          "priceRate": "1.000000000010977651"
+          "weight": "null"
         }
       ]
     },
