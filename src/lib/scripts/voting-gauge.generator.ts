@@ -10,7 +10,7 @@ import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 
 import config from '../config';
 
-dotenv.config();
+dotenv.config({ path: __dirname + '/../../../.env.development' });
 
 type Pool = {
   id: string;
@@ -263,7 +263,7 @@ async function getGaugeAddress(
 
   const jsonFilePath = path.resolve(
     __dirname,
-    '../utils/votingGauges/votingGauges.json'
+    '../../../public/data/voting-gauges.json'
   );
 
   fs.writeFile(jsonFilePath, JSON.stringify(votingGauges, null, 2), err => {
