@@ -46,7 +46,7 @@ const tooltipClasses = computed(() => {
 
 const tooltipPad = computed(() => {
   return {
-    'p-3': !props.noPad,
+    'p-3': !props.noPad
   };
 });
 
@@ -88,16 +88,11 @@ onMounted(() => {
       <BalIcon :name="iconName" :size="iconSize" :class="iconClass" />
     </slot>
   </button>
-    <div
-      ref="content"
-      class="tooltip"
-      :class="tooltipClasses"
-      v-bind="$attrs"
-    >
-        <div :class="tooltipPad" class="tooltip-content">
-          <p class="tooltip-text" v-if="text" v-text="text" />
-          <slot v-else />
-        </div>      
+  <div ref="content" class="tooltip" :class="tooltipClasses" v-bind="$attrs">
+    <div :class="tooltipPad" class="tooltip-content">
+      <p class="tooltip-text" v-if="text" v-text="text" />
+      <slot v-else />
+    </div>
   </div>
 </template>
 <style>
@@ -113,10 +108,12 @@ onMounted(() => {
 
 .tooltip:before {
   background-blend-mode: soft-light, soft-light, normal;
-  background: 
-    radial-gradient(circle at center, rgba(0,0,0,0.6), transparent)
-  ; 
-  content: "";
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.6),
+    transparent
+  );
+  content: '';
   width: 100%;
   height: 100%;
   display: block;
@@ -133,14 +130,11 @@ onMounted(() => {
 
 .dark .tooltip:before {
   background-blend-mode: soft-light, soft-light, normal;
-  background: 
-    radial-gradient(circle at left, yellow, transparent),
+  background: radial-gradient(circle at left, yellow, transparent),
     radial-gradient(ellipse at bottom right, blue, transparent),
-    radial-gradient(ellipse at top, red, transparent)
-  ; 
-  content: "";
+    radial-gradient(ellipse at top, red, transparent);
+  content: '';
 }
-
 
 .tooltip[data-show] {
   display: block;
@@ -169,7 +163,7 @@ onMounted(() => {
 }
 
 .dark .tooltip[data-popper-placement='top'] .tooltip-content:before {
-  border-top: solid #0F172A 8px; /* gray-900 */
+  border-top: solid #0f172a 8px; /* gray-900 */
 }
 
 .tooltip-content {
@@ -193,7 +187,6 @@ onMounted(() => {
 }
 
 .dark .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
-  border-bottom: solid #0F172A 8px; /* gray-900 */
+  border-bottom: solid #0f172a 8px; /* gray-900 */
 }
-
 </style>
