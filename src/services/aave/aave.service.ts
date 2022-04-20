@@ -2,7 +2,6 @@ import { getAddress } from '@ethersproject/address';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
-import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 import AaveSubgraphService, {
@@ -17,57 +16,50 @@ export default class AaveService {
   }
 
   public async calcWeightedSupplyAPRFor(
-    pool: Pool,
+    mainTokens: string[],
+    wrappedTokens: string[],
+    wrappedTokenBalances: string[],
+    totalLiquidity: string,
     prices: TokenPrices,
     currency: FiatCurrency
   ) {
     let total = bnum(0);
-    const tokenBreakdown = {};
+    const breakdown: Record<string, string> = {};
 
-    if (pool.mainTokens != null && pool.wrappedTokens != null) {
-      const reserves = await this.subgraphService.reserves.get({
-        where: {
-          underlyingAsset_in: pool.mainTokens,
-          isActive: true
+    const reserves = await this.subgraphService.reserves.get({
+      where: {
+        underlyingAsset_in: mainTokens,
+        isActive: true
+      }
+    });
+
+    reserves.forEach(reserve => {
+      const supplyAPR = bnum(reserve.supplyAPR);
+
+      if (supplyAPR.gt(0)) {
+        const tokenIndex = mainTokens.findIndex(
+          token => token === getAddress(reserve.underlyingAsset)
+        );
+        // Grabs the matching wrapped which generates the yield
+        const wrappedToken = wrappedTokens[tokenIndex];
+        const mainToken = mainTokens[tokenIndex];
+
+        if (prices[mainToken] != null) {
+          const price = prices[mainToken][currency] || 0;
+          const balance = wrappedTokenBalances[tokenIndex];
+          const value = bnum(balance).times(price);
+          const weightedAPR = value.times(supplyAPR).div(totalLiquidity);
+
+          breakdown[wrappedToken] = weightedAPR.toString();
+
+          total = total.plus(weightedAPR);
         }
-      });
-
-      reserves.forEach(reserve => {
-        const supplyAPR = bnum(reserve.supplyAPR);
-
-        if (
-          pool.mainTokens != null &&
-          pool.wrappedTokens != null &&
-          supplyAPR.gt(0)
-        ) {
-          const tokenIndex = pool.mainTokens.findIndex(
-            token => token === getAddress(reserve.underlyingAsset)
-          );
-          // Grabs the matching wrapped which generates the yield
-          const wrappedToken = pool.wrappedTokens[tokenIndex];
-          const mainToken = pool.mainTokens[tokenIndex];
-
-          if (
-            pool.linearPoolTokensMap != null &&
-            pool.linearPoolTokensMap[wrappedToken] != null &&
-            prices[mainToken] != null
-          ) {
-            const price = prices[mainToken][currency] || 0;
-            const balance = pool.linearPoolTokensMap[wrappedToken].balance;
-            const value = bnum(balance).times(price);
-            const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
-
-            tokenBreakdown[wrappedToken] = weightedAPR.toString();
-
-            total = total.plus(weightedAPR);
-          }
-        }
-      });
-    }
+      }
+    });
 
     return {
       total: total.toString(),
-      tokenBreakdown
+      breakdown
     };
   }
 }

@@ -8,6 +8,7 @@ import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
+import { calcBoostedAPR } from '@/lib/utils/apr.helper';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   computeAPRsForPool,
@@ -344,13 +345,34 @@ export default class Pools {
         protocolFeePercentage
       );
     } else if (isStablePhantom(pool.poolType)) {
-      const {
-        total,
-        tokenBreakdown
-      } = await aaveService.calcWeightedSupplyAPRFor(pool, prices, currency);
+      const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
+      const wrappedTokenBalances = wrappedTokens?.map(
+        token => linearPoolTokensMap?.[token].balance || ''
+      );
+      const hasAllWrappedTokenBalances =
+        wrappedTokenBalances &&
+        wrappedTokenBalances.every(balance => !!balance);
 
-      thirdPartyAPR = total;
-      thirdPartyAPRBreakdown = tokenBreakdown;
+      if (mainTokens && wrappedTokens && hasAllWrappedTokenBalances) {
+        const { total, breakdown } = await aaveService.calcWeightedSupplyAPRFor(
+          mainTokens,
+          wrappedTokens,
+          wrappedTokenBalances,
+          pool.totalLiquidity,
+          prices,
+          currency
+        );
+        calcBoostedAPR(
+          mainTokens,
+          wrappedTokens,
+          wrappedTokenBalances,
+          pool.totalLiquidity,
+          prices,
+          currency
+        );
+        thirdPartyAPR = total;
+        thirdPartyAPRBreakdown = breakdown;
+      }
     }
 
     return {
