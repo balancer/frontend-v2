@@ -13,7 +13,8 @@
         "pools-fetch-error": "Failed to fetch pools.",
         "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
         "retry-label": "Refresh to try again",
-        "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →"
+        "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
+        "vebalL2": "Liquidity incentives for Polygon and Arbitrum are paused for 1 week during its transition to the veBAL system."
     },
     "allow": "Allow",
     "allowing": "Allowing...",
