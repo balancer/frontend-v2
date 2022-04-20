@@ -82,7 +82,8 @@ async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
 
 async function getLiquidityGaugeAddress(
   poolId: string,
-  network: Network
+  network: Network,
+  retries = 5
 ): Promise<string> {
   const subgraphEndpoint = config[network].subgraphs.gauge;
   const query = `
@@ -120,13 +121,16 @@ async function getLiquidityGaugeAddress(
       network
     );
 
-    return '';
+    return retries > 0
+      ? getLiquidityGaugeAddress(poolId, network, retries - 1)
+      : '';
   }
 }
 
 async function getStreamerAddress(
   poolId: string,
-  network: Network
+  network: Network,
+  retries = 5
 ): Promise<string> {
   const subgraphEndpoint = config[network].subgraphs.gauge;
 
@@ -160,16 +164,19 @@ async function getStreamerAddress(
       'Streamer not found for poolId:',
       poolId,
       'chainId:',
-      network
+      network,
+      'retries:',
+      retries
     );
 
-    return '';
+    return retries > 0 ? getStreamerAddress(poolId, network, retries - 1) : '';
   }
 }
 
 async function getRootGaugeAddress(
   streamer: string,
-  network: Network
+  network: Network,
+  retries = 5
 ): Promise<string> {
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
@@ -209,7 +216,9 @@ async function getRootGaugeAddress(
       network
     );
 
-    return '';
+    return retries > 0
+      ? getRootGaugeAddress(streamer, network, retries - 1)
+      : '';
   }
 }
 
@@ -263,5 +272,5 @@ async function getGaugeAddress(
     }
   });
 
-  console.log(votingGauges);
+  // console.log(votingGauges);
 })();
