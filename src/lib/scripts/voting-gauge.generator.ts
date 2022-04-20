@@ -116,7 +116,12 @@ async function getLiquidityGaugeAddress(
 
     return liquidityGaugeAddress;
   } catch {
-    console.error('LiquidityGauge not found for poolId:', poolId);
+    console.error(
+      'LiquidityGauge not found for poolId:',
+      poolId,
+      'chainId:',
+      network
+    );
 
     return '';
   }
@@ -154,13 +159,21 @@ async function getStreamerAddress(
 
     return data.liquidityGauges[0].streamer;
   } catch {
-    console.error('Streamer not found for poolId:', poolId, network);
+    console.error(
+      'Streamer not found for poolId:',
+      poolId,
+      'chainId:',
+      network
+    );
 
     return '';
   }
 }
 
-async function getRootGaugeAddress(streamer: string): Promise<string> {
+async function getRootGaugeAddress(
+  streamer: string,
+  network: Network
+): Promise<string> {
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
   const query = `
@@ -190,8 +203,13 @@ async function getRootGaugeAddress(streamer: string): Promise<string> {
     const rootGaugeAddress = getAddress(data.rootGauges[0].id);
 
     return rootGaugeAddress;
-  } catch (error) {
-    console.error('RootGauge not found for Streamer:', streamer);
+  } catch {
+    console.error(
+      'RootGauge not found for Streamer:',
+      streamer,
+      'chainId:',
+      network
+    );
 
     return '';
   }
