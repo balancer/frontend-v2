@@ -181,6 +181,7 @@ async function getRootGaugeAddress(
       rootGauges(
         where: {
           recipient: "${streamer}"
+          chain: ${config[network].shortName}
         }
       ) {
         id
@@ -224,7 +225,7 @@ async function getGaugeAddress(
     return gauge;
   } else {
     const streamer = await getStreamerAddress(poolId, network);
-    const gauge = await getRootGaugeAddress(streamer);
+    const gauge = await getRootGaugeAddress(streamer, network);
     return gauge;
   }
 }
