@@ -24,6 +24,10 @@ function getBalancerAssetsURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
+function getBalancerAssetsMultichainURI(tokenAdress: string): string {
+  return `https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
+}
+
 function getTrustWalletAssetsURI(
   tokenAdress: string,
   network: Network
@@ -45,7 +49,10 @@ async function getTokenLogoURI(
   if (network === Network.MAINNET) {
     const logoUri = getBalancerAssetsURI(tokenAdress);
     const { status } = await fetch(logoUri);
-
+    if (status === 200) return logoUri;
+  } else {
+    const logoUri = getBalancerAssetsMultichainURI(tokenAdress);
+    const { status } = await fetch(logoUri);
     if (status === 200) return logoUri;
   }
 
