@@ -11,6 +11,7 @@ import { networkNameFor } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
+  isUnknownType,
   orderedPoolTokens,
   poolURLFor
 } from '@/composables/usePool';
@@ -136,7 +137,11 @@ function networkSrc(network: Network) {
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {
-  window.location.href = poolURLFor(gauge.pool.id, gauge.network);
+  window.location.href = poolURLFor(
+    gauge.pool.id,
+    gauge.network,
+    gauge.pool.poolType
+  );
 }
 </script>
 
@@ -193,7 +198,9 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
             "
-            :isStablePool="isStableLike(pool.poolType)"
+            :isStablePool="
+              isStableLike(pool.poolType) || isUnknownType(pool.poolType)
+            "
           />
         </div>
       </template>
