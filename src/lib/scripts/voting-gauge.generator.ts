@@ -36,9 +36,7 @@ function getTrustWalletAssetsURI(
     [Network.KOVAN]: 'kovan'
   };
 
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
-    networksMap[network.toString()]
-  }/assets/${checksummedAddress}/logo.png`;
+  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${checksummedAddress}/logo.png`;
 }
 
 async function getTokenLogoURI(
@@ -61,9 +59,7 @@ async function getTokenLogoURI(
 
 async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
   const poolsApiEndpoint = process.env.POOLS_API_URL;
-  const response = await fetch(
-    `${poolsApiEndpoint}/${network.toString()}/${poolId}`
-  );
+  const response = await fetch(`${poolsApiEndpoint}/${network}/${poolId}`);
   const { id, address, poolType, symbol, tokens } = await response.json();
 
   const tokensList = tokens.map(token => {
@@ -87,7 +83,7 @@ async function getLiquidityGaugeAddress(
   poolId: string,
   network: Network
 ): Promise<string> {
-  const subgraphEndpoint = config[network.toString()].subgraphs.gauge;
+  const subgraphEndpoint = config[network].subgraphs.gauge;
   const query = `
     {
       liquidityGauges(
@@ -131,7 +127,7 @@ async function getStreamerAddress(
   poolId: string,
   network: Network
 ): Promise<string> {
-  const subgraphEndpoint = config[network.toString()].subgraphs.gauge;
+  const subgraphEndpoint = config[network].subgraphs.gauge;
 
   const query = `
     {
