@@ -384,11 +384,6 @@
           "symbol": "bb-a-USDT"
         },
         {
-          "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
-          "weight": "null",
-          "symbol": "bb-a-USD"
-        },
-        {
           "address": "0x804CdB9116a10bB78768D3252355a1b18067bF8f",
           "weight": "null",
           "symbol": "bb-a-DAI"
@@ -402,7 +397,6 @@
     },
     "tokenLogoURIs": {
       "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x2bbf681cc4eb09218bee85ea2a5d3d13fa40fc0c.png",
-      "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2.png",
       "0x804CdB9116a10bB78768D3252355a1b18067bF8f": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x804cdb9116a10bb78768d3252355a1b18067bf8f.png",
       "0x9210F1204b5a24742Eba12f710636D76240dF3d0": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x9210f1204b5a24742eba12f710636d76240df3d0.png"
     }
@@ -1993,10 +1987,6 @@
           "weight": "null"
         },
         {
-          "address": "0x8fd162f338B770F7E879030830cDe9173367f301",
-          "weight": "null"
-        },
-        {
           "address": "0xe667D48618e71c2a02E4a1B66Ed9dEf1426938b6",
           "weight": "null"
         },
@@ -2008,7 +1998,6 @@
     },
     "tokenLogoURIs": {
       "0x0Bbd32B14A6503EE20F87df38Cf2d5d3b59eA2F5": "",
-      "0x8fd162f338B770F7E879030830cDe9173367f301": "",
       "0xe667D48618e71c2a02E4a1B66Ed9dEf1426938b6": "",
       "0xfCCcB77A946b6a3BD59d149F083B5BfbB8004D6D": ""
     }
