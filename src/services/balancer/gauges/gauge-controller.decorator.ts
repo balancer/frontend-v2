@@ -7,6 +7,7 @@ import {
   oneWeekInSecs,
   toUnixTimestamp
 } from '@/composables/useTime';
+import { VotingGauge } from '@/constants/voting-gauges';
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
@@ -46,7 +47,7 @@ export interface RawVotesDataMap {
   gauges: Record<string, RawVotesData>;
 }
 
-export type VotingGaugeWithVotes = any & VotesData;
+export type VotingGaugeWithVotes = VotingGauge & VotesData;
 
 export class GaugeControllerDecorator {
   multicaller: Multicaller;
@@ -66,7 +67,7 @@ export class GaugeControllerDecorator {
    * @summary Decorate subgraph gauge schema with onchain data using multicalls.
    */
   async decorateWithVotes(
-    votingGauges: any[],
+    votingGauges: VotingGauge[],
     userAddress: string
   ): Promise<VotingGaugeWithVotes[]> {
     this.multicaller = this.resetMulticaller();
@@ -119,7 +120,7 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch total points allocated towards each gauge for this period
    */
-  private callGaugeWeightThisPeriod(votingGauges: any[]) {
+  private callGaugeWeightThisPeriod(votingGauges: VotingGauge[]) {
     let thisWeekTimestamp = toUnixTimestamp(
       Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
     );
@@ -142,7 +143,7 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch total points allocated towards each gauge for next period (+1 week)
    */
-  private callGaugeWeightNextPeriod(votingGauges: any[]) {
+  private callGaugeWeightNextPeriod(votingGauges: VotingGauge[]) {
     const nextWeekTimestamp = toUnixTimestamp(
       Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
     );
@@ -189,7 +190,7 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch user's vote weight for each gauge
    */
-  private callUserGaugeVotes(votingGauges: any[], userAddress: string) {
+  private callUserGaugeVotes(votingGauges: VotingGauge[], userAddress: string) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
         `gauges.${gauge.address}.userVotes`,
@@ -203,7 +204,10 @@ export class GaugeControllerDecorator {
   /**
    * @summary Fetch user's vote weight for each gauge
    */
-  private callUserGaugeVoteTime(votingGauges: any[], userAddress: string) {
+  private callUserGaugeVoteTime(
+    votingGauges: VotingGauge[],
+    userAddress: string
+  ) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
         `gauges.${gauge.address}.lastUserVoteTime`,

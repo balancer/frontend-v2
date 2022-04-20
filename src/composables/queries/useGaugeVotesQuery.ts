@@ -3,6 +3,7 @@ import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
+import { VotingGauge } from '@/constants/voting-gauges';
 import {
   gaugeControllerDecorator,
   VotingGaugeWithVotes
@@ -18,7 +19,7 @@ type QueryResponse = VotingGaugeWithVotes[];
  * @summary Fetches guages list from subgraph
  */
 export default function useGaugeVotesQuery(
-  votingGauges,
+  votingGauges: VotingGauge[],
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
