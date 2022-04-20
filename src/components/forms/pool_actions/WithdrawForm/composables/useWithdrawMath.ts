@@ -268,6 +268,7 @@ export default function useWithdrawMath(
       hasNestedUsdStablePhantomPool.value &&
       pool.value.mainTokens
     ) {
+      const stablePhantomPool = pool.value.stablePhantomPools![0];
       const bptInScaled = parseUnits(propBptIn.value, 18);
       const fixedRatio = poolCalculator.ratioOf('send', 0);
 
@@ -279,12 +280,31 @@ export default function useWithdrawMath(
         );
 
         if (networkConfig.usdTokens.includes(mainToken)) {
-          //TODO it would be more correct to also apply the ratio of the underlying usd token balances
+          const linearPool = pool.value.linearPools?.find(
+            linearPool =>
+              linearPool.mainToken.address.toLowerCase() ===
+              mainToken.toLowerCase()
+          );
+          const usdTotalBalance = bnSum(
+            stablePhantomPool.tokens.map(token =>
+              parseUnits(token.balance, token.decimals).toString()
+            )
+          ).toString();
+          const usdToken = stablePhantomPool.tokens.find(
+            token =>
+              token.address.toLowerCase() === linearPool?.address.toLowerCase()
+          );
+          const usdTokenBalance = parseUnits(
+            usdToken?.balance || '0',
+            usdToken?.decimals || 18
+          );
+
           return formatUnits(
             bptInScaled
               .mul(poolCalculator.receiveRatios[tokenIdx])
               .div(fixedRatio)
-              .div(networkConfig.usdTokens.length),
+              .mul(usdTokenBalance)
+              .div(usdTotalBalance),
             18
           );
         }
