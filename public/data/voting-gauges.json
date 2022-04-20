@@ -1,5 +1,25 @@
 [
   {
+    "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
+    "network": 1,
+    "pool": {
+      "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
+      "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
+      "poolType": "Stable",
+      "symbol": "veBAL",
+      "tokens": [
+        {
+          "address": "0xc128a9954e6c874ea3d62ce62b468ba073093f25",
+          "weight": "null",
+          "symbol": "veBAL"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+    }
+  },
+  {
     "address": "0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac",
     "network": 1,
     "pool": {

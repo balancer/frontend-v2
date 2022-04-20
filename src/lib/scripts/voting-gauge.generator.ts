@@ -7,20 +7,13 @@ import path from 'path';
 
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
-import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
+import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 
+import vebalGauge from '../../../public/data/vebal-gauge.json';
 import config from '../config';
 
 dotenv.config({ path: __dirname + '/../../../.env.development' });
-
-type Pool = {
-  id: string;
-  address: string;
-  poolType: PoolType;
-  symbol: string;
-  tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
-};
 
 function getBalancerAssetsURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
@@ -119,7 +112,10 @@ async function getTokenLogoURI(
   return '';
 }
 
-async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
+async function getPoolInfo(
+  poolId: string,
+  network: Network
+): Promise<VotingGauge['pool']> {
   const poolsApiEndpoint = process.env.POOLS_API_URL;
   const response = await fetch(`${poolsApiEndpoint}/${network}/${poolId}`);
   const { id, address, poolType, symbol, tokens } = await response.json();
@@ -300,9 +296,9 @@ async function getGaugeAddress(
 }
 
 (async () => {
-  console.log('Run script');
+  console.log('Generating voting-gauges.json...');
 
-  const votingGauges = await Promise.all(
+  let votingGauges = await Promise.all(
     POOLS.map(async ({ id, network }) => {
       const address = await getGaugeAddress(id, network);
       const pool = await getPoolInfo(id, network);
@@ -324,6 +320,8 @@ async function getGaugeAddress(
     })
   );
 
+  votingGauges = [vebalGauge as VotingGauge, ...votingGauges];
+
   const jsonFilePath = path.resolve(
     __dirname,
     '../../../public/data/voting-gauges.json'
@@ -334,6 +332,4 @@ async function getGaugeAddress(
       console.log(err);
     }
   });
-
-  // console.log(votingGauges);
 })();
