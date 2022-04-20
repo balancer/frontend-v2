@@ -211,13 +211,23 @@ export default function useWithdrawMath(
       );
 
       if (networkConfig.usdTokens.includes(tokenAddress)) {
-        const linearPool = pool.value.linearPools?.find(
-          linearPool =>
-            linearPool.mainToken.address.toLowerCase() ===
-            tokenAddress.toLowerCase()
+        const bbUsdPoolToken = pool.value.tokens.find(
+          token =>
+            token.address.toLowerCase() ===
+            networkConfig.addresses.bbUsd.toLowerCase()
         );
 
-        return linearPool?.mainTokenTotalBalance || '0';
+        return bbUsdPoolToken?.balance || '0';
+      }
+
+      const linearPool = pool.value.linearPools?.find(
+        linearPool =>
+          linearPool.mainToken.address.toLowerCase() ===
+          tokenAddress.toLowerCase()
+      );
+
+      if (linearPool) {
+        return linearPool.mainTokenTotalBalance;
       }
     } else if (
       isWeightedPoolWithNestedLinearPools.value &&
@@ -364,37 +374,43 @@ export default function useWithdrawMath(
     });
   });
 
-  const fullAmountsWithNestedUsdBpt = computed(() => {
+  const singleAssetWithdrawAmountsStablePhantomWithNestedUsd = computed(() => {
     if (!hasNestedUsdStablePhantomPool.value || batchSwapUsd.value === null) {
       return [];
     }
 
-    const amounts: string[] = [];
+    const returnAmount = bnum(batchSwapUsd.value.returnAmounts[0].toString())
+      .abs()
+      .toString();
 
-    for (const token of pool.value.tokensList) {
-      if (token === pool.value.address) {
-        continue;
+    return pool.value.tokensList.map(token => {
+      if (token.toLowerCase() === tokenOut.value.toLowerCase()) {
+        const tokenInfo = getToken(token);
+
+        return formatUnits(returnAmount, tokenInfo.decimals);
+      } else if (
+        networkConfig.usdTokens.includes(tokenOut.value) &&
+        token === configService.network.addresses.bbUsd.toLowerCase()
+      ) {
+        const tokenInfo = getToken(tokenOut.value);
+
+        return formatUnits(returnAmount, tokenInfo.decimals);
       }
 
-      if (token === configService.network.addresses.bbUsd.toLowerCase()) {
-        amounts.push(
-          formatUnits(
-            bnum(batchSwapUsd.value.returnAmounts[0].toString())
-              .abs()
-              .toString(),
-            18
-          )
-        );
-      } else {
-        const amountIdx = tokenAddresses.value.findIndex(
-          address => address.toLowerCase() === token.toLowerCase()
-        );
+      const linearPool = pool.value.linearPools?.find(
+        linearPool => linearPool.address.toLowerCase() === token.toLowerCase()
+      );
 
-        amounts.push(fullAmounts.value[amountIdx]);
+      if (
+        linearPool &&
+        tokenOut.value.toLowerCase() ===
+          linearPool.mainToken.address.toLowerCase()
+      ) {
+        return formatUnits(returnAmount, linearPool.mainToken.decimals);
       }
-    }
 
-    return amounts;
+      return '0';
+    });
   });
 
   /**
@@ -513,11 +529,14 @@ export default function useWithdrawMath(
     if (hasNestedUsdStablePhantomPool.value && batchSwapUsd.value !== null) {
       return (
         poolCalculator
-          .priceImpact(fullAmountsWithNestedUsdBpt.value, {
-            exactOut: exactOut.value,
-            tokenIndex: tokenOutIndex.value,
-            queryBPT: fullBPTIn.value
-          })
+          .priceImpact(
+            singleAssetWithdrawAmountsStablePhantomWithNestedUsd.value,
+            {
+              exactOut: exactOut.value,
+              tokenIndex: tokenOutIndex.value,
+              queryBPT: fullBPTIn.value
+            }
+          )
           .toNumber() || 0
       );
     }
@@ -712,14 +731,13 @@ export default function useWithdrawMath(
     const fetchPools = !batchSwap.value; // Only needs to be fetched on first call
 
     if (hasNestedUsdStablePhantomPool.value) {
-      const usdBatchSwapAmounts = tokensOut
-        .map((address, index) => ({
-          address,
-          amount: batchSwapAmounts[index] || '0'
-        }))
-        .filter(item =>
+      const usdBatchSwapAmounts = tokensOut.map((address, index) => ({
+        address,
+        amount: batchSwapAmounts[index] || '0'
+      }));
+      /*.filter(item =>
           configService.network.usdTokens.includes(getAddress(item.address))
-        );
+        );*/
 
       if (usdBatchSwapAmounts.length > 0) {
         batchSwapUsd.value = await balancer.swaps.queryBatchSwapWithSor({
