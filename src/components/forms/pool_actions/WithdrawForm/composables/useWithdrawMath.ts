@@ -10,7 +10,7 @@ import { computed, Ref, ref, watch } from 'vue';
 import { bnSum, bnum, forChange, scaleDown } from '@/lib/utils';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 // Types
-import { FullPool, Pool } from '@/services/balancer/subgraph/types';
+import { FullPool, PoolToken } from '@/services/balancer/subgraph/types';
 // Services
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 // Composables
@@ -20,9 +20,10 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
-import { BatchSwap, BatchSwapOut } from '@/types';
+import { BatchSwapOut } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import OldBigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
 import {
@@ -34,10 +35,8 @@ import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import { getAddress } from '@ethersproject/address';
 import { configService } from '@/services/config/config.service';
-import { fp } from '@/beethovenx/utils/numbers';
 import { isEqual } from 'lodash';
 import useConfig from '@/composables/useConfig';
-import BigNumber from 'bignumber.js';
 
 /**
  * TYPES
@@ -260,12 +259,33 @@ export default function useWithdrawMath(
       pool.value.mainTokens
     ) {
       const bptInScaled = parseUnits(propBptIn.value, 18);
-      const proportionalAmount = formatUnits(
-        bptInScaled.div(pool.value.mainTokens.length),
-        18
-      );
+      const fixedRatio = poolCalculator.ratioOf('send', 0);
 
-      return pool.value.mainTokens.map(() => proportionalAmount);
+      return pool.value.mainTokens.map(mainToken => {
+        const poolToken = getPoolTokenForMainToken(mainToken);
+        const tokenIdx = pool.value.tokens.findIndex(
+          token =>
+            token.address.toLowerCase() === poolToken?.address.toLowerCase()
+        );
+
+        if (networkConfig.usdTokens.includes(mainToken)) {
+          //TODO it would be more correct to also apply the ratio of the underlying usd token balances
+          return formatUnits(
+            bptInScaled
+              .mul(poolCalculator.receiveRatios[tokenIdx])
+              .div(fixedRatio)
+              .div(networkConfig.usdTokens.length),
+            18
+          );
+        }
+
+        return formatUnits(
+          bptInScaled
+            .mul(poolCalculator.receiveRatios[tokenIdx])
+            .div(fixedRatio),
+          18
+        );
+      });
     }
 
     const { receive } = poolCalculator.propAmountsGiven(
@@ -1117,6 +1137,49 @@ export default function useWithdrawMath(
         );
       }
     }
+  }
+
+  function getPoolTokenForMainToken(mainToken: string): PoolToken | null {
+    mainToken = mainToken.toLowerCase();
+
+    const token = pool.value.tokens.find(
+      token => token.address.toLowerCase() === mainToken
+    );
+
+    //mainToken is directly in the pool, not nested
+    if (token) {
+      return token;
+    }
+
+    const linearPool = pool.value.linearPools?.find(
+      linearPool => linearPool.mainToken.address.toLowerCase() === mainToken
+    );
+
+    if (linearPool) {
+      const nestedLinearBpt = pool.value.tokens.find(
+        token =>
+          token.address.toLowerCase() === linearPool.address.toLowerCase()
+      );
+
+      if (nestedLinearBpt) {
+        return nestedLinearBpt;
+      }
+
+      //linear is nested in a stable phantom
+      const stablePhantom = pool.value.stablePhantomPools
+        ? pool.value.stablePhantomPools[0]
+        : undefined;
+      const nestedStablePhantomBpt = pool.value.tokens.find(
+        token =>
+          token.address.toLowerCase() === stablePhantom?.address.toLowerCase()
+      );
+
+      if (nestedStablePhantomBpt) {
+        return nestedStablePhantomBpt;
+      }
+    }
+
+    return null;
   }
 
   /**
