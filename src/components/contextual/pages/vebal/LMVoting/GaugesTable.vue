@@ -137,7 +137,11 @@ function networkSrc(network: Network) {
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {
-  window.location.href = poolURLFor(gauge.pool.id, gauge.network);
+  window.location.href = poolURLFor(
+    gauge.pool.id,
+    gauge.network,
+    gauge.pool.poolType
+  );
 }
 </script>
 
