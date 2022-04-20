@@ -68,7 +68,7 @@ async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
 
   const tokensList = tokens.map(token => {
     return {
-      address: token.address,
+      address: getAddress(token.address),
       weight: token.weight || 'null',
       symbol: token.symbol
     };
@@ -76,7 +76,7 @@ async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
 
   return {
     id,
-    address,
+    address: getAddress(address),
     poolType,
     symbol,
     tokens: tokensList
@@ -100,18 +100,26 @@ async function getLiquidityGaugeAddress(
     }
   `;
 
-  const response = await fetch(subgraphEndpoint, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ query })
-  });
+  try {
+    const response = await fetch(subgraphEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query })
+    });
 
-  const { data } = await response.json();
+    const { data } = await response.json();
 
-  return data.liquidityGauges[0].id;
+    const liquidityGaugeAddress = getAddress(data.liquidityGauges[0].id);
+
+    return liquidityGaugeAddress;
+  } catch {
+    console.error('LiquidityGauge not found for poolId:', poolId);
+
+    return '';
+  }
 }
 
 async function getStreamerAddress(
@@ -120,7 +128,7 @@ async function getStreamerAddress(
 ): Promise<string> {
   const subgraphEndpoint = config[network.toString()].subgraphs.gauge;
 
-  const streamerQuery = `
+  const query = `
     {
       liquidityGauges(
         where: {
@@ -132,24 +140,30 @@ async function getStreamerAddress(
     }
   `;
 
-  const response = await fetch(subgraphEndpoint, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ streamerQuery })
-  });
+  try {
+    const response = await fetch(subgraphEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query })
+    });
 
-  const { data } = await response.json();
+    const { data } = await response.json();
 
-  return data.liquidityGauges[0].streamer;
+    return data.liquidityGauges[0].streamer;
+  } catch {
+    console.error('Streamer not found for poolId:', poolId, network);
+
+    return '';
+  }
 }
 
 async function getRootGaugeAddress(streamer: string): Promise<string> {
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
-  const gaugeQuery = `
+  const query = `
     {
       rootGauges(
         where: {
@@ -161,18 +175,26 @@ async function getRootGaugeAddress(streamer: string): Promise<string> {
     }
   `;
 
-  const response = await fetch(subgraphEndpoint, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ gaugeQuery })
-  });
+  try {
+    const response = await fetch(subgraphEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query })
+    });
 
-  const { data } = await response.json();
+    const { data } = await response.json();
 
-  return data.rootGauges[0].id;
+    const rootGaugeAddress = getAddress(data.rootGauges[0].id);
+
+    return rootGaugeAddress;
+  } catch (error) {
+    console.error('RootGauge not found for Streamer:', streamer);
+
+    return '';
+  }
 }
 
 async function getGaugeAddress(
