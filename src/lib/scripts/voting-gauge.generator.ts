@@ -61,13 +61,15 @@ async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
   const response = await fetch(`${poolsApiEndpoint}/${network}/${poolId}`);
   const { id, address, poolType, symbol, tokens } = await response.json();
 
-  const tokensList = tokens.map(token => {
-    return {
-      address: getAddress(token.address),
-      weight: token.weight || 'null',
-      symbol: token.symbol
-    };
-  });
+  const tokensList = tokens
+    .filter(token => token.address != address)
+    .map(token => {
+      return {
+        address: getAddress(token.address),
+        weight: token.weight || 'null',
+        symbol: token.symbol
+      };
+    });
 
   return {
     id,
