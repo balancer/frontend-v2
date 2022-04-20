@@ -41,7 +41,7 @@
             <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
-            <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
+            <div v-html="poolFeeLabel" class="text-sm text-gray-600 mr-2" />
             <BalTooltip>
               <template v-slot:activator>
                 <BalLink
@@ -49,13 +49,13 @@
                   :href="EXTERNAL_LINKS.Gauntlet.Home"
                   external
                 >
-                  <GauntletIcon class="ml-2" />
+                  <GauntletIcon />
                 </BalLink>
                 <BalIcon
                   v-else
                   name="info"
                   size="xs"
-                  class="text-gray-400 ml-2"
+                  class="text-gray-400"
                 />
               </template>
               <span>
