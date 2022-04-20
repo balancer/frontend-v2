@@ -39,9 +39,14 @@ const popper = ref<PopperInstance>();
 
 const tooltipClasses = computed(() => {
   return {
-    'p-3': !props.noPad,
     [`w-${props.width}`]: true,
     [`text-${props.textAlign}`]: props.textAlign !== ''
+  };
+});
+
+const tooltipPad = computed(() => {
+  return {
+    'p-3': !props.noPad,
   };
 });
 
@@ -83,43 +88,78 @@ onMounted(() => {
       <BalIcon :name="iconName" :size="iconSize" :class="iconClass" />
     </slot>
   </button>
-  <div
-    ref="content"
-    class="tooltip text-xs text-black dark:text-white bg-white dark:bg-gray-800 font-medium shadow-2xl rounded-md border dark:border-gray-900 z-50"
-    :class="tooltipClasses"
-    v-bind="$attrs"
-  >
-    <p v-if="text" v-text="text" />
-    <slot v-else />
+    <div
+      ref="content"
+      class="tooltip"
+      :class="tooltipClasses"
+      v-bind="$attrs"
+    >
+        <div :class="tooltipPad" class="tooltip-content">
+          <p class="tooltip-text" v-if="text" v-text="text" />
+          <slot v-else />
+        </div>      
   </div>
 </template>
 <style>
 .tooltip {
-  display: none;
-  position: relative;
+  @apply z-50 hidden relative shadow-sm;
 }
+
+.dark .tooltip {
+  @apply shadow-none;
+}
+
+/* Light mode gray shadow */
+
+.tooltip:before {
+  background-blend-mode: soft-light, soft-light, normal;
+  background: 
+    radial-gradient(circle at center, rgba(0,0,0,0.6), transparent)
+  ; 
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: blur(40px);
+  z-index: -1;
+  opacity: 0;
+  animation: fadeIn 0.4s ease-out 0.05s both;
+}
+
+/* Dark mode radial gradient shadow */
+
+.dark .tooltip:before {
+  background-blend-mode: soft-light, soft-light, normal;
+  background: 
+    radial-gradient(circle at left, yellow, transparent),
+    radial-gradient(ellipse at bottom right, blue, transparent),
+    radial-gradient(ellipse at top, red, transparent)
+  ; 
+  content: "";
+}
+
 
 .tooltip[data-show] {
   display: block;
 }
 
-.tooltip[data-popper-placement='top']:before {
-  border-left: solid transparent 8px;
-  border-right: solid transparent 8px;
-  border-top: solid rgba(234, 240, 246, 1) 8px;
-  bottom: 0;
-  content: ' ';
-  height: 0;
-  bottom: -9px;
-  left: calc(50% - 7px);
-  position: absolute;
-  width: 0;
+.tooltip[data-popper-placement='top'] .tooltip-content {
+  opacity: 0;
+  animation: fadeInMoveUp 0.2s ease-out both;
 }
 
-.tooltip[data-popper-placement='top']:after {
+.tooltip[data-popper-placement='bottom'] .tooltip-content {
+  opacity: 0;
+  animation: fadeInMoveDown 0.2s ease-out both;
+}
+
+.tooltip[data-popper-placement='top'] .tooltip-content:before {
+  border-top: solid #fff 8px;
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
-  border-top: solid #fff 8px;
   bottom: -8px;
   content: ' ';
   height: 0;
@@ -128,20 +168,19 @@ onMounted(() => {
   width: 0;
 }
 
-.tooltip[data-popper-placement='bottom']:before {
-  border-left: solid transparent 8px;
-  border-right: solid transparent 8px;
-  border-bottom: solid rgba(234, 240, 246, 1) 8px;
-  bottom: 0;
-  content: ' ';
-  height: 0;
-  top: -9px;
-  left: calc(50% - 7px);
-  position: absolute;
-  width: 0;
+.dark .tooltip[data-popper-placement='top'] .tooltip-content:before {
+  border-top: solid #0F172A 8px; /* gray-900 */
 }
 
-.tooltip[data-popper-placement='bottom']:after {
+.tooltip-content {
+  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900 font-medium;
+}
+
+.tooltip-text {
+  animation: fadeIn 0.5s ease-out 0.05s both;
+}
+
+.tooltip[data-popper-placement='bottom'] .tooltip-content:after {
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
   border-bottom: solid #fff 8px;
@@ -153,7 +192,8 @@ onMounted(() => {
   width: 0;
 }
 
-/* .tooltip[data-popper-placement="bottom"] {
-  background: green;
-} */
+.dark .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+  border-bottom: solid #0F172A 8px; /* gray-900 */
+}
+
 </style>
