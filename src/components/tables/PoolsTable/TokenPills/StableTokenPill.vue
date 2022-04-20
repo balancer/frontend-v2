@@ -60,6 +60,10 @@ withDefaults(defineProps<Props>(), {
   border-radius: 0px 4px 4px 0px;
 }
 
+.pill:only-child::before {
+  border-radius: 4px 4px 4px 4px;
+}
+
 .pill-text {
   @apply px-2 py-1;
   z-index: 1;

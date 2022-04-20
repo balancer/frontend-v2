@@ -8,7 +8,7 @@ const sidebarOpen = ref(false);
 /**
  * METHODS
  */
-function setSidebarOpen(newVal: boolean) {
+function setSidebarOpen(newVal: boolean): void {
   sidebarOpen.value = newVal;
 }
 
