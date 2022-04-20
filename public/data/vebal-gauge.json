@@ -1,0 +1,26 @@
+{
+  "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
+  "network": 1,
+  "pool": {
+    "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
+    "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
+    "poolType": "Weighted",
+    "symbol": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
+    "tokens": [
+      {
+        "address": "0xba100000625a3754423978a60c9317c58a424e3D",
+        "weight": "0.8",
+        "symbol": "BAL"
+      },
+      {
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "weight": "0.2",
+        "symbol": "WETH"
+      }
+    ]
+  },
+  "tokenLogoURIs": {
+    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "0xba100000625a3754423978a60c9317c58a424e3D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png"
+  }
+}
