@@ -4,23 +4,17 @@
   "pool": {
     "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
     "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
-    "poolType": "Weighted",
-    "symbol": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
+    "poolType": "Stable",
+    "symbol": "veBAL",
     "tokens": [
       {
-        "address": "0xba100000625a3754423978a60c9317c58a424e3D",
-        "weight": "0.8",
-        "symbol": "BAL"
-      },
-      {
-        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-        "weight": "0.2",
-        "symbol": "WETH"
+        "address": "0xc128a9954e6c874ea3d62ce62b468ba073093f25",
+        "weight": "null",
+        "symbol": "veBAL"
       }
     ]
   },
   "tokenLogoURIs": {
-    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-    "0xba100000625a3754423978a60c9317c58a424e3D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png"
+    "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
   }
 }
