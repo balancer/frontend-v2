@@ -1,4 +1,4 @@
-import { StablePoolEncoder } from '@balancer-labs/balancer-js';
+import { StablePoolEncoder } from '@balancer-labs/sdk';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export type JoinStablePoolInit = {
