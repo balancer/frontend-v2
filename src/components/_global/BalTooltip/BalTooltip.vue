@@ -105,7 +105,6 @@ onMounted(() => {
 }
 
 /* Light mode gray shadow */
-
 .tooltip:before {
   background-blend-mode: soft-light, soft-light, normal;
   background: radial-gradient(
@@ -127,7 +126,6 @@ onMounted(() => {
 }
 
 /* Dark mode radial gradient shadow */
-
 .dark .tooltip:before {
   background-blend-mode: soft-light, soft-light, normal;
   background: radial-gradient(ellipse at left, yellow, transparent),
@@ -150,11 +148,12 @@ onMounted(() => {
   animation: fadeInMoveDown 0.2s ease-out both;
 }
 
+/* bottom triangle for top placed tooltips */
 .tooltip[data-popper-placement='top'] .tooltip-content:before {
   border-top: solid #fff 8px;
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
-  bottom: -8px;
+  bottom: -7px;
   content: ' ';
   height: 0;
   left: calc(50% - 7px);
@@ -166,14 +165,7 @@ onMounted(() => {
   border-top: solid #0f172a 8px; /* gray-900 */
 }
 
-.tooltip-content {
-  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900 font-medium;
-}
-
-.tooltip-text {
-  animation: fadeIn 0.5s ease-out 0.05s both;
-}
-
+/* Top triangle for top placed tooltips */
 .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
@@ -188,5 +180,13 @@ onMounted(() => {
 
 .dark .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
   border-bottom: solid #0f172a 8px; /* gray-900 */
+}
+
+.tooltip-content {
+  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900 font-medium;
+}
+
+.tooltip-text {
+  animation: fadeIn 0.5s ease-out 0.05s both;
 }
 </style>

@@ -253,7 +253,6 @@ const chartGrid = computed(() => {
         >
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
           <BalTooltip
-            width="48"
             class="ml-2"
             :text="$t('coingeckoPricingTooltip')"
           >
