@@ -5,6 +5,7 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
+import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
 import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 
@@ -28,6 +29,28 @@ function getBalancerAssetsMultichainURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
 }
 
+async function getAssetURIFromTokenlists(
+  tokenAddress: string,
+  network: Network
+): Promise<string> {
+  const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
+  const allURIs = [
+    ...Object.values(tokenListURIs.Balancer),
+    ...tokenListURIs.External
+  ].filter(uri => uri.includes('https'));
+
+  const responses = await Promise.all(allURIs.map(uri => fetch(uri)));
+  const tokenLists = await Promise.all(
+    responses.map(response => response.json())
+  );
+  const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
+
+  const token = allTokens.find(
+    token => token.address === getAddress(tokenAddress)
+  );
+  return token?.logoURI ? token.logoURI : '';
+}
+
 function getTrustWalletAssetsURI(
   tokenAdress: string,
   network: Network
@@ -46,19 +69,26 @@ async function getTokenLogoURI(
   tokenAdress: string,
   network: Network
 ): Promise<string> {
+  let logoUri = '';
+  let response;
+
   if (network === Network.MAINNET) {
-    const logoUri = getBalancerAssetsURI(tokenAdress);
-    const { status } = await fetch(logoUri);
-    if (status === 200) return logoUri;
+    logoUri = getBalancerAssetsURI(tokenAdress);
+    response = await fetch(logoUri);
+    if (response.status === 200) return logoUri;
   } else {
-    const logoUri = getBalancerAssetsMultichainURI(tokenAdress);
-    const { status } = await fetch(logoUri);
-    if (status === 200) return logoUri;
+    logoUri = getBalancerAssetsMultichainURI(tokenAdress);
+    response = await fetch(logoUri);
+    if (response.status === 200) return logoUri;
   }
 
-  const logoUri = getTrustWalletAssetsURI(tokenAdress, network);
-  const { status } = await fetch(logoUri);
-  if (status === 200) return logoUri;
+  logoUri = getTrustWalletAssetsURI(tokenAdress, network);
+  response = await fetch(logoUri);
+  if (response.status === 200) return logoUri;
+
+  logoUri = await getAssetURIFromTokenlists(tokenAdress, network);
+  if (logoUri) response = await fetch(logoUri);
+  if (logoUri && response.status === 200) return logoUri;
 
   return '';
 }
