@@ -28,8 +28,7 @@ export default class AaveService {
       const reserves = await this.subgraphService.reserves.get({
         where: {
           underlyingAsset_in: pool.mainTokens,
-          isActive: true,
-          aEmissionPerSecond_gt: 0
+          isActive: true
         }
       });
 
