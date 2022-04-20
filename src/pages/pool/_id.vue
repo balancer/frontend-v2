@@ -51,12 +51,7 @@
                 >
                   <GauntletIcon />
                 </BalLink>
-                <BalIcon
-                  v-else
-                  name="info"
-                  size="xs"
-                  class="text-gray-400"
-                />
+                <BalIcon v-else name="info" size="xs" class="text-gray-400" />
               </template>
               <span>
                 {{ swapFeeToolTip }}

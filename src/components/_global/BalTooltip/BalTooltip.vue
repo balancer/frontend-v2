@@ -130,7 +130,7 @@ onMounted(() => {
 
 .dark .tooltip:before {
   background-blend-mode: soft-light, soft-light, normal;
-  background: radial-gradient(ellipse at left, yellow, transparent), 
+  background: radial-gradient(ellipse at left, yellow, transparent),
     radial-gradient(ellipse at bottom right, blue, transparent),
     radial-gradient(ellipse at top, red, transparent);
   content: '';
