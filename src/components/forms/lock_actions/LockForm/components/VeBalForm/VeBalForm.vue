@@ -75,7 +75,7 @@ const submissionDisabled = computed(() => {
     return true;
   }
 
-  if (props.veBalLockInfo?.hasExistingLock) {
+  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
     return !isIncreasedLockAmount.value && !isExtendedLockEndDate.value;
   }
 
@@ -95,7 +95,7 @@ const expectedVeBalAmount = computed(() => {
 });
 
 const lockType = computed(() => {
-  if (props.veBalLockInfo?.hasExistingLock) {
+  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
     if (isIncreasedLockAmount.value && isExtendedLockEndDate.value) {
       return [LockType.INCREASE_LOCK, LockType.EXTEND_LOCK];
     }
