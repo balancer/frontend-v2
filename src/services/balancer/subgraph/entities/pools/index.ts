@@ -7,8 +7,8 @@ import { networkId } from '@/composables/useNetwork';
 import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum } from '@/lib/utils';
-import { calcBoostedAPR } from '@/lib/utils/apr.helper';
+import { bnSum, bnum } from '@/lib/utils';
+import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   computeAPRsForPool,
@@ -345,34 +345,43 @@ export default class Pools {
         protocolFeePercentage
       );
     } else if (isStablePhantom(pool.poolType)) {
-      const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
-      const wrappedTokenBalances = wrappedTokens?.map(
-        token => linearPoolTokensMap?.[token].balance || ''
+      const aaveAPR = await aaveService.calcWeightedSupplyAPRFor(
+        pool,
+        prices,
+        currency
       );
-      const hasAllWrappedTokenBalances =
-        wrappedTokenBalances &&
-        wrappedTokenBalances.every(balance => !!balance);
+      let { total } = aaveAPR;
+      const { breakdown } = aaveAPR;
 
-      if (mainTokens && wrappedTokens && hasAllWrappedTokenBalances) {
-        const { total, breakdown } = await aaveService.calcWeightedSupplyAPRFor(
-          mainTokens,
-          wrappedTokens,
-          wrappedTokenBalances,
-          pool.totalLiquidity,
-          prices,
-          currency
-        );
-        calcBoostedAPR(
-          mainTokens,
-          wrappedTokens,
-          wrappedTokenBalances,
-          pool.totalLiquidity,
-          prices,
-          currency
-        );
-        thirdPartyAPR = total;
-        thirdPartyAPRBreakdown = breakdown;
+      // TODO burn with fire once scalable linear pool support is added.
+      // If USD+ pool, replace aave APR with USD+
+      const usdPlusPools = [
+        '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f',
+        '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445'
+      ];
+      if (usdPlusPools.includes(pool.id)) {
+        const usdPlusLinearPoolAddress =
+          '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425';
+        const linearPool =
+          pool.onchain?.linearPools?.[usdPlusLinearPoolAddress];
+        if (linearPool) {
+          const wrappedToken = linearPool.wrappedToken.address;
+          const weightedAPR = await calcUSDPlusWeightedAPR(
+            pool,
+            linearPool,
+            usdPlusLinearPoolAddress,
+            prices,
+            currency
+          );
+
+          breakdown[wrappedToken] = weightedAPR.toString();
+
+          total = bnSum(Object.values(breakdown)).toString();
+        }
       }
+
+      thirdPartyAPR = total;
+      thirdPartyAPRBreakdown = breakdown;
     }
 
     return {

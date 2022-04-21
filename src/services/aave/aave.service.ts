@@ -1,9 +1,11 @@
 import { getAddress } from '@ethersproject/address';
+import { groupBy } from 'lodash';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
+import { Pool } from '../balancer/subgraph/types';
 import AaveSubgraphService, {
   aaveSubgraphService
 } from './subgraph/aave-subgraph.service';
@@ -16,13 +18,20 @@ export default class AaveService {
   }
 
   public async calcWeightedSupplyAPRFor(
-    mainTokens: string[],
-    wrappedTokens: string[],
-    wrappedTokenBalances: string[],
-    totalLiquidity: string,
+    pool: Pool,
     prices: TokenPrices,
     currency: FiatCurrency
   ) {
+    const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
+    const wrappedTokenBalances = wrappedTokens?.map(
+      token => linearPoolTokensMap?.[token].balance || ''
+    );
+    const hasAllWrappedTokenBalances =
+      wrappedTokenBalances && wrappedTokenBalances.every(balance => !!balance);
+
+    if (!mainTokens || !wrappedTokens || !hasAllWrappedTokenBalances)
+      return { total: '0', breakdown: {} };
+
     let total = bnum(0);
     const breakdown: Record<string, string> = {};
 
@@ -33,7 +42,19 @@ export default class AaveService {
       }
     });
 
-    reserves.forEach(reserve => {
+    const groupedReserves = groupBy(reserves, 'underlyingAsset');
+
+    Object.keys(groupedReserves).forEach(key => {
+      const linearPoolReserves = groupedReserves[key];
+      const reserve =
+        linearPoolReserves.length === 1
+          ? linearPoolReserves[0]
+          : linearPoolReserves.find(reserve =>
+              bnum(reserve.aEmissionPerSecond).gt(0)
+            );
+
+      if (!reserve) return;
+
       const supplyAPR = bnum(reserve.supplyAPR);
 
       if (supplyAPR.gt(0)) {
@@ -43,12 +64,20 @@ export default class AaveService {
         // Grabs the matching wrapped which generates the yield
         const wrappedToken = wrappedTokens[tokenIndex];
         const mainToken = mainTokens[tokenIndex];
+        const linearPoolAddress = pool.tokenAddresses[tokenIndex];
+        const linearPool = pool.onchain?.linearPools?.[linearPoolAddress];
 
-        if (prices[mainToken] != null) {
+        if (prices[mainToken] != null && linearPool) {
           const price = prices[mainToken][currency] || 0;
           const balance = wrappedTokenBalances[tokenIndex];
-          const value = bnum(balance).times(price);
-          const weightedAPR = value.times(supplyAPR).div(totalLiquidity);
+          const linearPoolBalance =
+            pool.onchain?.tokens[linearPoolAddress].balance || '0';
+          const linearPoolShare = bnum(linearPoolBalance).div(
+            linearPool.totalSupply
+          );
+          const actualBalance = bnum(balance).times(linearPoolShare);
+          const value = bnum(actualBalance).times(price);
+          const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
 
           breakdown[wrappedToken] = weightedAPR.toString();
 
