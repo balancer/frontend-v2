@@ -645,10 +645,20 @@
         "myVeBAL": {
             "title": "My veBAL",
             "cards": {
-                "myLpToken": "My {0}",
-                "myLockedLpToken": "My locked {0}",
-                "lockedEndDate": "Locked until",
-                "myVeBAL": "My veBAL"
+                "myLpToken": {
+                    "title": "My {0}"
+                },
+                "myLockedLpToken": {
+                    "title": "My locked {0}"
+                },
+                "lockedEndDate": {
+                    "title": "Locked until",
+                    "secondaryText": "{0} days"
+                },
+                "myVeBAL": {
+                    "title": "My veBAL",
+                    "secondaryText": "{0} of all veBAL"
+                }
             }
         },
         "communityVeBAL": {
