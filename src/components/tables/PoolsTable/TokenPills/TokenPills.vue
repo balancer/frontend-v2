@@ -66,6 +66,7 @@ const MAX_PILLS = 11;
         :key="token.address"
         :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
+        :token="token"
         :isSelected="selectedTokens.includes(token.address)"
       />
     </template>
@@ -76,6 +77,7 @@ const MAX_PILLS = 11;
         :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :weight="weightFor(token)"
+        :token="token"
         :isSelected="selectedTokens.includes(token.address)"
       />
       <HiddenTokensPills

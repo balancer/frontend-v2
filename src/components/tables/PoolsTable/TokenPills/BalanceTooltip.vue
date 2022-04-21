@@ -1,0 +1,43 @@
+<script setup lang="ts">
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { shortenLabel } from '@/lib/utils';
+import { PoolToken } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
+
+/**
+ * TYPES
+ */
+type Props = {
+  token: PoolToken;
+  symbol: string;
+};
+
+defineProps<Props>();
+
+/**
+ * COMPOSABLES
+ */
+const { fNum2, toFiat } = useNumbers();
+const { account } = useWeb3();
+</script>
+
+<template>
+  <div>
+    <div class="mb-2 text-gray-400 dark:text-gray-500">
+      {{ $t('tokenPills.balanceTooltip.title', [shortenLabel(account)]) }}
+    </div>
+    <div class="flex">
+      <BalAsset :address="token.address" :size="36" class="mr-2" />
+      <div>
+        <div class="font-semibold text-sm">
+          {{ fNum2(token.balance, FNumFormats.token) }}
+          {{ symbol }}
+        </div>
+        <div class="text-gray-400 dark:text-gray-500">
+          {{ fNum2(toFiat(token.balance, token.address), FNumFormats.fiat) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

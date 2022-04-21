@@ -909,7 +909,10 @@
     "tokenInjected": "This token is injected",
     "tokenLists": "Token lists",
     "tokenPills": {
-        "hiddenTokens": "+{0} tokens"
+        "hiddenTokens": "+{0} tokens",
+        "balanceTooltip": {
+            "title": "In your wallet {0}"
+        }
     },
     "tokens": "Tokens",
     "tokenSearch": "Token search",

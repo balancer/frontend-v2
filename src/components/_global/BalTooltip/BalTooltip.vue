@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import BalIcon, { IconSize } from '../BalIcon/BalIcon.vue';
 
@@ -19,6 +19,7 @@ type Props = {
   iconClass?: string;
   width?: string;
   textAlign?: TextAlign;
+  delayMs?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -30,12 +31,15 @@ const props = withDefaults(defineProps<Props>(), {
   textAlign: '',
   iconName: 'info',
   iconSize: 'md',
-  iconClass: 'text-gray-300'
+  iconClass: 'text-gray-300',
+  delayMs: 0
 });
 
 const activator = ref<HTMLElement>();
 const content = ref<HTMLElement>();
 const popper = ref<PopperInstance>();
+
+let delayTimeout: NodeJS.Timeout;
 
 const tooltipClasses = computed(() => {
   return {
@@ -46,21 +50,40 @@ const tooltipClasses = computed(() => {
 });
 
 // show the tooltip
-const handleMouseEnter = () => {
-  if (!props.disabled && content.value && popper.value) {
+function showTooltip() {
+  if (content.value && popper.value) {
     content.value.setAttribute('data-show', '');
     popper.value.update();
     props.onShow && props.onShow();
   }
-};
+}
 
 // hide the tooltip
-const handleMouseLeave = () => {
-  if (!props.disabled && content.value) {
+function hideTooltip() {
+  if (content.value) {
     content.value.removeAttribute('data-show');
     props.onHide && props.onHide();
   }
-};
+}
+
+function handleMouseEnter() {
+  if (!props.disabled) {
+    if (props.delayMs > 0) {
+      delayTimeout = setTimeout(showTooltip, props.delayMs);
+    } else {
+      showTooltip();
+    }
+  }
+}
+
+function handleMouseLeave() {
+  if (!props.disabled) {
+    if (delayTimeout != null) {
+      clearTimeout(delayTimeout);
+    }
+    hideTooltip();
+  }
+}
 
 onMounted(() => {
   if (activator.value && content.value) {
@@ -68,6 +91,12 @@ onMounted(() => {
       placement: props.placement,
       modifiers: [{ name: 'offset', options: { offset: [0, 5] } }]
     });
+  }
+});
+
+onUnmounted(() => {
+  if (delayTimeout != null) {
+    clearTimeout(delayTimeout);
   }
 });
 </script>
