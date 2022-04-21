@@ -646,17 +646,17 @@
             "title": "My veBAL",
             "cards": {
                 "myLpToken": {
-                    "title": "My {0}"
+                    "label": "My {0}"
                 },
                 "myLockedLpToken": {
-                    "title": "My locked {0}"
+                    "label": "My locked {0}"
                 },
                 "lockedEndDate": {
-                    "title": "Locked until",
+                    "label": "Locked until",
                     "secondaryText": "{0} days"
                 },
                 "myVeBAL": {
-                    "title": "My veBAL",
+                    "label": "My veBAL",
                     "secondaryText": "{0} of all veBAL"
                 }
             }

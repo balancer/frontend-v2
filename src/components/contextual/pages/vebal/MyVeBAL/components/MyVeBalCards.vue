@@ -86,7 +86,7 @@ const cards = computed(() => {
   return [
     {
       id: 'myLpToken',
-      label: t('veBAL.myVeBAL.cards.myLpToken.title', [
+      label: t('veBAL.myVeBAL.cards.myLpToken.label', [
         props.lockablePoolTokenInfo?.symbol
       ]),
       value: isWalletReady.value
@@ -104,7 +104,7 @@ const cards = computed(() => {
     },
     {
       id: 'myLockedLpToken',
-      label: t('veBAL.myVeBAL.cards.myLockedLpToken.title', [
+      label: t('veBAL.myVeBAL.cards.myLockedLpToken.label', [
         props.lockablePoolTokenInfo?.symbol
       ]),
       value: isWalletReady.value
@@ -119,7 +119,7 @@ const cards = computed(() => {
     },
     {
       id: 'lockedEndDate',
-      label: t('veBAL.myVeBAL.cards.lockedEndDate.title'),
+      label: t('veBAL.myVeBAL.cards.lockedEndDate.label'),
       value: lockedUntil.value,
       secondaryText:
         hasExistingLock && !isExpired
@@ -132,7 +132,7 @@ const cards = computed(() => {
     },
     {
       id: 'myVeBAL',
-      label: t('veBAL.myVeBAL.cards.myVeBAL.title'),
+      label: t('veBAL.myVeBAL.cards.myVeBAL.label'),
       secondaryText:
         hasExistingLock && !isExpired
           ? t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
