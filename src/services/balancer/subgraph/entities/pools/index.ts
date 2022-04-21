@@ -344,13 +344,30 @@ export default class Pools {
         protocolFeePercentage
       );
     } else if (isStablePhantom(pool.poolType)) {
-      const {
-        total,
-        tokenBreakdown
-      } = await aaveService.calcWeightedSupplyAPRFor(pool, prices, currency);
+      const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
+      const wrappedTokenBalances = wrappedTokens?.map(
+        token => linearPoolTokensMap?.[token].balance || ''
+      );
+      const hasAllWrappedTokenBalances =
+        wrappedTokenBalances &&
+        wrappedTokenBalances.every(balance => !!balance);
 
-      thirdPartyAPR = total;
-      thirdPartyAPRBreakdown = tokenBreakdown;
+      if (mainTokens && wrappedTokens && hasAllWrappedTokenBalances) {
+        const {
+          total,
+          tokenBreakdown
+        } = await aaveService.calcWeightedSupplyAPRFor(
+          // mainTokens,
+          // wrappedTokens,
+          // wrappedTokenBalances,
+          pool,
+          prices,
+          currency
+        );
+        // calcBoostedAPR(pool, prices, currency);
+        thirdPartyAPR = total;
+        thirdPartyAPRBreakdown = tokenBreakdown;
+      }
     }
 
     return {
