@@ -5,20 +5,15 @@ import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
 
+import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
-import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
+import { VotingGauge } from '@/constants/voting-gauges';
+import { getPlatformId } from '@/services/coingecko/coingecko.service';
 
+import vebalGauge from '../../../public/data/vebal-gauge.json';
 import config from '../config';
 
 dotenv.config({ path: __dirname + '/../../../.env.development' });
-
-type Pool = {
-  id: string;
-  address: string;
-  poolType: PoolType;
-  symbol: string;
-  tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
-};
 
 function getBalancerAssetsURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
@@ -26,6 +21,46 @@ function getBalancerAssetsURI(tokenAdress: string): string {
 
 function getBalancerAssetsMultichainURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/${tokenAdress.toLowerCase()}.png`;
+}
+
+async function getAssetURIFromTokenlists(
+  tokenAddress: string,
+  network: Network
+): Promise<string> {
+  const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
+  const allURIs = [
+    ...Object.values(tokenListURIs.Balancer),
+    ...tokenListURIs.External
+  ].filter(uri => uri.includes('https'));
+
+  const responses = await Promise.all(allURIs.map(uri => fetch(uri)));
+  const tokenLists = await Promise.all(
+    responses.map(response => response.json())
+  );
+  const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
+
+  const token = allTokens.find(
+    token => token.address === getAddress(tokenAddress)
+  );
+  return token?.logoURI ? token.logoURI : '';
+}
+
+async function getMainnetTokenAddresss(
+  tokenAdress: string,
+  network: Network
+): Promise<string> {
+  const coingeckoEndpoint = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
+    network.toString()
+  )}/contract/${tokenAdress.toLowerCase()}`;
+
+  const response = await fetch(coingeckoEndpoint);
+
+  if (response.status === 200) {
+    const data = await response.json();
+    return getAddress(data.platforms.ethereum);
+  } else {
+    return '';
+  }
 }
 
 function getTrustWalletAssetsURI(
@@ -46,24 +81,41 @@ async function getTokenLogoURI(
   tokenAdress: string,
   network: Network
 ): Promise<string> {
+  let logoUri = '';
+  let response;
+
   if (network === Network.MAINNET) {
-    const logoUri = getBalancerAssetsURI(tokenAdress);
-    const { status } = await fetch(logoUri);
-    if (status === 200) return logoUri;
+    logoUri = getBalancerAssetsURI(tokenAdress);
+    response = await fetch(logoUri);
+    if (response.status === 200) return logoUri;
   } else {
-    const logoUri = getBalancerAssetsMultichainURI(tokenAdress);
-    const { status } = await fetch(logoUri);
-    if (status === 200) return logoUri;
+    logoUri = getBalancerAssetsMultichainURI(tokenAdress);
+    response = await fetch(logoUri);
+    if (response.status === 200) return logoUri;
   }
 
-  const logoUri = getTrustWalletAssetsURI(tokenAdress, network);
-  const { status } = await fetch(logoUri);
-  if (status === 200) return logoUri;
+  logoUri = getTrustWalletAssetsURI(tokenAdress, network);
+  response = await fetch(logoUri);
+  if (response.status === 200) return logoUri;
+
+  logoUri = await getAssetURIFromTokenlists(tokenAdress, network);
+  if (logoUri) response = await fetch(logoUri);
+  if (logoUri && response.status === 200) return logoUri;
+
+  if (network === Network.ARBITRUM || network === Network.POLYGON) {
+    const mainnetAddress = await getMainnetTokenAddresss(tokenAdress, network);
+    logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
+    response = await fetch(logoUri);
+    if (logoUri && response.status === 200) return logoUri;
+  }
 
   return '';
 }
 
-async function getPoolInfo(poolId: string, network: Network): Promise<Pool> {
+async function getPoolInfo(
+  poolId: string,
+  network: Network
+): Promise<VotingGauge['pool']> {
   const poolsApiEndpoint = process.env.POOLS_API_URL;
   const response = await fetch(`${poolsApiEndpoint}/${network}/${poolId}`);
   const { id, address, poolType, symbol, tokens } = await response.json();
@@ -244,9 +296,9 @@ async function getGaugeAddress(
 }
 
 (async () => {
-  console.log('Run script');
+  console.log('Generating voting-gauges.json...');
 
-  const votingGauges = await Promise.all(
+  let votingGauges = await Promise.all(
     POOLS.map(async ({ id, network }) => {
       const address = await getGaugeAddress(id, network);
       const pool = await getPoolInfo(id, network);
@@ -268,6 +320,8 @@ async function getGaugeAddress(
     })
   );
 
+  votingGauges = [vebalGauge as VotingGauge, ...votingGauges];
+
   const jsonFilePath = path.resolve(
     __dirname,
     '../../../public/data/voting-gauges.json'
@@ -278,6 +332,4 @@ async function getGaugeAddress(
       console.log(err);
     }
   });
-
-  // console.log(votingGauges);
 })();

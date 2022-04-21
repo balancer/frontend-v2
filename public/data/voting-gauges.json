@@ -1,5 +1,25 @@
 [
   {
+    "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
+    "network": 1,
+    "pool": {
+      "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
+      "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
+      "poolType": "Stable",
+      "symbol": "veBAL",
+      "tokens": [
+        {
+          "address": "0xc128a9954e6c874ea3d62ce62b468ba073093f25",
+          "weight": "null",
+          "symbol": "veBAL"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+    }
+  },
+  {
     "address": "0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac",
     "network": 1,
     "pool": {
@@ -954,8 +974,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x32Eb7902D4134bf98A28b963D26de779AF92A212": "",
-      "0x6C2C06790b3E3E3c38e12Ee22F8183b37a13EE55": "",
+      "0x32Eb7902D4134bf98A28b963D26de779AF92A212": "https://assets.coingecko.com/coins/images/16659/large/rDPX_200x200_Coingecko.png?1624614475",
+      "0x6C2C06790b3E3E3c38e12Ee22F8183b37a13EE55": "https://assets.coingecko.com/coins/images/16652/large/DPX_%281%29.png?1624598630",
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png"
     }
   },
@@ -986,7 +1006,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f": "",
+      "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
       "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8/logo.png"
     }
@@ -1078,7 +1098,7 @@
     },
     "tokenLogoURIs": {
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0x965772e0E9c84b6f359c8597C891108DcF1c5B1A": ""
+      "0x965772e0E9c84b6f359c8597C891108DcF1c5B1A": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x429881672B9AE42b8EbA0E26cD9C73711b891Ca5/logo.png"
     }
   },
   {
@@ -1104,7 +1124,7 @@
     },
     "tokenLogoURIs": {
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4": ""
+      "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png"
     }
   },
   {
@@ -1214,7 +1234,7 @@
     },
     "tokenLogoURIs": {
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xA72159FC390f0E3C6D415e658264c7c4051E9b87": ""
+      "0xA72159FC390f0E3C6D415e658264c7c4051E9b87": "https://assets.coingecko.com/coins/images/18271/large/tracer_logo.png?1631176676"
     }
   },
   {
@@ -1272,7 +1292,7 @@
     },
     "tokenLogoURIs": {
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
-      "0xa0b862F60edEf4452F25B4160F177db44DeB6Cf1": ""
+      "0xa0b862F60edEf4452F25B4160F177db44DeB6Cf1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png"
     }
   },
   {
@@ -1297,7 +1317,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42": "",
+      "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42/logo.png",
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png"
     }
   },
@@ -1323,7 +1343,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8": "",
+      "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png"
     }
   },
@@ -1362,7 +1382,7 @@
       "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": ""
+      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png"
     }
   },
   {
@@ -1392,7 +1412,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "",
+      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png"
     }
@@ -1419,7 +1439,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "",
+      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32/logo.png"
     }
   },
@@ -1452,7 +1472,7 @@
     "tokenLogoURIs": {
       "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0xF501dd45a1198C2E1b5aEF5314A68B9006D842E0": ""
+      "0xF501dd45a1198C2E1b5aEF5314A68B9006D842E0": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xa3BeD4E1c75D00fa6f4E5E6922DB7261B5E9AcD2/logo.png"
     }
   },
   {
@@ -1482,9 +1502,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x2C89bbc92BD86F8075d1DEcc58C7F4E0107f286b": "",
+      "0x2C89bbc92BD86F8075d1DEcc58C7F4E0107f286b": "https://raw.githubusercontent.com/trustwallet/assets/2563ac9dc5369d8e3255cde663cf7f08e3c58914/blockchains/avalanchec/info/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0x7DfF46370e9eA5f0Bad3C4E29711aD50062EA7A4": ""
+      "0x7DfF46370e9eA5f0Bad3C4E29711aD50062EA7A4": "https://raw.githubusercontent.com/trustwallet/assets/2563ac9dc5369d8e3255cde663cf7f08e3c58914/blockchains/solana/info/logo.png"
     }
   },
   {
@@ -1558,7 +1578,7 @@
     },
     "tokenLogoURIs": {
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x2e1AD108fF1D8C782fcBbB89AAd783aC49586756": "",
+      "0x2e1AD108fF1D8C782fcBbB89AAd783aC49586756": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0000000000085d4780B73119b644AE5ecd22b376/logo.png",
       "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063/logo.png",
       "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0xc2132D05D31c914a87C6611C10748AEb04B58e8F/logo.png"
     }
@@ -1649,8 +1669,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "",
-      "0xDBf31dF14B66535aF65AaC99C32e9eA844e14501": ""
+      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0xDBf31dF14B66535aF65AaC99C32e9eA844e14501": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D/logo.png"
     }
   },
   {
@@ -1675,7 +1695,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "",
+      "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png"
     }
   },
@@ -1702,7 +1722,7 @@
     },
     "tokenLogoURIs": {
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0xDB7Cb471dd0b49b29CAB4a1C14d070f27216a0Ab": ""
+      "0xDB7Cb471dd0b49b29CAB4a1C14d070f27216a0Ab": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198/logo.png"
     }
   },
   {
@@ -1797,7 +1817,7 @@
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
       "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "",
+      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0xD6DF932A45C0f255f85145f286eA0b292B21C90B": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0xD6DF932A45C0f255f85145f286eA0b292B21C90B/logo.png"
     }
   },
@@ -1823,7 +1843,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x034b2090b579228482520c589dbD397c53Fc51cC": "",
+      "0x034b2090b579228482520c589dbD397c53Fc51cC": "https://s3-us-west-2.amazonaws.com/acf-uploads/apyvisionlogo200circle.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png"
     }
   },
@@ -1881,7 +1901,7 @@
     },
     "tokenLogoURIs": {
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png",
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "",
+      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32/logo.png"
     }
   },
@@ -1919,7 +1939,7 @@
     "tokenLogoURIs": {
       "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39/logo.png",
       "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619/logo.png",
-      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "",
+      "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0xD6DF932A45C0f255f85145f286eA0b292B21C90B": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0xD6DF932A45C0f255f85145f286eA0b292B21C90B/logo.png"
     }
   },
@@ -1942,8 +1962,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "",
-      "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1": ""
+      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
     }
   },
   {
@@ -1969,9 +1989,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "",
-      "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7": "",
-      "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115": ""
+      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
+      "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
     }
   },
   {
