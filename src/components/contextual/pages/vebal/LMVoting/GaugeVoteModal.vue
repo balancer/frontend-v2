@@ -205,11 +205,7 @@ const remainingVotes = computed(() => {
   ]);
 });
 
-const inputRules = [
-  v => !v || isVoteWeightValid(v) || '',
-  isPositive(),
-  isGreaterThan(0)
-];
+const inputRules = [v => !v || isVoteWeightValid(v) || '', isPositive()];
 
 /**
  * METHODS
