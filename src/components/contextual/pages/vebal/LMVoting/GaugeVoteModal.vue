@@ -19,7 +19,7 @@ import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { bnum, scale } from '@/lib/utils';
-import { isGreaterThan, isPositive } from '@/lib/utils/validations';
+import { isPositive } from '@/lib/utils/validations';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
@@ -205,11 +205,7 @@ const remainingVotes = computed(() => {
   ]);
 });
 
-const inputRules = [
-  v => !v || isVoteWeightValid(v) || '',
-  isPositive(),
-  isGreaterThan(0)
-];
+const inputRules = [v => !v || isVoteWeightValid(v) || '', isPositive()];
 
 /**
  * METHODS
