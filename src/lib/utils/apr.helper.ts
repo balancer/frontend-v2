@@ -1,6 +1,10 @@
 import { FiatCurrency } from '@/constants/currency';
 import { aaveService } from '@/services/aave/aave.service';
-import { FullPool, LinearPoolData, Pool } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  LinearPoolData,
+  Pool
+} from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { LinearPoolFactory } from '@/services/linear-pool/linear-pool.factory';
 
