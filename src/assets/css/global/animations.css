@@ -39,3 +39,14 @@
       transform: translateY(0px);
   }
 }
+
+@keyframes spin-quarter {
+  from {
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-90deg);
+    opacity: 1;
+  }
+}
