@@ -143,7 +143,7 @@ export default defineComponent({
 }
 
 .my-wallet .addresses-row {
-  @apply flex-wrap gap-1.5;
+  @apply flex-wrap gap-2;
   width: auto !important;
   height: auto !important;
 }

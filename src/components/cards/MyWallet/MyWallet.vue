@@ -71,7 +71,7 @@ const tokensWithBalance = computed(() => {
             @click="setTokenInAddress"
             :width="275"
             wrap
-            :size="32"
+            :size="30"
             :addresses="tokensWithBalance"
             :maxAssetsPerLine="28"
           >
