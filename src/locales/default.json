@@ -449,6 +449,7 @@
     "noRecentActivity": "Your recent activity will appear here…",
     "noResults": "No results.",
     "noSwapsPool": "No swaps in this pool.",
+    "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
     "numberOfPools": "Number of pools",
     "notAvailable": "N/A",
     "oneDay": "1D",

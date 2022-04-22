@@ -7,6 +7,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { useI18n } from 'vue-i18n';
 
 const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -17,10 +18,16 @@ const {
   dynamicDataLoading: isLoadingBalances
 } = useTokens();
 const nativeCurrency = configService.network.nativeAsset.symbol;
+const networkName = configService.network.name;
+const { t } = useI18n();
 
 const etherBalance = computed(() => {
   if (!isWalletReady.value) return '-';
   return Number(balanceFor(appNetworkConfig.nativeAsset.address)).toFixed(4);
+});
+
+const noTokensMessage = computed(() => {
+  return t('noTokensInWallet', [ networkName ]);
 });
 
 const tokensWithBalance = computed(() => {
@@ -59,15 +66,18 @@ const tokensWithBalance = computed(() => {
       </div>
       <div class="my-wallet h-full p-3 z-0">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
-        <BalAssetSet
-          v-else-if="isWalletReady"
+        <div v-else-if="isWalletReady">
+          <BalAssetSet
           @click="setTokenInAddress"
           :width="275"
           wrap
           :size="32"
           :addresses="tokensWithBalance"
           :maxAssetsPerLine="28"
-        ></BalAssetSet>
+        >
+        </BalAssetSet>
+          <p class="text-sm text-gray-500 dark:text-gray-400 opacity-0 fade-in" v-if="tokensWithBalance.length === 0">{{noTokensMessage}}.</p>
+        </div>
         <div v-else class="w-full mt-4 lg:mt-0 flex justify-center">
           <BalLink @click="toggleWalletSelectModal"
             >Connect your wallet</BalLink
