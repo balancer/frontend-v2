@@ -121,7 +121,7 @@ defineExpose({ hide });
 }
 .modal-enter-from,
 .modal-leave-to {
-  transform: translateY(50px);
+  transform: translateY(12px);
   opacity: 0;
 }
 </style>
