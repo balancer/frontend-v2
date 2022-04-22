@@ -76,10 +76,13 @@
       </div>-->
       <div v-if="joined" class="mt-6 mb-2">
         <p class="text-yellow-500">
-          We're still looking for the magic recipe that allows us to verify
-          factory created contracts through the ftmscan API. Until then, please
-          reach out to us on discord and someone from the team will manually
-          verify your contract.
+          Please follow these instructions at
+          <BalLink
+            href="https://docs.beets.fi/developers/pool-verification"
+            external
+            >Pool Verification</BalLink
+          >
+          to verify your pool.
         </p>
       </div>
     </div>

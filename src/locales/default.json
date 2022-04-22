@@ -317,6 +317,7 @@
   "mustBeValidEmail": "must be a valid email",
   "mustBeValidNum": "must be a valid number",
   "mustBeGreaterThan": "must be greater than {0}",
+  "mustBeLessThanChars": "must be less than {0} characters",
   "mustBeValidAddress": "This is not a valid Ethereum address",
   "myBalance": "My balance",
   "myInvestments": "My V2 Balancer investments",
