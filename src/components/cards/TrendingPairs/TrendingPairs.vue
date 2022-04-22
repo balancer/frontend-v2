@@ -26,7 +26,7 @@ const getTrendingTradePairs = async () => {
     where: {
       timestamp_gte: getUnixTime(new Date().setUTCHours(0, 0, 0, 0))
     },
-    first: 5
+    first: 6
   });
 };
 
@@ -79,14 +79,14 @@ const setTradePair = (pair: TrendingPair[]) => {
       >
         <h6>{{ $t('trendingPairs') }}</h6>
       </div>
-      <div class="px-1 lg:p-3 flex flex-wrap">
+      <div class="px-1 lg:p-3 flex flex-wrap gap-3">
         <button
-          class="py-1 px-2 bg-transparent hover:bg-blue-500 hover:text-white text-sm rounded-lg lg:shadow my-2 mr-2 font-medium lg:font-normal"
+          class="py-1 px-2 bg-transparent hover:bg-blue-500 hover:text-white text-sm rounded-lg border dark:border-gray-700 font-medium lg:font-normal shadow-sm transition-colors"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
           @click="setTradePair(pair)"
         >
-          {{ pair[0].symbol }}/{{ pair[1].symbol }}
+          {{ pair[0].symbol }} <span class="text-xs relative -top-px">-></span>  {{ pair[1].symbol }}
         </button>
       </div>
     </div>
