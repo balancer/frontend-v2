@@ -86,7 +86,8 @@ const setTradePair = (pair: TrendingPair[]) => {
           :key="`trendingPair-${i}`"
           @click="setTradePair(pair)"
         >
-          {{ pair[0].symbol }} <span class="text-xs relative -top-px">-></span>  {{ pair[1].symbol }}
+          {{ pair[0].symbol }} <span class="text-xs relative -top-px">-></span>
+          {{ pair[1].symbol }}
         </button>
       </div>
     </div>
