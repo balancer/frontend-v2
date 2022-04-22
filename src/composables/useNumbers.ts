@@ -14,13 +14,15 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
   fixedFormat?: boolean; // If true, don't auto-adjust based on number magnitde
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
   dontAdjustLarge?: boolean; // If true, don't auto-adjust if the number is large
+  returnLessBasicPoint?: boolean; // If true, return less than basic point (< 0.01%) instead of 0.00%, if num < 0.00005
 }
 
 export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'percent',
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
+    returnLessBasicPoint: false
   },
   token: {
     maximumFractionDigits: 4
@@ -162,6 +164,10 @@ export default function useNumbers() {
 
     if (!options.fixedFormat && number < 1e-6) {
       number = 0;
+    }
+
+    if (options.returnLessBasicPoint && number > 0 && number < 0.00005) {
+      return '< 0.01%';
     }
 
     const formatter = new Intl.NumberFormat('en-US', formatterOptions);
