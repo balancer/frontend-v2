@@ -147,12 +147,15 @@ export default defineComponent({
   width: auto !important;
   height: auto !important;
 }
-.my-wallet .addresses-row > img, .my-wallet .addresses-row > .token-icon {
+.my-wallet .addresses-row > img,
+.my-wallet .addresses-row > .token-icon {
   @apply cursor-pointer transition-transform border-0 shadow;
-  
 }
 
-.my-wallet .addresses-row > img:hover, .my-wallet .addresses-row > img:focus, .my-wallet .addresses-row > .token-icon:hover, .my-wallet .addresses-row > .token-icon:focus {
+.my-wallet .addresses-row > img:hover,
+.my-wallet .addresses-row > img:focus,
+.my-wallet .addresses-row > .token-icon:hover,
+.my-wallet .addresses-row > .token-icon:focus {
   @apply scale-110 transform-gpu;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -162,7 +165,8 @@ export default defineComponent({
 }
 
 /* After the first three rows, display any remaining tokens smaller to fit more in */
-.my-wallet .addresses-row:nth-child(n+2) img, .my-wallet .addresses-row:nth-child(n+2) .token-icon {
+.my-wallet .addresses-row:nth-child(n + 2) img,
+.my-wallet .addresses-row:nth-child(n + 2) .token-icon {
   width: 24px !important;
   height: 24px !important;
 }
@@ -177,5 +181,4 @@ export default defineComponent({
 .my-wallet .token-icon {
   @apply ml-0;
 }
-
 </style>
