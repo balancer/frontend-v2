@@ -40,7 +40,7 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
         {
           chainId: hexChainId,
           chainName: appNetworkConfig.name,
-          rpcUrls: [appNetworkConfig.publicRpc],
+          rpcUrls: [appNetworkConfig.rpc],
           iconUrls: [appNetworkConfig.nativeAsset.logoURI],
           nativeCurrency: {
             name: appNetworkConfig.nativeAsset.name,
