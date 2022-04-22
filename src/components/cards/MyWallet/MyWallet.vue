@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { take } from 'lodash';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { useI18n } from 'vue-i18n';
 
 const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -27,7 +27,7 @@ const etherBalance = computed(() => {
 });
 
 const noTokensMessage = computed(() => {
-  return t('noTokensInWallet', [ networkName ]);
+  return t('noTokensInWallet', [networkName]);
 });
 
 const tokensWithBalance = computed(() => {
@@ -68,17 +68,22 @@ const tokensWithBalance = computed(() => {
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <BalAssetSet
-          @click="setTokenInAddress"
-          :width="275"
-          wrap
-          :size="32"
-          :addresses="tokensWithBalance"
-          :maxAssetsPerLine="28"
-        >
-        </BalAssetSet>
-          <p class="text-sm text-gray-500 dark:text-gray-400 opacity-0 fade-in" v-if="tokensWithBalance.length === 0">{{noTokensMessage}}.</p>
+            @click="setTokenInAddress"
+            :width="275"
+            wrap
+            :size="32"
+            :addresses="tokensWithBalance"
+            :maxAssetsPerLine="28"
+          >
+          </BalAssetSet>
+          <p
+            class="text-sm text-gray-500 dark:text-gray-400 opacity-0 fade-in"
+            v-if="tokensWithBalance.length === 0"
+          >
+            {{ noTokensMessage }}.
+          </p>
         </div>
-        <div v-else class="w-full mt-4 lg:mt-0 flex justify-center">
+        <div v-else class="w-full mt-4 lg:mt-0 flex font-medium">
           <BalLink @click="toggleWalletSelectModal"
             >Connect your wallet</BalLink
           >
