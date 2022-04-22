@@ -57,7 +57,7 @@ const tokensWithBalance = computed(() => {
         </div>
         <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
-      <div class="h-full p-3 z-0">
+      <div class="my-wallet h-full p-3 z-0">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <BalAssetSet
           v-else-if="isWalletReady"
@@ -66,7 +66,7 @@ const tokensWithBalance = computed(() => {
           wrap
           :size="32"
           :addresses="tokensWithBalance"
-          :max-asssets-per-line="7"
+          :maxAssetsPerLine="28"
         ></BalAssetSet>
         <div v-else class="w-full mt-4 lg:mt-0 flex justify-center">
           <BalLink @click="toggleWalletSelectModal"
