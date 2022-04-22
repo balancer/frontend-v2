@@ -180,7 +180,7 @@ watch(blockNumber, async () => {
 }
 
 .social-link {
-  @apply w-12 h-12 rounded-full bg-gray-850 hover:bg-gray-800 flex items-center justify-center text-white cursor-pointer;
+  @apply w-11 h-11 xs:w-12 xs:h-12  rounded-full bg-gray-850 hover:bg-gray-800 flex items-center justify-center text-white cursor-pointer;
 }
 
 .social-link > svg {
