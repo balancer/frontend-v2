@@ -80,14 +80,14 @@ watch(blockNumber, async () => {
 </script>
 
 <template>
-  <div>
+  <div class="opacity-0 fade-in-delay">
     <div
       class="h-20 px-4 border-b border-gray-800 flex flex-col justify-center"
     >
       <AppLogo forceDark />
     </div>
 
-    <div class="grid grid-col-1 text-lg">
+    <div class="grid grid-col-1 text-lg mt-2">
       <div
         v-for="link in navLinks"
         :key="link.label"
@@ -98,8 +98,8 @@ watch(blockNumber, async () => {
       </div>
     </div>
 
-    <div class="grid grid-col-1 text-sm mt-6">
-      <span class="text-gray-500 px-4 font-medium">Ecosystem</span>
+    <div class="grid grid-col-1 text-sm mt-5">
+      <span class="text-gray-500 px-4 pb-1 font-medium">Ecosystem</span>
       <BalLink
         v-for="link in ecosystemLinks"
         :key="link.url"
@@ -125,7 +125,7 @@ watch(blockNumber, async () => {
       </div>
     </div>
 
-    <div class="mt-6 px-4 grid grid-rows-1 grid-flow-col auto-cols-min gap-2">
+    <div class="mt-4 px-4 grid grid-rows-1 grid-flow-col auto-cols-min gap-2">
       <BalLink
         v-for="link in socialLinks"
         :key="link.component"
@@ -172,7 +172,7 @@ watch(blockNumber, async () => {
 
 <style scoped>
 .side-bar-link {
-  @apply transition duration-300 p-4 py-2 hover:bg-gray-850 cursor-pointer;
+  @apply transition duration-300 p-4 py-1.5 hover:bg-gray-850 cursor-pointer;
 }
 
 .side-bar-btn {

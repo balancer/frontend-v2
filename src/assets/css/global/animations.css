@@ -25,6 +25,10 @@
   animation: fadeIn 0.5s ease-out both;
 }
 
+.fade-in-delay {
+  animation: fadeIn 0.5s ease-out 0.1s both;
+}
+
 .fade-in-slow {
   animation: fadeIn 1s ease-out 0.1s both;
 }
