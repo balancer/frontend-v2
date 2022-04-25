@@ -127,8 +127,10 @@ function onClickConnect() {
             "
             @click="router.push({ name: 'vebal' })"
           >
-            <span v-if="lockFiatValue === '0'">{{lockFiatValue}} {{ $t('veBAL.hero.tokens.veBAL') }}</span>
-            <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>            
+            <span v-if="lockFiatValue === '0'"
+              >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
+            >
+            <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
           </div>
         </div>
       </template>
