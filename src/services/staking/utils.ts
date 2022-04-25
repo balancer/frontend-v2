@@ -48,6 +48,7 @@ export function calculateRewardTokenAprs({
   totalSupply: BigNumber;
   bptPrice: BigNumber;
 }) {
+  if (!rewardTokensMeta) return {};
   return Object.fromEntries(
     Object.keys(rewardTokensMeta).map(rewardTokenAddress => {
       const data = rewardTokensMeta[rewardTokenAddress];
