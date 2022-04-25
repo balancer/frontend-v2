@@ -64,18 +64,25 @@ const tokensWithBalance = computed(() => {
           class="font-semibold lg:font-normal ml-1 lg:ml-0"
           v-if="!isLoadingBalances"
         >
-        <div class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors" v-if="Number(balanceFor(appNetworkConfig.nativeAsset.address)) === 0">{{ etherBalance }} {{ nativeCurrency }}
-          <BalTooltip
+          <div
+            class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+            v-if="
+              Number(balanceFor(appNetworkConfig.nativeAsset.address)) === 0
+            "
+          >
+            {{ etherBalance }} {{ nativeCurrency }}
+            <BalTooltip
               :text="noNativeCurrencyMessage"
               icon-size="sm"
               :icon-name="'alert-triangle'"
-              :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
+              :icon-class="
+                'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+              "
               width="72"
               class="ml-0.5 relative top-0.5"
             />
-        </div>
-        <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
-          
+          </div>
+          <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
         </div>
         <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
