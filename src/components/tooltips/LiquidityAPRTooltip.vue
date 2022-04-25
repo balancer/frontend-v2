@@ -7,7 +7,6 @@ import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
 import { bnum } from '@/lib/utils';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import {
   getAprRangeWithRewardEmissions,
@@ -85,8 +84,8 @@ const totalAPRRange = computed(() => {
 function getFlattenedStakingAPRItems(pool: DecoratedPool) {
   const items: Record<string, string> = {};
   if (hasBALEmissions(pool)) {
-    (items['Min BAL'] = pool.dynamic.apr.staking?.BAL.min || '0'),
-      (items['Max BAL'] = pool.dynamic.apr.staking?.BAL.max || '0');
+    (items['Min BAL'] = pool.dynamic.apr.staking?.BAL?.min || '0'),
+      (items['Max BAL'] = pool.dynamic.apr.staking?.BAL?.max || '0');
   }
   if (bnum(pool.dynamic.apr.staking?.Rewards || '0').gt(0)) {
     items['Rewards'] = pool.dynamic.apr.staking?.Rewards || '0';
@@ -170,11 +169,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
             </span>
           </template>
         </BalBreakdown>
-        <BalBreakdown
-          v-if="
-            hasStakingRewards(pool) && showStakingRewards && pool.dynamic.boost
-          "
-        >
+        <BalBreakdown v-if="hasStakingRewards(pool) && pool.dynamic.boost">
           <div class="flex items-center">
             {{
               fNum2(
@@ -190,7 +185,6 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
         <BalBreakdown
           v-if="
             hasStakingRewards(pool) &&
-              showStakingRewards &&
               !pool.dynamic.boost &&
               !hasBALEmissions(pool)
           "
@@ -211,7 +205,6 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           :items="Object.entries(getFlattenedStakingAPRItems(pool))"
           v-if="
             hasStakingRewards(pool) &&
-              showStakingRewards &&
               !pool.dynamic.boost &&
               hasBALEmissions(pool)
           "
@@ -219,7 +212,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           <div class="flex items-center">
             {{
               fNum2(
-                pool.dynamic.apr.staking?.BAL.min || '0',
+                pool.dynamic.apr.staking?.BAL?.min || '0',
                 FNumFormats.percent
               )
             }}
