@@ -29,12 +29,12 @@
           hFull
           growContent
         >
-        <div>
-          <h6>LUSD3CRV-f—ePyvCurveLUSD</h6>
-          <p>
-            Element principal pool Yearn crvLUSD v2 vault.
-          </p>
-        </div>          
+          <div>
+            <h6>LUSD3CRV-f—ePyvCurveLUSD</h6>
+            <p>
+              Element principal pool Yearn crvLUSD v2 vault.
+            </p>
+          </div>
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Pools.LUSD" external>
               <span>{{ $t('viewOnElement') }}</span>
@@ -67,10 +67,10 @@
   </div>
 </template>
 <style scoped>
-   /deep/ .card-container {
-    justify-content: space-between;
-    height: 100%;
-  }
+/deep/ .card-container {
+  justify-content: space-between;
+  height: 100%;
+}
 </style>
 
 <script lang="ts">
