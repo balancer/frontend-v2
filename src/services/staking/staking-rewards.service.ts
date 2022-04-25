@@ -1,3 +1,4 @@
+import { Network } from '@balancer-labs/sdk';
 import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { isNil, mapValues } from 'lodash';
@@ -12,6 +13,7 @@ import { balancerContractsService } from '../balancer/contracts/balancer-contrac
 import { GaugeController } from '../balancer/contracts/contracts/gauge-controller';
 import { LiquidityGauge } from '../balancer/contracts/contracts/liquidity-gauge';
 import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin';
+import { VEBalHelpers } from '../balancer/contracts/contracts/vebal-helpers';
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { SubgraphGauge } from '../balancer/gauges/types';
 import { Pool } from '../balancer/subgraph/types';
@@ -27,6 +29,9 @@ export type PoolAPRs = Record<
 export class StakingRewardsService {
   private gaugeController = new GaugeController(
     configService.network.addresses.gaugeController
+  );
+  private veBALHelpers = new VEBalHelpers(
+    configService.network.addresses.veBALHelpers
   );
   private tokenAdmin = new BalancerTokenAdmin(
     configService.network.addresses.tokenAdmin
@@ -66,16 +71,18 @@ export class StakingRewardsService {
     return supplies;
   }
 
-  private async getRelativeWeightsForGauges(
-    gaugeAddresses: string[],
-    customTimestamp?: number
-  ) {
-    const timestamp = customTimestamp || getUnixTime(new Date());
-    const result = await this.gaugeController.getRelativeWeights(
-      gaugeAddresses,
-      timestamp
-    );
-    return result;
+  private async getRelativeWeightsForGauges(gaugeAddresses: string[]) {
+    const timestamp = getUnixTime(new Date());
+    if (configService.network.chainId === Network.KOVAN) {
+      return await this.gaugeController.getRelativeWeights(
+        gaugeAddresses,
+        timestamp
+      );
+    }
+    // the ve bal helpers contract for gauge weights calls
+    // the checkpoint function which is necesary for returning
+    // the correct value.
+    return await this.veBALHelpers.getRelativeWeights(gaugeAddresses);
   }
 
   /**
