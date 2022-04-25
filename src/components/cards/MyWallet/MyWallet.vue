@@ -71,16 +71,18 @@ const tokensWithBalance = computed(() => {
             "
           >
             {{ etherBalance }} {{ nativeCurrency }}
-            <BalTooltip
-              :text="noNativeCurrencyMessage"
-              icon-size="sm"
-              :icon-name="'alert-triangle'"
-              :icon-class="
-                'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
-              "
-              width="72"
-              class="ml-0.5 relative top-0.5"
-            />
+            <span v-if="isWalletReady">
+              <BalTooltip
+                :text="noNativeCurrencyMessage"
+                icon-size="sm"
+                :icon-name="'alert-triangle'"
+                :icon-class="
+                  'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+                "
+                width="72"
+                class="ml-0.5 relative top-0.5"
+              />
+            </span>
           </div>
           <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
         </div>
