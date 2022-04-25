@@ -12,7 +12,6 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import usePools from '@/composables/pools/usePools';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
@@ -107,7 +106,7 @@ function navigateToCreatePool() {
         <BalStack vertical spacing="xl">
           <StakingProvider>
             <UnstakedPoolsTable :userPools="userPools" />
-            <StakedPoolsTable v-if="!isL2" :userPools="userPools" />
+            <StakedPoolsTable :userPools="userPools" />
           </StakingProvider>
           <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
             <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
