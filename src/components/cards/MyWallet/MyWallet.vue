@@ -30,8 +30,19 @@ const noNativeCurrencyMessage = computed(() => {
   return t('noNativeCurrency', [nativeCurrency, networkName]);
 });
 
+const noNativeCurrencyMessageEthereum = computed(() => {
+  return t('noNativeCurrencyEthereum', [nativeCurrency, networkName]);
+});
+
 const noTokensMessage = computed(() => {
   return t('noTokensInWallet', [networkName]);
+});
+
+const isEthereum = computed(() => {
+  if (networkName === 'Ethereum Mainnet') {
+    return true
+  } else
+  return false
 });
 
 const tokensWithBalance = computed(() => {
@@ -71,18 +82,16 @@ const tokensWithBalance = computed(() => {
             "
           >
             {{ etherBalance }} {{ nativeCurrency }}
-            <span v-if="isWalletReady">
-              <BalTooltip
-                :text="noNativeCurrencyMessage"
-                icon-size="sm"
-                :icon-name="'alert-triangle'"
-                :icon-class="
-                  'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
-                "
-                width="72"
-                class="ml-0.5 relative top-0.5"
-              />
-            </span>
+            <BalTooltip
+              :text="isEthereum ? noNativeCurrencyMessageEthereum : noNativeCurrencyMessage" 
+              icon-size="sm"
+              :icon-name="'alert-triangle'"
+              :icon-class="
+                'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+              "
+              width="72"
+              class="ml-0.5 relative top-0.5"
+            />
           </div>
           <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
         </div>
