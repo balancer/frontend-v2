@@ -39,6 +39,7 @@ const { setSidebarOpen } = useSidebar();
 .sidebar-overlay {
   z-index: 999999999;
   @apply fixed top-0 left-0 h-screen w-full bg-black bg-opacity-80 cursor-pointer flex;
+  backdrop-filter: blur(5px);
 }
 
 .app-sidebar {
