@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { toRef, computed, ref, nextTick, onBeforeMount, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, toRef, watch } from 'vue';
 import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool, PoolType } from '@/services/balancer/subgraph/types';
 // Composables
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -11,7 +11,7 @@ import useTokens from '@/composables/useTokens';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import useInvestState from './composables/useInvestState';
 import useInvestMath from './composables/useInvestMath';
-import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
+import { isStableLike, usePool } from '@/composables/usePool';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
@@ -20,9 +20,6 @@ import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLi
 import { getAddress } from '@ethersproject/address';
 import useConfig from '@/composables/useConfig';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
-import useRelayerApproval, {
-  Relayer
-} from '@/composables/trade/useRelayerApproval';
 
 /**
  * TYPES
@@ -198,7 +195,10 @@ function hint(index: number): string {
 }
 
 function tokenOptions(index: number): string[] {
-  if (investmentTokens.value[index] === wrappedNativeAsset.value.address) {
+  if (
+    investmentTokens.value[index] === wrappedNativeAsset.value.address &&
+    props.pool.poolType !== PoolType.StablePhantom
+  ) {
     return [wrappedNativeAsset.value.address, nativeAsset.address];
   } else if (
     isWeightedPoolWithNestedLinearPools.value &&
