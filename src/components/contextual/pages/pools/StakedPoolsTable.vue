@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
+import { isL2 } from '@/composables/useNetwork';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
@@ -44,6 +45,12 @@ const poolsWithBoost = computed(() => {
   }));
 });
 
+const hiddenColumns = computed(() => {
+  const _hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'stake'];
+  if (isL2.value) _hiddenColumns.push('myBoost');
+  return _hiddenColumns;
+});
+
 /** METHODS */
 function handleStake(pool: FullPool) {
   setPoolAddress(pool.address);
@@ -64,7 +71,7 @@ function handleModalClose() {
         :key="poolsWithBoost"
         :data="poolsWithBoost"
         :noPoolsLabel="$t('noInvestments')"
-        :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
+        :hiddenColumns="hiddenColumns"
         @triggerStake="handleStake"
         :isLoading="isLoading"
         showPoolShares
