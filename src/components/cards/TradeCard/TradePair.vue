@@ -181,6 +181,7 @@ watchEffect(() => {
       noMax
       :disabled="tradeLoading"
       disableNativeAssetBuffer
+      :excludedTokens="[veBalTokenInfo?.address]"
     />
   </div>
 </template>

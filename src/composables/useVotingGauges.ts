@@ -12,7 +12,9 @@ import { isKovan } from './useNetwork';
 export default function useVotingGauges() {
   // Hard coded list of voting gauges
   const _votingGauges = computed((): VotingGauge[] =>
-    isKovan.value ? KOVAN_VOTING_GAUGES : MAINNET_VOTING_GAUGES
+    isKovan.value
+      ? (KOVAN_VOTING_GAUGES as VotingGauge[])
+      : (MAINNET_VOTING_GAUGES as VotingGauge[])
   );
 
   // Fetch onchain votes data for given votingGauges

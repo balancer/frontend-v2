@@ -59,6 +59,7 @@ export interface Config {
     balancerMinter: string;
     tokenAdmin: string;
     veDelegationProxy: string;
+    veBALHelpers: string;
   };
   keys: {
     infura: string;

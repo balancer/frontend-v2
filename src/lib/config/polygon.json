@@ -17,7 +17,7 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
-    "gauge": "https://api.thegraph.com/subgraphs/name/mendesfabio/balancer-gauges-polygon"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon"
   },
   "supportsEIP1559": true,
   "supportsElementPools": false,
@@ -49,7 +49,8 @@
     "gaugeController": "",
     "tokenAdmin": "",
     "veBAL": "",
-    "veDelegationProxy": ""
+    "veDelegationProxy": "",
+    "veBALHelpers": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

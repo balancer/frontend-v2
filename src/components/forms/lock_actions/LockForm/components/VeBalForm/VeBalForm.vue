@@ -75,7 +75,7 @@ const submissionDisabled = computed(() => {
     return true;
   }
 
-  if (props.veBalLockInfo?.hasExistingLock) {
+  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
     return !isIncreasedLockAmount.value && !isExtendedLockEndDate.value;
   }
 
@@ -95,7 +95,7 @@ const expectedVeBalAmount = computed(() => {
 });
 
 const lockType = computed(() => {
-  if (props.veBalLockInfo?.hasExistingLock) {
+  if (props.veBalLockInfo?.hasExistingLock && !props.veBalLockInfo?.isExpired) {
     if (isIncreasedLockAmount.value && isExtendedLockEndDate.value) {
       return [LockType.INCREASE_LOCK, LockType.EXTEND_LOCK];
     }
@@ -114,6 +114,11 @@ const lockType = computed(() => {
  */
 function handleClosePreviewModal() {
   showPreviewModal.value = false;
+}
+
+function handleShowPreviewModal() {
+  if (submissionDisabled.value) return;
+  showPreviewModal.value = true;
 }
 </script>
 
@@ -158,7 +163,7 @@ function handleClosePreviewModal() {
         color="gradient"
         block
         :disabled="submissionDisabled"
-        @click="showPreviewModal = true"
+        @click="handleShowPreviewModal"
       >
         {{ $t('preview') }}
       </BalBtn>
