@@ -1,30 +1,24 @@
 <template>
-  <div :class="`app-nav-toggle`">
+  <div :class="`app-nav-toggle bg-gray-50 dark:bg-gray-${darkModeBg}`">
     <router-link
-      :to="{ name: 'trade' }"
-      :class="['toggle-link px-5', { [activeClasses]: isTradePage }]"
-      @click="trackGoal(Goals.ClickNavTrade)"
-    >
-      Swap
-    </router-link>
-    <router-link
-      :to="{ name: 'pools' }"
-      :class="['toggle-link px-5', { [activeClasses]: isInvestPage }]"
+      :to="{ name: 'home' }"
+      :class="[
+        'toggle-link px-6 rounded-l-lg',
+        { [activeClasses]: !isTradePage }
+      ]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
-      Invest{{ upToXLargeBreakpoint ? '' : '&nbsp;/&nbsp;Farm' }}
+      {{ $t('invest') }}
     </router-link>
     <router-link
-      :to="{ name: 'stake' }"
-      :class="['toggle-link px-5', { [activeClasses]: isStakePage }]"
+      :to="{ name: 'trade' }"
+      :class="[
+        'toggle-link px-6 rounded-r-lg',
+        { [activeClasses]: isTradePage }
+      ]"
+      @click="trackGoal(Goals.ClickNavTrade)"
     >
-      Stake
-    </router-link>
-    <router-link
-      :to="{ name: 'launch' }"
-      :class="['toggle-link px-5', { [activeClasses]: isLaunchPage }]"
-    >
-      Launch
+      {{ $t('trade') }}
     </router-link>
   </div>
 </template>
@@ -33,51 +27,25 @@
 import useFathom from '@/composables/useFathom';
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
-import useApp from '@/composables/useApp';
-import useWeb3 from '@/services/web3/useWeb3';
-import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   name: 'AppNavToggle',
-  components: {},
+
   props: {
     darkModeBg: { type: String, default: '800' }
   },
 
   setup() {
     const route = useRoute();
-    const { appLoading } = useApp();
-    const { account } = useWeb3();
-    const { upToXLargeBreakpoint } = useBreakpoints();
-    const activeClasses = 'bg-black text-green-500 dark:bg-gray-800';
+    const activeClasses = 'gradient-blue-l-to-r text-white rounded-lg';
     const isTradePage = computed(() => route.name === 'trade');
-    const isPortfolioPage = computed(() => route.name === 'my-portfolio');
-    const isStakePage = computed(() => route.name === 'stake');
-    const isLaunchPage = computed(
-      () =>
-        route.name === 'launch' ||
-        route.name === 'lge-create' ||
-        route.name === 'lge'
-    );
-    const isInvestPage = computed(
-      () => route.name === 'invest' || String(route.name).startsWith('pool')
-    );
-
     const { trackGoal, Goals } = useFathom();
-
-    const isLoggedIn = computed(() => !appLoading.value && !!account.value);
 
     return {
       isTradePage,
       activeClasses,
       trackGoal,
-      Goals,
-      isLoggedIn,
-      isPortfolioPage,
-      isStakePage,
-      isInvestPage,
-      isLaunchPage,
-      upToXLargeBreakpoint
+      Goals
     };
   }
 });
@@ -85,11 +53,11 @@ export default defineComponent({
 
 <style scoped>
 .app-nav-toggle {
-  @apply h-12 flex items-center;
+  @apply h-10 flex items-center rounded-lg shadow;
   font-variation-settings: 'wght' 600;
 }
 
 .toggle-link {
-  @apply h-full flex items-center text-center;
+  @apply h-full flex items-center;
 }
 </style>

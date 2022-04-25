@@ -1,42 +1,41 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
+import AppHero from '@/components/heros/AppHero.vue';
 import AppFooterNav from '@/components/navs/AppFooterNav/AppFooterNav.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import AppHeaderBg from '@/beethovenx/components/backgrounds/AppHeaderBg.vue';
-import { EXTERNAL_LINKS } from '@/constants/links';
 
 /**
  * COMPOSABLES
  */
+const route = useRoute();
+const { upToLargeBreakpoint } = useBreakpoints();
 
-const { upToMediumBreakpoint } = useBreakpoints();
+/**
+ * COMPUTED
+ */
+const isHomePage = computed(() => route.path === '/');
 </script>
 
 <template>
   <div>
     <AppNav />
-    <AppHeaderBg />
-    <div class="z-10 pb-16 relative">
+    <AppHero v-if="isHomePage" />
+    <div class="pb-16">
       <router-view :key="$route.path" />
     </div>
-    <AppFooterNav v-if="upToMediumBreakpoint" />
-    <div class="-top-14 xl:top-0 flex flex-col items-center relative">
-      <img src="~@/beethovenx/assets/images/community-image.png" />
-      <div class="absolute bottom-0 flex justify-center pb-4 xl:pb-6 xl:ml-8">
-        <template
-          v-for="(item, index) in EXTERNAL_LINKS.Beethoven.NavOtherItems"
-          :key="index"
-        >
-          <BalLink :href="item.url" v-if="item.icon" external class="mx-6">
-            <img
-              :src="require(`@/beethovenx/assets/images/${item.icon}.png`)"
-              width="40"
-              class="mx-auto"
-            />
-          </BalLink>
-        </template>
-      </div>
-    </div>
+    <AppFooterNav v-if="upToLargeBreakpoint" />
+    <BalBtn
+      v-else
+      id="intercom-activator"
+      circle
+      size="lg"
+      color="blue"
+      class="fixed bottom-0 right-0 m-4 z-100"
+    >
+      <BalIcon name="message-square" size="lg" />
+    </BalBtn>
   </div>
 </template>
 

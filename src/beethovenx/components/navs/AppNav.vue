@@ -1,61 +1,52 @@
 <template>
   <AppNavAlert v-if="currentAlert" :alert="currentAlert" />
-  <nav id="app-nav" ref="appNav" class="h-20 px-4 lg:px-6 sticky top-0 z-50">
-    <div class="h-full flex items-center justify-between">
-      <div class="w-2/3 lg:w-1/3 flex items-center">
+  <nav id="app-nav" ref="appNav" class="h-12 pr-3 xl:pr-6 sticky top-0">
+    <div class="h-full flex items-center">
+      <div class="flex items-center">
         <router-link
           :to="{ name: 'home' }"
           @click="trackGoal(Goals.ClickNavLogo)"
         >
-          <AppIcon v-if="['xs', 'sm', 'md'].includes(bp)" />
-          <AppLogo v-else />
+          <AppIcon />
         </router-link>
-        <AppNavNetworkSelect v-if="!hideNetworkSelect" />
-        <DarkModeToggle v-if="!upToLargeBreakpoint" class="ml-2" />
       </div>
+      <AppNavToggle v-if="!upToMediumBreakpoint" />
+      <AppNavOtherItems v-if="!upToMediumBreakpoint" />
 
-      <div
-        v-if="!upToLargeBreakpoint"
-        class="flex-1 md:w-1/3 flex justify-center"
-      >
-        <AppNavToggle />
-      </div>
-
-      <div class="w-1/3 flex justify-end">
+      <div class="flex-1 flex justify-end">
         <AppNavActions />
       </div>
     </div>
   </nav>
+  <AppNavBelow />
 </template>
 
 <script>
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import AppLogo from '@/components/images/AppLogo.vue';
-import AppIcon from '@/components/images/AppIcon.vue';
-import AppNavAlert from './AppNavAlert.vue';
-import AppNavToggle from './AppNavToggle.vue';
-import AppNavActions from './AppNavActions.vue';
-import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
+import AppIcon from '@/beethovenx/components/images/AppIcon.vue';
+import AppNavAlert from '@/components/navs/AppNav/AppNavAlert';
+import AppNavToggle from '@/beethovenx/components/navs/AppNavToggle.vue';
+import AppNavOtherItems from '@/beethovenx/components/navs/AppNavOtherItems.vue';
+import AppNavActions from '@/beethovenx/components/navs/AppNavActions.vue';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
-import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
 import useAlerts from '@/composables/useAlerts';
+import AppNavBelow from '@/beethovenx/components/navs/AppNavBelow';
 
 export default defineComponent({
   components: {
-    AppLogo,
+    AppNavBelow,
     AppIcon,
     AppNavAlert,
     AppNavToggle,
     AppNavActions,
-    AppNavNetworkSelect,
-    DarkModeToggle
+    AppNavOtherItems
   },
 
   setup() {
     // COMPOSABLES
-    const { bp, upToLargeBreakpoint } = useBreakpoints();
+    const { bp, upToMediumBreakpoint } = useBreakpoints();
     const { trackGoal, Goals } = useFathom();
     const { connector } = useWeb3();
     const { currentAlert } = useAlerts();
@@ -89,8 +80,8 @@ export default defineComponent({
       appNav,
       // computed
       bp,
+      upToMediumBreakpoint,
       currentAlert,
-      upToLargeBreakpoint,
       hideNetworkSelect,
       // methods
       trackGoal,
@@ -102,7 +93,7 @@ export default defineComponent({
 
 <style scoped>
 #app-nav {
-  @apply w-full z-20;
+  @apply w-full z-50;
   @apply bg-white dark:bg-gray-900;
   @apply border-b border-transparent;
   transition: all 0.2s ease-in-out;
