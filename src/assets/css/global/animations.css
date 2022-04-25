@@ -22,7 +22,7 @@
 }
 
 .fade-in {
-  animation: fadeIn 0.5s ease-out both;
+  animation: fadeIn 0.3s ease-out both;
 }
 
 .fade-in-delay {
@@ -52,5 +52,16 @@
   to {
     transform: rotate(-90deg);
     opacity: 1;
+  }
+}
+
+@keyframes fadeInMoveUpScaleUp {
+  0% {
+      opacity: 0;
+      transform: scale(0.96) translateY(-10px);
+  }
+  100% {
+      opacity: 1;
+      transform: scale(1) translateY(0px);
   }
 }
