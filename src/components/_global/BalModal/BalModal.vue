@@ -110,15 +110,15 @@ defineExpose({ hide });
   background: radial-gradient(circle at left, yellow, transparent),
     radial-gradient(circle at bottom right, blue, transparent),
     radial-gradient(circle at top, red, transparent);
-  content: '';  
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
   position: absolute;
-  top:0;
+  top: 0;
   left: 0;
-  bottom:0;
-  right:0;
+  bottom: 0;
+  right: 0;
   z-index: -1;
   filter: blur(80px);
   transform: translateZ(-1px);
