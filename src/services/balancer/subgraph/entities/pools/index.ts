@@ -126,9 +126,18 @@ export default class Pools {
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
-    const [protocolFeePercentage, gaugeAprs] = await Promise.all([
+    const [
+      protocolFeePercentage,
+      gaugeBALAprs,
+      gaugeRewardTokenAprs
+    ] = await Promise.all([
       this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
-      await stakingRewardsService.getGaugeAprForPools({
+      await stakingRewardsService.getGaugeBALAprs({
+        prices,
+        gauges,
+        pools
+      }),
+      await stakingRewardsService.getRewardTokenAprs({
         prices,
         gauges,
         pools,
@@ -168,7 +177,8 @@ export default class Pools {
         protocolFeePercentage
       );
 
-      const stakingApr = gaugeAprs[pool.id];
+      const balAPR = gaugeBALAprs[pool.id];
+      const rewardTokenAPR = gaugeRewardTokenAprs[pool.id];
 
       // TODO - We might need to include staking + LM APRs for L2s?
       const networkAdjustedLMApr = '0';
@@ -201,7 +211,10 @@ export default class Pools {
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
             liquidityMining: networkAdjustedLMApr,
             liquidityMiningBreakdown,
-            staking: stakingApr,
+            staking: {
+              BAL: balAPR,
+              Rewards: rewardTokenAPR
+            },
             total: totalAPR
           },
           isNewPool

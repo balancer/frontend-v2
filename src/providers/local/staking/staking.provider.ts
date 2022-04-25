@@ -3,6 +3,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { fromUnixTime, isAfter } from 'date-fns';
 import { parseUnits } from 'ethers/lib/utils';
 import {
   computed,
@@ -27,6 +28,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useUserStakingData, {
   UserStakingDataResponse
 } from './userUserStakingData';
+
+export const isL2StakingAprLive = isAfter(new Date(), fromUnixTime(1651104000));
 
 /**
  * TYPES

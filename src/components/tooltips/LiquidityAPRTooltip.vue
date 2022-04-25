@@ -84,8 +84,8 @@ const totalAPRRange = computed(() => {
 function getFlattenedStakingAPRItems(pool: DecoratedPool) {
   const items: Record<string, string> = {};
   if (hasBALEmissions(pool)) {
-    (items['Min BAL'] = pool.dynamic.apr.staking?.BAL.min || '0'),
-      (items['Max BAL'] = pool.dynamic.apr.staking?.BAL.max || '0');
+    (items['Min BAL'] = pool.dynamic.apr.staking?.BAL?.min || '0'),
+      (items['Max BAL'] = pool.dynamic.apr.staking?.BAL?.max || '0');
   }
   if (bnum(pool.dynamic.apr.staking?.Rewards || '0').gt(0)) {
     items['Rewards'] = pool.dynamic.apr.staking?.Rewards || '0';
@@ -212,7 +212,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           <div class="flex items-center">
             {{
               fNum2(
-                pool.dynamic.apr.staking?.BAL.min || '0',
+                pool.dynamic.apr.staking?.BAL?.min || '0',
                 FNumFormats.percent
               )
             }}
