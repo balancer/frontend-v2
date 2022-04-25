@@ -9,6 +9,7 @@ import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
+import { isL2 } from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
@@ -221,7 +222,7 @@ export default function useUserStakingData(
   );
 
   const isBoostQueryEnabled = computed(
-    () => isWalletReady.value && userGaugeShares.value.length > 0
+    () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
   );
 
   const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery(

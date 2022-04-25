@@ -39,7 +39,7 @@ const poolsWithBoost = computed(() => {
     ...pool,
     dynamic: {
       ...pool.dynamic,
-      boost: poolBoosts.value[pool.id]
+      boost: (poolBoosts.value || {})[pool.id]
     }
   }));
 });
