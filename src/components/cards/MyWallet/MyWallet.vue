@@ -40,9 +40,8 @@ const noTokensMessage = computed(() => {
 
 const isEthereum = computed(() => {
   if (networkName === 'Ethereum Mainnet') {
-    return true
-  } else
-  return false
+    return true;
+  } else return false;
 });
 
 const tokensWithBalance = computed(() => {
@@ -76,21 +75,26 @@ const tokensWithBalance = computed(() => {
           v-if="!isLoadingBalances"
         >
           <div
-            class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+            class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors mr-0.5"
             v-if="
               Number(balanceFor(appNetworkConfig.nativeAsset.address)) === 0
             "
           >
             {{ etherBalance }} {{ nativeCurrency }}
             <BalTooltip
-              :text="isEthereum ? noNativeCurrencyMessageEthereum : noNativeCurrencyMessage" 
+              v-if="isWalletReady"
+              :text="
+                isEthereum
+                  ? noNativeCurrencyMessageEthereum
+                  : noNativeCurrencyMessage
+              "
               icon-size="sm"
               :icon-name="'alert-triangle'"
               :icon-class="
                 'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
               "
               width="72"
-              class="ml-0.5 relative top-0.5"
+              class="relative top-0.5"
             />
           </div>
           <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
