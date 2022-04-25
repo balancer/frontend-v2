@@ -2,6 +2,7 @@ import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { isNil, mapValues } from 'lodash';
 
+import { isL2 } from '@/composables/useNetwork';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, getBalAddress } from '@/lib/utils';
 import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
@@ -17,7 +18,11 @@ import { SubgraphGauge } from '../balancer/gauges/types';
 import { Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import PoolService from '../pool/pool.service';
-import { calculateGaugeApr, getAprRange } from './utils';
+import {
+  calculateGaugeApr,
+  calculateRewardTokenAprs,
+  getAprRange
+} from './utils';
 
 export type PoolAPRs = Record<
   string,
@@ -78,31 +83,21 @@ export class StakingRewardsService {
     return result;
   }
 
-  /**
-   * @summary calculates the APR for a gauge
-   */
-  async getGaugeAprForPools({
+  async getGaugeBALAprs({
     prices,
     gauges,
-    pools,
-    tokens
+    pools
   }: {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
     pools: Pool[];
-    tokens: TokenInfoMap;
-  }): Promise<PoolAPRs> {
+  }) {
+    if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = getBalAddress();
-
-    const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
-      gaugeAddresses
-    );
-
     const [
       inflationRate,
       relativeWeights,
-      rewardTokenData,
       workingSupplies,
       totalSupplies
     ] = await Promise.all([
@@ -110,12 +105,11 @@ export class StakingRewardsService {
         configService.network.addresses.tokenAdmin
       ).getInflationRate(),
       this.getRelativeWeightsForGauges(gaugeAddresses),
-      LiquidityGauge.getRewardTokenDataForGauges(rewardTokensForGauges),
       this.getWorkingSupplyForGauges(gaugeAddresses),
       this.getTotalSupplyForGauges(gaugeAddresses)
     ]);
 
-    const aprs = gauges.map(async gauge => {
+    const aprs = gauges.map(gauge => {
       const poolId = gauge.poolId;
       const pool = pools.find(pool => pool.id === poolId);
       const nilApr = [poolId, { min: '0', max: '0' }];
@@ -129,8 +123,10 @@ export class StakingRewardsService {
       ).div(pool.totalShares);
       if (!balAddress) return nilApr;
 
+      const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
       const balPrice = prices[getAddress(balAddress)].usd;
-      const gaugeAprMap = calculateGaugeApr({
+
+      const gaugeBALApr = calculateGaugeApr({
         gaugeAddress: getAddress(gauge.id),
         bptPrice: bptPrice.toString(),
         balPrice: String(balPrice),
@@ -138,33 +134,62 @@ export class StakingRewardsService {
         inflationRate: inflationRate as string,
         boost: '1',
         workingSupplies,
-        totalSupplies,
         relativeWeights,
-        rewardTokenData: rewardTokenData[getAddress(gauge.id)],
+        totalSupply
+      });
+      const range = getAprRange(gaugeBALApr || '0'.toString());
+      return [poolId, { ...range }];
+    });
+
+    return Object.fromEntries(aprs);
+  }
+
+  async getRewardTokenAprs({
+    prices,
+    gauges,
+    pools,
+    tokens
+  }: {
+    prices: TokenPrices;
+    gauges: SubgraphGauge[];
+    pools: Pool[];
+    tokens: TokenInfoMap;
+  }) {
+    const gaugeAddresses = gauges.map(gauge => gauge.id);
+    const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
+      gaugeAddresses
+    );
+    const [rewardTokensMeta, totalSupplies] = await Promise.all([
+      LiquidityGauge.getRewardTokenDataForGauges(rewardTokensForGauges),
+      this.getTotalSupplyForGauges(gaugeAddresses)
+    ]);
+    const aprs = gauges.map(gauge => {
+      const poolId = gauge.poolId;
+      const pool = pools.find(pool => pool.id === poolId);
+      if (!pool) return [poolId, '0'];
+      const poolService = new PoolService(pool);
+      const bptPrice = bnum(
+        poolService.calcTotalLiquidity(prices, FiatCurrency.usd)
+      ).div(pool.totalShares);
+
+      const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
+      const rewardTokens = rewardTokensMeta[getAddress(gauge.id)];
+      const rewardTokenAprs = calculateRewardTokenAprs({
+        boost: '1',
+        totalSupply,
+        rewardTokensMeta: rewardTokens,
+        bptPrice,
         prices,
         tokens
       });
-
       // TODO BETTER INTEGRATION OF REWARD TOKEN APRS
       let totalRewardStakingAPR = bnum(0);
-      for (const rewardApr of Object.values(gaugeAprMap.rewardTokenAprs)) {
+      for (const rewardApr of Object.values(rewardTokenAprs)) {
         totalRewardStakingAPR = totalRewardStakingAPR.plus(rewardApr);
       }
-
-      const range = getAprRange(gaugeAprMap.apr.toString());
-
-      return [
-        poolId,
-        {
-          BAL: range,
-          Rewards: totalRewardStakingAPR.toString()
-        }
-      ];
+      return [poolId, totalRewardStakingAPR.toString()];
     });
-
-    const resolvedAprs = await Promise.all(aprs);
-
-    return Object.fromEntries(resolvedAprs);
+    return Object.fromEntries(aprs);
   }
 
   async getUserBoosts({

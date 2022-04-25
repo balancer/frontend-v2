@@ -33,57 +33,27 @@ export function calculateTokenPayableToGauge(
     .times(gaugeRelativeWeight);
 }
 
-export function calculateGaugeApr({
-  gaugeAddress,
-  inflationRate,
-  balPrice,
-  bptPrice,
-  workingSupplies,
-  totalSupplies,
-  relativeWeights,
-  boost = '1',
-  rewardTokenData = {},
+export function calculateRewardTokenAprs({
+  boost,
   prices,
-  tokens
+  rewardTokensMeta,
+  tokens,
+  totalSupply,
+  bptPrice
 }: {
-  gaugeAddress: string;
-  inflationRate: string;
-  balPrice: string;
-  bptPrice: string;
-  boost: string;
-  workingSupplies: Record<string, string>;
-  totalSupplies: Record<string, string>;
-  relativeWeights: Record<string, string>;
-  rewardTokenData: Record<string, RewardTokenData>;
+  rewardTokensMeta: Record<string, RewardTokenData>;
   prices: TokenPrices;
   tokens: TokenInfoMap;
-}): {
-  apr: string;
-  rewardTokenAprs: Record<string, string>;
-} {
-  const workingSupply = bnum((workingSupplies || {})[gaugeAddress]) || '0';
-  const totalSupply = bnum((totalSupplies || {})[gaugeAddress]) || '0';
-  const relativeWeight = bnum((relativeWeights || {})[gaugeAddress]) || '0';
-  const balPayable = calculateTokenPayableToGauge(
-    bnum(inflationRate),
-    relativeWeight
-  );
-  // 0.4 is the working balance for 1 BPT
-  const weeklyReward = calculateWeeklyReward(0.4, workingSupply, balPayable);
-  const yearlyReward = weeklyReward
-    .times(boost)
-    .times(52)
-    .times(balPrice);
-
-  // bal apr
-  const balApr = yearlyReward.div(bptPrice).toString();
-
-  const rewardTokenAprs = Object.keys(rewardTokenData).map(
-    rewardTokenAddress => {
-      const data = rewardTokenData[rewardTokenAddress];
+  boost: string;
+  totalSupply: BigNumber;
+  bptPrice: BigNumber;
+}) {
+  return Object.fromEntries(
+    Object.keys(rewardTokensMeta).map(rewardTokenAddress => {
+      const data = rewardTokensMeta[rewardTokenAddress];
       const inflationRate = formatUnits(
         data.rate,
-        tokens[getAddress(rewardTokenAddress)].decimals
+        tokens[getAddress(rewardTokenAddress)]?.decimals || 18
       );
       // for reward tokens, there is no relative weight
       // all tokens go to the gauge depositors
@@ -99,13 +69,45 @@ export function calculateGaugeApr({
         .times(prices[rewardTokenAddress].usd);
       const apr = yearlyReward.div(bptPrice);
       return [rewardTokenAddress, apr.toString()];
-    }
+    })
   );
+}
 
-  return {
-    apr: balApr,
-    rewardTokenAprs: Object.fromEntries(rewardTokenAprs)
-  };
+export function calculateGaugeApr({
+  gaugeAddress,
+  inflationRate,
+  balPrice,
+  bptPrice,
+  workingSupplies,
+  relativeWeights,
+  boost = '1'
+}: {
+  gaugeAddress: string;
+  inflationRate: string;
+  balPrice: string;
+  bptPrice: string;
+  boost: string;
+  totalSupply: BigNumber;
+  workingSupplies: Record<string, string>;
+  relativeWeights: Record<string, string>;
+}) {
+  const workingSupply = bnum((workingSupplies || {})[gaugeAddress]) || '0';
+  const relativeWeight = bnum((relativeWeights || {})[gaugeAddress]) || '0';
+  const balPayable = calculateTokenPayableToGauge(
+    bnum(inflationRate),
+    relativeWeight
+  );
+  // 0.4 is the working balance for 1 BPT
+  const weeklyReward = calculateWeeklyReward(0.4, workingSupply, balPayable);
+  const yearlyReward = weeklyReward
+    .times(boost)
+    .times(52)
+    .times(balPrice);
+
+  // bal apr
+  const apr = yearlyReward.div(bptPrice).toString();
+
+  return apr;
 }
 
 export function getAprRange(apr: string) {
@@ -124,7 +126,7 @@ export function getAprRange(apr: string) {
 export function hasStakingRewards(pool: DecoratedPool | undefined) {
   if (!pool) return false;
   return (
-    bnum(pool.dynamic.apr.staking?.BAL.min || 0).gt(0) ||
+    bnum(pool.dynamic.apr.staking?.BAL?.min || 0).gt(0) ||
     bnum(pool.dynamic.apr.staking?.Rewards || 0).gt(0)
   );
 }
@@ -134,7 +136,7 @@ export function hasStakingRewards(pool: DecoratedPool | undefined) {
  */
 export function hasBALEmissions(pool?: DecoratedPool) {
   if (!pool) return false;
-  return bnum(pool.dynamic.apr.staking?.BAL.min || 0).gt(0);
+  return bnum(pool.dynamic.apr.staking?.BAL?.min || 0).gt(0);
 }
 
 /**
@@ -143,7 +145,7 @@ export function hasBALEmissions(pool?: DecoratedPool) {
  */
 export function getBoostAdjustedTotalAPR(pool: DecoratedPool, boost: string) {
   const rewardsApr = bnum(pool.dynamic.apr.staking?.Rewards || 0);
-  const minBALApr = bnum(pool.dynamic.apr.staking?.BAL.min || 0);
+  const minBALApr = bnum(pool.dynamic.apr.staking?.BAL?.min || 0);
   const boostedApr = minBALApr.times(boost);
   return boostedApr
     .plus(rewardsApr)
@@ -162,9 +164,8 @@ export function getAprRangeWithRewardEmissions(
   if (!pool) return { min: '0', max: '0' };
 
   const rewardsApr = bnum(pool.dynamic.apr.staking?.Rewards || 0);
-  const minBALApr = bnum(pool.dynamic.apr.staking?.BAL.min || 0);
-  const maxBALApr = bnum(pool.dynamic.apr.staking?.BAL.max || 0);
-
+  const minBALApr = bnum(pool.dynamic.apr.staking?.BAL?.min || 0);
+  const maxBALApr = bnum(pool.dynamic.apr.staking?.BAL?.max || 0);
   const minTotalAPR = bnum(pool.dynamic.apr.total)
     .plus(minBALApr)
     .plus(rewardsApr);
