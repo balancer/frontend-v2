@@ -9,8 +9,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import AppNavToggle from '@/beethovenx/components/navs/AppNavToggle.vue';
-import AppNavOtherItems from '@/beethovenx/components/navs/AppNavOtherItems.vue';
+import AppNavToggle from '@/components/navs/AppNav/AppNavToggle.vue';
+import AppNavOtherItems from '@/components/navs/AppNav/AppNavOtherItems.vue';
 
 export default defineComponent({
   name: 'AppFooterNav',

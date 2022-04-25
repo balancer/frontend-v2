@@ -27,11 +27,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
-import useNumbers from '@/composables/useNumbers';
-import useBreakpoints from '@/composables/useBreakpoints';
+import { defineComponent, PropType } from 'vue';
 import { Alert } from '@/composables/useAlerts';
-import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
@@ -42,34 +39,7 @@ export default defineComponent({
   },
 
   setup() {
-    const { fNum } = useNumbers();
-    const { upToLargeBreakpoint } = useBreakpoints();
-
-    const protocolDataQuery = useProtocolDataQuery();
-    const tvl = computed(
-      () => protocolDataQuery.data?.value?.totalLiquidity || 0
-    );
-
-    const beetsPrice = computed(
-      () => protocolDataQuery.data?.value?.beetsPrice || 0
-    );
-    const circulatingSupply = computed(
-      () => protocolDataQuery.data.value?.circulatingSupply || 0
-    );
-    const marketCap = computed(() => {
-      return beetsPrice.value * circulatingSupply.value;
-    });
-    const loading = computed(() => protocolDataQuery.isLoading.value);
-
     return {
-      fNum,
-      upToLargeBreakpoint,
-      beetsPrice,
-      tvl,
-      circulatingSupply,
-      marketCap,
-      loading,
-
       // constants
       EXTERNAL_LINKS
     };

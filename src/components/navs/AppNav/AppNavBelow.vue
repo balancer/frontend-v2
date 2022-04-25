@@ -2,17 +2,13 @@
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import useUserPoolsData from '@/beethovenx/composables/useUserPoolsData';
 
 const { fNum } = useNumbers();
-const { account } = useWeb3();
 const protocolDataQuery = useProtocolDataQuery();
 const { userPoolsData, userPoolDataLoading } = useUserPoolsData();
-
 const procotolDataLoading = computed(() => protocolDataQuery.isLoading.value);
-
 const tvl = computed(() => protocolDataQuery.data?.value?.totalLiquidity || 0);
 const swapFee24h = computed(
   () => protocolDataQuery.data?.value?.swapFee24h || 0

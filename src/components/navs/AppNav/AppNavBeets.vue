@@ -66,16 +66,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { sumBy } from 'lodash';
-import numeral from 'numeral';
-import usePools from '@/composables/pools/usePools';
-import useEthers from '@/composables/useEthers';
-import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { Alert } from '@/composables/useAlerts';
-import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 
 export default defineComponent({

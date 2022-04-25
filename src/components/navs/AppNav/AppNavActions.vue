@@ -2,40 +2,42 @@
   <div>
     <div v-if="account" class="flex items-center">
       <AppNavActivityBtn />
-      <AppNavClaimBtn v-if="liquidityMiningSupported" />
+      <AppNavClaimBtn />
+      <AppNavBeets />
       <AppNavAccountBtn />
     </div>
-    <BalBtn
-      v-else
-      color="white"
-      :size="upToLargeBreakpoint ? 'md' : 'sm'"
-      @click="toggleWalletSelectModal"
-    >
-      <WalletIcon class="mr-2" />
-      <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
-      <span class="lg:hidden" v-text="$t('connect')" />
-    </BalBtn>
+    <div v-else class="flex">
+      <div class="mr-2">
+        <AppNavBeets />
+      </div>
+      <BalBtn
+        color="white"
+        :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        @click="toggleWalletSelectModal"
+        class="mr-2"
+      >
+        <WalletIcon class="mr-2" />
+        <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
+        <span class="lg:hidden" v-text="$t('connect')" />
+      </BalBtn>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-
-import { EXTERNAL_LINKS } from '@/constants/links';
-
-import useFathom from '@/composables/useFathom';
+import { defineComponent } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
-
-import AppNavAccountBtn from './AppNavAccountBtn.vue';
-import AppNavClaimBtn from './AppNavClaimBtn.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
+import AppNavAccountBtn from './AppNavAccountBtn.vue';
+import AppNavClaimBtn from './AppNavClaimBtn.vue';
+import AppNavBeets from './AppNavBeets.vue';
 
 export default defineComponent({
   name: 'AppNavActions',
 
   components: {
+    AppNavBeets,
     AppNavAccountBtn,
     AppNavClaimBtn,
     AppNavActivityBtn
@@ -43,43 +45,16 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const { upToSmallBreakpoint, upToLargeBreakpoint } = useBreakpoints();
-    const { fNum } = useNumbers();
-    const { trackGoal, Goals } = useFathom();
-    const {
-      connectWallet,
-      account,
-      toggleWalletSelectModal,
-      isMainnet,
-      isKovan,
-      isPolygon,
-      isArbitrum
-    } = useWeb3();
-
-    // COMPUTED
-    const liquidityMiningSupported = computed(
-      () =>
-        isMainnet.value || isPolygon.value || isArbitrum.value || isKovan.value
-    );
-
-    // METHODS
-    function onClickConnect() {
-      trackGoal(Goals.ClickNavConnectWallet);
-    }
+    const { upToLargeBreakpoint } = useBreakpoints();
+    const { connectWallet, account, toggleWalletSelectModal } = useWeb3();
 
     return {
       // computed
-      liquidityMiningSupported,
       account,
-      upToSmallBreakpoint,
       upToLargeBreakpoint,
       // methods
-      fNum,
-      onClickConnect,
       connectWallet,
-      toggleWalletSelectModal,
-      // constants
-      EXTERNAL_LINKS
+      toggleWalletSelectModal
     };
   }
 });
