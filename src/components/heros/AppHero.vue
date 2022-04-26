@@ -65,7 +65,7 @@ const totalVeBalLabel = computed((): string =>
 );
 
 const isLoadingLockAndStaking = computed(
-  (): boolean => isLoadingLock.value || isStakingLoading.value
+  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value
 );
 
 const isLoadingTotalValue = computed(

@@ -7,7 +7,7 @@
   "network": "polygon",
   "portisNetwork": "matic",
   "unknown": false,
-  "rpc": "https://polygon-rpc.com",
+  "rpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://polygon-rpc.com",
