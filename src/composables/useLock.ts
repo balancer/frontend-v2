@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -7,6 +7,7 @@ import { TokenInfo } from '@/types/TokenList';
 
 import usePoolQuery from './queries/usePoolQuery';
 import useVeBalLockInfoQuery from './queries/useVeBalLockInfoQuery';
+import { isL2 } from './useNetwork';
 import useTokens from './useTokens';
 import useVeBal from './useVeBAL';
 
@@ -20,7 +21,10 @@ export function useLock() {
   /**
    * QUERIES
    */
-  const lockPoolQuery = usePoolQuery(lockablePoolId.value as string);
+  const lockPoolQuery = usePoolQuery(
+    lockablePoolId.value as string,
+    ref(!isL2.value)
+  );
   const lockQuery = useVeBalLockInfoQuery();
 
   /**
