@@ -1,12 +1,7 @@
 import { differenceInSeconds } from 'date-fns';
 import { computed, ref } from 'vue';
 
-import {
-  isArbitrum,
-  isKovan,
-  isMainnet,
-  isPolygon
-} from '@/composables/useNetwork';
+import { isKovan, isMainnet } from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
