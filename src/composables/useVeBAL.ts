@@ -23,7 +23,7 @@ const showRedirectModal = ref(false);
  * COMPUTED
  */
 export const isVeBalSupported = computed(
-  () => isMainnet.value || isKovan.value || isArbitrum.value || isPolygon.value
+  () => isMainnet.value || isKovan.value
 );
 
 /**
