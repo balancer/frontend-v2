@@ -182,14 +182,14 @@ onMounted(() => {
  */
 const unpinnedData = computed(() => {
   if (!props.pin) return props.data;
-  return (props.data || []).filter(
+  return (tableData.value || []).filter(
     data => !props.pin?.pinnedData.includes(data[props.pin.pinOn])
   );
 });
 
 const pinnedData = computed(() => {
   if (!props.pin) return [];
-  return (props.data || []).filter(data =>
+  return (tableData.value || []).filter(data =>
     props.pin?.pinnedData.includes(data[props.pin.pinOn])
   );
 });
