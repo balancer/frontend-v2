@@ -70,7 +70,7 @@ const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
 
 const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 900 : undefined
+  upToMediumBreakpoint.value ? 450 : undefined
 );
 
 /**

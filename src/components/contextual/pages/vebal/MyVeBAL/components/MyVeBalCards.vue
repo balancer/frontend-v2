@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format } from 'date-fns';
+import { differenceInDays, format } from 'date-fns';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -86,11 +86,14 @@ const cards = computed(() => {
   return [
     {
       id: 'myLpToken',
-      label: t('veBAL.myVeBAL.cards.myLpToken', [
+      label: t('veBAL.myVeBAL.cards.myLpToken.label', [
         props.lockablePoolTokenInfo?.symbol
       ]),
       value: isWalletReady.value
         ? fNum2(fiatTotal.value, FNumFormats.fiat)
+        : '—',
+      secondaryText: isWalletReady.value
+        ? fNum2(bptBalance.value, FNumFormats.token)
         : '—',
       showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: {
@@ -101,11 +104,14 @@ const cards = computed(() => {
     },
     {
       id: 'myLockedLpToken',
-      label: t('veBAL.myVeBAL.cards.myLockedLpToken', [
+      label: t('veBAL.myVeBAL.cards.myLockedLpToken.label', [
         props.lockablePoolTokenInfo?.symbol
       ]),
-      value: hasExistingLock
+      value: isWalletReady.value
         ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
+        : '—',
+      secondaryText: isWalletReady.value
+        ? fNum2(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)
         : '—',
       showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
@@ -113,14 +119,34 @@ const cards = computed(() => {
     },
     {
       id: 'lockedEndDate',
-      label: t('veBAL.myVeBAL.cards.lockedEndDate'),
+      label: t('veBAL.myVeBAL.cards.lockedEndDate.label'),
       value: lockedUntil.value,
+      secondaryText:
+        hasExistingLock && !isExpired
+          ? t('veBAL.myVeBAL.cards.lockedEndDate.secondaryText', [
+              differenceInDays(new Date(lockedUntil.value), new Date())
+            ])
+          : '-',
       showPlusIcon: hasExistingLock ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } }
     },
     {
       id: 'myVeBAL',
-      label: t('veBAL.myVeBAL.cards.myVeBAL'),
+      label: t('veBAL.myVeBAL.cards.myVeBAL.label'),
+      secondaryText:
+        hasExistingLock && !isExpired
+          ? t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
+              fNum2(
+                bnum(veBalBalance.value)
+                  .div(props.veBalLockInfo.totalSupply)
+                  .toString(),
+                {
+                  style: 'percent',
+                  maximumFractionDigits: 4
+                }
+              )
+            ])
+          : '-',
       showPlusIcon: false,
       value: hasExistingLock
         ? fNum2(veBalBalance.value, FNumFormats.token)
@@ -153,6 +179,7 @@ const cards = computed(() => {
         </router-link>
       </span>
     </div>
+    <div class="secondary-value">{{ card.secondaryText }}</div>
   </BalCard>
   <teleport to="#modal">
     <UnlockPreviewModal
@@ -172,6 +199,10 @@ const cards = computed(() => {
   @apply text-sm text-gray-500 font-medium mb-2;
 }
 .value {
-  @apply text-xl font-medium truncate flex items-center justify-between;
+  @apply text-xl font-medium truncate flex items-center justify-between mb-1;
+}
+
+.secondary-value {
+  @apply text-gray-400 dark:text-gray-500;
 }
 </style>

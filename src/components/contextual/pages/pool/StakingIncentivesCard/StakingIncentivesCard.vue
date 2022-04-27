@@ -225,10 +225,7 @@ async function handleActionSuccess() {
   </AnimatePresence>
   <AnimatePresence
     :isVisible="
-      isLoadingStakedShares ||
-        isStakedSharesIdle ||
-        isLoadingPoolEligibility ||
-        isLoadingBoosts
+      isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
     "
     unmountInstantly
   >

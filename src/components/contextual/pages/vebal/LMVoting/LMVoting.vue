@@ -147,7 +147,7 @@ function getVotePeriodEndTime(): number {
   <GaugesTable
     :isLoading="isLoading"
     :data="votingGauges"
-    :key="votingGauges"
+    :key="votingGauges && isLoading"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"
