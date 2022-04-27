@@ -360,7 +360,7 @@
     "liquidityMining": "Liquidity mining",
     "liquidityMiningAPR": "Liquidity Mining APR",
     "liquidityMiningIncentives": "Liquidity mining incentives",
-    "liquidityMiningIncentivesCopy": "People who invest in this pool receive liquidity mining incentives. Unlike on Ethereum Mainnet, no staking is required for eligible pools on {0}",
+    "liquidityMiningIncentivesCopy": "Liquidity incentives on {0} are paused for 1 week during its upgrade to the veBAL system. Incentives will resume on April 28.",
     "liquidityMiningPopover": {
         "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
         "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
@@ -443,6 +443,8 @@
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
     "noInvestmentsPool": "No investments in this pool",
+    "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
+    "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
     "noPoolsFound": "No pools found",
     "noPriceImpact": "Best price",
     "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
@@ -450,6 +452,7 @@
     "noRecentActivity": "Your recent activity will appear here…",
     "noResults": "No results.",
     "noSwapsPool": "No swaps in this pool.",
+    "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
     "numberOfPools": "Number of pools",
     "notAvailable": "N/A",
     "oneDay": "1D",
@@ -645,10 +648,20 @@
         "myVeBAL": {
             "title": "My veBAL",
             "cards": {
-                "myLpToken": "My {0}",
-                "myLockedLpToken": "My locked {0}",
-                "lockedEndDate": "Locked until",
-                "myVeBAL": "My veBAL"
+                "myLpToken": {
+                    "label": "My {0}"
+                },
+                "myLockedLpToken": {
+                    "label": "My locked {0}"
+                },
+                "lockedEndDate": {
+                    "label": "Locked until",
+                    "secondaryText": "{0} days"
+                },
+                "myVeBAL": {
+                    "label": "My veBAL",
+                    "secondaryText": "{0} of all veBAL"
+                }
             }
         },
         "communityVeBAL": {
@@ -909,7 +922,10 @@
     "tokenInjected": "This token is injected",
     "tokenLists": "Token lists",
     "tokenPills": {
-        "hiddenTokens": "+{0} tokens"
+        "hiddenTokens": "+{0} tokens",
+        "balanceTooltip": {
+            "title": "In your wallet {0}"
+        }
     },
     "tokens": "Tokens",
     "tokenSearch": "Token search",

@@ -2,7 +2,6 @@ import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
-import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -29,11 +28,6 @@ export default function useVeBalQuery(
    */
   const enabled = computed(() => isWalletReady.value && isVeBalSupported.value);
 
-  /**
-   * QUERY INPUTS
-   */
-  const queryKey = reactive(QUERY_KEYS.Tokens.VeBAL(networkId, account));
-
   const queryFn = () =>
     balancerContractsService.veBAL.getLockInfo(account.value);
 
@@ -42,5 +36,9 @@ export default function useVeBalQuery(
     ...options
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(
+    reactive(['tokens', 'veBAL', { networkId, account }]),
+    queryFn,
+    queryOptions
+  );
 }

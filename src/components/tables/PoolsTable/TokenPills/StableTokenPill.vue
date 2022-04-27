@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { PoolToken } from '@/services/balancer/subgraph/types';
+
+import BalanceTooltip from './BalanceTooltip.vue';
+
 type Props = {
   hasBalance: boolean;
   symbol: string;
   isSelected: boolean;
+  token: PoolToken;
 };
 
 withDefaults(defineProps<Props>(), {
@@ -12,36 +17,45 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div
-    :class="[
-      'pill',
-      {
-        'pill-selected': isSelected
-      }
-    ]"
+  <BalTooltip
+    :disabled="!hasBalance"
+    class="mr-1 last:mr-0 cursor-pointer leading-normal"
+    textAlign="left"
+    :delayMs="50"
   >
-    <div v-if="hasBalance" class="balance-indicator" />
-    <div
-      :class="[
-        'pill-text',
-        {
-          'font-medium': isSelected
-        }
-      ]"
-    >
-      {{ symbol }}
-    </div>
-  </div>
+    <template v-slot:activator>
+      <div
+        :class="[
+          'pill',
+          {
+            'pill-selected': isSelected,
+            'pill-hoverable': hasBalance
+          }
+        ]"
+      >
+        <div v-if="hasBalance" class="balance-indicator" />
+        <div
+          :class="[
+            'pill-text',
+            {
+              'font-medium': isSelected
+            }
+          ]"
+        >
+          {{ symbol }}
+        </div>
+      </div>
+    </template>
+    <BalanceTooltip :token="token" :symbol="symbol" />
+  </BalTooltip>
 </template>
 
 <style scoped>
 .pill {
   @apply flex;
   @apply relative;
-  @apply mr-1 my-px;
-}
-.pill:last-child {
-  @apply mr-0;
+  @apply my-px;
+  @apply h-full;
 }
 
 .pill::before {
@@ -78,5 +92,10 @@ withDefaults(defineProps<Props>(), {
   @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
   @apply bg-green-200 dark:bg-green-500;
   @apply absolute top-0 right-0 -mt-1 -mr-2;
+}
+
+.pill-hoverable:hover::before,
+.pill-hoverable:focus::before {
+  @apply bg-gray-200 dark:bg-gray-900;
 }
 </style>
