@@ -28,7 +28,7 @@ const { setSidebarOpen } = useSidebar();
         <BalIcon
           name="x"
           size="lg"
-          class="fixed top-8 right-8 text-white cursor-pointer"
+          class="close-icon flex justify-center items-center fixed top-4 right-2 text-white cursor-pointer"
         />
       </div>
     </div>
@@ -39,6 +39,7 @@ const { setSidebarOpen } = useSidebar();
 .sidebar-overlay {
   z-index: 999999999;
   @apply fixed top-0 left-0 h-screen w-full bg-black bg-opacity-80 cursor-pointer flex;
+  backdrop-filter: blur(5px);
 }
 
 .app-sidebar {
@@ -69,5 +70,18 @@ const { setSidebarOpen } = useSidebar();
 .sidebar-leave-to {
   transform: translateX(-100%);
   opacity: 0;
+}
+
+.close-icon {
+  @apply overflow-hidden rounded-full w-9 h-9;
+  animation: spin-quarter 0.3s ease-out both;
+}
+
+.close-icon:before {
+  @apply w-9 h-9 flex items-center justify-center absolute rounded-full;
+  content: '';
+  z-index: -1;
+  background: rgba(150, 150, 150, 0.2);
+  backdrop-filter: blur(4px);
 }
 </style>
