@@ -14,7 +14,6 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
   fixedFormat?: boolean; // If true, don't auto-adjust based on number magnitde
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
   dontAdjustLarge?: boolean; // If true, don't auto-adjust if the number is large
-  returnLessBasicPoint?: boolean; // If true, return less than basic point (< 0.01%) instead of 0.00%, if num < 0.00005
 }
 
 export const FNumFormats: Record<string, FNumOptions> = {
