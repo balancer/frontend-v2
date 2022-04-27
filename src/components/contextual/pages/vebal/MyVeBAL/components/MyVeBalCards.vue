@@ -158,11 +158,11 @@ const cards = computed(() => {
 
 <template>
   <BalCard v-for="card in cards" :key="card.id">
-    <div class="label">
+    <div class="label font-medium">
       {{ card.label }}
     </div>
     <div class="value">
-      <span>{{ card.value }}</span>
+      <span class="font-bold">{{ card.value }}</span>
       <span>
         <BalIcon
           v-if="card.showUnlockIcon"
@@ -179,7 +179,7 @@ const cards = computed(() => {
         </router-link>
       </span>
     </div>
-    <div class="secondary-value">{{ card.secondaryText }}</div>
+    <div class="secondary-value font-medium">{{ card.secondaryText }}</div>
   </BalCard>
   <teleport to="#modal">
     <UnlockPreviewModal
@@ -196,13 +196,13 @@ const cards = computed(() => {
 
 <style scoped>
 .label {
-  @apply text-sm text-gray-500 font-medium mb-2;
+  @apply text-sm mb-2;
 }
 .value {
-  @apply text-xl font-medium truncate flex items-center justify-between mb-1;
+  @apply text-xl font-medium truncate flex items-center justify-between mb-0.5;
 }
 
 .secondary-value {
-  @apply text-gray-400 dark:text-gray-500;
+  @apply text-sm text-gray-500 dark:text-gray-400;
 }
 </style>

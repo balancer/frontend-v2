@@ -156,7 +156,7 @@ function getVotePeriodEndTime(): number {
           {{ $t('getVeBALToVote') }}</BalLink
         >.
       </span> -->
-      <div class="border dark:border-gray-700 p-3 rounded-lg min-w-max md:w-48">
+      <div class="border dark:border-gray-800 p-3 rounded-lg min-w-max md:w-48">
         <div class="flex items-center">
           <p class="text-sm text-gray-500 inline mr-1">
             My unallocated votes
