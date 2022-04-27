@@ -5,8 +5,8 @@ import { useI18n } from 'vue-i18n';
 
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
 import { isMainnet } from '@/composables/useNetwork';
+import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -14,7 +14,7 @@ const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { setTokenInAddress } = useTradeState();
 const {
-  hasBalance, 
+  hasBalance,
   nativeAsset,
   balanceFor,
   balances,
@@ -73,9 +73,7 @@ const tokensWithBalance = computed(() => {
         >
           <div
             class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors mr-0.5"
-            v-if="
-               !hasBalance(nativeAsset.address)
-            "
+            v-if="!hasBalance(nativeAsset.address)"
           >
             {{ etherBalance }} {{ nativeCurrency }}
             <BalTooltip
