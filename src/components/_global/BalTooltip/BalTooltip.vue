@@ -142,7 +142,8 @@ onMounted(() => {
   animation: fadeInMoveDown 0.2s ease-out both;
 }
 
-.tooltip[data-popper-placement='top'] .tooltip-content:before, .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+.tooltip[data-popper-placement='top'] .tooltip-content:before,
+.tooltip[data-popper-placement='bottom'] .tooltip-content:after {
   @apply w-0 h-0 absolute;
   content: ' ';
   left: calc(50% - 7px);
