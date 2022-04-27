@@ -76,7 +76,6 @@ export type UserStakingDataResponse = {
   isLoadingUserPools: Ref<boolean>;
   isUserPoolsIdle: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
-  isStakingQueryEnabled: Ref<boolean>;
   getStakedShares: () => Promise<string>;
   refetchUserStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
@@ -104,7 +103,6 @@ export default function useUserStakingData(
 
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
-  const isStakingQueryEnabled = computed(() => !isL2.value);
   const isStakedSharesQueryEnabled = computed(
     () =>
       !!poolAddress.value &&
@@ -149,7 +147,7 @@ export default function useUserStakingData(
     }),
     reactive({
       refetchOnWindowFocus: false,
-      enabled: isStakingQueryEnabled
+      enabled: true
     })
   );
 
@@ -227,7 +225,7 @@ export default function useUserStakingData(
   );
 
   const isBoostQueryEnabled = computed(
-    () => isWalletReady.value && userGaugeShares.value.length > 0
+    () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
   );
 
   const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery(
@@ -295,7 +293,6 @@ export default function useUserStakingData(
     isStakedPoolsQueryEnabled,
     isLoadingUserPools,
     isUserPoolsIdle,
-    isStakingQueryEnabled,
     stakedSharesMap,
     refetchUserStakingData,
     stakedPools,

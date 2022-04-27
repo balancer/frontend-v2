@@ -3,6 +3,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { fromUnixTime, isAfter } from 'date-fns';
 import { parseUnits } from 'ethers/lib/utils';
 import {
   computed,
@@ -17,7 +18,6 @@ import {
 
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
-import { isL2 } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
 import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
@@ -29,7 +29,7 @@ import useUserStakingData, {
   UserStakingDataResponse
 } from './userUserStakingData';
 
-export const stakingEnabled = computed(() => !isL2.value);
+export const isL2StakingAprLive = isAfter(new Date(), fromUnixTime(1651104000));
 
 /**
  * TYPES
@@ -103,7 +103,6 @@ export default defineComponent({
       isStakedPoolsQueryEnabled,
       isLoadingUserPools,
       isUserPoolsIdle,
-      isStakingQueryEnabled,
       stakedSharesMap,
       refetchUserStakingData,
       stakedPools,
@@ -119,7 +118,7 @@ export default defineComponent({
     );
 
     const isPoolEligibleQueryEnabled = computed(
-      (): boolean => isPoolAddressRegistered.value && stakingEnabled.value
+      (): boolean => isPoolAddressRegistered.value
     );
 
     // this query is responsible for checking if the given pool
@@ -211,7 +210,6 @@ export default defineComponent({
         isStakedPoolsQueryEnabled,
         isLoadingUserPools,
         isUserPoolsIdle,
-        isStakingQueryEnabled,
         stakedSharesMap,
         refetchUserStakingData,
         stakedPools,

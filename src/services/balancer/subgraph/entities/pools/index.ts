@@ -15,7 +15,6 @@ import {
   computeTotalAPRForPool,
   currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
-import { stakingEnabled } from '@/providers/local/staking/staking.provider';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
@@ -128,9 +127,18 @@ export default class Pools {
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
   ): Promise<DecoratedPool[]> {
-    const [protocolFeePercentage, gaugeAprs] = await Promise.all([
+    const [
+      protocolFeePercentage,
+      gaugeBALAprs,
+      gaugeRewardTokenAprs
+    ] = await Promise.all([
       this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
-      await stakingRewardsService.getGaugeAprForPools({
+      await stakingRewardsService.getGaugeBALAprs({
+        prices,
+        gauges,
+        pools
+      }),
+      await stakingRewardsService.getRewardTokenAprs({
         prices,
         gauges,
         pools,
@@ -156,8 +164,8 @@ export default class Pools {
 
       const fees = this.calcFees(pool, pastPool);
       const {
-        hasLiquidityMiningRewards,
-        liquidityMiningAPR,
+        // hasLiquidityMiningRewards,
+        // liquidityMiningAPR,
         liquidityMiningBreakdown
       } = this.calcLiquidityMiningAPR(pool, prices, currency);
       const {
@@ -170,14 +178,16 @@ export default class Pools {
         protocolFeePercentage
       );
 
-      const stakingApr = gaugeAprs[pool.id];
+      const balAPR = gaugeBALAprs[pool.id];
+      const rewardTokenAPR = gaugeRewardTokenAprs[pool.id];
 
-      const networkAdjustedLMApr = stakingEnabled.value
-        ? '0'
-        : liquidityMiningAPR;
-      const networkAdjustedLMEligibility = stakingEnabled.value
-        ? false
-        : hasLiquidityMiningRewards;
+      // TODO - We might need to include staking + LM APRs for L2s?
+      const networkAdjustedLMApr = '0';
+      // ? '0'
+      // : liquidityMiningAPR;
+      const networkAdjustedLMEligibility = false;
+      // ? false
+      // : hasLiquidityMiningRewards;
 
       const totalAPR = this.calcTotalAPR(
         poolAPR,
@@ -202,7 +212,10 @@ export default class Pools {
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
             liquidityMining: networkAdjustedLMApr,
             liquidityMiningBreakdown,
-            staking: stakingApr,
+            staking: {
+              BAL: balAPR,
+              Rewards: rewardTokenAPR
+            },
             total: totalAPR
           },
           isNewPool
