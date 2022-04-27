@@ -31,7 +31,7 @@ export type ColumnDefinition<T = Data> = {
 
   cellClassName?: string;
 };
-import { compact, sortBy, sumBy, tail } from 'lodash';
+import { sortBy, sumBy } from 'lodash';
 import { computed, onMounted, ref, watch } from 'vue';
 
 import PinHeader from './PinHeader.vue';
@@ -354,7 +354,7 @@ watch(
           </template>
         </BalTableRow>
         <!-- end end data rows -->
-        <!-- <TotalsRow
+        <TotalsRow
           :columns="filteredColumns"
           :onRowClick="onRowClick"
           :sticky="sticky"
@@ -364,7 +364,7 @@ watch(
           <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
             <slot :name="name" v-bind="slotData" />
           </template>
-        </TotalsRow> -->
+        </TotalsRow>
       </table>
     </div>
   </div>
