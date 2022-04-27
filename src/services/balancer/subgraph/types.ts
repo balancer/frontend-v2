@@ -148,6 +148,7 @@ export interface RawLinearPoolData {
   mainToken: RawLinearPoolToken;
   wrappedToken: RawWrappedLinearPoolToken;
   unwrappedTokenAddress: string;
+  unwrappedERC4626Address: string;
   totalSupply: string;
   tokenData: RawPoolTokens;
 }

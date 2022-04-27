@@ -41,7 +41,7 @@
             <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
-            <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
+            <div v-html="poolFeeLabel" class="text-sm text-gray-600 mr-2" />
             <BalTooltip>
               <template v-slot:activator>
                 <BalLink
@@ -49,14 +49,9 @@
                   :href="EXTERNAL_LINKS.Gauntlet.Home"
                   external
                 >
-                  <GauntletIcon class="ml-2" />
+                  <GauntletIcon />
                 </BalLink>
-                <BalIcon
-                  v-else
-                  name="info"
-                  size="xs"
-                  class="text-gray-400 ml-2"
-                />
+                <BalIcon v-else name="info" size="xs" class="text-gray-400" />
               </template>
               <span>
                 {{ swapFeeToolTip }}
@@ -146,52 +141,12 @@
               class="pool-actions-card h-40"
             />
             <StakingIncentivesCard
-              v-if="isStakablePool && !loadingPool && !isL2"
+              v-if="isStakablePool && !loadingPool"
               :pool="pool"
             />
-            <LMIncentivesCard v-if="isL2" :poolId="id" />
-            <!-- <PoolActionsCard
-          v-else-if="!noInitLiquidity"
-          :pool="pool"
-          :missingPrices="missingPrices"
-        /> -->
           </BalStack>
         </StakingProvider>
       </div>
-      <!-- <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
-        <BalCard
-          v-if="isCopperPool"
-          noPad
-          imgSrc="/images/partners/copper-launch.png"
-        >
-          <div class="p-4 mt-2">
-            <div class="mb-4 font-semibold">
-              {{ $t('copperLaunchPromo.title') }}
-            </div>
-            <div class="mb-4 text-sm">
-              {{ $t('copperLaunchPromo.description') }}
-            </div>
-            <div class="italic mb-4 text-sm">
-              {{ $t('copperLaunchPromo.poweredByBalancer') }}
-            </div>
-            <BalLink
-              :href="
-                EXTERNAL_LINKS.Copper.Auctions(
-                  pool.address,
-                  copperNetworkPrefix
-                )
-              "
-              external
-              class="block hover:no-underline"
-            >
-              <BalBtn color="blue" block
-                >{{ $t('copperLaunchPromo.buttonLabel') }}
-                <BalIcon name="arrow-up-right" size="sm" class="ml-1"
-              /></BalBtn>
-            </BalLink>
-          </div>
-        </BalCard>
-      </div> -->
     </div>
   </div>
 </template>
@@ -202,7 +157,6 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
-import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
@@ -232,7 +186,6 @@ export default defineComponent({
     LiquidityAPRTooltip,
     StakingIncentivesCard,
     StakingProvider,
-    LMIncentivesCard,
     ApyVisionPoolLink
   },
 

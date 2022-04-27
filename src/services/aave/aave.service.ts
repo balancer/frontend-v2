@@ -2,9 +2,9 @@ import { getAddress } from '@ethersproject/address';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
-import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
+import { Pool } from '../balancer/subgraph/types';
 import AaveSubgraphService, {
   aaveSubgraphService
 } from './subgraph/aave-subgraph.service';
@@ -21,54 +21,72 @@ export default class AaveService {
     prices: TokenPrices,
     currency: FiatCurrency
   ) {
+    const { mainTokens, wrappedTokens, onchain, linearPoolTokensMap } = pool;
+
+    const wrappedTokenBalances = wrappedTokens?.map(
+      token => linearPoolTokensMap?.[token].balance || ''
+    );
+    const hasAllWrappedTokenBalances =
+      wrappedTokenBalances && wrappedTokenBalances.every(balance => !!balance);
+
+    if (
+      !mainTokens ||
+      !wrappedTokens ||
+      !onchain?.linearPools ||
+      !hasAllWrappedTokenBalances
+    )
+      return { total: '0', breakdown: {} };
+
+    const unwrappedTokens = Object.values(
+      onchain?.linearPools
+    ).map(linearPool => linearPool.unwrappedTokenAddress.toLocaleLowerCase());
+
     let total = bnum(0);
-    const tokenBreakdown = {};
+    const breakdown: Record<string, string> = {};
 
-    if (pool.mainTokens != null && pool.wrappedTokens != null) {
-      const reserves = await this.subgraphService.reserves.get({
-        where: {
-          underlyingAsset_in: pool.mainTokens,
-          isActive: true,
-          aEmissionPerSecond_gt: 0
-        }
-      });
+    const reserves = await this.subgraphService.reserves.get({
+      where: {
+        underlyingAsset_in: mainTokens,
+        aToken_in: unwrappedTokens,
+        isActive: true
+      }
+    });
 
-      reserves.forEach(reserve => {
-        const supplyAPR = bnum(reserve.supplyAPR);
+    reserves.forEach(reserve => {
+      const supplyAPR = bnum(reserve.supplyAPR);
 
-        if (
-          pool.mainTokens != null &&
-          pool.wrappedTokens != null &&
-          supplyAPR.gt(0)
-        ) {
-          const tokenIndex = pool.mainTokens.findIndex(
-            token => token === getAddress(reserve.underlyingAsset)
+      if (supplyAPR.gt(0)) {
+        const tokenIndex = mainTokens.findIndex(
+          token => token === getAddress(reserve.underlyingAsset)
+        );
+        // Grabs the matching wrapped which generates the yield
+        const wrappedToken = wrappedTokens[tokenIndex];
+        const mainToken = mainTokens[tokenIndex];
+        const linearPoolAddress = pool.tokenAddresses[tokenIndex];
+        const linearPool = pool.onchain?.linearPools?.[linearPoolAddress];
+
+        if (prices[mainToken] != null && linearPool) {
+          const price = prices[mainToken][currency] || 0;
+          const balance = wrappedTokenBalances[tokenIndex];
+          const linearPoolBalance =
+            pool.onchain?.tokens[linearPoolAddress].balance || '0';
+          const linearPoolShare = bnum(linearPoolBalance).div(
+            linearPool.totalSupply
           );
-          // Grabs the matching wrapped which generates the yield
-          const wrappedToken = pool.wrappedTokens[tokenIndex];
-          const mainToken = pool.mainTokens[tokenIndex];
+          const actualBalance = bnum(balance).times(linearPoolShare);
+          const value = bnum(actualBalance).times(price);
+          const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
 
-          if (
-            pool.linearPoolTokensMap != null &&
-            pool.linearPoolTokensMap[wrappedToken] != null &&
-            prices[mainToken] != null
-          ) {
-            const price = prices[mainToken][currency] || 0;
-            const balance = pool.linearPoolTokensMap[wrappedToken].balance;
-            const value = bnum(balance).times(price);
-            const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
+          breakdown[wrappedToken] = weightedAPR.toString();
 
-            tokenBreakdown[wrappedToken] = weightedAPR.toString();
-
-            total = total.plus(weightedAPR);
-          }
+          total = total.plus(weightedAPR);
         }
-      });
-    }
+      }
+    });
 
     return {
       total: total.toString(),
-      tokenBreakdown
+      breakdown
     };
   }
 }
