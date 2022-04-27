@@ -6,6 +6,7 @@ import {
 import { JsonRpcProvider } from '@ethersproject/providers';
 
 import ERC20_ABI from '@/lib/abi/ERC20.json';
+import IERC4626 from '@/lib/abi/IERC4626.json';
 import LinearPoolAbi from '@/lib/abi/LinearPool.json';
 import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
 import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
@@ -50,7 +51,8 @@ export default class BalancerContractsService {
           ...StablePhantomPool,
           ...LinearPoolAbi,
           ...StaticATokenLMAbi,
-          ...ERC20_ABI
+          ...ERC20_ABI,
+          ...IERC4626
         ].map(row => [row.name, row])
       )
     );

@@ -907,11 +907,11 @@
     "thirdPartyRewards": {
         "apr": {
             "steth": "stETH staking rewards APR",
-            "aaveBoosted": "Aave boosted APR"
+            "boosted": "Boosted APR"
         },
         "fiat": {
             "steth": "stETH staking rewards",
-            "aaveBoosted": "Aave boosted rewards"
+            "boosted": "Boosted rewards"
         }
     },
     "threeMonths": "3M",
