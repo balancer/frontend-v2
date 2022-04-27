@@ -443,6 +443,8 @@
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
     "noInvestmentsPool": "No investments in this pool",
+    "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
+    "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
     "noPoolsFound": "No pools found",
     "noPriceImpact": "Best price",
     "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
@@ -450,6 +452,7 @@
     "noRecentActivity": "Your recent activity will appear here…",
     "noResults": "No results.",
     "noSwapsPool": "No swaps in this pool.",
+    "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
     "numberOfPools": "Number of pools",
     "notAvailable": "N/A",
     "oneDay": "1D",
@@ -919,7 +922,10 @@
     "tokenInjected": "This token is injected",
     "tokenLists": "Token lists",
     "tokenPills": {
-        "hiddenTokens": "+{0} tokens"
+        "hiddenTokens": "+{0} tokens",
+        "balanceTooltip": {
+            "title": "In your wallet {0}"
+        }
     },
     "tokens": "Tokens",
     "tokenSearch": "Token search",

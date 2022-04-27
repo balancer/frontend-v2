@@ -141,13 +141,44 @@ export default defineComponent({
 .addresses-row {
   @apply relative flex;
 }
+
+.my-wallet .addresses-row {
+  @apply flex-wrap gap-2;
+  width: auto !important;
+  height: auto !important;
+}
+.my-wallet .addresses-row > img,
+.my-wallet .addresses-row > .token-icon {
+  @apply cursor-pointer transition-transform border-0 shadow;
+}
+
+.my-wallet .addresses-row > img:hover,
+.my-wallet .addresses-row > img:focus,
+.my-wallet .addresses-row > .token-icon:hover,
+.my-wallet .addresses-row > .token-icon:focus {
+  @apply scale-110 transform-gpu;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
 .addresses-row:last-child {
   @apply mb-0;
 }
+
+/* After the first three rows, display any remaining tokens smaller to fit more in */
+.my-wallet .addresses-row:nth-child(n + 2) img,
+.my-wallet .addresses-row:nth-child(n + 2) .token-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
 .token-icon {
   margin-left: -2px;
   @apply rounded-full overflow-hidden shadow-none;
   @apply bg-white dark:bg-gray-850;
   @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+}
+
+.my-wallet .token-icon {
+  @apply ml-0;
 }
 </style>

@@ -93,14 +93,36 @@ defineExpose({ hide });
 .content {
   @apply relative w-full h-3/4 sm:h-auto max-h-screen;
   max-width: 450px;
+  transform-style: preserve-3d;
 }
 
 .modal-bg {
   @apply absolute h-full w-full bg-black bg-opacity-80;
+  backdrop-filter: blur(5px);
 }
 
 .modal-card {
-  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border dark:border-gray-800;
+  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border-0;
+}
+
+.dark .bal-modal .content:before {
+  background-blend-mode: soft-light, soft-light, normal;
+  background: radial-gradient(circle at left, yellow, transparent),
+    radial-gradient(circle at bottom right, blue, transparent),
+    radial-gradient(circle at top, red, transparent);
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  filter: blur(80px);
+  transform: translateZ(-1px);
+  animation: fadeInMoveUpScaleUp 0.2s ease-out both;
 }
 
 /* Overlay animation */
@@ -117,11 +139,11 @@ defineExpose({ hide });
 /* Modal animation */
 .modal-enter-active,
 .modal-leave-active {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-out;
 }
 .modal-enter-from,
 .modal-leave-to {
-  transform: translateY(50px);
+  transform: translateY(10px);
   opacity: 0;
 }
 </style>

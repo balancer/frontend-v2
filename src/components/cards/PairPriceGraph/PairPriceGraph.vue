@@ -252,11 +252,7 @@ const chartGrid = computed(() => {
           class="flex"
         >
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
-          <BalTooltip
-            width="64"
-            class="ml-2"
-            :text="$t('coingeckoPricingTooltip')"
-          >
+          <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
             <template v-slot:activator>
               <img class="h-5" src="@/assets/images/icons/coingecko.svg" />
             </template>
