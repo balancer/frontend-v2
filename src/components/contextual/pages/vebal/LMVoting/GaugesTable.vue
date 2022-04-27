@@ -158,6 +158,10 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :columns="columns"
       :data="data"
       :is-loading="isLoading"
+      :link="{
+        to: 'pool',
+        getParams: gauge => ({ id: gauge?.pool?.id })
+      }"
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
@@ -167,13 +171,17 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
         sortColumn: 'nextPeriodVotes',
         sortDirection: 'desc'
       }"
+      :pin="{
+        pinOn: 'address',
+        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b']
+      }"
     >
-      <template #chainColumnHeader>
+      <template v-slot:chainColumnHeader>
         <div class="flex items-center">
           <NetworkIcon />
         </div>
       </template>
-      <template #networkColumnCell="{ network }">
+      <template v-slot:networkColumnCell="{ network }">
         <div v-if="!isLoading" class="px-6 py-4">
           <div
             class="w-8 h-8 rounded shadow-sm bg-gray-50 dark:bg-gray-800 flex items-center justify-center"
@@ -182,17 +190,17 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
           </div>
         </div>
       </template>
-      <template #iconColumnHeader>
+      <template v-slot:iconColumnHeader>
         <div class="flex items-center">
           <CompositionIcon />
         </div>
       </template>
-      <template #iconColumnCell="gauge">
+      <template v-slot:iconColumnCell="gauge">
         <div v-if="!isLoading" class="px-6 py-4">
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool }">
+      <template v-slot:poolCompositionCell="{ pool }">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
             :tokens="
@@ -204,12 +212,12 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
           />
         </div>
       </template>
-      <template #nextPeriodVotesCell="gauge">
+      <template v-slot:nextPeriodVotesCell="gauge">
         <div v-if="!isLoading" class="px-6 py-4 text-right">
           <GaugeVoteInfo :gauge="gauge" />
         </div>
       </template>
-      <template #voteColumnCell="gauge">
+      <template v-slot:voteColumnCell="gauge">
         <div v-if="isWalletReady" class="px-4">
           <BalBtn
             color="blue"
