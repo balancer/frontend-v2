@@ -14,7 +14,7 @@
         "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
         "retry-label": "Refresh to try again",
         "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
-        "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28 0h UTC."
+        "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28."
     },
     "allow": "Allow",
     "allowing": "Allowing...",
