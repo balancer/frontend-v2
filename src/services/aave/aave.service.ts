@@ -1,5 +1,4 @@
 import { getAddress } from '@ethersproject/address';
-import { groupBy } from 'lodash';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
@@ -22,15 +21,25 @@ export default class AaveService {
     prices: TokenPrices,
     currency: FiatCurrency
   ) {
-    const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
+    const { mainTokens, wrappedTokens, onchain, linearPoolTokensMap } = pool;
+
     const wrappedTokenBalances = wrappedTokens?.map(
       token => linearPoolTokensMap?.[token].balance || ''
     );
     const hasAllWrappedTokenBalances =
       wrappedTokenBalances && wrappedTokenBalances.every(balance => !!balance);
 
-    if (!mainTokens || !wrappedTokens || !hasAllWrappedTokenBalances)
+    if (
+      !mainTokens ||
+      !wrappedTokens ||
+      !onchain?.linearPools ||
+      !hasAllWrappedTokenBalances
+    )
       return { total: '0', breakdown: {} };
+
+    const unwrappedTokens = Object.values(
+      onchain?.linearPools
+    ).map(linearPool => linearPool.unwrappedTokenAddress.toLocaleLowerCase());
 
     let total = bnum(0);
     const breakdown: Record<string, string> = {};
@@ -38,23 +47,12 @@ export default class AaveService {
     const reserves = await this.subgraphService.reserves.get({
       where: {
         underlyingAsset_in: mainTokens,
+        aToken_in: unwrappedTokens,
         isActive: true
       }
     });
 
-    const groupedReserves = groupBy(reserves, 'underlyingAsset');
-
-    Object.keys(groupedReserves).forEach(key => {
-      const linearPoolReserves = groupedReserves[key];
-      const reserve =
-        linearPoolReserves.length === 1
-          ? linearPoolReserves[0]
-          : linearPoolReserves.find(reserve =>
-              bnum(reserve.aEmissionPerSecond).gt(0)
-            );
-
-      if (!reserve) return;
-
+    reserves.forEach(reserve => {
       const supplyAPR = bnum(reserve.supplyAPR);
 
       if (supplyAPR.gt(0)) {
