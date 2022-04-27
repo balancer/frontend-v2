@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
+import { isMainnet } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -13,6 +14,8 @@ const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { setTokenInAddress } = useTradeState();
 const {
+  hasBalance, 
+  nativeAsset,
   balanceFor,
   balances,
   dynamicDataLoading: isLoadingBalances
@@ -36,12 +39,6 @@ const noNativeCurrencyMessageEthereum = computed(() => {
 
 const noTokensMessage = computed(() => {
   return t('noTokensInWallet', [networkName]);
-});
-
-const isEthereum = computed(() => {
-  if (networkName === 'Ethereum Mainnet') {
-    return true;
-  } else return false;
 });
 
 const tokensWithBalance = computed(() => {
@@ -77,14 +74,14 @@ const tokensWithBalance = computed(() => {
           <div
             class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors mr-0.5"
             v-if="
-              Number(balanceFor(appNetworkConfig.nativeAsset.address)) === 0
+               !hasBalance(nativeAsset.address)
             "
           >
             {{ etherBalance }} {{ nativeCurrency }}
             <BalTooltip
               v-if="isWalletReady"
               :text="
-                isEthereum
+                isMainnet
                   ? noNativeCurrencyMessageEthereum
                   : noNativeCurrencyMessage
               "
