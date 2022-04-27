@@ -648,10 +648,20 @@
         "myVeBAL": {
             "title": "My veBAL",
             "cards": {
-                "myLpToken": "My {0}",
-                "myLockedLpToken": "My locked {0}",
-                "lockedEndDate": "Locked until",
-                "myVeBAL": "My veBAL"
+                "myLpToken": {
+                    "label": "My {0}"
+                },
+                "myLockedLpToken": {
+                    "label": "My locked {0}"
+                },
+                "lockedEndDate": {
+                    "label": "Locked until",
+                    "secondaryText": "{0} days"
+                },
+                "myVeBAL": {
+                    "label": "My veBAL",
+                    "secondaryText": "{0} of all veBAL"
+                }
             }
         },
         "communityVeBAL": {
@@ -912,7 +922,10 @@
     "tokenInjected": "This token is injected",
     "tokenLists": "Token lists",
     "tokenPills": {
-        "hiddenTokens": "+{0} tokens"
+        "hiddenTokens": "+{0} tokens",
+        "balanceTooltip": {
+            "title": "In your wallet {0}"
+        }
     },
     "tokens": "Tokens",
     "tokenSearch": "Token search",

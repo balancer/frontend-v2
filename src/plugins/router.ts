@@ -7,6 +7,7 @@ import HomePage from '@/pages/index.vue';
 import PoolPage from '@/pages/pool/_id.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
 import PoolInvestPage from '@/pages/pool/invest.vue';
+import MigratePoolPage from '@/pages/pool/migrate.vue';
 import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
 import TermsOfUsePage from '@/pages/terms-of-use.vue';
@@ -63,6 +64,12 @@ const routes: RouteRecordRaw[] = [
     name: 'withdraw',
     component: PoolWithdrawPage,
     meta: { layout: 'PoolTransferLayout' }
+  },
+  {
+    path: '/pool/migrate/:from/:to',
+    name: 'migrate-pool',
+    component: MigratePoolPage,
+    meta: { layout: 'FocusedLayout' }
   },
   {
     path: '/terms-of-use',

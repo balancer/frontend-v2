@@ -146,10 +146,9 @@
               class="pool-actions-card h-40"
             />
             <StakingIncentivesCard
-              v-if="isStakablePool && !loadingPool && !isL2"
+              v-if="isStakablePool && !loadingPool"
               :pool="pool"
             />
-            <LMIncentivesCard v-if="isL2" :poolId="id" />
             <!-- <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
@@ -202,7 +201,6 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
-import LMIncentivesCard from '@/components/contextual/pages/pool/LMIncentivesCard/LMIncentivesCard.vue';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
@@ -232,7 +230,6 @@ export default defineComponent({
     LiquidityAPRTooltip,
     StakingIncentivesCard,
     StakingProvider,
-    LMIncentivesCard,
     ApyVisionPoolLink
   },
 
