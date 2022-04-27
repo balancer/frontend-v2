@@ -49,9 +49,20 @@ const votingPeriodEnd = computed<number[]>(() => {
     timeUntilEnd.days || 0,
     timeUntilEnd.hours || 0,
     timeUntilEnd.minutes || 0,
-    timeUntilEnd.seconds || 0
+    timeUntilEnd.seconds || 2
   ];
   return formattedTime;
+});
+
+const votingPeriodLastHour = computed<number[]>(() => {
+  const periodEnd = getVotePeriodEndTime();
+  const interval: Interval = { start: now.value, end: periodEnd };
+  const timeUntilEnd: Duration = intervalToDuration(interval);
+  if ((timeUntilEnd.days || 0) < 1 && (timeUntilEnd.hours || 0) < 1) {
+    return true;
+  } else {
+    return false;
+  }
 });
 
 const unallocatedVoteWeight = computed(() => {
@@ -68,6 +79,12 @@ const hasLock = computed(
   (): boolean =>
     !!veBalLockInfoQuery.data.value?.hasExistingLock &&
     !veBalLockInfoQuery.data.value?.isExpired
+);
+
+const hasExpiredLock = computed(
+  (): boolean =>
+    !!veBalLockInfoQuery.data.value?.hasExistingLock &&
+    veBalLockInfoQuery.data.value?.isExpired
 );
 
 /**
@@ -122,19 +139,14 @@ function getVotePeriodEndTime(): number {
       {{ $t('veBAL.votingTransitionDescription') }}
     </p>
   </div> -->
-  <div class="flex flex-col md:flex-row">
-    <div>
+  <div
+    class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-2 gap-4"
+  >
+    <div class="max-w-3xl">
       <h3 class="mb-2">{{ $t('veBAL.liquidityMining.title') }}</h3>
-      <p class="mb-3">{{ $t('veBAL.liquidityMining.description') }}</p>
+      <p class="">{{ $t('veBAL.liquidityMining.description') }}</p>
     </div>
-    <div class="mb-3">
-      <span v-if="hasLock">
-        {{
-          $t('veBAL.liquidityMining.unallocatedVotes', [
-            unallocatedVotesFormatted
-          ])
-        }}
-      </span>
+    <div class="flex gap-2 xs:gap-3">
       <!-- <span v-else>
         <BalLink
           tag="router-link"
@@ -144,9 +156,63 @@ function getVotePeriodEndTime(): number {
           {{ $t('getVeBALToVote') }}</BalLink
         >.
       </span> -->
-      <span v-if="votingPeriodEnd.length">
-        &nbsp;{{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
-      </span>
+      <div class="border dark:border-gray-700 p-3 rounded-lg min-w-max md:w-48">
+        <div class="flex items-center">
+          <p class="text-sm text-gray-500 inline mr-1">
+            My unallocated votes
+          </p>
+          <BalTooltip
+            :text="$t('veBAL.liquidityMining.myUnallocatedVotesTooltip')"
+            icon-size="sm"
+            width="72"
+            class="mt-1"
+          />
+        </div>
+        <p
+          class="text-lg font-semibold inline mr-1"
+          :class="{ 'text-red-500': hasExpiredLock }"
+        >
+          <span v-if="hasLock">
+            {{ unallocatedVotesFormatted }}
+          </span>
+          <span v-else>—</span>
+        </p>
+        <BalTooltip
+          v-if="hasExpiredLock"
+          :text="$t('veBAL.liquidityMining.votingPowerExpiredTooltip')"
+          icon-size="sm"
+          :icon-name="'alert-triangle'"
+          :icon-class="
+            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+          "
+          width="72"
+          class="relative top-0.5"
+        />
+      </div>
+      <div class="border dark:border-gray-700 p-3 rounded-lg min-w-max md:w-48">
+        <div class="flex items-center">
+          <p class="text-sm text-gray-500 inline mr-1">
+            Voting period ends
+          </p>
+          <BalTooltip
+            :text="$t('veBAL.liquidityMining.votingPeriodTooltip')"
+            icon-size="sm"
+            width="72"
+            class="mt-1"
+          />
+        </div>
+        <p class="text-lg font-semibold tabular-nums">
+          <span
+            :class="{ 'text-red-500': votingPeriodLastHour }"
+            v-if="votingPeriodEnd.length"
+          >
+            {{
+              $t('veBAL.liquidityMining.votingPeriodCountdown', votingPeriodEnd)
+            }}
+          </span>
+          <span>{{ timeUntilEnd }}</span>
+        </p>
+      </div>
     </div>
   </div>
   <GaugesTable
