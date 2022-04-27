@@ -80,12 +80,7 @@ const optimizeBtnClasses = computed(() => ({
       <div class="data-table-number-col">
         <div class="flex">
           <span v-if="!batchSwapLoading">
-            {{
-              fNum2(priceImpact, {
-                ...FNumFormats.percent,
-                returnLessBasicPoint: true
-              })
-            }}
+            {{ fNum2(priceImpact, FNumFormats.percent) }}
           </span>
           <BalLoadingBlock v-else class="w-10" />
 

@@ -21,8 +21,7 @@ export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'percent',
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-    returnLessBasicPoint: false
+    maximumFractionDigits: 2
   },
   token: {
     maximumFractionDigits: 4
@@ -166,7 +165,7 @@ export default function useNumbers() {
       number = 0;
     }
 
-    if (options.returnLessBasicPoint && number > 0 && number < 0.00005) {
+    if (number > 0 && number < 0.0001) {
       return '< 0.01%';
     }
 
