@@ -106,6 +106,7 @@ onMounted(() => {
 
 /* Light mode gray shadow */
 .tooltip:before {
+  @apply w-full h-full block absolute top-0 left-0 opacity-0 blur-2xl;
   background-blend-mode: soft-light, soft-light, normal;
   background: radial-gradient(
     ellipse at center,
@@ -113,15 +114,8 @@ onMounted(() => {
     transparent
   );
   content: '';
-  width: 100%;
-  height: 100%;
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
   filter: blur(40px);
   z-index: -1;
-  opacity: 0;
   animation: fadeIn 0.4s ease-out 0.05s both;
 }
 
@@ -135,17 +129,23 @@ onMounted(() => {
 }
 
 .tooltip[data-show] {
-  display: block;
+  @apply block;
 }
 
 .tooltip[data-popper-placement='top'] .tooltip-content {
-  opacity: 0;
+  @apply opacity-0;
   animation: fadeInMoveUp 0.2s ease-out both;
 }
 
 .tooltip[data-popper-placement='bottom'] .tooltip-content {
-  opacity: 0;
+  @apply opacity-0;
   animation: fadeInMoveDown 0.2s ease-out both;
+}
+
+.tooltip[data-popper-placement='top'] .tooltip-content:before, .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+  @apply w-0 h-0 absolute;
+  content: ' ';
+  left: calc(50% - 7px);
 }
 
 /* bottom triangle for top placed tooltips */
@@ -154,11 +154,6 @@ onMounted(() => {
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
   bottom: -7px;
-  content: ' ';
-  height: 0;
-  left: calc(50% - 7px);
-  position: absolute;
-  width: 0;
 }
 
 .dark .tooltip[data-popper-placement='top'] .tooltip-content:before {
@@ -167,15 +162,10 @@ onMounted(() => {
 
 /* Top triangle for top placed tooltips */
 .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+  @apply -top-2;
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
   border-bottom: solid #fff 8px;
-  top: -8px;
-  content: ' ';
-  height: 0;
-  left: calc(50% - 7px);
-  position: absolute;
-  width: 0;
 }
 
 .dark .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
