@@ -214,7 +214,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
         </div>
       </template>
       <template v-slot:voteColumnCell="gauge">
-        <div v-if="isWalletReady" class="px-4" @click.stop>
+        <div v-if="isWalletReady" class="px-4">
           <BalBtn
             color="blue"
             :outline="true"
