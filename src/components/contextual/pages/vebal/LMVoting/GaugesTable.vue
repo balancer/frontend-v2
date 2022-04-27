@@ -158,10 +158,6 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :columns="columns"
       :data="data"
       :is-loading="isLoading"
-      :link="{
-        to: 'pool',
-        getParams: gauge => ({ id: gauge?.pool?.id })
-      }"
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
