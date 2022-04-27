@@ -682,6 +682,7 @@
         },
         "liquidityMining": {
             "title": "Pools eligible for liquidity mining",
+            "description": "Liquidity incentives are directed by the community of veBAL holders. If you hold veBAL, vote below on any pools across Ethereum and Layer 2’s. Your vote will persist until you change it and editing can only be done once in 10 days.",
             "unallocatedVotes": "My unallocated votes: {0}.",
             "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
             "table": {
