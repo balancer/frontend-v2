@@ -117,10 +117,6 @@ export default defineComponent({
       () => !!poolAddress.value && poolAddress.value != ''
     );
 
-    const isPoolEligibleQueryEnabled = computed(
-      (): boolean => isPoolAddressRegistered.value
-    );
-
     // this query is responsible for checking if the given pool
     // is eligible for staking rewards or not
     const {
@@ -140,7 +136,7 @@ export default defineComponent({
         }
       }),
       reactive({
-        enabled: isPoolEligibleQueryEnabled,
+        enabled: isPoolAddressRegistered,
         refetchOnWindowFocus: false
       })
     );
