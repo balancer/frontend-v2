@@ -74,7 +74,7 @@ function getHorizontalStickyClass(index: number) {
           }}
         </div>
       </router-link>
-      <template>
+      <template v-else>
         <slot v-if="column.Cell" v-bind="data" :name="column.Cell"></slot>
         <div
           v-else
