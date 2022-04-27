@@ -158,10 +158,6 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :columns="columns"
       :data="data"
       :is-loading="isLoading"
-      :link="{
-        to: 'pool',
-        getParams: gauge => ({ id: gauge?.pool?.id })
-      }"
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
@@ -218,7 +214,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
         </div>
       </template>
       <template v-slot:voteColumnCell="gauge">
-        <div v-if="isWalletReady" class="px-4">
+        <div v-if="isWalletReady" class="px-4" @click.stop>
           <BalBtn
             color="blue"
             :outline="true"
