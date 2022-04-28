@@ -161,13 +161,33 @@ const cards = computed(() => {
     <div class="label font-medium">
       {{ card.label }}
     </div>
-    <div class="value">
-      <span class="font-bold">{{ card.value }}</span>
-      <span>
+    <div class="value" :class="card.id">
+      <div v-if="card.id === 'myLockedLpToken'">
+        <span
+          :class="{ 'text-red-500': totalExpiredLpTokens > 0 }"
+          class="font-bold truncate mr-1"
+          >{{ card.value }}</span
+        >
+        <BalTooltip
+          v-if="totalExpiredLpTokens > 0"
+          :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
+          icon-size="sm"
+          :icon-name="'alert-triangle'"
+          :icon-class="
+            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+          "
+          width="72"
+          class="relative top-0.5"
+        />
+      </div>
+      <div v-else>
+        <span class="font-bold truncate">{{ card.value }}</span>
+      </div>
+      <div>
         <BalIcon
           v-if="card.showUnlockIcon"
           name="minus-circle"
-          class="pr-2 cursor-pointer"
+          class="minus-circle mr-2 transition-all cursor-pointer"
           @click="showUnlockPreviewModal = true"
         />
         <router-link
@@ -175,9 +195,12 @@ const cards = computed(() => {
           :to="card.plusIconTo"
           class="text-blue-500"
         >
-          <BalIcon name="plus-circle" class="cursor-pointer" />
+          <BalIcon
+            name="plus-circle"
+            class="plus-circle transition-all cursor-pointer"
+          />
         </router-link>
-      </span>
+      </div>
     </div>
     <div class="secondary-value font-medium">{{ card.secondaryText }}</div>
   </BalCard>
@@ -199,10 +222,39 @@ const cards = computed(() => {
   @apply text-sm mb-2;
 }
 .value {
-  @apply text-xl font-medium truncate flex items-center justify-between mb-0.5;
+  @apply text-xl font-medium flex items-center justify-between mb-0.5 overflow-visible overflow-x-visible overflow-y-visible;
 }
 
 .secondary-value {
   @apply text-sm text-gray-500 dark:text-gray-400;
+}
+
+.plus-circle:hover,
+.plus-circle:focus,
+.minus-circle:hover,
+.minus-circle:focus {
+  transform: scale(1.25);
+}
+
+.plus-circle:hover /deep/ svg.feather-plus-circle,
+.plus-circle:focus /deep/ svg.feather-plus-circle {
+  @apply transition-all text-white;
+  fill: #384aff; /* blue-500 */
+}
+
+.plus-circle:hover /deep/ svg.feather-plus-circle circle,
+.plus-circle:focus /deep/ svg.feather-plus-circle circle {
+  color: #384aff; /* blue-500 */
+}
+
+.minus-circle:hover /deep/ svg.feather-minus-circle,
+.minus-circle:focus /deep/ svg.feather-minus-circle {
+  @apply transition-all text-white;
+  fill: rgba(239, 68, 68); /* red-500 */
+}
+
+.minus-circle:hover /deep/ svg.feather-minus-circle circle,
+.minus-circle {
+  color: rgba(239, 68, 68); /* red-500 */
 }
 </style>

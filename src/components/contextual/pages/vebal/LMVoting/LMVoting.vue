@@ -163,6 +163,7 @@ function getVotePeriodEndTime(): number {
           </p>
           <BalTooltip
             :text="$t('veBAL.liquidityMining.myUnallocatedVotesTooltip')"
+            iconClass="text-gray-400 dark:text-gray-600"
             icon-size="sm"
             width="72"
             class="mt-1"
@@ -175,7 +176,7 @@ function getVotePeriodEndTime(): number {
           <span v-if="hasLock">
             {{ unallocatedVotesFormatted }}
           </span>
-          <span v-else>—</span>
+          <span class="mr-1" v-else>—</span>
         </p>
         <BalTooltip
           v-if="hasExpiredLock"
@@ -197,6 +198,7 @@ function getVotePeriodEndTime(): number {
           <BalTooltip
             :text="$t('veBAL.liquidityMining.votingPeriodTooltip')"
             icon-size="sm"
+            iconClass="text-gray-400 dark:text-gray-600"
             width="72"
             class="mt-1"
           />

@@ -658,7 +658,8 @@
                 "myVeBAL": {
                     "label": "My veBAL",
                     "secondaryText": "{0} of all veBAL"
-                }
+                },
+                "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer get boosted yields on staked pools or on your locked 80% BAL / 20% WETH pool. However, you’ll still get the minimum 1.0x rate. Tap the plus icon to extend your lock on B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power. Tap the minus icon to redeem your LP tokens."
             }
         },
         "communityVeBAL": {
@@ -689,7 +690,7 @@
             "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
             "votingPeriodTooltip": "There is a weekly vote for veBAL holders which ends at 0:00 UTC on Thursdays. This vote determines the BAL incentives allocation for all Stakers in these pools for the next week. Although you don’t have to vote to get a boosted yield, your vote can help you earn more by voting on pools where you are a Staker.",
             "votingPeriodCountdown": "{0}d : {1}h : {2}m : {3}s",
-            "votingPowerExpiredTooltip": "Your previous lock period has expired. This means you have no voting power since you no longer have any veBAL. Any votes that have been allocated in the past will no longer count. Lock up B-80BAL-20WETH LP tokens to get veBAL and to get your voting power back.",
+            "votingPowerExpiredTooltip": "Your previous lock period has expired, so you no longer have any veBAL or voting power. Any votes that have been allocated in the past will no longer count. Lock up B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power.",
             "table": {
                 "chain": "Chain",
                 "assets": "Assets",
