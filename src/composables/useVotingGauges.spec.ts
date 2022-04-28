@@ -26,21 +26,21 @@ describe('useVotingGauges', () => {
     });
 
     it('Should return 1s just before the next period', () => {
-      jest.setSystemTime(Date.UTC(2022, 3, 27, 23, 59, 59)); // Wed Apr 27 2022 23:20:02 GMT+0000
+      jest.setSystemTime(Date.UTC(2022, 3, 27, 23, 59, 59)); // Wed Apr 27 2022 23:59:59 GMT+0000
       const { result } = mount(() => useVotingGauges());
       const { votingPeriodEnd } = result;
       expect(votingPeriodEnd.value).toEqual([0, 0, 0, 1]);
     });
 
     it('Should return all zeros at midnight Thursday morning', () => {
-      jest.setSystemTime(Date.UTC(2022, 3, 28, 0, 0, 0)); // Wed Apr 27 2022 23:20:02 GMT+0000
+      jest.setSystemTime(Date.UTC(2022, 3, 28, 0, 0, 0)); // Thu Apr 28 2022 00:00:00 GMT+0000
       const { result } = mount(() => useVotingGauges());
       const { votingPeriodEnd } = result;
       expect(votingPeriodEnd.value).toEqual([0, 0, 0, 0]);
     });
 
     it('Should return 6d 23h, 59m, 59s just after the next period', () => {
-      jest.setSystemTime(Date.UTC(2022, 3, 28, 0, 0, 1)); // Wed Apr 27 2022 23:20:02 GMT+0000
+      jest.setSystemTime(Date.UTC(2022, 3, 28, 0, 0, 1)); // Thu Apr 28 2022 00:00:01 GMT+0000
       const { result } = mount(() => useVotingGauges());
       const { votingPeriodEnd } = result;
       expect(votingPeriodEnd.value).toEqual([6, 23, 59, 59]);
