@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
 import { computed, ref } from 'vue';
 
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
@@ -16,11 +15,6 @@ import GaugeVoteModal from './GaugeVoteModal.vue';
  * DATA
  */
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
-
-const now = ref(Date.now());
-setInterval(() => {
-  now.value = Date.now();
-}, 1000);
 
 /**
  * COMPOSABLES
@@ -40,19 +34,6 @@ const veBalLockInfoQuery = useVeBalLockInfoQuery();
 const unallocatedVotesFormatted = computed<string>(() =>
   fNum2(scale(bnum(unallocatedVotes.value), -4).toString(), FNumFormats.percent)
 );
-
-const votingPeriodEnd = computed<number[]>(() => {
-  const periodEnd = getVotePeriodEndTime();
-  const interval: Interval = { start: now.value, end: periodEnd };
-  const timeUntilEnd: Duration = intervalToDuration(interval);
-  const formattedTime = [
-    timeUntilEnd.days || 0,
-    timeUntilEnd.hours || 0,
-    timeUntilEnd.minutes || 0,
-    timeUntilEnd.seconds || 0
-  ];
-  return formattedTime;
-});
 
 const unallocatedVoteWeight = computed(() => {
   const totalVotes = 1e4;
@@ -95,22 +76,6 @@ function handleVoteSuccess() {
   refetchVotingGauges.value();
 }
 
-function getVotePeriodEndTime(): number {
-  let n = nextThursday(new Date());
-  // April 5th 2022, for launch, remove after this date
-  if (n.getTime() < 1649116800000) {
-    n = nextThursday(n);
-  }
-  const epochEndTime = Date.UTC(
-    n.getFullYear(),
-    n.getMonth(),
-    n.getDate(),
-    0,
-    0,
-    0
-  );
-  return epochEndTime;
-}
 </script>
 
 <template>
