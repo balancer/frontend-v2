@@ -47,7 +47,8 @@
     "veBAL": "",
     "balancerMinter": "",
     "veDelegationProxy": "",
-    "veBALHelpers": ""
+    "veBALHelpers": "",
+    "feeDistributor": ""
   },
   "keys": {},
   "strategies": {

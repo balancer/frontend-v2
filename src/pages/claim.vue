@@ -95,13 +95,16 @@ const balRewardsData = computed((): RewardRow[] => {
 });
 
 const gaugesWithRewards = computed((): Gauge[] => {
+  console.log('gauges', gauges.value);
   return gauges.value.filter(gauge => gauge.rewardTokens.length > 0);
 });
 
 const gaugeTables = computed((): GaugeTable[] => {
   // Only return gauges if we have a corresponding pool and rewards > 0
+  console.log('gaugesWithRewards', gaugesWithRewards.value);
   return gaugesWithRewards.value.reduce<GaugeTable[]>((arr, gauge) => {
     const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
+    console.log('pool', pool);
     const totalRewardValue = Object.values(gauge.claimableRewards).reduce(
       (acc, reward) => acc.plus(reward),
       bnum(0)
