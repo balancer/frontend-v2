@@ -23,6 +23,7 @@ const {
   isLoading,
   votingGauges,
   unallocatedVotes,
+  votingPeriodEnd,
   refetch: refetchVotingGauges
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
