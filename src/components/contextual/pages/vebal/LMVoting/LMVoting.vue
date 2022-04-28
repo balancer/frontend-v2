@@ -75,7 +75,6 @@ function handleModalClose() {
 function handleVoteSuccess() {
   refetchVotingGauges.value();
 }
-
 </script>
 
 <template>

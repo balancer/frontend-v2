@@ -52,7 +52,7 @@ export default function useVotingGauges() {
     const interval: Interval = { start: now.value, end: periodEnd };
     const timeUntilEnd: Duration = intervalToDuration(interval);
     const formattedTime = [
-      timeUntilEnd.days || 0,
+      (timeUntilEnd.days || 0) % 7,
       timeUntilEnd.hours || 0,
       timeUntilEnd.minutes || 0,
       timeUntilEnd.seconds || 0
