@@ -70,7 +70,7 @@ const thirdPartyMultiRewardPool = computed(
 const thirdPartyFiatLabel = computed(() => {
   if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
   if (isStablePhantom(props.pool.poolType))
-    return t('thirdPartyRewards.fiat.aaveBoosted');
+    return t('thirdPartyRewards.fiat.boosted');
   return '';
 });
 /**

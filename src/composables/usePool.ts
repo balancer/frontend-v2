@@ -160,7 +160,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
    */
   function poolWeightsLabel(pool: FullPool): string {
     if (isStableLike(pool.poolType)) {
-      return Object.values(pool.tokens)
+      return Object.values(pool.onchain.tokens)
         .map(token => token.symbol)
         .join(', ');
     }
