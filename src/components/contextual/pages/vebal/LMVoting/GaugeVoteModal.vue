@@ -18,6 +18,7 @@ import {
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
+import { VEBAL_VOTING_GAUGE } from '@/constants/voting-gauges';
 import { bnum, scale } from '@/lib/utils';
 import { isPositive } from '@/lib/utils/validations';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
@@ -144,6 +145,24 @@ const veBalLockTooShortWarning = computed(() => {
   return null;
 });
 
+const veBalVoteOverLimitWarning = computed(() => {
+  if (props.gauge.address === VEBAL_VOTING_GAUGE?.address) {
+    const gaugeVoteWeightNormalized = scale(props.gauge.votesNextPeriod, -18);
+    if (gaugeVoteWeightNormalized.gte(bnum('0.1'))) {
+      return {
+        title: t(
+          'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
+        ),
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
+        )
+      };
+    }
+  }
+
+  return null;
+});
+
 const voteWarning = computed((): {
   title: string;
   description: string;
@@ -151,6 +170,7 @@ const voteWarning = computed((): {
   if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
   if (noVeBalWarning.value) return noVeBalWarning.value;
   if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
+  if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
   return null;
 });
 

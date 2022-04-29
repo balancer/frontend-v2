@@ -733,6 +733,10 @@
                     "veBalLockTooShort": {
                         "title": "veBAL not locked for 7 days.",
                         "description": "You must have veBAL locked for more than 7 days to vote on gagues."
+                    },
+                    "veBalVoteOverLimitWarning": {
+                        "title": "You may be wasting your vote: veBAL cap hit",
+                        "description": "Distributions to veBAL holders of weekly emissions are capped at 10%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted."
                     }
                 },
                 "errors": {

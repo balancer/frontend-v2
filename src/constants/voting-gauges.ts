@@ -24,3 +24,7 @@ export const KOVAN_VOTING_GAUGES: VotingGauge[] = (ALL_VOTING_GAUGES as VotingGa
 export const MAINNET_VOTING_GAUGES: VotingGauge[] = (ALL_VOTING_GAUGES as VotingGauge[]).filter(
   gauge => gauge.network !== Network.KOVAN
 );
+
+export const VEBAL_VOTING_GAUGE: VotingGauge | undefined = (ALL_VOTING_GAUGES as VotingGauge[]).find(
+  gauge => gauge.pool.symbol === "veBAL"
+);
