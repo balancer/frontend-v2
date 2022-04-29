@@ -18,6 +18,7 @@ import {
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
+import { VEBAL_VOTING_GAUGE } from '@/constants/voting-gauges';
 import { bnum, scale } from '@/lib/utils';
 import { isPositive } from '@/lib/utils/validations';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
@@ -72,15 +73,31 @@ const voteState = reactive<TransactionActionState>({
 /**
  * COMPUTED
  */
-const voteDisabled = computed(
-  () => !!voteWarning.value || !hasEnoughVotes.value
-);
+const voteDisabled = computed((): boolean => {
+  if (isVeBalGauge.value) {
+    return (
+      (!!voteWarning.value && isCriticalWarning.value) || !hasEnoughVotes.value
+    );
+  }
+
+  return !!voteWarning.value || !hasEnoughVotes.value;
+});
 
 const currentWeight = computed(() => props.gauge.userVotes);
 const currentWeightNormalized = computed(() =>
   scale(bnum(currentWeight.value), -2).toString()
 );
 const hasVotes = computed((): boolean => bnum(currentWeight.value).gt(0));
+
+const isVeBalGauge = computed(
+  (): boolean => props.gauge.address === VEBAL_VOTING_GAUGE?.address
+);
+
+// Is votes next period value above 10%?
+const votesNextPeriodGt10pct = computed((): boolean => {
+  const gaugeVoteWeightNormalized = scale(props.gauge.votesNextPeriod, -18);
+  return gaugeVoteWeightNormalized.gte(bnum('0.1'));
+});
 
 const voteTitle = computed(() =>
   hasVotes.value
@@ -144,6 +161,21 @@ const veBalLockTooShortWarning = computed(() => {
   return null;
 });
 
+const veBalVoteOverLimitWarning = computed(() => {
+  if (isVeBalGauge.value && votesNextPeriodGt10pct.value) {
+    return {
+      title: t(
+        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
+      ),
+      description: t(
+        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
+      )
+    };
+  }
+
+  return null;
+});
+
 const voteWarning = computed((): {
   title: string;
   description: string;
@@ -151,8 +183,14 @@ const voteWarning = computed((): {
   if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
   if (noVeBalWarning.value) return noVeBalWarning.value;
   if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
+  if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
   return null;
 });
+
+// Some warnings should not block voting
+const isCriticalWarning = computed(
+  (): boolean => voteWarning.value !== veBalVoteOverLimitWarning.value
+);
 
 const voteError = computed(() => {
   if (voteState.error) return voteState.error;
@@ -344,9 +382,7 @@ onMounted(() => {
           v-model="voteWeight"
           validateOn="input"
           :rules="inputRules"
-          :disabled="
-            !!voteWarning || transactionInProgress || voteState.receipt
-          "
+          :disabled="voteDisabled || transactionInProgress || voteState.receipt"
           size="sm"
           autoFocus
         >
