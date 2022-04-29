@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { getPoolAddress, Network } from '@balancer-labs/sdk';
 import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
@@ -18,10 +18,6 @@ import useNumbers from './useNumbers';
 /**
  * METHODS
  */
-export function addressFor(poolId: string): string {
-  return getAddress(poolId.slice(0, 42));
-}
-
 export function isStable(poolType: PoolType): boolean {
   return poolType === PoolType.Stable;
 }
@@ -143,7 +139,7 @@ export function poolURLFor(
   poolType?: string | PoolType
 ): string {
   if (poolType && poolType.toString() === 'Element') {
-    return `https://app.element.fi/pools/${addressFor(poolId)}`;
+    return `https://app.element.fi/pools/${getPoolAddress(poolId)}`;
   }
 
   return `${urlFor(network)}/pool/${poolId}`;

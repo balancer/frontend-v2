@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { getPoolAddress, Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 import axios from 'axios';
 import { differenceInWeeks } from 'date-fns';
@@ -441,6 +441,6 @@ export default class Pools {
   }
 
   public addressFor(poolId: string): string {
-    return getAddress(poolId.slice(0, 42));
+    return getPoolAddress(poolId);
   }
 }
