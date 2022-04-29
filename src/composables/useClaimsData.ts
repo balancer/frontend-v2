@@ -1,15 +1,15 @@
 import { computed, reactive } from 'vue';
+import { useQuery } from 'vue-query';
 
 import { Gauge } from '@/services/balancer/gauges/types';
 import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
 
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
-import { useQuery } from 'vue-query';
 import useProtocolRewardsQuery from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
 
 export type GaugePool = {
   id: string;
