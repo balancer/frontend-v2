@@ -86,9 +86,7 @@ const cards = computed(() => {
   return [
     {
       id: 'myLpToken',
-      label: t('veBAL.myVeBAL.cards.myLpToken.label', [
-        props.lockablePoolTokenInfo?.symbol
-      ]),
+      label: t('veBAL.myVeBAL.cards.myLpToken.label'),
       value: isWalletReady.value
         ? fNum2(fiatTotal.value, FNumFormats.fiat)
         : '—',
@@ -104,9 +102,7 @@ const cards = computed(() => {
     },
     {
       id: 'myLockedLpToken',
-      label: t('veBAL.myVeBAL.cards.myLockedLpToken.label', [
-        props.lockablePoolTokenInfo?.symbol
-      ]),
+      label: t('veBAL.myVeBAL.cards.myLockedLpToken.label'),
       value: isWalletReady.value
         ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
         : '—',
