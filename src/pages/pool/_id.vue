@@ -39,6 +39,18 @@
               {{ $t('new') }}
             </BalChip>
             <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
+            <BalLink
+              :href="explorer.addressLink(pool.address)"
+              external
+              noStyle
+              class="flex items-center"
+            >
+              <BalIcon
+                name="arrow-up-right"
+                size="sm"
+                class="ml-2 mt-2 text-gray-500 hover:text-blue-500 transition-colors"
+              />
+            </BalLink>
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600 mr-2" />
@@ -197,7 +209,7 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const { fNum2 } = useNumbers();
-    const { isWalletReady } = useWeb3();
+    const { explorerLinks, isWalletReady } = useWeb3();
     const { prices } = useTokens();
     const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
@@ -404,6 +416,7 @@ export default defineComponent({
       // computed
       appLoading,
       pool,
+      explorer: explorerLinks,
       noInitLiquidity,
       poolTypeLabel,
       poolFeeLabel,
