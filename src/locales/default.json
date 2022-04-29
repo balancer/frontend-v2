@@ -649,10 +649,10 @@
             "title": "My veBAL",
             "cards": {
                 "myLpToken": {
-                    "label": "My 80BAL-20WETH"
+                    "label": "My B-80BAL-20WETH"
                 },
                 "myLockedLpToken": {
-                    "label": "My locked 80BAL-20WETH"
+                    "label": "My locked B-80BAL-20WETH"
                 },
                 "lockedEndDate": {
                     "label": "Locked until",
