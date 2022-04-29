@@ -6,6 +6,10 @@ import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
+import { useQuery } from 'vue-query';
+import useProtocolRewardsQuery from './queries/useProtocolRewardsQuery';
+import { isQueryLoading } from './queries/useQueryHelpers';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
 
 export type GaugePool = {
   id: string;
@@ -23,6 +27,11 @@ type GaugePoolQueryResponse = {
  * @summary Combines queries for fetching claims page gauges and associated pools.
  */
 export function useClaimsData() {
+  const protocolRewardsQuery = useProtocolRewardsQuery();
+  const protocolRewards = computed(
+    (): BalanceMap => protocolRewardsQuery.data.value || {}
+  );
+
   // Fetch subgraph liquidity gauges
   const subgraphGaugesQuery = useGaugesQuery();
 
@@ -65,17 +74,15 @@ export function useClaimsData() {
     (): GaugePool[] => gaugePoolQuery.data.value?.pools || []
   );
 
-  const queriesLoading = computed(
+  const isLoading = computed(
     (): boolean =>
-      gaugePoolQueryEnabled.value &&
-      (gaugePoolQuery.isLoading.value ||
-        gaugePoolQuery.isIdle.value ||
-        !!gaugePoolQuery.error.value)
+      isQueryLoading(gaugePoolQuery) || isQueryLoading(protocolRewardsQuery)
   );
 
   return {
     gauges,
     gaugePools,
-    queriesLoading
+    protocolRewards,
+    isLoading
   };
 }

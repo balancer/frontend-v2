@@ -1,10 +1,10 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { UseQueryOptions } from 'react-query/types';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { networkId } from '../useNetwork';
@@ -12,10 +12,10 @@ import { networkId } from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = TransactionResponse | never[];
+type QueryResponse = BalanceMap;
 
 /**
- * @summary Fetches guages list from subgraph
+ * @summary Fetches claimable protocol reward balances.
  */
 export default function useProtocolRewardsQuery(
   options: UseQueryOptions<QueryResponse> = {}
@@ -40,12 +40,10 @@ export default function useProtocolRewardsQuery(
    */
   const queryFn = async () => {
     try {
-      const result = await feeDistributor.getClaimableBalances(account.value);
-      console.log('result', result);
-      return result;
+      return await feeDistributor.getClaimableBalances(account.value);
     } catch (error) {
       console.error('Failed to fetch claimable protocol balances', error);
-      return [];
+      return {};
     }
   };
 

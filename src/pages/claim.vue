@@ -38,7 +38,12 @@ const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { appLoading } = useApp();
-const { gauges, gaugePools, queriesLoading } = useClaimsData();
+const {
+  gauges,
+  gaugePools,
+  protocolRewards,
+  isLoading: isClaimsLoading
+} = useClaimsData();
 
 /**
  * STATE
@@ -94,17 +99,16 @@ const balRewardsData = computed((): RewardRow[] => {
   }, []);
 });
 
+// const protocolRewardsData = computed((): )
+
 const gaugesWithRewards = computed((): Gauge[] => {
-  console.log('gauges', gauges.value);
   return gauges.value.filter(gauge => gauge.rewardTokens.length > 0);
 });
 
 const gaugeTables = computed((): GaugeTable[] => {
   // Only return gauges if we have a corresponding pool and rewards > 0
-  console.log('gaugesWithRewards', gaugesWithRewards.value);
   return gaugesWithRewards.value.reduce<GaugeTable[]>((arr, gauge) => {
     const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
-    console.log('pool', pool);
     const totalRewardValue = Object.values(gauge.claimableRewards).reduce(
       (acc, reward) => acc.plus(reward),
       bnum(0)
@@ -217,11 +221,11 @@ watch(gaugePools, async newPools => {
         </div>
         <BalClaimsTable
           :rewardsData="balRewardsData"
-          :isLoading="queriesLoading || appLoading"
+          :isLoading="isClaimsLoading || appLoading"
         />
 
         <template
-          v-if="!queriesLoading && !appLoading && gaugesWithRewards.length > 0"
+          v-if="!isClaimsLoading && !appLoading && gaugesWithRewards.length > 0"
         >
           <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
           <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
@@ -232,7 +236,7 @@ watch(gaugePools, async newPools => {
             </div>
             <GaugeRewardsTable
               :gauge="gauge"
-              :isLoading="queriesLoading || appLoading"
+              :isLoading="isClaimsLoading || appLoading"
             />
           </div>
         </template>
