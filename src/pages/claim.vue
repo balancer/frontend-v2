@@ -228,7 +228,10 @@ watch(gaugePools, async newPools => {
           />
         </div>
       </template>
-      <BalBlankSlate v-else-if="gaugeTables.length === 0" class="mt-4">
+      <BalBlankSlate
+        v-else-if="!queriesLoading && !appLoading && gaugeTables.length === 0"
+        class="mt-4"
+      >
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
 
