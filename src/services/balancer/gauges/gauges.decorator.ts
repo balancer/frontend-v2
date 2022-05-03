@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 
+import { isL2 } from '@/composables/useNetwork';
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
@@ -57,7 +58,7 @@ export class GaugesDecorator {
     return {
       ...gaugeData,
       rewardTokens: this.formatRewardTokens(gaugeData.rewardTokens),
-      claimableTokens: gaugeData.claimableTokens.toString(),
+      claimableTokens: gaugeData.claimableTokens?.toString() || '0',
       claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards)
     };
   }
@@ -117,6 +118,9 @@ export class GaugesDecorator {
     userAddress: string,
     gaugesDataMap: OnchainGaugeDataMap
   ) {
+    const methodName = isL2.value
+      ? 'claimable_reward_write'
+      : 'claimable_reward';
     subgraphGauges.forEach(gauge => {
       gaugesDataMap[gauge.id].rewardTokens.forEach(rewardToken => {
         if (rewardToken === AddressZero) return;
@@ -124,7 +128,7 @@ export class GaugesDecorator {
         this.multicaller.call(
           `${gauge.id}.claimableRewards.${rewardToken}`,
           gauge.id,
-          'claimable_reward',
+          methodName,
           [userAddress, rewardToken]
         );
       });
