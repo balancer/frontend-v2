@@ -210,18 +210,18 @@ watch(gaugePools, async newPools => {
         </div>
         <BalClaimsTable
           :rewardsData="balRewardsData"
-          :isLoading="queriesLoading || appLoading"
+          :isLoading="(queriesLoading || appLoading) && isWalletReady"
         />
       </template>
 
+      <h3 v-if="!isL2" class="text-xl mt-8">
+        {{ $t('otherTokenEarnings') }}
+      </h3>
       <BalLoadingBlock
         v-if="(appLoading || queriesLoading) && isWalletReady"
         class="mt-6 mb-2 h-56"
       />
       <template v-if="!queriesLoading && !appLoading && gaugeTables.length > 0">
-        <h3 v-if="!isL2" class="text-xl mt-8">
-          {{ $t('otherTokenEarnings') }}
-        </h3>
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="flex mt-4">
             <h4 class="text-base mb-2">
