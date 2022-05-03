@@ -214,8 +214,14 @@ watch(gaugePools, async newPools => {
         />
       </template>
 
+      <BalLoadingBlock
+        v-if="appLoading || queriesLoading"
+        class="mt-6 mb-2 h-56"
+      />
       <template v-if="!queriesLoading && !appLoading && gaugeTables.length > 0">
-        <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
+        <h3 v-if="!isL2" class="text-xl mt-8">
+          {{ $t('otherTokenEarnings') }}
+        </h3>
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="flex mt-4">
             <h4 class="text-base mb-2">
@@ -230,7 +236,7 @@ watch(gaugePools, async newPools => {
       </template>
       <BalBlankSlate
         v-else-if="!queriesLoading && !appLoading && gaugeTables.length === 0"
-        class="mt-4"
+        class="mt-6"
       >
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
