@@ -200,6 +200,11 @@ export default function useSor({
         assets: result.tokenAddresses
       });
 
+      if (result !== sorReturn.value.result) {
+        // sorReturn was updated while we were querying, abort to not show stale data.
+        return;
+      }
+
       if (deltas.length >= 2) {
         const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
         const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
