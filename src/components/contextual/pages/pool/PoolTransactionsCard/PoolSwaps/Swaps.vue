@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { flatten } from 'lodash';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { shortenLabel } from '@/lib/utils';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
+import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
 import Table from './Table.vue';
-import { useI18n } from 'vue-i18n';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
-import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -40,19 +41,45 @@ const { priceFor } = useTokens();
  */
 const id = route.params.id as string;
 const stats = computed(() => {
-  const largestValue = poolSwaps.value?.reduce((prev, current) => {
-    return prev.tokenAmountOut > current.tokenAmountOut ? prev : current;
-  });
-  if (!largestValue) return [];
+  if (!poolSwaps.value || !poolSwaps.value.length) {
+    return [];
+  }
+  const poolSwapsLength = poolSwaps.value.length;
+
+  const largestValue = poolSwaps.value.reduce((prev, current) =>
+    Number(prev.tokenAmountOut) > Number(current.tokenAmountOut)
+      ? prev
+      : current
+  );
+
+  const avgValue =
+    poolSwaps.value.reduce(
+      (total, current) => total + Number(current.tokenAmountOut),
+      0
+    ) / poolSwapsLength;
+
   return [
     {
-      label: t('Largest'),
+      label: t('Largest trade'),
       value: fNum2(
         bnum(priceFor(largestValue.tokenOut))
           .times(largestValue.tokenAmountOut)
           .toNumber(),
         { style: 'currency', abbreviate: true }
       )
+    },
+    {
+      label: t('Average trade'),
+      value: fNum2(
+        bnum(priceFor(largestValue.tokenOut))
+          .times(avgValue)
+          .toNumber(),
+        { style: 'currency', abbreviate: true }
+      )
+    },
+    {
+      label: t('Number of trades'),
+      value: fNum2(poolSwapsLength, { abbreviate: true })
     }
   ];
 });
@@ -85,7 +112,7 @@ function loadMorePoolSwaps() {
 
 <template>
   <div class="flex">
-    <BalCard v-for="(stat, i) in stats" :key="i">
+    <BalCard v-for="(stat, i) in stats" :key="i" class="ml-5">
       <div class="text-sm text-gray-500 font-medium mb-2 flex">
         <span>{{ stat.label }}</span>
       </div>

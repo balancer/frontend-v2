@@ -2,6 +2,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { shortenLabel } from '@/lib/utils';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -158,8 +159,14 @@ const swapRows = computed<SwapRow[]>(() =>
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <!-- {{ $t('swap') }} -->
-            {{ action.tx.slice(0, 15) + '...' }}
+            <!-- <BalAvatar
+              v-if="action.ensName && action.ensAvatar"
+              :name="action.ensName"
+              :avatar="action.ensAvatar"
+              class="mr-2"
+            /> -->
+
+            <span> {{ shortenLabel(action.tx) }}</span>
           </div>
         </div>
       </template>

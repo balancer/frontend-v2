@@ -98,7 +98,7 @@ const activeTab = ref(tabs.value[0].value);
     <div class="mb-20">
       <h4 v-text="$t('Trades')" class="px-4 lg:px-0 mb-5" />
 
-      <Swaps :pool="pool" :loading="loading" />
+      <Swaps v-if="pool" :pool="pool" :loading="loading" />
     </div>
 
     <div>
