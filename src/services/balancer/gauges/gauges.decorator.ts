@@ -57,7 +57,7 @@ export class GaugesDecorator {
     return {
       ...gaugeData,
       rewardTokens: this.formatRewardTokens(gaugeData.rewardTokens),
-      claimableTokens: gaugeData.claimableTokens.toString(),
+      claimableTokens: gaugeData.claimableTokens?.toString() || '0',
       claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards)
     };
   }

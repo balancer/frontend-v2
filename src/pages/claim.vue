@@ -12,7 +12,7 @@ import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vu
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { isKovan, isL2, isMainnet } from '@/composables/useNetwork';
+import { isL2 } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
@@ -70,10 +70,6 @@ const networks = [
 const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
-
-const supportsContractBasedClaiming = computed(
-  (): boolean => isMainnet.value || isKovan.value
-);
 
 const balRewardsData = computed((): RewardRow[] => {
   if (!isWalletReady.value || appLoading.value) return [];
@@ -200,75 +196,60 @@ watch(gaugePools, async newPools => {
       </div>
     </div>
     <div class="lg:container lg:mx-auto py-12">
-      <template v-if="supportsContractBasedClaiming">
-        <h2 class="font-body font-bold text-2xl">
-          {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
-        </h2>
+      <h2 class="font-body font-bold text-2xl">
+        {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
+      </h2>
 
-        <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
-        <div v-else class="flex items-center mt-6 mb-2">
-          <BalAsset :address="balToken?.address" />
-          <h3 class="text-xl ml-2">
-            Balancer (BAL) {{ $t('earnings').toLowerCase() }}
-          </h3>
-        </div>
-        <BalClaimsTable
-          :rewardsData="balRewardsData"
-          :isLoading="queriesLoading || appLoading"
-        />
+      <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
+      <div v-else class="flex items-center mt-6 mb-2">
+        <BalAsset :address="balToken?.address" />
+        <h3 class="text-xl ml-2">
+          Balancer (BAL) {{ $t('earnings').toLowerCase() }}
+        </h3>
+      </div>
+      <BalClaimsTable
+        :rewardsData="balRewardsData"
+        :isLoading="queriesLoading || appLoading"
+      />
 
-        <template
-          v-if="!queriesLoading && !appLoading && gaugesWithRewards.length > 0"
-        >
-          <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
-          <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
-            <div class="flex mt-4">
-              <h4 class="text-base mb-2">
-                {{ gaugeTitle(pool) }}
-              </h4>
-            </div>
-            <GaugeRewardsTable
-              :gauge="gauge"
-              :isLoading="queriesLoading || appLoading"
-            />
+      <template v-if="!queriesLoading && !appLoading && gaugeTables.length > 0">
+        <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
+        <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
+          <div class="flex mt-4">
+            <h4 class="text-base mb-2">
+              {{ gaugeTitle(pool) }}
+            </h4>
           </div>
-        </template>
-
-        <h2 class="font-body font-bold text-2xl mt-8">
-          {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
-        </h2>
-        <BalFlexGrid class="mt-4" flexWrap>
-          <BalBtn
-            tag="a"
-            v-for="network in networkBtns"
-            :key="network.id"
-            :href="`https://${network.subdomain}.balancer.fi/#/claim`"
-            color="white"
-          >
-            <img
-              :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
-              :alt="network.id"
-              class="w-6 h-6 rounded-full shadow-sm mr-2"
-            />
-            {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
-          </BalBtn>
-        </BalFlexGrid>
+          <GaugeRewardsTable
+            :gauge="gauge"
+            :isLoading="queriesLoading || appLoading"
+          />
+        </div>
       </template>
 
-      <template v-if="isWalletReady">
-        <h2
-          :class="[
-            'font-body font-bold text-2xl',
-            { 'mt-8': supportsContractBasedClaiming }
-          ]"
+      <h2 class="font-body font-bold text-2xl mt-8">
+        {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
+      </h2>
+      <BalFlexGrid class="mt-4" flexWrap>
+        <BalBtn
+          tag="a"
+          v-for="network in networkBtns"
+          :key="network.id"
+          :href="`https://${network.subdomain}.balancer.fi/#/claim`"
+          color="white"
         >
-          {{
-            !supportsContractBasedClaiming
-              ? `${configService.network.chainName} ${$t(
-                  'liquidityIncentives'
-                )}`
-              : $t('pages.claim.titles.legacyIncentives')
-          }}
+          <img
+            :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
+            :alt="network.id"
+            class="w-6 h-6 rounded-full shadow-sm mr-2"
+          />
+          {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
+        </BalBtn>
+      </BalFlexGrid>
+
+      <template v-if="isWalletReady">
+        <h2 :class="['font-body font-bold text-2xl mt-8']">
+          {{ $t('pages.claim.titles.legacyIncentives') }}
         </h2>
         <LegacyClaims />
       </template>
