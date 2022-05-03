@@ -200,17 +200,19 @@ watch(gaugePools, async newPools => {
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
-      <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
-      <div v-else class="flex items-center mt-6 mb-2">
-        <BalAsset :address="balToken?.address" />
-        <h3 class="text-xl ml-2">
-          Balancer (BAL) {{ $t('earnings').toLowerCase() }}
-        </h3>
-      </div>
-      <BalClaimsTable
-        :rewardsData="balRewardsData"
-        :isLoading="queriesLoading || appLoading"
-      />
+      <template v-if="!isL2">
+        <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
+        <div v-else class="flex items-center mt-6 mb-2">
+          <BalAsset :address="balToken?.address" />
+          <h3 class="text-xl ml-2">
+            Balancer (BAL) {{ $t('earnings').toLowerCase() }}
+          </h3>
+        </div>
+        <BalClaimsTable
+          :rewardsData="balRewardsData"
+          :isLoading="queriesLoading || appLoading"
+        />
+      </template>
 
       <template v-if="!queriesLoading && !appLoading && gaugeTables.length > 0">
         <h3 class="text-xl mt-8">{{ $t('otherTokenEarnings') }}</h3>
@@ -226,6 +228,9 @@ watch(gaugePools, async newPools => {
           />
         </div>
       </template>
+      <BalBlankSlate v-else-if="gaugeTables.length === 0" class="mt-4">
+        {{ $t('noClaimableIncentives') }}
+      </BalBlankSlate>
 
       <h2 class="font-body font-bold text-2xl mt-8">
         {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
