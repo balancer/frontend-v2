@@ -2,12 +2,12 @@
 import { formatDistanceToNow } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { shortenLabel } from '@/lib/utils';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import { shortenLabel } from '@/lib/utils';
 import { bnum } from '@/lib/utils';
 import { PoolSwap } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';

@@ -3,7 +3,6 @@ import { flatten } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { shortenLabel } from '@/lib/utils';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
 import useNumbers from '@/composables/useNumbers';
