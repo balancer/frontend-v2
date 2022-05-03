@@ -198,6 +198,8 @@ export interface PoolSwap {
   tokenAmountOut: string;
   timestamp: number;
   tx: string;
+  ensName?: string | null;
+  ensAvatar?: string | null;
 }
 
 export interface PoolSnapshot {

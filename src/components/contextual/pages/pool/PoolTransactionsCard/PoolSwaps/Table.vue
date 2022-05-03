@@ -61,12 +61,22 @@ const { explorerLinks } = useWeb3();
  */
 const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
   {
-    name: t('action'),
+    name: t('trader'),
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
-    width: 150,
+    width: 250,
     sortable: false
+  },
+  {
+    name: t('tradeValue'),
+    id: 'value',
+    accessor: 'value',
+    Cell: 'valueCell',
+    align: 'right',
+    className: 'align-center w-40',
+    sortKey: pool => pool.value,
+    width: 125
   },
   {
     name: t('details'),
@@ -76,16 +86,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     width: 325,
     sortable: false
   },
-  {
-    name: t('value'),
-    id: 'value',
-    accessor: 'value',
-    Cell: 'valueCell',
-    align: 'right',
-    className: 'align-center w-40',
-    sortKey: pool => pool.value,
-    width: 125
-  },
+
   {
     name: t('time'),
     id: 'timeAgo',
@@ -154,10 +155,11 @@ const swapRows = computed<SwapRow[]>(() =>
         sortDirection: 'desc'
       }"
     >
-      <template v-slot:actionCell>
+      <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            {{ $t('swap') }}
+            <!-- {{ $t('swap') }} -->
+            {{ action.tx.slice(0, 15) + '...' }}
           </div>
         </div>
       </template>

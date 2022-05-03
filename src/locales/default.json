@@ -952,6 +952,8 @@
     "totalValue": "Total value",
     "totalValueTo": "Total value to",
     "trade": "Trade",
+    "trader": "Trader",
+    "tradeValue": "Trade value",
     "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
     "tradeFromWeth": "Trade from WETH",
