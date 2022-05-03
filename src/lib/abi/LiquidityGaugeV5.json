@@ -531,6 +531,27 @@
   {
     "stateMutability": "view",
     "type": "function",
+    "name": "claimable_reward_write",
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      },
+      {
+        "name": "_token",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
     "name": "claimable_tokens",
     "inputs": [
       {
