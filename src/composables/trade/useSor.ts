@@ -1,7 +1,11 @@
 import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
+import {
+  AddressZero,
+  WeiPerEther as ONE,
+  Zero
+} from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
@@ -16,6 +20,7 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnum, scale } from '@/lib/utils';
 import {
@@ -209,9 +214,25 @@ export default function useSor({
         const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
         const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
+        const tokenInAddress =
+          tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
+            ? AddressZero
+            : tokenInAddressInput.value;
+        const tokenOutAddress =
+          tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS
+            ? AddressZero
+            : tokenOutAddressInput.value;
+
+        const tokenInPosition = result.tokenAddresses.indexOf(
+          tokenInAddress.toLowerCase()
+        );
+        const tokenOutPosition = result.tokenAddresses.indexOf(
+          tokenOutAddress.toLowerCase()
+        );
+
         const tokenInAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[0])
+            bnum(deltas[tokenInPosition])
               .abs()
               .toString(),
             tokenInDecimals
@@ -220,7 +241,7 @@ export default function useSor({
 
         const tokenOutAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[deltas.length - 1])
+            bnum(deltas[tokenOutPosition])
               .abs()
               .toString(),
             tokenOutDecimals
