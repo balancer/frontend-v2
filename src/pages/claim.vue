@@ -215,7 +215,7 @@ watch(gaugePools, async newPools => {
       </template>
 
       <BalLoadingBlock
-        v-if="appLoading || queriesLoading"
+        v-if="(appLoading || queriesLoading) && isWalletReady"
         class="mt-6 mb-2 h-56"
       />
       <template v-if="!queriesLoading && !appLoading && gaugeTables.length > 0">
@@ -235,7 +235,10 @@ watch(gaugePools, async newPools => {
         </div>
       </template>
       <BalBlankSlate
-        v-else-if="!queriesLoading && !appLoading && gaugeTables.length === 0"
+        v-else-if="
+          (!queriesLoading && !appLoading && gaugeTables.length === 0) ||
+            !isWalletReady
+        "
         class="mt-6"
       >
         {{ $t('noClaimableIncentives') }}
