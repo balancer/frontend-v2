@@ -1,3 +1,85 @@
+<script setup lang="ts">
+import { getAddress } from '@ethersproject/address';
+import { compact, pick, take } from 'lodash';
+import { computed, ref } from 'vue';
+
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
+import useTokens from '@/composables/useTokens';
+import useVeBal from '@/composables/useVeBAL';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import useWeb3 from '@/services/web3/useWeb3';
+
+type Props = {
+  modelValue: string[];
+  loading?: boolean;
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: () => [],
+  loading: true
+});
+
+const emit = defineEmits<{
+  (e: 'add', token: string): void;
+  (e: 'remove', token: string): void;
+}>();
+
+/**
+ * STATE
+ */
+const selectTokenModal = ref(false);
+
+/**
+ * COMPOSABLES
+ */
+const { tokens, balances, dynamicDataLoading } = useTokens();
+const { account, appNetworkConfig } = useWeb3();
+const { veBalTokenInfo } = useVeBal();
+
+/**
+ * COMPUTED
+ */
+// sorted by biggest bag balance, limited to biggest 5
+const sortedBalances = computed(() => {
+  const addressesWithBalance = Object.entries(balances.value)
+    .filter(
+      ([address, balance]) =>
+        balance !== '0.0' && address !== veBalTokenInfo.value?.address
+    )
+    .map(([address]) => address);
+  const tokensWithBalance = Object.values(
+    pick(tokens.value, addressesWithBalance)
+  );
+
+  return take(tokensWithBalance, 6);
+});
+
+const hasNoBalances = computed(() => !sortedBalances.value.length);
+
+const whiteListedTokens = computed(() =>
+  Object.values(tokens.value)
+    .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
+    .filter(token => !props.modelValue.includes(token.address))
+);
+
+/**
+ * METHODS
+ */
+function addToken(token: string) {
+  let _token = token;
+  // special case for ETH where we want it to filter as WETH regardless
+  // as ETH is the native asset
+  if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
+    _token = appNetworkConfig.addresses.weth;
+  }
+  // const newSelected = [...props.modelValue, _token];
+  emit('add', _token);
+}
+
+function onClick() {
+  if (!props.loading) selectTokenModal.value = true;
+}
+</script>
 <template>
   <div>
     <div class="flex items-center flex-wrap">
@@ -13,7 +95,7 @@
           color="white"
           iconSize="sm"
           :closeable="true"
-          @closed="$emit('remove', token)"
+          @closed="emit('remove', token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
           <span class="ml-2">{{ tokens[token]?.symbol }}</span>
@@ -48,106 +130,10 @@
     <teleport to="#modal">
       <SelectTokenModal
         v-if="selectTokenModal"
-        :excluded-tokens="modelValue"
+        :excluded-tokens="compact([...modelValue, veBalTokenInfo?.address])"
         @close="selectTokenModal = false"
         @select="addToken"
       />
     </teleport>
   </div>
 </template>
-
-<script lang="ts">
-import { getAddress } from '@ethersproject/address';
-import { pick, take } from 'lodash';
-import { computed, defineComponent, PropType, ref } from 'vue';
-
-import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
-import useWeb3 from '@/services/web3/useWeb3';
-
-export default defineComponent({
-  name: 'TokenSearchInput',
-
-  components: {
-    SelectTokenModal
-  },
-
-  emits: ['add', 'remove'],
-
-  props: {
-    modelValue: { type: Array as PropType<string[]>, default: () => [] },
-    loading: { type: Boolean, default: true }
-  },
-
-  setup(props, { emit }) {
-    /**
-     * STATE
-     */
-    const selectTokenModal = ref(false);
-
-    /**
-     * COMPOSABLES
-     */
-    const { tokens, balances, dynamicDataLoading } = useTokens();
-    const { account, appNetworkConfig } = useWeb3();
-
-    /**
-     * COMPUTED
-     */
-    // sorted by biggest bag balance, limited to biggest 5
-    const sortedBalances = computed(() => {
-      const addressesWithBalance = Object.entries(balances.value)
-        .filter(balance => balance[1] !== '0.0')
-        .map(balance => balance[0]);
-      const tokensWithBalance = Object.values(
-        pick(tokens.value, addressesWithBalance)
-      );
-
-      return take(tokensWithBalance, 6);
-    });
-
-    const hasNoBalances = computed(() => !sortedBalances.value.length);
-
-    const whiteListedTokens = computed(() =>
-      Object.values(tokens.value)
-        .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
-        .filter(token => !props.modelValue.includes(token.address))
-    );
-
-    /**
-     * METHODS
-     */
-    function addToken(token: string) {
-      let _token = token;
-      // special case for ETH where we want it to filter as WETH regardless
-      // as ETH is the native asset
-      if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
-        _token = appNetworkConfig.addresses.weth;
-      }
-      // const newSelected = [...props.modelValue, _token];
-      emit('add', _token);
-    }
-
-    function onClick() {
-      if (!props.loading) selectTokenModal.value = true;
-    }
-
-    return {
-      // state
-      selectTokenModal,
-      // computed
-      tokens,
-      dynamicDataLoading,
-      balances,
-      sortedBalances,
-      account,
-      hasNoBalances,
-      whiteListedTokens,
-      // methods
-      addToken,
-      onClick
-    };
-  }
-});
-</script>
