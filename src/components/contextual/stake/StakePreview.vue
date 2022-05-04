@@ -14,7 +14,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import {
   getGaugeAddress,
-  showStakingRewards
+  isL2StakingAprLive
 } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
@@ -237,7 +237,7 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="showStakingRewards">
+        <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
           <span class="text-sm">
             {{ action === 'stake' ? $t('your') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
@@ -246,10 +246,14 @@ function handleClose() {
             <span class="text-sm capitalize">
               ~{{ fNum2(stakingApr, FNumFormats.percent) }}</span
             >
-            <BalTooltip text="s" width="20" textAlign="center" />
+            <BalTooltip
+              :text="$t('staking.stakingAprTooltip')"
+              width="20"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="showStakingRewards">
+        <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
           <span class="text-sm">
             {{ action === 'stake' ? $t('potential') : $t('lost') }}
             {{ $t('staking.weeklyEarning') }}:
@@ -258,7 +262,11 @@ function handleClose() {
             <span class="text-sm capitalize"
               >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
             >
-            <BalTooltip text="s" width="20" textAlign="center" />
+            <BalTooltip
+              :text="$t('staking.potentialWeeklyEarningTooltip')"
+              width="20"
+              textAlign="center"
+            />
           </BalStack>
         </BalStack>
       </BalStack>

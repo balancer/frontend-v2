@@ -1,4 +1,4 @@
-import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { toNormalizedWeights } from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -145,11 +145,20 @@ export default class Vault {
       });
 
       Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
+        // The method to fetch the unwrapped asset of a linear pool can be
+        // different depending on if it's an ERC4626 or StaticAToken interface.
+        // Here we just try both methods and merge the result in formatting.
         poolMulticaller.call(
           `linearPools.${address}.unwrappedTokenAddress`,
           wrappedToken,
           'ATOKEN'
         );
+        poolMulticaller.call(
+          `linearPools.${address}.unwrappedERC4626Address`,
+          wrappedToken,
+          'asset'
+        );
+
         poolMulticaller.call(
           `linearPools.${address}.totalSupply`,
           address,
@@ -259,9 +268,12 @@ export default class Vault {
         wrappedToken,
         priceRate,
         unwrappedTokenAddress,
+        unwrappedERC4626Address,
         tokenData,
         totalSupply
       } = linearPools[address];
+
+      const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
 
       _linearPools[address] = {
         id,
@@ -277,7 +289,7 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
+        unwrappedTokenAddress: getAddress(unwrappedAddress),
         totalSupply: formatUnits(totalSupply, 18)
       };
     });

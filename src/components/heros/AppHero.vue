@@ -30,7 +30,6 @@ const { lockFiatValue, isLoadingLock } = useLock();
 const {
   userData: {
     totalStakedFiatValue,
-    isStakingQueryEnabled,
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isUserStakeDataIdle
@@ -66,10 +65,7 @@ const totalVeBalLabel = computed((): string =>
 );
 
 const isLoadingLockAndStaking = computed(
-  (): boolean =>
-    !isL2.value &&
-    (isLoadingLock.value ||
-      (isStakingQueryEnabled.value && isStakingLoading.value))
+  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value
 );
 
 const isLoadingTotalValue = computed(
@@ -119,24 +115,23 @@ function onClickConnect() {
               font-medium
               cursor-pointer
               border border-yellow-500
+              group
+              hover:text-white
+              focus:text-white
+              transition-colors
               rounded-bl rounded-tr
             "
             @click="router.push({ name: 'vebal' })"
           >
-            {{ $t('inclXInVeBal', [totalVeBalLabel]) }}
+            <span v-if="lockFiatValue === '0'"
+              >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
+            >
+            <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
           </div>
         </div>
       </template>
       <template v-else>
-        <h1
-          v-text="$t('ammPlatform')"
-          class="
-            text-white text-center text-4xl
-            md:text-5xl
-            pb-2
-            font-display font-black
-          "
-        />
+        <h1 v-text="$t('ammPlatform')" class="headline" />
         <div class="flex justify-center mt-4">
           <BalBtn
             :color="darkMode ? 'gray' : 'white'"
@@ -189,5 +184,10 @@ function onClickConnect() {
   right: 0;
   position: absolute;
   border-bottom-right-radius: 8px;
+}
+.headline {
+  @apply text-white text-center text-4xl md:text-5xl pb-2 font-display font-black;
+  font-weight: 600;
+  font-variation-settings: 'wght' 700;
 }
 </style>

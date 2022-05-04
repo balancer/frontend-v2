@@ -229,6 +229,10 @@ export default function useTrading(
     }
   }
 
+  function resetAmounts() {
+    sor.resetInputAmounts('');
+  }
+
   function handleAmountChange() {
     if (exactIn.value) {
       tokenOutAmountInput.value = '';
@@ -313,7 +317,7 @@ export default function useTrading(
     toggleTradeGasless,
     isGaslessTradingDisabled,
     isGnosisSupportedOnNetwork,
-
+    resetAmounts,
     // methods
     getQuote,
     trade,

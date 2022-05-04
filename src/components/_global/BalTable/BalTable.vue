@@ -1,3 +1,219 @@
+<script setup lang="ts">
+export type Sticky = 'horizontal' | 'vertical' | 'both';
+export type Data = any;
+export type ColumnDefinition<T = Data> = {
+  // Column Header Label
+  name: string;
+  // Unique ID
+  id: string;
+  // Key or function to access data from the row
+  accessor: string | ((row: T) => string);
+  // Slot ID for custom rendering the cell
+  Cell?: string;
+  // Slot ID for custom rendering a header
+  Header?: string;
+  // Is the column sortable
+  isSortable?: boolean;
+  // Extra classes to supply to the column. E.g. min width
+  className?: string;
+  // Left or right aligned content. E.g. Numbers should be right aligned
+  align?: 'left' | 'right' | 'center';
+  // Should the column width grow to fit available space?
+  noGrow?: boolean;
+  // Set to true to hide the column
+  hidden?: boolean;
+  // Accessor for sorting purposes
+  sortKey?: string | ((row: T) => unknown);
+
+  width?: number;
+
+  totalsCell?: string;
+
+  cellClassName?: string;
+};
+import { sortBy, sumBy } from 'lodash';
+import { computed, onMounted, ref, watch } from 'vue';
+
+import PinHeader from './PinHeader.vue';
+
+type InitialState = {
+  sortDirection: 'asc' | 'desc' | null;
+  sortColumn: string | null;
+};
+
+type DataPinState = {
+  // the key inside each data object that you want to
+  // pin by
+  pinOn: string;
+  pinnedData: string[];
+};
+
+defineEmits(['loadMore']);
+
+type Props = {
+  columns: ColumnDefinition[];
+  data: Data[];
+  isLoading?: boolean;
+  isLoadingMore?: boolean;
+  skeletonClass?: string;
+  onRowClick?: (data: Data) => void;
+  sticky?: Sticky;
+  square?: boolean;
+  isPaginated?: boolean;
+  noResultsLabel?: string;
+  link?: { to?: string } | null;
+  initialState?: InitialState;
+  pin?: DataPinState;
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  square: false,
+  isPaginated: false,
+  noResultsLabel: '',
+  link: () => null,
+  initialState: () => ({
+    sortColumn: null,
+    sortDirection: null
+  }),
+  skeletonClass: '',
+  isLoading: false,
+  isLoadingMore: false
+});
+
+const stickyHeaderRef = ref();
+const isColumnStuck = ref(false);
+const tableData = ref(props.data);
+const currentSortDirection = ref<InitialState['sortDirection']>(
+  props.initialState?.sortDirection || null
+);
+const currentSortColumn = ref<InitialState['sortColumn']>(
+  props.initialState?.sortColumn || null
+);
+const headerRef = ref<HTMLElement>();
+const bodyRef = ref<HTMLElement>();
+
+// for loading and no results
+const placeholderBlockWidth = computed(() => sumBy(props.columns, 'width'));
+
+const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
+  if (el && columnIndex === 0) {
+    stickyHeaderRef.value = el;
+  }
+};
+
+// Need a method for horizontal stickiness as we need to
+// check whether the table item belongs in the first column
+const getHorizontalStickyClass = (index: number) => {
+  if (index !== 0) return '';
+  if (props.sticky === 'horizontal' || props.sticky === 'both') {
+    return 'horizontalSticky';
+  }
+  return '';
+};
+
+const handleSort = (columnId: string | null, updateDirection = true) => {
+  const column = props.columns.find(column => column.id === columnId);
+  if (!column?.sortKey) return;
+  if (columnId !== currentSortColumn.value) currentSortDirection.value = null;
+
+  currentSortColumn.value = columnId;
+
+  if (updateDirection) {
+    if (currentSortDirection.value === null) {
+      currentSortDirection.value = 'desc';
+    } else if (currentSortDirection.value === 'desc') {
+      currentSortDirection.value = 'asc';
+    } else {
+      currentSortDirection.value = null;
+    }
+  }
+
+  const sortedData = sortBy(
+    (props.data as any).value || props.data,
+    column.sortKey
+  );
+  if (currentSortDirection.value === 'asc') {
+    tableData.value = sortedData;
+    return;
+  } else if (currentSortDirection.value === 'desc') {
+    tableData.value = sortedData.reverse();
+    return;
+  }
+  tableData.value = props.data;
+};
+
+function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
+  switch (align) {
+    case 'left':
+      return 'justify-start';
+    case 'right':
+      return 'justify-end';
+    case 'center':
+      return 'justify-center';
+    default:
+      return 'justify-start';
+  }
+}
+
+onMounted(() => {
+  if (bodyRef.value) {
+    bodyRef.value.onscroll = () => {
+      if (bodyRef.value) {
+        const offsetRatio =
+          bodyRef.value.offsetWidth / stickyHeaderRef.value.offsetWidth / 10;
+        isColumnStuck.value = !!(
+          stickyHeaderRef.value.offsetLeft >
+          stickyHeaderRef.value.offsetWidth * offsetRatio
+        );
+      }
+    };
+    bodyRef.value.addEventListener('scroll', () => {
+      if (bodyRef.value && headerRef.value) {
+        headerRef.value.scrollLeft = bodyRef.value.scrollLeft;
+      }
+    });
+  }
+
+  handleSort(currentSortColumn.value, false);
+});
+
+/**
+ * COMPUTED
+ */
+const unpinnedData = computed(() => {
+  if (!props.pin) return props.data;
+  return (tableData.value || []).filter(
+    data => !props.pin?.pinnedData.includes(data[props.pin.pinOn])
+  );
+});
+
+const pinnedData = computed(() => {
+  if (!props.pin) return [];
+  return (tableData.value || []).filter(data =>
+    props.pin?.pinnedData.includes(data[props.pin.pinOn])
+  );
+});
+
+const filteredColumns = computed(() =>
+  props.columns.filter(column => !column.hidden)
+);
+
+const shouldRenderTotals = computed(() =>
+  props.columns.some(column => column.totalsCell !== undefined)
+);
+
+watch(
+  () => props.data,
+  newData => {
+    if (currentSortColumn.value && currentSortDirection.value !== null) {
+      handleSort(currentSortColumn.value, false);
+      return;
+    }
+    tableData.value = newData;
+  }
+);
+</script>
+
 <template>
   <div
     :class="[
@@ -102,111 +318,53 @@
           ></td>
         </tr>
         <!-- end measurement row -->
-        <tbody v-if="!isLoading && tableData.length">
-          <tr
-            v-for="(dataItem, index) in tableData"
-            :key="`tableRow-${index}`"
-            @click="handleRowClick(dataItem)"
-            :class="[
-              'bg-white z-10 row-bg group',
-              { 'cursor-pointer': onRowClick }
-            ]"
-          >
-            <td
-              v-for="(column, columnIndex) in filteredColumns"
-              :key="column.id"
-              :class="[
-                column.align === 'right' ? 'text-left' : 'text-right',
-                getHorizontalStickyClass(columnIndex),
-                isColumnStuck ? 'isSticky' : ''
-              ]"
-            >
-              <router-link
-                v-if="link"
-                :to="{
-                  name: link.to,
-                  params: link.getParams(dataItem)
-                }"
-              >
-                <slot
-                  v-if="column.Cell"
-                  v-bind="dataItem"
-                  :name="column.Cell"
-                ></slot>
-                <div
-                  v-else
-                  :class="
-                    compact([
-                      'px-6 py-4',
-                      column.align === 'right' ? 'text-right' : 'text-left',
-                      column.cellClassName
-                    ])
-                  "
-                >
-                  {{
-                    typeof column.accessor === 'string'
-                      ? dataItem[column.accessor]
-                      : column.accessor(dataItem)
-                  }}
-                </div>
-              </router-link>
-              <template v-else>
-                <slot
-                  v-if="column.Cell"
-                  v-bind="dataItem"
-                  :name="column.Cell"
-                ></slot>
-                <div
-                  v-else
-                  :class="
-                    compact([
-                      'px-6 py-4',
-                      column.align === 'right' ? 'text-right' : 'text-left',
-                      column.cellClassName
-                    ])
-                  "
-                >
-                  {{
-                    typeof column.accessor === 'string'
-                      ? dataItem[column.accessor]
-                      : column.accessor(dataItem)
-                  }}
-                </div>
-              </template>
-            </td>
-          </tr>
-          <tr
-            :class="[
-              'bg-white z-10 row-bg group',
-              { 'cursor-pointer': onRowClick }
-            ]"
-            v-if="shouldRenderTotals"
-          >
-            <td
-              :class="[
-                getHorizontalStickyClass(0),
-                isColumnStuck ? 'isSticky' : '',
-                'text-left p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900 align-top'
-              ]"
-            >
-              <span class="font-semibold text-left">
-                Total
-              </span>
-            </td>
-            <td
-              v-for="(column, columnIndex) in tail(filteredColumns)"
-              :key="column.id"
-              :class="[
-                column.align === 'right' ? 'text-left' : 'text-right',
-                getHorizontalStickyClass(columnIndex + 1),
-                isColumnStuck ? 'isSticky' : '',
-                'p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900'
-              ]"
-            >
-              <slot v-if="column.totalsCell" :name="column.totalsCell"> </slot>
-            </td>
-          </tr>
-        </tbody>
+
+        <!-- begin pinned rows -->
+        <PinHeader v-if="pinnedData.length" />
+        <BalTableRow
+          v-for="(dataItem, index) in pinnedData"
+          :data="dataItem"
+          :columns="filteredColumns"
+          :onRowClick="onRowClick"
+          :key="`tableRow-${index}`"
+          :link="link"
+          :sticky="sticky"
+          :isColumnStuck="isColumnStuck"
+          pinned
+        >
+          <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+            <slot :name="name" v-bind="slotData" />
+          </template>
+        </BalTableRow>
+        <!-- end pinned rows -->
+
+        <!-- begin data rows -->
+        <BalTableRow
+          v-for="(dataItem, index) in unpinnedData"
+          :data="dataItem"
+          :columns="filteredColumns"
+          :onRowClick="onRowClick"
+          :key="`tableRow-${index}-${dataItem}`"
+          :link="link"
+          :sticky="sticky"
+          :isColumnStuck="isColumnStuck"
+        >
+          <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+            <slot :name="name" v-bind="slotData" />
+          </template>
+        </BalTableRow>
+        <!-- end end data rows -->
+        <TotalsRow
+          :columns="filteredColumns"
+          :onRowClick="onRowClick"
+          :sticky="sticky"
+          :isColumnStuck="isColumnStuck"
+          v-if="!isLoading && tableData.length && shouldRenderTotals"
+        >
+          <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+            <slot :name="name" v-bind="slotData" />
+          </template>
+        </TotalsRow>
       </table>
     </div>
   </div>
@@ -221,265 +379,6 @@
     /></template>
   </div>
 </template>
-
-<script lang="ts">
-import { compact, sortBy, sumBy, tail } from 'lodash';
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  PropType,
-  ref,
-  watch
-} from 'vue';
-
-type Sticky = 'horizontal' | 'vertical' | 'both';
-type Data = any;
-
-type InitialState = {
-  sortDirection: 'asc' | 'desc' | null;
-  sortColumn: string | null;
-};
-
-export type ColumnDefinition<T = Data> = {
-  // Column Header Label
-  name: string;
-  // Unique ID
-  id: string;
-  // Key or function to access data from the row
-  accessor: string | ((row: T) => string);
-  // Slot ID for custom rendering the cell
-  Cell?: string;
-  // Slot ID for custom rendering a header
-  Header?: string;
-  // Is the column sortable
-  isSortable?: boolean;
-  // Extra classes to supply to the column. E.g. min width
-  className?: string;
-  // Left or right aligned content. E.g. Numbers should be right aligned
-  align?: 'left' | 'right' | 'center';
-  // Should the column width grow to fit available space?
-  noGrow?: boolean;
-  // Set to true to hide the column
-  hidden?: boolean;
-  // Accessor for sorting purposes
-  sortKey?: string | ((row: T) => unknown);
-
-  width?: number;
-
-  totalsCell?: string;
-
-  cellClassName?: string;
-};
-
-export default defineComponent({
-  name: 'BalTable',
-
-  emits: ['loadMore'],
-
-  props: {
-    columns: {
-      type: Object as PropType<ColumnDefinition[]>,
-      required: true
-    },
-    data: {
-      type: Object as PropType<Data[]>
-    },
-    isLoading: {
-      type: Boolean,
-      default: () => false
-    },
-    isLoadingMore: {
-      type: Boolean,
-      default: false
-    },
-    skeletonClass: {
-      type: String
-    },
-    onRowClick: {
-      type: Function as PropType<(data: Data) => void>
-    },
-    sticky: {
-      type: String as PropType<Sticky>
-    },
-    square: {
-      type: Boolean,
-      default: false
-    },
-    isPaginated: {
-      type: Boolean,
-      default: false
-    },
-    noResultsLabel: {
-      type: String
-    },
-    link: {
-      type: Object,
-      default: null
-    },
-    initialState: {
-      type: Object as PropType<InitialState>,
-      default: () => ({
-        sortColumn: null,
-        sortDirection: null
-      })
-    }
-  },
-  setup(props) {
-    const stickyHeaderRef = ref();
-    const tableRef = ref<HTMLElement>();
-    const isColumnStuck = ref(false);
-    const tableData = ref(props.data);
-    const currentSortDirection = ref<InitialState['sortDirection']>(
-      props.initialState.sortDirection
-    );
-    const currentSortColumn = ref<InitialState['sortColumn']>(
-      props.initialState.sortColumn
-    );
-    const headerRef = ref<HTMLElement>();
-    const bodyRef = ref<HTMLElement>();
-
-    // for loading and no results
-    const placeholderBlockWidth = computed(() => sumBy(props.columns, 'width'));
-
-    const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
-      if (el && columnIndex === 0) {
-        stickyHeaderRef.value = el;
-      }
-    };
-
-    // Need a method for horizontal stickiness as we need to
-    // check whether the table item belongs in the first column
-    const getHorizontalStickyClass = (index: number) => {
-      if (index !== 0) return '';
-      if (props.sticky === 'horizontal' || props.sticky === 'both') {
-        return 'horizontalSticky';
-      }
-      return '';
-    };
-
-    const handleRowClick = (data: Data) => {
-      if (props.link?.to) return;
-      props.onRowClick && props.onRowClick(data);
-    };
-
-    const handleSort = (columnId: string | null, updateDirection = true) => {
-      const column = props.columns.find(column => column.id === columnId);
-      if (!column?.sortKey) return;
-      if (columnId !== currentSortColumn.value)
-        currentSortDirection.value = null;
-
-      currentSortColumn.value = columnId;
-
-      if (updateDirection) {
-        if (currentSortDirection.value === null) {
-          currentSortDirection.value = 'desc';
-        } else if (currentSortDirection.value === 'desc') {
-          currentSortDirection.value = 'asc';
-        } else {
-          currentSortDirection.value = null;
-        }
-      }
-
-      const sortedData = sortBy(
-        (props.data as any)?.value || props.data,
-        column.sortKey
-      );
-      if (currentSortDirection.value === 'asc') {
-        tableData.value = sortedData;
-        return;
-      } else if (currentSortDirection.value === 'desc') {
-        tableData.value = sortedData.reverse();
-        return;
-      }
-      tableData.value = props.data;
-    };
-
-    function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
-      switch (align) {
-        case 'left':
-          return 'justify-start';
-        case 'right':
-          return 'justify-end';
-        case 'center':
-          return 'justify-center';
-        default:
-          return 'justify-start';
-      }
-    }
-
-    onMounted(() => {
-      if (bodyRef.value) {
-        bodyRef.value.onscroll = () => {
-          if (bodyRef.value) {
-            const offsetRatio =
-              bodyRef.value.offsetWidth /
-              stickyHeaderRef.value.offsetWidth /
-              10;
-            isColumnStuck.value = !!(
-              stickyHeaderRef.value.offsetLeft >
-              stickyHeaderRef.value.offsetWidth * offsetRatio
-            );
-          }
-        };
-        bodyRef.value.addEventListener('scroll', () => {
-          if (bodyRef.value && headerRef.value) {
-            headerRef.value.scrollLeft = bodyRef.value.scrollLeft;
-          }
-        });
-      }
-
-      handleSort(currentSortColumn.value, false);
-    });
-
-    const filteredColumns = computed(() =>
-      props.columns.filter(column => !column.hidden)
-    );
-
-    const shouldRenderTotals = computed(() =>
-      props.columns.some(column => column.totalsCell !== undefined)
-    );
-
-    watch(
-      () => props.data,
-      newData => {
-        if (currentSortColumn.value && currentSortDirection.value !== null) {
-          handleSort(currentSortColumn.value, false);
-          return;
-        }
-        tableData.value = newData;
-      }
-    );
-
-    return {
-      //refs
-      tableRef,
-      headerRef,
-      bodyRef,
-
-      // methods
-      setHeaderRef,
-      getHorizontalStickyClass,
-      handleSort,
-      handleRowClick,
-      tail,
-      compact,
-      getAlignProperty,
-
-      //data
-      isColumnStuck,
-      tableData,
-      currentSortColumn,
-      currentSortDirection,
-      placeholderBlockWidth,
-
-      // computed
-      filteredColumns,
-      shouldRenderTotals
-    };
-  }
-});
-</script>
 
 <style>
 .horizontalSticky {

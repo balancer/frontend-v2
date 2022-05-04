@@ -18,6 +18,10 @@ import useNumbers from './useNumbers';
 /**
  * METHODS
  */
+export function addressFor(poolId: string): string {
+  return getAddress(poolId.slice(0, 42));
+}
+
 export function isStable(poolType: PoolType): boolean {
   return poolType === PoolType.Stable;
 }
@@ -34,6 +38,10 @@ export function isStableLike(poolType: PoolType): boolean {
   return (
     isStable(poolType) || isMetaStable(poolType) || isStablePhantom(poolType)
   );
+}
+
+export function isUnknownType(poolType: any): boolean {
+  return !Object.values(PoolType).includes(poolType);
 }
 
 export function isLiquidityBootstrapping(poolType: PoolType): boolean {
@@ -129,7 +137,15 @@ export function orderedPoolTokens(
 /**
  * @summary returns full URL for pool id, given network.
  */
-export function poolURLFor(poolId: string, network: Network): string {
+export function poolURLFor(
+  poolId: string,
+  network: Network,
+  poolType?: string | PoolType
+): string {
+  if (poolType && poolType.toString() === 'Element') {
+    return `https://app.element.fi/pools/${addressFor(poolId)}`;
+  }
+
   return `${urlFor(network)}/pool/${poolId}`;
 }
 
@@ -144,7 +160,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
    */
   function poolWeightsLabel(pool: FullPool): string {
     if (isStableLike(pool.poolType)) {
-      return Object.values(pool.tokens)
+      return Object.values(pool.onchain.tokens)
         .map(token => token.symbol)
         .join(', ');
     }

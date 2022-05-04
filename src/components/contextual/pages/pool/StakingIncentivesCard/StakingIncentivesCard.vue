@@ -8,7 +8,7 @@ import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
+import { isL2StakingAprLive } from '@/providers/local/staking/staking.provider';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 
@@ -185,7 +185,7 @@ async function handleActionSuccess() {
                   <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between" v-if="showStakingRewards">
+              <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
                 <span>
                   {{ $t('potential') }} {{ $t('staking.weeklyEarning') }}
                 </span>
@@ -225,10 +225,7 @@ async function handleActionSuccess() {
   </AnimatePresence>
   <AnimatePresence
     :isVisible="
-      isLoadingStakedShares ||
-        isStakedSharesIdle ||
-        isLoadingPoolEligibility ||
-        isLoadingBoosts
+      isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
     "
     unmountInstantly
   >

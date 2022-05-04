@@ -1,6 +1,7 @@
 <script lang="ts">
 import BigNumber from 'bignumber.js';
 import { defineComponent, onBeforeMount, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
@@ -14,16 +15,16 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import useAlerts, {
+  Alert,
+  AlertPriority,
+  AlertType
+} from './composables/useAlerts';
 import useBackgroundColor from './composables/useBackgroundColor';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
 import useNavigationGuards from './composables/useNavigationGuards';
+import { isL2 } from './composables/useNetwork';
 import { useSidebar } from './composables/useSidebar';
-// import useAlerts, {
-//   Alert,
-//   AlertPriority,
-//   AlertType
-// } from './composables/useAlerts';
-// import { useI18n } from 'vue-i18n';
 import useExploitWatcher from './composables/watchers/useExploitWatcher';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
@@ -62,9 +63,8 @@ export default defineComponent({
     } = useWeb3();
     const route = useRoute();
     const store = useStore();
-    // const router = useRouter();
-    // const { addAlert } = useAlerts();
-    // const { t } = useI18n();
+    const { addAlert } = useAlerts();
+    const { t } = useI18n();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
     const { sidebarOpen } = useSidebar();
 
@@ -94,6 +94,20 @@ export default defineComponent({
     //   };
     //   addAlert(featureAlert);
     // }
+
+    // Temporary feature alert due to the decreased APRs on L2s
+    // because of the 1 week gap from veBAL
+    if (isL2.value) {
+      const featureAlert: Alert = {
+        id: 'vebal-gap',
+        priority: AlertPriority.LOW,
+        label: t('alerts.vebalL2'),
+        type: AlertType.FEATURE,
+        rememberClose: false,
+        actionOnClick: false
+      };
+      addAlert(featureAlert);
+    }
 
     /**
      * CALLBACKS

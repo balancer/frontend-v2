@@ -16,7 +16,6 @@ import useQueryStreams from '@/composables/queries/useQueryStream';
 import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
@@ -170,10 +169,10 @@ const { data, dataStates, result } = useStreamedPoolsQuery();
         <BalStack vertical spacing="xl">
           <StakingProvider>
             <UnstakedPoolsTable :userPools="userPools" />
-            <StakedPoolsTable v-if="!isL2" :userPools="userPools" />
+            <StakedPoolsTable :userPools="userPools" />
           </StakingProvider>
           <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
-            <h5>{{ $t('poolsToMigrate') }}</h5>
+            <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
             <PoolsTable
               :key="migratableUserPools"
               :isLoading="isLoadingUserPools"

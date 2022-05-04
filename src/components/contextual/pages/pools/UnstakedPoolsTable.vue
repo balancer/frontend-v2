@@ -106,7 +106,6 @@ const poolsToRender = computed(() => {
 
 const hiddenColumns = computed((): string[] => {
   const hiddenCols = ['poolVolume', 'poolValue', 'migrate'];
-  if (isL2.value) hiddenCols.push('stake');
   return hiddenCols;
 });
 
@@ -134,7 +133,7 @@ function handleModalClose() {
 
 <template>
   <BalStack vertical spacing="sm">
-    <h5 v-if="!isL2">{{ $t('staking.unstakedPools') }}</h5>
+    <h5 class="px-4 lg:px-0" v-if="!isL2">{{ $t('staking.unstakedPools') }}</h5>
     <PoolsTable
       :key="poolsToRender"
       :isLoading="

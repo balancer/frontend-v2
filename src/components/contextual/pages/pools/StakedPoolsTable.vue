@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
+import { isL2 } from '@/composables/useNetwork';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
@@ -39,9 +40,15 @@ const poolsWithBoost = computed(() => {
     ...pool,
     dynamic: {
       ...pool.dynamic,
-      boost: poolBoosts.value[pool.id]
+      boost: (poolBoosts.value || {})[pool.id]
     }
   }));
+});
+
+const hiddenColumns = computed(() => {
+  const _hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'stake'];
+  if (isL2.value) _hiddenColumns.push('myBoost');
+  return _hiddenColumns;
 });
 
 /** METHODS */
@@ -59,12 +66,12 @@ function handleModalClose() {
 <template>
   <div class="mt-8">
     <BalStack vertical spacing="sm">
-      <h5>{{ $t('staking.stakedPools') }}</h5>
+      <h5 class="px-4 lg:px-0">{{ $t('staking.stakedPools') }}</h5>
       <PoolsTable
         :key="poolsWithBoost"
         :data="poolsWithBoost"
         :noPoolsLabel="$t('noInvestments')"
-        :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
+        :hiddenColumns="hiddenColumns"
         @triggerStake="handleStake"
         :isLoading="isLoading"
         showPoolShares

@@ -67,10 +67,9 @@ export function useClaimsData() {
 
   const queriesLoading = computed(
     (): boolean =>
-      gaugePoolQueryEnabled.value &&
-      (gaugePoolQuery.isLoading.value ||
-        gaugePoolQuery.isIdle.value ||
-        !!gaugePoolQuery.error.value)
+      gaugePoolQuery.isLoading.value ||
+      gaugePoolQuery.isIdle.value ||
+      !!gaugePoolQuery.error.value
   );
 
   return {

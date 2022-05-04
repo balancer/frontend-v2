@@ -19,7 +19,6 @@ import {
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { showStakingRewards } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import {
   getAprRangeWithRewardEmissions,
@@ -71,7 +70,7 @@ const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
 
 const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 900 : undefined
+  upToMediumBreakpoint.value ? 450 : undefined
 );
 
 /**
@@ -165,9 +164,21 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
-      const apr = Number(pool?.dynamic?.apr?.total);
-      if (apr === Infinity || isNaN(apr)) return 0;
-      return apr;
+      let apr = 0;
+
+      if (hasStakingRewards(pool)) {
+        if (pool.dynamic.boost) {
+          apr = Number(getTotalBoostedApr(pool));
+        } else if (!hasBALEmissions(pool)) {
+          apr = Number(getTotalRewardsAPR(pool));
+        } else {
+          apr = Number(getAprRange(pool).max);
+        }
+      } else {
+        apr = Number(pool.dynamic.apr.total);
+      }
+
+      return isFinite(apr) ? apr : 0;
     },
     width: 250
   },
@@ -297,10 +308,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
       </template>
       <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
-          <span
-            v-if="hasStakingRewards(pool) && showStakingRewards"
-            class="text-right"
-          >
+          <span v-if="hasStakingRewards(pool)" class="text-right">
             <span v-if="pool.dynamic.boost">
               {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
             </span>
