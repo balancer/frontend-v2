@@ -179,23 +179,25 @@ const cards = computed(() => {
       <div v-else>
         <span class="font-bold truncate">{{ card.value }}</span>
       </div>
-      <div>
+      <div class="flex items-center">
         <BalIcon
           v-if="card.showUnlockIcon"
           name="minus-circle"
           class="minus-circle mr-2 transition-all cursor-pointer"
           @click="showUnlockPreviewModal = true"
         />
-        <router-link
-          v-if="card.showPlusIcon"
-          :to="card.plusIconTo"
-          class="text-blue-500"
-        >
-          <BalIcon
-            name="plus-circle"
-            class="plus-circle transition-all cursor-pointer"
-          />
-        </router-link>
+        <div>
+          <router-link
+            v-if="card.showPlusIcon"
+            :to="card.plusIconTo"
+            class="text-blue-500 flex items-center"
+          >
+            <BalIcon
+              name="plus-circle"
+              class="plus-circle transition-all cursor-pointer"
+            />
+          </router-link>
+        </div>
       </div>
     </div>
     <div class="secondary-value font-medium">{{ card.secondaryText }}</div>
@@ -218,7 +220,7 @@ const cards = computed(() => {
   @apply text-sm mb-2;
 }
 .value {
-  @apply text-xl font-medium flex items-center justify-between mb-0.5 overflow-visible overflow-x-visible overflow-y-visible;
+  @apply text-xl font-medium flex flex-wrap items-center justify-between mb-0.5;
 }
 
 .secondary-value {

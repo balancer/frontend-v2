@@ -49,7 +49,7 @@ const votingPeriodEnd = computed<number[]>(() => {
     timeUntilEnd.days || 0,
     timeUntilEnd.hours || 0,
     timeUntilEnd.minutes || 0,
-    timeUntilEnd.seconds || 2
+    timeUntilEnd.seconds || 0
   ];
   return formattedTime;
 });
@@ -131,14 +131,6 @@ function getVotePeriodEndTime(): number {
 </script>
 
 <template>
-  <!-- <div
-    class="bg-yellow-500 flex items-center rounded-lg p-4 mb-8 text-gray-900"
-  >
-    <LightBulbIcon width="36" height="36" class="w-36 lg:w-16" />
-    <p class="ml-4 max-w-4xl">
-      {{ $t('veBAL.votingTransitionDescription') }}
-    </p>
-  </div> -->
   <div
     class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-2 gap-4"
   >
@@ -147,15 +139,6 @@ function getVotePeriodEndTime(): number {
       <p class="">{{ $t('veBAL.liquidityMining.description') }}</p>
     </div>
     <div class="flex gap-2 xs:gap-3">
-      <!-- <span v-else>
-        <BalLink
-          tag="router-link"
-          :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
-          class="inline-block"
-        >
-          {{ $t('getVeBALToVote') }}</BalLink
-        >.
-      </span> -->
       <div class="border dark:border-gray-800 p-3 rounded-lg min-w-max md:w-48">
         <div class="flex items-center">
           <p class="text-sm text-gray-500 inline mr-1">
