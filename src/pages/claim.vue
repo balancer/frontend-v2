@@ -9,7 +9,9 @@ import BalClaimsTable, {
   RewardRow
 } from '@/components/tables/BalClaimsTable.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
-import ProtocolRewardsTable from '@/components/tables/ProtocolRewardsTable.vue';
+import ProtocolRewardsTable, {
+  ProtocolRewardRow
+} from '@/components/tables/ProtocolRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { isL2 } from '@/composables/useNetwork';
@@ -98,7 +100,7 @@ const balRewardsData = computed((): RewardRow[] => {
   }, []);
 });
 
-const protocolRewardsData = computed(() => {
+const protocolRewardsData = computed((): ProtocolRewardRow[] => {
   if (!isWalletReady.value || appLoading.value) return [];
   return Object.keys(protocolRewards.value).map(tokenAddress => {
     const token = getToken(tokenAddress);
