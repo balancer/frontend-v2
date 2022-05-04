@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
@@ -42,6 +43,7 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  columnStates?: Record<string, string>;
 };
 
 /**
@@ -54,7 +56,8 @@ const props = withDefaults(defineProps<Props>(), {
   noPoolsLabel: 'No pools',
   isPaginated: false,
   hiddenColumns: () => [],
-  showBoost: false
+  showBoost: false,
+  columnStates: () => ({})
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -127,15 +130,10 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
-    accessor: pool => {
-      if (!pool?.dynamic?.volume) return '-';
-      return fNum2(pool?.dynamic?.volume, {
-        style: 'currency',
-        maximumFractionDigits: 0
-      });
-    },
+    accessor: pool => pool.dynamic?.volume,
     align: 'right',
     id: 'poolVolume',
+    Cell: 'volumeCell',
     sortKey: pool => {
       const apr = Number(pool?.dynamic?.volume);
       if (apr === Infinity || isNaN(apr)) return 0;
@@ -306,31 +304,69 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           </BalChip>
         </div>
       </template>
-      <template v-slot:aprCell="pool">
-        <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
-          <span v-if="hasStakingRewards(pool)" class="text-right">
-            <span v-if="pool.dynamic.boost">
-              {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
+      <template v-slot:volumeCell="pool">
+        <div
+          class="px-6 py-4 -mt-1 flex justify-end font-numeric"
+          :key="columnStates.volume"
+        >
+          <AnimatePresence
+            :isVisible="columnStates.volume !== 'success'"
+            unmountInstantly
+          >
+            <BalLoadingBlock class="h-4 w-12" />
+          </AnimatePresence>
+          <AnimatePresence :isVisible="columnStates.volume === 'success'">
+            <span v-if="!pool?.dynamic?.volume">-</span>
+            <span v-else class="text-right">
+              {{
+                fNum2(pool?.dynamic?.volume, {
+                  style: 'currency',
+                  maximumFractionDigits: 0
+                })
+              }}
             </span>
-            <span v-else-if="!hasBALEmissions(pool)">
-              {{ fNum2(getTotalRewardsAPR(pool), FNumFormats.percent) }}
+          </AnimatePresence>
+        </div>
+      </template>
+      <template v-slot:aprCell="pool">
+        <div
+          class="px-6 py-4 -mt-1 flex justify-end font-numeric"
+          :key="columnStates.aprs"
+        >
+          <AnimatePresence
+            :isVisible="
+              columnStates.aprs !== 'success' || !pool.dynamic?.apr?.total
+            "
+            unmountInstantly
+          >
+            <BalLoadingBlock class="h-4 w-12" />
+          </AnimatePresence>
+          <AnimatePresence
+            :isVisible="
+              columnStates.aprs === 'success' && pool.dynamic?.apr?.total
+            "
+          >
+            <span v-if="hasStakingRewards(pool)" class="text-right">
+              <span v-if="pool.dynamic.boost">
+                {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
+              </span>
+              <span v-else-if="!hasBALEmissions(pool)">
+                {{ fNum2(getTotalRewardsAPR(pool), FNumFormats.percent) }}
+              </span>
+              <span v-else>
+                {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
+                {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
+              </span>
             </span>
             <span v-else>
-              {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
-              {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
+              {{
+                Number(pool?.dynamic?.apr?.pool) > 10000
+                  ? '-'
+                  : fNum2(pool?.dynamic?.apr?.total, FNumFormats.percent)
+              }}
             </span>
-          </span>
-          <span v-if="!pool.dynamic?.apr?.total">
-            -
-          </span>
-          <span v-else>
-            {{
-              Number(pool?.dynamic?.apr?.pool) > 10000
-                ? '-'
-                : fNum2(pool?.dynamic?.apr?.total, FNumFormats.percent)
-            }}
-          </span>
-          <LiquidityAPRTooltip :pool="pool" />
+            <LiquidityAPRTooltip :pool="pool" />
+          </AnimatePresence>
         </div>
       </template>
       <template v-slot:migrateCell="pool">
