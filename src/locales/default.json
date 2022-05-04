@@ -14,7 +14,7 @@
         "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
         "retry-label": "Refresh to try again",
         "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
-        "vebalL2": "Liquidity incentives on Polygon and Arbitrum are paused for 1 week during its upgrade to the veBAL system. L2 incentives will resume on April 28."
+        "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28."
     },
     "allow": "Allow",
     "allowing": "Allowing...",
@@ -438,6 +438,7 @@
     "newWithdrawal": "New withdrawal",
     "next": "Next",
     "noContent": "No content",
+    "noClaimableIncentives": "No claimable incentives",
     "noData": "No data available",
     "noInitLiquidity": "This pool has no initial liquidity",
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
@@ -649,10 +650,10 @@
             "title": "My veBAL",
             "cards": {
                 "myLpToken": {
-                    "label": "My {0}"
+                    "label": "My B-80BAL-20WETH"
                 },
                 "myLockedLpToken": {
-                    "label": "My locked {0}"
+                    "label": "My locked B-80BAL-20WETH"
                 },
                 "lockedEndDate": {
                     "label": "Locked until",
@@ -733,6 +734,10 @@
                     "veBalLockTooShort": {
                         "title": "veBAL not locked for 7 days.",
                         "description": "You must have veBAL locked for more than 7 days to vote on gagues."
+                    },
+                    "veBalVoteOverLimitWarning": {
+                        "title": "You may be wasting your vote: veBAL cap hit",
+                        "description": "Distributions to veBAL holders of weekly emissions are capped at 10%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted."
                     }
                 },
                 "errors": {
