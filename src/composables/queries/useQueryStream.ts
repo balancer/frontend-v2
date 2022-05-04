@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { isArray } from 'lodash';
+import { flatten, isArray } from 'lodash';
 import { QueryKey, QueryOptions } from 'react-query';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useQueries } from 'vue-query';
@@ -30,6 +30,7 @@ type Promises = Record<
     waitFor?: string[];
     streamResponses?: boolean;
     independent?: boolean;
+    skip?: number;
   }
 >;
 
@@ -38,7 +39,9 @@ export default function useQueryStreams(
   promises: Promises,
   options?: QueryOptions
 ) {
-  const result = ref<any>();
+  const result = ref<any[]>([]);
+  const currentPage = ref(1);
+  const currentPageData = computed(() => result.value[result.value.length - 1])
 
   const successStates = ref(
     Object.fromEntries(
@@ -62,13 +65,13 @@ export default function useQueryStreams(
     const template: any = {
       queryFn: async () => {
         if (!query.streamResponses) {
-          return query.queryFn(result, internalData);
+          return query.queryFn(currentPageData, internalData);
         }
         const emitter = promisesEmitter(
-          await query.queryFn(result, internalData)
+          await query.queryFn(currentPageData, internalData)
         );
         emitter.on('resolved', value => {
-          result.value = value;
+          result.value[currentPage.value - 1] = value;
         });
       },
       queryKey: [id, promiseKey, query.dependencies || {}] as any,
@@ -83,14 +86,22 @@ export default function useQueryStreams(
     };
     template.onSuccess = response => {
       if (!query.streamResponses && !query.independent) {
-        result.value = response;
+        console.log(result.value);
+        if (result.value.length < currentPage.value) {
+          result.value.push(response);
+        } else {
+          result.value[currentPage.value - 1] = response;
+        }
       }
       successStates.value[promiseKey] = true;
       internalData.value[promiseKey] = response;
     };
     queries.push(reactive(template));
   });
+
+  /** fetch the queries */
   const responses = useQueries(queries as any);
+
   const dataStates = computed(() => {
     const states: {
       [key: keyof typeof promises]: 'idle' | 'error' | 'loading' | 'success';
@@ -114,10 +125,18 @@ export default function useQueryStreams(
     Object.values(dataStates.value).every(state => state === 'success')
   );
 
+  const _result = computed(() => flatten(result.value));
+
+  function loadMore() {
+    currentPage.value += 1;
+  }
+
   return {
     dataStates,
     isComplete,
     data,
-    result
+    result: _result,
+    currentPage,
+    loadMore
   };
 }
