@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import ClaimProtocolRewardsBtn from '@/components/btns/ClaimProtocolRewardsBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
@@ -130,13 +131,16 @@ const totalClaimValue = computed((): string =>
           {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
         </div>
       </template>
-      <template #claimColumnCell>
+      <template #claimColumnCell="{ token, value }">
         <div class="px-6 py-4">
-          claim btn
+          <ClaimProtocolRewardsBtn
+            :tokenAddress="token.address"
+            :fiatValue="value"
+          />
         </div>
       </template>
       <template #claimTotalCell>
-        a btn
+        <ClaimProtocolRewardsBtn :fiatValue="totalClaimValue" />
       </template>
     </BalTable>
   </BalCard>
