@@ -7,9 +7,10 @@ import { formatUnits } from 'ethers/lib/utils';
 import { computed, watch } from 'vue';
 
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
-import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
-import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
-import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
+import BalClaimsTable, {
+  RewardRow
+} from '@/components/tables/BalClaimsTable.vue';
+import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { isKovan, isL2, isMainnet } from '@/composables/useNetwork';
