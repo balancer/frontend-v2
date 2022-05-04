@@ -54,9 +54,10 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const animateContainer = ref<HTMLElement>();
+    const hasAnimated = ref(false);
 
     onMounted(() => {
-      if (animateContainer.value) {
+      if (animateContainer.value && !hasAnimated.value) {
         anime.set(animateContainer.value, {
           ...props.initial
         });
@@ -66,7 +67,8 @@ export default defineComponent({
     watch(
       () => props.isVisible,
       async () => {
-        if (props.isVisible) {
+        if (props.isVisible && !hasAnimated.value) {
+          hasAnimated.value = true;
           await nextTick();
           if (animateContainer.value) {
             anime.set(animateContainer.value, {
@@ -83,8 +85,8 @@ export default defineComponent({
       // available tick, so it's instant visually but on a tick delay for code
       emit('on-presence', { isCompleted: false });
 
-      setTimeout(
-        () =>
+      setTimeout(() => {
+        if (!hasAnimated.value) {
           anime({
             targets: el,
             ...props.animate,
@@ -93,9 +95,9 @@ export default defineComponent({
               done();
               emit('on-presence', { isCompleted: true });
             }
-          }),
-        0
-      );
+          });
+        }
+      }, 0);
       setTimeout(() => {
         if (animateContainer.value) {
           emit('update-dimensions', {
