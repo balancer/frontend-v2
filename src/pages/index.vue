@@ -104,7 +104,13 @@ function navigateToCreatePool() {
   router.push({ name: 'create-pool' });
 }
 
-const { data, dataStates, result } = useStreamedPoolsQuery();
+const {
+  data,
+  dataStates,
+  result,
+  loadMore,
+  currentPage
+} = useStreamedPoolsQuery();
 
 // const { data, result, dataStates } = useQueryStreams('esk', {
 //   poolNames: {
@@ -145,17 +151,18 @@ const { data, dataStates, result } = useStreamedPoolsQuery();
           dataStates['liquidity'] === 'success'
       "
     > -->
+    bing {{ currentPage }}
     <PoolsTable
-      :key="result"
       v-if="dataStates['basic'] !== 'loading' && !priceQueryLoading"
       :data="result"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="false"
       :isLoadingMore="false"
-      @loadMore="loadMorePools"
+      @loadMore="loadMore"
       :selectedTokens="selectedTokens"
       class="mb-8"
       :hiddenColumns="['migrate', 'stake']"
+      :columnStates="dataStates"
+      :isPaginated="true"
     >
     </PoolsTable>
     <!-- </AnimatePresence> -->
@@ -223,6 +230,7 @@ const { data, dataStates, result } = useStreamedPoolsQuery();
         :selectedTokens="selectedTokens"
         class="mb-8"
         :hiddenColumns="['migrate', 'stake']"
+        :columnStates="dataStates"
       />
 
       <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">

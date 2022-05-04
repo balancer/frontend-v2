@@ -125,7 +125,7 @@ export function getAprRange(apr: string) {
  * emission or if there is a rewards emission
  */
 export function hasStakingRewards(pool: DecoratedPool | undefined) {
-  if (!pool) return false;
+  if (!pool || !pool?.dynamic?.apr?.staking) return false;
   return (
     bnum(pool.dynamic.apr.staking?.BAL?.min || 0).gt(0) ||
     bnum(pool.dynamic.apr.staking?.Rewards || 0).gt(0)

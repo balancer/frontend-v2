@@ -30,14 +30,18 @@ type FilterOptions = {
 
 async function fetchBasicPoolMetadata(
   tokenList: Ref<string[]> = ref([]),
-  filterOptions?: FilterOptions
+  filterOptions?: FilterOptions,
+  currentPage = 0
 ) {
+  const skip =
+    POOLS.Pagination.PerPage * (currentPage - 1 < 0 ? 0 : currentPage - 1);
+  console.log('skip', skip);
   const tokensListFilterKey = filterOptions?.isExactTokensList
     ? 'tokensList'
     : 'tokensList_contains';
   const queryArgs: any = {
     first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
-    skip: 0,
+    skip: skip,
     where: {
       [tokensListFilterKey]: tokenList.value,
       poolType_not_in: POOLS.ExcludedPoolTypes
@@ -188,76 +192,88 @@ export default function useStreamedPoolsQuery(
     return !priceQueryLoading.value;
   });
 
-  const { data, dataStates, result } = useQueryStreams('pools', {
-    basic: {
-      init: true,
-      queryFn: async () => {
-        return fetchBasicPoolMetadata(tokenList, filterOptions);
-      }
-    },
-    excludedAddresses: {
-      independent: true,
-      queryFn: async () => getExcludedAddresses()
-    },
-    protocolFee: {
-      independent: true,
-      queryFn: async () =>
-        balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage()
-    },
-    formatPools: {
-      waitFor: ['excludedAddresses'],
-      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
-        return formatPools(pools.value, data.value.excludedAddresses);
-      }
-    },
-    liquidity: {
-      dependencies: { prices, currency },
-      enabled: isNotLoadingPrices,
-      waitFor: ['basic'],
-      queryFn: async (pools: Ref<Pool[]>) => {
-        return decorateWithTotalLiquidity(pools, prices.value, currency.value);
-      }
-    },
-    timeTravelBlock: {
-      independent: true,
-      queryFn: async () => rpcProviderService.getTimeTravelBlock('24h')
-    },
-    historicalPools: {
-      waitFor: ['timeTravelBlock'],
-      independent: true,
-      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
-        return fetchHistoricalPools(data.value.timeTravelBlock, pools.value);
-      }
-    },
-    volume: {
-      waitFor: ['timeTravelBlock', 'basic', 'historicalPools'],
-      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
-        const withVolumes = await decorateWithVolumes(
-          data.value.historicalPools,
-          pools.value
-        );
-        return withVolumes;
-      }
-    },
-    aprs: {
-      waitFor: ['protocolFee', 'historicalPools'],
-      enabled: isNotLoadingPrices,
-      streamResponses: true,
-      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
-        return await decorateWithAPRs(
-          pools.value,
-          prices.value,
-          currency.value,
-          data.value.historicalPools,
-          data.value.protocolFee
-        );
+  const { data, dataStates, result, currentPage, loadMore } = useQueryStreams(
+    'pools',
+    {
+      basic: {
+        queryFn: async () => {
+          return fetchBasicPoolMetadata(
+            tokenList,
+            filterOptions,
+            currentPage.value
+          );
+        }
+      },
+      excludedAddresses: {
+        independent: true,
+        queryFn: async () => getExcludedAddresses()
+      },
+      protocolFee: {
+        independent: true,
+        queryFn: async () =>
+          balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage()
+      },
+      formatPools: {
+        waitFor: ['excludedAddresses'],
+        queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
+          return formatPools(pools.value, data.value.excludedAddresses);
+        }
+      },
+      liquidity: {
+        dependencies: { prices, currency },
+        enabled: isNotLoadingPrices,
+        waitFor: ['basic'],
+        queryFn: async (pools: Ref<Pool[]>) => {
+          return decorateWithTotalLiquidity(
+            pools,
+            prices.value,
+            currency.value
+          );
+        }
+      },
+      timeTravelBlock: {
+        independent: true,
+        queryFn: async () => rpcProviderService.getTimeTravelBlock('24h')
+      },
+      historicalPools: {
+        waitFor: ['timeTravelBlock'],
+        independent: true,
+        queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
+          return fetchHistoricalPools(data.value.timeTravelBlock, pools.value);
+        }
+      },
+      volume: {
+        waitFor: ['timeTravelBlock', 'basic', 'historicalPools'],
+        queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
+          const withVolumes = await decorateWithVolumes(
+            data.value.historicalPools,
+            pools.value
+          );
+          return withVolumes;
+        }
+      },
+      aprs: {
+        waitFor: ['protocolFee', 'historicalPools'],
+        enabled: isNotLoadingPrices,
+        streamResponses: true,
+        queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
+          return await decorateWithAPRs(
+            pools.value,
+            prices.value,
+            currency.value,
+            data.value.historicalPools,
+            data.value.protocolFee
+          );
+        }
       }
     }
-  });
+  );
 
   return {
     data,
     dataStates,
-    result
+    result,
+    loadMore,
+    currentPage
   };
 }
