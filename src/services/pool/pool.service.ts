@@ -2,12 +2,15 @@ import { getAddress } from 'ethers/lib/utils';
 
 import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
+import { bnSum, bnum } from '@/lib/utils';
+import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import {
   computeAPRsForPool,
   computeTotalAPRForPool,
   currentLiquidityMiningRewards
 } from '@/lib/utils/liquidityMining';
 
+import { aaveService } from '../aave/aave.service';
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import {
   ExcludedAddresses,
@@ -20,10 +23,8 @@ import {
   PoolToken
 } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
-import LiquidityConcern from './concerns/liquidity.concern';
 import { lidoService } from '../lido/lido.service';
-import { aaveService } from '../aave/aave.service';
-import { bnum } from '@/lib/utils';
+import LiquidityConcern from './concerns/liquidity.concern';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 export default class PoolService {
@@ -174,17 +175,43 @@ export default class PoolService {
         protocolFeePercentage
       );
     } else if (isStablePhantom(this.pool.poolType)) {
-      const {
-        total,
-        tokenBreakdown
-      } = await aaveService.calcWeightedSupplyAPRFor(
+      const aaveAPR = await aaveService.calcWeightedSupplyAPRFor(
         this.pool,
         prices,
         currency
       );
+      let { total } = aaveAPR;
+      const { breakdown } = aaveAPR;
+
+      // TODO burn with fire once scalable linear pool support is added.
+      // If USD+ pool, replace aave APR with USD+
+      const usdPlusPools = {
+        '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f':
+          '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425',
+        '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445':
+          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f'
+      };
+      if (Object.keys(usdPlusPools).includes(this.pool.id)) {
+        const linearPoolAddress = usdPlusPools[this.pool.id];
+        const linearPool = this.pool.onchain?.linearPools?.[linearPoolAddress];
+        if (linearPool) {
+          const wrappedToken = linearPool.wrappedToken.address;
+          const weightedAPR = await calcUSDPlusWeightedAPR(
+            this.pool,
+            linearPool,
+            linearPoolAddress,
+            prices,
+            currency
+          );
+
+          breakdown[wrappedToken] = weightedAPR.toString();
+
+          total = bnSum(Object.values(breakdown)).toString();
+        }
+      }
 
       thirdPartyAPR = total;
-      thirdPartyAPRBreakdown = tokenBreakdown;
+      thirdPartyAPRBreakdown = breakdown;
     }
 
     return {

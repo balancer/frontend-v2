@@ -66,7 +66,6 @@ export default class TokenListService {
     );
     const listsWithKey = lists.map((list, i) => [uris[i], list]);
     const validLists = listsWithKey.filter(list => !(list[1] instanceof Error));
-      console.log('dingle', validLists)
     if (validLists.length === 0) {
       throw new Error('Failed to load any TokenLists');
     } else if (lists[0] instanceof Error) {

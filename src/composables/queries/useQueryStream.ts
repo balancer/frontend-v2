@@ -64,7 +64,9 @@ export default function useQueryStreams(
         if (!query.streamResponses) {
           return query.queryFn(result, internalData);
         }
-        const emitter = promisesEmitter(await query.queryFn(result, internalData));
+        const emitter = promisesEmitter(
+          await query.queryFn(result, internalData)
+        );
         emitter.on('resolved', value => {
           result.value = value;
         });

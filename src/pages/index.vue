@@ -145,19 +145,19 @@ const { data, dataStates, result } = useStreamedPoolsQuery();
           dataStates['liquidity'] === 'success'
       "
     > -->
-      <PoolsTable
-        :key="result"
-        v-if="dataStates['basic'] !== 'loading' && !priceQueryLoading"
-        :data="result"
-        :noPoolsLabel="$t('noPoolsFound')"
-        :isPaginated="false"
-        :isLoadingMore="false"
-        @loadMore="loadMorePools"
-        :selectedTokens="selectedTokens"
-        class="mb-8"
-        :hiddenColumns="['migrate', 'stake']"
-      >
-      </PoolsTable>
+    <PoolsTable
+      :key="result"
+      v-if="dataStates['basic'] !== 'loading' && !priceQueryLoading"
+      :data="result"
+      :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="false"
+      :isLoadingMore="false"
+      @loadMore="loadMorePools"
+      :selectedTokens="selectedTokens"
+      class="mb-8"
+      :hiddenColumns="['migrate', 'stake']"
+    >
+    </PoolsTable>
     <!-- </AnimatePresence> -->
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
