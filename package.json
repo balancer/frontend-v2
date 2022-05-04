@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.50.4",
+  "version": "1.52.2",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -16,14 +16,14 @@
     "prepare": "node ./prepare.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
-    "script": "ts-node -O '{\"module\": \"commonjs\"}'"
+    "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts"
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
     "@babel/core": "^7.13.8",
     "@babel/plugin-proposal-numeric-separator": "^7.14.5",
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
-    "@balancer-labs/sdk": "^0.1.7",
+    "@balancer-labs/sdk": "^0.1.8",
     "@balancer-labs/sor": "^1.1.0",
     "@balancer-labs/typechain": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.3",

@@ -14,7 +14,7 @@
         "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
         "retry-label": "Refresh to try again",
         "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →",
-        "vebalL2": "Liquidity incentives on Polygon and Arbitrum are paused for 1 week during its upgrade to the veBAL system. L2 incentives will resume on April 28."
+        "vebalL2": "Staking is live on Polygon and Arbitrum. Incentives for eligible pools will resume on April 28."
     },
     "allow": "Allow",
     "allowing": "Allowing...",
@@ -438,11 +438,14 @@
     "newWithdrawal": "New withdrawal",
     "next": "Next",
     "noContent": "No content",
+    "noClaimableIncentives": "No claimable incentives",
     "noData": "No data available",
     "noInitLiquidity": "This pool has no initial liquidity",
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
     "noInvestmentsPool": "No investments in this pool",
+    "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
+    "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
     "noPoolsFound": "No pools found",
     "noPriceImpact": "Best price",
     "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
@@ -450,6 +453,7 @@
     "noRecentActivity": "Your recent activity will appear here…",
     "noResults": "No results.",
     "noSwapsPool": "No swaps in this pool.",
+    "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
     "numberOfPools": "Number of pools",
     "notAvailable": "N/A",
     "oneDay": "1D",
@@ -646,10 +650,10 @@
             "title": "My veBAL",
             "cards": {
                 "myLpToken": {
-                    "label": "My {0}"
+                    "label": "My B-80BAL-20WETH"
                 },
                 "myLockedLpToken": {
-                    "label": "My locked {0}"
+                    "label": "My locked B-80BAL-20WETH"
                 },
                 "lockedEndDate": {
                     "label": "Locked until",
@@ -737,6 +741,10 @@
                     "veBalLockTooShort": {
                         "title": "veBAL not locked for 7 days.",
                         "description": "You must have veBAL locked for more than 7 days to vote on gagues."
+                    },
+                    "veBalVoteOverLimitWarning": {
+                        "title": "You may be wasting your vote: veBAL cap hit",
+                        "description": "Distributions to veBAL holders of weekly emissions are capped at 10%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted."
                     }
                 },
                 "errors": {
@@ -911,11 +919,11 @@
     "thirdPartyRewards": {
         "apr": {
             "steth": "stETH staking rewards APR",
-            "aaveBoosted": "Aave boosted APR"
+            "boosted": "Boosted APR"
         },
         "fiat": {
             "steth": "stETH staking rewards",
-            "aaveBoosted": "Aave boosted rewards"
+            "boosted": "Boosted rewards"
         }
     },
     "threeMonths": "3M",

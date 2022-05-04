@@ -70,9 +70,11 @@ export default class BlocknativeProvider {
       // gas price is in gwei
       if (gasPrice != null) {
         return {
-          price: gasPrice.price * GWEI_UNIT,
-          maxFeePerGas: gasPrice.maxFeePerGas * GWEI_UNIT,
-          maxPriorityFeePerGas: gasPrice.maxPriorityFeePerGas * GWEI_UNIT
+          price: Math.round(gasPrice.price * GWEI_UNIT),
+          maxFeePerGas: Math.round(gasPrice.maxFeePerGas * GWEI_UNIT),
+          maxPriorityFeePerGas: Math.round(
+            gasPrice.maxPriorityFeePerGas * GWEI_UNIT
+          )
         };
       }
     } catch (e) {

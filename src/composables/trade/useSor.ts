@@ -1,7 +1,11 @@
 import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
+import {
+  AddressZero,
+  WeiPerEther as ONE,
+  Zero
+} from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
@@ -16,6 +20,7 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnum, scale } from '@/lib/utils';
 import {
@@ -186,8 +191,7 @@ export default function useSor({
     if (!sorManager) {
       return;
     }
-
-    if (sorReturn.value.hasSwaps) {
+    if (sorReturn.value.hasSwaps && !confirming.value) {
       const { result } = sorReturn.value;
 
       const swapType: SwapType = exactIn.value
@@ -200,13 +204,34 @@ export default function useSor({
         assets: result.tokenAddresses
       });
 
+      if (result !== sorReturn.value.result) {
+        // sorReturn was updated while we were querying, abort to not show stale data.
+        return;
+      }
+
       if (deltas.length >= 2) {
         const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
         const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
+        const tokenInAddress =
+          tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
+            ? AddressZero
+            : tokenInAddressInput.value;
+        const tokenOutAddress =
+          tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS
+            ? AddressZero
+            : tokenOutAddressInput.value;
+
+        const tokenInPosition = result.tokenAddresses.indexOf(
+          tokenInAddress.toLowerCase()
+        );
+        const tokenOutPosition = result.tokenAddresses.indexOf(
+          tokenOutAddress.toLowerCase()
+        );
+
         const tokenInAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[0])
+            bnum(deltas[tokenInPosition])
               .abs()
               .toString(),
             tokenInDecimals
@@ -215,7 +240,7 @@ export default function useSor({
 
         const tokenOutAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[deltas.length - 1])
+            bnum(deltas[tokenOutPosition])
               .abs()
               .toString(),
             tokenOutDecimals
@@ -239,6 +264,14 @@ export default function useSor({
     }
   }
 
+  function resetInputAmounts(amount: string): void {
+    tokenInAmountInput.value = amount;
+    tokenOutAmountInput.value = amount;
+    priceImpact.value = 0;
+    sorReturn.value.hasSwaps = false;
+    sorReturn.value.returnAmount = Zero;
+  }
+
   async function handleAmountChange(): Promise<void> {
     const amount = exactIn.value
       ? tokenInAmountInput.value
@@ -246,11 +279,7 @@ export default function useSor({
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || amount === '0';
     if (zeroValueTrade) {
-      tokenInAmountInput.value = amount;
-      tokenOutAmountInput.value = amount;
-      priceImpact.value = 0;
-      sorReturn.value.hasSwaps = false;
-      sorReturn.value.returnAmount = Zero;
+      resetInputAmounts(amount);
       return;
     }
 
@@ -681,7 +710,7 @@ export default function useSor({
     resetState,
     confirming,
     updateTradeAmounts,
-
+    resetInputAmounts,
     // For Tests
     setSwapCost
   };
