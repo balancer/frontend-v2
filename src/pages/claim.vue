@@ -100,7 +100,7 @@ const balRewardsData = computed((): RewardRow[] => {
 
 const protocolRewardsData = computed(() => {
   if (!isWalletReady.value || appLoading.value) return [];
-  const data = Object.keys(protocolRewards.value).map(tokenAddress => {
+  return Object.keys(protocolRewards.value).map(tokenAddress => {
     const token = getToken(tokenAddress);
     const amount = formatUnits(
       protocolRewards.value[tokenAddress],
@@ -113,9 +113,6 @@ const protocolRewardsData = computed(() => {
       value: toFiat(amount, tokenAddress)
     };
   });
-  console.log('data', data);
-
-  return data;
 });
 
 const gaugesWithRewards = computed((): Gauge[] => {
