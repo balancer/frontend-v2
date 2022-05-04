@@ -99,7 +99,25 @@ const balRewardsData = computed((): RewardRow[] => {
   }, []);
 });
 
-// const protocolRewardsData = computed((): )
+const protocolRewardsData = computed(() => {
+  if (!isWalletReady.value || appLoading.value) return [];
+  const data = Object.keys(protocolRewards.value).map(tokenAddress => {
+    const token = getToken(tokenAddress);
+    const amount = formatUnits(
+      protocolRewards.value[tokenAddress],
+      token.decimals
+    );
+
+    return {
+      token,
+      amount,
+      value: toFiat(amount, tokenAddress)
+    };
+  });
+  console.log('data', data);
+
+  return data;
+});
 
 const gaugesWithRewards = computed((): Gauge[] => {
   return gauges.value.filter(gauge => gauge.rewardTokens.length > 0);
@@ -223,6 +241,9 @@ watch(gaugePools, async newPools => {
           :rewardsData="balRewardsData"
           :isLoading="isClaimsLoading || appLoading"
         />
+
+        <h3 class="text-xl mt-8">{{ $t('protocolEarnings') }}</h3>
+        {{ protocolRewardsData }}
 
         <template
           v-if="!isClaimsLoading && !appLoading && gaugesWithRewards.length > 0"

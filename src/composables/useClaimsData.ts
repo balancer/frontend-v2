@@ -1,6 +1,7 @@
 import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
 
+import { POOLS } from '@/constants/pools';
+import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -8,6 +9,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
+import usePoolQuery from './queries/usePoolQuery';
 import useProtocolRewardsQuery from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
 
@@ -31,6 +33,8 @@ export function useClaimsData() {
   const protocolRewards = computed(
     (): BalanceMap => protocolRewardsQuery.data.value || {}
   );
+
+  const bbAUsdQuery = usePoolQuery(POOLS.IdsMap.bbAaveUSD);
 
   // Fetch subgraph liquidity gauges
   const subgraphGaugesQuery = useGaugesQuery();
