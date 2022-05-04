@@ -1,5 +1,5 @@
 import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 
 import {
   KOVAN_VOTING_GAUGES,
@@ -43,9 +43,14 @@ export default function useVotingGauges() {
   });
 
   const now = ref(Date.now());
-  setInterval(() => {
+  const nowInterval = setInterval(() => {
     now.value = Date.now();
   }, 1000);
+
+  onUnmounted(() => {
+    if (!nowInterval) return;
+    clearInterval(nowInterval);
+  });
 
   const votingPeriodEnd = computed<number[]>(() => {
     const periodEnd = getVotePeriodEndTime();
