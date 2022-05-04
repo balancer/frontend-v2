@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
+import { Contract } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { computed, onBeforeMount, watch } from 'vue';
 
@@ -17,9 +18,11 @@ import { addressFor, isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
+import StablePhantomPoolABI from '@/lib/abi/StablePhantomPool.json';
 import { bnum } from '@/lib/utils';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -175,6 +178,24 @@ function gaugeTitle(pool: GaugePool): string {
 }
 
 /**
+ * @summary Fetches bb-a-USD rate as an appoximation of USD price.
+ */
+async function getBBaUSDPrice() {
+  const bbaUSDAddress = addressFor(POOLS.IdsMap?.bbAaveUSD || '');
+
+  if (!isL2.value && bbaUSDAddress) {
+    const bbaUSDContract = new Contract(
+      bbaUSDAddress,
+      StablePhantomPoolABI,
+      rpcProviderService.jsonProvider
+    );
+    const price = await bbaUSDContract.getRate();
+    const normalizedPrice = bnum(formatUnits(price, 18)).toNumber();
+    injectPrices({ [bbaUSDAddress]: normalizedPrice });
+  }
+}
+
+/**
  * WATCHERS
  */
 watch(gauges, async newGauges => {
@@ -188,9 +209,8 @@ watch(gaugePools, async newPools => {
 /**
  * LIFECYCLE
  */
-onBeforeMount(() => {
-  const bbaUSDAddress = addressFor(POOLS.IdsMap?.bbAaveUSD || '');
-  if (bbaUSDAddress) injectPrices({ [bbaUSDAddress]: 1.01 });
+onBeforeMount(async () => {
+  await getBBaUSDPrice();
 });
 </script>
 
@@ -246,7 +266,7 @@ onBeforeMount(() => {
           :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
         />
 
-        <h3 class="text-xl mt-8">
+        <h3 class="text-xl mt-8 mb-3">
           {{ $t('protocolEarnings') }}
         </h3>
         <ProtocolRewardsTable
