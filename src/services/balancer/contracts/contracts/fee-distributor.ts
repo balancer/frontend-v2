@@ -1,3 +1,4 @@
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from 'ethers';
 import { zipObject } from 'lodash';
 
@@ -36,6 +37,35 @@ export class FeeDistributor {
     const stringBalances = balances.map(balance => balance.toString());
 
     return zipObject(this.claimableTokens, stringBalances);
+  }
+
+  /**
+   * @summary Claim all protocol reward token balances.
+   */
+  public async claimBalances(
+    userAddress: string
+  ): Promise<TransactionResponse> {
+    return await this.web3.sendTransaction(
+      this.address,
+      this.abi,
+      'claimTokens',
+      [userAddress, this.claimableTokens]
+    );
+  }
+
+  /**
+   * @summary Claim specific protocol reward token balance.
+   */
+  public async claimBalance(
+    userAddress: string,
+    tokenAddress: string
+  ): Promise<TransactionResponse> {
+    return await this.web3.sendTransaction(
+      this.address,
+      this.abi,
+      'claimToken',
+      [userAddress, tokenAddress]
+    );
   }
 }
 

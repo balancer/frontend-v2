@@ -1,23 +1,22 @@
 <script lang="ts" setup>
-/**
- * Claim Page
- */
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from 'ethers/lib/utils';
-import { computed, watch } from 'vue';
+import { computed, onBeforeMount, watch } from 'vue';
 
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import BalClaimsTable, {
   RewardRow
 } from '@/components/tables/BalClaimsTable.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
+import ProtocolRewardsTable from '@/components/tables/ProtocolRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { isL2 } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
-import { isStableLike } from '@/composables/usePool';
+import { addressFor, isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import useTokens from '@/composables/useTokens';
+import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
@@ -34,7 +33,7 @@ type GaugeTable = {
 /**
  * COMPOSABLES
  */
-const { injectTokens, getToken } = useTokens();
+const { injectTokens, injectPrices, getToken } = useTokens();
 const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
@@ -185,6 +184,14 @@ watch(gauges, async newGauges => {
 watch(gaugePools, async newPools => {
   if (newPools) await injectPoolTokens(newPools);
 });
+
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(() => {
+  const bbaUSDAddress = addressFor(POOLS.IdsMap?.bbAaveUSD || '');
+  if (bbaUSDAddress) injectPrices({ [bbaUSDAddress]: 1.01 });
+});
 </script>
 
 <template>
@@ -236,6 +243,14 @@ watch(gaugePools, async newPools => {
         </div>
         <BalClaimsTable
           :rewardsData="balRewardsData"
+          :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
+        />
+
+        <h3 class="text-xl mt-8">
+          {{ $t('protocolEarnings') }}
+        </h3>
+        <ProtocolRewardsTable
+          :rewardsData="protocolRewardsData"
           :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
         />
       </template>
