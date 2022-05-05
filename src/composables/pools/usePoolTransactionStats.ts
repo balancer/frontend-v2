@@ -6,7 +6,11 @@ import { useI18n } from 'vue-i18n';
 // import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool, PoolActivity } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  PoolActivity,
+  PoolSwap
+} from '@/services/balancer/subgraph/types';
 
 import useNumbers from '../useNumbers';
 
@@ -15,10 +19,15 @@ const TRANSACTION_NUM_STYLE = {
   abbreviate: true
 };
 
+enum TransactionPeriod {
+  DAY = '(24h)',
+  WEEK = '(7d)'
+}
+
 export default function usePoolTransactionStats(
   pool: ComputedRef<FullPool>,
-  poolActivities?: ComputedRef<PoolActivity[]>,
-  poolSwaps?: ComputedRef<PoolActivity[]>
+  poolInvestTransactions?: ComputedRef<PoolActivity[]>,
+  poolTradeTransactions?: ComputedRef<PoolSwap[]>
 ) {
   const { tokens, priceFor } = useTokens();
   const { fNum2 } = useNumbers();
@@ -46,57 +55,57 @@ export default function usePoolTransactionStats(
   }
 
   const investTransactionStats = computed(() => {
-    if (!pool.value || !poolActivities?.value) {
+    if (!pool.value || !poolInvestTransactions?.value) {
       return [];
     }
 
-    const poolInvestmentsLength = poolActivities.value.length;
+    const poolInvestmentsLength = poolInvestTransactions.value.length;
 
     if (poolInvestmentsLength === 0) {
       return [];
     }
 
     let lastTransactions: PoolActivity[] = [];
-    let period = '(24h)';
-    const lastDayInvests = poolActivities.value.filter(
+    let period = TransactionPeriod.DAY;
+    const lastDayInvests = poolInvestTransactions.value.filter(
       invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 1
     );
 
     if (lastDayInvests.length >= 3) {
       lastTransactions = lastDayInvests;
     } else {
-      period = '(7d)';
-      lastTransactions = poolActivities.value.filter(
-        invets => differenceInDays(new Date(), new Date(invets.timestamp)) <= 7
+      period = TransactionPeriod.WEEK;
+      lastTransactions = poolInvestTransactions.value.filter(
+        invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 7
       );
     }
 
     if (lastTransactions.length === 0) {
       return [];
     }
+
     const lastInvestments = lastTransactions.filter(
       transaction => transaction.type === 'Join'
     );
 
-    console.log('lastDayInvests', lastTransactions);
-
     // Investments net TVL value
-    let netTvl = 0;
-    lastTransactions.forEach(invest =>
-      invest.type === 'Join'
-        ? (netTvl += getPoolInvestmentValue(invest.amounts))
-        : (netTvl -= getPoolInvestmentValue(invest.amounts))
+    const netTvl = lastTransactions.reduce(
+      (total, invest) =>
+        invest.type === 'Join'
+          ? (total += getPoolInvestmentValue(invest.amounts))
+          : (total -= getPoolInvestmentValue(invest.amounts)),
+      0
     );
 
     // Largest investment value
     const largestInvestment =
       lastInvestments.length > 0
-        ? lastInvestments.reduce((prev, current) => {
-            return getPoolInvestmentValue(prev.amounts) >
-              getPoolInvestmentValue(current.amounts)
+        ? lastInvestments.reduce((prev, current) =>
+            getPoolInvestmentValue(prev.amounts) >
+            getPoolInvestmentValue(current.amounts)
               ? prev
-              : current;
-          })
+              : current
+          )
         : null;
 
     const largestValue = largestInvestment
@@ -142,13 +151,92 @@ export default function usePoolTransactionStats(
     ];
   });
 
-  const tradeTransactionsStats = computed(() => {
-    return [];
+  const tradeTransactionStats = computed(() => {
+    if (!pool.value || !poolTradeTransactions?.value) {
+      return [];
+    }
+
+    if (poolTradeTransactions.value.length === 0) {
+      return [];
+    }
+
+    let lastTrades: PoolSwap[];
+    let period = TransactionPeriod.DAY;
+    const lastDayTrades = poolTradeTransactions.value.filter(
+      invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 1
+    );
+
+    if (lastDayTrades.length >= 3) {
+      lastTrades = lastDayTrades;
+    } else {
+      period = TransactionPeriod.WEEK;
+      lastTrades = poolTradeTransactions.value.filter(
+        invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 25
+      );
+    }
+
+    if (lastTrades.length === 0) {
+      return [];
+    }
+
+    // Trades volume
+    const tradeSum = lastTrades.reduce(
+      (total, current) => (total += Number(current.tokenAmountOut)),
+      0
+    );
+
+    // Largest trade value
+    const largestTrade = lastTrades.reduce((prev, current) =>
+      Number(prev.tokenAmountOut) > Number(current.tokenAmountOut)
+        ? prev
+        : current
+    );
+
+    // Trades average value
+    const avgValue =
+      lastTrades.reduce(
+        (total, current) => total + Number(current.tokenAmountOut),
+        0
+      ) / lastTrades.length;
+
+    return [
+      {
+        label: t('poolTransactionStats.trade.volume', { period }),
+        value: fNum2(
+          bnum(priceFor(largestTrade.tokenOut))
+            .times(tradeSum)
+            .toNumber(),
+          TRANSACTION_NUM_STYLE
+        )
+      },
+      {
+        label: t('poolTransactionStats.trade.largest', { period }),
+        value: fNum2(
+          bnum(priceFor(largestTrade.tokenOut))
+            .times(largestTrade.tokenAmountOut)
+            .toNumber(),
+          TRANSACTION_NUM_STYLE
+        )
+      },
+      {
+        label: t('poolTransactionStats.trade.ave', { period }),
+        value: fNum2(
+          bnum(priceFor(largestTrade.tokenOut))
+            .times(avgValue)
+            .toNumber(),
+          TRANSACTION_NUM_STYLE
+        )
+      },
+      {
+        label: t('poolTransactionStats.trade.total', { period }),
+        value: fNum2(lastTrades.length, { abbreviate: true })
+      }
+    ];
   });
 
   return {
     getPoolInvestmentValue,
     investTransactionStats,
-    tradeTransactionsStats
+    tradeTransactionStats
   };
 }

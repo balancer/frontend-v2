@@ -171,6 +171,12 @@ const swapRows = computed<SwapRow[]>(() =>
         </div>
       </template>
 
+      <template v-slot:valueCell="action">
+        <div class="px-6 py-4 flex justify-end font-numeric">
+          {{ action.formattedValue }}
+        </div>
+      </template>
+
       <template v-slot:detailsCell="action">
         <div class="px-6 py-4 flex -mt-1 items-center flex-wrap">
           <div class="token-item">
@@ -186,12 +192,6 @@ const swapRows = computed<SwapRow[]>(() =>
               fNum2(action.tokenAmountOut, FNumFormats.token)
             }}</span>
           </div>
-        </div>
-      </template>
-
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end font-numeric">
-          {{ action.formattedValue }}
         </div>
       </template>
 

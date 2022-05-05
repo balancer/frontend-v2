@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 import PoolStatInfo from '@/components/contextual/pages/pool/PoolStatInfo.vue';
+import usePoolTransactionStats from '@/composables/pools/usePoolTransactionStats';
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
@@ -20,7 +21,7 @@ type Props = {
 /**
  * PROPS
  */
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   loading: false
 });
 
@@ -53,6 +54,11 @@ const poolSwapsIsFetchingNextPage = computed(
   () => poolSwapsQuery.isFetchingNextPage?.value
 );
 
+const { tradeTransactionStats } = usePoolTransactionStats(
+  computed(() => props.pool),
+  undefined,
+  poolSwaps
+);
 /**
  * METHODS
  */
@@ -63,7 +69,7 @@ function loadMorePoolSwaps() {
 
 <template>
   <h4 v-text="$t('Trades')" class="px-4 lg:px-0 mb-5" />
-  <!-- <PoolStatInfo :pool-swaps="poolSwaps" /> -->
+  <PoolStatInfo :stats="tradeTransactionStats" />
 
   <Table
     :tokens="pool ? pool.tokensList : []"

@@ -6,7 +6,7 @@ import { ColumnDefinition, Data, Sticky } from './BalTable.vue';
 
 type Props = {
   columns: ColumnDefinition<any>[];
-  onRowClick: (data: any) => void;
+  onRowClick?: (data: any) => void;
   data: Ref<any>;
   link?: any;
   sticky?: Sticky;

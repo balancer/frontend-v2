@@ -29,11 +29,11 @@ const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
 </script>
 
 <template>
-  <InvestmentTransactions :pool="pool" :loading="loading" />
+  <InvestmentTransactions :pool="pool" :loading="loading"/>
 
-  <!-- <TradeTransactions
+  <TradeTransactions
     v-if="!isStablePhantomPool"
     :pool="pool"
     :loading="loading"
-  /> -->
+  />
 </template>
