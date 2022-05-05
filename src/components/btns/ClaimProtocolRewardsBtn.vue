@@ -49,5 +49,6 @@ function claimTx() {
     action="claim"
     :summary="`${t('claim')} ${fNum2(fiatValue, FNumFormats.fiat)}`"
     :confirmingLabel="$t('claiming')"
+    v-bind="$attrs"
   />
 </template>

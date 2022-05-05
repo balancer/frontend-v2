@@ -60,7 +60,6 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     id: 'amount',
     align: 'right',
     width: 150,
-    totalsCell: 'totalAmountCell',
     accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)}`
   },
   {
@@ -95,6 +94,10 @@ const totalClaimValue = computed((): string =>
     .reduce((acc, row) => acc.plus(row.value), bnum('0'))
     .toString()
 );
+
+const hasClaimableBalance = computed((): boolean =>
+  bnum(totalClaimAmount.value).gt(0)
+);
 </script>
 
 <template>
@@ -121,26 +124,26 @@ const totalClaimValue = computed((): string =>
           {{ token.symbol }}
         </div>
       </template>
-      <template #totalAmountCell>
-        <div class="flex justify-end">
-          {{ fNum2(totalClaimAmount, FNumFormats.token) }}
-        </div>
-      </template>
+
       <template #totalValueCell>
         <div class="flex justify-end">
           {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
         </div>
       </template>
-      <template #claimColumnCell="{ token, value }">
+      <template #claimColumnCell="{ token, amount, value }">
         <div class="px-6 py-4">
           <ClaimProtocolRewardsBtn
             :tokenAddress="token.address"
             :fiatValue="value"
+            :disabled="bnum(amount).eq(0)"
           />
         </div>
       </template>
       <template #claimTotalCell>
-        <ClaimProtocolRewardsBtn :fiatValue="totalClaimValue" />
+        <ClaimProtocolRewardsBtn
+          :fiatValue="totalClaimValue"
+          :disabled="!hasClaimableBalance"
+        />
       </template>
     </BalTable>
   </BalCard>
