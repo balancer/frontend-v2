@@ -109,7 +109,8 @@ const {
   dataStates,
   result,
   loadMore,
-  currentPage
+  currentPage,
+  isLoadingMore
 } = useStreamedPoolsQuery();
 
 // const { data, result, dataStates } = useQueryStreams('esk', {
@@ -151,12 +152,15 @@ const {
           dataStates['liquidity'] === 'success'
       "
     > -->
-    bing {{ currentPage }}
+    bing {{ isLoadingMore }}
     <PoolsTable
-      v-if="dataStates['basic'] !== 'loading' && !priceQueryLoading"
+      v-if="
+        (dataStates['basic'] !== 'loading' || isLoadingMore) &&
+          !priceQueryLoading
+      "
       :data="result"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isLoadingMore="false"
+      :isLoadingMore="isLoadingMore"
       @loadMore="loadMore"
       :selectedTokens="selectedTokens"
       class="mb-8"

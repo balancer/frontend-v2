@@ -335,7 +335,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
         >
           <AnimatePresence
             :isVisible="
-              columnStates.aprs !== 'success' || !pool.dynamic?.apr?.total
+              columnStates.aprs !== 'success' && !pool.dynamic?.apr?.total
             "
             unmountInstantly
           >

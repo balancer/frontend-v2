@@ -1,6 +1,7 @@
+import { getAddress } from '@ethersproject/address';
 import EventEmitter from 'events';
-import { flatten, isArray } from 'lodash';
-import { QueryKey, QueryOptions } from 'react-query';
+import { flatten, isArray, last, mapValues, nth } from 'lodash';
+import { QueryKey } from 'react-query';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useQueries } from 'vue-query';
 
@@ -20,6 +21,8 @@ export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
   return emitter;
 }
 
+type QueryType = 'independent' | 'page_dependent' | 'normal';
+
 type Promises = Record<
   string,
   {
@@ -29,19 +32,18 @@ type Promises = Record<
     enabled?: Ref<boolean>;
     waitFor?: string[];
     streamResponses?: boolean;
-    independent?: boolean;
+    type?: QueryType;
     skip?: number;
   }
 >;
 
-export default function useQueryStreams(
-  id: string,
-  promises: Promises,
-  options?: QueryOptions
-) {
+export default function useQueryStreams(id: string, promises: Promises) {
   const result = ref<any[]>([]);
   const currentPage = ref(1);
-  const currentPageData = computed(() => result.value[result.value.length - 1])
+  const currentPageData = computed(() => {
+    console.log('TES', result.value[result.value.length - 1].map(r => r.tokenAddresses));
+    return result.value[result.value.length - 1];
+  });
 
   const successStates = ref(
     Object.fromEntries(
@@ -62,19 +64,45 @@ export default function useQueryStreams(
 
   Object.keys(promises).forEach(promiseKey => {
     const query = promises[promiseKey];
+
+    // the initial query is the base query to use for pagination purposes,
+    // so it needs to be responsible for the fetching of extra paginated data
+    // if there is any. to do so we need to make it refetch on page changes
+    // so we have to add a dependency to the query which tracks the page
+    const dependencies =
+      query.init || query.type === 'page_dependent'
+        ? reactive(Object.assign({}, query.dependencies, { currentPage }))
+        : query.dependencies || {};
+
     const template: any = {
       queryFn: async () => {
+        // if not streaming responses, simply return the data from the function
         if (!query.streamResponses) {
-          return query.queryFn(currentPageData, internalData);
+          return query.queryFn(currentPageData, internalData, currentPage, successStates);
+        }
+        // otherwise setup an even emitter that emits a 'resolved' event
+        // whenever a promises within a list of promises resolves, the
+        // queryFn is an async fn so we have to await it to get the correct
+        // return type even though it is a list of promises. (Otherwise it'll
+        // be a Promise<Promise[]>, we need a Promise[])
+        if (promiseKey === 'aprs') {
+          console.log(
+            'finna call with',
+            (currentPageData.value || []).map(pool => pool.tokenAddresses)
+          );
         }
         const emitter = promisesEmitter(
-          await query.queryFn(currentPageData, internalData)
+          await query.queryFn(currentPageData, internalData, currentPage, successStates)
         );
+        // as each promise in the list is resolved, update the existing value
+        // the event emitter is responsible for returning the 'whole' list
+        // but with the modified item inside of it. this ensures that no
+        // wacky splicing happens and its as simple as a replace
         emitter.on('resolved', value => {
           result.value[currentPage.value - 1] = value;
         });
       },
-      queryKey: [id, promiseKey, query.dependencies || {}] as any,
+      queryKey: [id, promiseKey, dependencies] as any,
       enabled: computed(
         () =>
           (query.enabled?.value ?? true) &&
@@ -85,8 +113,10 @@ export default function useQueryStreams(
       refetchOnWindowFocus: false
     };
     template.onSuccess = response => {
-      if (!query.streamResponses && !query.independent) {
-        console.log(result.value);
+      if (
+        !query.streamResponses &&
+        !['independent', 'page_dependent'].includes(query.type || '')
+      ) {
         if (result.value.length < currentPage.value) {
           result.value.push(response);
         } else {
@@ -103,40 +133,88 @@ export default function useQueryStreams(
   const responses = useQueries(queries as any);
 
   const dataStates = computed(() => {
-    const states: {
+    type DataState = {
       [key: keyof typeof promises]: 'idle' | 'error' | 'loading' | 'success';
-    } = {};
-    Object.keys(promises).forEach((promiseKey, i) => {
-      states[promiseKey] = responses[i].status;
-    });
-    return states;
+    };
+    const statesPerPage: [number, DataState][] = [];
+
+    for (let i = 0; i < currentPage.value; i++) {
+      const states: {
+        [key: keyof typeof promises]: 'idle' | 'error' | 'loading' | 'success';
+      } = {};
+      Object.keys(promises).forEach((promiseKey, j) => {
+        states[promiseKey] = responses[j].status;
+        statesPerPage.push([i, states]);
+      });
+    }
+    return Object.fromEntries(statesPerPage);
   });
 
   const data = computed(() => {
+    const pages: Record<string, any>[] = [];
     const data: {
       [key: keyof typeof promises]: any;
     } = {};
     Object.keys(promises).forEach((promiseKey, i) => {
       data[promiseKey] = responses[i].data;
     });
+    pages.push(data);
     return data;
   });
+
   const isComplete = computed(() =>
-    Object.values(dataStates.value).every(state => state === 'success')
+    Object.values(last(Object.values(dataStates.value)) || []).every(
+      state => state === 'success'
+    )
   );
 
   const _result = computed(() => flatten(result.value));
+  const currentDataStates = computed(
+    () => last(Object.values(dataStates.value)) || {}
+  );
+  const isLoadingMore = computed(() => {
+    if (Object.values(dataStates.value).length > 1) {
+      if (
+        Object.values(nth(Object.values(dataStates.value), -2) || {}).some(
+          state => state === 'success'
+        )
+      ) {
+        if (
+          Object.values(last(Object.values(dataStates.value)) || {}).some(
+            state => state === 'loading'
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  });
 
   function loadMore() {
     currentPage.value += 1;
+    successStates.value = mapValues(successStates.value, (state, key) => {
+      if (
+        ['independent', 'paged_independent'].includes(promises[key].type || '')
+      ) {
+        return true;
+      }
+      return false;
+    });
   }
 
+  // watch(successStates, () => {
+  //   console.log('succ', JSON.stringify(successStates.value));
+  // })
+
   return {
-    dataStates,
+    dataStates: currentDataStates,
     isComplete,
     data,
     result: _result,
     currentPage,
+    isLoadingMore,
+    successStates,
     loadMore
   };
 }
