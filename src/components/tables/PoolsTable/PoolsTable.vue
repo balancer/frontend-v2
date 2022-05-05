@@ -343,7 +343,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           </AnimatePresence>
           <AnimatePresence
             :isVisible="
-              columnStates.aprs === 'success' && pool.dynamic?.apr?.total
+              columnStates.aprs === 'success' && !!pool.dynamic?.apr?.total
             "
           >
             <span v-if="hasStakingRewards(pool)" class="text-right">

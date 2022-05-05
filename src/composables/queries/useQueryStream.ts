@@ -40,10 +40,23 @@ type Promises = Record<
 export default function useQueryStreams(id: string, promises: Promises) {
   const result = ref<any[]>([]);
   const currentPage = ref(1);
-  const currentPageData = computed(() => {
-    console.log('TES', result.value[result.value.length - 1].map(r => r.tokenAddresses));
-    return result.value[result.value.length - 1];
+  const currentPageData = ref(result.value[result.value.length - 1]);
+
+  watch(currentPageData, () => {
+    console.log(
+      'curr page',
+      (currentPageData.value || []).map(pool => pool.tokenAddresses)
+    );
   });
+  // watch(
+  //   result,
+  //   () => {
+  //     currentPageData.value = result.value[result.value.length - 1];
+  //   },
+  //   {
+  //     deep: true
+  //   }
+  // );
 
   const successStates = ref(
     Object.fromEntries(
@@ -78,21 +91,27 @@ export default function useQueryStreams(id: string, promises: Promises) {
       queryFn: async () => {
         // if not streaming responses, simply return the data from the function
         if (!query.streamResponses) {
-          return query.queryFn(currentPageData, internalData, currentPage, successStates);
+          const res = await query.queryFn(
+            currentPageData,
+            internalData,
+            currentPage,
+            successStates
+          );
+
+          return res;
         }
         // otherwise setup an even emitter that emits a 'resolved' event
         // whenever a promises within a list of promises resolves, the
         // queryFn is an async fn so we have to await it to get the correct
         // return type even though it is a list of promises. (Otherwise it'll
         // be a Promise<Promise[]>, we need a Promise[])
-        if (promiseKey === 'aprs') {
-          console.log(
-            'finna call with',
-            (currentPageData.value || []).map(pool => pool.tokenAddresses)
-          );
-        }
         const emitter = promisesEmitter(
-          await query.queryFn(currentPageData, internalData, currentPage, successStates)
+          await query.queryFn(
+            currentPageData,
+            internalData,
+            currentPage,
+            successStates
+          )
         );
         // as each promise in the list is resolved, update the existing value
         // the event emitter is responsible for returning the 'whole' list
@@ -110,7 +129,8 @@ export default function useQueryStreams(id: string, promises: Promises) {
             otherQueryId => successStates.value[otherQueryId] === true
           )
       ),
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      // staleTime: 120000
     };
     template.onSuccess = response => {
       if (
@@ -119,8 +139,15 @@ export default function useQueryStreams(id: string, promises: Promises) {
       ) {
         if (result.value.length < currentPage.value) {
           result.value.push(response);
+          currentPageData.value = response;
         } else {
           result.value[currentPage.value - 1] = response;
+          console.log(
+            'oos',
+            promiseKey,
+            response.map(pool => pool.tokenAddresses)
+          );
+          currentPageData.value = response;
         }
       }
       successStates.value[promiseKey] = true;

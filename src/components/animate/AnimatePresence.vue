@@ -54,10 +54,9 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const animateContainer = ref<HTMLElement>();
-    const hasAnimated = ref(false);
 
     onMounted(() => {
-      if (animateContainer.value && !hasAnimated.value) {
+      if (animateContainer.value) {
         anime.set(animateContainer.value, {
           ...props.initial
         });
@@ -67,8 +66,7 @@ export default defineComponent({
     watch(
       () => props.isVisible,
       async () => {
-        if (props.isVisible && !hasAnimated.value) {
-          hasAnimated.value = true;
+        if (props.isVisible) {
           await nextTick();
           if (animateContainer.value) {
             anime.set(animateContainer.value, {
@@ -86,17 +84,15 @@ export default defineComponent({
       emit('on-presence', { isCompleted: false });
 
       setTimeout(() => {
-        if (!hasAnimated.value) {
-          anime({
-            targets: el,
-            ...props.animate,
-            easing: 'spring(0.2, 80, 10, 0)',
-            complete: () => {
-              done();
-              emit('on-presence', { isCompleted: true });
-            }
-          });
-        }
+        anime({
+          targets: el,
+          ...props.animate,
+          easing: 'spring(0.2, 80, 10, 0)',
+          complete: () => {
+            done();
+            emit('on-presence', { isCompleted: true });
+          }
+        });
       }, 0);
       setTimeout(() => {
         if (animateContainer.value) {

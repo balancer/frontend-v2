@@ -173,6 +173,13 @@ async function decorateWithAPRs(
     );
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
 
+    console.log({
+      liquidityMiningAPR,
+      hasLiquidityMiningRewards,
+      fees,
+      poolAPR
+    })
+
     const totalApr = bnum(poolAPR)
       .plus(liquidityMiningAPR)
       .plus(thirdPartyAPR);
@@ -203,7 +210,7 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    successStates,
+    successStates
   } = useQueryStreams('pools', {
     basic: {
       init: true,
@@ -225,10 +232,8 @@ export default function useStreamedPoolsQuery(
         balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage()
     },
     formatPools: {
-      waitFor: ['excludedAddresses', 'basic'],
-      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>, _, successStates) => {
-        console.log('succ f', JSON.stringify(successStates.value));
-
+      waitFor: ['excludedAddresses', 'liquidity'],
+      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
         return formatPools(pools.value, data.value.excludedAddresses);
       }
     },
@@ -262,16 +267,10 @@ export default function useStreamedPoolsQuery(
       }
     },
     aprs: {
-      waitFor: ['protocolFee', 'historicalPools', 'formatPools', 'basic'],
+      waitFor: ['protocolFee', 'historicalPools', 'formatPools'],
       enabled: isNotLoadingPrices,
       streamResponses: true,
-      queryFn: async (
-        pools: Ref<DecoratedPool[]>,
-        data: Ref<any>,
-        _,
-        successStates
-      ) => {
-        console.log('succ a', JSON.stringify(successStates.value));
+      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
         return await decorateWithAPRs(
           pools.value,
           prices.value,
@@ -284,8 +283,8 @@ export default function useStreamedPoolsQuery(
   });
 
   watch(successStates, () => {
-    console.log('succ', JSON.stringify(successStates.value))
-  })
+    console.log('succ', JSON.stringify(successStates.value));
+  });
 
   return {
     data,
