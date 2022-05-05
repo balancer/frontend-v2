@@ -70,7 +70,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     sortable: false
   },
   {
-    name: t('tradeValue'),
+    name: t('value'),
     id: 'value',
     accessor: 'value',
     Cell: 'valueCell',
@@ -80,7 +80,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     width: 125
   },
   {
-    name: t('details'),
+    name: t('tradeDetails'),
     id: 'details',
     accessor: '',
     Cell: 'detailsCell',
@@ -159,14 +159,15 @@ const swapRows = computed<SwapRow[]>(() =>
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <!-- <BalAvatar
-              v-if="action.ensName && action.ensAvatar"
-              :name="action.ensName"
-              :avatar="action.ensAvatar"
-              class="mr-2"
-            /> -->
+            <template v-if="action.ensName && action.ensAvatar">
+              <BalAsset class="mr-2" :address="action.ensAvatar" :size="36" />
+              <span> {{ action.ensName }}</span>
+            </template>
 
-            <span> {{ shortenLabel(action.tx) }}</span>
+            <template v-else>
+              <BalAsset class="mr-2" :address="action.tx" :size="36" />
+              <span> {{ shortenLabel(action.tx) }}</span>
+            </template>
           </div>
         </div>
       </template>

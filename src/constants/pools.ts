@@ -46,7 +46,7 @@ const POOLS_KOVAN: Pools = {
       '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701'
   },
   Pagination: {
-    PerPage: 5
+    PerPage: 10
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',

@@ -97,10 +97,7 @@ const poolActivitiesQuery =
       v-text="$t('poolTransactions.tabs.allInvestments')"
       class="px-4 lg:px-0 mb-5"
     />
-    <PoolStatInfo
-      v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-      :stats="investTransactionStats"
-    />
+    <PoolStatInfo :stats="investTransactionStats" />
     <div
       class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
     >
