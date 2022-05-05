@@ -112,7 +112,7 @@ async function initTx() {
   <BalBtn
     :loadingLabel="loadingLabel"
     :loading="isWaitingOnWallet || isConfirming"
-    :disabled="isMismatchedNetwork"
+    :disabled="$attrs.disabled || isMismatchedNetwork"
     @click.stop="initTx"
   />
 </template>

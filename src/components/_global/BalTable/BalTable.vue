@@ -291,12 +291,12 @@ watch(
         :style="{ width: `${placeholderBlockWidth}px` }"
       />
       <div
-        v-if="!isLoading && !tableData.length"
+        v-else-if="!isLoading && !tableData.length"
         class="max-w-full bg-white dark:bg-gray-850 row-bg h-40 flex items-center justify-center text-gray-500"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
-      <table class="w-full table-fixed whitespace-normal">
+      <table v-else class="w-full table-fixed whitespace-normal">
         <colgroup>
           <col
             v-for="column in filteredColumns"

@@ -1,25 +1,30 @@
 <script lang="ts" setup>
-/**
- * Claim Page
- */
 import { getAddress } from '@ethersproject/address';
+import { Contract } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
-import { computed, watch } from 'vue';
+import { computed, onBeforeMount, watch } from 'vue';
 
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
-import { RewardRow } from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
-import BalClaimsTable from '@/components/tables/BalClaimsTable/BalClaimsTable.vue';
-import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable/GaugeRewardsTable.vue';
+import BalClaimsTable, {
+  RewardRow
+} from '@/components/tables/BalClaimsTable.vue';
+import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
+import ProtocolRewardsTable, {
+  ProtocolRewardRow
+} from '@/components/tables/ProtocolRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
 import { isL2 } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
-import { isStableLike } from '@/composables/usePool';
+import { addressFor, isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import useTokens from '@/composables/useTokens';
+import { POOLS } from '@/constants/pools';
+import StablePhantomPoolABI from '@/lib/abi/StablePhantomPool.json';
 import { bnum } from '@/lib/utils';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -33,12 +38,17 @@ type GaugeTable = {
 /**
  * COMPOSABLES
  */
-const { injectTokens, getToken } = useTokens();
+const { injectTokens, injectPrices, getToken } = useTokens();
 const { balToken } = useTokenHelpers();
 const { toFiat, fNum2 } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { appLoading } = useApp();
-const { gauges, gaugePools, queriesLoading } = useClaimsData();
+const {
+  gauges,
+  gaugePools,
+  protocolRewards,
+  isLoading: isClaimsLoading
+} = useClaimsData();
 
 /**
  * STATE
@@ -88,6 +98,23 @@ const balRewardsData = computed((): RewardRow[] => {
 
     return arr;
   }, []);
+});
+
+const protocolRewardsData = computed((): ProtocolRewardRow[] => {
+  if (!isWalletReady.value || appLoading.value) return [];
+  return Object.keys(protocolRewards.value).map(tokenAddress => {
+    const token = getToken(tokenAddress);
+    const amount = formatUnits(
+      protocolRewards.value[tokenAddress],
+      token.decimals
+    );
+
+    return {
+      token,
+      amount,
+      value: toFiat(amount, tokenAddress)
+    };
+  });
 });
 
 const gaugesWithRewards = computed((): Gauge[] => {
@@ -150,6 +177,24 @@ function gaugeTitle(pool: GaugePool): string {
 }
 
 /**
+ * @summary Fetches bb-a-USD rate as an appoximation of USD price.
+ */
+async function getBBaUSDPrice() {
+  const bbaUSDAddress = addressFor(POOLS.IdsMap?.bbAaveUSD || '');
+
+  if (!isL2.value && bbaUSDAddress) {
+    const bbaUSDContract = new Contract(
+      bbaUSDAddress,
+      StablePhantomPoolABI,
+      rpcProviderService.jsonProvider
+    );
+    const price = await bbaUSDContract.getRate();
+    const normalizedPrice = bnum(formatUnits(price, 18)).toNumber();
+    injectPrices({ [bbaUSDAddress]: normalizedPrice });
+  }
+}
+
+/**
  * WATCHERS
  */
 watch(gauges, async newGauges => {
@@ -158,6 +203,13 @@ watch(gauges, async newGauges => {
 
 watch(gaugePools, async newPools => {
   if (newPools) await injectPoolTokens(newPools);
+});
+
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(async () => {
+  await getBBaUSDPrice();
 });
 </script>
 
@@ -210,7 +262,15 @@ watch(gaugePools, async newPools => {
         </div>
         <BalClaimsTable
           :rewardsData="balRewardsData"
-          :isLoading="(queriesLoading || appLoading) && isWalletReady"
+          :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
+        />
+
+        <h3 class="text-xl mt-8 mb-3">
+          {{ $t('protocolEarnings') }}
+        </h3>
+        <ProtocolRewardsTable
+          :rewardsData="protocolRewardsData"
+          :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
         />
       </template>
 
@@ -218,10 +278,12 @@ watch(gaugePools, async newPools => {
         {{ $t('otherTokenEarnings') }}
       </h3>
       <BalLoadingBlock
-        v-if="(appLoading || queriesLoading) && isWalletReady"
+        v-if="(appLoading || isClaimsLoading) && isWalletReady"
         class="mt-6 mb-2 h-56"
       />
-      <template v-if="!queriesLoading && !appLoading && gaugeTables.length > 0">
+      <template
+        v-if="!isClaimsLoading && !appLoading && gaugeTables.length > 0"
+      >
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="flex mt-4">
             <h4 class="text-base mb-2">
@@ -230,13 +292,13 @@ watch(gaugePools, async newPools => {
           </div>
           <GaugeRewardsTable
             :gauge="gauge"
-            :isLoading="queriesLoading || appLoading"
+            :isLoading="isClaimsLoading || appLoading"
           />
         </div>
       </template>
       <BalBlankSlate
         v-else-if="
-          (!queriesLoading && !appLoading && gaugeTables.length === 0) ||
+          (!isClaimsLoading && !appLoading && gaugeTables.length === 0) ||
             !isWalletReady
         "
         class="mt-6"
