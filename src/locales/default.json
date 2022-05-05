@@ -535,6 +535,20 @@
             }
         }
     },
+    "poolTransactionStats": {
+        "trade": {
+            "volume": "Volume {period}",
+            "largest": "Largest trade {period}",
+            "ave": "Ave. trade {period}",
+            "total": "Total trades {period}"
+        },
+        "investment": {
+            "netTvl": "Net TVL {period}",
+            "largest": "Largest investment {period}",
+            "ave": "Ave. investment {period}",
+            "net": "Net investments {period}"
+        }
+    },
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "popularBases": "Popular:",

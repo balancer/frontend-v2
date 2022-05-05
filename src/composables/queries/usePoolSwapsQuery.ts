@@ -39,7 +39,7 @@ export default function usePoolSwapsQuery(
         subgraphQuery
       )
     });
-    console.log('poolSwaps', poolSwaps);
+
     return {
       poolSwaps,
       skip:

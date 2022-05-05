@@ -21,7 +21,7 @@ export default class PoolSwaps {
     const { swaps } = await this.service.client.get(query);
     console.log('swaps', swaps);
     const ens = await web3Service.getEnsName(swaps[0].tx);
-    console.log('ens', ens);
+
     const ensNames = await Promise.all(
       swaps.map(
         async (poolSwap: PoolSwap) => await web3Service.getEnsName(poolSwap.tx)
@@ -33,8 +33,6 @@ export default class PoolSwaps {
           await web3Service.getEnsAvatar(poolSwap.tx)
       )
     );
-    console.log('ensNames', ensNames);
-    console.log('ensAvatars', ensAvatars);
 
     swaps.forEach((swap: PoolSwap, index: number) => {
       swap.ensName = ensNames[index] as string;

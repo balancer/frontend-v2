@@ -79,14 +79,6 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     sortable: false
   },
   {
-    name: t('details'),
-    id: 'details',
-    accessor: '',
-    Cell: 'detailsCell',
-    width: 325,
-    sortable: false
-  },
-  {
     name: t('value'),
     id: 'value',
     accessor: 'value',
@@ -95,6 +87,14 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     className: 'align-center w-40',
     sortKey: pool => pool.value,
     width: 125
+  },
+  {
+    name: t('details'),
+    id: 'details',
+    accessor: '',
+    Cell: 'detailsCell',
+    width: 325,
+    sortable: false
   },
   {
     name: t('time'),
