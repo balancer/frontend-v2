@@ -472,7 +472,7 @@
         "claim": {
             "title": "Claim your liquidity mining incentives",
             "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
-            "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, you just need to invest in these pools to receive incentives. No staking is required for now.",
+            "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, invest in these pools and stake the LP tokens to receive incentives.",
             "transitionInfo": {
                 "title": "veBAL liquidity mining incentives are live!",
                 "titleL2": "Transition to new veBAL tokenomics",
