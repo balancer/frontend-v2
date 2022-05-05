@@ -11,7 +11,7 @@
           growContent
         >
           <p>
-            {{ $t('aboutElementFinance') }}
+            {{ $t('featuredProtocols.Element') }}
           </p>
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>

@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
     "accept": "Accept",
     "account": "Account",
     "action": "Action",
@@ -245,6 +244,13 @@
     "exploreBalancerV1Pools": "Explore V1 pools ->",
     "explorePools": "Explore pools",
     "featuredProtocol": "Featured ecosystem protocol",
+    "featuredProtocols": { 
+        "title": "Featured ecosystem protocols",
+        "Copper": "A platform for open, transparent, and user-friendly participation in Liquidity Bootstrapping Pools (LBPs). Built on top of the Balancer protocol.",
+        "Element": "An open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
+        "Sense": "A fixed-income protocol with a capital efficient AMM. It allows users to manage risk through fixed rates and future yield trading on existing yield bearing-assets.",
+        "Tracer": "Perpetual Pools. Leveraged tokens, no liquidations, no margins, tradeable anywhere. Utilizes Balancer for aggregated liquidty to settle markets on Tracer."        
+    }, 
     "fees": "fees",
     "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
     "feesTime": "Fees ({0})",
