@@ -1,4 +1,5 @@
-import { computed } from 'vue';
+import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
+import { computed, onUnmounted, ref } from 'vue';
 
 import {
   KOVAN_VOTING_GAUGES,
@@ -41,10 +42,47 @@ export default function useVotingGauges() {
     return votesRemaining;
   });
 
+  const now = ref(Date.now());
+  const nowInterval = setInterval(() => {
+    now.value = Date.now();
+  }, 1000);
+
+  onUnmounted(() => {
+    if (!nowInterval) return;
+    clearInterval(nowInterval);
+  });
+
+  const votingPeriodEnd = computed<number[]>(() => {
+    const periodEnd = getVotePeriodEndTime();
+    const interval: Interval = { start: now.value, end: periodEnd };
+    const timeUntilEnd: Duration = intervalToDuration(interval);
+    const formattedTime = [
+      (timeUntilEnd.days || 0) % 7,
+      timeUntilEnd.hours || 0,
+      timeUntilEnd.minutes || 0,
+      timeUntilEnd.seconds || 0
+    ];
+    return formattedTime;
+  });
+
+  function getVotePeriodEndTime(): number {
+    const n = nextThursday(new Date());
+    const epochEndTime = Date.UTC(
+      n.getFullYear(),
+      n.getMonth(),
+      n.getDate(),
+      0,
+      0,
+      0
+    );
+    return epochEndTime;
+  }
+
   return {
     isLoading,
     votingGauges,
     unallocatedVotes,
+    votingPeriodEnd,
     refetch: gaugeVotesQuery.refetch
   };
 }

@@ -89,7 +89,6 @@ export class LiquidityGauge {
 
   async rewardData(rewardTokenAddress: string) {
     const response = this.instance.reward_data(getAddress(rewardTokenAddress));
-    console.log('esh', response);
     return response;
   }
 

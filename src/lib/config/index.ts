@@ -60,6 +60,7 @@ export interface Config {
     tokenAdmin: string;
     veDelegationProxy: string;
     veBALHelpers: string;
+    feeDistributor: string;
   };
   keys: {
     infura: string;
