@@ -145,6 +145,10 @@ export default function useNumbers() {
           formatterOptions.maximumFractionDigits - 2;
       }
       formatterOptions.useGrouping = false;
+
+      if (number > 0 && number < 0.01) {
+        return '< 0.01%';
+      }
     }
 
     if (options.style === 'currency') {
@@ -162,10 +166,6 @@ export default function useNumbers() {
 
     if (!options.fixedFormat && number < 1e-6) {
       number = 0;
-    }
-
-    if (number > 0 && number < 0.0001) {
-      return '< 0.01%';
     }
 
     const formatter = new Intl.NumberFormat('en-US', formatterOptions);
