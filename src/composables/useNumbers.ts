@@ -164,6 +164,10 @@ export default function useNumbers() {
       number = 0;
     }
 
+    if (number > 0 && number < 0.0001) {
+      return '< 0.01%';
+    }
+
     const formatter = new Intl.NumberFormat('en-US', formatterOptions);
     let formattedNumber = formatter.format(number);
 
