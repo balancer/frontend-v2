@@ -57,6 +57,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
+  (e: 'error'): void;
 }>();
 
 /**
@@ -216,6 +217,12 @@ onBeforeMount(() => {
 watch(blockNumber, async () => {
   if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
     await props.math.getSwap();
+    if (
+      batchSwap.value &&
+      (batchSwap.value.assets.length === 0 ||
+        batchSwap.value.swaps.length === 0)
+    )
+      emit('error');
   }
 });
 </script>
