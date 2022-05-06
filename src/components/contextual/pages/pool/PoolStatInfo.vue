@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * TYPES
+ */
 type Props = {
   stats: {
     label: string;
@@ -6,6 +9,9 @@ type Props = {
   };
 };
 
+/**
+ * PROPS
+ */
 defineProps<Props>();
 </script>
 

@@ -89,7 +89,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     width: 125
   },
   {
-    name: t('details'),
+    name: t('tokens'),
     id: 'details',
     accessor: '',
     Cell: 'detailsCell',

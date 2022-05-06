@@ -16,7 +16,8 @@ import useNumbers from '../useNumbers';
 
 const TRANSACTION_NUM_STYLE = {
   style: 'currency',
-  abbreviate: true
+  abbreviate: true,
+  fixedFormat: true
 };
 
 enum TransactionPeriod {
@@ -68,7 +69,7 @@ export default function usePoolTransactionStats(
     let lastTransactions: PoolActivity[] = [];
     let period = TransactionPeriod.DAY;
     const lastDayInvests = poolInvestTransactions.value.filter(
-      invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 1
+      invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 1
     );
 
     if (lastDayInvests.length >= 3) {
@@ -76,7 +77,7 @@ export default function usePoolTransactionStats(
     } else {
       period = TransactionPeriod.WEEK;
       lastTransactions = poolInvestTransactions.value.filter(
-        invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 7
+        invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 7
       );
     }
 
@@ -163,7 +164,7 @@ export default function usePoolTransactionStats(
     let lastTrades: PoolSwap[];
     let period = TransactionPeriod.DAY;
     const lastDayTrades = poolTradeTransactions.value.filter(
-      invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 1
+      invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 1
     );
 
     if (lastDayTrades.length >= 3) {
@@ -171,7 +172,7 @@ export default function usePoolTransactionStats(
     } else {
       period = TransactionPeriod.WEEK;
       lastTrades = poolTradeTransactions.value.filter(
-        invest => differenceInDays(new Date(), new Date(invest.timestamp)) <= 25
+        invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 7
       );
     }
 
