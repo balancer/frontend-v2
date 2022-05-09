@@ -181,7 +181,7 @@ onMounted(() => {
  * COMPUTED
  */
 const unpinnedData = computed(() => {
-  if (!props.pin) return props.data;
+  if (!props.pin) return tableData.value;
   return (tableData.value || []).filter(
     data => !props.pin?.pinnedData.includes(data[props.pin.pinOn])
   );
