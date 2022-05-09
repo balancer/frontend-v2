@@ -84,7 +84,6 @@ const id = route.params.id as string;
 /**
  * QUERIES
  */
-
 const poolActivitiesQuery =
   activeTab.value === PoolTransactionsTab.ALL_ACTIVITY
     ? usePoolActivitiesQuery(id)

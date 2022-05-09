@@ -3,7 +3,6 @@ import differenceInDays from 'date-fns/differenceInDays';
 import { computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-// import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import {
@@ -12,7 +11,7 @@ import {
   PoolSwap
 } from '@/services/balancer/subgraph/types';
 
-import useNumbers from '../useNumbers';
+import useNumbers, { FNumFormats } from '../useNumbers';
 
 const TRANSACTION_NUM_STYLE = {
   style: 'currency',
@@ -55,6 +54,21 @@ export default function usePoolTransactionStats(
     return total.toNumber();
   }
 
+  function getPoolInvestmentDetails(amounts: PoolActivity['amounts']) {
+    return amounts.map((amount, index) => {
+      const address = getAddress(pool.value.tokensList[index]);
+      const token = tokens.value[address];
+      const symbol = token ? token.symbol : address;
+      const amountNumber = parseFloat(amount);
+
+      return {
+        address,
+        symbol,
+        amount: fNum2(amountNumber, FNumFormats.token)
+      };
+    });
+  }
+
   const investTransactionStats = computed(() => {
     if (!pool.value || !poolInvestTransactions?.value) {
       return [];
@@ -72,6 +86,7 @@ export default function usePoolTransactionStats(
       invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 1
     );
 
+    // If there are less than 3 invests during last day, use the last week invests.
     if (lastDayInvests.length >= 3) {
       lastTransactions = lastDayInvests;
     } else {
@@ -167,6 +182,7 @@ export default function usePoolTransactionStats(
       invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 1
     );
 
+    // If there are less than 3 trades during last day, use the last week trades.
     if (lastDayTrades.length >= 3) {
       lastTrades = lastDayTrades;
     } else {
@@ -237,6 +253,7 @@ export default function usePoolTransactionStats(
 
   return {
     getPoolInvestmentValue,
+    getPoolInvestmentDetails,
     investTransactionStats,
     tradeTransactionStats
   };
