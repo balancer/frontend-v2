@@ -54,15 +54,11 @@ const votingPeriodEnd = computed<number[]>(() => {
   return formattedTime;
 });
 
-const votingPeriodLastHour = computed<number[]>(() => {
+const votingPeriodLastHour = computed((): boolean => {
   const periodEnd = getVotePeriodEndTime();
   const interval: Interval = { start: now.value, end: periodEnd };
   const timeUntilEnd: Duration = intervalToDuration(interval);
-  if ((timeUntilEnd.days || 0) < 1 && (timeUntilEnd.hours || 0) < 1) {
-    return true;
-  } else {
-    return false;
-  }
+  return (timeUntilEnd.days || 0) < 1 && (timeUntilEnd.hours || 0) < 1;
 });
 
 const unallocatedVoteWeight = computed(() => {

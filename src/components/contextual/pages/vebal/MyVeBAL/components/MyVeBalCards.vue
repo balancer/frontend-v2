@@ -234,24 +234,24 @@ const cards = computed(() => {
   transform: scale(1.25);
 }
 
-.plus-circle:hover /deep/ svg.feather-plus-circle,
-.plus-circle:focus /deep/ svg.feather-plus-circle {
+.plus-circle:hover :deep(svg.feather-plus-circle),
+.plus-circle:focus :deep(svg.feather-plus-circle) {
   @apply transition-all text-white;
   fill: #384aff; /* blue-500 */
 }
 
-.plus-circle:hover /deep/ svg.feather-plus-circle circle,
-.plus-circle:focus /deep/ svg.feather-plus-circle circle {
+.plus-circle:hover :deep(svg.feather-plus-circle circle),
+.plus-circle:focus :deep(svg.feather-plus-circle circle) {
   color: #384aff; /* blue-500 */
 }
 
-.minus-circle:hover /deep/ svg.feather-minus-circle,
-.minus-circle:focus /deep/ svg.feather-minus-circle {
+.minus-circle:hover :deep(svg.feather-minus-circle),
+.minus-circle:focus :deep(svg.feather-minus-circle) {
   @apply transition-all text-white;
   fill: rgba(239, 68, 68); /* red-500 */
 }
 
-.minus-circle:hover /deep/ svg.feather-minus-circle circle,
+.minus-circle:hover :deep(svg.feather-minus-circle circle),
 .minus-circle {
   color: rgba(239, 68, 68); /* red-500 */
 }
