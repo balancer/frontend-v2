@@ -159,7 +159,7 @@ export default function useUserStakingData(
     isRefetching: isRefetchingStakedShares,
     refetch: refetchStakedShares
   } = useQuery<string>(
-    ['staking', 'pool', 'shares'],
+    ['staking', 'pool', 'shares', { poolAddress }],
     () => getStakedShares(),
     reactive({
       enabled: isStakedSharesQueryEnabled,

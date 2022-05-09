@@ -118,6 +118,8 @@ describe('useNumbers', () => {
 
     it('Should give the same result as a formatted percentage', () => {
       testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+
         const format1 = fNum(testNumber, null, { format: '0.00%' });
         const format2 = fNum2(testNumber, {
           style: 'percent',
@@ -187,6 +189,8 @@ describe('useNumbers', () => {
 
     it('Should return the same result as percent preset', () => {
       testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+
         const format1 = fNum(testNumber, 'percent');
         const format2 = fNum2(testNumber, {
           style: 'percent',
@@ -199,6 +203,8 @@ describe('useNumbers', () => {
 
     it('Should return the same result as percent_lg preset', () => {
       testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+
         const format1 = fNum(testNumber, 'percent_lg');
         const format2 = fNum2(testNumber, {
           style: 'percent',
@@ -210,6 +216,8 @@ describe('useNumbers', () => {
 
     it('Should return the same result as percent_variable preset', () => {
       testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+
         const format1 = fNum(testNumber, 'percent_variable');
         const format2 = fNum2(testNumber, {
           style: 'percent',
@@ -222,6 +230,8 @@ describe('useNumbers', () => {
 
     it('Should return the same result as a formatted percentage unit', () => {
       testNumbers.forEach(testNumber => {
+        if (Number(testNumber) > 0 && Number(testNumber) < 0.01) return;
+
         const format1 = fNum(testNumber, null, { format: '0.0%' });
         const format2 = fNum2(testNumber, {
           style: 'percent',
@@ -270,6 +280,11 @@ describe('useNumbers', () => {
         fixedFormat: true
       });
       expect(formattedNumber).toEqual(testNumber);
+    });
+
+    it('Should return < 0.01% if percent is between 0 and 0.01', () => {
+      const formattedNumber = fNum2('0.001', FNumFormats.percent);
+      expect(formattedNumber).toEqual('< 0.01%');
     });
   });
 
