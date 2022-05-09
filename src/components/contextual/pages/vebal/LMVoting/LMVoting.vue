@@ -135,7 +135,7 @@ function getVotePeriodEndTime(): number {
       <p class="">{{ $t('veBAL.liquidityMining.description') }}</p>
     </div>
     <div class="flex gap-2 xs:gap-3">
-      <BalCard shadow="none">
+      <BalCard shadow="none" class="min-w-max md:w-48">
         <div class="flex items-center">
           <p class="text-sm text-gray-500 inline mr-1">
             My unallocated votes
@@ -169,7 +169,7 @@ function getVotePeriodEndTime(): number {
           class="relative top-0.5"
         />
       </BalCard>
-      <BalCard shadow="none">
+      <BalCard shadow="none" class="min-w-max md:w-48">
         <div class="flex items-center">
           <p
             :class="{ 'text-orange-500 font-medium': votingPeriodLastHour }"
