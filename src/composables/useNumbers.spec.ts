@@ -283,7 +283,7 @@ describe('useNumbers', () => {
     });
 
     it('Should return < 0.01% if percent is between 0 and 0.01', () => {
-      const formattedNumber = fNum2('0.001', FNumFormats.percent);
+      const formattedNumber = fNum2('0.00009', FNumFormats.percent);
       expect(formattedNumber).toEqual('< 0.01%');
     });
   });
