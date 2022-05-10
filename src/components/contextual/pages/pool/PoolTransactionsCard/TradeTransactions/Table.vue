@@ -109,7 +109,10 @@ const swapRows = computed<SwapRow[]>(() =>
           tokenAmountIn,
           tokenAmountOut,
           timestamp,
-          tx
+          tx,
+          userAddress,
+          ensName,
+          ensAvatar
         }) => {
           const value = bnum(priceFor(tokenOut))
             .times(tokenAmountOut)
@@ -126,6 +129,9 @@ const swapRows = computed<SwapRow[]>(() =>
             tokenAmountIn,
             tokenAmountOut,
             timestamp,
+            userAddress: userAddress.id,
+            ensName,
+            ensAvatar,
             formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
             tx
           };
@@ -159,15 +165,14 @@ const swapRows = computed<SwapRow[]>(() =>
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <template v-if="action.ensName && action.ensAvatar">
-              <BalAsset class="mr-2" :address="action.ensAvatar" :size="36" />
-              <span> {{ action.ensName }}</span>
-            </template>
-
-            <template v-else>
-              <BalAsset class="mr-2" :address="action.tx" :size="36" />
-              <span> {{ shortenLabel(action.tx) }}</span>
-            </template>
+            <BalAsset
+              class="mr-2 flex-shrink-0"
+              :address="action.ensAvatar || action.userAddress"
+              :size="36"
+            />
+            <span class="truncate">
+              {{ action.ensName || shortenLabel(action.userAddress) }}
+            </span>
           </div>
         </div>
       </template>

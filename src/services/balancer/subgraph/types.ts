@@ -191,6 +191,10 @@ export interface PoolActivity {
   type: PoolActivityType;
 }
 
+export interface PoolSwapUserAddress {
+  id: string;
+}
+
 export interface PoolSwap {
   tokenIn: string;
   tokenOut: string;
@@ -198,6 +202,7 @@ export interface PoolSwap {
   tokenAmountOut: string;
   timestamp: number;
   tx: string;
+  userAddress: PoolSwapUserAddress;
   ensName?: string | null;
   ensAvatar?: string | null;
 }

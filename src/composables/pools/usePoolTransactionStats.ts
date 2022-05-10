@@ -179,7 +179,7 @@ export default function usePoolTransactionStats(
     let lastTrades: PoolSwap[];
     let period = TransactionPeriod.DAY;
     const lastDayTrades = poolTradeTransactions.value.filter(
-      invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 1
+      trade => differenceInDays(new Date(), new Date(trade.timestamp)) < 1
     );
 
     // If there are less than 3 trades during last day, use the last week trades.
@@ -188,7 +188,7 @@ export default function usePoolTransactionStats(
     } else {
       period = TransactionPeriod.WEEK;
       lastTrades = poolTradeTransactions.value.filter(
-        invest => differenceInDays(new Date(), new Date(invest.timestamp)) < 7
+        trade => differenceInDays(new Date(), new Date(trade.timestamp)) < 7
       );
     }
 

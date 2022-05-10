@@ -22,7 +22,7 @@ export default class PoolSwaps {
 
     const ensNames = await Promise.all(
       swaps.map(
-        async (poolSwap: PoolSwap) => await web3Service.getEnsName(poolSwap.tx)
+        async (poolSwap: PoolSwap) => await web3Service.getEnsName(poolSwap.userAddress.id)
       )
     );
 
@@ -32,7 +32,7 @@ export default class PoolSwaps {
           return null;
         }
 
-        return await web3Service.getEnsAvatar(poolSwap.tx);
+        return await web3Service.getEnsAvatar(poolSwap.userAddress.id);
       })
     );
 
