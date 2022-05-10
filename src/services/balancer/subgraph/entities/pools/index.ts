@@ -10,11 +10,6 @@ import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import {
-  computeAPRsForPool,
-  computeTotalAPRForPool,
-  currentLiquidityMiningRewards
-} from '@/lib/utils/liquidityMining';
 import { aaveService } from '@/services/aave/aave.service';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
@@ -38,8 +33,6 @@ import {
   removeAddressesFromTotalLiquidity
 } from './helpers';
 import queryBuilder from './query';
-
-const IS_LIQUIDITY_MINING_ENABLED = true;
 
 type ExcludedAddressesResponse = Record<Network, Record<string, string[]>>;
 
@@ -163,11 +156,6 @@ export default class Pools {
       const poolAPR = this.calcAPR(pool, pastPool, protocolFeePercentage);
 
       const fees = this.calcFees(pool, pastPool);
-      const { liquidityMiningBreakdown } = this.calcLiquidityMiningAPR(
-        pool,
-        prices,
-        currency
-      );
       const {
         thirdPartyAPR,
         thirdPartyAPRBreakdown
@@ -180,15 +168,8 @@ export default class Pools {
 
       const balAPR = gaugeBALAprs[pool.id];
       const rewardTokenAPR = gaugeRewardTokenAprs[pool.id];
+      const totalAPR = this.calcTotalAPR(poolAPR, thirdPartyAPR);
 
-      // TODO - We might need to include staking + LM APRs for L2s?
-      const networkAdjustedLMApr = '0';
-
-      const totalAPR = this.calcTotalAPR(
-        poolAPR,
-        networkAdjustedLMApr,
-        thirdPartyAPR
-      );
       const isNewPool = this.isNewPool(pool);
 
       return {
@@ -201,8 +182,6 @@ export default class Pools {
             pool: poolAPR,
             thirdParty: thirdPartyAPR,
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
-            liquidityMining: networkAdjustedLMApr,
-            liquidityMiningBreakdown,
             staking: {
               BAL: balAPR,
               Rewards: rewardTokenAPR
@@ -293,42 +272,6 @@ export default class Pools {
       .toString();
   }
 
-  private calcLiquidityMiningAPR(
-    pool: Pool,
-    prices: TokenPrices,
-    currency: FiatCurrency
-  ) {
-    let liquidityMiningAPR = '0';
-    let liquidityMiningBreakdown = {};
-
-    const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
-
-    const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
-      ? !!liquidityMiningRewards
-      : false;
-
-    if (hasLiquidityMiningRewards) {
-      liquidityMiningAPR = computeTotalAPRForPool(
-        liquidityMiningRewards,
-        prices,
-        currency,
-        pool.miningTotalLiquidity
-      );
-      liquidityMiningBreakdown = computeAPRsForPool(
-        liquidityMiningRewards,
-        prices,
-        currency,
-        pool.miningTotalLiquidity
-      );
-    }
-
-    return {
-      hasLiquidityMiningRewards,
-      liquidityMiningAPR,
-      liquidityMiningBreakdown
-    };
-  }
-
   /**
    * Fetch additional APRs not covered by pool swap fees and
    * liquidity minning rewards. These APRs may require 3rd party
@@ -394,13 +337,8 @@ export default class Pools {
     };
   }
 
-  private calcTotalAPR(
-    poolAPR: string,
-    liquidityMiningAPR: string,
-    thirdPartyAPR: string
-  ): string {
+  private calcTotalAPR(poolAPR: string, thirdPartyAPR: string): string {
     return bnum(poolAPR)
-      .plus(liquidityMiningAPR)
       .plus(thirdPartyAPR)
       .toString();
   }

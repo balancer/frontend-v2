@@ -70,8 +70,6 @@ const decoratedPool: DecoratedPool = {
       pool: '0.03875806812649627',
       thirdParty: '0',
       thirdPartyBreakdown: {},
-      liquidityMining: '0',
-      liquidityMiningBreakdown: {},
       total: '0.03875806812649627'
     },
     isNewPool: false
