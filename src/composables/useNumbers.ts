@@ -146,7 +146,7 @@ export default function useNumbers() {
       }
       formatterOptions.useGrouping = false;
 
-      if (number > 0 && number < 0.01) {
+      if (number > 0 && number < 0.0001) {
         return '< 0.01%';
       }
     }
