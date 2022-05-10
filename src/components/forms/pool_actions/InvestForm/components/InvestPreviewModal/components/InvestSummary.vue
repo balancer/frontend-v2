@@ -33,46 +33,51 @@ const { fNum2 } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();
 const { getTokens } = useTokens();
+
 /**
  * COMPUTED
  */
 const totalWeeklyYield = computed((): string =>
   weeklyYieldForAPR(props.pool.dynamic.apr.total)
 );
+
 const swapFeeWeeklyYield = computed((): string =>
   weeklyYieldForAPR(props.pool.dynamic.apr.pool)
 );
+
 const thirdPartyWeeklyYield = computed((): string =>
   weeklyYieldForAPR(props.pool.dynamic.apr.thirdParty)
 );
-const lmWeeklyYield = computed((): string =>
-  weeklyYieldForAPR(props.pool.dynamic.apr.liquidityMining)
-);
-const lmBreakdown = computed(
-  () => props.pool.dynamic.apr.liquidityMiningBreakdown
-);
-const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
-const lmMultiRewardPool = computed(
-  () => Object.keys(lmTokens.value).length > 1
-);
+
 const hasThirdPartyAPR = computed(() =>
   bnum(props.pool.dynamic.apr.thirdParty).gt(0)
 );
+
+const hasStakingAPR = computed(() =>
+  bnum(props.pool.dynamic.apr.staking?.BAL?.min || '0')
+    .plus(props.pool.dynamic.apr.staking?.Rewards || '0')
+    .gt(0)
+);
+
 const thirdPartyBreakdown = computed(
   () => props.pool.dynamic.apr.thirdPartyBreakdown
 );
+
 const thirdPartyTokens = computed(() =>
   getTokens(Object.keys(thirdPartyBreakdown.value))
 );
+
 const thirdPartyMultiRewardPool = computed(
   () => Object.keys(thirdPartyTokens.value).length > 1
 );
+
 const thirdPartyFiatLabel = computed(() => {
   if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
   if (isStablePhantom(props.pool.poolType))
     return t('thirdPartyRewards.fiat.boosted');
   return '';
 });
+
 /**
  * METHODS
  */
@@ -140,7 +145,7 @@ function weeklyYieldForAPR(apr: string): string {
           <BalTooltip icon-size="sm" width="72" noPad>
             <template v-slot:activator>
               <StarsIcon
-                v-if="props.pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
+                v-if="hasStakingAPR || hasThirdPartyAPR"
                 class="h-4 text-orange-300"
               />
               <BalIcon
@@ -184,24 +189,6 @@ function weeklyYieldForAPR(apr: string): string {
                   {{ fNum2(weeklyYieldForAPR(item[1]), FNumFormats.fiat) }}
                   <span class="text-gray-500 text-xs ml-1">
                     {{ thirdPartyTokens[item[0]].symbol }}
-                  </span>
-                </template>
-              </BalBreakdown>
-              <BalBreakdown
-                v-if="props.pool.hasLiquidityMiningRewards"
-                :items="Object.entries(lmBreakdown)"
-                :hideItems="!lmMultiRewardPool"
-              >
-                <div class="flex items-center">
-                  <span>{{ fNum2(lmWeeklyYield, FNumFormats.fiat) }}</span>
-                  <span class="ml-1 text-gray-500">
-                    {{ $t('liquidityMining') }}
-                  </span>
-                </div>
-                <template v-if="lmMultiRewardPool" v-slot:item="{ item }">
-                  {{ fNum2(weeklyYieldForAPR(item[1]), FNumFormats.fiat) }}
-                  <span class="text-gray-500 ml-1">
-                    {{ lmTokens[item[0]].symbol }}
                   </span>
                 </template>
               </BalBreakdown>

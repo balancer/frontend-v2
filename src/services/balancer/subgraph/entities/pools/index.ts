@@ -163,11 +163,11 @@ export default class Pools {
       const poolAPR = this.calcAPR(pool, pastPool, protocolFeePercentage);
 
       const fees = this.calcFees(pool, pastPool);
-      const {
-        // hasLiquidityMiningRewards,
-        // liquidityMiningAPR,
-        liquidityMiningBreakdown
-      } = this.calcLiquidityMiningAPR(pool, prices, currency);
+      const { liquidityMiningBreakdown } = this.calcLiquidityMiningAPR(
+        pool,
+        prices,
+        currency
+      );
       const {
         thirdPartyAPR,
         thirdPartyAPRBreakdown
@@ -183,11 +183,6 @@ export default class Pools {
 
       // TODO - We might need to include staking + LM APRs for L2s?
       const networkAdjustedLMApr = '0';
-      // ? '0'
-      // : liquidityMiningAPR;
-      const networkAdjustedLMEligibility = false;
-      // ? false
-      // : hasLiquidityMiningRewards;
 
       const totalAPR = this.calcTotalAPR(
         poolAPR,
@@ -196,12 +191,8 @@ export default class Pools {
       );
       const isNewPool = this.isNewPool(pool);
 
-      // TODO - remove hasLiquidityMiningRewards from schema
-      // Add a conditional to usePool or somewhere else that
-      // checks what rewards are available.
       return {
         ...pool,
-        hasLiquidityMiningRewards: networkAdjustedLMEligibility,
         dynamic: {
           period,
           volume,

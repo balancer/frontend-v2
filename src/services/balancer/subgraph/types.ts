@@ -47,7 +47,6 @@ export interface Pool {
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
-  hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
   createTime: number;
   mainTokens?: string[];
