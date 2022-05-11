@@ -314,6 +314,10 @@ export const POLYGON_POOLS: Pool[] = [
   {
     id: '0xce66904b68f1f070332cbc631de7ee98b650b499000100000000000000000009',
     network: Network.POLYGON
+  },
+  {
+    id: '0x0297e37f1873d2dab4487aa67cd56b58e2f27875000100000000000000000002',
+    network: Network.POLYGON
   }
 ];
 
