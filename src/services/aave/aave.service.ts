@@ -82,6 +82,10 @@ export default class AaveService {
         // Grabs the matching wrapped which generates the yield
         const wrappedToken = wrappedTokens[tokenIndex];
         const mainToken = mainTokens[tokenIndex];
+        const linearPoolAddress = pool.tokenAddresses[tokenIndex];
+        const linearPoolToken = pool.tokens.find(
+          token => token.address === linearPoolAddress
+        );
         const linearPoolTotalSupply = formatUnits(
           linearPoolTotalSupplies[tokenIndex],
           18
@@ -90,8 +94,7 @@ export default class AaveService {
         if (prices[mainToken] != null && linearPoolTotalSupply) {
           const price = prices[mainToken][currency] || 0;
           const balance = wrappedTokenBalances[tokenIndex];
-          const linearPoolBalance =
-            pool?.linearPoolTokensMap?.[wrappedToken].balance || '0';
+          const linearPoolBalance = linearPoolToken?.balance || '0';
           const linearPoolShare = bnum(linearPoolBalance).div(
             linearPoolTotalSupply
           );
