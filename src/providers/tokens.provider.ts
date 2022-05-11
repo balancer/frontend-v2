@@ -20,7 +20,6 @@ import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, forChange } from '@/lib/utils';
-import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -438,7 +437,6 @@ export default {
      */
     onBeforeMount(async () => {
       const tokensToInject = compact([
-        ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
         configService.network.addresses.veBAL
