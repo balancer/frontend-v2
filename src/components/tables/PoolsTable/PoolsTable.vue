@@ -309,13 +309,6 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.volume"
         >
-          <!-- <AnimatePresence
-            :isVisible="columnStates.volume !== 'success'"
-            unmountInstantly
-          >
-            <BalLoadingBlock class="h-4 w-12" />
-          </AnimatePresence> -->
-          <!-- <AnimatePresence :isVisible="columnStates.volume === 'success'"> -->
           <span v-if="!pool?.dynamic?.volume">-</span>
           <span v-else class="text-right">
             {{
@@ -325,7 +318,6 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
               })
             }}
           </span>
-          <!-- </AnimatePresence> -->
         </div>
       </template>
       <template v-slot:aprCell="pool">
@@ -333,19 +325,6 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.aprs"
         >
-          <!-- <AnimatePresence
-            :isVisible="
-              columnStates.aprs !== 'success' && !pool.dynamic?.apr?.total
-            "
-            unmountInstantly
-          >
-            <BalLoadingBlock class="h-4 w-12" />
-          </AnimatePresence> -->
-          <!-- <AnimatePresence
-            :isVisible="
-              columnStates.aprs === 'success' && !!pool.dynamic?.apr?.total
-            "
-          > -->
           <span v-if="hasStakingRewards(pool)" class="text-right">
             <span v-if="pool.dynamic?.boost">
               {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
@@ -369,7 +348,6 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
             }}
           </span>
           <LiquidityAPRTooltip v-if="pool?.dynamic?.apr?.total" :pool="pool" />
-          <!-- </AnimatePresence> -->
         </div>
       </template>
       <template v-slot:migrateCell="pool">
