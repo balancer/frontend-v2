@@ -9,12 +9,15 @@ import { bnum } from '@/lib/utils';
 import { getPoolAddress } from '@/lib/utils/balancer/pool';
 import { getExcludedAddresses } from '@/lib/utils/liquidityMining';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { ExcludedAddresses } from '@/services/balancer/subgraph/entities/pools/helpers';
 import { DecoratedPool, Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import PoolService from '@/services/pool/pool.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import { TokenInfoMap } from '@/types/TokenList';
 
 import { isStablePhantom } from '../usePool';
 import useTokens from '../useTokens';
@@ -136,10 +139,12 @@ function decorateWithVolumes(historicalPools: Pool[], pools: DecoratedPool[]) {
 
 async function decorateWithAPRs(
   pools: DecoratedPool[],
+  gauges: SubgraphGauge[],
   prices: TokenPrices,
   currency: FiatCurrency,
   pastPools: DecoratedPool[],
-  protocolFeePercentage: number
+  protocolFeePercentage: number,
+  tokens: TokenInfoMap
 ) {
   const pastPoolsMap = keyBy(pastPools, 'id');
   return pools.map(async pool => {
@@ -158,8 +163,27 @@ async function decorateWithAPRs(
       currency,
       protocolFeePercentage
     );
+
+    const gaugeBALAprs = await stakingRewardsService.getGaugeBALAprs({
+      prices,
+      gauges,
+      pools
+    });
+
+    const rewardAprs = await stakingRewardsService.getRewardTokenAprs({
+      prices,
+      tokens,
+      gauges,
+      pools
+    });
+
     if (!pool.dynamic) pool.dynamic = {} as any;
     if (!pool.dynamic.apr) pool.dynamic.apr = {} as any;
+    if (!pool.dynamic.apr.staking)
+      pool.dynamic.apr.staking = {
+        BAL: gaugeBALAprs[pool.id] || { min: '0', max: '0' },
+        Rewards: rewardAprs[pool.id] || '0'
+      };
 
     pool.dynamic.apr.thirdParty = thirdPartyAPR;
     pool.dynamic.apr.thirdPartyBreakdown = thirdPartyAPRBreakdown;
@@ -167,18 +191,14 @@ async function decorateWithAPRs(
     pool.dynamic.apr.liquidityMiningBreakdown = liquidityMiningBreakdown;
     pool.hasLiquidityMiningRewards = hasLiquidityMiningRewards;
 
+    // staking aprs
+    pool.dynamic.apr.staking.BAL = gaugeBALAprs[pool.id];
+
     const poolAPR = poolService.calcAPR(
       pastPoolsMap[pool.id],
       protocolFeePercentage
     );
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
-
-    console.log({
-      liquidityMiningAPR,
-      hasLiquidityMiningRewards,
-      fees,
-      poolAPR
-    })
 
     const totalApr = bnum(poolAPR)
       .plus(liquidityMiningAPR)
@@ -195,10 +215,9 @@ export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions
 ) {
-  const { priceQueryLoading, prices } = useTokens();
+  const { priceQueryLoading, prices, tokens } = useTokens();
   const { currency } = useUserSettings();
   const { data: subgraphGauges } = useGaugesQuery();
-  (subgraphGauges.value || []).map(gauge => gauge.id);
   const isNotLoadingPrices = computed(() => {
     return !priceQueryLoading.value;
   });
@@ -209,8 +228,7 @@ export default function useStreamedPoolsQuery(
     result,
     loadMore,
     currentPage,
-    isLoadingMore,
-    successStates
+    isLoadingMore
   } = useQueryStreams('pools', {
     basic: {
       init: true,
@@ -273,17 +291,15 @@ export default function useStreamedPoolsQuery(
       queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
         return await decorateWithAPRs(
           pools.value,
+          subgraphGauges.value || [],
           prices.value,
           currency.value,
           data.value.historicalPools,
-          data.value.protocolFee
+          data.value.protocolFee,
+          tokens.value
         );
       }
     }
-  });
-
-  watch(successStates, () => {
-    console.log('succ', JSON.stringify(successStates.value));
   });
 
   return {
