@@ -1,13 +1,7 @@
 <script setup lang="ts">
-import flatten from 'lodash/flatten';
 import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
-import PoolStatInfo from '@/components/contextual/pages/pool/PoolStatInfo.vue';
-import usePoolTransactionStats from '@/composables/pools/usePoolTransactionStats';
-import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
-import usePoolUserActivitiesQuery from '@/composables/queries/usePoolUserActivitiesQuery';
 import { usePool } from '@/composables/usePool';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
@@ -33,13 +27,6 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPUTED
  */
-const poolActivities = computed(() =>
-  poolActivitiesQuery.data.value
-    ? flatten(
-        poolActivitiesQuery.data.value.pages.map(page => page.poolActivities)
-      )
-    : []
-);
 const tabs = computed(() =>
   isStablePhantomPool.value
     ? [
@@ -69,25 +56,11 @@ const tabs = computed(() =>
  */
 const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { t } = useI18n();
-const { investTransactionStats } = usePoolTransactionStats(
-  computed(() => props.pool),
-  poolActivities
-);
-const route = useRoute();
 
 /**
  * STATE
  */
 const activeTab = ref(tabs.value[0].value);
-const id = route.params.id as string;
-
-/**
- * QUERIES
- */
-const poolActivitiesQuery =
-  activeTab.value === PoolTransactionsTab.ALL_ACTIVITY
-    ? usePoolActivitiesQuery(id)
-    : usePoolUserActivitiesQuery(id);
 </script>
 
 <template>
@@ -96,7 +69,6 @@ const poolActivitiesQuery =
       v-text="$t('poolTransactions.tabs.allInvestments')"
       class="px-4 lg:px-0 mb-5"
     />
-    <PoolStatInfo :stats="investTransactionStats" />
     <div
       class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
     >

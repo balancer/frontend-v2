@@ -66,7 +66,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
-    width: 250,
+    width: 200,
     sortable: false
   },
   {
@@ -170,7 +170,7 @@ const swapRows = computed<SwapRow[]>(() =>
               :address="action.ensAvatar || action.userAddress"
               :size="36"
             />
-            <span class="truncate">
+            <span :class="[action.ensName && 'truncate']">
               {{ action.ensName || shortenLabel(action.userAddress) }}
             </span>
           </div>
