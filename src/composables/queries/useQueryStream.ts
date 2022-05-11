@@ -1,7 +1,17 @@
 import EventEmitter from 'events';
-import { flatten, isArray, last, mapValues, nth } from 'lodash';
+import {
+  flatten,
+  get,
+  head,
+  isArray,
+  last,
+  mapValues,
+  merge,
+  nth,
+  tail
+} from 'lodash';
 import { QueryKey } from 'react-query';
-import { computed, reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useQueries } from 'vue-query';
 
 export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
@@ -37,9 +47,25 @@ type Promises = Record<
 >;
 
 export default function useQueryStreams(id: string, promises: Promises) {
-  const result = ref<any[]>([]);
+  const result = ref<Record<string, any[]>>({});
   const currentPage = ref(1);
-  const currentPageData = ref(result.value[result.value.length - 1]);
+  const initQuery = computed(() =>
+    Object.values(promises).find(query => query.init === true)
+  );
+  if (!initQuery.value) {
+    throw new Error(
+      `A set of parallel queries needs an initial query. Please mark one of the passed queries as [init].`
+    );
+  }
+  const initialQueryHash = computed(() =>
+    JSON.stringify(initQuery.value?.dependencies)
+  );
+
+  const currentPageData = ref(
+    (result.value[initialQueryHash.value] || [])[
+      result.value[initialQueryHash.value]?.length - 1
+    ]
+  );
 
   const successStates = ref(
     Object.fromEntries(
@@ -58,6 +84,16 @@ export default function useQueryStreams(id: string, promises: Promises) {
     queryKey: Ref<QueryKey>;
   }[] = [];
 
+  // when the initial query has changes we want to wipe everything
+  // but the first page to reset pagination
+  watch(initialQueryHash, () => {
+    currentPage.value = 1;
+    result.value[initialQueryHash.value] = result.value[initialQueryHash.value]
+      ?.length
+      ? [head(result.value[initialQueryHash.value])]
+      : [];
+  });
+
   Object.keys(promises).forEach(promiseKey => {
     const query = promises[promiseKey];
 
@@ -65,10 +101,30 @@ export default function useQueryStreams(id: string, promises: Promises) {
     // so it needs to be responsible for the fetching of extra paginated data
     // if there is any. to do so we need to make it refetch on page changes
     // so we have to add a dependency to the query which tracks the page
+
+    const otherQueryDependency = computed(() => {
+      return (query.waitFor || []).map(queryId => {
+        if (queryId.includes('.')) {
+          return (internalData.value[queryId.split('.')[0]] || []).map(data =>
+            get(data, tail(queryId.split('.')).join('.'))
+          );
+        }
+        return internalData.value[queryId];
+      });
+    });
     const dependencies =
       query.init || query.type === 'page_dependent'
-        ? reactive(Object.assign({}, query.dependencies, { currentPage }))
-        : query.dependencies || {};
+        ? reactive(
+            Object.assign({}, query.dependencies, {
+              currentPage,
+              otherQueryDependency
+            })
+          )
+        : reactive(
+            Object.assign({}, query.dependencies, {
+              otherQueryDependency
+            })
+          ) || {};
 
     const template: any = {
       queryFn: async () => {
@@ -78,7 +134,8 @@ export default function useQueryStreams(id: string, promises: Promises) {
             currentPageData,
             internalData,
             currentPage,
-            successStates
+            successStates,
+            initialQueryHash
           );
 
           return res;
@@ -101,7 +158,7 @@ export default function useQueryStreams(id: string, promises: Promises) {
         // but with the modified item inside of it. this ensures that no
         // wacky splicing happens and its as simple as a replace
         emitter.on('resolved', value => {
-          result.value[currentPage.value - 1] = value;
+          result.value[initialQueryHash.value][currentPage.value - 1] = value;
         });
       },
       queryKey: [id, promiseKey, dependencies] as any,
@@ -109,21 +166,34 @@ export default function useQueryStreams(id: string, promises: Promises) {
         () =>
           (query.enabled?.value ?? true) &&
           (promises[promiseKey].waitFor || []).every(
-            otherQueryId => successStates.value[otherQueryId] === true
+            otherQueryId =>
+              successStates.value[otherQueryId.split('.')[0]] === true
           )
       ),
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      keepPreviousData: true
     };
     template.onSuccess = response => {
       if (
         !query.streamResponses &&
         !['independent', 'page_dependent'].includes(query.type || '')
       ) {
-        if (result.value.length < currentPage.value) {
-          result.value.push(response);
+        if (!result.value[initialQueryHash.value]) {
+          result.value[initialQueryHash.value] = [];
+        }
+        if (
+          (result.value[initialQueryHash.value] || []).length <
+          currentPage.value
+        ) {
+          result.value[initialQueryHash.value].push(response);
           currentPageData.value = response;
         } else {
-          result.value[currentPage.value - 1] = response;
+          // merging here is important as we don't want to lose previous data
+          // which defeats the purpose of caching
+          result.value[initialQueryHash.value][currentPage.value - 1] = merge(
+            result.value[initialQueryHash.value][currentPage.value - 1],
+            response
+          );
           currentPageData.value = response;
         }
       }
@@ -154,25 +224,13 @@ export default function useQueryStreams(id: string, promises: Promises) {
     return Object.fromEntries(statesPerPage);
   });
 
-  const data = computed(() => {
-    const pages: Record<string, any>[] = [];
-    const data: {
-      [key: keyof typeof promises]: any;
-    } = {};
-    Object.keys(promises).forEach((promiseKey, i) => {
-      data[promiseKey] = responses[i].data;
-    });
-    pages.push(data);
-    return data;
-  });
-
   const isComplete = computed(() =>
     Object.values(last(Object.values(dataStates.value)) || []).every(
       state => state === 'success'
     )
   );
 
-  const _result = computed(() => flatten(result.value));
+  const _result = computed(() => flatten(result.value[initialQueryHash.value]));
   const currentDataStates = computed(
     () => last(Object.values(dataStates.value)) || {}
   );
@@ -210,7 +268,6 @@ export default function useQueryStreams(id: string, promises: Promises) {
   return {
     dataStates: currentDataStates,
     isComplete,
-    data,
     result: _result,
     currentPage,
     isLoadingMore,

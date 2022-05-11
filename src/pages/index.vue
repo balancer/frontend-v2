@@ -31,13 +31,15 @@ const {
   removeSelectedToken
 } = usePoolFilters();
 
+const { userPools, isLoadingPools, isLoadingUserPools, poolsQuery } = usePools(
+  selectedTokens
+);
 const {
-  pools,
-  userPools,
-  isLoadingPools,
-  isLoadingUserPools,
-  poolsQuery
-} = usePools(selectedTokens);
+  dataStates,
+  result: investmentPools,
+  loadMore,
+  isLoadingMore
+} = useStreamedPoolsQuery(selectedTokens);
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
@@ -45,12 +47,12 @@ const { priceQueryLoading } = useTokens();
 // COMPUTED
 const filteredPools = computed(() =>
   selectedTokens.value.length > 0
-    ? pools.value?.filter(pool => {
+    ? (investmentPools?.value || []).filter(pool => {
         return selectedTokens.value.every((selectedToken: string) =>
-          pool.tokenAddresses.includes(selectedToken)
+          (pool.tokenAddresses || []).includes(selectedToken)
         );
       })
-    : pools?.value
+    : investmentPools?.value || []
 );
 
 const showMigrationColumn = computed(() =>
@@ -85,35 +87,18 @@ const migratableUserPools = computed(() => {
 });
 
 watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
-
 /**
  * METHODS
  */
 function navigateToCreatePool() {
   router.push({ name: 'create-pool' });
 }
-
-const { dataStates, result, loadMore, isLoadingMore } = useStreamedPoolsQuery();
 </script>
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <PoolsTable
-      v-if="
-        (dataStates['basic'] !== 'loading' || isLoadingMore) &&
-          !priceQueryLoading
-      "
-      :data="result"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isLoadingMore="isLoadingMore"
-      @loadMore="loadMore"
-      :selectedTokens="selectedTokens"
-      class="mb-8"
-      :hiddenColumns="['migrate', 'stake']"
-      :columnStates="dataStates"
-      :isPaginated="true"
-    >
-    </PoolsTable>
+    {{ dataStates }}
+    {{ (investmentPools || []).map(pool => pool.dynamic?.apr) }}
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">
@@ -167,6 +152,22 @@ const { dataStates, result, loadMore, isLoadingMore } = useStreamedPoolsQuery();
           </BalBtn>
         </div>
       </div>
+      <PoolsTable
+        v-if="
+          (dataStates['basic'] !== 'loading' || isLoadingMore) &&
+            !priceQueryLoading
+        "
+        :data="investmentPools"
+        :noPoolsLabel="$t('noPoolsFound')"
+        :isLoadingMore="isLoadingMore"
+        @loadMore="loadMore"
+        :selectedTokens="selectedTokens"
+        class="mb-8"
+        :hiddenColumns="['migrate', 'stake']"
+        :columnStates="dataStates"
+        :isPaginated="true"
+      >
+      </PoolsTable>
       <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
         <FeaturedPools />
       </div>

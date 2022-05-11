@@ -142,7 +142,7 @@ async function decorateWithAPRs(
   tokens: TokenInfoMap
 ) {
   const pastPoolsMap = keyBy(pastPools, 'id');
-  return pools.map(async pool => {
+  const decorated = pools.map(async pool => {
     const poolService = new PoolService(pool);
     const {
       hasLiquidityMiningRewards,
@@ -202,8 +202,9 @@ async function decorateWithAPRs(
     pool.dynamic.fees = fees;
     pool.dynamic.apr.total = totalApr.toString();
 
-    return pools;
+    return pool;
   });
+  return await Promise.all(decorated);
 }
 
 export default function useStreamedPoolsQuery(
@@ -218,7 +219,6 @@ export default function useStreamedPoolsQuery(
   });
 
   const {
-    data,
     dataStates,
     result,
     loadMore,
@@ -227,8 +227,9 @@ export default function useStreamedPoolsQuery(
   } = useQueryStreams('pools', {
     basic: {
       init: true,
+      dependencies: { tokenList },
       queryFn: async (_, __, currentPage: Ref<number>) => {
-        return fetchBasicPoolMetadata(
+        return await fetchBasicPoolMetadata(
           tokenList,
           filterOptions,
           currentPage.value
@@ -245,7 +246,7 @@ export default function useStreamedPoolsQuery(
         balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage()
     },
     formatPools: {
-      waitFor: ['excludedAddresses', 'liquidity'],
+      waitFor: ['excludedAddresses', 'liquidity.id'],
       queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
         return formatPools(pools.value, data.value.excludedAddresses);
       }
@@ -253,7 +254,7 @@ export default function useStreamedPoolsQuery(
     liquidity: {
       dependencies: { prices, currency },
       enabled: isNotLoadingPrices,
-      waitFor: ['basic'],
+      waitFor: ['basic.id'],
       queryFn: async (pools: Ref<Pool[]>) => {
         return decorateWithTotalLiquidity(pools, prices.value, currency.value);
       }
@@ -263,14 +264,14 @@ export default function useStreamedPoolsQuery(
       queryFn: async () => web3Service.getTimeTravelBlock('24h')
     },
     historicalPools: {
-      waitFor: ['timeTravelBlock', 'basic'],
+      waitFor: ['timeTravelBlock', 'basic.id'],
       type: 'page_dependent',
       queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
         return fetchHistoricalPools(data.value.timeTravelBlock, pools.value);
       }
     },
     volume: {
-      waitFor: ['basic', 'historicalPools'],
+      waitFor: ['basic.id', 'historicalPools.id'],
       queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
         const withVolumes = await decorateWithVolumes(
           data.value.historicalPools,
@@ -280,9 +281,8 @@ export default function useStreamedPoolsQuery(
       }
     },
     aprs: {
-      waitFor: ['protocolFee', 'historicalPools', 'formatPools'],
+      waitFor: ['protocolFee', 'historicalPools.id', 'formatPools.id'],
       enabled: isNotLoadingPrices,
-      streamResponses: true,
       queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
         return await decorateWithAPRs(
           pools.value,
@@ -298,7 +298,6 @@ export default function useStreamedPoolsQuery(
   });
 
   return {
-    data,
     dataStates,
     result,
     loadMore,

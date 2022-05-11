@@ -166,12 +166,6 @@ export default class PoolService {
     currency: FiatCurrency,
     protocolFeePercentage: number
   ) {
-    console.log('dingling', {
-      prices,
-      currency,
-      protocolFeePercentage,
-      pool: this.pool.tokenAddresses
-    })
     let thirdPartyAPR = '0';
     let thirdPartyAPRBreakdown = {};
     if (isWstETH(this.pool)) {
