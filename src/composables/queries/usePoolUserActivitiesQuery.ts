@@ -33,8 +33,13 @@ export default function usePoolUserActivitiesQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
+    const pagination =
+      pageParam === 0
+        ? POOLS.Pagination.PerPoolInitial
+        : POOLS.Pagination.PerPool;
+
     const poolActivities = await balancerSubgraphService.poolActivities.get({
-      first: POOLS.Pagination.PerPage,
+      first: pagination,
       skip: pageParam,
       where: {
         pool: id,
@@ -45,9 +50,7 @@ export default function usePoolUserActivitiesQuery(
     return {
       poolActivities,
       skip:
-        poolActivities.length >= POOLS.Pagination.PerPage
-          ? pageParam + POOLS.Pagination.PerPage
-          : undefined
+        poolActivities.length >= pagination ? pageParam + pagination : undefined
     };
   };
 

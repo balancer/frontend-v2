@@ -22,7 +22,8 @@ export default class PoolSwaps {
 
     const ensNames = await Promise.all(
       swaps.map(
-        async (poolSwap: PoolSwap) => await web3Service.getEnsName(poolSwap.userAddress.id)
+        async (poolSwap: PoolSwap) =>
+          await web3Service.getEnsName(poolSwap.userAddress.id)
       )
     );
 
