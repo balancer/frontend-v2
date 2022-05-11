@@ -1,8 +1,7 @@
-import { getAddress } from '@ethersproject/address';
 import EventEmitter from 'events';
 import { flatten, isArray, last, mapValues, nth } from 'lodash';
 import { QueryKey } from 'react-query';
-import { computed, reactive, Ref, ref, watch } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { useQueries } from 'vue-query';
 
 export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
@@ -41,22 +40,6 @@ export default function useQueryStreams(id: string, promises: Promises) {
   const result = ref<any[]>([]);
   const currentPage = ref(1);
   const currentPageData = ref(result.value[result.value.length - 1]);
-
-  watch(currentPageData, () => {
-    console.log(
-      'curr page',
-      (currentPageData.value || []).map(pool => pool.tokenAddresses)
-    );
-  });
-  // watch(
-  //   result,
-  //   () => {
-  //     currentPageData.value = result.value[result.value.length - 1];
-  //   },
-  //   {
-  //     deep: true
-  //   }
-  // );
 
   const successStates = ref(
     Object.fromEntries(
@@ -129,8 +112,7 @@ export default function useQueryStreams(id: string, promises: Promises) {
             otherQueryId => successStates.value[otherQueryId] === true
           )
       ),
-      refetchOnWindowFocus: false,
-      // staleTime: 120000
+      refetchOnWindowFocus: false
     };
     template.onSuccess = response => {
       if (
@@ -142,11 +124,6 @@ export default function useQueryStreams(id: string, promises: Promises) {
           currentPageData.value = response;
         } else {
           result.value[currentPage.value - 1] = response;
-          console.log(
-            'oos',
-            promiseKey,
-            response.map(pool => pool.tokenAddresses)
-          );
           currentPageData.value = response;
         }
       }
@@ -229,10 +206,6 @@ export default function useQueryStreams(id: string, promises: Promises) {
       return false;
     });
   }
-
-  // watch(successStates, () => {
-  //   console.log('succ', JSON.stringify(successStates.value));
-  // })
 
   return {
     dataStates: currentDataStates,

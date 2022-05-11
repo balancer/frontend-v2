@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { useQueries } from 'react-query';
-import { computed, Ref, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
@@ -12,7 +10,6 @@ import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import usePools from '@/composables/pools/usePools';
-import useQueryStreams from '@/composables/queries/useQueryStream';
 import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -39,19 +36,11 @@ const {
   userPools,
   isLoadingPools,
   isLoadingUserPools,
-  loadMorePools,
-  poolsHasNextPage,
-  poolsIsFetchingNextPage,
   poolsQuery
 } = usePools(selectedTokens);
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
-const {
-  loading: isLoadingTokens,
-  dynamicDataLoading,
-  priceQueryLoading,
-  prices
-} = useTokens();
+const { priceQueryLoading } = useTokens();
 
 // COMPUTED
 const filteredPools = computed(() =>
@@ -104,55 +93,11 @@ function navigateToCreatePool() {
   router.push({ name: 'create-pool' });
 }
 
-const {
-  data,
-  dataStates,
-  result,
-  loadMore,
-  currentPage,
-  isLoadingMore
-} = useStreamedPoolsQuery();
-
-// const { data, result, dataStates } = useQueryStreams('esk', {
-//   poolNames: {
-//     init: true,
-//     queryFn: (pools: Ref<any>) => {
-//       console.log('dingle', pools.value);
-//       return new Promise(resolve => {
-//         setTimeout(() => {
-//           pools.value = 0;
-//           resolve('fetched');
-//         }, 2500);
-//       });
-//     }
-//   },
-//   dingles: {
-//     dependencies: {},
-//     queryFn: (pools: Ref<any>) => {
-//       console.log('dingle', pools.value);
-//       return new Promise(resolve => {
-//         setTimeout(() => {
-//           pools.value = pools.value += 5;
-//           resolve('fetched');
-//         }, 7000);
-//       });
-//     }
-//   }
-// });
+const { dataStates, result, loadMore, isLoadingMore } = useStreamedPoolsQuery();
 </script>
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    {{ { dynamicDataLoading, priceQueryLoading } }}
-    {{ dataStates }}
-    {{ Object.keys(prices).length }}
-    <!-- <AnimatePresence
-      :isVisible="
-        dataStates['basic'] === 'success' &&
-          dataStates['liquidity'] === 'success'
-      "
-    > -->
-    bing {{ isLoadingMore }}
     <PoolsTable
       v-if="
         (dataStates['basic'] !== 'loading' || isLoadingMore) &&
@@ -169,7 +114,6 @@ const {
       :isPaginated="true"
     >
     </PoolsTable>
-    <!-- </AnimatePresence> -->
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">

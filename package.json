@@ -85,6 +85,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-vue": "^7.16.0",
     "ethereumjs-util": "^7.0.7",
+    "events": "^3.3.0",
     "feather-icons": "^4.28.0",
     "husky": "^6.0.0",
     "isomorphic-fetch": "^3.0.0",
@@ -121,9 +122,5 @@
     "worker-loader": "^3.0.8"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2",
-  "dependencies": {
-    "events": "^3.3.0",
-    "rxjs": "^7.5.5"
-  }
+  "repository": "balancer-labs/frontend-v2"
 }

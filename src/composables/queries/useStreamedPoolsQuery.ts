@@ -1,7 +1,6 @@
-import { PoolBalanceOpKind } from '@balancer-labs/sdk';
 import { getAddress } from 'ethers/lib/utils';
 import { keyBy } from 'lodash';
-import { computed, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
 import { POOLS } from '@/constants/pools';
@@ -15,8 +14,8 @@ import { ExcludedAddresses } from '@/services/balancer/subgraph/entities/pools/h
 import { DecoratedPool, Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import PoolService from '@/services/pool/pool.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import { web3Service } from '@/services/web3/web3.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { isStablePhantom } from '../usePool';
@@ -55,10 +54,6 @@ async function fetchBasicPoolMetadata(
 }
 
 function formatPools(pools: Pool[], excludedAddresses: ExcludedAddresses) {
-  console.log(
-    'formatio',
-    pools.map(pool => pool.tokensList.map(token => getAddress(token)))
-  );
   return pools.map(pool => {
     const poolService = new PoolService(pool);
     return {
@@ -265,7 +260,7 @@ export default function useStreamedPoolsQuery(
     },
     timeTravelBlock: {
       type: 'independent',
-      queryFn: async () => rpcProviderService.getTimeTravelBlock('24h')
+      queryFn: async () => web3Service.getTimeTravelBlock('24h')
     },
     historicalPools: {
       waitFor: ['timeTravelBlock', 'basic'],
