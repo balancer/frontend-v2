@@ -66,7 +66,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
-    width: 200,
+    width: 190,
     sortable: false
   },
   {
@@ -84,7 +84,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     id: 'details',
     accessor: '',
     Cell: 'detailsCell',
-    width: 325,
+    width: 310,
     sortable: false
   },
 
@@ -168,7 +168,7 @@ const swapRows = computed<SwapRow[]>(() =>
             <BalAsset
               class="mr-2 flex-shrink-0"
               :address="action.ensAvatar || action.userAddress"
-              :size="36"
+              :size="30"
             />
             <span :class="[action.ensName && 'truncate']">
               {{ action.ensName || shortenLabel(action.userAddress) }}

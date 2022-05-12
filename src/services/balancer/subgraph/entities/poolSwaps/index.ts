@@ -20,33 +20,37 @@ export default class PoolSwaps {
     const query = this.query(args, attrs);
     const { swaps } = await this.service.client.get(query);
 
-    const ensNames = await Promise.all(
-      swaps.map(
-        async (poolSwap: PoolSwap) =>
-          await web3Service.getEnsName(poolSwap.userAddress.id)
-      )
-    );
+    return await this.serialize(swaps);
+  }
 
-    const ensAvatars = await Promise.all(
-      swaps.map(async (poolSwap: PoolSwap, index: number) => {
-        if (!ensNames[index]) {
-          return null;
+  public async traderDecoration(swaps: PoolSwap[]): Promise<PoolSwap[]> {
+    const ensData = await Promise.all(
+      swaps.map(async (poolSwap: PoolSwap) => {
+        const ensName = await web3Service.getEnsName(poolSwap.userAddress.id);
+        let ensAvatar: null | string = null;
+
+        if (ensName) {
+          ensAvatar = await web3Service.getEnsAvatar(ensName);
         }
 
-        return await web3Service.getEnsAvatar(poolSwap.userAddress.id);
+        return {
+          ensName,
+          ensAvatar
+        };
       })
     );
 
-    swaps.forEach((swap: PoolSwap, index: number) => {
-      swap.ensName = ensNames[index] as string;
-      swap.ensAvatar = ensAvatars[index] as string;
-    });
-
-    return this.serialize(swaps);
+    return swaps.map((swap: PoolSwap, index: number) => ({
+      ...swap,
+      ensName: ensData[index].ensName,
+      ensAvatar: ensData[index].ensAvatar
+    }));
   }
 
-  serialize(swaps: PoolSwap[]) {
-    return swaps.map(swap => ({
+  async serialize(swaps: PoolSwap[]) {
+    const processedSwaps = await this.traderDecoration(swaps);
+
+    return processedSwaps.map(swap => ({
       ...swap,
       tokenIn: getAddress(swap.tokenIn),
       tokenOut: getAddress(swap.tokenOut),
