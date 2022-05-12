@@ -2054,6 +2054,32 @@
     }
   },
   {
+    "address": "0xf01541837CF3A64BC957F53678b0AB113e92911b",
+    "network": 137,
+    "pool": {
+      "id": "0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4",
+      "address": "0xC17636e36398602dd37Bb5d1B3a9008c7629005f",
+      "poolType": "MetaStable",
+      "symbol": "B-MaticX-STABLE",
+      "tokens": [
+        {
+          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+          "weight": "null",
+          "symbol": "WMATIC"
+        },
+        {
+          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+          "weight": "null",
+          "symbol": "MaticX"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
+    }
+  },
+  {
     "address": "0xE190E5363C925513228Bf25E4633C8cca4809C9a",
     "network": 42,
     "pool": {
