@@ -23,6 +23,7 @@ export type Pools = {
     Gauntlet: string[];
   };
   BlockList: string[];
+  BugWarning20220513: string[];
   ExcludedPoolTypes: string[];
   Stable: {
     AllowList: string[];
@@ -66,6 +67,7 @@ const POOLS_KOVAN: Pools = {
     '0x28efa7f86341aa0ad534bdfb033edb4f4ac6adf700020000000000000000067e',
     '0x10ee90b9ff4b9a44a773107280c0ce083619286800020000000000000000067b'
   ],
+  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -120,6 +122,9 @@ const POOLS_MAINNET: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
+  BugWarning20220513: [
+    '0x09804caea2400035b18e2173fdd10ec8b670ca09000100000000000000000038'
+  ],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -206,6 +211,7 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
+  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -273,6 +279,7 @@ const POOLS_ARBITRUM: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
+  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -327,6 +334,7 @@ const POOLS_GENERIC: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
+  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [

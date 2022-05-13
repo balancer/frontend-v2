@@ -87,6 +87,13 @@
           block
         />
         <BalAlert
+          v-if="!appLoading && showBugWarning20220513"
+          type="error"
+          :title="$t('bugWarning20220513')"
+          class="mt-2"
+          block
+        />
+        <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
@@ -379,6 +386,10 @@ export default defineComponent({
       POOLS.Stakable.AllowList.includes(route.params.id as string)
     );
 
+    const showBugWarning20220513 = computed((): boolean =>
+      POOLS.BugWarning20220513.includes(route.params.id as string)
+    );
+
     /**
      * METHODS
      */
@@ -435,6 +446,7 @@ export default defineComponent({
       isStablePhantomPool,
       copperNetworkPrefix,
       hasCustomToken,
+      showBugWarning20220513,
       isL2,
       isStakablePool,
       // methods
