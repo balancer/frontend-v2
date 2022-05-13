@@ -89,10 +89,13 @@
         <BalAlert
           v-if="!appLoading && showBugWarning20220513"
           type="error"
-          :title="$t('bugWarning20220513')"
           class="mt-2"
           block
-        />
+        >
+          <template #title>
+            <div v-html="$t('bugWarning20220513')" />
+          </template>
+        </BalAlert>
         <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"

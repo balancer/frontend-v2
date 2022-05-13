@@ -623,7 +623,7 @@
     "swapFeeManager": "Swap fee manager",
     "switchNetwork": "Switch network",
     "symbol": "Symbol",
-    "bugWarning20220513": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+    "bugWarning20220513": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation, <a href=\"https://balancer.fi\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">A link</a>",
     "veBAL": {
         "hero": {
             "eyebrow": "Introducing veBAL",
