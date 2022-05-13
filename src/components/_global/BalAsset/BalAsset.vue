@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 
+import useDarkMode from '@/composables/useDarkMode';
+import useTailwind from '@/composables/useTailwind';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
 import { TokenInfo } from '@/types/TokenList';
