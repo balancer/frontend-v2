@@ -1,3 +1,54 @@
+<script lang="ts" setup>
+import { computed, onMounted, ref, watch } from 'vue';
+
+import useUrls from '@/composables/useUrls';
+
+/**
+ * TYPES
+ */
+type Props = {
+  address: string;
+  iconURI?: string;
+  size?: number;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  iconURI: '',
+  size: 24
+});
+
+/**
+ * COMPOSABLES
+ */
+const { resolve } = useUrls();
+
+/**
+ * STATE
+ */
+const error = ref(false);
+const isMounted = ref(false);
+
+/**
+ * COMPUTED
+ */
+const iconSRC = computed(() => resolve(props.iconURI));
+
+/**
+ * WATCHERS
+ */
+watch(iconSRC, newURL => {
+  if (newURL !== '') error.value = false;
+});
+
+/**
+ * LIFECYCLE
+ */
+onMounted(() => (isMounted.value = true));
+</script>
+
 <template>
   <img
     v-if="iconSRC && !error"
@@ -18,57 +69,6 @@
       height: `${size}px`
     }"
   >
-    <Jazzicon :address="address" :diameter="size" />
+    <Jazzicon v-if="isMounted" :address="address" :diameter="size" />
   </div>
 </template>
-
-<script>
-import { computed, defineComponent, ref, watch } from 'vue';
-
-import useUrls from '@/composables/useUrls';
-
-export default defineComponent({
-  name: 'Avatar',
-
-  props: {
-    address: {
-      type: String,
-      required: true
-    },
-    iconURI: { type: String },
-    size: {
-      type: Number,
-      default: 24
-    }
-  },
-
-  setup(props) {
-    /**
-     * COMPOSABLES
-     */
-    const { resolve } = useUrls();
-
-    /**
-     * STATE
-     */
-    const error = ref(false);
-
-    /**
-     * COMPUTED
-     */
-    const iconSRC = computed(() => resolve(props.iconURI));
-
-    /**
-     * WATCHERS
-     */
-    watch(iconSRC, newURL => {
-      if (newURL !== '') error.value = false;
-    });
-
-    return {
-      iconSRC,
-      error
-    };
-  }
-});
-</script>
