@@ -1,5 +1,6 @@
 import parsePath from 'parse-filepath';
 import { App } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export function registerGlobalComponents(app: App): void {
   // Load global components from @/components/_global
@@ -14,4 +15,5 @@ export function registerGlobalComponents(app: App): void {
     const componentConfig = req(filePath);
     app.component(componentName, componentConfig.default || componentConfig);
   }
+  app.component('jazzicon', Jazzicon);
 }

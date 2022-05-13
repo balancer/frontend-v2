@@ -127,7 +127,9 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
     gauge.pool.address,
     gauge.pool.tokens
   );
-  return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
+  return sortedTokens.map(
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+  );
 }
 
 function networkSrc(network: Network) {
