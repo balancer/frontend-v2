@@ -154,28 +154,53 @@ const cards = computed(() => {
 
 <template>
   <BalCard v-for="card in cards" :key="card.id">
-    <div class="label">
+    <div class="label font-medium">
       {{ card.label }}
     </div>
-    <div class="value">
-      <span>{{ card.value }}</span>
-      <span>
+    <div class="value" :class="card.id">
+      <div v-if="card.id === 'myLockedLpToken'">
+        <span
+          :class="{ 'text-red-500': totalExpiredLpTokens > 0 }"
+          class="font-bold truncate mr-1"
+          >{{ card.value }}</span
+        >
+        <BalTooltip
+          v-if="totalExpiredLpTokens > 0"
+          :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
+          icon-size="sm"
+          :icon-name="'alert-triangle'"
+          :icon-class="
+            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+          "
+          width="72"
+          class="relative top-0.5"
+        />
+      </div>
+      <div v-else>
+        <span class="font-bold truncate">{{ card.value }}</span>
+      </div>
+      <div class="flex items-center">
         <BalIcon
           v-if="card.showUnlockIcon"
           name="minus-circle"
-          class="pr-2 cursor-pointer"
+          class="minus-circle mr-2 transition-all cursor-pointer"
           @click="showUnlockPreviewModal = true"
         />
-        <router-link
-          v-if="card.showPlusIcon"
-          :to="card.plusIconTo"
-          class="text-blue-500"
-        >
-          <BalIcon name="plus-circle" class="cursor-pointer" />
-        </router-link>
-      </span>
+        <div>
+          <router-link
+            v-if="card.showPlusIcon"
+            :to="card.plusIconTo"
+            class="text-blue-500 flex items-center"
+          >
+            <BalIcon
+              name="plus-circle"
+              class="plus-circle transition-all cursor-pointer"
+            />
+          </router-link>
+        </div>
+      </div>
     </div>
-    <div class="secondary-value">{{ card.secondaryText }}</div>
+    <div class="secondary-value font-medium">{{ card.secondaryText }}</div>
   </BalCard>
   <teleport to="#modal">
     <UnlockPreviewModal
@@ -192,13 +217,42 @@ const cards = computed(() => {
 
 <style scoped>
 .label {
-  @apply text-sm text-gray-500 font-medium mb-2;
+  @apply text-sm mb-2;
 }
 .value {
-  @apply text-xl font-medium truncate flex items-center justify-between mb-1;
+  @apply text-xl font-medium flex flex-wrap items-center justify-between mb-0.5;
 }
 
 .secondary-value {
-  @apply text-gray-400 dark:text-gray-500;
+  @apply text-sm text-gray-500 dark:text-gray-400;
+}
+
+.plus-circle:hover,
+.plus-circle:focus,
+.minus-circle:hover,
+.minus-circle:focus {
+  transform: scale(1.25);
+}
+
+.plus-circle:hover :deep(svg.feather-plus-circle),
+.plus-circle:focus :deep(svg.feather-plus-circle) {
+  @apply transition-all text-white;
+  fill: #384aff; /* blue-500 */
+}
+
+.plus-circle:hover :deep(svg.feather-plus-circle circle),
+.plus-circle:focus :deep(svg.feather-plus-circle circle) {
+  color: #384aff; /* blue-500 */
+}
+
+.minus-circle:hover :deep(svg.feather-minus-circle),
+.minus-circle:focus :deep(svg.feather-minus-circle) {
+  @apply transition-all text-white;
+  fill: rgba(239, 68, 68); /* red-500 */
+}
+
+.minus-circle:hover :deep(svg.feather-minus-circle circle),
+.minus-circle {
+  color: rgba(239, 68, 68); /* red-500 */
 }
 </style>

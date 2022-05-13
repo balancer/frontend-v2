@@ -156,6 +156,23 @@ export default class Web3Service {
         return currentBlock - blocksInDay;
     }
   }
+
+  public async callStatic<T>(
+    contractAddress: string,
+    abi: any[],
+    action: string,
+    params: any[] = [],
+    options: Record<string, any> = {}
+  ): Promise<T> {
+    console.log('Sending transaction');
+    console.log('Contract', contractAddress);
+    console.log('Action', `"${action}"`);
+    console.log('Params', params);
+    const signer = this.userProvider.value.getSigner();
+    const contract = new Contract(contractAddress, abi, signer);
+    const contractWithSigner = contract.connect(signer);
+    return await contractWithSigner.callStatic[action](...params, options);
+  }
 }
 
 export const web3Service = new Web3Service();

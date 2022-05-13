@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
 import { computed, ref } from 'vue';
 
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
@@ -17,11 +16,6 @@ import GaugeVoteModal from './GaugeVoteModal.vue';
  */
 const activeVotingGauge = ref<VotingGaugeWithVotes | null>(null);
 
-const now = ref(Date.now());
-setInterval(() => {
-  now.value = Date.now();
-}, 1000);
-
 /**
  * COMPOSABLES
  */
@@ -29,6 +23,8 @@ const {
   isLoading,
   votingGauges,
   unallocatedVotes,
+  votingPeriodEnd,
+  votingPeriodLastHour,
   refetch: refetchVotingGauges
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
@@ -40,19 +36,6 @@ const veBalLockInfoQuery = useVeBalLockInfoQuery();
 const unallocatedVotesFormatted = computed<string>(() =>
   fNum2(scale(bnum(unallocatedVotes.value), -4).toString(), FNumFormats.percent)
 );
-
-const votingPeriodEnd = computed<number[]>(() => {
-  const periodEnd = getVotePeriodEndTime();
-  const interval: Interval = { start: now.value, end: periodEnd };
-  const timeUntilEnd: Duration = intervalToDuration(interval);
-  const formattedTime = [
-    timeUntilEnd.days || 0,
-    timeUntilEnd.hours || 0,
-    timeUntilEnd.minutes || 0,
-    timeUntilEnd.seconds || 0
-  ];
-  return formattedTime;
-});
 
 const unallocatedVoteWeight = computed(() => {
   const totalVotes = 1e4;
@@ -70,6 +53,12 @@ const hasLock = computed(
     !veBalLockInfoQuery.data.value?.isExpired
 );
 
+const hasExpiredLock = computed(
+  (): boolean =>
+    !!veBalLockInfoQuery.data.value?.hasExistingLock &&
+    veBalLockInfoQuery.data.value?.isExpired
+);
+
 /**
  * METHODS
  */
@@ -83,7 +72,9 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
     gauge.pool.address,
     gauge.pool.tokens
   );
-  return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
+  return sortedTokens.map(
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+  );
 }
 
 function handleModalClose() {
@@ -94,55 +85,79 @@ function handleModalClose() {
 function handleVoteSuccess() {
   refetchVotingGauges.value();
 }
-
-function getVotePeriodEndTime(): number {
-  let n = nextThursday(new Date());
-  // April 5th 2022, for launch, remove after this date
-  if (n.getTime() < 1649116800000) {
-    n = nextThursday(n);
-  }
-  const epochEndTime = Date.UTC(
-    n.getFullYear(),
-    n.getMonth(),
-    n.getDate(),
-    0,
-    0,
-    0
-  );
-  return epochEndTime;
-}
 </script>
 
 <template>
   <div
-    class="bg-yellow-500 flex items-center rounded-lg p-4 mb-8 text-gray-900"
+    class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-2 gap-4"
   >
-    <LightBulbIcon width="36" height="36" class="w-36 lg:w-16" />
-    <p class="ml-4 max-w-4xl">
-      {{ $t('veBAL.votingTransitionDescription') }}
-    </p>
-  </div>
-  <h3 class="mb-3">{{ $t('veBAL.liquidityMining.title') }}</h3>
-  <div class="mb-3">
-    <span v-if="hasLock">
-      {{
-        $t('veBAL.liquidityMining.unallocatedVotes', [
-          unallocatedVotesFormatted
-        ])
-      }}
-    </span>
-    <span v-else>
-      <BalLink
-        tag="router-link"
-        :to="{ name: 'get-vebal', query: { returnRoute: 'vebal' } }"
-        class="inline-block"
-      >
-        {{ $t('getVeBALToVote') }}</BalLink
-      >.
-    </span>
-    <span v-if="votingPeriodEnd.length">
-      &nbsp;{{ $t('veBAL.liquidityMining.votingPeriod', votingPeriodEnd) }}
-    </span>
+    <div class="max-w-3xl">
+      <h3 class="mb-2">{{ $t('veBAL.liquidityMining.title') }}</h3>
+      <p class="">{{ $t('veBAL.liquidityMining.description') }}</p>
+    </div>
+    <div class="flex gap-2 xs:gap-3">
+      <BalCard shadow="none" class="min-w-max md:w-48">
+        <div class="flex items-center">
+          <p class="text-sm text-gray-500 inline mr-1">
+            My unallocated votes
+          </p>
+          <BalTooltip
+            :text="$t('veBAL.liquidityMining.myUnallocatedVotesTooltip')"
+            iconClass="text-gray-400 dark:text-gray-600"
+            icon-size="sm"
+            width="72"
+            class="mt-1"
+          />
+        </div>
+        <p
+          class="text-lg font-semibold inline mr-1"
+          :class="{ 'text-red-500': hasExpiredLock }"
+        >
+          <span v-if="hasLock">
+            {{ unallocatedVotesFormatted }}
+          </span>
+          <span class="mr-1" v-else>—</span>
+        </p>
+        <BalTooltip
+          v-if="hasExpiredLock"
+          :text="$t('veBAL.liquidityMining.votingPowerExpiredTooltip')"
+          icon-size="sm"
+          :icon-name="'alert-triangle'"
+          :icon-class="
+            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
+          "
+          width="72"
+          class="relative top-0.5"
+        />
+      </BalCard>
+      <BalCard shadow="none" class="min-w-max md:w-48">
+        <div class="flex items-center">
+          <p
+            :class="{ 'text-orange-500 font-medium': votingPeriodLastHour }"
+            class="text-sm text-gray-500 inline mr-1"
+          >
+            Voting period ends
+          </p>
+          <BalTooltip
+            :text="$t('veBAL.liquidityMining.votingPeriodTooltip')"
+            icon-size="sm"
+            iconClass="text-gray-400 dark:text-gray-600"
+            width="72"
+            class="mt-1"
+          />
+        </div>
+        <p class="text-lg font-semibold tabular-nums">
+          <span
+            :class="{ 'text-orange-500': votingPeriodLastHour }"
+            v-if="votingPeriodEnd.length"
+          >
+            {{
+              $t('veBAL.liquidityMining.votingPeriodCountdown', votingPeriodEnd)
+            }}
+          </span>
+        </p>
+      </BalCard>
+    </div>
   </div>
   <GaugesTable
     :isLoading="isLoading"

@@ -37,18 +37,8 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const lmBreakdown = computed(
-  () => props?.pool?.dynamic?.apr?.liquidityMiningBreakdown
-);
-
 const validAPR = computed(
   () => Number(props?.pool?.dynamic?.apr?.total || '0') * 100 <= APR_THRESHOLD
-);
-
-const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
-
-const lmMultiRewardPool = computed(
-  () => Object.keys(lmTokens.value).length > 1
 );
 
 const hasThirdPartyAPR = computed(() =>
@@ -105,11 +95,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="
-            pool.hasLiquidityMiningRewards ||
-              hasThirdPartyAPR ||
-              hasStakingRewards(pool)
-          "
+          v-if="hasThirdPartyAPR || hasStakingRewards(pool)"
           class="h-4 text-yellow-300 -mr-1"
           v-bind="$attrs"
         />
@@ -224,31 +210,6 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
             {{ fNum2(item[1], FNumFormats.percent) }}
             <span class="text-gray-500 text-xs ml-1 capitalize">
               {{ item[0] }} {{ $t('apr') }}
-            </span>
-          </template>
-        </BalBreakdown>
-        <BalBreakdown
-          v-if="pool.hasLiquidityMiningRewards"
-          :items="Object.entries(lmBreakdown)"
-          :hideItems="!lmMultiRewardPool"
-        >
-          <div class="flex items-center">
-            {{ fNum2(pool.dynamic?.apr.liquidityMining, FNumFormats.percent) }}
-            <span class="ml-1 text-gray-500 text-xs flex items-center">
-              {{
-                [
-                  '0xde8c195aa41c11a0c4787372defbbddaa31306d2000200000000000000000181',
-                  '0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182'
-                ].includes(pool.id)
-                  ? $t('staking.minimumStakingAPR')
-                  : $t('liquidityMiningAPR')
-              }}
-            </span>
-          </div>
-          <template v-if="lmMultiRewardPool" #item="{ item }">
-            {{ fNum2(item[1], FNumFormats.percent) }}
-            <span class="text-gray-500 text-xs ml-1">
-              {{ lmTokens[item[0]].symbol }} {{ $t('apr') }}
             </span>
           </template>
         </BalBreakdown>

@@ -145,6 +145,10 @@ export default function useNumbers() {
           formatterOptions.maximumFractionDigits - 2;
       }
       formatterOptions.useGrouping = false;
+
+      if (number > 0 && number < 0.0001) {
+        return '< 0.01%';
+      }
     }
 
     if (options.style === 'currency') {

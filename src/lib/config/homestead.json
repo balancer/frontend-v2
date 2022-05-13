@@ -54,7 +54,8 @@
     "balancerMinter": "0x239e55F427D44C3cc793f49bFB507ebe76638a2b",
     "tokenAdmin": "0xf302f9F50958c5593770FDf4d4812309fF77414f",
     "veDelegationProxy": "0x6f5a2eE11E7a772AeB5114A20d0D7c0ff61EB8A0",
-    "veBALHelpers": "0x8e5698dc4897dc12243c8642e77b4f21349db97c"
+    "veBALHelpers": "0x8e5698dc4897dc12243c8642e77b4f21349db97c",
+    "feeDistributor": "0x26743984e3357eFC59f2fd6C1aFDC310335a61c9"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

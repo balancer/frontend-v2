@@ -152,6 +152,7 @@ function handleClose(): void {
       :pool="pool"
       :math="math"
       class="mt-4"
+      @error="$emit('close')"
       @success="withdrawalConfirmed = true"
     />
   </BalModal>

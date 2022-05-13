@@ -1,10 +1,12 @@
 import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 import { Pool } from '../balancer/subgraph/types';
+import { ERC20Multicaller } from '../multicalls/erc20.multicaller';
 import AaveSubgraphService, {
   aaveSubgraphService
 } from './subgraph/aave-subgraph.service';
@@ -21,7 +23,7 @@ export default class AaveService {
     prices: TokenPrices,
     currency: FiatCurrency
   ) {
-    const { mainTokens, wrappedTokens, onchain, linearPoolTokensMap } = pool;
+    const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
 
     const wrappedTokenBalances = wrappedTokens?.map(
       token => linearPoolTokensMap?.[token].balance || ''
@@ -29,17 +31,35 @@ export default class AaveService {
     const hasAllWrappedTokenBalances =
       wrappedTokenBalances && wrappedTokenBalances.every(balance => !!balance);
 
+    const multicaller = new ERC20Multicaller();
+
+    wrappedTokens?.forEach((address, i) => {
+      multicaller.call(`unwrappedAave[${i}]`, address, 'ATOKEN');
+      multicaller.call(`unwrappedERC4626[${i}]`, address, 'asset');
+      multicaller.call(
+        `linearPoolTotalSupplies[${i}]`,
+        pool.tokensList[i],
+        'getVirtualSupply'
+      );
+    });
+
+    const {
+      unwrappedAave,
+      unwrappedERC4626,
+      linearPoolTotalSupplies
+    } = await multicaller.execute();
+
+    const unwrappedTokens = wrappedTokens?.map((_, i) => {
+      return (unwrappedAave[i] || unwrappedERC4626[i]).toLowerCase();
+    });
+
     if (
       !mainTokens ||
       !wrappedTokens ||
-      !onchain?.linearPools ||
+      !unwrappedTokens ||
       !hasAllWrappedTokenBalances
     )
       return { total: '0', breakdown: {} };
-
-    const unwrappedTokens = Object.values(
-      onchain?.linearPools
-    ).map(linearPool => linearPool.unwrappedTokenAddress.toLocaleLowerCase());
 
     let total = bnum(0);
     const breakdown: Record<string, string> = {};
@@ -63,15 +83,20 @@ export default class AaveService {
         const wrappedToken = wrappedTokens[tokenIndex];
         const mainToken = mainTokens[tokenIndex];
         const linearPoolAddress = pool.tokenAddresses[tokenIndex];
-        const linearPool = pool.onchain?.linearPools?.[linearPoolAddress];
+        const linearPoolToken = pool.tokens.find(
+          token => token.address === linearPoolAddress
+        );
+        const linearPoolTotalSupply = formatUnits(
+          linearPoolTotalSupplies[tokenIndex],
+          18
+        );
 
-        if (prices[mainToken] != null && linearPool) {
+        if (prices[mainToken] != null && linearPoolTotalSupply) {
           const price = prices[mainToken][currency] || 0;
           const balance = wrappedTokenBalances[tokenIndex];
-          const linearPoolBalance =
-            pool.onchain?.tokens[linearPoolAddress].balance || '0';
+          const linearPoolBalance = linearPoolToken?.balance || '0';
           const linearPoolShare = bnum(linearPoolBalance).div(
-            linearPool.totalSupply
+            linearPoolTotalSupply
           );
           const actualBalance = bnum(balance).times(linearPoolShare);
           const value = bnum(actualBalance).times(price);

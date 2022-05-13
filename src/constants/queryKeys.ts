@@ -66,6 +66,11 @@ const QUERY_KEYS = {
     All: (networkId: Ref<Network>, account: Ref<string>) => [
       CLAIMS_ROOT_KEY,
       { networkId, account }
+    ],
+    Protocol: (networkId: Ref<Network>, account: Ref<string>) => [
+      CLAIMS_ROOT_KEY,
+      'protocol',
+      { networkId, account }
     ]
   },
   Tokens: {
