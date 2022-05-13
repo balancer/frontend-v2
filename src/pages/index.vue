@@ -45,16 +45,6 @@ const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
 
 // COMPUTED
-const filteredPools = computed(() =>
-  selectedTokens.value.length > 0
-    ? (investmentPools?.value || []).filter(pool => {
-        return selectedTokens.value.every((selectedToken: string) =>
-          (pool.tokenAddresses || []).includes(selectedToken)
-        );
-      })
-    : investmentPools?.value || []
-);
-
 const showMigrationColumn = computed(() =>
   userPools.value?.some(pool => {
     return (
@@ -97,8 +87,6 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    {{ dataStates }}
-    {{ (investmentPools || []).map(pool => pool.dynamic?.apr) }}
     <template v-if="isWalletReady || isWalletConnecting">
       <BalStack vertical>
         <div class="px-4 lg:px-0">

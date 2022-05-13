@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import {
   flatten,
   get,
-  head,
   isArray,
   last,
   mapValues,
@@ -11,7 +10,7 @@ import {
   tail
 } from 'lodash';
 import { QueryKey } from 'react-query';
-import { computed, reactive, Ref, ref, watch } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { useQueries } from 'vue-query';
 
 export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
@@ -46,8 +45,9 @@ type Promises = Record<
   }
 >;
 
+const result = ref<Record<string, any[]>>({});
+
 export default function useQueryStreams(id: string, promises: Promises) {
-  const result = ref<Record<string, any[]>>({});
   const currentPage = ref(1);
   const initQuery = computed(() =>
     Object.values(promises).find(query => query.init === true)
@@ -86,14 +86,6 @@ export default function useQueryStreams(id: string, promises: Promises) {
 
   // when the initial query has changes we want to wipe everything
   // but the first page to reset pagination
-  watch(initialQueryHash, () => {
-    currentPage.value = 1;
-    result.value[initialQueryHash.value] = result.value[initialQueryHash.value]
-      ?.length
-      ? [head(result.value[initialQueryHash.value])]
-      : [];
-  });
-
   Object.keys(promises).forEach(promiseKey => {
     const query = promises[promiseKey];
 
