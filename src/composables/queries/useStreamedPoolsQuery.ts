@@ -6,11 +6,9 @@ import { FiatCurrency } from '@/constants/currency';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { getPoolAddress } from '@/lib/utils/balancer/pool';
-import { getExcludedAddresses } from '@/lib/utils/liquidityMining';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { ExcludedAddresses } from '@/services/balancer/subgraph/entities/pools/helpers';
 import { DecoratedPool, Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import PoolService from '@/services/pool/pool.service';
@@ -53,18 +51,14 @@ async function fetchBasicPoolMetadata(
   return pools;
 }
 
-function formatPools(pools: Pool[], excludedAddresses: ExcludedAddresses) {
+function formatPools(pools: Pool[]) {
   return pools.map(pool => {
     const poolService = new PoolService(pool);
     return {
       ...pool,
       address: getPoolAddress(pool.id),
       tokenAddresses: pool.tokensList.map(token => getAddress(token)),
-      tokens: poolService.formatPoolTokens(),
-      miningTotalLiquidity: poolService.removeExcludedAddressesFromTotalLiquidity(
-        pool.totalLiquidity,
-        excludedAddresses
-      )
+      tokens: poolService.formatPoolTokens()
     };
   });
 }
@@ -145,12 +139,6 @@ async function decorateWithAPRs(
   const decorated = pools.map(async pool => {
     const poolService = new PoolService(pool);
     const {
-      hasLiquidityMiningRewards,
-      liquidityMiningAPR,
-      liquidityMiningBreakdown
-    } = poolService.calcLiquidityMiningAPR(prices, currency);
-
-    const {
       thirdPartyAPR,
       thirdPartyAPRBreakdown
     } = await poolService.calcThirdPartyAPR(
@@ -182,9 +170,6 @@ async function decorateWithAPRs(
 
     pool.dynamic.apr.thirdParty = thirdPartyAPR;
     pool.dynamic.apr.thirdPartyBreakdown = thirdPartyAPRBreakdown;
-    pool.dynamic.apr.liquidityMining = liquidityMiningAPR;
-    pool.dynamic.apr.liquidityMiningBreakdown = liquidityMiningBreakdown;
-    pool.hasLiquidityMiningRewards = hasLiquidityMiningRewards;
 
     // staking aprs
     pool.dynamic.apr.staking.BAL = gaugeBALAprs[pool.id];
@@ -195,9 +180,7 @@ async function decorateWithAPRs(
     );
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
 
-    const totalApr = bnum(poolAPR)
-      .plus(liquidityMiningAPR)
-      .plus(thirdPartyAPR);
+    const totalApr = bnum(poolAPR).plus(thirdPartyAPR);
 
     pool.dynamic.fees = fees;
     pool.dynamic.apr.total = totalApr.toString();
@@ -236,19 +219,15 @@ export default function useStreamedPoolsQuery(
         );
       }
     },
-    excludedAddresses: {
-      type: 'independent',
-      queryFn: async () => getExcludedAddresses()
-    },
     protocolFee: {
       type: 'independent',
       queryFn: async () =>
         balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage()
     },
     formatPools: {
-      waitFor: ['excludedAddresses', 'liquidity.id'],
-      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
-        return formatPools(pools.value, data.value.excludedAddresses);
+      waitFor: ['liquidity.id'],
+      queryFn: async (pools: Ref<Pool[]>) => {
+        return formatPools(pools.value);
       }
     },
     liquidity: {

@@ -70,7 +70,9 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 }
 
 export function isWeth(pool: AnyPool): boolean {
-  return (pool.tokenAddresses || []).includes(configService.network.addresses.weth);
+  return (pool.tokenAddresses || []).includes(
+    configService.network.addresses.weth
+  );
 }
 
 export function isWstETH(pool: AnyPool): boolean {

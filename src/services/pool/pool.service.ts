@@ -4,11 +4,6 @@ import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
-import {
-  computeAPRsForPool,
-  computeTotalAPRForPool,
-  currentLiquidityMiningRewards
-} from '@/lib/utils/liquidityMining';
 
 import { aaveService } from '../aave/aave.service';
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
@@ -26,7 +21,6 @@ import { TokenPrices } from '../coingecko/api/price.service';
 import { lidoService } from '../lido/lido.service';
 import LiquidityConcern from './concerns/liquidity.concern';
 
-const IS_LIQUIDITY_MINING_ENABLED = true;
 export default class PoolService {
   pool: AnyPool;
   liquidityConcern: LiquidityConcern;
@@ -105,38 +99,6 @@ export default class PoolService {
       address => address !== poolAddress.toLowerCase()
     );
     return this.pool;
-  }
-
-  calcLiquidityMiningAPR(prices: TokenPrices, currency: FiatCurrency) {
-    let liquidityMiningAPR = '0';
-    let liquidityMiningBreakdown = {};
-
-    const liquidityMiningRewards = currentLiquidityMiningRewards[this.pool.id];
-
-    const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
-      ? !!liquidityMiningRewards
-      : false;
-
-    if (hasLiquidityMiningRewards) {
-      liquidityMiningAPR = computeTotalAPRForPool(
-        liquidityMiningRewards,
-        prices,
-        currency,
-        this.pool.miningTotalLiquidity
-      );
-      liquidityMiningBreakdown = computeAPRsForPool(
-        liquidityMiningRewards,
-        prices,
-        currency,
-        this.pool.miningTotalLiquidity
-      );
-    }
-
-    return {
-      hasLiquidityMiningRewards,
-      liquidityMiningAPR,
-      liquidityMiningBreakdown
-    };
   }
 
   formatPoolTokens(): PoolToken[] {
