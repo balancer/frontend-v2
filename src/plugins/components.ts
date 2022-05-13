@@ -15,5 +15,5 @@ export function registerGlobalComponents(app: App): void {
     const componentConfig = req(filePath);
     app.component(componentName, componentConfig.default || componentConfig);
   }
-  app.component('jazzicon', Jazzicon);
+  app.component('Jazzicon', Jazzicon);
 }
