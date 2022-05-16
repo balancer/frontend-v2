@@ -76,6 +76,13 @@ const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
 
+const isInvestmentPoolsTableLoading = computed(
+  () =>
+    dataStates['basic'] === 'loading' ||
+    isLoadingMore.value ||
+    priceQueryLoading.value
+);
+
 watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 /**
  * METHODS
@@ -141,10 +148,6 @@ function navigateToCreatePool() {
         </div>
       </div>
       <PoolsTable
-        v-if="
-          (dataStates['basic'] !== 'loading' || isLoadingMore) &&
-            !priceQueryLoading
-        "
         :data="investmentPools"
         :noPoolsLabel="$t('noPoolsFound')"
         :isLoadingMore="isLoadingMore"
@@ -154,6 +157,7 @@ function navigateToCreatePool() {
         :hiddenColumns="['migrate', 'stake']"
         :columnStates="dataStates"
         :isPaginated="true"
+        :isLoading="isInvestmentPoolsTableLoading"
       >
       </PoolsTable>
       <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
