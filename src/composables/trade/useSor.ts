@@ -27,7 +27,7 @@ import {
   SorManager,
   SorReturn
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
+import { getStETHByWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import {
   getWrapOutput,
@@ -213,14 +213,19 @@ export default function useSor({
         const tokenInDecimals = getTokenDecimals(tokenInAddressInput.value);
         const tokenOutDecimals = getTokenDecimals(tokenOutAddressInput.value);
 
-        const tokenInAddress =
+        let tokenInAddress =
           tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
             ? AddressZero
             : tokenInAddressInput.value;
-        const tokenOutAddress =
+        let tokenOutAddress =
           tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS
             ? AddressZero
             : tokenOutAddressInput.value;
+
+        if (isStEthAddress(tokenInAddressInput.value))
+          tokenInAddress = configService.network.addresses.wstETH;
+        if (isStEthAddress(tokenOutAddressInput.value))
+          tokenOutAddress = configService.network.addresses.wstETH;
 
         const tokenInPosition = result.tokenAddresses.indexOf(
           tokenInAddress.toLowerCase()
@@ -248,17 +253,15 @@ export default function useSor({
         );
 
         if (swapType === SwapType.SwapExactOut) {
-          tokenInAmountInput.value =
-            tokenInAmountNormalised.toNumber() > 0
-              ? formatAmount(tokenInAmountNormalised.toString())
-              : '';
+          tokenInAmountInput.value = tokenInAmountNormalised.gt(0)
+            ? formatAmount(tokenInAmountNormalised.toString())
+            : '';
         }
 
         if (swapType === SwapType.SwapExactIn) {
-          tokenOutAmountInput.value =
-            tokenOutAmountNormalised.toNumber() > 0
-              ? formatAmount(tokenOutAmountNormalised.toString())
-              : '';
+          tokenOutAmountInput.value = tokenOutAmountNormalised.gt(0)
+            ? formatAmount(tokenOutAmountNormalised.toString())
+            : '';
         }
       }
     }
