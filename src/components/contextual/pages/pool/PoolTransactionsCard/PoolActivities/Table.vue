@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import { getAddress } from '@ethersproject/address';
 import { formatDistanceToNow } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import usePoolTransactionStats from '@/composables/pools/usePoolTransactionStats';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
 import {
-  FullPool,
   PoolActivity,
   PoolActivityType
 } from '@/services/balancer/subgraph/types';
@@ -35,7 +36,7 @@ type ActivityRow = {
 };
 
 type Props = {
-  pool: FullPool;
+  tokens: string[];
   poolActivities: PoolActivity[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -62,11 +63,7 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  getPoolInvestmentValue,
-  getPoolInvestmentDetails
-} = usePoolTransactionStats(computed(() => props.pool));
-
+const { tokens, priceFor } = useTokens();
 /**
  * COMPUTED
  */
@@ -113,7 +110,7 @@ const activityRows = computed<ActivityRow[]>(() =>
     ? []
     : props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
         const isJoin = type === 'Join';
-        const value = getPoolInvestmentValue(amounts);
+        const value = getJoinExitValue(amounts);
 
         return {
           label: isJoin ? t('invest') : t('withdraw.label'),
@@ -126,10 +123,45 @@ const activityRows = computed<ActivityRow[]>(() =>
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
           type,
-          tokenAmounts: getPoolInvestmentDetails(amounts)
+          tokenAmounts: getJoinExitDetails(amounts)
         };
       })
 );
+
+/**
+ * METHODS
+ */
+function getJoinExitValue(amounts: PoolActivity['amounts']) {
+  let total = bnum(0);
+
+  for (let i = 0; i < amounts.length; i++) {
+    const amount = amounts[i];
+    const address = getAddress(props.tokens[i]);
+    const token = tokens.value[address];
+    const price = priceFor(token.address);
+    const amountNumber = Math.abs(parseFloat(amount));
+    // If the price is unknown for any of the positive amounts - the value cannot be computed.
+    if (amountNumber > 0 && price === 0) {
+      return 0;
+    }
+    total = total.plus(bnum(amountNumber).times(price));
+  }
+  return total.toNumber();
+}
+
+function getJoinExitDetails(amounts: PoolActivity['amounts']) {
+  return amounts.map((amount, index) => {
+    const address = getAddress(props.tokens[index]);
+    const token = tokens.value[address];
+    const symbol = token ? token.symbol : address;
+    const amountNumber = parseFloat(amount);
+    return {
+      address,
+      symbol,
+      amount: fNum2(amountNumber, FNumFormats.token)
+    };
+  });
+}
 </script>
 
 <template>
