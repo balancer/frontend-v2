@@ -344,7 +344,7 @@ watch(
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
-          :key="`tableRow-${index}-${dataItem}`"
+          :key="`tableRow-${index}`"
           :link="link"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"

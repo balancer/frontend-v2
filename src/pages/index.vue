@@ -10,9 +10,11 @@ import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import usePools from '@/composables/pools/usePools';
+import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMigratablePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
@@ -29,30 +31,20 @@ const {
   removeSelectedToken
 } = usePoolFilters();
 
+const { userPools, isLoadingPools, isLoadingUserPools, poolsQuery } = usePools(
+  selectedTokens
+);
 const {
-  pools,
-  userPools,
-  isLoadingPools,
-  isLoadingUserPools,
-  loadMorePools,
-  poolsHasNextPage,
-  poolsIsFetchingNextPage,
-  poolsQuery
-} = usePools(selectedTokens);
+  dataStates,
+  result: investmentPools,
+  loadMore,
+  isLoadingMore
+} = useStreamedPoolsQuery(selectedTokens);
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
+const { priceQueryLoading } = useTokens();
 
 // COMPUTED
-const filteredPools = computed(() =>
-  selectedTokens.value.length > 0
-    ? pools.value?.filter(pool => {
-        return selectedTokens.value.every((selectedToken: string) =>
-          pool.tokenAddresses.includes(selectedToken)
-        );
-      })
-    : pools?.value
-);
-
 const showMigrationColumn = computed(() =>
   userPools.value?.some(pool => {
     return (
@@ -84,8 +76,14 @@ const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
 
-watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
+const isInvestmentPoolsTableLoading = computed(
+  () =>
+    dataStates['basic'] === 'loading' ||
+    isLoadingMore.value ||
+    priceQueryLoading.value
+);
 
+watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 /**
  * METHODS
  */
@@ -149,19 +147,19 @@ function navigateToCreatePool() {
           </BalBtn>
         </div>
       </div>
-
       <PoolsTable
-        :isLoading="isLoadingPools"
-        :data="filteredPools"
+        :data="investmentPools"
         :noPoolsLabel="$t('noPoolsFound')"
-        :isPaginated="poolsHasNextPage"
-        :isLoadingMore="poolsIsFetchingNextPage"
-        @loadMore="loadMorePools"
+        :isLoadingMore="isLoadingMore"
+        @loadMore="loadMore"
         :selectedTokens="selectedTokens"
         class="mb-8"
         :hiddenColumns="['migrate', 'stake']"
-      />
-
+        :columnStates="dataStates"
+        :isPaginated="true"
+        :isLoading="isInvestmentPoolsTableLoading"
+      >
+      </PoolsTable>
       <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
         <FeaturedPools />
       </div>

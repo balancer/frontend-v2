@@ -38,15 +38,15 @@ const { t } = useI18n();
  * COMPUTED
  */
 const validAPR = computed(
-  () => Number(props.pool.dynamic.apr.total) * 100 <= APR_THRESHOLD
+  () => Number(props?.pool?.dynamic?.apr?.total || '0') * 100 <= APR_THRESHOLD
 );
 
 const hasThirdPartyAPR = computed(() =>
-  bnum(props.pool.dynamic.apr.thirdParty).gt(0)
+  bnum(props?.pool?.dynamic?.apr?.thirdParty || '0').gt(0)
 );
 
 const thirdPartyBreakdown = computed(
-  () => props.pool.dynamic.apr.thirdPartyBreakdown
+  () => props?.pool?.dynamic?.apr?.thirdPartyBreakdown
 );
 
 const thirdPartyTokens = computed(() =>
@@ -58,15 +58,15 @@ const thirdPartyMultiRewardPool = computed(
 );
 
 const thirdPartyAPRLabel = computed(() => {
-  if (isWstETH(props.pool)) return t('thirdPartyRewards.apr.steth');
-  if (isStablePhantom(props.pool.poolType))
+  if (isWstETH(props?.pool)) return t('thirdPartyRewards.apr.steth');
+  if (isStablePhantom(props?.pool?.poolType))
     return t('thirdPartyRewards.apr.boosted');
 
   return '';
 });
 
 const totalAPRRange = computed(() => {
-  const adjustedRange = getAprRangeWithRewardEmissions(props.pool);
+  const adjustedRange = getAprRangeWithRewardEmissions(props?.pool);
   return adjustedRange;
 });
 
@@ -74,18 +74,18 @@ const totalAPRRange = computed(() => {
 function getFlattenedStakingAPRItems(pool: DecoratedPool) {
   const items: Record<string, string> = {};
   if (hasBALEmissions(pool)) {
-    (items['Min BAL'] = pool.dynamic.apr.staking?.BAL?.min || '0'),
-      (items['Max BAL'] = pool.dynamic.apr.staking?.BAL?.max || '0');
+    (items['Min BAL'] = pool.dynamic?.apr.staking?.BAL?.min || '0'),
+      (items['Max BAL'] = pool.dynamic?.apr.staking?.BAL?.max || '0');
   }
-  if (bnum(pool.dynamic.apr.staking?.Rewards || '0').gt(0)) {
-    items['Rewards'] = pool.dynamic.apr.staking?.Rewards || '0';
+  if (bnum(pool.dynamic?.apr.staking?.Rewards || '0').gt(0)) {
+    items['Rewards'] = pool.dynamic?.apr.staking?.Rewards || '0';
   }
   return items;
 }
 
 function getTotalRewardsAPR(pool: DecoratedPool) {
-  return bnum(pool.dynamic.apr.staking?.Rewards || '0').plus(
-    pool.dynamic.apr.total
+  return bnum(pool.dynamic?.apr.staking?.Rewards || '0').plus(
+    pool.dynamic?.apr?.total || '0'
   );
 }
 </script>
@@ -111,10 +111,10 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
         <div class="text-gray-500">{{ $t('totalAPR') }}</div>
-        <div v-if="pool.dynamic.boost">
+        <div v-if="pool.dynamic?.boost">
           {{
             fNum2(
-              getBoostAdjustedTotalAPR(pool, pool.dynamic.boost),
+              getBoostAdjustedTotalAPR(pool, pool.dynamic?.boost),
               FNumFormats.percent
             )
           }}
@@ -129,12 +129,12 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           </div>
         </div>
         <div class="text-lg" v-else>
-          {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
+          {{ fNum2(pool.dynamic?.apr?.total, FNumFormats.percent) }}
         </div>
       </div>
       <div class="p-3">
         <div class="whitespace-nowrap flex items-center mb-1">
-          {{ fNum2(pool.dynamic.apr.pool, FNumFormats.percent) }}
+          {{ fNum2(pool.dynamic?.apr?.pool, FNumFormats.percent) }}
           <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
         <BalBreakdown
@@ -143,7 +143,7 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           :hideItems="!thirdPartyMultiRewardPool"
         >
           <div class="flex items-center">
-            {{ fNum2(pool.dynamic.apr.thirdParty, FNumFormats.percent) }}
+            {{ fNum2(pool.dynamic?.apr.thirdParty, FNumFormats.percent) }}
             <span class="ml-1 text-gray-500 text-xs">
               {{ thirdPartyAPRLabel }}
             </span>
@@ -155,11 +155,11 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
             </span>
           </template>
         </BalBreakdown>
-        <BalBreakdown v-if="hasStakingRewards(pool) && pool.dynamic.boost">
+        <BalBreakdown v-if="hasStakingRewards(pool) && pool.dynamic?.boost">
           <div class="flex items-center">
             {{
               fNum2(
-                getBoostAdjustedTotalAPR(pool, pool.dynamic.boost),
+                getBoostAdjustedTotalAPR(pool, pool.dynamic?.boost),
                 FNumFormats.percent
               )
             }}
@@ -171,14 +171,14 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
         <BalBreakdown
           v-if="
             hasStakingRewards(pool) &&
-              !pool.dynamic.boost &&
+              !pool.dynamic?.boost &&
               !hasBALEmissions(pool)
           "
         >
           <div class="flex items-center">
             {{
               fNum2(
-                pool.dynamic.apr.staking?.Rewards || '0',
+                pool.dynamic?.apr.staking?.Rewards || '0',
                 FNumFormats.percent
               )
             }}
@@ -191,14 +191,14 @@ function getTotalRewardsAPR(pool: DecoratedPool) {
           :items="Object.entries(getFlattenedStakingAPRItems(pool))"
           v-if="
             hasStakingRewards(pool) &&
-              !pool.dynamic.boost &&
+              !pool.dynamic?.boost &&
               hasBALEmissions(pool)
           "
         >
           <div class="flex items-center">
             {{
               fNum2(
-                pool.dynamic.apr.staking?.BAL?.min || '0',
+                pool.dynamic?.apr.staking?.BAL?.min || '0',
                 FNumFormats.percent
               )
             }}
