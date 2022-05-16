@@ -1058,6 +1058,32 @@
     }
   },
   {
+    "address": "0x86EC8Bd97622dc80B4a7346bc853760d99D14C7F",
+    "network": 1,
+    "pool": {
+      "id": "0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de",
+      "address": "0xe8cc7E765647625B95F59C15848379D10B9AB4af",
+      "poolType": "Weighted",
+      "symbol": "20WETH-80WNCG",
+      "tokens": [
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "0.2",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xf203Ca1769ca8e9e8FE1DA9D147DB68B6c919817",
+          "weight": "0.8",
+          "symbol": "WNCG"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "0xf203Ca1769ca8e9e8FE1DA9D147DB68B6c919817": ""
+    }
+  },
+  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "pool": {
