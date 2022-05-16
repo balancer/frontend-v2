@@ -52,7 +52,12 @@ function handleInternalClose() {
           :label="$t('proceed')"
           color="gradient"
         />
-        <BalBtn :label="$t('cancel')" outline @click="handleInternalClose" />
+        <BalBtn
+          color="gray"
+          :label="$t('cancel')"
+          outline
+          @click="handleInternalClose"
+        />
       </div>
     </div>
   </BalModal>
