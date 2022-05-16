@@ -178,6 +178,10 @@ async function decorateWithAPRs(
       pastPoolsMap[pool.id],
       protocolFeePercentage
     );
+
+    // pool apr
+    pool.dynamic.apr.pool = poolAPR;
+
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
 
     const totalApr = bnum(poolAPR).plus(thirdPartyAPR);
