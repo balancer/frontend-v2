@@ -222,6 +222,10 @@ export default function useSor({
             ? AddressZero
             : tokenOutAddressInput.value;
 
+        // If the token in/out is stETH then finding the token position
+        // below doesn't work because result.tokenAddresses only includes
+        // wstETH. This is a crude hack to replace token in/out address
+        // with wstETH so the index mapping works.
         if (isStEthAddress(tokenInAddressInput.value))
           tokenInAddress = configService.network.addresses.wstETH;
         if (isStEthAddress(tokenOutAddressInput.value))
