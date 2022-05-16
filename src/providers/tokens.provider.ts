@@ -12,6 +12,7 @@ import {
   toRefs
 } from 'vue';
 
+import balTokenList from '@/assets/tokenlists/balancer.json';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
