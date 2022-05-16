@@ -17,17 +17,19 @@
       }"
     >
       <template v-slot:tokenColumnCell="token">
-        <div class="px-6 py-4 flex flex-row w-52">
+        <div class="px-6 py-4 flex flex-row">
           <BalLink
             :href="explorer.addressLink(token.address)"
             external
             noStyle
-            class="flex items-center"
+            class="flex items-center w-full"
           >
-            <BalAsset :address="token.address" :size="36" />
-            <span class="pl-4 font-medium eth-address">
+            <div><BalAsset :address="token.address" :size="36" /></div>
+            <div
+              class="pl-4 font-medium eth-address truncate text-ellipsis overflow-hidden"
+            >
               {{ symbolFor(token.address) }}
-            </span>
+            </div>
             <BalIcon
               name="arrow-up-right"
               size="sm"
