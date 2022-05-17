@@ -7,6 +7,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import { shortenLabel } from '@/lib/utils';
 import { bnum } from '@/lib/utils';
 import { PoolSwap } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -61,19 +62,11 @@ const { explorerLinks } = useWeb3();
  */
 const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
   {
-    name: t('action'),
+    name: t('trader'),
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
-    width: 150,
-    sortable: false
-  },
-  {
-    name: t('details'),
-    id: 'details',
-    accessor: '',
-    Cell: 'detailsCell',
-    width: 325,
+    width: 190,
     sortable: false
   },
   {
@@ -86,6 +79,15 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     sortKey: pool => pool.value,
     width: 125
   },
+  {
+    name: t('tradeDetails'),
+    id: 'details',
+    accessor: '',
+    Cell: 'detailsCell',
+    width: 310,
+    sortable: false
+  },
+
   {
     name: t('time'),
     id: 'timeAgo',
@@ -107,7 +109,10 @@ const swapRows = computed<SwapRow[]>(() =>
           tokenAmountIn,
           tokenAmountOut,
           timestamp,
-          tx
+          tx,
+          userAddress,
+          ensName,
+          ensAvatar
         }) => {
           const value = bnum(priceFor(tokenOut))
             .times(tokenAmountOut)
@@ -124,6 +129,9 @@ const swapRows = computed<SwapRow[]>(() =>
             tokenAmountIn,
             tokenAmountOut,
             timestamp,
+            userAddress: userAddress.id,
+            ensName,
+            ensAvatar,
             formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
             tx
           };
@@ -154,11 +162,24 @@ const swapRows = computed<SwapRow[]>(() =>
         sortDirection: 'desc'
       }"
     >
-      <template v-slot:actionCell>
+      <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            {{ $t('swap') }}
+            <BalAsset
+              class="mr-2 flex-shrink-0"
+              :address="action.ensAvatar || action.userAddress"
+              :size="30"
+            />
+            <span :class="[action.ensName && 'truncate']">
+              {{ action.ensName || shortenLabel(action.userAddress) }}
+            </span>
           </div>
+        </div>
+      </template>
+
+      <template v-slot:valueCell="action">
+        <div class="px-6 py-4 flex justify-end font-numeric">
+          {{ action.formattedValue }}
         </div>
       </template>
 
@@ -177,12 +198,6 @@ const swapRows = computed<SwapRow[]>(() =>
               fNum2(action.tokenAmountOut, FNumFormats.token)
             }}</span>
           </div>
-        </div>
-      </template>
-
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end font-numeric">
-          {{ action.formattedValue }}
         </div>
       </template>
 

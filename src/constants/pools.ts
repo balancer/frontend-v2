@@ -16,6 +16,8 @@ export type Pools = {
   IdsMap: Partial<Record<'staBAL' | 'bbAaveUSD' | 'B-80BAL-20WETH', string>>;
   Pagination: {
     PerPage: number;
+    PerPool: number;
+    PerPoolInitial: number;
   };
   DelegateOwner: string;
   ZeroAddress: string;
@@ -47,7 +49,9 @@ const POOLS_KOVAN: Pools = {
       '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701'
   },
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -114,7 +118,9 @@ const POOLS_MAINNET: Pools = {
       '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014'
   },
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -209,7 +215,9 @@ const POOLS_MAINNET: Pools = {
 const POOLS_POLYGON: Pools = {
   IdsMap: {},
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -277,7 +285,9 @@ const POOLS_POLYGON: Pools = {
 const POOLS_ARBITRUM: Pools = {
   IdsMap: {},
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -332,7 +342,9 @@ const POOLS_ARBITRUM: Pools = {
 const POOLS_GENERIC: Pools = {
   IdsMap: {},
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',

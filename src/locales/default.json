@@ -536,6 +536,20 @@
             }
         }
     },
+    "poolTransactionStats": {
+        "trade": {
+            "volume": "Volume {period}",
+            "largest": "Largest trade {period}",
+            "ave": "Ave. trade {period}",
+            "total": "Total trades {period}"
+        },
+        "investment": {
+            "netTvl": "Net TVL {period}",
+            "largest": "Largest investment {period}",
+            "ave": "Ave. investment {period}",
+            "net": "Net investments {period}"
+        }
+    },
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "popularBases": "Popular:",
@@ -966,6 +980,8 @@
     "totalValue": "Total value",
     "totalValueTo": "Total value to",
     "trade": "Trade",
+    "trader": "Trader",
+    "tradeDetails": "Trade details",
     "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
     "tradeFromWeth": "Trade from WETH",

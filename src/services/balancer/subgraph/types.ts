@@ -195,6 +195,11 @@ export interface PoolSwap {
   tokenAmountOut: string;
   timestamp: number;
   tx: string;
+  userAddress: {
+    id: string;
+  };
+  ensName?: string | null;
+  ensAvatar?: string | null;
 }
 
 export interface PoolSnapshot {
