@@ -153,7 +153,11 @@ export default class Pools {
 
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
-      const poolAPR = this.calcAPR(pool, pastPool, protocolFeePercentage);
+      const swapFeeAPR = this.calcSwapFeeAPR(
+        pool,
+        pastPool,
+        protocolFeePercentage
+      );
 
       const fees = this.calcFees(pool, pastPool);
       const {
@@ -166,9 +170,7 @@ export default class Pools {
         protocolFeePercentage
       );
 
-      const balAPR = gaugeBALAprs[pool.id];
-      const rewardTokenAPR = gaugeRewardTokenAprs[pool.id];
-      const totalAPR = bnSum([poolAPR, thirdPartyAPR]).toString();
+      const totalAPR = bnSum([swapFeeAPR, thirdPartyAPR]).toString();
 
       const isNewPool = this.isNewPool(pool);
 
@@ -179,12 +181,12 @@ export default class Pools {
           volume,
           fees,
           apr: {
-            pool: poolAPR,
+            pool: swapFeeAPR,
             thirdParty: thirdPartyAPR,
             thirdPartyBreakdown: thirdPartyAPRBreakdown,
             staking: {
-              BAL: balAPR,
-              Rewards: rewardTokenAPR
+              BAL: gaugeBALAprs[pool.id],
+              Rewards: gaugeRewardTokenAprs[pool.id]
             },
             total: totalAPR
           },
@@ -252,7 +254,7 @@ export default class Pools {
       .toString();
   }
 
-  private calcAPR(
+  private calcSwapFeeAPR(
     pool: Pool,
     pastPool: Pool | undefined,
     protocolFeePercentage: number
