@@ -62,7 +62,6 @@ const decoratedPool: DecoratedPool = {
     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
   ],
   miningTotalLiquidity: '2300',
-  hasLiquidityMiningRewards: false,
   dynamic: {
     period: '24h',
     volume: '44069.1679612192361059063129301',
@@ -71,8 +70,6 @@ const decoratedPool: DecoratedPool = {
       pool: '0.03875806812649627',
       thirdParty: '0',
       thirdPartyBreakdown: {},
-      liquidityMining: '0',
-      liquidityMiningBreakdown: {},
       total: '0.03875806812649627'
     },
     isNewPool: false

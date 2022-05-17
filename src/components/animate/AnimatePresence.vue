@@ -83,19 +83,17 @@ export default defineComponent({
       // available tick, so it's instant visually but on a tick delay for code
       emit('on-presence', { isCompleted: false });
 
-      setTimeout(
-        () =>
-          anime({
-            targets: el,
-            ...props.animate,
-            easing: 'spring(0.2, 80, 10, 0)',
-            complete: () => {
-              done();
-              emit('on-presence', { isCompleted: true });
-            }
-          }),
-        0
-      );
+      setTimeout(() => {
+        anime({
+          targets: el,
+          ...props.animate,
+          easing: 'spring(0.2, 80, 10, 0)',
+          complete: () => {
+            done();
+            emit('on-presence', { isCompleted: true });
+          }
+        });
+      }, 0);
       setTimeout(() => {
         if (animateContainer.value) {
           emit('update-dimensions', {

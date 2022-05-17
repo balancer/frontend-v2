@@ -10,14 +10,18 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 
 <template>
   <div v-if="isVeBalSupported" class="">
-    <div class="pb-12">
+    <div>
       <Hero />
     </div>
   </div>
-  <div v-if="isVeBalSupported" class="lg:container lg:mx-auto">
-    <div class="mb-16 px-1 lg:px-0">
-      <MyVeBAL />
+  <div class="py-16 xl:py-20 bg-gray-50 dark:bg-gray-900">
+    <div v-if="isVeBalSupported" class="lg:container lg:mx-auto">
+      <div class="px-1 lg:px-0">
+        <MyVeBAL />
+      </div>
     </div>
+  </div>
+  <div v-if="isVeBalSupported" class="pt-16 xl:pt-20 lg:container lg:mx-auto">
     <div class="mb-16 px-1 lg:px-0">
       <LMVoting />
     </div>

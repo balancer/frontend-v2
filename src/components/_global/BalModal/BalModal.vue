@@ -98,7 +98,6 @@ defineExpose({ hide });
 
 .modal-bg {
   @apply absolute h-full w-full bg-black bg-opacity-80;
-  backdrop-filter: blur(5px);
 }
 
 .modal-card {

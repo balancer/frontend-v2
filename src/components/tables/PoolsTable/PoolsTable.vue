@@ -42,6 +42,7 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  columnStates?: Record<string, string>;
 };
 
 /**
@@ -54,7 +55,8 @@ const props = withDefaults(defineProps<Props>(), {
   noPoolsLabel: 'No pools',
   isPaginated: false,
   hiddenColumns: () => [],
-  showBoost: false
+  showBoost: false,
+  columnStates: () => ({})
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -127,15 +129,12 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
-    accessor: pool =>
-      fNum2(pool.dynamic.volume, {
-        style: 'currency',
-        maximumFractionDigits: 0
-      }),
+    accessor: pool => pool.dynamic?.volume,
     align: 'right',
     id: 'poolVolume',
+    Cell: 'volumeCell',
     sortKey: pool => {
-      const apr = Number(pool.dynamic.volume);
+      const apr = Number(pool?.dynamic?.volume);
       if (apr === Infinity || isNaN(apr)) return 0;
       return apr;
     },
@@ -145,18 +144,20 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBoost'),
     accessor: pool =>
-      pool.dynamic.boost ? `${bnum(pool.dynamic.boost).toFixed(3)}x` : 'N/A',
+      pool?.dynamic?.boost
+        ? `${bnum(pool?.dynamic?.boost).toFixed(3)}x`
+        : 'N/A',
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
-    sortKey: pool => Number(pool.dynamic.boost),
+    sortKey: pool => Number(pool?.dynamic?.boost),
     width: 150,
     cellClassName: 'font-numeric'
   },
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool.dynamic.apr.total,
+    accessor: pool => pool?.dynamic?.apr?.total,
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
@@ -232,8 +233,8 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
 }
 
 function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
-  return bnum(pool.dynamic.apr.staking?.Rewards || '0').plus(
-    pool.dynamic.apr.total
+  return bnum(pool?.dynamic?.apr?.staking?.Rewards || '0').plus(
+    pool?.dynamic?.apr?.total || '0'
   );
 }
 </script>
@@ -255,7 +256,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
       :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
-        getParams: pool => ({ id: pool.id })
+        getParams: pool => ({ id: pool.id || '' })
       }"
       :on-row-click="handleRowClick"
       :is-paginated="isPaginated"
@@ -292,7 +293,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
             :selectedTokens="selectedTokens"
           />
           <BalChip
-            v-if="pool.dynamic.isNewPool"
+            v-if="pool?.dynamic?.isNewPool"
             color="red"
             size="sm"
             class="ml-2 uppercase"
@@ -302,10 +303,29 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           </BalChip>
         </div>
       </template>
+      <template v-slot:volumeCell="pool">
+        <div
+          class="px-6 py-4 -mt-1 flex justify-end font-numeric"
+          :key="columnStates.volume"
+        >
+          <span v-if="!pool?.dynamic?.volume">-</span>
+          <span v-else class="text-right">
+            {{
+              fNum2(pool?.dynamic?.volume, {
+                style: 'currency',
+                maximumFractionDigits: 0
+              })
+            }}
+          </span>
+        </div>
+      </template>
       <template v-slot:aprCell="pool">
-        <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
+        <div
+          class="px-6 py-4 -mt-1 flex justify-end font-numeric"
+          :key="columnStates.aprs"
+        >
           <span v-if="hasStakingRewards(pool)" class="text-right">
-            <span v-if="pool.dynamic.boost">
+            <span v-if="pool.dynamic?.boost">
               {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
             </span>
             <span v-else-if="!hasBALEmissions(pool)">
@@ -316,14 +336,17 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
               {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
             </span>
           </span>
+          <span v-else-if="!pool?.dynamic?.apr?.total">
+            <BalLoadingBlock class="h-4 w-12" />
+          </span>
           <span v-else>
             {{
-              Number(pool.dynamic.apr.pool) > 10000
+              Number(pool?.dynamic?.apr?.pool) > 10000
                 ? '-'
-                : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
+                : fNum2(pool?.dynamic?.apr?.total, FNumFormats.percent)
             }}
           </span>
-          <LiquidityAPRTooltip :pool="pool" />
+          <LiquidityAPRTooltip v-if="pool?.dynamic?.apr?.total" :pool="pool" />
         </div>
       </template>
       <template v-slot:migrateCell="pool">

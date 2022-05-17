@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.53.15",
+  "version": "1.54.0",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -85,6 +85,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-vue": "^7.16.0",
     "ethereumjs-util": "^7.0.7",
+    "events": "^3.3.0",
     "feather-icons": "^4.28.0",
     "husky": "^6.0.0",
     "isomorphic-fetch": "^3.0.0",

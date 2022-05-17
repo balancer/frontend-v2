@@ -94,7 +94,10 @@ onMounted(() => {
   if (activator.value && content.value) {
     popper.value = createPopper(activator.value, content.value, {
       placement: props.placement,
-      modifiers: [{ name: 'offset', options: { offset: [0, 8] } }]
+      modifiers: [
+        { name: 'offset', options: { offset: [0, 8] } },
+        { name: 'eventListeners', options: { scroll: false } }
+      ]
     });
   }
 });
