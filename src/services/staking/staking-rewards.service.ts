@@ -26,10 +26,9 @@ import {
   getAprRange
 } from './utils';
 
-export type PoolAPRs = Record<
-  string,
-  { BAL: { min: string; max: string }; Rewards: string }
->;
+export type GaugeBalApr = { min: string; max: string };
+export type GaugeBalAprs = Record<string, GaugeBalApr>;
+export type GaugeRewardTokenAprs = Record<string, string>;
 
 export class StakingRewardsService {
   private gaugeController = new GaugeController(
@@ -98,7 +97,7 @@ export class StakingRewardsService {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
     pools: Pool[];
-  }): Promise<Record<string, { min: string; max: string }>> {
+  }): Promise<GaugeBalAprs> {
     if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = getBalAddress();
@@ -161,7 +160,7 @@ export class StakingRewardsService {
     gauges: SubgraphGauge[];
     pools: Pool[];
     tokens: TokenInfoMap;
-  }): Promise<Record<string, string>> {
+  }): Promise<GaugeRewardTokenAprs> {
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses

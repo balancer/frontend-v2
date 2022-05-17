@@ -139,6 +139,9 @@ export default class Pools {
       })
     ]);
 
+    console.log('gaugeBALAprs', gaugeBALAprs);
+    console.log('gaugeRewardTokenAprs', gaugeRewardTokenAprs);
+
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
 
@@ -153,26 +156,30 @@ export default class Pools {
 
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
+      const fees = this.calcFees(pool, pastPool);
+
+      // Calculate various APRs
       const swapFeeAPR = this.calcSwapFeeAPR(
         pool,
         pastPool,
         protocolFeePercentage
       );
-
-      const fees = this.calcFees(pool, pastPool);
-      const {
-        thirdPartyAPR,
-        thirdPartyAPRBreakdown
-      } = await this.calcThirdPartyAPR(
+      const yieldAPR = await this.calcYieldAPR(
         pool,
         prices,
         currency,
         protocolFeePercentage
       );
+      const stakingAPR = {
+        bal: gaugeBALAprs[pool.id],
+        rewards: gaugeRewardTokenAprs[pool.id]
+      };
 
-      const totalAPR = bnSum([swapFeeAPR, thirdPartyAPR]).toString();
-
-      const isNewPool = this.isNewPool(pool);
+      // const totalAPR = this.calcTotalAPR(
+      //   swapFeeAPR,
+      //   yieldAPR,
+      //   stakingAPR
+      // );
 
       return {
         ...pool,
@@ -181,22 +188,20 @@ export default class Pools {
           volume,
           fees,
           apr: {
-            pool: swapFeeAPR,
-            thirdParty: thirdPartyAPR,
-            thirdPartyBreakdown: thirdPartyAPRBreakdown,
-            staking: {
-              BAL: gaugeBALAprs[pool.id],
-              Rewards: gaugeRewardTokenAprs[pool.id]
-            },
-            total: totalAPR
+            total: '0',
+            swap: swapFeeAPR,
+            yield: yieldAPR,
+            staking: stakingAPR
           },
-          isNewPool
+          isNewPool: this.isNewPool(pool)
         }
       };
     });
 
     return Promise.all(promises);
   }
+
+  // private calcTotalAPR(swapFeeAPR, third);
 
   private async getExcludedAddresses() {
     try {
@@ -275,32 +280,29 @@ export default class Pools {
   }
 
   /**
-   * Fetch additional APRs not covered by pool swap fees and
+   * @description Fetch additional APRs not covered by pool swap fees and
    * liquidity minning rewards. These APRs may require 3rd party
    * API requests.
+   * @returns total yield APR and breakdown of total by pool token.
    */
-  private async calcThirdPartyAPR(
+  private async calcYieldAPR(
     pool: Pool,
     prices: TokenPrices,
     currency: FiatCurrency,
     protocolFeePercentage: number
-  ) {
-    let thirdPartyAPR = '0';
-    let thirdPartyAPRBreakdown = {};
+  ): Promise<{ total: string; breakdown: Record<string, string> }> {
+    let total = '0';
+    let breakdown = {};
 
     if (isWstETH(pool)) {
-      thirdPartyAPR = await lidoService.calcStEthAPRFor(
-        pool,
-        protocolFeePercentage
-      );
+      total = await lidoService.calcStEthAPRFor(pool, protocolFeePercentage);
     } else if (isStablePhantom(pool.poolType)) {
       const aaveAPR = await aaveService.calcWeightedSupplyAPRFor(
         pool,
         prices,
         currency
       );
-      let { total } = aaveAPR;
-      const { breakdown } = aaveAPR;
+      ({ total, breakdown } = aaveAPR);
 
       // TODO burn with fire once scalable linear pool support is added.
       // If USD+ pool, replace aave APR with USD+
@@ -328,14 +330,11 @@ export default class Pools {
           total = bnSum(Object.values(breakdown)).toString();
         }
       }
-
-      thirdPartyAPR = total;
-      thirdPartyAPRBreakdown = breakdown;
     }
 
     return {
-      thirdPartyAPR,
-      thirdPartyAPRBreakdown
+      total,
+      breakdown
     };
   }
 

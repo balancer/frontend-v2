@@ -19,15 +19,23 @@ import {
 } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import { lidoService } from '../lido/lido.service';
+import { PoolAPRs } from '../staking/staking-rewards.service';
+import { AprConcern } from './concerns/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 
 export default class PoolService {
   pool: AnyPool;
   liquidityConcern: LiquidityConcern;
+  aprConcern: AprConcern;
 
-  constructor(pool: AnyPool, liquidityConcernClass = LiquidityConcern) {
+  constructor(
+    pool: AnyPool,
+    liquidityConcernClass = LiquidityConcern,
+    aprConcernClass = AprConcern
+  ) {
     this.pool = pool;
     this.liquidityConcern = new liquidityConcernClass(this);
+    this.aprConcern = new aprConcernClass(this.pool);
   }
 
   public calcTotalLiquidity(
@@ -40,6 +48,10 @@ export default class PoolService {
       console.error('Failed to calc pool liquidity:', error);
       return '0';
     }
+  }
+
+  public calcAPR(): PoolAPRs {
+    return {};
   }
 
   /**

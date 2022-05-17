@@ -127,8 +127,8 @@ export function getAprRange(apr: string) {
 export function hasStakingRewards(pool: DecoratedPool | undefined) {
   if (!pool || !pool?.dynamic?.apr?.staking) return false;
   return (
-    bnum(pool.dynamic.apr.staking?.BAL?.min || 0).gt(0) ||
-    bnum(pool.dynamic.apr.staking?.Rewards || 0).gt(0)
+    bnum(pool.dynamic.apr.staking?.bal?.min || 0).gt(0) ||
+    bnum(pool.dynamic.apr.staking?.rewards || 0).gt(0)
   );
 }
 
@@ -137,7 +137,7 @@ export function hasStakingRewards(pool: DecoratedPool | undefined) {
  */
 export function hasBALEmissions(pool?: DecoratedPool) {
   if (!pool) return false;
-  return bnum(pool.dynamic.apr.staking?.BAL?.min || 0).gt(0);
+  return bnum(pool.dynamic.apr.staking?.bal?.min || 0).gt(0);
 }
 
 /**
@@ -145,8 +145,8 @@ export function hasBALEmissions(pool?: DecoratedPool) {
  * the rewards token APR
  */
 export function getBoostAdjustedTotalAPR(pool: DecoratedPool, boost: string) {
-  const rewardsApr = bnum(pool.dynamic.apr.staking?.Rewards || 0);
-  const minBALApr = bnum(pool.dynamic.apr.staking?.BAL?.min || 0);
+  const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
+  const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
   const boostedApr = minBALApr.times(boost);
   return boostedApr
     .plus(rewardsApr)
@@ -164,9 +164,9 @@ export function getAprRangeWithRewardEmissions(
 ) {
   if (!pool) return { min: '0', max: '0' };
 
-  const rewardsApr = bnum(pool.dynamic.apr.staking?.Rewards || 0);
-  const minBALApr = bnum(pool.dynamic.apr.staking?.BAL?.min || 0);
-  const maxBALApr = bnum(pool.dynamic.apr.staking?.BAL?.max || 0);
+  const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
+  const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
+  const maxBALApr = bnum(pool.dynamic.apr.staking?.bal?.max || 0);
   const minTotalAPR = bnum(pool.dynamic.apr.total)
     .plus(minBALApr)
     .plus(rewardsApr);

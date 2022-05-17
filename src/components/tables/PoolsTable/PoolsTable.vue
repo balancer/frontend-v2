@@ -233,7 +233,7 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
 }
 
 function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
-  return bnum(pool?.dynamic?.apr?.staking?.Rewards || '0').plus(
+  return bnum(pool?.dynamic?.apr?.staking?.rewards || '0').plus(
     pool?.dynamic?.apr?.total || '0'
   );
 }

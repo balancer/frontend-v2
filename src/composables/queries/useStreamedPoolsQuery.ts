@@ -164,27 +164,29 @@ async function decorateWithAPRs(
     if (!pool.dynamic.apr) pool.dynamic.apr = {} as any;
     if (!pool.dynamic.apr.staking)
       pool.dynamic.apr.staking = {
-        BAL: gaugeBALAprs[pool.id] || { min: '0', max: '0' },
-        Rewards: rewardAprs[pool.id] || '0'
+        bal: gaugeBALAprs[pool.id] || { min: '0', max: '0' },
+        rewards: rewardAprs[pool.id] || '0'
       };
 
-    pool.dynamic.apr.thirdParty = thirdPartyAPR;
-    pool.dynamic.apr.thirdPartyBreakdown = thirdPartyAPRBreakdown;
+    pool.dynamic.apr.yield = {
+      total: thirdPartyAPR,
+      breakdown: thirdPartyAPRBreakdown
+    };
 
     // staking aprs
-    pool.dynamic.apr.staking.BAL = gaugeBALAprs[pool.id];
+    pool.dynamic.apr.staking.bal = gaugeBALAprs[pool.id];
 
-    const poolAPR = poolService.calcAPR(
+    const swapFeeAPR = poolService.calcAPR(
       pastPoolsMap[pool.id],
       protocolFeePercentage
     );
 
     // pool apr
-    pool.dynamic.apr.pool = poolAPR;
+    pool.dynamic.apr.swap = swapFeeAPR;
 
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
 
-    const totalApr = bnum(poolAPR).plus(thirdPartyAPR);
+    const totalApr = bnum(swapFeeAPR).plus(thirdPartyAPR);
 
     pool.dynamic.fees = fees;
     pool.dynamic.apr.total = totalApr.toString();

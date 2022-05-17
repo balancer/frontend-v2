@@ -54,8 +54,8 @@ const hasThirdPartyAPR = computed(() =>
 );
 
 const hasStakingAPR = computed(() =>
-  bnum(props.pool.dynamic.apr.staking?.BAL?.min || '0')
-    .plus(props.pool.dynamic.apr.staking?.Rewards || '0')
+  bnum(props.pool.dynamic.apr.staking?.bal?.min || '0')
+    .plus(props.pool.dynamic.apr.staking?.rewards || '0')
     .gt(0)
 );
 

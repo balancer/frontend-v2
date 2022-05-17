@@ -64,22 +64,26 @@ export interface DecoratedPool extends Pool {
   dynamic: {
     period: TimeTravelPeriod;
     volume: string;
-    apr: {
-      pool: string;
-      thirdParty: string;
-      thirdPartyBreakdown: { [address: string]: string };
-      total: string;
-      staking?: {
-        BAL: {
-          min: string;
-          max: string;
-        };
-        Rewards: string;
-      };
-    };
+    apr: PoolAPRs;
     fees: string;
     isNewPool: boolean;
     boost?: string;
+  };
+}
+
+export interface PoolAPRs {
+  total: string | { min: string; max: string };
+  swap: string;
+  yield: {
+    total: string;
+    breakdown: { [address: string]: string };
+  };
+  staking?: {
+    bal: {
+      min: string;
+      max: string;
+    };
+    rewards: string;
   };
 }
 
