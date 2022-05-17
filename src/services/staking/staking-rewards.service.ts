@@ -98,7 +98,7 @@ export class StakingRewardsService {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
     pools: Pool[];
-  }) {
+  }): Promise<Record<string, { min: string; max: string }>> {
     if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = getBalAddress();
@@ -161,7 +161,7 @@ export class StakingRewardsService {
     gauges: SubgraphGauge[];
     pools: Pool[];
     tokens: TokenInfoMap;
-  }) {
+  }): Promise<Record<string, string>> {
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses
