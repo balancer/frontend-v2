@@ -400,10 +400,6 @@ export default defineComponent({
       POOLS.Stakable.AllowList.includes(route.params.id as string)
     );
 
-    const showBugWarning20220513 = computed((): boolean =>
-      POOLS.BugWarning20220513.includes(route.params.id as string)
-    );
-
     /**
      * METHODS
      */
