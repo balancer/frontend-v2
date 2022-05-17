@@ -82,6 +82,22 @@ export interface PoolAPRs {
   veBal?: string;
 }
 
+export interface PoolAPRs {
+  total: string | { min: string; max: string };
+  swap: string;
+  yield: {
+    total: string;
+    breakdown: { [address: string]: string };
+  };
+  staking?: {
+    bal: {
+      min: string;
+      max: string;
+    };
+    rewards: string;
+  };
+}
+
 export interface OnchainTokenData {
   balance: string;
   weight: number;

@@ -153,6 +153,10 @@ export default class PoolService {
     );
   }
 
+  public calcAPR(): PoolAPRs {
+    return {};
+  }
+
   /**
    * fetches StablePhantom linear pools and extracts
    * required attributes.
