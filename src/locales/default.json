@@ -1039,6 +1039,14 @@
             "tradeFees": "Wrap fees"
         }
     },
+    "tradeToggle": {
+        "wrapEth": "Gas trade—required for wrapping ETH",
+        "unwrapEth": "Gas trade—required for unwrapping ETH",
+        "fromEth": "Gas trade—required when trading from ETH",
+        "signature": "Signature ‘gasless’ trade—price optimized with MEV protection.",
+        "tradeGasless": "Trade gasless by signature",
+        "tradeWithGas": "Trade with a gas fee"
+    },
     "transactionAction": {
         "approve": "Approve",
         "claim": "Claim",

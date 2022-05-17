@@ -76,3 +76,16 @@
       transform: scale(1) translateY(0px);
   }
 }
+
+/* Transition component animations */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3 ease-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}

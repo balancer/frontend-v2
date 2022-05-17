@@ -72,35 +72,74 @@
           !ENABLE_LEGACY_TRADE_INTERFACE &&
             trading.isGnosisSupportedOnNetwork.value
         "
-        class="mt-6 text-sm flex items-center"
+        class="mt-5 text-sm flex items-center h-8"
       >
-        <BalTooltip
-          width="64"
-          :disabled="!trading.isGaslessTradingDisabled.value"
-        >
-          <template v-slot:activator>
-            <BalToggle
-              name="tradeGasless"
-              :checked="trading.tradeGasless.value"
-              @toggle="trading.toggleTradeGasless"
-              :disabled="trading.isGaslessTradingDisabled.value"
-            />
-          </template>
+        <Transition name="fade" mode="out-in">
           <div
-            v-text="
-              trading.isWrapUnwrapTrade.value
-                ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
-                : $t('tradeGaslessToggle.disabledTooltip.eth')
-            "
-          ></div>
-        </BalTooltip>
-        <span class="text-sm pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
-        <BalTooltip width="64">
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
-          </template>
-          <div v-html="$t('tradeGaslessToggle.tooltip')" />
-        </BalTooltip>
+            v-if="trading.isGaslessTradingDisabled.value"
+            class="text-gray-600 dark:text-gray-500"
+          >
+            <div class="flex items-center gap-2">
+              <span class="text-lg">⛽</span>
+              <Transition name="fade" mode="out-in">
+                <p v-if="trading.isWrap.value">
+                  {{ $t('tradeToggle.wrapEth') }}
+                </p>
+                <p v-else-if="trading.isUnwrap.value">
+                  {{ $t('tradeToggle.unwrapEth') }}
+                </p>
+                <p v-else>{{ $t('tradeToggle.fromEth') }}</p>
+              </Transition>
+            </div>
+          </div>
+
+          <div v-else>
+            <div class="trade-gasless flex items-center">
+              <BalTooltip
+                width="64"
+                :disabled="!trading.isGaslessTradingDisabled.value"
+              >
+                <template v-slot:activator>
+                  <BalToggle
+                    name="tradeGasless"
+                    :checked="trading.tradeGasless.value"
+                    @toggle="trading.toggleTradeGasless"
+                    :disabled="trading.isGaslessTradingDisabled.value"
+                  />
+                </template>
+                <div
+                  v-text="
+                    trading.isWrapUnwrapTrade.value
+                      ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
+                      : $t('tradeGaslessToggle.disabledTooltip.eth')
+                  "
+                ></div>
+              </BalTooltip>
+              <Transition name="fade" mode="out-in">
+                <span
+                  v-if="trading.tradeGasless.value"
+                  class="text-sm pl-2 text-gray-600 dark:text-gray-500"
+                  >{{ $t('tradeToggle.tradeGasless') }}</span
+                >
+                <span
+                  v-else
+                  class="text-sm pl-2 text-gray-600 dark:text-gray-500"
+                  >{{ $t('tradeToggle.tradeWithGas') }}</span
+                >
+              </Transition>
+              <BalTooltip width="64">
+                <template v-slot:activator>
+                  <BalIcon
+                    name="info"
+                    size="xs"
+                    class="text-gray-400 ml-1 flex"
+                  />
+                </template>
+                <div v-html="$t('tradeGaslessToggle.tooltip')" />
+              </BalTooltip>
+            </div>
+          </div>
+        </Transition>
       </div>
       <TradeRoute
         v-if="alwaysShowRoutes"
@@ -417,5 +456,18 @@ export default defineComponent({
 /* This is needed because the trade settings popover overflows */
 .card-container {
   overflow: unset;
+}
+
+.trade-gasless :deep(.bal-toggle) {
+  width: 3rem;
+}
+.gas-symbol {
+  @apply h-8 w-8 rounded-full flex items-center justify-center text-lg bg-gray-50 dark:bg-gray-800;
+}
+.gas-symbol:before {
+  content: '⛽';
+}
+.signature-symbol:before {
+  content: '✍️';
 }
 </style>
