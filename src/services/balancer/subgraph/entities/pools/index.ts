@@ -168,7 +168,7 @@ export default class Pools {
 
       const balAPR = gaugeBALAprs[pool.id];
       const rewardTokenAPR = gaugeRewardTokenAprs[pool.id];
-      const totalAPR = this.calcTotalAPR(poolAPR, thirdPartyAPR);
+      const totalAPR = bnSum([poolAPR, thirdPartyAPR]).toString();
 
       const isNewPool = this.isNewPool(pool);
 
@@ -335,12 +335,6 @@ export default class Pools {
       thirdPartyAPR,
       thirdPartyAPRBreakdown
     };
-  }
-
-  private calcTotalAPR(poolAPR: string, thirdPartyAPR: string): string {
-    return bnum(poolAPR)
-      .plus(thirdPartyAPR)
-      .toString();
   }
 
   private calcFees(pool: Pool, pastPool: Pool | undefined): string {
