@@ -75,6 +75,8 @@ const emit = defineEmits<{
  * STATE
  */
 const textInput = ref<HTMLInputElement>();
+const isActive = ref(false);
+const isHover = ref(false);
 
 /**
  * COMPOSABLES
@@ -91,8 +93,31 @@ const {
   prependClasses,
   appendClasses,
   borderRadiusClasses
-} = useInputStyles(props, isInvalid, attrs);
+} = useInputStyles(props, isInvalid, isActive, isHover, attrs);
 const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
+
+function handleOnBlur(event: HtmlInputEvent) {
+  isActive.value = false;
+  onBlur(event);
+}
+
+function handleOnInput(event: HtmlInputEvent) {
+  isActive.value = true;
+  onInput(event);
+}
+
+function handleOnClick(event: HtmlInputEvent) {
+  isActive.value = true;
+}
+function handleOnFocus(event: HtmlInputEvent) {
+  isActive.value = true;
+}
+function handleOnMouseOver(event: HtmlInputEvent) {
+  isHover.value = true;
+}
+function handleOnMouseLeave(event: HtmlInputEvent) {
+  isHover.value = false;
+}
 
 /**
  * COMPUTED
@@ -113,6 +138,8 @@ onMounted(() => {
   <div :class="['bal-text-input', parentClasses, borderRadiusClasses]">
     <div
       :class="['input-container', inputContainerClasses, borderRadiusClasses]"
+      @mouseover="handleOnMouseOver"
+      @mouseleave="handleOnMouseLeave"
     >
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
@@ -132,9 +159,11 @@ onMounted(() => {
           :value="modelValue"
           v-bind="inputAttrs"
           :disabled="disabled"
-          @blur="onBlur"
-          @input="onInput"
+          @blur="handleOnBlur"
+          @input="handleOnInput"
           @keydown="onKeydown"
+          @click="handleOnClick"
+          @focus="handleOnFocus"
           :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
@@ -153,7 +182,7 @@ onMounted(() => {
 
 <style scoped>
 .input-container {
-  @apply bg-white dark:bg-gray-800;
+  @apply bg-white dark:bg-gray-800 border transition-colors;
 }
 
 .input-group {
