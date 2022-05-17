@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import APRTooltip from '@/components/tooltips/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
@@ -346,7 +346,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
                 : fNum2(pool?.dynamic?.apr?.total, FNumFormats.percent)
             }}
           </span>
-          <LiquidityAPRTooltip v-if="pool?.dynamic?.apr?.total" :pool="pool" />
+          <APRTooltip v-if="pool?.dynamic?.apr?.total" :pool="pool" />
         </div>
       </template>
       <template v-slot:migrateCell="pool">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/types';
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import APRTooltip from '@/components/tooltips/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
@@ -48,7 +48,7 @@ const { fNum2 } = useNumbers();
         <div class="text-gray-500">{{ $t('apr') }}</div>
         <div class="flex items-center font-semibold">
           {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
-          <LiquidityAPRTooltip :pool="pool" />
+          <APRTooltip :pool="pool" />
         </div>
       </div>
     </div>
