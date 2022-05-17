@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineEmits, withDefaults } from 'vue';
-
 import BalIcon from '../BalIcon/BalIcon.vue';
 import {
   useChipClasses,
