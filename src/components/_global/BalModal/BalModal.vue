@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineExpose, ref } from 'vue';
+import { defineExpose, ref, watch } from 'vue';
 
 import BalCard from '../BalCard/BalCard.vue';
 
@@ -17,7 +17,8 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-withDefaults(defineProps<Props>(), {
+
+const props = withDefaults(defineProps<Props>(), {
   show: false,
   title: '',
   noPad: false,
@@ -38,6 +39,17 @@ const showContent = ref(false);
 function hide(): void {
   showContent.value = false;
 }
+
+watch(
+  () => props.show,
+  () => {
+    if (props.show) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }
+);
 
 /**
  * EXPOSE
