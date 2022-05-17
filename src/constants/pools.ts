@@ -23,7 +23,6 @@ export type Pools = {
     Gauntlet: string[];
   };
   BlockList: string[];
-  BugWarning20220513: string[];
   ExcludedPoolTypes: string[];
   Stable: {
     AllowList: string[];
@@ -67,7 +66,6 @@ const POOLS_KOVAN: Pools = {
     '0x28efa7f86341aa0ad534bdfb033edb4f4ac6adf700020000000000000000067e',
     '0x10ee90b9ff4b9a44a773107280c0ce083619286800020000000000000000067b'
   ],
-  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -122,14 +120,6 @@ const POOLS_MAINNET: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
-  BugWarning20220513: [
-    '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',
-    '0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027',
-    '0x3b40d7d5ae25df2561944dd68b252016c4c7b2800001000000000000000000c2',
-    '0x9e7fd25ad9d97f1e6716fa5bb04749a4621e892d000100000000000000000039',
-    '0xb6b9b165c4ac3f5233a0cf413126c72be28b468a00010000000000000000005a',
-    '0x09804caea2400035b18e2173fdd10ec8b670ca09000100000000000000000038'
-  ],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -217,20 +207,16 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
-  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon MAI/DAI/USDC/USDT
       '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e', // polygon WBTC/renBTC
-      '0x9f19a375709baf0e8e35c2c5c65aca676c4c7191000200000000000000000022', // polygon PAR/PAR,
       '0xf38cf113d2d4f60c36cbd95af2f48a9a0167045a00000000000000000000005b', // polygon,
       '0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f000000000000000000000068', // tusd polygon
       '0x5028497af0c9a54ea8c6d42a054c0341b9fc616800020000000000000000007b', // dusd polygon
       '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366', // polygon staked matic
       '0xb4670d1389c758e4380c4211bcbc85342688b9c50002000000000000000003d8', // vQi,
-      '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445', // USD+ (production)
-      '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f', // USD+ (test)
       '0xc31a37105b94ab4efca1954a14f059af11fcd9bb000000000000000000000455', // 4pool
       '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4' // maticx metastable
     ]
@@ -285,7 +271,6 @@ const POOLS_ARBITRUM: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
-  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
@@ -340,7 +325,6 @@ const POOLS_GENERIC: Pools = {
     Gauntlet: []
   },
   BlockList: [''],
-  BugWarning20220513: [''],
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
