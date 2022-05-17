@@ -283,6 +283,14 @@ export default function useGnosis({
   }
 
   async function handleAmountChange() {
+    // Prevent quering undefined input amounts
+    if (
+      (exactIn.value && !tokenInAmountInput.value) ||
+      (!exactIn.value && !tokenOutAmountInput.value)
+    ) {
+      return;
+    }
+
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
       : tokenOutAmountScaled.value;
@@ -371,6 +379,16 @@ export default function useGnosis({
 
         if (priceQuoteAmount != null) {
           feeQuote.value = feeQuoteResult;
+
+          // When user clears the input while fee is fetching we won't be able to get the quote
+          // TODO: ideally cancel all pending requests on amount getting changed / cleared
+          if (
+            (exactIn.value && !tokenInAmountInput.value) ||
+            (!exactIn.value && !tokenOutAmountInput.value)
+          ) {
+            updatingQuotes.value = false;
+            return;
+          }
 
           if (exactIn.value) {
             tokenOutAmountInput.value = bnum(
