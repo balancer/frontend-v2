@@ -73,20 +73,20 @@
         </div>
 
         <BalAlert
-          v-if="!appLoading && missingPrices"
+          v-if="!appLoading && !loadingPool && missingPrices"
           type="warning"
           :title="$t('noPriceInfo')"
           class="mt-2"
           block
         />
         <BalAlert
-          v-if="!appLoading && hasCustomToken"
+          v-if="!appLoading && !loadingPool && hasCustomToken"
           type="error"
           :title="$t('highRiskPool')"
           class="mt-2"
           block
         />
-        <template v-if="!appLoading && isAffected">
+        <template v-if="!appLoading && !loadingPool && isAffected">
           <BalAlert
             v-for="(warning, i) in warnings"
             :key="`warning-${i}`"
