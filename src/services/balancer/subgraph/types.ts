@@ -72,7 +72,7 @@ export interface DecoratedPool extends Pool {
 }
 
 export interface PoolAPRs {
-  total: string | { min: string; max: string };
+  total: string;
   swap: string;
   yield: {
     total: string;

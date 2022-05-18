@@ -139,9 +139,6 @@ export default class Pools {
       })
     ]);
 
-    console.log('gaugeBALAprs', gaugeBALAprs);
-    console.log('gaugeRewardTokenAprs', gaugeRewardTokenAprs);
-
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
 
@@ -158,28 +155,14 @@ export default class Pools {
       const volume = this.calcVolume(pool, pastPool);
       const fees = this.calcFees(pool, pastPool);
 
-      // Calculate various APRs
-      const swapFeeAPR = this.calcSwapFeeAPR(
-        pool,
+      const apr = await poolService.apr.calc(
         pastPool,
-        protocolFeePercentage
-      );
-      const yieldAPR = await this.calcYieldAPR(
-        pool,
         prices,
         currency,
-        protocolFeePercentage
+        protocolFeePercentage,
+        gaugeBALAprs[pool.id],
+        gaugeRewardTokenAprs[pool.id]
       );
-      const stakingAPR = {
-        bal: gaugeBALAprs[pool.id],
-        rewards: gaugeRewardTokenAprs[pool.id]
-      };
-
-      // const totalAPR = this.calcTotalAPR(
-      //   swapFeeAPR,
-      //   yieldAPR,
-      //   stakingAPR
-      // );
 
       return {
         ...pool,
@@ -187,12 +170,7 @@ export default class Pools {
           period,
           volume,
           fees,
-          apr: {
-            total: '0',
-            swap: swapFeeAPR,
-            yield: yieldAPR,
-            staking: stakingAPR
-          },
+          apr,
           isNewPool: this.isNewPool(pool)
         }
       };
@@ -200,8 +178,6 @@ export default class Pools {
 
     return Promise.all(promises);
   }
-
-  // private calcTotalAPR(swapFeeAPR, third);
 
   private async getExcludedAddresses() {
     try {
@@ -257,85 +233,6 @@ export default class Pools {
     return bnum(pool.totalSwapVolume)
       .minus(pastPool.totalSwapVolume)
       .toString();
-  }
-
-  private calcSwapFeeAPR(
-    pool: Pool,
-    pastPool: Pool | undefined,
-    protocolFeePercentage: number
-  ) {
-    if (!pastPool)
-      return bnum(pool.totalSwapFee)
-        .times(1 - protocolFeePercentage)
-        .dividedBy(pool.totalLiquidity)
-        .multipliedBy(365)
-        .toString();
-
-    const swapFees = bnum(pool.totalSwapFee).minus(pastPool.totalSwapFee);
-    return swapFees
-      .times(1 - protocolFeePercentage)
-      .dividedBy(pool.totalLiquidity)
-      .multipliedBy(365)
-      .toString();
-  }
-
-  /**
-   * @description Fetch additional APRs not covered by pool swap fees and
-   * liquidity minning rewards. These APRs may require 3rd party
-   * API requests.
-   * @returns total yield APR and breakdown of total by pool token.
-   */
-  private async calcYieldAPR(
-    pool: Pool,
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    protocolFeePercentage: number
-  ): Promise<{ total: string; breakdown: Record<string, string> }> {
-    let total = '0';
-    let breakdown = {};
-
-    if (isWstETH(pool)) {
-      total = await lidoService.calcStEthAPRFor(pool, protocolFeePercentage);
-    } else if (isStablePhantom(pool.poolType)) {
-      const aaveAPR = await aaveService.calcWeightedSupplyAPRFor(
-        pool,
-        prices,
-        currency
-      );
-      ({ total, breakdown } = aaveAPR);
-
-      // TODO burn with fire once scalable linear pool support is added.
-      // If USD+ pool, replace aave APR with USD+
-      const usdPlusPools = {
-        '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f':
-          '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425',
-        '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445':
-          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f'
-      };
-      if (Object.keys(usdPlusPools).includes(pool.id)) {
-        const linearPoolAddress = usdPlusPools[pool.id];
-        const linearPool = pool.onchain?.linearPools?.[linearPoolAddress];
-        if (linearPool) {
-          const wrappedToken = linearPool.wrappedToken.address;
-          const weightedAPR = await calcUSDPlusWeightedAPR(
-            pool,
-            linearPool,
-            linearPoolAddress,
-            prices,
-            currency
-          );
-
-          breakdown[wrappedToken] = weightedAPR.toString();
-
-          total = bnSum(Object.values(breakdown)).toString();
-        }
-      }
-    }
-
-    return {
-      total,
-      breakdown
-    };
   }
 
   private calcFees(pool: Pool, pastPool: Pool | undefined): string {

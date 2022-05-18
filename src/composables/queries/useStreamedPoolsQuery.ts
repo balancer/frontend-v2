@@ -138,58 +138,36 @@ async function decorateWithAPRs(
   const pastPoolsMap = keyBy(pastPools, 'id');
   const decorated = pools.map(async pool => {
     const poolService = new PoolService(pool);
-    const {
-      thirdPartyAPR,
-      thirdPartyAPRBreakdown
-    } = await poolService.calcThirdPartyAPR(
-      prices,
-      currency,
-      protocolFeePercentage
-    );
+    const poolSnapshot = pastPoolsMap[pool.id];
 
-    const gaugeBALAprs = await stakingRewardsService.getGaugeBALAprs({
-      prices,
-      gauges,
-      pools
-    });
-
-    const rewardAprs = await stakingRewardsService.getRewardTokenAprs({
-      prices,
-      tokens,
-      gauges,
-      pools
-    });
+    const [gaugeBALAprs, rewardAprs] = await Promise.all([
+      await stakingRewardsService.getGaugeBALAprs({
+        prices,
+        gauges,
+        pools
+      }),
+      await stakingRewardsService.getRewardTokenAprs({
+        prices,
+        tokens,
+        gauges,
+        pools
+      })
+    ]);
 
     if (!pool.dynamic) pool.dynamic = {} as any;
     if (!pool.dynamic.apr) pool.dynamic.apr = {} as any;
-    if (!pool.dynamic.apr.staking)
-      pool.dynamic.apr.staking = {
-        bal: gaugeBALAprs[pool.id] || { min: '0', max: '0' },
-        rewards: rewardAprs[pool.id] || '0'
-      };
 
-    pool.dynamic.apr.yield = {
-      total: thirdPartyAPR,
-      breakdown: thirdPartyAPRBreakdown
-    };
-
-    // staking aprs
-    pool.dynamic.apr.staking.bal = gaugeBALAprs[pool.id];
-
-    const swapFeeAPR = poolService.calcAPR(
-      pastPoolsMap[pool.id],
-      protocolFeePercentage
+    pool.dynamic.apr = await poolService.apr.calc(
+      poolSnapshot,
+      prices,
+      currency,
+      protocolFeePercentage,
+      gaugeBALAprs[pool.id],
+      rewardAprs[pool.id]
     );
 
-    // pool apr
-    pool.dynamic.apr.swap = swapFeeAPR;
-
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
-
-    const totalApr = bnum(swapFeeAPR).plus(thirdPartyAPR);
-
     pool.dynamic.fees = fees;
-    pool.dynamic.apr.total = totalApr.toString();
 
     return pool;
   });

@@ -52,7 +52,7 @@ export default defineComponent({
         // cannot show a range if there are no bal emissions
         if (!hasBALEmissions(props.pool)) {
           return fNum2(
-            bnum(props.pool?.dynamic.apr.staking?.Rewards || '0')
+            bnum(props.pool?.dynamic.apr.staking?.rewards || '0')
               .plus(props.pool?.dynamic.apr.total || '0')
               .toString(),
             FNumFormats.percent
