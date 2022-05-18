@@ -153,10 +153,6 @@ export default class PoolService {
     );
   }
 
-  public calcAPR(): PoolAPRs {
-    return {};
-  }
-
   /**
    * fetches StablePhantom linear pools and extracts
    * required attributes.
@@ -236,80 +232,6 @@ export default class PoolService {
       this.pool,
       totalLiquidityString
     );
-  }
-
-  async calcThirdPartyAPR(
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    protocolFeePercentage: number
-  ) {
-    let thirdPartyAPR = '0';
-    let thirdPartyAPRBreakdown = {};
-    if (isWstETH(this.pool)) {
-      thirdPartyAPR = await lidoService.calcStEthAPRFor(
-        this.pool,
-        protocolFeePercentage
-      );
-    } else if (isStablePhantom(this.pool.poolType)) {
-      const aaveAPR = await aaveService.calcWeightedSupplyAPRFor(
-        this.pool,
-        prices,
-        currency
-      );
-      let { total } = aaveAPR;
-      const { breakdown } = aaveAPR;
-
-      // TODO burn with fire once scalable linear pool support is added.
-      // If USD+ pool, replace aave APR with USD+
-      const usdPlusPools = {
-        '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f':
-          '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425',
-        '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445':
-          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f'
-      };
-      if (Object.keys(usdPlusPools).includes(this.pool.id)) {
-        const linearPoolAddress = usdPlusPools[this.pool.id];
-        const linearPool = this.pool.onchain?.linearPools?.[linearPoolAddress];
-        if (linearPool) {
-          const wrappedToken = linearPool.wrappedToken.address;
-          const weightedAPR = await calcUSDPlusWeightedAPR(
-            this.pool,
-            linearPool,
-            linearPoolAddress,
-            prices,
-            currency
-          );
-
-          breakdown[wrappedToken] = weightedAPR.toString();
-
-          total = bnSum(Object.values(breakdown)).toString();
-        }
-      }
-
-      thirdPartyAPR = total;
-      thirdPartyAPRBreakdown = breakdown;
-    }
-
-    return {
-      thirdPartyAPR,
-      thirdPartyAPRBreakdown
-    };
-  }
-
-  calcAPR(pastPool: Pool | undefined, protocolFeePercentage: number) {
-    if (!pastPool)
-      return bnum(this.pool.totalSwapFee)
-        .times(1 - protocolFeePercentage)
-        .dividedBy(this.pool.totalLiquidity)
-        .multipliedBy(365)
-        .toString();
-
-    const swapFees = bnum(this.pool.totalSwapFee).minus(pastPool.totalSwapFee);
-    return swapFees
-      .times(1 - protocolFeePercentage)
-      .dividedBy(this.pool.totalLiquidity)
-      .multipliedBy(365)
-      .toString();
   }
 
   calcFees(pastPool: Pool | undefined): string {

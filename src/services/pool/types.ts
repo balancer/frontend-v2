@@ -83,7 +83,7 @@ export interface PoolAPRs {
 }
 
 export interface PoolAPRs {
-  total: string | { min: string; max: string };
+  total: string;
   swap: string;
   yield: {
     total: string;
