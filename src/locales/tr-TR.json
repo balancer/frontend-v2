@@ -1,0 +1,1015 @@
+{
+    "aboutElementFinance":"Element, sabit ve değişken getiri piyasaları için açık kaynaklı bir protokoldür. Balancer V2 üzerine inşa edilmiştir. Likidite pozisyonlarınızı doğrudan Element.fi'de görüntüleyin ve yönetin.",
+    "accept":"Kabul etmek",
+    "account":"Hesap",
+    "action":"Aksiyon",
+    "actions":"Hareketler",
+    "activity":"Aktivite",
+    "addToken":"Bir jeton ekleyin",
+    "alerts":{
+       "price-fetch-error":"Fiyatlandırma sağlayıcımız Coingecko şu anda çalışmıyor.",
+       "balances-fetch-error":"Jeton bakiyeleri getirilemedi.",
+       "allowances-fetch-error":"Jeton ödenekleri getirilemedi.",
+       "pool-fetch-error":"Havuz getirilemedi.",
+       "pools-fetch-error":"Havuzlar getirilemedi.",
+       "retry-label":"Tekrar denemek için yenileyin"
+    },
+    "allPools":"Tüm havuzlar",
+    "allTokens":"Tüm jetonlar",
+    "allow":"İzin vermek",
+    "allowing":"İzin veriliyor ...",
+    "ammPlatform":"Otomatik bir portföy yöneticisi ve ticaret platformu.",
+    "amount":"Miktar",
+    "amountBeforeFees":"Ücretlerden önceki tutar",
+    "amountToInvest":"Yatırım tutarı",
+    "amountToWithdraw":"Çekilecek miktar",
+    "amplification":"Amplifikasyon",
+    "analytics":"Analitik",
+    "and":"ve",
+    "apiErrorCodeDetails":{
+       "DuplicateOrder":"Zaten gönderilmiş başka bir aynı sipariş vardı. Lütfen tekrar deneyin.",
+       "InsufficientFee":"İmzalanan ücret yetersiz. Gaz fiyatındaki, ether fiyatındaki veya satış jetonu fiyatındaki bir değişiklik nedeniyle şu anda daha yüksek olması mümkündür. Güncellenmiş bir ücret teklifi almak için lütfen tekrar deneyin.",
+       "InvalidSignature":"Sipariş imzası geçersiz. Cüzdan uygulamanızın zincir dışı imzalamayı destekleyip desteklemediğini kontrol edin.",
+       "MissingOrderData":"Siparişte eksik bilgi var.",
+       "InsufficientValidTo":"İmzaladığınız siparişin süresi zaten doldu. Bu, ayarlarda kısa bir son kullanma tarihi ayarlarsanız ve işlemi imzalamadan önce çok uzun süre beklerseniz olabilir. Lütfen tekrar deneyin.",
+       "InsufficientFunds":"Hesapta yeterli bakiye yok.",
+       "UnsupportedToken":"Ticaret yaptığınız jetonlardan biri desteklenmiyor.",
+       "WrongOwner":"İmza geçersiz. Cüzdanınız tarafından sağlanan imzalama yönteminin Balancer'ın gerektirdiği standartlara uymaması muhtemeldir. Cüzdan uygulamanızın zincir dışı imzalamayı (EIP-712 veya ETHSIGN) destekleyip desteklemediğini kontrol edin.",
+       "NotFound":"Seçilen jeton çifti yetersiz likiditeye sahip.",
+       "OrderNotFound":"İptal etmeye çalıştığınız sipariş mevcut değil.",
+       "AlreadyCancelled":"Sipariş zaten iptal edildi.",
+       "OrderFullyExecuted":"Sipariş zaten dolu.",
+       "OrderExpired":"Siparişin süresi doldu.",
+       "UnsupportedSellTokenSource":"Satış belirteci kaynağı şu anda desteklenmiyor.",
+       "UnsupportedBuyTokenSource":"Satın alma jetonu kaynağı şu anda desteklenmiyor.",
+       "UnhandledGetError":"Sipariş getirilemedi. Bunun nedeni bir sunucu veya ağ bağlantısı sorunu olabilir. Lütfen daha sonra tekrar deneyiniz.",
+       "UnhandledCreateError":"Sipariş ağ tarafından kabul edilmedi.",
+       "UnhandledDeleteError":"Sipariş iptali ağ tarafından kabul edilmedi.",
+       "UnhandledError":"Bir şey başarısız oldu. Lütfen daha sonra tekrar deneyiniz.",
+       "Error403Accept":"Sipariş kabul edilemez. Hesabınız reddedilenler listesine alındı.",
+       "Error403Cancel":"Sipariş iptal edilemez. Hesabınız reddedilenler listesine alındı.",
+       "Error429Accept":"Sipariş kabul edilemez. Çok fazla sipariş yerleşimi. Lütfen bir dakika içinde tekrar deneyin.",
+       "Error429Cancel":"Sipariş iptal edilemez. Çok fazla sipariş iptali. Lütfen bir dakika içinde tekrar deneyin.",
+       "Error500":"Siparişte hata {0}."
+    },
+    "approve":"Onayla",
+    "approveBatchRelayer":"Toplu aktarıcıyı onayla",
+    "approveBatchRelayerTooltip":"Batch aktarıcıyı kullanmak için izniniz gerekiyor.",
+    "approveGP":"Gnosis Protokolünde ticareti onaylayın",
+    "approveGnosisRelayer":"Gnosis aktarıcısını onayla",
+    "approveLidoRelayer":"Lido Relayer'ı Onayla",
+    "approveTokens":"Jetonları onaylayın",
+    "approved":"Onaylandı",
+    "approvedGnosisRelayer":"Onaylı Gnosis aktarıcı",
+    "approvedLidoRelayer":"Onaylı Lido Röle",
+    "approving":"Onaylanıyor",
+    "approvingBatchRelayer":"Toplu aktarıcıyı onaylama",
+    "approvingGnosisRelayer":"Gnosis aktarıcısını onaylama",
+    "approvingLidoRelayer":"Lido Rölesini Onaylama",
+    "apr":"Nisan",
+    "apyvisionPoolInsights":"APY.vision hakkında daha fazla bilgi",
+    "autoOptimiseLiquidityToggle":{
+       "label":"Otomatik optimize likidite",
+       "tooltip":"Belirttiğiniz belirteç ağırlıklarıyla eşleşmesi için belirteç değerlerini otomatik olarak optimize edin."
+    },
+    "available":"Mevcut",
+    "availableToClaim":"Talep edilebilir:",
+    "balance":"Denge",
+    "balancerGovernance":"Dengeleyici yönetişim",
+    "balances":"Bakiyeler",
+    "basedOnLast24h":"son 24 saate göre",
+    "basedOnTokensInWallet":"Cüzdanınızdaki havuz jetonlarına göre",
+    "best":"En iyi",
+    "blog":"Blog",
+    "boostedPool":"Dengeleyici Güçlendirilmiş havuz",
+    "browseLists":"Listelere göz atın",
+    "browserWallet":"Tarayıcı Cüzdanı",
+    "build":"İnşa etmek",
+    "buy":"Satın Al",
+    "byConnectingWallet":"Bir cüzdan bağlayarak Balancer Labs'in",
+    "cancel":"İptal",
+    "cancelling":"İptal",
+    "changeTheme":"Temayı değiştir",
+    "checkWallet":"Cüzdanda onayla",
+    "chooseAPair":"Lütfen geçerli bir çift seçin",
+    "claim":"İddia",
+    "claimAll":"Tümünü talep et",
+    "claimBAL":"Şunun için BAL talebinde bulun:",
+    "claimSuccess":"BAL için başarıyla hak talebinde bulundunuz!",
+    "claiming":"iddia...",
+    "classic":"Klasik",
+    "clearTransactions":"İşlemleri temizle",
+    "clickHere":"Buraya Tıkla",
+    "close":"Kapat",
+    "coingeckoPricingTooltip":"Bu grafiğin verileri, fiyatlandırma sağlayıcımız CoinGecko'dan alınmıştır.",
+    "communitySwapFeeLabel":"Temsilci takas ücretleri; şu anda sabit: <b>{0}</b>",
+    "composition":"Kompozisyon",
+    "configuration":"Yapılandırma",
+    "confirm":"Onaylamak",
+    "confirmTrade":"Ticareti onayla",
+    "confirmUnwrap":"{0} paketi açmayı onayla",
+    "confirmWrap":"{0} sarmayı onayla",
+    "confirming":"Onaylanıyor ...",
+    "connect":"Bağlan",
+    "connectWallet":"Cüzdan bağlayın",
+    "connecting":"Bağlanıyor...",
+    "continueAnyway":"Her halükarda devam et",
+    "copied":"Kopyalandı!",
+    "copperLaunchPromo":{
+       "title":"A Copper adil lansman müzayede havuzu (FLA)",
+       "description":"Copper, FLA'lar için bir platformdur—dünyanın dört bir yanından proje ve fikirlerin giriş engeli olmaksızın bireylerden para toplamasını sağlayan basit bir kitle fonlaması mekanizmasıdır.",
+       "poweredByBalancer":"Copper, Balancer V2 üzerine inşa edilmiştir ve FLA'larına güç sağlamak için Likidite Önyükleme Havuzlarını kullanır",
+       "buttonLabel":"Bu açık artırmayı Copper'da görüntüle"
+    },
+    "copyAddress":"Adresi kopyala",
+    "correctTokenPricing":"Doğru belirteç fiyatlandırması, arbitrajcılara para kaybetmekten kaçınmanıza yardımcı olabilir. Havuz varlıklarını hedef ağırlıklarıyla orantılı olarak eklemezseniz kayıplar olabilir.",
+    "create":"Oluşturmak",
+    "createAPool":{
+       "title":"Havuz oluştur",
+       "governanceFees":"Dengeleyici yönetiminin ücretleri yönetmesine izin ver",
+       "swapFeeSuggestion":"%0,30, yerleşik belirteçlere sahip çoğu ağırlıklı havuz için en iyisidir. Daha egzotik çiftler için daha yükseğe çıkın.",
+       "governanceFeesTooltip":"Karları en üst düzeye çıkarmak için Balancer yönetimine bu havuzun ücretlerini dinamik olarak yönetme yeteneği vermek için bunu etkinleştirin. Ancak, Dengeleyici yönetişimin ücretleri gerçekten yönetme yükümlülüğü altında olmadığını ve büyük olasılıkla bunu yalnızca önemli ticaret hacmi varsa yapacaklarını unutmayın.",
+       "fixedFeeRadioLabel":"Ücretleri kalıcı olarak başlangıç oranına sabitleyin",
+       "dynamicFeeRadioLabel":"Seçtiğim bir adresten dinamik ücretlere izin ver",
+       "setAnAddress":"Ücretleri kontrol etmek için bir adres belirleyin",
+       "myAddressOption":"Adresim: {0}",
+       "customAddressOption":"Seçtiğim bir adresten dinamik ücretlere izin ver",
+       "customAddressTitle":"Ücretleri güncelleyebilecek bir adres girin",
+       "customAddressInfo":"Bu, bir akıllı sözleşmenin adresine sahip olduğunuz başka bir adres olabilir. Bunu yalnızca bir kez ayarlayabilirsiniz.",
+       "poolSummary":"Havuz özeti",
+       "maxInitialLiquidity":"Maksimum başlangıç likiditesi",
+       "setPoolFees":"Havuz ücretlerini ayarla",
+       "bestFeeOption":"%0,30, yerleşik belirteçlere sahip çoğu ağırlıklı havuz için en iyisidir. Daha egzotik jetonlar için daha yükseğe çıkın.",
+       "alternativeFeeManagement":"Alternatif ücret yönetimi seçenekleri",
+       "chooseTokenWeights":"Jetonları ve ağırlıkları seçin",
+       "existingPoolInfo":"Tam olarak aynı jetonlara ve ücret yapısına sahip başka bir havuz zaten var. Likiditenizi diğer havuza eklemeniz veya geri dönüp Havuz Oluşturma parametrelerinizi maddi bir şekilde değiştirmeniz, likiditenin kırılmaması ve her iki havuz için daha düşük karlar için tavsiye edilir.",
+       "poolAlreadyExists":"Bu havuz zaten var",
+       "similarPoolsExist":"Benzer havuzlar var",
+       "previewPool":"Yeni {0} havuzunu önizle",
+       "tokensAndSeedLiquidity":"Jetonlar ve ilk tohum likiditesi",
+       "recommendedLiquidity":"Başlangıç fonlarında en az 20.000 ABD doları olan yeni havuzlar sağlanması önerilir.",
+       "youCanFundWithThisPoolWith":"Bu jetonlar için cüzdan bakiyenize bağlı olarak, bu havuza fon sağlayabileceğiniz maksimum miktar ~{0}'dir.",
+       "zeroWeightTitle":"Sıfır ağırlıklı bir jeton eklediniz",
+       "zeroWeightInfo":"Bir havuzdaki tüm jetonların ağırlığı sıfırdan büyük olmalıdır. {0} öğesini kaldırın veya değiştirin ya da %0,01'in üzerine ayarlayın.",
+       "totalWeightAlert":"Devam edebilmeniz için tüm belirteçlerin toplam ağırlığı tam olarak %100'e eşit olmalıdır.",
+       "totalWeightAlertTitle":"Toplam ağırlık %100 olmalıdır",
+       "arbTitle":"{0} ({1}) değerine kadar kaybedebilirsiniz",
+       "arbReason":"CoinGecko'dan alınan fiyatlandırma bilgilerine göre, havuza eklediğiniz miktarlar belirtilen havuz ağırlıklarıyla orantılı olmadığı için fonları arbitrajcılara kaptırmaya karşı savunmasızsınız.",
+       "maxLiquidityTooltip":"Bu, mevcut jeton seçimi ile havuza sağlayabileceğiniz maksimum likidite miktarıdır."
+    },
+    "createPool":"Bir havuz oluştur",
+    "createPoolTooltip":"{0} havuzu oluştur",
+    "creating":"yaratmak",
+    "currentNetwork":"Mevcut ağ",
+    "custom":"Özel",
+    "customAmounts":"Özel miktarlar",
+    "customAmountsTip":"Özel miktarlar eklemek, havuzun iç fiyatlarının sanki jeton takas ediyormuşsunuz gibi değişmesine neden olur. Fiyat ne kadar yüksek olursa, takas ücretlerinde o kadar çok harcarsınız.",
+    "dark":"Karanlık",
+    "date":"Tarih (değiştir | kaynağı değiştir)",
+    "day":"gün",
+    "delegateFeesTooltip":"Bu havuzdaki likidite sağlayıcıları, bu havuzdaki likiditeyi kullanarak her ticarette sabit takas ücreti alırlar. Denetim topluluğa devredildi, bu nedenle bu havuz aktif olarak yönetilirse gelecekte ücretler değişebilir.",
+    "depositing":"yatırma",
+    "details":"Detaylar",
+    "docs":"Dokümanlar",
+    "dynamicSwapFeeLabel":"Dinamik takas ücretleri: Şu anda <b>{0}</b>",
+    "earnBAL":"Uygun jetonları değiştirirken BAL kazanın",
+    "earnings":"Kazanç",
+    "editoAbout":"Ethereum tabanlı varlıklarınızdan daha fazla kazanın. Havuzlara jeton ekleyin ve insanlar likiditenizi kullanarak borsada işlem yaptıklarında bileşik ücretler kazanın.",
+    "editoTitle":"Paranı işe koy",
+    "effectivePrice":"Geçerli fiyat:",
+    "emptyInvestmentPools":"Herhangi bir Dengeleyici yatırım havuzuna katılmadınız.",
+    "emptyInvestmentPoolsLink":"Yatırım havuzlarını görüntüleyin ->",
+    "enterAPrice":"bir fiyat girin",
+    "enterAmount":"Miktarı girin",
+    "errorCancellingOrder":"Sipariş iptal edilirken hata oluştu",
+    "errorNoLists":"Üzgünüz, herhangi bir liste bulamıyoruz",
+    "errorNoMatch":"Üzgünüz, herhangi bir eşleşme bulamıyoruz",
+    "errorNoTokens":"Üzgünüz, herhangi bir jeton bulamıyoruz",
+    "ethBufferInstruction":"Bu havuz Sarılmış Eter (WETH) gerektirir. Maksimize etmek için<br> yatırım, biraz ek ETH sarabilirsiniz. Sakladığınızdan emin olun<br> gaz maliyetlerini karşılamaya yetecek kadar ETH.",
+    "ethereumTxTypeTooltip":"Çoğu kullanıcı EIP-1559 İşlemleri isteyecektir, ancak Eski İşlem gerektirebilecek bazı durumlar vardır. Örneğin, bazı Ledger kullanıcıları, EIP-1559 İşlemleri ile MetaMask'ı kullanırken sorunlar yaşadı.",
+    "etherscan":"eter tarama",
+    "exceedsBalance":"Bakiyeyi aşıyor",
+    "exceedsPoolBalance":"Bu jeton için havuz bakiyesini aşıyor",
+    "explore":"keşfetmek",
+    "exploreBalancerV1Pools":"V1 havuzlarını keşfedin ->",
+    "explorePools":"Havuzları keşfedin",
+    "featuredProtocol":"Öne çıkan ekosistem protokolü",
+    "fees":"ücretler",
+    "feesManagedByGauntlet":"Likidite sağlayıcıları, bu havuzdaki Likiditeyi kullanan her ticarette dinamik takas ücretleri kazanır. Dinamik takas ücretleri yönetişim tarafından kontrol edilir ve şu anda Gauntlet tarafından belirlenir.",
+    "feesTime":"Ücretler ({0})",
+    "filter":"Filtrele",
+    "filterByToken":"Jetona göre filtrele",
+    "filters":"Filtreler",
+    "finishCreatingPoolAlert":"En son bir havuz oluşturmayı ve tohumlamayı bitirmeden önce ayrıldınız.",
+    "finishSeedingPoolAlert":"Yeni oluşturduğunuz havuzu başlatma işlemini likidite ile tohumlayarak tamamlayın",
+    "fixedFeesTooltip":"Bu havuzdaki likidite sağlayıcıları, bu havuzdaki likiditeyi kullanarak her ticarette sabit takas ücreti alırlar.",
+    "fixedSwapFeeLabel":"Sabit takas ücretleri: <b>{0}</b>",
+    "flashLoanFee":"Flaş kredi ücreti",
+    "forum":"Forum",
+    "fundPool":"fon havuzu",
+    "fundPoolTooltip":"Bu havuz için ilk likiditeyi ekleyin.",
+    "getLpTokens":"LP jetonları alın",
+    "getVeBAL":{
+       "lockableTokens":{
+          "title":"Cüzdanımdaki kilitlenebilir jetonlar",
+          "getMoreVeBAL":"{0} al"
+       },
+       "howToLock":{
+          "title":"Nasıl kilitlenir ve kazanılır?",
+          "steps":{
+             "investPart1":"yatırım yap",
+             "investPart2":"havuz.",
+             "lock":"Ortaya çıkan LP jetonunu ({0}) kilitleyin. Ne kadar uzun süre kilitlerseniz (en fazla 1 yıl), o kadar fazla veBAL elde edersiniz."
+          },
+          "earn":{
+             "boost":"veBAL sahipleri, artırılmış likidite madenciliği getirileri (2,5 kata kadar) ve oylama gücünü artırıyor.",
+             "voting":"Hangi havuz göstergelerine tahsis edilen likidite madenciliği teşviklerini seçmek için bu oylama gücünü kullanın. Daha fazla getiri elde etmek için likidite eklediğiniz havuzlara oy verin."
+          }
+       },
+       "myVeBAL":{
+          "title":"benim veBAL'ım",
+          "lockedEndDate":"Şu tarihe kadar kilitlendi:",
+          "expiredOn":"süresi doldu",
+          "percentVeBAL":"toplam veBAL'in %'si"
+       },
+       "lockForm":{
+          "title":"veBAL almak için kilitleyin",
+          "lockAmount":{
+             "title":"Ne kadar kilitlemek istiyorsun?"
+          },
+          "lockEndDate":{
+             "title":"Şu tarihe kadar kilitle:",
+             "tooltip":"Bahsinizi ne kadar uzun süre kilitlerseniz, o kadar fazla veBAL oylama gücü elde edersiniz (4 yıla kadar). Kilidi daha sonra uzatabilirsiniz. Dikkatli olun, kilitleme geri alınamaz."
+          },
+          "summary":{
+             "receive":{
+                "title":"Toplam oy emaneti",
+                "tooltip":""
+             },
+             "weeklyYield":{
+                "title":"Potansiyel haftalık bahis getirisi",
+                "tooltip":""
+             }
+          },
+          "lockPeriods":{
+             "1w":"1 hafta",
+             "2w":"2 hafta",
+             "1m":"1 ay",
+             "3m":"3 ay",
+             "6m":"6 ay",
+             "1y":"1 yıl"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "createLock":{
+                "default":"Önizleme kilitleniyor",
+                "confirmed":"Kilitleme onaylandı"
+             },
+             "extendLock":{
+                "default":"Kilit önizleme önizlemesini genişlet",
+                "confirmed":"Kilit önizlemesini genişlet onaylandı"
+             },
+             "increaseLock":{
+                "default":"Kilit miktarını artır",
+                "confirmed":"Onaylanan kilit miktarını artırın"
+             }
+          },
+          "lpTokens":"{0} LP jetonları",
+          "summary":{
+             "title":"Kilitleme özeti",
+             "totalToLock":"Toplam kilitlemek için",
+             "totalAlreadyLocked":"Toplam zaten kilitli",
+             "lockEndDate":"Kilitlenme bitiş tarihi",
+             "newLockEndDate":"Yeni kilitleme bitiş tarihi",
+             "totalVotingEscrow":"Toplam oy emaneti",
+             "totalVotingEscrowTooltip":{
+                "explainer":"Kilitleme bitiş tarihleri yalnızca Perşembe günleri 0:00 UTC'de olabilir. 1 yıllık kilitlenmeye mümkün olduğunca yaklaşmak için Perşembe günü kilitleme önerilir.",
+                "table":{
+                   "lockPeriod":"Kilit dönemi",
+                   "totalVeBAL":"Toplam veBAL"
+                }
+             },
+             "increasedLockAmount":"Artan kilit miktarı",
+             "potentialWeeklyYield":"Potansiyel haftalık getiri"
+          },
+          "actions":{
+             "approve":{
+                "confirming":"Onay onaylanıyor...",
+                "tooltip":"{0}'i onaylamanız gerekir.",
+                "loadingLabel":"Cüzdandaki onayı onaylayın"
+             },
+             "createLock":{
+                "label":"{0} tarihine kadar kilidi onaylayın",
+                "confirming":"onaylanıyor...",
+                "tooltip":"Kilitlemeyi onaylayın.",
+                "loadingLabel":"Cüzdandaki kilidi onaylayın"
+             },
+             "extendLock":{
+                "label":"Kilit süresini uzat",
+                "confirming":"onaylanıyor...",
+                "tooltip":"Kilitleme süresini uzatmayı onaylayın.",
+                "loadingLabel":"Cüzdandaki kilidi onaylayın"
+             },
+             "increaseLock":{
+                "label":"Kilit miktarını artır",
+                "confirming":"onaylanıyor...",
+                "tooltip":"Artan kilit miktarını onaylayın.",
+                "loadingLabel":"Cüzdandaki kilidi onaylayın"
+             }
+          },
+          "returnToVeBalPage":"veBAL sayfasına dön"
+       },
+       "notSupported":{
+          "title":"Bu ağda kilitleme kullanılamıyor",
+          "description":"Ethereum Mainnet'te veBAL edinin"
+       }
+    },
+    "getVeBALToVote":"Oy vermek için veBAL alın",
+    "gnosisErrors":{
+       "lowAmount":{
+          "header":"Ticaret miktarınız çok düşük",
+          "body":"Bu işlemin ücretleri, işlem yapmak istediğiniz miktarı aşıyor."
+       },
+       "lowBalance":{
+          "header":"Yetersiz {0} bakiyesi",
+          "body":"Bu ticaret için belirlenen ücretler ve olası kayma (en fazla {2}), {0} bakiyenizi aşıyor. Devam etmek için en az {1} {0} gerekir."
+       }
+    },
+    "gnosisWarnings":{
+       "highFees":{
+          "header":"Bu işlemdeki ücretler, işlem tutarının %20'sini aşıyor.",
+          "body":"Hala ticarete devam edebilirsiniz, ancak yüksek bir yüzdesi ticaret ücretleri tarafından tüketilecektir."
+       }
+    },
+    "goToBalancerV1Site":"Balancer V1 sitesine gidin ->",
+    "goToMigratedPool":"Taşınan havuza git",
+    "governance":"Yönetim",
+    "grants":"Hibeler",
+    "highGasFees":"Yüksek gaz ücretleri? İşte yardım eli",
+    "highPriceImpact":"Yüksek fiyat etkisi",
+    "highPriceImpactDetailed":"Bu ticaret, piyasa fiyatını önemli ölçüde hareket ettiriyor.",
+    "highRiskPool":"Bu, bir veya daha fazla listelenmemiş jeton içeren daha yüksek riskli bir havuzdur. Bir likidite havuzu, yalnızca en zayıf jetonu kadar iyidir! Bir belirteç kara listeye alınmışsa, sonsuza kadar basılmışsa, dondurulmuşsa veya başka bir şekilde kullanılmışsa, bu havuzun değeri 0'a gidebilir. Balancer Labs, Kullanıcı Arabirimi veya Balancer protokolünü kullanmaktan kaynaklanan kayıplardan asla sorumlu değildir. Dikkatli olun ve kendi araştırmanızı yapın!",
+    "home":"Ev",
+    "hourAbbrev":"h",
+    "inYourWallet":"Cüzdanınızda:",
+    "incentiveToken":"Teşvik jetonu",
+    "inclXInVeBal":"dahil veBAL'de {0}",
+    "initialBPT":"İlk BPT",
+    "initialWeight":"İlk ağırlık",
+    "insufficientBalance":"Yetersiz bakiye",
+    "insufficientBalanceDetailed":"Bu ticaret, cüzdanınızda bulunan daha fazla para gerektirir.",
+    "insufficientData":"Yeterli veri yok.",
+    "insufficientLiquidity":"Yeterli likidite yok",
+    "insufficientLiquidityDetailed":"Daha küçük bir miktarla işlem yapmayı deneyin veya bu havuzun likiditesi arttığında tekrar kontrol edin.",
+    "invalidFee":"Geçersiz ücret",
+    "invalidFeeExplain":"Lütfen %0,0001 ile %10 arasında geçerli bir ücret girin",
+    "invest":"Yatırım",
+    "investInPool":"Havuza yatırım yapın",
+    "investWithdraw":"Yatırım Yap ve Çek",
+    "investment":"Yatırım",
+    "investmentPool":"Yatırım havuzu",
+    "investmentPools":"Yatırım havuzları",
+    "investmentPoolsAbout":"Balancer V2 likidite madenciliğine katılmak için $ BAL token kazanmak için varlıklarınızı yatırın.",
+    "investmentPoolsAboutLink":"Daha fazla bilgi edinin ->",
+    "investmentSettled":"Yatırımınız tamamlandı",
+    "investmentSuccess":"Jetonlarınız bu havuza eklendi ve sizde<br> bu yatırımı temsil eden yeni bir LP jetonu aldı.",
+    "investmentTooltip":"Bu havuza yapılan yatırımı onaylayın",
+    "isRequired":"gerekli",
+    "joinPool":"havuza katıl",
+    "language":"Dil",
+    "learnMore":"Daha fazla bilgi edin",
+    "light":"Işık",
+    "liquidityBootstrappingPool":"Likidite Önyükleme Havuzu",
+    "liquidityIncentives":"likidite teşvikleri",
+    "liquidityMining":"Likidite madenciliği",
+    "liquidityMiningAPR":"Likidite Madenciliği APR",
+    "liquidityMiningIncentives":"Likidite madenciliği teşvikleri",
+    "liquidityMiningIncentivesCopy":"Bu havuza yatırım yapan kişiler likidite madenciliği teşvikleri alırlar. Ethereum Mainnet'in aksine, {0} üzerindeki uygun havuzlar için herhangi bir stake işlemi gerekmez",
+    "liquidityMiningPopover":{
+       "airdropEligibility":"Uygun yatırım havuzlarına likidite sağlayan veya uygun token çiftlerinde ticaret yapan kişiler, teşvik olarak haftalık $BAL dağıtımları alır. $BAL token sahipleri Dengeleyici Protokolüne sahiptir ve yönetişim tekliflerine oy vererek geleceğini şekillendirmeye yardımcı olabilir.",
+       "airdropExplainer":"{0} tarihindeki likidite madenciliğinden elde edilen haftalık dağıtımlar, Çarşamba günleri havadan düşürülür ve disperse.app kullanılarak doğrudan cüzdanınıza gönderilir.",
+       "claimFreezeWarning":{
+          "description":"Birkaç hafta boyunca talep edilmemiş jetonlarınız olduğundan, işlem yapılırken talep düğmesine bastıktan sonra ekranınız donmuş gibi görünebilir. Sadece tarayıcınızı açık bırakın ve cüzdanınız sonunda talebinizi tamamlamanız için açılacaktır.",
+          "title":"Çok fazla iddia"
+       },
+       "networksExplainer":"{0} ve {1} üzerindeki mevcut kümülatif $BAL teşviklerinizi görmek için başlıktaki ağları değiştirin.",
+       "noRewards":{
+          "description":"Bazı uygun havuzlar, katkılarıyla orantılı olarak haftalık olarak yatırımcılara dağıtılan 'likidite madenciliği' jeton teşviklerine sahiptir.",
+          "title":"Talep etmek için jeton teşvikiniz yok"
+       },
+       "tabs":{
+          "claimable":"Şimdi talep edilebilir",
+          "currentEstimate":"Askıda olması"
+       },
+       "title":"Jeton teşvikleri"
+    },
+    "liquidityProviderCopy":"Uygun yatırım havuzlarına likidite sağlayan veya uygun token çiftlerinde ticaret yapan kişiler, teşvik olarak haftalık $BAL dağıtımları alır. $BAL token sahipleri, Dengeleyici Protokolüne sahiptir ve yönetim tekliflerine oy vererek geleceğini şekillendirmeye yardımcı olabilir.",
+    "loadMore":"Daha fazla yükle",
+    "loading":"Yükleniyor...",
+    "loadingBestPrice":"En iyi fiyatı arıyorum...",
+    "lockToGetVeBAL":"veBAL almak için bunu kilitleyin",
+    "logOut":"Çıkış Yap",
+    "lost":"Kayıp",
+    "lpTokens":"LP jetonları",
+    "lpsEarnFee":"LP'ler ücret olarak {0} kazanır",
+    "manageLists":"Listeleri yönet",
+    "managedPool":"yönetilen havuz",
+    "marketConditionsWarning":"Siparişinizin verildiği saat arasında piyasa koşulları değişebilir.<br> gönderildiği ve Ethereum'da yürütüldüğü zaman. Kayma<br> tolerans, istekli olduğunuz fiyattaki maksimum değişikliktir<br> kabul etmek. Bu sizi önden çalışan botlardan ve madencilerden korur<br> çıkarılabilir değer (MEV).",
+    "max":"Max",
+    "maxed":"Maksimum",
+    "maximum":"Maksimum",
+    "menu":"Menü",
+    "migrate":"Göç",
+    "migratePool":{
+       "aaveBoostedPool":{
+          "whyMigrate":{
+             "title":"Neden göç?",
+             "description":"Yükseltilmiş havuzlar ayrıca faiz getiren aToken'ları tutmaktan ek getiri elde eder. aTokens, dayanak varlıklar Aave'deki borçlulara ödünç verildiğinde gerçek zamanlı olarak faiz tahakkuk ettirir."
+          },
+          "migrateToPool":{
+             "title":"Güçlendirilmiş bir havuza geçiş yapın"
+          },
+          "poolStats":{
+             "title":"Artırılmış havuz istatistikleri"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "default":"Önizlemeyi taşı",
+             "confirmed":"Taşıma onaylandı"
+          },
+          "riskWarnings":{
+             "title":"Bazı riskler - aşağıdaki durumlarda havuzda para kaybedebilirsiniz:",
+             "risks":{
+                "loseUSDPeg":"Bu havuzdaki jetonlardan herhangi biri, 1 USD'lik hedef sabitini kalıcı olarak kaybeder.",
+                "aaveStableExploit":"Aave'de sorunlar çıkıyor. Bunun nedeni, stabilcoinlerin çoğunun size ek getiri sağlamak için Aave aTokens'a yatırılmasıdır."
+             }
+          },
+          "summary":{
+             "title":"Özeti taşı"
+          },
+          "actions":{
+             "title":"Taşıma havuzu",
+             "loading":"Cüzdanda havuz geçişini onaylayın",
+             "migrationStep":"Havuz geçişini onaylayın"
+          },
+          "priceImpactAccept":"Havuz geçişinden kaynaklanan yüksek fiyat etkisini kabul ediyorum."
+       },
+       "migrateToBoostedPool":"Güçlendirilmiş bir havuza geçiş yapın",
+       "errorLoadingMigration":{
+          "title":"Bir şeyler yanlış gitti",
+          "description":"Havuz geçişi gösterilmeye çalışılırken bir hata oluştu."
+       }
+    },
+    "minTransactionBuffer":"Sorunsuz bir işlem sağlamak için, gaz ücretlerini ödemek için cüzdanınızda en az {0} {1} bırakılmalıdır.",
+    "missingPoolNameOrSymbol":"Havuz adı veya sembolü eksik",
+    "missingPoolNameOrSymbolInfo":"Havuz adı veya sembolü eksik, havuzu oluşturmadan önce doldurun.",
+    "missingTokenPrices":"Eksik jeton fiyatları",
+    "modals":{
+       "veBalRedirectModal":{
+          "title":"Ana ağa devam et",
+          "description":"Yetiştirmek ve oy kullanmak için veBAL'i almak ve kullanmak, Ethereum ana ağında yapılmalıdır. Uygun havuzlara yatırım yaparak Arbitrum ve Polygon'da likidite madenciliği teşvikleri kazanmaya devam edebilirsiniz. Ancak, emisyonları tercih ettiğiniz havuzlara yönlendirmek ve protokol ücretlerini kazanmak için oy kullanmak için, B-80BAL-20WETH'yi kilitleyerek Ethereum Mainnet'te veBAL kullanmanız gerekir."
+       }
+    },
+    "month":"ay",
+    "months":"aylar",
+    "mustBeAtLeast":"en az {0} karakter olmalıdır",
+    "mustBeInt":"tam sayı olmak zorunda",
+    "mustBeLessThan":"{0} altında olmalıdır",
+    "mustBeMoreThan":"{0} değerinden büyük olmalıdır",
+    "mustBePositive":"pozitif bir sayı olmalı",
+    "mustBeSame":"{0} ile aynı olmalıdır",
+    "mustBeValidAddress":"Bu geçerli bir Ethereum adresi değil",
+    "mustBeValidEmail":"geçerli bir e-posta olmalı",
+    "mustBeValidNum":"geçerli bir numara olmalı",
+    "myApr":"Nisan'ım",
+    "myBalance":"Benim dengem",
+    "myBalancerInvestments":"Dengeleyici yatırımlarım",
+    "myInvestments":"Dengeleyici yatırımlarım",
+    "myPortfolio":"Portföyüm",
+    "myShare":"Benim payım",
+    "myWallet":"Ethereum cüzdanım",
+    "myWallet2":"Cüzdanım",
+    "name":"İsim Soyisim",
+    "namePlaceholder":"İsim, sembol veya sözleşme adresi",
+    "nativeTokens":"Yerel belirteçler",
+    "network":"Ağ",
+    "networkMismatch":"Lütfen {0} olarak geçiş yapın",
+    "new":"Yeni",
+    "newInvestment":"Yeni yatırım",
+    "newToEthereum":"Ethereum'da yeni misiniz?",
+    "newTrade":"Yeni Ticaret",
+    "newWithdrawal":"Yeni para çekme",
+    "next":"Sonraki",
+    "noContent":"İçerik yok",
+    "noData":"Uygun veri yok",
+    "noInitLiquidity":"Bu havuzun başlangıç likiditesi yok",
+    "noInitLiquidityDetail":"Havuz oluşturma kullanıcı arabirimi hazır olana kadar, yatırımlar desteklenmeden önce akıllı sözleşmede bir INIT birleştirme türü gerekir.",
+    "noInvestments":"Bu havuza yatırım yok.",
+    "noInvestmentsPool":"Bu havuza yatırım yok",
+    "noPoolsFound":"Havuz bulunamadı",
+    "noPriceImpact":"En iyi fiyat",
+    "noPriceImpactTip":"Tokenleri orantılı olarak eklemek size en iyi fiyatı verir.",
+    "noPriceInfo":"Fiyatlandırma sağlayıcımız tarafından bulunmayan bir belirteç içerdiğinden bu havuz için fiyat bilgisi mevcut değil.",
+    "noRecentActivity":"Etkinliğiniz burada görünecek...",
+    "noResults":"Sonuç yok.",
+    "noSwapsPool":"Bu havuzda takas yoktur.",
+    "notAvailable":"Yok",
+    "numberOfPools":"Havuz sayısı",
+    "oneDay":"1D",
+    "oneMonth":"1 milyon",
+    "oneWeek":"1 W",
+    "oops":"ayy",
+    "optimize":"optimize et",
+    "optimized":"Optimize",
+    "optimizedPrefilled":"Optimize edilmiş miktarlar önceden doldurulmuştur",
+    "oracleWeightedPool":"Oracle Ağırlıklı Havuz",
+    "otherTokenEarnings":"Diğer jeton kazançları",
+    "overview":"Genel Bakış",
+    "ownerFeesTooltip":"Likidite sağlayıcıları, bu havuzdaki Likiditeyi kullanan her ticarette dinamik takas ücretleri kazanır. Dinamik takas ücretleri havuz sahibi tarafından kontrol edilir.",
+    "pages":{
+       "claim":{
+          "title":"Likidite madenciliği teşviklerinizi talep edin",
+          "description":"Dengeleyici protokolü ve ortakları, uygun havuzlarda likidite çekmek için teşvikler sağlar. Bu havuzlardaki bahisçiler her blokta teşvik biriktirir. veBAL'li kişiler, 2,5 kata kadar daha yüksek bir oran elde eder.",
+          "transitionInfo":{
+             "title":"Yeni veBAL tokenomiklerine geçiş",
+             "description":"Likidite madenciliği teşvikleri 7 Nisan 2022'de 0:00 UTC'de başlıyor. Jeton kazançları her blokta birikir ve herhangi bir zamanda talep edilebilir. Bu arada uygun havuzlarda veBAL alarak, likidite sağlayarak, stake ve oylama yaparak hazırlanabilirsiniz.",
+             "descriptionL2":"Likidite madenciliği teşvikleri 7 Nisan 2022'de 0:00 UTC'de başlıyor. Polygon ve Arbitrum'daki kazançlar, 14 Nisan'dan itibaren her hafta Perşembe günleri talep edilebilir. Bu arada uygun havuzlarda veBAL alarak, likidite sağlayarak, stake ve oylama yaparak hazırlanabilirsiniz."
+          },
+          "titles":{
+             "incentivesOnOtherNetworks":"Diğer ağlardaki teşvikler",
+             "legacyIncentives":"Eski teşvikler"
+          },
+          "btns":{
+             "claimOn":"üzerinde hak talebinde bulunmak"
+          }
+       }
+    },
+    "payload":"Yük",
+    "pendingClaims":"Bekleyen iddialar",
+    "pendingEstimate":"Beklemede: (tahmini)",
+    "perWeek":"haftada",
+    "policies":{
+       "cookiesPolicy":"Çerez Politikası",
+       "privacyPolicy":"Gizlilik Politikası",
+       "termsOfUse":"Kullanım Şartları"
+    },
+    "pool":"Havuz",
+    "poolBalance":"Havuz bakiyesi",
+    "poolComposition":"Havuz bileşimi",
+    "poolCreated":"Havuz oluşturuldu!",
+    "poolName":"Havuz adı",
+    "poolPercent":"Havuz %",
+    "poolReturns":"Havuz iadeleri",
+    "poolSymbol":"Havuz sembolü",
+    "poolTokenName":"Havuz jetonu adı",
+    "poolTransactions":"Havuz işlemleri",
+    "poolTransfer":{
+       "myPoolBalancesCard":{
+          "title":"havuz bakiyem"
+       },
+       "myWalletTokensCard":{
+          "title":"Cüzdanımdaki havuz jetonları",
+          "tooltips":{
+             "nativeAssetSelection":"Bu havuza yatırım yapmak için {0} veya {1} öğesini seçin. Daha büyük miktarda yatırım yapmak ve yatırımınızı en üst düzeye çıkarmak için {0} öğesini sarın veya paketi açın."
+          }
+       }
+    },
+    "poolType":"Havuz türü",
+    "poolValue":"Havuz değeri",
+    "pools":"Havuzlar",
+    "poolsToMigrate":"Taşınacak havuzlar",
+    "poolsToStake":"Bahis havuzları",
+    "popularBases":"Popüler Üsler:",
+    "portfolio":"Portföy",
+    "potential":"Potansiyel",
+    "potentialWeeklyYield":"Potansiyel haftalık getiri",
+    "preview":"Ön izleme",
+    "previewMigrate":"Taşımayı önizle",
+    "previewPool":"Yeni {0} havuzunu önizle",
+    "previewTrade":"Önizleme ticareti",
+    "previewTradeTransactions":"Önizleme ticaret işlemleri",
+    "previewUnwrap":"Önizleme {0} Paketi Aç",
+    "previewWrap":"Önizleme {0} Kaydır",
+    "priceImpact":"Fiyat etkisi",
+    "priceImpactAccept":"Piyasa fiyatını piyasanın derinliğine göre hareket ettirerek {0} tek jeton tutarından yüksek fiyat etkisini kabul ediyorum.",
+    "priceImpactCheckbox":"Fiyat etkisi onayı",
+    "priceImpactTolerance":"Fiyat etkisi toleransı",
+    "priceUpdatedAlert":{
+       "title":"Fiyat güncellendi",
+       "description":"Ticaret fiyatı {0}'den fazla güncellendi",
+       "actionLabel":"Kabul etmek"
+    },
+    "proceed":"Devam etmek",
+    "profit":"Kâr (1 {0})",
+    "proportionalSuggestion":"orantılı öneri",
+    "proportionalWithdrawal":"orantılı çekilme",
+    "protocolFees":"Protokol ücretleri",
+    "rank":"Sıra (1 {0})",
+    "receipt":"Fiş",
+    "receive":"Teslim almak",
+    "recentActivityTitle":"Son Etkinlik",
+    "requiresTransactions":"1 işlem gerektirir | {txCount} işlem gerektirir",
+    "restoring":"Geri yükleniyor...",
+    "returnToPool":"Havuz sayfasına dön",
+    "returnToPoolCreation":"Havuz oluşturmaya geri dön",
+    "saveGas":"gazdan tasarruf etmek için.",
+    "searchBy":"İsim, sembol veya adres",
+    "searchByName":"Ada göre ara",
+    "seeMore":"Daha fazla gör",
+    "seeOnExplorer":"Gezgini gör",
+    "seePools":"Havuzları görün",
+    "seeV1BalancerInvestments":"Balancer V1 yatırımlarınızı görmek ister misiniz?",
+    "select":"Seçiniz",
+    "selectToken":"Jeton araması",
+    "sell":"Satmak",
+    "send":"Gönder",
+    "setUpEthereumWallet":"Balancer, Ethereum'da bir DeFi uygulamasıdır. Burada Yatırım ve Ticaret için bir Ethereum Cüzdanı kurun.",
+    "settings":"Ayarlar",
+    "singleToken":"Tek jeton",
+    "singleTokenMax":"Tek jeton maks.",
+    "slippageTolerance":"Kayma toleransı",
+    "somethingWentWrong":"Bir şeyler yanlış gitti",
+    "stablePool":"Sabit havuz",
+    "stake":"Bahis",
+    "stakeToGetExtra":"Ekstra kazanmak için bunu değerlendirin",
+    "staked":"kazıklı",
+    "staking":{
+       "newTotalShare":"toplam payınız",
+       "stakedPools":"Bahis havuzları",
+       "stakedLpTokensTooltip":"Bu havuzda stake ettiğiniz LP jetonlarının itibari değeri.",
+       "stakeValueTooltip":"Stake edeceğiniz LP jetonlarının yaklaşık değeri.",
+       "unstakedLpTokensTooltip":"Stake edebileceğiniz LP jetonlarının itibari değeri.",
+       "staking":"esnetme",
+       "stakeTooltip":"Bu havuzda likidite madenciliği teşvikleri kazanmak için LP jetonlarının stake edilmesini onaylayın",
+       "stakingApr":"APR hissesi",
+       "stakingIncentives":"Stake teşvikleri",
+       "totalShareTooltip":"Havuzdaki mevcut toplam LP jeton payınız",
+       "unclaimedIncentives":"Talep edilmemiş teşvikler",
+       "unstakedPools":"Bahissiz havuzlar",
+       "unstakeValueTooltip":"Geri alacağınız LP jetonlarının yaklaşık değeri.",
+       "unstaking":"unstake",
+       "unstakeTooltip":"LP jetonlarının ayrılmasını onaylayın. Bu havuz için likidite madenciliği teşvikleri kazanma hakkını kaybedersiniz.",
+       "weeklyEarning":"haftalık kazanç"
+    },
+    "strategy":"Strateji",
+    "submit":"Göndermek",
+    "summary":"Özet",
+    "swap":"Takas",
+    "swapFee":"Takas ücreti",
+    "swapFeeAPR":"Takas ücretleri APR",
+    "swapFeeManager":"takas ücreti yöneticisi",
+    "switchNetwork":"Ağ Değiştir",
+    "symbol":"Sembol",
+    "tableShowsBalancerV2Pools":"Bu tablo yalnızca Dengeleyici V2 havuzlarını gösterir.",
+    "theme":"Tema",
+    "yieldAprRewards":{
+       "apr":{
+          "steth":"stETH staking ödülleri Nisan"
+       },
+       "fiat":{
+          "steth":"stETH stake ödülleri"
+       }
+    },
+    "threeMonths":"3 milyon",
+    "time":"Zaman",
+    "timeAgo":"{0} önce",
+    "token":"Jeton",
+    "tokenAlreadySelected":"Belirteç Zaten Seçildi",
+    "tokenInjected":"Bu jeton enjekte edildi",
+    "tokenLists":"Jeton listeleri",
+    "tokenPills":{
+       "hiddenTokens":"+{0} jeton"
+    },
+    "tokenPrices":"Jeton fiyatları",
+    "tokenSearch":"Jeton arama",
+    "tokenWarning":"Balancer Labs, bu havuza likidite eklemenin doğrudan veya dolaylı bir sonucu olarak maruz kalabileceğiniz kayıplardan sorumlu değildir. Deflasyon belirteçleri, transfer ücretli belirteçler veya ERC20 ile uyumlu olmayan diğer belirteçler eklemeyin. Lütfen devam etmeden önce onaylayın.",
+    "tokenWarningTitle":"Özel bir jeton eklediniz",
+    "tokens":"Jetonlar",
+    "tokensLowerCase":"jetonlar",
+    "tokensParen":"Jeton (lar)",
+    "tooltips":{
+       "invest":{
+          "priceImpact":"Likidite eklenmesinden kaynaklanan fiyat etkisi, eklenen her bir jetonun değeri havuzun ağırlıklarıyla orantılı olmadığında ortaya çıkar. Orantısız miktarlar eklemek, sanki jetonları değiştiriyormuşsunuz gibi havuzun iç fiyatlarının değişmesine neden olur. Fiyat etkisi ne kadar yüksek olursa, pozisyonunuzu girmek için o kadar kötü fiyat alırsınız.",
+          "total":"Bu havuza yatıracağınız toplam {0} değeri."
+       },
+       "withdraw":{
+          "priceImpact":"Likiditenin kaldırılmasından kaynaklanan fiyat etkisi, kaldırılan her jetonun değeri havuzun ağırlıklarıyla orantılı olmadığında ortaya çıkar. Orantısız tutarları kaldırmak, sanki jetonları değiştiriyormuşsunuz gibi havuzun iç fiyatlarının değişmesine neden olur. Fiyat etkisi ne kadar yüksek olursa, pozisyonunuzdan çıkmak için alacağınız fiyat o kadar kötü olur.",
+          "total":"Bu havuzdan çekeceğiniz {0} cinsinden toplam değer."
+       }
+    },
+    "total":"Toplam",
+    "totalAPR":"Toplam APR",
+    "totalAllocated":"Toplam tahsis edilen",
+    "totalInvested":"Toplam yatırım",
+    "totalSupply":"Toplam arz",
+    "totalValue":"Toplam değer",
+    "totalValueTo":"Toplam değer",
+    "trade":"Ticaret",
+    "tradeEarns":"Bu ticaret seni kazandırır",
+    "tradeFromWeth":"WETH'den ticaret",
+    "tradeGaslessToggle":{
+       "disabledTooltip":{
+          "eth":"Gazsız işlemler yalnızca ERC-20 jetonlarıyla çalıştığı için bu seçenek devre dışı bırakılır. 'ETH' bir ERC-20 belirteci değildir.",
+          "wrapUnwrap":"Wrap/Unwrap işlemleri her zaman bir gas işlemi gerektirdiğinden bu seçenek devre dışı bırakıldı."
+       },
+       "label":"Gazsız ticaret",
+       "tooltip":"Ücretsiz imza işlemleri, MEV koruması ve DeFi borsaları arasında akıllı ticaret yönlendirmesi ile en iyi fiyatlar için Balancer-Gnosis-Protocol (CowSwap) üzerinde 'gazsız işlem yapın'. Yalnızca gaz kullanan Balancer likidite havuzları aracılığıyla işlem yapmak için kapatın."
+    },
+    "tradeInterface":"Ticaret arayüzü",
+    "tradeInterfaceTooltip":"Balancer V1 ve V2 havuzlarında en iyi likidite için Balancer'ı seçin. MEV korumasının keyfini çıkarırken gazsız siparişler kullanarak jeton alıp satmak için Gnosis'i seçin.",
+    "tradeLiquidity":"Ticaret likiditesi",
+    "tradeRoute":"Ticaret rotası",
+    "tradeSettled":"Ticaretiniz halloldu",
+    "tradeSubmissionError":{
+       "title":"bir hata oluştu",
+       "actionLabel":"Azletmek"
+    },
+    "tradeSuccess":"Jetonlarınızı başarıyla takas ettiniz",
+    "tradeSummary":{
+       "exactIn":{
+          "title":"{0} ayrıntılardan işlem yapın",
+          "tradeFees":"Ticaret ücretleri",
+          "totalBeforeFees":"Ücretlerden önce alınacak toplam",
+          "totalAfterFees":"Ücretlerden sonra beklenen toplam",
+          "totalWithSlippage":"En az {0} kaymasında alırsınız"
+       },
+       "exactOut":{
+          "title":"{0} ayrıntılarla işlem yapın",
+          "tradeFees":"Ticaret ücretleri",
+          "totalBeforeFees":"Ücretlerden önce işlem yapılacak toplam",
+          "totalAfterFees":"Ücretlerden sonra işlem görmesi beklenen toplam",
+          "totalWithSlippage":"{0} kaymasında göndereceğiniz en fazla miktar"
+       },
+       "wrapETH":{
+          "title":"Özet",
+          "tradeFees":"sarma ücretleri",
+          "totalBeforeFees":"Ücretlerden önceki tutar",
+          "totalAfterFees":"Toplam alınacak",
+          "totalWithSlippage":"ETH'yi sarmak için sıfır kayma"
+       },
+       "unwrapETH":{
+          "title":"Özet",
+          "tradeFees":"Paketi açma ücretleri",
+          "totalBeforeFees":"Ücretlerden önceki tutar",
+          "totalAfterFees":"Toplam alınacak",
+          "totalWithSlippage":"ETH'yi sarmak için sıfır kayma"
+       },
+       "gasCosts":"Gaz maliyetleri"
+    },
+    "tradesThroughWeth":"ETH yolundan Balancer likidite havuzları aracılığıyla yapılan işlemler ve gas ücretlerine tabidir.",
+    "transactionAction":{
+       "trade":"Ticaret",
+       "approve":"Onayla",
+       "claim":"İddia",
+       "invest":"Yatırım",
+       "withdraw":"Çekil"
+    },
+    "transactionDeadline":"İşlem son tarihi",
+    "transactionDeadlineTooltip":"Takasınızın süresi dolar ve seçilen süreden daha uzun süre beklemedeyse yürütülmez. Yalnızca gerçekleştirilen takaslar ücrete tabidir.",
+    "transactionErrors":{
+       "default":{
+          "title":"İşlem başarısız",
+          "description":"Lütfen daha sonra tekrar deneyiniz."
+       },
+       "gasTooLow":{
+          "title":"Gaz çok düşük",
+          "description":"İşlem gazı çok düşük. İşlemin minimum maliyetini karşılayacak kadar gaz yok. Sağlanan gazı artırmayı deneyin."
+       },
+       "cannotEstGas":{
+          "title":"Gaz tahmin edilemiyor",
+          "description":"İşlem başarısız olabilir veya manuel gaz limiti gerektirebilir."
+       },
+       "slippage":{
+          "title":"Kayma nedeniyle işlem başarısız oldu",
+          "description":"Piyasa fiyatı, sizinkinden önce işlenen diğer işlemler nedeniyle kayma toleransınızın ötesinde değişti. Tekrar deneyin veya kayma toleransınızı artırın."
+       }
+    },
+    "transactionPending":"Bekleyen işlem yok | {n} işlem beklemede | {n} işlem beklemede",
+    "transactionStatus":{
+       "pending":"Bekliyor",
+       "confirmed":"Onaylanmış",
+       "expired":"Süresi doldu",
+       "cancelling":"İptal",
+       "Cancelled":"İptal edildi"
+    },
+    "transactionSummary":{
+       "investInPool":"{1} içinde {0}",
+       "withdrawFromPool":"{1}'den {0}",
+       "claimBAL":"{0} BAL",
+       "approveForInvesting":"Yatırım için {0} onaylayın",
+       "approveForTrading":"Alım satım için {0} onaylayın",
+       "approveLidoRelayer":"Lido Relayer'ı Onayla",
+       "wrapUnwrap":"{0} {1} ila {2}"
+    },
+    "transactionType":"İşlem tipi",
+    "trendingPairs":"Trend olan çiftler",
+    "unallocated":"ayrılmamış",
+    "unavailableOnNetwork":"Afedersiniz! Dengeleyici bu ağda mevcut değil",
+    "unavailableOnNetworkWithName":"Afedersiniz! Dengeleyici, {0} üzerinde mevcut değil",
+    "unknown":"Bilinmeyen",
+    "unknownPoolType":"Bilinmeyen havuz türü",
+    "unknownTokenPrice":"Bilinmeyen jeton fiyatı",
+    "unlock":"Kilidini aç",
+    "unlockVeBAL":{
+       "expiredLockableTokens":{
+          "title":"Süresi dolmuş kilitli jetonlar"
+       },
+       "unlockForm":{
+          "title":"Kilidini aç",
+          "lockedAmount":{
+             "title":"Kilidi açılabilecek mevcut jetonlar:"
+          }
+       },
+       "previewModal":{
+          "titles":{
+             "unlock":{
+                "default":"Önizleme kilidini açma",
+                "confirmed":"Kilit açma onaylandı"
+             }
+          },
+          "lpTokens":"{0} LP jetonları",
+          "summary":{
+             "title":"Kilit açma özeti",
+             "totalToUnlock":"Kilidi açmak için toplam",
+             "totalVotingEscrow":"Toplam oy emaneti",
+             "expiredOn":"süresi doldu"
+          },
+          "actions":{
+             "unlock":{
+                "label":"Kilit açmayı onayla",
+                "confirming":"onaylanıyor...",
+                "tooltip":"Kilit açmayı onaylayın.",
+                "loadingLabel":"Cüzdanda kilidi açmayı onaylayın"
+             }
+          },
+          "returnToVeBalPage":"veBAL kilit sayfasına dön"
+       },
+       "notSupported":{
+          "title":"Kilit açma bu ağda kullanılamıyor",
+          "description":"Ethereum Mainnet'te kilidini açın"
+       }
+    },
+    "unlocking":"Kilit açma",
+    "unstake":"geri almak",
+    "unstaked":"bahissiz",
+    "unsupportedNetwork":"Desteklenmeyen ağ",
+    "unwrap":"Paketi Aç",
+    "usdValue":"USD Değeri",
+    "v1":"V1",
+    "v2":"V2",
+    "value":"Değer",
+    "vault":"Vault",
+    "veBAL":{
+       "hero":{
+          "eyebrow":"veBAL ile tanışın",
+          "title":"Ekstra kazanç ve oylama gücü",
+          "benefits":{
+             "earn":"Protokol gelirinden payınızı kazanın",
+             "boost":"Likidite madenciliği verimini 2,5 kata kadar artırın",
+             "vote":"Likidite madenciliği emisyonlarını yönlendirmek için oy verin"
+          },
+          "tokens":{
+             "balWETH":"BAL + ISLAK",
+             "lpToken":"B-80BAL-20WETH",
+             "veBAL":"veBAL"
+          },
+          "tokenInfo":{
+             "balWETH":"B-80BAL-20WETH LP jetonunu almak için %80 BAL / %20 WETH havuzuna yatırım yapın / likidite ekleyin.",
+             "lpToken":"veBAL almak için %80 BAL / %20 WETH havuzundaki LP jetonlarını bir yıla kadar kilitleyin. Ne kadar uzun süre kilitlerseniz, o kadar fazla veBAL elde edersiniz.",
+             "veBAL":"Stake havuzlarınızdan ekstra kazanmak için veBAL kullanın. Sadece bazı havuzlar stake için uygundur. Bulunduğunuz havuzları kontrol edin ve likidite madenciliği teşvikleri kazanmak için bahis yapın. Gelecekteki likidite madenciliği emisyonlarını yönlendirmek için oy kullanmak için veBAL'i de kullanabilirsiniz."
+          },
+          "buttons":{
+             "getVeBAL":"veBAL'ı edinin",
+             "learnMore":"Daha fazla bilgi edin"
+          }
+       },
+       "myVeBAL":{
+          "title":"benim veBAL'ım",
+          "cards":{
+             "myLpToken":"benim {0}",
+             "myLockedLpToken":"benim kilitli {0}",
+             "lockedEndDate":"Şu tarihe kadar kilitlendi:",
+             "myVeBAL":"benim veBAL'ım"
+          }
+       },
+       "communityVeBAL":{
+          "title":"Topluluk veBAL",
+          "cards":{
+             "totalVeBAL":"Toplam veBAL",
+             "avgLockUpPeriod":"Ave. kilitlenme süresi",
+             "effectiveBalLocked":"Etkili BAL kilitli",
+             "shareOfBalLocked":"BAL'ın payı kilitlendi"
+          },
+          "stats":{
+             "currentWeekVoting":"Mevcut hafta oylama",
+             "nextWeekVoting":"Önümüzdeki hafta oylama",
+             "balIncentives":"BAL teşvikleri"
+          },
+          "table":{
+             "poolGauge":"Havuz göstergesi",
+             "vote":"Oy",
+             "viewMore":"Daha fazla göster"
+          }
+       },
+       "liquidityMining":{
+          "title":"Likidite madenciliği için uygun havuzlar",
+          "unallocatedVotes":"Ayrılmamış oylarım: {0}.",
+          "votingPeriod":"Oylama dönemi sona eriyor: {0}gün {1}sa {2}dk {3}sn",
+          "table":{
+             "chain":"Zincir",
+             "assets":"Varlıklar",
+             "composition":"Kompozisyon",
+             "nextPeriodVotes":"Sonraki dönem oyları",
+             "myVotes":"benim oylarım",
+             "vote":"Oy"
+          },
+          "votesTooltip":{
+             "title":"Oy dökümü",
+             "thisPeriod":"Bu dönem: {0}",
+             "nextPeriod":"Sonraki dönem: {0}"
+          },
+          "popover":{
+             "title":{
+                "vote":"ölçü oyu",
+                "edit":"Gösterge oylamasını düzenle"
+             },
+             "button":{
+                "vote":"Oylamayı Onayla",
+                "edit":"Oyu düzenle"
+             },
+             "actions":{
+                "vote":{
+                   "confirming":"Oy onaylanıyor...",
+                   "loadingLabel":"Cüzdanda oyu onaylayın"
+                }
+             },
+             "emissionsInfo":"Oyunuzu, Perşembe günü saat 0:00 UTC'de sonraki dönemden başlayarak gelecekteki likidite madenciliği emisyonlarını yönlendirecek.",
+             "voteForGauge":"{1} için {0}",
+             "remainingVotes":"Kalan oylarınız: {0}",
+             "remainingVotesEditing":"Kalan oylarınız: {0} (bu havuzdaki {1} mevcut tahsis + {2} ayrılmamış oy)",
+             "remainingVotesExceeded":"Bu, kalan oylarınızı aşıyor: {0}",
+             "voteLockInfo":"Oylar 10 gün süreyle kilitlendi. {0} tarihine kadar bu oy tahsisinde herhangi bir düzenleme yapamayacaksınız",
+             "warnings":{
+                "votedTooRecently":{
+                   "title":"Oylar 10 gün süreyle kilitlendi.",
+                   "description":"{0} için bu oy tahsisinde herhangi bir düzenleme yapamayacaksınız"
+                },
+                "noVeBal":{
+                   "title":"Göstergelere oy vermek için biraz veBAL'e ihtiyacınız var",
+                   "description":"%80 BAL / %20 WETH havuzundan LP jetonlarını kilitleyerek veBAL alın."
+                },
+                "veBalLockTooShort":{
+                   "title":"veBAL 7 gündür kilitli değil.",
+                   "description":"Göstergelere oy verebilmek için veBAL'i 7 günden fazla kilitlemiş olmanız gerekir."
+                }
+             },
+             "errors":{
+                "notEnoughVotes":"Yeterli ayrılmamış oy"
+             }
+          }
+       },
+       "notSupported":{
+          "title":"Bu ağda kilitleme kullanılamıyor",
+          "description":"Ethereum Mainnet'te veBAL edinin"
+       },
+       "votingTransitionDescription":"veBAL sahipleri tarafından yönlendirilen likidite madenciliği emisyonları 7 Nisan 2022'de 0:00 UTC'de başlıyor! Oylama şimdi canlı, bu yüzden veBAL'i edinin ve havuzlara oy verin. Oyunuz, siz düzenleyene kadar devam edecek. Düzenleme sadece 10 günde bir yapılabilir."
+    },
+    "vestVote":"Yelek+Oy",
+    "viewAllAssets":"Tüm varlıkları görüntüleyin ({0})",
+    "viewAndManangeOnElement":"Element.fi'deki tüm havuzları görüntüleyin ve yönetin",
+    "viewFullWallet":"Cüzdanın tamamını görüntüleyin",
+    "viewLess":"Daha az görüntüle",
+    "viewOnElement":"Element.fi'de görüntüle",
+    "viewPool":"Havuzu görüntüle",
+    "viewTransaction":"İşlemi görüntüle",
+    "volume24h":"Hacim (24 {0})",
+    "volume24hShort":"Cilt (24s)",
+    "volumeTime":"Hacim ({0})",
+    "wallet":"Cüzdan",
+    "warning":"Uyarı",
+    "week":"Hafta",
+    "weekAbbrev":"w",
+    "weight":"Ağırlık",
+    "weightedPool":"Ağırlıklı havuz",
+    "whichPools":"İşlem yaparken hangi likidite havuzları kullanılmalıdır.",
+    "withdraw":"Çekil",
+    "withdrawFee":"Para çekme ücreti",
+    "withdrawFromPool":"Havuzdan çekilmek",
+    "withdrawWarning":"Tek varlık tutarlarının çekilmesi, varlıkların iç fiyatlarına neden olur.<br> havuz değiştirilecek, sanki jeton değiştiriyormuşsunuz gibi. Daha yüksek<br> fiyat, takas ücretlerinde ne kadar çok harcayacağınızı etkiler.",
+    "withdrawal":"Para çekme",
+    "withdrawalSettled":"Para çekme işleminiz çözüldü",
+    "withdrawalSuccess":"Yatırımınız bu havuzdan çekildi ve<br> temel belirteçler artık cüzdanınızda.",
+    "withdrawing":"geri çekilme",
+    "wrap":"Paketlemek",
+    "wrapInstruction":"{0}'nizi W{0}'e sarın",
+    "wrapStEthTooltip":"Bu havuz, Wrapped Liquid Stake ETH 2.0 (wstETH) gerektirir. Yatırımınızı maksimize etmek için, biraz daha STETH yapabilirsiniz.",
+    "yearAbbrev":"y",
+    "yieldEarnings":"verim kazançları",
+    "youCanInvest":"yatırım yapabilirsin",
+    "youDidIt":"Sen yaptın!",
+    "yourBalanceInPool":"Bu havuzdaki bakiyeniz",
+    "yourTransactions":"Bu havuzdaki işlemleriniz"
+ }
+ 
