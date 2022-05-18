@@ -12,7 +12,6 @@ import {
   toRefs
 } from 'vue';
 
-import balTokenList from '@/assets/tokenlists/balancer.json';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
@@ -250,8 +249,9 @@ export default {
      * Create token map from a token list tokens array.
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
+      const balancerTokenList = require('../../public/tokens/balancer.json');
       const tokensMap = {};
-      const tokens = [...tokenLists, balTokenList]
+      const tokens = [...tokenLists, balancerTokenList]
         .map(list => list.tokens)
         .flat();
 

@@ -6,14 +6,15 @@
     "npm": ">=7"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "npm run generate:tokenlists && vue-cli-service serve",
+    "build": "npm run generate:tokenlists && vue-cli-service build",
     "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
     "lint": "vue-cli-service lint --no-fix --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "lint:fix": "vue-cli-service lint",
     "prepare": "node ./prepare.js",
+    "generate:tokenlists": "node ./generate_tokenlists.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts"
