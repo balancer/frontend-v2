@@ -73,14 +73,13 @@ const unboostedTotalAPR = computed((): string =>
 
 const breakdownItems = computed(
   (): Array<any> => {
-    const items: Record<string, string> = {};
+    const items: Array<any> = [];
 
-    items['Min BAL'] = minBalAPR.value;
-    items['Max BAL'] = maxBalAPR.value;
+    items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
 
-    if (hasRewardTokens.value) items['Rewards'] = rewardTokensAPR.value;
+    if (hasRewardTokens.value) items.push(['Rewards', rewardTokensAPR.value]);
 
-    return Object.entries(items);
+    return items;
   }
 );
 </script>
