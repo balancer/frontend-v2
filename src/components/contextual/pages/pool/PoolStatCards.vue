@@ -7,7 +7,7 @@
       <BalCard v-for="(stat, i) in stats" :key="i">
         <div class="text-sm text-gray-500 font-medium mb-2 flex">
           <span>{{ stat.label }}</span>
-          <APRTooltip :pool="pool" v-if="stat.id === 'apr'" />
+          <APRTooltip v-if="stat.id === 'apr'" :pool="pool" />
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}
@@ -21,7 +21,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import APRTooltip from '@/components/tooltips/APRTooltip.vue';
+import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
 import { bnum } from '@/lib/utils';

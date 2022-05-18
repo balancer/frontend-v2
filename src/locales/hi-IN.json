@@ -664,7 +664,7 @@
     "symbol":"प्रतीक",
     "tableShowsBalancerV2Pools":"यह तालिका केवल बैलेंसर V2 पूल दिखाती है।",
     "theme":"विषय",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"stETH स्टेकिंग पुरस्कार अप्रैल"
        },

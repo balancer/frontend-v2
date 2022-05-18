@@ -4,10 +4,11 @@ import { useI18n } from 'vue-i18n';
 
 import { isL2 } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isStablePhantom, isWstETH } from '@/composables/usePool';
+import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
+import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { FullPool } from '@/services/balancer/subgraph/types';
 /**
  * TYPES
@@ -72,9 +73,10 @@ const thirdPartyMultiRewardPool = computed(
 );
 
 const thirdPartyFiatLabel = computed(() => {
-  if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
+  if (includesWstEth(props.pool.tokensList))
+    return t('yieldAprRewards.fiat.steth');
   if (isStablePhantom(props.pool.poolType))
-    return t('thirdPartyRewards.fiat.boosted');
+    return t('yieldAprRewards.fiat.boosted');
   return '';
 });
 

@@ -1,7 +1,8 @@
-import { isStablePhantom, isWstETH } from '@/composables/usePool';
+import { isStablePhantom } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
+import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
 import { AnyPool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -78,7 +79,7 @@ export class AprConcern {
     let total = '0';
     let breakdown = {};
 
-    if (isWstETH(this.pool)) {
+    if (includesWstEth(this.pool.tokensList)) {
       total = await this.lido.calcStEthAPRFor(this.pool, protocolFeePercentage);
     } else if (isStablePhantom(this.pool.poolType)) {
       const aaveAPR = await this.aave.calcWeightedSupplyAPRFor(

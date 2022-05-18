@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/types';
-import APRTooltip from '@/components/tooltips/APRTooltip.vue';
+import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { FullPool } from '@/services/balancer/subgraph/types';
 

@@ -4,6 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { bnum } from '@/lib/utils';
+import { includesWstEth } from '@/lib/utils/balancer/lido';
 import {
   AnyPool,
   FullPool,
@@ -72,14 +73,6 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 export function isWeth(pool: AnyPool): boolean {
   return (pool.tokenAddresses || []).includes(
     configService.network.addresses.weth
-  );
-}
-
-export function isWstETH(pool: AnyPool): boolean {
-  if (!configService.network.addresses.wstETH) return false;
-
-  return (pool.tokenAddresses || []).includes(
-    getAddress(configService.network.addresses.wstETH)
   );
 }
 
@@ -213,7 +206,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean => !!pool.value && isWeth(pool.value)
   );
   const isWstETHPool = computed(
-    (): boolean => !!pool.value && isWstETH(pool.value)
+    (): boolean => !!pool.value && includesWstEth(pool.value.tokensList)
   );
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
