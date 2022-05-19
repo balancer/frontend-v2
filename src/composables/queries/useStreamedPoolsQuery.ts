@@ -154,10 +154,7 @@ async function decorateWithAPRs(
       })
     ]);
 
-    if (!pool.dynamic) pool.dynamic = {} as any;
-    if (!pool.dynamic.apr) pool.dynamic.apr = {} as any;
-
-    pool.dynamic.apr = await poolService.apr.calc(
+    const apr = await poolService.apr.calc(
       poolSnapshot,
       prices,
       currency,
@@ -167,9 +164,14 @@ async function decorateWithAPRs(
     );
 
     const fees = poolService.calcFees(pastPoolsMap[pool.id]);
-    pool.dynamic.fees = fees;
 
-    return pool;
+    return {
+      ...pool,
+      dynamic: {
+        fees,
+        apr
+      }
+    };
   });
   return await Promise.all(decorated);
 }
