@@ -42,9 +42,10 @@ export function isWstEthAddress(address: string): boolean {
   return address.toLowerCase() === wstEthAddress.toLowerCase();
 }
 
-export function includesWstEth(addresses: string[]): boolean {
-  const wstEthAddress = configService.network.addresses.wstETH;
-
+export function includesWstEth(
+  addresses: string[],
+  wstEthAddress = configService.network.addresses.wstETH
+): boolean {
   if (!wstEthAddress) return false;
 
   return addresses
