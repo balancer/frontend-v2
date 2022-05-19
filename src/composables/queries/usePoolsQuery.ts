@@ -243,13 +243,6 @@ export default function usePoolsQuery(
 
           decoratedPools[i].onchain = onchainData;
           decoratedPools[i].totalLiquidity = totalLiquidity.toString();
-
-          const miningTotalLiquidity = balancerSubgraphService.pools.removeExcludedAddressesFromTotalLiquidity(
-            decoratedPools[i],
-            decoratedPools[i].totalLiquidity
-          );
-
-          decoratedPools[i].miningTotalLiquidity = miningTotalLiquidity;
         }
       }
     }

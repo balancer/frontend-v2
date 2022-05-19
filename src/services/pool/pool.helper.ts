@@ -1,6 +1,6 @@
 import { fNum2 } from '@/composables/useNumbers';
 
-import { FullPool } from '../balancer/subgraph/types';
+import { AnyPool, FullPool } from '../balancer/subgraph/types';
 
 export function getPoolWeights(pool: FullPool) {
   return Object.values(pool.onchain.tokens)

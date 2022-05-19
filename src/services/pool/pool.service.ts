@@ -6,10 +6,6 @@ import { bnum } from '@/lib/utils';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import {
-  ExcludedAddresses,
-  removeAddressesFromTotalLiquidity
-} from '../balancer/subgraph/entities/pools/helpers';
-import {
   AnyPool,
   LinearPool,
   Pool,
@@ -114,17 +110,6 @@ export default class PoolService {
     if (isStable(this.pool.poolType)) return tokens;
 
     return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
-  }
-
-  removeExcludedAddressesFromTotalLiquidity(
-    totalLiquidityString: string,
-    excludedAddresses: ExcludedAddresses
-  ) {
-    return removeAddressesFromTotalLiquidity(
-      excludedAddresses,
-      this.pool,
-      totalLiquidityString
-    );
   }
 
   calcFees(pastPool: Pool | undefined): string {

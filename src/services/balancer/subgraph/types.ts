@@ -43,7 +43,6 @@ export interface Pool {
   tokensList: string[];
   tokenAddresses: string[];
   totalLiquidity: string;
-  miningTotalLiquidity: string;
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
@@ -62,7 +61,6 @@ export interface LinearPool extends Pool {
 
 export interface DecoratedPool extends Pool {
   dynamic: {
-    period: TimeTravelPeriod;
     volume: string;
     apr: PoolAPRs;
     fees: string;
