@@ -1,12 +1,12 @@
-import { fNum2 } from '@/composables/useNumbers';
+import { numF } from '@/composables/useNumbers';
 
-import { AnyPool, FullPool } from '../balancer/subgraph/types';
+import { FullPool } from '../balancer/subgraph/types';
 
 export function getPoolWeights(pool: FullPool) {
   return Object.values(pool.onchain.tokens)
     .map(
       token =>
-        `${fNum2(token.weight, {
+        `${numF(token.weight, {
           style: 'percent',
           maximumFractionDigits: 0
         })} ${token.symbol}`
