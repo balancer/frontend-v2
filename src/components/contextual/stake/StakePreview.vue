@@ -13,11 +13,11 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import {
-  getGaugeAddress,
-  isL2StakingAprLive
+  getGaugeAddress
+  // isL2StakingAprLive
 } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
+// import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
@@ -43,8 +43,8 @@ const {
   userData: {
     stakedSharesForProvidedPool,
     refetchStakedShares,
-    refetchUserStakingData,
-    getBoostFor
+    refetchUserStakingData
+    // getBoostFor
   },
   stakeBPT,
   unstakeBPT
@@ -123,19 +123,25 @@ const totalUserPoolSharePct = ref(
     .toString()
 );
 
-const stakingApr = computed(() => {
-  return bnum(getAprRangeWithRewardEmissions(props.pool).min).times(
-    getBoostFor(props.pool.id)
-  );
-});
+/**
+ * TODO implement staking APR and potential weekly yield
+ * Doesn't currently work because getBoostFor only returns boosts
+ * For staked positions and not pools you're invested in but not staked.
+ */
+// const stakingApr = computed(() => {
+//   return bnum(getAprRangeWithRewardEmissions(props.pool).min).times(
+//     getBoostFor(props.pool.id)
+//   );
+// });
 
-const potentialyWeeklyYield = computed(() => {
-  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
-    .times(getBoostFor(props.pool.id))
-    .times(fiatValueOfModifiedShares.value)
-    .div(52)
-    .toString();
-});
+// const potentialyWeeklyYield = computed(() => {
+//   console.log('boost', getBoostFor(props.pool.id))
+//   return bnum(getAprRangeWithRewardEmissions(props.pool).min)
+//     .times(getBoostFor(props.pool.id))
+//     .times(fiatValueOfModifiedShares.value)
+//     .div(52)
+//     .toString();
+// });
 
 /**
  * LIFECYCLE
@@ -237,7 +243,7 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
+        <!-- <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
           <span class="text-sm">
             {{ action === 'stake' ? $t('your') : $t('lost') }}
             {{ $t('staking.stakingApr') }}:
@@ -268,7 +274,7 @@ function handleClose() {
               textAlign="center"
             />
           </BalStack>
-        </BalStack>
+        </BalStack> -->
       </BalStack>
     </BalCard>
     <BalActionSteps
