@@ -1,19 +1,39 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
-import ClaimPage from '@/pages/claim.vue';
-import CookiesPolicyPage from '@/pages/cookies-policy.vue';
-import GetVeBalPage from '@/pages/get-vebal.vue';
-import HomePage from '@/pages/index.vue';
-import PoolPage from '@/pages/pool/_id.vue';
-import CreatePoolPage from '@/pages/pool/create.vue';
-import PoolInvestPage from '@/pages/pool/invest.vue';
-import MigratePoolPage from '@/pages/pool/migrate.vue';
-import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
-import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
-import TermsOfUsePage from '@/pages/terms-of-use.vue';
-import TradePage from '@/pages/trade.vue';
-import UnlockVeBalPage from '@/pages/unlock-vebal.vue';
-import VeBalPage from '@/pages/vebal.vue';
+const ClaimPage = () =>
+  import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
+const CookiesPolicyPage = () =>
+  import(
+    /* webpackChunkName: "CookiesPolicyPage" */ '@/pages/cookies-policy.vue'
+  );
+const GetVeBalPage = () =>
+  import(/* webpackChunkName: "GetVeBalPage" */ '@/pages/get-vebal.vue');
+const HomePage = () =>
+  import(/* webpackChunkName: "HomePage" */ '@/pages/index.vue');
+const PoolPage = () =>
+  import(/* webpackChunkName: "PoolPage" */ '@/pages/pool/_id.vue');
+const CreatePoolPage = () =>
+  import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
+const PoolInvestPage = () =>
+  import(/* webpackChunkName: "PoolInvestPage" */ '@/pages/pool/invest.vue');
+const MigratePoolPage = () =>
+  import(/* webpackChunkName: "MigratePoolPage" */ '@/pages/pool/migrate.vue');
+const PoolWithdrawPage = () =>
+  import(
+    /* webpackChunkName: "PoolWithdrawPage" */ '@/pages/pool/withdraw.vue'
+  );
+const PrivacyPolicyPage = () =>
+  import(
+    /* webpackChunkName: "PrivacyPolicyPage" */ '@/pages/privacy-policy.vue'
+  );
+const TermsOfUsePage = () =>
+  import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
+const TradePage = () =>
+  import(/* webpackChunkName: "TradePage" */ '@/pages/trade.vue');
+const UnlockVeBalPage = () =>
+  import(/* webpackChunkName: "UnlockVeBalPage" */ '@/pages/unlock-vebal.vue');
+const VeBalPage = () =>
+  import(/* webpackChunkName: "VeBalPage" */ '@/pages/vebal.vue');
 
 declare module 'vue-router' {
   interface RouteMeta {

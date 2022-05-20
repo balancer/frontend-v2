@@ -18,7 +18,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 /**
  * TYPES
  */
-
 type TokenAmount = {
   address: string;
   symbol: string;
@@ -63,9 +62,8 @@ const emit = defineEmits(['loadMore']);
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks } = useWeb3();
-const { tokens, priceFor } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
-
+const { tokens, priceFor } = useTokens();
 /**
  * COMPUTED
  */
@@ -79,14 +77,6 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     sortable: false
   },
   {
-    name: t('details'),
-    id: 'details',
-    accessor: '',
-    Cell: 'detailsCell',
-    width: 325,
-    sortable: false
-  },
-  {
     name: t('value'),
     id: 'value',
     accessor: 'value',
@@ -95,6 +85,14 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     className: 'align-center w-40',
     sortKey: pool => pool.value,
     width: 125
+  },
+  {
+    name: t('tokens'),
+    id: 'details',
+    accessor: '',
+    Cell: 'detailsCell',
+    width: 325,
+    sortable: false
   },
   {
     name: t('time'),
@@ -142,15 +140,12 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
     const token = tokens.value[address];
     const price = priceFor(token.address);
     const amountNumber = Math.abs(parseFloat(amount));
-
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
     if (amountNumber > 0 && price === 0) {
       return 0;
     }
-
     total = total.plus(bnum(amountNumber).times(price));
   }
-
   return total.toNumber();
 }
 
@@ -160,7 +155,6 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     const token = tokens.value[address];
     const symbol = token ? token.symbol : address;
     const amountNumber = parseFloat(amount);
-
     return {
       address,
       symbol,

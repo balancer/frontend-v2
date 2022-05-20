@@ -182,7 +182,7 @@ function gaugeTitle(pool: GaugePool): string {
 async function getBBaUSDPrice() {
   const bbaUSDAddress = addressFor(POOLS.IdsMap?.bbAaveUSD || '');
 
-  if (!isL2.value && bbaUSDAddress) {
+  if (bbaUSDAddress) {
     const bbaUSDContract = new Contract(
       bbaUSDAddress,
       StablePhantomPoolABI,
@@ -209,7 +209,7 @@ watch(gaugePools, async newPools => {
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  await getBBaUSDPrice();
+  if (!isL2.value) await getBBaUSDPrice();
 });
 </script>
 

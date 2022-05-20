@@ -9,7 +9,8 @@ module.exports = {
     NodeJS: true,
     withDefaults: true,
     defineProps: true,
-    defineEmits: true
+    defineEmits: true,
+    defineExpose: true
   },
 
   extends: [

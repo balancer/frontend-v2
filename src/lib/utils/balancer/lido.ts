@@ -18,6 +18,14 @@ export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
     .includes(getAddress(stEthAddress));
 }
 
+export function isStEthAddress(address: string): boolean {
+  return address.toLowerCase() === stEthAddress.toLowerCase();
+}
+
+export function isWstEthAddress(address: string): boolean {
+  return address.toLowerCase() === wstEthAddress.toLowerCase();
+}
+
 /**
  * @notice Get amount of wstETH for a given amount of stETH
  */

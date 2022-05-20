@@ -1,6 +1,5 @@
 import { Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
-import dotenv from 'dotenv';
 import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 import path from 'path';
@@ -12,8 +11,6 @@ import { getPlatformId } from '@/services/coingecko/coingecko.service';
 
 import vebalGauge from '../../../public/data/vebal-gauge.json';
 import config from '../config';
-
-dotenv.config({ path: __dirname + '/../../../.env.development' });
 
 function getBalancerAssetsURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
@@ -114,29 +111,65 @@ async function getTokenLogoURI(
 
 async function getPoolInfo(
   poolId: string,
-  network: Network
+  network: Network,
+  retries = 5
 ): Promise<VotingGauge['pool']> {
-  const poolsApiEndpoint = process.env.POOLS_API_URL;
-  const response = await fetch(`${poolsApiEndpoint}/${network}/${poolId}`);
-  const { id, address, poolType, symbol, tokens } = await response.json();
+  const subgraphEndpoint = config[network].subgraph;
+  const query = `
+    {
+      pool(
+        id: "${poolId}"
+      ) {
+        id
+        address
+        poolType
+        symbol
+        tokens {
+          address
+          weight
+          symbol
+        }
+      }
+    }
+  `;
 
-  const tokensList = tokens
-    .filter(token => token.address != address)
-    .map(token => {
-      return {
-        address: getAddress(token.address),
-        weight: token.weight || 'null',
-        symbol: token.symbol
-      };
+  try {
+    const response = await fetch(subgraphEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query })
     });
 
-  return {
-    id,
-    address: getAddress(address),
-    poolType,
-    symbol,
-    tokens: tokensList
-  };
+    const { data } = await response.json();
+    const { id, address, poolType, symbol, tokens } = data.pool;
+
+    const tokensList = tokens
+      .filter(token => token.address != address)
+      .map(token => {
+        return {
+          address: getAddress(token.address),
+          weight: token.weight || 'null',
+          symbol: token.symbol
+        };
+      });
+
+    return {
+      id,
+      address: getAddress(address),
+      poolType,
+      symbol,
+      tokens: tokensList
+    };
+  } catch {
+    console.error('Pool not found:', poolId, 'chainId:', network);
+
+    return retries > 0
+      ? getPoolInfo(poolId, network, retries - 1)
+      : ({} as VotingGauge['pool']);
+  }
 }
 
 async function getLiquidityGaugeAddress(

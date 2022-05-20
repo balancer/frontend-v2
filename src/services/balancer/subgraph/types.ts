@@ -47,7 +47,6 @@ export interface Pool {
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
-  hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
   createTime: number;
   mainTokens?: string[];
@@ -69,8 +68,6 @@ export interface DecoratedPool extends Pool {
       pool: string;
       thirdParty: string;
       thirdPartyBreakdown: { [address: string]: string };
-      liquidityMining: string;
-      liquidityMiningBreakdown: { [address: string]: string };
       total: string;
       staking?: {
         BAL: {
@@ -198,6 +195,11 @@ export interface PoolSwap {
   tokenAmountOut: string;
   timestamp: number;
   tx: string;
+  userAddress: {
+    id: string;
+  };
+  ensName?: string | null;
+  ensAvatar?: string | null;
 }
 
 export interface PoolSnapshot {

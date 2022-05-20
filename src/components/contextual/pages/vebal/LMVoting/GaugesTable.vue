@@ -127,7 +127,9 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
     gauge.pool.address,
     gauge.pool.tokens
   );
-  return sortedTokens.map(token => gauge.tokenLogoURIs[token?.address || '']);
+  return sortedTokens.map(
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+  );
 }
 
 function networkSrc(network: Network) {
@@ -219,6 +221,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
             color="blue"
             :outline="true"
             size="sm"
+            class="hover:text-white hover:bg-blue-500 focus:text-white focus:bg-blue-500"
             flat
             block
             @click.stop="emit('clickedVote', gauge)"

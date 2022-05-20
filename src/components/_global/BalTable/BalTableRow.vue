@@ -6,7 +6,7 @@ import { ColumnDefinition, Data, Sticky } from './BalTable.vue';
 
 type Props = {
   columns: ColumnDefinition<any>[];
-  onRowClick: (data: any) => void;
+  onRowClick?: (data: any) => void;
   data: Ref<any>;
   link?: any;
   sticky?: Sticky;
@@ -37,7 +37,10 @@ function getHorizontalStickyClass(index: number) {
     @click="handleRowClick(data)"
     :class="[
       'bg-white z-10 row-bg group',
-      { 'cursor-pointer': handleRowClick, 'border-b': pinned }
+      {
+        'cursor-pointer': handleRowClick,
+        'border-b dark:border-gray-700': pinned
+      }
     ]"
   >
     <td

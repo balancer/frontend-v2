@@ -1058,6 +1058,32 @@
     }
   },
   {
+    "address": "0x86EC8Bd97622dc80B4a7346bc853760d99D14C7F",
+    "network": 1,
+    "pool": {
+      "id": "0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de",
+      "address": "0xe8cc7E765647625B95F59C15848379D10B9AB4af",
+      "poolType": "Weighted",
+      "symbol": "20WETH-80WNCG",
+      "tokens": [
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "0.2",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xf203Ca1769ca8e9e8FE1DA9D147DB68B6c919817",
+          "weight": "0.8",
+          "symbol": "WNCG"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "0xf203Ca1769ca8e9e8FE1DA9D147DB68B6c919817": ""
+    }
+  },
+  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "pool": {
@@ -2054,20 +2080,49 @@
     }
   },
   {
+    "address": "0xf01541837CF3A64BC957F53678b0AB113e92911b",
+    "network": 137,
+    "pool": {
+      "id": "0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4",
+      "address": "0xC17636e36398602dd37Bb5d1B3a9008c7629005f",
+      "poolType": "MetaStable",
+      "symbol": "B-MaticX-STABLE",
+      "tokens": [
+        {
+          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+          "weight": "null",
+          "symbol": "WMATIC"
+        },
+        {
+          "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+          "weight": "null",
+          "symbol": "MaticX"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png",
+      "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xfa68fb4628dff1028cfec22b4162fccd0d45efb6.png"
+    }
+  },
+  {
     "address": "0xE190E5363C925513228Bf25E4633C8cca4809C9a",
     "network": 42,
     "pool": {
       "id": "0x647c1fd457b95b75d0972ff08fe01d7d7bda05df000200000000000000000001",
       "address": "0x647c1FD457b95b75D0972fF08FE01d7D7bda05dF",
       "poolType": "Weighted",
+      "symbol": "B-50WBTC-50WETH",
       "tokens": [
         {
           "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
-          "weight": "0.5"
+          "weight": "0.5",
+          "symbol": "WBTC"
         },
         {
           "address": "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1",
-          "weight": "0.5"
+          "weight": "0.5",
+          "symbol": "WETH"
         }
       ]
     },
@@ -2083,18 +2138,22 @@
       "id": "0xf767f0a3fcf1eafec2180b7de79d0c559d7e7e370001000000000000000003e3",
       "address": "0xF767F0a3FCf1EAfEc2180b7dE79D0c559D7E7e37",
       "poolType": "Weighted",
+      "symbol": "17WBTC-50BAL-33USDC",
       "tokens": [
         {
           "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
-          "weight": "0.1667"
+          "weight": "0.1667",
+          "symbol": "WBTC"
         },
         {
           "address": "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7",
-          "weight": "0.5"
+          "weight": "0.5",
+          "symbol": "BAL"
         },
         {
           "address": "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115",
-          "weight": "0.3333"
+          "weight": "0.3333",
+          "symbol": "USDC"
         }
       ]
     },
@@ -2111,18 +2170,22 @@
       "id": "0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8",
       "address": "0x8fd162f338B770F7E879030830cDe9173367f301",
       "poolType": "StablePhantom",
+      "symbol": "bb-a-USD",
       "tokens": [
         {
           "address": "0x0Bbd32B14A6503EE20F87df38Cf2d5d3b59eA2F5",
-          "weight": "null"
+          "weight": "null",
+          "symbol": "bb-a-USDC"
         },
         {
           "address": "0xe667D48618e71c2a02E4a1B66Ed9dEf1426938b6",
-          "weight": "null"
+          "weight": "null",
+          "symbol": "bb-a-USDT"
         },
         {
           "address": "0xfCCcB77A946b6a3BD59d149F083B5BfbB8004D6D",
-          "weight": "null"
+          "weight": "null",
+          "symbol": "bb-a-DAI"
         }
       ]
     },

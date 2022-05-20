@@ -65,6 +65,13 @@ export default function useVotingGauges() {
     return formattedTime;
   });
 
+  const votingPeriodLastHour = computed((): boolean => {
+    const periodEnd = getVotePeriodEndTime();
+    const interval: Interval = { start: now.value, end: periodEnd };
+    const timeUntilEnd: Duration = intervalToDuration(interval);
+    return (timeUntilEnd.days || 0) < 1 && (timeUntilEnd.hours || 0) < 1;
+  });
+
   function getVotePeriodEndTime(): number {
     const n = nextThursday(new Date());
     const epochEndTime = Date.UTC(
@@ -83,6 +90,7 @@ export default function useVotingGauges() {
     votingGauges,
     unallocatedVotes,
     votingPeriodEnd,
+    votingPeriodLastHour,
     refetch: gaugeVotesQuery.refetch
   };
 }

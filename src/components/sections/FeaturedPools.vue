@@ -67,7 +67,7 @@
   </div>
 </template>
 <style scoped>
-/deep/ .card-container {
+:deep(.card-container) {
   justify-content: space-between;
   height: 100%;
 }

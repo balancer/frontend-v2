@@ -12,6 +12,7 @@ import {
   toRefs
 } from 'vue';
 
+import balTokenList from '@/assets/tokenlists/balancer.json';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
@@ -20,7 +21,6 @@ import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
 import { bnum, forChange } from '@/lib/utils';
-import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -251,7 +251,9 @@ export default {
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
-      const tokens = tokenLists.map(list => list.tokens).flat();
+      const tokens = [...tokenLists, balTokenList]
+        .map(list => list.tokens)
+        .flat();
 
       tokens.forEach(token => {
         const address: string = getAddress(token.address);
@@ -438,7 +440,6 @@ export default {
      */
     onBeforeMount(async () => {
       const tokensToInject = compact([
-        ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
         configService.network.addresses.veBAL

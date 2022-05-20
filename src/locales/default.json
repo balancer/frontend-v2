@@ -478,7 +478,7 @@
         "claim": {
             "title": "Claim your liquidity mining incentives",
             "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
-            "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, you just need to invest in these pools to receive incentives. No staking is required for now.",
+            "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, invest in these pools and stake the LP tokens to receive incentives.",
             "transitionInfo": {
                 "title": "veBAL liquidity mining incentives are live!",
                 "titleL2": "Transition to new veBAL tokenomics",
@@ -542,8 +542,36 @@
             }
         }
     },
+    "poolTransactionStats": {
+        "trade": {
+            "volume": "Volume {period}",
+            "largest": "Largest trade {period}",
+            "ave": "Ave. trade {period}",
+            "total": "Total trades {period}"
+        },
+        "investment": {
+            "netTvl": "Net TVL {period}",
+            "largest": "Largest investment {period}",
+            "ave": "Ave. investment {period}",
+            "net": "Net investments {period}"
+        }
+    },
     "poolType": "Pool type",
     "poolValue": "Pool value",
+    "poolWarnings": {
+        "bugWarning20220513": {
+            "title": "This pool contains double-entrypoint tokens, which have been found to be incompatible with Balancer. It is currently not possible to withdraw all assets from the pool proportionally. While it is possible to withdraw in a single asset, liquidity providers are advised to wait. A mechanism is being implemented to allow for proportional withdrawals. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Learn more </a>"
+        },
+        "poolOwnerVulnWarningGovernance": {
+            "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to."
+        },
+        "poolOwnerVulnWarningEcosystem": {
+            "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem."
+        },
+        "poolOwnerVulnWarningEcosystemMigrate": {
+            "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem. A new version of the pool will be deployed in the next few weeks that can be migrated to."
+        }
+    },
     "popularBases": "Popular:",
     "portfolio": "Portfolio",
     "potential": "Potential",
@@ -669,7 +697,8 @@
                 "myVeBAL": {
                     "label": "My veBAL",
                     "secondaryText": "{0} of all veBAL"
-                }
+                },
+                "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer get boosted yields on staked pools or on your locked 80% BAL / 20% WETH pool. However, you’ll still get the minimum 1.0x rate. Tap the plus icon to extend your lock on B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power. Tap the minus icon to redeem your LP tokens."
             }
         },
         "communityVeBAL": {
@@ -693,8 +722,14 @@
         },
         "liquidityMining": {
             "title": "Pools eligible for liquidity mining",
+            "description": "Liquidity incentives are directed by the community of veBAL holders. If you hold veBAL, vote below on any pools across Ethereum and Layer 2’s. Your vote will persist until you change it and editing a pool can only be done once in 10 days.",
+            "myUnallocatedVotes": "My unallocated votes:",
+            "myUnallocatedVotesTooltip": "veBAL holders can vote for a single pool or multiple pools in whatever weights they choose, up to their max of 100%. Note: If you’ve previously voted for a pool but no longer have any veBAL, your votes will not count.",
             "unallocatedVotes": "My unallocated votes: {0}.",
             "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
+            "votingPeriodTooltip": "There is a weekly vote for veBAL holders which ends at 0:00 UTC on Thursdays. This vote determines the BAL incentives allocation for all Stakers in these pools for the next week. Although you don’t have to vote to get a boosted yield, your vote can help you earn more by voting on pools where you are a Staker.",
+            "votingPeriodCountdown": "{0}d : {1}h : {2}m : {3}s",
+            "votingPowerExpiredTooltip": "Your previous lock period has expired, so you no longer have any veBAL or voting power. Any votes that have been allocated in the past will no longer count. Lock up B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power.",
             "table": {
                 "chain": "Chain",
                 "assets": "Assets",
@@ -964,6 +999,8 @@
     "totalValue": "Total value",
     "totalValueTo": "Total value to",
     "trade": "Trade",
+    "trader": "Trader",
+    "tradeDetails": "Trade details",
     "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
     "tradeFromWeth": "Trade from WETH",

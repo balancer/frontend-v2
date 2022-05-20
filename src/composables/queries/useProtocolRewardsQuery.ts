@@ -7,7 +7,7 @@ import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-dist
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { networkId } from '../useNetwork';
+import { isL2, networkId } from '../useNetwork';
 
 /**
  * TYPES
@@ -28,7 +28,9 @@ export default function useProtocolRewardsQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => isWalletReady.value && account.value != null);
+  const enabled = computed(
+    () => isWalletReady.value && account.value != null && !isL2.value
+  );
 
   /**
    * QUERY KEY
