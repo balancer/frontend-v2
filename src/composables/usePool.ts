@@ -147,6 +147,23 @@ export function poolURLFor(
 }
 
 /**
+ * @summary Calculates absolute max APR given boost or not.
+ * If given boost returns user's max APR.
+ * If not given boost returns pool absolute max assuming 2.5x boost.
+ */
+export function absMaxApr(aprs: PoolAPRs, boost?: string): string {
+  if (boost && aprs.staking?.bal.min) {
+    const boostedAPR = bnum(aprs.staking.bal.min).times(boost);
+    const total = boostedAPR.plus(aprs.total.base);
+    return total.toString();
+  } else if (aprs.total.inclEmissions) {
+    return aprs.total.inclEmissions.max;
+  }
+
+  return aprs.total.base;
+}
+
+/**
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {

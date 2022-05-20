@@ -10,22 +10,18 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import {
+  absMaxApr,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
-  orderedTokenAddresses
+  orderedTokenAddresses,
+  totalAprLabel
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import {
-  getAprRangeWithRewardEmissions,
-  getBoostAdjustedTotalAPR,
-  hasBALEmissions,
-  hasStakingRewards
-} from '@/services/staking/utils';
 
 import TokenPills from './TokenPills/TokenPills.vue';
 
@@ -157,22 +153,14 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.dynamic?.apr?.total,
+    accessor: pool => pool?.dynamic?.apr?.total.base,
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
       let apr = 0;
 
-      if (hasStakingRewards(pool)) {
-        if (pool.dynamic.boost) {
-          apr = Number(getTotalBoostedApr(pool));
-        } else if (!hasBALEmissions(pool)) {
-          apr = Number(getTotalRewardsAPR(pool));
-        } else {
-          apr = Number(getAprRange(pool).max);
-        }
-      } else {
-        apr = Number(pool.dynamic.apr.total);
+      if (pool?.dynamic.apr) {
+        apr = Number(absMaxApr(pool.dynamic.apr, pool.dynamic.boost));
       }
 
       return isFinite(apr) ? apr : 0;
@@ -211,16 +199,6 @@ function handleRowClick(pool: DecoratedPoolWithShares) {
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 
-function getAprRange(pool: DecoratedPoolWithShares) {
-  const adjustedRange = getAprRangeWithRewardEmissions(pool);
-  return adjustedRange;
-}
-
-function getTotalBoostedApr(pool: DecoratedPoolWithShares) {
-  const boostedAPR = getBoostAdjustedTotalAPR(pool, pool.dynamic.boost || '1');
-  return boostedAPR;
-}
-
 function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
   router.push({
     name: 'migrate-pool',
@@ -232,10 +210,11 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
   });
 }
 
-function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
-  return bnum(pool?.dynamic?.apr?.staking?.rewards || '0').plus(
-    pool?.dynamic?.apr?.total || '0'
-  );
+function aprLabelFor(pool: DecoratedPoolWithShares): string {
+  const poolAPRs = pool?.dynamic.apr;
+  if (!poolAPRs) return '0';
+
+  return totalAprLabel(poolAPRs, pool.dynamic.boost);
 }
 </script>
 
@@ -324,29 +303,14 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.aprs"
         >
-          <span v-if="hasStakingRewards(pool)" class="text-right">
-            <span v-if="pool.dynamic?.boost">
-              {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
-            </span>
-            <span v-else-if="!hasBALEmissions(pool)">
-              {{ fNum2(getTotalRewardsAPR(pool), FNumFormats.percent) }}
-            </span>
-            <span v-else>
-              {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
-              {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
-            </span>
-          </span>
-          <span v-else-if="!pool?.dynamic?.apr?.total">
-            <BalLoadingBlock class="h-4 w-12" />
-          </span>
-          <span v-else>
-            {{
-              Number(pool?.dynamic?.apr?.pool) > 10000
-                ? '-'
-                : fNum2(pool?.dynamic?.apr?.total, FNumFormats.percent)
-            }}
-          </span>
-          <APRTooltip v-if="pool?.dynamic?.apr?.total" :pool="pool" />
+          <BalLoadingBlock
+            v-if="!pool?.dynamic?.apr?.total?.base"
+            class="h-4 w-12"
+          />
+          <template v-else>
+            {{ aprLabelFor(pool) }}
+            <APRTooltip v-if="pool?.dynamic?.apr?.total?.base" :pool="pool" />
+          </template>
         </div>
       </template>
       <template v-slot:migrateCell="pool">
