@@ -180,7 +180,8 @@ export default function useNumbers() {
     number: number | string,
     options: FNumOptions | undefined = {}
   ): string {
-    return numF(number, options, currency.value);
+    const _currency = currency?.value || FiatCurrency.usd;
+    return numF(number, options, _currency);
   }
 
   return { fNum, fNum2, toFiat };
