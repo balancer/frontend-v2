@@ -150,6 +150,7 @@ export function poolURLFor(
  * @summary Calculates absolute max APR given boost or not.
  * If given boost returns user's max APR.
  * If not given boost returns pool absolute max assuming 2.5x boost.
+ * Used primarily for sorting tables by the APR column.
  */
 export function absMaxApr(aprs: PoolAPRs, boost?: string): string {
   if (boost && aprs.staking?.bal.min) {
