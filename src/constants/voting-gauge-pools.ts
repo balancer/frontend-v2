@@ -239,6 +239,10 @@ export const ARBITRUM_POOLS: Pool[] = [
   {
     id: '0xcc65a812ce382ab909a11e434dbf75b34f1cc59d000200000000000000000001',
     network: Network.ARBITRUM
+  },
+  {
+    id: '0xe1b40094f1446722c424c598ac412d590e0b3ffb000200000000000000000076',
+    network: Network.ARBITRUM
   }
 ];
 
