@@ -5,7 +5,7 @@ import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { RewardTokenData } from '../balancer/contracts/contracts/liquidity-gauge';
-import { DecoratedPool } from '../balancer/subgraph/types';
+import { DecoratedPool, PoolAPRs } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 
 const MIN_BOOST = 1;
@@ -133,9 +133,9 @@ export function hasStakingRewards(pool: DecoratedPool | undefined) {
 }
 
 /**
- * @summary Checks if a pool ONLY has BAL emissions
+ * @summary Checks if a pool has BAL emissions
  */
-export function hasBALEmissions(pool?: DecoratedPool) {
+export function hasBalEmissions(pool?: DecoratedPool) {
   if (!pool) return false;
   return bnum(pool.dynamic.apr.staking?.bal?.min || 0).gt(0);
 }
@@ -144,15 +144,12 @@ export function hasBALEmissions(pool?: DecoratedPool) {
  * @summary Returns the BAL emission adjusted by a users boost PLUS
  * the rewards token APR
  */
-// export function getBoostAdjustedTotalAPR(pool: DecoratedPool, boost: string) {
-//   const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
-//   const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
-//   const boostedApr = minBALApr.times(boost);
-//   return boostedApr
-//     .plus(rewardsApr)
-//     .plus(pool.dynamic.apr.total)
-//     .toString();
-// }
+export function usersBoostedAPR(aprs: PoolAPRs, boost: string) {
+  if (!aprs.staking?.bal.min) return aprs?.total?.base || '0';
+
+  const boostedAPR = bnum(aprs.staking.bal.min).times(boost);
+  return boostedAPR.plus(aprs.total.base).toString();
+}
 
 /**
  * @summary Returns the min and max BAL emissions APR with the rewards tokens
