@@ -12,12 +12,8 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import {
-  getGaugeAddress,
-  isL2StakingAprLive
-} from '@/providers/local/staking/staking.provider';
+import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
@@ -43,8 +39,7 @@ const {
   userData: {
     stakedSharesForProvidedPool,
     refetchStakedShares,
-    refetchUserStakingData,
-    getBoostFor
+    refetchUserStakingData
   },
   stakeBPT,
   unstakeBPT
@@ -122,20 +117,6 @@ const totalUserPoolSharePct = ref(
     .div(props.pool.totalShares)
     .toString()
 );
-
-const stakingApr = computed(() => {
-  return bnum(getAprRangeWithRewardEmissions(props.pool).min).times(
-    getBoostFor(props.pool.id)
-  );
-});
-
-const potentialyWeeklyYield = computed(() => {
-  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
-    .times(getBoostFor(props.pool.id))
-    .times(fiatValueOfModifiedShares.value)
-    .div(52)
-    .toString();
-});
 
 /**
  * LIFECYCLE
@@ -233,38 +214,6 @@ function handleClose() {
             <BalTooltip
               :text="$t('staking.totalShareTooltip')"
               width="40"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-        <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
-          <span class="text-sm">
-            {{ action === 'stake' ? $t('your') : $t('lost') }}
-            {{ $t('staking.stakingApr') }}:
-          </span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">
-              ~{{ fNum2(stakingApr, FNumFormats.percent) }}</span
-            >
-            <BalTooltip
-              :text="$t('staking.stakingAprTooltip')"
-              width="20"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-        <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
-          <span class="text-sm">
-            {{ action === 'stake' ? $t('potential') : $t('lost') }}
-            {{ $t('staking.weeklyEarning') }}:
-          </span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize"
-              >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
-            >
-            <BalTooltip
-              :text="$t('staking.potentialWeeklyEarningTooltip')"
-              width="20"
               textAlign="center"
             />
           </BalStack>

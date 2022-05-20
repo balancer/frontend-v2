@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { totalAprLabel } from '@/composables/usePool';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
 type Props = {
@@ -12,12 +15,22 @@ type Props = {
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
+
+/**
+ * COMPUTED
+ */
+const aprLabel = computed((): string => {
+  const poolAPRs = props.pool?.dynamic.apr;
+  if (!poolAPRs) return '0';
+
+  return totalAprLabel(poolAPRs, props.pool.dynamic.boost);
+});
 </script>
 
 <template>
@@ -47,7 +60,7 @@ const { fNum2 } = useNumbers();
       <div>
         <div class="text-gray-500">{{ $t('apr') }}</div>
         <div class="flex items-center font-semibold">
-          {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
+          {{ aprLabel }}
           <APRTooltip :pool="pool" />
         </div>
       </div>
