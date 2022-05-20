@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js';
 import numeral from 'numeral';
 
 import useUserSettings from '@/composables/useUserSettings';
+import { FiatCurrency } from '@/constants/currency';
 
 import useTokens from './useTokens';
-import { FiatCurrency } from '@/constants/currency';
 
 interface Options {
   format?: string;

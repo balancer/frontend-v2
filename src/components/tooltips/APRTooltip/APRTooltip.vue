@@ -32,7 +32,8 @@ const { fNum2 } = useNumbers();
  * COMPUTED
  */
 const validAPR = computed(
-  () => Number(props?.pool?.dynamic?.apr?.total.base || '0') * 100 <= APR_THRESHOLD
+  () =>
+    Number(props?.pool?.dynamic?.apr?.total.base || '0') * 100 <= APR_THRESHOLD
 );
 
 const hasYieldAPR = computed(() =>
