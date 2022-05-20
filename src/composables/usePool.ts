@@ -3,18 +3,20 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { bnum } from '@/lib/utils';
+import { bnSum, bnum } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import {
   AnyPool,
+  AprRange,
   FullPool,
+  PoolAPRs,
   PoolToken,
   PoolType
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 
 import { urlFor } from './useNetwork';
-import useNumbers from './useNumbers';
+import useNumbers, { FNumFormats, numF } from './useNumbers';
 
 /**
  * METHODS
@@ -142,6 +144,23 @@ export function poolURLFor(
   }
 
   return `${urlFor(network)}/pool/${poolId}`;
+}
+
+/**
+ * @summary Returns total APR label, whether range or single value.
+ */
+export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
+  if (boost && aprs.staking?.bal.min) {
+    const boostedAPR = bnum(aprs.staking.bal.min).times(boost);
+    const total = boostedAPR.plus(aprs.total.base);
+    return numF(total.toString(), FNumFormats.percent);
+  } else if (aprs.total.inclEmissions) {
+    const minAPR = numF(aprs.total.inclEmissions.min, FNumFormats.percent);
+    const maxAPR = numF(aprs.total.inclEmissions.max, FNumFormats.percent);
+    return `${minAPR} - ${maxAPR}`;
+  }
+
+  return numF(aprs.total.base, FNumFormats.percent);
 }
 
 /**

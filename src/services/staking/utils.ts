@@ -144,37 +144,37 @@ export function hasBALEmissions(pool?: DecoratedPool) {
  * @summary Returns the BAL emission adjusted by a users boost PLUS
  * the rewards token APR
  */
-export function getBoostAdjustedTotalAPR(pool: DecoratedPool, boost: string) {
-  const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
-  const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
-  const boostedApr = minBALApr.times(boost);
-  return boostedApr
-    .plus(rewardsApr)
-    .plus(pool.dynamic.apr.total)
-    .toString();
-}
+// export function getBoostAdjustedTotalAPR(pool: DecoratedPool, boost: string) {
+//   const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
+//   const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
+//   const boostedApr = minBALApr.times(boost);
+//   return boostedApr
+//     .plus(rewardsApr)
+//     .plus(pool.dynamic.apr.total)
+//     .toString();
+// }
 
 /**
  * @summary Returns the min and max BAL emissions APR with the rewards tokens
  * APRs. For when a gauge has both a rewards token APR and BAL emissions
  */
 
-export function getAprRangeWithRewardEmissions(
-  pool: DecoratedPool | undefined
-) {
-  if (!pool) return { min: '0', max: '0' };
+// export function getAprRangeWithRewardEmissions(
+//   pool: DecoratedPool | undefined
+// ) {
+//   if (!pool) return { min: '0', max: '0' };
 
-  const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
-  const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
-  const maxBALApr = bnum(pool.dynamic.apr.staking?.bal?.max || 0);
-  const minTotalAPR = bnum(pool.dynamic.apr.total)
-    .plus(minBALApr)
-    .plus(rewardsApr);
-  const maxTotalAPR = bnum(pool.dynamic.apr.total)
-    .plus(maxBALApr)
-    .plus(rewardsApr);
-  return {
-    min: minTotalAPR.toString(),
-    max: maxTotalAPR.toString()
-  };
-}
+//   const rewardsApr = bnum(pool.dynamic.apr.staking?.rewards || 0);
+//   const minBALApr = bnum(pool.dynamic.apr.staking?.bal?.min || 0);
+//   const maxBALApr = bnum(pool.dynamic.apr.staking?.bal?.max || 0);
+//   const minTotalAPR = bnum(pool.dynamic.apr.total)
+//     .plus(minBALApr)
+//     .plus(rewardsApr);
+//   const maxTotalAPR = bnum(pool.dynamic.apr.total)
+//     .plus(maxBALApr)
+//     .plus(rewardsApr);
+//   return {
+//     min: minTotalAPR.toString(),
+//     max: maxTotalAPR.toString()
+//   };
+// }

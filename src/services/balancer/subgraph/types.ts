@@ -69,8 +69,12 @@ export interface DecoratedPool extends Pool {
   };
 }
 
+export type AprRange = { min: string; max: string };
 export interface PoolAPRs {
-  total: string;
+  total: {
+    base: string;
+    inclEmissions: AprRange | null;
+  };
   swap: string;
   yield: {
     total: string;

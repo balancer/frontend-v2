@@ -1,3 +1,75 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { totalAprLabel } from '@/composables/usePool';
+import { APR_THRESHOLD } from '@/constants/pools';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
+
+/**
+ * TYPES
+ */
+type Props = {
+  pool: DecoratedPool;
+  loading?: boolean;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  loading: false
+});
+
+/**
+ * COMPOSABLES
+ */
+const { fNum2 } = useNumbers();
+const { t } = useI18n();
+
+/**
+ * COMPUTED
+ */
+const aprLabel = computed((): string => {
+  const poolAPRs = props.pool?.dynamic.apr;
+  if (!poolAPRs) return '0';
+
+  return totalAprLabel(poolAPRs, props.pool.dynamic.boost);
+});
+
+const stats = computed(() => {
+  if (!props.pool) return [];
+
+  return [
+    {
+      id: 'poolValue',
+      label: t('poolValue'),
+      value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat)
+    },
+    {
+      id: 'volumeTime',
+      label: t('volumeTime', ['24h']),
+      value: fNum2(props.pool.dynamic.volume, FNumFormats.fiat)
+    },
+    {
+      id: 'feesTime',
+      label: t('feesTime', ['24h']),
+      value: fNum2(props.pool.dynamic.fees, FNumFormats.fiat)
+    },
+    {
+      id: 'apr',
+      label: 'APR',
+      value:
+        Number(props.pool.dynamic.apr.total.base) * 100 > APR_THRESHOLD
+          ? '-'
+          : aprLabel.value
+    }
+  ];
+});
+</script>
+
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
     <template v-if="loading">
@@ -16,98 +88,3 @@
     </template>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { APR_THRESHOLD } from '@/constants/poolAPR';
-import { bnum } from '@/lib/utils';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
-import {
-  getAprRangeWithRewardEmissions,
-  hasBALEmissions,
-  hasStakingRewards
-} from '@/services/staking/utils';
-
-export default defineComponent({
-  components: {
-    APRTooltip
-  },
-
-  props: {
-    pool: { type: Object as PropType<DecoratedPool> },
-    loading: { type: Boolean, default: true }
-  },
-
-  setup(props) {
-    // COMPOSABLES
-    const { fNum2 } = useNumbers();
-    const { t } = useI18n();
-
-    const aprValueToRender = computed(() => {
-      if (hasStakingRewards(props.pool)) {
-        // cannot show a range if there are no bal emissions
-        if (!hasBALEmissions(props.pool)) {
-          return fNum2(
-            bnum(props.pool?.dynamic.apr.staking?.rewards || '0')
-              .plus(props.pool?.dynamic.apr.total || '0')
-              .toString(),
-            FNumFormats.percent
-          );
-        }
-        // show a range if there are bal emissions, min and max
-        // are adjusted to show rewards emissions apr included
-        return `${fNum2(
-          getAprRange(props.pool).min,
-          FNumFormats.percent
-        )} - ${fNum2(getAprRange(props.pool).max, FNumFormats.percent)}`;
-      }
-      return fNum2(props.pool?.dynamic?.apr?.total || '0', FNumFormats.percent);
-    });
-
-    // COMPUTED
-    const stats = computed(() => {
-      if (!props.pool) return [];
-
-      return [
-        {
-          id: 'poolValue',
-          label: t('poolValue'),
-          value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat)
-        },
-        {
-          id: 'volumeTime',
-          label: t('volumeTime', ['24h']),
-          value: fNum2(props.pool.dynamic.volume, FNumFormats.fiat)
-        },
-        {
-          id: 'feesTime',
-          label: t('feesTime', ['24h']),
-          value: fNum2(props.pool.dynamic.fees, FNumFormats.fiat)
-        },
-        {
-          id: 'apr',
-          label: 'APR',
-          value:
-            Number(props.pool.dynamic.apr.total) > APR_THRESHOLD
-              ? '-'
-              : aprValueToRender.value
-        }
-      ];
-    });
-
-    function getAprRange(pool: DecoratedPool | undefined) {
-      if (!pool) return { min: '0', max: '0' };
-      const adjustedRange = getAprRangeWithRewardEmissions(pool);
-      return adjustedRange;
-    }
-
-    return {
-      stats
-    };
-  }
-});
-</script>

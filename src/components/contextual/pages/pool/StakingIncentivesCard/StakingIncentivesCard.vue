@@ -8,9 +8,7 @@ import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { isL2StakingAprLive } from '@/providers/local/staking/staking.provider';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 
@@ -38,7 +36,6 @@ const {
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
-    getBoostFor,
     isLoadingBoosts
   },
   isPoolEligibleForStaking,
@@ -59,14 +56,6 @@ const fiatValueOfUnstakedShares = computed(() => {
   return bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
-    .toString();
-});
-
-const potentialyWeeklyYield = computed(() => {
-  return bnum(getAprRangeWithRewardEmissions(props.pool).min)
-    .times(getBoostFor(props.pool.id))
-    .times(fiatValueOfStakedShares.value)
-    .div(52)
     .toString();
 });
 
@@ -183,19 +172,6 @@ async function handleActionSuccess() {
                     </span>
                   </AnimatePresence>
                   <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
-                </BalStack>
-              </BalStack>
-              <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
-                <span>
-                  {{ $t('potential') }} {{ $t('staking.weeklyEarning') }}
-                </span>
-                <BalStack horizontal spacing="sm" align="center">
-                  <span>
-                    {{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}
-                  </span>
-                  <BalTooltip
-                    :text="$t('staking.potentialWeeklyEarningTooltip')"
-                  />
                 </BalStack>
               </BalStack>
               <BalStack horizontal spacing="sm" class="mt-2">
