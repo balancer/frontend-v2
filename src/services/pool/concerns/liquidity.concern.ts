@@ -13,7 +13,6 @@ import {
   PoolType
 } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { ERC20Multicaller } from '@/services/multicalls/erc20.multicaller';
 
 import PoolService from '../pool.service';
 
@@ -26,10 +25,7 @@ export default class LiquidityConcern {
   poolType: PoolType;
   poolTokens: OnchainTokenInfo[] | PoolToken[];
 
-  constructor(
-    poolService: PoolService,
-    private readonly erc20MulticallerClass = ERC20Multicaller
-  ) {
+  constructor(poolService: PoolService) {
     this.poolService = poolService;
     this.poolType = this.poolService.pool.poolType;
     this.poolTokens = this.onchainPoolTokens || this.poolService.pool.tokens;
