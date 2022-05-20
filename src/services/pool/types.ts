@@ -82,8 +82,12 @@ export interface PoolAPRs {
   veBal?: string;
 }
 
+export type AprRange = { min: string; max: string };
 export interface PoolAPRs {
-  total: string;
+  total: {
+    base: string;
+    inclEmissions: AprRange | null;
+  };
   swap: string;
   yield: {
     total: string;

@@ -4,7 +4,7 @@ import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
-import { AnyPool, PoolAPRs } from '@/services/balancer/subgraph/types';
+import { AnyPool, AprRange, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
 import { GaugeBalApr } from '@/services/staking/staking-rewards.service';
@@ -21,8 +21,8 @@ export class AprConcern {
     prices: TokenPrices,
     currency: FiatCurrency,
     protocolFeePercentage: number,
-    gaugeBalApr: GaugeBalApr,
-    gaugeRewardApr: string
+    stakingBalApr: GaugeBalApr,
+    stakingRewardApr: string
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
     const yieldAPR = await this.calcYieldAPR(
@@ -30,15 +30,26 @@ export class AprConcern {
       currency,
       protocolFeePercentage
     );
-    const totalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();
+    const baseTotalAPR = bnSum([
+      swapFeeAPR,
+      yieldAPR.total,
+      stakingRewardApr
+    ]).toString();
+    const totalAPRInclEmissions = this.calcTotalInclEmissions(
+      baseTotalAPR,
+      stakingBalApr
+    );
 
     return {
-      total: totalAPR,
+      total: {
+        base: baseTotalAPR,
+        inclEmissions: totalAPRInclEmissions
+      },
       swap: swapFeeAPR,
       yield: yieldAPR,
       staking: {
-        bal: gaugeBalApr,
-        rewards: gaugeRewardApr
+        bal: stakingBalApr,
+        rewards: stakingRewardApr
       }
     };
   }
@@ -63,6 +74,27 @@ export class AprConcern {
       .dividedBy(this.pool.totalLiquidity)
       .multipliedBy(365)
       .toString();
+  }
+
+  /**
+   * @summary Total APR range including BAL emissions.
+   */
+  private calcTotalInclEmissions(
+    baseTotalAPR: string,
+    stakingBalApr: GaugeBalApr
+  ): AprRange | null {
+    if (stakingBalApr?.min && stakingBalApr?.max) {
+      return {
+        min: bnum(baseTotalAPR)
+          .plus(stakingBalApr?.min)
+          .toString(),
+        max: bnum(baseTotalAPR)
+          .plus(stakingBalApr?.max)
+          .toString()
+      };
+    }
+
+    return null;
   }
 
   /**
