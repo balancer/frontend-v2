@@ -3,11 +3,10 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { bnSum, bnum } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import {
   AnyPool,
-  AprRange,
   FullPool,
   PoolAPRs,
   PoolToken,
