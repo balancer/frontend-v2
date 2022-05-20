@@ -26,7 +26,7 @@ export class AprConcern {
     currency: FiatCurrency,
     protocolFeePercentage: number,
     stakingBalApr: GaugeBalApr,
-    stakingRewardApr: string
+    stakingRewardApr = '0'
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
     const yieldAPR = await this.calcYieldAPR(
