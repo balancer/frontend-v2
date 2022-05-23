@@ -53,7 +53,32 @@ To change your local development app network, update the network key for
 42 - Kovan
 137 - Polygon
 42161 - Arbitrum
+31337 - Local test node with forked mainnet (run in separate process)
 ```
+
+## Local test node
+
+For local development purposes you may want to use a test node with a forked mainnet state.
+
+If you keep you RPC_URL in local .env
+```
+export RPC_URL=$(grep ALCHEMY_URL .env | cut -d '=' -f2)
+```
+
+Hardhat:
+```
+npm run node
+or
+npx hardhat node --fork $RPC_URL --fork-block-number 14828550
+```
+
+Alternatively with anvil:
+```
+anvil -f $RPC_URL --fork-block-number 14828550
+```
+
+For better performance we prepared a test specific config with limited set of whitelisted tokens in public/test/listed.tokenlist.json.
+
 
 ## Self-Hosting
 
