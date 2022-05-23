@@ -1,3 +1,20 @@
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
+
+export default defineComponent({
+  setup() {
+    const { t } = useI18n();
+    return {
+      EXTERNAL_LINKS,
+      t
+    };
+  }
+});
+</script>
+
 <template>
   <div class="featured-protocols">
     <h3 class="mb-4">{{ $t('featuredProtocols.title') }}</h3>
@@ -96,29 +113,12 @@
   </div>
 </template>
 <style scoped>
-/deep/ .card-container {
+:deep(.card-container) {
   justify-content: space-between;
   height: 100%;
 }
 
-.featured-protocols /deep/ .feature {
+.featured-protocols :deep(.feature) {
   height: 8rem;
 }
 </style>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-import { EXTERNAL_LINKS } from '@/constants/links';
-
-export default defineComponent({
-  setup() {
-    const { t } = useI18n();
-    return {
-      EXTERNAL_LINKS,
-      t
-    };
-  }
-});
-</script>
