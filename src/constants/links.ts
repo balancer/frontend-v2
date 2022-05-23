@@ -11,6 +11,7 @@ export const EXTERNAL_LINKS = {
     Wallets: 'https://ethereum.org/en/wallets'
   },
   Element: {
+    Home: 'https://element.fi',
     Earn: 'https://app.element.fi/mint',
     Pools: {
       LUSD:
@@ -20,7 +21,14 @@ export const EXTERNAL_LINKS = {
     }
   },
   Copper: {
+    Home: 'https://copperlaunch.com/',
     Auctions: (poolAddress: string, networkPrefix = '') =>
       `https://${networkPrefix}copperlaunch.com/auctions/${poolAddress}`
+  },
+  Tracer: {
+    Home: 'https://tracer.finance/'
+  },
+  Sense: {
+    Home: 'https://sense.finance/'
   }
 };
