@@ -1,3 +1,4 @@
+import { Pool } from '@balancer-labs/sor/dist/types';
 import {
   PoolFilter,
   SOR as SORV2,
@@ -5,8 +6,7 @@ import {
   SwapInfo,
   SwapOptions,
   SwapTypes
-} from '@balancer-labs/sdk';
-import { Pool } from '@balancer-labs/sor/dist/types';
+} from '@disscorp/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';

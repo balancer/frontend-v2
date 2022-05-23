@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { getUnixTime } from 'date-fns';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { isNil, mapValues } from 'lodash';

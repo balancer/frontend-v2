@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import {
   GPv2Settlement,

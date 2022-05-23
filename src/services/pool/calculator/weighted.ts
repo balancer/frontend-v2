@@ -1,4 +1,4 @@
-import { weightedBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sdk';
+import { weightedBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@disscorp/sdk';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import * as SDK from '@georgeroman/balancer-v2-pools';
 import OldBigNumber from 'bignumber.js';

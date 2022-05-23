@@ -121,9 +121,9 @@
 </template>
 
 <script lang="ts">
-import { SubgraphPoolBase, SwapV2 } from '@balancer-labs/sdk';
-import { Network } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
+import { SubgraphPoolBase, SwapV2 } from '@disscorp/sdk';
+import { Network } from '@disscorp/sdk';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';

@@ -1,9 +1,9 @@
-import { toNormalizedWeights } from '@balancer-labs/sdk';
 import {
   Vault__factory,
   WeightedPool__factory,
   WeightedPoolFactory__factory
 } from '@balancer-labs/typechain';
+import { toNormalizedWeights } from '@disscorp/sdk';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';

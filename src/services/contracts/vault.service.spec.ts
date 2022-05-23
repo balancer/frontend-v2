@@ -1,9 +1,4 @@
-import {
-  FundManagement,
-  SingleSwap,
-  SwapType,
-  SwapV2
-} from '@balancer-labs/sdk';
+import { FundManagement, SingleSwap, SwapType, SwapV2 } from '@disscorp/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
 import { SwapToken, SwapTokenType } from '../swap/swap.service';

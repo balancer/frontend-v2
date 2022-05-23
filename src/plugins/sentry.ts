@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { App } from 'vue';

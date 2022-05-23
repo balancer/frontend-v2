@@ -1,10 +1,5 @@
-import {
-  FundManagement,
-  SingleSwap,
-  SwapType,
-  SwapV2
-} from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
+import { FundManagement, SingleSwap, SwapType, SwapV2 } from '@disscorp/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { MaxUint256 } from '@ethersproject/constants';
 import { ContractInterface } from '@ethersproject/contracts';

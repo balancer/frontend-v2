@@ -11,7 +11,7 @@ import {
   BalancerErrorCode,
   SwapType,
   TransactionData
-} from '@balancer-labs/sdk';
+} from '@disscorp/sdk';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';

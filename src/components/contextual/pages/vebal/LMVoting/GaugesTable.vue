@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import BigNumber from 'bignumber.js';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';

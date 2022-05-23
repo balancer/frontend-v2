@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import axios from 'axios';
 

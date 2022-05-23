@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { computed, ref } from 'vue';
 
 import config from '@/lib/config';

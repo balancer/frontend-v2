@@ -1,5 +1,5 @@
-import { SubgraphPoolBase, SwapType, SwapTypes } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
+import { SubgraphPoolBase, SwapType, SwapTypes } from '@disscorp/sdk';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE, Zero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';

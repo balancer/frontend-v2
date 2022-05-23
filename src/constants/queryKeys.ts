@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 

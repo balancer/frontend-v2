@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { Web3Provider } from '@ethersproject/providers';
 import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';

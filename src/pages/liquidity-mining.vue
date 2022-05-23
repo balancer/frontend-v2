@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { getAddress } from '@ethersproject/address';
 import { flatten, last, takeRight, uniq } from 'lodash';
 import { computed, defineComponent } from 'vue';

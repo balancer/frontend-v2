@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { computed, ref } from 'vue';
 
 import BalModal from '@/components/_global/BalModal/BalModal.vue';

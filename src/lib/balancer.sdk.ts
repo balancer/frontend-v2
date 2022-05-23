@@ -1,4 +1,4 @@
-import { BalancerSDK, Network } from '@balancer-labs/sdk';
+import { BalancerSDK, Network } from '@disscorp/sdk';
 
 import { configService } from '@/services/config/config.service';
 

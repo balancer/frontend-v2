@@ -1,5 +1,5 @@
-import { toNormalizedWeights } from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
+import { toNormalizedWeights } from '@disscorp/sdk';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';

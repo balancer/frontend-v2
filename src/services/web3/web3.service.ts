@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network } from '@disscorp/sdk';
 import { Contract } from '@ethersproject/contracts';
 import { ErrorCode } from '@ethersproject/logger';
 import {

@@ -1,4 +1,4 @@
-import { queryBatchSwapTokensIn } from '@balancer-labs/sdk';
+import { queryBatchSwapTokensIn } from '@disscorp/sdk';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { computed, Ref, ref } from 'vue';
