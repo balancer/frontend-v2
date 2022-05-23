@@ -9,12 +9,18 @@ import {
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
 import { ComputedRef } from 'vue';
 
+import { networkId } from '@/composables/useNetwork';
+import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { logFailedTx } from '@/lib/utils/logging';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { WalletError } from '@/types';
 
-import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { TimeTravelPeriod } from '../balancer/subgraph/types';
+import {
+  rpcProviderService as _rpcProviderService,
+  rpcProviderService
+} from '../rpc-provider/rpc-provider.service';
 
 interface Web3Profile {
   ens: string | null;
@@ -120,6 +126,34 @@ export default class Web3Service {
         logFailedTx(sender, contract, action, params, options);
       }
       return Promise.reject(error);
+    }
+  }
+
+  public get blockTime(): number {
+    switch (networkId.value) {
+      case Network.MAINNET:
+        return 13;
+      case Network.POLYGON:
+        return 2;
+      case Network.ARBITRUM:
+        return 3;
+      case Network.KOVAN:
+        // Should be ~4s but this causes subgraph to return with unindexed block error.
+        return 1;
+      default:
+        return 13;
+    }
+  }
+
+  public async getTimeTravelBlock(period: TimeTravelPeriod): Promise<number> {
+    const currentBlock = await rpcProviderService.getBlockNumber();
+    const blocksInDay = Math.round(twentyFourHoursInSecs / this.blockTime);
+
+    switch (period) {
+      case '24h':
+        return currentBlock - blocksInDay;
+      default:
+        return currentBlock - blocksInDay;
     }
   }
 

@@ -12,6 +12,7 @@ import {
   toRefs
 } from 'vue';
 
+import balTokenList from '@/assets/tokenlists/balancer.json';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
@@ -250,7 +251,9 @@ export default {
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
-      const tokens = tokenLists.map(list => list.tokens).flat();
+      const tokens = [...tokenLists, balTokenList]
+        .map(list => list.tokens)
+        .flat();
 
       tokens.forEach(token => {
         const address: string = getAddress(token.address);

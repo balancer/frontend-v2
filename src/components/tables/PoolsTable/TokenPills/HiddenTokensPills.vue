@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps, withDefaults } from 'vue';
-
 import { PoolToken } from '@/services/balancer/subgraph/types';
 
 type Props = {

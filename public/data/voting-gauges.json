@@ -1058,6 +1058,32 @@
     }
   },
   {
+    "address": "0x86EC8Bd97622dc80B4a7346bc853760d99D14C7F",
+    "network": 1,
+    "pool": {
+      "id": "0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de",
+      "address": "0xe8cc7E765647625B95F59C15848379D10B9AB4af",
+      "poolType": "Weighted",
+      "symbol": "20WETH-80WNCG",
+      "tokens": [
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "weight": "0.2",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xf203Ca1769ca8e9e8FE1DA9D147DB68B6c919817",
+          "weight": "0.8",
+          "symbol": "WNCG"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "0xf203Ca1769ca8e9e8FE1DA9D147DB68B6c919817": ""
+    }
+  },
+  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "pool": {
@@ -1455,6 +1481,32 @@
     "tokenLogoURIs": {
       "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png"
+    }
+  },
+  {
+    "address": "0xACFDA9Fd773C23c01f5d0CAE304CBEbE6b449677",
+    "network": 42161,
+    "pool": {
+      "id": "0xe1b40094f1446722c424c598ac412d590e0b3ffb000200000000000000000076",
+      "address": "0xE1B40094F1446722c424C598aC412D590e0b3ffb",
+      "poolType": "Weighted",
+      "symbol": "20WETH-80CRE8R",
+      "tokens": [
+        {
+          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          "weight": "0.2",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xb96B904ba83DdEeCE47CAADa8B40EE6936D92091",
+          "weight": "0.8",
+          "symbol": "CRE8R"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png",
+      "0xb96B904ba83DdEeCE47CAADa8B40EE6936D92091": "https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/assets/0xb96b904ba83ddeece47caada8b40ee6936d92091.png"
     }
   },
   {
@@ -2101,8 +2153,8 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1": "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
     }
   },
   {
@@ -2132,9 +2184,9 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
-      "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7": "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
+      "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115": "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
     }
   },
   {

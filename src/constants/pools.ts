@@ -16,6 +16,8 @@ export type Pools = {
   IdsMap: Partial<Record<'staBAL' | 'bbAaveUSD' | 'B-80BAL-20WETH', string>>;
   Pagination: {
     PerPage: number;
+    PerPool: number;
+    PerPoolInitial: number;
   };
   DelegateOwner: string;
   ZeroAddress: string;
@@ -46,7 +48,9 @@ const POOLS_KOVAN: Pools = {
       '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701'
   },
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -112,7 +116,9 @@ const POOLS_MAINNET: Pools = {
       '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014'
   },
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -129,7 +135,7 @@ const POOLS_MAINNET: Pools = {
       '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080', // Lido Metastable
       '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112', // Rocket Pool Metastable
       '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // Mainnet bb-a-USD
-      '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed'
+      '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed' // wstETH/WETH #2
     ]
   },
   Investment: {
@@ -190,7 +196,8 @@ const POOLS_MAINNET: Pools = {
       '0x2d344a84bac123660b021eebe4eb6f12ba25fe8600020000000000000000018a',
       '0xb460daa847c45f1c4a41cb05bfb3b51c92e41b36000200000000000000000194',
       '0x5122e01d819e58bb2e22528c0d68d310f0aa6fd7000200000000000000000163',
-      '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed'
+      '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
+      '0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de'
     ]
   }
 };
@@ -198,7 +205,9 @@ const POOLS_MAINNET: Pools = {
 const POOLS_POLYGON: Pools = {
   IdsMap: {},
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -211,14 +220,11 @@ const POOLS_POLYGON: Pools = {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon MAI/DAI/USDC/USDT
       '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e', // polygon WBTC/renBTC
-      '0x9f19a375709baf0e8e35c2c5c65aca676c4c7191000200000000000000000022', // polygon PAR/PAR,
       '0xf38cf113d2d4f60c36cbd95af2f48a9a0167045a00000000000000000000005b', // polygon,
       '0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f000000000000000000000068', // tusd polygon
       '0x5028497af0c9a54ea8c6d42a054c0341b9fc616800020000000000000000007b', // dusd polygon
       '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366', // polygon staked matic
       '0xb4670d1389c758e4380c4211bcbc85342688b9c50002000000000000000003d8', // vQi,
-      '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445', // USD+ (production)
-      '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f', // USD+ (test)
       '0xc31a37105b94ab4efca1954a14f059af11fcd9bb000000000000000000000455', // 4pool
       '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4' // maticx metastable
     ]
@@ -265,7 +271,9 @@ const POOLS_POLYGON: Pools = {
 const POOLS_ARBITRUM: Pools = {
   IdsMap: {},
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',
@@ -311,7 +319,8 @@ const POOLS_ARBITRUM: Pools = {
       '0xb5b77f1ad2b520df01612399258e7787af63025d000200000000000000000010',
       '0xc2f082d33b5b8ef3a7e3de30da54efd3114512ac000200000000000000000017',
       '0xc61ff48f94d801c1ceface0289085197b5ec44f000020000000000000000004d',
-      '0xcc65a812ce382ab909a11e434dbf75b34f1cc59d000200000000000000000001'
+      '0xcc65a812ce382ab909a11e434dbf75b34f1cc59d000200000000000000000001',
+      '0xe1b40094f1446722c424c598ac412d590e0b3ffb000200000000000000000076'
     ]
   }
 };
@@ -319,7 +328,9 @@ const POOLS_ARBITRUM: Pools = {
 const POOLS_GENERIC: Pools = {
   IdsMap: {},
   Pagination: {
-    PerPage: 10
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
   },
   DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   ZeroAddress: '0x0000000000000000000000000000000000000000',

@@ -12,7 +12,10 @@ const defaultAttrs = {
   tokenAmountIn: true,
   tokenAmountOut: true,
   tx: true,
-  timestamp: true
+  timestamp: true,
+  userAddress: {
+    id: true
+  }
 };
 
 export default (args = {}, attrs = {}) => ({

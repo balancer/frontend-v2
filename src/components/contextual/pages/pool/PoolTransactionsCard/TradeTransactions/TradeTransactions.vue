@@ -61,6 +61,8 @@ function loadMorePoolSwaps() {
 </script>
 
 <template>
+  <h4 v-text="$t('Trades')" class="px-4 lg:px-0 mb-5" />
+
   <Table
     :tokens="pool ? pool.tokensList : []"
     :pool-swaps="poolSwaps"

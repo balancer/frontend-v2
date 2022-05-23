@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineExpose, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import BalCard from '../BalCard/BalCard.vue';
 
@@ -110,7 +110,6 @@ defineExpose({ hide });
 
 .modal-bg {
   @apply absolute h-full w-full bg-black bg-opacity-80;
-  backdrop-filter: blur(5px);
 }
 
 .modal-card {

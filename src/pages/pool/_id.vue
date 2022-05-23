@@ -73,19 +73,35 @@
         </div>
 
         <BalAlert
-          v-if="!appLoading && missingPrices"
+          v-if="!appLoading && !loadingPool && missingPrices"
           type="warning"
           :title="$t('noPriceInfo')"
           class="mt-2"
           block
         />
         <BalAlert
-          v-if="!appLoading && hasCustomToken"
+          v-if="!appLoading && !loadingPool && hasCustomToken"
           type="error"
           :title="$t('highRiskPool')"
           class="mt-2"
           block
         />
+        <template v-if="!appLoading && !loadingPool && isAffected">
+          <BalAlert
+            v-for="(warning, i) in warnings"
+            :key="`warning-${i}`"
+            type="error"
+            class="mt-2"
+            block
+          >
+            <template #title>
+              <div v-html="warning.title" />
+            </template>
+            <template #description>
+              <div v-html="warning.description" />
+            </template>
+          </BalAlert>
+        </template>
         <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
@@ -122,10 +138,6 @@
           </div>
 
           <div>
-            <h4
-              v-text="$t('poolTransactions.title')"
-              class="px-4 lg:px-0 mb-2"
-            />
             <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>
@@ -180,6 +192,7 @@ import useApp from '@/composables/useApp';
 import { isL2 } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
+import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
@@ -214,6 +227,7 @@ export default defineComponent({
     const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
     const { balancerTokenListTokens } = useTokens();
+    const { isAffected, warnings } = usePoolWarning(route.params.id as string);
 
     /**
      * QUERIES
@@ -435,6 +449,8 @@ export default defineComponent({
       isStablePhantomPool,
       copperNetworkPrefix,
       hasCustomToken,
+      isAffected,
+      warnings,
       isL2,
       isStakablePool,
       // methods

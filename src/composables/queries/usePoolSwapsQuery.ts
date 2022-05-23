@@ -29,8 +29,13 @@ export default function usePoolSwapsQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
+    const pagination =
+      pageParam === 0
+        ? POOLS.Pagination.PerPoolInitial
+        : POOLS.Pagination.PerPool;
+
     const poolSwaps = await balancerSubgraphService.poolSwaps.get({
-      first: POOLS.Pagination.PerPage,
+      first: pagination,
       skip: pageParam,
       where: Object.assign(
         {
@@ -42,10 +47,7 @@ export default function usePoolSwapsQuery(
 
     return {
       poolSwaps,
-      skip:
-        poolSwaps.length >= POOLS.Pagination.PerPage
-          ? pageParam + POOLS.Pagination.PerPage
-          : undefined
+      skip: poolSwaps.length >= pagination ? pageParam + pagination : undefined
     };
   };
 
