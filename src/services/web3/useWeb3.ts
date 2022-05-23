@@ -77,10 +77,13 @@ export default function useWeb3() {
   const canLoadProfile = computed(
     () => account.value !== '' && userNetworkConfig.value !== null
   );
+  // Key config on a forked test node is different then chainId,
+  // when comparing networks it's better to use chainId as a real network reference
+  // rather then app specfic configuration
   const isMismatchedNetwork = computed(() => {
     return (
       isWalletReady.value &&
-      userNetworkConfig.value?.key !== appNetworkConfig.key
+      userNetworkConfig.value?.key !== appNetworkConfig.chainId.toString()
     );
   });
   const isUnsupportedNetwork = computed(() => {

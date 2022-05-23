@@ -66,5 +66,16 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
         'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/arbitrum.vetted.tokenlist.json'
     },
     External: ['https://tracer.finance/tokens']
+  },
+  // We override the list with a short version fixture stored in src/fixtures/listed.tokenlist.json
+  // With more tokens the local node can easily crash
+  '31337': {
+    Balancer: {
+      Default:
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
+      Vetted:
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json'
+    },
+    External: []
   }
 };
