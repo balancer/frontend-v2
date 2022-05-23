@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
     "accept": "Accept",
     "account": "Account",
     "action": "Action",
@@ -245,6 +244,13 @@
     "exploreBalancerV1Pools": "Explore V1 pools ->",
     "explorePools": "Explore pools",
     "featuredProtocol": "Featured ecosystem protocol",
+    "featuredProtocols": { 
+        "title": "Featured ecosystem protocols",
+        "Copper": "Copper offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
+        "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient trading with a Balancer Pool that minimizes slippage and impermanent loss.",
+        "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient trading between yield and principle tokens.",
+        "Tracer": "An open-source protocol for derivative markets, Tracer DAO utilizes Balancer Protocol for aggregated liquidity and creating a market for leveraged tokens."        
+    }, 
     "fees": "fees",
     "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
     "feesTime": "Fees ({0})",
@@ -534,6 +540,20 @@
             "tooltips": {
                 "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
             }
+        }
+    },
+    "poolTransactionStats": {
+        "trade": {
+            "volume": "Volume {period}",
+            "largest": "Largest trade {period}",
+            "ave": "Ave. trade {period}",
+            "total": "Total trades {period}"
+        },
+        "investment": {
+            "netTvl": "Net TVL {period}",
+            "largest": "Largest investment {period}",
+            "ave": "Ave. investment {period}",
+            "net": "Net investments {period}"
         }
     },
     "poolType": "Pool type",
@@ -979,6 +999,8 @@
     "totalValue": "Total value",
     "totalValueTo": "Total value to",
     "trade": "Trade",
+    "trader": "Trader",
+    "tradeDetails": "Trade details",
     "tradeRoute": "Trade route",
     "tradeEarns": "This trade earns you",
     "tradeFromWeth": "Trade from WETH",

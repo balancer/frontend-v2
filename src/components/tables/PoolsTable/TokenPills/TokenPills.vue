@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAddress } from 'ethers/lib/utils';
-import { computed, defineProps, withDefaults } from 'vue';
+import { computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
