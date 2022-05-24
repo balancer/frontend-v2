@@ -84,8 +84,7 @@ async function decorateWithTotalLiquidity(
 }
 
 function calcVolume(pool: Pool, pastPool: Pool | undefined): string {
-  if (!pastPool) return pool.totalSwapVolume;
-
+  if (!pastPool) return '0';
   return bnum(pool.totalSwapVolume)
     .minus(pastPool.totalSwapVolume)
     .toString();
