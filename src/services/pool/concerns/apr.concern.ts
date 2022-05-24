@@ -4,24 +4,20 @@ import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
-import {
-  AnyPool,
-  AprRange,
-  PoolAPRs
-} from '@/services/balancer/subgraph/types';
+import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
 import { GaugeBalApr } from '@/services/staking/staking-rewards.service';
 
 export class AprConcern {
   constructor(
-    public pool: AnyPool,
+    public pool: Pool,
     public readonly lido = lidoService,
     public readonly aave = aaveService
   ) {}
 
   public async calc(
-    poolSnapshot: AnyPool | undefined,
+    poolSnapshot: Pool | undefined,
     prices: TokenPrices,
     currency: FiatCurrency,
     protocolFeePercentage: number,
@@ -34,20 +30,27 @@ export class AprConcern {
       currency,
       protocolFeePercentage
     );
-    const baseTotalAPR = bnSum([
-      swapFeeAPR,
-      yieldAPR.total,
+    const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();
+    const aprGivenBoost = (boost = '1') =>
+      this.calcAprGivenBoost(
+        unstakedTotalAPR,
+        stakingBalApr,
+        stakingRewardApr,
+        boost
+      );
+    const stakedAprRange = this.calcStakedAprRange(
+      unstakedTotalAPR,
+      stakingBalApr,
       stakingRewardApr
-    ]).toString();
-    const totalAPRInclEmissions = this.calcTotalInclEmissions(
-      baseTotalAPR,
-      stakingBalApr
     );
 
     return {
       total: {
-        base: baseTotalAPR,
-        inclEmissions: totalAPRInclEmissions
+        unstaked: unstakedTotalAPR,
+        staked: {
+          calc: aprGivenBoost,
+          ...stakedAprRange
+        }
       },
       swap: swapFeeAPR,
       yield: yieldAPR,
@@ -59,7 +62,7 @@ export class AprConcern {
   }
 
   private calcSwapFeeAPR(
-    poolSnapshot: AnyPool | undefined,
+    poolSnapshot: Pool | undefined,
     protocolFeePercentage: number
   ): string {
     if (!poolSnapshot)
@@ -81,24 +84,38 @@ export class AprConcern {
   }
 
   /**
-   * @summary Total APR range including BAL emissions.
+   * @summary Total APR given boost
    */
-  private calcTotalInclEmissions(
-    baseTotalAPR: string,
-    stakingBalApr: GaugeBalApr
-  ): AprRange | null {
-    if (stakingBalApr?.min && stakingBalApr?.max) {
-      return {
-        min: bnum(baseTotalAPR)
-          .plus(stakingBalApr?.min)
-          .toString(),
-        max: bnum(baseTotalAPR)
-          .plus(stakingBalApr?.max)
-          .toString()
-      };
-    }
+  private calcAprGivenBoost(
+    unstakedTotalAPR: string,
+    stakingBalApr: GaugeBalApr,
+    stakingRewardApr = '0',
+    boost = '1'
+  ): string {
+    const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
+    const boostedAPR = stakingBalApr?.min
+      ? bnum(stakingBalApr.min).times(boost)
+      : bnum('0');
 
-    return null;
+    return stakedBaseAPR.plus(boostedAPR).toString();
+  }
+
+  /**
+   * @summary Absolute total staked APR range
+   */
+  private calcStakedAprRange(
+    unstakedTotalAPR: string,
+    stakingBalApr: GaugeBalApr,
+    stakingRewardApr = '0'
+  ): AprRange {
+    const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
+    const maxBalApr = stakingBalApr?.max || '0';
+    const minBalApr = stakingBalApr?.min || '0';
+
+    return {
+      max: stakedBaseAPR.plus(maxBalApr).toString(),
+      min: stakedBaseAPR.plus(minBalApr).toString()
+    };
   }
 
   /**
