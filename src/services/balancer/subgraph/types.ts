@@ -52,7 +52,7 @@ export interface Pool {
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
   unwrappedTokens?: string[];
-  isNew: boolean;
+  isNew?: boolean;
   volumeSnapshot?: string;
   feesSnapshot?: string;
   apr?: PoolAPRs;

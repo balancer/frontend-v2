@@ -270,7 +270,7 @@ function aprLabelFor(pool: PoolWithShares): string {
             :selectedTokens="selectedTokens"
           />
           <BalChip
-            v-if="pool.isNew"
+            v-if="pool?.isNew"
             color="red"
             size="sm"
             class="ml-2 uppercase"
