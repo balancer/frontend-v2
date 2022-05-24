@@ -15,7 +15,7 @@ import { GaugeBalApr } from '@/services/staking/staking-rewards.service';
 
 export class AprConcern {
   constructor(
-    public readonly pool: AnyPool,
+    public pool: AnyPool,
     public readonly lido = lidoService,
     public readonly aave = aaveService
   ) {}

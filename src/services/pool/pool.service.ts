@@ -157,7 +157,7 @@ export default class PoolService {
    * fetches StablePhantom linear pools and extracts
    * required attributes.
    */
-  public async decorateWithLinearPoolAttrs(): Promise<AnyPool> {
+  public async getLinearPoolAttrs(): Promise<Record<string, PoolToken>> {
     // Fetch linear pools from subgraph
     const linearPools = (await balancerSubgraphService.pools.get(
       {
@@ -199,17 +199,15 @@ export default class PoolService {
         });
     });
 
-    this.pool.linearPoolTokensMap = linearPoolTokensMap;
-    return this.pool;
+    return (this.pool.linearPoolTokensMap = linearPoolTokensMap);
   }
 
-  removePreMintedBPT(): AnyPool {
+  removePreMintedBPT(): string[] {
     const poolAddress = balancerSubgraphService.pools.addressFor(this.pool.id);
     // Remove pre-minted BPT token if exits
-    this.pool.tokensList = this.pool.tokensList.filter(
+    return (this.pool.tokensList = this.pool.tokensList.filter(
       address => address !== poolAddress.toLowerCase()
-    );
-    return this.pool;
+    ));
   }
 
   formatPoolTokens(): PoolToken[] {
@@ -218,16 +216,36 @@ export default class PoolService {
       address: getAddress(token.address)
     }));
 
-    if (isStable(this.pool.poolType)) return tokens;
+    if (isStable(this.pool.poolType)) return (this.pool.tokens = tokens);
 
-    return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+    return (this.pool.tokens = tokens.sort(
+      (a, b) => parseFloat(b.weight) - parseFloat(a.weight)
+    ));
   }
 
-  calcFees(pastPool: Pool | undefined): string {
-    if (!pastPool) return this.pool.totalSwapFee;
+  public setFeesSnapshot(poolSnapshot: Pool | undefined): string {
+    if (!poolSnapshot) return '0';
 
-    return bnum(this.pool.totalSwapFee)
-      .minus(pastPool.totalSwapFee)
+    const feesSnapshot = bnum(this.pool.totalSwapFee)
+      .minus(poolSnapshot.totalSwapFee)
       .toString();
+
+    return (this.pool.feesSnapshot = feesSnapshot);
+  }
+
+  public setVolumeSnapshot(poolSnapshot: Pool | undefined): string {
+    if (!poolSnapshot) return '0';
+
+    const volumeSnapshot = bnum(this.pool.totalSwapVolume)
+      .minus(poolSnapshot.totalSwapVolume)
+      .toString();
+
+    return (this.pool.volumeSnapshot = volumeSnapshot);
+  }
+
+  public get isNew(): boolean {
+    return (
+      differenceInWeeks(Date.now(), this.pool.createTime * oneSecondInMs) < 1
+    );
   }
 }
