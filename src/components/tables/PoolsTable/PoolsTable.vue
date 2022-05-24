@@ -21,7 +21,7 @@ import {
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/balancer/subgraph/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
 
@@ -29,7 +29,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: DecoratedPoolWithShares[];
+  data?: PoolWithShares[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -74,7 +74,7 @@ const wideCompositionWidth = computed(() =>
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
+const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -125,14 +125,14 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
-    accessor: pool => pool.dynamic?.volume,
+    accessor: pool => pool?.volumeSnapshot || '0',
     align: 'right',
     id: 'poolVolume',
     Cell: 'volumeCell',
     sortKey: pool => {
-      const apr = Number(pool?.dynamic?.volume);
-      if (apr === Infinity || isNaN(apr)) return 0;
-      return apr;
+      const volume = Number(pool?.volumeSnapshot);
+      if (volume === Infinity || isNaN(volume)) return 0;
+      return volume;
     },
     width: 175,
     cellClassName: 'font-numeric'
@@ -140,27 +140,25 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBoost'),
     accessor: pool =>
-      pool?.dynamic?.boost
-        ? `${bnum(pool?.dynamic?.boost).toFixed(3)}x`
-        : 'N/A',
+      pool?.boost ? `${bnum(pool?.boost).toFixed(3)}x` : 'N/A',
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
-    sortKey: pool => Number(pool?.dynamic?.boost),
+    sortKey: pool => Number(pool?.boost || '0'),
     width: 150,
     cellClassName: 'font-numeric'
   },
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.dynamic?.apr?.total.base,
+    accessor: pool => pool?.apr?.total.base || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
       let apr = 0;
 
-      if (pool?.dynamic.apr) {
-        apr = Number(absMaxApr(pool.dynamic.apr, pool.dynamic.boost));
+      if (pool?.apr) {
+        apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
       return isFinite(apr) ? apr : 0;
@@ -194,12 +192,12 @@ const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 /**
  * METHODS
  */
-function handleRowClick(pool: DecoratedPoolWithShares) {
+function handleRowClick(pool: PoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 
-function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
+function navigateToPoolMigration(pool: PoolWithShares) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -210,11 +208,11 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
   });
 }
 
-function aprLabelFor(pool: DecoratedPoolWithShares): string {
-  const poolAPRs = pool?.dynamic.apr;
+function aprLabelFor(pool: PoolWithShares): string {
+  const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, pool.dynamic.boost);
+  return totalAprLabel(poolAPRs, pool.boost);
 }
 </script>
 
@@ -272,7 +270,7 @@ function aprLabelFor(pool: DecoratedPoolWithShares): string {
             :selectedTokens="selectedTokens"
           />
           <BalChip
-            v-if="pool?.dynamic?.isNewPool"
+            v-if="pool.isNew"
             color="red"
             size="sm"
             class="ml-2 uppercase"
@@ -287,10 +285,10 @@ function aprLabelFor(pool: DecoratedPoolWithShares): string {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.volume"
         >
-          <span v-if="!pool?.dynamic?.volume">-</span>
+          <span v-if="!pool?.volumeSnapshot">-</span>
           <span v-else class="text-right">
             {{
-              fNum2(pool?.dynamic?.volume, {
+              fNum2(pool?.volumeSnapshot, {
                 style: 'currency',
                 maximumFractionDigits: 0
               })
@@ -303,13 +301,10 @@ function aprLabelFor(pool: DecoratedPoolWithShares): string {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.aprs"
         >
-          <BalLoadingBlock
-            v-if="!pool?.dynamic?.apr?.total?.base"
-            class="h-4 w-12"
-          />
+          <BalLoadingBlock v-if="!pool?.apr?.total?.base" class="h-4 w-12" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.dynamic?.apr?.total?.base" :pool="pool" />
+            <APRTooltip v-if="pool?.apr?.total?.base" :pool="pool" />
           </template>
         </div>
       </template>

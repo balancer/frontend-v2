@@ -1,52 +1,94 @@
+import { differenceInWeeks } from 'date-fns';
 import { getAddress } from 'ethers/lib/utils';
 
 import { isStable } from '@/composables/usePool';
+import { oneSecondInMs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import {
-  AnyPool,
   LinearPool,
   Pool,
+  PoolAPRs,
   PoolToken
 } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
+import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 
 export default class PoolService {
-  pool: AnyPool;
-  liquidityConcern: LiquidityConcern;
-  apr: AprConcern;
-
   constructor(
-    pool: AnyPool,
-    liquidityConcernClass = LiquidityConcern,
-    aprConcernClass = AprConcern
+    public pool: Pool,
+    public liquidity = LiquidityConcern,
+    public apr = AprConcern
   ) {
-    this.pool = pool;
-    this.liquidityConcern = new liquidityConcernClass(this);
-    this.apr = new aprConcernClass(this.pool);
+    this.format();
   }
 
-  public calcTotalLiquidity(
+  /**
+   * @summary Statically format various pool attributes.
+   */
+  public format(): Pool {
+    this.pool.address = this.address;
+    this.pool.isNew = this.isNew;
+    this.pool.tokenAddresses = this.pool.tokensList.map(t => getAddress(t));
+    this.formatPoolTokens();
+    return this.pool;
+  }
+
+  public get address(): string {
+    return getAddress(this.pool.id.slice(0, 42));
+  }
+
+  public get bptPrice(): string {
+    return bnum(this.pool.totalLiquidity)
+      .div(this.pool.totalShares)
+      .toString();
+  }
+
+  /**
+   * @summary Calculates and sets total liquidity of pool.
+   */
+  public setTotalLiquidity(
     prices: TokenPrices,
     currency: FiatCurrency
   ): string {
-    try {
-      return this.liquidityConcern.calcTotal(prices, currency);
-    } catch (error) {
-      console.error('Failed to calc pool liquidity:', error);
-      return '0';
-    }
+    const liquidityConcern = new this.liquidity(this.pool);
+    const totalLiquidity = liquidityConcern.calcTotal(prices, currency);
+    return (this.pool.totalLiquidity = totalLiquidity);
+  }
+
+  /**
+   * @summary Calculates APRs for pool.
+   */
+  public async setAPR(
+    poolSnapshot: Pool | undefined,
+    prices: TokenPrices,
+    currency: FiatCurrency,
+    protocolFeePercentage: number,
+    stakingBalApr: GaugeBalApr,
+    stakingRewardApr = '0'
+  ): Promise<PoolAPRs> {
+    const aprConcern = new this.apr(this.pool);
+    const apr = await aprConcern.calc(
+      poolSnapshot,
+      prices,
+      currency,
+      protocolFeePercentage,
+      stakingBalApr,
+      stakingRewardApr
+    );
+
+    return (this.pool.apr = apr);
   }
 
   /**
    * fetches StablePhantom linear pools and extracts
    * required attributes.
    */
-  public async decorateWithLinearPoolAttrs(): Promise<AnyPool> {
+  public async getLinearPoolAttrs(): Promise<Record<string, PoolToken>> {
     // Fetch linear pools from subgraph
     const linearPools = (await balancerSubgraphService.pools.get(
       {
@@ -88,17 +130,15 @@ export default class PoolService {
         });
     });
 
-    this.pool.linearPoolTokensMap = linearPoolTokensMap;
-    return this.pool;
+    return (this.pool.linearPoolTokensMap = linearPoolTokensMap);
   }
 
-  removePreMintedBPT(): AnyPool {
+  removePreMintedBPT(): string[] {
     const poolAddress = balancerSubgraphService.pools.addressFor(this.pool.id);
     // Remove pre-minted BPT token if exits
-    this.pool.tokensList = this.pool.tokensList.filter(
+    return (this.pool.tokensList = this.pool.tokensList.filter(
       address => address !== poolAddress.toLowerCase()
-    );
-    return this.pool;
+    ));
   }
 
   formatPoolTokens(): PoolToken[] {
@@ -107,16 +147,36 @@ export default class PoolService {
       address: getAddress(token.address)
     }));
 
-    if (isStable(this.pool.poolType)) return tokens;
+    if (isStable(this.pool.poolType)) return (this.pool.tokens = tokens);
 
-    return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+    return (this.pool.tokens = tokens.sort(
+      (a, b) => parseFloat(b.weight) - parseFloat(a.weight)
+    ));
   }
 
-  calcFees(pastPool: Pool | undefined): string {
-    if (!pastPool) return this.pool.totalSwapFee;
+  public setFeesSnapshot(poolSnapshot: Pool | undefined): string {
+    if (!poolSnapshot) return '0';
 
-    return bnum(this.pool.totalSwapFee)
-      .minus(pastPool.totalSwapFee)
+    const feesSnapshot = bnum(this.pool.totalSwapFee)
+      .minus(poolSnapshot.totalSwapFee)
       .toString();
+
+    return (this.pool.feesSnapshot = feesSnapshot);
+  }
+
+  public setVolumeSnapshot(poolSnapshot: Pool | undefined): string {
+    if (!poolSnapshot) return '0';
+
+    const volumeSnapshot = bnum(this.pool.totalSwapVolume)
+      .minus(poolSnapshot.totalSwapVolume)
+      .toString();
+
+    return (this.pool.volumeSnapshot = volumeSnapshot);
+  }
+
+  public get isNew(): boolean {
+    return (
+      differenceInWeeks(Date.now(), this.pool.createTime * oneSecondInMs) < 1
+    );
   }
 }

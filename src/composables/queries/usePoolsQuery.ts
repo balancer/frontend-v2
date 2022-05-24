@@ -10,11 +10,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import {
-  DecoratedPool,
-  LinearPool,
-  Pool
-} from '@/services/balancer/subgraph/types';
+import { LinearPool, Pool } from '@/services/balancer/subgraph/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
@@ -24,7 +20,7 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 
 type PoolsQueryResponse = {
-  pools: DecoratedPool[];
+  pools: Pool[];
   tokens: string[];
   skip?: number;
   enabled?: boolean;

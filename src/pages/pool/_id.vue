@@ -30,7 +30,7 @@
               </span>
             </div>
             <BalChip
-              v-if="pool.dynamic.isNewPool"
+              v-if="pool?.isNew"
               color="red"
               size="sm"
               class="uppercase mt-2 mr-2"
@@ -40,7 +40,7 @@
             </BalChip>
             <APRTooltip :pool="pool" class="-ml-1 mt-1" />
             <BalLink
-              :href="explorer.addressLink(pool.address)"
+              :href="explorer.addressLink(pool?.address || '')"
               external
               noStyle
               class="flex items-center"

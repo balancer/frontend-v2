@@ -1,6 +1,6 @@
-import { DecoratedPool, PoolType } from '../../../types';
+import { Pool, PoolType } from '../../../types';
 
-const decoratedPool: DecoratedPool = {
+const decoratedPool: Pool = {
   onchain: {
     tokens: {
       '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7': {
@@ -35,6 +35,7 @@ const decoratedPool: DecoratedPool = {
   owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   poolType: PoolType.Weighted,
   swapFee: '0.0037',
+  isNew: false,
   tokens: [
     {
       address: '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
@@ -61,19 +62,18 @@ const decoratedPool: DecoratedPool = {
     '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
   ],
-  dynamic: {
-    period: '24h',
-    volume: '44069.1679612192361059063129301',
-    fees: '163.0559214565111735918533578413',
-    apr: {
-      swap: '0.03875806812649627',
-      yield: {
-        total: '0',
-        breakdown: {}
-      },
-      total: '0.03875806812649627'
+  volumeSnapshot: '44069.1679612192361059063129301',
+  feesSnapshot: '163.0559214565111735918533578413',
+  apr: {
+    swap: '0.03875806812649627',
+    yield: {
+      total: '0',
+      breakdown: {}
     },
-    isNewPool: false
+    total: {
+      base: '0.03875806812649627',
+      inclEmissions: null
+    }
   }
 };
 

@@ -52,21 +52,16 @@ export interface Pool {
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
   unwrappedTokens?: string[];
+  isNew: boolean;
+  volumeSnapshot?: string;
+  feesSnapshot?: string;
+  apr?: PoolAPRs;
+  boost?: string;
 }
 
 export interface LinearPool extends Pool {
   mainIndex: number;
   wrappedIndex: number;
-}
-
-export interface DecoratedPool extends Pool {
-  dynamic: {
-    volume: string;
-    apr: PoolAPRs;
-    fees: string;
-    isNewPool: boolean;
-    boost?: string;
-  };
 }
 
 export type AprRange = { min: string; max: string };
@@ -167,11 +162,11 @@ export interface LinearPoolData {
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
-export interface FullPool extends DecoratedPool {
+export interface FullPool extends Pool {
   onchain: OnchainPoolData;
 }
 
-export type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
+export type AnyPool = Pool | FullPool | PoolWithShares;
 
 export interface PoolShare {
   poolId: {
@@ -180,7 +175,7 @@ export interface PoolShare {
   balance: string;
 }
 
-export interface DecoratedPoolWithShares extends DecoratedPool {
+export interface PoolWithShares extends Pool {
   shares: string;
   bpt: string;
 }

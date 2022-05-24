@@ -12,12 +12,7 @@ import PoolService from '@/services/pool/pool.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../../balancer-subgraph.service';
-import {
-  DecoratedPool,
-  Pool,
-  QueryBuilder,
-  TimeTravelPeriod
-} from '../../types';
+import { Pool, QueryBuilder, TimeTravelPeriod } from '../../types';
 import queryBuilder from './query';
 
 export default class Pools {
@@ -51,7 +46,7 @@ export default class Pools {
     currency: FiatCurrency,
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
-  ): Promise<DecoratedPool[]> {
+  ): Promise<Pool[]> {
     // Get past state of pools
     const blockNumber = await this.timeTravelBlock(period);
     const block = { number: blockNumber };

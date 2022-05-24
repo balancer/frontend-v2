@@ -3,14 +3,14 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
-import { DecoratedPool, PoolAPRs } from '@/services/balancer/subgraph/types';
+import { Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { hasBalEmissions, usersBoostedAPR } from '@/services/staking/utils';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: DecoratedPool;
+  pool: Pool;
 };
 
 /**
@@ -26,10 +26,10 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const boost = computed((): string => props.pool.dynamic?.boost || '');
+const boost = computed((): string => props.pool?.boost || '');
 const hasBoost = computed((): boolean => !!boost.value);
 const stakingAPR = computed(
-  (): PoolAPRs['staking'] => props.pool.dynamic.apr.staking
+  (): PoolAPRs['staking'] => props.pool?.apr?.staking
 );
 const minBalAPR = computed((): string => stakingAPR.value?.bal.min || '0');
 const maxBalAPR = computed((): string => stakingAPR.value?.bal.max || '0');
@@ -44,16 +44,13 @@ const hasRewardTokens = computed((): boolean =>
  * @summary The total APR if we have the user's boost.
  */
 const boostedTotalAPR = computed((): string => {
-  if (hasBalEmissions(props.pool) && props.pool.dynamic.apr)
+  if (hasBalEmissions(props.pool) && props.pool.apr)
     return fNum2(
-      usersBoostedAPR(props.pool.dynamic.apr, boost.value),
+      usersBoostedAPR(props.pool.apr, boost.value),
       FNumFormats.percent
     );
 
-  return fNum2(
-    props.pool.dynamic?.apr.staking?.rewards || '0',
-    FNumFormats.percent
-  );
+  return fNum2(props.pool?.apr?.staking?.rewards || '0', FNumFormats.percent);
 });
 
 /**

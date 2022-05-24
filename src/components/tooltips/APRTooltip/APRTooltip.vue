@@ -5,7 +5,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/balancer/subgraph/types';
 import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
@@ -15,7 +15,7 @@ import YieldBreakdown from './components/YieldBreakdown.vue';
  * TYPES
  */
 type Props = {
-  pool: DecoratedPool;
+  pool: Pool;
 };
 
 /**
@@ -32,19 +32,18 @@ const { fNum2 } = useNumbers();
  * COMPUTED
  */
 const validAPR = computed(
-  () =>
-    Number(props?.pool?.dynamic?.apr?.total.base || '0') * 100 <= APR_THRESHOLD
+  () => Number(props?.pool?.apr?.total.base || '0') * 100 <= APR_THRESHOLD
 );
 
 const hasYieldAPR = computed(() =>
-  bnum(props?.pool?.dynamic?.apr?.yield.total || '0').gt(0)
+  bnum(props?.pool?.apr?.yield.total || '0').gt(0)
 );
 
 const totalLabel = computed((): string => {
-  const poolAPRs = props.pool?.dynamic.apr;
+  const poolAPRs = props.pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, props.pool.dynamic.boost);
+  return totalAprLabel(poolAPRs, props.pool.boost);
 });
 </script>
 
@@ -74,14 +73,14 @@ const totalLabel = computed((): string => {
       <div class="p-3">
         <!-- SWAP FEE APR -->
         <div class="whitespace-nowrap flex items-center mb-1">
-          {{ fNum2(pool.dynamic?.apr?.swap, FNumFormats.percent) }}
+          {{ fNum2(pool?.apr?.swap || '0', FNumFormats.percent) }}
           <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
           v-if="hasYieldAPR"
-          :yieldAPR="pool.dynamic.apr.yield"
+          :yieldAPR="pool?.apr?.yield"
           :poolTokens="pool.tokensList"
           :poolType="pool.poolType"
         />

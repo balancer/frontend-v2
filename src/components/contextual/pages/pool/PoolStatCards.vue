@@ -6,13 +6,13 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/balancer/subgraph/types';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: DecoratedPool;
+  pool: Pool;
   loading?: boolean;
 };
 
@@ -33,10 +33,10 @@ const { t } = useI18n();
  * COMPUTED
  */
 const aprLabel = computed((): string => {
-  const poolAPRs = props.pool?.dynamic.apr;
+  const poolAPRs = props.pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, props.pool.dynamic.boost);
+  return totalAprLabel(poolAPRs, props.pool.boost);
 });
 
 const stats = computed(() => {
@@ -51,18 +51,18 @@ const stats = computed(() => {
     {
       id: 'volumeTime',
       label: t('volumeTime', ['24h']),
-      value: fNum2(props.pool.dynamic.volume, FNumFormats.fiat)
+      value: fNum2(props.pool.volumeSnapshot || '0', FNumFormats.fiat)
     },
     {
       id: 'feesTime',
       label: t('feesTime', ['24h']),
-      value: fNum2(props.pool.dynamic.fees, FNumFormats.fiat)
+      value: fNum2(props.pool.feesSnapshot || '0', FNumFormats.fiat)
     },
     {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.pool.dynamic.apr.total.base) * 100 > APR_THRESHOLD
+        Number(props.pool?.apr?.total.base || '0') * 100 > APR_THRESHOLD
           ? '-'
           : aprLabel.value
     }

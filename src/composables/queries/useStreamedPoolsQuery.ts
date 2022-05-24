@@ -4,12 +4,11 @@ import { computed, Ref, ref } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
 import { POOLS } from '@/constants/pools';
-import { bnum } from '@/lib/utils';
 import { getPoolAddress } from '@/lib/utils/balancer/pool';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { DecoratedPool, Pool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import PoolService from '@/services/pool/pool.service';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
@@ -70,31 +69,19 @@ async function decorateWithTotalLiquidity(
 ): Promise<Pool[]> {
   const withTotalLiquidity = (pools.value || []).map(async pool => {
     const poolService = new PoolService(pool);
-    const isStablePhantomPool = isStablePhantom(pool.poolType);
 
-    if (isStablePhantomPool) {
-      pool = poolService.removePreMintedBPT();
-      pool = await poolService.decorateWithLinearPoolAttrs();
+    if (isStablePhantom(pool.poolType)) {
+      poolService.removePreMintedBPT();
+      await poolService.getLinearPoolAttrs();
     }
-    pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
+    poolService.setTotalLiquidity(prices, currency);
 
-    return pool;
+    return poolService.pool;
   });
   return await Promise.all(withTotalLiquidity);
 }
 
-function calcVolume(pool: Pool, pastPool: Pool | undefined): string {
-  if (!pastPool) return pool.totalSwapVolume;
-
-  return bnum(pool.totalSwapVolume)
-    .minus(pastPool.totalSwapVolume)
-    .toString();
-}
-
-async function fetchHistoricalPools(
-  blockNumber: number,
-  pools: DecoratedPool[]
-) {
+async function fetchHistoricalPools(blockNumber: number, pools: Pool[]) {
   const block = { number: blockNumber };
   const isInPoolIds = { id_in: pools.map(pool => pool.id) };
   const pastPoolQuery = await balancerSubgraphService.pools.query({
@@ -113,25 +100,22 @@ async function fetchHistoricalPools(
   return pastPools;
 }
 
-function decorateWithVolumes(historicalPools: Pool[], pools: DecoratedPool[]) {
+function decorateWithVolumes(historicalPools: Pool[], pools: Pool[]) {
   if (!historicalPools || !historicalPools.length) return pools;
   const pastPoolMap = keyBy(historicalPools, 'id');
   return pools.map(pool => {
-    const volume = calcVolume(pool, pastPoolMap[pool.id]);
-    if (!pool.dynamic) {
-      pool.dynamic = {} as any;
-      pool.dynamic.volume = volume;
-    }
-    return pool;
+    const poolService = new PoolService(pool);
+    poolService.setVolumeSnapshot(pastPoolMap[pool.id]);
+    return poolService.pool;
   });
 }
 
 async function decorateWithAPRs(
-  pools: DecoratedPool[],
+  pools: Pool[],
   gauges: SubgraphGauge[],
   prices: TokenPrices,
   currency: FiatCurrency,
-  pastPools: DecoratedPool[],
+  pastPools: Pool[],
   protocolFeePercentage: number,
   tokens: TokenInfoMap
 ) {
@@ -154,7 +138,9 @@ async function decorateWithAPRs(
       })
     ]);
 
-    const apr = await poolService.apr.calc(
+    poolService.setFeesSnapshot(pastPoolsMap[pool.id]);
+
+    await poolService.setAPR(
       poolSnapshot,
       prices,
       currency,
@@ -163,15 +149,7 @@ async function decorateWithAPRs(
       rewardAprs[pool.id]
     );
 
-    const fees = poolService.calcFees(pastPoolsMap[pool.id]);
-
-    return {
-      ...pool,
-      dynamic: {
-        fees,
-        apr
-      }
-    };
+    return poolService.pool;
   });
   return await Promise.all(decorated);
 }
@@ -231,13 +209,13 @@ export default function useStreamedPoolsQuery(
     historicalPools: {
       waitFor: ['timeTravelBlock', 'basic.id'],
       type: 'page_dependent',
-      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
+      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
         return fetchHistoricalPools(data.value.timeTravelBlock, pools.value);
       }
     },
     volume: {
       waitFor: ['basic.id', 'historicalPools.id'],
-      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
+      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
         const withVolumes = await decorateWithVolumes(
           data.value.historicalPools,
           pools.value
@@ -248,7 +226,7 @@ export default function useStreamedPoolsQuery(
     aprs: {
       waitFor: ['protocolFee', 'historicalPools.id', 'formatPools.id'],
       enabled: isNotLoadingPrices,
-      queryFn: async (pools: Ref<DecoratedPool[]>, data: Ref<any>) => {
+      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
         return await decorateWithAPRs(
           pools.value,
           subgraphGauges.value || [],

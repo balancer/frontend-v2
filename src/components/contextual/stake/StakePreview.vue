@@ -13,13 +13,13 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
-  pool: DecoratedPoolWithShares;
+  pool: PoolWithShares;
   action: StakeAction;
 };
 

@@ -26,10 +26,10 @@ const { fNum2 } = useNumbers();
  * COMPUTED
  */
 const aprLabel = computed((): string => {
-  const poolAPRs = props.pool?.dynamic.apr;
+  const poolAPRs = props.pool?.apr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, props.pool.dynamic.boost);
+  return totalAprLabel(poolAPRs, props.pool.boost);
 });
 </script>
 
@@ -54,7 +54,7 @@ const aprLabel = computed((): string => {
           {{ $t('volumeTime', ['24h']) }}
         </div>
         <div class="font-semibold">
-          {{ fNum2(pool.dynamic.volume, FNumFormats.fiat) }}
+          {{ fNum2(pool.volumeSnapshot || '0', FNumFormats.fiat) }}
         </div>
       </div>
       <div>
