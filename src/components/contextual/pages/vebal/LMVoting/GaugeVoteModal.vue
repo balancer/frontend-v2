@@ -342,7 +342,21 @@ onMounted(() => {
     </template>
     <div>
       <div class="mb-4 text-sm" v-if="!voteWarning">
-        {{ t('veBAL.liquidityMining.popover.emissionsInfo') }}
+        <ul class="list-disc ml-4 text-gray-600 dark:text-gray-400">
+          <li class="mb-1">
+            {{ t('veBAL.liquidityMining.popover.emissionsInfo') }}
+          </li>
+          <li class="mb-1">
+            {{ t('veBAL.liquidityMining.popover.resubmitVote') }}
+          </li>
+          <li>
+            {{
+              t('veBAL.liquidityMining.popover.voteLockInfo', [
+                voteLockedUntilText
+              ])
+            }}
+          </li>
+        </ul>
       </div>
       <BalAlert
         v-if="voteWarning"
@@ -357,7 +371,9 @@ onMounted(() => {
       >
         <div class="flex items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
-          <span class="text-gray-500">{{ gauge.pool.symbol }}</span>
+          <span class="text-black dark:text-white font-semibold">{{
+            gauge.pool.symbol
+          }}</span>
         </div>
         <BalLink
           :href="poolURL"
@@ -371,7 +387,7 @@ onMounted(() => {
           />
         </BalLink>
       </div>
-      <BalForm>
+      <BalForm class="vote-form">
         <BalTextInput
           name="voteWeight"
           type="number"
@@ -383,12 +399,14 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="voteDisabled || transactionInProgress || voteState.receipt"
-          size="sm"
+          size="md"
           autoFocus
         >
           <template v-slot:append>
-            <div class="h-full flex flex-row justify-center items-center px-2">
-              <span class="text-gray-500">%</span>
+            <div
+              class="flex flex-row justify-center items-center px-2 bg-gray-200 dark:bg-gray-700 w-16 h-12 border-gray-100 dark:border-gray-800 rounded-r-lg"
+            >
+              <span class="text-black dark:text-white">%</span>
             </div>
           </template>
         </BalTextInput>
@@ -436,11 +454,16 @@ onMounted(() => {
           </BalBtn>
         </div>
       </BalForm>
-      <div class="text-gray-500 text-sm mt-4" v-if="!voteWarning">
-        {{
-          t('veBAL.liquidityMining.popover.voteLockInfo', [voteLockedUntilText])
-        }}
-      </div>
     </div>
   </BalModal>
 </template>
+<style scoped>
+.vote-form :deep(.input-container),
+.vote-form :deep(.input-group) {
+  @apply p-0;
+}
+
+.vote-form :deep(.input) {
+  @apply px-3 h-12;
+}
+</style>

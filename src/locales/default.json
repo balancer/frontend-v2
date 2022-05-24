@@ -758,12 +758,13 @@
                         "loadingLabel": "Confirm vote in wallet"
                     }
                 },
-                "emissionsInfo": "Your vote will direct future liquidity mining emissions starting with the next period on Thursday at 0:00 UTC.",
+                "emissionsInfo": "Your vote directs future liquidity mining emissions starting from the next period on Thursday at 0:00 UTC.",
                 "voteForGauge": "{0} for {1}",
                 "remainingVotes": "Your remaining votes: {0}",
                 "remainingVotesEditing": "Your remaining votes: {0} ({1} current allocation in this pool + {2} unallocated votes)",
                 "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
-                "voteLockInfo": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation until {0}",
+                "resubmitVote": "Voting power is set at the time of the vote. If you get more veBAL later, resubmit your vote to use your increased power.",
+                "voteLockInfo": "Votes are timelocked for 10 days. If you vote now, no edits can be made until {0}.",
                 "warnings": {
                     "votedTooRecently": {
                         "title": "Votes are locked for 10 days.",

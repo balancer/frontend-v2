@@ -221,7 +221,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
             color="blue"
             :outline="true"
             size="sm"
-            class="hover:text-white hover:bg-blue-500 focus:text-white focus:bg-blue-500"
+            class="hover:text-white dark:hover:text-white hover:bg-blue-500 focus:text-white focus:bg-blue-500"
             flat
             block
             @click.stop="emit('clickedVote', gauge)"
