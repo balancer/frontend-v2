@@ -67,8 +67,12 @@ export interface LinearPool extends Pool {
 export type AprRange = { min: string; max: string };
 export interface PoolAPRs {
   total: {
-    base: string;
-    inclEmissions: AprRange | null;
+    unstaked: string;
+    staked: {
+      calc: (boost?: string) => string;
+      max: string;
+      min: string;
+    };
   };
   swap: string;
   yield: {

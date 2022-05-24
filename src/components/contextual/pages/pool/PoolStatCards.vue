@@ -62,7 +62,7 @@ const stats = computed(() => {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.pool?.apr?.total.base || '0') * 100 > APR_THRESHOLD
+        Number(props.pool?.apr?.total.unstaked || '0') * 100 > APR_THRESHOLD
           ? '-'
           : aprLabel.value
     }

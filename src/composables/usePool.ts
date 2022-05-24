@@ -13,6 +13,7 @@ import {
   PoolType
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { hasBalEmissions } from '@/services/staking/utils';
 
 import { urlFor } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
@@ -152,32 +153,24 @@ export function poolURLFor(
  * Used primarily for sorting tables by the APR column.
  */
 export function absMaxApr(aprs: PoolAPRs, boost?: string): string {
-  if (boost && aprs.staking?.bal.min) {
-    const boostedAPR = bnum(aprs.staking.bal.min).times(boost);
-    const total = boostedAPR.plus(aprs.total.base);
-    return total.toString();
-  } else if (aprs.total.inclEmissions) {
-    return aprs.total.inclEmissions.max;
-  }
+  if (boost) return aprs.total.staked.calc(boost);
 
-  return aprs.total.base;
+  return aprs.total.staked.max;
 }
 
 /**
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
-  if (boost && aprs.staking?.bal.min) {
-    const boostedAPR = bnum(aprs.staking.bal.min).times(boost);
-    const total = boostedAPR.plus(aprs.total.base);
-    return numF(total.toString(), FNumFormats.percent);
-  } else if (aprs.total.inclEmissions) {
-    const minAPR = numF(aprs.total.inclEmissions.min, FNumFormats.percent);
-    const maxAPR = numF(aprs.total.inclEmissions.max, FNumFormats.percent);
+  if (boost) {
+    return numF(aprs.total.staked.calc(boost), FNumFormats.percent);
+  } else if (hasBalEmissions(aprs)) {
+    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
+    const maxAPR = numF(aprs.total.staked.max, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(aprs.total.base, FNumFormats.percent);
+  return numF(aprs.total.staked.min, FNumFormats.percent);
 }
 
 /**

@@ -32,7 +32,7 @@ const { fNum2 } = useNumbers();
  * COMPUTED
  */
 const validAPR = computed(
-  () => Number(props?.pool?.apr?.total.base || '0') * 100 <= APR_THRESHOLD
+  () => Number(props?.pool?.apr?.total.unstaked || '0') * 100 <= APR_THRESHOLD
 );
 
 const hasYieldAPR = computed(() =>
@@ -52,7 +52,7 @@ const totalLabel = computed((): string => {
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="hasYieldAPR || hasStakingRewards(pool)"
+          v-if="hasYieldAPR || hasStakingRewards(pool.apr)"
           class="h-4 text-yellow-300 -mr-1"
           v-bind="$attrs"
         />

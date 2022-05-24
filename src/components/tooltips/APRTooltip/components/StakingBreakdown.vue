@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
-import { hasBalEmissions, usersBoostedAPR } from '@/services/staking/utils';
+import { hasBalEmissions } from '@/services/staking/utils';
 
 /**
  * TYPES
@@ -44,13 +44,16 @@ const hasRewardTokens = computed((): boolean =>
  * @summary The total APR if we have the user's boost.
  */
 const boostedTotalAPR = computed((): string => {
-  if (hasBalEmissions(props.pool) && props.pool.apr)
-    return fNum2(
-      usersBoostedAPR(props.pool.apr, boost.value),
-      FNumFormats.percent
-    );
+  if (hasBalEmissions(props.pool.apr) && props.pool.apr) {
+    const boostedStakingAPR = bnum(minBalAPR.value)
+      .times(boost.value)
+      .plus(rewardTokensAPR.value)
+      .toString();
 
-  return fNum2(props.pool?.apr?.staking?.rewards || '0', FNumFormats.percent);
+    return fNum2(boostedStakingAPR, FNumFormats.percent);
+  }
+
+  return fNum2(rewardTokensAPR.value, FNumFormats.percent);
 });
 
 /**
@@ -89,7 +92,7 @@ const breakdownItems = computed(
       </div>
     </div>
     <template v-else>
-      <BalBreakdown v-if="hasBalEmissions(pool)" :items="breakdownItems">
+      <BalBreakdown v-if="hasBalEmissions(pool.apr)" :items="breakdownItems">
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
           <span class="ml-1 text-gray-500 text-xs">

@@ -151,7 +151,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.apr?.total.base || '0',
+    accessor: pool => pool?.apr?.total.unstaked || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
@@ -301,10 +301,13 @@ function aprLabelFor(pool: PoolWithShares): string {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.aprs"
         >
-          <BalLoadingBlock v-if="!pool?.apr?.total?.base" class="h-4 w-12" />
+          <BalLoadingBlock
+            v-if="!pool?.apr?.total?.unstaked"
+            class="h-4 w-12"
+          />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr?.total?.base" :pool="pool" />
+            <APRTooltip v-if="pool?.apr?.total?.unstaked" :pool="pool" />
           </template>
         </div>
       </template>

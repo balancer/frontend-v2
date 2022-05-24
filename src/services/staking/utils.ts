@@ -5,7 +5,7 @@ import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { RewardTokenData } from '../balancer/contracts/contracts/liquidity-gauge';
-import { Pool, PoolAPRs } from '../balancer/subgraph/types';
+import { PoolAPRs } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 
 const MIN_BOOST = 1;
@@ -124,29 +124,19 @@ export function getAprRange(apr: string) {
  * @summary A pool has staking rewards if there either a BAL
  * emission or if there is a rewards emission
  */
-export function hasStakingRewards(pool: Pool | undefined) {
-  if (!pool || !pool?.apr?.staking) return false;
+export function hasStakingRewards(aprs?: PoolAPRs) {
+  if (!aprs?.staking) return false;
+
   return (
-    bnum(pool.apr.staking?.bal?.min || 0).gt(0) ||
-    bnum(pool.apr.staking?.rewards || 0).gt(0)
+    bnum(aprs.staking?.bal?.min || 0).gt(0) ||
+    bnum(aprs.staking?.rewards || 0).gt(0)
   );
 }
 
 /**
  * @summary Checks if a pool has BAL emissions
  */
-export function hasBalEmissions(pool?: Pool) {
-  if (!pool) return false;
-  return bnum(pool?.apr?.staking?.bal?.min || 0).gt(0);
-}
-
-/**
- * @summary Returns the BAL emission adjusted by a users boost PLUS
- * the rewards token APR
- */
-export function usersBoostedAPR(aprs: PoolAPRs, boost: string) {
-  if (!aprs.staking?.bal.min) return aprs?.total?.base || '0';
-
-  const boostedAPR = bnum(aprs.staking.bal.min).times(boost);
-  return boostedAPR.plus(aprs.total.base).toString();
+export function hasBalEmissions(aprs?: PoolAPRs): boolean {
+  if (!aprs) return false;
+  return bnum(aprs?.staking?.bal?.min || 0).gt(0);
 }
