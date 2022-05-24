@@ -141,6 +141,8 @@ export default function useQueryStreams(
     // so we have to add a dependency to the query which tracks the page
     const otherQueryDependency = computed(() => {
       return (query.waitFor || []).map(queryId => {
+        if (queryKey === 'historicalPools') {
+        }
         if (queryId.includes('.')) {
           return (
             internalData.value[initialQueryHash.value][queryId.split('.')[0]] ||
