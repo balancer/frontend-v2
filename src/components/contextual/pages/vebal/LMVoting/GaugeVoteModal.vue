@@ -369,11 +369,21 @@ onMounted(() => {
       <div
         class="border dark:border-gray-800 p-2 rounded-lg mb-4 flex items-center justify-between"
       >
-        <div class="flex items-center h-full">
+        <div class="flex gap-4 items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
-          <span class="text-black dark:text-white font-semibold">{{
-            gauge.pool.symbol
-          }}</span>
+          <div v-if="gauge.pool.name">
+            <p class="text-black dark:text-white font-medium">
+              {{ gauge.pool.name }}
+            </p>
+            <p class="text-sm text-gray-500 dark:gray-400">
+              {{ gauge.pool.symbol }}
+            </p>
+          </div>
+          <div v-else>
+            <p class="text-black dark:text-white font-medium">
+              {{ gauge.pool.symbol }}
+            </p>
+          </div>
         </div>
         <BalLink
           :href="poolURL"

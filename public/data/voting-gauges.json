@@ -26,6 +26,7 @@
       "id": "0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063",
       "address": "0x06Df3b2bbB68adc8B0e302443692037ED9f91b42",
       "poolType": "Stable",
+      "name": "DAI / USDC / USDT",
       "symbol": "staBAL3",
       "tokens": [
         {
@@ -58,6 +59,7 @@
       "id": "0x072f14b85add63488ddad88f855fda4a99d6ac9b000200000000000000000027",
       "address": "0x072f14B85ADd63488DDaD88f855Fda4A99d6aC9B",
       "poolType": "Weighted",
+      "name": "50% SNX / 50% WETH",
       "symbol": "B-50SNX-50WETH",
       "tokens": [
         {
@@ -84,6 +86,7 @@
       "id": "0x0b09dea16768f0799065c475be02919503cb2a3500020000000000000000001a",
       "address": "0x0b09deA16768f0799065C475bE02919503cB2a35",
       "poolType": "Weighted",
+      "name": "60% WETH / 40% DAI",
       "symbol": "B-60WETH-40DAI",
       "tokens": [
         {
@@ -110,6 +113,7 @@
       "id": "0x186084ff790c65088ba694df11758fae4943ee9e000200000000000000000013",
       "address": "0x186084fF790C65088BA694Df11758faE4943EE9E",
       "poolType": "Weighted",
+      "name": "50% YFI / 50% WETH",
       "symbol": "B-50WETH-50YFI",
       "tokens": [
         {
@@ -136,6 +140,7 @@
       "id": "0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112",
       "address": "0x1E19CF2D73a72Ef1332C882F20534B6519Be0276",
       "poolType": "MetaStable",
+      "name": "rETH / WETH",
       "symbol": "B-rETH-STABLE",
       "tokens": [
         {
@@ -162,6 +167,7 @@
       "id": "0x27c9f71cc31464b906e0006d4fcbc8900f48f15f00020000000000000000010f",
       "address": "0x27C9f71cC31464B906E0006d4FcBC8900F48f15f",
       "poolType": "Weighted",
+      "name": "80% D2D / 20% USDC",
       "symbol": "80D2D-20USDC",
       "tokens": [
         {
@@ -188,6 +194,7 @@
       "id": "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080",
       "address": "0x32296969Ef14EB0c6d29669C550D4a0449130230",
       "poolType": "MetaStable",
+      "name": "stETH / WETH",
       "symbol": "B-stETH-STABLE",
       "tokens": [
         {
@@ -214,6 +221,7 @@
       "id": "0x350196326aeaa9b98f1903fb5e8fc2686f85318c000200000000000000000084",
       "address": "0x350196326AEAA9b98f1903fb5e8fc2686f85318C",
       "poolType": "Weighted",
+      "name": "80% Vita / 20% WETH",
       "symbol": "VBPT",
       "tokens": [
         {
@@ -240,6 +248,7 @@
       "id": "0x3e5fa9518ea95c3e533eb377c001702a9aacaa32000200000000000000000052",
       "address": "0x3e5FA9518eA95c3E533EB377C001702A9AaCAA32",
       "poolType": "Weighted",
+      "name": "50% USDT / 50% WETH",
       "symbol": "B-50WETH-50USDT",
       "tokens": [
         {
@@ -292,6 +301,7 @@
       "id": "0x51735bdfbfe3fc13dea8dc6502e2e958989429610002000000000000000000a0",
       "address": "0x51735bdFBFE3fC13dEa8DC6502E2E95898942961",
       "poolType": "Weighted",
+      "name": "80% UNN / 20% WETH",
       "symbol": "B-80UNN-20WETH",
       "tokens": [
         {
@@ -318,6 +328,7 @@
       "id": "0x5d66fff62c17d841935b60df5f07f6cf79bd0f4700020000000000000000014c",
       "address": "0x5d66FfF62c17D841935b60df5F07f6CF79Bd0F47",
       "poolType": "Weighted",
+      "name": "50% Silo / 50% WETH",
       "symbol": "50Silo-50WETH",
       "tokens": [
         {
@@ -344,6 +355,7 @@
       "id": "0x5f7fa48d765053f8dd85e052843e12d23e3d7bc50002000000000000000000c0",
       "address": "0x5f7FA48d765053F8dD85E052843e12D23e3D7BC5",
       "poolType": "Weighted",
+      "name": "50% NOTE / 50% WETH",
       "symbol": "NWWP",
       "tokens": [
         {
@@ -370,6 +382,7 @@
       "id": "0x702605f43471183158938c1a3e5f5a359d7b31ba00020000000000000000009f",
       "address": "0x702605F43471183158938C1a3e5f5A359d7b31ba",
       "poolType": "Weighted",
+      "name": "80% GRO / 20% WETH",
       "symbol": "B-80BAL-20WETH",
       "tokens": [
         {
@@ -396,6 +409,7 @@
       "id": "0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe",
       "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
       "poolType": "StablePhantom",
+      "name": "Balancer Boosted Aave USD",
       "symbol": "bb-a-USD",
       "tokens": [
         {
@@ -454,6 +468,7 @@
       "id": "0x8f4205e1604133d1875a3e771ae7e4f2b086563900020000000000000000010e",
       "address": "0x8f4205e1604133d1875a3E771AE7e4F2b0865639",
       "poolType": "Weighted",
+      "name": "50% D2D / 50% BAL",
       "symbol": "50N/A-50N/A",
       "tokens": [
         {
@@ -480,6 +495,7 @@
       "id": "0x90291319f1d4ea3ad4db0dd8fe9e12baf749e84500020000000000000000013c",
       "address": "0x90291319F1D4eA3ad4dB0Dd8fe9E12BAF749E845",
       "poolType": "Weighted",
+      "name": "70% WETH / 30% FEI",
       "symbol": "B-30FEI-70WETH",
       "tokens": [
         {
@@ -506,6 +522,7 @@
       "id": "0x96646936b91d6b9d7d0c47c496afbf3d6ec7b6f8000200000000000000000019",
       "address": "0x96646936b91d6B9D7D0c47C496AfBF3D6ec7B6f8",
       "poolType": "Weighted",
+      "name": "50% USDC / 50% WETH",
       "symbol": "B-50USDC-50WETH",
       "tokens": [
         {
@@ -532,6 +549,7 @@
       "id": "0x96ba9025311e2f47b840a1f68ed57a3df1ea8747000200000000000000000160",
       "address": "0x96bA9025311e2f47B840A1f68ED57A3DF1EA8747",
       "poolType": "Weighted",
+      "name": "80% TCR / 20% DAI",
       "symbol": "20DAI-80TCR",
       "tokens": [
         {
@@ -558,6 +576,7 @@
       "id": "0xa02e4b3d18d4e6b8d18ac421fbc3dfff8933c40a00020000000000000000004b",
       "address": "0xa02E4b3d18D4E6B8d18Ac421fBc3dfFF8933c40a",
       "poolType": "Weighted",
+      "name": "50% MATIC / 50% WETH",
       "symbol": "B-50MATIC-50WETH",
       "tokens": [
         {
@@ -584,6 +603,7 @@
       "id": "0xa6f548df93de924d73be7d25dc02554c6bd66db500020000000000000000000e",
       "address": "0xA6F548DF93de924d73be7D25dC02554c6bD66dB5",
       "poolType": "Weighted",
+      "name": "50% WBTC / 50% WETH",
       "symbol": "B-50WBTC-50WETH",
       "tokens": [
         {
@@ -610,6 +630,7 @@
       "id": "0xbaeec99c90e3420ec6c1e7a769d2a856d2898e4d00020000000000000000008a",
       "address": "0xBaeEC99c90E3420Ec6c1e7A769d2A856d2898e4D",
       "poolType": "Weighted",
+      "name": "50% VITA / 50% WETH",
       "symbol": "B-50VITA-50WETH",
       "tokens": [
         {
@@ -636,6 +657,7 @@
       "id": "0xbf96189eee9357a95c7719f4f5047f76bde804e5000200000000000000000087",
       "address": "0xBF96189Eee9357a95C7719f4F5047F76bdE804E5",
       "poolType": "Weighted",
+      "name": "80% LDO / 20% WETH",
       "symbol": "B-80LDO-20WETH",
       "tokens": [
         {
@@ -662,6 +684,7 @@
       "id": "0xe2469f47ab58cf9cf59f9822e3c5de4950a41c49000200000000000000000089",
       "address": "0xe2469f47aB58cf9CF59F9822e3C5De4950a41C49",
       "poolType": "Weighted",
+      "name": "80% MTA / 20% WETH",
       "symbol": "mBPT",
       "tokens": [
         {
@@ -688,6 +711,7 @@
       "id": "0xe99481dc77691d8e2456e5f3f61c1810adfc1503000200000000000000000018",
       "address": "0xE99481DC77691d8E2456E5f3F61C1810adFC1503",
       "poolType": "Weighted",
+      "name": "50% LINK / 50% WETH",
       "symbol": "B-50LINK-50WETH",
       "tokens": [
         {
@@ -714,6 +738,7 @@
       "id": "0xec60a5fef79a92c741cb74fdd6bfc340c0279b01000200000000000000000015",
       "address": "0xeC60a5FeF79a92c741Cb74FdD6bfC340C0279B01",
       "poolType": "Weighted",
+      "name": "50% REN / 50% WETH",
       "symbol": "B-50REN-50WETH",
       "tokens": [
         {
@@ -766,6 +791,7 @@
       "id": "0xefaa1604e82e1b3af8430b90192c1b9e8197e377000200000000000000000021",
       "address": "0xEFAa1604e82e1B3AF8430b90192c1B9e8197e377",
       "poolType": "Weighted",
+      "name": "50% COMP / 50% WETH",
       "symbol": "B-50COMP-50WETH",
       "tokens": [
         {
@@ -792,6 +818,7 @@
       "id": "0xf4c0dd9b82da36c07605df83c8a416f11724d88b000200000000000000000026",
       "address": "0xF4C0DD9B82DA36C07605df83c8a416F11724d88b",
       "poolType": "Weighted",
+      "name": "80% GNO / 20% WETH",
       "symbol": "B-80GNO-20WETH",
       "tokens": [
         {
@@ -818,6 +845,7 @@
       "id": "0xf5aaf7ee8c39b651cebf5f1f50c10631e78e0ef9000200000000000000000069",
       "address": "0xf5aAf7Ee8C39B651CEBF5f1F50C10631E78e0ef9",
       "poolType": "Weighted",
+      "name": "50% UMA / 50% USDC",
       "symbol": "BPTUMAUSDC",
       "tokens": [
         {
@@ -844,6 +872,7 @@
       "id": "0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066",
       "address": "0xFeadd389a5c427952D8fdb8057D6C8ba1156cC56",
       "poolType": "Stable",
+      "name": "WBTC / renBTC / sBTC",
       "symbol": "staBAL3-BTC",
       "tokens": [
         {
@@ -876,6 +905,7 @@
       "id": "0x17ddd9646a69c9445cd8a9f921d4cd93bf50d108000200000000000000000159",
       "address": "0x17dDd9646a69C9445CD8A9f921d4cD93BF50D108",
       "poolType": "Weighted",
+      "name": "80% HAUS / 20% WETH",
       "symbol": "20WETH-80HAUS",
       "tokens": [
         {
@@ -902,6 +932,7 @@
       "id": "0x92762b42a06dcdddc5b7362cfb01e631c4d44b40000200000000000000000182",
       "address": "0x92762B42A06dCDDDc5B7362Cfb01E631c4D44B40",
       "poolType": "Weighted",
+      "name": "50% COW / 50% GNO",
       "symbol": "50COW-50GNO",
       "tokens": [
         {
@@ -928,6 +959,7 @@
       "id": "0xde8c195aa41c11a0c4787372defbbddaa31306d2000200000000000000000181",
       "address": "0xde8C195Aa41C11a0c4787372deFBbDdAa31306D2",
       "poolType": "Weighted",
+      "name": "50% COW / 50% WETH",
       "symbol": "50COW-50WETH",
       "tokens": [
         {
@@ -954,6 +986,7 @@
       "id": "0xc45d42f801105e861e86658648e3678ad7aa70f900010000000000000000011e",
       "address": "0xc45D42f801105e861e86658648e3678aD7aa70f9",
       "poolType": "Weighted",
+      "name": "50% OHM / 25% DAI / 25% WETH",
       "symbol": "50OHM-25DAI-25WETH",
       "tokens": [
         {
@@ -986,6 +1019,7 @@
       "id": "0x2d344a84bac123660b021eebe4eb6f12ba25fe8600020000000000000000018a",
       "address": "0x2D344A84BaC123660b021EEbE4eB6F12ba25fe86",
       "poolType": "Weighted",
+      "name": "80% FDT / 20% WETH",
       "symbol": "20WETH-80FDT",
       "tokens": [
         {
@@ -1012,6 +1046,7 @@
       "id": "0xb460daa847c45f1c4a41cb05bfb3b51c92e41b36000200000000000000000194",
       "address": "0xb460DAa847c45f1C4a41cb05BFB3b51c92e41B36",
       "poolType": "Weighted",
+      "name": "80% BADGER / 20% WBTC",
       "symbol": "20WBTC-80BADGER",
       "tokens": [
         {
@@ -1038,6 +1073,7 @@
       "id": "0x5122e01d819e58bb2e22528c0d68d310f0aa6fd7000200000000000000000163",
       "address": "0x5122E01D819E58BB2E22528c0D68D310f0AA6FD7",
       "poolType": "Weighted",
+      "name": "80% NOTE / 20% WETH",
       "symbol": "sNOTE-BPT",
       "tokens": [
         {
@@ -1064,6 +1100,7 @@
       "id": "0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de",
       "address": "0xe8cc7E765647625B95F59C15848379D10B9AB4af",
       "poolType": "Weighted",
+      "name": "80% WNCG / 20% WETH",
       "symbol": "20WETH-80WNCG",
       "tokens": [
         {
@@ -1090,6 +1127,7 @@
       "id": "0xb340b6b1a34019853cb05b2de6ee8ffd0b89a008000100000000000000000036",
       "address": "0xB340B6b1a34019853Cb05B2De6eE8ffD0B89a008",
       "poolType": "Weighted",
+      "name": "33% DPX / 33% RDPX / 33% WETH",
       "symbol": "33DPX-33RDPX-33WETH",
       "tokens": [
         {
@@ -1122,6 +1160,7 @@
       "id": "0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002",
       "address": "0x64541216bAFFFEec8ea535BB71Fbc927831d0595",
       "poolType": "Weighted",
+      "name": "33% WBTC / 33% WETH / 33% USDC",
       "symbol": "B-33WETH-33WBTC-33USDC",
       "tokens": [
         {
@@ -1154,6 +1193,7 @@
       "id": "0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f",
       "address": "0x5A5884FC31948D59DF2aEcCCa143dE900d49e1a3",
       "poolType": "Stable",
+      "name": "VST / USDC/ USDT / DAI",
       "symbol": "VST-USDC-USDT-DAI-BSP",
       "tokens": [
         {
@@ -1192,6 +1232,7 @@
       "id": "0x1779900c7707885720d39aa741f4086886307e9e00020000000000000000004b",
       "address": "0x1779900c7707885720d39aA741F4086886307e9E",
       "poolType": "Weighted",
+      "name": "80% MAGIC / 20% WETH",
       "symbol": "80MAGIC-20WETH",
       "tokens": [
         {
@@ -1218,6 +1259,7 @@
       "id": "0xc2f082d33b5b8ef3a7e3de30da54efd3114512ac000200000000000000000017",
       "address": "0xc2F082d33b5B8eF3A7E3de30da54EFd3114512aC",
       "poolType": "Weighted",
+      "name": "80% PICKLE / 20% WETH",
       "symbol": "B-80PICKLE-20WETH",
       "tokens": [
         {
@@ -1244,6 +1286,7 @@
       "id": "0x651e00ffd5ecfa7f3d4f33d62ede0a97cf62ede2000200000000000000000006",
       "address": "0x651e00FfD5eCfA7F3d4F33d62eDe0a97Cf62EdE2",
       "poolType": "Weighted",
+      "name": "80% LINK / 20% WETH",
       "symbol": "B-80LINK-20WETH",
       "tokens": [
         {
@@ -1270,6 +1313,7 @@
       "id": "0x0adeb25cb5920d4f7447af4a0428072edc2cee2200020000000000000000004a",
       "address": "0x0adeb25cb5920d4f7447af4a0428072EdC2cEE22",
       "poolType": "Weighted",
+      "name": "80% GMX / 20% WETH",
       "symbol": "80GMX-20WETH",
       "tokens": [
         {
@@ -1296,6 +1340,7 @@
       "id": "0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d",
       "address": "0x0510cCF9eB3AB03C1508d3b9769E8Ee2CFd6FDcF",
       "poolType": "Stable",
+      "name": "MAI / USDT / USDC",
       "symbol": "MAI-BSP",
       "tokens": [
         {
@@ -1328,6 +1373,7 @@
       "id": "0xc61ff48f94d801c1ceface0289085197b5ec44f000020000000000000000004d",
       "address": "0xC61ff48f94D801c1ceFaCE0289085197B5ec44F0",
       "poolType": "Weighted",
+      "name": "50% VSTA / 50% WETH",
       "symbol": "50VSTA-50WETH",
       "tokens": [
         {
@@ -1354,6 +1400,7 @@
       "id": "0xb28670b3e7ad27bd41fb5938136bf9e9cba90d6500020000000000000000001e",
       "address": "0xb28670b3E7Ad27bd41Fb5938136BF9E9cBa90d65",
       "poolType": "Weighted",
+      "name": "80% TCR / 20% WETH",
       "symbol": "B-80TCR-20WETH",
       "tokens": [
         {
@@ -1380,6 +1427,7 @@
       "id": "0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016",
       "address": "0x1533A3278f3F9141d5F820A184EA4B017fce2382",
       "poolType": "Stable",
+      "name": "DAI / USDT / USDC",
       "symbol": "B-staBAL-3",
       "tokens": [
         {
@@ -1412,6 +1460,7 @@
       "id": "0x4a3a22a3e7fee0ffbb66f1c28bfac50f75546fc7000200000000000000000008",
       "address": "0x4a3a22A3e7fee0FfBB66f1C28BfAC50f75546Fc7",
       "poolType": "Weighted",
+      "name": "80% GNO / 20% WETH",
       "symbol": "B-80GNO-20WETH",
       "tokens": [
         {
@@ -1438,6 +1487,7 @@
       "id": "0xb5b77f1ad2b520df01612399258e7787af63025d000200000000000000000010",
       "address": "0xB5B77F1AD2B520df01612399258E7787aF63025D",
       "poolType": "Weighted",
+      "name": "60% MCB / 40% WETH",
       "symbol": "MWP",
       "tokens": [
         {
@@ -1464,6 +1514,7 @@
       "id": "0xcc65a812ce382ab909a11e434dbf75b34f1cc59d000200000000000000000001",
       "address": "0xcC65A812ce382aB909a11E434dbf75B34f1cc59D",
       "poolType": "Weighted",
+      "name": "60% BAL / 40% WETH",
       "symbol": "B-60BAL-40WETH",
       "tokens": [
         {
@@ -1490,6 +1541,7 @@
       "id": "0xe1b40094f1446722c424c598ac412d590e0b3ffb000200000000000000000076",
       "address": "0xE1B40094F1446722c424C598aC412D590e0b3ffb",
       "poolType": "Weighted",
+      "name": "80% CRE8R / 20% WETH",
       "symbol": "20WETH-80CRE8R",
       "tokens": [
         {
@@ -1516,6 +1568,7 @@
       "id": "0x0297e37f1873d2dab4487aa67cd56b58e2f27875000100000000000000000002",
       "address": "0x0297e37f1873D2DAb4487Aa67cD56B58E2F27875",
       "poolType": "Weighted",
+      "name": "25% MATIC / 25% USDC / 25% WETH / 25% BAL",
       "symbol": "B-POLYBASE",
       "tokens": [
         {
@@ -1554,6 +1607,7 @@
       "id": "0x03cd191f589d12b0582a99808cf19851e468e6b500010000000000000000000a",
       "address": "0x03cD191F589d12b0582a99808cf19851E468E6B5",
       "poolType": "Weighted",
+      "name": "33% WBTC / 33% WETH / 33% USDC",
       "symbol": "BPTC",
       "tokens": [
         {
@@ -1586,6 +1640,7 @@
       "id": "0x186084ff790c65088ba694df11758fae4943ee9e000200000000000000000032",
       "address": "0x186084fF790C65088BA694Df11758faE4943EE9E",
       "poolType": "Weighted",
+      "name": "50% TEL / 50% BAL",
       "symbol": "TELX-50TEL-50BAL",
       "tokens": [
         {
@@ -1612,6 +1667,7 @@
       "id": "0x614b5038611729ed49e0ded154d8a5d3af9d1d9e00010000000000000000001d",
       "address": "0x614b5038611729ed49e0dED154d8A5d3AF9D1D9E",
       "poolType": "Weighted",
+      "name": "40% WMATIC / 40% MTA / 20% WETH",
       "symbol": "BP-MTA",
       "tokens": [
         {
@@ -1644,6 +1700,7 @@
       "id": "0x7c9cf12d783821d5c63d8e9427af5c44bad92445000100000000000000000051",
       "address": "0x7C9cF12d783821d5C63d8E9427aF5C44bAd92445",
       "poolType": "Weighted",
+      "name": "33% AVAX / 33% SOL / 33% WETH",
       "symbol": "B-33AVAX-33WETH-33SOL",
       "tokens": [
         {
@@ -1676,6 +1733,7 @@
       "id": "0xc31a37105b94ab4efca1954a14f059af11fcd9bb000000000000000000000455",
       "address": "0xc31A37105B94aB4eFCA1954A14f059Af11FCD9BB",
       "poolType": "Stable",
+      "name": "FRAX / UST / USDC / USDT",
       "symbol": "FRAX-UST-USDC-USDT-BSP",
       "tokens": [
         {
@@ -1714,6 +1772,7 @@
       "id": "0x0d34e5dd4d8f043557145598e4e2dc286b35fd4f000000000000000000000068",
       "address": "0x0d34e5dD4D8f043557145598E4e2dC286B35FD4f",
       "poolType": "Stable",
+      "name": "TUSD / DAI / USDC / USDT",
       "symbol": "BPSP-TUSD",
       "tokens": [
         {
@@ -1752,6 +1811,7 @@
       "id": "0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012",
       "address": "0x06Df3b2bbB68adc8B0e302443692037ED9f91b42",
       "poolType": "Stable",
+      "name": "miMATIC / DAI / USDC / USDT",
       "symbol": "BPSP",
       "tokens": [
         {
@@ -1790,6 +1850,7 @@
       "id": "0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366",
       "address": "0xaF5E0B5425dE1F5a630A8cB5AA9D97B8141C908D",
       "poolType": "MetaStable",
+      "name": "stMATIC / WMATIC",
       "symbol": "B-stMATIC-STABLE",
       "tokens": [
         {
@@ -1816,6 +1877,7 @@
       "id": "0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e",
       "address": "0xFeadd389a5c427952D8fdb8057D6C8ba1156cC56",
       "poolType": "Stable",
+      "name": "renBTC / WBTC",
       "symbol": "BP-BTC-SP",
       "tokens": [
         {
@@ -1842,6 +1904,7 @@
       "id": "0xcf354603a9aebd2ff9f33e1b04246d8ea204ae9500020000000000000000005a",
       "address": "0xCF354603A9AEbD2Ff9f33E1B04246d8Ea204ae95",
       "poolType": "Weighted",
+      "name": "50% WBTC / 50% WETH",
       "symbol": "B-50WBTC-50WETH",
       "tokens": [
         {
@@ -1868,6 +1931,7 @@
       "id": "0x5a6ae1fd70d04ba4a279fc219dfabc53825cb01d00020000000000000000020e",
       "address": "0x5A6aE1fd70d04bA4a279FC219dfAbC53825cb01D",
       "poolType": "Weighted",
+      "name": "80% BANK / 20% WETH",
       "symbol": "20WETH-80BANK",
       "tokens": [
         {
@@ -1894,6 +1958,7 @@
       "id": "0xea4e073c8ac859f2994c07e627178719c8002dc00002000000000000000003dc",
       "address": "0xEa4e073c8AC859f2994C07E627178719c8002dc0",
       "poolType": "Weighted",
+      "name": "80% SAND / 20% WMATIC",
       "symbol": "20WMATIC-80SAND",
       "tokens": [
         {
@@ -1920,6 +1985,7 @@
       "id": "0x10f21c9bd8128a29aa785ab2de0d044dcdd79436000200000000000000000059",
       "address": "0x10f21C9bD8128a29Aa785Ab2dE0d044DCdd79436",
       "poolType": "Weighted",
+      "name": "50% USDC / 50% WETH",      
       "symbol": "B-50WETH-50USDC",
       "tokens": [
         {
@@ -1946,6 +2012,7 @@
       "id": "0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008",
       "address": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0",
       "poolType": "Weighted",
+      "name": "20% AAVE / 20% LINK / 20% BAL / 20% USDC / 20% WETH",
       "symbol": "B-POLYDEFI",
       "tokens": [
         {
@@ -1990,6 +2057,7 @@
       "id": "0x805ca3ccc61cc231851dee2da6aabff0a7714aa7000200000000000000000361",
       "address": "0x805cA3cCC61cc231851DEE2Da6aABFF0a7714aa7",
       "poolType": "Weighted",
+      "name": "80% VISION / 20% WETH",
       "symbol": "BAL-VISION-LP",
       "tokens": [
         {
@@ -2016,6 +2084,7 @@
       "id": "0xb204bf10bc3a5435017d3db247f56da601dfe08a0002000000000000000000fe",
       "address": "0xb204BF10bc3a5435017D3db247f56dA601dFe08A",
       "poolType": "Weighted",
+      "name": "80% THX / 20% USDC",
       "symbol": "20USDC-80THX",
       "tokens": [
         {
@@ -2042,6 +2111,7 @@
       "id": "0xdb1db6e248d7bb4175f6e5a382d0a03fe3dcc813000100000000000000000035",
       "address": "0xdB1db6E248d7Bb4175f6E5A382d0A03fe3DCc813",
       "poolType": "Weighted",
+      "name": "60% TEL / 20% BAL / 20% USDC",
       "symbol": "TELX-60TEL-20BAL-20USDC",
       "tokens": [
         {
@@ -2074,6 +2144,7 @@
       "id": "0xce66904b68f1f070332cbc631de7ee98b650b499000100000000000000000009",
       "address": "0xce66904B68f1f070332Cbc631DE7ee98B650b499",
       "poolType": "Weighted",
+      "name": "25% AAVE / 25% LINK / 25% BAL / 25% WETH",
       "symbol": "B-POLYDEFI",
       "tokens": [
         {
@@ -2112,6 +2183,7 @@
       "id": "0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4",
       "address": "0xC17636e36398602dd37Bb5d1B3a9008c7629005f",
       "poolType": "MetaStable",
+      "name": "MaticX / WMATIC",
       "symbol": "B-MaticX-STABLE",
       "tokens": [
         {
@@ -2139,6 +2211,7 @@
       "address": "0x647c1FD457b95b75D0972fF08FE01d7D7bda05dF",
       "poolType": "Weighted",
       "symbol": "B-50WBTC-50WETH",
+      "name": "50% WBTC / 50% WETH",
       "tokens": [
         {
           "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
