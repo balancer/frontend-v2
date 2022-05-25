@@ -77,10 +77,7 @@ const migratableUserPools = computed(() => {
 });
 
 const isInvestmentPoolsTableLoading = computed(
-  () =>
-    dataStates['basic'] === 'loading' ||
-    isLoadingMore.value ||
-    priceQueryLoading.value
+  () => dataStates['basic'] === 'loading' || priceQueryLoading.value
 );
 
 watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
