@@ -7,7 +7,6 @@ import { aaveService } from '@/services/aave/aave.service';
 import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
-import { GaugeBalApr } from '@/services/staking/staking-rewards.service';
 
 export class AprConcern {
   constructor(
@@ -21,7 +20,7 @@ export class AprConcern {
     prices: TokenPrices,
     currency: FiatCurrency,
     protocolFeePercentage: number,
-    stakingBalApr: GaugeBalApr,
+    stakingBalApr: AprRange,
     stakingRewardApr = '0'
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
@@ -88,7 +87,7 @@ export class AprConcern {
    */
   private calcAprGivenBoost(
     unstakedTotalAPR: string,
-    stakingBalApr: GaugeBalApr,
+    stakingBalApr: AprRange,
     stakingRewardApr = '0',
     boost = '1'
   ): string {
@@ -105,7 +104,7 @@ export class AprConcern {
    */
   private calcStakedAprRange(
     unstakedTotalAPR: string,
-    stakingBalApr: GaugeBalApr,
+    stakingBalApr: AprRange,
     stakingRewardApr = '0'
   ): AprRange {
     const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
