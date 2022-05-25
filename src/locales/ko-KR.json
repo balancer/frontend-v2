@@ -664,7 +664,7 @@
     "symbol":"상징",
     "tableShowsBalancerV2Pools":"이 표에는 Balancer V2 풀만 표시됩니다.",
     "theme":"테마",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"stETH 스테이킹 보상 APR"
        },

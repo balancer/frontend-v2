@@ -951,7 +951,7 @@
     },
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
     "theme": "Theme",
-    "thirdPartyRewards": {
+    "yieldAprRewards": {
         "apr": {
             "steth": "stETH staking rewards APR",
             "boosted": "Boosted APR"

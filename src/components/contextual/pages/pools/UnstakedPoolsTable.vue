@@ -9,9 +9,9 @@ import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import {
-  DecoratedPool,
-  DecoratedPoolWithShares,
-  FullPool
+  FullPool,
+  Pool,
+  PoolWithShares
 } from '@/services/balancer/subgraph/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
@@ -70,10 +70,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        dynamic: {
-          ...pool.dynamic,
-          boost: poolBoosts.value[pool.id]
-        }
+        boost: poolBoosts.value[pool.id]
       };
     });
 });
@@ -117,7 +114,7 @@ function handleStake(pool: FullPool) {
 }
 
 function calculateFiatValueOfShares(
-  pool: DecoratedPoolWithShares | DecoratedPool,
+  pool: PoolWithShares | Pool,
   stakedBalance: string
 ) {
   return bnum(pool.totalLiquidity)

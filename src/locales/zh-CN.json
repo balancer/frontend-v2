@@ -664,7 +664,7 @@
     "symbol":"符号",
     "tableShowsBalancerV2Pools":"该表仅显示Balancer V2池。",
     "theme":"主题",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"stETH 质押奖励 APR"
        },

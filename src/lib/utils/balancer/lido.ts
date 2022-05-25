@@ -26,6 +26,17 @@ export function isWstEthAddress(address: string): boolean {
   return address.toLowerCase() === wstEthAddress.toLowerCase();
 }
 
+export function includesWstEth(
+  addresses: string[],
+  wstEthAddress = configService.network.addresses.wstETH
+): boolean {
+  if (!wstEthAddress) return false;
+
+  return addresses
+    .map(address => address.toLowerCase())
+    .includes(wstEthAddress.toLowerCase());
+}
+
 /**
  * @notice Get amount of wstETH for a given amount of stETH
  */

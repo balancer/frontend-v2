@@ -8,42 +8,21 @@ import {
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import {
+  AnyPool,
   OnchainTokenData,
-  PoolToken,
-  PoolType
+  PoolToken
 } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-
-import PoolService from '../pool.service';
 
 interface OnchainTokenInfo extends OnchainTokenData {
   address: string;
 }
 
 export default class LiquidityConcern {
-  poolService: PoolService;
-  poolType: PoolType;
   poolTokens: OnchainTokenInfo[] | PoolToken[];
 
-  constructor(poolService: PoolService) {
-    this.poolService = poolService;
-    this.poolType = this.poolService.pool.poolType;
-    this.poolTokens = this.onchainPoolTokens || this.poolService.pool.tokens;
-  }
-
-  public get onchainPoolTokens(): OnchainTokenInfo[] | null {
-    if (this.poolService.pool.onchain) {
-      const tokenMap = this.poolService.pool.onchain.tokens;
-      const addresses = Object.keys(tokenMap);
-      const tokens = Object.values(tokenMap);
-      return tokens.map<OnchainTokenInfo>(
-        (token: OnchainTokenData, i: number) => ({
-          ...token,
-          address: addresses[i]
-        })
-      );
-    }
-    return null;
+  constructor(public pool: AnyPool, private readonly poolType = pool.poolType) {
+    this.poolTokens = this.onchainPoolTokens || this.pool.tokens;
   }
 
   public calcTotal(prices: TokenPrices, currency: FiatCurrency): string {
@@ -99,9 +78,9 @@ export default class LiquidityConcern {
 
     if (
       isStablePhantom(this.poolType) &&
-      this.poolService.pool.linearPoolTokensMap != null
+      this.pool.linearPoolTokensMap != null
     ) {
-      tokens = Object.values(this.poolService.pool.linearPoolTokensMap);
+      tokens = Object.values(this.pool.linearPoolTokensMap);
     }
 
     let sumBalance = bnum(0);
@@ -152,5 +131,20 @@ export default class LiquidityConcern {
 
   private get hasPoolTokens(): boolean {
     return Object.keys(this.poolTokens).length > 0;
+  }
+
+  private get onchainPoolTokens(): OnchainTokenInfo[] | null {
+    if (this.pool.onchain) {
+      const tokenMap = this.pool.onchain.tokens;
+      const addresses = Object.keys(tokenMap);
+      const tokens = Object.values(tokenMap);
+      return tokens.map<OnchainTokenInfo>(
+        (token: OnchainTokenData, i: number) => ({
+          ...token,
+          address: addresses[i]
+        })
+      );
+    }
+    return null;
   }
 }
