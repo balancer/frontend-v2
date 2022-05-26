@@ -3,6 +3,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import {
@@ -171,6 +172,13 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
   }
 
   return numF(aprs.total.staked.min, FNumFormats.percent);
+}
+
+/**
+ * @summary Checks if given pool is BAL 80/20 pool (veBAL)
+ */
+export function isVeBalPool(poolId: string): boolean {
+  return POOLS.IdsMap['B-80BAL-20WETH'] === poolId;
 }
 
 /**

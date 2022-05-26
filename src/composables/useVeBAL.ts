@@ -1,4 +1,4 @@
-import { differenceInSeconds } from 'date-fns';
+import { differenceInSeconds, sub } from 'date-fns';
 import { computed, ref } from 'vue';
 
 import { isKovan, isMainnet } from '@/composables/useNetwork';
@@ -6,7 +6,7 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
 import useConfig from './useConfig';
-import { getPreviousThursday, oneYearInSecs } from './useTime';
+import { getPreviousThursday, nowUTC, oneYearInSecs, toUtcTime } from './useTime';
 import useTokens from './useTokens';
 
 /**
@@ -43,6 +43,20 @@ export function expectedVeBal(bpt: string, lockDateStr: string): string {
     .times(lockTime)
     .div(oneYearInSecs)
     .toString();
+}
+
+export function getLastEpoch(): Date {
+  const now = nowUTC();
+
+  let daysSinceThursday = now.getDay() - 4;
+  if (daysSinceThursday < 0) daysSinceThursday += 7;
+
+  return sub(now, {
+    days: daysSinceThursday,
+    hours: now.getHours(),
+    minutes: now.getMinutes(),
+    seconds: now.getSeconds()
+  });
 }
 
 export default function useVeBal() {

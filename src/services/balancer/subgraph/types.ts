@@ -86,6 +86,7 @@ export interface PoolAPRs {
     };
     rewards: string;
   };
+  additional: Record<string, string>;
 }
 
 export interface OnchainTokenData {

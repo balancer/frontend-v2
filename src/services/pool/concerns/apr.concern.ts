@@ -1,18 +1,24 @@
-import { isStablePhantom } from '@/composables/usePool';
+import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
+import { getPreviousThursday } from '@/composables/useTime';
+import { getLastEpoch } from '@/composables/useVeBAL';
 import { FiatCurrency } from '@/constants/currency';
-import { bnSum, bnum } from '@/lib/utils';
+import { POOLS } from '@/constants/pools';
+import { TOKENS } from '@/constants/tokens';
+import { bnSum, bnum, getAddressFromPoolId } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
+import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
-
+import { getAddress } from '@ethersproject/address';
 export class AprConcern {
   constructor(
     public pool: Pool,
     public readonly lido = lidoService,
-    public readonly aave = aaveService
+    public readonly aave = aaveService,
+    public readonly feeDistributorContract = feeDistributor
   ) {}
 
   public async calc(
@@ -24,12 +30,21 @@ export class AprConcern {
     stakingRewardApr = '0'
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
+
     const yieldAPR = await this.calcYieldAPR(
       prices,
       currency,
       protocolFeePercentage
     );
-    const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();
+
+    const additionalAPRs = await this.calcAdditionalAPR();
+
+    const unstakedTotalAPR = bnSum([
+      swapFeeAPR,
+      yieldAPR.total,
+      ...Object.values(additionalAPRs)
+    ]).toString();
+
     const aprGivenBoost = (boost = '1') =>
       this.calcAprGivenBoost(
         unstakedTotalAPR,
@@ -37,6 +52,7 @@ export class AprConcern {
         stakingRewardApr,
         boost
       );
+
     const stakedAprRange = this.calcStakedAprRange(
       unstakedTotalAPR,
       stakingBalApr,
@@ -56,7 +72,8 @@ export class AprConcern {
       staking: {
         bal: stakingBalApr,
         rewards: stakingRewardApr
-      }
+      },
+      additional: additionalAPRs
     };
   }
 
@@ -118,9 +135,8 @@ export class AprConcern {
   }
 
   /**
-   * @description Fetch additional APRs not covered by pool swap fees and
-   * liquidity minning rewards. These APRs may require 3rd party
-   * API requests.
+   * @description Calculate APRs coming from underlying yield bearing tokens
+   * such as Aave tokens.
    * @returns total yield APR and breakdown of total by pool token.
    */
   private async calcYieldAPR(
@@ -173,5 +189,27 @@ export class AprConcern {
       total,
       breakdown
     };
+  }
+
+  private async calcAdditionalAPR(): Promise<Record<string, string>> {
+    const aprs = {};
+    if (isVeBalPool(this.pool.id) && POOLS.IdsMap.bbAaveUSD) {
+      const bbAUSDAddress = getAddressFromPoolId(POOLS.IdsMap.bbAaveUSD);
+      const balAddress = getAddress(TOKENS.AddressMap['1'].BAL);
+
+      const lastEpoch = new Date(getLastEpoch().getTime() - 1);
+      const _lastEpoch = getPreviousThursday(lastEpoch);
+      console.log(lastEpoch, _lastEpoch);
+      console.log('lastEpoch.getTime()', _lastEpoch.getTime())
+
+      const amount = await feeDistributor.getTokensDistributedInWeek(
+        balAddress,
+        _lastEpoch.getTime() / 1000
+      );
+
+      console.log('BAL amouiy', amount);
+      aprs['veBalApr'] = '0.1';
+    }
+    return aprs;
   }
 }

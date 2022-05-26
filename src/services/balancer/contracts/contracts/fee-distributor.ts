@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { zipObject } from 'lodash';
 
 import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
@@ -7,6 +7,8 @@ import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';
 import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { web3Service } from '@/services/web3/web3.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { formatUnits } from '@ethersproject/units';
 
 export class FeeDistributor {
   public claimableTokens: string[] = [
@@ -19,8 +21,17 @@ export class FeeDistributor {
     private readonly staticAbi = FeeDistributorStaticABI,
     private readonly config = configService,
     private readonly web3 = web3Service,
-    public readonly address = config.network.addresses.feeDistributor
+    public readonly address = config.network.addresses.feeDistributor,
+    private readonly provider = rpcProviderService.jsonProvider
   ) {}
+
+  /**
+   * @summary Instantiates a contract instance for the FeeDistributor.
+   * @returns Ethers Contract instance
+   */
+  public async getInstance(): Promise<Contract> {
+    return new Contract(this.address, this.abi, this.provider);
+  }
 
   /**
    * @summary Get claimable protocol fee reward balances
@@ -66,6 +77,19 @@ export class FeeDistributor {
       'claimToken',
       [userAddress, tokenAddress]
     );
+  }
+
+  /**
+   * @summary 
+   */
+  public async getTokensDistributedInWeek(
+    token: string,
+    timestamp: number
+  ): Promise<string> {
+    const instance = await this.getInstance();
+    console.log('instance', instance);
+    const amount = await instance.getTokensDistributedInWeek(token, timestamp);
+    return formatUnits(amount, 18);
   }
 }
 

@@ -46,7 +46,12 @@ export function toUtcTime(date: Date) {
   );
 }
 
-export function getPreviousThursday(date: Date): Date {
+export function nowUTC(): Date {
+  const nowTimestamp = toUtcTime(new Date());
+  return new Date(nowTimestamp);
+}
+
+export function getPreviousThursday(date: Date = new Date()): Date {
   let daysSinceThursday = date.getDay() - 4;
   if (daysSinceThursday < 0) daysSinceThursday += 7;
 
