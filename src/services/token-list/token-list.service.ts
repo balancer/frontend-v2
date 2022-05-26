@@ -57,21 +57,21 @@ export default class TokenListService {
   }
 
   /**
-   * Fetch all token list json and return mapped to URI
+   * Fetch all token list json and return mapped to name
    */
-  async getAll(uris: string[] = this.uris.All): Promise<TokenListMap> {
-    const allFetchFns = uris.map(uri => this.get(uri));
-    const lists = await Promise.all(
-      allFetchFns.map(fetchList => fetchList.catch(e => e))
-    );
-    const listsWithKey = lists.map((list, i) => [uris[i], list]);
-    const validLists = listsWithKey.filter(list => !(list[1] instanceof Error));
-    if (validLists.length === 0) {
-      throw new Error('Failed to load any TokenLists');
-    } else if (lists[0] instanceof Error) {
-      throw new Error('Failed to load default TokenList');
+  public get all(): TokenListMap {
+    const numExternalLists = TOKEN_LIST_MAP[this.appNetworkKey].External.length;
+    const lists = {
+      'balancer.vetted': require('../../../public/tokens/Balancer.Vetted.json'),
+      'balancer.default': require('../../../public/tokens/Balancer.Default.json')
+    };
+    console.log('nuim', numExternalLists)
+    for (let i = 0; i < numExternalLists; i++) {
+      lists[
+        `external-${i}`
+      ] = require(`../../../public/tokens/External-${i}.json`);
     }
-    return Object.fromEntries(validLists);
+    return lists;
   }
 
   async get(uri: string): Promise<TokenList> {

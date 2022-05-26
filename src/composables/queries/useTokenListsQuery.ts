@@ -25,8 +25,10 @@ export default function useTokenListsQuery(
   const queryKey = reactive(QUERY_KEYS.TokenLists.All(networkId));
 
   const queryFn = async () => {
-    console.log('Fetching tokenLists');
-    return await tokenListService.getAll();
+    console.log('Retrieving tokenLists');
+    const lol = tokenListService.all;
+    console.log('lol', lol);
+    return lol;
   };
 
   const queryOptions = reactive({

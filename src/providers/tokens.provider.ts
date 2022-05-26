@@ -249,7 +249,7 @@ export default {
      * Create token map from a token list tokens array.
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
-      const balancerTokenList = require('../../public/tokens/balancer.json');
+      const balancerTokenList = require('../../public/tokens/Balancer.Vetted.json');
       const tokensMap = {};
       const tokens = [...tokenLists, balancerTokenList]
         .map(list => list.tokens)
