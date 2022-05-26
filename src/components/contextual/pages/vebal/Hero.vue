@@ -32,7 +32,7 @@ function navigateToGetVeBAL() {
 </script>
 
 <template>
-  <div class="w-full bg-gray-850 hero-container">
+  <div class="w-full bg-black hero-container">
     <div class="hero-content">
       <div
         class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
