@@ -185,13 +185,14 @@ export default class Stable {
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): OldBigNumber {
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = BigNumber.from(this.adjustAmp(amp).toString());
-    const denormAmounts = this.calc.denormAmounts(
-      tokenAmounts,
-      this.calc.poolTokenDecimals
+    // These amounts need to take priceRate into consideration
+    const denormAmounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
+      this.scaleInput(tokenAmounts[i], priceRate).toString()
     );
 
     // _bptForTokensZeroPriceImpact is the only stable pool function
     // that requires balances be scaled by the token decimals and not 18
+    // scaledBalances already use priceRate
     const balances = this.scaledBalances.map((balance, i) => {
       const normalizedBalance = formatUnits(balance.toString(), 18);
       const denormBalance = parseUnits(
