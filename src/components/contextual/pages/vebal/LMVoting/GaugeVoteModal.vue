@@ -75,9 +75,7 @@ const voteState = reactive<TransactionActionState>({
  */
 const voteDisabled = computed((): boolean => {
   if (isVeBalGauge.value) {
-    return (
-      (!!voteWarning.value && isCriticalWarning.value) || !hasEnoughVotes.value
-    );
+    return (!!voteWarning.value && isError.value) || !hasEnoughVotes.value;
   }
 
   return !!voteWarning.value || !hasEnoughVotes.value;
@@ -188,11 +186,12 @@ const voteWarning = computed((): {
 });
 
 // Some warnings should not block voting
-const isCriticalWarning = computed(
+const isError = computed(
   (): boolean => voteWarning.value !== veBalVoteOverLimitWarning.value
 );
 
 const voteError = computed(() => {
+  if (isError.value) return voteWarning.value;
   if (voteState.error) return voteState.error;
   return null;
 });
@@ -213,7 +212,9 @@ const unallocatedVotesFormatted = computed((): string =>
 );
 
 const unallocatedVotesClass = computed(() => {
-  return hasEnoughVotes.value ? ['text-gray-500'] : ['text-red-600'];
+  return hasEnoughVotes.value
+    ? ['text-gray-500 dark:text-gray-400']
+    : ['text-red-600'];
 });
 
 const remainingVotes = computed(() => {
@@ -359,11 +360,19 @@ onMounted(() => {
         </ul>
       </div>
       <BalAlert
-        v-if="voteWarning"
+        v-if="voteWarning && !isError"
         type="warning"
         :title="voteWarning.title"
         :description="voteWarning.description"
         class="w-full rounded mb-4"
+      />
+      <BalAlert
+        v-if="voteError"
+        type="error"
+        :title="voteError.title"
+        :description="voteError.description"
+        block
+        class="mt-2 mb-4"
       />
 
       <div
@@ -423,14 +432,6 @@ onMounted(() => {
         <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
           {{ remainingVotes }}
         </div>
-        <BalAlert
-          v-if="voteError"
-          type="error"
-          :title="voteError.title"
-          :description="voteError.description"
-          block
-          class="mt-2"
-        />
         <div class="mt-4">
           <template v-if="voteState.receipt">
             <ConfirmationIndicator
