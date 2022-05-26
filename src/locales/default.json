@@ -772,7 +772,8 @@
                     },
                     "noVeBal": {
                         "title": "You need some veBAL to vote on gauges",
-                        "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool."
+                        "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.",
+                        "inputHintText": "You can't vote since you have no veBAL"
                     },
                     "veBalLockTooShort": {
                         "title": "veBAL not locked for 7 days.",

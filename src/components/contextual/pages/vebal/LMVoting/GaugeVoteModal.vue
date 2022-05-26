@@ -415,6 +415,7 @@ onMounted(() => {
           spellcheck="false"
           step="any"
           v-model="voteWeight"
+          placeholder="0"
           validateOn="input"
           :rules="inputRules"
           :disabled="voteDisabled || transactionInProgress || voteState.receipt"
@@ -429,9 +430,18 @@ onMounted(() => {
             </div>
           </template>
         </BalTextInput>
-        <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
+        <div
+          v-if="isError"
+          class="mt-2 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{
+            t('veBAL.liquidityMining.popover.warnings.noVeBal.inputHintText')
+          }}
+        </div>
+        <div v-else :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
           {{ remainingVotes }}
         </div>
+
         <div class="mt-4">
           <template v-if="voteState.receipt">
             <ConfirmationIndicator
@@ -476,5 +486,9 @@ onMounted(() => {
 
 .vote-form :deep(.input) {
   @apply px-3 h-12;
+}
+
+.vote-form :deep(.input[disabled]) {
+  @apply cursor-not-allowed bg-gray-100 dark:bg-gray-800 rounded-l-lg;
 }
 </style>
