@@ -20,7 +20,6 @@ import useConfig from '@/composables/useConfig';
 import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
-import { TOKENS } from '@/constants/tokens';
 import { bnum, forChange } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
@@ -437,19 +436,17 @@ export default {
     }
 
     /**
-     * CALLBACKS
+     * LIFECYCLE
      */
     onBeforeMount(async () => {
       const tokensToInject = compact([
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
-        configService.network.addresses.veBAL,
-        TOKENS.Addresses.bbaUSD
+        configService.network.addresses.veBAL
       ]);
 
       await forChange(loadingTokenLists, false);
       await injectTokens(tokensToInject);
-      // TODO Inject approx bbausd price
       state.loading = false;
     });
 
