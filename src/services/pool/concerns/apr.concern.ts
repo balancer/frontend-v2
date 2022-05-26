@@ -10,10 +10,12 @@ import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
+import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
+
 export class AprConcern {
   constructor(
     public pool: Pool,
@@ -220,7 +222,7 @@ export class AprConcern {
       ]);
 
       const balPrice = prices[balAddress];
-      const bbaUSDPrice = prices[bbAUSDAddress];
+      const bbaUSDPrice = bnum(await bbAUSDToken.getRate()).toNumber();
       console.log('prices', balPrice, bbaUSDPrice);
 
       console.log('Amounts', balAmount, bbAUSDAmount);
