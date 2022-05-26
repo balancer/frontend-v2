@@ -192,7 +192,9 @@ export class AprConcern {
     };
   }
 
-  private async calcAdditionalAPR(prices: TokenPrices): Promise<Record<string, string>> {
+  private async calcAdditionalAPR(
+    prices: TokenPrices
+  ): Promise<Record<string, string>> {
     const aprs = {};
     if (
       isVeBalPool(this.pool.id) &&
@@ -219,7 +221,7 @@ export class AprConcern {
 
       const balPrice = prices[balAddress];
       const bbaUSDPrice = prices[bbAUSDAddress];
-      console.log('prices', balPrice, bbaUSDPrice)
+      console.log('prices', balPrice, bbaUSDPrice);
 
       console.log('Amounts', balAmount, bbAUSDAmount);
       aprs['veBalApr'] = '0.1';

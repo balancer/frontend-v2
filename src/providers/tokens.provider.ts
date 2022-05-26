@@ -19,7 +19,9 @@ import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useConfig from '@/composables/useConfig';
 import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
+import { POOLS } from '@/constants/pools';
 import symbolKeys from '@/constants/symbol.keys';
+import { TOKENS } from '@/constants/tokens';
 import { bnum, forChange, getAddressFromPoolId } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
@@ -32,8 +34,6 @@ import {
   TokenInfoMap,
   TokenList
 } from '@/types/TokenList';
-import { POOLS } from '@/constants/pools';
-import { TOKENS } from '@/constants/tokens';
 
 /**
  * TYPES
@@ -200,7 +200,7 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'),  {
+    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
       keepPreviousData: true
     });
 
