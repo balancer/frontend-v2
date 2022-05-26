@@ -8,6 +8,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/balancer/subgraph/types';
 import { hasStakingRewards } from '@/services/staking/utils';
 
+import AdditionalBreakdown from './components/AdditionalBreakdown.vue';
 import StakingBreakdown from './components/StakingBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
 
@@ -87,6 +88,9 @@ const totalLabel = computed((): string => {
 
         <!-- STAKING APR BREAKDOWN -->
         <StakingBreakdown :pool="pool" />
+
+        <!-- ADDITIONAL APR BREAKDOWN -->
+        <AdditionalBreakdown :aprs="pool.apr?.additional || {}" />
       </div>
     </div>
   </BalTooltip>
