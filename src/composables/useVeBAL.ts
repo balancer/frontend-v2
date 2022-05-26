@@ -6,7 +6,12 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
 import useConfig from './useConfig';
-import { getPreviousThursday, nowUTC, oneYearInSecs, toUtcTime } from './useTime';
+import {
+  getPreviousThursday,
+  nowUTC,
+  oneYearInSecs,
+  toUtcTime
+} from './useTime';
 import useTokens from './useTokens';
 
 /**

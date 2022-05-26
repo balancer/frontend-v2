@@ -1,14 +1,14 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { formatUnits } from '@ethersproject/units';
 import { BigNumber, Contract } from 'ethers';
 import { zipObject } from 'lodash';
 
 import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
 import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';
 import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { web3Service } from '@/services/web3/web3.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { formatUnits } from '@ethersproject/units';
 
 export class FeeDistributor {
   public claimableTokens: string[] = [
@@ -80,7 +80,7 @@ export class FeeDistributor {
   }
 
   /**
-   * @summary 
+   * @summary
    */
   public async getTokensDistributedInWeek(
     token: string,

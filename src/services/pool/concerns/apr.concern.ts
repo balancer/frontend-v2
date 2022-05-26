@@ -1,3 +1,5 @@
+import { getAddress } from '@ethersproject/address';
+
 import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
 import { getPreviousThursday } from '@/composables/useTime';
 import { getLastEpoch } from '@/composables/useVeBAL';
@@ -12,7 +14,6 @@ import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-dist
 import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
-import { getAddress } from '@ethersproject/address';
 export class AprConcern {
   constructor(
     public pool: Pool,
@@ -200,7 +201,7 @@ export class AprConcern {
       const lastEpoch = new Date(getLastEpoch().getTime() - 1);
       const _lastEpoch = getPreviousThursday(lastEpoch);
       console.log(lastEpoch, _lastEpoch);
-      console.log('lastEpoch.getTime()', _lastEpoch.getTime())
+      console.log('lastEpoch.getTime()', _lastEpoch.getTime());
 
       const amount = await feeDistributor.getTokensDistributedInWeek(
         balAddress,
