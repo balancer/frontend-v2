@@ -142,5 +142,5 @@ export function getAddressFromPoolId(poolId: string) {
 }
 
 export function getBalAddress() {
-  return TOKENS.AddressMap[configService.network.chainId]?.BAL;
+  return TOKENS.Addresses.BAL;
 }

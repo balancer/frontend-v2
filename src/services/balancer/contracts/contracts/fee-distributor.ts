@@ -87,7 +87,6 @@ export class FeeDistributor {
     timestamp: number
   ): Promise<string> {
     const instance = await this.getInstance();
-    console.log('instance', instance);
     const amount = await instance.getTokensDistributedInWeek(token, timestamp);
     return formatUnits(amount, 18);
   }

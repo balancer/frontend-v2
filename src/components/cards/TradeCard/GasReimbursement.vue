@@ -70,9 +70,7 @@ export default defineComponent({
 
       const ethPrice = priceFor(appNetworkConfig.nativeAsset.address);
       const balPrice = priceFor(
-        coingeckoService.prices.addressMapOut(
-          TOKENS.AddressMap[appNetworkConfig.key].BAL
-        )
+        coingeckoService.prices.addressMapOut(TOKENS.Addresses.BAL)
       );
       const gasPrice = store.state.market.gasPrice || 0;
 

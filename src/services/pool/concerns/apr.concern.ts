@@ -1,8 +1,8 @@
 import { getAddress } from '@ethersproject/address';
 
 import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
-import { getPreviousThursday } from '@/composables/useTime';
-import { getLastEpoch } from '@/composables/useVeBAL';
+import { getPreviousThursday, toUnixTimestamp } from '@/composables/useTime';
+import { getPreviousEpoch } from '@/composables/useVeBAL';
 import { FiatCurrency } from '@/constants/currency';
 import { POOLS } from '@/constants/pools';
 import { TOKENS } from '@/constants/tokens';
@@ -38,7 +38,7 @@ export class AprConcern {
       protocolFeePercentage
     );
 
-    const additionalAPRs = await this.calcAdditionalAPR();
+    const additionalAPRs = await this.calcAdditionalAPR(prices);
 
     const unstakedTotalAPR = bnSum([
       swapFeeAPR,
@@ -192,23 +192,36 @@ export class AprConcern {
     };
   }
 
-  private async calcAdditionalAPR(): Promise<Record<string, string>> {
+  private async calcAdditionalAPR(prices: TokenPrices): Promise<Record<string, string>> {
     const aprs = {};
-    if (isVeBalPool(this.pool.id) && POOLS.IdsMap.bbAaveUSD) {
-      const bbAUSDAddress = getAddressFromPoolId(POOLS.IdsMap.bbAaveUSD);
-      const balAddress = getAddress(TOKENS.AddressMap['1'].BAL);
+    if (
+      isVeBalPool(this.pool.id) &&
+      POOLS.IdsMap.bbAaveUSD &&
+      TOKENS.Addresses.bbaUSD
+    ) {
+      const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
+      const balAddress = getAddress(TOKENS.Addresses.BAL);
+      const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD);
 
-      const lastEpoch = new Date(getLastEpoch().getTime() - 1);
-      const _lastEpoch = getPreviousThursday(lastEpoch);
-      console.log(lastEpoch, _lastEpoch);
-      console.log('lastEpoch.getTime()', _lastEpoch.getTime());
-
-      const amount = await feeDistributor.getTokensDistributedInWeek(
+      const getBalDistribution = feeDistributor.getTokensDistributedInWeek(
         balAddress,
-        _lastEpoch.getTime() / 1000
+        epochBeforeLast
+      );
+      const getbbAUSDDistribution = feeDistributor.getTokensDistributedInWeek(
+        bbAUSDAddress,
+        epochBeforeLast
       );
 
-      console.log('BAL amouiy', amount);
+      const [balAmount, bbAUSDAmount] = await Promise.all([
+        getBalDistribution,
+        getbbAUSDDistribution
+      ]);
+
+      const balPrice = prices[balAddress];
+      const bbaUSDPrice = prices[bbAUSDAddress];
+      console.log('prices', balPrice, bbaUSDPrice)
+
+      console.log('Amounts', balAmount, bbAUSDAmount);
       aprs['veBalApr'] = '0.1';
     }
     return aprs;

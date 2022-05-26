@@ -2,7 +2,7 @@ import { UseQueryOptions } from 'react-query/types';
 import { reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
 
-import useUserSettings from '@/composables/useUserSettings';
+import { FiatCurrency } from '@/constants/currency';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { TOKENS } from '@/constants/tokens';
 import { sleep } from '@/lib/utils';
@@ -27,23 +27,23 @@ const PER_PAGE = 1000;
  */
 export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
-  pricesToInject: Ref<Record<string, number>> = ref({}),
+  pricesToInject: Ref<TokenPrices> = ref({}),
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   const { networkId } = useNetwork();
   const queryKey = reactive(
     QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
   );
-  const { currency } = useUserSettings();
 
   // TODO: kill this with fire as soon as Coingecko supports wstETH
   function injectWstEth(prices: TokenPrices): TokenPrices {
     const stEthAddress = configService.network.addresses.stETH;
     const wstEthAddress = configService.network.addresses.wstETH;
     if (prices[stEthAddress]) {
-      const stETHPrice = prices[stEthAddress][currency.value] || 0;
+      const stETHPrice = prices[stEthAddress][FiatCurrency.usd] || 0;
       prices[wstEthAddress] = {
-        [currency.value]: TOKENS.Prices.ExchangeRates.wstETH.stETH * stETHPrice
+        [FiatCurrency.usd]:
+          (TOKENS?.ExchangeRates?.wstETH?.stETH || 0) * stETHPrice
       };
     }
 
@@ -52,12 +52,10 @@ export default function useTokenPricesQuery(
 
   function injectCustomTokens(
     prices: TokenPrices,
-    pricesToInject: Record<string, number>
+    pricesToInject: TokenPrices
   ): TokenPrices {
     for (const address of Object.keys(pricesToInject)) {
-      prices[address] = {
-        [currency.value]: pricesToInject[address]
-      };
+      prices[address] = pricesToInject[address];
     }
     return prices;
   }

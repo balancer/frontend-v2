@@ -20,7 +20,7 @@ import useConfig from '@/composables/useConfig';
 import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum, forChange, getAddressFromPoolId } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -32,6 +32,8 @@ import {
   TokenInfoMap,
   TokenList
 } from '@/types/TokenList';
+import { POOLS } from '@/constants/pools';
+import { TOKENS } from '@/constants/tokens';
 
 /**
  * TYPES
@@ -40,14 +42,14 @@ export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
-  injectedPrices: Record<string, number>;
+  injectedPrices: TokenPrices;
 }
 
 export interface TokensProviderResponse {
   loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
-  injectedPrices: Ref<Record<string, number>>;
+  injectedPrices: Ref<TokenPrices>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
@@ -86,7 +88,7 @@ export interface TokensProviderResponse {
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
-  injectPrices: (pricesToInject: Record<string, number>) => void;
+  injectPrices: (pricesToInject: TokenPrices) => void;
 }
 
 /**
@@ -198,7 +200,7 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
+    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'),  {
       keepPreviousData: true
     });
 
@@ -428,7 +430,7 @@ export default {
      * may have not found a valid price for provided tokens
      * @param pricesToInject A map of <address, price> to inject
      */
-    function injectPrices(pricesToInject: Record<string, number>) {
+    function injectPrices(pricesToInject: TokenPrices) {
       state.injectedPrices = {
         ...state.injectedPrices,
         ...pricesToInject
@@ -442,11 +444,13 @@ export default {
       const tokensToInject = compact([
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
-        configService.network.addresses.veBAL
+        configService.network.addresses.veBAL,
+        TOKENS.Addresses.bbaUSD
       ]);
 
       await forChange(loadingTokenLists, false);
       await injectTokens(tokensToInject);
+      // TODO Inject approx bbausd price
       state.loading = false;
     });
 

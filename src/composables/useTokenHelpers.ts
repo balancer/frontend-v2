@@ -16,9 +16,7 @@ export function useTokenHelpers() {
   /**
    * COMPUTED
    */
-  const balAddress = computed((): string =>
-    getAddress(TOKENS.AddressMap[networkId.value]?.BAL)
-  );
+  const balAddress = computed((): string => getAddress(TOKENS.Addresses.BAL));
 
   const balToken = computed((): TokenInfo => getToken(balAddress.value));
 

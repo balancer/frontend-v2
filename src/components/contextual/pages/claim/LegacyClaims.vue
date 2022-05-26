@@ -65,7 +65,7 @@ const { addTransaction } = useTransactions();
 const { priceFor, tokens } = useTokens();
 const { parseError } = useTranasactionErrors();
 
-const BALTokenAddress = getAddress(TOKENS.AddressMap[networkId.value].BAL);
+const BALTokenAddress = getAddress(TOKENS.Addresses.BAL);
 
 // COMPUTED
 const BALTokenPlaceholder = computed<ClaimableToken>(() => ({

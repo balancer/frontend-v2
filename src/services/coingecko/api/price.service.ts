@@ -195,7 +195,7 @@ export class PriceService {
             // TODO - remove this conditional once coingecko supports wstETH
             prices[Number(key) * 1000] =
               address === this.appAddresses.stETH
-                ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
+                ? price * (TOKENS?.ExchangeRates?.wstETH?.stETH || 0)
                 : price;
           }
         } else if (aggregateBy === 'day') {
@@ -206,7 +206,7 @@ export class PriceService {
               // TODO - remove this conditional once coingecko supports wstETH
               prices[dayTimestamp * 1000] =
                 address === this.appAddresses.stETH
-                  ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
+                  ? price * (TOKENS?.ExchangeRates?.wstETH?.stETH || 0)
                   : price;
               dayTimestamp += twentyFourHoursInSecs;
             }
@@ -235,7 +235,7 @@ export class PriceService {
    */
   @returnChecksum()
   public addressMapIn(address: string): string {
-    const addressMap = TOKENS.Prices.ChainMap[this.appNetwork];
+    const addressMap = TOKENS?.PriceChainMap;
     if (!addressMap) return address;
     return addressMap[address.toLowerCase()] || address;
   }
@@ -245,7 +245,7 @@ export class PriceService {
    */
   @returnChecksum()
   public addressMapOut(address: string): string {
-    const addressMap = TOKENS.Prices.ChainMap[this.appNetwork];
+    const addressMap = TOKENS?.PriceChainMap;
     if (!addressMap) return address;
     return invert(addressMap)[address.toLowerCase()] || address;
   }

@@ -50,17 +50,26 @@ export function expectedVeBal(bpt: string, lockDateStr: string): string {
     .toString();
 }
 
-export function getLastEpoch(): Date {
-  const now = nowUTC();
+/**
+ * @summary Get date object of previous epoch given number of weeks to go back.
+ * @param {number} weeksToGoBack - Number of weeks to go back for epoch, if 0
+ * gets the immediate epoch in the past. If 1, gets the week before that and so on.
+ */
+export function getPreviousEpoch(weeksToGoBack = 0): Date {
+  const now = new Date();
+  const todayAtMidnightUTC = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate()
+  );
 
   let daysSinceThursday = now.getDay() - 4;
   if (daysSinceThursday < 0) daysSinceThursday += 7;
 
-  return sub(now, {
-    days: daysSinceThursday,
-    hours: now.getHours(),
-    minutes: now.getMinutes(),
-    seconds: now.getSeconds()
+  daysSinceThursday = daysSinceThursday + weeksToGoBack * 7;
+
+  return sub(todayAtMidnightUTC, {
+    days: daysSinceThursday
   });
 }
 
