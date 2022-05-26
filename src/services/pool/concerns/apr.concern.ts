@@ -1,12 +1,12 @@
 import { getAddress } from '@ethersproject/address';
 
 import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
-import { getPreviousThursday, toUnixTimestamp } from '@/composables/useTime';
+import { toUnixTimestamp } from '@/composables/useTime';
 import { getPreviousEpoch } from '@/composables/useVeBAL';
 import { FiatCurrency } from '@/constants/currency';
 import { POOLS } from '@/constants/pools';
 import { TOKENS } from '@/constants/tokens';
-import { bnSum, bnum, getAddressFromPoolId } from '@/lib/utils';
+import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';

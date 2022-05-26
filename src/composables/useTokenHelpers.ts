@@ -4,7 +4,6 @@ import { computed } from 'vue';
 import { TOKENS } from '@/constants/tokens';
 import { TokenInfo } from '@/types/TokenList';
 
-import { networkId } from './useNetwork';
 import useTokens from './useTokens';
 
 export function useTokenHelpers() {

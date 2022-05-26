@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n';
 import BalLink from '@/components/_global/BalLink/BalLink.vue';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useEthers from '@/composables/useEthers';
-import { networkId } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { oneSecondInMs } from '@/composables/useTime';
 import useTokens from '@/composables/useTokens';
