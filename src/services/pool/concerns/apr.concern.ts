@@ -198,14 +198,10 @@ export class AprConcern {
     prices: TokenPrices
   ): Promise<Record<string, string>> {
     const aprs = {};
-    if (
-      isVeBalPool(this.pool.id) &&
-      POOLS.IdsMap.bbAaveUSD &&
-      TOKENS.Addresses.bbaUSD
-    ) {
+    if (isVeBalPool(this.pool.id)) {
       const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
       const balAddress = getAddress(TOKENS.Addresses.BAL);
-      const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD);
+      const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD as string);
 
       const feeDistributorInstance = await feeDistributor.getInstance();
       const getBalDistribution = feeDistributor.getTokensDistributedInWeek(
