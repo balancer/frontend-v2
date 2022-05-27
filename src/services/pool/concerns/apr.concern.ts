@@ -4,7 +4,6 @@ import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
 import { toUnixTimestamp } from '@/composables/useTime';
 import { getPreviousEpoch } from '@/composables/useVeBAL';
 import { FiatCurrency } from '@/constants/currency';
-import { POOLS } from '@/constants/pools';
 import { TOKENS } from '@/constants/tokens';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
@@ -40,13 +39,9 @@ export class AprConcern {
       protocolFeePercentage
     );
 
-    const additionalAPRs = await this.calcAdditionalAPR(prices);
+    const veBalAPR = await this.calcVeBalAPR(prices);
 
-    const unstakedTotalAPR = bnSum([
-      swapFeeAPR,
-      yieldAPR.total,
-      ...Object.values(additionalAPRs)
-    ]).toString();
+    const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();
 
     const aprGivenBoost = (boost = '1') =>
       this.calcAprGivenBoost(
@@ -63,6 +58,12 @@ export class AprConcern {
     );
 
     return {
+      swap: swapFeeAPR,
+      yield: yieldAPR,
+      staking: {
+        bal: stakingBalApr,
+        rewards: stakingRewardApr
+      },
       total: {
         unstaked: unstakedTotalAPR,
         staked: {
@@ -70,13 +71,8 @@ export class AprConcern {
           ...stakedAprRange
         }
       },
-      swap: swapFeeAPR,
-      yield: yieldAPR,
-      staking: {
-        bal: stakingBalApr,
-        rewards: stakingRewardApr
-      },
-      additional: additionalAPRs
+      // Conditionally add the veBAL APR attribute if this is the BAL 80/20 pool.
+      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR })
     };
   }
 
@@ -194,55 +190,49 @@ export class AprConcern {
     };
   }
 
-  private async calcAdditionalAPR(
-    prices: TokenPrices
-  ): Promise<Record<string, string>> {
-    const aprs = {};
-    if (isVeBalPool(this.pool.id)) {
-      const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
-      const balAddress = getAddress(TOKENS.Addresses.BAL);
-      const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD as string);
+  private async calcVeBalAPR(prices: TokenPrices): Promise<string> {
+    if (!isVeBalPool(this.pool.id)) return '0';
 
-      const feeDistributorInstance = await feeDistributor.getInstance();
-      const getBalDistribution = feeDistributor.getTokensDistributedInWeek(
-        balAddress,
-        epochBeforeLast,
-        feeDistributorInstance
-      );
-      const getbbAUSDDistribution = feeDistributor.getTokensDistributedInWeek(
-        bbAUSDAddress,
-        epochBeforeLast,
-        feeDistributorInstance
-      );
-      const getVeBalSupply = feeDistributor.getTotalSupply(
-        epochBeforeLast,
-        feeDistributorInstance
-      );
+    const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
+    const balAddress = getAddress(TOKENS.Addresses.BAL);
+    const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD as string);
 
-      const [balAmount, bbAUSDAmount, veBalSupply] = await Promise.all([
-        getBalDistribution,
-        getbbAUSDDistribution,
-        getVeBalSupply
-      ]);
+    const feeDistributorInstance = await feeDistributor.getInstance();
+    const getBalDistribution = feeDistributor.getTokensDistributedInWeek(
+      balAddress,
+      epochBeforeLast,
+      feeDistributorInstance
+    );
+    const getbbAUSDDistribution = feeDistributor.getTokensDistributedInWeek(
+      bbAUSDAddress,
+      epochBeforeLast,
+      feeDistributorInstance
+    );
+    const getVeBalSupply = feeDistributor.getTotalSupply(
+      epochBeforeLast,
+      feeDistributorInstance
+    );
 
-      const balPrice = prices[balAddress];
-      const bbaUSDPrice = bnum(await bbAUSDToken.getRate()).toNumber();
+    const [balAmount, bbAUSDAmount, veBalSupply] = await Promise.all([
+      getBalDistribution,
+      getbbAUSDDistribution,
+      getVeBalSupply
+    ]);
 
-      const balValue = bnum(balAmount).times(balPrice.usd);
-      const bbaUSDValue = bnum(bbAUSDAmount).times(bbaUSDPrice);
+    const balPrice = prices[balAddress];
+    const bbaUSDPrice = bnum(await bbAUSDToken.getRate()).toNumber();
 
-      const aggregateWeeklyRevenue = balValue.plus(bbaUSDValue);
+    const balValue = bnum(balAmount).times(balPrice.usd);
+    const bbaUSDValue = bnum(bbAUSDAmount).times(bbaUSDPrice);
 
-      const bptPrice = bnum(this.pool.totalLiquidity).div(
-        this.pool.totalShares
-      );
+    const aggregateWeeklyRevenue = balValue.plus(bbaUSDValue);
 
-      const apr = aggregateWeeklyRevenue
-        .times(52)
-        .div(bptPrice.times(veBalSupply));
+    const bptPrice = bnum(this.pool.totalLiquidity).div(this.pool.totalShares);
 
-      aprs['veBalApr'] = apr.toString();
-    }
-    return aprs;
+    const apr = aggregateWeeklyRevenue
+      .times(52)
+      .div(bptPrice.times(veBalSupply));
+
+    return apr.toString();
   }
 }
