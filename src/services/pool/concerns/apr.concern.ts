@@ -207,26 +207,45 @@ export class AprConcern {
       const balAddress = getAddress(TOKENS.Addresses.BAL);
       const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD);
 
+      const feeDistributorInstance = await feeDistributor.getInstance();
       const getBalDistribution = feeDistributor.getTokensDistributedInWeek(
         balAddress,
-        epochBeforeLast
+        epochBeforeLast,
+        feeDistributorInstance
       );
       const getbbAUSDDistribution = feeDistributor.getTokensDistributedInWeek(
         bbAUSDAddress,
-        epochBeforeLast
+        epochBeforeLast,
+        feeDistributorInstance
+      );
+      const getVeBalSupply = feeDistributor.getTotalSupply(
+        epochBeforeLast,
+        feeDistributorInstance
       );
 
-      const [balAmount, bbAUSDAmount] = await Promise.all([
+      const [balAmount, bbAUSDAmount, veBalSupply] = await Promise.all([
         getBalDistribution,
-        getbbAUSDDistribution
+        getbbAUSDDistribution,
+        getVeBalSupply
       ]);
 
       const balPrice = prices[balAddress];
       const bbaUSDPrice = bnum(await bbAUSDToken.getRate()).toNumber();
-      console.log('prices', balPrice, bbaUSDPrice);
 
-      console.log('Amounts', balAmount, bbAUSDAmount);
-      aprs['veBalApr'] = '0.1';
+      const balValue = bnum(balAmount).times(balPrice.usd);
+      const bbaUSDValue = bnum(bbAUSDAmount).times(bbaUSDPrice);
+
+      const aggregateWeeklyRevenue = balValue.plus(bbaUSDValue);
+
+      const bptPrice = bnum(this.pool.totalLiquidity).div(
+        this.pool.totalShares
+      );
+
+      const apr = aggregateWeeklyRevenue
+        .times(52)
+        .div(bptPrice.times(veBalSupply));
+
+      aprs['veBalApr'] = apr.toString();
     }
     return aprs;
   }

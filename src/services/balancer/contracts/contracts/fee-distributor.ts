@@ -80,14 +80,34 @@ export class FeeDistributor {
   }
 
   /**
-   * @summary
+   * @summary Get total token distribution in week.
+   * @param {string} token address to check distribution for, either bb-a-USD or BAL
+   * @param {number} timestamp unix timestamp of epoch to check, has to be exact
+   * epoch timestamp
    */
   public async getTokensDistributedInWeek(
     token: string,
-    timestamp: number
+    timestamp: number,
+    instance?: Contract
   ): Promise<string> {
-    const instance = await this.getInstance();
+    if (!instance) instance = await this.getInstance();
     const amount = await instance.getTokensDistributedInWeek(token, timestamp);
+
+    return formatUnits(amount, 18);
+  }
+
+  /**
+   * @summary Get total veBAL supply at epoch.
+   * @param {number} timestamp unix timestamp of epoch to check, has to be exact
+   * epoch timestamp
+   */
+  public async getTotalSupply(
+    timestamp: number,
+    instance?: Contract
+  ): Promise<string> {
+    if (!instance) instance = await this.getInstance();
+    const amount = await instance.getTotalSupplyAtTimestamp(timestamp);
+
     return formatUnits(amount, 18);
   }
 }
