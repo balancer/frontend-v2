@@ -165,6 +165,10 @@ export const MAINNET_POOLS: Pool[] = [
   {
     id: '0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de',
     network: Network.MAINNET
+  },
+  {
+    id: '0x85370d9e3bb111391cc89f6de344e801760461830002000000000000000001ef',
+    network: Network.MAINNET
   }
 ];
 

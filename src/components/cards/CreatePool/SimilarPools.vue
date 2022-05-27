@@ -91,7 +91,7 @@ function cancel() {
                 $t('volume24hShort')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool.dynamic.volume, FNumFormats.fiat)
+                fNum2(existingPool?.volumeSnapshot || '0', FNumFormats.fiat)
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -132,7 +132,7 @@ function cancel() {
                   $t('volume24hShort')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.dynamic.volume, FNumFormats.fiat)
+                  fNum2(pool?.volumeSnapshot || '0', FNumFormats.fiat)
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">

@@ -10,20 +10,22 @@ import {
   tail
 } from 'lodash';
 import { QueryKey } from 'react-query';
-import { computed, reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useQueries } from 'vue-query';
 
-export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
+export function queryTemplatesEmitter(
+  queryTemplates: Promise<any>[] | Promise<any>
+) {
   const emitter = new EventEmitter();
-  if (isArray(promises)) {
-    promises.map(promise =>
+  if (isArray(queryTemplates)) {
+    queryTemplates.map(promise =>
       promise.then(value => {
         emitter.emit('resolved', value);
       })
     );
     return emitter;
   }
-  promises.then(value => {
+  queryTemplates.then(value => {
     emitter.emit('resolved', value);
   });
   return emitter;
@@ -31,7 +33,7 @@ export function promisesEmitter(promises: Promise<any>[] | Promise<any>) {
 
 type QueryType = 'independent' | 'page_dependent' | 'normal';
 
-type Promises = Record<
+type queryTemplates = Record<
   string,
   {
     queryFn: (...args: any[]) => Promise<any> | Promise<any>[];
@@ -47,10 +49,13 @@ type Promises = Record<
 
 const result = ref<Record<string, any[]>>({});
 
-export default function useQueryStreams(id: string, promises: Promises) {
+export default function useQueryStreams(
+  id: string,
+  queryTemplates: queryTemplates
+) {
   const currentPage = ref(1);
   const initQuery = computed(() =>
-    Object.values(promises).find(query => query.init === true)
+    Object.values(queryTemplates).find(query => query.init === true)
   );
   if (!initQuery.value) {
     throw new Error(
@@ -67,17 +72,58 @@ export default function useQueryStreams(id: string, promises: Promises) {
     ]
   );
 
-  const successStates = ref(
-    Object.fromEntries(
-      Object.keys(promises).map(promiseKey => [promiseKey, false])
+  // success states are keyed by the query hash first, and then the id
+  // of the query. As query hashes may represent different filters etc
+  const successStates = ref({
+    [initialQueryHash.value]: Object.fromEntries(
+      Object.keys(queryTemplates).map(queryKey => [queryKey, false])
     )
-  );
+  });
 
-  const internalData = ref(
-    Object.fromEntries(
-      Object.keys(promises).map(promiseKey => [promiseKey, undefined])
+  // Same as success, internal data is keyed by the query hash first, and then the id
+  // of the query. As query hashes may represent different filters etc
+  const internalData = ref({
+    [initialQueryHash.value]: Object.fromEntries(
+      Object.keys(queryTemplates).map(queryKey => [queryKey, undefined])
     )
-  );
+  });
+
+  // when the query hash changes. e.g. when a filter is hit
+  // we need to handle it by first, creating the new success and internal
+  // data objects for that query hash. BUT we also need to persist independent
+  // data, so everything can continue to work smoothly as independent data
+  // should always be there!
+  watch(initialQueryHash, () => {
+    // first find the independent queries
+    const independentQueries = Object.keys(queryTemplates).filter(queryKey =>
+      ['independent', 'paged_independent'].includes(
+        queryTemplates[queryKey].type || ''
+      )
+    );
+    // seed the internal data
+    internalData.value[initialQueryHash.value] = Object.fromEntries(
+      Object.keys(queryTemplates).map(queryKey => {
+        let value = undefined;
+        // find the independent values
+        if (independentQueries.includes(queryKey)) {
+          const independentData = Object.values(internalData.value)[0][
+            queryKey
+          ];
+          value = independentData;
+        }
+        return [queryKey, value];
+      })
+    );
+    successStates.value[initialQueryHash.value] = Object.fromEntries(
+      Object.keys(queryTemplates).map(queryKey => {
+        let state = false;
+        if (independentQueries.includes(queryKey)) {
+          state = true;
+        }
+        return [queryKey, state];
+      })
+    );
+  });
 
   const queries: {
     queryFn: (...args: any[]) => Promise<any>;
@@ -86,20 +132,20 @@ export default function useQueryStreams(id: string, promises: Promises) {
 
   // when the initial query has changes we want to wipe everything
   // but the first page to reset pagination
-  Object.keys(promises).forEach(promiseKey => {
-    const query = promises[promiseKey];
+  Object.keys(queryTemplates).forEach(queryKey => {
+    const query = queryTemplates[queryKey];
 
     // the initial query is the base query to use for pagination purposes,
     // so it needs to be responsible for the fetching of extra paginated data
     // if there is any. to do so we need to make it refetch on page changes
     // so we have to add a dependency to the query which tracks the page
-
     const otherQueryDependency = computed(() => {
       return (query.waitFor || []).map(queryId => {
         if (queryId.includes('.')) {
-          return (internalData.value[queryId.split('.')[0]] || []).map(data =>
-            get(data, tail(queryId.split('.')).join('.'))
-          );
+          return (
+            internalData.value[initialQueryHash.value][queryId.split('.')[0]] ||
+            []
+          ).map(data => get(data, tail(queryId.split('.')).join('.')));
         }
         return internalData.value[queryId];
       });
@@ -124,7 +170,7 @@ export default function useQueryStreams(id: string, promises: Promises) {
         if (!query.streamResponses) {
           const res = await query.queryFn(
             currentPageData,
-            internalData,
+            ref(internalData.value[initialQueryHash.value]),
             currentPage,
             successStates,
             initialQueryHash
@@ -133,14 +179,14 @@ export default function useQueryStreams(id: string, promises: Promises) {
           return res;
         }
         // otherwise setup an even emitter that emits a 'resolved' event
-        // whenever a promises within a list of promises resolves, the
+        // whenever a queryTemplates within a list of queryTemplates resolves, the
         // queryFn is an async fn so we have to await it to get the correct
-        // return type even though it is a list of promises. (Otherwise it'll
+        // return type even though it is a list of queryTemplates. (Otherwise it'll
         // be a Promise<Promise[]>, we need a Promise[])
-        const emitter = promisesEmitter(
+        const emitter = queryTemplatesEmitter(
           await query.queryFn(
             currentPageData,
-            internalData,
+            ref(internalData.value[initialQueryHash.value]),
             currentPage,
             successStates
           )
@@ -153,13 +199,15 @@ export default function useQueryStreams(id: string, promises: Promises) {
           result.value[initialQueryHash.value][currentPage.value - 1] = value;
         });
       },
-      queryKey: [id, promiseKey, dependencies] as any,
+      queryKey: [id, queryKey, dependencies] as any,
       enabled: computed(
         () =>
           (query.enabled?.value ?? true) &&
-          (promises[promiseKey].waitFor || []).every(
+          (queryTemplates[queryKey].waitFor || []).every(
             otherQueryId =>
-              successStates.value[otherQueryId.split('.')[0]] === true
+              successStates.value[initialQueryHash.value][
+                otherQueryId.split('.')[0]
+              ] === true
           )
       ),
       refetchOnWindowFocus: false,
@@ -189,8 +237,11 @@ export default function useQueryStreams(id: string, promises: Promises) {
           currentPageData.value = response;
         }
       }
-      successStates.value[promiseKey] = true;
-      internalData.value[promiseKey] = response;
+      if (!internalData.value[initialQueryHash.value]) {
+        internalData.value[initialQueryHash.value] = {};
+      }
+      internalData.value[initialQueryHash.value][queryKey] = response;
+      successStates.value[initialQueryHash.value][queryKey] = true;
     };
     queries.push(reactive(template));
   });
@@ -200,16 +251,24 @@ export default function useQueryStreams(id: string, promises: Promises) {
 
   const dataStates = computed(() => {
     type DataState = {
-      [key: keyof typeof promises]: 'idle' | 'error' | 'loading' | 'success';
+      [key: keyof typeof queryTemplates]:
+        | 'idle'
+        | 'error'
+        | 'loading'
+        | 'success';
     };
     const statesPerPage: [number, DataState][] = [];
 
     for (let i = 0; i < currentPage.value; i++) {
       const states: {
-        [key: keyof typeof promises]: 'idle' | 'error' | 'loading' | 'success';
+        [key: keyof typeof queryTemplates]:
+          | 'idle'
+          | 'error'
+          | 'loading'
+          | 'success';
       } = {};
-      Object.keys(promises).forEach((promiseKey, j) => {
-        states[promiseKey] = responses[j].status;
+      Object.keys(queryTemplates).forEach((queryKey, j) => {
+        states[queryKey] = responses[j].status;
         statesPerPage.push([i, states]);
       });
     }
@@ -247,14 +306,19 @@ export default function useQueryStreams(id: string, promises: Promises) {
 
   function loadMore() {
     currentPage.value += 1;
-    successStates.value = mapValues(successStates.value, (state, key) => {
-      if (
-        ['independent', 'paged_independent'].includes(promises[key].type || '')
-      ) {
-        return true;
+    successStates.value[initialQueryHash.value] = mapValues(
+      successStates.value[initialQueryHash.value],
+      (state, key) => {
+        if (
+          ['independent', 'paged_independent'].includes(
+            queryTemplates[key].type || ''
+          )
+        ) {
+          return true;
+        }
+        return false;
       }
-      return false;
-    });
+    );
   }
 
   return {
@@ -263,7 +327,6 @@ export default function useQueryStreams(id: string, promises: Promises) {
     result: _result,
     currentPage,
     isLoadingMore,
-    successStates,
     loadMore
   };
 }

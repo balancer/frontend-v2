@@ -1,6 +1,6 @@
-import { DecoratedPool, PoolType } from '../../../types';
+import { Pool, PoolType } from '@/services/balancer/subgraph/types';
 
-const decoratedPool: DecoratedPool = {
+export const PoolMock: Pool = {
   onchain: {
     tokens: {
       '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7': {
@@ -60,20 +60,5 @@ const decoratedPool: DecoratedPool = {
   tokenAddresses: [
     '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-  ],
-  miningTotalLiquidity: '2300',
-  dynamic: {
-    period: '24h',
-    volume: '44069.1679612192361059063129301',
-    fees: '163.0559214565111735918533578413',
-    apr: {
-      pool: '0.03875806812649627',
-      thirdParty: '0',
-      thirdPartyBreakdown: {},
-      total: '0.03875806812649627'
-    },
-    isNewPool: false
-  }
+  ]
 };
-
-export default decoratedPool;

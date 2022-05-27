@@ -11,9 +11,9 @@ import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import {
-  DecoratedPoolWithShares,
   LinearPool,
-  Pool
+  Pool,
+  PoolWithShares
 } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -25,7 +25,7 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 
 type UserPoolsQueryResponse = {
-  pools: DecoratedPoolWithShares[];
+  pools: PoolWithShares[];
   totalInvestedAmount: string;
   tokens: string[];
 };
@@ -239,13 +239,6 @@ export default function useUserPoolsQuery(
 
           decoratedPools[i].onchain = onchainData;
           decoratedPools[i].totalLiquidity = totalLiquidity.toString();
-
-          const miningTotalLiquidity = balancerSubgraphService.pools.removeExcludedAddressesFromTotalLiquidity(
-            decoratedPools[i],
-            decoratedPools[i].totalLiquidity
-          );
-
-          decoratedPools[i].miningTotalLiquidity = miningTotalLiquidity;
         }
       }
     }

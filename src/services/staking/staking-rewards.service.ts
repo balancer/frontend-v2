@@ -26,10 +26,9 @@ import {
   getAprRange
 } from './utils';
 
-export type PoolAPRs = Record<
-  string,
-  { BAL: { min: string; max: string }; Rewards: string }
->;
+export type GaugeBalApr = { min: string; max: string };
+export type GaugeBalAprs = Record<string, GaugeBalApr>;
+export type GaugeRewardTokenAprs = Record<string, string>;
 
 export class StakingRewardsService {
   private gaugeController = new GaugeController(
@@ -98,7 +97,7 @@ export class StakingRewardsService {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
     pools: Pool[];
-  }) {
+  }): Promise<GaugeBalAprs> {
     if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = getBalAddress();
@@ -125,9 +124,7 @@ export class StakingRewardsService {
       if (isNil(inflationRate)) return nilApr;
 
       const poolService = new PoolService(pool);
-      const bptPrice = bnum(
-        poolService.calcTotalLiquidity(prices, FiatCurrency.usd)
-      ).div(pool.totalShares);
+      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
       if (!balAddress) return nilApr;
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
@@ -135,7 +132,7 @@ export class StakingRewardsService {
 
       const gaugeBALApr = calculateGaugeApr({
         gaugeAddress: getAddress(gauge.id),
-        bptPrice: bptPrice.toString(),
+        bptPrice: poolService.bptPrice,
         balPrice: String(balPrice),
         // undefined inflation rate is guarded above
         inflationRate: inflationRate as string,
@@ -161,7 +158,7 @@ export class StakingRewardsService {
     gauges: SubgraphGauge[];
     pools: Pool[];
     tokens: TokenInfoMap;
-  }) {
+  }): Promise<GaugeRewardTokenAprs> {
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses
@@ -175,9 +172,7 @@ export class StakingRewardsService {
       const pool = pools.find(pool => pool.id === poolId);
       if (!pool) return [poolId, '0'];
       const poolService = new PoolService(pool);
-      const bptPrice = bnum(
-        poolService.calcTotalLiquidity(prices, FiatCurrency.usd)
-      ).div(pool.totalShares);
+      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
       const rewardTokens = rewardTokensMeta[getAddress(gauge.id)];
@@ -185,7 +180,7 @@ export class StakingRewardsService {
         boost: '1',
         totalSupply,
         rewardTokensMeta: rewardTokens,
-        bptPrice,
+        bptPrice: bnum(poolService.bptPrice),
         prices,
         tokens
       });

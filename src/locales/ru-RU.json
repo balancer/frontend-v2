@@ -664,7 +664,7 @@
     "symbol":"Символ",
     "tableShowsBalancerV2Pools":"В этой таблице показаны только пулы Balancer V2.",
     "theme":"Тема",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"STETH вознаграждения за стекинг в годовом исчислении"
        },

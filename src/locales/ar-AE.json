@@ -664,7 +664,7 @@
     "symbol":"رمز",
     "tableShowsBalancerV2Pools":"يعرض هذا الجدول فقط تجمعات Balancer V2.",
     "theme":"سمة",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"المكافآت staking staking أبريل"
        },
