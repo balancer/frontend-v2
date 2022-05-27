@@ -72,11 +72,6 @@ export class PriceService {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
 
-      // TODO - remove once wsteth is supported
-      addresses = addresses.filter(
-        address => address !== this.appAddresses.wstETH
-      );
-
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
