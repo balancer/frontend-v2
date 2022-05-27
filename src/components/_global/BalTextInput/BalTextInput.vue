@@ -82,6 +82,17 @@ const textInput = ref<HTMLInputElement>();
 const attrs = useAttrs();
 const { errors, isInvalid, validate } = useInputValidation(props, emit);
 const {
+  isActive,
+  isHover,
+  onInput,
+  onKeydown,
+  onBlur,
+  onClick,
+  onFocus,
+  onMouseOver,
+  onMouseLeave
+} = useInputEvents(props, emit, validate);
+const {
   parentClasses,
   inputContainerClasses,
   inputGroupClasses,
@@ -91,8 +102,7 @@ const {
   prependClasses,
   appendClasses,
   borderRadiusClasses
-} = useInputStyles(props, isInvalid, attrs);
-const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
+} = useInputStyles(props, isInvalid, isActive, isHover, attrs);
 
 /**
  * COMPUTED
@@ -113,6 +123,8 @@ onMounted(() => {
   <div :class="['bal-text-input', parentClasses, borderRadiusClasses]">
     <div
       :class="['input-container', inputContainerClasses, borderRadiusClasses]"
+      @mouseover="onMouseOver"
+      @mouseleave="onMouseLeave"
     >
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
@@ -135,6 +147,8 @@ onMounted(() => {
           @blur="onBlur"
           @input="onInput"
           @keydown="onKeydown"
+          @click="onClick"
+          @focus="onFocus"
           :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
@@ -153,7 +167,7 @@ onMounted(() => {
 
 <style scoped>
 .input-container {
-  @apply bg-white dark:bg-gray-800;
+  @apply bg-white dark:bg-gray-800 border transition-colors;
 }
 
 .input-group {

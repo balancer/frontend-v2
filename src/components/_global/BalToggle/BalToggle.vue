@@ -1,5 +1,5 @@
 <template>
-  <div class="bal-toggle" @click="onClick">
+  <div class="bal-toggle group" @click="onClick">
     <input
       type="checkbox"
       :name="name"
@@ -52,19 +52,33 @@ export default defineComponent({
 
 <style>
 .bal-toggle {
-  @apply relative inline-block w-10 align-middle select-none transition duration-200 ease-in;
+  @apply relative inline-block w-10 align-middle select-none transition duration-200 ease-out;
 }
 .bal-toggle-checkbox {
-  @apply absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 dark:border-gray-900 appearance-none cursor-pointer;
+  @apply absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 group-hover:border-gray-300 dark:border-gray-700 dark:group-hover:border-gray-900 appearance-none cursor-pointer transition-colors;
 }
 .bal-toggle-track {
-  @apply block overflow-hidden h-6 rounded-full bg-gray-200 dark:bg-gray-900 bg-none cursor-pointer;
+  @apply block overflow-hidden h-6 rounded-full bg-gray-200 group-hover:bg-gray-300 dark:bg-gray-700 dark:group-hover:bg-gray-900 bg-none cursor-pointer transition-colors;
 }
 .bal-toggle-checkbox:checked {
-  @apply right-0 border-green-400;
+  @apply right-0 border-green-400 group-hover:border-green-500 dark:border-green-500 dark:group-hover:border-green-400 transition-colors;
 }
+
+.bal-toggle-track[for='tradeGasless'] {
+  @apply h-8;
+}
+.bal-toggle-checkbox[name='tradeGasless'] {
+  @apply w-8 h-8 flex items-center justify-center;
+}
+.bal-toggle-checkbox[name='tradeGasless']:before {
+  content: '⛽';
+}
+.bal-toggle-checkbox[name='tradeGasless']:checked:before {
+  content: '✍️';
+}
+
 .bal-toggle-checkbox:checked + .bal-toggle-track {
-  @apply bg-green-400;
+  @apply bg-green-400 group-hover:bg-green-500 dark:bg-green-500 dark:group-hover:bg-green-400;
 }
 .bal-toggle-checkbox[disabled] {
   @apply border-gray-300 dark:border-gray-700 cursor-not-allowed;
