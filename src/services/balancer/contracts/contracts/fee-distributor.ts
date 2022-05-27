@@ -29,7 +29,7 @@ export class FeeDistributor {
    * @summary Instantiates a contract instance for the FeeDistributor.
    * @returns Ethers Contract instance
    */
-  public async getInstance(): Promise<Contract> {
+  public getInstance(): Contract {
     return new Contract(this.address, this.abi, this.provider);
   }
 
@@ -90,7 +90,7 @@ export class FeeDistributor {
     timestamp: number,
     instance?: Contract
   ): Promise<string> {
-    if (!instance) instance = await this.getInstance();
+    if (!instance) instance = this.getInstance();
     const amount = await instance.getTokensDistributedInWeek(token, timestamp);
 
     return formatUnits(amount, 18);
@@ -105,7 +105,7 @@ export class FeeDistributor {
     timestamp: number,
     instance?: Contract
   ): Promise<string> {
-    if (!instance) instance = await this.getInstance();
+    if (!instance) instance = this.getInstance();
     const amount = await instance.getTotalSupplyAtTimestamp(timestamp);
 
     return formatUnits(amount, 18);

@@ -16,7 +16,7 @@ export class BBAUSDToken {
    * @summary Instantiates a contract instance for the bb-a-USD token.
    * @returns Ethers Contract instance
    */
-  public async getInstance(): Promise<Contract> {
+  public getInstance(): Contract {
     if (!this.address) throw new Error('No bb-a-USD address');
     return new Contract(this.address, this.abi, this.provider);
   }
@@ -27,7 +27,7 @@ export class BBAUSDToken {
    * getVirtualSupply` instead of `totalSupply`.
    */
   public async getRate(): Promise<string> {
-    const instance = await this.getInstance();
+    const instance = this.getInstance();
     const rate = await instance.getRate();
 
     return formatUnits(rate, 18);

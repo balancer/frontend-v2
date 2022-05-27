@@ -42,22 +42,15 @@ export class VeBalAprCalc {
   private async getEpochData() {
     const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
 
-    const feeDistributorInstance = await this._feeDistributor.getInstance();
-
     const getBalDistribution = this._feeDistributor.getTokensDistributedInWeek(
       this.balAddress,
-      epochBeforeLast,
-      feeDistributorInstance
+      epochBeforeLast
     );
     const getbbAUSDDistribution = this._feeDistributor.getTokensDistributedInWeek(
       this.bbAUSDAddress,
-      epochBeforeLast,
-      feeDistributorInstance
+      epochBeforeLast
     );
-    const getVeBalSupply = this._feeDistributor.getTotalSupply(
-      epochBeforeLast,
-      feeDistributorInstance
-    );
+    const getVeBalSupply = this._feeDistributor.getTotalSupply(epochBeforeLast);
 
     const [balAmount, bbAUSDAmount, veBalSupply] = await Promise.all([
       getBalDistribution,
