@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import BalBreakdown from '@/components/_global/BalBreakdown/BalBreakdown.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { totalAprLabel } from '@/composables/usePool';
+import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/balancer/subgraph/types';
@@ -10,6 +11,7 @@ import { hasStakingRewards } from '@/services/staking/utils';
 
 import AdditionalBreakdown from './components/AdditionalBreakdown.vue';
 import StakingBreakdown from './components/StakingBreakdown.vue';
+import VeBalBreakdown from './components/VeBalBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
 
 /**
@@ -78,6 +80,12 @@ const totalLabel = computed((): string => {
           <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
 
+        <!-- VeBal APR -->
+        <VeBalBreakdown
+          v-if="isVeBalPool(pool.id)"
+          :apr="pool?.apr?.veBal || '0'"
+        />
+
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
           v-if="hasYieldAPR"
@@ -88,9 +96,6 @@ const totalLabel = computed((): string => {
 
         <!-- STAKING APR BREAKDOWN -->
         <StakingBreakdown :pool="pool" />
-
-        <!-- ADDITIONAL APR BREAKDOWN -->
-        <AdditionalBreakdown :aprs="pool.apr?.additional || {}" />
       </div>
     </div>
   </BalTooltip>

@@ -169,6 +169,13 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
     const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
     const maxAPR = numF(aprs.total.staked.max, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
+  } else if (aprs.veBal) {
+    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
+    const maxValue = bnum(aprs.total.staked.min)
+      .plus(aprs.veBal)
+      .toString();
+    const maxAPR = numF(maxValue, FNumFormats.percent);
+    return `${minAPR} - ${maxAPR}`;
   }
 
   return numF(aprs.total.staked.min, FNumFormats.percent);
