@@ -2,13 +2,10 @@ import { UseQueryOptions } from 'react-query/types';
 import { reactive, Ref, ref } from 'vue';
 import { useQuery } from 'vue-query';
 
-import { FiatCurrency } from '@/constants/currency';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { TOKENS } from '@/constants/tokens';
 import { sleep } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
-import { configService } from '@/services/config/config.service';
 
 import useNetwork from '../useNetwork';
 
