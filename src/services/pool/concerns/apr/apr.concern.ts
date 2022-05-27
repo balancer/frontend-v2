@@ -1,26 +1,21 @@
-import { getAddress } from '@ethersproject/address';
-
 import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
-import { toUnixTimestamp } from '@/composables/useTime';
-import { getPreviousEpoch } from '@/composables/useVeBAL';
 import { FiatCurrency } from '@/constants/currency';
-import { TOKENS } from '@/constants/tokens';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
-import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
-import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
 
+import { veBalAprCalc } from './calcs/vebal-apr.calc';
+
 export class AprConcern {
   constructor(
     public pool: Pool,
-    public readonly lido = lidoService,
-    public readonly aave = aaveService,
-    public readonly feeDistributorContract = feeDistributor
+    private readonly lido = lidoService,
+    private readonly aave = aaveService,
+    private readonly _veBalAprCalc = veBalAprCalc
   ) {}
 
   public async calc(
@@ -193,46 +188,10 @@ export class AprConcern {
   private async calcVeBalAPR(prices: TokenPrices): Promise<string> {
     if (!isVeBalPool(this.pool.id)) return '0';
 
-    const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
-    const balAddress = getAddress(TOKENS.Addresses.BAL);
-    const bbAUSDAddress = getAddress(TOKENS.Addresses.bbaUSD as string);
-
-    const feeDistributorInstance = await feeDistributor.getInstance();
-    const getBalDistribution = feeDistributor.getTokensDistributedInWeek(
-      balAddress,
-      epochBeforeLast,
-      feeDistributorInstance
+    return await this._veBalAprCalc.calc(
+      this.pool.totalLiquidity,
+      this.pool.totalShares,
+      prices
     );
-    const getbbAUSDDistribution = feeDistributor.getTokensDistributedInWeek(
-      bbAUSDAddress,
-      epochBeforeLast,
-      feeDistributorInstance
-    );
-    const getVeBalSupply = feeDistributor.getTotalSupply(
-      epochBeforeLast,
-      feeDistributorInstance
-    );
-
-    const [balAmount, bbAUSDAmount, veBalSupply] = await Promise.all([
-      getBalDistribution,
-      getbbAUSDDistribution,
-      getVeBalSupply
-    ]);
-
-    const balPrice = prices[balAddress];
-    const bbaUSDPrice = bnum(await bbAUSDToken.getRate()).toNumber();
-
-    const balValue = bnum(balAmount).times(balPrice.usd);
-    const bbaUSDValue = bnum(bbAUSDAmount).times(bbaUSDPrice);
-
-    const aggregateWeeklyRevenue = balValue.plus(bbaUSDValue);
-
-    const bptPrice = bnum(this.pool.totalLiquidity).div(this.pool.totalShares);
-
-    const apr = aggregateWeeklyRevenue
-      .times(52)
-      .div(bptPrice.times(veBalSupply));
-
-    return apr.toString();
   }
 }
