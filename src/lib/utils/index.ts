@@ -139,7 +139,3 @@ export function formatWordListAsSentence(
 export function getAddressFromPoolId(poolId: string) {
   return poolId.substring(0, 42);
 }
-
-export function getBalAddress() {
-  return TOKENS.Addresses.BAL;
-}

@@ -5,7 +5,8 @@ import { isNil, mapValues } from 'lodash';
 
 import { isL2 } from '@/composables/useNetwork';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum, getBalAddress } from '@/lib/utils';
+import { TOKENS } from '@/constants/tokens';
+import { bnum } from '@/lib/utils';
 import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -100,7 +101,7 @@ export class StakingRewardsService {
   }): Promise<GaugeBalAprs> {
     if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
-    const balAddress = getBalAddress();
+    const balAddress = TOKENS.Addresses.BAL;
     const [
       inflationRate,
       relativeWeights,
