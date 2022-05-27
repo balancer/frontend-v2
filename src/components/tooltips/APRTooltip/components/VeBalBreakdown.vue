@@ -40,7 +40,7 @@ const items = computed((): string[] => [
       {{ $t('tooltips.veBalApr.title') }}
     </span>
     <template #item="{ item }">
-      <div class="text-gray-500 text-xs ml-1">
+      <div class="text-gray-500 text-xs">
         {{ item }}
       </div>
     </template>
