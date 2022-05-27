@@ -126,11 +126,6 @@ export class PriceService {
         aggregateBy === 'hour' ? now : now - (now % twentyFourHoursInSecs);
       const start = end - days * twentyFourHoursInSecs;
 
-      // TODO - remove once wsteth is supported
-      addresses = addresses.filter(
-        address => address !== this.appAddresses.wstETH
-      );
-
       addresses = addresses.map(address => this.addressMapIn(address));
       const requests: Promise<HistoricalPriceResponse>[] = [];
 
@@ -192,22 +187,14 @@ export class PriceService {
           );
           for (const key of Object.keys(pricesByHour)) {
             const price = (last(pricesByHour[key]) || [])[1] || 0;
-            // TODO - remove this conditional once coingecko supports wstETH
-            prices[Number(key) * 1000] =
-              address === this.appAddresses.stETH
-                ? price * (TOKENS?.ExchangeRates?.wstETH?.stETH || 0)
-                : price;
+            prices[Number(key) * 1000] = price;
           }
         } else if (aggregateBy === 'day') {
           for (const key in result) {
             const value = result[key];
             const [timestamp, price] = value;
             if (timestamp > dayTimestamp * 1000) {
-              // TODO - remove this conditional once coingecko supports wstETH
-              prices[dayTimestamp * 1000] =
-                address === this.appAddresses.stETH
-                  ? price * (TOKENS?.ExchangeRates?.wstETH?.stETH || 0)
-                  : price;
+              prices[dayTimestamp * 1000] = price;
               dayTimestamp += twentyFourHoursInSecs;
             }
           }
