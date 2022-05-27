@@ -179,10 +179,10 @@ function gaugeTitle(pool: GaugePool): string {
  */
 async function getBBaUSDPrice() {
   if (isMainnet.value) {
-    const price = await bbAUSDToken.getRate();
+    const appoxPrice = await bbAUSDToken.getRate();
     injectPrices({
       [FiatCurrency.usd]: {
-        [bbAUSDToken.address as string]: bnum(price).toNumber()
+        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber()
       }
     });
   }
