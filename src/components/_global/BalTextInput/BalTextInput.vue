@@ -75,14 +75,23 @@ const emit = defineEmits<{
  * STATE
  */
 const textInput = ref<HTMLInputElement>();
-const isActive = ref(false);
-const isHover = ref(false);
 
 /**
  * COMPOSABLES
  */
 const attrs = useAttrs();
 const { errors, isInvalid, validate } = useInputValidation(props, emit);
+const {
+  isActive,
+  isHover,
+  onInput,
+  onKeydown,
+  onBlur,
+  onClick,
+  onFocus,
+  onMouseOver,
+  onMouseLeave
+} = useInputEvents(props, emit, validate);
 const {
   parentClasses,
   inputContainerClasses,
@@ -94,30 +103,6 @@ const {
   appendClasses,
   borderRadiusClasses
 } = useInputStyles(props, isInvalid, isActive, isHover, attrs);
-const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
-
-function handleOnBlur(event: HtmlInputEvent) {
-  isActive.value = false;
-  onBlur(event);
-}
-
-function handleOnInput(event: HtmlInputEvent) {
-  isActive.value = true;
-  onInput(event);
-}
-
-function handleOnClick(event: HtmlInputEvent) {
-  isActive.value = true;
-}
-function handleOnFocus(event: HtmlInputEvent) {
-  isActive.value = true;
-}
-function handleOnMouseOver(event: HtmlInputEvent) {
-  isHover.value = true;
-}
-function handleOnMouseLeave(event: HtmlInputEvent) {
-  isHover.value = false;
-}
 
 /**
  * COMPUTED
@@ -138,8 +123,8 @@ onMounted(() => {
   <div :class="['bal-text-input', parentClasses, borderRadiusClasses]">
     <div
       :class="['input-container', inputContainerClasses, borderRadiusClasses]"
-      @mouseover="handleOnMouseOver"
-      @mouseleave="handleOnMouseLeave"
+      @mouseover="onMouseOver"
+      @mouseleave="onMouseLeave"
     >
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
@@ -159,11 +144,11 @@ onMounted(() => {
           :value="modelValue"
           v-bind="inputAttrs"
           :disabled="disabled"
-          @blur="handleOnBlur"
-          @input="handleOnInput"
+          @blur="onBlur"
+          @input="onInput"
           @keydown="onKeydown"
-          @click="handleOnClick"
-          @focus="handleOnFocus"
+          @click="onClick"
+          @focus="onFocus"
           :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
