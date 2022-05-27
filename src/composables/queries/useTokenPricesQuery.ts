@@ -35,21 +35,6 @@ export default function useTokenPricesQuery(
     QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
   );
 
-  // TODO: kill this with fire as soon as Coingecko supports wstETH
-  function injectWstEth(prices: TokenPrices): TokenPrices {
-    const stEthAddress = configService.network.addresses.stETH;
-    const wstEthAddress = configService.network.addresses.wstETH;
-    if (prices[stEthAddress]) {
-      const stETHPrice = prices[stEthAddress][FiatCurrency.usd] || 0;
-      prices[wstEthAddress] = {
-        [FiatCurrency.usd]:
-          (TOKENS?.ExchangeRates?.wstETH?.stETH || 0) * stETHPrice
-      };
-    }
-
-    return prices;
-  }
-
   function injectCustomTokens(
     prices: TokenPrices,
     pricesToInject: TokenPrices
@@ -79,7 +64,6 @@ export default function useTokenPricesQuery(
       };
     }
 
-    prices = injectWstEth(prices);
     console.log('Injecting price data', pricesToInject.value);
     prices = injectCustomTokens(prices, pricesToInject.value);
     return prices;
