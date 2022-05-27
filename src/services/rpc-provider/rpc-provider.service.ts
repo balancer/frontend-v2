@@ -12,7 +12,7 @@ export default class RpcProviderService {
   constructor(
     private readonly config = configService,
     public readonly network = config.network.shortName,
-    public jsonProvider = new StaticJsonRpcBatchProvider(config.rpc),
+    public readonly jsonProvider = new StaticJsonRpcBatchProvider(config.rpc),
     public readonly loggingProvider = new StaticJsonRpcBatchProvider(
       config.loggingRpc
     )

@@ -53,7 +53,7 @@ export default {
     try {
       allTokenLists = require<TokenListMap>('/public/data/tokenlists.json');
     } catch (error) {
-      console.error('Tokenlists not generated');
+      console.error('Failed to fetch tokenlists', error);
       throw error;
     }
 
