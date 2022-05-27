@@ -24,4 +24,4 @@ pnpm-debug.log*
 *.sw?
 
 # tokenlists
-/public/tokens/*.json
+/public/data/tokenlists.json

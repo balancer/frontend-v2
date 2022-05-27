@@ -13,7 +13,6 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokenLists from '@/composables/useTokenLists';
 // Types
 import { TradeInterface } from '@/store/modules/app';
 
@@ -26,7 +25,6 @@ const showPriceGraphModal = ref(false);
  * COMPOSABLES
  */
 const store = useStore();
-const { loadingTokenLists } = useTokenLists();
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -63,7 +61,7 @@ onMounted(() => {
       <TrendingPairs class="mt-4" />
     </template>
 
-    <BalLoadingBlock v-if="appLoading || loadingTokenLists" class="h-96" />
+    <BalLoadingBlock v-if="appLoading" class="h-96" />
     <template v-else>
       <template v-if="ENABLE_LEGACY_TRADE_INTERFACE">
         <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />

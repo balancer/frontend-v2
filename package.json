@@ -14,9 +14,9 @@
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "lint:fix": "vue-cli-service lint",
     "prepare": "node ./prepare.js",
-    "generate:tokenlists": "node ./generate_tokenlists.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
+    "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts"
   },
   "devDependencies": {

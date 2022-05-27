@@ -267,7 +267,7 @@ export default function useUserStakingData(
       getAddress(poolAddress.value),
       getProvider()
     );
-    const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+    const gauge = new LiquidityGauge(gaugeAddress);
     const balance = await gauge.balance(account.value);
     return formatUnits(balance.toString(), 18);
   }
