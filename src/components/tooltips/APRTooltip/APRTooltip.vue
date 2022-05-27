@@ -42,6 +42,8 @@ const hasYieldAPR = computed(() =>
   bnum(props?.pool?.apr?.yield.total || '0').gt(0)
 );
 
+const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
+
 const totalLabel = computed((): string => {
   const poolAPRs = props.pool?.apr;
   if (!poolAPRs) return '0';
@@ -55,8 +57,9 @@ const totalLabel = computed((): string => {
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="hasYieldAPR || hasStakingRewards(pool.apr)"
-          class="h-4 text-yellow-300 -mr-1"
+          v-if="hasYieldAPR || hasStakingRewards(pool.apr) || hasVebalAPR"
+          :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
+          class="h-4 -mr-1"
           v-bind="$attrs"
         />
         <BalIcon
@@ -81,10 +84,7 @@ const totalLabel = computed((): string => {
         </div>
 
         <!-- VeBal APR -->
-        <VeBalBreakdown
-          v-if="isVeBalPool(pool.id)"
-          :apr="pool?.apr?.veBal || '0'"
-        />
+        <VeBalBreakdown v-if="hasVebalAPR" :apr="pool?.apr?.veBal || '0'" />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
