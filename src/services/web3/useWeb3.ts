@@ -5,6 +5,7 @@ import { useQuery } from 'vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { hasInjectedProvider } from '@/services/web3/connectors/metamask/metamask.connector';
 
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -90,7 +91,13 @@ export default function useWeb3() {
   const getProvider = () => new Web3Provider(provider.value as any);
   const getSigner = () => getProvider().getSigner();
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
+
   const toggleWalletSelectModal = (value: boolean) => {
+    // for 1 click connect (coinbase)
+    if (hasInjectedProvider()) {
+      connectWallet('metamask');
+      return;
+    }
     if (value !== undefined && typeof value === 'boolean') {
       isWalletSelectVisible.value = value;
       return;
