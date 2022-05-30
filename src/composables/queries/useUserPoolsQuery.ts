@@ -19,7 +19,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
 import { isStablePhantom, lpTokensFor } from '../usePool';
-import useTokenLists from '../useTokenLists';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
@@ -43,7 +42,6 @@ export default function useUserPoolsQuery(
     getTokens,
     tokens: tokenMeta
   } = useTokens();
-  const { loadingTokenLists } = useTokenLists();
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
   const { networkId } = useNetwork();
@@ -55,10 +53,7 @@ export default function useUserPoolsQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(
-    () =>
-      isWalletReady.value && account.value != null && !loadingTokenLists.value
-  );
+  const enabled = computed(() => isWalletReady.value && account.value != null);
 
   function removePreMintedBPT(pool: Pool): Pool {
     const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);

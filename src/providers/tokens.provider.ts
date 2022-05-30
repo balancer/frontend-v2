@@ -12,7 +12,6 @@ import {
   toRefs
 } from 'vue';
 
-import balTokenList from '@/assets/tokenlists/balancer.json';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
@@ -20,7 +19,7 @@ import useConfig from '@/composables/useConfig';
 import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -111,8 +110,7 @@ export default {
     const {
       allTokenLists,
       activeTokenLists,
-      balancerTokenLists,
-      loadingTokenLists
+      balancerTokenLists
     } = useTokenLists();
     const { currency } = useUserSettings();
 
@@ -146,7 +144,7 @@ export default {
      */
     const allTokenListTokens = computed(
       (): TokenInfoMap => ({
-        ...mapTokenListTokens(Object.values(allTokenLists.value)),
+        ...mapTokenListTokens(Object.values(allTokenLists)),
         ...state.injectedTokens
       })
     );
@@ -251,9 +249,7 @@ export default {
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
-      const tokens = [...tokenLists, balTokenList]
-        .map(list => list.tokens)
-        .flat();
+      const tokens = [...tokenLists].map(list => list.tokens).flat();
 
       tokens.forEach(token => {
         const address: string = getAddress(token.address);
@@ -289,7 +285,7 @@ export default {
 
       const newTokens = await tokenService.metadata.get(
         injectable,
-        allTokenLists.value
+        allTokenLists
       );
 
       state.injectedTokens = { ...state.injectedTokens, ...newTokens };
@@ -445,7 +441,6 @@ export default {
         configService.network.addresses.veBAL
       ]);
 
-      await forChange(loadingTokenLists, false);
       await injectTokens(tokensToInject);
       state.loading = false;
     });
