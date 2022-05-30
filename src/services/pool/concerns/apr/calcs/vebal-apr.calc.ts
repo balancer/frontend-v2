@@ -4,10 +4,15 @@ import { formatUnits } from '@ethersproject/units';
 import { toUnixTimestamp } from '@/composables/useTime';
 import { getPreviousEpoch } from '@/composables/useVeBAL';
 import { TOKENS } from '@/constants/tokens';
+import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
+import StablePhantomAbi from '@/lib/abi/StablePhantomPool.json';
+import veBalAbi from '@/lib/abi/veBalAbi.json';
 import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { configService } from '@/services/config/config.service';
+import { Multicaller } from '@/services/multicalls/multicaller';
 
 export class VeBalAprCalc {
   constructor(
@@ -15,6 +20,7 @@ export class VeBalAprCalc {
     private readonly bbAUSDAddress = getAddress(
       TOKENS.Addresses.bbaUSD as string
     ),
+    private readonly veBalAddress = configService.network.addresses.veBAL,
     private readonly _feeDistributor = feeDistributor,
     private readonly _bbAUSDToken = bbAUSDToken
   ) {}
@@ -24,11 +30,17 @@ export class VeBalAprCalc {
     totalSupply: string,
     prices: TokenPrices
   ) {
-    const { balAmount, bbAUSDAmount, veBalSupply } = await this.getEpochData();
-
-    const aggregateWeeklyRevenue = await this.calcAggregateWeeklyRevenue(
+    const {
       balAmount,
       bbAUSDAmount,
+      bbaUSDPrice,
+      veBalCurrentSupply
+    } = await this.getData();
+
+    const aggregateWeeklyRevenue = this.calcAggregateWeeklyRevenue(
+      balAmount,
+      bbAUSDAmount,
+      bbaUSDPrice,
       prices
     );
 
@@ -36,37 +48,46 @@ export class VeBalAprCalc {
 
     return aggregateWeeklyRevenue
       .times(52)
-      .div(bptPrice.times(veBalSupply))
+      .div(bptPrice.times(veBalCurrentSupply))
       .toString();
   }
 
-  private async getEpochData(): Promise<{
+  private async getData(): Promise<{
     balAmount: string;
     bbAUSDAmount: string;
-    veBalSupply: string;
+    bbaUSDPrice: string;
+    veBalCurrentSupply: string;
   }> {
     const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
-    const multicaller = this._feeDistributor.getMulticaller();
+    const multicaller = new Multicaller();
 
     multicaller
-      .call(
-        'balAmount',
-        this._feeDistributor.address,
-        'getTokensDistributedInWeek',
-        [this.balAddress, epochBeforeLast]
-      )
-      .call(
-        'bbAUSDAmount',
-        this._feeDistributor.address,
-        'getTokensDistributedInWeek',
-        [this.bbAUSDAddress, epochBeforeLast]
-      )
-      .call(
-        'veBalSupply',
-        this._feeDistributor.address,
-        'getTotalSupplyAtTimestamp',
-        [epochBeforeLast]
-      );
+      .call({
+        key: 'balAmount',
+        address: this._feeDistributor.address,
+        function: 'getTokensDistributedInWeek',
+        abi: FeeDistributorABI,
+        params: [this.balAddress, epochBeforeLast]
+      })
+      .call({
+        key: 'bbAUSDAmount',
+        address: this._feeDistributor.address,
+        function: 'getTokensDistributedInWeek',
+        abi: FeeDistributorABI,
+        params: [this.bbAUSDAddress, epochBeforeLast]
+      })
+      .call({
+        key: 'veBalCurrentSupply',
+        address: this.veBalAddress,
+        function: 'totalSupply()',
+        abi: veBalAbi
+      })
+      .call({
+        key: 'bbaUSDPrice',
+        address: this.bbAUSDAddress,
+        function: 'getRate',
+        abi: StablePhantomAbi
+      });
 
     const result = await multicaller.execute();
 
@@ -77,13 +98,13 @@ export class VeBalAprCalc {
     return result;
   }
 
-  private async calcAggregateWeeklyRevenue(
+  private calcAggregateWeeklyRevenue(
     balAmount: string,
     bbAUSDAmount: string,
+    bbaUSDPrice: string,
     prices: TokenPrices
   ) {
     const balPrice = prices[this.balAddress];
-    const bbaUSDPrice = bnum(await this._bbAUSDToken.getRate()).toNumber();
 
     const balValue = bnum(balAmount).times(balPrice.usd);
     const bbaUSDValue = bnum(bbAUSDAmount).times(bbaUSDPrice);
