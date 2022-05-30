@@ -8,14 +8,14 @@ import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
 
-import { veBalAprCalc } from './calcs/vebal-apr.calc';
+import { VeBalAprCalc } from './calcs/vebal-apr.calc';
 
 export class AprConcern {
   constructor(
     public pool: Pool,
     private readonly lido = lidoService,
     private readonly aave = aaveService,
-    private readonly _veBalAprCalc = veBalAprCalc
+    private readonly VeBalAprCalcClass = VeBalAprCalc
   ) {}
 
   public async calc(
@@ -188,7 +188,8 @@ export class AprConcern {
   private async calcVeBalAPR(prices: TokenPrices): Promise<string> {
     if (!isVeBalPool(this.pool.id)) return '0';
 
-    return await this._veBalAprCalc.calc(
+    const veBalApr = new this.VeBalAprCalcClass();
+    return await veBalApr.calc(
       this.pool.totalLiquidity,
       this.pool.totalShares,
       prices

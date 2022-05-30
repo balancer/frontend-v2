@@ -5,6 +5,7 @@ import { zipObject } from 'lodash';
 
 import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
 import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -31,6 +32,13 @@ export class FeeDistributor {
    */
   public getInstance(): Contract {
     return new Contract(this.address, this.abi, this.provider);
+  }
+
+  /**
+   * @summary Instantiates a multicaller instance of the FeeDistributor
+   */
+  public getMulticaller(): Multicaller {
+    return new Multicaller(this.config.network.key, this.provider, this.abi);
   }
 
   /**

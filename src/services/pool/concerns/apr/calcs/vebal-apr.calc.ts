@@ -7,6 +7,8 @@ import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { formatUnits } from '@ethersproject/units';
+import { BigNumber } from 'ethers';
 
 export class VeBalAprCalc {
   constructor(
@@ -39,26 +41,41 @@ export class VeBalAprCalc {
       .toString();
   }
 
-  private async getEpochData() {
+  private async getEpochData(): Promise<{
+    balAmount: string;
+    bbAUSDAmount: string;
+    veBalSupply: string;
+  }> {
     const epochBeforeLast = toUnixTimestamp(getPreviousEpoch(1).getTime());
+    const multicaller = this._feeDistributor.getMulticaller();
 
-    const getBalDistribution = this._feeDistributor.getTokensDistributedInWeek(
-      this.balAddress,
-      epochBeforeLast
-    );
-    const getbbAUSDDistribution = this._feeDistributor.getTokensDistributedInWeek(
-      this.bbAUSDAddress,
-      epochBeforeLast
-    );
-    const getVeBalSupply = this._feeDistributor.getTotalSupply(epochBeforeLast);
+    multicaller
+      .call(
+        'balAmount',
+        this._feeDistributor.address,
+        'getTokensDistributedInWeek',
+        [this.balAddress, epochBeforeLast]
+      )
+      .call(
+        'bbAUSDAmount',
+        this._feeDistributor.address,
+        'getTokensDistributedInWeek',
+        [this.bbAUSDAddress, epochBeforeLast]
+      )
+      .call(
+        'veBalSupply',
+        this._feeDistributor.address,
+        'getTotalSupplyAtTimestamp',
+        [epochBeforeLast]
+      );
 
-    const [balAmount, bbAUSDAmount, veBalSupply] = await Promise.all([
-      getBalDistribution,
-      getbbAUSDDistribution,
-      getVeBalSupply
-    ]);
+    const result = await multicaller.execute();
 
-    return { balAmount, bbAUSDAmount, veBalSupply };
+    for (const key in result) {
+      result[key] = formatUnits(result[key], 18);
+    }
+
+    return result;
   }
 
   private async calcAggregateWeeklyRevenue(
@@ -75,5 +92,3 @@ export class VeBalAprCalc {
     return balValue.plus(bbaUSDValue);
   }
 }
-
-export const veBalAprCalc = new VeBalAprCalc();
