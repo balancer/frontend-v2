@@ -664,7 +664,7 @@
     "symbol":"Sembol",
     "tableShowsBalancerV2Pools":"Bu tablo yalnızca Dengeleyici V2 havuzlarını gösterir.",
     "theme":"Tema",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"stETH staking ödülleri Nisan"
        },

@@ -38,10 +38,7 @@ const isLoading = computed(() => {
 const poolsWithBoost = computed(() => {
   return stakedPools.value.map(pool => ({
     ...pool,
-    dynamic: {
-      ...pool.dynamic,
-      boost: (poolBoosts.value || {})[pool.id]
-    }
+    boost: (poolBoosts.value || {})[pool.id]
   }));
 });
 

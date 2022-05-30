@@ -664,7 +664,7 @@
     "symbol":"シンボル",
     "tableShowsBalancerV2Pools":"この表は、BalancerV2プールのみを示しています。",
     "theme":"テーマ",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"stETHステーキング報酬4月"
        },

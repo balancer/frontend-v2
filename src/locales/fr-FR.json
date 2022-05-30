@@ -664,7 +664,7 @@
     "symbol":"Symbole",
     "tableShowsBalancerV2Pools":"Ce tableau affiche uniquement les pools Balancer V2.",
     "theme":"Thème",
-    "thirdPartyRewards":{
+    "yieldAprRewards":{
        "apr":{
           "steth":"STETH staking récompense APR"
        },

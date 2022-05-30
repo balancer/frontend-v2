@@ -43,7 +43,6 @@ export interface Pool {
   tokensList: string[];
   tokenAddresses: string[];
   totalLiquidity: string;
-  miningTotalLiquidity: string;
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
@@ -53,6 +52,11 @@ export interface Pool {
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
   unwrappedTokens?: string[];
+  isNew?: boolean;
+  volumeSnapshot?: string;
+  feesSnapshot?: string;
+  apr?: PoolAPRs;
+  boost?: string;
 }
 
 export interface LinearPool extends Pool {
@@ -60,26 +64,27 @@ export interface LinearPool extends Pool {
   wrappedIndex: number;
 }
 
-export interface DecoratedPool extends Pool {
-  dynamic: {
-    period: TimeTravelPeriod;
-    volume: string;
-    apr: {
-      pool: string;
-      thirdParty: string;
-      thirdPartyBreakdown: { [address: string]: string };
-      total: string;
-      staking?: {
-        BAL: {
-          min: string;
-          max: string;
-        };
-        Rewards: string;
-      };
+export type AprRange = { min: string; max: string };
+export interface PoolAPRs {
+  total: {
+    unstaked: string;
+    staked: {
+      calc: (boost?: string) => string;
+      max: string;
+      min: string;
     };
-    fees: string;
-    isNewPool: boolean;
-    boost?: string;
+  };
+  swap: string;
+  yield: {
+    total: string;
+    breakdown: { [address: string]: string };
+  };
+  staking?: {
+    bal: {
+      min: string;
+      max: string;
+    };
+    rewards: string;
   };
 }
 
@@ -161,11 +166,11 @@ export interface LinearPoolData {
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
-export interface FullPool extends DecoratedPool {
+export interface FullPool extends Pool {
   onchain: OnchainPoolData;
 }
 
-export type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
+export type AnyPool = Pool | FullPool | PoolWithShares;
 
 export interface PoolShare {
   poolId: {
@@ -174,7 +179,7 @@ export interface PoolShare {
   balance: string;
 }
 
-export interface DecoratedPoolWithShares extends DecoratedPool {
+export interface PoolWithShares extends Pool {
   shares: string;
   bpt: string;
 }

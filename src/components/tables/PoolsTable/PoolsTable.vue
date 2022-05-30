@@ -6,26 +6,22 @@ import { useRouter } from 'vue-router';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import {
+  absMaxApr,
   isMigratablePool,
   isStableLike,
   orderedPoolTokens,
-  orderedTokenAddresses
+  orderedTokenAddresses,
+  totalAprLabel
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import {
-  getAprRangeWithRewardEmissions,
-  getBoostAdjustedTotalAPR,
-  hasBALEmissions,
-  hasStakingRewards
-} from '@/services/staking/utils';
+import { PoolWithShares } from '@/services/balancer/subgraph/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
 
@@ -33,7 +29,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: DecoratedPoolWithShares[];
+  data?: PoolWithShares[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -78,7 +74,7 @@ const wideCompositionWidth = computed(() =>
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
+const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -129,14 +125,14 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
-    accessor: pool => pool.dynamic?.volume,
+    accessor: pool => pool?.volumeSnapshot || '0',
     align: 'right',
     id: 'poolVolume',
     Cell: 'volumeCell',
     sortKey: pool => {
-      const apr = Number(pool?.dynamic?.volume);
-      if (apr === Infinity || isNaN(apr)) return 0;
-      return apr;
+      const volume = Number(pool?.volumeSnapshot);
+      if (volume === Infinity || isNaN(volume)) return 0;
+      return volume;
     },
     width: 175,
     cellClassName: 'font-numeric'
@@ -144,35 +140,25 @@ const columns = computed<ColumnDefinition<DecoratedPoolWithShares>[]>(() => [
   {
     name: t('myBoost'),
     accessor: pool =>
-      pool?.dynamic?.boost
-        ? `${bnum(pool?.dynamic?.boost).toFixed(3)}x`
-        : 'N/A',
+      pool?.boost ? `${bnum(pool?.boost).toFixed(3)}x` : 'N/A',
     align: 'right',
     id: 'myBoost',
     hidden: !props.showBoost,
-    sortKey: pool => Number(pool?.dynamic?.boost),
+    sortKey: pool => Number(pool?.boost || '0'),
     width: 150,
     cellClassName: 'font-numeric'
   },
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.dynamic?.apr?.total,
+    accessor: pool => pool?.apr?.total.unstaked || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
       let apr = 0;
 
-      if (hasStakingRewards(pool)) {
-        if (pool.dynamic.boost) {
-          apr = Number(getTotalBoostedApr(pool));
-        } else if (!hasBALEmissions(pool)) {
-          apr = Number(getTotalRewardsAPR(pool));
-        } else {
-          apr = Number(getAprRange(pool).max);
-        }
-      } else {
-        apr = Number(pool.dynamic.apr.total);
+      if (pool?.apr) {
+        apr = Number(absMaxApr(pool.apr, pool.boost));
       }
 
       return isFinite(apr) ? apr : 0;
@@ -206,22 +192,12 @@ const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 /**
  * METHODS
  */
-function handleRowClick(pool: DecoratedPoolWithShares) {
+function handleRowClick(pool: PoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 
-function getAprRange(pool: DecoratedPoolWithShares) {
-  const adjustedRange = getAprRangeWithRewardEmissions(pool);
-  return adjustedRange;
-}
-
-function getTotalBoostedApr(pool: DecoratedPoolWithShares) {
-  const boostedAPR = getBoostAdjustedTotalAPR(pool, pool.dynamic.boost || '1');
-  return boostedAPR;
-}
-
-function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
+function navigateToPoolMigration(pool: PoolWithShares) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -232,10 +208,11 @@ function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
   });
 }
 
-function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
-  return bnum(pool?.dynamic?.apr?.staking?.Rewards || '0').plus(
-    pool?.dynamic?.apr?.total || '0'
-  );
+function aprLabelFor(pool: PoolWithShares): string {
+  const poolAPRs = pool?.apr;
+  if (!poolAPRs) return '0';
+
+  return totalAprLabel(poolAPRs, pool.boost);
 }
 </script>
 
@@ -293,7 +270,7 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
             :selectedTokens="selectedTokens"
           />
           <BalChip
-            v-if="pool?.dynamic?.isNewPool"
+            v-if="pool?.isNew"
             color="red"
             size="sm"
             class="ml-2 uppercase"
@@ -308,10 +285,10 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.volume"
         >
-          <span v-if="!pool?.dynamic?.volume">-</span>
+          <span v-if="!pool?.volumeSnapshot">-</span>
           <span v-else class="text-right">
             {{
-              fNum2(pool?.dynamic?.volume, {
+              fNum2(pool?.volumeSnapshot, {
                 style: 'currency',
                 maximumFractionDigits: 0
               })
@@ -324,29 +301,14 @@ function getTotalRewardsAPR(pool: DecoratedPoolWithShares) {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.aprs"
         >
-          <span v-if="hasStakingRewards(pool)" class="text-right">
-            <span v-if="pool.dynamic?.boost">
-              {{ fNum2(getTotalBoostedApr(pool), FNumFormats.percent) }}
-            </span>
-            <span v-else-if="!hasBALEmissions(pool)">
-              {{ fNum2(getTotalRewardsAPR(pool), FNumFormats.percent) }}
-            </span>
-            <span v-else>
-              {{ fNum2(getAprRange(pool).min, FNumFormats.percent) }} -
-              {{ fNum2(getAprRange(pool).max, FNumFormats.percent) }}
-            </span>
-          </span>
-          <span v-else-if="!pool?.dynamic?.apr?.total">
-            <BalLoadingBlock class="h-4 w-12" />
-          </span>
-          <span v-else>
-            {{
-              Number(pool?.dynamic?.apr?.pool) > 10000
-                ? '-'
-                : fNum2(pool?.dynamic?.apr?.total, FNumFormats.percent)
-            }}
-          </span>
-          <LiquidityAPRTooltip v-if="pool?.dynamic?.apr?.total" :pool="pool" />
+          <BalLoadingBlock
+            v-if="!pool?.apr?.total?.unstaked"
+            class="h-4 w-12"
+          />
+          <template v-else>
+            {{ aprLabelFor(pool) }}
+            <APRTooltip v-if="pool?.apr?.total?.unstaked" :pool="pool" />
+          </template>
         </div>
       </template>
       <template v-slot:migrateCell="pool">

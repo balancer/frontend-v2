@@ -4,16 +4,19 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { bnum } from '@/lib/utils';
+import { includesWstEth } from '@/lib/utils/balancer/lido';
 import {
   AnyPool,
   FullPool,
+  PoolAPRs,
   PoolToken,
   PoolType
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { hasBalEmissions } from '@/services/staking/utils';
 
 import { urlFor } from './useNetwork';
-import useNumbers from './useNumbers';
+import useNumbers, { FNumFormats, numF } from './useNumbers';
 
 /**
  * METHODS
@@ -72,14 +75,6 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 export function isWeth(pool: AnyPool): boolean {
   return (pool.tokenAddresses || []).includes(
     configService.network.addresses.weth
-  );
-}
-
-export function isWstETH(pool: AnyPool): boolean {
-  if (!configService.network.addresses.wstETH) return false;
-
-  return (pool.tokenAddresses || []).includes(
-    getAddress(configService.network.addresses.wstETH)
   );
 }
 
@@ -152,6 +147,33 @@ export function poolURLFor(
 }
 
 /**
+ * @summary Calculates absolute max APR given boost or not.
+ * If given boost returns user's max APR.
+ * If not given boost returns pool absolute max assuming 2.5x boost.
+ * Used primarily for sorting tables by the APR column.
+ */
+export function absMaxApr(aprs: PoolAPRs, boost?: string): string {
+  if (boost) return aprs.total.staked.calc(boost);
+
+  return aprs.total.staked.max;
+}
+
+/**
+ * @summary Returns total APR label, whether range or single value.
+ */
+export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
+  if (boost) {
+    return numF(aprs.total.staked.calc(boost), FNumFormats.percent);
+  } else if (hasBalEmissions(aprs)) {
+    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
+    const maxAPR = numF(aprs.total.staked.max, FNumFormats.percent);
+    return `${minAPR} - ${maxAPR}`;
+  }
+
+  return numF(aprs.total.staked.min, FNumFormats.percent);
+}
+
+/**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
@@ -213,7 +235,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean => !!pool.value && isWeth(pool.value)
   );
   const isWstETHPool = computed(
-    (): boolean => !!pool.value && isWstETH(pool.value)
+    (): boolean => !!pool.value && includesWstEth(pool.value.tokensList)
   );
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)

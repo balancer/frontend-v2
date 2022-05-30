@@ -1,6 +1,12 @@
 import { computed, Ref } from 'vue';
 
-export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
+export default function useInputStyles(
+  props,
+  isInvalid: Ref<boolean>,
+  isActive: Ref<boolean>,
+  isHover: Ref<boolean>,
+  attrs
+) {
   const extPaddingClass = (): string => {
     switch (props.size) {
       case 'xs':
@@ -61,8 +67,11 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const inputContainerClasses = computed(() => ({
     border: !props.noBorder,
     [extPaddingClass()]: true,
-    'border-gray-100 dark:border-gray-800': !isInvalid.value,
+    'border-gray-100 dark:border-gray-800': !isInvalid.value && !isActive.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
+    'border-blue-300': isActive.value && !isInvalid.value,
+    'hover:border-gray-300 dark:hover:border-gray-700':
+      isHover.value && !isActive.value,
     'shadow-inner': !props.noShadow
   }));
 
