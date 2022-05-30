@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 
 import { toUnixTimestamp } from '@/composables/useTime';
 import { getPreviousEpoch } from '@/composables/useVeBAL';
@@ -7,8 +8,6 @@ import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from 'ethers';
 
 export class VeBalAprCalc {
   constructor(
