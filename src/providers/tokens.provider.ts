@@ -182,7 +182,7 @@ export default {
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
     const wrappedNativeAsset = computed(
-      (): TokenInfo => getToken(networkConfig.addresses.weth)
+      (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
     );
 
     /****************************************************************
@@ -440,7 +440,8 @@ export default {
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
         configService.network.addresses.veBAL,
-        TOKENS.Addresses.BAL
+        TOKENS.Addresses.BAL,
+        TOKENS.Addresses.wNativeAsset
       ]);
 
       await injectTokens(tokensToInject);
