@@ -55,8 +55,7 @@ export class LiquidityGauge {
   }
 
   async balance(account: string): Promise<string> {
-    const balance = this.instance.balanceOf(getAddress(account));
-    return balance;
+    return this.instance.balanceOf(getAddress(account));
   }
 
   async totalSupply(): Promise<string> {
