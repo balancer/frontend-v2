@@ -90,6 +90,7 @@ export default function useWeb3() {
   const getProvider = () => new Web3Provider(provider.value as any);
   const getSigner = () => getProvider().getSigner();
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
+
   const toggleWalletSelectModal = (value: boolean) => {
     if (value !== undefined && typeof value === 'boolean') {
       isWalletSelectVisible.value = value;

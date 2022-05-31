@@ -23,9 +23,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [
       'ipns://tokens.uniswap.org',
-      'https://www.gemini.com/uniswap/manifest.json',
-      'tokenlist.aave.eth',
-      'https://umaproject.org/uma.tokenlist.json'
+      'https://www.gemini.com/uniswap/manifest.json'
     ]
   },
   '42': {
@@ -37,7 +35,6 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [
       'ipns://tokens.uniswap.org',
-      // 'https://tokens.coingecko.com/uniswap/all.json',
       'https://umaproject.org/uma.tokenlist.json'
     ]
   },

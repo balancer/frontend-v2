@@ -2,13 +2,14 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { totalAprLabel } from '@/composables/usePool';
+import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/balancer/subgraph/types';
 import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
+import VeBalBreakdown from './components/VeBalBreakdown.vue';
 import YieldBreakdown from './components/YieldBreakdown.vue';
 
 /**
@@ -39,6 +40,8 @@ const hasYieldAPR = computed(() =>
   bnum(props?.pool?.apr?.yield.total || '0').gt(0)
 );
 
+const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
+
 const totalLabel = computed((): string => {
   const poolAPRs = props.pool?.apr;
   if (!poolAPRs) return '0';
@@ -52,8 +55,9 @@ const totalLabel = computed((): string => {
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="hasYieldAPR || hasStakingRewards(pool.apr)"
-          class="h-4 text-yellow-300 -mr-1"
+          v-if="hasYieldAPR || hasStakingRewards(pool.apr) || hasVebalAPR"
+          :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
+          class="h-4 -mr-1"
           v-bind="$attrs"
         />
         <BalIcon
@@ -76,6 +80,9 @@ const totalLabel = computed((): string => {
           {{ fNum2(pool?.apr?.swap || '0', FNumFormats.percent) }}
           <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
+
+        <!-- VeBal APR -->
+        <VeBalBreakdown v-if="hasVebalAPR" :apr="pool?.apr?.veBal || '0'" />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown

@@ -1,13 +1,13 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.56.0",
+  "version": "1.56.1",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "npm run generate:tokenlists && vue-cli-service serve",
+    "build": "npm run generate:tokenlists && vue-cli-service build",
     "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
     "lint": "vue-cli-service lint --no-fix --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
@@ -16,6 +16,7 @@
     "prepare": "node ./prepare.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
+    "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts"
   },
   "devDependencies": {

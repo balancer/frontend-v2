@@ -48,19 +48,24 @@ async function getPairPriceData(
     [_inputAsset, _outputAsset] = [_outputAsset, _inputAsset];
   }
   const aggregateBy = days === 1 ? 'hour' : 'day';
-  const inputAssetData = await coingeckoService.prices.getTokensHistorical(
+  const getInputAssetData = coingeckoService.prices.getTokensHistorical(
     [_inputAsset],
     days,
     1,
     aggregateBy
   );
 
-  const outputAssetData = await coingeckoService.prices.getTokensHistorical(
+  const getOutputAssetData = coingeckoService.prices.getTokensHistorical(
     [_outputAsset],
     days,
     1,
     aggregateBy
   );
+
+  const [inputAssetData, outputAssetData] = await Promise.all([
+    getInputAssetData,
+    getOutputAssetData
+  ]);
 
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
     if (!outputAssetData[timestamp]) return null;

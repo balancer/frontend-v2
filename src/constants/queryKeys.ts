@@ -3,6 +3,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { NativeAsset } from '@/types/TokenList';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -99,7 +100,7 @@ const QUERY_KEYS = {
     Prices: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      pricesToInject: Ref<Record<string, number>>
+      pricesToInject: Ref<TokenPrices>
     ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
     AllPrices: ['tokens', 'prices'],
     VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [

@@ -160,7 +160,7 @@ export default defineComponent({
         poolAddress.value,
         getProvider()
       );
-      const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+      const gauge = new LiquidityGauge(gaugeAddress);
       const tx = await gauge.stake(
         parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
       );
@@ -177,7 +177,7 @@ export default defineComponent({
         getAddress(poolAddress.value),
         getProvider()
       );
-      const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+      const gauge = new LiquidityGauge(gaugeAddress);
       const tx = await gauge.unstake(
         parseUnits(stakedSharesForProvidedPool.value || '0', 18)
       );

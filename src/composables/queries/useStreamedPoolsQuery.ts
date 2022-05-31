@@ -120,23 +120,24 @@ async function decorateWithAPRs(
   tokens: TokenInfoMap
 ) {
   const pastPoolsMap = keyBy(pastPools, 'id');
+
+  const [gaugeBALAprs, rewardAprs] = await Promise.all([
+    await stakingRewardsService.getGaugeBALAprs({
+      prices,
+      gauges,
+      pools
+    }),
+    await stakingRewardsService.getRewardTokenAprs({
+      prices,
+      tokens,
+      gauges,
+      pools
+    })
+  ]);
+
   const decorated = pools.map(async pool => {
     const poolService = new PoolService(pool);
     const poolSnapshot = pastPoolsMap[pool.id];
-
-    const [gaugeBALAprs, rewardAprs] = await Promise.all([
-      await stakingRewardsService.getGaugeBALAprs({
-        prices,
-        gauges,
-        pools
-      }),
-      await stakingRewardsService.getRewardTokenAprs({
-        prices,
-        tokens,
-        gauges,
-        pools
-      })
-    ]);
 
     poolService.setFeesSnapshot(pastPoolsMap[pool.id]);
 
@@ -151,6 +152,7 @@ async function decorateWithAPRs(
 
     return poolService.pool;
   });
+
   return await Promise.all(decorated);
 }
 

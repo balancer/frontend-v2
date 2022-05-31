@@ -9,7 +9,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import useNetwork from '../useNetwork';
-import useTokenLists from '../useTokenLists';
 
 /**
  * TYPES
@@ -28,13 +27,12 @@ export default function useAllowancesQuery(
    * COMPOSABLES
    */
   const { account, isWalletReady } = useWeb3();
-  const { tokenListsLoaded } = useTokenLists();
   const { networkId } = useNetwork();
 
   /**
    * COMPUTED
    */
-  const enabled = computed(() => isWalletReady.value && tokenListsLoaded.value);
+  const enabled = computed(() => isWalletReady.value);
   const tokenAddresses = computed(() => Object.keys(tokens.value));
 
   /**

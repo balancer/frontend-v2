@@ -12,7 +12,6 @@ import {
   toRefs
 } from 'vue';
 
-import balTokenList from '@/assets/tokenlists/balancer.json';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
@@ -20,7 +19,8 @@ import useConfig from '@/composables/useConfig';
 import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
-import { bnum, forChange } from '@/lib/utils';
+import { TOKENS } from '@/constants/tokens';
+import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -40,14 +40,14 @@ export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
-  injectedPrices: Record<string, number>;
+  injectedPrices: TokenPrices;
 }
 
 export interface TokensProviderResponse {
   loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
-  injectedPrices: Ref<Record<string, number>>;
+  injectedPrices: Ref<TokenPrices>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
@@ -86,7 +86,7 @@ export interface TokensProviderResponse {
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
-  injectPrices: (pricesToInject: Record<string, number>) => void;
+  injectPrices: (pricesToInject: TokenPrices) => void;
 }
 
 /**
@@ -111,8 +111,7 @@ export default {
     const {
       allTokenLists,
       activeTokenLists,
-      balancerTokenLists,
-      loadingTokenLists
+      balancerTokenLists
     } = useTokenLists();
     const { currency } = useUserSettings();
 
@@ -146,7 +145,7 @@ export default {
      */
     const allTokenListTokens = computed(
       (): TokenInfoMap => ({
-        ...mapTokenListTokens(Object.values(allTokenLists.value)),
+        ...mapTokenListTokens(Object.values(allTokenLists)),
         ...state.injectedTokens
       })
     );
@@ -183,7 +182,7 @@ export default {
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
     const wrappedNativeAsset = computed(
-      (): TokenInfo => getToken(networkConfig.addresses.weth)
+      (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
     );
 
     /****************************************************************
@@ -251,9 +250,7 @@ export default {
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
-      const tokens = [...tokenLists, balTokenList]
-        .map(list => list.tokens)
-        .flat();
+      const tokens = [...tokenLists].map(list => list.tokens).flat();
 
       tokens.forEach(token => {
         const address: string = getAddress(token.address);
@@ -289,7 +286,7 @@ export default {
 
       const newTokens = await tokenService.metadata.get(
         injectable,
-        allTokenLists.value
+        allTokenLists
       );
 
       state.injectedTokens = { ...state.injectedTokens, ...newTokens };
@@ -428,7 +425,7 @@ export default {
      * may have not found a valid price for provided tokens
      * @param pricesToInject A map of <address, price> to inject
      */
-    function injectPrices(pricesToInject: Record<string, number>) {
+    function injectPrices(pricesToInject: TokenPrices) {
       state.injectedPrices = {
         ...state.injectedPrices,
         ...pricesToInject
@@ -436,16 +433,17 @@ export default {
     }
 
     /**
-     * CALLBACKS
+     * LIFECYCLE
      */
     onBeforeMount(async () => {
       const tokensToInject = compact([
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH,
-        configService.network.addresses.veBAL
+        configService.network.addresses.veBAL,
+        TOKENS.Addresses.BAL,
+        TOKENS.Addresses.wNativeAsset
       ]);
 
-      await forChange(loadingTokenLists, false);
       await injectTokens(tokensToInject);
       state.loading = false;
     });
