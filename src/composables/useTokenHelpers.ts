@@ -4,7 +4,6 @@ import { computed } from 'vue';
 import { TOKENS } from '@/constants/tokens';
 import { TokenInfo } from '@/types/TokenList';
 
-import { networkId } from './useNetwork';
 import useTokens from './useTokens';
 
 export function useTokenHelpers() {
@@ -16,9 +15,7 @@ export function useTokenHelpers() {
   /**
    * COMPUTED
    */
-  const balAddress = computed((): string =>
-    getAddress(TOKENS.AddressMap[networkId.value]?.BAL)
-  );
+  const balAddress = computed((): string => getAddress(TOKENS.Addresses.BAL));
 
   const balToken = computed((): TokenInfo => getToken(balAddress.value));
 

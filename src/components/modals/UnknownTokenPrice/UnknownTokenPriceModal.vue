@@ -5,8 +5,10 @@ import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
+import { FiatCurrency } from '@/constants/currency';
 import { bnum, formatWordListAsSentence } from '@/lib/utils';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 type Props = {
   isVisible: boolean;
@@ -36,13 +38,18 @@ const { t } = useI18n();
 /**
  * LIFECYCLE
  */
-const unknownTokenPrices = computed(() => {
-  const _unknownTokenPrices = {};
-  for (const token of props.unknownTokens) {
-    _unknownTokenPrices[token] = injectedPrices.value[token] || null;
+const unknownTokenPrices = computed(
+  (): TokenPrices => {
+    const _unknownTokenPrices = {};
+    for (const token of props.unknownTokens) {
+      _unknownTokenPrices[token] = {
+        [FiatCurrency.usd]:
+          injectedPrices.value?.[token]?.[FiatCurrency.usd] || null
+      };
+    }
+    return _unknownTokenPrices;
   }
-  return _unknownTokenPrices;
-});
+);
 
 /**
  * COMPUTED
@@ -59,7 +66,7 @@ const isSubmitDisabled = computed(() => {
     [null, ''].includes(unknownTokenPrices[token])
   );
   const hasLargePrice = props.unknownTokens.some(token =>
-    bnum(unknownTokenPrices[token]).gt(PRICE_CAP)
+    bnum(unknownTokenPrices?.[token]?.[FiatCurrency.usd] || '0').gt(PRICE_CAP)
   );
   return noPricesEntered || hasLargePrice;
 });
@@ -101,7 +108,7 @@ function injectUnknownPrices() {
           :key="i"
           fixedToken
           placeholder="$0.00"
-          v-model:amount="unknownTokenPrices[address]"
+          v-model:amount="unknownTokenPrices[address][FiatCurrency.usd]"
           :address="address"
           :name="
             `initial-token-${

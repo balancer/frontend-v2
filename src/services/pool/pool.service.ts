@@ -15,7 +15,7 @@ import {
 } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import { GaugeBalApr } from '../staking/staking-rewards.service';
-import { AprConcern } from './concerns/apr.concern';
+import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 
 export default class PoolService {

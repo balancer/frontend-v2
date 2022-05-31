@@ -39,14 +39,14 @@ export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
-  injectedPrices: Record<string, number>;
+  injectedPrices: TokenPrices;
 }
 
 export interface TokensProviderResponse {
   loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
-  injectedPrices: Ref<Record<string, number>>;
+  injectedPrices: Ref<TokenPrices>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
@@ -85,7 +85,7 @@ export interface TokensProviderResponse {
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
-  injectPrices: (pricesToInject: Record<string, number>) => void;
+  injectPrices: (pricesToInject: TokenPrices) => void;
 }
 
 /**
@@ -424,7 +424,7 @@ export default {
      * may have not found a valid price for provided tokens
      * @param pricesToInject A map of <address, price> to inject
      */
-    function injectPrices(pricesToInject: Record<string, number>) {
+    function injectPrices(pricesToInject: TokenPrices) {
       state.injectedPrices = {
         ...state.injectedPrices,
         ...pricesToInject
@@ -432,7 +432,7 @@ export default {
     }
 
     /**
-     * CALLBACKS
+     * LIFECYCLE
      */
     onBeforeMount(async () => {
       const tokensToInject = compact([

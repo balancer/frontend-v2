@@ -1,4 +1,5 @@
-import { isStablePhantom } from '@/composables/usePool';
+import { isKovan } from '@/composables/useNetwork';
+import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
@@ -8,11 +9,14 @@ import { AprRange, Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
 
+import { VeBalAprCalc } from './calcs/vebal-apr.calc';
+
 export class AprConcern {
   constructor(
     public pool: Pool,
-    public readonly lido = lidoService,
-    public readonly aave = aaveService
+    private readonly lido = lidoService,
+    private readonly aave = aaveService,
+    private readonly VeBalAprCalcClass = VeBalAprCalc
   ) {}
 
   public async calc(
@@ -24,12 +28,17 @@ export class AprConcern {
     stakingRewardApr = '0'
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
+
     const yieldAPR = await this.calcYieldAPR(
       prices,
       currency,
       protocolFeePercentage
     );
+
+    const veBalAPR = await this.calcVeBalAPR(prices);
+
     const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();
+
     const aprGivenBoost = (boost = '1') =>
       this.calcAprGivenBoost(
         unstakedTotalAPR,
@@ -37,6 +46,7 @@ export class AprConcern {
         stakingRewardApr,
         boost
       );
+
     const stakedAprRange = this.calcStakedAprRange(
       unstakedTotalAPR,
       stakingBalApr,
@@ -44,6 +54,12 @@ export class AprConcern {
     );
 
     return {
+      swap: swapFeeAPR,
+      yield: yieldAPR,
+      staking: {
+        bal: stakingBalApr,
+        rewards: stakingRewardApr
+      },
       total: {
         unstaked: unstakedTotalAPR,
         staked: {
@@ -51,12 +67,8 @@ export class AprConcern {
           ...stakedAprRange
         }
       },
-      swap: swapFeeAPR,
-      yield: yieldAPR,
-      staking: {
-        bal: stakingBalApr,
-        rewards: stakingRewardApr
-      }
+      // Conditionally add the veBAL APR attribute if this is the BAL 80/20 pool.
+      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR })
     };
   }
 
@@ -118,9 +130,8 @@ export class AprConcern {
   }
 
   /**
-   * @description Fetch additional APRs not covered by pool swap fees and
-   * liquidity minning rewards. These APRs may require 3rd party
-   * API requests.
+   * @description Calculate APRs coming from underlying yield bearing tokens
+   * such as Aave tokens.
    * @returns total yield APR and breakdown of total by pool token.
    */
   private async calcYieldAPR(
@@ -173,5 +184,16 @@ export class AprConcern {
       total,
       breakdown
     };
+  }
+
+  private async calcVeBalAPR(prices: TokenPrices): Promise<string> {
+    if (!isVeBalPool(this.pool.id) || isKovan.value) return '0';
+
+    const veBalApr = new this.VeBalAprCalcClass();
+    return await veBalApr.calc(
+      this.pool.totalLiquidity,
+      this.pool.totalShares,
+      prices
+    );
   }
 }
