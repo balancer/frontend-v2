@@ -118,7 +118,7 @@ const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
 const unknownTokens = computed(() => {
   return validTokens.value.filter(token => {
-    return priceFor(token) === 0 || injectedPrices.value[token];
+    return priceFor(token) === 0 || injectedPrices.value[token]?.usd;
   });
 });
 
