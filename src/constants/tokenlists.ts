@@ -23,8 +23,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [
       'ipns://tokens.uniswap.org',
-      'https://www.gemini.com/uniswap/manifest.json',
-      'https://umaproject.org/uma.tokenlist.json'
+      'https://www.gemini.com/uniswap/manifest.json'
     ]
   },
   '42': {
