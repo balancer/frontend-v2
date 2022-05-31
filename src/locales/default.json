@@ -991,7 +991,7 @@
             "total": "The total value in {0} you’ll be withdrawing from this pool."
         },
         "veBalApr": {
-            "title": "Locking / veBAL APR",
+            "title": "Max locking/veBAL APR",
             "breakdown1": "BAL",
             "breakdown2": "bb-a-USD"
         }
