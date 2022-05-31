@@ -8,21 +8,17 @@ import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
 import StablePhantomAbi from '@/lib/abi/StablePhantomPool.json';
 import veBalAbi from '@/lib/abi/veBalAbi.json';
 import { bnum } from '@/lib/utils';
-import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
-import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { Multicaller } from '@/services/multicalls/multicaller';
 
 export class VeBalAprCalc {
   constructor(
+    private readonly config = configService,
     private readonly balAddress = getAddress(TOKENS.Addresses.BAL),
     private readonly bbAUSDAddress = getAddress(
       TOKENS.Addresses.bbaUSD as string
-    ),
-    private readonly veBalAddress = configService.network.addresses.veBAL,
-    private readonly _feeDistributor = feeDistributor,
-    private readonly _bbAUSDToken = bbAUSDToken
+    )
   ) {}
 
   public async calc(
@@ -64,21 +60,21 @@ export class VeBalAprCalc {
     multicaller
       .call({
         key: 'balAmount',
-        address: this._feeDistributor.address,
+        address: this.config.network.addresses.feeDistributor,
         function: 'getTokensDistributedInWeek',
         abi: FeeDistributorABI,
         params: [this.balAddress, epochBeforeLast]
       })
       .call({
         key: 'bbAUSDAmount',
-        address: this._feeDistributor.address,
+        address: this.config.network.addresses.feeDistributor,
         function: 'getTokensDistributedInWeek',
         abi: FeeDistributorABI,
         params: [this.bbAUSDAddress, epochBeforeLast]
       })
       .call({
         key: 'veBalCurrentSupply',
-        address: this.veBalAddress,
+        address: this.config.network.addresses.veBAL,
         function: 'totalSupply()',
         abi: veBalAbi
       })
