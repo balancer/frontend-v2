@@ -1952,18 +1952,18 @@
       "poolType": "Weighted",
       "tokens": [
         {
-          "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
+          "address": "0x3afB291BdEBF937067D928383c92225b5C8aBF4a",
           "weight": "0.5"
         },
         {
-          "address": "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1",
+          "address": "0xa5b76a530a91A4C5BD1c89A6266419c800b4B2f6",
           "weight": "0.5"
         }
       ]
     },
     "tokenLogoURIs": {
-      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+      "0x3afB291BdEBF937067D928383c92225b5C8aBF4a": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0xa5b76a530a91A4C5BD1c89A6266419c800b4B2f6": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
     }
   },
   {
@@ -1975,7 +1975,7 @@
       "poolType": "Weighted",
       "tokens": [
         {
-          "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
+          "address": "0x3afB291BdEBF937067D928383c92225b5C8aBF4a",
           "weight": "0.1667"
         },
         {
@@ -1989,7 +1989,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+      "0x3afB291BdEBF937067D928383c92225b5C8aBF4a": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
       "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png",
       "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115": "https://assets.trustwalletapp.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
     }

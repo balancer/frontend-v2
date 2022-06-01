@@ -13,7 +13,7 @@ export const TOKENS = {
       BAL: '0xba100000625a3754423978a60c9317c58a424e3d'
     },
     '42': {
-      WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
+      WETH: '0xa5b76a530a91A4C5BD1c89A6266419c800b4B2f6',
       BAL: '0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7'
     },
     '137': {
@@ -32,21 +32,28 @@ export const TOKENS = {
        * [kovan address]: mainnet address
        */
       '42': {
-        '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1':
+        // WETH
+        '0xa5b76a530a91A4C5BD1c89A6266419c800b4B2f6':
           '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        '0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648':
+        // WBTC
+        '0x3afB291BdEBF937067D928383c92225b5C8aBF4a':
           '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        // BAL
         '0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7':
           '0xba100000625a3754423978a60c9317c58a424e3d',
+        // PERP
         '0x8f4bebf498cc624a0797fe64114a6ff169eee078':
           '0xbc396689893d065f41bc2c6ecbee5e0085233447',
+        // MKR
         '0xaf9ac3235be96ed496db7969f60d354fe5e426b0':
           '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
         // USDC
         '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115':
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        // DAI
         '0x04df6e4121c27713ed22341e7c7df330f56f289b':
           '0x6b175474e89094c44da98b954eedeac495271d0f',
+        // stETH
         '0x4803bb90d18a1cb7a2187344fe4feb0e07878d05':
           '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
         // AAVE DAI

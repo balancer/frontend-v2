@@ -34,7 +34,7 @@ describe('swap.service', () => {
       type: SwapTokenType.fixed
     };
     tokens.USDT = {
-      address: '0xcC08220af469192C53295fDd34CFb8DF29aa17AB',
+      address: '0x48Acff95A0C90A6Cc1e54B687eE03a0467050066',
       amount: BigNumber.from('1000000'),
       type: SwapTokenType.fixed
     };
