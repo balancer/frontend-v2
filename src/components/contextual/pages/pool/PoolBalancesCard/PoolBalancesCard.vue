@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 
 import BoostedPool from './BoostedPool.vue';
 import Pool from './Pool.vue';

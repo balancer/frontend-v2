@@ -1,8 +1,8 @@
 import { FiatCurrency } from '@/constants/currency';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
-import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { Pool } from '@/services/pool/types';
 import {
   GaugeBalAprs,
   GaugeRewardTokenAprs,

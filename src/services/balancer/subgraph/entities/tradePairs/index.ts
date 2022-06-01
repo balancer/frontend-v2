@@ -1,8 +1,23 @@
 import { QueryBuilder } from '@/types/subgraph';
 
 import Service from '../../balancer-subgraph.service';
-import { TradePairSnapshot } from '../../types';
 import tradePairSnapshotQueryBuilder from './query';
+
+export type TradePairSnapshot = {
+  timestamp: number;
+  totalSwapFee: string;
+  totalSwapVolume: string;
+  pair: {
+    token0: {
+      symbol: string;
+      address: string;
+    };
+    token1: {
+      symbol: string;
+      address: string;
+    };
+  };
+};
 
 export default class TradePairSnapshots {
   service: Service;

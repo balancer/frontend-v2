@@ -4,9 +4,9 @@ import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
 import { isStablePhantom } from '../usePool';

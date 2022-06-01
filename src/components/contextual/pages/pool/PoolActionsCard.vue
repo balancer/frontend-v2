@@ -6,7 +6,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { lpTokensFor } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

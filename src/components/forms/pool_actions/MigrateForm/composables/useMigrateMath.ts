@@ -10,8 +10,8 @@ import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnSum, bnum } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { FullPool } from '@/services/pool/types';
 import { BatchSwap } from '@/types';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;

@@ -6,8 +6,8 @@ import { Ref } from 'vue';
 import { isManaged, isStableLike } from '@/composables/usePool';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import ConfigService from '@/services/config/config.service';
+import { FullPool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
 

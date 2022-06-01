@@ -2,7 +2,7 @@ import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { usePool } from '@/composables/usePool';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 
 import usePoolTransfers from './usePoolTransfers';
 

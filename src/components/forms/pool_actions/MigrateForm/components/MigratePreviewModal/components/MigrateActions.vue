@@ -22,7 +22,7 @@ import { balancer } from '@/lib/balancer.sdk';
 // Services
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 
 /**
  * TYPES

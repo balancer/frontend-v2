@@ -7,7 +7,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';

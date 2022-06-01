@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { InvestMathResponse } from '../../composables/useInvestMath';

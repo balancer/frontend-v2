@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 

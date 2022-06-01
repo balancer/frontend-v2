@@ -8,11 +8,7 @@ import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import {
-  FullPool,
-  Pool,
-  PoolWithShares
-} from '@/services/balancer/subgraph/types';
+import { FullPool, Pool, PoolWithShares } from '@/services/pool/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 

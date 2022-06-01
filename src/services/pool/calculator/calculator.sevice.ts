@@ -5,8 +5,8 @@ import { Ref, ref } from 'vue';
 
 import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { FullPool } from '@/services/pool/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { TokenInfoMap } from '@/types/TokenList';
 

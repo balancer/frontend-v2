@@ -6,7 +6,7 @@ import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { expectedVeBal } from '@/composables/useVeBAL';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useLockState from '../../composables/useLockState';

@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 
 /**
  * STATE

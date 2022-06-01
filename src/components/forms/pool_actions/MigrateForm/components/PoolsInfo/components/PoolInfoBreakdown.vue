@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 type Props = {

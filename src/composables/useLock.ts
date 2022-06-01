@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
 
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import usePoolQuery from './queries/usePoolQuery';

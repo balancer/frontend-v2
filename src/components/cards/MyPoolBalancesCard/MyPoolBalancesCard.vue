@@ -6,8 +6,8 @@ import { usePool } from '@/composables/usePool';
 // Composables
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { FullPool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';

@@ -5,7 +5,7 @@ import { usePool } from '@/composables/usePool';
 // Composables
 import useTokens from '@/composables/useTokens';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useWithdrawalState from '../composables/useWithdrawalState';

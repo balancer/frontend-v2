@@ -6,13 +6,8 @@ import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/con
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
-import {
-  AnyPool,
-  FullPool,
-  PoolAPRs,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { AnyPool, FullPool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 

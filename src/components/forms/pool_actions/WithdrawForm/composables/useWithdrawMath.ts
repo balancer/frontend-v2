@@ -27,10 +27,10 @@ import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnSum, bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
 // Services
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+// Types
+import { FullPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';

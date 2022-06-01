@@ -9,10 +9,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import {
-  PoolActivity,
-  PoolActivityType
-} from '@/services/balancer/subgraph/types';
+import { PoolActivity, PoolActivityType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

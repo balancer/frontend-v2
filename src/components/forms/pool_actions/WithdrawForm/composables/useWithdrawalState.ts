@@ -6,7 +6,7 @@ import useRelayerApproval, {
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import i18n from '@/plugins/i18n';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
 
 /**

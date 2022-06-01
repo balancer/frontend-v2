@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import UnlockActions from './components/UnlockActions.vue';

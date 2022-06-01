@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useLockState from '../../../composables/useLockState';

@@ -7,7 +7,7 @@ import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import HowToLock from './components/HowToLock.vue';

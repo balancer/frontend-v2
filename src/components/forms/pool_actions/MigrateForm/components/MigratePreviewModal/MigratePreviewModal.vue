@@ -2,7 +2,7 @@
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';

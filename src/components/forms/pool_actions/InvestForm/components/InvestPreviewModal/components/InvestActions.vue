@@ -19,9 +19,9 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
+// Types
+import { FullPool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';

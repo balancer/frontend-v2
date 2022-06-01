@@ -10,8 +10,8 @@ import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { FullPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import PoolActionsCard from './PoolActionsCard.vue';
