@@ -1,4 +1,4 @@
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolType } from '@/services/pool/types';
 
 export const PoolMock: Pool = {
   onchain: {
