@@ -1,7 +1,10 @@
 import { Network } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
-import { twentyFourHoursInSecs } from '@/composables/useTime';
+import {
+  getTimeTravelBlock,
+  TimeTravelPeriod
+} from '@/composables/useSnapshots';
 import { FiatCurrency } from '@/constants/currency';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
@@ -9,11 +12,11 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService as _configService } from '@/services/config/config.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import PoolService from '@/services/pool/pool.service';
+import { Pool } from '@/services/pool/types';
 import { QueryBuilder } from '@/types/subgraph';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../../balancer-subgraph.service';
-import { Pool, TimeTravelPeriod } from '../../types';
 import queryBuilder from './query';
 
 export default class Pools {
@@ -49,7 +52,8 @@ export default class Pools {
     tokens: TokenInfoMap
   ): Promise<Pool[]> {
     // Get past state of pools
-    const blockNumber = await this.timeTravelBlock(period);
+    const currentBlock = await this.service.rpcProviderService.getBlockNumber();
+    const blockNumber = await getTimeTravelBlock(currentBlock, period);
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: pools.map(pool => pool.id) };
     const poolSnapshotQuery = this.query({ where: isInPoolIds, block });
@@ -72,20 +76,6 @@ export default class Pools {
       poolSnapshots,
       tokens
     );
-  }
-
-  private async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
-    const currentBlock = await this.service.rpcProviderService.getBlockNumber();
-    const blocksInDay = Math.round(
-      twentyFourHoursInSecs / this.service.blockTime
-    );
-
-    switch (period) {
-      case '24h':
-        return currentBlock - blocksInDay;
-      default:
-        return currentBlock - blocksInDay;
-    }
   }
 
   public addressFor(poolId: string): string {
