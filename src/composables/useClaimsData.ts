@@ -1,7 +1,8 @@
 import { computed, reactive } from 'vue';
 
 import { Gauge } from '@/services/balancer/gauges/types';
-import { PoolToken, PoolType } from '@/services/balancer/subgraph/types';
+import { PoolToken } from '@/services/balancer/subgraph/types';
+import { PoolType } from '@/services/pool/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';

@@ -10,10 +10,10 @@ import {
   AnyPool,
   FullPool,
   PoolAPRs,
-  PoolToken,
-  PoolType
+  PoolToken
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
 import { urlFor } from './useNetwork';

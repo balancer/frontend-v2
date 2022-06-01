@@ -14,13 +14,13 @@ import {
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
+import { PoolType } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import {
   LinearPoolDataMap,
   OnchainPoolData,
   OnchainTokenDataMap,
-  PoolType,
   RawLinearPoolData,
   RawLinearPoolDataMap,
   RawOnchainPoolData,

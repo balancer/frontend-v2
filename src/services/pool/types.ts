@@ -1,5 +1,7 @@
 import { BigNumber } from 'ethers';
 
+import { Address } from '@/types';
+
 export type QueryArgs = Record<string, any>;
 export type QueryAttrs = Record<string, any>;
 export type QueryBuilder = (

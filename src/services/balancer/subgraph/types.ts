@@ -1,15 +1,8 @@
 import { BigNumber } from 'ethers';
 
+import { PoolType } from '@/services/pool/types';
 import { Address } from '@/types';
 
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  LiquidityBootstrapping = 'LiquidityBootstrapping'
-}
 export type TimeTravelPeriod = '24h';
 
 export interface PoolToken {
