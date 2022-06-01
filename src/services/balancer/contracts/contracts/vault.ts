@@ -15,8 +15,6 @@ import {
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { PoolType } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
-
 import {
   LinearPoolDataMap,
   OnchainPoolData,
@@ -25,7 +23,9 @@ import {
   RawLinearPoolDataMap,
   RawOnchainPoolData,
   RawPoolTokens
-} from '../../subgraph/types';
+} from '@/services/pool/types';
+import { TokenInfoMap } from '@/types/TokenList';
+
 import Service from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 

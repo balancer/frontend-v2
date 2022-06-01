@@ -5,8 +5,8 @@ import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { RewardTokenData } from '../balancer/contracts/contracts/liquidity-gauge';
-import { PoolAPRs } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
+import { PoolAPRs } from '../pool/types';
 
 const MIN_BOOST = 1;
 const MAX_BOOST = 2.5;

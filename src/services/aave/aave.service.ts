@@ -5,8 +5,8 @@ import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
-import { Pool } from '../balancer/subgraph/types';
 import { ERC20Multicaller } from '../multicalls/erc20.multicaller';
+import { Pool } from '../pool/types';
 import AaveSubgraphService, {
   aaveSubgraphService
 } from './subgraph/aave-subgraph.service';

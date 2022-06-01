@@ -2,8 +2,8 @@ import axios from 'axios';
 
 import { bnum } from '@/lib/utils';
 
-import { Pool } from '../balancer/subgraph/types';
 import ConfigService, { configService } from '../config/config.service';
+import { Pool } from '../pool/types';
 
 type LidoAPRs = {
   eth: string;
