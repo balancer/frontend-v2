@@ -9,10 +9,11 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService as _configService } from '@/services/config/config.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import PoolService from '@/services/pool/pool.service';
+import { QueryBuilder } from '@/types/subgraph';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../../balancer-subgraph.service';
-import { Pool, QueryBuilder, TimeTravelPeriod } from '../../types';
+import { Pool, TimeTravelPeriod } from '../../types';
 import queryBuilder from './query';
 
 export default class Pools {
