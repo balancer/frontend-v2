@@ -31,7 +31,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '42': {
     Balancer: {
       Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/kovan.listed.tokenlist.json',
+        'https://raw.githubusercontent.com/disscorp/pools-assets/refactor-for-multichain/generated/kovan.listed.tokenlist.json',
       Vetted:
         'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/kovan.vetted.tokenlist.json'
     },
