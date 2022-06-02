@@ -42,7 +42,6 @@
     "@gnosis.pm/safe-apps-sdk": "4.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.9.2",
-    "@portis/web3": "^3.0.10",
     "@sentry/browser": "^6.3.2",
     "@sentry/tracing": "^6.3.2",
     "@sentry/webpack-plugin": "^1.15.1",

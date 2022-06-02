@@ -11,7 +11,6 @@ import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
-import portisLogo from '@/assets/images/connectors/portis.svg';
 import statusLogo from '@/assets/images/connectors/status.svg';
 import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
@@ -25,7 +24,6 @@ import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector } from './connectors/connector';
 import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
 import { MetamaskConnector } from './connectors/metamask/metamask.connector';
-import { PortisConnector } from './connectors/portis/portis.connector';
 import { TallyConnector } from './connectors/tally/tally.connector';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
@@ -36,22 +34,19 @@ export type Wallet =
   | 'walletconnect'
   | 'gnosis'
   | 'walletlink'
-  | 'portis'
   | 'tally';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
   'tally',
   'gnosis',
-  'walletlink',
-  'portis'
+  'walletlink'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase',
-  portis: 'Portis',
   tally: 'Tally'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
@@ -73,7 +68,6 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   walletconnect: WalletConnectConnector,
   gnosis: GnosisSafeConnector,
   walletlink: WalletLinkConnector,
-  portis: PortisConnector,
   tally: TallyConnector
 };
 
@@ -223,9 +217,6 @@ export function getConnectorName(connectorId: string): string {
   if (connectorId === 'fortmatic') {
     return 'Fortmatic';
   }
-  if (connectorId === 'portis') {
-    return 'Portis';
-  }
   if (connectorId === 'walletconnect') {
     return 'WalletConnect';
   }
@@ -269,9 +260,6 @@ export function getConnectorLogo(connectorId: string): string {
   }
   if (connectorId === 'fortmatic') {
     return fortmaticLogo;
-  }
-  if (connectorId === 'portis') {
-    return portisLogo;
   }
   if (connectorId === 'walletconnect') {
     return walletconnectLogo;
