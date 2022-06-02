@@ -56,6 +56,12 @@ export function calculateRewardTokenAprs({
         data.rate,
         tokens[getAddress(rewardTokenAddress)]?.decimals || 18
       );
+      // if the period is finished for a reward token,
+      // it should be 0 as emissions are no longer seeded
+      if (Date.now() / 1000 > data.period_finish.toNumber()) {
+        return [rewardTokenAddress, '0'];
+      }
+
       // for reward tokens, there is no relative weight
       // all tokens go to the gauge depositors
       const tokenPayable = calculateTokenPayableToGauge(
