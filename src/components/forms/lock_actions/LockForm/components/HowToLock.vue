@@ -2,14 +2,14 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
 };
 

@@ -11,15 +11,12 @@ import { balancer } from '@/lib/balancer.sdk';
 import { bnSum, bnum } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { BatchSwap } from '@/types';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 
-export default function useMigrateMath(
-  fromPool: Ref<FullPool>,
-  toPool: Ref<FullPool>
-) {
+export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   /**
    * COMPOSABLES
    */
@@ -61,7 +58,7 @@ export default function useMigrateMath(
 
   const tokenCount = computed(() => fromPool.value.tokenAddresses.length);
 
-  const poolDecimals = computed(() => fromPool.value.onchain.decimals);
+  const poolDecimals = computed(() => fromPool.value?.onchain?.decimals || 18);
 
   const batchSwapLoaded = computed(() => batchSwap.value != null);
 

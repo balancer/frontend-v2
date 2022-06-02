@@ -1,30 +1,29 @@
 <script setup lang="ts">
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import BoostedPool from './BoostedPool.vue';
-import Pool from './Pool.vue';
+import DefaultPool from './DefaultPool.vue';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   loading: boolean;
 };
 
 /**
  * PROPS
  */
-
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   loading: false
 });
 </script>
 
 <template>
-  <BalLoadingBlock v-if="props.loading" class="h-64" />
+  <BalLoadingBlock v-if="loading" class="h-64" />
   <template v-else>
-    <BoostedPool v-if="props.pool.onchain?.linearPools" :pool="props.pool" />
-    <Pool v-else :pool="props.pool" />
+    <BoostedPool v-if="pool?.onchain?.linearPools" :pool="pool" />
+    <DefaultPool v-else :pool="pool" />
   </template>
 </template>

@@ -21,7 +21,7 @@ import useVeBal from '@/composables/useVeBAL';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
@@ -32,7 +32,7 @@ import { InvestMathResponse } from '../../../composables/useInvestMath';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   math: InvestMathResponse;
   tokenAddresses: string[];
   disabled: boolean;
@@ -173,7 +173,7 @@ async function submit(): Promise<TransactionResponse> {
         account.value,
         fullAmounts.value,
         props.tokenAddresses,
-        formatUnits(bptOut.value, props.pool.onchain.decimals)
+        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
       );
     }
 

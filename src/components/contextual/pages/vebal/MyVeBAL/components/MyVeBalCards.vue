@@ -10,7 +10,7 @@ import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -18,7 +18,7 @@ import { TokenInfo } from '@/types/TokenList';
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo?: VeBalLockInfo;
 };
@@ -160,12 +160,12 @@ const cards = computed(() => {
     <div class="value" :class="card.id">
       <div v-if="card.id === 'myLockedLpToken'">
         <span
-          :class="{ 'text-red-500': totalExpiredLpTokens > 0 }"
+          :class="{ 'text-red-500': bnum(totalExpiredLpTokens).gt(0) }"
           class="font-bold truncate mr-1"
           >{{ card.value }}</span
         >
         <BalTooltip
-          v-if="totalExpiredLpTokens > 0"
+          v-if="bnum(totalExpiredLpTokens).gt(0)"
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
           icon-size="sm"
           :icon-name="'alert-triangle'"

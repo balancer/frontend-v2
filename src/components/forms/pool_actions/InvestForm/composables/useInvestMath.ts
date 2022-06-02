@@ -15,14 +15,14 @@ import {
 import { bnum } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { BatchSwap } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
 export default function useInvestMath(
-  pool: Ref<FullPool>,
+  pool: Ref<Pool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,

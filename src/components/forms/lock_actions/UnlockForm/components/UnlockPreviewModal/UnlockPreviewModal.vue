@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import UnlockActions from './components/UnlockActions.vue';
@@ -15,7 +15,7 @@ import UnlockSummary from './components/UnlockSummary.vue';
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo: VeBalLockInfo;
   totalLpTokens: string;

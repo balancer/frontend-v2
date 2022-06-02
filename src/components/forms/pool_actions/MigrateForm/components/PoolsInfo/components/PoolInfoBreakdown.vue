@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   poolTokenInfo: TokenInfo;
 };
 

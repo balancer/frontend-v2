@@ -259,7 +259,7 @@ export default defineComponent({
       () =>
         !loadingPool.value &&
         pool.value &&
-        Number(pool.value.onchain.totalSupply) === 0
+        Number(pool.value?.onchain?.totalSupply || '0') === 0
     );
 
     const communityManagedFees = computed(
@@ -303,6 +303,7 @@ export default defineComponent({
 
     const titleTokens = computed(() => {
       if (!pool.value) return [];
+      if (!pool.value?.onchain?.tokens) return [];
 
       return Object.entries(pool.value.onchain.tokens).sort(
         ([, a]: any[], [, b]: any[]) => b.weight - a.weight
@@ -318,6 +319,8 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
+      if (!pool.value?.onchain?.swapFee) return '';
+
       const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
         style: 'percent',
         maximumFractionDigits: 4

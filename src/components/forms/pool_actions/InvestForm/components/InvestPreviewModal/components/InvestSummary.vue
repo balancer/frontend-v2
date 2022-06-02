@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 /**
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   fiatTotal: string;
   priceImpact: number;
   isLoadingPriceImpact?: boolean;

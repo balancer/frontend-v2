@@ -11,7 +11,7 @@ import useTokens from '@/composables/useTokens';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import PoolActionsCard from './PoolActionsCard.vue';
@@ -20,7 +20,7 @@ import PoolActionsCard from './PoolActionsCard.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   missingPrices: boolean;
 };
 
@@ -76,7 +76,7 @@ const propTokenAmounts = computed((): string[] => {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
     return props.pool.tokenAddresses.map((address, i) => {
-      if (!props.pool.onchain.linearPools) return '0';
+      if (!props.pool?.onchain?.linearPools) return '0';
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
@@ -119,7 +119,7 @@ const showMigrateButton = computed(
  * METHODS
  */
 function weightLabelFor(address: string): string {
-  return fNum2(props.pool.onchain.tokens[address].weight, {
+  return fNum2(props.pool?.onchain?.tokens?.[address]?.weight || '0', {
     style: 'percent',
     maximumFractionDigits: 0
   });
@@ -130,7 +130,7 @@ function fiatLabelFor(index: number, address: string): string {
   return fNum2(fiatValue, FNumFormats.fiat);
 }
 
-function navigateToPoolMigration(pool: FullPool) {
+function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
     params: {

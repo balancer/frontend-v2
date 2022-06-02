@@ -15,7 +15,7 @@ import { bnum } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import InvestFormTotals from './components/InvestFormTotals.vue';
@@ -32,7 +32,7 @@ enum NativeAsset {
 }
 
 type Props = {
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**
@@ -135,6 +135,8 @@ function handleAddressChange(newAddress: string): void {
 
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
+  if (!props.pool?.onchain?.tokens) return 0;
+
   if (address === nativeAsset.address) {
     return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
   }

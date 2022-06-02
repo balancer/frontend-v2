@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * STATE
@@ -30,7 +30,7 @@ export default function usePoolTransfers() {
   /**
    * COMPUTED
    */
-  const pool = computed((): FullPool | undefined => {
+  const pool = computed((): Pool | undefined => {
     return poolQuery.data.value;
   });
 

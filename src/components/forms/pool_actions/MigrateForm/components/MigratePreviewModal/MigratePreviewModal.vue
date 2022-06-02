@@ -2,7 +2,7 @@
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
@@ -17,8 +17,8 @@ import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
  */
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
-  fromPool: FullPool;
-  toPool: FullPool;
+  fromPool: Pool;
+  toPool: Pool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
@@ -80,7 +80,7 @@ function handleClose() {
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
-          v-if="withdrawalConfirmed"
+          v-if="migrateConfirmed"
           size="8"
           color="green"
           class="text-white mr-2"

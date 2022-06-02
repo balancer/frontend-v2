@@ -23,7 +23,7 @@ export default class Stable {
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): OldBigNumber {
     try {
-      const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+      const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
       const ampAdjusted = this.adjustAmp(amp);
       const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
         this.scaleInput(tokenAmounts[i], priceRate)
@@ -55,7 +55,7 @@ export default class Stable {
   }
 
   public bptInForExactTokensOut(tokenAmounts: string[]): OldBigNumber {
-    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
 
     const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
@@ -82,7 +82,7 @@ export default class Stable {
     amount: string,
     tokenIndex: number
   ): OldBigNumber {
-    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) => {
       if (i === tokenIndex) return this.scaleInput(amount, priceRate);
@@ -117,7 +117,7 @@ export default class Stable {
         OldBigNumber.ROUND_DOWN // If OUT given IN, round down
       );
 
-    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const normalizedAmountIn = formatUnits(bptAmount, this.calc.poolDecimals);
     const bptAmountIn = this.scaleInput(normalizedAmountIn);
@@ -183,7 +183,7 @@ export default class Stable {
    * PRIVATE FUNCTIONS
    */
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): OldBigNumber {
-    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = BigNumber.from(this.adjustAmp(amp).toString());
     // These amounts need to take priceRate into consideration
     const denormAmounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>

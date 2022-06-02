@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
 
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import usePoolQuery from './queries/usePoolQuery';
@@ -43,9 +43,7 @@ export function useLock() {
     (): boolean => isLoadingLockPool.value || isLoadingLockInfo.value
   );
 
-  const lockPool = computed<FullPool | undefined>(
-    () => lockPoolQuery.data.value
-  );
+  const lockPool = computed<Pool | undefined>(() => lockPoolQuery.data.value);
 
   const lockPoolToken = computed((): TokenInfo | null =>
     lockPool.value != null ? tokens.value[lockPool.value.address] : null

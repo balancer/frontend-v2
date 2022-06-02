@@ -2,29 +2,6 @@ import { BigNumber } from 'ethers';
 
 import { Address } from '@/types';
 
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  LiquidityBootstrapping = 'LiquidityBootstrapping'
-}
-
-export interface PoolToken {
-  address: string;
-  balance: string;
-  weight: string;
-  priceRate: string | null;
-  symbol?: string;
-}
-
-export interface RawPoolTokens {
-  balances: BigNumber[];
-  lastChangeBlock: BigNumber;
-  tokens: string[];
-}
-
 export interface Pool {
   id: string;
   address: string;
@@ -50,6 +27,30 @@ export interface Pool {
   feesSnapshot?: string;
   apr?: PoolAPRs;
   boost?: string;
+}
+
+export enum PoolType {
+  Weighted = 'Weighted',
+  Investment = 'Investment',
+  Stable = 'Stable',
+  MetaStable = 'MetaStable',
+  StablePhantom = 'StablePhantom',
+  LiquidityBootstrapping = 'LiquidityBootstrapping'
+}
+
+export interface PoolToken {
+  address: string;
+  balance: string;
+  weight: string;
+  priceRate: string | null;
+  symbol?: string;
+}
+
+// PoolToken data from onchain call
+export interface RawPoolTokens {
+  balances: BigNumber[];
+  lastChangeBlock: BigNumber;
+  tokens: string[];
 }
 
 export interface LinearPool extends Pool {
@@ -160,11 +161,7 @@ export interface LinearPoolData {
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
-export interface FullPool extends Pool {
-  onchain: OnchainPoolData;
-}
-
-export type AnyPool = Pool | FullPool | PoolWithShares;
+export type AnyPool = Pool | PoolWithShares;
 
 export interface PoolShare {
   poolId: {

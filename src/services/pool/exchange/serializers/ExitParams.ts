@@ -7,12 +7,12 @@ import { isStableLike } from '@/composables/usePool';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import ConfigService from '@/services/config/config.service';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
 
 export default class ExitParams {
-  private pool: Ref<FullPool>;
+  private pool: Ref<Pool>;
   private config: ConfigService;
   private isStableLike: boolean;
   private dataEncodeFn: (data: any) => string;
@@ -36,7 +36,10 @@ export default class ExitParams {
     exactOut: boolean
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
-    const parsedBptIn = parseUnits(bptIn, this.pool.value.onchain.decimals);
+    const parsedBptIn = parseUnits(
+      bptIn,
+      this.pool.value?.onchain?.decimals || 18
+    );
     const assets = this.parseTokensOut(tokensOut);
     const txData = this.txData(
       parsedAmountsOut,
@@ -65,7 +68,10 @@ export default class ExitParams {
   private parseAmounts(amounts: string[]): BigNumber[] {
     return amounts.map((amount, i) => {
       const token = this.pool.value.tokenAddresses[i];
-      return parseUnits(amount, this.pool.value.onchain.tokens[token].decimals);
+      return parseUnits(
+        amount,
+        this.pool.value?.onchain?.tokens?.[token]?.decimals || 18
+      );
     });
   }
 

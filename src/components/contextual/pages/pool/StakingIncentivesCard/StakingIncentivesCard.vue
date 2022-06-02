@@ -8,12 +8,12 @@ import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 
 type Props = {
-  pool: FullPool;
+  pool: Pool;
 };
 const props = defineProps<Props>();
 

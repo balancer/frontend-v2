@@ -4,13 +4,13 @@ import { computed, ref } from 'vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
 /** STATE */
 const showStakeModal = ref(false);
-const stakePool = ref<FullPool | undefined>();
+const stakePool = ref<Pool | undefined>();
 
 /** COMPOSABLES */
 const {
@@ -49,7 +49,7 @@ const hiddenColumns = computed(() => {
 });
 
 /** METHODS */
-function handleStake(pool: FullPool) {
+function handleStake(pool: Pool) {
   setPoolAddress(pool.address);
   showStakeModal.value = true;
   stakePool.value = pool;

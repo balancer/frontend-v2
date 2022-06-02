@@ -5,7 +5,7 @@ import { usePool } from '@/composables/usePool';
 // Composables
 import useTokens from '@/composables/useTokens';
 // Types
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useWithdrawalState from '../composables/useWithdrawalState';
@@ -14,7 +14,7 @@ import useWithdrawalState from '../composables/useWithdrawalState';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   initToken?: string;
 };
 

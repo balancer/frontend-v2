@@ -7,7 +7,7 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import MigrateExplainer from './components/MigrateExplainer.vue';
 import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
@@ -52,9 +52,9 @@ const isLoadingPools = computed(
   () => toPoolLoading.value || fromPoolLoading.value
 );
 
-const fromPool = computed<FullPool | undefined>(() => fromPoolQuery.data.value);
+const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
 
-const toPool = computed<FullPool | undefined>(() => toPoolQuery.data.value);
+const toPool = computed<Pool | undefined>(() => toPoolQuery.data.value);
 
 const fromPoolTokenInfo = computed(() =>
   fromPool.value != null ? tokens.value[fromPool.value.address] : null

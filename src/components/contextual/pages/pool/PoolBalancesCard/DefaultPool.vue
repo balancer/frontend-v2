@@ -67,13 +67,13 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { shortenLabel } from '@/lib/utils';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   props: {
     pool: {
-      type: Object as PropType<FullPool>,
+      type: Object as PropType<Pool>,
       required: true
     },
     loading: { type: Boolean, default: false }
@@ -82,7 +82,7 @@ export default defineComponent({
     /**
      * STATE
      */
-    const { pool }: { pool: Ref<FullPool> } = toRefs(props);
+    const { pool }: { pool: Ref<Pool> } = toRefs(props);
 
     /**
      * COMPOSABLES
@@ -99,7 +99,8 @@ export default defineComponent({
      */
     const tableData = computed(() => {
       if (!pool || !pool.value || props.loading) return [];
-      return Object.keys(pool.value.onchain.tokens).map((address, index) => ({
+      const onchainTokens = pool.value?.onchain?.tokens || [];
+      return Object.keys(onchainTokens).map((address, index) => ({
         address,
         index
       }));
@@ -148,32 +149,28 @@ export default defineComponent({
      */
     function symbolFor(address: string) {
       if (!pool || !pool.value) return '-';
-      const symbol = pool.value.onchain.tokens[address].symbol;
+      const symbol = pool.value?.onchain?.tokens?.[address]?.symbol;
       return symbol ? symbol : shortenLabel(address);
     }
 
     function balanceFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum2(
-        pool.value.onchain.tokens[address].balance,
-        FNumFormats.token
-      );
+      const balance = pool.value?.onchain?.tokens[address]?.balance;
+      return balance ? fNum2(balance, FNumFormats.token) : '-';
     }
 
     function weightFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum2(
-        pool.value.onchain.tokens[address].weight,
-        FNumFormats.percent
-      );
+      const weight = pool.value?.onchain?.tokens[address]?.weight;
+      return weight ? fNum2(weight, FNumFormats.percent) : '-';
     }
 
     function fiatValueFor(address: string): string {
       const price = priceFor(address);
       if (!pool || !pool.value || price === 0) return '-';
 
-      const balance = Number(pool.value.onchain.tokens[address].balance);
-      return fNum2(balance * price, FNumFormats.fiat);
+      const balance = pool.value?.onchain?.tokens[address]?.balance;
+      return balance ? fNum2(Number(balance) * price, FNumFormats.fiat) : '-';
     }
 
     return {

@@ -9,7 +9,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool, PoolSwap } from '@/services/pool/types';
+import { Pool, PoolSwap } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -42,7 +42,7 @@ type Props = {
   isPaginated?: boolean;
   noResultsLabel?: string;
   poolAddress: string;
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**
@@ -168,7 +168,7 @@ function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
     const mainTokenAddress = getUnderlyingTokenAddress(address);
     const mainEquivAmount = getMainTokenEquivalentAmount(address, amount);
     const price = priceFor(mainTokenAddress);
-    const amountNumber = Math.abs(parseFloat(mainEquivAmount));
+    const amountNumber = Math.abs(parseFloat(mainEquivAmount.toString()));
 
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
     if (amountNumber > 0 && price === 0) {
@@ -210,14 +210,14 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
 }
 
 function getUnderlyingTokenAddress(address: string) {
-  const { linearPools } = props.pool.onchain;
+  const linearPools = props.pool?.onchain?.linearPools;
   return linearPools != null && linearPools[address] != null
     ? linearPools[address].mainToken.address
     : address;
 }
 
 function getMainTokenEquivalentAmount(address: string, amount: string) {
-  const { linearPools } = props.pool.onchain;
+  const linearPools = props.pool?.onchain?.linearPools;
   return linearPools != null && linearPools[address] != null
     ? bnum(amount).times(linearPools[address].priceRate)
     : bnum(amount);

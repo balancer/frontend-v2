@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
 import useUserPoolSwapsQuery from '@/composables/queries/useUserPoolSwapsQuery';
-import { FullPool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import { PoolTransactionsTab } from '../types';
 import Table from './Table.vue';
@@ -14,7 +14,7 @@ import Table from './Table.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   loading: boolean;
   poolActivityType: PoolTransactionsTab;
 };

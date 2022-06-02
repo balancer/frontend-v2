@@ -8,13 +8,13 @@ import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { FullPool, Pool, PoolWithShares } from '@/services/pool/types';
+import { Pool, PoolWithShares } from '@/services/pool/types';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
 /** STATE */
 const showStakeModal = ref(false);
-const stakePool = ref<FullPool | undefined>();
+const stakePool = ref<Pool | undefined>();
 
 /** COMPOSABLES */
 const {
@@ -103,7 +103,7 @@ const hiddenColumns = computed((): string[] => {
 });
 
 /** METHODS */
-function handleStake(pool: FullPool) {
+function handleStake(pool: Pool) {
   setPoolAddress(pool.address);
   showStakeModal.value = true;
   stakePool.value = pool;
