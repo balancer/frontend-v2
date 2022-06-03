@@ -14,7 +14,7 @@ export const TOKENS = {
     },
     '42': {
       WETH: '0xa5b76a530a91A4C5BD1c89A6266419c800b4B2f6',
-      BAL: '0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7'
+      BAL: '0xcb355677E36f390Ccc4a5d4bEADFbF1Eb2071c81'
     },
     '137': {
       WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
@@ -39,7 +39,7 @@ export const TOKENS = {
         '0x3afB291BdEBF937067D928383c92225b5C8aBF4a':
           '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
         // BAL
-        '0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7':
+        '0xcb355677E36f390Ccc4a5d4bEADFbF1Eb2071c81':
           '0xba100000625a3754423978a60c9317c58a424e3d',
         // PERP
         '0x8f4bebf498cc624a0797fe64114a6ff169eee078':
