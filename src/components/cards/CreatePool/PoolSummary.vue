@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { prominent } from 'color.js';
-import echarts from 'echarts';
+import * as echarts from 'echarts/core';
 import { computed, nextTick, ref, watch } from 'vue';
 import ECharts from 'vue-echarts';
 
