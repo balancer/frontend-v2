@@ -169,7 +169,7 @@ async function submit() {
       exiter: account.value,
       swapRecipient: account.value,
       poolId: props.fromPool.id,
-      exitTokens: props.fromPool.tokensList,
+      exitTokens: props.fromPool.tokensList.map(t => t.toLowerCase()),
       userData,
       expectedAmountsOut: fullAmountsScaled.value.map(amount =>
         amount.toString()

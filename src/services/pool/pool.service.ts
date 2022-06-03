@@ -26,15 +26,11 @@ export default class PoolService {
    * @summary Statically format various pool attributes.
    */
   public format(): Pool {
-    this.pool.address = this.address;
+    this.pool.address = getAddress(this.pool.address);
     this.pool.isNew = this.isNew;
-    this.pool.tokenAddresses = this.pool.tokensList.map(t => getAddress(t));
+    this.pool.tokensList = this.pool.tokensList.map(t => getAddress(t));
     this.formatPoolTokens();
     return this.pool;
-  }
-
-  public get address(): string {
-    return getAddress(this.pool.id.slice(0, 42));
   }
 
   public get bptPrice(): string {

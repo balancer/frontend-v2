@@ -50,7 +50,7 @@ const tokenAddresses = computed((): string[] => {
     return props.pool.mainTokens || [];
   }
 
-  return props.pool.tokenAddresses;
+  return props.pool.tokensList;
 });
 
 const tokensForTotal = computed((): string[] => {

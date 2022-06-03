@@ -71,7 +71,7 @@ export default function usePoolsQuery(
     const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
     // Remove pre-minted BPT token if exits
     pool.tokensList = pool.tokensList.filter(
-      address => address !== poolAddress.toLowerCase()
+      address => address.toLowerCase() !== poolAddress.toLowerCase()
     );
     return pool;
   }
@@ -99,7 +99,7 @@ export default function usePoolsQuery(
       if (!pool.mainTokens) pool.mainTokens = [];
       if (!pool.wrappedTokens) pool.wrappedTokens = [];
 
-      const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
+      const index = pool.tokensList.indexOf(getAddress(linearPool.address));
 
       pool.mainTokens[index] = getAddress(
         linearPool.tokensList[linearPool.mainIndex]
@@ -179,9 +179,7 @@ export default function usePoolsQuery(
       if (isStablePhantomPool) {
         const decoratedPool = decoratedPools[i];
 
-        const poolTokenMeta = getTokens(
-          decoratedPool.tokensList.map(address => getAddress(address))
-        );
+        const poolTokenMeta = getTokens(decoratedPool.tokensList);
 
         const onchainData = await balancerContractsService.vault.getPoolData(
           decoratedPool.id,

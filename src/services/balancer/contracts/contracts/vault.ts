@@ -240,7 +240,7 @@ export default class Vault {
     poolTokens.tokens.forEach((token, i) => {
       const tokenBalance = poolTokens.balances[i];
       const decimals = tokenInfo[token]?.decimals;
-      tokens[token] = {
+      tokens[getAddress(token)] = {
         decimals,
         balance: formatUnits(tokenBalance, decimals),
         weight: weights[i],
@@ -275,7 +275,7 @@ export default class Vault {
 
       const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
 
-      _linearPools[address] = {
+      _linearPools[getAddress(address)] = {
         id,
         priceRate: formatUnits(priceRate.toString(), 18),
         mainToken: {
