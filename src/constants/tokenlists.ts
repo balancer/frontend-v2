@@ -26,6 +26,15 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       'https://www.gemini.com/uniswap/manifest.json'
     ]
   },
+  '5': {
+    Balancer: {
+      Default:
+        'https://gist.githubusercontent.com/mikemcdonald/794254c72d3ce21c3beb6264bb18027f/raw/39471773dabfc908a7fbadd4991ca945dac2b677/goerli.listed.tokenlist.json',
+      Vetted:
+        'https://gist.githubusercontent.com/mikemcdonald/794254c72d3ce21c3beb6264bb18027f/raw/39471773dabfc908a7fbadd4991ca945dac2b677/goerli.listed.tokenlist.json'
+    },
+    External: []
+  },
   '42': {
     Balancer: {
       Default:

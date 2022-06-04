@@ -110,6 +110,43 @@ export const TOKENS_KOVAN: TokenConstants = {
   }
 };
 
+export const TOKENS_GOERLI: TokenConstants = {
+  Popular: {
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'USDT', 'WETH']
+  },
+  Addresses: {
+    nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    wNativeAsset: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
+    WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
+    BAL: '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
+    bbaUSD: '0x13ACD41C585d7EbB4a9460f7C8f50BE60DC080Cd'
+  },
+  PriceChainMap: {
+    /**
+     * Addresses must be lower case and map from goerli to mainnet, e.g
+     * [goerli address]: mainnet address
+     */
+    '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1':
+      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    '0x37f03a12241e9fd3658ad6777d289c3fb8512bc9':
+      '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+    '0xfa8449189744799ad2ace7e0ebac8bb7575eff47':
+      '0xba100000625a3754423978a60c9317c58a424e3d',
+    '0xe0c9275e44ea80ef17579d33c55136b7da269aeb':
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    '0x8c9e6c40d3402480ace624730524facc5482798c':
+      '0x6b175474e89094c44da98b954eedeac495271d0f',
+    '0x1f1f156e0317167c11aa412e3d1435ea29dc3cce':
+      '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    '0x4cb1892fddf14f772b2e39e299f44b2e5da90d04':
+      '0xf8fd466f12e236f4c96f7cce6c79eadb819abf58',
+    '0x811151066392fd641fe74a9b55a712670572d161':
+      '0xd093fa4fb80d09bb30817fdcd442d4d02ed3e5de',
+    '0x89534a24450081aa267c79b07411e9617d984052':
+      '0x02d60b84491589974263d922d9cc7a3152618ef6'
+  }
+};
+
 export const TOKENS_GENERIC: TokenConstants = {
   Popular: {
     Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
@@ -124,6 +161,7 @@ export const TOKENS_GENERIC: TokenConstants = {
 
 const TOKENS_MAP = {
   [Network.KOVAN]: TOKENS_KOVAN,
+  [Network.GOERLI]: TOKENS_GOERLI,
   [Network.MAINNET]: TOKENS_MAINNET,
   [Network.POLYGON]: TOKENS_POLYGON,
   [Network.ARBITRUM]: TOKENS_ARBITRUM

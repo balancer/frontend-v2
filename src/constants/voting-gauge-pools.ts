@@ -187,6 +187,13 @@ export const KOVAN_POOLS: Pool[] = [
   }
 ];
 
+export const GOERLI_POOLS: Pool[] = [
+  {
+    id: '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b',
+    network: Network.GOERLI
+  }
+];
+
 export const ARBITRUM_POOLS: Pool[] = [
   {
     id: '0xb340b6b1a34019853cb05b2de6ee8ffd0b89a008000100000000000000000036',
@@ -337,5 +344,6 @@ export const POOLS = [
   ...MAINNET_POOLS,
   ...ARBITRUM_POOLS,
   ...POLYGON_POOLS,
-  ...KOVAN_POOLS
+  ...KOVAN_POOLS,
+  ...GOERLI_POOLS
 ];

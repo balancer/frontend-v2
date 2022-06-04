@@ -6,6 +6,7 @@ import { networkId } from './useNetwork';
 
 const POOL_ISSUES = {
   [Network.KOVAN]: {},
+  [Network.GOERLI]: {},
   [Network.MAINNET]: {
     poolOwnerVulnWarningGovernance: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',

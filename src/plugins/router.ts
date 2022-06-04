@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
+import { isGoerli } from '@/composables/useNetwork';
+
 const ClaimPage = () =>
   import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
 const CookiesPolicyPage = () =>
@@ -34,6 +36,8 @@ const UnlockVeBalPage = () =>
   import(/* webpackChunkName: "UnlockVeBalPage" */ '@/pages/unlock-vebal.vue');
 const VeBalPage = () =>
   import(/* webpackChunkName: "VeBalPage" */ '@/pages/vebal.vue');
+const FaucetPage = () =>
+  import(/* webpackChunkName: "FaucetPage" */ '@/pages/faucet.vue');
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -137,6 +141,17 @@ const routes: RouteRecordRaw[] = [
     component: ClaimPage
   }
 ];
+
+/**
+ * TESTNET ONLY ROUTES
+ */
+if (isGoerli) {
+  routes.push({
+    path: '/faucet',
+    name: 'faucet',
+    component: FaucetPage
+  });
+}
 
 /**
  * DEV/STAGING ONLY ROUTES
