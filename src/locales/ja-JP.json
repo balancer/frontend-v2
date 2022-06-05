@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance":"Elementは、固定および変動利回り市場向けのオープンソースプロトコルです。 BalancerV2上に構築されています。 Element.fiで直接流動性ポジションを表示および管理します。",
     "accept":"受け入れる",
     "account":"アカウント",
     "action":"アクション",
@@ -194,6 +193,13 @@
     "exploreBalancerV1Pools":"V1プールを探索する->",
     "explorePools":"プールを探索する",
     "featuredProtocol":"注目のエコシステムプロトコル",
+    "featuredProtocols":{
+       "title":"注目の生態系プロトコル",
+       "Copper":"Copperは、透過的でユーザーフレンドリーなプラットフォーム上でバランサー流動性ブートストラッププール（LBP）を作成、管理、追跡するための直感的なUIを提供します。",
+       "Element":"固定および変動利回り市場向けのオープンソースプロトコルであるElementは、スリッページと永久損失を最小限に抑えるバランサープールとの効率的な取引を可能にします。",
+       "Sense":"SenseはDeFiイールドプリミティブのプロトコルであり、Balancer上に構築されたAMMであるSense Spaceは、イールドトークンとプリンシパルトークン間の効率的な取引を容易にします。",
+       "Tracer":"デリバティブ市場向けのオープンソースプロトコルであるTracerDAOは、Balancer Protocolを利用して流動性を集約し、レバレッジトークンの市場を創出します。"
+    },
     "fees":"料金",
     "feesManagedByGauntlet":"流動性プロバイダーは、このプールの流動性を利用して、すべての取引で動的スワップ手数料を獲得します。動的スワップ料金はガバナンスによって管理されており、現在はガントレットによって設定されています。",
     "feesTime":"料金（{0}）",
@@ -463,6 +469,7 @@
        }
     },
     "minTransactionBuffer":"スムーズな取引を確実にするには、ガス料金を支払うために少なくとも{0} {1}をウォレットに残しておく必要があります。",
+    "minimumTotalApr":"最小合計APR",
     "missingPoolNameOrSymbol":"プール名またはシンボルがありません",
     "missingPoolNameOrSymbolInfo":"プール名または記号がありません。プールを作成する前に入力してください。",
     "missingTokenPrices":"トークン価格がありません",
@@ -486,6 +493,7 @@
     "myApr":"私のAPR",
     "myBalance":"私のバランス",
     "myBalancerInvestments":"私のバランサーへの投資",
+    "myBoost":"私のブースト",
     "myInvestments":"私のバランサーへの投資",
     "myPortfolio":"私のポートフォリオ",
     "myShare":"私の分け前",
@@ -502,12 +510,15 @@
     "newTrade":"新しい貿易",
     "newWithdrawal":"新しい撤退",
     "next":"次",
+    "noClaimableIncentives":"主張できるインセンティブはありません",
     "noContent":"コンテンツなし",
     "noData":"データなし",
     "noInitLiquidity":"このプールには初期流動性がありません",
     "noInitLiquidityDetail":"プール作成UIの準備が整うまで、投資がサポートされる前に、スマートコントラクトでINIT結合タイプが必要です。",
     "noInvestments":"このプールへの投資はありません。",
     "noInvestmentsPool":"このプールへの投資はありません",
+    "noNativeCurrency":"{1}で取引するには、ガス料金として{0}が必要です。",
+    "noNativeCurrencyEthereum":"{1}で最も基本的な取引を行うには、ガス料金に{0}が必要です。ただし、「ガスレス取引」オプションを使用することにより、このウォレットでバランサーでの使用を以前に承認したトークンを引き続き取引できます。",
     "noPoolsFound":"プールが見つかりません",
     "noPriceImpact":"ベストプライス",
     "noPriceImpactTip":"トークンを比例的に追加すると、最良の価格が得られます。",
@@ -515,6 +526,7 @@
     "noRecentActivity":"あなたの活動はここに表示されます...",
     "noResults":"結果がありません。",
     "noSwapsPool":"このプールにはスワップはありません。",
+    "noTokensInWallet":"{0}の接続されたウォレットにトークンがありません",
     "notAvailable":"該当なし",
     "numberOfPools":"プールの数",
     "oneDay":"1D",
@@ -564,6 +576,20 @@
     "poolReturns":"プールリターン",
     "poolSymbol":"プールのシンボル",
     "poolTokenName":"プールトークン名",
+    "poolTransactionStats":{
+       "trade":{
+          "volume":"ボリューム{期間}",
+          "largest":"最大の取引{期間}",
+          "ave":"アベニュートレード{期間}",
+          "total":"総取引数{期間}"
+       },
+       "investment":{
+          "netTvl":"ネットTVL{期間}",
+          "largest":"最大の投資{期間}",
+          "ave":"アベニュー投資{期間}",
+          "net":"純投資{期間}"
+       }
+    },
     "poolTransactions":"プールトランザクション",
     "poolTransfer":{
        "myPoolBalancesCard":{
@@ -578,6 +604,20 @@
     },
     "poolType":"プールタイプ",
     "poolValue":"プールの価値",
+    "poolWarnings":{
+       "bugWarning20220513":{
+          "title":"このプールには、Balancerと互換性がないことが判明したダブルエントリポイントトークンが含まれています。現在、プールからすべての資産を比例的に引き出すことはできません。単一の資産で引き出すことは可能ですが、流動性プロバイダーは待つことをお勧めします。比例的な引き出しを可能にするメカニズムが実装されています。 <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">もっと詳しく知る</a>"
+       },
+       "poolOwnerVulnWarningGovernance":{
+          "title":"このプールは、 <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">ここ</a>に開示されている脆弱性の影響を受けます。エクスプロイトがバランサーガバナンス自体によって開始される必要がある限り、資金は安全です。プールの新しいバージョンは、移行可能な数週間以内に展開されます。"
+       },
+       "poolOwnerVulnWarningEcosystem":{
+          "title":"このプールは、 <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">ここ</a>に開示されている脆弱性の影響を受けます。バランサーエコシステムの既知の参加者で構成されるマルチシグによってエクスプロイトを開始する必要がある限り、ファンドは安全です。"
+       },
+       "poolOwnerVulnWarningEcosystemMigrate":{
+          "title":"このプールは、 <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">ここ</a>に開示されている脆弱性の影響を受けます。バランサーエコシステムの既知の参加者で構成されるマルチシグによってエクスプロイトを開始する必要がある限り、ファンドは安全です。プールの新しいバージョンは、移行可能な数週間以内に展開されます。"
+       }
+    },
     "pools":"プール",
     "poolsToMigrate":"移行するプール",
     "poolsToStake":"賭けるプール",
@@ -605,6 +645,7 @@
     "profit":"利益（1 {0}）",
     "proportionalSuggestion":"比例提案",
     "proportionalWithdrawal":"比例撤退",
+    "protocolEarnings":"プロトコルとveBALの収益",
     "protocolFees":"プロトコル料金",
     "rank":"ランク（1 {0}）",
     "receipt":"領収書",
@@ -664,14 +705,6 @@
     "symbol":"シンボル",
     "tableShowsBalancerV2Pools":"この表は、BalancerV2プールのみを示しています。",
     "theme":"テーマ",
-    "yieldAprRewards":{
-       "apr":{
-          "steth":"stETHステーキング報酬4月"
-       },
-       "fiat":{
-          "steth":"stETHステーキング報酬"
-       }
-    },
     "threeMonths":"3M",
     "time":"時間",
     "timeAgo":"{0}前",
@@ -707,6 +740,7 @@
     "totalValue":"総価値",
     "totalValueTo":"合計値",
     "trade":"トレード",
+    "tradeDetails":"取引の詳細",
     "tradeEarns":"この取引はあなたを稼ぎます",
     "tradeFromWeth":"WETHからの取引",
     "tradeGaslessToggle":{
@@ -758,6 +792,15 @@
        },
        "gasCosts":"ガス代"
     },
+    "tradeToggle":{
+       "wrapEth":"ガス取引-ETHをラッピングするために必要",
+       "unwrapEth":"ガス取引-ETHを開梱するために必要",
+       "fromEth":"ガス取引-ETHから取引する場合に必要",
+       "signature":"署名の「ガスレス」取引—MEV保護で最適化された価格。",
+       "tradeGasless":"署名によるガスレス取引",
+       "tradeWithGas":"ガス料金で取引する"
+    },
+    "trader":"トレーダー",
     "tradesThroughWeth":"ETHルートからバランサー流動性プールを経由して取引すると、ガス料金が発生します。",
     "transactionAction":{
        "trade":"取引する",
@@ -1006,9 +1049,18 @@
     "wrapInstruction":"{0}をW{0}にラップする",
     "wrapStEthTooltip":"このプールには、Wrapped Liquid Staked ETH 2.0（wstETH）が必要です。投資を最大化するために、いくつかの追加のstETHをラップすることができます。",
     "yearAbbrev":"y",
+    "yieldAprRewards":{
+       "apr":{
+          "steth":"stETHステーキング報酬4月"
+       },
+       "fiat":{
+          "steth":"stETHステーキング報酬"
+       }
+    },
     "yieldEarnings":"利回り収益",
     "youCanInvest":"あなたは投資することができます",
     "youDidIt":"できたね！",
+    "your":"君の",
     "yourBalanceInPool":"このプールでのあなたのバランス",
     "yourTransactions":"このプールでのトランザクション"
  }

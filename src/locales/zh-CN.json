@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance":"Element 是用于固定和可变收益市场的开源协议。它建立在 Balancer V2 之上。直接在 Element.fi 上查看和管理您的流动性头寸。",
     "accept":"接受",
     "account":"账户",
     "action":"行动",
@@ -194,6 +193,13 @@
     "exploreBalancerV1Pools":"探索V1池->",
     "explorePools":"探索池",
     "featuredProtocol":"特色生态系统协议",
+    "featuredProtocols":{
+       "title":"特色生态系统协议",
+       "Copper":"Copper 提供直观的 UI，用于在透明且用户友好的平台上创建、管理和跟踪 Balancer 流动性引导池 (LBP)。",
+       "Element":"Element 是一种用于固定和可变收益市场的开源协议，可通过平衡器池实现高效交易，最大限度地减少滑点和无常损失。",
+       "Sense":"Sense 是 DeFi 收益原语的协议，Sense Space 是一种建立在 Balancer 上的 AMM，可促进收益和本金代币之间的高效交易。",
+       "Tracer":"Tracer DAO 是衍生品市场的开源协议，它利用 Balancer 协议来聚合流动性并为杠杆代币创建市场。"
+    },
     "fees":"费用",
     "feesManagedByGauntlet":"流动性提供者利用此池中的流动性在每笔交易中赚取动态掉期费。动态掉期费用由治理控制，目前由Gauntlet设置。",
     "feesTime":"费用（{0}）",
@@ -463,6 +469,7 @@
        }
     },
     "minTransactionBuffer":"为确保交易顺利进行，您的钱包中必须至少留有 {0} {1} 以支付加油费。",
+    "minimumTotalApr":"最低总年利率",
     "missingPoolNameOrSymbol":"缺少池名称或符号",
     "missingPoolNameOrSymbolInfo":"缺少池名称或符号，请在创建池之前填写。",
     "missingTokenPrices":"缺少代币价格",
@@ -486,6 +493,7 @@
     "myApr":"我的四月",
     "myBalance":"我的余额",
     "myBalancerInvestments":"我的平衡器投资",
+    "myBoost":"我的助力",
     "myInvestments":"我的均衡器投资",
     "myPortfolio":"我的投资组合",
     "myShare":"我的份额",
@@ -502,12 +510,15 @@
     "newTrade":"新贸易",
     "newWithdrawal":"新的提款",
     "next":"下一个",
+    "noClaimableIncentives":"没有可索赔的激励措施",
     "noContent":"无内容",
     "noData":"无可用数据",
     "noInitLiquidity":"该池没有初始流动性",
     "noInitLiquidityDetail":"在池创建 UI 准备就绪之前，在支持投资之前，智能合约需要 INIT 连接类型。",
     "noInvestments":"此池中没有任何投资。",
     "noInvestmentsPool":"此池中没有任何投资",
+    "noNativeCurrency":"您需要支付一些 {0} 的汽油费才能在 {1} 上进行交易。",
+    "noNativeCurrencyEthereum":"您需要支付一些 {0} 的汽油费才能在 {1} 上进行大多数基本交易。但是，您可以使用“无气体交易”选项继续使用此钱包交易您之前批准在 Balancer 上使用的任何代币。",
     "noPoolsFound":"找不到池",
     "noPriceImpact":"最好的价钱",
     "noPriceImpactTip":"按比例添加代币可以获得最佳价格。",
@@ -515,6 +526,7 @@
     "noRecentActivity":"您的活动将显示在此处...",
     "noResults":"没结果。",
     "noSwapsPool":"此池中没有掉期。",
+    "noTokensInWallet":"您在 {0} 连接的钱包中没有任何代币",
     "notAvailable":"不适用",
     "numberOfPools":"池数量",
     "oneDay":"一天",
@@ -564,6 +576,20 @@
     "poolReturns":"池收益",
     "poolSymbol":"池符号",
     "poolTokenName":"池代币名称",
+    "poolTransactionStats":{
+       "trade":{
+          "volume":"卷{期}",
+          "largest":"最大交易{期}",
+          "ave":"平均贸易{期}",
+          "total":"总交易{期}"
+       },
+       "investment":{
+          "netTvl":"净 TVL {期}",
+          "largest":"最大投资{期}",
+          "ave":"平均投资{期}",
+          "net":"净投资{期}"
+       }
+    },
     "poolTransactions":"池交易",
     "poolTransfer":{
        "myPoolBalancesCard":{
@@ -578,6 +604,20 @@
     },
     "poolType":"池类型",
     "poolValue":"池数值",
+    "poolWarnings":{
+       "bugWarning20220513":{
+          "title":"该池包含双入口令牌，已被发现与 Balancer 不兼容。目前不可能按比例从池中提取所有资产。虽然可以提取单一资产，但建议流动性提供者等待。正在实施一种机制，以允许按比例提款。 <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">学到更多</a>"
+       },
+       "poolOwnerVulnWarningGovernance":{
+          "title":"此池受<a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">此处</a>披露的漏洞影响。就必须由 Balancer Governance 本身发起的漏洞利用而言，资金是安全的。将在接下来的几周内部署可以迁移到的新版本的池。"
+       },
+       "poolOwnerVulnWarningEcosystem":{
+          "title":"此池受<a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">此处</a>披露的漏洞影响。只要漏洞利用必须由 Balancer 生态系统中的已知参与者组成的多重签名发起，资金是安全的。"
+       },
+       "poolOwnerVulnWarningEcosystemMigrate":{
+          "title":"此池受<a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">此处</a>披露的漏洞影响。只要漏洞利用必须由 Balancer 生态系统中的已知参与者组成的多重签名发起，资金是安全的。将在接下来的几周内部署可以迁移到的新版本的池。"
+       }
+    },
     "pools":"游泳池",
     "poolsToMigrate":"要迁移的池",
     "poolsToStake":"质押池",
@@ -605,6 +645,7 @@
     "profit":"利润 (1{0})",
     "proportionalSuggestion":"比例建议",
     "proportionalWithdrawal":"按比例提款",
+    "protocolEarnings":"协议和 veBAL 收益",
     "protocolFees":"协议费",
     "rank":"排名 (1{0})",
     "receipt":"收据",
@@ -664,14 +705,6 @@
     "symbol":"符号",
     "tableShowsBalancerV2Pools":"该表仅显示Balancer V2池。",
     "theme":"主题",
-    "yieldAprRewards":{
-       "apr":{
-          "steth":"stETH 质押奖励 APR"
-       },
-       "fiat":{
-          "steth":"stETH 质押奖励"
-       }
-    },
     "threeMonths":"三个月",
     "time":"时间",
     "timeAgo":"{0}前",
@@ -707,6 +740,7 @@
     "totalValue":"总价值",
     "totalValueTo":"总价值",
     "trade":"交易",
+    "tradeDetails":"交易详情",
     "tradeEarns":"这笔交易为您赚钱",
     "tradeFromWeth":"来自 WETH 的交易",
     "tradeGaslessToggle":{
@@ -758,6 +792,15 @@
        },
        "gasCosts":"燃气成本"
     },
+    "tradeToggle":{
+       "wrapEth":"Gas 交易——包裹 ETH 所必需的",
+       "unwrapEth":"Gas 交易——解包 ETH 所必需的",
+       "fromEth":"Gas 交易——从 ETH 交易时需要",
+       "signature":"标志性的“无气体”交易——通过 MEV 保护优化价格。",
+       "tradeGasless":"通过签名进行无气体交易",
+       "tradeWithGas":"以gas费交易"
+    },
+    "trader":"商人",
     "tradesThroughWeth":"从 ETH 路线通过 Balancer 流动性池进行交易并产生 gas 费用。",
     "transactionAction":{
        "trade":"贸易",
@@ -1006,9 +1049,18 @@
     "wrapInstruction":"将您的{0}包裹到W{0}",
     "wrapStEthTooltip":"该矿池需要 Wrapped Liquid Staked ETH 2.0 (wstETH)。为了最大化您的投资，您可以包装一些额外的 stETH。",
     "yearAbbrev":"年",
+    "yieldAprRewards":{
+       "apr":{
+          "steth":"stETH 质押奖励 APR"
+       },
+       "fiat":{
+          "steth":"stETH 质押奖励"
+       }
+    },
     "yieldEarnings":"收益收益",
     "youCanInvest":"你可以投资",
     "youDidIt":"你做到了！",
+    "your":"您的",
     "yourBalanceInPool":"您在此池中的余额",
     "yourTransactions":"您在该池中的交易"
  }

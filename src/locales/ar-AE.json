@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance":"Element هو بروتوكول مفتوح المصدر للأسواق ذات العائد الثابت والمتغير. إنه مبني على Balancer V2. عرض وإدارة مراكز السيولة الخاصة بك مباشرة على Element.fi.",
     "accept":"قبول",
     "account":"حساب",
     "action":"عمل",
@@ -194,6 +193,13 @@
     "exploreBalancerV1Pools":"استكشف حمامات V1 ->",
     "explorePools":"استكشف حمامات السباحة",
     "featuredProtocol":"بروتوكول النظام البيئي المميز",
+    "featuredProtocols":{
+       "title":"بروتوكولات النظام البيئي المميزة",
+       "Copper":"يوفر النحاس واجهة مستخدم بديهية لإنشاء وإدارة وتتبع مجمعات توازن السيولة (LBPs) على منصة شفافة وسهلة الاستخدام.",
+       "Element":"بروتوكول مفتوح المصدر للأسواق ذات العائد الثابت والمتغير ، يتيح Element التداول الفعال مع Balancer Pool الذي يقلل الانزلاق والخسارة غير الدائمة.",
+       "Sense":"Sense هو بروتوكول لعوائد DeFi الأولية ، و Sense Space ، وهو AMM مبني على Balancer ، يسهل التداول الفعال بين العائد والرموز الأساسية.",
+       "Tracer":"بروتوكول مفتوح المصدر لأسواق المشتقات ، يستخدم Tracer DAO بروتوكول الموازن للسيولة المجمعة وخلق سوق للرموز ذات الرافعة المالية."
+    },
     "fees":"مصاريف",
     "feesManagedByGauntlet":"يكسب مقدمو السيولة رسوم مقايضة ديناميكية على كل صفقة باستخدام السيولة في هذا المجمع. يتم التحكم في رسوم المقايضة الديناميكية بواسطة الحوكمة ويتم تحديدها حاليًا بواسطة Gauntlet.",
     "feesTime":"الرسوم ({0})",
@@ -463,6 +469,7 @@
        }
     },
     "minTransactionBuffer":"لضمان إجراء معاملة سلسة ، يجب ترك {0} {1} على الأقل في محفظتك لدفع رسوم الغاز.",
+    "minimumTotalApr":"الحد الأدنى لإجمالي أبريل",
     "missingPoolNameOrSymbol":"اسم التجمع أو رمزه مفقود",
     "missingPoolNameOrSymbolInfo":"يوجد اسم أو رمز للتجمع مفقود ، قم بتعبئته قبل إنشاء التجمع.",
     "missingTokenPrices":"أسعار الرموز المفقودة",
@@ -486,6 +493,7 @@
     "myApr":"أبريل",
     "myBalance":"رصيدي",
     "myBalancerInvestments":"استثماراتي الموازن",
+    "myBoost":"دفعي",
     "myInvestments":"استثماراتي في V2 Balancer",
     "myPortfolio":"أعمالي",
     "myShare":"حصتي",
@@ -502,12 +510,15 @@
     "newTrade":"تجارة جديدة",
     "newWithdrawal":"انسحاب جديد",
     "next":"التالي",
+    "noClaimableIncentives":"لا توجد حوافز يمكن المطالبة بها",
     "noContent":"لا يوجد محتوى",
     "noData":"لا تتوافر بيانات",
     "noInitLiquidity":"هذا المجمع ليس لديه سيولة أولية",
     "noInitLiquidityDetail":"إلى أن تصبح واجهة مستخدم إنشاء التجمع جاهزة ، يلزم وجود نوع صلة INIT في العقد الذكي قبل دعم الاستثمارات.",
     "noInvestments":"لا استثمارات",
     "noInvestmentsPool":"لا توجد استثمارات في هذا المجمع",
+    "noNativeCurrency":"ستحتاج إلى بعض {0} لرسوم الغاز من أجل إجراء معاملة في {1}.",
+    "noNativeCurrencyEthereum":"ستحتاج إلى بعض {0} رسوم الوقود من أجل إجراء معظم المعاملات الأساسية في {1}. ومع ذلك ، يمكنك الاستمرار في تداول أي الرموز المميزة التي وافقت عليها مسبقًا لاستخدامها على Balancer مع هذه المحفظة ، باستخدام خيار ""trade gasless"".",
     "noPoolsFound":"لم يتم العثور على حمامات سباحة",
     "noPriceImpact":"افضل سعر",
     "noPriceImpactTip":"إضافة الرموز بشكل متناسب تحصل على أفضل سعر",
@@ -515,6 +526,7 @@
     "noRecentActivity":"سيظهر نشاطك هنا ...",
     "noResults":"لا نتائج.",
     "noSwapsPool":"لا مقايضة في هذا المجمع.",
+    "noTokensInWallet":"ليس لديك أي رموز مميزة في محفظتك المتصلة على {0}",
     "notAvailable":"غير متاح",
     "numberOfPools":"عدد حمامات السباحة",
     "oneDay":"1 د",
@@ -564,6 +576,20 @@
     "poolReturns":"عودة البلياردو",
     "poolSymbol":"رمز التجمع",
     "poolTokenName":"اسم رمز التجمع",
+    "poolTransactionStats":{
+       "trade":{
+          "volume":"الحجم {period}",
+          "largest":"أكبر تداول {فترة}",
+          "ave":"Ave. trade {period}",
+          "total":"إجمالي التداولات {period}"
+       },
+       "investment":{
+          "netTvl":"Net TVL {period}",
+          "largest":"أكبر استثمار {فترة}",
+          "ave":"Ave. Investment {period}",
+          "net":"صافي الاستثمارات {فترة}"
+       }
+    },
     "poolTransactions":"المعاملات المجمعة",
     "poolTransfer":{
        "myPoolBalancesCard":{
@@ -578,6 +604,20 @@
     },
     "poolType":"نوع البركة",
     "poolValue":"قيمة التجمع",
+    "poolWarnings":{
+       "bugWarning20220513":{
+          "title":"يحتوي هذا التجمع على رموز ذات نقطة دخول مزدوجة ، والتي وُجد أنها غير متوافقة مع Balancer. لا يمكن حاليًا سحب جميع الأصول من المجمع بشكل متناسب. في حين أنه من الممكن السحب في أصل واحد ، يُنصح موفرو السيولة بالانتظار. يجري تنفيذ آلية للسماح بعمليات الانسحاب النسبي. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">يتعلم أكثر</a>"
+       },
+       "poolOwnerVulnWarningGovernance":{
+          "title":"يتأثر هذا التجمع بثغرة أمنية تم الكشف عنها <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">هنا</a> . الأموال آمنة بقدر ما يجب أن تبدأ الاستغلال من قبل Balancer Governance نفسها. سيتم نشر إصدار جديد من التجمع في الأسابيع القليلة القادمة التي يمكن الترحيل إليها."
+       },
+       "poolOwnerVulnWarningEcosystem":{
+          "title":"يتأثر هذا التجمع بثغرة أمنية تم الكشف عنها <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">هنا</a> . الأموال آمنة بقدر ما يجب أن يبدأ الاستغلال بواسطة multisig يتألف من مشاركين معروفين في النظام البيئي Balancer."
+       },
+       "poolOwnerVulnWarningEcosystemMigrate":{
+          "title":"يتأثر هذا التجمع بثغرة أمنية تم الكشف عنها <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">هنا</a> . الأموال آمنة بقدر ما يجب أن يبدأ الاستغلال بواسطة multisig يتألف من مشاركين معروفين في النظام البيئي Balancer. سيتم نشر إصدار جديد من التجمع في الأسابيع القليلة القادمة التي يمكن الترحيل إليها."
+       }
+    },
     "pools":"حمامات السباحة",
     "poolsToMigrate":"برك للهجرة",
     "poolsToStake":"مجمعات للحصة",
@@ -605,6 +645,7 @@
     "profit":"الربح (1 {0})",
     "proportionalSuggestion":"اقتراح نسبي",
     "proportionalWithdrawal":"الانسحاب النسبي",
+    "protocolEarnings":"أرباح البروتوكول و veBAL",
     "protocolFees":"رسوم المراسم",
     "rank":"الترتيب (1 {0})",
     "receipt":"إيصال",
@@ -664,14 +705,6 @@
     "symbol":"رمز",
     "tableShowsBalancerV2Pools":"يعرض هذا الجدول فقط تجمعات Balancer V2.",
     "theme":"سمة",
-    "yieldAprRewards":{
-       "apr":{
-          "steth":"المكافآت staking staking أبريل"
-       },
-       "fiat":{
-          "steth":"المكافآت staking staking"
-       }
-    },
     "threeMonths":"3 م",
     "time":"زمن",
     "timeAgo":"قبل {0}",
@@ -707,6 +740,7 @@
     "totalValue":"القيمة الإجمالية",
     "totalValueTo":"القيمة الإجمالية لـ",
     "trade":"تجارة",
+    "tradeDetails":"تفاصيل التجارة",
     "tradeEarns":"هذه التجارة تكسبك",
     "tradeFromWeth":"تداول من WETH",
     "tradeGaslessToggle":{
@@ -758,6 +792,15 @@
        },
        "gasCosts":"تكاليف الغاز"
     },
+    "tradeToggle":{
+       "wrapEth":"تجارة الغاز - مطلوبة لتغليف ETH",
+       "unwrapEth":"تجارة الغاز - مطلوبة لفك غلاف ETH",
+       "fromEth":"تجارة الغاز - مطلوبة عند التداول من ETH",
+       "signature":"التجارة \"بدون غاز\" - السعر الأمثل مع حماية MEV.",
+       "tradeGasless":"تداول بدون غاز بالتوقيع",
+       "tradeWithGas":"تداول برسوم غاز"
+    },
+    "trader":"تاجر",
     "tradesThroughWeth":"التداولات من مسار ETH عبر مجمعات السيولة Balancer وتحمل رسوم الغاز.",
     "transactionAction":{
        "trade":"تجارة",
@@ -1006,9 +1049,18 @@
     "wrapInstruction":"لف {0} إلى W {0}",
     "wrapStEthTooltip":"يتطلب هذا التجمع Wrapped Liquid Staked ETH 2.0 (wstETH). لتعظيم استثمارك ، يمكنك إتمام بعض الإجراءات الإضافية.",
     "yearAbbrev":"ذ",
+    "yieldAprRewards":{
+       "apr":{
+          "steth":"المكافآت staking staking أبريل"
+       },
+       "fiat":{
+          "steth":"المكافآت staking staking"
+       }
+    },
     "yieldEarnings":"أرباح الغلة",
     "youCanInvest":"يمكنك الاستثمار",
     "youDidIt":"أنت فعلت ذلك!",
+    "your":"لك",
     "yourBalanceInPool":"رصيدك في هذا التجمع",
     "yourTransactions":"معاملاتك في هذا المجمع"
  }

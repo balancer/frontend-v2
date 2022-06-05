@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance":"Element는 고정 및 변동 수익률 시장을 위한 오픈 소스 프로토콜입니다. 이것은 Balancer V2를 기반으로 합니다. Element.fi에서 유동성 포지션을 직접 확인하고 관리하세요.",
     "accept":"동의하기",
     "account":"계정",
     "action":"동작",
@@ -194,6 +193,13 @@
     "exploreBalancerV1Pools":"V1 풀 살펴보기->",
     "explorePools":"풀 탐색",
     "featuredProtocol":"주요 생태계 프로토콜",
+    "featuredProtocols":{
+       "title":"주요 생태계 프로토콜",
+       "Copper":"Copper는 투명하고 사용자 친화적인 플랫폼에서 밸런서 유동성 부트스트래핑 풀(LBP)을 생성, 관리 및 추적하기 위한 직관적인 UI를 제공합니다.",
+       "Element":"고정 및 변동 수익률 시장을 위한 오픈 소스 프로토콜인 Element는 슬리피지와 영구적 손실을 최소화하는 밸런서 풀로 효율적인 거래를 가능하게 합니다.",
+       "Sense":"Sense는 DeFi 수익률 프리미티브를 위한 프로토콜이며, Balancer에 구축된 AMM인 Sense Space는 수익률과 기본 토큰 간의 효율적인 거래를 촉진합니다.",
+       "Tracer":"파생 시장을 위한 오픈 소스 프로토콜인 Tracer DAO는 전체 유동성을 위해 밸런서 프로토콜을 활용하고 레버리지 토큰을 위한 시장을 만듭니다."
+    },
     "fees":"수수료",
     "feesManagedByGauntlet":"유동성 공급자는이 풀의 유동성을 활용하는 모든 거래에서 동적 스왑 수수료를받습니다. 동적 스왑 수수료는 거버넌스에 의해 제어되며 현재 Gauntlet에서 설정합니다.",
     "feesTime":"수수료 ({0})",
@@ -463,6 +469,7 @@
        }
     },
     "minTransactionBuffer":"원활한 거래를 위해 가스 요금을 지불하려면 지갑에 최소 {0} {1}이(가) 남아 있어야 합니다.",
+    "minimumTotalApr":"최소 총 연이율",
     "missingPoolNameOrSymbol":"풀 이름 또는 기호가 누락되었습니다.",
     "missingPoolNameOrSymbolInfo":"누락된 풀 이름 또는 기호가 있습니다. 풀을 생성하기 전에 채우십시오.",
     "missingTokenPrices":"토큰 가격 누락",
@@ -486,6 +493,7 @@
     "myApr":"내 연이율",
     "myBalance":"내 잔액",
     "myBalancerInvestments":"마이 밸런서 투자",
+    "myBoost":"내 부스트",
     "myInvestments":"내 밸런서 투자",
     "myPortfolio":"내 포트폴리오",
     "myShare":"내 몫",
@@ -502,12 +510,15 @@
     "newTrade":"새로운 무역",
     "newWithdrawal":"새로운 출금",
     "next":"다음",
+    "noClaimableIncentives":"청구 가능한 인센티브 없음",
     "noContent":"콘텐츠 없음",
     "noData":"자료 없음",
     "noInitLiquidity":"이 풀에는 초기 유동성이 없습니다.",
     "noInitLiquidityDetail":"풀 생성 UI가 준비 될 때까지 투자가 지원되기 전에 스마트 계약에서 INIT 조인 유형이 필요합니다.",
     "noInvestments":"이 풀에 대한 투자가 없습니다.",
     "noInvestmentsPool":"이 풀에 대한 투자 없음",
+    "noNativeCurrency":"{1}에서 거래하려면 가스 요금으로 약간의 {0}이(가) 필요합니다.",
+    "noNativeCurrencyEthereum":"{1}에서 가장 기본적인 거래를 하려면 가스 요금으로 약간의 {0}이(가) 필요합니다. 그러나 '가스 없는 거래' 옵션을 사용하여 이 지갑으로 이전에 Balancer에서 사용하도록 승인한 모든 토큰을 계속 거래할 수 있습니다.",
     "noPoolsFound":"풀이 없습니다.",
     "noPriceImpact":"최고의 가격",
     "noPriceImpactTip":"비례 적으로 토큰을 추가하면 최상의 가격을 얻을 수 있습니다.",
@@ -515,6 +526,7 @@
     "noRecentActivity":"활동이 여기에 표시됩니다...",
     "noResults":"결과가 없습니다.",
     "noSwapsPool":"이 풀에는 스왑이 없습니다.",
+    "noTokensInWallet":"{0}에 연결된 지갑에 토큰이 없습니다.",
     "notAvailable":"해당 없음",
     "numberOfPools":"풀 수",
     "oneDay":"1D",
@@ -564,6 +576,20 @@
     "poolReturns":"풀 반환",
     "poolSymbol":"수영장 기호",
     "poolTokenName":"풀 토큰 이름",
+    "poolTransactionStats":{
+       "trade":{
+          "volume":"볼륨 {period}",
+          "largest":"최대 거래 {period}",
+          "ave":"Ave. 거래 {period}",
+          "total":"총 거래 {period}"
+       },
+       "investment":{
+          "netTvl":"순 TVL {기간}",
+          "largest":"최대 투자 {period}",
+          "ave":"평균 투자 {period}",
+          "net":"순 투자 {period}"
+       }
+    },
     "poolTransactions":"풀 트랜잭션",
     "poolTransfer":{
        "myPoolBalancesCard":{
@@ -578,6 +604,20 @@
     },
     "poolType":"수영장 유형",
     "poolValue":"풀 가치",
+    "poolWarnings":{
+       "bugWarning20220513":{
+          "title":"이 풀에는 Balancer와 호환되지 않는 이중 진입점 토큰이 포함되어 있습니다. 현재 풀에서 모든 자산을 비례적으로 인출하는 것은 불가능합니다. 단일 자산으로 인출하는 것이 가능하지만 유동성 공급자는 기다리는 것이 좋습니다. 비례 인출을 허용하는 메커니즘이 구현되고 있습니다. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">더 알아보기</a>"
+       },
+       "poolOwnerVulnWarningGovernance":{
+          "title":"이 풀은 <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">여기</a> 에 공개된 취약점의 영향을 받습니다. 익스플로잇이 Balancer Governance 자체에 의해 시작되어야 하는 한 자금은 안전합니다. 마이그레이션할 수 있는 새 버전의 풀이 앞으로 몇 주 내에 배포됩니다."
+       },
+       "poolOwnerVulnWarningEcosystem":{
+          "title":"이 풀은 <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">여기</a> 에 공개된 취약점의 영향을 받습니다. 펀드는 밸런서 생태계의 알려진 참가자로 구성된 다중 서명에 의해 익스플로잇이 시작되어야 하는 한 안전합니다."
+       },
+       "poolOwnerVulnWarningEcosystemMigrate":{
+          "title":"이 풀은 <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">여기</a> 에 공개된 취약점의 영향을 받습니다. 펀드는 밸런서 생태계의 알려진 참가자로 구성된 다중 서명에 의해 익스플로잇이 시작되어야 하는 한 안전합니다. 마이그레이션할 수 있는 새 버전의 풀이 앞으로 몇 주 내에 배포됩니다."
+       }
+    },
     "pools":"수영장",
     "poolsToMigrate":"마이그레이션할 풀",
     "poolsToStake":"스테이킹할 풀",
@@ -605,6 +645,7 @@
     "profit":"이익 (1 {0})",
     "proportionalSuggestion":"비례 제안",
     "proportionalWithdrawal":"비례 인출",
+    "protocolEarnings":"프로토콜 및 veBAL 수익",
     "protocolFees":"프로토콜 수수료",
     "rank":"순위 (1 {0})",
     "receipt":"영수증",
@@ -664,14 +705,6 @@
     "symbol":"상징",
     "tableShowsBalancerV2Pools":"이 표에는 Balancer V2 풀만 표시됩니다.",
     "theme":"테마",
-    "yieldAprRewards":{
-       "apr":{
-          "steth":"stETH 스테이킹 보상 APR"
-       },
-       "fiat":{
-          "steth":"stETH 스테이킹 보상"
-       }
-    },
     "threeMonths":"3M",
     "time":"시각",
     "timeAgo":"{0} 전",
@@ -707,6 +740,7 @@
     "totalValue":"총 가치",
     "totalValueTo":"총 가치",
     "trade":"무역",
+    "tradeDetails":"거래 세부 정보",
     "tradeEarns":"이 거래는 당신을 얻습니다",
     "tradeFromWeth":"WETH에서 거래",
     "tradeGaslessToggle":{
@@ -758,6 +792,15 @@
        },
        "gasCosts":"가스 비용"
     },
+    "tradeToggle":{
+       "wrapEth":"가스 거래 - ETH 포장에 필요",
+       "unwrapEth":"가스 거래 - ETH 포장 해제에 필요",
+       "fromEth":"가스 거래 - ETH에서 거래할 때 필요",
+       "signature":"시그니처 '가스리스' 거래 - MEV 보호로 최적화된 가격.",
+       "tradeGasless":"서명으로 가스리스 거래",
+       "tradeWithGas":"가스 수수료로 거래"
+    },
+    "trader":"상인",
     "tradesThroughWeth":"ETH 경로에서 Balancer 유동성 풀을 통해 거래하고 가스 요금이 발생합니다.",
     "transactionAction":{
        "trade":"무역",
@@ -1006,9 +1049,18 @@
     "wrapInstruction":"{0}를 W{0}로 래핑",
     "wrapStEthTooltip":"이 풀에는 Wrapped Liquid Staking ETH 2.0(wstETH)이 필요합니다. 투자를 극대화하기 위해 추가 stETH를 포장할 수 있습니다.",
     "yearAbbrev":"와이",
+    "yieldAprRewards":{
+       "apr":{
+          "steth":"stETH 스테이킹 보상 APR"
+       },
+       "fiat":{
+          "steth":"stETH 스테이킹 보상"
+       }
+    },
     "yieldEarnings":"수익률",
     "youCanInvest":"당신은 투자할 수 있습니다",
     "youDidIt":"훌륭해!",
+    "your":"당신의",
     "yourBalanceInPool":"이 풀의 잔액",
     "yourTransactions":"이 풀의 거래"
  }

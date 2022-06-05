@@ -1,5 +1,4 @@
 {
-    "aboutElementFinance":"O Element é um protocolo de código aberto para mercados de rendimento fixo e variável. Ele é construído no Balancer V2. Visualize e gerencie suas posições de liquidez diretamente no Element.fi.",
     "accept":"Aceitar",
     "account":"Conta",
     "action":"Açao",
@@ -194,6 +193,13 @@
     "exploreBalancerV1Pools":"Explore os pools V1 ->",
     "explorePools":"Explorar pools",
     "featuredProtocol":"Protocolo de ecossistema apresentado",
+    "featuredProtocols":{
+       "title":"Protocolos de ecossistema em destaque",
+       "Copper":"O Copper oferece uma interface de usuário intuitiva para criar, gerenciar e rastrear Balancer Liquidity Bootstrapping Pools (LBPs) em uma plataforma transparente e fácil de usar.",
+       "Element":"Um protocolo de código aberto para mercados de rendimento fixo e variável, o Element permite uma negociação eficiente com um Balancer Pool que minimiza a derrapagem e a perda temporária.",
+       "Sense":"O Sense é um protocolo para primitivos de rendimento DeFi, e o Sense Space, um AMM construído no Balancer, facilita a negociação eficiente entre tokens de rendimento e de princípio.",
+       "Tracer":"Um protocolo de código aberto para mercados derivativos, o Tracer DAO utiliza o Balancer Protocol para liquidez agregada e criando um mercado para tokens alavancados."
+    },
     "fees":"honorários",
     "feesManagedByGauntlet":"Os provedores de liquidez ganham taxas de swap dinâmicas em todas as negociações que utilizam a Liquidez neste pool. As taxas de troca dinâmica são controladas pela governança e atualmente são definidas pelo Gauntlet.",
     "feesTime":"Taxas ({0})",
@@ -463,6 +469,7 @@
        }
     },
     "minTransactionBuffer":"Para garantir uma transação tranquila, pelo menos {0} {1} deve ser deixado em sua carteira para pagar as taxas de gás.",
+    "minimumTotalApr":"APR total mínima",
     "missingPoolNameOrSymbol":"Nome ou símbolo do pool ausente",
     "missingPoolNameOrSymbolInfo":"Há um nome ou símbolo de pool ausente, preencha-o antes de criar o pool.",
     "missingTokenPrices":"Preços de token ausentes",
@@ -486,6 +493,7 @@
     "myApr":"Minha TAEG",
     "myBalance":"Meu saldo",
     "myBalancerInvestments":"Meus investimentos no balanceador",
+    "myBoost":"Meu impulso",
     "myInvestments":"Meus investimentos balanceadores",
     "myPortfolio":"Meu portfolio",
     "myShare":"Minha parte",
@@ -502,12 +510,15 @@
     "newTrade":"Novo Comércio",
     "newWithdrawal":"Nova retirada",
     "next":"Próximo",
+    "noClaimableIncentives":"Sem incentivos reclamáveis",
     "noContent":"Sem conteúdo",
     "noData":"Sem dados disponíveis",
     "noInitLiquidity":"Este pool não tem liquidez inicial",
     "noInitLiquidityDetail":"Até que a IU de criação de pool esteja pronta, um tipo de junção INIT é necessário no contrato inteligente antes que os investimentos sejam suportados.",
     "noInvestments":"Sem investimentos neste pool.",
     "noInvestmentsPool":"Nenhum investimento neste pool",
+    "noNativeCurrency":"Você precisará de alguns {0} para taxas de gás para fazer transações em {1}.",
+    "noNativeCurrencyEthereum":"Você precisará de alguns {0} para taxas de gás para fazer as transações mais básicas em {1}. No entanto, você pode continuar a negociar quaisquer tokens que tenha aprovado anteriormente para uso no Balancer com esta carteira, usando a opção 'trade gasless'.",
     "noPoolsFound":"Nenhum pool encontrado",
     "noPriceImpact":"Melhor preço",
     "noPriceImpactTip":"Adicionar tokens proporcionalmente obtém o melhor preço.",
@@ -515,6 +526,7 @@
     "noRecentActivity":"Sua atividade aparecerá aqui ...",
     "noResults":"Sem resultados.",
     "noSwapsPool":"Sem trocas neste pool.",
+    "noTokensInWallet":"Você não tem nenhum token em sua carteira conectada em {0}",
     "notAvailable":"N / D",
     "numberOfPools":"Número de pools",
     "oneDay":"1 dia",
@@ -564,6 +576,20 @@
     "poolReturns":"Devoluções de pool",
     "poolSymbol":"Símbolo do pool",
     "poolTokenName":"Nome do token do pool",
+    "poolTransactionStats":{
+       "trade":{
+          "volume":"Volume {período}",
+          "largest":"Maior comércio {período}",
+          "ave":"Comércio da avenida {período}",
+          "total":"Total de negociações {período}"
+       },
+       "investment":{
+          "netTvl":"Net TVL {período}",
+          "largest":"Maior investimento {period}",
+          "ave":"Investimento médio {período}",
+          "net":"Investimentos líquidos {período}"
+       }
+    },
     "poolTransactions":"Transações de pool",
     "poolTransfer":{
        "myPoolBalancesCard":{
@@ -578,6 +604,20 @@
     },
     "poolType":"Tipo de pool",
     "poolValue":"Valor do pool",
+    "poolWarnings":{
+       "bugWarning20220513":{
+          "title":"Este pool contém tokens de entrada dupla, que foram considerados incompatíveis com o Balancer. Atualmente, não é possível retirar todos os ativos do pool proporcionalmente. Embora seja possível retirar em um único ativo, os provedores de liquidez são aconselhados a esperar. Um mecanismo está sendo implementado para permitir saques proporcionais. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Saber mais</a>"
+       },
+       "poolOwnerVulnWarningGovernance":{
+          "title":"Este pool é afetado por uma vulnerabilidade divulgada <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">aqui</a> . Os fundos são seguros na medida em que a exploração teria que ser iniciada pelo próprio Balancer Governance. Uma nova versão do pool será implantada nas próximas semanas e poderá ser migrada."
+       },
+       "poolOwnerVulnWarningEcosystem":{
+          "title":"Este pool é afetado por uma vulnerabilidade divulgada <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">aqui</a> . Os fundos são seguros na medida em que a exploração teria que ser iniciada por um multisig composto por participantes conhecidos no ecossistema do Balancer."
+       },
+       "poolOwnerVulnWarningEcosystemMigrate":{
+          "title":"Este pool é afetado por uma vulnerabilidade divulgada <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">aqui</a> . Os fundos são seguros na medida em que a exploração teria que ser iniciada por um multisig composto por participantes conhecidos no ecossistema do Balancer. Uma nova versão do pool será implantada nas próximas semanas e poderá ser migrada."
+       }
+    },
     "pools":"Pools",
     "poolsToMigrate":"Pools para migrar",
     "poolsToStake":"Pools para apostar",
@@ -605,6 +645,7 @@
     "profit":"Lucro (1{0})",
     "proportionalSuggestion":"Sugestão proporcional",
     "proportionalWithdrawal":"Retirada proporcional",
+    "protocolEarnings":"Ganhos de protocolo e veBAL",
     "protocolFees":"Taxas de protocolo",
     "rank":"Classificação (1{0})",
     "receipt":"Recibo",
@@ -664,14 +705,6 @@
     "symbol":"Símbolo",
     "tableShowsBalancerV2Pools":"Esta tabela mostra apenas pools do Balancer V2.",
     "theme":"Tema",
-    "yieldAprRewards":{
-       "apr":{
-          "steth":"Recompensas staking staking APR"
-       },
-       "fiat":{
-          "steth":"Recompensas de aposta forte"
-       }
-    },
     "threeMonths":"3 meses",
     "time":"Tempo",
     "timeAgo":"{0} atrás",
@@ -707,6 +740,7 @@
     "totalValue":"Valor total",
     "totalValueTo":"Valor total para",
     "trade":"Trocar",
+    "tradeDetails":"Detalhes da negociação",
     "tradeEarns":"Este comércio rende você",
     "tradeFromWeth":"Comércio da WETH",
     "tradeGaslessToggle":{
@@ -758,6 +792,15 @@
        },
        "gasCosts":"Custos de gás"
     },
+    "tradeToggle":{
+       "wrapEth":"Comércio de gás - necessário para envolver ETH",
+       "unwrapEth":"Comércio de gás - necessário para desembrulhar ETH",
+       "fromEth":"Comércio de gás - necessário ao negociar a partir de ETH",
+       "signature":"Comércio 'sem gás' exclusivo—preço otimizado com proteção MEV.",
+       "tradeGasless":"Comércio sem gás por assinatura",
+       "tradeWithGas":"Negocie com uma taxa de gás"
+    },
+    "trader":"Comerciante",
     "tradesThroughWeth":"As negociações da rota ETH por meio de pools de liquidez do Balancer e incorrem em taxas de gás.",
     "transactionAction":{
        "trade":"Trocar",
@@ -1006,9 +1049,19 @@
     "wrapInstruction":"Enrole seu {0} para W{0}",
     "wrapStEthTooltip":"Este pool requer Wrapped Liquid Staked ETH 2.0 (wstETH). Para maximizar seu investimento, você pode embrulhar algumas peças adicionais.",
     "yearAbbrev":"a",
+    "yieldAprRewards":{
+       "apr":{
+          "steth":"Recompensas staking staking APR"
+       },
+       "fiat":{
+          "steth":"Recompensas de aposta forte"
+       }
+    },
     "yieldEarnings":"Ganhos de rendimento",
     "youCanInvest":"Você pode investir",
     "youDidIt":"Você fez isso!",
+    "your":"Sua",
     "yourBalanceInPool":"Seu saldo neste pool",
     "yourTransactions":"Suas transações neste pool"
  }
+ 
