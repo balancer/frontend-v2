@@ -31,7 +31,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       Default:
         'https://gist.githubusercontent.com/mikemcdonald/794254c72d3ce21c3beb6264bb18027f/raw/39471773dabfc908a7fbadd4991ca945dac2b677/goerli.listed.tokenlist.json',
       Vetted:
-        'https://gist.githubusercontent.com/mikemcdonald/794254c72d3ce21c3beb6264bb18027f/raw/39471773dabfc908a7fbadd4991ca945dac2b677/goerli.listed.tokenlist.json'
+        'https://gist.githubusercontent.com/mikemcdonald/4cff1b973bfb74b13e244a8ba926ad79/raw/e01b90546b1021dace1f6edac11a0de7d25f3a2c/goerli.vetted.tokenlist.json'
     },
     External: []
   },

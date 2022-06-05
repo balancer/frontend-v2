@@ -12,7 +12,7 @@ import FaucetTable from '@/components/tables/FaucetTable/FaucetTable.vue';
           </h1>
         </div>
       </div>
+      <FaucetTable />
     </div>
   </div>
-  <FaucetTable />
 </template>

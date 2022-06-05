@@ -7,6 +7,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import DripBtn from '@/components/btns/DripBtn/DripBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useTokenLists from '@/composables/useTokenLists';
 import useTokens from '@/composables/useTokens';
 
 /**
@@ -15,14 +16,11 @@ import useTokens from '@/composables/useTokens';
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
-const {
-  balancerTokenListTokens: allTokens,
-  priceFor,
-  balanceFor
-} = useTokens();
+const { defaultTokenList } = useTokenLists();
+const { priceFor, balanceFor } = useTokens();
 
 const tokens = computed(() => {
-  const tokensWithValues = Object.values(allTokens.value)
+  const tokensWithValues = Object.values(defaultTokenList.value.tokens)
     .map(token => {
       const balance = balanceFor(token.address);
       const price = priceFor(token.address);
@@ -68,6 +66,7 @@ const columns = ref<ColumnDefinition<any>[]>([
   {
     name: 'Drip',
     id: 'drip',
+    align: 'center',
     accessor: 'drip',
     Cell: 'dripColumnCell',
     width: 150
@@ -96,7 +95,9 @@ const columns = ref<ColumnDefinition<any>[]>([
         </div>
       </template>
       <template #dripColumnCell="{ address }">
-        <DripBtn :token="address" />
+        <div class="px-2 py-4 flex justify-center">
+          <DripBtn :token="address" />
+        </div>
       </template>
     </BalTable>
   </BalCard>

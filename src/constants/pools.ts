@@ -133,7 +133,9 @@ const POOLS_GOERLI: Pools = {
   ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
   Stable: {
     AllowList: [
-      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f'
+      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
+      '0xb60e46d90f2de35f7062a27d3a98749414036d5d000200000000000000000061',
+      '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062'
     ]
   },
   Investment: {
@@ -145,7 +147,8 @@ const POOLS_GOERLI: Pools = {
     '0x44afeb87c871d8fea9398a026dea2bd3a13f5769': 'stablePool',
     '0xa55f73e2281c60206ba43a3590db07b8955832be': 'stablePool', // Metastable
     '0xb48cc42c45d262534e46d5965a9ac496f1b7a830': 'liquidityBootstrappingPool',
-    '0xb0c726778c3ae4b3454d85557a48e8fa502bdd6a': 'liquidityBootstrappingPool' // LBP (zero protocol fee)
+    '0xb0c726778c3ae4b3454d85557a48e8fa502bdd6a': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
+    '0x41e9036ae350baedcc7107760a020dca3c0731ec': 'boostedPool'
   },
   Stakable: {
     AllowList: [
