@@ -410,7 +410,7 @@ export default {
      * Get subset of tokens from state
      */
     function getTokens(addresses: string[]): TokenInfoMap {
-      return pick(tokens.value, addresses);
+      return pick(tokens.value, addresses.map(getAddress));
     }
 
     /**

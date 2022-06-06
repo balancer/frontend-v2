@@ -13,6 +13,7 @@ import {
   isWeightedLike
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
+import { isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { PoolType } from '@/services/pool/types';
 import {
@@ -185,7 +186,7 @@ export default class Vault {
 
     // Filter out pre-minted BPT token if exists
     const validTokens = Object.keys(tokens).filter(
-      address => address !== poolAddress
+      address => !isSameAddress(address, poolAddress)
     );
     tokens = pick(tokens, validTokens);
 
