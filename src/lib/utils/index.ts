@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { initial, String } from 'lodash';
+import { initial } from 'lodash';
 import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
 

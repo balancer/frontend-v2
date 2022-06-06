@@ -1,4 +1,3 @@
-import { getAddress } from 'ethers/lib/utils';
 import { keyBy } from 'lodash';
 import { computed, Ref, ref } from 'vue';
 
