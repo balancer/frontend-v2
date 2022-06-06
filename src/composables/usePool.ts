@@ -6,14 +6,9 @@ import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/con
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
-import {
-  AnyPool,
-  FullPool,
-  PoolAPRs,
-  PoolToken,
-  PoolType
-} from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
+import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
 import { urlFor } from './useNetwork';
@@ -197,7 +192,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   /**
    * Returns pool weights label
    */
-  function poolWeightsLabel(pool: FullPool): string {
+  function poolWeightsLabel(pool: Pool): string {
+    if (!pool?.onchain?.tokens) return '';
+
     if (isStableLike(pool.poolType)) {
       return Object.values(pool.onchain.tokens)
         .map(token => token.symbol)

@@ -10,7 +10,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
+import { LinearPool, Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useApp from '../useApp';
@@ -26,7 +26,7 @@ import useGaugesQuery from './useGaugesQuery';
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<FullPool> = {}
+  options: QueryObserverOptions<Pool> = {}
 ) {
   /**
    * COMPOSABLES
@@ -235,5 +235,5 @@ export default function usePoolQuery(
     ...options
   });
 
-  return useQuery<FullPool>(queryKey, queryFn, queryOptions);
+  return useQuery<Pool>(queryKey, queryFn, queryOptions);
 }

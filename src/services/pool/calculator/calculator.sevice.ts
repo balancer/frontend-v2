@@ -5,8 +5,8 @@ import { Ref, ref } from 'vue';
 
 import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -35,7 +35,7 @@ export default class CalculatorService {
   stablePhantom: StablePhantom;
 
   constructor(
-    public pool: Ref<FullPool>,
+    public pool: Ref<Pool>,
     public allTokens: Ref<TokenInfoMap>,
     public balances: Ref<BalanceMap>,
     public action: PoolAction,
@@ -191,36 +191,44 @@ export default class CalculatorService {
     return this.pool.value.tokenAddresses;
   }
 
+  public get poolTokens(): OnchainTokenDataMap {
+    if (!this.pool.value?.onchain?.tokens) return {};
+    return this.pool.value.onchain.tokens;
+  }
+
   public get poolTokenBalances(): BigNumber[] {
-    const normalizedBalances = Object.values(
-      this.pool.value.onchain.tokens
-    ).map(t => t.balance);
+    if (!this.pool.value?.onchain?.tokens) return [];
+
+    const normalizedBalances = Object.values(this.poolTokens).map(
+      t => t.balance
+    );
     return normalizedBalances.map((balance, i) =>
       parseUnits(balance, this.poolTokenDecimals[i])
     );
   }
 
   public get poolTokenDecimals(): number[] {
-    return Object.values(this.pool.value.onchain.tokens).map(t => t.decimals);
+    return Object.values(this.poolTokens).map(t => t.decimals);
   }
 
   public get poolTokenWeights(): BigNumber[] {
-    const normalizedWeights = Object.values(this.pool.value.onchain.tokens).map(
-      t => t.weight
-    );
+    const normalizedWeights = Object.values(this.poolTokens).map(t => t.weight);
     return normalizedWeights.map(weight => parseUnits(weight.toString(), 18));
   }
 
   public get poolTotalSupply(): BigNumber {
-    return parseUnits(this.pool.value.onchain.totalSupply, this.poolDecimals);
+    return parseUnits(
+      this.pool.value?.onchain?.totalSupply || '0',
+      this.poolDecimals
+    );
   }
 
   public get poolSwapFee(): BigNumber {
-    return parseUnits(this.pool.value.onchain.swapFee, 18);
+    return parseUnits(this.pool.value?.onchain?.swapFee || '0', 18);
   }
 
   public get poolDecimals(): number {
-    return this.pool.value.onchain.decimals;
+    return this.pool.value?.onchain?.decimals || 18;
   }
 
   public get bptBalance(): string {

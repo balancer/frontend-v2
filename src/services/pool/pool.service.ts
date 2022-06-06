@@ -5,14 +5,9 @@ import { isStable } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
+import { LinearPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
-import {
-  LinearPool,
-  Pool,
-  PoolAPRs,
-  PoolToken
-} from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';

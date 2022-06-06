@@ -7,12 +7,8 @@ import {
 } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
-import {
-  AnyPool,
-  OnchainTokenData,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { AnyPool, OnchainTokenData, PoolToken } from '@/services/pool/types';
 
 interface OnchainTokenInfo extends OnchainTokenData {
   address: string;

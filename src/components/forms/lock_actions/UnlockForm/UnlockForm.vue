@@ -6,7 +6,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import MyVeBAL from '../LockForm/components/MyVeBAL.vue';
@@ -36,7 +36,7 @@ const veBalQueryLoading = computed(
   () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value
 );
 
-const lockablePool = computed<FullPool | undefined>(
+const lockablePool = computed<Pool | undefined>(
   () => lockablePoolQuery.data.value
 );
 

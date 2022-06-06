@@ -14,18 +14,18 @@ import {
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import { TokenInfoMap } from '@/types/TokenList';
-
+import { PoolType } from '@/services/pool/types';
 import {
   LinearPoolDataMap,
   OnchainPoolData,
   OnchainTokenDataMap,
-  PoolType,
   RawLinearPoolData,
   RawLinearPoolDataMap,
   RawOnchainPoolData,
   RawPoolTokens
-} from '../../subgraph/types';
+} from '@/services/pool/types';
+import { TokenInfoMap } from '@/types/TokenList';
+
 import Service from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 

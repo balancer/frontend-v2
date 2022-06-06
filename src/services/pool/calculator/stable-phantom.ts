@@ -54,7 +54,7 @@ export default class StablePhantom {
    * PRIVATE FUNCTIONS
    */
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): OldBigNumber {
-    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = BigNumber.from(this.adjustAmp(amp).toString());
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
@@ -109,7 +109,7 @@ export default class StablePhantom {
   }
 
   private get priceRates(): BigNumberish[] {
-    const tokenRates = this.calc.pool.value.onchain.tokenRates;
+    const tokenRates = this.calc.pool.value?.onchain?.tokenRates;
     if (!tokenRates) return [];
     return tokenRates.map(rate => parseUnits(rate, 18));
   }

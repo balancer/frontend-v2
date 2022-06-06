@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { PoolToken } from '@/services/balancer/subgraph/types';
+import { PoolToken } from '@/services/pool/types';
 
 import HiddenTokensPills from './HiddenTokensPills.vue';
 import StableTokenPill from './StableTokenPill.vue';

@@ -1,4 +1,4 @@
-import { Pool, PoolType } from '@/services/balancer/subgraph/types';
+import { Pool, PoolType } from '@/services/pool/types';
 
 export const PoolMock: Pool = {
   onchain: {

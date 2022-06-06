@@ -3,13 +3,13 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   totalLpTokens: string;
 };
 

@@ -9,7 +9,7 @@ import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -22,7 +22,7 @@ import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   tokenAddresses: string[];
   math: WithdrawMathResponse;
 };
@@ -82,7 +82,7 @@ const percentageLabel = computed(() => {
 });
 
 const seedTokens = computed((): number[] =>
-  Object.values(props.pool.onchain.tokens).map(token => token.weight)
+  Object.values(props.pool?.onchain?.tokens || []).map(token => token.weight)
 );
 
 /**
@@ -93,7 +93,7 @@ function handleSliderChange(newVal: number): void {
   propBptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
-    .toFixed(props.pool.onchain.decimals);
+    .toFixed(props.pool?.onchain?.decimals || 18);
 }
 
 async function handleSliderEnd(): Promise<void> {

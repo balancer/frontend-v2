@@ -18,9 +18,9 @@ import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin'
 import { VEBalHelpers } from '../balancer/contracts/contracts/vebal-helpers';
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { SubgraphGauge } from '../balancer/gauges/types';
-import { Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import PoolService from '../pool/pool.service';
+import { Pool } from '../pool/types';
 import {
   calculateGaugeApr,
   calculateRewardTokenAprs,

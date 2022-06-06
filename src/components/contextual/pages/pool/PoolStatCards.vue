@@ -6,7 +6,7 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { Pool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
