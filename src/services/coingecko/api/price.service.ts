@@ -17,7 +17,7 @@ import {
 /**
  * TYPES
  */
-export type Price = { [fiat: string]: number };
+export type Price = { [fiat: string]: string };
 export type PriceResponse = { [id: string]: Price };
 export type TokenPrices = { [address: string]: Price };
 export interface HistoricalPriceResponse {
@@ -160,7 +160,7 @@ export class PriceService {
     const entries = Object.entries(results);
     const parsedEntries = entries
       .filter(result => Object.keys(result[1]).length > 0)
-      .map(result => [this.addressMapOut(result[0]), result[1]]);
+      .map(result => [this.addressMapOut(result[0]), result[1].toString()]);
     return Object.fromEntries(parsedEntries);
   }
 

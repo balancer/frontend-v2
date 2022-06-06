@@ -81,7 +81,7 @@ export default {
         ? prices.value[props.token.address][currency.value]
         : 0
     );
-    const value = computed(() => balance.value * price.value);
+    const value = computed(() => balance.value * Number(price.value));
 
     /**
      * CALLBACKS

@@ -210,7 +210,7 @@ export default function usePoolCreation() {
 
   const tokensWithNoPrice = computed(() => {
     const validTokens = tokensList.value.filter(t => t !== '');
-    return validTokens.filter(token => priceFor(token) === 0);
+    return validTokens.filter(token => priceFor(token) === '0');
   });
 
   const similarPools = computed(() => {

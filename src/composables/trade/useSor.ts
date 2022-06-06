@@ -622,8 +622,8 @@ export default function useSor({
   function calculateEthPriceInToken(tokenAddress: string): OldBigNumber {
     const ethPriceFiat = priceFor(appNetworkConfig.nativeAsset.address);
     const tokenPriceFiat = priceFor(tokenAddress);
-    if (tokenPriceFiat === 0) return bnum(0);
-    const ethPriceToken = bnum(ethPriceFiat / tokenPriceFiat);
+    if (tokenPriceFiat === '0') return bnum(0);
+    const ethPriceToken = bnum(ethPriceFiat).div(tokenPriceFiat);
     return ethPriceToken;
   }
 

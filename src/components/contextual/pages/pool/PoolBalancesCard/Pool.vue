@@ -170,10 +170,10 @@ export default defineComponent({
 
     function fiatValueFor(address: string): string {
       const price = priceFor(address);
-      if (!pool || !pool.value || price === 0) return '-';
+      if (!pool || !pool.value || price === '0') return '-';
 
       const balance = Number(pool.value.onchain.tokens[address].balance);
-      return fNum2(balance * price, FNumFormats.fiat);
+      return fNum2(balance * Number(price), FNumFormats.fiat);
     }
 
     return {

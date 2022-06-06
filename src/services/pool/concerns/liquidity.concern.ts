@@ -1,3 +1,9 @@
+import {
+  Liquidity,
+  StaticPoolProvider,
+  StaticTokenPriceProvider,
+  StaticTokenProvider
+} from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
 import {
@@ -13,6 +19,7 @@ import {
   PoolToken
 } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { configService } from '@/services/config/config.service';
 
 interface OnchainTokenInfo extends OnchainTokenData {
   address: string;
@@ -28,10 +35,31 @@ export default class LiquidityConcern {
   public calcTotal(prices: TokenPrices, currency: FiatCurrency): string {
     if (!this.hasPoolTokens) throw new Error('Missing onchain pool token data');
 
+    const tokenPriceProvider = new StaticTokenPriceProvider(prices);
+    const poolProvider = new StaticPoolProvider([this.pool]);
+    const tokenProvider = new StaticTokenProvider(this.poolTokens);
+    const liquidity = new Liquidity(
+      {
+        network: configService.network.chainId,
+        rpcUrl: configService.rpc
+      },
+      poolProvider,
+      tokenProvider,
+      tokenPriceProvider
+    );
+
     if (isWeightedLike(this.poolType)) {
-      return this.calcWeightedTotal(prices, currency);
+      const total = this.calcWeightedTotal(prices, currency);
+      console.log('Old Weighted total: ', total);
+      const newTotal = liquidity.getLiquidity(this.pool);
+      console.log('New weighted total: ', newTotal);
+      return total;
     } else if (isStableLike(this.poolType)) {
-      return this.calcStableTotal(prices, currency);
+      const total = this.calcStableTotal(prices, currency);
+      console.log('Old stable total: ', total);
+      const newTotal = liquidity.getLiquidity(this.pool);
+      console.log('New stable total: ', newTotal);
+      return total;
     }
 
     return '0';

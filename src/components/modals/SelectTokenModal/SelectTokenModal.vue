@@ -203,7 +203,7 @@ export default defineComponent({
       const tokensWithValues = Object.values(state.results).map(token => {
         const balance = balanceFor(token.address);
         const price = priceFor(token.address);
-        const value = Number(balance) * price;
+        const value = Number(balance) * Number(price);
         return {
           ...token,
           price,

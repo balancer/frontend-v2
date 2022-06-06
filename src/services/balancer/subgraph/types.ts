@@ -20,9 +20,10 @@ export type TimeTravelPeriod = '24h';
 
 export interface PoolToken {
   address: string;
+  decimals: number;
   balance: string;
   weight: string;
-  priceRate: string | null;
+  priceRate?: string;
   symbol?: string;
 }
 

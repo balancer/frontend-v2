@@ -82,7 +82,7 @@ export interface TokensProviderResponse {
     amounts: string[],
     contractAddress?: string
   ) => string[];
-  priceFor: (address: string) => number;
+  priceFor: (address: string) => string;
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
@@ -380,11 +380,11 @@ export default {
     /**
      * Fetch price for a token
      */
-    function priceFor(address: string): number {
+    function priceFor(address: string): string {
       try {
-        return prices.value[address][currency.value] || 0;
+        return prices.value[address][currency.value] || '0';
       } catch {
-        return 0;
+        return '0';
       }
     }
 
