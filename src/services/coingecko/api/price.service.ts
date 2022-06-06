@@ -160,7 +160,15 @@ export class PriceService {
     const entries = Object.entries(results);
     const parsedEntries = entries
       .filter(result => Object.keys(result[1]).length > 0)
-      .map(result => [this.addressMapOut(result[0]), result[1].toString()]);
+      .map(result => {
+        const pricesAsStrings = Object.entries(
+          result[1]
+        ).map(([currency, price]) => [currency, price.toString()]);
+        return [
+          this.addressMapOut(result[0]),
+          Object.fromEntries(pricesAsStrings)
+        ];
+      });
     return Object.fromEntries(parsedEntries);
   }
 
