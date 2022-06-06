@@ -11,7 +11,6 @@ import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
-import portisLogo from '@/assets/images/connectors/portis.svg';
 import statusLogo from '@/assets/images/connectors/status.svg';
 import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
@@ -23,12 +22,6 @@ import i18n from '@/plugins/i18n';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector } from './connectors/connector';
-import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
-import { MetamaskConnector } from './connectors/metamask/metamask.connector';
-import { PortisConnector } from './connectors/portis/portis.connector';
-import { TallyConnector } from './connectors/tally/tally.connector';
-import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
-import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { web3Service } from './web3.service';
 
 export type Wallet =
@@ -36,25 +29,22 @@ export type Wallet =
   | 'walletconnect'
   | 'gnosis'
   | 'walletlink'
-  | 'portis'
   | 'tally';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
   'tally',
   'gnosis',
-  'walletlink',
-  'portis'
+  'walletlink'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase',
-  portis: 'Portis',
   tally: 'Tally'
 };
-type ConnectorImplementation = new (...args: any[]) => Connector;
+
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
 
 export type Web3Plugin = {
@@ -66,15 +56,6 @@ export type Web3Plugin = {
   connector: Ref<Connector>;
   walletState: Ref<WalletState>;
   signer: Ref<JsonRpcSigner>;
-};
-
-const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
-  metamask: MetamaskConnector,
-  walletconnect: WalletConnectConnector,
-  gnosis: GnosisSafeConnector,
-  walletlink: WalletLinkConnector,
-  portis: PortisConnector,
-  tally: TallyConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -117,6 +98,50 @@ export default {
       return new Web3Provider(pluginState.connector.provider as any);
     });
 
+    async function getWalletConnector(
+      wallet: Wallet
+    ): Promise<Connector | void> {
+      if (wallet === 'metamask') {
+        const { MetamaskConnector } = await import(
+          /* webpackChunkName: "MetamaskConnector" */
+          '@/services/web3/connectors/metamask/metamask.connector'
+        );
+        return new MetamaskConnector(alreadyConnectedAccount.value);
+      }
+
+      if (wallet === 'walletconnect') {
+        const { WalletConnectConnector } = await import(
+          /* webpackChunkName: "WalletConnectConnector" */
+          '@/services/web3/connectors/trustwallet/walletconnect.connector'
+        );
+        return new WalletConnectConnector(alreadyConnectedAccount.value);
+      }
+
+      if (wallet === 'gnosis') {
+        const { GnosisSafeConnector } = await import(
+          /* webpackChunkName: "GnosisSafeConnector" */
+          '@/services/web3/connectors/gnosis/gnosis.connector'
+        );
+        return new GnosisSafeConnector(alreadyConnectedAccount.value);
+      }
+
+      if (wallet === 'walletlink') {
+        const { WalletLinkConnector } = await import(
+          /* webpackChunkName: "WalletLinkConnector" */
+          '@/services/web3/connectors/walletlink/walletlink.connector'
+        );
+        return new WalletLinkConnector(alreadyConnectedAccount.value);
+      }
+
+      if (wallet === 'tally') {
+        const { TallyConnector } = await import(
+          /* webpackChunkName: "TallyConnector" */
+          '@/services/web3/connectors/tally/tally.connector'
+        );
+        return new TallyConnector(alreadyConnectedAccount.value);
+      }
+    }
+
     // user supplied web3 provider. i.e. (web3, ethers)
     const connectWallet = async (wallet: Wallet) => {
       pluginState.walletState = 'connecting';
@@ -130,9 +155,8 @@ export default {
 
         // the wallet parameter will be provided by the front-end by means of
         // modal selection or otherwise
-        const connector = new WalletConnectorDictionary[wallet](
-          alreadyConnectedAccount.value
-        );
+        const connector = await getWalletConnector(wallet);
+
         if (!connector) {
           throw new Error(
             `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
@@ -223,9 +247,6 @@ export function getConnectorName(connectorId: string): string {
   if (connectorId === 'fortmatic') {
     return 'Fortmatic';
   }
-  if (connectorId === 'portis') {
-    return 'Portis';
-  }
   if (connectorId === 'walletconnect') {
     return 'WalletConnect';
   }
@@ -269,9 +290,6 @@ export function getConnectorLogo(connectorId: string): string {
   }
   if (connectorId === 'fortmatic') {
     return fortmaticLogo;
-  }
-  if (connectorId === 'portis') {
-    return portisLogo;
   }
   if (connectorId === 'walletconnect') {
     return walletconnectLogo;
