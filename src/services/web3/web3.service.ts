@@ -9,8 +9,6 @@ import {
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
 import { ComputedRef } from 'vue';
 
-import { networkId } from '@/composables/useNetwork';
-import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { logFailedTx } from '@/lib/utils/logging';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
