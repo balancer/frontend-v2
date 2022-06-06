@@ -12,7 +12,7 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT
 } from '@/constants/poolLiquidity';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
@@ -142,7 +142,7 @@ export default function useInvestMath(
 
   const maximized = computed(() =>
     fullAmounts.value.every((amount, i) => {
-      if (tokenAddresses.value[i] === nativeAsset.address) {
+      if (isSameAddress(tokenAddresses.value[i], nativeAsset.address)) {
         const balance = balanceFor(tokenAddresses.value[i]);
         return (
           amount ===
@@ -223,7 +223,7 @@ export default function useInvestMath(
 
   function maximizeAmounts(): void {
     fullAmounts.value.forEach((_, i) => {
-      if (tokenAddresses.value[i] === nativeAsset.address) {
+      if (isSameAddress(tokenAddresses.value[i], nativeAsset.address)) {
         const balance = balanceFor(tokenAddresses.value[i]);
         amounts.value[i] = bnum(balance).gt(nativeAsset.minTransactionBuffer)
           ? bnum(balance)

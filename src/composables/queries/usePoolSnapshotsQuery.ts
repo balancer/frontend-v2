@@ -61,7 +61,7 @@ export default function usePoolSnapshotsQuery(
         snapshots
       };
     } else {
-      const tokens = pool.value.tokenAddresses;
+      const tokens = pool.value.tokensList;
       [prices, snapshots] = await Promise.all([
         coingeckoService.prices.getTokensHistorical(tokens, days),
         balancerSubgraphService.poolSnapshots.get(id, days)

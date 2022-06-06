@@ -57,7 +57,6 @@ function formatPools(pools: Pool[]) {
     return {
       ...pool,
       address: getPoolAddress(pool.id),
-      tokenAddresses: pool.tokensList.map(token => getAddress(token)),
       tokens: poolService.formatPoolTokens()
     };
   });

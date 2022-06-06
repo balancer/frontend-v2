@@ -182,13 +182,13 @@ export default class CalculatorService {
 
   public get tokenAddresses(): string[] {
     if (this.useNativeAsset.value) {
-      return this.pool.value.tokenAddresses.map(address => {
+      return this.pool.value.tokensList.map(address => {
         if (address === this.config.network.addresses.weth)
           return this.config.network.nativeAsset.address;
         return address;
       });
     }
-    return this.pool.value.tokenAddresses;
+    return this.pool.value.tokensList;
   }
 
   public get poolTokens(): OnchainTokenDataMap {

@@ -101,14 +101,14 @@ export default function useWithdrawMath(
     if (isStablePhantom(pool.value.poolType)) {
       return pool.value.mainTokens || [];
     }
-    return pool.value.tokenAddresses;
+    return pool.value.tokensList;
   });
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
   // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
-    pool.value.tokenAddresses.map(address => getToken(address))
+    pool.value.tokensList.map(address => getToken(address))
   );
 
   const tokenOutDecimals = computed(

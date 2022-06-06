@@ -7,7 +7,7 @@ import { useQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum, forChange, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { LinearPool, Pool, PoolWithShares } from '@/services/pool/types';
@@ -55,7 +55,7 @@ export default function useUserPoolsQuery(
     const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
     // Remove pre-minted BPT token if exits
     pool.tokensList = pool.tokensList.filter(
-      address => address !== poolAddress.toLowerCase()
+      address => !isSameAddress(address, poolAddress)
     );
     return pool;
   }
@@ -170,9 +170,7 @@ export default function useUserPoolsQuery(
       if (isStablePhantomPool) {
         const decoratedPool = decoratedPools[i];
 
-        const poolTokenMeta = getTokens(
-          decoratedPool.tokensList.map(address => getAddress(address))
-        );
+        const poolTokenMeta = getTokens(decoratedPool.tokensList);
 
         const onchainData = await balancerContractsService.vault.getPoolData(
           decoratedPool.id,

@@ -67,7 +67,7 @@ export default class ExitParams {
 
   private parseAmounts(amounts: string[]): BigNumber[] {
     return amounts.map((amount, i) => {
-      const token = this.pool.value.tokenAddresses[i];
+      const token = this.pool.value.tokensList[i];
       return parseUnits(
         amount,
         this.pool.value?.onchain?.tokens?.[token]?.decimals || 18

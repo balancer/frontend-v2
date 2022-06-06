@@ -8,6 +8,7 @@ import useTokens from '@/composables/useTokens';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
+import { isSameAddress } from '@/lib/utils';
 
 /**
  * TYPES
@@ -89,12 +90,12 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
     if (!pool.value) return [];
     const poolTokens = isStablePhantom(pool.value.poolType)
       ? pool.value.mainTokens || []
-      : pool.value.tokenAddresses;
+      : pool.value.tokensList;
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
       return poolTokens.map(address => {
-        if (address === wrappedNativeAsset.value.address) {
+        if (isSameAddress(address, wrappedNativeAsset.value.address)) {
           return nativeAsset.address;
         }
         return address;

@@ -345,7 +345,7 @@ export default defineComponent({
         const tokens =
           isStablePhantomPool.value && pool.value.mainTokens
             ? pool.value.mainTokens
-            : pool.value.tokenAddresses;
+            : pool.value.tokensList;
 
         return !tokens.every(token => tokensWithPrice.includes(token));
       }
@@ -386,9 +386,7 @@ export default defineComponent({
         !!pool.value &&
         !isLiquidityBootstrappingPool.value &&
         !isStablePhantomPool.value &&
-        pool.value.tokenAddresses.some(
-          address => !knownTokens.includes(address)
-        )
+        pool.value.tokensList.some(address => !knownTokens.includes(address))
       );
     });
 

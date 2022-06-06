@@ -69,9 +69,7 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 }
 
 export function isWeth(pool: AnyPool): boolean {
-  return (pool.tokenAddresses || []).includes(
-    configService.network.addresses.weth
-  );
+  return (pool.tokensList || []).includes(configService.network.addresses.weth);
 }
 
 export function isMigratablePool(pool: AnyPool) {
@@ -93,7 +91,7 @@ export function lpTokensFor(pool: AnyPool): string[] {
     const wrappedTokens = pool.wrappedTokens || [];
     return [...mainTokens, ...wrappedTokens];
   } else {
-    return pool.tokenAddresses || [];
+    return pool.tokensList || [];
   }
 }
 

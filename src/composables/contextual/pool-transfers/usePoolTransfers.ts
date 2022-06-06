@@ -50,7 +50,7 @@ export default function usePoolTransfers() {
       if (isStablePhantom(pool.value.poolType)) {
         return pool.value.mainTokens || [];
       }
-      return pool.value?.tokenAddresses || [];
+      return pool.value?.tokensList || [];
     }
     return [];
   });

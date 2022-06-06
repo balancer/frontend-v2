@@ -113,7 +113,7 @@ const investmentTokens = computed((): string[] => {
   if (isStablePhantom(props.pool.poolType)) {
     return props.pool.mainTokens || [];
   }
-  return props.pool.tokenAddresses;
+  return props.pool.tokensList;
 });
 
 /**
