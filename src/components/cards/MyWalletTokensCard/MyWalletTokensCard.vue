@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 // Components
@@ -56,7 +56,7 @@ const tokenAddresses = computed((): string[] => {
 const tokensForTotal = computed((): string[] => {
   if (pageContext.value === 'invest' && props.useNativeAsset) {
     return tokenAddresses.value.map(address => {
-      if (address === wrappedNativeAsset.value.address)
+      if (isSameAddress(address, wrappedNativeAsset.value.address))
         return nativeAsset.address;
       return address;
     });
@@ -71,10 +71,13 @@ const fiatTotal = computed(() => {
   const fiatValue = tokensForTotal.value
     .map(address => {
       if (pageContext.value === 'invest') {
-        if (address === nativeAsset.address && !props.useNativeAsset)
+        if (
+          isSameAddress(address, nativeAsset.address) &&
+          !props.useNativeAsset
+        )
           return '0';
         if (
-          address === wrappedNativeAsset.value.address &&
+          isSameAddress(address, wrappedNativeAsset.value.address) &&
           props.useNativeAsset
         )
           return '0';
@@ -97,9 +100,13 @@ const fiatTotal = computed(() => {
  */
 function isSelectedNativeAsset(address: string): boolean {
   if (pageContext.value === 'withdraw') return true;
-  if (props.useNativeAsset && address === nativeAsset.address) return true;
+  if (props.useNativeAsset && isSameAddress(address, nativeAsset.address))
+    return true;
 
-  return !props.useNativeAsset && address === wrappedNativeAsset.value.address;
+  return (
+    !props.useNativeAsset &&
+    isSameAddress(address, wrappedNativeAsset.value.address)
+  );
 }
 </script>
 
