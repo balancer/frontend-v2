@@ -5,10 +5,10 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import { isSameAddress } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
-import { isSameAddress } from '@/lib/utils';
 
 /**
  * TYPES
