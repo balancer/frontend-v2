@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { POOLS } from '@/constants/pools';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
@@ -179,6 +179,16 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
  */
 export function isVeBalPool(poolId: string): boolean {
   return POOLS.IdsMap['B-80BAL-20WETH'] === poolId;
+}
+
+/**
+ * @summary Remove pre-minted pool token address from tokensList
+ */
+export function removePreMintedBPT(pool: Pool): Pool {
+  pool.tokensList = pool.tokensList.filter(
+    address => !isSameAddress(address, pool.address)
+  );
+  return pool;
 }
 
 /**

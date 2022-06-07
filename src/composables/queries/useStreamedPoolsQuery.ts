@@ -71,7 +71,7 @@ async function decorateWithTotalLiquidity(
 
     if (isStablePhantom(pool.poolType)) {
       poolService.removePreMintedBPT();
-      await poolService.getLinearPoolAttrs();
+      await poolService.setLinearPools();
     }
     poolService.setTotalLiquidity(prices, currency);
 
