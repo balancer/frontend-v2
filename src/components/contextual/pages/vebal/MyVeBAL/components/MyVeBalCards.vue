@@ -156,7 +156,7 @@ const cards = computed(() => {
       <div v-if="card.id === 'myLockedLpToken'">
         <span
           :class="{ 'text-red-500': bnum(totalExpiredLpTokens).gt(0) }"
-          class="font-bold truncate mr-1"
+          class="font-semibold truncate mr-1"
           >{{ card.value }}</span
         >
         <BalTooltip
@@ -172,7 +172,7 @@ const cards = computed(() => {
         />
       </div>
       <div v-else>
-        <span class="font-bold truncate">{{ card.value }}</span>
+        <span class="font-semibold truncate">{{ card.value }}</span>
       </div>
       <div class="flex items-center">
         <BalIcon
@@ -185,7 +185,7 @@ const cards = computed(() => {
           <router-link
             v-if="card.showPlusIcon"
             :to="card.plusIconTo"
-            class="text-blue-500 flex items-center"
+            class="text-blue-600 dark:text-blue-400 flex items-center"
           >
             <BalIcon
               name="plus-circle"
@@ -195,7 +195,9 @@ const cards = computed(() => {
         </div>
       </div>
     </div>
-    <div class="secondary-value font-medium">{{ card.secondaryText }}</div>
+    <div class="secondary-value font-medium text-secondary">
+      {{ card.secondaryText }}
+    </div>
   </BalCard>
   <teleport to="#modal">
     <UnlockPreviewModal
@@ -219,7 +221,7 @@ const cards = computed(() => {
 }
 
 .secondary-value {
-  @apply text-sm text-gray-500 dark:text-gray-400;
+  @apply text-sm;
 }
 
 .plus-circle:hover,
@@ -232,22 +234,22 @@ const cards = computed(() => {
 .plus-circle:hover :deep(svg.feather-plus-circle),
 .plus-circle:focus :deep(svg.feather-plus-circle) {
   @apply transition-all text-white;
-  fill: #384aff; /* blue-500 */
+  fill: theme('colors.blue.600');
 }
 
 .plus-circle:hover :deep(svg.feather-plus-circle circle),
 .plus-circle:focus :deep(svg.feather-plus-circle circle) {
-  color: #384aff; /* blue-500 */
+  fill: theme('colors.blue.600');
 }
 
 .minus-circle:hover :deep(svg.feather-minus-circle),
 .minus-circle:focus :deep(svg.feather-minus-circle) {
   @apply transition-all text-white;
-  fill: rgba(239, 68, 68); /* red-500 */
+  fill: theme('colors.red.500');
 }
 
 .minus-circle:hover :deep(svg.feather-minus-circle circle),
 .minus-circle {
-  color: rgba(239, 68, 68); /* red-500 */
+  fill: theme('colors.red.500');
 }
 </style>

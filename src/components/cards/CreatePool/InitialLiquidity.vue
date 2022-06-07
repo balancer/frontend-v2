@@ -225,7 +225,7 @@ function saveAndProceed() {
     <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
-          <span class="text-xs text-gray-700 dark:text-gray-500">{{
+          <span class="text-xs text-secondary">{{
             userNetworkConfig?.name
           }}</span>
           <BalStack horizontal spacing="xs" align="center">
@@ -237,7 +237,9 @@ function saveAndProceed() {
               <BalIcon class="flex" name="chevron-left" />
             </button>
 
-            <h5 class="font-bold dark:text-gray-300">Set initial liquidity</h5>
+            <h5 class="font-semibold dark:text-gray-300">
+              Set initial liquidity
+            </h5>
           </BalStack>
           <AnimatePresence :isVisible="isOptimised" unmountInstantly>
             <BalStack
@@ -246,7 +248,7 @@ function saveAndProceed() {
               spacing="sm"
               class="border rounded-lg p-2 mt-2"
             >
-              <BalIcon name="zap" size="sm" class="mt-1 text-gray-500" />
+              <BalIcon name="zap" size="sm" class="mt-1 text-secondary" />
               <span class="dark:text-gray-400 font-medium">
                 {{ t('optimizedPrefilled') }}
               </span>

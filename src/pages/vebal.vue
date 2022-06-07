@@ -16,13 +16,16 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
   </div>
   <div class="py-16 xl:py-20 bg-gray-50 dark:bg-gray-900">
     <div v-if="isVeBalSupported" class="lg:container lg:mx-auto">
-      <div class="px-1 lg:px-0">
+      <div class="px-4">
         <MyVeBAL />
       </div>
     </div>
   </div>
-  <div v-if="isVeBalSupported" class="pt-16 xl:pt-20 lg:container lg:mx-auto">
-    <div class="mb-16 px-1 lg:px-0">
+  <div
+    v-if="isVeBalSupported"
+    class="pt-16 xl:pt-20 xl:container xl:mx-auto xl:px-4"
+  >
+    <div class="mb-16 xl:px-0">
       <LMVoting />
     </div>
   </div>

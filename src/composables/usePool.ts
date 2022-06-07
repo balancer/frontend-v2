@@ -12,7 +12,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { urlFor } from './useNetwork';
+import { isTestnet, urlFor } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 
 /**
@@ -207,7 +207,9 @@ export function isBlocked(pool: Pool, account: string): boolean {
     POOLS.Stable.AllowList.includes(pool.id) ||
     POOLS.Investment.AllowList.includes(pool.id);
 
-  return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
+  return (
+    !isTestnet.value && requiresAllowlisting && !isAllowlisted && !isOwnedByUser
+  );
 }
 
 /**

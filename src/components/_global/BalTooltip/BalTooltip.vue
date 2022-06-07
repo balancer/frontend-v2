@@ -120,7 +120,7 @@ onUnmounted(() => {
       <BalIcon :name="iconName" :size="iconSize" :class="iconClass" />
     </slot>
   </button>
-  <div ref="content" class="tooltip" :class="tooltipClasses" v-bind="$attrs">
+  <div ref="content" class="tooltip" :class="tooltipClasses">
     <div :class="tooltipPad" class="tooltip-content font-medium">
       <p class="tooltip-text" v-if="text" v-text="text" />
       <slot v-else />

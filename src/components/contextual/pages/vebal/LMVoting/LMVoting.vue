@@ -98,14 +98,14 @@ function handleVoteSuccess() {
   <div
     class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-2 gap-4"
   >
-    <div class="max-w-3xl">
+    <div class="max-w-3xl px-4 xl:px-0">
       <h3 class="mb-2">{{ $t('veBAL.liquidityMining.title') }}</h3>
       <p class="">{{ $t('veBAL.liquidityMining.description') }}</p>
     </div>
-    <div class="flex gap-2 xs:gap-3">
+    <div class="flex gap-2 xs:gap-3 px-4 xl:px-0">
       <BalCard shadow="none" class="min-w-max md:w-48">
         <div class="flex items-center">
-          <p class="text-sm text-gray-500 inline mr-1">
+          <p class="text-sm text-secondary inline mr-1">
             My unallocated votes
           </p>
           <BalTooltip
@@ -141,7 +141,7 @@ function handleVoteSuccess() {
         <div class="flex items-center">
           <p
             :class="{ 'text-orange-500 font-medium': votingPeriodLastHour }"
-            class="text-sm text-gray-500 inline mr-1"
+            class="text-sm text-secondary inline mr-1"
           >
             Voting period ends
           </p>

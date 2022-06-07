@@ -54,17 +54,17 @@ function cancel() {
       <BalStack vertical spacing="xs">
         <span
           v-if="isWalletReady"
-          class="text-xs text-gray-700 dark:text-gray-500"
+          class="text-xs text-gray-600 dark:text-gray-400"
           >{{ userNetworkConfig?.name }}</span
         >
         <BalStack align="center" horizontal spacing="xs">
           <button
             @click="goBack"
-            class="text-blue-500 hover:text-blue-700 flex"
+            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex transition-colors"
           >
             <BalIcon class="flex" name="chevron-left" />
           </button>
-          <h5 class="font-bold dark:text-gray-300">{{ title }}</h5>
+          <h5 class="font-semibold dark:text-gray-300">{{ title }}</h5>
         </BalStack>
       </BalStack>
       <p v-if="existingPool">{{ $t('createAPool.existingPoolInfo') }}</p>
@@ -79,7 +79,7 @@ function cancel() {
           </BalStack>
           <BalStack horizontal spacing="lg">
             <BalStack vertical spacing="none">
-              <span class="font-medium  dark:text-gray-500">{{
+              <span class="font-medium  text-secondary">{{
                 $t('poolValue')
               }}</span>
               <span class="font-semibold">{{
@@ -87,7 +87,7 @@ function cancel() {
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
-              <span class="font-medium  dark:text-gray-500">{{
+              <span class="font-medium text-secondary">{{
                 $t('volume24hShort')
               }}</span>
               <span class="font-semibold">{{
@@ -95,7 +95,7 @@ function cancel() {
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
-              <span class="font-medium capitalize  dark:text-gray-500">{{
+              <span class="font-medium capitalize text-secondary">{{
                 $t('fees')
               }}</span>
               <span class="font-semibold">{{
@@ -120,7 +120,7 @@ function cancel() {
             </BalStack>
             <BalStack horizontal spacing="xl">
               <BalStack vertical spacing="none">
-                <span class="font-medium  dark:text-gray-500">{{
+                <span class="font-medium text-secondary">{{
                   $t('poolValue')
                 }}</span>
                 <span class="font-semibold">{{
@@ -128,7 +128,7 @@ function cancel() {
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
-                <span class="font-medium  dark:text-gray-500">{{
+                <span class="font-medium text-secondary">{{
                   $t('volume24hShort')
                 }}</span>
                 <span class="font-semibold">{{
@@ -136,7 +136,7 @@ function cancel() {
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
-                <span class="font-medium capitalize dark:text-gray-500">{{
+                <span class="font-medium capitalize text-secondary">{{
                   $t('fees')
                 }}</span>
                 <span class="font-semibold">{{

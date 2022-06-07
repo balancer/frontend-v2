@@ -131,7 +131,7 @@ onBeforeMount(() => {
             <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
           </div>
         </div>
-        <div class="flex mt-2 text-sm text-gray-500">
+        <div class="flex mt-2 text-sm text-secondary">
           <span>
             {{ $t('proportionalWithdrawal') }}
           </span>

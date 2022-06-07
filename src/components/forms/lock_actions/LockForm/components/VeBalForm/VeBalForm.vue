@@ -126,7 +126,7 @@ function handleShowPreviewModal() {
   <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-gray-500 leading-none pb-1.5">
+        <div class="text-xs text-secondary leading-none pb-1.5">
           {{ configService.network.chainName }}
         </div>
         <div class="flex items-center justify-between">

@@ -114,9 +114,9 @@ const hasCustomToken = computed(() => {
 </script>
 
 <template>
-  <div class="col-span-2">
+  <div class="col-span-2 px-4 lg:px-0">
     <BalLoadingBlock v-if="loadingPool" class="h-16" />
-    <div v-else class="px-4 lg:px-0 flex flex-col">
+    <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
         <h3 class="pool-title">
           {{ poolTypeLabel }}
@@ -163,7 +163,7 @@ const hasCustomToken = computed(() => {
         </BalLink>
       </div>
       <div class="flex items-center mt-2">
-        <div v-html="poolFeeLabel" class="text-sm text-gray-600 mr-2" />
+        <div v-html="poolFeeLabel" class="text-sm text-secondary mr-1" />
         <BalTooltip>
           <template v-slot:activator>
             <BalLink
@@ -173,7 +173,12 @@ const hasCustomToken = computed(() => {
             >
               <GauntletIcon />
             </BalLink>
-            <BalIcon v-else name="info" size="xs" class="text-gray-400" />
+            <BalIcon
+              v-else
+              name="info"
+              size="xs"
+              class="text-gray-400 dark:text-gray-500"
+            />
           </template>
           <span>
             {{ swapFeeToolTip }}

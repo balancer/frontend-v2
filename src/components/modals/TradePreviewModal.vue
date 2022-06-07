@@ -10,12 +10,12 @@
           :width="55"
         />
         <div class="flex flex-col">
-          <div class="font-bold">
+          <div class="font-semibold">
             {{ fNum2(amountIn, FNumFormats.token) }}
             {{ symbolIn }} -> {{ fNum2(amountOut, FNumFormats.token) }}
             {{ symbolOut }}
           </div>
-          <div class="text-gray-500 text-sm">
+          <div class="text-secondary text-sm">
             {{ fNum2(valueIn, FNumFormats.fiat) }}
           </div>
         </div>
@@ -33,7 +33,7 @@
                 name="check"
                 class="text-green-500"
               />
-              <span v-else class="text-gray-500 dark:text-gray-400">1</span>
+              <span v-else class="text-secondary">1</span>
             </div>
             <div class="ml-3">
               <span v-if="isLidoRelayerApproved">{{
@@ -49,7 +49,7 @@
                 name="check"
                 class="text-green-500"
               />
-              <span v-else class="text-gray-500 dark:text-gray-400">{{
+              <span v-else class="text-secondary">{{
                 requiresLidoRelayerApproval ? 2 : 1
               }}</span>
             </div>
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="mt-3 card-container">
-            <div class="card-step text-gray-500 dark:text-gray-400">
+            <div class="card-step text-secondary">
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">

@@ -41,7 +41,7 @@ const { getToken } = useTokens();
         <BalAsset :address="pool.address" class="mr-2" :size="36" />
         <div>
           <div>{{ poolTokenInfo.symbol }}</div>
-          <div class="text-gray-500">
+          <div class="text-secondary">
             {{ poolTokenInfo.name }}
           </div>
         </div>

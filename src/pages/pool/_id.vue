@@ -1,6 +1,8 @@
 <template>
-  <div class="lg:container lg:mx-auto pt-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
+  <div class="xl:container xl:mx-auto lg:px-4 pt-8">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-4 xl:gap-x-8"
+    >
       <PoolPageHeader
         :loadingPool="loadingPool"
         :poolTypeLabel="poolTypeLabel"
@@ -17,7 +19,7 @@
       <div class="hidden lg:block" />
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
-          <div class="px-1 lg:px-0">
+          <div class="px-4 lg:px-0">
             <PoolChart
               :pool="pool"
               :historicalPrices="historicalPrices"
@@ -28,7 +30,7 @@
               :poolType="pool?.poolType"
             />
           </div>
-          <div class="mb-4 px-1 lg:px-0">
+          <div class="mb-4 px-4 lg:px-0">
             <PoolStatCards
               :pool="pool"
               :poolApr="poolApr"
@@ -57,7 +59,7 @@
 
       <div
         v-if="!isLiquidityBootstrappingPool"
-        class="order-1 lg:order-2 px-1 lg:px-0"
+        class="order-1 lg:order-2 px-4 lg:px-0"
       >
         <StakingProvider :poolAddress="getAddressFromPoolId(id)">
           <BalStack vertical>

@@ -52,14 +52,14 @@ withDefaults(defineProps<Props>(), {
 .pill {
   @apply px-2 py-1;
   @apply rounded-lg;
-  @apply bg-gray-50 dark:bg-gray-600 text-gray-500 dark:text-gray-400;
+  @apply bg-gray-50 dark:bg-gray-600 text-gray-600 dark:text-gray-400;
   @apply text-sm;
   @apply flex items-center;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
 }
 
 .pill-selected {
-  @apply bg-blue-600 dark:bg-blue-600;
+  @apply bg-blue-600 dark:bg-blue-400;
   @apply text-white dark:text-white;
 }
 

@@ -139,7 +139,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .total-row {
-  @apply text-lg font-bold rounded-t-lg dark:bg-gray-800;
+  @apply text-lg font-semibold rounded-t-lg dark:bg-gray-800;
 }
 
 .price-impact-row {

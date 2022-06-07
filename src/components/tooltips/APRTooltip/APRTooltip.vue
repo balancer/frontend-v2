@@ -68,14 +68,16 @@ const totalLabel = computed((): string =>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
-        <div class="text-gray-500">{{ $t('totalAPR') }}</div>
+        <div class="text-secondary">{{ $t('totalAPR') }}</div>
         <div>{{ totalLabel }}</div>
       </div>
       <div class="p-3">
         <!-- SWAP FEE APR -->
         <div class="whitespace-nowrap flex items-center mb-1">
           {{ fNum2(apr?.swap || '0', FNumFormats.percent) }}
-          <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
+          <span class="ml-1 text-secondary text-xs">
+            {{ $t('swapFeeAPR') }}
+          </span>
         </div>
 
         <!-- VeBal APR -->
