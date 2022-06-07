@@ -58,14 +58,18 @@ export default class AaveService {
       linearPoolTotalSupplies
     } = await multicaller.execute();
 
-    const unwrappedTokens = wrappedTokens?.map((address, i) => {
-      return (unwrappedAave[i] || unwrappedERC4626[i] || address).toLowerCase();
+    const mappedUnwrappedTokens = wrappedTokens?.map((address, i) => {
+      return (
+        unwrappedAave[i] ||
+        unwrappedERC4626[i] ||
+        this.addressMapIn(address)
+      ).toLowerCase();
     });
 
     if (
       !mainTokens ||
       !wrappedTokens ||
-      !unwrappedTokens ||
+      !mappedUnwrappedTokens ||
       !hasAllWrappedTokenBalances
     )
       return { total: '0', breakdown: {} };
@@ -80,7 +84,7 @@ export default class AaveService {
     const reserves = await this.subgraphService.reserves.get({
       where: {
         underlyingAsset_in: mappedMainTokens,
-        // aToken_in: unwrappedTokens,
+        aToken_in: mappedUnwrappedTokens,
         isActive: true
       }
     });
