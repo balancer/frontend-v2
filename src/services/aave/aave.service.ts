@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
