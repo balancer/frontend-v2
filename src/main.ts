@@ -3,6 +3,15 @@ import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 import { Web3Provider } from '@ethersproject/providers';
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip
+} from 'chart.js';
 import { BarChart, LineChart, PieChart } from 'echarts/charts';
 import {
   GridComponent,
@@ -31,6 +40,15 @@ import Web3Plugin from '@/services/web3/web3.plugin';
 import store from '@/store';
 
 import Root from './Root';
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
 
 echarts.use([
   TitleComponent,

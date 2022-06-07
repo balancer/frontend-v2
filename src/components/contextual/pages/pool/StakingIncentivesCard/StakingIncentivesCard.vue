@@ -97,7 +97,7 @@ async function handleActionSuccess() {
         :class="['shadow-2xl', { handle: isPoolEligibleForStaking }]"
         :sections="[
           {
-            title: $t('stakingIncentives'),
+            title: $t('staking.stakingIncentives'),
             id: 'staking-incentives',
             handle: 'staking-handle',
             isDisabled: !isPoolEligibleForStaking
