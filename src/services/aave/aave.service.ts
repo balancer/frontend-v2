@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
@@ -76,14 +75,16 @@ export default class AaveService {
       const supplyAPR = bnum(reserve.supplyAPR);
 
       if (supplyAPR.gt(0)) {
-        const tokenIndex = mainTokens.findIndex(
-          token => isSameAddress(token, reserve.underlyingAsset)
+        const tokenIndex = mainTokens.findIndex(token =>
+          isSameAddress(token, reserve.underlyingAsset)
         );
         // Grabs the matching wrapped which generates the yield
         const wrappedToken = wrappedTokens[tokenIndex];
         const mainToken = mainTokens[tokenIndex];
         const linearPoolAddress = pool.tokensList[tokenIndex];
-        const linearPoolToken = pool.tokens.find(token => isSameAddress(token.address, linearPoolAddress));
+        const linearPoolToken = pool.tokens.find(token =>
+          isSameAddress(token.address, linearPoolAddress)
+        );
         const linearPoolTotalSupply = formatUnits(
           linearPoolTotalSupplies[tokenIndex],
           18
