@@ -340,14 +340,18 @@ export default defineComponent({
 
     const missingPrices = computed(() => {
       if (pool.value) {
-        const tokensWithPrice = Object.keys(prices.value);
+        const tokensWithPrice = Object.keys(prices.value).map(t =>
+          t.toLowerCase()
+        );
 
         const tokens =
           isStablePhantomPool.value && pool.value.mainTokens
             ? pool.value.mainTokens
             : pool.value.tokensList;
 
-        return !tokens.every(token => tokensWithPrice.includes(token));
+        return !tokens.every(token =>
+          tokensWithPrice.includes(token.toLowerCase())
+        );
       }
       return false;
     });

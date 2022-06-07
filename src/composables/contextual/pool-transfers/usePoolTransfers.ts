@@ -56,9 +56,9 @@ export default function usePoolTransfers() {
   });
 
   const missingPrices = computed(() => {
-    const tokensWithPrice = Object.keys(prices.value);
+    const tokensWithPrice = Object.keys(prices.value).map(t => t.toLowerCase());
     return !tokenAddresses.value.every(token =>
-      tokensWithPrice.includes(token)
+      tokensWithPrice.includes(token.toLowerCase())
     );
   });
 

@@ -2,6 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { set } from 'lodash';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import { isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   TokenInfo,
@@ -53,8 +54,8 @@ export default class MetadataConcern {
     const metaDict = {};
 
     addresses.forEach(async address => {
-      const tokenMeta = tokens.find(
-        token => getAddress(token.address) === address
+      const tokenMeta = tokens.find(token =>
+        isSameAddress(token.address, address)
       );
       if (tokenMeta)
         metaDict[address] = {

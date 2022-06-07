@@ -381,6 +381,7 @@ export default {
      * Fetch price for a token
      */
     function priceFor(address: string): number {
+      if (address) address = getAddress(address);
       try {
         return prices.value[address][currency.value] || 0;
       } catch {
@@ -392,6 +393,7 @@ export default {
      * Fetch balance for a token
      */
     function balanceFor(address: string): string {
+      if (address) address = getAddress(address);
       try {
         return balances.value[address] || '0';
       } catch {
