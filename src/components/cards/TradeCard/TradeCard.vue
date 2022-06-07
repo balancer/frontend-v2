@@ -206,7 +206,6 @@ export default defineComponent({
       tokenInAmountInput: tokenInAmount,
       tokenOutAddressInput: tokenOutAddress,
       tokenOutAmountInput: tokenOutAmount,
-      tokens,
       wrapType,
       tokenIn,
       tokenOut,
