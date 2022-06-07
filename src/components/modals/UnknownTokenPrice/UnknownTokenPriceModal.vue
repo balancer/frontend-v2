@@ -32,7 +32,7 @@ const PRICE_CAP = 100000000;
  * COMPOSABLES
  */
 const { seedTokens } = usePoolCreation();
-const { tokens, injectPrices, injectedPrices } = useTokens();
+const { getToken, injectPrices, injectedPrices } = useTokens();
 const { t } = useI18n();
 
 /**
@@ -56,7 +56,7 @@ const unknownTokenPrices = computed(
  */
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
-    tokenAddress => tokens.value[tokenAddress].symbol
+    tokenAddress => getToken(tokenAddress).symbol
   );
   return formatWordListAsSentence(tokenSymbols, t);
 });

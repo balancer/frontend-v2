@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getAddress } from 'ethers/lib/utils';
 import { computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
@@ -22,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const { fNum2 } = useNumbers();
-const { tokens, hasBalance } = useTokens();
+const { getToken, hasBalance } = useTokens();
 
 /**
  * COMPUTED
@@ -43,9 +42,7 @@ const isSelectedInHiddenTokens = computed(() =>
  * METHODS
  */
 function symbolFor(token: PoolToken): string {
-  return (
-    token.symbol || tokens.value[getAddress(token.address)]?.symbol || '---'
-  );
+  return token.symbol || getToken(token.address)?.symbol || '---';
 }
 
 function weightFor(token: PoolToken): string {

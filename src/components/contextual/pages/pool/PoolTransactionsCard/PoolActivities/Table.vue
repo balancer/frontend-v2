@@ -60,7 +60,7 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { tokens, priceFor } = useTokens();
+const { getToken, priceFor } = useTokens();
 /**
  * COMPUTED
  */
@@ -134,7 +134,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
   for (let i = 0; i < amounts.length; i++) {
     const amount = amounts[i];
     const address = getAddress(props.tokens[i]);
-    const token = tokens.value[address];
+    const token = getToken(address);
     const price = priceFor(token.address);
     const amountNumber = Math.abs(parseFloat(amount));
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
@@ -149,7 +149,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
 function getJoinExitDetails(amounts: PoolActivity['amounts']) {
   return amounts.map((amount, index) => {
     const address = getAddress(props.tokens[index]);
-    const token = tokens.value[address];
+    const token = getToken(address);
     const symbol = token ? token.symbol : address;
     const amountNumber = parseFloat(amount);
     return {

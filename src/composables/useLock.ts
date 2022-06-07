@@ -16,7 +16,7 @@ export function useLock() {
    * COMPOSABLES
    */
   const { lockablePoolId } = useVeBal();
-  const { tokens } = useTokens();
+  const { getToken } = useTokens();
 
   /**
    * QUERIES
@@ -46,7 +46,7 @@ export function useLock() {
   const lockPool = computed<Pool | undefined>(() => lockPoolQuery.data.value);
 
   const lockPoolToken = computed((): TokenInfo | null =>
-    lockPool.value != null ? tokens.value[lockPool.value.address] : null
+    lockPool.value != null ? getToken(lockPool.value.address) : null
   );
 
   const lock = computed(() => lockQuery.data.value);

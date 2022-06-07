@@ -186,7 +186,7 @@ export default defineComponent({
     const { fNum2 } = useNumbers();
 
     const { appNetworkConfig } = useWeb3();
-    const { tokens } = useTokens();
+    const { getToken } = useTokens();
 
     const visible = ref(false);
 
@@ -195,7 +195,7 @@ export default defineComponent({
     }
 
     const input = computed(() => {
-      const symbol = tokens.value[props.addressIn].symbol;
+      const symbol = getToken(props.addressIn).symbol;
       return {
         amount: props.amountIn,
         address: props.addressIn,
@@ -204,7 +204,7 @@ export default defineComponent({
     });
 
     const output = computed(() => {
-      const symbol = tokens.value[props.addressOut].symbol;
+      const symbol = getToken(props.addressOut).symbol;
       return {
         amount: props.amountOut,
         address: props.addressOut,

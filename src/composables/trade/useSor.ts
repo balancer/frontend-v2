@@ -38,7 +38,7 @@ import {
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import { TokenInfo } from '@/types/TokenList';
 
 import useEthers from '../useEthers';
 import useFathom from '../useFathom';
@@ -71,7 +71,6 @@ type Props = {
   tokenInAmountInput: Ref<string>;
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
-  tokens: Ref<TokenInfoMap>;
   wrapType: Ref<WrapType>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
   tokenOutAmountScaled?: ComputedRef<BigNumber>;
@@ -91,7 +90,6 @@ export default function useSor({
   tokenInAmountInput,
   tokenOutAddressInput,
   tokenOutAmountInput,
-  tokens,
   wrapType,
   tokenInAmountScaled,
   tokenOutAmountScaled,
@@ -136,17 +134,14 @@ export default function useSor({
   const { addTransaction } = useTransactions();
   const { fNum2 } = useNumbers();
   const { t } = useI18n();
-  const { injectTokens, priceFor } = useTokens();
+  const { injectTokens, priceFor, getToken } = useTokens();
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
-    if (tokenInAddressInput.value && !tokens.value[tokenInAddressInput.value]) {
+    if (tokenInAddressInput.value && !getToken(tokenInAddressInput.value)) {
       unknownAssets.push(tokenInAddressInput.value);
     }
-    if (
-      tokenOutAddressInput.value &&
-      !tokens.value[tokenOutAddressInput.value]
-    ) {
+    if (tokenOutAddressInput.value && !getToken(tokenOutAddressInput.value)) {
       unknownAssets.push(tokenOutAddressInput.value);
     }
     await injectTokens(unknownAssets);
@@ -516,8 +511,8 @@ export default function useSor({
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
-    const tokenInDecimals = tokens.value[tokenInAddress].decimals;
-    const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
+    const tokenInDecimals = getToken(tokenInAddress).decimals;
+    const tokenOutDecimals = getToken(tokenOutAddress).decimals;
     const tokenInAmountScaled = parseFixed(
       tokenInAmountInput.value,
       tokenInDecimals
@@ -678,7 +673,7 @@ export default function useSor({
   }
 
   function getTokenDecimals(tokenAddress: string) {
-    return tokens.value[tokenAddress]?.decimals;
+    return getToken(tokenAddress)?.decimals;
   }
 
   /**
