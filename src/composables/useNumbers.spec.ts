@@ -1,7 +1,6 @@
 import { mount } from 'vue-composable-tester';
 
 import { FiatCurrency } from '@/constants/currency';
-import { isSameAddress } from '@/lib/utils';
 
 import useNumbers, { FNumFormats } from './useNumbers';
 
@@ -24,8 +23,8 @@ jest.mock('@/composables/useTokens', () => {
       priceFor: jest
         .fn()
         .mockImplementation((address, currency = mockDefaultCurrency) => {
-          const token = Object.values(mockTokens).find(token =>
-            isSameAddress(address, token.address)
+          const token = Object.values(mockTokens).find(
+            token => address === token.address
           );
           return token?.price[currency];
         })

@@ -4,7 +4,6 @@ import { computed, ref } from 'vue';
 import { mount } from 'vue-composable-tester';
 
 import useSor from '@/composables/trade/useSor';
-import { isSameAddress } from '@/lib/utils';
 import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -29,7 +28,7 @@ jest.mock('@/composables/useTokens', () => {
     return {
       injectTokens: jest.fn().mockImplementation(),
       priceFor: jest.fn().mockImplementation(address => {
-        if (isSameAddress(address, mockNativeAssetAddress)) {
+        if (address === mockNativeAssetAddress) {
           return mockEthPrice;
         }
         return mockTokenPrice;
