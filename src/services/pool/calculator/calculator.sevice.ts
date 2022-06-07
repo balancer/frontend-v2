@@ -197,6 +197,11 @@ export default class CalculatorService {
     return this.pool.value.onchain.tokens;
   }
 
+  public get poolTokens(): OnchainTokenDataMap {
+    if (!this.pool.value?.onchain?.tokens) return {};
+    return this.pool.value.onchain.tokens;
+  }
+
   public get poolTokenBalances(): BigNumber[] {
     if (!this.pool.value?.onchain?.tokens) return [];
 

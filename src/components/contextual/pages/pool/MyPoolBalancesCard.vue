@@ -119,10 +119,14 @@ const showMigrateButton = computed(
  * METHODS
  */
 function weightLabelFor(address: string): string {
-  return fNum2(props.pool?.onchain?.tokens?.[address]?.weight || '0', {
-    style: 'percent',
-    maximumFractionDigits: 0
-  });
+  if (!props.pool || !props.pool) return '-';
+  const weight = props.pool?.onchain?.tokens?.[address]?.weight;
+  return weight
+    ? fNum2(weight, {
+        style: 'percent',
+        maximumFractionDigits: 0
+      })
+    : '-';
 }
 
 function fiatLabelFor(index: number, address: string): string {
