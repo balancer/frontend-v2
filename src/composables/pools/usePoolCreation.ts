@@ -9,7 +9,7 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { POOLS } from '@/constants/pools';
-import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
+import { bnum, isSameAddress, lsRemove, lsSet, scale } from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 import { PoolType } from '@/services/pool/types';
@@ -119,8 +119,9 @@ export default function usePoolCreation() {
       }
     }
     let bottleneckWeight =
-      poolCreationState.seedTokens.find(t => t.tokenAddress === bottleneckToken)
-        ?.weight || 0;
+      poolCreationState.seedTokens.find(t =>
+        isSameAddress(t.tokenAddress, bottleneckToken)
+      )?.weight || 0;
     let bottleneckPrice = priceFor(bottleneckToken || '0');
 
     // make sure that once we recognise that we are
@@ -135,8 +136,8 @@ export default function usePoolCreation() {
     ) {
       bottleneckToken = nativeAsset.address;
       bottleneckWeight =
-        poolCreationState.seedTokens.find(
-          t => t.tokenAddress === wrappedNativeAsset.value.address
+        poolCreationState.seedTokens.find(t =>
+          isSameAddress(t.tokenAddress, wrappedNativeAsset.value.address)
         )?.weight || 0;
       bottleneckPrice = priceFor(wrappedNativeAsset.value.address);
     }
@@ -224,8 +225,8 @@ export default function usePoolCreation() {
       if (pool.swapFee === poolCreationState.initialFee) {
         let weightsMatch = true;
         for (const token of pool.tokens) {
-          const relevantToken = poolCreationState.seedTokens.find(
-            t => t.tokenAddress === token.address
+          const relevantToken = poolCreationState.seedTokens.find(t =>
+            isSameAddress(t.tokenAddress, token.address)
           );
           const similarPoolWeight = Number(token.weight).toFixed(2);
           const seedTokenWeight = ((relevantToken?.weight || 0) / 100).toFixed(
@@ -308,9 +309,9 @@ export default function usePoolCreation() {
   }
 
   function findSeedTokenByAddress(address: string) {
-    return poolCreationState.seedTokens.find((token: PoolSeedToken) => {
-      return token.tokenAddress === address;
-    });
+    return poolCreationState.seedTokens.find((token: PoolSeedToken) =>
+      isSameAddress(token.tokenAddress, address)
+    );
   }
 
   function setFeeManagement(type: FeeManagementType) {
@@ -454,7 +455,10 @@ export default function usePoolCreation() {
       const tokenAddresses: string[] = poolCreationState.seedTokens.map(
         (token: PoolSeedToken) => {
           if (
-            token.tokenAddress === wrappedNativeAsset.value.address &&
+            isSameAddress(
+              token.tokenAddress,
+              wrappedNativeAsset.value.address
+            ) &&
             poolCreationState.useNativeAsset
           ) {
             return nativeAsset.address;

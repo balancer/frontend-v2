@@ -168,7 +168,7 @@ function handleAmountChange(tokenAddress) {
 }
 
 function handleAddressChange(newAddress: string): void {
-  useNativeAsset.value = newAddress === nativeAsset.address;
+  useNativeAsset.value = isSameAddress(newAddress, nativeAsset.address);
 }
 
 function tokenOptions(index: number): string[] {

@@ -6,7 +6,7 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum, formatWordListAsSentence } from '@/lib/utils';
+import { bnum, formatWordListAsSentence, isSameAddress } from '@/lib/utils';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
@@ -75,7 +75,9 @@ const isSubmitDisabled = computed(() => {
  * METHODS
  */
 function getIndexOfUnknownToken(address: string) {
-  return seedTokens.value.findIndex(token => address === token.tokenAddress);
+  return seedTokens.value.findIndex(token =>
+    isSameAddress(address, token.tokenAddress)
+  );
 }
 
 function injectUnknownPrices() {

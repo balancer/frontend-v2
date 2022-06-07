@@ -22,7 +22,7 @@ import { useI18n } from 'vue-i18n';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { balancer } from '@/lib/balancer.sdk';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, isSameAddress, scale } from '@/lib/utils';
 import {
   SorManager,
   SorReturn
@@ -686,7 +686,7 @@ export default function useSor({
     address: string,
     decimals: number
   ): Promise<OldBigNumber> {
-    if (address === appNetworkConfig.addresses.wstETH) {
+    if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
       const denormAmount = parseUnits(amount.toString(), decimals);
       const denormStEthAmount = await getStETHByWstETH(denormAmount);
       return bnum(formatUnits(denormStEthAmount, decimals));

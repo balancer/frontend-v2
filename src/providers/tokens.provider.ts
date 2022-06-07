@@ -20,7 +20,7 @@ import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -353,7 +353,7 @@ export default {
     ): boolean {
       if (!amount || bnum(amount).eq(0)) return false;
       if (!contractAddress) return false;
-      if (tokenAddress === nativeAsset.address) return false;
+      if (isSameAddress(tokenAddress, nativeAsset.address)) return false;
 
       const allowance = bnum(
         (allowances.value[contractAddress] || {})[getAddress(tokenAddress)]

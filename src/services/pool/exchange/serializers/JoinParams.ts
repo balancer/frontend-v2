@@ -4,6 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
 import { isManaged, isStableLike } from '@/composables/usePool';
+import { isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import ConfigService from '@/services/config/config.service';
@@ -79,10 +80,9 @@ export default class JoinParams {
       const token = tokensIn[i];
       // In WETH pools, tokenIn can include ETH so we need to check for this
       // and return the correct decimals.
-      const decimals =
-        nativeAsset.address === token
-          ? nativeAsset.decimals
-          : this.pool.value?.onchain?.tokens?.[token]?.decimals || 18;
+      const decimals = isSameAddress(nativeAsset.address, token)
+        ? nativeAsset.decimals
+        : this.pool.value?.onchain?.tokens?.[token]?.decimals || 18;
 
       return parseUnits(amount, decimals);
     });
@@ -92,7 +92,7 @@ export default class JoinParams {
     const nativeAsset = this.config.network.nativeAsset;
 
     return tokensIn.map(address =>
-      address === nativeAsset.address ? AddressZero : address
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
   }
 

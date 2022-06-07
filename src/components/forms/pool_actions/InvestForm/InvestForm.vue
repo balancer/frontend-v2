@@ -130,14 +130,14 @@ function handleAmountChange(value: string, index: number): void {
 }
 
 function handleAddressChange(newAddress: string): void {
-  useNativeAsset.value = newAddress === nativeAsset.address;
+  useNativeAsset.value = isSameAddress(newAddress, nativeAsset.address);
 }
 
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
   if (!props.pool?.onchain?.tokens) return 0;
 
-  if (address === nativeAsset.address) {
+  if (isSameAddress(address, nativeAsset.address)) {
     return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
   }
 

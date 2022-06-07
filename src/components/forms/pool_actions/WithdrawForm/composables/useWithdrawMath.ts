@@ -25,7 +25,7 @@ import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
-import { bnSum, bnum, forChange } from '@/lib/utils';
+import { bnSum, bnum, forChange, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 // Services
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -473,8 +473,8 @@ export default function useWithdrawMath(
     if (!pool.value?.onchain?.linearPools) return '0';
 
     const normalPriceRate =
-      Object.values(pool.value.onchain.linearPools).find(
-        linearPool => linearPool.wrappedToken.address === wrappedToken
+      Object.values(pool.value.onchain.linearPools).find(linearPool =>
+        isSameAddress(linearPool.wrappedToken.address, wrappedToken)
       )?.wrappedToken?.priceRate || '0';
 
     return parseUnits(normalPriceRate, 18).toString();

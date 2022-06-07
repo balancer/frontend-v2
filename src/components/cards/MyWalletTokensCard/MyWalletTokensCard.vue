@@ -122,7 +122,7 @@ function isSelectedNativeAsset(address: string): boolean {
 
     <div class="-mt-2 p-4">
       <div v-for="address in tokenAddresses" :key="address" class="py-2">
-        <div v-if="address === wrappedNativeAsset.address">
+        <div v-if="isSameAddress(address, wrappedNativeAsset.address)">
           <div class="flex items-start justify-between">
             <BalBreakdown
               :items="[nativeAsset, wrappedNativeAsset]"
@@ -152,7 +152,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   @click="
                     emit(
                       'update:useNativeAsset',
-                      asset.address === nativeAsset.address
+                      isSameAddress(asset.address, nativeAsset.address)
                     )
                   "
                 />

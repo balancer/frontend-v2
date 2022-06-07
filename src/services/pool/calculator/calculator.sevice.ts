@@ -5,7 +5,7 @@ import OldBigNumber from 'bignumber.js';
 import { Ref, ref } from 'vue';
 
 import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -184,7 +184,7 @@ export default class CalculatorService {
   public get tokenAddresses(): string[] {
     if (this.useNativeAsset.value) {
       return this.pool.value.tokensList.map(address => {
-        if (address === this.config.network.addresses.weth)
+        if (isSameAddress(address, this.config.network.addresses.weth))
           return this.config.network.nativeAsset.address;
         return address;
       });
