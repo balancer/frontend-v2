@@ -54,7 +54,6 @@ const mockProps = {
   tokenInAmountInput: ref('1'),
   tokenOutAddressInput: ref('0x0'),
   tokenOutAmountInput: ref('1'),
-  tokens: ref({}),
   wrapType: ref(0),
   tokenIn: computedMockTokenInfo,
   tokenOut: computedMockTokenInfo,
