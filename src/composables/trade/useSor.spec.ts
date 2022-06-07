@@ -33,7 +33,8 @@ jest.mock('@/composables/useTokens', () => {
         }
         return mockTokenPrice;
       }),
-      useTokens: jest.fn().mockImplementation()
+      useTokens: jest.fn().mockImplementation(),
+      getToken: jest.fn().mockImplementation()
     };
   });
 });
