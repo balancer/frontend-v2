@@ -53,7 +53,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { tokens } = useTokens();
+    const { getToken } = useTokens();
     const { resolve } = useUrls();
     const { theme } = useTailwind();
     const { darkMode } = useDarkMode();
@@ -70,7 +70,7 @@ export default defineComponent({
     const iconSRC = computed(() => {
       if (props.iconURI) return resolve(props.iconURI);
 
-      const token = tokens.value[address.value];
+      const token = getToken(address.value);
       if (!token) return '';
       return resolve(token.logoURI);
     });

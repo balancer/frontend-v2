@@ -78,7 +78,7 @@ export default class AaveService {
 
       if (supplyAPR.gt(0)) {
         const tokenIndex = mainTokens.findIndex(
-          token => token === getAddress(reserve.underlyingAsset)
+          token => isSameAddress(token, reserve.underlyingAsset)
         );
         // Grabs the matching wrapped which generates the yield
         const wrappedToken = wrappedTokens[tokenIndex];

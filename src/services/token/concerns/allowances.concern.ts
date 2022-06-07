@@ -27,8 +27,8 @@ export default class AllowancesConcern {
   ): Promise<ContractAllowancesMap> {
     try {
       // Filter out eth (or native asset) since it's not relevant for allowances.
-      const tokenAddresses = Object.keys(tokens).filter(address =>
-        isSameAddress(address, this.nativeAssetAddress)
+      const tokenAddresses = Object.keys(tokens).filter(
+        address => !isSameAddress(address, this.nativeAssetAddress)
       );
 
       const allContractAllowances = await Promise.all(

@@ -11,7 +11,7 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
@@ -157,7 +157,10 @@ function hint(index: number): string {
 }
 
 function tokenOptions(index: number): string[] {
-  return props.pool.tokenAddresses[index] === wrappedNativeAsset.value.address
+  return isSameAddress(
+    props.pool.tokensList[index],
+    wrappedNativeAsset.value.address
+  )
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
 }

@@ -241,7 +241,7 @@ export default class Vault {
     poolTokens.tokens.forEach((token, i) => {
       const tokenBalance = poolTokens.balances[i];
       const decimals = tokenInfo[token]?.decimals;
-      tokens[getAddress(token)] = {
+      tokens[token.toLowerCase()] = {
         decimals,
         balance: formatUnits(tokenBalance, decimals),
         weight: weights[i],
@@ -252,7 +252,7 @@ export default class Vault {
     });
 
     // Remove pre-minted BPT
-    delete tokens[poolAddress];
+    delete tokens[poolAddress.toLowerCase()];
 
     return tokens;
   }
@@ -276,7 +276,7 @@ export default class Vault {
 
       const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
 
-      _linearPools[getAddress(address)] = {
+      _linearPools[address.toLowerCase()] = {
         id,
         priceRate: formatUnits(priceRate.toString(), 18),
         mainToken: {
@@ -290,7 +290,7 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: getAddress(unwrappedAddress),
+        unwrappedTokenAddress: unwrappedAddress,
         totalSupply: formatUnits(totalSupply, 18)
       };
     });

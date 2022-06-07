@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
@@ -173,7 +174,7 @@ export default class CalculatorService {
   }
 
   public tokenOf(type: string, index: number) {
-    return this[`${type}Tokens`][index];
+    return getAddress(this[`${type}Tokens`][index]);
   }
 
   public ratioOf(type: string, index: number) {

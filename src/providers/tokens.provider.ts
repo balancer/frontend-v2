@@ -417,6 +417,7 @@ export default {
      * Get single token from state
      */
     function getToken(address: string): TokenInfo {
+      if (address) address = getAddress(address);
       return tokens.value[address];
     }
 
