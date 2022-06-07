@@ -202,20 +202,29 @@ export default function usePoolQuery(
             tokensMap[token.wrappedToken.address].decimals
           );
 
+          console.log("main token balance:, ", mainTokenBalance.toString());
+          console.log("wrapped token balance:, ", wrappedTokenBalance.toString());
+
           const mainTokenPrice =
             prices.value[token.mainToken.address] != null
               ? prices.value[token.mainToken.address].usd
               : null;
+
+          console.log("main token price: ", mainTokenPrice?.toString());
 
           if (mainTokenPrice != null) {
             const mainTokenValue = bnum(mainTokenBalance)
               .times(tokenShare)
               .times(mainTokenPrice);
 
+            console.log("main token value: ", mainTokenValue.toString());
+
             const wrappedTokenValue = bnum(wrappedTokenBalance)
               .times(tokenShare)
               .times(mainTokenPrice)
               .times(token.wrappedToken.priceRate);
+
+            console.log("wrapped token value: ", wrappedTokenValue.toString());
 
             totalLiquidity = bnum(totalLiquidity)
               .plus(mainTokenValue)

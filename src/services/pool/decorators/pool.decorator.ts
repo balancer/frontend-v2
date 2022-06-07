@@ -40,7 +40,7 @@ export class PoolDecorator {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
 
-      poolService.setTotalLiquidity(prices, currency);
+      await poolService.setTotalLiquidity(prices, currency);
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
 

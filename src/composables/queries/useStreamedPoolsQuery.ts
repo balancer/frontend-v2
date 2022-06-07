@@ -74,7 +74,7 @@ async function decorateWithTotalLiquidity(
       poolService.removePreMintedBPT();
       await poolService.getLinearPoolAttrs();
     }
-    poolService.setTotalLiquidity(prices, currency);
+    await poolService.setTotalLiquidity(prices, currency);
 
     return poolService.pool;
   });

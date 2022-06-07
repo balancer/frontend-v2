@@ -51,12 +51,12 @@ export default class PoolService {
   /**
    * @summary Calculates and sets total liquidity of pool.
    */
-  public setTotalLiquidity(
+  public async setTotalLiquidity(
     prices: TokenPrices,
     currency: FiatCurrency
-  ): string {
+  ): Promise<string> {
     const liquidityConcern = new this.liquidity(this.pool);
-    const totalLiquidity = liquidityConcern.calcTotal(prices, currency);
+    const totalLiquidity = await liquidityConcern.calcTotal(prices, currency);
     return (this.pool.totalLiquidity = totalLiquidity);
   }
 

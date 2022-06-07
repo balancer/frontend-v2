@@ -1,8 +1,10 @@
 import {
   Liquidity,
+  Pool,
   StaticPoolProvider,
   StaticTokenPriceProvider,
-  StaticTokenProvider
+  StaticTokenProvider,
+  Token
 } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 
@@ -15,6 +17,7 @@ import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import {
   AnyPool,
+  LinearPoolDataMap,
   OnchainTokenData,
   PoolToken
 } from '@/services/balancer/subgraph/types';
@@ -25,6 +28,38 @@ interface OnchainTokenInfo extends OnchainTokenData {
   address: string;
 }
 
+function convertLinearPoolDataMapToPools(
+  linearPoolDataMap?: LinearPoolDataMap
+): Pool[] {
+  if (!linearPoolDataMap) return [];
+  return Object.entries(linearPoolDataMap).map(([address, data]) => {
+    return {
+      id: data.id,
+      address: address,
+      poolType: 'AaveLinear',
+      swapFee: '',
+      tokens: [
+        {
+          address: data.mainToken.address,
+          decimals: 18,
+          balance: data.mainToken.balance,
+          weight: null,
+          priceRate: '1'
+        },
+        {
+          address: data.wrappedToken.address,
+          decimals: 18,
+          balance: data.wrappedToken.balance,
+          weight: null,
+          priceRate: data.wrappedToken.priceRate
+        }
+      ],
+      tokensList: [data.mainToken.address, data.wrappedToken.address],
+      totalShares: data.totalSupply
+    };
+  });
+}
+
 export default class LiquidityConcern {
   poolTokens: OnchainTokenInfo[] | PoolToken[];
 
@@ -32,12 +67,26 @@ export default class LiquidityConcern {
     this.poolTokens = this.onchainPoolTokens || this.pool.tokens;
   }
 
-  public calcTotal(prices: TokenPrices, currency: FiatCurrency): string {
+  public async calcTotal(
+    prices: TokenPrices,
+    currency: FiatCurrency
+  ): Promise<string> {
     if (!this.hasPoolTokens) throw new Error('Missing onchain pool token data');
 
+    const subPools = convertLinearPoolDataMapToPools(
+      this.pool.onchain?.linearPools
+    );
     const tokenPriceProvider = new StaticTokenPriceProvider(prices);
-    const poolProvider = new StaticPoolProvider([this.pool]);
-    const tokenProvider = new StaticTokenProvider(this.poolTokens);
+    const poolProvider = new StaticPoolProvider(
+      [this.pool as Pool].concat(subPools)
+    );
+    const subPoolTokens: Token[] = subPools.reduce((tokens, subPool) => {
+      return tokens.concat(subPool.tokens);
+    }, [] as Token[]);
+    const allTokens: Token[] = (this.poolTokens as Token[]).concat(
+      subPoolTokens
+    );
+    const tokenProvider = new StaticTokenProvider(allTokens);
     const liquidity = new Liquidity(
       {
         network: configService.network.chainId,
@@ -49,16 +98,16 @@ export default class LiquidityConcern {
     );
 
     if (isWeightedLike(this.poolType)) {
+      const newTotal = await liquidity.getLiquidity(this.pool);
+      console.log('New weighted total (' + this.pool.id + '): ', newTotal);
       const total = this.calcWeightedTotal(prices, currency);
-      console.log('Old Weighted total: ', total);
-      const newTotal = liquidity.getLiquidity(this.pool);
-      console.log('New weighted total: ', newTotal);
+      console.log('Old Weighted total (' + this.pool.id + '): ', total);
       return total;
     } else if (isStableLike(this.poolType)) {
+      const newTotal = await liquidity.getLiquidity(this.pool);
+      console.log('New stable total (' + this.pool.id + '): ', newTotal);
       const total = this.calcStableTotal(prices, currency);
-      console.log('Old stable total: ', total);
-      const newTotal = liquidity.getLiquidity(this.pool);
-      console.log('New stable total: ', newTotal);
+      console.log('Old stable total (' + this.pool.id + '): ', total);
       return total;
     }
 
