@@ -71,7 +71,7 @@ export const TOKENS_KOVAN: TokenConstants = {
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    wNativeAsset: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+    wNativeAsset: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     BAL: '0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7',
     bbaUSD: '0x8fd162f338B770F7E879030830cDe9173367f301'
