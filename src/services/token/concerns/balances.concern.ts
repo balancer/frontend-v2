@@ -5,7 +5,7 @@ import { formatUnits } from '@ethersproject/units';
 import { chunk } from 'lodash';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
-import { isSameAddress } from '@/lib/utils';
+import { includesAddress, isSameAddress } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -56,7 +56,7 @@ export default class BalancesConcern {
 
       // If native asset included in addresses, filter out for
       // multicall, but fetch indpendently and inject.
-      if (addresses.includes(this.nativeAssetAddress)) {
+      if (includesAddress(addresses, this.nativeAssetAddress)) {
         addresses = addresses.filter(
           address => !isSameAddress(address, this.nativeAssetAddress)
         );

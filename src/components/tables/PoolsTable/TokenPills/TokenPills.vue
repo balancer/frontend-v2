@@ -3,6 +3,7 @@ import { computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import { includesAddress } from '@/lib/utils';
 import { PoolToken } from '@/services/pool/types';
 
 import HiddenTokensPills from './HiddenTokensPills.vue';
@@ -35,7 +36,9 @@ const hasBalanceInHiddenTokens = computed(() =>
 );
 
 const isSelectedInHiddenTokens = computed(() =>
-  hiddenTokens.value.some(token => props.selectedTokens.includes(token.address))
+  hiddenTokens.value.some(token =>
+    includesAddress(props.selectedTokens, token.address)
+  )
 );
 
 /**
@@ -64,7 +67,7 @@ const MAX_PILLS = 11;
         :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :token="token"
-        :isSelected="selectedTokens.includes(token.address)"
+        :isSelected="includesAddress(selectedTokens, token.address)"
       />
     </template>
     <template v-else>
@@ -75,7 +78,7 @@ const MAX_PILLS = 11;
         :symbol="symbolFor(token)"
         :weight="weightFor(token)"
         :token="token"
-        :isSelected="selectedTokens.includes(token.address)"
+        :isSelected="includesAddress(selectedTokens, token.address)"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"

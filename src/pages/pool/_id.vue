@@ -196,7 +196,7 @@ import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
-import { getAddressFromPoolId } from '@/lib/utils';
+import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -340,18 +340,14 @@ export default defineComponent({
 
     const missingPrices = computed(() => {
       if (pool.value) {
-        const tokensWithPrice = Object.keys(prices.value).map(t =>
-          t.toLowerCase()
-        );
+        const tokensWithPrice = Object.keys(prices.value);
 
         const tokens =
           isStablePhantomPool.value && pool.value.mainTokens
             ? pool.value.mainTokens
             : pool.value.tokensList;
 
-        return !tokens.every(token =>
-          tokensWithPrice.includes(token.toLowerCase())
-        );
+        return !tokens.every(token => includesAddress(tokensWithPrice, token));
       }
       return false;
     });
@@ -390,7 +386,9 @@ export default defineComponent({
         !!pool.value &&
         !isLiquidityBootstrappingPool.value &&
         !isStablePhantomPool.value &&
-        pool.value.tokensList.some(address => !knownTokens.includes(address))
+        pool.value.tokensList.some(
+          address => !includesAddress(knownTokens, address)
+        )
       );
     });
 

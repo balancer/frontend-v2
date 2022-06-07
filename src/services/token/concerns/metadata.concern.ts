@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { set } from 'lodash';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
-import { isSameAddress } from '@/lib/utils';
+import { includesAddress, isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {
   TokenInfo,
@@ -30,8 +30,9 @@ export default class MetadataConcern {
     let metaDict = this.getMetaFromLists(addresses, tokenListTokens);
 
     // If token meta can't be found in TokenLists, fetch onchain
+    const existingAddresses = Object.keys(metaDict);
     const unknownAddresses = addresses.filter(
-      address => !Object.keys(metaDict).includes(address)
+      address => !includesAddress(existingAddresses, address)
     );
     if (unknownAddresses.length > 0) {
       const onchainMeta = await this.getMetaOnchain(unknownAddresses);

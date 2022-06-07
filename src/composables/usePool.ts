@@ -4,7 +4,7 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { POOLS } from '@/constants/pools';
-import { bnum, isSameAddress } from '@/lib/utils';
+import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
@@ -69,7 +69,10 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 }
 
 export function isWeth(pool: AnyPool): boolean {
-  return (pool.tokensList || []).includes(configService.network.addresses.weth);
+  return includesAddress(
+    pool.tokensList || [],
+    configService.network.addresses.weth
+  );
 }
 
 export function isMigratablePool(pool: AnyPool) {

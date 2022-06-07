@@ -9,7 +9,14 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { POOLS } from '@/constants/pools';
-import { bnum, isSameAddress, lsRemove, lsSet, scale } from '@/lib/utils';
+import {
+  bnum,
+  includesAddress,
+  isSameAddress,
+  lsRemove,
+  lsSet,
+  scale
+} from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 import { PoolType } from '@/services/pool/types';
@@ -244,7 +251,10 @@ export default function usePoolCreation() {
   });
 
   const isWethPool = computed((): boolean => {
-    return tokensList.value.includes(configService.network.addresses.weth);
+    return includesAddress(
+      tokensList.value,
+      configService.network.addresses.weth
+    );
   });
 
   const poolOwner = computed(() => {

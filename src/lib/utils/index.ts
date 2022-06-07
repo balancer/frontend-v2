@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import BigNumber from 'bignumber.js';
 import { initial } from 'lodash';
 import { Ref } from 'vue';
@@ -140,5 +141,12 @@ export function getAddressFromPoolId(poolId: string) {
 }
 
 export function isSameAddress(address1: string, address2: string): boolean {
-  return address1.toLowerCase() === address2.toLowerCase();
+  if (!address1 || !address2) return false;
+  return getAddress(address1) === getAddress(address2);
+}
+
+export function includesAddress(addresses: string[], address: string): boolean {
+  if (!address) return false;
+  addresses = addresses.map(a => (a ? getAddress(a) : ''));
+  return addresses.includes(getAddress(address));
 }
