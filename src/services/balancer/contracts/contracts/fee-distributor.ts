@@ -47,6 +47,7 @@ export class FeeDistributor {
    * the claimTokens method by modifing the ABI to make it a view function.
    */
   public async getClaimableBalances(userAddress: string): Promise<BalanceMap> {
+    console.log('address', this.address)
     const balances = await this.web3.callStatic<BigNumber[]>(
       this.address,
       this.staticAbi,
