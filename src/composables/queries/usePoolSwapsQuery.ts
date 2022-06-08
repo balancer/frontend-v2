@@ -5,7 +5,7 @@ import { useInfiniteQuery } from 'vue-query';
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolSwap } from '@/services/balancer/subgraph/types';
+import { PoolSwap } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
 

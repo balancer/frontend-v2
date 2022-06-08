@@ -9,6 +9,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 
+import { isSameAddress } from '@/lib/utils';
 import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
@@ -48,7 +49,7 @@ export default class SwapService {
     console.log('[Swap Service] batchSwapV2');
     const overrides: any = {};
 
-    if (tokenIn.address === AddressZero) {
+    if (isSameAddress(tokenIn.address, AddressZero)) {
       overrides.value = tokenIn.amount;
     }
 
@@ -107,7 +108,7 @@ export default class SwapService {
     console.log('[Swapper] lidoBatchSwap');
     const overrides: any = {};
 
-    if (tokenIn.address === AddressZero) {
+    if (isSameAddress(tokenIn.address, AddressZero)) {
       overrides.value = tokenIn.amount;
     }
 

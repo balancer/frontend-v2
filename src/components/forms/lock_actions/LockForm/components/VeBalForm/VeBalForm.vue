@@ -6,8 +6,8 @@ import useTokens from '@/composables/useTokens';
 import { expectedVeBal } from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -23,7 +23,7 @@ import Summary from './components/Summary.vue';
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo?: VeBalLockInfo;
 };

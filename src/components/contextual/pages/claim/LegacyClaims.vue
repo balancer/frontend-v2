@@ -11,14 +11,13 @@ import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { oneSecondInMs } from '@/composables/useTime';
 import useTokens from '@/composables/useTokens';
-import useTranasactionErrors, {
-  TransactionError
-} from '@/composables/useTransactionErrors';
+import useTranasactionErrors from '@/composables/useTransactionErrors';
 import useTransactions from '@/composables/useTransactions';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimService } from '@/services/claim/claim.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionError } from '@/types/transactions';
 
 type ClaimableToken = {
   token: string;
@@ -61,7 +60,7 @@ const {
 } = useWeb3();
 const { txListener } = useEthers();
 const { addTransaction } = useTransactions();
-const { priceFor, tokens } = useTokens();
+const { priceFor, getToken } = useTokens();
 const { parseError } = useTranasactionErrors();
 
 const BALTokenAddress = getAddress(TOKENS.Addresses.BAL);
@@ -69,7 +68,7 @@ const BALTokenAddress = getAddress(TOKENS.Addresses.BAL);
 // COMPUTED
 const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
   token: BALTokenAddress,
-  symbol: tokens.value[BALTokenAddress]?.symbol,
+  symbol: getToken(BALTokenAddress)?.symbol,
   amount: '0',
   fiatValue: '0'
 }));
@@ -107,7 +106,7 @@ const claimableTokens = computed<ClaimableToken[]>(() => {
     return userClaims.value.multiTokenPendingClaims.map(
       ({ availableToClaim, tokenClaimInfo }) => ({
         token: tokenClaimInfo.token,
-        symbol: tokens.value[tokenClaimInfo.token]?.symbol,
+        symbol: getToken(tokenClaimInfo.token)?.symbol,
         amount: availableToClaim,
         fiatValue: bnum(availableToClaim)
           .times(priceFor(tokenClaimInfo.token))
@@ -132,7 +131,7 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
 
         return {
           token,
-          symbol: tokens.value[token]?.symbol,
+          symbol: getToken(token)?.symbol,
           amount: totalRewards.toString(),
           fiatValue: totalRewards.times(priceFor(token)).toString()
         };

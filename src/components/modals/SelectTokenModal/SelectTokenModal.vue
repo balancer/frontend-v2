@@ -171,7 +171,7 @@ export default defineComponent({
       isActiveList
     } = useTokenLists();
     const {
-      tokens: allTokens,
+      getToken,
       searchTokens,
       priceFor,
       balanceFor,
@@ -224,7 +224,7 @@ export default defineComponent({
      * METHODS
      */
     async function onSelectToken(token: string): Promise<void> {
-      if (!allTokens.value[token]) {
+      if (!getToken(token)) {
         await injectTokens([token]);
       }
 

@@ -9,7 +9,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { shortenLabel } from '@/lib/utils';
 import { bnum } from '@/lib/utils';
-import { PoolSwap } from '@/services/balancer/subgraph/types';
+import { PoolSwap } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

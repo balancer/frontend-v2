@@ -10,8 +10,8 @@ import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import PoolActionsCard from './PoolActionsCard.vue';
@@ -20,7 +20,7 @@ import PoolActionsCard from './PoolActionsCard.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   missingPrices: boolean;
 };
 
@@ -60,7 +60,7 @@ const poolCalculator = new PoolCalculator(
 const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const poolTokens = computed(() =>
-  Object.values(getTokens(props.pool.tokenAddresses))
+  Object.values(getTokens(props.pool.tokensList))
 );
 
 const propTokenAmounts = computed((): string[] => {
@@ -75,8 +75,8 @@ const propTokenAmounts = computed((): string[] => {
   if (isStablePhantomPool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokenAddresses.map((address, i) => {
-      if (!props.pool.onchain.linearPools) return '0';
+    return props.pool.tokensList.map((address, i) => {
+      if (!props.pool?.onchain?.linearPools) return '0';
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
@@ -95,7 +95,7 @@ const tokenAddresses = computed((): string[] => {
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];
   }
-  return props.pool.tokenAddresses;
+  return props.pool.tokensList;
 });
 
 const fiatValue = computed(() =>
@@ -119,10 +119,14 @@ const showMigrateButton = computed(
  * METHODS
  */
 function weightLabelFor(address: string): string {
-  return fNum2(props.pool.onchain.tokens[address].weight, {
-    style: 'percent',
-    maximumFractionDigits: 0
-  });
+  if (!props.pool || !props.pool) return '-';
+  const weight = props.pool?.onchain?.tokens?.[address]?.weight;
+  return weight
+    ? fNum2(weight, {
+        style: 'percent',
+        maximumFractionDigits: 0
+      })
+    : '-';
 }
 
 function fiatLabelFor(index: number, address: string): string {
@@ -130,7 +134,7 @@ function fiatLabelFor(index: number, address: string): string {
   return fNum2(fiatValue, FNumFormats.fiat);
 }
 
-function navigateToPoolMigration(pool: FullPool) {
+function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
     params: {

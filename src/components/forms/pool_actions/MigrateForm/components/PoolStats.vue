@@ -5,11 +5,11 @@ import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/t
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**

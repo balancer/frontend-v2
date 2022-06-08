@@ -14,7 +14,7 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import { PoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
 

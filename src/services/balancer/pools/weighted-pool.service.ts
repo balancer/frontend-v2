@@ -18,7 +18,7 @@ import { formatUnits } from 'ethers/lib/utils';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import TOPICS from '@/constants/topics';
-import { scale } from '@/lib/utils';
+import { isSameAddress, scale } from '@/lib/utils';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { configService } from '@/services/config/config.service';
 
@@ -198,7 +198,7 @@ export default class WeightedPoolService {
     const nativeAsset = configService.network.nativeAsset;
 
     return tokensIn.map(address =>
-      address === nativeAsset.address ? AddressZero : address
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
   }
 }

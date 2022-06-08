@@ -2,7 +2,7 @@
 import { toRef } from 'vue';
 
 import { usePool } from '@/composables/usePool';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 import InvestmentTransactions from './InvestmentTransactions/InvestmentTransactions.vue';
 import TradeTransactions from './TradeTransactions/TradeTransactions.vue';
@@ -11,7 +11,7 @@ import TradeTransactions from './TradeTransactions/TradeTransactions.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   loading: boolean;
 };
 

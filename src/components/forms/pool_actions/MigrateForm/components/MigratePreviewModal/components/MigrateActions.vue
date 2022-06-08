@@ -22,7 +22,7 @@ import { balancer } from '@/lib/balancer.sdk';
 // Services
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
@@ -34,8 +34,8 @@ import { MigrateMathResponse } from '../../../composables/useMigrateMath';
  * TYPES
  */
 type Props = {
-  fromPool: FullPool;
-  toPool: FullPool;
+  fromPool: Pool;
+  toPool: Pool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
@@ -169,7 +169,7 @@ async function submit() {
       exiter: account.value,
       swapRecipient: account.value,
       poolId: props.fromPool.id,
-      exitTokens: props.fromPool.tokensList,
+      exitTokens: props.fromPool.tokensList.map(t => t.toLowerCase()),
       userData,
       expectedAmountsOut: fullAmountsScaled.value.map(amount =>
         amount.toString()
@@ -182,9 +182,9 @@ async function submit() {
       }
     });
 
-    const hasInvalidAmount = txInfo.outputs?.amountsOut.some(
-      (amount: BigNumberish) => BigNumber.from(amount).isZero()
-    );
+    const hasInvalidAmount = (
+      txInfo.outputs?.amountsOut || []
+    ).some((amount: BigNumberish) => BigNumber.from(amount).isZero());
 
     if (hasInvalidAmount) {
       throw new Error('exitPoolAndBatchSwap returned invalid amounts.');

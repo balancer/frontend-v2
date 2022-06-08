@@ -2,7 +2,7 @@ import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { usePool } from '@/composables/usePool';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 import usePoolTransfers from './usePoolTransfers';
 
@@ -27,7 +27,7 @@ export default function usePoolTransfersGuard() {
   /**
    * METHODS
    */
-  function shouldBlockAccess(pool: FullPool): boolean {
+  function shouldBlockAccess(pool: Pool): boolean {
     if (noInitLiquidity(pool)) return true;
     return false;
   }

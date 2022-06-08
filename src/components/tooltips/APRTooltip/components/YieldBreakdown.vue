@@ -7,7 +7,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
-import { PoolAPRs } from '@/services/balancer/subgraph/types';
+import { PoolAPRs } from '@/services/pool/types';
 
 /**
  * TYPES

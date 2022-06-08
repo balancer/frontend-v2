@@ -3,6 +3,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import { isSameAddress } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -27,7 +28,7 @@ export default class AllowancesConcern {
     try {
       // Filter out eth (or native asset) since it's not relevant for allowances.
       const tokenAddresses = Object.keys(tokens).filter(
-        address => address !== this.nativeAssetAddress
+        address => !isSameAddress(address, this.nativeAssetAddress)
       );
 
       const allContractAllowances = await Promise.all(

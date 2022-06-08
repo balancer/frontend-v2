@@ -5,7 +5,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { Pool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
