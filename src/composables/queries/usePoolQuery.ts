@@ -110,7 +110,6 @@ export default function usePoolQuery(
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
       [{ ...pool, onchain: onchainData }],
-      '24h',
       prices.value,
       currency.value,
       subgraphGauges.value || [],

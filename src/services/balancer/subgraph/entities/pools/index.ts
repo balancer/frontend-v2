@@ -45,7 +45,6 @@ export default class Pools {
 
   public async decorate(
     pools: Pool[],
-    period: TimeTravelPeriod,
     prices: TokenPrices,
     currency: FiatCurrency,
     gauges: SubgraphGauge[],
@@ -53,7 +52,7 @@ export default class Pools {
   ): Promise<Pool[]> {
     // Get past state of pools
     const currentBlock = await this.service.rpcProviderService.getBlockNumber();
-    const blockNumber = await getTimeTravelBlock(currentBlock, period);
+    const blockNumber = await getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: pools.map(pool => pool.id) };
     const poolSnapshotQuery = this.query({ where: isInPoolIds, block });

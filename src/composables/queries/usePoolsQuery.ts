@@ -38,7 +38,9 @@ export default function usePoolsQuery(
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
   filterOptions?: FilterOptions
 ) {
-  // COMPOSABLES
+  /**
+   * COMPOSABLES
+   */
   const {
     injectTokens,
     dynamicDataLoading,
@@ -54,7 +56,14 @@ export default function usePoolsQuery(
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
 
-  // DATA
+  /**
+   * COMPUTED
+   */
+  const enabled = computed(() => !appLoading.value && options.enabled);
+
+  /**
+   * QUERY KEY
+   */
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     tokenList,
@@ -63,9 +72,9 @@ export default function usePoolsQuery(
     gaugeAddresses
   );
 
-  // COMPUTED
-  const enabled = computed(() => !appLoading.value && options.enabled);
-
+  /**
+   * QUERY FUNCTION
+   */
   const queryFn = async ({ pageParam = 0 }) => {
     const tokensListFilterKey = filterOptions?.isExactTokensList
       ? 'tokensList'
@@ -109,7 +118,6 @@ export default function usePoolsQuery(
 
     const decoratedPools = await balancerSubgraphService.pools.decorate(
       pools,
-      '24h',
       prices.value,
       currency.value,
       subgraphGauges.value || [],
