@@ -24,6 +24,7 @@ The app should be live at [http://localhost:8080](http://localhost:8080)
 If you'd rather spin up the app in a docker container, first install dependencies to you local folder:
 
 ```bash
+docker-compose build
 docker-compose run --rm web npm i
 ```
 
