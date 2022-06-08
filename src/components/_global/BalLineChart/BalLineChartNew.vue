@@ -47,5 +47,6 @@ defineProps({
     :styles="styles"
     :chart-id="chartId"
     :height="height"
+    :css-classes="cssClasses"
   />
 </template>

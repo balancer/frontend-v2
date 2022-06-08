@@ -127,19 +127,34 @@ const history = computed(() => {
     })
     .reverse();
 });
+const periodOptions = [
+  { text: '90 days', value: 90 },
+  { text: '180 days', value: 180 },
+  { text: '365 days', value: 365 },
+  { text: 'All time', value: 399 }
+];
+const currentPeriod = ref(periodOptions[0].value);
 
+function setCurrentPeriod(period: number) {
+  currentPeriod.value = period;
+}
 const timestamps = computed(() =>
-  history.value.map(state => format(state.timestamp, 'yyyy/MM/dd'))
+  history.value
+    .map(state => format(state.timestamp, 'yyyy/MM/dd'))
+    .slice(-currentPeriod.value)
 );
-
 const volumeData = computed(() => {
-  const values = Object.values(props.snapshots).reverse();
-  return values.map((snapshot, idx) => {
-    const prevValue = idx === 0 ? 0 : parseFloat(values[idx - 1].swapVolume);
-    const value = parseFloat(snapshot.swapVolume);
+  const snapshotValues = Object.values(props.snapshots);
+  const values = snapshotValues.reverse();
 
-    return { x: 10, y: value - prevValue > 0 ? value - prevValue : 0 };
-  });
+  return values
+    .map((snapshot, idx) => {
+      const prevValue = idx === 0 ? 0 : parseFloat(values[idx - 1].swapVolume);
+      const value = parseFloat(snapshot.swapVolume);
+
+      return { x: 10, y: value - prevValue > 0 ? value - prevValue : 0 };
+    })
+    .slice(-currentPeriod.value);
 });
 
 const feesData = computed(() => {
@@ -155,8 +170,8 @@ const feesData = computed(() => {
 const chartData = computed(() => {
   if (activeTab.value === PoolChartTab.TVL) {
     return {
-      label: 'TVL',
-      backgroundColor: '#6ad09d',
+      backgroundColor: '#2563EB',
+      borderColor: '#2563EB',
       data: Object.values(props.snapshots)
         .reverse()
         .map(snapshot => snapshot.liquidity)
@@ -164,15 +179,15 @@ const chartData = computed(() => {
   }
   if (activeTab.value === PoolChartTab.FEES) {
     return {
-      label: 'Fees',
-      backgroundColor: '#6ad09d',
+      borderRadius: 100,
+      backgroundColor: '#34D399',
       data: feesData.value
     };
   }
 
   return {
-    label: '',
-    backgroundColor: '#6ad09d',
+    borderRadius: 100,
+    backgroundColor: '#34D399',
     data: volumeData.value
   };
 });
@@ -199,6 +214,11 @@ const plugins = {
 
 const chartOptions = {
   responsive: true,
+  elements: {
+    point: {
+      radius: 0
+    }
+  },
   scales: {
     y: {
       beginAtZero: true,
@@ -232,12 +252,17 @@ const chartOptions = {
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
   <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
-    <div
-      class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
-    >
+    <div class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6">
       <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+      <div class="w-24">
+        <BalSelectInput
+          :options="periodOptions"
+          :model-value="currentPeriod"
+          @change="setCurrentPeriod"
+          name="periods"
+        />
+      </div>
     </div>
-
     <BalLineChartNew
       v-if="activeTab === PoolChartTab.TVL"
       :data="{

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bal-select-input', containerClasses]" @click="onClick">
+  <div :class="['bal-select-input', containerClasses]">
     <div class="flex items-center h-full">
       <div class="flex flex-col justify-center h-full flex-1">
         <div v-if="label || $slots.label" :class="['label', labelClasses]">
@@ -101,7 +101,7 @@ export default defineComponent({
         case 'lg':
           return 'h-16';
         default:
-          return 'h-12';
+          return 'h-10';
       }
     });
 
@@ -171,7 +171,7 @@ export default defineComponent({
 }
 
 select {
-  @apply absolute w-full h-full leading-loose bg-transparent leading-none -ml-px pt-4;
+  @apply absolute w-full h-full leading-loose bg-transparent leading-none -ml-px text-xs;
   -webkit-appearance: none;
   -moz-appearance: none;
   text-indent: 1px;
