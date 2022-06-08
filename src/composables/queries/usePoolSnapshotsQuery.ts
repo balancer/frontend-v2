@@ -1,3 +1,4 @@
+import differenceInDays from 'date-fns/differenceInDays';
 import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
@@ -25,7 +26,6 @@ interface QueryResponse {
  */
 export default function usePoolSnapshotsQuery(
   id: string,
-  days: number,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
@@ -52,9 +52,16 @@ export default function usePoolSnapshotsQuery(
     let prices: HistoricalPrices = {};
 
     const isStablePhantomPool = isStablePhantom(pool.value.poolType);
+    const daysFromPoolCreation = differenceInDays(
+      new Date(),
+      new Date(pool.value.createTime * 1000)
+    );
 
     if (isStablePhantomPool) {
-      snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
+      snapshots = await balancerSubgraphService.poolSnapshots.get(
+        id,
+        daysFromPoolCreation
+      );
 
       return {
         prices,
@@ -63,8 +70,11 @@ export default function usePoolSnapshotsQuery(
     } else {
       const tokens = pool.value.tokenAddresses;
       [prices, snapshots] = await Promise.all([
-        coingeckoService.prices.getTokensHistorical(tokens, days),
-        balancerSubgraphService.poolSnapshots.get(id, days)
+        coingeckoService.prices.getTokensHistorical(
+          tokens,
+          daysFromPoolCreation
+        ),
+        balancerSubgraphService.poolSnapshots.get(id, daysFromPoolCreation)
       ]);
     }
 
