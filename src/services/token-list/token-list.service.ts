@@ -22,8 +22,7 @@ interface TokenListUris {
 
 export default class TokenListService {
   constructor(
-    private readonly config = configService,
-    private readonly appNetwork = config.network.key,
+    private readonly appNetwork = configService.network.key,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly ipfs = ipfsService
   ) {}
