@@ -1,10 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
-import { getAddress } from '@ethersproject/address';
 
-import {
-  getTimeTravelBlock,
-  TimeTravelPeriod
-} from '@/composables/useSnapshots';
+import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { FiatCurrency } from '@/constants/currency';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
@@ -43,6 +39,9 @@ export default class Pools {
     return data.pools;
   }
 
+  /**
+   *
+   */
   public async decorate(
     pools: Pool[],
     prices: TokenPrices,
@@ -75,9 +74,5 @@ export default class Pools {
       poolSnapshots,
       tokens
     );
-  }
-
-  public addressFor(poolId: string): string {
-    return getAddress(poolId.slice(0, 42));
   }
 }

@@ -95,7 +95,7 @@ export default function usePoolQuery(
     await injectTokens([
       ...pool.tokensList,
       ...lpTokensFor(pool),
-      balancerSubgraphService.pools.addressFor(pool.id)
+      pool.address
     ]);
     await forChange(dynamicDataLoading, false);
 

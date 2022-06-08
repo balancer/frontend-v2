@@ -110,7 +110,7 @@ export default function usePoolsQuery(
       pools.map(pool => [
         ...pool.tokensList,
         ...lpTokensFor(pool),
-        balancerSubgraphService.pools.addressFor(pool.id)
+        pool.address
       ])
     );
     await injectTokens(tokens);
