@@ -6,7 +6,7 @@
     "npm": ">=7"
   },
   "scripts": {
-    "serve": "npm run generate:tokenlists && vue-cli-service serve",
+    "serve": "NODE_ENV=development npm run generate:tokenlists && vue-cli-service serve",
     "build": "npm run generate:tokenlists && vue-cli-service build",
     "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
     "lint": "vue-cli-service lint --no-fix --max-warnings 0",
