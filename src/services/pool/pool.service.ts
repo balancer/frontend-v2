@@ -180,22 +180,14 @@ export default class PoolService {
         linearPool.address.toLowerCase()
       );
 
-      this.pool.mainTokens[index] = getAddress(
-        linearPool.tokensList[linearPool.mainIndex]
-      );
-      this.pool.wrappedTokens[index] = getAddress(
-        linearPool.tokensList[linearPool.wrappedIndex]
-      );
+      this.pool.mainTokens[index] = linearPool.tokensList[linearPool.mainIndex];
+      this.pool.wrappedTokens[index] =
+        linearPool.tokensList[linearPool.wrappedIndex];
 
       linearPool.tokens
-        .filter(token => token.address !== linearPool.address)
+        .filter(token => !isSameAddress(token.address, linearPool.address))
         .forEach(token => {
-          const address = getAddress(token.address);
-
-          linearPoolTokensMap[address] = {
-            ...token,
-            address
-          };
+          linearPoolTokensMap[token.address] = token;
         });
     });
 
@@ -203,22 +195,15 @@ export default class PoolService {
   }
 
   removePreMintedBPT(): string[] {
-    const poolAddress = balancerSubgraphService.pools.addressFor(this.pool.id);
-    // Remove pre-minted BPT token if exits
     return (this.pool.tokensList = this.pool.tokensList.filter(
-      address => address !== poolAddress.toLowerCase()
+      address => !isSameAddress(address, this.pool.address)
     ));
   }
 
   formatPoolTokens(): PoolToken[] {
-    const tokens = this.pool.tokens.map(token => ({
-      ...token,
-      address: getAddress(token.address)
-    }));
+    if (isStable(this.pool.poolType)) return this.pool.tokens;
 
-    if (isStable(this.pool.poolType)) return (this.pool.tokens = tokens);
-
-    return (this.pool.tokens = tokens.sort(
+    return (this.pool.tokens = this.pool.tokens.sort(
       (a, b) => parseFloat(b.weight) - parseFloat(a.weight)
     ));
   }

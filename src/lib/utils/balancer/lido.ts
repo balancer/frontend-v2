@@ -48,9 +48,7 @@ export function includesWstEth(
 ): boolean {
   if (!wstEthAddress) return false;
 
-  return addresses
-    .map(address => address.toLowerCase())
-    .includes(wstEthAddress.toLowerCase());
+  return includesAddress(addresses, wstEthAddress);
 }
 
 /**
