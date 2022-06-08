@@ -35,7 +35,6 @@ export class AprConcern {
       protocolFeePercentage
     );
 
-    // const yieldAPR = {total: '0', breakdown: {}};
     const veBalAPR = await this.calcVeBalAPR(prices);
 
     const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();

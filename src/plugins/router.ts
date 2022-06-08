@@ -145,7 +145,7 @@ const routes: RouteRecordRaw[] = [
 /**
  * TESTNET ONLY ROUTES
  */
-if (isGoerli) {
+if (isGoerli.value) {
   routes.push({
     path: '/faucet',
     name: 'faucet',
