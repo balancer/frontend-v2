@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Plugin } from 'chart.js';
 import { PropType } from 'vue';
-import { Bar } from 'vue-chartjs';
+import { Line } from 'vue-chartjs';
 
 defineProps({
   data: {
@@ -15,7 +15,7 @@ defineProps({
   },
   chartId: {
     type: String,
-    default: 'bar-chart'
+    default: 'line-chart'
   },
   width: {
     type: Number,
@@ -34,14 +34,14 @@ defineProps({
     default: () => ({})
   },
   plugins: {
-    type: Array as PropType<Plugin<'bar'>[]>,
+    type: Array as PropType<Plugin<'line'>[]>,
     default: () => []
   }
 });
 </script>
 
 <template>
-  <Bar
+  <Line
     :chart-options="chartOptions"
     :chart-data="data"
     :styles="styles"

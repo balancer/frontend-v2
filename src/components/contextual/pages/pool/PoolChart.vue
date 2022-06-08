@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
-import { zip } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
 import BalBarChart from '@/components/_global/BalBarChart/BalBarChart.vue';
+import BalLineChartNew from '@/components/_global/BalLineChart/BalLineChartNew.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom } from '@/composables/usePool';
@@ -132,52 +132,6 @@ const timestamps = computed(() =>
   history.value.map(state => format(state.timestamp, 'yyyy/MM/dd'))
 );
 
-const hodlValues = computed(() => {
-  if (history.value.length === 0) {
-    return [];
-  }
-
-  const firstState = history.value[0];
-  const firstValue = getPoolValue(firstState.amounts, firstState.prices);
-
-  return history.value.map(state => {
-    if (state.timestamp < firstState.timestamp) {
-      return 0;
-    }
-
-    const currentValue = getPoolValue(firstState.amounts, state.prices);
-
-    return currentValue / firstValue - 1;
-  });
-});
-
-const bptValues = computed(() => {
-  if (history.value.length === 0) {
-    return [];
-  }
-
-  const firstState = history.value[0];
-  const firstValue = supportsPoolLiquidity.value
-    ? firstState.liquidity
-    : getPoolValue(firstState.amounts, firstState.prices);
-  const firstShares = firstState.totalShares;
-  const firstValuePerBpt = firstValue / firstShares;
-
-  return history.value.map(state => {
-    if (state.timestamp < firstState.timestamp) {
-      return 0;
-    }
-
-    const currentValue = supportsPoolLiquidity.value
-      ? state.liquidity
-      : getPoolValue(state.amounts, state.prices);
-    const currentShares = state.totalShares;
-    const currentValuePerBpt = currentValue / currentShares;
-
-    return currentValuePerBpt / firstValuePerBpt - 1;
-  });
-});
-
 const volumeData = computed(() => {
   const values = Object.values(props.snapshots).reverse();
   return values.map((snapshot, idx) => {
@@ -223,39 +177,9 @@ const chartData = computed(() => {
   };
 });
 
-const series = computed(() => {
-  // TODO: currently HODL series is disabled when using pool liquidity
-  const supportsHODLSeries = !supportsPoolLiquidity.value;
-
-  const chartSeries = [
-    {
-      name: t('poolReturns'),
-      values: zip(timestamps.value, bptValues.value)
-    }
-  ];
-
-  if (supportsHODLSeries) {
-    chartSeries.push({
-      name: 'HODL',
-      values: zip(timestamps.value, hodlValues.value)
-    });
-  }
-
-  return chartSeries;
-});
-
 /**
  * METHODS
  */
-function getPoolValue(amounts: string[], prices: number[]) {
-  return amounts
-    .map((amount, index) => {
-      const price = prices[index];
-
-      return price * parseFloat(amount);
-    })
-    .reduce((total, value) => total + value, 0);
-}
 
 function showTooltip(context: any) {
   console.log(context);
@@ -268,10 +192,40 @@ const plugins = {
   },
   tooltip: {
     callbacks: {
-      label: showTooltip,
-      formattedValue: 'kek'
+      label: showTooltip
     }
   }
+};
+
+const chartOptions = {
+  responsive: true,
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        display: false
+      },
+      grid: {
+        display: false,
+        drawTicks: false,
+        drawOnChartArea: false
+      }
+    },
+    x: {
+      ticks: {
+        display: true
+      },
+      grid: {
+        display: true,
+        drawTicks: true,
+        drawOnChartArea: false
+      }
+    }
+  },
+  tooltips: {
+    enabled: false
+  },
+  plugins
 };
 </script>
 
@@ -284,41 +238,24 @@ const plugins = {
       <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
     </div>
 
-    <BalBarChart
+    <BalLineChartNew
+      v-if="activeTab === PoolChartTab.TVL"
       :data="{
         labels: timestamps,
         datasets: [chartData]
       }"
-      :chart-options="{
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              display: false
-            },
-            grid: {
-              display: false,
-              drawTicks: false,
-              drawOnChartArea: false
-            }
-          },
-          x: {
-            ticks: {
-              display: true
-            },
-            grid: {
-              display: true,
-              drawTicks: true,
-              drawOnChartArea: false
-            }
-          }
-        },
-        tooltips: {
-          enabled: false
-        },
-        plugins
+      :chart-options="chartOptions"
+      :styles="chartColors"
+      chart-id="1"
+      :height="146"
+    />
+    <BalBarChart
+      v-else
+      :data="{
+        labels: timestamps,
+        datasets: [chartData]
       }"
+      :chart-options="chartOptions"
       :styles="chartColors"
       chart-id="1"
       :height="146"
