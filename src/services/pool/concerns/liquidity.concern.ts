@@ -7,6 +7,8 @@ import {
   Token
 } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
+import { formatUnits } from 'ethers/lib/utils';
+import { Address } from 'paraswap';
 
 import {
   isStableLike,
@@ -29,10 +31,23 @@ interface OnchainTokenInfo extends OnchainTokenData {
 }
 
 function convertLinearPoolDataMapToPools(
-  linearPoolDataMap?: LinearPoolDataMap
+  linearPoolDataMap: LinearPoolDataMap,
+  decimalsMap: Record<Address, number>
 ): Pool[] {
   if (!linearPoolDataMap) return [];
+  // const tokensMap = getTokens(
+  //   Object.keys(decoratedPool.linearPoolTokensMap)
+  // );
   return Object.entries(linearPoolDataMap).map(([address, data]) => {
+    const mainTokenBalance = formatUnits(
+      data.mainToken.balance,
+      decimalsMap[data.mainToken.address]
+    );
+
+    const wrappedTokenBalance = formatUnits(
+      data.wrappedToken.balance,
+      decimalsMap[data.wrappedToken.address]
+    );
     return {
       id: data.id,
       address: address,
@@ -41,15 +56,15 @@ function convertLinearPoolDataMapToPools(
       tokens: [
         {
           address: data.mainToken.address,
-          decimals: 18,
-          balance: data.mainToken.balance,
+          decimals: decimalsMap[data.mainToken.address] || 18,
+          balance: mainTokenBalance,
           weight: null,
           priceRate: '1'
         },
         {
           address: data.wrappedToken.address,
-          decimals: 18,
-          balance: data.wrappedToken.balance,
+          decimals: decimalsMap[data.wrappedToken.address] || 18,
+          balance: wrappedTokenBalance,
           weight: null,
           priceRate: data.wrappedToken.priceRate
         }
@@ -73,8 +88,17 @@ export default class LiquidityConcern {
   ): Promise<string> {
     if (!this.hasPoolTokens) throw new Error('Missing onchain pool token data');
 
+    const decimalsMap = {};
+    if (this.pool.linearPoolTokensMap) {
+      Object.entries(this.pool.linearPoolTokensMap).forEach(
+        ([address, data]) => {
+          decimalsMap[address] = data.decimals;
+        }
+      );
+    }
     const subPools = convertLinearPoolDataMapToPools(
-      this.pool.onchain?.linearPools
+      this.pool.onchain?.linearPools || {},
+      decimalsMap
     );
     const tokenPriceProvider = new StaticTokenPriceProvider(prices);
     const poolProvider = new StaticPoolProvider(
@@ -151,7 +175,7 @@ export default class LiquidityConcern {
   }
 
   public calcStableTotal(prices: TokenPrices, currency: FiatCurrency): string {
-    let tokens = this.poolTokens;
+    let tokens = this.pool.tokens;
 
     if (
       isStablePhantom(this.poolType) &&
@@ -176,6 +200,14 @@ export default class LiquidityConcern {
       const balance = token.balance;
 
       const value = bnum(balance).times(price);
+      console.log(
+        'balance: ',
+        balance,
+        ' price ',
+        price,
+        ' value ',
+        value.toString()
+      );
       sumValue = sumValue.plus(value);
       sumBalance = sumBalance.plus(balance);
     }

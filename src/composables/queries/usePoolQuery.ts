@@ -31,7 +31,7 @@ export default function usePoolQuery(
   /**
    * COMPOSABLES
    */
-  const { getTokens, injectTokens, prices, dynamicDataLoading } = useTokens();
+  const { getToken, getTokens, injectTokens, prices, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { account } = useWeb3();
   const { currency } = useUserSettings();
@@ -110,10 +110,12 @@ export default function usePoolQuery(
         .filter(token => token.address !== linearPool.address)
         .forEach(token => {
           const address = getAddress(token.address);
+          const tokenInfo = getToken(address);
 
           linearPoolTokensMap[address] = {
             ...token,
-            address
+            address,
+            decimals: tokenInfo.decimals
           };
         });
     });
@@ -226,12 +228,13 @@ export default function usePoolQuery(
 
             console.log("wrapped token value: ", wrappedTokenValue.toString());
 
-            totalLiquidity = bnum(totalLiquidity)
-              .plus(mainTokenValue)
-              .plus(wrappedTokenValue);
+            const linearPoolLiquidity = mainTokenValue.plus(wrappedTokenValue);
+            console.log('Linear pool total liquidity: ', linearPoolLiquidity.toString());
+            totalLiquidity = bnum(totalLiquidity).plus(linearPoolLiquidity);
           }
         });
 
+        console.log("Final total liquidity: ", totalLiquidity.toString())
         decoratedPool.totalLiquidity = totalLiquidity.toString();
       }
     }

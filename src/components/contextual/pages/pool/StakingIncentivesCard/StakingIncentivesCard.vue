@@ -126,7 +126,7 @@ async function handleActionSuccess() {
                   />
                   <BalIcon size="sm" name="x" v-else />
                 </div>
-                <h6>{{ $t('staking.stakingIncentives') }}</h6>
+                <h6>{{ $t('stakingIncentives') }}</h6>
               </BalStack>
               <BalStack
                 v-if="isPoolEligibleForStaking"
