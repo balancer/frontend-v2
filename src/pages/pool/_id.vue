@@ -196,7 +196,7 @@ import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
-import { getAddressFromPoolId } from '@/lib/utils';
+import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -345,9 +345,9 @@ export default defineComponent({
         const tokens =
           isStablePhantomPool.value && pool.value.mainTokens
             ? pool.value.mainTokens
-            : pool.value.tokenAddresses;
+            : pool.value.tokensList;
 
-        return !tokens.every(token => tokensWithPrice.includes(token));
+        return !tokens.every(token => includesAddress(tokensWithPrice, token));
       }
       return false;
     });
@@ -386,8 +386,8 @@ export default defineComponent({
         !!pool.value &&
         !isLiquidityBootstrappingPool.value &&
         !isStablePhantomPool.value &&
-        pool.value.tokenAddresses.some(
-          address => !knownTokens.includes(address)
+        pool.value.tokensList.some(
+          address => !includesAddress(knownTokens, address)
         )
       );
     });

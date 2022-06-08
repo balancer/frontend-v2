@@ -3,6 +3,7 @@ import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { BLOCKED_ADDRESSES } from '@/constants/blocked';
+import { includesAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
@@ -102,7 +103,7 @@ export default function useWeb3Watchers() {
   });
 
   watch(account, () => {
-    if (BLOCKED_ADDRESSES.includes(account.value)) {
+    if (includesAddress(BLOCKED_ADDRESSES, account.value)) {
       disconnectWallet();
     }
   });

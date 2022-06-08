@@ -10,7 +10,7 @@ import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
 import useProtocolRewardsQuery from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
-import { isL2 } from './useNetwork';
+import { isKovan, isL2 } from './useNetwork';
 
 export type GaugePool = {
   id: string;
@@ -78,7 +78,7 @@ export function useClaimsData() {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(gaugePoolQuery) ||
-      (!isL2.value && isQueryLoading(protocolRewardsQuery))
+      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery))
   );
 
   return {

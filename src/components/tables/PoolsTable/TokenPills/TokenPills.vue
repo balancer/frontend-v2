@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { getAddress } from 'ethers/lib/utils';
 import { computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import { includesAddress } from '@/lib/utils';
 import { PoolToken } from '@/services/pool/types';
 
 import HiddenTokensPills from './HiddenTokensPills.vue';
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const { fNum2 } = useNumbers();
-const { tokens, hasBalance } = useTokens();
+const { getToken, hasBalance } = useTokens();
 
 /**
  * COMPUTED
@@ -36,16 +36,16 @@ const hasBalanceInHiddenTokens = computed(() =>
 );
 
 const isSelectedInHiddenTokens = computed(() =>
-  hiddenTokens.value.some(token => props.selectedTokens.includes(token.address))
+  hiddenTokens.value.some(token =>
+    includesAddress(props.selectedTokens, token.address)
+  )
 );
 
 /**
  * METHODS
  */
 function symbolFor(token: PoolToken): string {
-  return (
-    token.symbol || tokens.value[getAddress(token.address)]?.symbol || '---'
-  );
+  return token.symbol || getToken(token.address)?.symbol || '---';
 }
 
 function weightFor(token: PoolToken): string {
@@ -67,7 +67,7 @@ const MAX_PILLS = 11;
         :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :token="token"
-        :isSelected="selectedTokens.includes(token.address)"
+        :isSelected="includesAddress(selectedTokens, token.address)"
       />
     </template>
     <template v-else>
@@ -78,7 +78,7 @@ const MAX_PILLS = 11;
         :symbol="symbolFor(token)"
         :weight="weightFor(token)"
         :token="token"
-        :isSelected="selectedTokens.includes(token.address)"
+        :isSelected="includesAddress(selectedTokens, token.address)"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"

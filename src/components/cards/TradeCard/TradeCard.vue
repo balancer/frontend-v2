@@ -130,7 +130,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const { tokens, nativeAsset } = useTokens();
+    const { tokens, getToken, nativeAsset } = useTokens();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
     const {
@@ -151,9 +151,9 @@ export default defineComponent({
 
     const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
-    const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
+    const tokenIn = computed(() => getToken(tokenInAddress.value));
 
-    const tokenOut = computed(() => tokens.value[tokenOutAddress.value]);
+    const tokenOut = computed(() => getToken(tokenOutAddress.value));
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -206,7 +206,6 @@ export default defineComponent({
       tokenInAmountInput: tokenInAmount,
       tokenOutAddressInput: tokenOutAddress,
       tokenOutAmountInput: tokenOutAmount,
-      tokens,
       wrapType,
       tokenIn,
       tokenOut,

@@ -21,7 +21,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 const { fNum2 } = useNumbers();
 
 /**
@@ -31,7 +31,7 @@ const poolWeightsLabel = computed(() =>
   props.lockablePool.tokens
     .map(token => {
       const weightLabel = formatWeightLabel(token.weight);
-      const symbol = token.symbol ?? tokens.value[token.address].symbol;
+      const symbol = token.symbol ?? getToken(token.address).symbol;
 
       return `${weightLabel} ${symbol}`;
     })
@@ -66,7 +66,7 @@ function formatWeightLabel(weight: string) {
       </div>
       <div class="grid gap-1 grid-cols-2">
         <BalAsset
-          v-for="tokenAddress in lockablePool.tokenAddresses"
+          v-for="tokenAddress in lockablePool.tokensList"
           :key="tokenAddress"
           :address="tokenAddress"
           :size="30"

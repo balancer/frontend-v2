@@ -19,7 +19,7 @@ import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { VEBAL_VOTING_GAUGE } from '@/constants/voting-gauges';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, isSameAddress, scale } from '@/lib/utils';
 import { isPositive } from '@/lib/utils/validations';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
@@ -89,8 +89,8 @@ const currentWeightNormalized = computed(() =>
 );
 const hasVotes = computed((): boolean => bnum(currentWeight.value).gt(0));
 
-const isVeBalGauge = computed(
-  (): boolean => props.gauge.address === VEBAL_VOTING_GAUGE?.address
+const isVeBalGauge = computed((): boolean =>
+  isSameAddress(props.gauge.address, VEBAL_VOTING_GAUGE?.address || '')
 );
 
 // Is votes next period value above 10%?

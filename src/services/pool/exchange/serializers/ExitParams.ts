@@ -4,6 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
 import { isStableLike } from '@/composables/usePool';
+import { isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import ConfigService from '@/services/config/config.service';
@@ -67,7 +68,7 @@ export default class ExitParams {
 
   private parseAmounts(amounts: string[]): BigNumber[] {
     return amounts.map((amount, i) => {
-      const token = this.pool.value.tokenAddresses[i];
+      const token = this.pool.value.tokensList[i];
       return parseUnits(
         amount,
         this.pool.value?.onchain?.tokens?.[token]?.decimals || 18
@@ -79,7 +80,7 @@ export default class ExitParams {
     const nativeAsset = this.config.network.nativeAsset;
 
     return tokensOut.map(address =>
-      address === nativeAsset.address ? AddressZero : address
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
   }
 

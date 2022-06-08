@@ -1,16 +1,15 @@
 import { BigNumberish } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 
 import { configService } from '@/services/config/config.service';
+
+import { includesAddress } from '../..';
 
 const { stETH: stEthAddress } = configService.network.addresses;
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;
 
-  return [tokenInAddress, tokenOutAddress]
-    .map(getAddress)
-    .includes(getAddress(stEthAddress));
+  return includesAddress([tokenInAddress, tokenOutAddress], stEthAddress);
 }
 
 export function getWstETHByStETH(stETHAmount: BigNumberish) {

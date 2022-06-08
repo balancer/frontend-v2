@@ -5,6 +5,7 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import { isSameAddress } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
@@ -89,12 +90,12 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
     if (!pool.value) return [];
     const poolTokens = isStablePhantom(pool.value.poolType)
       ? pool.value.mainTokens || []
-      : pool.value.tokenAddresses;
+      : pool.value.tokensList;
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
       return poolTokens.map(address => {
-        if (address === wrappedNativeAsset.value.address) {
+        if (isSameAddress(address, wrappedNativeAsset.value.address)) {
           return nativeAsset.address;
         }
         return address;

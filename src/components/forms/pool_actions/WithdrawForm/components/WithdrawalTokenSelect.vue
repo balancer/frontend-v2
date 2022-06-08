@@ -42,9 +42,8 @@ const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
  */
 const tokenAddresses = computed(() => {
   if (isStablePhantomPool.value) return props.pool?.mainTokens || [];
-  if (isWethPool.value)
-    return [nativeAsset.address, ...props.pool.tokenAddresses];
-  return props.pool.tokenAddresses;
+  if (isWethPool.value) return [nativeAsset.address, ...props.pool.tokensList];
+  return props.pool.tokensList;
 });
 
 const tokens = computed(() => getTokens(tokenAddresses.value));

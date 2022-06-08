@@ -91,9 +91,7 @@ watch(
 );
 
 /* COMPUTED */
-const assetRowWidth = computed(
-  () => (props.pool.tokenAddresses.length * 32) / 1.5
-);
+const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 
 const numSharesToModify = ref(
   props.action === 'stake'

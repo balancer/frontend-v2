@@ -18,7 +18,7 @@ import VeBalForm from './components/VeBalForm/VeBalForm.vue';
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 const { isWalletReady } = useWeb3();
 const { lockablePoolId } = useVeBal();
 const { isDesktop, isMobile } = useBreakpoints();
@@ -45,7 +45,7 @@ const lockablePool = computed<Pool | undefined>(
 );
 
 const lockablePoolTokenInfo = computed(() =>
-  lockablePool.value != null ? tokens.value[lockablePool.value.address] : null
+  lockablePool.value != null ? getToken(lockablePool.value.address) : null
 );
 
 const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);

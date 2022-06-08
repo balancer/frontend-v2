@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 /**
@@ -50,15 +51,15 @@ export default function usePoolTransfers() {
       if (isStablePhantom(pool.value.poolType)) {
         return pool.value.mainTokens || [];
       }
-      return pool.value?.tokenAddresses || [];
+      return pool.value?.tokensList || [];
     }
     return [];
   });
 
   const missingPrices = computed(() => {
-    const tokensWithPrice = Object.keys(prices.value);
+    const tokensWithPrice = Object.keys(prices.value).map(t => t.toLowerCase());
     return !tokenAddresses.value.every(token =>
-      tokensWithPrice.includes(token)
+      includesAddress(tokensWithPrice, token)
     );
   });
 

@@ -43,7 +43,7 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
-const { nativeAsset, tokens } = useTokens();
+const { nativeAsset, getToken } = useTokens();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { t } = useI18n();
 const { darkMode } = useDarkMode();
@@ -72,7 +72,7 @@ const zeroWeightToken = computed(() => {
   const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
   const zeroWeightToken = validTokens.find(t => t.weight === 0);
   if (zeroWeightToken) {
-    return tokens.value[zeroWeightToken.tokenAddress];
+    return getToken(zeroWeightToken.tokenAddress);
   }
   return null;
 });

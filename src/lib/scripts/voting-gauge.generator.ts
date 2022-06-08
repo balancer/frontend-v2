@@ -11,6 +11,7 @@ import { getPlatformId } from '@/services/coingecko/coingecko.service';
 
 import vebalGauge from '../../../public/data/vebal-gauge.json';
 import config from '../config';
+import { isSameAddress } from '../utils';
 
 function getBalancerAssetsURI(tokenAdress: string): string {
   return `https://raw.githubusercontent.com/balancer-labs/assets/master/assets/${tokenAdress.toLowerCase()}.png`;
@@ -36,8 +37,8 @@ async function getAssetURIFromTokenlists(
   );
   const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
 
-  const token = allTokens.find(
-    token => token.address === getAddress(tokenAddress)
+  const token = allTokens.find(token =>
+    isSameAddress(token.address, tokenAddress)
   );
   return token?.logoURI ? token.logoURI : '';
 }
