@@ -16,15 +16,19 @@ const { isDesktop } = useBreakpoints();
 /**
  * COMPUTED
  */
-const isHomePage = computed(() => route.path === '/');
+const isHomePage = computed(() => route.name === 'home');
+const isPortfolioPage = computed(() => route.name === 'portfolio');
 </script>
 
 <template>
   <div>
     <AppNav />
-    <template v-if="isHomePage">
+    <template v-if="isHomePage || isPortfolioPage">
       <StakingProvider>
-        <AppHero />
+        <AppHero
+          :showInvestments="isPortfolioPage"
+          :showLearnMoreBtn="isHomePage"
+        />
       </StakingProvider>
     </template>
     <div class="pb-16">

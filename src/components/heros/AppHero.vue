@@ -14,6 +14,22 @@ import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
+ * TYPES
+ */
+type Props = {
+  showInvestments: boolean;
+  showLearnMoreBtn: boolean;
+};
+
+/**
+ * PROPS & EMITS
+ */
+const props = withDefaults(defineProps<Props>(), {
+  showInvestments: false,
+  showLearnMoreBtn: false
+});
+
+/**
  * COMPOSABLES
  */
 const router = useRouter();
@@ -40,8 +56,10 @@ const {
  * COMPUTED
  */
 const classes = computed(() => ({
-  ['h-72']: !isWalletReady.value && !isWalletConnecting.value,
-  ['h-40']: isWalletReady.value || isWalletConnecting.value
+  ['h-72']:
+    !props.showInvestments && !isWalletReady.value && !isWalletConnecting.value,
+  ['h-40']:
+    props.showInvestments || isWalletReady.value || isWalletConnecting.value
 }));
 
 const isStakingLoading = computed(() => {
@@ -84,28 +102,32 @@ function onClickConnect() {
 <template>
   <div :class="['app-hero', classes]">
     <div class="w-full max-w-2xl mx-auto">
+      <h1
+        v-if="props.showInvestments"
+        v-text="$t('myBalancerInvestments')"
+        class="text-base font-medium text-white opacity-90 font-body mb-2"
+      />
+      <h1 v-else v-text="$t('ammPlatform')" class="headline" />
+
       <template v-if="isWalletReady || isWalletConnecting">
-        <h1
-          v-text="$t('myBalancerInvestments')"
-          class="text-base font-medium text-white opacity-90 font-body mb-2"
-        />
-        <BalLoadingBlock
-          v-if="isLoadingTotalValue"
-          class="h-10 w-40 mx-auto"
-          white
-        />
-        <div v-else class="text-3xl font-bold text-white mb-1">
-          {{ totalInvestedLabel }}
-        </div>
-        <div v-if="!isL2" class="relative mt-2 inline-block">
+        <template v-if="showInvestments">
           <BalLoadingBlock
             v-if="isLoadingTotalValue"
-            class="h-8 w-40 mx-auto"
+            class="h-10 w-40 mx-auto"
             white
           />
-          <div
-            v-else
-            class="
+          <div v-else class="text-3xl font-bold text-white mb-1">
+            {{ totalInvestedLabel }}
+          </div>
+          <div v-if="!isL2" class="relative mt-2 inline-block">
+            <BalLoadingBlock
+              v-if="isLoadingTotalValue"
+              class="h-8 w-40 mx-auto"
+              white
+            />
+            <div
+              v-else
+              class="
               vebal-banner
               h-8
               flex
@@ -121,17 +143,17 @@ function onClickConnect() {
               transition-colors
               rounded-bl rounded-tr
             "
-            @click="router.push({ name: 'vebal' })"
-          >
-            <span v-if="lockFiatValue === '0'"
-              >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
+              @click="router.push({ name: 'vebal' })"
             >
-            <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
+              <span v-if="lockFiatValue === '0'"
+                >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
+              >
+              <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
+            </div>
           </div>
-        </div>
+        </template>
       </template>
       <template v-else>
-        <h1 v-text="$t('ammPlatform')" class="headline" />
         <div class="flex justify-center mt-4">
           <BalBtn
             :color="darkMode ? 'gray' : 'white'"
@@ -141,6 +163,7 @@ function onClickConnect() {
             {{ $t('connectWallet') }}
           </BalBtn>
           <BalBtn
+            v-if="props.showLearnMoreBtn"
             tag="a"
             :href="EXTERNAL_LINKS.Balancer.Home"
             target="_blank"
