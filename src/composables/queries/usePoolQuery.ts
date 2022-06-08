@@ -10,6 +10,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import PoolService from '@/services/pool/pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -102,24 +103,24 @@ export default function usePoolQuery(
     // Need to fetch onchain pool data first so that calculations can be
     // performed in the decoration step.
     const poolTokenMeta = getTokens(pool.tokensList);
-    const onchainData = await balancerContractsService.vault.getPoolData(
+    pool.onchain = await balancerContractsService.vault.getPoolData(
       id,
       pool.poolType,
       poolTokenMeta
     );
 
-    const [decoratedPool] = await balancerSubgraphService.pools.decorate(
-      [{ ...pool, onchain: onchainData }],
+    const poolDecorator = new PoolDecorator([pool]);
+    const [decoratedPool] = await poolDecorator.decorate(
+      subgraphGauges.value || [],
       prices.value,
       currency.value,
-      subgraphGauges.value || [],
       tokens.value
     );
 
     let unwrappedTokens: Pool['unwrappedTokens'];
 
-    if (isStablePhantomPool && onchainData.linearPools != null) {
-      unwrappedTokens = Object.entries(onchainData.linearPools).map(
+    if (isStablePhantomPool && pool.onchain.linearPools != null) {
+      unwrappedTokens = Object.entries(pool.onchain.linearPools).map(
         ([, linearPool]) => linearPool.unwrappedTokenAddress
       );
 
@@ -129,10 +130,10 @@ export default function usePoolQuery(
           Object.keys(decoratedPool.linearPoolTokensMap)
         );
 
-        Object.entries(onchainData.linearPools).forEach(([address, token]) => {
-          const tokenShare = bnum(onchainData.tokens[address].balance).div(
-            token.totalSupply
-          );
+        Object.entries(pool.onchain.linearPools).forEach(([address, token]) => {
+          const tokenShare = bnum(
+            pool?.onchain?.tokens?.[address]?.balance || '0'
+          ).div(token.totalSupply);
 
           const mainTokenBalance = formatUnits(
             token.mainToken.balance,
@@ -169,7 +170,7 @@ export default function usePoolQuery(
       }
     }
 
-    return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
+    return { unwrappedTokens, ...decoratedPool };
   };
 
   const queryOptions = reactive({

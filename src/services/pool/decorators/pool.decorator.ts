@@ -1,8 +1,11 @@
+import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { FiatCurrency } from '@/constants/currency';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { Pool } from '@/services/pool/types';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import {
   GaugeBalAprs,
   GaugeRewardTokenAprs,
@@ -20,20 +23,22 @@ export class PoolDecorator {
     public pools: Pool[],
     private readonly balancerContracts = balancerContractsService,
     private readonly stakingRewards = stakingRewardsService,
-    private readonly poolServiceClass = PoolService
+    private readonly poolServiceClass = PoolService,
+    private readonly providerService = rpcProviderService,
+    private readonly poolSubgraph = balancerSubgraphService
   ) {}
 
   public async decorate(
     gauges: SubgraphGauge[],
     prices: TokenPrices,
     currency: FiatCurrency,
-    poolSnapshots: Pool[],
     tokens: TokenInfoMap
   ): Promise<Pool[]> {
     const [
       protocolFeePercentage,
       gaugeBALAprs,
-      gaugeRewardTokenAprs
+      gaugeRewardTokenAprs,
+      poolSnapshots
     ] = await this.getData(prices, gauges, tokens);
 
     const promises = this.pools.map(async pool => {
@@ -60,13 +65,35 @@ export class PoolDecorator {
   }
 
   /**
+   * @summary Get snapshot data of pools
+   * @description Getting the past state of pools allows us to calculate
+   * snapshot values like volume and fees, currently fixed at past 24h
+   * (see getTimeTravelBlock).
+   */
+  private async getSnapshots(): Promise<Pool[]> {
+    const currentBlock = await this.providerService.getBlockNumber();
+    const blockNumber = await getTimeTravelBlock(currentBlock);
+    const block = { number: blockNumber };
+    const isInPoolIds = { id_in: this.pools.map(pool => pool.id) };
+    try {
+      return await this.poolSubgraph.pools.get({
+        where: isInPoolIds,
+        block
+      });
+    } catch (error) {
+      console.error('Failed to fetch pool snapshots', error);
+      return [];
+    }
+  }
+
+  /**
    * @summary Fetch supporting data required to calculate APRs.
    */
   private async getData(
     prices: TokenPrices,
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
-  ): Promise<[number, GaugeBalAprs, GaugeRewardTokenAprs]> {
+  ): Promise<[number, GaugeBalAprs, GaugeRewardTokenAprs, Pool[]]> {
     return await Promise.all([
       this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
       await this.stakingRewards.getGaugeBALAprs({
@@ -79,7 +106,8 @@ export class PoolDecorator {
         prices,
         gauges,
         tokens
-      })
+      }),
+      await this.getSnapshots()
     ]);
   }
 }
