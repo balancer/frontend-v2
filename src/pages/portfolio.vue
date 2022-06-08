@@ -10,12 +10,10 @@ import usePools from '@/composables/pools/usePools';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import { isMigratablePool } from '@/composables/usePool';
 import StakingProvider from '@/providers/local/staking/staking.provider';
-import useWeb3 from '@/services/web3/useWeb3';
 
 // COMPOSABLES
 
 const { t } = useI18n();
-const { isWalletReady, isWalletConnecting } = useWeb3();
 
 const { selectedTokens } = usePoolFilters();
 
@@ -47,32 +45,31 @@ const migratableUserPools = computed(() => {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <template v-if="isWalletReady || isWalletConnecting">
-      <BalStack vertical>
-        <div class="px-4 lg:px-0">
-          <BalStack horizontal justify="between" align="center">
-            <h3>{{ $t('myInvestments') }}</h3>
-          </BalStack>
-        </div>
-        <BalStack vertical spacing="xl">
-          <StakingProvider>
-            <UnstakedPoolsTable :userPools="userPools" />
-            <StakedPoolsTable :userPools="userPools" />
-          </StakingProvider>
-          <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
-            <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
-            <PoolsTable
-              :key="migratableUserPools"
-              :isLoading="isLoadingUserPools"
-              :data="migratableUserPools"
-              :noPoolsLabel="$t('noInvestments')"
-              showPoolShares
-              :selectedTokens="selectedTokens"
-              :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
-            />
-          </BalStack>
+    <BalStack vertical>
+      <div class="px-4 lg:px-0">
+        <BalStack horizontal justify="between" align="center">
+          <h3>{{ $t('myInvestments') }}</h3>
+        </BalStack>
+      </div>
+      <BalStack vertical spacing="xl">
+        <StakingProvider>
+          <UnstakedPoolsTable :userPools="userPools" />
+          <StakedPoolsTable :userPools="userPools" />
+        </StakingProvider>
+        <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
+          <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
+          <PoolsTable
+            :key="migratableUserPools"
+            :isLoading="isLoadingUserPools"
+            :data="migratableUserPools"
+            :noPoolsLabel="$t('noInvestments')"
+            showPoolShares
+            :selectedTokens="selectedTokens"
+            :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
+          >
+          </PoolsTable>
         </BalStack>
       </BalStack>
-    </template>
+    </BalStack>
   </div>
 </template>
