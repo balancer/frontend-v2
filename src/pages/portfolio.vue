@@ -73,7 +73,6 @@ const migratableUserPools = computed(() => {
           </BalStack>
         </BalStack>
       </BalStack>
-      <div class="mb-16" />
     </template>
   </div>
 </template>
