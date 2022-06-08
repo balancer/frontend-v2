@@ -6,7 +6,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import MyVeBAL from '../LockForm/components/MyVeBAL.vue';
@@ -15,7 +15,7 @@ import VeBalUnlockForm from './components/VeBalUnlockForm/VeBalUnlockForm.vue';
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 const { isWalletReady } = useWeb3();
 const { lockablePoolId } = useVeBal();
 
@@ -36,12 +36,12 @@ const veBalQueryLoading = computed(
   () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value
 );
 
-const lockablePool = computed<FullPool | undefined>(
+const lockablePool = computed<Pool | undefined>(
   () => lockablePoolQuery.data.value
 );
 
 const lockablePoolTokenInfo = computed(() =>
-  lockablePool.value != null ? tokens.value[lockablePool.value.address] : null
+  lockablePool.value != null ? getToken(lockablePool.value.address) : null
 );
 
 const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);

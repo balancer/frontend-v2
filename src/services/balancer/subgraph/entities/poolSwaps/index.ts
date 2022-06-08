@@ -1,10 +1,11 @@
 import { getAddress } from '@ethersproject/address';
 
 import { toJsTimestamp } from '@/composables/useTime';
+import { PoolSwap } from '@/services/pool/types';
 import { web3Service } from '@/services/web3/web3.service';
+import { QueryBuilder } from '@/types/subgraph';
 
 import Service from '../../balancer-subgraph.service';
-import { PoolSwap, QueryBuilder } from '../../types';
 import queryBuilder from './query';
 
 export default class PoolSwaps {

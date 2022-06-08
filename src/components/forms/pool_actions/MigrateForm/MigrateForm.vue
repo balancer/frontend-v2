@@ -7,7 +7,7 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 import MigrateExplainer from './components/MigrateExplainer.vue';
 import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
@@ -26,7 +26,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 
 /**
  * QUERIES
@@ -52,16 +52,16 @@ const isLoadingPools = computed(
   () => toPoolLoading.value || fromPoolLoading.value
 );
 
-const fromPool = computed<FullPool | undefined>(() => fromPoolQuery.data.value);
+const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
 
-const toPool = computed<FullPool | undefined>(() => toPoolQuery.data.value);
+const toPool = computed<Pool | undefined>(() => toPoolQuery.data.value);
 
 const fromPoolTokenInfo = computed(() =>
-  fromPool.value != null ? tokens.value[fromPool.value.address] : null
+  fromPool.value != null ? getToken(fromPool.value.address) : null
 );
 
 const toPoolTokenInfo = computed(() =>
-  toPool.value != null ? tokens.value[toPool.value.address] : null
+  toPool.value != null ? getToken(toPool.value.address) : null
 );
 </script>
 

@@ -1,6 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 
-import { PoolType } from '@/services/balancer/subgraph/types';
+import { PoolType } from '@/services/pool/types';
 
 export type Pool = {
   id: string;

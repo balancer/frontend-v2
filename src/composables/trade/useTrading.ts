@@ -35,7 +35,7 @@ export default function useTrading(
   // COMPOSABLES
   const store = useStore();
   const { fNum2 } = useNumbers();
-  const { tokens } = useTokens();
+  const { getToken, tokens } = useTokens();
   const { blockNumber } = useWeb3();
   const { slippage } = useUserSettings();
 
@@ -48,9 +48,9 @@ export default function useTrading(
   const isWrap = computed(() => wrapType.value === WrapType.Wrap);
   const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
-  const tokenIn = computed(() => tokens.value[tokenInAddressInput.value]);
+  const tokenIn = computed(() => getToken(tokenInAddressInput.value));
 
-  const tokenOut = computed(() => tokens.value[tokenOutAddressInput.value]);
+  const tokenOut = computed(() => getToken(tokenOutAddressInput.value));
 
   const isEthTrade = computed(
     () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
@@ -139,7 +139,6 @@ export default function useTrading(
     tokenInAmountInput,
     tokenOutAddressInput,
     tokenOutAmountInput,
-    tokens,
     wrapType,
     tokenInAmountScaled,
     tokenOutAmountScaled,

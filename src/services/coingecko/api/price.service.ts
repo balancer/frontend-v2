@@ -4,6 +4,7 @@ import { groupBy, invert, last } from 'lodash';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { TOKENS } from '@/constants/tokens';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
+import { includesAddress } from '@/lib/utils';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
 import { configService as _configService } from '@/services/config/config.service';
 
@@ -95,7 +96,7 @@ export class PriceService {
       const results = this.parsePaginatedTokens(paginatedResults);
 
       // Inject native asset price if included in requested addresses
-      if (addresses.includes(this.nativeAssetAddress)) {
+      if (includesAddress(addresses, this.nativeAssetAddress)) {
         results[this.nativeAssetAddress] = await this.getNativeAssetPrice();
       }
 

@@ -1,4 +1,3 @@
-import { getAddress } from 'ethers/lib/utils';
 import { keyBy } from 'lodash';
 import { computed, Ref, ref } from 'vue';
 
@@ -8,14 +7,15 @@ import { getPoolAddress } from '@/lib/utils/balancer/pool';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import PoolService from '@/services/pool/pool.service';
+import { Pool } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import { web3Service } from '@/services/web3/web3.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { isStablePhantom } from '../usePool';
+import { getTimeTravelBlock } from '../useSnapshots';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
@@ -56,7 +56,6 @@ function formatPools(pools: Pool[]) {
     return {
       ...pool,
       address: getPoolAddress(pool.id),
-      tokenAddresses: pool.tokensList.map(token => getAddress(token)),
       tokens: poolService.formatPoolTokens()
     };
   });
@@ -72,7 +71,7 @@ async function decorateWithTotalLiquidity(
 
     if (isStablePhantom(pool.poolType)) {
       poolService.removePreMintedBPT();
-      await poolService.getLinearPoolAttrs();
+      await poolService.setLinearPools();
     }
     poolService.setTotalLiquidity(prices, currency);
 
@@ -206,7 +205,8 @@ export default function useStreamedPoolsQuery(
     },
     timeTravelBlock: {
       type: 'independent',
-      queryFn: async () => web3Service.getTimeTravelBlock('24h')
+      queryFn: async () =>
+        getTimeTravelBlock(await web3Service.getCurrentBlock())
     },
     historicalPools: {
       waitFor: ['timeTravelBlock', 'basic.id'],

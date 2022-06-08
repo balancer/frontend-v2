@@ -7,7 +7,7 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { isGreaterThan } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -168,13 +168,15 @@ function handleAmountChange(tokenAddress) {
 }
 
 function handleAddressChange(newAddress: string): void {
-  useNativeAsset.value = newAddress === nativeAsset.address;
+  useNativeAsset.value = isSameAddress(newAddress, nativeAsset.address);
 }
 
 function tokenOptions(index: number): string[] {
-  if (tokenAddresses.value[index] === wrappedNativeAsset.value.address)
+  if (
+    isSameAddress(tokenAddresses.value[index], wrappedNativeAsset.value.address)
+  )
     return [wrappedNativeAsset.value.address, nativeAsset.address];
-  if (tokenAddresses.value[index] === nativeAsset.address)
+  if (isSameAddress(tokenAddresses.value[index], nativeAsset.address))
     return [nativeAsset.address, wrappedNativeAsset.value.address];
   return [];
 }
@@ -193,7 +195,7 @@ function setNativeAssetIfRequired(): void {
     // the native asset flag may not be set
     useNativeAsset.value = true;
     tokenAddresses.value = tokenAddresses.value.map(address => {
-      if (address == wrappedNativeAsset.value.address) {
+      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
         return nativeAsset.address;
       }
       return address;

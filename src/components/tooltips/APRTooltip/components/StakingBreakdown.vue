@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
-import { Pool, PoolAPRs } from '@/services/balancer/subgraph/types';
+import { Pool, PoolAPRs } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
 /**

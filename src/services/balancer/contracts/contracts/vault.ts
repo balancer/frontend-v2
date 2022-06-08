@@ -13,19 +13,20 @@ import {
   isWeightedLike
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
+import { isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import { TokenInfoMap } from '@/types/TokenList';
-
+import { PoolType } from '@/services/pool/types';
 import {
   LinearPoolDataMap,
   OnchainPoolData,
   OnchainTokenDataMap,
-  PoolType,
   RawLinearPoolData,
   RawLinearPoolDataMap,
   RawOnchainPoolData,
   RawPoolTokens
-} from '../../subgraph/types';
+} from '@/services/pool/types';
+import { TokenInfoMap } from '@/types/TokenList';
+
 import Service from '../balancer-contracts.service';
 import ProtocolFeesCollector from './protocol-fees-collector';
 
@@ -185,7 +186,7 @@ export default class Vault {
 
     // Filter out pre-minted BPT token if exists
     const validTokens = Object.keys(tokens).filter(
-      address => address !== poolAddress
+      address => !isSameAddress(address, poolAddress)
     );
     tokens = pick(tokens, validTokens);
 
@@ -240,7 +241,7 @@ export default class Vault {
     poolTokens.tokens.forEach((token, i) => {
       const tokenBalance = poolTokens.balances[i];
       const decimals = tokenInfo[token]?.decimals;
-      tokens[token] = {
+      tokens[token.toLowerCase()] = {
         decimals,
         balance: formatUnits(tokenBalance, decimals),
         weight: weights[i],
@@ -251,7 +252,7 @@ export default class Vault {
     });
 
     // Remove pre-minted BPT
-    delete tokens[poolAddress];
+    delete tokens[poolAddress.toLowerCase()];
 
     return tokens;
   }
@@ -278,7 +279,7 @@ export default class Vault {
         unwrappedERC4626Address ||
         wrappedToken.address;
 
-      _linearPools[address] = {
+      _linearPools[address.toLowerCase()] = {
         id,
         priceRate: formatUnits(priceRate.toString(), 18),
         mainToken: {
@@ -292,7 +293,7 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: getAddress(unwrappedAddress),
+        unwrappedTokenAddress: unwrappedAddress,
         totalSupply: formatUnits(totalSupply, 18)
       };
     });

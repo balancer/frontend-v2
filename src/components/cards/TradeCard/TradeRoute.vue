@@ -132,6 +132,7 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { isSameAddress } from '@/lib/utils';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -186,7 +187,7 @@ export default defineComponent({
     const { fNum2 } = useNumbers();
 
     const { appNetworkConfig } = useWeb3();
-    const { tokens } = useTokens();
+    const { getToken } = useTokens();
 
     const visible = ref(false);
 
@@ -195,7 +196,7 @@ export default defineComponent({
     }
 
     const input = computed(() => {
-      const symbol = tokens.value[props.addressIn].symbol;
+      const symbol = getToken(props.addressIn).symbol;
       return {
         amount: props.amountIn,
         address: props.addressIn,
@@ -204,7 +205,7 @@ export default defineComponent({
     });
 
     const output = computed(() => {
-      const symbol = tokens.value[props.addressOut].symbol;
+      const symbol = getToken(props.addressOut).symbol;
       return {
         amount: props.amountOut,
         address: props.addressOut,
@@ -295,10 +296,16 @@ export default defineComponent({
               };
             })
             .sort((a, b) => {
-              if (a.address === tokenIn || b.address === tokenOut) {
+              if (
+                isSameAddress(a.address, tokenIn) ||
+                isSameAddress(b.address, tokenOut)
+              ) {
                 return -1;
               }
-              if (a.address === tokenOut || b.address === tokenIn) {
+              if (
+                isSameAddress(a.address, tokenOut) ||
+                isSameAddress(b.address, tokenIn)
+              ) {
                 return 1;
               }
               return a.share - b.share;

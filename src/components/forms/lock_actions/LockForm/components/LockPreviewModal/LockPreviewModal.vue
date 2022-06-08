@@ -6,7 +6,7 @@ import { LockType } from '@/components/forms/lock_actions/LockForm/types';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import { expectedVeBal } from '@/composables/useVeBAL';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useLockState from '../../composables/useLockState';
@@ -18,7 +18,7 @@ import LockSummary from './components/LockSummary.vue';
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   lockAmount: string;
   lockEndDate: string;

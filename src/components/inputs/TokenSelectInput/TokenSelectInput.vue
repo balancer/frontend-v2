@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -60,10 +61,6 @@ const token = computed((): TokenInfo | null => {
  */
 function toggleModal(): void {
   if (!props.fixed) openTokenModal.value = !openTokenModal.value;
-}
-
-function tokenFor(option: string): TokenInfo {
-  return getToken(option);
 }
 </script>
 
@@ -126,7 +123,7 @@ function tokenFor(option: string): TokenInfo {
       </template>
       <template #option="{ option: address }">
         <div
-          :set="(optionToken = tokenFor(address) || {})"
+          :set="(optionToken = getToken(address) || {})"
           class="flex items-center justify-between"
         >
           <div class="flex items-center">
@@ -136,7 +133,7 @@ function tokenFor(option: string): TokenInfo {
             </span>
           </div>
           <BalIcon
-            v-if="optionToken.address === modelValue"
+            v-if="isSameAddress(optionToken.address, modelValue)"
             name="check"
             class="text-blue-500 ml-4"
           />

@@ -3,13 +3,13 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   totalLpTokens: string;
 };
 
@@ -21,7 +21,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 const { fNum2 } = useNumbers();
 
 /**
@@ -31,7 +31,7 @@ const poolWeightsLabel = computed(() =>
   props.lockablePool.tokens
     .map(token => {
       const weightLabel = formatWeightLabel(token.weight);
-      const symbol = token.symbol ?? tokens.value[token.address].symbol;
+      const symbol = token.symbol ?? getToken(token.address).symbol;
 
       return `${weightLabel} ${symbol}`;
     })

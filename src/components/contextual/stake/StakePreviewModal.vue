@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { PoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/pool/types';
 
 import StakePreview, { StakeAction } from './StakePreview.vue';
 

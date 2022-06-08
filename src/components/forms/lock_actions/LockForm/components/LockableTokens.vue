@@ -5,14 +5,14 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo?: VeBalLockInfo;
 };
@@ -33,10 +33,11 @@ const { fNum2 } = useNumbers();
  */
 const bptBalance = computed(() => balanceFor(props.lockablePool.address));
 
-const fiatTotal = computed(() =>
+const fiatTotal = computed((): string =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
     .times(bptBalance.value)
+    .toString()
 );
 </script>
 

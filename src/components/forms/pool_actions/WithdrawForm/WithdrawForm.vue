@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import ProportionalWithdrawalInput from './components/ProportionalWithdrawalInput.vue';
@@ -20,7 +20,7 @@ import useWithdrawMath from './composables/useWithdrawMath';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**

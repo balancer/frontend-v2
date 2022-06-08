@@ -7,19 +7,19 @@ import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Ref } from 'vue';
 
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import ConfigService, { configService } from '@/services/config/config.service';
+import { Pool } from '@/services/pool/types';
 
 import ExitParams from './serializers/ExitParams';
 import JoinParams from './serializers/JoinParams';
 
 export default class ExchangeService {
-  pool: Ref<FullPool>;
+  pool: Ref<Pool>;
   vaultAddress: string;
   helpersAddress: string;
 
   constructor(
-    pool: Ref<FullPool>,
+    pool: Ref<Pool>,
     public readonly config: ConfigService = configService
   ) {
     this.pool = pool;

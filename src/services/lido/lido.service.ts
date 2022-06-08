@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-import { bnum } from '@/lib/utils';
+import { TOKENS } from '@/constants/tokens';
+import { bnum, isSameAddress } from '@/lib/utils';
 
-import { Pool } from '../balancer/subgraph/types';
 import ConfigService, { configService } from '../config/config.service';
+import { Pool } from '../pool/types';
 
 type LidoAPRs = {
   eth: string;
@@ -19,7 +20,7 @@ export default class LidoService {
   wstEthAddress: string;
 
   constructor(readonly config: ConfigService = configService) {
-    this.wethAddress = config.network.addresses.weth;
+    this.wethAddress = TOKENS.Addresses.WETH;
     this.wstEthAddress = config.network.addresses.wstETH;
   }
 
@@ -43,9 +44,11 @@ export default class LidoService {
   ): Promise<string> {
     const stethAPR = await this.getStEthAPR();
     const wethBalance =
-      pool.tokens.find(t => t.address === this.wethAddress)?.balance || '0';
+      pool.tokens.find(t => isSameAddress(t.address, this.wethAddress))
+        ?.balance || '0';
     const wstethBalance =
-      pool.tokens.find(t => t.address === this.wstEthAddress)?.balance || '0';
+      pool.tokens.find(t => isSameAddress(t.address, this.wstEthAddress))
+        ?.balance || '0';
     const totalBalance = bnum(wethBalance).plus(wstethBalance);
     const wstethRatio = bnum(wstethBalance).div(totalBalance);
 
