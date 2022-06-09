@@ -8,6 +8,7 @@ import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { PoolAPRs } from '@/services/pool/types';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -33,7 +34,7 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const yieldAPRTokens = computed(() =>
+const yieldAPRTokens = computed(() => 
   getTokens(Object.keys(props.yieldAPR.breakdown))
 );
 
@@ -64,7 +65,7 @@ const yieldBreakdownItems = computed((): [string, string][] =>
     <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
       {{ fNum2(amount, FNumFormats.percent) }}
       <span class="text-gray-500 text-xs ml-1">
-        {{ yieldAPRTokens[address].symbol }} {{ $t('apr') }}
+        {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
       </span>
     </template>
   </BalBreakdown>

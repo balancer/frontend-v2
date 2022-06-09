@@ -125,7 +125,6 @@ export class StakingRewardsService {
       if (isNil(inflationRate)) return nilApr;
 
       const poolService = new PoolService(pool);
-      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
       if (!balAddress) return nilApr;
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
@@ -142,6 +141,7 @@ export class StakingRewardsService {
         relativeWeights,
         totalSupply
       });
+
       const range = getAprRange(gaugeBALApr || '0'.toString());
       return [poolId, { ...range }];
     });
