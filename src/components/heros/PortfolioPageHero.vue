@@ -116,9 +116,7 @@ const isLoadingTotalValue = computed(
         </div>
       </div>
     </template>
-    <div v-else class="flex justify-center mt-4">
-      <HeroConnectWalletButton />
-    </div>
+    <HeroConnectWalletButton class="mt-4" v-else />
   </AppHero>
 </template>
 
