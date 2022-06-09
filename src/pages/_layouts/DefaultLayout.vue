@@ -1,34 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
-
-import HomePageHero from '@/components/heros/HomePageHero.vue';
-import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 
 /**
  * COMPOSABLES
  */
-const route = useRoute();
 const { isDesktop } = useBreakpoints();
-
-/**
- * COMPUTED
- */
-const isHomePage = computed(() => route.name === 'home');
-const isPortfolioPage = computed(() => route.name === 'portfolio');
 </script>
 
 <template>
   <div>
     <AppNav />
-    <HomePageHero v-if="isHomePage" />
-    <StakingProvider v-else-if="isPortfolioPage">
-      <PortfolioPageHero :showInvestments="true" />
-    </StakingProvider>
-
     <div class="pb-16">
       <router-view :key="$route.path" />
     </div>

@@ -3,6 +3,7 @@ import { computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import HomePageHero from '@/components/heros/HomePageHero.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
@@ -66,6 +67,7 @@ function navigateToCreatePool() {
 </script>
 
 <template>
+  <HomePageHero />
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
     <BalStack vertical>
       <div class="px-4 lg:px-0">
