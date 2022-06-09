@@ -92,7 +92,7 @@ export default class AaveService {
       const supplyAPR = bnum(reserve.supplyAPR);
 
       if (supplyAPR.gt(0)) {
-        const tokenIndex = mainTokens.findIndex(token =>
+        const tokenIndex = mappedMainTokens.findIndex(token =>
           isSameAddress(token, reserve.underlyingAsset)
         );
         // Grabs the matching wrapped which generates the yield
