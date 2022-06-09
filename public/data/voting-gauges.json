@@ -260,32 +260,6 @@
     }
   },
   {
-    "address": "0xaB5ea78c8323212cC5736bfe4874557Bc778Bfbf",
-    "network": 1,
-    "pool": {
-      "id": "0x4bd6d86debdb9f5413e631ad386c4427dc9d01b20002000000000000000000ec",
-      "address": "0x4bd6D86dEBdB9F5413e631Ad386c4427DC9D01B2",
-      "poolType": "Element",
-      "symbol": "LPePyvWBTC-29APR22",
-      "tokens": [
-        {
-          "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-          "weight": "null",
-          "symbol": "WBTC"
-        },
-        {
-          "address": "0x49e9e169f0B661Ea0A883f490564F4CC275123Ed",
-          "weight": "null",
-          "symbol": "ePyvWBTC-29APR22"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-      "0x49e9e169f0B661Ea0A883f490564F4CC275123Ed": ""
-    }
-  },
-  {
     "address": "0x8F4a5C19A74D7111bC0e1486640F0aAB537dE5A1",
     "network": 1,
     "pool": {
