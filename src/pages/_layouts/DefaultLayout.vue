@@ -2,7 +2,8 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-import AppHero from '@/components/heros/AppHero.vue';
+import HomePageHero from '@/components/heros/HomePageHero.vue';
+import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import StakingProvider from '@/providers/local/staking/staking.provider';
@@ -23,14 +24,11 @@ const isPortfolioPage = computed(() => route.name === 'portfolio');
 <template>
   <div>
     <AppNav />
-    <template v-if="isHomePage || isPortfolioPage">
-      <StakingProvider>
-        <AppHero
-          :showInvestments="isPortfolioPage"
-          :showLearnMoreBtn="isHomePage"
-        />
-      </StakingProvider>
-    </template>
+    <HomePageHero v-if="isHomePage" />
+    <StakingProvider v-else-if="isPortfolioPage">
+      <PortfolioPageHero :showInvestments="true" />
+    </StakingProvider>
+
     <div class="pb-16">
       <router-view :key="$route.path" />
     </div>
