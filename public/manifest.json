@@ -1,10 +1,10 @@
 {
-  "short_name": "Balancer",
-  "name": "Balancer",
-  "description": "Swap tokens and manage your assets on Balancer Protocol",
+  "short_name": "Pools",
+  "name": "Pools",
+  "description": "Swap tokens and manage your assets on Pools",
   "providedBy": {
-    "name": "Balancer Labs",
-    "url": "https://balancer.fi"
+    "name": "Pools",
+    "url": "https://pools.fi"
   },
   "icons": [
     {
