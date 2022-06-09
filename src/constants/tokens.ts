@@ -149,7 +149,7 @@ export const TOKENS_GOERLI: TokenConstants = {
       '0x028171bca77440897b824ca71d1c56cac55b68a3',
     '0x829f35cebbcd47d3c120793c12f7a232c903138b':
       '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
-    '0xe8ca9afac400757bcbfeea33453880c70e08fb70':
+    '0xff386a3d08f80ac38c77930d173fa56c6286dc8b':
       '0x6810e776880c02933d47db1b9fc05908e5386b96'
   }
 };
