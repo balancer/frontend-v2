@@ -75,8 +75,9 @@
           class="px-4 py-3 flex-auto"
         />
       </div>
-      <div class="overflow-hidden rounded-lg">
+      <div ref="listElement" class="overflow-hidden rounded-lg">
         <RecycleScroller
+          :style="upToSmallBreakpoint && listStyles"
           class="h-96 overflow-y-scroll"
           v-if="tokens.length > 0"
           :items="tokens"
@@ -112,6 +113,7 @@ import {
   defineComponent,
   PropType,
   reactive,
+  ref,
   toRef,
   toRefs,
   watch
@@ -120,6 +122,7 @@ import { useI18n } from 'vue-i18n';
 
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 import useTokenLists from '@/composables/useTokenLists';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
@@ -160,6 +163,7 @@ export default defineComponent({
       query: '',
       results: {}
     });
+    const listElement = ref<HTMLDivElement | null>(null);
 
     /**
      * COMPOSABLES
@@ -181,6 +185,7 @@ export default defineComponent({
     } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
+    const { upToSmallBreakpoint } = useBreakpoints();
 
     /**
      * COMPUTED
@@ -219,6 +224,23 @@ export default defineComponent({
       ...props.excludedTokens,
       ...(props.includeEther ? [] : [nativeAsset.address])
     ]);
+
+    const listStyles = computed(() => {
+      if (listElement.value) {
+        // Get modal container height
+        const modalHeight = listElement.value.offsetParent?.clientHeight;
+
+        // Get list element offset
+        const listOffset = listElement.value.offsetTop;
+
+        if (modalHeight) {
+          return {
+            height: modalHeight - listOffset + 'px'
+          };
+        }
+      }
+      return null;
+    });
 
     /**
      * METHODS
@@ -269,12 +291,17 @@ export default defineComponent({
     return {
       // data
       ...toRefs(state),
+      // refs
+      listElement,
+      // composables
+      upToSmallBreakpoint,
       // computed
       title,
       tokens,
       tokenLists,
       activeTokenLists,
       dynamicDataLoading,
+      listStyles,
       // methods
       onSelectToken,
       onToggleList,
