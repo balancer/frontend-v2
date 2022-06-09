@@ -53,8 +53,8 @@ const migratableUserPools = computed(() => {
       </div>
       <BalStack vertical spacing="xl">
         <StakingProvider>
-          <UnstakedPoolsTable :userPools="userPools" />
-          <StakedPoolsTable :userPools="userPools" />
+          <UnstakedPoolsTable />
+          <StakedPoolsTable />
         </StakingProvider>
         <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
           <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
