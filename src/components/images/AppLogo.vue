@@ -29,7 +29,7 @@ const textColor = computed(() =>
   <div class="flex items-center">
     <AppIcon :forceDark="forceDark" />
     <span :class="['mr-1 font-secondary text-xl font-semibold', textColor]">
-      Balancer
+      Pools
     </span>
   </div>
 </template>
