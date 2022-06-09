@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PoolType } from '@balancer-labs/sdk';
+import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -8,7 +9,6 @@ import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { PoolAPRs } from '@/services/pool/types';
-import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -34,7 +34,7 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const yieldAPRTokens = computed(() => 
+const yieldAPRTokens = computed(() =>
   getTokens(Object.keys(props.yieldAPR.breakdown))
 );
 
