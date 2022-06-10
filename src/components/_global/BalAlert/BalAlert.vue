@@ -128,11 +128,11 @@ export default defineComponent({
     const iconColorClasses = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'text-orange-500 dark:text-white bg-orange-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-orange-500 dark:text-white bg-orange-500/10 dark:bg-white/10';
         case 'error':
-          return 'text-red-500 dark:text-white bg-red-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-red-500 dark:text-white bg-red-500/10 dark:bg-white/10';
         default:
-          return 'text-gray-500 dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-gray-500 dark:text-white bg-black/10 dark:bg-white/10';
       }
     });
 
