@@ -20,6 +20,7 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import useQueryStreams from './useQueryStream';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type FilterOptions = {
   poolIds?: Ref<string[]>;
@@ -51,20 +52,14 @@ async function fetchBasicPoolMetadata(
 }
 
 function formatPools(pools: Pool[]) {
-  return pools.map(pool => {
-    const poolService = new PoolService(pool);
-    return {
-      ...pool,
-      address: getPoolAddress(pool.id),
-      tokens: poolService.formatPoolTokens()
-    };
-  });
+  return pools.map(pool => new PoolService(pool).pool);
 }
 
 async function decorateWithTotalLiquidity(
   pools: Ref<Pool[]>,
   prices: TokenPrices,
-  currency: FiatCurrency
+  currency: FiatCurrency,
+  tokens: TokenInfoMap
 ): Promise<Pool[]> {
   const withTotalLiquidity = (pools.value || []).map(async pool => {
     const poolService = new PoolService(pool);
@@ -73,7 +68,7 @@ async function decorateWithTotalLiquidity(
       poolService.removePreMintedBPT();
       await poolService.setLinearPools();
     }
-    poolService.setTotalLiquidity(prices, currency);
+    poolService.setTotalLiquidity(prices, currency, tokens);
 
     return poolService.pool;
   });
@@ -155,6 +150,10 @@ async function decorateWithAPRs(
   return await Promise.all(decorated);
 }
 
+type StreamData = {
+  basic: Pool[];
+};
+
 export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions
@@ -184,25 +183,32 @@ export default function useStreamedPoolsQuery(
         );
       }
     },
-    protocolFee: {
-      type: 'independent',
-      queryFn: async () =>
-        balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage()
-    },
     formatPools: {
-      waitFor: ['liquidity.id'],
+      waitFor: ['basic.id'],
       queryFn: async (pools: Ref<Pool[]>) => {
         return formatPools(pools.value);
       }
     },
-    liquidity: {
-      dependencies: { prices, currency },
-      enabled: isNotLoadingPrices,
-      waitFor: ['basic.id'],
+    injectTokens: {
+      type: 'independent',
       queryFn: async (pools: Ref<Pool[]>) => {
-        return decorateWithTotalLiquidity(pools, prices.value, currency.value);
+        getTimeTravelBlock(await web3Service.getCurrentBlock())
       }
     },
+    // liquidity: {
+    //   dependencies: { prices, currency, tokens },
+    //   enabled: isNotLoadingPrices,
+    //   waitFor: ['basic.id'],
+    //   queryFn: async (pools: Ref<Pool[]>) => {
+    //     console.log('pools', pools.value)
+    //     return decorateWithTotalLiquidity(
+    //       pools,
+    //       prices.value,
+    //       currency.value,
+    //       tokens.value
+    //     );
+    //   }
+    // },
     timeTravelBlock: {
       type: 'independent',
       queryFn: async () =>
@@ -225,21 +231,35 @@ export default function useStreamedPoolsQuery(
         return withVolumes;
       }
     },
-    aprs: {
-      waitFor: ['protocolFee', 'historicalPools.id', 'formatPools.id'],
+    decoratePools: {
+      dependencies: { prices, tokens },
+      waitFor: ['basic.id'],
       enabled: isNotLoadingPrices,
-      queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
-        return await decorateWithAPRs(
-          pools.value,
+      queryFn: async (pools: Ref<Pool[]>) => {
+        const poolDecorator = new PoolDecorator(pools.value);
+        return poolDecorator.decorate(
           subgraphGauges.value || [],
           prices.value,
           currency.value,
-          data.value.historicalPools,
-          data.value.protocolFee,
           tokens.value
         );
       }
     }
+    // aprs: {
+    //   waitFor: ['supportingData', 'historicalPools.id', 'formatPools.id'],
+    //   enabled: isNotLoadingPrices,
+    //   queryFn: async (pools: Ref<Pool[]>, data: Ref<any>) => {
+    //     return await decorateWithAPRs(
+    //       pools.value,
+    //       subgraphGauges.value || [],
+    //       prices.value,
+    //       currency.value,
+    //       data.value.historicalPools,
+    //       data.value.supportingData.protocolFeePercentage,
+    //       tokens.value
+    //     );
+    //   }
+    // }
   });
 
   return {

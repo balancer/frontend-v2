@@ -171,12 +171,12 @@ export default class LiquidityConcern {
 
         const mainTokenBalance = formatUnits(
           token.mainToken.balance,
-          tokenMeta[token.mainToken.address].decimals
+          tokenMeta[getAddress(token.mainToken.address)].decimals
         );
 
         const wrappedTokenBalance = formatUnits(
           token.wrappedToken.balance,
-          tokenMeta[token.wrappedToken.address].decimals
+          tokenMeta[getAddress(token.wrappedToken.address)].decimals
         );
 
         const mainTokenPrice =

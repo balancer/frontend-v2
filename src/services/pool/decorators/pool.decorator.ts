@@ -97,7 +97,7 @@ export class PoolDecorator {
   /**
    * @summary Fetch supporting data required to calculate APRs.
    */
-  private async getData(
+  public async getData(
     prices: TokenPrices,
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
