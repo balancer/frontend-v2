@@ -1,19 +1,24 @@
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
+import 'chartjs-adapter-date-fns';
 
 import { Web3Provider } from '@ethersproject/providers';
 import {
   BarElement,
   CategoryScale,
   Chart as ChartJS,
+  Interaction,
   Legend,
   LinearScale,
   LineElement,
   PointElement,
+  TimeScale,
+  TimeSeriesScale,
   Title,
-  Tooltip
+  Tooltip,
 } from 'chart.js';
+import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair';
 import { BarChart, LineChart, PieChart } from 'echarts/charts';
 import {
   GridComponent,
@@ -42,8 +47,10 @@ import Web3Plugin from '@/services/web3/web3.plugin';
 import store from '@/store';
 
 import Root from './Root';
+(Interaction.modes as any).interpolate = Interpolate;
 
 ChartJS.register(
+  CrosshairPlugin,
   Title,
   Tooltip,
   Legend,
@@ -51,7 +58,9 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   LineElement,
-  PointElement
+  PointElement,
+  TimeScale,
+  TimeSeriesScale
 );
 
 echarts.use([

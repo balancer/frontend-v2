@@ -128,19 +128,19 @@ const history = computed(() => {
     .reverse();
 });
 const periodOptions = [
-  { text: '90 days', value: 90 },
-  { text: '180 days', value: 180 },
-  { text: '365 days', value: 365 },
-  { text: 'All time', value: 399 }
+  { text: '90 days', value: '90' },
+  { text: '180 days', value: '180' },
+  { text: '365 days', value: '365' },
+  { text: 'All time', value: '399' }
 ];
 const currentPeriod = ref(periodOptions[0].value);
 
-function setCurrentPeriod(period: number) {
+function setCurrentPeriod(period: string) {
   currentPeriod.value = period;
 }
 const timestamps = computed(() =>
   history.value
-    .map(state => format(state.timestamp, 'yyyy/MM/dd'))
+    .map(state => format(state.timestamp, 'yy/MM/dd'))
     .slice(-currentPeriod.value)
 );
 const volumeData = computed(() => {
@@ -197,7 +197,6 @@ const chartData = computed(() => {
  */
 
 function showTooltip(context: any) {
-  console.log(context);
   return fNum2(context.parsed.y, FNumFormats.fiat);
 }
 
@@ -209,10 +208,83 @@ const plugins = {
     callbacks: {
       label: showTooltip
     }
+  },
+  title: {
+    display: true,
+    text: ctx => {
+      const { axis = 'xy', intersect, mode } = ctx.chart.options.interaction;
+      return 'Mode: ' + mode + ', axis: ' + axis + ', intersect: ' + intersect;
+    }
   }
 };
 
-const chartOptions = {
+const lineChartOptions = {
+  responsive: true,
+  maintainAspectRatio: true,
+  hover: {
+    intersect: false
+  },
+  interaction: {
+    intersect: false,
+  },
+  elements: {
+    point: {
+      radius: 0
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: false,
+      ticks: {
+        display: false
+      },
+      grid: {
+        display: false,
+        drawTicks: false,
+        drawOnChartArea: false
+      }
+    },
+    x: {
+      ticks: {
+        display: true
+      },
+      grid: {
+        display: false,
+        drawTicks: false,
+        drawOnChartArea: false
+      }
+    }
+  },
+  plugins: {
+    legend: {
+      display: false
+    },
+    tooltip: {
+      mode: 'interpolate',
+      intersect: false,
+      callbacks: {
+        label: showTooltip
+      }
+    },
+    crosshair: {
+      line: {
+        color: '#2563EB',
+        width: 1
+      },
+      sync: {
+        enabled: true
+      },
+      snap: {
+        enabled: true
+      },
+      zoom: {
+        enabled: true // enable zooming
+      }
+    }
+  }
+};
+
+const barChartOptions = {
   responsive: true,
   elements: {
     point: {
@@ -230,6 +302,24 @@ const chartOptions = {
         drawTicks: false,
         drawOnChartArea: false
       }
+      // type: 'time',
+      // time: {
+      //   displayFormats: {
+      //     millisecond: 'MMM dd',
+      //     second: 'MMM dd',
+      //     minute: 'MMM dd',
+      //     hour: 'MMM dd',
+      //     day: 'MMM dd',
+      //     week: 'MMM dd',
+      //     month: 'MMM dd',
+      //     quarter: 'MMM dd',
+      //     year: 'MMM dd'
+      //   }
+      // }
+    },
+    interaction: {
+      intersect: true,
+      mode: 'index'
     },
     x: {
       ticks: {
@@ -269,10 +359,10 @@ const chartOptions = {
         labels: timestamps,
         datasets: [chartData]
       }"
-      :chart-options="chartOptions"
+      :chart-options="lineChartOptions"
       :styles="chartColors"
       chart-id="1"
-      :height="146"
+      :height="226"
     />
     <BalBarChart
       v-else
@@ -280,7 +370,7 @@ const chartOptions = {
         labels: timestamps,
         datasets: [chartData]
       }"
-      :chart-options="chartOptions"
+      :chart-options="barChartOptions"
       :styles="chartColors"
       chart-id="1"
       :height="146"
