@@ -54,7 +54,7 @@
             name="triangle"
             size="xxs"
             :filled="true"
-            class="transform rotate-180 text-gray-500"
+            class="rotate-180 text-gray-500"
           />
           <BalIcon
             name="triangle"
@@ -85,7 +85,7 @@
                   name="triangle"
                   size="xxs"
                   :filled="true"
-                  class="transform rotate-90 text-gray-500"
+                  class="rotate-90 text-gray-500"
                 />
               </div>
               <div class="flex">

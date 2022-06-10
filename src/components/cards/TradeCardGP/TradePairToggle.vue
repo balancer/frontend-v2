@@ -3,10 +3,7 @@
     class="w-9 h-9 flex justify-center items-center cursor-pointer rounded-full shadow-sm"
     @click="toggle"
   >
-    <div
-      class="ease-in-out duration-300"
-      :class="{ 'transform rotate-180': isRotated }"
-    >
+    <div class="ease-in-out duration-300" :class="{ 'rotate-180': isRotated }">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 21 18"

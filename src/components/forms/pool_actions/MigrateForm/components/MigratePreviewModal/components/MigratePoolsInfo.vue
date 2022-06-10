@@ -39,7 +39,7 @@ defineProps<Props>();
 }
 
 .arrow-container {
-  @apply absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2;
+  @apply absolute right-0 top-1/2 -translate-y-1/2 -translate-x-1/2;
   @apply p-2;
   @apply rounded-full border dark:border-gray-900 bg-white dark:bg-gray-700 dark:text-gray-400;
 }
