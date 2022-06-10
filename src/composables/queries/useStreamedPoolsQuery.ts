@@ -3,11 +3,10 @@ import { computed, Ref, ref } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
 import { POOLS } from '@/constants/pools';
-import { getPoolAddress } from '@/lib/utils/balancer/pool';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import PoolService from '@/services/pool/pool.service';
 import { Pool } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
@@ -20,7 +19,6 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import useQueryStreams from './useQueryStream';
-import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type FilterOptions = {
   poolIds?: Ref<string[]>;
@@ -192,7 +190,7 @@ export default function useStreamedPoolsQuery(
     injectTokens: {
       type: 'independent',
       queryFn: async (pools: Ref<Pool[]>) => {
-        getTimeTravelBlock(await web3Service.getCurrentBlock())
+        getTimeTravelBlock(await web3Service.getCurrentBlock());
       }
     },
     // liquidity: {
