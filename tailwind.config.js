@@ -1,28 +1,24 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 module.exports = {
-  purge: {
-    content: [
-      './src/components/**/*.{vue,ts}',
-      './src/composables/*.ts',
-      './src/pages/**/*.{vue,ts}'
-    ],
-    options: {
-      safelist: [
-        /^shadow/,
-        /^bg/,
-        /^text/,
-        /^border/,
-        /^from/,
-        /^to/,
-        /^dark:/,
-        /^hover:/,
-        'dark',
-        /^dark:/,
-        /^mr/,
-        /^w/
-      ]
-    }
-  },
+  content: [
+    './src/components/**/*.{vue,ts}',
+    './src/composables/*.ts',
+    './src/pages/**/*.{vue,ts}'
+  ],
+  safelist: [
+    /^shadow/,
+    /^bg/,
+    /^text/,
+    /^border/,
+    /^from/,
+    /^to/,
+    /^dark:/,
+    /^hover:/,
+    'dark',
+    /^dark:/,
+    /^mr/,
+    /^w/
+  ],
   darkMode: 'class', // false or 'media' or 'class'
   theme: {
     fontFamily: {
@@ -159,14 +155,6 @@ module.exports = {
           900: '#78350f'
         }
       }
-    }
-  },
-  variants: {
-    extend: {
-      margin: ['first'],
-      borderRadius: ['first', 'last'],
-      zIndex: ['hover'],
-      borderWidth: ['dark', 'last']
     }
   },
   plugins: []
