@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { getAddress } from '@ethersproject/address';
 import { compact, pick, take } from 'lodash';
-import { computed, onUpdated, ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
@@ -10,7 +11,7 @@ import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import { includesAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import TokenSearchInputToken from './TokenSearchInputToken.vue';
+import TokenSearchInputSelectTokens from './TokenSearchInputSelectTokens.vue';
 
 type Props = {
   modelValue: string[];
@@ -35,13 +36,11 @@ const selectTokenModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { getToken, tokens, balances, dynamicDataLoading } = useTokens();
+const { getToken, tokens, balances } = useTokens();
 const { account, appNetworkConfig } = useWeb3();
 const { veBalTokenInfo } = useVeBal();
+const { t } = useI18n();
 
-onUpdated(() => {
-  console.log({ sortedBalances: sortedBalances.value });
-});
 /**
  * COMPUTED
  */
@@ -57,7 +56,9 @@ const sortedBalances = computed(() => {
     pick(tokens.value, addressesWithBalance)
   );
 
-  return take(tokensWithBalance, 6);
+  return take(tokensWithBalance, 6).filter(
+    token => !includesAddress(props.modelValue, token.address)
+  );
 });
 
 const hasNoBalances = computed(() => !sortedBalances.value.length);
@@ -67,6 +68,18 @@ const whiteListedTokens = computed(() =>
     .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
     .filter(token => !includesAddress(props.modelValue, token.address))
 );
+
+const selectTokensLabel = computed(() => {
+  return !account.value || hasNoBalances.value
+    ? t('popularBases')
+    : t('myWallet2');
+});
+
+const selectableTokens = computed(() => {
+  return !account.value || hasNoBalances.value
+    ? whiteListedTokens.value
+    : sortedBalances.value;
+});
 
 /**
  * METHODS
@@ -88,15 +101,14 @@ function onClick() {
 </script>
 <template>
   <div>
-    <div class="flex items-center flex-wrap">
-      <div class="flex items-center flex-wrap">
-        <BalBtn color="white" size="sm" @click="onClick" class="mr-4 mb-2">
-          <BalIcon name="search" size="sm" class="mr-2" />
-          {{ $t('filterByToken') }}
-        </BalBtn>
+    <div class="flex items-stretch gap-x-6 gap-y-3 flex-wrap">
+      <BalBtn color="white" size="sm" @click="onClick">
+        <BalIcon name="search" size="sm" class="mr-2" />
+        {{ $t('filterByToken') }}
+      </BalBtn>
+      <div class="flex items-center flex-wrap gap-2" v-if="modelValue.length">
         <BalChip
           v-for="token in modelValue"
-          class="mr-2"
           :key="token"
           color="white"
           iconSize="sm"
@@ -107,28 +119,11 @@ function onClick() {
           <span class="ml-2">{{ getToken(token)?.symbol }}</span>
         </BalChip>
       </div>
-      <div class="text-gray-400 flex flex-wrap overflow-x-auto">
-        <template v-if="account && !dynamicDataLoading && !hasNoBalances">
-          <span class="mr-2">{{ $t('inYourWallet') }}:</span>
-          <TokenSearchInputToken
-            v-for="token in sortedBalances"
-            :symbol="token.symbol"
-            :address="token.address"
-            :key="token.symbol"
-            @click="addToken(token.address)"
-          />
-        </template>
-        <template v-else>
-          <span class="mr-2">{{ $t('popularBases') }}</span>
-          <TokenSearchInputToken
-            v-for="token in whiteListedTokens"
-            :key="token.symbol"
-            :symbol="token.symbol"
-            :address="token.address"
-            @click="addToken(token.address)"
-          />
-        </template>
-      </div>
+      <TokenSearchInputSelectTokens
+        :label="selectTokensLabel"
+        :tokens="selectableTokens"
+        @click="token => addToken(token.address)"
+      ></TokenSearchInputSelectTokens>
     </div>
     <teleport to="#modal">
       <SelectTokenModal
