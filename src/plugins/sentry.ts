@@ -3,9 +3,9 @@ import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { App } from 'vue';
 
+import pkg from '@/../package.json';
 import { networkId } from '@/composables/useNetwork';
-
-import { version } from '../../package.json';
+const { version } = pkg;
 
 // Using Sentry's vanila JS package (@sentry/browser) here instead of
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.

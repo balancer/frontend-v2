@@ -1,10 +1,10 @@
 import { computed, ComputedRef, InjectionKey, provide } from 'vue';
 import { useStore } from 'vuex';
 
+import pkg from '@/../package.json';
 import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
-
-import { version } from '../../package.json';
+const { version } = pkg;
 
 /**
  * TYPES

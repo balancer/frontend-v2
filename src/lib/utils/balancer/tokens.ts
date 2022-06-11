@@ -1,7 +1,7 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 
-import { default as abi } from '@/lib/abi/ERC20.json';
+import abi from '@/lib/abi/ERC20.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 export async function approveToken(

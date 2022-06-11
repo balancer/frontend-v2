@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 
 import useEthers from '@/composables/useEthers';
 import useTokens from '@/composables/useTokens';
-import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
+import ERC20ABI from '@/lib/abi/ERC20.json';
 import { bnum } from '@/lib/utils';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { tokenService } from '@/services/token/token.service';

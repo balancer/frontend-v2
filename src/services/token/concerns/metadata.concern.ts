@@ -1,7 +1,7 @@
 import { getAddress } from '@ethersproject/address';
 import { set } from 'lodash';
 
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import erc20Abi from '@/lib/abi/ERC20.json';
 import { includesAddress, isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import {

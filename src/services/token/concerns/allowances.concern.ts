@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import erc20Abi from '@/lib/abi/ERC20.json';
 import { isSameAddress } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { TokenInfoMap } from '@/types/TokenList';

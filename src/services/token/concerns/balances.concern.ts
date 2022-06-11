@@ -4,7 +4,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { chunk } from 'lodash';
 
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import erc20Abi from '@/lib/abi/ERC20.json';
 import { includesAddress, isSameAddress } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { TokenInfoMap } from '@/types/TokenList';
