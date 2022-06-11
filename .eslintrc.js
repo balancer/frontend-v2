@@ -17,8 +17,6 @@ module.exports = {
     'plugin:vue/vue3-essential',
     'eslint:recommended',
     '@vue/typescript/recommended',
-    '@vue/prettier',
-    '@vue/prettier/@typescript-eslint',
     '@vue/typescript'
   ],
 
@@ -41,7 +39,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'simple-import-sort/imports': 'warn',
-    'simple-import-sort/exports': 'warn'
+    'simple-import-sort/exports': 'warn',
+    'vue/multi-word-component-names': 'warn'
   },
 
   overrides: [
