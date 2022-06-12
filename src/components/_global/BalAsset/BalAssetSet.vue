@@ -13,7 +13,7 @@
       <BalAsset
         v-for="(addressOrURI, i) in assetChunk"
         :key="i"
-        v-bind="assetAttrsFor(addressOrURI)"
+        v-bind="{ ...assetAttrsFor(addressOrURI), ...$attrs }"
         :size="size"
         @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
@@ -146,18 +146,6 @@ export default defineComponent({
   @apply flex-wrap gap-2;
   width: auto !important;
   height: auto !important;
-}
-.my-wallet .addresses-row > img,
-.my-wallet .addresses-row > .token-icon {
-  @apply cursor-pointer transition-transform border-0 shadow;
-}
-
-.my-wallet .addresses-row > img:hover,
-.my-wallet .addresses-row > img:focus,
-.my-wallet .addresses-row > .token-icon:hover,
-.my-wallet .addresses-row > .token-icon:focus {
-  @apply scale-110 transform-gpu;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .addresses-row:last-child {
