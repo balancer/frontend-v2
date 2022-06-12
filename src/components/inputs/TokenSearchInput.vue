@@ -122,7 +122,7 @@ function onClick() {
       <TokenSearchInputSelectTokens
         :label="selectTokensLabel"
         :tokens="selectableTokens"
-        @click="token => addToken(token.address)"
+        @click="address => addToken(address)"
       ></TokenSearchInputSelectTokens>
     </div>
     <teleport to="#modal">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { TokenInfo } from '@/types/TokenList';
+import { computed } from 'vue';
 
-import TokenSearchInputToken from './TokenSearchInputToken.vue';
+import { TokenInfo } from '@/types/TokenList';
 
 type Props = {
   tokens: TokenInfo[];
@@ -12,8 +12,10 @@ const props = withDefaults(defineProps<Props>(), {
   tokens: () => []
 });
 
+const addresses = computed(() => props.tokens.map(t => t.address));
+
 const emit = defineEmits<{
-  (e: 'click', token: TokenInfo): void;
+  (e: 'click', address: string): void;
 }>();
 </script>
 <template>
@@ -30,12 +32,12 @@ const emit = defineEmits<{
       :class="['border-r border-gray-100 dark:border-gray-800', 'pr-3 py-1']"
       >{{ props.label }}</span
     >
-    <TokenSearchInputToken
-      v-for="token in props.tokens"
-      :symbol="token.symbol"
-      :address="token.address"
-      :key="token.symbol"
-      @click="emit('click', token)"
+    <BalAsset
+      v-for="address in addresses"
+      :address="address"
+      button
+      :key="address"
+      @click="emit('click', address)"
     />
   </div>
 </template>
