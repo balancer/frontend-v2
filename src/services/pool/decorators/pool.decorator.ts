@@ -55,8 +55,6 @@ export class PoolDecorator {
       poolService.setVolumeSnapshot(poolSnapshot);
       poolService.setUnwrappedTokens();
 
-      console.log(pool);
-
       await poolService.setAPR(
         poolSnapshot,
         prices,
