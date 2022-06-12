@@ -100,7 +100,6 @@ export default function useStreamedPoolsQuery(
       enabled: decorationEnabled,
       queryFn: async (pools: Ref<Pool[]>) => {
         const poolDecorator = new PoolDecorator(pools.value);
-        console.log('RUN DECORATION');
         return poolDecorator.decorate(
           gaugesQuery.data.value || [],
           prices.value,
