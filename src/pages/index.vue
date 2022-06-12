@@ -33,8 +33,7 @@ const {
   dataStates,
   result: investmentPools,
   loadMore,
-  isLoadingMore,
-  isComplete
+  isLoadingMore
 } = useStreamedPoolsQuery(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
