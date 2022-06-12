@@ -20,7 +20,7 @@
     <Avatar v-else-if="!!address" :address="address" :size="size" />
     <div
       v-else
-      class="overflow-visible"
+      class="rounded-full overflow-visible"
       :style="{
         width: `${size}px`,
         height: `${size}px`,
