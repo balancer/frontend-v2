@@ -41,7 +41,7 @@ import { TokenInfo } from '@/types/TokenList';
 
 import Avatar from '../../images/Avatar.vue';
 
-type Props = {
+export type Props = {
   address?: string;
   iconURI?: string;
   size?: number;

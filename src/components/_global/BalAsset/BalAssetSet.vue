@@ -13,7 +13,7 @@
       <BalAsset
         v-for="(addressOrURI, i) in assetChunk"
         :key="i"
-        v-bind="{ ...assetAttrsFor(addressOrURI), ...$attrs }"
+        v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
         @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
@@ -33,7 +33,7 @@ import { isAddress } from '@ethersproject/address';
 import { chunk } from 'lodash';
 import { computed, defineComponent, PropType } from 'vue';
 
-import BalAsset from './BalAsset.vue';
+import BalAsset, { Props as BalAssetProps } from './BalAsset.vue';
 
 export default defineComponent({
   components: {
@@ -46,6 +46,10 @@ export default defineComponent({
     },
     logoURIs: {
       type: Array as PropType<string[]>
+    },
+    balAssetProps: {
+      type: Object as PropType<BalAssetProps>,
+      default: () => ({})
     },
     width: {
       type: Number,
