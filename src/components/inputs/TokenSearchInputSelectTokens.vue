@@ -21,7 +21,8 @@ const emit = defineEmits<{
 <template>
   <div
     :class="[
-      'border border-gray-100 dark:border-gray-800 rounded-lg',
+      'border border-gray-100 dark:border-gray-900 rounded-lg',
+      'bg-white dark:bg-gray-850',
       'flex flex-wrap items-center gap-3',
       'text-gray-900 dark:text-gray-400',
       'overflow-x-auto',
@@ -29,7 +30,7 @@ const emit = defineEmits<{
     ]"
   >
     <span
-      :class="['border-r border-gray-100 dark:border-gray-800', 'pr-3 py-1']"
+      :class="['border-r border-gray-100 dark:border-gray-900', 'pr-3 py-1']"
       >{{ props.label }}</span
     >
     <BalAsset
