@@ -12,7 +12,7 @@ import PoolService from '@/services/pool/pool.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import Service from '../../balancer-subgraph.service';
-import { Pool, QueryBuilder, TimeTravelPeriod } from '../../types';
+import { Pool, PoolType, QueryBuilder, TimeTravelPeriod } from '../../types';
 import queryBuilder from './query';
 
 export default class Pools {
@@ -35,6 +35,54 @@ export default class Pools {
 
   public async get(args = {}, attrs = {}): Promise<Pool[]> {
     const query = this.query(args, attrs);
+    // hardcoded workaround for tetuBAL pool
+    if (
+      args['where'].id ==
+      '0xd9a6efb07ff8cc69bcb20a0c2229486e949c2270000200000000000000000562'
+    ) {
+      return [
+        {
+          address: '0xd9a6efb07ff8cc69bcb20a0c2229486e949c2270',
+          // ,amp: 500
+          createTime: 1624551483,
+          factory: '0xca96c4f198d343e251b1a01f3eba061ef3da73c1',
+          id:
+            '0xd9a6efb07ff8cc69bcb20a0c2229486e949c2270000200000000000000000562',
+          owner: '0xd2bd536adb0198f74d5f4f2bd4fe68bae1e1ba80',
+          poolType: PoolType.Stable,
+          // ,swapEnabled: 'true'
+          swapFee: '0.0025',
+          tokens: [
+            {
+              address: '0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f',
+              balance: '0',
+              weight: 'null',
+              priceRate: '1',
+              symbol: '20WETH-80BAL'
+            },
+            {
+              address: '0x7fc9e0aa043787bfad28e29632ada302c790ce33',
+              balance: '0',
+              weight: 'null',
+              priceRate: '1',
+              symbol: 'tetuBAL'
+            }
+          ],
+          tokensList: [
+            '0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f',
+            '0x7fc9e0aa043787bfad28e29632ada302c790ce33'
+          ],
+          tokenAddresses: [
+            '0x3d468ab2329f296e1b9d8476bb54dd77d8c2320f',
+            '0x7fc9e0aa043787bfad28e29632ada302c790ce33'
+          ],
+          totalLiquidity: '0',
+          totalShares: '10',
+          totalSwapFee: '0',
+          totalSwapVolume: '0'
+        }
+      ];
+    }
     const data = await this.service.client.get(query);
     return data.pools;
   }
