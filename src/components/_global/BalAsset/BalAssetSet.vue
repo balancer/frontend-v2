@@ -33,7 +33,14 @@ import { isAddress } from '@ethersproject/address';
 import { chunk } from 'lodash';
 import { computed, defineComponent, PropType } from 'vue';
 
-import BalAsset, { Props as BalAssetProps } from './BalAsset.vue';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+
+type BalAssetProps = {
+  address?: string;
+  iconURI?: string;
+  size?: number;
+  button?: boolean;
+};
 
 export default defineComponent({
   components: {
