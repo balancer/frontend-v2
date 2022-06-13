@@ -94,6 +94,7 @@ export default defineComponent({
     },
     hideYAxis: { type: Boolean, default: false },
     hideXAxis: { type: Boolean, default: false },
+    xAxisMinInterval: { type: Number, default: null },
     showHeader: {
       type: Boolean
     },
@@ -147,7 +148,11 @@ export default defineComponent({
     useMinMax: {
       type: Boolean,
       default: () => false
-    }
+    },
+    areaStyle: {
+      type: Object,
+      default: null
+    },
   },
   components: {
     ECharts
@@ -205,19 +210,26 @@ export default defineComponent({
           onZero: false,
           lineStyle: { color: axisColor.value }
         },
+        minInterval: props.xAxisMinInterval,
         axisLabel: {
           formatter: props.axisLabelFormatter.xAxis
             ? value => fNum2(value, props.axisLabelFormatter.xAxis)
             : undefined,
           color: tailwind.theme.colors.gray['400']
+        },
+        splitArea: {
+          show: false,
+          areaStyle: {
+            color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)']
+          }
         }
       },
       // controlling the display of the Y-Axis
       yAxis: {
         axisLine: {
-          show: !props.hideYAxis,
-          lineStyle: { color: axisColor.value }
+          show: false
         },
+        axisTick: { show: false },
         min: props.useMinMax ? 'dataMin' : null,
         max: props.useMinMax ? 'dataMax' : null,
         type: 'value',
@@ -226,7 +238,7 @@ export default defineComponent({
         splitLine: {
           show: false
         },
-        position: 'right',
+        position: 'left',
         axisLabel: {
           show: !props.hideYAxis,
           formatter: props.axisLabelFormatter.yAxis
@@ -234,7 +246,22 @@ export default defineComponent({
             : undefined,
           color: tailwind.theme.colors.gray['400']
         },
-        nameGap: 25
+        nameGap: 25,
+        splitArea: {
+          show: false,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: 'rgb(255, 158, 68)'
+              },
+              {
+                offset: 1,
+                color: 'rgb(255, 70, 131)'
+              }
+            ])
+          }
+        }
       },
       color: props.color,
       // Controls the boundaries of the chart from the HTML defined rectangle
@@ -294,6 +321,7 @@ export default defineComponent({
         lineStyle: {
           width: 2
         },
+        areaStyle: props.areaStyle,
         // This is a retrofitted option to show the small pill with the
         // latest value of the series at the end of the line on the RHS
         // the line is hidden, but the label is shown with extra styles

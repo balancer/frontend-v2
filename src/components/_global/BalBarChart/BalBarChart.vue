@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts">
+import { format } from 'date-fns';
 import * as echarts from 'echarts/core';
 import { last } from 'lodash';
 import numeral from 'numeral';
@@ -59,7 +60,7 @@ type ChartData = {
 };
 
 type AxisLabelFormat = {
-  xAxis?: FNumOptions;
+  xAxis?: string;
   yAxis?: FNumOptions;
 };
 
@@ -94,6 +95,7 @@ export default defineComponent({
     },
     hideYAxis: { type: Boolean, default: false },
     hideXAxis: { type: Boolean, default: false },
+    xAxisMinInterval: { type: Number, default: null },
     showHeader: {
       type: Boolean
     },
@@ -201,9 +203,10 @@ export default defineComponent({
         axisLine: {
           show: false
         },
+        minInterval: props.xAxisMinInterval,
         axisLabel: {
           formatter: props.axisLabelFormatter.xAxis
-            ? value => fNum2(value, props.axisLabelFormatter.xAxis)
+            ? value => format(value, props.axisLabelFormatter.xAxis || '')
             : undefined,
           color: tailwind.theme.colors.gray['400']
         }

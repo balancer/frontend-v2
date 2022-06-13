@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
+import * as echarts from 'echarts/core';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
@@ -7,7 +8,6 @@ import { useStore } from 'vuex';
 import BalBarChart from '@/components/_global/BalBarChart/BalBarChart.vue';
 import BalLineChart from '@/components/_global/BalLineChart/BalLineChart.vue';
 import useDarkMode from '@/composables/useDarkMode';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom } from '@/composables/usePool';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
@@ -42,7 +42,6 @@ const store = useStore();
 const { t } = useI18n();
 const tailwind = useTailwind();
 const { darkMode } = useDarkMode();
-const { fNum2 } = useNumbers();
 
 /**
  * STATE
@@ -160,10 +159,10 @@ const chartData = computed(() => {
   const values = snapshotValues.value.slice(0, currentPeriod.value - 1);
 
   if (activeTab.value === PoolChartTab.TVL) {
-    const tvlValues = values.map((snapshot, idx) => [
-      timestamps.value[idx],
-      snapshot.liquidity
-    ]);
+    const tvlValues = values.map((snapshot, idx) => ({
+      name: timestamps.value[idx],
+      value: [timestamps.value[idx], snapshot.liquidity]
+    }));
     return {
       color: [tailwind.theme.colors.blue['600']],
       data: [
@@ -186,7 +185,10 @@ const chartData = computed(() => {
       } else {
         nextValue = parseFloat(values[idx + 1].swapFees);
       }
-      return [timestamps.value[idx], value - nextValue];
+      return {
+        name: timestamps.value[idx],
+        value: [timestamps.value[idx], value - nextValue]
+      };
     });
     return {
       color: [tailwind.theme.colors.yellow['400']],
@@ -210,7 +212,10 @@ const chartData = computed(() => {
     } else {
       nextValue = parseFloat(values[idx + 1].swapVolume);
     }
-    return [timestamps.value[idx], value - nextValue];
+    return {
+      name: timestamps.value[idx],
+      value: [timestamps.value[idx], value - nextValue]
+    };
   });
 
   return {
@@ -231,12 +236,13 @@ const chartData = computed(() => {
   <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
     <div class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6">
       <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
-      <div class="w-24">
+      <div class="w-24 flex items-center">
         <BalSelectInput
           :options="periodOptions"
           :model-value="currentPeriod.toString()"
           @change="setCurrentPeriod"
           name="periods"
+          no-margin
         />
       </div>
     </div>
@@ -246,13 +252,23 @@ const chartData = computed(() => {
       :data="chartData.data"
       :isPeriodSelectionEnabled="false"
       :axisLabelFormatter="{
-        yAxis: {
-          style: 'currency'
-        }
+        yAxis: { style: 'currency', abbreviate: true }
+      }"
+      :areaStyle="{
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: 'rgba(14, 165, 233, 0.08)'
+          },
+          {
+            offset: 1,
+            color: 'rgba(68, 9, 236, 0)'
+          }
+        ])
       }"
       :color="chartData.color"
+      :xAxisMinInterval="3600 * 1000 * 24 * 30"
       height="96"
-      hide-y-axis
     />
     <BalBarChart
       v-else
@@ -264,6 +280,7 @@ const chartData = computed(() => {
       }"
       :color="chartData.color"
       :hoverColor="chartData.hoverColor"
+      :xAxisMinInterval="3600 * 1000 * 24 * 30"
       height="96"
     />
   </div>
