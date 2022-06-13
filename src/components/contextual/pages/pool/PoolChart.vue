@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
 import BalBarChart from '@/components/_global/BalBarChart/BalBarChart.vue';
-import BalLineChartNew from '@/components/_global/BalLineChart/BalLineChartNew.vue';
+import BalLineChart from '@/components/_global/BalLineChart/BalLineChart.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isStablePhantom } from '@/composables/usePool';
@@ -67,16 +67,16 @@ const activeTab = ref(tabs[0].value);
 /**
  * COMPUTED
  */
-const hodlColor = computed(() =>
-  darkMode.value
-    ? tailwind.theme.colors.gray['600']
-    : tailwind.theme.colors.black
-);
+// const hodlColor = computed(() =>
+//   darkMode.value
+//     ? tailwind.theme.colors.gray['600']
+//     : tailwind.theme.colors.black
+// );
 
-const chartColors = computed(() => [
-  tailwind.theme.colors.green['400'],
-  hodlColor.value
-]);
+// const chartColors = computed(() => [
+//   tailwind.theme.colors.green['400'],
+//   hodlColor.value
+// ]);
 
 const supportsPoolLiquidity = computed(() =>
   isStablePhantom(props.pool.poolType)
@@ -127,216 +127,103 @@ const history = computed(() => {
     })
     .reverse();
 });
-const periodOptions = [
-  { text: '90 days', value: '90' },
-  { text: '180 days', value: '180' },
-  { text: '365 days', value: '365' },
-  { text: 'All time', value: '399' }
-];
-const currentPeriod = ref(periodOptions[0].value);
+
+const snapshotValues = computed(() => Object.values(props.snapshots || {}));
+const periodOptions = computed(() => {
+  const maxPeriodLengh = snapshotValues.value.length;
+  const arr = [{ text: 'All time', value: snapshotValues.value.length }];
+  if (maxPeriodLengh > 365) {
+    arr.unshift({ text: '365 days', value: 365 });
+  }
+  if (maxPeriodLengh > 180) {
+    arr.unshift({ text: '180 days', value: 180 });
+  }
+  if (maxPeriodLengh > 90) {
+    arr.unshift({ text: '90 days', value: 90 });
+  }
+
+  return arr;
+});
+const currentPeriod = ref(periodOptions.value[0].value || 90);
 
 function setCurrentPeriod(period: string) {
-  currentPeriod.value = period;
+  currentPeriod.value = Number(period);
 }
+
 const timestamps = computed(() =>
-  history.value
-    .map(state => format(state.timestamp, 'yy/MM/dd'))
-    .slice(-currentPeriod.value)
+  Object.values(props.snapshots).map(snapshot =>
+    format(snapshot.timestamp, 'yyyy/MM/dd')
+  )
 );
-const volumeData = computed(() => {
-  const snapshotValues = Object.values(props.snapshots);
-  const values = snapshotValues.reverse();
-
-  return values
-    .map((snapshot, idx) => {
-      const prevValue = idx === 0 ? 0 : parseFloat(values[idx - 1].swapVolume);
-      const value = parseFloat(snapshot.swapVolume);
-
-      return { x: 10, y: value - prevValue > 0 ? value - prevValue : 0 };
-    })
-    .slice(-currentPeriod.value);
-});
-
-const feesData = computed(() => {
-  const values = Object.values(props.snapshots).reverse();
-  return values.map((snapshot, idx) => {
-    const prevValue = idx === 0 ? 0 : parseFloat(values[idx - 1].swapFees);
-    const value = parseFloat(snapshot.swapFees);
-
-    return value - prevValue > 0 ? value - prevValue : 0;
-  });
-});
 
 const chartData = computed(() => {
+  const values = snapshotValues.value.slice(0, currentPeriod.value - 1);
+
   if (activeTab.value === PoolChartTab.TVL) {
+    const tvlValues = values.map((snapshot, idx) => [
+      timestamps.value[idx],
+      snapshot.liquidity
+    ]);
     return {
-      backgroundColor: '#2563EB',
-      borderColor: '#2563EB',
-      data: Object.values(props.snapshots)
-        .reverse()
-        .map(snapshot => snapshot.liquidity)
+      color: [tailwind.theme.colors.blue['600']],
+      data: [
+        {
+          name: 'TVL',
+          values: tvlValues
+        }
+      ]
     };
   }
+
   if (activeTab.value === PoolChartTab.FEES) {
+    const feesValues = values.map((snapshot, idx) => {
+      const value = parseFloat(snapshot.swapFees);
+      let nextValue: number;
+      if (idx === snapshotValues.value.length - 1) {
+        nextValue = 0;
+      } else if (idx === values.length - 1) {
+        nextValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
+      } else {
+        nextValue = parseFloat(values[idx + 1].swapFees);
+      }
+      return [timestamps.value[idx], value - nextValue];
+    });
     return {
-      borderRadius: 100,
-      backgroundColor: '#34D399',
-      data: feesData.value
+      color: [tailwind.theme.colors.yellow['400']],
+      hoverColor: tailwind.theme.colors.green['400'],
+      data: [
+        {
+          name: 'Fees',
+          values: feesValues
+        }
+      ]
     };
   }
+
+  const volumeData = values.map((snapshot, idx) => {
+    const value = parseFloat(snapshot.swapVolume);
+    let nextValue: number;
+    if (idx === snapshotValues.value.length - 1) {
+      nextValue = 0;
+    } else if (idx === values.length - 1) {
+      nextValue = parseFloat(snapshotValues.value[idx + 1].swapVolume);
+    } else {
+      nextValue = parseFloat(values[idx + 1].swapVolume);
+    }
+    return [timestamps.value[idx], value - nextValue];
+  });
 
   return {
-    borderRadius: 100,
-    backgroundColor: '#34D399',
-    data: volumeData.value
+    color: [tailwind.theme.colors.green['400']],
+    hoverColor: tailwind.theme.colors.yellow['400'],
+    data: [
+      {
+        name: 'Volume',
+        values: volumeData
+      }
+    ]
   };
 });
-
-/**
- * METHODS
- */
-
-function showTooltip(context: any) {
-  return fNum2(context.parsed.y, FNumFormats.fiat);
-}
-
-const plugins = {
-  legend: {
-    display: false
-  },
-  tooltip: {
-    callbacks: {
-      label: showTooltip
-    }
-  },
-  title: {
-    display: true,
-    text: ctx => {
-      const { axis = 'xy', intersect, mode } = ctx.chart.options.interaction;
-      return 'Mode: ' + mode + ', axis: ' + axis + ', intersect: ' + intersect;
-    }
-  }
-};
-
-const lineChartOptions = {
-  responsive: true,
-  maintainAspectRatio: true,
-  hover: {
-    intersect: false
-  },
-  interaction: {
-    intersect: false,
-  },
-  elements: {
-    point: {
-      radius: 0
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: false,
-      ticks: {
-        display: false
-      },
-      grid: {
-        display: false,
-        drawTicks: false,
-        drawOnChartArea: false
-      }
-    },
-    x: {
-      ticks: {
-        display: true
-      },
-      grid: {
-        display: false,
-        drawTicks: false,
-        drawOnChartArea: false
-      }
-    }
-  },
-  plugins: {
-    legend: {
-      display: false
-    },
-    tooltip: {
-      mode: 'interpolate',
-      intersect: false,
-      callbacks: {
-        label: showTooltip
-      }
-    },
-    crosshair: {
-      line: {
-        color: '#2563EB',
-        width: 1
-      },
-      sync: {
-        enabled: true
-      },
-      snap: {
-        enabled: true
-      },
-      zoom: {
-        enabled: true // enable zooming
-      }
-    }
-  }
-};
-
-const barChartOptions = {
-  responsive: true,
-  elements: {
-    point: {
-      radius: 0
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      ticks: {
-        display: false
-      },
-      grid: {
-        display: false,
-        drawTicks: false,
-        drawOnChartArea: false
-      }
-      // type: 'time',
-      // time: {
-      //   displayFormats: {
-      //     millisecond: 'MMM dd',
-      //     second: 'MMM dd',
-      //     minute: 'MMM dd',
-      //     hour: 'MMM dd',
-      //     day: 'MMM dd',
-      //     week: 'MMM dd',
-      //     month: 'MMM dd',
-      //     quarter: 'MMM dd',
-      //     year: 'MMM dd'
-      //   }
-      // }
-    },
-    interaction: {
-      intersect: true,
-      mode: 'index'
-    },
-    x: {
-      ticks: {
-        display: true
-      },
-      grid: {
-        display: true,
-        drawTicks: true,
-        drawOnChartArea: false
-      }
-    }
-  },
-  tooltips: {
-    enabled: false
-  },
-  plugins
-};
 </script>
 
 <template>
@@ -347,33 +234,37 @@ const barChartOptions = {
       <div class="w-24">
         <BalSelectInput
           :options="periodOptions"
-          :model-value="currentPeriod"
+          :model-value="currentPeriod.toString()"
           @change="setCurrentPeriod"
           name="periods"
         />
       </div>
     </div>
-    <BalLineChartNew
+
+    <BalLineChart
       v-if="activeTab === PoolChartTab.TVL"
-      :data="{
-        labels: timestamps,
-        datasets: [chartData]
+      :data="chartData.data"
+      :isPeriodSelectionEnabled="false"
+      :axisLabelFormatter="{
+        yAxis: {
+          style: 'currency'
+        }
       }"
-      :chart-options="lineChartOptions"
-      :styles="chartColors"
-      chart-id="1"
-      :height="226"
+      :color="chartData.color"
+      height="96"
+      hide-y-axis
     />
     <BalBarChart
       v-else
-      :data="{
-        labels: timestamps,
-        datasets: [chartData]
+      :data="chartData.data"
+      :isPeriodSelectionEnabled="false"
+      :showLegend="false"
+      :axisLabelFormatter="{
+        yAxis: { style: 'currency', abbreviate: true }
       }"
-      :chart-options="barChartOptions"
-      :styles="chartColors"
-      chart-id="1"
-      :height="146"
+      :color="chartData.color"
+      :hoverColor="chartData.hoverColor"
+      height="96"
     />
   </div>
   <BalBlankSlate v-else class="h-96">

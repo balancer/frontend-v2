@@ -11,8 +11,8 @@
           'text-red-400': change < 0,
           'font-medium': true
         }"
-        >{{ numeral(change).format('+0.0%') }}</span
-      >
+        >{{ numeral(change).format('+0.0%') }}
+      </span>
     </div>
     <ECharts
       ref="chartInstance"
