@@ -56,17 +56,15 @@ const sortedBalances = computed(() => {
     pick(tokens.value, addressesWithBalance)
   );
 
-  return take(tokensWithBalance, 6).filter(
-    token => !includesAddress(props.modelValue, token.address)
-  );
+  return take(tokensWithBalance, 6);
 });
 
 const hasNoBalances = computed(() => !sortedBalances.value.length);
 
 const whiteListedTokens = computed(() =>
-  Object.values(tokens.value)
-    .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
-    .filter(token => !includesAddress(props.modelValue, token.address))
+  Object.values(tokens.value).filter(token =>
+    TOKENS.Popular.Symbols.includes(token.symbol)
+  )
 );
 
 const selectTokensLabel = computed(() => {
@@ -76,9 +74,14 @@ const selectTokensLabel = computed(() => {
 });
 
 const selectableTokens = computed(() => {
-  return !account.value || hasNoBalances.value
-    ? whiteListedTokens.value
-    : sortedBalances.value;
+  const tokens =
+    !account.value || hasNoBalances.value
+      ? whiteListedTokens.value
+      : sortedBalances.value;
+
+  return tokens.filter(
+    token => !includesAddress(props.modelValue, token.address)
+  );
 });
 
 /**
