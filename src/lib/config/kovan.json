@@ -53,7 +53,7 @@
     "veBAL": "0x0BA4d28a89b0aB0c48253f4f36B204DE24354651",
     "veDelegationProxy": "0x5C7c4bdfEf212F3154156A84e8e44abed73D104b",
     "veBALHelpers": "",
-    "feeDistributor": ""
+    "feeDistributor": "0xcC508a455F5b0073973107Db6a878DdBDab957bC"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
