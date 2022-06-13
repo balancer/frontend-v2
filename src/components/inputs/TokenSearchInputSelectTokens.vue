@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
-import { TokenInfo } from '@/types/TokenList';
-
 type Props = {
-  tokens: TokenInfo[];
+  addresses: string[];
   label: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  tokens: () => []
+  addresses: () => []
 });
-
-const addresses = computed(() => props.tokens.map(t => t.address));
 
 const emit = defineEmits<{
   (e: 'click', address: string): void;
@@ -33,7 +27,7 @@ const emit = defineEmits<{
       :class="[
         'border-r border-gray-100 dark:border-gray-900',
         'self-stretch flex items-center',
-        'pr-3'
+        'pr-3 py-1'
       ]"
     >
       {{ props.label }}

@@ -73,14 +73,18 @@ const selectTokensLabel = computed(() => {
     : t('myWallet2');
 });
 
-const selectableTokens = computed(() => {
+const selectableTokensAddresses = computed<string[]>(() => {
   const tokens =
     !account.value || hasNoBalances.value
       ? whiteListedTokens.value
       : sortedBalances.value;
 
-  return tokens.filter(
-    token => !includesAddress(props.modelValue, token.address)
+  return tokens.reduce(
+    (acc, token) =>
+      includesAddress(props.modelValue, token.address)
+        ? acc
+        : [...acc, token.address],
+    [] as string[]
   );
 });
 
@@ -123,8 +127,9 @@ function onClick() {
         </BalChip>
       </div>
       <TokenSearchInputSelectTokens
+        v-if="selectableTokensAddresses.length"
         :label="selectTokensLabel"
-        :tokens="selectableTokens"
+        :addresses="selectableTokensAddresses"
         @click="address => addToken(address)"
       ></TokenSearchInputSelectTokens>
     </div>
