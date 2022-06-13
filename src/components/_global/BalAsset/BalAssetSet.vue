@@ -159,6 +159,11 @@ export default defineComponent({
   height: auto !important;
 }
 
+.my-wallet .addresses-row > img,
+.my-wallet .addresses-row > .token-icon {
+  @apply border-0;
+}
+
 .addresses-row:last-child {
   @apply mb-0;
 }

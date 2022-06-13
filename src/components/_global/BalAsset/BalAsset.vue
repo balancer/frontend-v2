@@ -100,7 +100,7 @@ watch(iconSRC, newURL => {
 
 <style scoped>
 button.bal-asset {
-  @apply transition-transform border-0 shadow;
+  @apply transition-transform shadow;
 }
 
 button.bal-asset:hover,
