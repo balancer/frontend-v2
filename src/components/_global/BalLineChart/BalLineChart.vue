@@ -152,7 +152,7 @@ export default defineComponent({
     areaStyle: {
       type: Object,
       default: null
-    },
+    }
   },
   components: {
     ECharts
