@@ -113,7 +113,7 @@ function handleSelected(newToken: string): void {
       <div v-else class="flex items-center justify-between">
         <div class="flex items-center">
           <BalAsset :address="option" class="mr-2" />
-          {{ tokens[option]?.symbol }}
+          {{ getToken(option)?.symbol }}
         </div>
         <BalIcon
           v-if="selectedOption === option"
