@@ -121,9 +121,5 @@
     "worker-loader": "^3.0.8"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2",
-  "dependencies": {
-    "chartjs-adapter-date-fns": "^2.0.0",
-    "chartjs-plugin-crosshair": "^1.2.0"
-  }
+  "repository": "balancer-labs/frontend-v2"
 }
