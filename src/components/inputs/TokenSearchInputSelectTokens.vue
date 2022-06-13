@@ -30,9 +30,14 @@ const emit = defineEmits<{
     ]"
   >
     <span
-      :class="['border-r border-gray-100 dark:border-gray-900', 'pr-3 py-1']"
-      >{{ props.label }}</span
+      :class="[
+        'border-r border-gray-100 dark:border-gray-900',
+        'self-stretch flex items-center',
+        'pr-3'
+      ]"
     >
+      {{ props.label }}
+    </span>
     <BalAsset
       v-for="address in addresses"
       :address="address"
