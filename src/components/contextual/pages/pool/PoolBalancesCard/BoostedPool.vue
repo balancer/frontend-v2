@@ -83,7 +83,7 @@ function getTokenShare(address: string) {
     </template>
 
     <div class="p-4 -mt-2">
-      <div v-for="address in pool.tokenAddresses" :key="address" class="py-4">
+      <div v-for="address in pool.tokensList" :key="address" class="py-4">
         <BalBreakdown
           :items="getUnderlyingTokens(address)"
           class="w-full"

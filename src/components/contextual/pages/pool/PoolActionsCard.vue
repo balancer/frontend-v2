@@ -5,7 +5,7 @@ import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/compos
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { lpTokensFor } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -38,7 +38,7 @@ const fiatTotal = computed(() => {
     .map(address => {
       let tokenBalance = '0';
 
-      if (address === wrappedNativeAsset.value.address) {
+      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
         const wrappedBalance = balanceFor(address);
         const nativeBalance = balanceFor(nativeAsset.address);
         tokenBalance = bnum(nativeBalance).gt(wrappedBalance)

@@ -23,13 +23,6 @@
         @amountChange="trading.handleAmountChange"
         class="mb-4"
       />
-      <GasReimbursement
-        v-if="!ENABLE_LEGACY_TRADE_INTERFACE && trading.isBalancerTrade.value"
-        class="mb-5"
-        :address-in="tokenInAddress"
-        :address-out="tokenOutAddress"
-        :sorReturn="trading.sor.sorReturn.value"
-      />
       <BalAlert
         v-if="error"
         class="p-3 mb-4"
@@ -191,7 +184,6 @@ import { isRequired } from '@/lib/utils/validations';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import TradeRoute from '../TradeCard/TradeRoute.vue';
 
@@ -200,8 +192,7 @@ export default defineComponent({
     TradePair,
     TradePreviewModalGP,
     TradeRoute,
-    TradeSettingsPopover,
-    GasReimbursement
+    TradeSettingsPopover
   },
 
   setup() {

@@ -1,4 +1,3 @@
-import { getAddress } from 'ethers/lib/utils';
 import { keyBy } from 'lodash';
 import { computed, Ref, ref } from 'vue';
 
@@ -57,7 +56,6 @@ function formatPools(pools: Pool[]) {
     return {
       ...pool,
       address: getPoolAddress(pool.id),
-      tokenAddresses: pool.tokensList.map(token => getAddress(token)),
       tokens: poolService.formatPoolTokens()
     };
   });
@@ -73,7 +71,7 @@ async function decorateWithTotalLiquidity(
 
     if (isStablePhantom(pool.poolType)) {
       poolService.removePreMintedBPT();
-      await poolService.getLinearPoolAttrs();
+      await poolService.setLinearPools();
     }
     poolService.setTotalLiquidity(prices, currency);
 

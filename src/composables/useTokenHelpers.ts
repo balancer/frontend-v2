@@ -2,6 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 
 import { TOKENS } from '@/constants/tokens';
+import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
 
 import useTokens from './useTokens';
@@ -23,7 +24,7 @@ export function useTokenHelpers() {
    * METHODS
    */
   function isBalAddress(address: string): boolean {
-    return address === balAddress.value;
+    return isSameAddress(address, balAddress.value);
   }
 
   return {

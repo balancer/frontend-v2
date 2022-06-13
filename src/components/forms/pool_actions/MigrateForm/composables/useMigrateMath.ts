@@ -56,7 +56,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
-  const tokenCount = computed(() => fromPool.value.tokenAddresses.length);
+  const tokenCount = computed(() => fromPool.value.tokensList.length);
 
   const poolDecimals = computed(() => fromPool.value?.onchain?.decimals || 18);
 
@@ -71,7 +71,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   );
 
   const poolTokens = computed(() =>
-    fromPool.value.tokenAddresses.map(address => getToken(address))
+    fromPool.value.tokensList.map(address => getToken(address))
   );
 
   const fullAmounts = computed(() => {
@@ -135,7 +135,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   const batchSwapAmountMap = computed(
     (): Record<string, BigNumber> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        fromPool.value.tokenAddresses[i].toLowerCase(),
+        fromPool.value.tokensList[i].toLowerCase(),
         amount
       ]);
       const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
@@ -146,7 +146,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   );
 
   const fiatAmounts = computed((): string[] =>
-    fromPool.value.tokenAddresses.map((address, i) =>
+    fromPool.value.tokensList.map((address, i) =>
       toFiat(fullAmounts.value[i], address)
     )
   );

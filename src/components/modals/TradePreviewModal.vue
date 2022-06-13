@@ -152,7 +152,7 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut } = toRefs(props);
 
-    const { tokens, approvalRequired } = useTokens();
+    const { tokens, getToken, approvalRequired } = useTokens();
 
     const wrapType = computed(() =>
       getWrapAction(addressIn.value, addressOut.value)
@@ -173,7 +173,7 @@ export default defineComponent({
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
     const symbolIn = computed(() => {
-      const token = tokens.value[addressIn.value];
+      const token = getToken(addressIn.value);
       if (!token) {
         return '';
       }
@@ -181,7 +181,7 @@ export default defineComponent({
     });
 
     const symbolOut = computed(() => {
-      const token = tokens.value[addressOut.value];
+      const token = getToken(addressOut.value);
       if (!token) {
         return '';
       }

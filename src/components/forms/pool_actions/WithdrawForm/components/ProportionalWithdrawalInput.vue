@@ -62,7 +62,7 @@ const tokens = computed(
     if (isStablePhantom(props.pool.poolType)) {
       return getTokens(props.pool.mainTokens || []);
     }
-    return getTokens(props.pool.tokenAddresses);
+    return getTokens(props.pool.tokensList);
   }
 );
 

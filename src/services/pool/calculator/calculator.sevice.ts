@@ -1,10 +1,11 @@
+import { getAddress } from '@ethersproject/address';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { Ref, ref } from 'vue';
 
 import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
@@ -173,7 +174,7 @@ export default class CalculatorService {
   }
 
   public tokenOf(type: string, index: number) {
-    return this[`${type}Tokens`][index];
+    return getAddress(this[`${type}Tokens`][index]);
   }
 
   public ratioOf(type: string, index: number) {
@@ -182,13 +183,13 @@ export default class CalculatorService {
 
   public get tokenAddresses(): string[] {
     if (this.useNativeAsset.value) {
-      return this.pool.value.tokenAddresses.map(address => {
-        if (address === this.config.network.addresses.weth)
+      return this.pool.value.tokensList.map(address => {
+        if (isSameAddress(address, this.config.network.addresses.weth))
           return this.config.network.nativeAsset.address;
         return address;
       });
     }
-    return this.pool.value.tokenAddresses;
+    return this.pool.value.tokensList;
   }
 
   public get poolTokens(): OnchainTokenDataMap {

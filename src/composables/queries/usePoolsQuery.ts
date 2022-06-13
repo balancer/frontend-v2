@@ -1,4 +1,3 @@
-import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { flatten } from 'lodash';
 import { UseInfiniteQueryOptions } from 'react-query/types';
@@ -10,7 +9,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { LinearPool, Pool } from '@/services/pool/types';
+import PoolService from '@/services/pool/pool.service';
+import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
@@ -66,65 +66,6 @@ export default function usePoolsQuery(
   // COMPUTED
   const enabled = computed(() => !appLoading.value && options.enabled);
 
-  // METHODS
-  function removePreMintedBPT(pool: Pool): Pool {
-    const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
-    // Remove pre-minted BPT token if exits
-    pool.tokensList = pool.tokensList.filter(
-      address => address !== poolAddress.toLowerCase()
-    );
-    return pool;
-  }
-
-  /**
-   * fetches StablePhantom linear pools and extracts
-   * required attributes.
-   */
-  async function getLinearPoolAttrs(pool: Pool): Promise<Pool> {
-    // Fetch linear pools from subgraph
-    const linearPools = (await balancerSubgraphService.pools.get(
-      {
-        where: {
-          address_in: pool.tokensList,
-          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-        }
-      },
-      { mainIndex: true, wrappedIndex: true }
-    )) as LinearPool[];
-
-    const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
-
-    // Inject main/wrapped tokens into pool schema
-    linearPools.forEach(linearPool => {
-      if (!pool.mainTokens) pool.mainTokens = [];
-      if (!pool.wrappedTokens) pool.wrappedTokens = [];
-
-      const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
-
-      pool.mainTokens[index] = getAddress(
-        linearPool.tokensList[linearPool.mainIndex]
-      );
-      pool.wrappedTokens[index] = getAddress(
-        linearPool.tokensList[linearPool.wrappedIndex]
-      );
-
-      linearPool.tokens
-        .filter(token => token.address !== linearPool.address)
-        .forEach(token => {
-          const address = getAddress(token.address);
-
-          linearPoolTokensMap[address] = {
-            ...token,
-            address
-          };
-        });
-    });
-
-    pool.linearPoolTokensMap = linearPoolTokensMap;
-
-    return pool;
-  }
-
   const queryFn = async ({ pageParam = 0 }) => {
     const tokensListFilterKey = filterOptions?.isExactTokensList
       ? 'tokensList'
@@ -149,8 +90,10 @@ export default function usePoolsQuery(
       const isStablePhantomPool = isStablePhantom(pools[i].poolType);
 
       if (isStablePhantomPool) {
-        pools[i] = removePreMintedBPT(pools[i]);
-        pools[i] = await getLinearPoolAttrs(pools[i]);
+        const poolService = new PoolService(pools[i]);
+        poolService.removePreMintedBPT();
+        await poolService.setLinearPools();
+        pools[i] = poolService.pool;
       }
     }
 
@@ -179,9 +122,7 @@ export default function usePoolsQuery(
       if (isStablePhantomPool) {
         const decoratedPool = decoratedPools[i];
 
-        const poolTokenMeta = getTokens(
-          decoratedPool.tokensList.map(address => getAddress(address))
-        );
+        const poolTokenMeta = getTokens(decoratedPool.tokensList);
 
         const onchainData = await balancerContractsService.vault.getPoolData(
           decoratedPool.id,
