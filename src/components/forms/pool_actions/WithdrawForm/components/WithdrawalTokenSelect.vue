@@ -33,7 +33,7 @@ const selectedOption = ref(props.initToken);
 /**
  * COMPOSABLES
  */
-const { getTokens, getToken, nativeAsset } = useTokens();
+const { getToken, getTokens, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
@@ -113,7 +113,7 @@ function handleSelected(newToken: string): void {
       <div v-else class="flex items-center justify-between">
         <div class="flex items-center">
           <BalAsset :address="option" class="mr-2" />
-          {{ getToken(option)?.symbol }}
+          {{ tokens[option]?.symbol }}
         </div>
         <BalIcon
           v-if="selectedOption === option"
