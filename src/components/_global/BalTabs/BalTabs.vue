@@ -77,6 +77,10 @@ export default defineComponent({
   @apply -mb-px mr-6 py-3 cursor-pointer;
 }
 
+.bal-tab:last-child {
+  @apply mr-0;
+}
+
 .bal-tab-container {
   @apply flex border-b text-gray-500 dark:border-gray-700;
 }
