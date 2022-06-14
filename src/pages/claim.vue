@@ -212,24 +212,6 @@ onBeforeMount(async () => {
   <HeroClaim />
   <div class="px-2 lg:px-0">
     <div class="lg:container lg:mx-auto py-12">
-      <div class="bg-yellow-500 dark:bg-gray-700 p-4 rounded-lg">
-        <h3 class="mb-3">
-          {{
-            isL2
-              ? $t('pages.claim.transitionInfo.titleL2')
-              : $t('pages.claim.transitionInfo.title')
-          }}
-        </h3>
-        <p class="max-w-4xl">
-          {{
-            isL2
-              ? $t('pages.claim.transitionInfo.descriptionL2')
-              : $t('pages.claim.transitionInfo.description')
-          }}
-        </p>
-      </div>
-    </div>
-    <div class="lg:container lg:mx-auto py-12">
       <h2 class="font-body font-bold text-2xl">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
