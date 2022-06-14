@@ -4,9 +4,7 @@ type Props = {
   label: string;
 };
 
-const props = withDefaults(defineProps<Props>(), {
-  addresses: () => []
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'click', address: string): void;
