@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
+import useGaugesQuery from '@/composables/queries/useGaugesQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
@@ -15,7 +17,7 @@ import {
   orderedPoolTokens,
   poolURLFor
 } from '@/composables/usePool';
-import { scale } from '@/lib/utils';
+import { isSameAddress, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -51,7 +53,12 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
+const { data: subgraphGauges } = useGaugesQuery();
+const { data: gaugesDecorationData } = useGaugesDecorationQuery(subgraphGauges);
 
+const expiredGauges = computed(() => {
+  return gaugesDecorationData.value?.filter(gauge => gauge.isKilled) || [];
+});
 /**
  * DATA
  */
@@ -145,6 +152,10 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
     gauge.pool.poolType
   );
 }
+
+function isGaugeExpired(gaugeAddress: string): boolean {
+  return expiredGauges.value.some(item => isSameAddress(gaugeAddress, item.id));
+}
 </script>
 
 <template>
@@ -198,7 +209,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template v-slot:poolCompositionCell="{ pool }">
+      <template v-slot:poolCompositionCell="{ pool, address }">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
             :tokens="
@@ -208,6 +219,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
+          {{ isGaugeExpired(address) ? 'Expired' : '' }}
         </div>
       </template>
       <template v-slot:nextPeriodVotesCell="gauge">
