@@ -701,7 +701,7 @@
                     "label": "My veBAL",
                     "secondaryText": "{0} of all veBAL"
                 },
-                "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer get boosted yields on staked pools or on your locked 80% BAL / 20% WETH pool. However, you’ll still get the minimum 1.0x rate. Tap the plus icon to extend your lock on B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power. Tap the minus icon to redeem your LP tokens."
+                "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer earn protocol fees, boosted yields on staked Ethereum Mainnet pools or veBAL incentives. However, you’ll still get the minimum 1.0x rate. Tap the minus icon to redeem your expired locked B-80BAL-20WETH LP tokens and then create a new lock to get veBAL."
             }
         },
         "communityVeBAL": {
