@@ -15,6 +15,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import SanctionedWalletModal from './components/web3/SanctionedWalletModal.vue';
 import useBackgroundColor from './composables/useBackgroundColor';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
 import useNavigationGuards from './composables/useNavigationGuards';
@@ -55,7 +56,8 @@ export default defineComponent({
     useNavigationGuards();
     const {
       isWalletSelectVisible,
-      toggleWalletSelectModal
+      toggleWalletSelectModal,
+      isSanctioned
       // isMainnet
     } = useWeb3();
     const route = useRoute();
