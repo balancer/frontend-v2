@@ -1,7 +1,8 @@
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { version } = require('../../package.json');
 
-const plugins = [];
+const plugins = [new NodePolyfillPlugin()];
 
 if (process.env.VUE_APP_SENTRY_AUTH_TOKEN) {
   const release = `frontend-v2@${version}`;
