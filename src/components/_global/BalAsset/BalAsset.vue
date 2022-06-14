@@ -11,20 +11,16 @@
     <img
       v-if="iconSRC && !error"
       :src="iconSRC"
-      :style="{
-        background: 'white'
-      }"
       @error="error = true"
-      class="rounded-full"
+      class="rounded-full bg-white"
     />
     <Avatar v-else-if="!!address" :address="address" :size="size" />
     <div
       v-else
-      class="rounded-full overflow-visible"
+      class="rounded-full overflow-visible bg-gray-300 dark:bg-gray-700"
       :style="{
         width: `${size}px`,
-        height: `${size}px`,
-        background: `${noIconColor} !important`
+        height: `${size}px`
       }"
     />
   </component>
@@ -33,8 +29,6 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 
-import useDarkMode from '@/composables/useDarkMode';
-import useTailwind from '@/composables/useTailwind';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
 import { TokenInfo } from '@/types/TokenList';
@@ -59,8 +53,6 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { getToken } = useTokens();
 const { resolve } = useUrls();
-const { theme } = useTailwind();
-const { darkMode } = useDarkMode();
 
 /**
  * STATE
@@ -85,10 +77,6 @@ const rootElement = computed(() => (props.button ? 'button' : 'div'));
 const rootElementAttrs = computed(() => ({
   'aria-label': token.value?.symbol
 }));
-
-const noIconColor = computed(() =>
-  darkMode.value ? theme.colors.gray['700'] : theme.colors.gray['300']
-);
 
 /**
  * WATCHERS
