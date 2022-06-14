@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
@@ -19,20 +21,26 @@ const {
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
-    isUserPoolsIdle,
     poolBoosts
   },
   setPoolAddress
 } = useStaking();
+const { isWalletReady, isWalletConnecting } = useWeb3();
+const { t } = useI18n();
 
 /** COMPUTED */
 const isLoading = computed(() => {
   return (
     isLoadingUserStakingData.value ||
     isLoadingStakedPools.value ||
-    isLoadingUserPools.value ||
-    isUserPoolsIdle.value
+    isLoadingUserPools.value
   );
+});
+
+const noPoolsLabel = computed(() => {
+  return isWalletReady.value || isWalletConnecting.value
+    ? t('noStakedInvestments')
+    : t('connectYourWallet');
 });
 
 const poolsWithBoost = computed(() => {
@@ -67,7 +75,7 @@ function handleModalClose() {
       <PoolsTable
         :key="poolsWithBoost"
         :data="poolsWithBoost"
-        :noPoolsLabel="$t('noInvestments')"
+        :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         @triggerStake="handleStake"
         :isLoading="isLoading"

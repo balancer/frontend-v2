@@ -113,6 +113,7 @@
     "connect": "Connect",
     "connecting": "Connecting...",
     "connectWallet": "Connect wallet",
+    "connectYourWallet": "Connect your wallet",
     "copied": "Copied!",
     "copperLaunchPromo": {
         "buttonLabel": "View this auction on Copper",
@@ -449,6 +450,8 @@
     "noInitLiquidity": "This pool has no initial liquidity",
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
+    "noUnstakedInvestments": "You have no unstaked investments",
+    "noStakedInvestments": "You have no staked investments",
     "noInvestmentsPool": "No investments in this pool",
     "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
     "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
