@@ -14,6 +14,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import SanctionedWalletModal from './components/web3/SanctionedWalletModal.vue';
 import useBackgroundColor from './composables/useBackgroundColor';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
 import useNavigationGuards from './composables/useNavigationGuards';
@@ -29,6 +30,7 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
+    SanctionedWalletModal,
     Notifications,
     AppSidebar,
     GlobalModalContainer
@@ -51,7 +53,8 @@ export default defineComponent({
     useNavigationGuards();
     const {
       isWalletSelectVisible,
-      toggleWalletSelectModal
+      toggleWalletSelectModal,
+      isSanctioned
       // isMainnet
     } = useWeb3();
     const route = useRoute();
@@ -92,6 +95,7 @@ export default defineComponent({
     return {
       // state
       layout,
+      isSanctioned,
       // computed
       isWalletSelectVisible,
       sidebarOpen,
@@ -111,7 +115,7 @@ export default defineComponent({
       :isVisible="isWalletSelectVisible"
       @close="toggleWalletSelectModal"
     />
-    <Notifications />
+    <SanctionedWalletModal v-if="isSanctioned" />
     <AppSidebar v-if="sidebarOpen" />
   </div>
   <GlobalModalContainer />

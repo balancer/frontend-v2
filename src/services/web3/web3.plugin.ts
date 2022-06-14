@@ -4,6 +4,7 @@ import {
   JsonRpcSigner,
   Web3Provider
 } from '@ethersproject/providers';
+import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
@@ -17,6 +18,7 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom from '@/composables/useFathom';
+import { SANCTIONS_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 
@@ -56,6 +58,7 @@ export type Web3Plugin = {
   connector: Ref<Connector>;
   walletState: Ref<WalletState>;
   signer: Ref<JsonRpcSigner>;
+  isSanctioned: Ref<boolean>;
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -64,11 +67,22 @@ type PluginState = {
   walletState: WalletState;
 };
 
+async function isSanctionedAddress(address: string) {
+  const response = await axios.post(SANCTIONS_ENDPOINT, [
+    {
+      address: address.toLowerCase()
+    }
+  ]);
+  const isSanctioned = response.data[0].isSanctioned;
+  return isSanctioned;
+}
+
 export default {
   install: async app => {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
+    const isSanctioned = ref(false);
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -149,7 +163,7 @@ export default {
       try {
         if (!wallet || typeof wallet !== 'string') {
           throw new Error(
-            'Please provide a wallet to facilitate a web3 connection.'
+            'Please provide a wallet to fa cilitate a web3 connection.'
           );
         }
 
@@ -176,6 +190,12 @@ export default {
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
         if (account.value) {
+          // fetch sanctioned status
+          const _isSanctioned = await isSanctionedAddress(account.value);
+          isSanctioned.value = _isSanctioned;
+          if (_isSanctioned) {
+            disconnectWallet();
+          }
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
@@ -214,7 +234,8 @@ export default {
       account,
       chainId,
       provider,
-      signer
+      signer,
+      isSanctioned
     };
 
     app.provide(Web3ProviderSymbol, payload);
