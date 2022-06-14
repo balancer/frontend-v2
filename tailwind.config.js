@@ -6,20 +6,17 @@ module.exports = {
     './src/pages/**/*.{vue,ts}'
   ],
   safelist: [
-    /^shadow/,
-    /^bg/,
-    /^text/,
-    /^border/,
-    /^from/,
-    /^to/,
-    /^dark:/,
-    /^hover:/,
     'dark',
-    /^dark:/,
-    /^mr/,
-    /^w/
+    { pattern: /^shadow/ },
+    { pattern: /^bg/ },
+    { pattern: /^text/ },
+    { pattern: /^border/ },
+    { pattern: /^from/ },
+    { pattern: /^to/ },
+    { pattern: /^mr/ },
+    { pattern: /^w/ }
   ],
-  darkMode: 'class', // false or 'media' or 'class'
+  darkMode: 'class',
   theme: {
     fontFamily: {
       body: [
