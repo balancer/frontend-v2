@@ -5,9 +5,8 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
-import BalBarChart from '@/components/_global/BalBarChart/BalBarChart.vue';
-import BalLineChart from '@/components/_global/BalLineChart/BalLineChart.vue';
 import useDarkMode from '@/composables/useDarkMode';
+import useNumbers from '@/composables/useNumbers';
 import { isStablePhantom } from '@/composables/usePool';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
@@ -42,6 +41,7 @@ const store = useStore();
 const { t } = useI18n();
 const tailwind = useTailwind();
 const { darkMode } = useDarkMode();
+const { fNum2 } = useNumbers();
 
 /**
  * STATE
@@ -165,6 +165,19 @@ const chartData = computed(() => {
     }));
     return {
       color: [tailwind.theme.colors.blue['600']],
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: 'rgba(14, 165, 233, 0.08)'
+          },
+          {
+            offset: 1,
+            color: 'rgba(68, 9, 236, 0)'
+          }
+        ])
+      },
+      chartType: 'line',
       data: [
         {
           name: 'TVL',
@@ -192,6 +205,7 @@ const chartData = computed(() => {
     });
     return {
       color: [tailwind.theme.colors.yellow['400']],
+      chartType: 'bar',
       hoverColor: tailwind.theme.colors.green['400'],
       data: [
         {
@@ -220,6 +234,7 @@ const chartData = computed(() => {
 
   return {
     color: [tailwind.theme.colors.green['400']],
+    chartType: 'bar',
     hoverColor: tailwind.theme.colors.yellow['400'],
     data: [
       {
@@ -229,58 +244,56 @@ const chartData = computed(() => {
     ]
   };
 });
+
+const currentChartValue = ref();
+const currentChartDate = ref();
+function setCurrentChartValue(value) {
+  console.log('value :>> ', value);
+  currentChartValue.value = fNum2(value.value[1], {
+    style: 'currency'
+  });
+  currentChartDate.value = value.value[0];
+}
 </script>
 
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
   <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
     <div class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6">
-      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
-      <div class="w-24 flex items-center">
-        <BalSelectInput
-          :options="periodOptions"
-          :model-value="currentPeriod.toString()"
-          @change="setCurrentPeriod"
-          name="periods"
-          no-margin
-        />
+      <div class="flex">
+        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+        <div class="w-24 flex items-center">
+          <BalSelectInput
+            :options="periodOptions"
+            :model-value="currentPeriod.toString()"
+            @change="setCurrentPeriod"
+            name="periods"
+            no-margin
+          />
+        </div>
+      </div>
+      <div class="flex flex-col items-end text-2xl font-bold">
+        {{ currentChartValue }}
+        <div class="text-sm	font-medium text-pink-500">
+          {{ currentChartDate }}
+        </div>
       </div>
     </div>
 
-    <BalLineChart
-      v-if="activeTab === PoolChartTab.TVL"
+    <BalChart
       :data="chartData.data"
-      :isPeriodSelectionEnabled="false"
       :axisLabelFormatter="{
         yAxis: { style: 'currency', abbreviate: true }
       }"
-      :areaStyle="{
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgba(14, 165, 233, 0.08)'
-          },
-          {
-            offset: 1,
-            color: 'rgba(68, 9, 236, 0)'
-          }
-        ])
-      }"
-      :color="chartData.color"
-      :xAxisMinInterval="3600 * 1000 * 24 * 30"
-      height="96"
-    />
-    <BalBarChart
-      v-else
-      :data="chartData.data"
-      :isPeriodSelectionEnabled="false"
-      :showLegend="false"
-      :axisLabelFormatter="{
-        yAxis: { style: 'currency', abbreviate: true }
-      }"
+      :areaStyle="chartData.areaStyle"
       :color="chartData.color"
       :hoverColor="chartData.hoverColor"
       :xAxisMinInterval="3600 * 1000 * 24 * 30"
+      @setCurrentChartValue="setCurrentChartValue"
+      :showLegend="false"
+      needChartValue
+      :chartType="chartData.chartType"
+      :showTooltipLayer="false"
       height="96"
     />
   </div>

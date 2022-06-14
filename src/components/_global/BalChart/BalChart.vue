@@ -69,7 +69,7 @@ type PeriodOption = {
 };
 
 export default defineComponent({
-  emits: ['periodSelected'],
+  emits: ['periodSelected', 'setCurrentChartValue'],
   props: {
     data: {
       type: Array as PropType<ChartData[]>,
@@ -98,12 +98,18 @@ export default defineComponent({
     showHeader: {
       type: Boolean
     },
+    needChartValue: {
+      type: Boolean
+    },
     axisLabelFormatter: {
       type: Object as PropType<AxisLabelFormat>,
       default: () => ({})
     },
     color: {
       type: Array as PropType<string[]>
+    },
+    hoverColor: {
+      type: String
     },
     height: {
       type: [Number, String]
@@ -142,6 +148,11 @@ export default defineComponent({
       type: Boolean,
       default: () => true
     },
+    // hides tooltip floating layer
+    showTooltipLayer: {
+      type: Boolean,
+      default: () => true
+    },
     // whether to constrain the y-axis
     // based on the min and max values of the
     // data passed in
@@ -152,12 +163,16 @@ export default defineComponent({
     areaStyle: {
       type: Object,
       default: null
+    },
+    chartType: {
+      type: String,
+      default: 'line'
     }
   },
   components: {
     ECharts
   },
-  setup(props) {
+  setup(props, { emit }) {
     const chartInstance = ref<echarts.ECharts>();
     const lineChart = ref<HTMLElement>();
     const currentValue = ref('$0,00');
@@ -205,10 +220,9 @@ export default defineComponent({
       xAxis: {
         type: 'time',
         show: !props.hideXAxis,
-        axisTick: { show: true, alignWithLabel: true },
+        axisTick: { show: false },
         axisLine: {
-          onZero: false,
-          lineStyle: { color: axisColor.value }
+          show: false
         },
         minInterval: props.xAxisMinInterval,
         axisLabel: {
@@ -274,6 +288,7 @@ export default defineComponent({
       },
       tooltip: {
         show: props.showTooltip,
+        showContent: props.showTooltipLayer,
         trigger: 'axis',
         confine: true,
         axisPointer: {
@@ -310,7 +325,7 @@ export default defineComponent({
       },
       series: props.data.map((d, i) => ({
         data: d.values,
-        type: 'line',
+        type: props.chartType,
         smooth: 0.3,
         showSymbol: false,
         name: d.name,
@@ -322,6 +337,14 @@ export default defineComponent({
           width: 2
         },
         areaStyle: props.areaStyle,
+        itemStyle: {
+          borderRadius: 100
+        },
+        emphasis: {
+          itemStyle: {
+            color: props.hoverColor
+          }
+        },
         // This is a retrofitted option to show the small pill with the
         // latest value of the series at the end of the line on the RHS
         // the line is hidden, but the label is shown with extra styles
@@ -421,10 +444,12 @@ export default defineComponent({
 
     // Triggered when hovering mouse over different xAxis points
     const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
-      if (!props.showHeader) return;
+      if (!props.showHeader && !props.needChartValue) return;
       if (props.data[seriesIndex]?.values) {
         props.onAxisMoved &&
           props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
+
+        emit('setCurrentChartValue', props.data[seriesIndex].values[dataIndex]);
 
         currentValue.value = fNum2(
           props.data[seriesIndex].values[dataIndex][1],
@@ -434,6 +459,7 @@ export default defineComponent({
             fixedFormat: true
           }
         );
+        console.log('currentValue', currentValue.value);
 
         // if first point in chart, show overall change
         if (dataIndex === 0) {
