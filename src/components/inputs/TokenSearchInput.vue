@@ -33,7 +33,7 @@ const selectTokenModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { tokens, balances, dynamicDataLoading } = useTokens();
+const { getToken, tokens, balances, dynamicDataLoading } = useTokens();
 const { account, appNetworkConfig } = useWeb3();
 const { veBalTokenInfo } = useVeBal();
 
@@ -99,7 +99,7 @@ function onClick() {
           @closed="emit('remove', token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
+          <span class="ml-2">{{ getToken(token)?.symbol }}</span>
         </BalChip>
       </div>
       <div

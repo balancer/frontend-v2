@@ -49,7 +49,7 @@ const {
 } = usePoolCreation();
 
 const {
-  tokens,
+  getToken,
   priceFor,
   nativeAsset,
   wrappedNativeAsset,
@@ -221,7 +221,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                   <BalStack vertical spacing="none">
                     <span class="font-semibold">
                       {{ fNum2(token.weight / 100, FNumFormats.percent) }}
-                      {{ tokens[token.tokenAddress]?.symbol }}
+                      {{ getToken(token.tokenAddress)?.symbol }}
                     </span>
                     <span
                       :class="[

@@ -33,7 +33,7 @@ const selectedOption = ref(props.initToken);
 /**
  * COMPOSABLES
  */
-const { getTokens, getToken, nativeAsset } = useTokens();
+const { getToken, getTokens, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
