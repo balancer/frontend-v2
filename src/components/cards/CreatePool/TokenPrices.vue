@@ -17,7 +17,7 @@ defineProps<Props>();
  */
 const { upToLargeBreakpoint } = useBreakpoints();
 const { tokensList } = usePoolCreation();
-const { tokens, priceFor, injectedPrices } = useTokens();
+const { getToken, priceFor, injectedPrices } = useTokens();
 const { fNum2 } = useNumbers();
 
 /**
@@ -57,7 +57,7 @@ const hasUnknownPrice = computed(() =>
           justify="between"
           align="center"
         >
-          <span>{{ tokens[token]?.symbol }}</span>
+          <span>{{ getToken(token)?.symbol }}</span>
           <BalStack horizontal justify="center">
             <div>
               <div class="-mr-1">
@@ -95,7 +95,7 @@ const hasUnknownPrice = computed(() =>
                 'w-1/2 text-left',
                 { 'font-medium': injectedPrices[token]?.usd === undefined }
               ]"
-              >{{ tokens[token]?.symbol }}</span
+              >{{ getToken(token)?.symbol }}</span
             >
             <BalStack
               v-if="injectedPrices[token]?.usd !== undefined"

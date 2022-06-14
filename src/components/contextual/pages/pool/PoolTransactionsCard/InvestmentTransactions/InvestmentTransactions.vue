@@ -3,7 +3,7 @@ import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { usePool } from '@/composables/usePool';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 import BoostedActivities from '../BoostedPoolActivities/Activities.vue';
 import Activities from '../PoolActivities/Activities.vue';
@@ -13,7 +13,7 @@ import { PoolTransactionsTab } from '../types';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   loading: boolean;
 };
 

@@ -20,7 +20,7 @@ import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
-import { bnum } from '@/lib/utils';
+import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -254,8 +254,9 @@ export default {
 
       tokens.forEach(token => {
         const address: string = getAddress(token.address);
+        const existingAddresses = Object.keys(tokensMap);
         // Don't include if already included
-        if (Object.keys(tokensMap).includes(address)) return;
+        if (includesAddress(existingAddresses, address)) return;
         // Don't include if not on app network
         if (token.chainId !== networkConfig.chainId) return;
 
@@ -278,9 +279,11 @@ export default {
       // Remove any duplicates
       addresses = [...new Set(addresses)];
 
+      const existingAddresses = Object.keys(tokens.value);
+
       // Only inject tokens that aren't already in tokens
       const injectable = addresses.filter(
-        address => !Object.keys(tokens.value).includes(address)
+        address => !includesAddress(existingAddresses, address)
       );
       if (injectable.length === 0) return;
 
@@ -335,7 +338,7 @@ export default {
       excluded: string[]
     ): TokenInfoMap {
       return Object.keys(tokens)
-        .filter(address => !excluded.includes(address))
+        .filter(address => !includesAddress(excluded, address))
         .reduce((result, address) => {
           result[address] = tokens[address];
           return result;
@@ -353,7 +356,7 @@ export default {
     ): boolean {
       if (!amount || bnum(amount).eq(0)) return false;
       if (!contractAddress) return false;
-      if (tokenAddress === nativeAsset.address) return false;
+      if (isSameAddress(tokenAddress, nativeAsset.address)) return false;
 
       const allowance = bnum(
         (allowances.value[contractAddress] || {})[getAddress(tokenAddress)]
@@ -381,6 +384,7 @@ export default {
      * Fetch price for a token
      */
     function priceFor(address: string): number {
+      if (address) address = getAddress(address);
       try {
         return prices.value[address][currency.value] || 0;
       } catch {
@@ -392,6 +396,7 @@ export default {
      * Fetch balance for a token
      */
     function balanceFor(address: string): string {
+      if (address) address = getAddress(address);
       try {
         return balances.value[address] || '0';
       } catch {
@@ -410,13 +415,14 @@ export default {
      * Get subset of tokens from state
      */
     function getTokens(addresses: string[]): TokenInfoMap {
-      return pick(tokens.value, addresses);
+      return pick(tokens.value, addresses.map(getAddress));
     }
 
     /**
      * Get single token from state
      */
     function getToken(address: string): TokenInfo {
+      if (address) address = getAddress(address);
       return tokens.value[address];
     }
 

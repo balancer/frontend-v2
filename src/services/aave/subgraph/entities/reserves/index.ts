@@ -1,6 +1,6 @@
 import { ComputedReserveData, v2 } from '@aave/protocol-js';
 
-import { QueryBuilder } from '@/types';
+import { QueryBuilder } from '@/types/subgraph';
 
 import Service from '../../aave-subgraph.service';
 import queryBuilder from './query';

@@ -7,6 +7,7 @@ import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenMo
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
 import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import { includesAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
@@ -32,7 +33,7 @@ const selectTokenModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { tokens, balances, dynamicDataLoading } = useTokens();
+const { getToken, tokens, balances, dynamicDataLoading } = useTokens();
 const { account, appNetworkConfig } = useWeb3();
 const { veBalTokenInfo } = useVeBal();
 
@@ -59,7 +60,7 @@ const hasNoBalances = computed(() => !sortedBalances.value.length);
 const whiteListedTokens = computed(() =>
   Object.values(tokens.value)
     .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
-    .filter(token => !props.modelValue.includes(token.address))
+    .filter(token => !includesAddress(props.modelValue, token.address))
 );
 
 /**
@@ -98,7 +99,7 @@ function onClick() {
           @closed="emit('remove', token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
+          <span class="ml-2">{{ getToken(token)?.symbol }}</span>
         </BalChip>
       </div>
       <div

@@ -21,7 +21,7 @@ import {
 } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { PoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/pool/types';
 
 import TokenPills from './TokenPills/TokenPills.vue';
 

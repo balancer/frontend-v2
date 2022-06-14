@@ -8,7 +8,7 @@ import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { bnum, shortenLabel } from '@/lib/utils';
+import { bnum, isSameAddress, shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -49,7 +49,7 @@ const {
 } = usePoolCreation();
 
 const {
-  tokens,
+  getToken,
   priceFor,
   nativeAsset,
   wrappedNativeAsset,
@@ -126,8 +126,8 @@ const showNativeAssetWarning = computed(() => {
   );
 
   const seedAmount =
-    seedTokens.value.find(
-      token => token.tokenAddress === wrappedNativeAsset.value.address
+    seedTokens.value.find(token =>
+      isSameAddress(token.tokenAddress, wrappedNativeAsset.value.address)
     )?.amount || '0';
   // when the UI is set to use the native asset and the user does
   // not have the required native asset amount to cover the fund
@@ -221,7 +221,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                   <BalStack vertical spacing="none">
                     <span class="font-semibold">
                       {{ fNum2(token.weight / 100, FNumFormats.percent) }}
-                      {{ tokens[token.tokenAddress]?.symbol }}
+                      {{ getToken(token.tokenAddress)?.symbol }}
                     </span>
                     <span
                       :class="[

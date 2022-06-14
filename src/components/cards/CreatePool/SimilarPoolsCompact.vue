@@ -2,13 +2,13 @@
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { Pool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * COMPOSABLES
  */
 const { similarPools } = usePoolCreation();
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 const { fNum2 } = useNumbers();
 /**
  * FUNCTIONS
@@ -17,10 +17,7 @@ function getPoolLabel(pool: Pool) {
   const tokensString = pool.tokens
     .map(
       t =>
-        `${tokens.value[t.address]?.symbol} ${fNum2(
-          t.weight,
-          FNumFormats.percent
-        )}`
+        `${getToken(t.address)?.symbol} ${fNum2(t.weight, FNumFormats.percent)}`
     )
     .join(', ');
   return `${tokensString} (${fNum2(pool.swapFee, FNumFormats.percent)} fee)`;

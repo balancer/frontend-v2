@@ -23,10 +23,10 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
+// Types
+import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
@@ -38,7 +38,7 @@ import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   math: WithdrawMathResponse;
 };
 
@@ -180,7 +180,7 @@ async function submit(): Promise<TransactionResponse> {
         account.value,
         amountsOut.value,
         tokensOut.value,
-        formatUnits(bptIn.value, props.pool.onchain.decimals),
+        formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
         singleAssetMaxOut.value ? tokenOutIndex.value : null,
         exactOut.value
       );

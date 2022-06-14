@@ -1,8 +1,9 @@
 import { BigNumberish, Contract } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+
+import { includesAddress } from '..';
 
 const {
   stETH: stEthAddress,
@@ -13,9 +14,7 @@ export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;
   console.log('stETH: ', stEthAddress, ' is null: ', stEthAddress == null);
 
-  return [tokenInAddress, tokenOutAddress]
-    .map(getAddress)
-    .includes(getAddress(stEthAddress));
+  return includesAddress([tokenInAddress, tokenOutAddress], stEthAddress);
 }
 
 export function isStEthAddress(address: string): boolean {
@@ -32,9 +31,7 @@ export function includesWstEth(
 ): boolean {
   if (!wstEthAddress) return false;
 
-  return addresses
-    .map(address => address.toLowerCase())
-    .includes(wstEthAddress.toLowerCase());
+  return includesAddress(addresses, wstEthAddress);
 }
 
 /**

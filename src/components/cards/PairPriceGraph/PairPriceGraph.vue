@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getAddress } from '@ethersproject/address';
 import { format, fromUnixTime } from 'date-fns';
 import {
   Dictionary,
@@ -117,7 +116,7 @@ type Props = {
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
-const { tokens, wrappedNativeAsset, nativeAsset } = useTokens();
+const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId } = useWeb3();
@@ -130,11 +129,11 @@ const appLoading = computed(() => store.state.app.loading);
 
 const inputSym = computed(() => {
   if (tokenInAddress.value === '') return 'Unknown';
-  return tokens.value[getAddress(tokenInAddress.value)]?.symbol;
+  return getToken(tokenInAddress.value)?.symbol;
 });
 const outputSym = computed(() => {
   if (tokenOutAddress.value === '') return 'Unknown';
-  return tokens.value[getAddress(tokenOutAddress.value)]?.symbol;
+  return getToken(tokenOutAddress.value)?.symbol;
 });
 
 const dataMin = computed(() => {

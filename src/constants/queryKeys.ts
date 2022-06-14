@@ -4,7 +4,7 @@ import { Ref } from 'vue';
 
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { NativeAsset } from '@/types/TokenList';
+import { NativeAsset, TokenInfo } from '@/types/TokenList';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -85,7 +85,7 @@ const QUERY_KEYS = {
       activeTimespan: Ref<{ option: string; value: number }>,
       userNetworkId: Ref<number>,
       nativeAsset: NativeAsset,
-      wrappedNativeAsset: Ref<NativeAsset>
+      wrappedNativeAsset: Ref<TokenInfo>
     ) => [
       'pairPriceData',
       {
