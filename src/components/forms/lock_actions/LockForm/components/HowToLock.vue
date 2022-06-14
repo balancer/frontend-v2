@@ -46,11 +46,16 @@ const steps = computed(() => [
     ]"
   >
     <template v-slot:how-to-lock-handle>
-      <button class="p-4 rounded-xl w-full flex justify-between items-center">
-        <h6>
+      <button
+        class="p-4 rounded-xl w-full flex justify-between items-center group"
+      >
+        <h6 class="group-hover:text-blue-500 transition-colors">
           {{ $t('getVeBAL.howToLock.title') }}
         </h6>
-        <BalIcon name="chevron-down" class="text-blue-500" />
+        <BalIcon
+          name="chevron-down"
+          class="text-blue-500 group-hover:text-pink-500 transition-colors"
+        />
       </button>
     </template>
     <template v-slot:how-to-lock>
