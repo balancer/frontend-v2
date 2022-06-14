@@ -206,7 +206,7 @@ const chartData = computed(() => {
     return {
       color: [tailwind.theme.colors.yellow['400']],
       chartType: 'bar',
-      hoverColor: tailwind.theme.colors.green['400'],
+      hoverColor: tailwind.theme.colors.pink['500'],
       data: [
         {
           name: 'Fees',
@@ -235,7 +235,7 @@ const chartData = computed(() => {
   return {
     color: [tailwind.theme.colors.green['400']],
     chartType: 'bar',
-    hoverColor: tailwind.theme.colors.yellow['400'],
+    hoverColor: tailwind.theme.colors.pink['500'],
     data: [
       {
         name: 'Volume',
@@ -265,7 +265,7 @@ function setCurrentChartValue(value: {
       class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6 flex-wrap	"
     >
       <div class="flex mb-4">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-5" />
+        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
         <div class="w-24 flex items-center">
           <BalSelectInput
             :options="periodOptions"
@@ -273,13 +273,18 @@ function setCurrentChartValue(value: {
             @change="setCurrentPeriod"
             name="periods"
             no-margin
+            class="font-medium cursor-pointer"
           />
         </div>
       </div>
-      <div class="flex flex-col items-end text-2xl font-bold">
-        {{ currentChartValue }}
+      <div class="flex flex-col items-end text-2xl font-bold tabular-nums">
+        <p class="tracking-tighter">
+          {{ currentChartValue }}
+        </p>
         <div class="text-sm	font-medium text-pink-500">
-          {{ currentChartDate }}
+          <p class="tracking-tighter">
+            {{ currentChartDate }}
+          </p>
         </div>
       </div>
     </div>
