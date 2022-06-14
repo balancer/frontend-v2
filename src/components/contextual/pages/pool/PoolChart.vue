@@ -260,7 +260,7 @@ function setCurrentChartValue(value: {
 
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
-  <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
+  <div class="chart" v-else-if="history.length >= MIN_CHART_VALUES">
     <div
       class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6 flex-wrap	"
     >
@@ -311,3 +311,8 @@ function setCurrentChartValue(value: {
     {{ $t('insufficientData') }}
   </BalBlankSlate>
 </template>
+<style scoped>
+.chart {
+  @apply sm:border rounded-xl sm:px-5 sm:pt-5 sm:shadow sm:dark:bg-gray-850 dark:border-transparent;
+}
+</style>
