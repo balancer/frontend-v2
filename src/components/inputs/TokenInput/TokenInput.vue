@@ -261,7 +261,7 @@ watchEffect(() => {
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
 
             <BalLoadingBlock v-if="balanceLoading" class="w-12 h-4 mx-2" />
-            <span v-else class="mx-2">
+            <span v-else class="mx-1">
               {{ fNum2(tokenBalance, FNumFormats.token) }}
             </span>
 

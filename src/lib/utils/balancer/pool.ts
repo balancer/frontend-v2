@@ -1,6 +1,6 @@
 import { getAddress } from 'ethers/lib/utils';
 
-import { AnyPool, Pool } from '@/services/balancer/subgraph/types';
+import { AnyPool, Pool } from '@/services/pool/types';
 
 import { bnum } from '..';
 

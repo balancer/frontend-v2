@@ -1,11 +1,10 @@
+import { getAddress } from '@ethersproject/address';
 import BigNumber from 'bignumber.js';
 import { initial } from 'lodash';
 import { Ref } from 'vue';
 import { Path } from 'vue-i18n';
 
 import pkg from '@/../package.json';
-import { TOKENS } from '@/constants/tokens';
-import { configService } from '@/services/config/config.service';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -141,6 +140,13 @@ export function getAddressFromPoolId(poolId: string) {
   return poolId.substring(0, 42);
 }
 
-export function getBalAddress() {
-  return TOKENS.AddressMap[configService.network.chainId]?.BAL;
+export function isSameAddress(address1: string, address2: string): boolean {
+  if (!address1 || !address2) return false;
+  return getAddress(address1) === getAddress(address2);
+}
+
+export function includesAddress(addresses: string[], address: string): boolean {
+  if (!address) return false;
+  addresses = addresses.map(a => (a ? getAddress(a) : ''));
+  return addresses.includes(getAddress(address));
 }

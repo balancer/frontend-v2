@@ -4,13 +4,13 @@ import { computed, toRef } from 'vue';
 import useConfig from '@/composables/useConfig';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**

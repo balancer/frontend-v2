@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
 /** STATE */
 const showStakeModal = ref(false);
-const stakePool = ref<FullPool | undefined>();
+const stakePool = ref<Pool | undefined>();
 
 /** COMPOSABLES */
 const {
@@ -19,29 +21,32 @@ const {
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
-    isUserPoolsIdle,
     poolBoosts
   },
   setPoolAddress
 } = useStaking();
+const { isWalletReady, isWalletConnecting } = useWeb3();
+const { t } = useI18n();
 
 /** COMPUTED */
 const isLoading = computed(() => {
   return (
     isLoadingUserStakingData.value ||
     isLoadingStakedPools.value ||
-    isLoadingUserPools.value ||
-    isUserPoolsIdle.value
+    isLoadingUserPools.value
   );
+});
+
+const noPoolsLabel = computed(() => {
+  return isWalletReady.value || isWalletConnecting.value
+    ? t('noStakedInvestments')
+    : t('connectYourWallet');
 });
 
 const poolsWithBoost = computed(() => {
   return stakedPools.value.map(pool => ({
     ...pool,
-    dynamic: {
-      ...pool.dynamic,
-      boost: (poolBoosts.value || {})[pool.id]
-    }
+    boost: (poolBoosts.value || {})[pool.id]
   }));
 });
 
@@ -52,7 +57,7 @@ const hiddenColumns = computed(() => {
 });
 
 /** METHODS */
-function handleStake(pool: FullPool) {
+function handleStake(pool: Pool) {
   setPoolAddress(pool.address);
   showStakeModal.value = true;
   stakePool.value = pool;
@@ -70,7 +75,7 @@ function handleModalClose() {
       <PoolsTable
         :key="poolsWithBoost"
         :data="poolsWithBoost"
-        :noPoolsLabel="$t('noInvestments')"
+        :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         @triggerStake="handleStake"
         :isLoading="isLoading"

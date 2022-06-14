@@ -113,6 +113,7 @@
     "connect": "Connect",
     "connecting": "Connecting...",
     "connectWallet": "Connect wallet",
+    "connectYourWallet": "Connect your wallet",
     "copied": "Copied!",
     "copperLaunchPromo": {
         "buttonLabel": "View this auction on Copper",
@@ -449,6 +450,8 @@
     "noInitLiquidity": "This pool has no initial liquidity",
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
+    "noUnstakedInvestments": "You have no unstaked investments",
+    "noStakedInvestments": "You have no staked investments",
     "noInvestmentsPool": "No investments in this pool",
     "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
     "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
@@ -953,7 +956,7 @@
     },
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
     "theme": "Theme",
-    "thirdPartyRewards": {
+    "yieldAprRewards": {
         "apr": {
             "steth": "stETH staking rewards APR",
             "boosted": "Boosted APR"
@@ -991,6 +994,11 @@
         "withdraw": {
             "priceImpact": "Price impact from removing liquidity results when the value of each token removed is not proportional to the weights of the pool. Removing non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get for exiting your position.",
             "total": "The total value in {0} you’ll be withdrawing from this pool."
+        },
+        "veBalApr": {
+            "title": "Max locking/veBAL APR",
+            "breakdown1": "BAL",
+            "breakdown2": "bb-a-USD"
         }
     },
     "total": "Total",
@@ -1076,6 +1084,14 @@
             "totalWithSlippage": "Zero slippage to wrap {0}",
             "tradeFees": "Wrap fees"
         }
+    },
+    "tradeToggle": {
+        "wrapEth": "Gas trade—required for wrapping ETH",
+        "unwrapEth": "Gas trade—required for unwrapping ETH",
+        "fromEth": "Gas trade—required when trading from ETH",
+        "signature": "Signature ‘gasless’ trade—price optimized with MEV protection.",
+        "tradeGasless": "Trade gasless by signature",
+        "tradeWithGas": "Trade with a gas fee"
     },
     "transactionAction": {
         "approve": "Approve",

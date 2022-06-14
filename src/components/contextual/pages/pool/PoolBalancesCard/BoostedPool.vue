@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import AssetRow from './components/AssetRow';
+import AssetRow from './components/AssetRow.vue';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   loading: boolean;
 };
 
@@ -31,7 +31,7 @@ const { explorerLinks } = useWeb3();
  * METHODS
  */
 function getUnderlyingTokens(address: string) {
-  const linearPools = props.pool.onchain.linearPools;
+  const linearPools = props.pool?.onchain?.linearPools;
 
   if (linearPools == null) {
     return [];
@@ -51,15 +51,15 @@ function getUnderlyingTokens(address: string) {
 }
 
 function getTokenShare(address: string) {
-  const linearPools = props.pool.onchain.linearPools;
+  const linearPools = props.pool?.onchain?.linearPools;
 
   if (linearPools == null) {
     return null;
   }
 
-  const token = props.pool.onchain.tokens[address];
+  const token = props.pool?.onchain?.tokens[address];
 
-  return bnum(token.balance)
+  return bnum(token?.balance || '0')
     .div(linearPools[address].totalSupply)
     .toString();
 }
@@ -83,7 +83,7 @@ function getTokenShare(address: string) {
     </template>
 
     <div class="p-4 -mt-2">
-      <div v-for="address in pool.tokenAddresses" :key="address" class="py-4">
+      <div v-for="address in pool.tokensList" :key="address" class="py-4">
         <BalBreakdown
           :items="getUnderlyingTokens(address)"
           class="w-full"
@@ -98,7 +98,7 @@ function getTokenShare(address: string) {
             class="flex items-center"
           >
             <BalAsset :address="address" class="mr-2" />
-            {{ pool.onchain.tokens[address].symbol }}
+            {{ pool?.onchain?.tokens?.[address]?.symbol || '---' }}
             <BalIcon
               name="arrow-up-right"
               size="sm"

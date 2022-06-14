@@ -12,18 +12,14 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import {
-  getGaugeAddress
-  // isL2StakingAprLive
-} from '@/providers/local/staking/staking.provider';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-// import { getAprRangeWithRewardEmissions } from '@/services/staking/utils';
+import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
+import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
-  pool: DecoratedPoolWithShares;
+  pool: PoolWithShares;
   action: StakeAction;
 };
 
@@ -44,7 +40,6 @@ const {
     stakedSharesForProvidedPool,
     refetchStakedShares,
     refetchUserStakingData
-    // getBoostFor
   },
   stakeBPT,
   unstakeBPT
@@ -96,9 +91,7 @@ watch(
 );
 
 /* COMPUTED */
-const assetRowWidth = computed(
-  () => (props.pool.tokenAddresses.length * 32) / 1.5
-);
+const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 
 const numSharesToModify = ref(
   props.action === 'stake'
@@ -122,26 +115,6 @@ const totalUserPoolSharePct = ref(
     .div(props.pool.totalShares)
     .toString()
 );
-
-/**
- * TODO implement staking APR and potential weekly yield
- * Doesn't currently work because getBoostFor only returns boosts
- * For staked positions and not pools you're invested in but not staked.
- */
-// const stakingApr = computed(() => {
-//   return bnum(getAprRangeWithRewardEmissions(props.pool).min).times(
-//     getBoostFor(props.pool.id)
-//   );
-// });
-
-// const potentialyWeeklyYield = computed(() => {
-//   console.log('boost', getBoostFor(props.pool.id))
-//   return bnum(getAprRangeWithRewardEmissions(props.pool).min)
-//     .times(getBoostFor(props.pool.id))
-//     .times(fiatValueOfModifiedShares.value)
-//     .div(52)
-//     .toString();
-// });
 
 /**
  * LIFECYCLE
@@ -243,38 +216,6 @@ function handleClose() {
             />
           </BalStack>
         </BalStack>
-        <!-- <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
-          <span class="text-sm">
-            {{ action === 'stake' ? $t('your') : $t('lost') }}
-            {{ $t('staking.stakingApr') }}:
-          </span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize">
-              ~{{ fNum2(stakingApr, FNumFormats.percent) }}</span
-            >
-            <BalTooltip
-              :text="$t('staking.stakingAprTooltip')"
-              width="20"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack>
-        <BalStack horizontal justify="between" v-if="isL2StakingAprLive">
-          <span class="text-sm">
-            {{ action === 'stake' ? $t('potential') : $t('lost') }}
-            {{ $t('staking.weeklyEarning') }}:
-          </span>
-          <BalStack horizontal spacing="base">
-            <span class="text-sm capitalize"
-              >~{{ fNum2(potentialyWeeklyYield, FNumFormats.fiat) }}</span
-            >
-            <BalTooltip
-              :text="$t('staking.potentialWeeklyEarningTooltip')"
-              width="20"
-              textAlign="center"
-            />
-          </BalStack>
-        </BalStack> -->
       </BalStack>
     </BalCard>
     <BalActionSteps

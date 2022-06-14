@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { uniqBy } from 'lodash';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
@@ -8,17 +9,14 @@ import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import {
-  DecoratedPool,
-  DecoratedPoolWithShares,
-  FullPool
-} from '@/services/balancer/subgraph/types';
+import { Pool, PoolWithShares } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
 /** STATE */
 const showStakeModal = ref(false);
-const stakePool = ref<FullPool | undefined>();
+const stakePool = ref<Pool | undefined>();
 
 /** COMPOSABLES */
 const {
@@ -31,6 +29,8 @@ const {
   },
   setPoolAddress
 } = useStaking();
+const { isWalletReady, isWalletConnecting } = useWeb3();
+const { t } = useI18n();
 
 /** COMPUTED */
 // a map of poolId-stakedBPT for the connected user
@@ -43,12 +43,14 @@ const stakedBalanceMap = computed(() => {
   return map;
 });
 
+const noPoolsLabel = computed(() => {
+  return isWalletReady.value || isWalletConnecting.value
+    ? t('noUnstakedInvestments')
+    : t('connectYourWallet');
+});
+
 // first retrieve all the pools the user has liquidity for
-const {
-  data: userPools,
-  isLoading: isLoadingUserPools,
-  isIdle: isUserPoolsIdle
-} = useUserPoolsQuery();
+const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
 
 const partiallyStakedPools = computed(() => {
   const stakedPoolIds = stakedPools.value?.map(pool => pool.id);
@@ -70,10 +72,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        dynamic: {
-          ...pool.dynamic,
-          boost: poolBoosts.value[pool.id]
-        }
+        boost: poolBoosts.value[pool.id]
       };
     });
 });
@@ -110,14 +109,14 @@ const hiddenColumns = computed((): string[] => {
 });
 
 /** METHODS */
-function handleStake(pool: FullPool) {
+function handleStake(pool: Pool) {
   setPoolAddress(pool.address);
   showStakeModal.value = true;
   stakePool.value = pool;
 }
 
 function calculateFiatValueOfShares(
-  pool: DecoratedPoolWithShares | DecoratedPool,
+  pool: PoolWithShares | Pool,
   stakedBalance: string
 ) {
   return bnum(pool.totalLiquidity)
@@ -136,11 +135,9 @@ function handleModalClose() {
     <h5 class="px-4 lg:px-0" v-if="!isL2">{{ $t('staking.unstakedPools') }}</h5>
     <PoolsTable
       :key="poolsToRender"
-      :isLoading="
-        isLoadingUserStakingData || isLoadingUserPools || isUserPoolsIdle
-      "
+      :isLoading="isLoadingUserStakingData || isLoadingUserPools"
       :data="poolsToRender"
-      :noPoolsLabel="$t('noInvestments')"
+      :noPoolsLabel="noPoolsLabel"
       :hiddenColumns="hiddenColumns"
       @triggerStake="handleStake"
       showPoolShares

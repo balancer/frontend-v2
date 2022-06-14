@@ -8,15 +8,15 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useVeBal from '@/composables/useVeBAL';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
-import VeBalTooltipExplainer from './VeBalTooltipExplainer';
+import VeBalTooltipExplainer from './VeBalTooltipExplainer.vue';
 
 /**
  * TYPES
  */
 type Props = {
-  lockablePool: FullPool;
+  lockablePool: Pool;
   totalLpTokens: string;
   lockEndDate: string;
   lockAmount: string;

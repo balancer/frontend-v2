@@ -5,7 +5,8 @@ import { isNil, mapValues } from 'lodash';
 
 import { isL2 } from '@/composables/useNetwork';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum, getBalAddress } from '@/lib/utils';
+import { TOKENS } from '@/constants/tokens';
+import { bnum } from '@/lib/utils';
 import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -17,19 +18,18 @@ import { BalancerTokenAdmin } from '../balancer/contracts/contracts/token-admin'
 import { VEBalHelpers } from '../balancer/contracts/contracts/vebal-helpers';
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { SubgraphGauge } from '../balancer/gauges/types';
-import { Pool } from '../balancer/subgraph/types';
 import { TokenPrices } from '../coingecko/api/price.service';
 import PoolService from '../pool/pool.service';
+import { Pool } from '../pool/types';
 import {
   calculateGaugeApr,
   calculateRewardTokenAprs,
   getAprRange
 } from './utils';
 
-export type PoolAPRs = Record<
-  string,
-  { BAL: { min: string; max: string }; Rewards: string }
->;
+export type GaugeBalApr = { min: string; max: string };
+export type GaugeBalAprs = Record<string, GaugeBalApr>;
+export type GaugeRewardTokenAprs = Record<string, string>;
 
 export class StakingRewardsService {
   private gaugeController = new GaugeController(
@@ -98,10 +98,10 @@ export class StakingRewardsService {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
     pools: Pool[];
-  }) {
+  }): Promise<GaugeBalAprs> {
     if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
-    const balAddress = getBalAddress();
+    const balAddress = TOKENS.Addresses.BAL;
     const [
       inflationRate,
       relativeWeights,
@@ -125,9 +125,7 @@ export class StakingRewardsService {
       if (isNil(inflationRate)) return nilApr;
 
       const poolService = new PoolService(pool);
-      const bptPrice = bnum(
-        poolService.calcTotalLiquidity(prices, FiatCurrency.usd)
-      ).div(pool.totalShares);
+      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
       if (!balAddress) return nilApr;
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
@@ -135,7 +133,7 @@ export class StakingRewardsService {
 
       const gaugeBALApr = calculateGaugeApr({
         gaugeAddress: getAddress(gauge.id),
-        bptPrice: bptPrice.toString(),
+        bptPrice: poolService.bptPrice,
         balPrice: String(balPrice),
         // undefined inflation rate is guarded above
         inflationRate: inflationRate as string,
@@ -161,7 +159,7 @@ export class StakingRewardsService {
     gauges: SubgraphGauge[];
     pools: Pool[];
     tokens: TokenInfoMap;
-  }) {
+  }): Promise<GaugeRewardTokenAprs> {
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses
@@ -175,9 +173,7 @@ export class StakingRewardsService {
       const pool = pools.find(pool => pool.id === poolId);
       if (!pool) return [poolId, '0'];
       const poolService = new PoolService(pool);
-      const bptPrice = bnum(
-        poolService.calcTotalLiquidity(prices, FiatCurrency.usd)
-      ).div(pool.totalShares);
+      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
       const rewardTokens = rewardTokensMeta[getAddress(gauge.id)];
@@ -185,7 +181,7 @@ export class StakingRewardsService {
         boost: '1',
         totalSupply,
         rewardTokensMeta: rewardTokens,
-        bptPrice,
+        bptPrice: bnum(poolService.bptPrice),
         prices,
         tokens
       });

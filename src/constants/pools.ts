@@ -4,6 +4,10 @@ import { isMainnet, networkId } from '@/composables/useNetwork';
 
 export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
 
+// Do not display APR values greater than this amount; they are likely to be nonsensical
+// These can arise from pools with extremely low balances (e.g., completed LBPs)
+export const APR_THRESHOLD = 10_000;
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -166,7 +170,6 @@ const POOLS_MAINNET: Pools = {
       '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080',
       '0x350196326aeaa9b98f1903fb5e8fc2686f85318c000200000000000000000084',
       '0x3e5fa9518ea95c3e533eb377c001702a9aacaa32000200000000000000000052',
-      '0x4bd6d86debdb9f5413e631ad386c4427dc9d01b20002000000000000000000ec',
       '0x51735bdfbfe3fc13dea8dc6502e2e958989429610002000000000000000000a0',
       '0x5d66fff62c17d841935b60df5f07f6cf79bd0f4700020000000000000000014c',
       '0x5f7fa48d765053f8dd85e052843e12d23e3d7bc50002000000000000000000c0',
@@ -197,7 +200,9 @@ const POOLS_MAINNET: Pools = {
       '0xb460daa847c45f1c4a41cb05bfb3b51c92e41b36000200000000000000000194',
       '0x5122e01d819e58bb2e22528c0d68d310f0aa6fd7000200000000000000000163',
       '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
-      '0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de'
+      '0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de',
+      '0x85370d9e3bb111391cc89f6de344e801760461830002000000000000000001ef',
+      '0xa7ff759dbef9f3efdd1d59beee44b966acafe214000200000000000000000180'
     ]
   }
 };

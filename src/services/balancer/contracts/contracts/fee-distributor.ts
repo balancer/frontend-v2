@@ -1,10 +1,13 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { BigNumber } from 'ethers';
+import { formatUnits } from '@ethersproject/units';
+import { BigNumber, Contract } from 'ethers';
 import { zipObject } from 'lodash';
 
 import FeeDistributorABI from '@/lib/abi/FeeDistributor.json';
 import FeeDistributorStaticABI from '@/lib/abi/FeeDistributorStatic.json';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { web3Service } from '@/services/web3/web3.service';
 
@@ -19,8 +22,24 @@ export class FeeDistributor {
     private readonly staticAbi = FeeDistributorStaticABI,
     private readonly config = configService,
     private readonly web3 = web3Service,
-    public readonly address = config.network.addresses.feeDistributor
+    public readonly address = config.network.addresses.feeDistributor,
+    private readonly provider = rpcProviderService.jsonProvider
   ) {}
+
+  /**
+   * @summary Instantiates a contract instance for the FeeDistributor.
+   * @returns Ethers Contract instance
+   */
+  public getInstance(): Contract {
+    return new Contract(this.address, this.abi, this.provider);
+  }
+
+  /**
+   * @summary Instantiates a multicaller instance of the FeeDistributor
+   */
+  public getMulticaller(): Multicaller {
+    return new Multicaller(this.config.network.key, this.provider, this.abi);
+  }
 
   /**
    * @summary Get claimable protocol fee reward balances
@@ -66,6 +85,38 @@ export class FeeDistributor {
       'claimToken',
       [userAddress, tokenAddress]
     );
+  }
+
+  /**
+   * @summary Get total token distribution in week.
+   * @param {string} token address to check distribution for, either bb-a-USD or BAL
+   * @param {number} timestamp unix timestamp of epoch to check, has to be exact
+   * epoch timestamp
+   */
+  public async getTokensDistributedInWeek(
+    token: string,
+    timestamp: number,
+    instance?: Contract
+  ): Promise<string> {
+    if (!instance) instance = this.getInstance();
+    const amount = await instance.getTokensDistributedInWeek(token, timestamp);
+
+    return formatUnits(amount, 18);
+  }
+
+  /**
+   * @summary Get total veBAL supply at epoch.
+   * @param {number} timestamp unix timestamp of epoch to check, has to be exact
+   * epoch timestamp
+   */
+  public async getTotalSupply(
+    timestamp: number,
+    instance?: Contract
+  ): Promise<string> {
+    if (!instance) instance = this.getInstance();
+    const amount = await instance.getTotalSupplyAtTimestamp(timestamp);
+
+    return formatUnits(amount, 18);
   }
 }
 

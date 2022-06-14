@@ -3,7 +3,8 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
-import { NativeAsset } from '@/types/TokenList';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { NativeAsset, TokenInfo } from '@/types/TokenList';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
 export const CLAIMS_ROOT_KEY = 'claims';
@@ -84,7 +85,7 @@ const QUERY_KEYS = {
       activeTimespan: Ref<{ option: string; value: number }>,
       userNetworkId: Ref<number>,
       nativeAsset: NativeAsset,
-      wrappedNativeAsset: Ref<NativeAsset>
+      wrappedNativeAsset: Ref<TokenInfo>
     ) => [
       'pairPriceData',
       {
@@ -99,7 +100,7 @@ const QUERY_KEYS = {
     Prices: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      pricesToInject: Ref<Record<string, number>>
+      pricesToInject: Ref<TokenPrices>
     ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
     AllPrices: ['tokens', 'prices'],
     VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [

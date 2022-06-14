@@ -1,12 +1,11 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
 import axios from 'axios';
 
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { TokenList, TokenListMap } from '@/types/TokenList';
 
-import { configService as _configService } from '../config/config.service';
-import { ipfsService as _ipfsService } from '../ipfs/ipfs.service';
+import { configService } from '../config/config.service';
+import { ipfsService } from '../ipfs/ipfs.service';
 
 interface TokenListUris {
   All: string[];
@@ -22,24 +21,18 @@ interface TokenListUris {
 }
 
 export default class TokenListService {
-  provider: JsonRpcProvider;
-  appNetworkKey: string;
-
   constructor(
-    private readonly configService = _configService,
-    private readonly rpcProviderService = _rpcProviderService,
-    private readonly ipfsService = _ipfsService
-  ) {
-    this.provider = this.rpcProviderService.jsonProvider;
-    this.appNetworkKey = this.configService.network.key;
-  }
+    private readonly appNetwork = configService.network.key,
+    private readonly provider = rpcProviderService.jsonProvider,
+    private readonly ipfs = ipfsService
+  ) {}
 
   /**
    * Return all token list URIs for the app network in
    * a structured object.
    */
   public get uris(): TokenListUris {
-    const { Balancer, External } = TOKEN_LIST_MAP[this.appNetworkKey];
+    const { Balancer, External } = TOKEN_LIST_MAP[this.appNetwork];
 
     const balancerLists = [Balancer.Default, Balancer.Vetted];
     const All = [...balancerLists, ...External];
@@ -84,7 +77,7 @@ export default class TokenListService {
         const { data } = await axios.get<TokenList>(uri);
         return data;
       } else if (protocol === 'ipns') {
-        return await this.ipfsService.get<TokenList>(path, protocol);
+        return await this.ipfs.get<TokenList>(path, protocol);
       } else {
         console.error('Unhandled TokenList protocol', uri);
         throw new Error('Unhandled TokenList protocol');
@@ -99,7 +92,7 @@ export default class TokenListService {
     const resolver = await this.provider.getResolver(ensName);
     if (resolver === null) throw new Error('Could not resolve ENS');
     const [, ipfsHash] = (await resolver.getContentHash()).split('://');
-    return await this.ipfsService.get<TokenList>(ipfsHash);
+    return await this.ipfs.get<TokenList>(ipfsHash);
   }
 }
 

@@ -25,12 +25,12 @@ import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
-import { bnSum, bnum, forChange } from '@/lib/utils';
+import { bnSum, bnum, forChange, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
 // Services
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+// Types
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
@@ -43,7 +43,7 @@ import { setError, WithdrawalError } from './useWithdrawalState';
 export type WithdrawMathResponse = ReturnType<typeof useWithdrawMath>;
 
 export default function useWithdrawMath(
-  pool: Ref<FullPool>,
+  pool: Ref<Pool>,
   isProportional: Ref<boolean> = ref(true),
   tokenOut: Ref<string> = ref(''),
   tokenOutIndex: Ref<number> = ref(0)
@@ -101,21 +101,23 @@ export default function useWithdrawMath(
     if (isStablePhantom(pool.value.poolType)) {
       return pool.value.mainTokens || [];
     }
-    return pool.value.tokenAddresses;
+    return pool.value.tokensList;
   });
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
   // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
-    pool.value.tokenAddresses.map(address => getToken(address))
+    pool.value.tokensList.map(address => getToken(address))
   );
 
   const tokenOutDecimals = computed(
     (): number => getToken(tokenOut.value).decimals
   );
 
-  const poolDecimals = computed((): number => pool.value.onchain.decimals);
+  const poolDecimals = computed(
+    (): number => pool.value?.onchain?.decimals || 18
+  );
 
   /**
    * The tokens being withdrawn
@@ -153,9 +155,8 @@ export default function useWithdrawMath(
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
   const tokenOutPoolBalance = computed(() => {
-    const balances = Object.values(pool.value.onchain.tokens).map(
-      token => token.balance
-    );
+    const tokens = pool.value?.onchain?.tokens || [];
+    const balances = Object.values(tokens).map(token => token.balance);
     return balances[tokenOutIndex.value];
   });
 
@@ -373,7 +374,7 @@ export default function useWithdrawMath(
   );
 
   const shouldUseBatchRelayer = computed((): boolean => {
-    if (!isStablePhantomPool.value || !pool.value.onchain.linearPools)
+    if (!isStablePhantomPool.value || !pool.value?.onchain?.linearPools)
       return false;
 
     // If batchSwap has any 0 return amounts, we should use batch relayer
@@ -469,11 +470,11 @@ export default function useWithdrawMath(
    * @param wrappedToken the wrapped linear pool token address.
    */
   function scaledWrappedTokenRateFor(wrappedToken: string): string {
-    if (!pool.value.onchain.linearPools) return '0';
+    if (!pool.value?.onchain?.linearPools) return '0';
 
     const normalPriceRate =
-      Object.values(pool.value.onchain.linearPools).find(
-        linearPool => linearPool.wrappedToken.address === wrappedToken
+      Object.values(pool.value.onchain.linearPools).find(linearPool =>
+        isSameAddress(linearPool.wrappedToken.address, wrappedToken)
       )?.wrappedToken?.priceRate || '0';
 
     return parseUnits(normalPriceRate, 18).toString();

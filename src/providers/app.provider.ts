@@ -1,7 +1,6 @@
 import { computed, ComputedRef, InjectionKey, provide } from 'vue';
 import { useStore } from 'vuex';
 
-import useTokenLists from '@/composables/useTokenLists';
 import useTokens from '@/composables/useTokens';
 import symbolKeys from '@/constants/symbol.keys';
 
@@ -31,14 +30,10 @@ export default {
 
   setup(props, { slots }) {
     const store = useStore();
-    const { loadingTokenLists } = useTokenLists();
     const { loading: loadingTokens } = useTokens();
 
     const appLoading = computed(
-      () =>
-        store.state.app.loading ||
-        loadingTokenLists.value ||
-        loadingTokens.value
+      () => store.state.app.loading || loadingTokens.value
     );
 
     provide(AppProviderSymbol, {

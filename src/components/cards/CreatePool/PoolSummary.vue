@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { prominent } from 'color.js';
-import echarts from 'echarts';
+import * as echarts from 'echarts/core';
 import { computed, nextTick, ref, watch } from 'vue';
 import ECharts from 'vue-echarts';
 
@@ -29,7 +29,7 @@ const chartInstance = ref<echarts.ECharts>();
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 const {
   seedTokens,
   updateTokenColors,
@@ -59,8 +59,8 @@ const chartConfig = computed(() => {
       show: true,
       type: 'scroll',
       icon: 'circle',
-      formatter: name => {
-        return `${tokens.value[name]?.symbol || 'Unallocated'}`;
+      formatter: address => {
+        return `${getToken(address)?.symbol || 'Unallocated'}`;
       },
       selectedMode: false,
       top: 'bottom',
@@ -99,7 +99,7 @@ const chartConfig = computed(() => {
             // .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
               const tokenLogoURI = resolve(
-                tokens.value[t.tokenAddress]?.logoURI || ''
+                getToken(t.tokenAddress)?.logoURI || ''
               );
               return {
                 name: t.tokenAddress,
@@ -158,15 +158,14 @@ async function calculateColors() {
     .filter(t => t.tokenAddress !== '')
     .map(async t => {
       try {
-        const tokenLogoURI = resolve(
-          tokens.value[t.tokenAddress].logoURI || ''
-        );
+        const token = getToken(t.tokenAddress);
+        const tokenLogoURI = resolve(token.logoURI || '');
         const color = await prominent(tokenLogoURI, {
           amount: 2,
           format: 'hex'
         });
-        if (manualColorMap[tokens.value[t.tokenAddress].symbol]) {
-          return manualColorMap[tokens.value[t.tokenAddress].symbol];
+        if (manualColorMap[token.symbol]) {
+          return manualColorMap[token.symbol];
         }
         if (color[0] === '#ffffff' || color[0] === '#000000')
           return color[1] as string;

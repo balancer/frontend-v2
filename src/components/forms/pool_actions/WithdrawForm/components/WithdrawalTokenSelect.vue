@@ -5,7 +5,7 @@ import { usePool } from '@/composables/usePool';
 // Composables
 import useTokens from '@/composables/useTokens';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useWithdrawalState from '../composables/useWithdrawalState';
@@ -14,7 +14,7 @@ import useWithdrawalState from '../composables/useWithdrawalState';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   initToken?: string;
 };
 
@@ -33,7 +33,7 @@ const selectedOption = ref(props.initToken);
 /**
  * COMPOSABLES
  */
-const { getTokens, getToken, nativeAsset } = useTokens();
+const { getToken, getTokens, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
@@ -42,9 +42,8 @@ const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
  */
 const tokenAddresses = computed(() => {
   if (isStablePhantomPool.value) return props.pool?.mainTokens || [];
-  if (isWethPool.value)
-    return [nativeAsset.address, ...props.pool.tokenAddresses];
-  return props.pool.tokenAddresses;
+  if (isWethPool.value) return [nativeAsset.address, ...props.pool.tokensList];
+  return props.pool.tokensList;
 });
 
 const tokens = computed(() => getTokens(tokenAddresses.value));

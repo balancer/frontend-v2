@@ -17,7 +17,7 @@ defineProps<Props>();
  */
 const { upToLargeBreakpoint } = useBreakpoints();
 const { tokensList } = usePoolCreation();
-const { tokens, priceFor, injectedPrices } = useTokens();
+const { getToken, priceFor, injectedPrices } = useTokens();
 const { fNum2 } = useNumbers();
 
 /**
@@ -26,12 +26,12 @@ const { fNum2 } = useNumbers();
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 const knownTokens = computed(() =>
   validTokens.value.filter(
-    token => priceFor(token) !== 0 && !injectedPrices.value[token]
+    token => priceFor(token) !== 0 && !injectedPrices.value[token]?.usd
   )
 );
 const unknownTokens = computed(() =>
   validTokens.value.filter(
-    token => priceFor(token) === 0 || injectedPrices.value[token]
+    token => priceFor(token) === 0 || injectedPrices.value[token]?.usd
   )
 );
 const hasUnknownPrice = computed(() =>
@@ -57,7 +57,7 @@ const hasUnknownPrice = computed(() =>
           justify="between"
           align="center"
         >
-          <span>{{ tokens[token]?.symbol }}</span>
+          <span>{{ getToken(token)?.symbol }}</span>
           <BalStack horizontal justify="center">
             <div>
               <div class="-mr-1">
@@ -93,18 +93,18 @@ const hasUnknownPrice = computed(() =>
             <span
               :class="[
                 'w-1/2 text-left',
-                { 'font-medium': injectedPrices[token] === undefined }
+                { 'font-medium': injectedPrices[token]?.usd === undefined }
               ]"
-              >{{ tokens[token]?.symbol }}</span
+              >{{ getToken(token)?.symbol }}</span
             >
             <BalStack
-              v-if="injectedPrices[token] !== undefined"
+              v-if="injectedPrices[token]?.usd !== undefined"
               horizontal
               align="center"
               class="w-1/2 text-right"
             >
               <span class="w-4/5 break-words">{{
-                fNum2(injectedPrices[token], FNumFormats.fiat)
+                fNum2(injectedPrices[token]?.usd, FNumFormats.fiat)
               }}</span>
               <BalIcon size="sm" name="edit" class="mr-px" />
             </BalStack>

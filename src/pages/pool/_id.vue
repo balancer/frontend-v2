@@ -30,7 +30,7 @@
               </span>
             </div>
             <BalChip
-              v-if="pool.dynamic.isNewPool"
+              v-if="pool?.isNew"
               color="red"
               size="sm"
               class="uppercase mt-2 mr-2"
@@ -38,9 +38,9 @@
             >
               {{ $t('new') }}
             </BalChip>
-            <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
+            <APRTooltip :pool="pool" class="-ml-1 mt-1" />
             <BalLink
-              :href="explorer.addressLink(pool.address)"
+              :href="explorer.addressLink(pool?.address || '')"
               external
               noStyle
               class="flex items-center"
@@ -184,7 +184,7 @@ import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
-import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
@@ -196,7 +196,7 @@ import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
-import { getAddressFromPoolId } from '@/lib/utils';
+import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -208,7 +208,7 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityAPRTooltip,
+    APRTooltip,
     StakingIncentivesCard,
     StakingProvider,
     ApyVisionPoolLink
@@ -259,7 +259,7 @@ export default defineComponent({
       () =>
         !loadingPool.value &&
         pool.value &&
-        Number(pool.value.onchain.totalSupply) === 0
+        Number(pool.value?.onchain?.totalSupply || '0') === 0
     );
 
     const communityManagedFees = computed(
@@ -303,6 +303,7 @@ export default defineComponent({
 
     const titleTokens = computed(() => {
       if (!pool.value) return [];
+      if (!pool.value?.onchain?.tokens) return [];
 
       return Object.entries(pool.value.onchain.tokens).sort(
         ([, a]: any[], [, b]: any[]) => b.weight - a.weight
@@ -318,6 +319,8 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
+      if (!pool.value?.onchain?.swapFee) return '';
+
       const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
         style: 'percent',
         maximumFractionDigits: 4
@@ -342,9 +345,9 @@ export default defineComponent({
         const tokens =
           isStablePhantomPool.value && pool.value.mainTokens
             ? pool.value.mainTokens
-            : pool.value.tokenAddresses;
+            : pool.value.tokensList;
 
-        return !tokens.every(token => tokensWithPrice.includes(token));
+        return !tokens.every(token => includesAddress(tokensWithPrice, token));
       }
       return false;
     });
@@ -383,8 +386,8 @@ export default defineComponent({
         !!pool.value &&
         !isLiquidityBootstrappingPool.value &&
         !isStablePhantomPool.value &&
-        pool.value.tokenAddresses.some(
-          address => !knownTokens.includes(address)
+        pool.value.tokensList.some(
+          address => !includesAddress(knownTokens, address)
         )
       );
     });

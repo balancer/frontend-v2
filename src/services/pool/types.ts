@@ -1,36 +1,6 @@
 import { BigNumber } from 'ethers';
 
-export type Address = string;
-export type QueryArgs = Record<string, any>;
-export type QueryAttrs = Record<string, any>;
-export type QueryBuilder = (
-  args?: QueryArgs,
-  attrs?: QueryAttrs
-) => Record<string, any>;
-
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  LiquidityBootstrapping = 'LiquidityBootstrapping'
-}
-export type TimeTravelPeriod = '24h';
-
-export interface PoolToken {
-  address: string;
-  balance: string;
-  weight: string;
-  priceRate: string | null;
-  symbol?: string;
-}
-
-export interface RawPoolTokens {
-  balances: BigNumber[];
-  lastChangeBlock: BigNumber;
-  tokens: string[];
-}
+import { Address } from '@/types';
 
 export interface Pool {
   id: string;
@@ -41,18 +11,45 @@ export interface Pool {
   factory: string;
   tokens: PoolToken[];
   tokensList: string[];
-  tokenAddresses: string[];
   totalLiquidity: string;
-  miningTotalLiquidity: string;
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
-  onchain?: OnchainPoolData;
   createTime: number;
+  onchain?: OnchainPoolData;
   mainTokens?: string[];
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
   unwrappedTokens?: string[];
+  isNew?: boolean;
+  volumeSnapshot?: string;
+  feesSnapshot?: string;
+  apr?: PoolAPRs;
+  boost?: string;
+}
+
+export enum PoolType {
+  Weighted = 'Weighted',
+  Investment = 'Investment',
+  Stable = 'Stable',
+  MetaStable = 'MetaStable',
+  StablePhantom = 'StablePhantom',
+  LiquidityBootstrapping = 'LiquidityBootstrapping'
+}
+
+export interface PoolToken {
+  address: string;
+  balance: string;
+  weight: string;
+  priceRate: string | null;
+  symbol?: string;
+}
+
+// PoolToken data from onchain call
+export interface RawPoolTokens {
+  balances: BigNumber[];
+  lastChangeBlock: BigNumber;
+  tokens: string[];
 }
 
 export interface LinearPool extends Pool {
@@ -60,27 +57,29 @@ export interface LinearPool extends Pool {
   wrappedIndex: number;
 }
 
-export interface DecoratedPool extends Pool {
-  dynamic: {
-    period: TimeTravelPeriod;
-    volume: string;
-    apr: {
-      pool: string;
-      thirdParty: string;
-      thirdPartyBreakdown: { [address: string]: string };
-      total: string;
-      staking?: {
-        BAL: {
-          min: string;
-          max: string;
-        };
-        Rewards: string;
-      };
+export type AprRange = { min: string; max: string };
+export interface PoolAPRs {
+  total: {
+    unstaked: string;
+    staked: {
+      calc: (boost?: string) => string;
+      max: string;
+      min: string;
     };
-    fees: string;
-    isNewPool: boolean;
-    boost?: string;
   };
+  swap: string;
+  yield: {
+    total: string;
+    breakdown: { [address: string]: string };
+  };
+  staking?: {
+    bal: {
+      min: string;
+      max: string;
+    };
+    rewards: string;
+  };
+  veBal?: string;
 }
 
 export interface OnchainTokenData {
@@ -161,11 +160,7 @@ export interface LinearPoolData {
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
-export interface FullPool extends DecoratedPool {
-  onchain: OnchainPoolData;
-}
-
-export type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
+export type AnyPool = Pool | PoolWithShares;
 
 export interface PoolShare {
   poolId: {
@@ -174,7 +169,7 @@ export interface PoolShare {
   balance: string;
 }
 
-export interface DecoratedPoolWithShares extends DecoratedPool {
+export interface PoolWithShares extends Pool {
   shares: string;
   bpt: string;
 }
@@ -215,19 +210,3 @@ export interface PoolSnapshot {
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
-
-export type TradePairSnapshot = {
-  timestamp: number;
-  totalSwapFee: string;
-  totalSwapVolume: string;
-  pair: {
-    token0: {
-      symbol: string;
-      address: string;
-    };
-    token1: {
-      symbol: string;
-      address: string;
-    };
-  };
-};

@@ -14,7 +14,7 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -60,7 +60,7 @@ export type UserStakingDataResponse = {
   // is one. otherwise 0
   stakedSharesForProvidedPool: Ref<string>;
   // a list of pools the user has a stake in
-  stakedPools: Ref<DecoratedPoolWithShares[]>;
+  stakedPools: Ref<PoolWithShares[]>;
   // Total fiat value of all staked pools for user
   totalStakedFiatValue: Ref<string>;
   // loading flag for pulling actual pool data for the
@@ -239,7 +239,7 @@ export default function useUserStakingData(
     })
   );
 
-  const stakedPools = computed<DecoratedPoolWithShares[]>(() => {
+  const stakedPools = computed<PoolWithShares[]>(() => {
     return (stakedPoolsResponse.value?.pages[0].pools || []).map(pool => {
       const stakedBpt = stakedSharesMap.value[pool.id];
       return {
@@ -267,7 +267,7 @@ export default function useUserStakingData(
       getAddress(poolAddress.value),
       getProvider()
     );
-    const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+    const gauge = new LiquidityGauge(gaugeAddress);
     const balance = await gauge.balance(account.value);
     return formatUnits(balance.toString(), 18);
   }

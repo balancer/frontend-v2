@@ -14,7 +14,7 @@ import {
   ToolboxComponent,
   TooltipComponent
 } from 'echarts/components';
-import { use } from 'echarts/core';
+import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { createApp } from 'vue';
 import VueVirtualScroller from 'vue3-virtual-scroller';
@@ -32,7 +32,7 @@ import store from '@/store';
 
 import Root from './Root';
 
-use([
+echarts.use([
   TitleComponent,
   TooltipComponent,
   CanvasRenderer,

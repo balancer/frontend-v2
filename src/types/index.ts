@@ -3,7 +3,6 @@ import { BigNumberish } from '@ethersproject/bignumber';
 
 export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
-
 export interface FormRef {
   validate(): boolean;
 }
@@ -69,12 +68,6 @@ export type Step = {
 };
 
 export type Address = string;
-export type QueryArgs = Record<string, any>;
-export type QueryAttrs = Record<string, any>;
-export type QueryBuilder = (
-  args?: QueryArgs,
-  attrs?: QueryAttrs
-) => Record<string, any>;
 
 export type BaseContent = {
   title: string;

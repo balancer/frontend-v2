@@ -1,4 +1,4 @@
-import { differenceInSeconds } from 'date-fns';
+import { differenceInSeconds, sub } from 'date-fns';
 import { computed, ref } from 'vue';
 
 import { isKovan, isMainnet } from '@/composables/useNetwork';
@@ -43,6 +43,29 @@ export function expectedVeBal(bpt: string, lockDateStr: string): string {
     .times(lockTime)
     .div(oneYearInSecs)
     .toString();
+}
+
+/**
+ * @summary Get date object of previous epoch given number of weeks to go back.
+ * @param {number} weeksToGoBack - Number of weeks to go back for epoch, if 0
+ * gets the immediate epoch in the past. If 1, gets the week before that and so on.
+ */
+export function getPreviousEpoch(weeksToGoBack = 0): Date {
+  const now = new Date();
+  const todayAtMidnightUTC = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate()
+  );
+
+  let daysSinceThursday = now.getDay() - 4;
+  if (daysSinceThursday < 0) daysSinceThursday += 7;
+
+  daysSinceThursday = daysSinceThursday + weeksToGoBack * 7;
+
+  return sub(todayAtMidnightUTC, {
+    days: daysSinceThursday
+  });
 }
 
 export default function useVeBal() {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getAddress } from '@ethersproject/address';
 import { format, fromUnixTime } from 'date-fns';
 import {
   Dictionary,
@@ -48,19 +47,24 @@ async function getPairPriceData(
     [_inputAsset, _outputAsset] = [_outputAsset, _inputAsset];
   }
   const aggregateBy = days === 1 ? 'hour' : 'day';
-  const inputAssetData = await coingeckoService.prices.getTokensHistorical(
+  const getInputAssetData = coingeckoService.prices.getTokensHistorical(
     [_inputAsset],
     days,
     1,
     aggregateBy
   );
 
-  const outputAssetData = await coingeckoService.prices.getTokensHistorical(
+  const getOutputAssetData = coingeckoService.prices.getTokensHistorical(
     [_outputAsset],
     days,
     1,
     aggregateBy
   );
+
+  const [inputAssetData, outputAssetData] = await Promise.all([
+    getInputAssetData,
+    getOutputAssetData
+  ]);
 
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
     if (!outputAssetData[timestamp]) return null;
@@ -112,7 +116,7 @@ type Props = {
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
-const { tokens, wrappedNativeAsset, nativeAsset } = useTokens();
+const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId } = useWeb3();
@@ -125,11 +129,11 @@ const appLoading = computed(() => store.state.app.loading);
 
 const inputSym = computed(() => {
   if (tokenInAddress.value === '') return 'Unknown';
-  return tokens.value[getAddress(tokenInAddress.value)]?.symbol;
+  return getToken(tokenInAddress.value)?.symbol;
 });
 const outputSym = computed(() => {
   if (tokenOutAddress.value === '') return 'Unknown';
-  return tokens.value[getAddress(tokenOutAddress.value)]?.symbol;
+  return getToken(tokenOutAddress.value)?.symbol;
 });
 
 const dataMin = computed(() => {

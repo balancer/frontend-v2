@@ -1,12 +1,11 @@
-import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
-import { Pool } from '../balancer/subgraph/types';
 import { ERC20Multicaller } from '../multicalls/erc20.multicaller';
+import { Pool } from '../pool/types';
 import AaveSubgraphService, {
   aaveSubgraphService
 } from './subgraph/aave-subgraph.service';
@@ -76,15 +75,15 @@ export default class AaveService {
       const supplyAPR = bnum(reserve.supplyAPR);
 
       if (supplyAPR.gt(0)) {
-        const tokenIndex = mainTokens.findIndex(
-          token => token === getAddress(reserve.underlyingAsset)
+        const tokenIndex = mainTokens.findIndex(token =>
+          isSameAddress(token, reserve.underlyingAsset)
         );
         // Grabs the matching wrapped which generates the yield
         const wrappedToken = wrappedTokens[tokenIndex];
         const mainToken = mainTokens[tokenIndex];
-        const linearPoolAddress = pool.tokenAddresses[tokenIndex];
-        const linearPoolToken = pool.tokens.find(
-          token => token.address === linearPoolAddress
+        const linearPoolAddress = pool.tokensList[tokenIndex];
+        const linearPoolToken = pool.tokens.find(token =>
+          isSameAddress(token.address, linearPoolAddress)
         );
         const linearPoolTotalSupply = formatUnits(
           linearPoolTotalSupplies[tokenIndex],

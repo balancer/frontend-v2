@@ -6,8 +6,8 @@ import { usePool } from '@/composables/usePool';
 // Composables
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { Pool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
@@ -16,7 +16,7 @@ import AssetRow from './components/AssetRow.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   hideHeader?: boolean;
 };
 /**
@@ -59,8 +59,8 @@ const propTokenAmounts = computed((): string[] => {
   if (isStablePhantomPool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokenAddresses.map((address, i) => {
-      if (!props.pool.onchain.linearPools) return '0';
+    return props.pool.tokensList.map((address, i) => {
+      if (!props.pool?.onchain?.linearPools) return '0';
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
@@ -79,7 +79,7 @@ const tokenAddresses = computed((): string[] => {
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];
   }
-  return props.pool.tokenAddresses;
+  return props.pool.tokensList;
 });
 
 const fiatTotal = computed(() => {
