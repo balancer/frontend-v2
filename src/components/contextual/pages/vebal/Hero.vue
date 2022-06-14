@@ -37,24 +37,18 @@ function navigateToGetVeBAL() {
       <div
         class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
       >
-        <p class="text-white font-medium mb-3">
-          {{ $t('veBAL.hero.eyebrow') }}
-        </p>
         <h1 class="title mb-6 text-white">{{ $t('veBAL.hero.title') }}</h1>
-        <div
-          v-for="(benefit, i) in benefits"
-          :key="i"
-          class="flex items-center mb-2 text-white"
-        >
-          <BalIcon name="check" class="text-green-500 mr-2" />
-          {{ benefit }}
-        </div>
-        <div class="flex mt-6">
-          <BalBtn
-            color="gradient"
-            @click="navigateToGetVeBAL"
-            class="mr-3 hero-btn"
+        <ul>
+          <li
+            v-for="(benefit, i) in benefits"
+            :key="i"
+            class="flex items-center mb-2 text-white"
           >
+            – {{ benefit }}
+          </li>
+        </ul>
+        <div class="flex mt-6">
+          <BalBtn @click="navigateToGetVeBAL" class="mr-3 hero-btn btn-gold">
             {{ $t('veBAL.hero.buttons.getVeBAL') }}
           </BalBtn>
           <BalBtn
@@ -86,9 +80,9 @@ function navigateToGetVeBAL() {
               alt="BAL and WETH tokens"
             />
           </div>
-          <div class="caption">
+          <div class="caption font-semibold">
             <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1 font-medium">
               {{ $t('veBAL.hero.tokenInfo.balWETH') }}
             </BalTooltip>
           </div>
@@ -103,7 +97,7 @@ function navigateToGetVeBAL() {
               alt="B-80BAL-20WETH LP token"
             />
           </div>
-          <div class="caption">
+          <div class="caption font-semibold">
             <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.lpToken') }}
@@ -120,7 +114,7 @@ function navigateToGetVeBAL() {
               alt="veBAL token"
             />
           </div>
-          <div class="caption">
+          <div class="caption font-semibold">
             <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.veBAL') }}
@@ -133,13 +127,27 @@ function navigateToGetVeBAL() {
 </template>
 <style scoped>
 .hero-container {
-  background-image: url('/images/backgrounds/spirograph.svg');
-  background-repeat: no-repeat;
-  background-position-x: right;
-  background-size: cover;
+  @apply flex content-center relative;
   min-height: 440px;
-  @apply flex content-center;
 }
+
+.hero-container:before {
+  content: ' ';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  /* background-image: url('/images/backgrounds/spirograph3.svg'); */
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
+    url('/images/backgrounds/vebal-hero-noise.svg');
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  background-size: cover;
+}
+
 .hero-content {
   @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full;
 }
@@ -148,10 +156,18 @@ function navigateToGetVeBAL() {
   animation: fadeIn 1s ease-out 0.1s both;
 }
 .title {
-  max-width: 820px;
+  @apply max-w-sm;
 }
 .hero-btn {
   min-width: 140px;
+}
+
+.btn-gold {
+  background: linear-gradient(45deg, #977622, #ccb373);
+  transition: 0.5s all ease-in-out;
+}
+.btn-gold:hover {
+  background: linear-gradient(-45deg, #ae8d39, #684e09);
 }
 .coins {
   @apply flex lg:gap-8;
@@ -171,7 +187,7 @@ function navigateToGetVeBAL() {
   @apply transition-transform duration-300;
 }
 .caption {
-  @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
+  @apply text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
   animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
 
@@ -180,9 +196,6 @@ function navigateToGetVeBAL() {
     min-width: 400px;
   }
 }
-</style>
-
-<style>
 .caption .bal-icon {
   animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
