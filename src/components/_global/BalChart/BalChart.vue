@@ -414,6 +414,8 @@ export default defineComponent({
             fixedFormat: true
           }
         );
+
+        emit('setCurrentChartValue', props.data[0].values[0]);
       }
 
       const startValue = numeral((props.data[0].values[0] || [])[1]);
@@ -459,7 +461,6 @@ export default defineComponent({
             fixedFormat: true
           }
         );
-        console.log('currentValue', currentValue.value);
 
         // if first point in chart, show overall change
         if (dataIndex === 0) {

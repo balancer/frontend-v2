@@ -245,10 +245,12 @@ const chartData = computed(() => {
   };
 });
 
-const currentChartValue = ref();
-const currentChartDate = ref();
-function setCurrentChartValue(value) {
-  console.log('value :>> ', value);
+const currentChartValue = ref('');
+const currentChartDate = ref('');
+function setCurrentChartValue(value: {
+  value: [string, number];
+  name: string;
+}) {
   currentChartValue.value = fNum2(value.value[1], {
     style: 'currency'
   });
@@ -259,9 +261,11 @@ function setCurrentChartValue(value) {
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
   <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
-    <div class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6">
-      <div class="flex">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+    <div
+      class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6 flex-wrap	"
+    >
+      <div class="flex mb-4">
+        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-5" />
         <div class="w-24 flex items-center">
           <BalSelectInput
             :options="periodOptions"
