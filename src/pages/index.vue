@@ -58,7 +58,6 @@ const isInvestmentPoolsTableLoading = computed(
   () => dataStates['basic'] === 'loading' || priceQueryLoading.value
 );
 
-watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 /**
  * METHODS
  */
