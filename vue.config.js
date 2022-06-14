@@ -1,18 +1,18 @@
 const path = require('path');
 const plugins = require('./src/plugins/webpack');
+const { defineConfig } = require('@vue/cli-service');
 
-module.exports = {
-  parallel: false, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
+module.exports = defineConfig({
   publicPath: './',
   pluginOptions: {
     webpackBundleAnalyzer: {
-      openAnalyzer: false
-    }
+      openAnalyzer: false,
+    },
   },
   configureWebpack: {
-    plugins
+    plugins,
   },
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.resolve.alias.set(
       'bn.js',
       path.resolve(path.join(__dirname, 'node_modules', 'bn.js'))
@@ -23,7 +23,7 @@ module.exports = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',
       'Access-Control-Allow-Headers':
-        'X-Requested-With, content-type, Authorization'
-    }
-  }
-};
+        'X-Requested-With, content-type, Authorization',
+    },
+  },
+});
