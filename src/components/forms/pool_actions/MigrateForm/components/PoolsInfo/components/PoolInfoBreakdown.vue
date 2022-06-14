@@ -23,7 +23,7 @@ const isExpanded = ref(false);
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 </script>
 
 <template>
@@ -51,7 +51,7 @@ const { tokens } = useTokens();
           class="ml-2 rounded-lg border dark:border-gray-800 bg-gray-50 dark:bg-gray-700 px-2 py-1 inline-flex items-center"
         >
           <BalAsset :address="address" class="mr-2" />
-          {{ tokens[address].symbol }}
+          {{ getToken(address).symbol }}
         </div>
       </template>
     </BalBreakdown>
