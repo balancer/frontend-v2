@@ -48,6 +48,13 @@
             "token": "0x43D4A3cd90ddD2F8f4f693170C9c8098163502ad",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-d2d.json",
             "weekStart": 1
+        },
+        {
+            "label": "BANK",
+            "distributor": "0xc38c5f97B34E175FFd35407fc91a937300E33860",
+            "token": "0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-bankless.json",
+            "weekStart": 12
         }
     ],
     "42": [

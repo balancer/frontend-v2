@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 
 import Table from './Table.vue';
 
@@ -12,7 +12,7 @@ import Table from './Table.vue';
  * TYPES
  */
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   loading: boolean;
 };
 

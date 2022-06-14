@@ -2,6 +2,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { isSameAddress } from '@/lib/utils';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -37,7 +38,9 @@ export default function useTokenApproval(
    * COMPUTED
    */
   const allowanceState = computed(() => {
-    if (tokenInAddress.value === networkConfig.nativeAsset.address) {
+    if (
+      isSameAddress(tokenInAddress.value, networkConfig.nativeAsset.address)
+    ) {
       return {
         isUnlockedV2: true,
         approvedSpenders: {}
@@ -89,7 +92,7 @@ export default function useTokenApproval(
       type: 'tx',
       action: 'approve',
       summary: t('transactionSummary.approveForTrading', [
-        tokens.value[tokenInAddress.value].symbol
+        tokens.value[tokenInAddress.value]?.symbol
       ]),
       details: {
         contractAddress: tokenInAddress.value,
@@ -112,7 +115,9 @@ export default function useTokenApproval(
    * WATCHERS
    */
   watch(tokenInAddress, async () => {
-    if (tokenInAddress.value === networkConfig.nativeAsset.address) {
+    if (
+      isSameAddress(tokenInAddress.value, networkConfig.nativeAsset.address)
+    ) {
       approved.value = true;
     } else {
       approved.value = false;

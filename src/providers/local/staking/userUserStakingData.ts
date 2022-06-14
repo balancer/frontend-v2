@@ -14,7 +14,7 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
-import { PoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -267,7 +267,7 @@ export default function useUserStakingData(
       getAddress(poolAddress.value),
       getProvider()
     );
-    const gauge = new LiquidityGauge(gaugeAddress, getProvider());
+    const gauge = new LiquidityGauge(gaugeAddress);
     const balance = await gauge.balance(account.value);
     return formatUnits(balance.toString(), 18);
   }

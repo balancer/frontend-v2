@@ -2,8 +2,8 @@ import axios from 'axios';
 import { formatUnits } from 'ethers/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
-import { LinearPoolData, Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { LinearPoolData, Pool } from '@/services/pool/types';
 
 import { bnum } from '.';
 

@@ -8,8 +8,8 @@ import { useStore } from 'vuex';
 import useDarkMode from '@/composables/useDarkMode';
 import { isStablePhantom } from '@/composables/usePool';
 import useTailwind from '@/composables/useTailwind';
-import { FullPool, PoolSnapshots } from '@/services/balancer/subgraph/types';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
+import { Pool, PoolSnapshots } from '@/services/pool/types';
 
 /**
  * TYPES
@@ -18,7 +18,7 @@ type Props = {
   historicalPrices: HistoricalPrices;
   snapshots: PoolSnapshots;
   loading: boolean;
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**

@@ -3,16 +3,12 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { bnum } from '@/lib/utils';
+import { POOLS } from '@/constants/pools';
+import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
-import {
-  AnyPool,
-  FullPool,
-  PoolAPRs,
-  PoolToken,
-  PoolType
-} from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
+import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
 import { urlFor } from './useNetwork';
@@ -73,7 +69,8 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 }
 
 export function isWeth(pool: AnyPool): boolean {
-  return (pool.tokenAddresses || []).includes(
+  return includesAddress(
+    pool.tokensList || [],
     configService.network.addresses.weth
   );
 }
@@ -97,7 +94,7 @@ export function lpTokensFor(pool: AnyPool): string[] {
     const wrappedTokens = pool.wrappedTokens || [];
     return [...mainTokens, ...wrappedTokens];
   } else {
-    return pool.tokenAddresses || [];
+    return pool.tokensList || [];
   }
 }
 
@@ -168,9 +165,33 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
     const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
     const maxAPR = numF(aprs.total.staked.max, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
+  } else if (aprs.veBal) {
+    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
+    const maxValue = bnum(aprs.total.staked.min)
+      .plus(aprs.veBal)
+      .toString();
+    const maxAPR = numF(maxValue, FNumFormats.percent);
+    return `${minAPR} - ${maxAPR}`;
   }
 
   return numF(aprs.total.staked.min, FNumFormats.percent);
+}
+
+/**
+ * @summary Checks if given pool is BAL 80/20 pool (veBAL)
+ */
+export function isVeBalPool(poolId: string): boolean {
+  return POOLS.IdsMap['B-80BAL-20WETH'] === poolId;
+}
+
+/**
+ * @summary Remove pre-minted pool token address from tokensList
+ */
+export function removePreMintedBPT(pool: Pool): Pool {
+  pool.tokensList = pool.tokensList.filter(
+    address => !isSameAddress(address, pool.address)
+  );
+  return pool;
 }
 
 /**
@@ -182,7 +203,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   /**
    * Returns pool weights label
    */
-  function poolWeightsLabel(pool: FullPool): string {
+  function poolWeightsLabel(pool: Pool): string {
+    if (!pool?.onchain?.tokens) return '';
+
     if (isStableLike(pool.poolType)) {
       return Object.values(pool.onchain.tokens)
         .map(token => token.symbol)

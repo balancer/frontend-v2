@@ -4,6 +4,7 @@ import { groupBy, invert, last } from 'lodash';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { TOKENS } from '@/constants/tokens';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
+import { includesAddress } from '@/lib/utils';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
 import { configService as _configService } from '@/services/config/config.service';
 
@@ -72,11 +73,6 @@ export class PriceService {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
 
-      // TODO - remove once wsteth is supported
-      addresses = addresses.filter(
-        address => address !== this.appAddresses.wstETH
-      );
-
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
@@ -100,7 +96,7 @@ export class PriceService {
       const results = this.parsePaginatedTokens(paginatedResults);
 
       // Inject native asset price if included in requested addresses
-      if (addresses.includes(this.nativeAssetAddress)) {
+      if (includesAddress(addresses, this.nativeAssetAddress)) {
         results[this.nativeAssetAddress] = await this.getNativeAssetPrice();
       }
 
@@ -125,11 +121,6 @@ export class PriceService {
       const end =
         aggregateBy === 'hour' ? now : now - (now % twentyFourHoursInSecs);
       const start = end - days * twentyFourHoursInSecs;
-
-      // TODO - remove once wsteth is supported
-      addresses = addresses.filter(
-        address => address !== this.appAddresses.wstETH
-      );
 
       addresses = addresses.map(address => this.addressMapIn(address));
       const requests: Promise<HistoricalPriceResponse>[] = [];
@@ -192,22 +183,14 @@ export class PriceService {
           );
           for (const key of Object.keys(pricesByHour)) {
             const price = (last(pricesByHour[key]) || [])[1] || 0;
-            // TODO - remove this conditional once coingecko supports wstETH
-            prices[Number(key) * 1000] =
-              address === this.appAddresses.stETH
-                ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
-                : price;
+            prices[Number(key) * 1000] = price;
           }
         } else if (aggregateBy === 'day') {
           for (const key in result) {
             const value = result[key];
             const [timestamp, price] = value;
             if (timestamp > dayTimestamp * 1000) {
-              // TODO - remove this conditional once coingecko supports wstETH
-              prices[dayTimestamp * 1000] =
-                address === this.appAddresses.stETH
-                  ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
-                  : price;
+              prices[dayTimestamp * 1000] = price;
               dayTimestamp += twentyFourHoursInSecs;
             }
           }
@@ -235,7 +218,7 @@ export class PriceService {
    */
   @returnChecksum()
   public addressMapIn(address: string): string {
-    const addressMap = TOKENS.Prices.ChainMap[this.appNetwork];
+    const addressMap = TOKENS?.PriceChainMap;
     if (!addressMap) return address;
     return addressMap[address.toLowerCase()] || address;
   }
@@ -245,7 +228,7 @@ export class PriceService {
    */
   @returnChecksum()
   public addressMapOut(address: string): string {
-    const addressMap = TOKENS.Prices.ChainMap[this.appNetwork];
+    const addressMap = TOKENS?.PriceChainMap;
     if (!addressMap) return address;
     return invert(addressMap)[address.toLowerCase()] || address;
   }

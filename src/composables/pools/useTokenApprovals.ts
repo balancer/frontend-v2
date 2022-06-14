@@ -39,7 +39,7 @@ export default function useTokenApprovals(
    */
   const { getProvider, appNetworkConfig, account } = useWeb3();
   const {
-    tokens,
+    getToken,
     refetchAllowances,
     approvalsRequired,
     getTokens
@@ -113,7 +113,7 @@ export default function useTokenApprovals(
           spender === appNetworkConfig.addresses.veBAL
             ? 'transactionSummary.approveForLocking'
             : 'transactionSummary.approveForInvesting',
-          [tokens.value[address]?.symbol]
+          [getToken(address)?.symbol]
         ),
         details: {
           contractAddress: address,

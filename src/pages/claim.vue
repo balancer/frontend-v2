@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { getAddress } from '@ethersproject/address';
-import { Contract } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { computed, onBeforeMount, watch } from 'vue';
 
@@ -15,17 +14,16 @@ import ProtocolRewardsTable, {
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
-import { isL2 } from '@/composables/useNetwork';
+import { isL2, isMainnet } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
-import { addressFor, isStableLike } from '@/composables/usePool';
+import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import useTokens from '@/composables/useTokens';
-import { POOLS } from '@/constants/pools';
-import StablePhantomPoolABI from '@/lib/abi/StablePhantomPool.json';
+import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
+import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -181,17 +179,13 @@ function gaugeTitle(pool: GaugePool): string {
  * @summary Fetches bb-a-USD rate as an appoximation of USD price.
  */
 async function getBBaUSDPrice() {
-  const bbaUSDAddress = addressFor(POOLS.IdsMap?.bbAaveUSD || '');
-
-  if (bbaUSDAddress) {
-    const bbaUSDContract = new Contract(
-      bbaUSDAddress,
-      StablePhantomPoolABI,
-      rpcProviderService.jsonProvider
-    );
-    const price = await bbaUSDContract.getRate();
-    const normalizedPrice = bnum(formatUnits(price, 18)).toNumber();
-    injectPrices({ [bbaUSDAddress]: normalizedPrice });
+  if (isMainnet.value) {
+    const appoxPrice = await bbAUSDToken.getRate();
+    injectPrices({
+      [FiatCurrency.usd]: {
+        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber()
+      }
+    });
   }
 }
 

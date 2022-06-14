@@ -2,9 +2,9 @@ import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 
 import { TOKENS } from '@/constants/tokens';
+import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
 
-import { networkId } from './useNetwork';
 import useTokens from './useTokens';
 
 export function useTokenHelpers() {
@@ -16,9 +16,7 @@ export function useTokenHelpers() {
   /**
    * COMPUTED
    */
-  const balAddress = computed((): string =>
-    getAddress(TOKENS.AddressMap[networkId.value]?.BAL)
-  );
+  const balAddress = computed((): string => getAddress(TOKENS.Addresses.BAL));
 
   const balToken = computed((): TokenInfo => getToken(balAddress.value));
 
@@ -26,7 +24,7 @@ export function useTokenHelpers() {
    * METHODS
    */
   function isBalAddress(address: string): boolean {
-    return address === balAddress.value;
+    return isSameAddress(address, balAddress.value);
   }
 
   return {

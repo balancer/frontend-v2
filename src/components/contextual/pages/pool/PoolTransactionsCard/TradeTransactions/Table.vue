@@ -9,7 +9,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { shortenLabel } from '@/lib/utils';
 import { bnum } from '@/lib/utils';
-import { PoolSwap } from '@/services/balancer/subgraph/types';
+import { PoolSwap } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -167,7 +167,8 @@ const swapRows = computed<SwapRow[]>(() =>
           <div class="flex items-center">
             <BalAsset
               class="mr-2 flex-shrink-0"
-              :address="action.ensAvatar || action.userAddress"
+              :address="action.userAddress"
+              :iconURI="action.ensAvatar"
               :size="30"
             />
             <span :class="[action.ensName && 'truncate']">

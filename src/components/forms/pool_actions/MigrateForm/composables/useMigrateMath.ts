@@ -10,16 +10,13 @@ import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnSum, bnum } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { Pool } from '@/services/pool/types';
 import { BatchSwap } from '@/types';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 
-export default function useMigrateMath(
-  fromPool: Ref<FullPool>,
-  toPool: Ref<FullPool>
-) {
+export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   /**
    * COMPOSABLES
    */
@@ -59,9 +56,9 @@ export default function useMigrateMath(
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
-  const tokenCount = computed(() => fromPool.value.tokenAddresses.length);
+  const tokenCount = computed(() => fromPool.value.tokensList.length);
 
-  const poolDecimals = computed(() => fromPool.value.onchain.decimals);
+  const poolDecimals = computed(() => fromPool.value?.onchain?.decimals || 18);
 
   const batchSwapLoaded = computed(() => batchSwap.value != null);
 
@@ -74,7 +71,7 @@ export default function useMigrateMath(
   );
 
   const poolTokens = computed(() =>
-    fromPool.value.tokenAddresses.map(address => getToken(address))
+    fromPool.value.tokensList.map(address => getToken(address))
   );
 
   const fullAmounts = computed(() => {
@@ -138,7 +135,7 @@ export default function useMigrateMath(
   const batchSwapAmountMap = computed(
     (): Record<string, BigNumber> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        fromPool.value.tokenAddresses[i].toLowerCase(),
+        fromPool.value.tokensList[i].toLowerCase(),
         amount
       ]);
       const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
@@ -149,7 +146,7 @@ export default function useMigrateMath(
   );
 
   const fiatAmounts = computed((): string[] =>
-    fromPool.value.tokenAddresses.map((address, i) =>
+    fromPool.value.tokensList.map((address, i) =>
       toFiat(fullAmounts.value[i], address)
     )
   );

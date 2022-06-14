@@ -4,15 +4,16 @@ import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
 import { isManaged, isStableLike } from '@/composables/usePool';
+import { isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import ConfigService from '@/services/config/config.service';
+import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
 
 export default class JoinParams {
-  private pool: Ref<FullPool>;
+  private pool: Ref<Pool>;
   private config: ConfigService;
   private isStableLikePool: boolean;
   private isManagedPool: boolean;
@@ -26,7 +27,7 @@ export default class JoinParams {
     this.isStableLikePool = isStableLike(this.pool.value.poolType);
     this.isManagedPool = isManaged(this.pool.value.poolType);
     this.isSwapEnabled =
-      this.isManagedPool && this.pool.value.onchain.swapEnabled;
+      this.isManagedPool && !!this.pool.value?.onchain?.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;
@@ -39,7 +40,10 @@ export default class JoinParams {
     bptOut: string
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn, tokensIn);
-    const parsedBptOut = parseUnits(bptOut, this.pool.value.onchain.decimals);
+    const parsedBptOut = parseUnits(
+      bptOut,
+      this.pool.value?.onchain?.decimals || 18
+    );
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
 
@@ -76,10 +80,9 @@ export default class JoinParams {
       const token = tokensIn[i];
       // In WETH pools, tokenIn can include ETH so we need to check for this
       // and return the correct decimals.
-      const decimals =
-        nativeAsset.address === token
-          ? nativeAsset.decimals
-          : this.pool.value.onchain.tokens[token].decimals;
+      const decimals = isSameAddress(nativeAsset.address, token)
+        ? nativeAsset.decimals
+        : this.pool.value?.onchain?.tokens?.[token]?.decimals || 18;
 
       return parseUnits(amount, decimals);
     });
@@ -89,12 +92,12 @@ export default class JoinParams {
     const nativeAsset = this.config.network.nativeAsset;
 
     return tokensIn.map(address =>
-      address === nativeAsset.address ? AddressZero : address
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
-    if (this.pool.value.onchain.totalSupply === '0') {
+    if ((this.pool.value?.onchain?.totalSupply || '0') === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
       // Managed Pools can only be joined proportionally if trading is halted

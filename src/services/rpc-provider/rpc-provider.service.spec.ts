@@ -15,7 +15,9 @@ jest.mock('@ethersproject/providers', () => {
       return {};
     }),
     WebSocketProvider: jest.fn().mockImplementation(() => {
-      return {};
+      return {
+        on: jest.fn().mockImplementation()
+      };
     })
   };
 });
@@ -42,8 +44,8 @@ describe('RPC provider service', () => {
     expect(JsonRpcBatchProvider).toHaveBeenCalledTimes(2);
   });
 
-  it('Calls the WebSocketProvider constructor', () => {
-    new RpcProviderService();
+  it('Calls the WebSocketProvider', () => {
+    new RpcProviderService().initBlockListener(() => ({}));
     expect(WebSocketProvider).toHaveBeenCalledTimes(1);
   });
 });

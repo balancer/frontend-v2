@@ -4,10 +4,9 @@ import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
-import { configService } from '@/services/config/config.service';
+import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
 import { isStablePhantom } from '../usePool';
@@ -24,8 +23,6 @@ interface QueryResponse {
 /**
  * HELPERS
  */
-const { addresses } = configService.network;
-
 export default function usePoolSnapshotsQuery(
   id: string,
   days: number,
@@ -64,12 +61,7 @@ export default function usePoolSnapshotsQuery(
         snapshots
       };
     } else {
-      let tokens = pool.value.tokenAddresses;
-      if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
-        // TODO - remove this once coingecko supports wstEth
-        tokens = [...pool.value.tokenAddresses, addresses.stETH];
-      }
-
+      const tokens = pool.value.tokensList;
       [prices, snapshots] = await Promise.all([
         coingeckoService.prices.getTokensHistorical(tokens, days),
         balancerSubgraphService.poolSnapshots.get(id, days)

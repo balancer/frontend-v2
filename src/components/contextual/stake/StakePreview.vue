@@ -13,7 +13,7 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
-import { PoolWithShares } from '@/services/balancer/subgraph/types';
+import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
@@ -91,9 +91,7 @@ watch(
 );
 
 /* COMPUTED */
-const assetRowWidth = computed(
-  () => (props.pool.tokenAddresses.length * 32) / 1.5
-);
+const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 
 const numSharesToModify = ref(
   props.action === 'stake'

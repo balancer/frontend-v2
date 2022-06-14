@@ -8,8 +8,8 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useMigrateMath from '../../composables/useMigrateMath';
@@ -19,8 +19,8 @@ import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
-  fromPool: FullPool;
-  toPool: FullPool;
+  fromPool: Pool;
+  toPool: Pool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
 };

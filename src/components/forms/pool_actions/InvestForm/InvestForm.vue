@@ -11,11 +11,11 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import InvestFormTotals from './components/InvestFormTotals.vue';
@@ -32,7 +32,7 @@ enum NativeAsset {
 }
 
 type Props = {
-  pool: FullPool;
+  pool: Pool;
 };
 
 /**
@@ -113,7 +113,7 @@ const investmentTokens = computed((): string[] => {
   if (isStablePhantom(props.pool.poolType)) {
     return props.pool.mainTokens || [];
   }
-  return props.pool.tokenAddresses;
+  return props.pool.tokensList;
 });
 
 /**
@@ -130,12 +130,14 @@ function handleAmountChange(value: string, index: number): void {
 }
 
 function handleAddressChange(newAddress: string): void {
-  useNativeAsset.value = newAddress === nativeAsset.address;
+  useNativeAsset.value = isSameAddress(newAddress, nativeAsset.address);
 }
 
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
-  if (address === nativeAsset.address) {
+  if (!props.pool?.onchain?.tokens) return 0;
+
+  if (isSameAddress(address, nativeAsset.address)) {
     return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
   }
 
@@ -155,7 +157,10 @@ function hint(index: number): string {
 }
 
 function tokenOptions(index: number): string[] {
-  return props.pool.tokenAddresses[index] === wrappedNativeAsset.value.address
+  return isSameAddress(
+    props.pool.tokensList[index],
+    wrappedNativeAsset.value.address
+  )
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
 }

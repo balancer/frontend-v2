@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 
 import useTokens from '@/composables/useTokens';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 type Props = {
-  pool: FullPool;
+  pool: Pool;
   poolTokenInfo: TokenInfo;
 };
 
@@ -23,13 +23,13 @@ const isExpanded = ref(false);
 /**
  * COMPOSABLES
  */
-const { tokens } = useTokens();
+const { getToken } = useTokens();
 </script>
 
 <template>
   <div class="rounded-lg border dark:border-gray-800 dark:bg-gray-800 p-3">
     <BalBreakdown
-      :items="pool.tokenAddresses"
+      :items="pool.tokensList"
       class="w-full cursor-pointer select-none"
       offsetClassOverrides="mt-4 ml-3"
       initVertBarClassOverrides="h-6 -mt-6"
@@ -51,7 +51,7 @@ const { tokens } = useTokens();
           class="ml-2 rounded-lg border dark:border-gray-800 bg-gray-50 dark:bg-gray-700 px-2 py-1 inline-flex items-center"
         >
           <BalAsset :address="address" class="mr-2" />
-          {{ tokens[address].symbol }}
+          {{ getToken(address).symbol }}
         </div>
       </template>
     </BalBreakdown>

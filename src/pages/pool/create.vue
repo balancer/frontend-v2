@@ -62,7 +62,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const {
   dynamicDataLoading,
   priceFor,
-  tokens,
+  getToken,
   injectTokens,
   injectedPrices,
   loading: isLoadingTokens
@@ -118,7 +118,7 @@ const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
 const unknownTokens = computed(() => {
   return validTokens.value.filter(token => {
-    return priceFor(token) === 0 || injectedPrices.value[token];
+    return priceFor(token) === 0 || injectedPrices.value[token]?.usd;
   });
 });
 
@@ -244,7 +244,7 @@ function showUnknownTokenModal() {
 function injectUnknownPoolTokens() {
   if (!isLoadingTokens.value) {
     const uninjectedTokens = seedTokens.value
-      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
+      .filter(seedToken => getToken(seedToken.tokenAddress) === undefined)
       .map(seedToken => seedToken.tokenAddress)
       .filter(token => token !== '');
     injectTokens(uninjectedTokens);

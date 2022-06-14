@@ -62,20 +62,6 @@
         </div>
       </div>
     </div>
-    <div class="hidden px-4">
-      <span v-text="$t('language')" class="font-medium mb-2" />
-      <div class="flex mt-1">
-        <div
-          v-for="(locale, localeKey) in locales"
-          :key="localeKey"
-          class="option w-16 mr-2 py-1 text-center border rounded-xl cursor-pointer"
-          :class="{ active: appLocale === localeKey }"
-          @click="setLocale(localeKey)"
-        >
-          {{ locale }}
-        </div>
-      </div>
-    </div>
     <div class="hidden px-4 mt-4">
       <span v-text="$t('theme')" class="font-medium mb-2" />
       <div class="flex mt-1">
@@ -176,21 +162,6 @@ import {
 } from '@/services/web3/web3.plugin';
 import { TradeInterface } from '@/store/modules/app';
 
-const locales = {
-  'en-US': 'English',
-  'zh-CN': '中文',
-  'es-ES': 'Español',
-  'it-IT': 'Italiano',
-  'fr-FR': 'Français',
-  'pt-PT': 'Português',
-  'ru-RU': 'Россия',
-  'ko-KO': '한국어',
-  'ja-JP': '日本語',
-  'tr-TR': 'Türk',
-  'hi-IN': 'हिंदी',
-  'ar-AE': 'عربى'
-};
-
 export default defineComponent({
   components: {
     AppSlippageForm,
@@ -215,7 +186,6 @@ export default defineComponent({
 
     // DATA
     const data = reactive({
-      locales,
       tradeInterfaceOptions,
       copiedAddress: false
     });
