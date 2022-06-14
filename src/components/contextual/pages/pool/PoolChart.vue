@@ -277,7 +277,9 @@ function setCurrentChartValue(value: {
           />
         </div>
       </div>
-      <div class="flex flex-col items-start xs:items-end text-2xl font-bold tabular-nums">
+      <div
+        class="flex flex-col items-start xs:items-end text-2xl font-bold tabular-nums"
+      >
         <p class="tracking-tighter">
           {{ currentChartValue }}
         </p>
