@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
-import useGaugesDecorationQuery from '@/composables/queries/useGaugesDecorationQuery';
-import useGaugesQuery from '@/composables/queries/useGaugesQuery';
+import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
@@ -17,7 +16,8 @@ import {
   orderedPoolTokens,
   poolURLFor
 } from '@/composables/usePool';
-import { isSameAddress, scale } from '@/lib/utils';
+import { isSameAddress } from '@/lib/utils';
+import { scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -36,7 +36,7 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false
@@ -53,12 +53,10 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
-const { data: subgraphGauges } = useGaugesQuery();
-const { data: gaugesDecorationData } = useGaugesDecorationQuery(subgraphGauges);
+const { data: expiredGauges } = useExpiredGaugesQuery(
+  props.data?.map(gauge => gauge.address)
+);
 
-const expiredGauges = computed(() => {
-  return gaugesDecorationData.value?.filter(gauge => gauge.isKilled) || [];
-});
 /**
  * DATA
  */
@@ -154,7 +152,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
 }
 
 function isGaugeExpired(gaugeAddress: string): boolean {
-  return expiredGauges.value.some(item => isSameAddress(gaugeAddress, item.id));
+  return !!expiredGauges.value?.some(item => isSameAddress(gaugeAddress, item));
 }
 </script>
 

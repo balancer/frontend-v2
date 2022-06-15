@@ -20,7 +20,6 @@ export interface OnchainGaugeData {
   rewardTokens: string[];
   claimableTokens: string;
   claimableRewards: Record<string, string>;
-  isKilled: boolean;
 }
 
 export type OnchainGaugeDataMap = Record<string, OnchainGaugeData>;

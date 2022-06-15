@@ -36,7 +36,6 @@ export class GaugesDecorator {
     this.multicaller = this.resetMulticaller();
     this.callRewardTokens(subgraphGauges);
     this.callClaimableTokens(subgraphGauges, userAddress);
-    this.callIsKilledStatus(subgraphGauges);
 
     let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
 
@@ -90,16 +89,6 @@ export class GaugesDecorator {
    */
   private formatRewardTokens(rewardTokens: string[]): string[] {
     return rewardTokens.filter(token => token !== AddressZero);
-  }
-
-  /**
-   * @summary Add multicaller calls that fetch the is_killed status
-   * for each gauge in given array of gauges.
-   */
-  private callIsKilledStatus(subgraphGauges: SubgraphGauge[]) {
-    for (const gauge of subgraphGauges) {
-      this.multicaller.call(`${gauge.id}.isKilled`, gauge.id, 'is_killed');
-    }
   }
 
   /**
