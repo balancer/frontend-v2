@@ -1,31 +1,3 @@
-<template>
-  <component
-    class="bal-asset rounded-full inline-block leading-none shadow-sm"
-    :style="{
-      width: `${size}px`,
-      height: `${size}px`
-    }"
-    :is="rootElement"
-    v-bind="rootElementAttrs"
-  >
-    <img
-      v-if="iconSRC && !error"
-      :src="iconSRC"
-      @error="error = true"
-      class="rounded-full bg-white"
-    />
-    <Avatar v-else-if="!!address" :address="address" :size="size" />
-    <div
-      v-else
-      class="rounded-full overflow-visible bg-gray-300 dark:bg-gray-700"
-      :style="{
-        width: `${size}px`,
-        height: `${size}px`
-      }"
-    />
-  </component>
-</template>
-
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 
@@ -86,6 +58,34 @@ watch(iconSRC, newURL => {
   if (newURL !== '') error.value = false;
 });
 </script>
+
+<template>
+  <component
+    class="bal-asset rounded-full inline-block leading-none shadow-sm"
+    :style="{
+      width: `${size}px`,
+      height: `${size}px`
+    }"
+    :is="rootElement"
+    v-bind="rootElementAttrs"
+  >
+    <img
+      v-if="iconSRC && !error"
+      :src="iconSRC"
+      @error="error = true"
+      class="rounded-full bg-white"
+    />
+    <Avatar v-else-if="!!address" :address="address" :size="size" />
+    <div
+      v-else
+      class="rounded-full overflow-visible bg-gray-300 dark:bg-gray-700"
+      :style="{
+        width: `${size}px`,
+        height: `${size}px`
+      }"
+    />
+  </component>
+</template>
 
 <style scoped>
 button.bal-asset {
