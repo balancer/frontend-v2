@@ -12,6 +12,7 @@ import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { Pool, PoolSnapshots } from '@/services/pool/types';
+
 /**
  * TYPES
  */
@@ -44,6 +45,7 @@ const tailwind = useTailwind();
 const { fNum2 } = useNumbers();
 const { isMobile } = useBreakpoints();
 const { darkMode } = useDarkMode();
+
 /**
  * STATE
  */
@@ -100,14 +102,16 @@ const timestamps = computed(() =>
 );
 
 const chartData = computed(() => {
-  const values =
+  const periodSnapshots =
     currentPeriod.value === snapshotValues.value.length
       ? snapshotValues.value
       : snapshotValues.value.slice(0, currentPeriod.value - 1);
-  const isAllTimeSelected = values.length === snapshotValues.value.length;
+  const isAllTimeSelected =
+    periodSnapshots.length === snapshotValues.value.length;
+  const pariodLastSnapshotIdx = periodSnapshots.length - 1;
 
   if (activeTab.value === PoolChartTab.TVL) {
-    const tvlValues = values.map((snapshot, idx) => ({
+    const tvlValues = periodSnapshots.map((snapshot, idx) => ({
       name: timestamps.value[idx],
       value: [timestamps.value[idx], snapshot.liquidity]
     }));
@@ -136,33 +140,39 @@ const chartData = computed(() => {
           values: tvlValues
         }
       ],
-      defaultStateValue: fNum2(values[0].liquidity, {
+      defaultHeaderStateValue: fNum2(periodSnapshots[0].liquidity, {
         style: 'currency'
       })
     };
   }
 
   if (activeTab.value === PoolChartTab.FEES) {
-    const feesValues = values.map((snapshot, idx) => {
-      const value = parseFloat(snapshot.swapFees);
-      let nextValue: number;
+    console.log('values', periodSnapshots);
 
-      // get value of next snapshot
+    const feesValues = periodSnapshots.map((snapshot, idx) => {
+      const value = parseFloat(snapshot.swapFees);
+      let prevValue: number;
+
+      // get value of prev snapshot
+      // if it is last value among all snapshots, then prev value is 0
       if (idx === snapshotValues.value.length - 1) {
-        nextValue = 0;
-      } else if (idx === values.length - 1) {
-        nextValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
+        prevValue = 0;
+      } // if it is last value among certain period snapshots, then we get prev value from all snapshots
+      else if (idx === pariodLastSnapshotIdx) {
+        prevValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
       } else {
-        nextValue = parseFloat(values[idx + 1].swapFees);
+        prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
       }
       return {
         name: timestamps.value[idx],
-        value: [timestamps.value[idx], value - nextValue]
+        value: [timestamps.value[idx], value - prevValue]
       };
     });
-    const defaultStateValue =
-      Number(values[0].swapFees) -
-      (isAllTimeSelected ? 0 : Number(values[values.length - 1].swapFees));
+    const defaultHeaderStateValue =
+      Number(periodSnapshots[0].swapFees) -
+      (isAllTimeSelected
+        ? 0
+        : Number(periodSnapshots[pariodLastSnapshotIdx].swapFees));
 
     return {
       color: [tailwind.theme.colors.yellow['400']],
@@ -174,31 +184,35 @@ const chartData = computed(() => {
           values: feesValues
         }
       ],
-      defaultStateValue: fNum2(defaultStateValue, { style: 'currency' })
+      defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+        style: 'currency'
+      })
     };
   }
 
-  const volumeData = values.map((snapshot, idx) => {
+  const volumeData = periodSnapshots.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapVolume);
-    let nextValue: number;
+    let prevValue: number;
 
-    // get value of next snapshot
+    // get value of prev snapshot
     if (idx === snapshotValues.value.length - 1) {
-      nextValue = 0;
-    } else if (idx === values.length - 1) {
-      nextValue = parseFloat(snapshotValues.value[idx + 1].swapVolume);
+      prevValue = 0;
+    } else if (idx === pariodLastSnapshotIdx) {
+      prevValue = parseFloat(snapshotValues.value[idx + 1].swapVolume);
     } else {
-      nextValue = parseFloat(values[idx + 1].swapVolume);
+      prevValue = parseFloat(periodSnapshots[idx + 1].swapVolume);
     }
     return {
       name: timestamps.value[idx],
-      value: [timestamps.value[idx], value - nextValue]
+      value: [timestamps.value[idx], value - prevValue]
     };
   });
 
-  const defaultStateValue =
-    Number(values[0].swapVolume) -
-    (isAllTimeSelected ? 0 : Number(values[values.length - 1].swapVolume));
+  const defaultHeaderStateValue =
+    Number(periodSnapshots[0].swapVolume) -
+    (isAllTimeSelected
+      ? 0
+      : Number(periodSnapshots[pariodLastSnapshotIdx].swapVolume));
 
   return {
     color: [tailwind.theme.colors.green['400']],
@@ -210,7 +224,9 @@ const chartData = computed(() => {
         values: volumeData
       }
     ],
-    defaultStateValue: fNum2(defaultStateValue, { style: 'currency' })
+    defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+      style: 'currency'
+    })
   };
 });
 
@@ -224,7 +240,7 @@ const defaultChartData = computed(() => {
     title = t('poolChart.defaultTitle.tvl');
   }
 
-  return { title, value: chartData.value.defaultStateValue };
+  return { title, value: chartData.value.defaultHeaderStateValue };
 });
 
 /**
@@ -271,7 +287,7 @@ function setCurrentChartValue(value: {
           {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
         </p>
         <div
-          class="text-sm	font-medium text-gray-500"
+          class="text-sm font-medium text-gray-500"
           :class="{ 'text-pink-500': isFocusedOnChart }"
         >
           <p class="tracking-tighter">
@@ -307,6 +323,7 @@ function setCurrentChartValue(value: {
     {{ $t('insufficientData') }}
   </BalBlankSlate>
 </template>
+
 <style scoped>
 .chart {
   @apply sm:border rounded-xl sm:px-5 sm:pt-5 sm:shadow sm:dark:bg-gray-850 dark:border-transparent;
