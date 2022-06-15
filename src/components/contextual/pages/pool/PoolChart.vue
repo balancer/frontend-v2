@@ -236,32 +236,36 @@ function setCurrentChartValue(value: {
 
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
-  <div
-    class="chart mr-n2 ml-n2"
-    v-else-if="snapshotValues.length >= MIN_CHART_VALUES"
-  >
+  <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
     <div
-      class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6 flex-wrap	"
+      class="px-4 sm:px-0 flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
     >
       <div class="flex mb-4">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-5" />
-        <div class="w-24 flex items-center mr-10">
+        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
+        <div class="w-24 flex items-center">
           <BalSelectInput
             :options="periodOptions"
             :model-value="currentPeriod.toString()"
             @change="setCurrentPeriod"
             name="periods"
             no-margin
+            class="font-medium cursor-pointer"
           />
         </div>
       </div>
-      <div class="flex flex-col items-end text-2xl font-bold">
-        {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
+      <div
+        class="flex flex-col items-start xs:items-end text-2xl font-bold tabular-nums"
+      >
+        <p class="tracking-tighter">
+          {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
+        </p>
         <div
           class="text-sm	font-medium text-gray-500"
           :class="{ 'text-pink-500': isFocusedOnChart }"
         >
-          {{ isFocusedOnChart ? currentChartDate : defaultChartData.title }}
+          <p class="tracking-tighter">
+            {{ isFocusedOnChart ? currentChartDate : defaultChartData.title }}
+          </p>
         </div>
       </div>
     </div>
@@ -292,3 +296,8 @@ function setCurrentChartValue(value: {
     {{ $t('insufficientData') }}
   </BalBlankSlate>
 </template>
+<style scoped>
+.chart {
+  @apply sm:border rounded-xl sm:px-5 sm:pt-5 sm:shadow sm:dark:bg-gray-850 dark:border-transparent;
+}
+</style>

@@ -163,7 +163,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-select-input {
-  @apply relative w-full border rounded-lg shadow-sm overflow-hidden px-2;
+  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2 bg-gray-50 dark:bg-gray-800 transition-all;
 }
 
 .label {
@@ -176,5 +176,17 @@ select {
   -moz-appearance: none;
   text-indent: 1px;
   text-overflow: '';
+}
+
+.bal-select-input .bal-icon :deep(svg) {
+  @apply transition-all;
+  /* blue-500 */
+  stroke: #384aff;
+}
+
+.bal-select-input:hover .bal-icon :deep(svg),
+.bal-select-input:focus .bal-icon :deep(svg) {
+  /* pink-500 */
+  stroke: #f21bf6;
 }
 </style>
