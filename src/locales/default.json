@@ -314,10 +314,10 @@
     "connectYourWallet": "Connect your wallet",
     "copied": "Copied!",
     "copperLaunchPromo": {
-        "buttonLabel": "View this auction on Copper",
-        "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
-        "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstrapping Pools to power its FLAs",
-        "title": "A Copper fair launch auction pool (FLA)"
+      "buttonLabel": "View this auction on Copper",
+      "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
+      "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstrapping Pools to power its FLAs",
+      "title": "A Copper fair launch auction pool (FLA)"
     },
     "noLiquidity": {
       "header": "No liquidity",
@@ -488,24 +488,24 @@
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
     "payload": "Payload",
     "pages": {
-        "claim": {
-            "title": "Claim your liquidity mining incentives",
-            "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
-            "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, invest in these pools and stake the LP tokens to receive incentives.",
-            "transitionInfo": {
-                "title": "veBAL liquidity mining incentives are live!",
-                "titleL2": "Transition to new veBAL tokenomics",
-                "description": "Token earnings accumulate every block and can be claimed at any time. Stake LP tokens in eligible pools to get incentives. Get veBAL to boost your yield and to vote on which pool should get token emissions for the next week.",
-                "descriptionL2": "Liquidity mining on Polygon & Arbitrum will be soon moving to the veBAL emission's system. When this happens, you'll need to stake your LP tokens in eligible pools to continue receiving liquidity mining incentives."
-            },
-            "titles": {
-                "incentivesOnOtherNetworks": "Incentives on other networks",
-                "legacyIncentives": "Legacy incentives"
-            },
-            "btns": {
-                "claimOn": "Claim on"
-            }
+      "claim": {
+        "title": "Claim your liquidity mining incentives",
+        "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
+        "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, invest in these pools and stake the LP tokens to receive incentives.",
+        "transitionInfo": {
+          "title": "veBAL liquidity mining incentives are live!",
+          "titleL2": "Transition to new veBAL tokenomics",
+          "description": "Token earnings accumulate every block and can be claimed at any time. Stake LP tokens in eligible pools to get incentives. Get veBAL to boost your yield and to vote on which pool should get token emissions for the next week.",
+          "descriptionL2": "Liquidity mining on Polygon & Arbitrum will be soon moving to the veBAL emission's system. When this happens, you'll need to stake your LP tokens in eligible pools to continue receiving liquidity mining incentives."
+        },
+        "titles": {
+          "incentivesOnOtherNetworks": "Incentives on other networks",
+          "legacyIncentives": "Legacy incentives"
+        },
+        "btns": {
+          "claimOn": "Claim on"
         }
+      }
     },
     "title": "Token incentives"
   },
@@ -702,6 +702,13 @@
       "volume": "Volume",
       "tvl": "TVL",
       "fees": "Fees"
+    },
+    "period": {
+      "all": "All time",
+      "days": "{0} days"
+    },
+    "defaultTitle": {
+      "tvl": "Current TVL"
     }
   },
   "popularBases": "Popular:",

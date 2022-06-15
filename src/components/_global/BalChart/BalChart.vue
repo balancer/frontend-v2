@@ -1,6 +1,11 @@
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
-  <div :class="[wrapperClass]" v-else @mouseleave="handleMouseLeave">
+  <div
+    :class="[wrapperClass]"
+    v-else
+    @mouseleave="handleMouseLeave"
+    @mouseenter="handleMouseEnter"
+  >
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
         {{ currentValue }}
@@ -69,7 +74,12 @@ type PeriodOption = {
 };
 
 export default defineComponent({
-  emits: ['periodSelected', 'setCurrentChartValue'],
+  emits: [
+    'periodSelected',
+    'setCurrentChartValue',
+    'mouseLeaveEvent',
+    'mouseEnterEvent'
+  ],
   props: {
     data: {
       type: Array as PropType<ChartData[]>,
@@ -109,6 +119,10 @@ export default defineComponent({
       type: Array as PropType<string[]>
     },
     hoverColor: {
+      type: String,
+      default: ''
+    },
+    hoverBorderColor: {
       type: String
     },
     height: {
@@ -180,12 +194,6 @@ export default defineComponent({
     const { fNum2 } = useNumbers();
     const tailwind = useTailwind();
     const { darkMode } = useDarkMode();
-
-    const axisColor = computed(() =>
-      darkMode.value
-        ? tailwind.theme.colors.gray['800']
-        : tailwind.theme.colors.gray['100']
-    );
 
     // https://echarts.apache.org/en/option.html
     const chartConfig = computed(() => ({
@@ -260,22 +268,7 @@ export default defineComponent({
             : undefined,
           color: tailwind.theme.colors.gray['400']
         },
-        nameGap: 25,
-        splitArea: {
-          show: false,
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(255, 158, 68)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(255, 70, 131)'
-              }
-            ])
-          }
-        }
+        nameGap: 25
       },
       color: props.color,
       // Controls the boundaries of the chart from the HTML defined rectangle
@@ -342,7 +335,8 @@ export default defineComponent({
         },
         emphasis: {
           itemStyle: {
-            color: props.hoverColor
+            color: props.hoverColor,
+            borderColor: props.hoverBorderColor
           }
         },
         // This is a retrofitted option to show the small pill with the
@@ -442,6 +436,11 @@ export default defineComponent({
     //reset the current value to latest when the user's mouse leaves the view
     function handleMouseLeave() {
       setCurrentValueToLatest(true);
+      emit('mouseLeaveEvent');
+    }
+
+    function handleMouseEnter() {
+      emit('mouseEnterEvent');
     }
 
     // Triggered when hovering mouse over different xAxis points
@@ -503,7 +502,7 @@ export default defineComponent({
       handleAxisMoved,
       numeral,
       handleMouseLeave,
-
+      handleMouseEnter,
       // data
       currentValue,
       change,

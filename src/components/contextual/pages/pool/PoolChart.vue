@@ -5,9 +5,9 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
-import useDarkMode from '@/composables/useDarkMode';
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
-import { isStablePhantom } from '@/composables/usePool';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { Pool, PoolSnapshots } from '@/services/pool/types';
@@ -40,9 +40,8 @@ const props = withDefaults(defineProps<Props>(), {
 const store = useStore();
 const { t } = useI18n();
 const tailwind = useTailwind();
-const { darkMode } = useDarkMode();
 const { fNum2 } = useNumbers();
-
+const { isMobile } = useBreakpoints();
 /**
  * STATE
  */
@@ -60,94 +59,37 @@ const tabs = [
     label: t('poolChart.tabs.fees')
   }
 ];
-const MIN_CHART_VALUES = 7;
 const activeTab = ref(tabs[0].value);
+
+const MIN_CHART_VALUES = 2;
+const currentChartValue = ref('');
+const currentChartDate = ref('');
+const isFocusedOnChart = ref(false);
 
 /**
  * COMPUTED
  */
-// const hodlColor = computed(() =>
-//   darkMode.value
-//     ? tailwind.theme.colors.gray['600']
-//     : tailwind.theme.colors.black
-// );
-
-// const chartColors = computed(() => [
-//   tailwind.theme.colors.green['400'],
-//   hodlColor.value
-// ]);
-
-const supportsPoolLiquidity = computed(() =>
-  isStablePhantom(props.pool.poolType)
-);
-
 const appLoading = computed(() => store.state.app.loading);
 
-const history = computed(() => {
-  if (!props.historicalPrices) return [];
+const snapshotValues = computed(() => Object.values(props.snapshots || []));
 
-  const pricesTimestamps = Object.keys(props.historicalPrices);
-  const snapshotsTimestamps = Object.keys(props.snapshots);
-
-  if (snapshotsTimestamps.length === 0) {
-    return [];
-  }
-
-  // Prices are required when not using pool liquidity
-  if (!supportsPoolLiquidity.value && pricesTimestamps.length === 0) {
-    return [];
-  }
-
-  return snapshotsTimestamps
-    .map(snapshotTimestamp => {
-      const timestamp = parseInt(snapshotTimestamp);
-
-      const snapshot = props.snapshots[timestamp];
-      const prices = props.historicalPrices[timestamp] ?? [];
-      const amounts = snapshot.amounts ?? [];
-      const totalShares = parseFloat(snapshot.totalShares) ?? 0;
-      const liquidity = parseFloat(snapshot.liquidity) ?? 0;
-
-      return {
-        timestamp,
-        prices,
-        amounts,
-        totalShares,
-        liquidity
-      };
-    })
-    .filter(({ totalShares, prices, amounts, liquidity }) => {
-      if (!supportsPoolLiquidity.value && prices.length === 0) {
-        return false;
-      } else if (supportsPoolLiquidity.value && liquidity === 0) {
-        return false;
-      }
-      return totalShares > 0 && amounts.length > 0;
-    })
-    .reverse();
-});
-
-const snapshotValues = computed(() => Object.values(props.snapshots || {}));
 const periodOptions = computed(() => {
   const maxPeriodLengh = snapshotValues.value.length;
-  const arr = [{ text: 'All time', value: snapshotValues.value.length }];
+  const arr = [{ text: t('poolChart.period.all'), value: maxPeriodLengh }];
   if (maxPeriodLengh > 365) {
-    arr.unshift({ text: '365 days', value: 365 });
+    arr.unshift({ text: t('poolChart.period.days', [365]), value: 365 });
   }
   if (maxPeriodLengh > 180) {
-    arr.unshift({ text: '180 days', value: 180 });
+    arr.unshift({ text: t('poolChart.period.days', [180]), value: 180 });
   }
   if (maxPeriodLengh > 90) {
-    arr.unshift({ text: '90 days', value: 90 });
+    arr.unshift({ text: t('poolChart.period.days', [90]), value: 90 });
   }
 
   return arr;
 });
-const currentPeriod = ref(periodOptions.value[0].value || 90);
 
-function setCurrentPeriod(period: string) {
-  currentPeriod.value = Number(period);
-}
+const currentPeriod = ref(periodOptions.value[0].value || 90);
 
 const timestamps = computed(() =>
   Object.values(props.snapshots).map(snapshot =>
@@ -165,6 +107,7 @@ const chartData = computed(() => {
     }));
     return {
       color: [tailwind.theme.colors.blue['600']],
+      hoverBorderColor: tailwind.theme.colors.pink['500'],
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           {
@@ -183,7 +126,10 @@ const chartData = computed(() => {
           name: 'TVL',
           values: tvlValues
         }
-      ]
+      ],
+      defaultStateValue: fNum2(values[0].liquidity, {
+        style: 'currency'
+      })
     };
   }
 
@@ -191,6 +137,8 @@ const chartData = computed(() => {
     const feesValues = values.map((snapshot, idx) => {
       const value = parseFloat(snapshot.swapFees);
       let nextValue: number;
+
+      // get value of next snapshot
       if (idx === snapshotValues.value.length - 1) {
         nextValue = 0;
       } else if (idx === values.length - 1) {
@@ -203,22 +151,28 @@ const chartData = computed(() => {
         value: [timestamps.value[idx], value - nextValue]
       };
     });
+    const defaultStateValue =
+      Number(values[0].swapFees) - Number(values[values.length - 1].swapFees);
+
     return {
       color: [tailwind.theme.colors.yellow['400']],
       chartType: 'bar',
-      hoverColor: tailwind.theme.colors.green['400'],
+      hoverColor: tailwind.theme.colors.pink['500'],
       data: [
         {
           name: 'Fees',
           values: feesValues
         }
-      ]
+      ],
+      defaultStateValue: fNum2(defaultStateValue, { style: 'currency' })
     };
   }
 
   const volumeData = values.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapVolume);
     let nextValue: number;
+
+    // get value of next snapshot
     if (idx === snapshotValues.value.length - 1) {
       nextValue = 0;
     } else if (idx === values.length - 1) {
@@ -232,21 +186,43 @@ const chartData = computed(() => {
     };
   });
 
+  const defaultStateValue =
+    Number(values[0].swapVolume) - Number(values[values.length - 1].swapVolume);
+
   return {
     color: [tailwind.theme.colors.green['400']],
     chartType: 'bar',
-    hoverColor: tailwind.theme.colors.yellow['400'],
+    hoverColor: tailwind.theme.colors.pink['500'],
     data: [
       {
         name: 'Volume',
         values: volumeData
       }
-    ]
+    ],
+    defaultStateValue: fNum2(defaultStateValue, { style: 'currency' })
   };
 });
 
-const currentChartValue = ref('');
-const currentChartDate = ref('');
+const defaultChartData = computed(() => {
+  const currentPeriodOption = periodOptions.value.find(
+    option => option.value === currentPeriod.value
+  );
+  let title = `${currentPeriodOption?.text} ${activeTab.value}`;
+
+  if (activeTab.value === PoolChartTab.TVL) {
+    title = t('poolChart.defaultTitle.tvl');
+  }
+
+  return { title, value: chartData.value.defaultStateValue };
+});
+
+/**
+ * METHODS
+ */
+function setCurrentPeriod(period: string) {
+  currentPeriod.value = Number(period);
+}
+
 function setCurrentChartValue(value: {
   value: [string, number];
   name: string;
@@ -254,19 +230,22 @@ function setCurrentChartValue(value: {
   currentChartValue.value = fNum2(value.value[1], {
     style: 'currency'
   });
-  currentChartDate.value = value.value[0];
+  currentChartDate.value = format(new Date(value.value[0]), PRETTY_DATE_FORMAT);
 }
 </script>
 
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
-  <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
+  <div
+    class="chart mr-n2 ml-n2"
+    v-else-if="snapshotValues.length >= MIN_CHART_VALUES"
+  >
     <div
       class="px-4 sm:px-0 flex justify-between dark:border-gray-900 mb-6 flex-wrap	"
     >
       <div class="flex mb-4">
         <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-5" />
-        <div class="w-24 flex items-center">
+        <div class="w-24 flex items-center mr-10">
           <BalSelectInput
             :options="periodOptions"
             :model-value="currentPeriod.toString()"
@@ -277,28 +256,35 @@ function setCurrentChartValue(value: {
         </div>
       </div>
       <div class="flex flex-col items-end text-2xl font-bold">
-        {{ currentChartValue }}
-        <div class="text-sm	font-medium text-pink-500">
-          {{ currentChartDate }}
+        {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
+        <div
+          class="text-sm	font-medium text-gray-500"
+          :class="{ 'text-pink-500': isFocusedOnChart }"
+        >
+          {{ isFocusedOnChart ? currentChartDate : defaultChartData.title }}
         </div>
       </div>
     </div>
 
     <BalChart
-      :data="chartData.data"
-      :axisLabelFormatter="{
-        yAxis: { style: 'currency', abbreviate: true }
-      }"
-      :areaStyle="chartData.areaStyle"
-      :color="chartData.color"
-      :hoverColor="chartData.hoverColor"
-      :xAxisMinInterval="3600 * 1000 * 24 * 30"
-      @setCurrentChartValue="setCurrentChartValue"
-      :showLegend="false"
-      needChartValue
-      :chartType="chartData.chartType"
-      :showTooltipLayer="false"
       height="96"
+      :data="chartData.data"
+      :axis-label-formatter="{
+        yAxis: { style: 'currency', abbreviate: true, fractionDigits: 0 }
+      }"
+      :area-style="chartData.areaStyle"
+      :color="chartData.color"
+      :hover-color="chartData.hoverColor"
+      :hover-border-color="chartData.hoverBorderColor"
+      :x-axis-min-interval="3600 * 1000 * 24 * 30"
+      :show-legend="false"
+      need-chart-value
+      :chart-type="chartData.chartType"
+      :show-tooltip-layer="false"
+      @setCurrentChartValue="setCurrentChartValue"
+      :hide-y-axis="isMobile"
+      @mouseLeaveEvent="isFocusedOnChart = false"
+      @mouseEnterEvent="isFocusedOnChart = true"
     />
   </div>
   <BalBlankSlate v-else class="h-96">

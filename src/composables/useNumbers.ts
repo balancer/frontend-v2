@@ -14,7 +14,8 @@ interface Options {
 export interface FNumOptions extends Intl.NumberFormatOptions {
   fixedFormat?: boolean; // If true, don't auto-adjust based on number magnitde
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
-  dontAdjustLarge?: boolean; // If true, don't auto-adjust if the number is large
+  dontAdjustLarge?: boolean; // If true, don't auto-adjust if the number is large,
+  fractionDigits?: number; // set fraction digits
 }
 
 export const FNumFormats: Record<string, FNumOptions> = {
@@ -153,6 +154,10 @@ export function numF(
 
   if (!options.fixedFormat && number < 1e-6) {
     number = 0;
+  }
+
+  if (options.fractionDigits !== undefined) {
+    formatterOptions.maximumFractionDigits = options.fractionDigits;
   }
 
   const formatter = new Intl.NumberFormat('en-US', formatterOptions);
