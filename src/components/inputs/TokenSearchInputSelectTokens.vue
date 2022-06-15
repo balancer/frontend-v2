@@ -18,7 +18,7 @@ const emit = defineEmits<{
        flex flex-wrap items-center gap-3 
        text-gray-900 dark:text-gray-400 
        overflow-x-auto 
-       px-3'
+       px-3
     "
   >
     <span
