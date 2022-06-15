@@ -7,6 +7,7 @@ import { useStore } from 'vuex';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
@@ -42,9 +43,12 @@ const { t } = useI18n();
 const tailwind = useTailwind();
 const { fNum2 } = useNumbers();
 const { isMobile } = useBreakpoints();
+const { darkMode } = useDarkMode();
 /**
  * STATE
  */
+const MIN_CHART_VALUES = 2;
+
 const tabs = [
   {
     value: PoolChartTab.VOLUME,
@@ -61,7 +65,6 @@ const tabs = [
 ];
 const activeTab = ref(tabs[0].value);
 
-const MIN_CHART_VALUES = 2;
 const currentChartValue = ref('');
 const currentChartDate = ref('');
 const isFocusedOnChart = ref(false);
@@ -76,6 +79,7 @@ const snapshotValues = computed(() => Object.values(props.snapshots || []));
 const periodOptions = computed(() => {
   const maxPeriodLengh = snapshotValues.value.length;
   const arr = [{ text: t('poolChart.period.all'), value: maxPeriodLengh }];
+
   if (maxPeriodLengh > 365) {
     arr.unshift({ text: t('poolChart.period.days', [365]), value: 365 });
   }
@@ -92,13 +96,15 @@ const periodOptions = computed(() => {
 const currentPeriod = ref(periodOptions.value[0].value || 90);
 
 const timestamps = computed(() =>
-  Object.values(props.snapshots).map(snapshot =>
-    format(snapshot.timestamp, 'yyyy/MM/dd')
-  )
+  snapshotValues.value.map(snapshot => format(snapshot.timestamp, 'yyyy/MM/dd'))
 );
 
 const chartData = computed(() => {
-  const values = snapshotValues.value.slice(0, currentPeriod.value - 1);
+  const values =
+    currentPeriod.value === snapshotValues.value.length
+      ? snapshotValues.value
+      : snapshotValues.value.slice(0, currentPeriod.value - 1);
+  const isAllTimeSelected = values.length === snapshotValues.value.length;
 
   if (activeTab.value === PoolChartTab.TVL) {
     const tvlValues = values.map((snapshot, idx) => ({
@@ -108,6 +114,9 @@ const chartData = computed(() => {
     return {
       color: [tailwind.theme.colors.blue['600']],
       hoverBorderColor: tailwind.theme.colors.pink['500'],
+      hoverColor: darkMode.value
+        ? tailwind.theme.colors.gray['900']
+        : tailwind.theme.colors.white,
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           {
@@ -152,7 +161,8 @@ const chartData = computed(() => {
       };
     });
     const defaultStateValue =
-      Number(values[0].swapFees) - Number(values[values.length - 1].swapFees);
+      Number(values[0].swapFees) -
+      (isAllTimeSelected ? 0 : Number(values[values.length - 1].swapFees));
 
     return {
       color: [tailwind.theme.colors.yellow['400']],
@@ -187,7 +197,8 @@ const chartData = computed(() => {
   });
 
   const defaultStateValue =
-    Number(values[0].swapVolume) - Number(values[values.length - 1].swapVolume);
+    Number(values[0].swapVolume) -
+    (isAllTimeSelected ? 0 : Number(values[values.length - 1].swapVolume));
 
   return {
     color: [tailwind.theme.colors.green['400']],

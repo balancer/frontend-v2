@@ -3,8 +3,10 @@
   <div
     :class="[wrapperClass]"
     v-else
-    @mouseleave="handleMouseLeave"
     @mouseenter="handleMouseEnter"
+    @touchstart="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+    @touchend="handleMouseLeave"
   >
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
@@ -119,8 +121,7 @@ export default defineComponent({
       type: Array as PropType<string[]>
     },
     hoverColor: {
-      type: String,
-      default: ''
+      type: String
     },
     hoverBorderColor: {
       type: String
