@@ -44,6 +44,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   address: '',
+  iconURI: '',
   size: 24,
   button: false
 });
