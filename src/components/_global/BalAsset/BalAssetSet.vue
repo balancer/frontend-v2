@@ -13,7 +13,7 @@
       <BalAsset
         v-for="(addressOrURI, i) in assetChunk"
         :key="i"
-        v-bind="assetAttrsFor(addressOrURI)"
+        v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
         @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
@@ -33,7 +33,14 @@ import { isAddress } from '@ethersproject/address';
 import { chunk } from 'lodash';
 import { computed, defineComponent, PropType } from 'vue';
 
-import BalAsset from './BalAsset.vue';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+
+type BalAssetProps = {
+  address?: string;
+  iconURI?: string;
+  size?: number;
+  button?: boolean;
+};
 
 export default defineComponent({
   components: {
@@ -46,6 +53,10 @@ export default defineComponent({
     },
     logoURIs: {
       type: Array as PropType<string[]>
+    },
+    balAssetProps: {
+      type: Object as PropType<BalAssetProps>,
+      default: () => ({})
     },
     width: {
       type: Number,
@@ -147,17 +158,10 @@ export default defineComponent({
   width: auto !important;
   height: auto !important;
 }
+
 .my-wallet .addresses-row > img,
 .my-wallet .addresses-row > .token-icon {
-  @apply cursor-pointer transition-transform border-0 shadow;
-}
-
-.my-wallet .addresses-row > img:hover,
-.my-wallet .addresses-row > img:focus,
-.my-wallet .addresses-row > .token-icon:hover,
-.my-wallet .addresses-row > .token-icon:focus {
-  @apply scale-110 transform-gpu;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  @apply border-0;
 }
 
 .addresses-row:last-child {

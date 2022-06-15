@@ -690,8 +690,25 @@
     "poolOwnerVulnWarningGovernance": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to."
     },
-    "poolOwnerVulnWarningEcosystem": {
-      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem."
+    "popularBases": "Popular",
+    "portfolio": "Portfolio",
+    "potential": "Potential",
+    "potentialWeeklyYield": "Potential weekly yield",
+    "preview": "Preview",
+    "previewPool": "Preview new {0} pool",
+    "previewTrade": "Preview trade",
+    "previewTradeTransactions": "Preview trade transactions",
+    "previewUnwrap": "Preview {0} Unwrap",
+    "previewWrap": "Preview {0} Wrap",
+    "previewMigrate": "Preview migrate",
+    "priceImpact": "Price impact",
+    "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
+    "priceImpactCheckbox": "Price impact acknowledgement",
+    "priceImpactTolerance": "Price impact tolerance",
+    "priceUpdatedAlert": {
+        "actionLabel": "Accept",
+        "description": "The trade price has updated by more than {0}",
+        "title": "Price updated"
     },
     "poolOwnerVulnWarningEcosystemMigrate": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem. A new version of the pool will be deployed in the next few weeks that can be migrated to."
