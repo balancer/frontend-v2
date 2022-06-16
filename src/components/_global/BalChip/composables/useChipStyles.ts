@@ -31,7 +31,7 @@ export function useChipClasses(props) {
 
   const shapeClasses = () => {
     if (props.rounded) return 'rounded-full';
-    return 'rounded-lg';
+    return 'rounded';
   };
 
   return computed(() => {
