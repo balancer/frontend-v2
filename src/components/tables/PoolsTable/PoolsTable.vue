@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import BalChipNew from '@/components/chips/BalChipNew.vue';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
@@ -270,15 +271,7 @@ function aprLabelFor(pool: PoolWithShares): string {
             :isStablePool="isStableLike(pool.poolType)"
             :selectedTokens="selectedTokens"
           />
-          <BalChip
-            v-if="pool?.isNew"
-            color="red"
-            size="sm"
-            class="ml-2 uppercase"
-            :outline="false"
-          >
-            {{ $t('new') }}
-          </BalChip>
+          <BalChipNew v-if="pool?.isNew" class="ml-2" />
         </div>
       </template>
       <template v-slot:volumeCell="pool">

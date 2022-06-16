@@ -241,6 +241,7 @@
     "etherscan": "Etherscan",
     "exceedsBalance": "Exceeds wallet balance",
     "exceedsPoolBalance": "Exceeds pool balance for this token",
+    "expired":"Expired",
     "explore": "Explore",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
     "explorePools": "Explore pools",

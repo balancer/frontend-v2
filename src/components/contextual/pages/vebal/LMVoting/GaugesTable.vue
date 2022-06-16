@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -217,7 +218,7 @@ function isGaugeExpired(gaugeAddress: string): boolean {
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
-          {{ isGaugeExpired(address) ? 'Expired' : '' }}
+          <BalChipExpired v-if="isGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
       <template v-slot:nextPeriodVotesCell="gauge">

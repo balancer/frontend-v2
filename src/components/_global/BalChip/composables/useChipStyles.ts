@@ -17,6 +17,7 @@ export function useChipClasses(props) {
       return 'text-white bg-gradient-to-tr from-blue-500 to-pink-500';
     if (props.color === 'white') return 'bg-white dark:bg-gray-900';
     if (props.color === 'red') return 'text-white bg-red-500';
+    if (props.color === 'orange') return 'text-black bg-orange-300';
 
     return `bg-${props.color}-100 dark:bg-${props.color}-800`;
   };
