@@ -51,7 +51,7 @@ export default function useExpiredGaugesQuery(
    */
   // TODO KEY
   const queryKey = reactive(
-    QUERY_KEYS.Gauges.Expired('gaugeAddresses', networkId)
+    QUERY_KEYS.Gauges.Expired(gaugeAddresses, networkId)
   );
 
   /**
