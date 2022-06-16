@@ -15,7 +15,9 @@ import useNetwork from '../useNetwork';
 type QueryResponse = Address[];
 type MulticallerResult = Record<Address, { isKilled: boolean }>;
 
-async function callGaugesIsKilledStatus(gaugeAddresses: Address[]) {
+function callGaugesIsKilledStatus(
+  gaugeAddresses: Address[]
+): Promise<MulticallerResult> {
   const multicaller = LiquidityGauge.getMulticaller();
 
   for (const gaugeAddress of gaugeAddresses) {
@@ -49,7 +51,6 @@ export default function useExpiredGaugesQuery(
   /**
    * QUERY KEY
    */
-  // TODO KEY
   const queryKey = reactive(
     QUERY_KEYS.Gauges.Expired(gaugeAddresses, networkId)
   );
