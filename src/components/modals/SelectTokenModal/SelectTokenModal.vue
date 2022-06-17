@@ -235,7 +235,7 @@ export default defineComponent({
 
         if (modalHeight) {
           return {
-            height: modalHeight - listOffset + 'px'
+            height: `${modalHeight - listOffset}px`
           };
         }
       }
