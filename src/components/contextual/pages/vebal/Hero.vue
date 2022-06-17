@@ -133,7 +133,7 @@ function navigateToGetVeBAL() {
 </template>
 <style scoped>
 .hero-container {
-  background-image: url('/images/backgrounds/spirograph.svg');
+  background-image: url('@/assets/images/backgrounds/spirograph.svg');
   background-repeat: no-repeat;
   background-position-x: right;
   background-size: cover;
