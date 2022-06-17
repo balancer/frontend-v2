@@ -11,7 +11,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
-import { Pool, PoolSnapshots } from '@/services/pool/types';
+import { Pool, PoolSnapshot, PoolSnapshots } from '@/services/pool/types';
 
 /**
  * TYPES
@@ -27,6 +27,21 @@ enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
   FEES = 'fees'
+}
+
+interface PoolChartData {
+  color: string[];
+  hoverBorderColor?: string;
+  hoverColor?: string;
+  areaStyle?: {
+    color: echarts.LinearGradientObject;
+  };
+  chartType: string;
+  data: {
+    name: string;
+    values: (string | number)[][];
+  }[];
+  defaultHeaderStateValue: string;
 }
 
 /**
@@ -78,118 +93,116 @@ const appLoading = computed(() => store.state.app.loading);
 
 const snapshotValues = computed(() => Object.values(props.snapshots || []));
 
-const periodOptions = computed(() => {
-  const maxPeriodLengh = snapshotValues.value.length;
-  const arr = [{ text: t('poolChart.period.all'), value: maxPeriodLengh }];
+const periodOptions = computed(() => [
+  { text: t('poolChart.period.days', [90]), value: 90 },
+  { text: t('poolChart.period.days', [180]), value: 180 },
+  { text: t('poolChart.period.days', [365]), value: 365 },
+  { text: t('poolChart.period.all'), value: snapshotValues.value.length }
+]);
 
-  if (maxPeriodLengh > 365) {
-    arr.unshift({ text: t('poolChart.period.days', [365]), value: 365 });
-  }
-  if (maxPeriodLengh > 180) {
-    arr.unshift({ text: t('poolChart.period.days', [180]), value: 180 });
-  }
-  if (maxPeriodLengh > 90) {
-    arr.unshift({ text: t('poolChart.period.days', [90]), value: 90 });
-  }
-
-  return arr;
-});
-
-const currentPeriod = ref(periodOptions.value[0].value || 90);
+const currentPeriod = ref(90);
 
 const timestamps = computed(() =>
   snapshotValues.value.map(snapshot => format(snapshot.timestamp, 'yyyy/MM/dd'))
 );
 
-const chartData = computed(() => {
-  const periodSnapshots =
-    currentPeriod.value === snapshotValues.value.length
-      ? snapshotValues.value
-      : snapshotValues.value.slice(0, currentPeriod.value - 1);
-  const isAllTimeSelected =
-    periodSnapshots.length === snapshotValues.value.length;
-  const pariodLastSnapshotIdx = periodSnapshots.length - 1;
-
-  if (activeTab.value === PoolChartTab.TVL) {
-    const tvlValues = periodSnapshots.map((snapshot, idx) => ({
-      name: timestamps.value[idx],
-      value: [timestamps.value[idx], snapshot.liquidity]
-    }));
-    return {
-      color: [tailwind.theme.colors.blue['600']],
-      hoverBorderColor: tailwind.theme.colors.pink['500'],
-      hoverColor: darkMode.value
-        ? tailwind.theme.colors.gray['900']
-        : tailwind.theme.colors.white,
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgba(14, 165, 233, 0.08)'
-          },
-          {
-            offset: 1,
-            color: 'rgba(68, 9, 236, 0)'
-          }
-        ])
+function getTVLData(periodSnapshots: PoolSnapshot[]) {
+  const tvlValues = periodSnapshots.map((snapshot, idx) => {
+    const timestamp = timestamps.value[idx];
+    const prices = props.historicalPrices[snapshot.timestamp];
+    const amounts = snapshot.amounts;
+    const snapshotPoolValue = amounts.reduce(
+      (sum: number, amount: string, index: number) => {
+        sum += Number(amount) * (prices ? prices[index] : 1);
+        return sum;
       },
-      chartType: 'line',
-      data: [
+      0
+    );
+    return [timestamp, snapshotPoolValue];
+  });
+
+  // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
+  tvlValues[tvlValues.length - 1][1] = Number(props.pool.totalLiquidity);
+
+  return {
+    color: [tailwind.theme.colors.blue['600']],
+    hoverBorderColor: tailwind.theme.colors.pink['500'],
+    hoverColor: darkMode.value
+      ? tailwind.theme.colors.gray['900']
+      : tailwind.theme.colors.white,
+    areaStyle: {
+      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
-          name: 'TVL',
-          values: tvlValues
+          offset: 0,
+          color: 'rgba(14, 165, 233, 0.08)'
+        },
+        {
+          offset: 1,
+          color: 'rgba(68, 9, 236, 0)'
         }
-      ],
-      defaultHeaderStateValue: fNum2(periodSnapshots[0].liquidity, {
-        style: 'currency'
-      })
-    };
-  }
-
-  if (activeTab.value === PoolChartTab.FEES) {
-    console.log('values', periodSnapshots);
-
-    const feesValues = periodSnapshots.map((snapshot, idx) => {
-      const value = parseFloat(snapshot.swapFees);
-      let prevValue: number;
-
-      // get value of prev snapshot
-      // if it is last value among all snapshots, then prev value is 0
-      if (idx === snapshotValues.value.length - 1) {
-        prevValue = 0;
-      } // if it is last value among certain period snapshots, then we get prev value from all snapshots
-      else if (idx === pariodLastSnapshotIdx) {
-        prevValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
-      } else {
-        prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
+      ])
+    },
+    chartType: 'line',
+    data: [
+      {
+        name: 'TVL',
+        values: tvlValues
       }
-      return {
-        name: timestamps.value[idx],
-        value: [timestamps.value[idx], value - prevValue]
-      };
-    });
-    const defaultHeaderStateValue =
-      Number(periodSnapshots[0].swapFees) -
-      (isAllTimeSelected
-        ? 0
-        : Number(periodSnapshots[pariodLastSnapshotIdx].swapFees));
+    ],
+    defaultHeaderStateValue: fNum2(tvlValues[0][1], {
+      style: 'currency'
+    })
+  };
+}
 
-    return {
-      color: [tailwind.theme.colors.yellow['400']],
-      chartType: 'bar',
-      hoverColor: tailwind.theme.colors.pink['500'],
-      data: [
-        {
-          name: 'Fees',
-          values: feesValues
-        }
-      ],
-      defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-        style: 'currency'
-      })
-    };
-  }
+function getFeesData(
+  periodSnapshots: PoolSnapshot[],
+  isAllTimeSelected: boolean,
+  pariodLastSnapshotIdx: number
+) {
+  const feesValues = periodSnapshots.map((snapshot, idx) => {
+    const value = parseFloat(snapshot.swapFees);
+    let prevValue: number;
 
+    // get value of prev snapshot
+    // if it is last value among all snapshots, then prev value is 0
+    if (idx === snapshotValues.value.length - 1) {
+      prevValue = 0;
+    } // if it is last value among certain period snapshots, then we get prev value from all snapshots
+    else if (idx === pariodLastSnapshotIdx) {
+      prevValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
+    } else {
+      prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
+    }
+    return [timestamps.value[idx], value - prevValue];
+  });
+  const defaultHeaderStateValue =
+    Number(periodSnapshots[0].swapFees) -
+    (isAllTimeSelected
+      ? 0
+      : Number(periodSnapshots[pariodLastSnapshotIdx].swapFees));
+
+  return {
+    color: [tailwind.theme.colors.yellow['400']],
+    chartType: 'bar',
+    hoverColor: tailwind.theme.colors.pink['500'],
+    data: [
+      {
+        name: 'Fees',
+        values: feesValues
+      }
+    ],
+    defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
+      style: 'currency'
+    })
+  };
+}
+
+function getVolumeData(
+  periodSnapshots: PoolSnapshot[],
+  isAllTimeSelected: boolean,
+  pariodLastSnapshotIdx: number
+): PoolChartData {
   const volumeData = periodSnapshots.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapVolume);
     let prevValue: number;
@@ -202,10 +215,7 @@ const chartData = computed(() => {
     } else {
       prevValue = parseFloat(periodSnapshots[idx + 1].swapVolume);
     }
-    return {
-      name: timestamps.value[idx],
-      value: [timestamps.value[idx], value - prevValue]
-    };
+    return [timestamps.value[idx], value - prevValue];
   });
 
   const defaultHeaderStateValue =
@@ -228,7 +238,37 @@ const chartData = computed(() => {
       style: 'currency'
     })
   };
-});
+}
+
+const chartData = computed(
+  (): PoolChartData => {
+    const periodSnapshots =
+      currentPeriod.value === snapshotValues.value.length
+        ? snapshotValues.value
+        : snapshotValues.value.slice(0, currentPeriod.value - 1);
+    const isAllTimeSelected =
+      periodSnapshots.length === snapshotValues.value.length;
+    const pariodLastSnapshotIdx = periodSnapshots.length - 1;
+
+    if (activeTab.value === PoolChartTab.TVL) {
+      return getTVLData(periodSnapshots);
+    }
+
+    if (activeTab.value === PoolChartTab.FEES) {
+      return getFeesData(
+        periodSnapshots,
+        isAllTimeSelected,
+        pariodLastSnapshotIdx
+      );
+    }
+
+    return getVolumeData(
+      periodSnapshots,
+      isAllTimeSelected,
+      pariodLastSnapshotIdx
+    );
+  }
+);
 
 const defaultChartData = computed(() => {
   const currentPeriodOption = periodOptions.value.find(
@@ -250,14 +290,17 @@ function setCurrentPeriod(period: string) {
   currentPeriod.value = Number(period);
 }
 
-function setCurrentChartValue(value: {
-  value: [string, number];
-  name: string;
+function setCurrentChartValue(payload: {
+  chartDate: string;
+  chartValue: number;
 }) {
-  currentChartValue.value = fNum2(value.value[1], {
+  currentChartValue.value = fNum2(payload.chartValue, {
     style: 'currency'
   });
-  currentChartDate.value = format(new Date(value.value[0]), PRETTY_DATE_FORMAT);
+  currentChartDate.value = format(
+    new Date(payload.chartDate),
+    PRETTY_DATE_FORMAT
+  );
 }
 </script>
 
@@ -301,7 +344,7 @@ function setCurrentChartValue(value: {
       height="96"
       :data="chartData.data"
       :axis-label-formatter="{
-        yAxis: { style: 'currency', abbreviate: true, fractionDigits: 0 }
+        yAxis: { style: 'currency', abbreviate: true, maximumFractionDigits: 0 }
       }"
       :area-style="chartData.areaStyle"
       :color="chartData.color"

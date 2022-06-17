@@ -26,6 +26,7 @@ interface QueryResponse {
  */
 export default function usePoolSnapshotsQuery(
   id: string,
+  days?: number,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
@@ -52,15 +53,14 @@ export default function usePoolSnapshotsQuery(
     let prices: HistoricalPrices = {};
 
     const isStablePhantomPool = isStablePhantom(pool.value.poolType);
-    const daysFromPoolCreation = differenceInDays(
-      new Date(),
-      new Date(pool.value.createTime * 1000)
-    );
+    const shapshotDaysNum =
+      days ||
+      differenceInDays(new Date(), new Date(pool.value.createTime * 1000));
 
     if (isStablePhantomPool) {
       snapshots = await balancerSubgraphService.poolSnapshots.get(
         id,
-        daysFromPoolCreation
+        shapshotDaysNum
       );
 
       return {
@@ -70,11 +70,8 @@ export default function usePoolSnapshotsQuery(
     } else {
       const tokens = pool.value.tokensList;
       [prices, snapshots] = await Promise.all([
-        coingeckoService.prices.getTokensHistorical(
-          tokens,
-          daysFromPoolCreation
-        ),
-        balancerSubgraphService.poolSnapshots.get(id, daysFromPoolCreation)
+        coingeckoService.prices.getTokensHistorical(tokens, shapshotDaysNum),
+        balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
       ]);
     }
 
