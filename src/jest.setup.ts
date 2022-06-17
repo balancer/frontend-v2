@@ -4,10 +4,10 @@ import { config } from '@vue/test-utils';
 import nock from 'nock';
 import { createI18n } from 'vue-i18n';
 
+import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import translations from '@/locales/default.json';
 
 const i18n = createI18n({
-  legacy: true,
   locale: 'en-US',
   messages: { 'en-US': translations },
   dateTimeFormats: {
@@ -35,3 +35,6 @@ nock.disableNetConnect();
 nock.enableNetConnect('balancer.fi');
 
 config.global.plugins = [i18n];
+config.global.components = {
+  BalBtn
+};

@@ -1,20 +1,13 @@
 import { fireEvent, render } from '@testing-library/vue';
 
 import { txResponseMock } from '@/__mocks__/transactions';
-import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.json';
 
-import TxActionBtn from '../TxActionBtn/TxActionBtn.vue';
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
-
-ClaimRewardsBtn.components = { TxActionBtn };
-TxActionBtn.components = { BalBtn };
 
 jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
 jest.mock('@/composables/useTransactions');
-jest.mock('@/composables/useTokens');
 jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useNumbers');
 jest.mock('@/composables/queries/useGaugesQuery');
 jest.mock('@/composables/queries/useGaugesDecorationQuery');
 jest.mock('@/services/web3/useWeb3');
@@ -31,7 +24,7 @@ jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
   };
 });
 
-describe.only('ClaimRewardsBtn', () => {
+describe('ClaimRewardsBtn', () => {
   beforeEach(() => {
     mockClaimRewards.mockClear();
   });
