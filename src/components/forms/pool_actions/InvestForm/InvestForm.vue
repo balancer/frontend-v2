@@ -11,7 +11,7 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, isSameAddress } from '@/lib/utils';
+import { bnum, findByAddress, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
@@ -138,10 +138,13 @@ function tokenWeight(address: string): number {
   if (!props.pool?.onchain?.tokens) return 0;
 
   if (isSameAddress(address, nativeAsset.address)) {
-    return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
+    return (
+      findByAddress(props.pool.onchain.tokens, wrappedNativeAsset.value.address)
+        ?.weight || 1
+    );
   }
 
-  return props.pool.onchain.tokens[address].weight;
+  return findByAddress(props.pool.onchain.tokens, address)?.weight || 1;
 }
 
 function propAmountFor(index: number): string {
