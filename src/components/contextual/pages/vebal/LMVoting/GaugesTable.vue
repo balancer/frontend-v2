@@ -7,7 +7,6 @@ import { useI18n } from 'vue-i18n';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
-import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
@@ -22,12 +21,14 @@ import { scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
+import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 
 /**
  * TYPES
  */
 type Props = {
+  expiredGauges?: string[];
   data?: VotingGaugeWithVotes[];
   isLoading?: boolean;
   noPoolsLabel?: string;
@@ -38,6 +39,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
+  expiredGauges: () => [],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false
@@ -54,9 +56,6 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
-const { data: expiredGauges } = useExpiredGaugesQuery(
-  props.data?.map(gauge => gauge.address)
-);
 
 /**
  * DATA
@@ -119,7 +118,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 80,
+    width: 100,
     hidden: !isWalletReady.value
   }
 ]);
@@ -152,8 +151,12 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
   );
 }
 
-function isGaugeExpired(gaugeAddress: string): boolean {
-  return !!expiredGauges.value?.some(item => isSameAddress(gaugeAddress, item));
+function getIsGaugeExpired(gaugeAddress: string): boolean {
+  return !!props.expiredGauges.some(item => isSameAddress(gaugeAddress, item));
+}
+
+function getHasUserVotes(userVotes: string) {
+  return !!Number(userVotes);
 }
 </script>
 
@@ -218,7 +221,7 @@ function isGaugeExpired(gaugeAddress: string): boolean {
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
-          <BalChipExpired v-if="isGaugeExpired(address)" class="ml-2" />
+          <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
       <template v-slot:nextPeriodVotesCell="gauge">
@@ -228,17 +231,11 @@ function isGaugeExpired(gaugeAddress: string): boolean {
       </template>
       <template v-slot:voteColumnCell="gauge">
         <div v-if="isWalletReady" class="px-4">
-          <BalBtn
-            color="blue"
-            :outline="true"
-            size="sm"
-            class="hover:text-white hover:bg-blue-500 focus:text-white focus:bg-blue-500"
-            flat
-            block
+          <GaugesTableVoteBtn
             @click.stop="emit('clickedVote', gauge)"
-          >
-            {{ $t('veBAL.liquidityMining.table.vote') }}
-          </BalBtn>
+            :hasUserVotes="getHasUserVotes(gauge.userVotes)"
+            :isGaugeExpired="getIsGaugeExpired(gauge.address)"
+          ></GaugesTableVoteBtn>
         </div>
       </template>
     </BalTable>

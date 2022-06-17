@@ -154,8 +154,11 @@ export default defineComponent({
     });
 
     const borderClasses = computed(() => {
-      if (props.outline)
+      if (props.outline) {
+        if (props.disabled)
+          return `border border-gray-200 dark:border-gray-700`;
         return `border border-${props.color}-200 dark:border-${props.color}-700`;
+      }
       return 'border-none';
     });
 

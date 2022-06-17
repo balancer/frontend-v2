@@ -1,6 +1,6 @@
 import { getAddress } from 'ethers/lib/utils';
 import { UseQueryOptions } from 'react-query/types';
-import { computed, reactive } from 'vue';
+import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -35,7 +35,7 @@ function callGaugesIsKilledStatus(
  * and returns the addresses that have is_killed status.
  */
 export default function useExpiredGaugesQuery(
-  gaugeAddresses: Address[] = [],
+  gaugeAddresses: Ref<Address[] | undefined>,
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
@@ -46,7 +46,9 @@ export default function useExpiredGaugesQuery(
   /**
    * COMPUTED
    */
-  const isQueryEnabled = computed(() => gaugeAddresses.length > 0);
+  const isQueryEnabled = computed(() => {
+    return !!gaugeAddresses.value?.length;
+  });
 
   /**
    * QUERY KEY
@@ -60,9 +62,9 @@ export default function useExpiredGaugesQuery(
    */
   async function queryFn() {
     const expiredGaugeAddresses: Address[] = [];
-    if (gaugeAddresses.length) {
+    if (gaugeAddresses.value?.length) {
       const gaugesExpiredStatus = await callGaugesIsKilledStatus(
-        gaugeAddresses
+        gaugeAddresses.value
       );
 
       for (const [address, value] of Object.entries(gaugesExpiredStatus)) {

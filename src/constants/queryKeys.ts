@@ -145,7 +145,7 @@ const QUERY_KEYS = {
         networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
     },
-    Expired: (gauges: string[], networkId: Ref<Network>) => [
+    Expired: (gauges: Ref<string[] | undefined>, networkId: Ref<Network>) => [
       'gauges',
       'expired',
       { gauges, networkId }

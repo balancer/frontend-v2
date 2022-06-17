@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import BalIcon from '../BalIcon/BalIcon.vue';
+import BalTableRow from './BalTableRow.vue';
+import TotalsRow from './TotalsRow.vue';
 export type Sticky = 'horizontal' | 'vertical' | 'both';
 export type Data = any;
 export type ColumnDefinition<T = Data> = {
