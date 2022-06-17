@@ -19,7 +19,6 @@ jest.mock('@/composables/queries/useGaugesQuery');
 jest.mock('@/composables/queries/useGaugesDecorationQuery');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('vue-i18n');
 
 const mockClaimRewards = jest.fn().mockResolvedValue(txResponseMock);
 jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
@@ -44,7 +43,6 @@ describe.only('ClaimRewardsBtn', () => {
         fiatValue: '1000',
       },
     });
-
     expect(getByText('Claim all')).toBeVisible();
   });
 

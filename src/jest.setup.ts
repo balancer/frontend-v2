@@ -2,8 +2,26 @@ import '@testing-library/jest-dom';
 
 import { config } from '@vue/test-utils';
 import nock from 'nock';
+import { createI18n } from 'vue-i18n';
 
 import translations from '@/locales/default.json';
+
+const i18n = createI18n({
+  legacy: true,
+  locale: 'en-US',
+  messages: { 'en-US': translations },
+  dateTimeFormats: {
+    'en-US': {
+      short: {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+      },
+    },
+  },
+});
 
 /**
  * HTTP Requests
@@ -16,9 +34,4 @@ nock.disableNetConnect();
 // Enable for mocked websockets
 nock.enableNetConnect('balancer.fi');
 
-/**
- * Global template mocks
- */
-config.global.mocks = {
-  $t: msg => translations[msg],
-};
+config.global.plugins = [i18n];
