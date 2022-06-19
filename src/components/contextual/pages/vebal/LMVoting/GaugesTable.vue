@@ -155,8 +155,14 @@ function getIsGaugeExpired(gaugeAddress: string): boolean {
   return !!props.expiredGauges.some(item => isSameAddress(gaugeAddress, item));
 }
 
-function getHasUserVotes(userVotes: string) {
+function getHasUserVotes(userVotes: string): boolean {
   return !!Number(userVotes);
+}
+
+function getTableRowClass(gauge: VotingGaugeWithVotes): string {
+  return getHasUserVotes(gauge.userVotes) && getIsGaugeExpired(gauge.address)
+    ? 'expired-gauge-row'
+    : '';
 }
 </script>
 
@@ -178,6 +184,7 @@ function getHasUserVotes(userVotes: string) {
       :square="upToLargeBreakpoint"
       :is-paginated="isPaginated"
       :on-row-click="redirectToPool"
+      :getTableRowClass="getTableRowClass"
       :initial-state="{
         sortColumn: 'nextPeriodVotes',
         sortDirection: 'desc'
@@ -241,3 +248,9 @@ function getHasUserVotes(userVotes: string) {
     </BalTable>
   </BalCard>
 </template>
+
+<style>
+tr.expired-gauge-row {
+  @apply bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800;
+}
+</style>
