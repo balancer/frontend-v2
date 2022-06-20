@@ -297,6 +297,7 @@ const chartGrid = computed(() => {
               }
             ]"
             :show-tooltip="!upToLargeBreakpoint || isModal"
+            chart-type="line"
             hide-y-axis
             hide-x-axis
             show-header

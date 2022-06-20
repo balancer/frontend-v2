@@ -113,7 +113,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
     const amounts = snapshot.amounts;
     const snapshotPoolValue = amounts.reduce(
       (sum: number, amount: string, index: number) => {
-        sum += Number(amount) * (prices ? prices[index] : 1);
+        sum += Number(amount) * (prices && prices[index] ? prices[index] : 0);
         return sum;
       },
       0
@@ -122,7 +122,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
   });
 
   // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
-  tvlValues[tvlValues.length - 1][1] = Number(props.pool.totalLiquidity);
+  tvlValues[0][1] = Number(props.pool.totalLiquidity);
 
   return {
     color: [tailwind.theme.colors.blue['600']],

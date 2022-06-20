@@ -51,7 +51,7 @@ type Props = {
   isLastValueChipVisible?: boolean; // whether to show the little rectangle with the last value of the data
   customGrid?: echarts.ComposeOption<GridOption>; // provide a custom grid for the chart
   chartClass?: string; // sets the class for the chart container
-  wrapperClass?: string; // sets the class for the element which wraps the chart and the header
+  wrapperClass?: string[]; // sets the class for the element which wraps the chart and the header
   showTooltip?: boolean; // shows the tooltip
   showTooltipLayer?: boolean; // hides tooltip floating layer
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
@@ -393,12 +393,12 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
   <div
-    :class="[wrapperClass]"
     v-else
-    @mouseenter="handleMouseEnter"
-    @touchstart="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-    @touchend="handleMouseLeave"
+    :class="[wrapperClass]"
+    @mouseenter.passive="handleMouseEnter"
+    @touchstart.passive="handleMouseEnter"
+    @mouseleave.passive="handleMouseLeave"
+    @touchend.passive="handleMouseLeave"
   >
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
