@@ -4,8 +4,7 @@ import { GridOption } from 'echarts/types/dist/shared';
 import { last } from 'lodash';
 import { Dictionary } from 'lodash';
 import numeral from 'numeral';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { nextTick } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import ECharts from 'vue-echarts';
 
 import useDarkMode from '@/composables/useDarkMode';
