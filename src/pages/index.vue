@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
@@ -8,7 +8,6 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import usePools from '@/composables/pools/usePools';
 import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMigratablePool } from '@/composables/usePool';
