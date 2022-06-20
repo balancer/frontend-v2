@@ -110,18 +110,29 @@ const timestamps = computed(() =>
 );
 
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
-  const tvlValues = periodSnapshots.map((snapshot, idx) => {
+  const tvlValues: (readonly (string | number)[])[] = [];
+  periodSnapshots.forEach((snapshot, idx) => {
     const timestamp = timestamps.value[idx];
     // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
     if (idx === 0) {
-      return Object.freeze([timestamp, Number(props.totalLiquidity || 0)]);
+      tvlValues.push(
+        Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+      );
+      return;
     }
 
     const prices = props.historicalPrices[snapshot.timestamp];
 
-    // if there are no prices for certain timestamp from coingecko
+    /**
+     * if there are no prices for certain timestamp from coingecko => use snapshot.liquidity
+     * if there is neither prices nor liquidity => timestamp is removed
+     */
     if (!prices || prices.length < (props.tokensList?.length || 0)) {
-      return Object.freeze([timestamp, snapshot.liquidity]);
+      if (!snapshot.liquidity) {
+        return;
+      }
+      tvlValues.push(Object.freeze([timestamp, snapshot.liquidity]));
+      return;
     }
 
     const snapshotPoolValue = snapshot.amounts.reduce(
@@ -132,7 +143,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       0
     );
 
-    return Object.freeze([timestamp, snapshotPoolValue]);
+    tvlValues.push(Object.freeze([timestamp, snapshotPoolValue]));
   });
 
   return {

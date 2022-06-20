@@ -57,10 +57,19 @@ export default function usePoolSnapshotsQuery(
       days ||
       differenceInDays(new Date(), new Date(pool.value.createTime * 1000));
 
+    /**
+     * @description
+     * due to coin gecko docs if we query from 1 to 90 days from current time it returns hourly data
+     * @see https://www.coingecko.com/en/api/documentation
+     */
+    const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
+
     if (isStablePhantomPool) {
       snapshots = await balancerSubgraphService.poolSnapshots.get(
         id,
-        shapshotDaysNum
+        shapshotDaysNum,
+        1,
+        aggregateBy
       );
 
       return {
@@ -70,7 +79,12 @@ export default function usePoolSnapshotsQuery(
     } else {
       const tokens = pool.value.tokensList;
       [prices, snapshots] = await Promise.all([
-        coingeckoService.prices.getTokensHistorical(tokens, shapshotDaysNum),
+        coingeckoService.prices.getTokensHistorical(
+          tokens,
+          shapshotDaysNum,
+          1,
+          aggregateBy
+        ),
         balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
       ]);
     }
