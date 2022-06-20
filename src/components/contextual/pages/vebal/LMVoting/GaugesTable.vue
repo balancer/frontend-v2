@@ -251,6 +251,6 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
 
 <style>
 tr.expired-gauge-row {
-  @apply bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800;
+  @apply bg-red-50  hover:bg-red-100 dark:border-red-600 dark:border;
 }
 </style>
