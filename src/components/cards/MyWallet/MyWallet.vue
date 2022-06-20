@@ -102,6 +102,7 @@ const tokensWithBalance = computed(() => {
         <div v-else-if="isWalletReady">
           <BalAssetSet
             @click="setTokenInAddress"
+            :balAssetProps="{ button: true }"
             :width="275"
             wrap
             :size="30"

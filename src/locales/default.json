@@ -578,7 +578,7 @@
             "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem. A new version of the pool will be deployed in the next few weeks that can be migrated to."
         }
     },
-    "popularBases": "Popular:",
+    "popularBases": "Popular",
     "portfolio": "Portfolio",
     "potential": "Potential",
     "potentialWeeklyYield": "Potential weekly yield",
