@@ -14,6 +14,9 @@ type Props = {
  */
 const props = defineProps<Props>();
 
+/**
+ * COMPUTED
+ */
 const showRemoveVotes = computed(() => {
   return props.isGaugeExpired && props.hasUserVotes;
 });
