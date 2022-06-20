@@ -115,10 +115,10 @@ export default function useWeb3() {
   );
 
   // WATCHERS
-  watch(account, () => {
+  watch(account, newAccount => {
     // if the account ref has changed, we know that
     // the user has successfully connected a wallet
-    toggleWalletSelectModal(false);
+    if (newAccount) toggleWalletSelectModal(false);
   });
 
   return {
