@@ -122,6 +122,8 @@
               :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
+              :totalLiquidity="pool?.totalLiquidity"
+              :tokensList="pool?.tokensList"
             />
           </div>
           <div class="mb-4 px-1 lg:px-0">

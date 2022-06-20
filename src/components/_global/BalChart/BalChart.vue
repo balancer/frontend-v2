@@ -4,7 +4,8 @@ import { GridOption } from 'echarts/types/dist/shared';
 import { last } from 'lodash';
 import { Dictionary } from 'lodash';
 import numeral from 'numeral';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { nextTick } from 'vue';
 import ECharts from 'vue-echarts';
 
 import useDarkMode from '@/composables/useDarkMode';
@@ -301,10 +302,12 @@ function setCurrentValueToLatest(updateCurrentValue: boolean) {
     );
     const currentChartValue = props.data[0].values[0];
 
-    emit('setCurrentChartValue', {
-      chartDate: currentChartValue[0],
-      chartValue: currentChartValue[1]
-    });
+    if (currentChartValue) {
+      emit('setCurrentChartValue', {
+        chartDate: currentChartValue[0],
+        chartValue: currentChartValue[1]
+      });
+    }
   }
 
   const startValue = numeral((props.data[0].values[0] || [])[1]);
@@ -395,10 +398,10 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
   <div
     v-else
     :class="[wrapperClass]"
-    @mouseenter.passive="handleMouseEnter"
+    @mouseenter="handleMouseEnter"
     @touchstart.passive="handleMouseEnter"
-    @mouseleave.passive="handleMouseLeave"
-    @touchend.passive="handleMouseLeave"
+    @mouseleave="handleMouseLeave"
+    @touchend="handleMouseLeave"
   >
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">

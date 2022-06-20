@@ -21,6 +21,9 @@ type Props = {
   snapshots: PoolSnapshots;
   loading: boolean;
   pool: Pool;
+  // props are added to prevent line chart rerender on each pool update
+  totalLiquidity?: string;
+  tokensList?: string[];
 };
 
 enum PoolChartTab {
@@ -39,7 +42,7 @@ interface PoolChartData {
   chartType: string;
   data: {
     name: string;
-    values: (string | number)[][];
+    values: (readonly (string | number)[])[];
   }[];
   defaultHeaderStateValue: string;
 }
@@ -109,20 +112,28 @@ const timestamps = computed(() =>
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
   const tvlValues = periodSnapshots.map((snapshot, idx) => {
     const timestamp = timestamps.value[idx];
+    // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
+    if (idx === 0) {
+      return Object.freeze([timestamp, Number(props.totalLiquidity || 0)]);
+    }
+
     const prices = props.historicalPrices[snapshot.timestamp];
-    const amounts = snapshot.amounts;
-    const snapshotPoolValue = amounts.reduce(
+
+    // if there are no prices for certain timestamp from coingecko
+    if (!prices || prices.length < (props.tokensList?.length || 0)) {
+      return Object.freeze([timestamp, snapshot.liquidity]);
+    }
+
+    const snapshotPoolValue = snapshot.amounts.reduce(
       (sum: number, amount: string, index: number) => {
-        sum += Number(amount) * (prices && prices[index] ? prices[index] : 0);
+        sum += Number(amount) * prices[index];
         return sum;
       },
       0
     );
-    return [timestamp, snapshotPoolValue];
-  });
 
-  // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
-  tvlValues[0][1] = Number(props.pool.totalLiquidity);
+    return Object.freeze([timestamp, snapshotPoolValue]);
+  });
 
   return {
     color: [tailwind.theme.colors.blue['600']],
@@ -174,8 +185,9 @@ function getFeesData(
     } else {
       prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
     }
-    return [timestamps.value[idx], value - prevValue];
+    return Object.freeze([timestamps.value[idx], value - prevValue]);
   });
+
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapFees) -
     (isAllTimeSelected
@@ -215,7 +227,7 @@ function getVolumeData(
     } else {
       prevValue = parseFloat(periodSnapshots[idx + 1].swapVolume);
     }
-    return [timestamps.value[idx], value - prevValue];
+    return Object.freeze([timestamps.value[idx], value - prevValue]);
   });
 
   const defaultHeaderStateValue =
