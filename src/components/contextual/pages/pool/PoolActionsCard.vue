@@ -28,7 +28,7 @@ const props = defineProps<Props>();
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { isWalletReady, toggleWalletSelectModal } = useWeb3();
+const { isWalletReady, tryConnectWithInjectedProvider } = useWeb3();
 
 /**
  * COMPUTED
@@ -81,7 +81,7 @@ const fiatTotal = computed(() => {
       :label="$t('connectWallet')"
       color="gradient"
       block
-      @click="toggleWalletSelectModal"
+      @click="tryConnectWithInjectedProvider"
     />
     <div v-else class="grid gap-2 grid-cols-2">
       <BalBtn
