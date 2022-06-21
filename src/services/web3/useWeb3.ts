@@ -1,6 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 import { Web3Provider } from '@ethersproject/providers';
-import { computed, inject, reactive, ref, watch } from 'vue';
+import { computed, inject, reactive, ref } from 'vue';
 import { useQuery } from 'vue-query';
 
 import useNetwork from '@/composables/useNetwork';

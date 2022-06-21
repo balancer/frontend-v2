@@ -3,10 +3,15 @@
     <div class="p-4 border-b dark:border-gray-900">
       <div class="flex justify-between items-center mb-4">
         <h5 v-text="$t('account')" class="leading-none" />
-        <div v-if="!hideDisconnect">
-          <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
-            Disconnect
+        <div class="flex items-center gap-2">
+          <BalBtn color="gray" size="xs" @click="toggleWalletSelectModal">
+            Change
           </BalBtn>
+          <div v-if="!hideDisconnect">
+            <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
+              Disconnect
+            </BalBtn>
+          </div>
         </div>
       </div>
       <div class="flex mt-1">
@@ -176,6 +181,7 @@ export default defineComponent({
       account,
       profile,
       disconnectWallet,
+      toggleWalletSelectModal,
       connector,
       isEIP1559SupportedNetwork,
       userNetworkConfig,
@@ -264,6 +270,7 @@ export default defineComponent({
       isUnsupportedNetwork,
       // methods
       disconnectWallet,
+      toggleWalletSelectModal,
       setDarkMode,
       setLocale,
       setTradeInterface,
