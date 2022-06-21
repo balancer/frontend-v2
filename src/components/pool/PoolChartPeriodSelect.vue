@@ -43,6 +43,11 @@ defineProps<Props>();
           <div class="flex items-center ml-1 font-medium">
             {{ option.text }}
           </div>
+          <BalIcon
+            v-if="activeOption.days === option.days"
+            name="check"
+            class="text-blue-500"
+          />
         </div>
       </div>
     </template>
