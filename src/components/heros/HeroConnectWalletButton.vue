@@ -6,7 +6,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 /**
  * COMPOSABLES
  */
-const { toggleWalletSelectModal } = useWeb3();
+const { tryConnectWithInjectedProvider } = useWeb3();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 
@@ -14,7 +14,7 @@ const { darkMode } = useDarkMode();
  * METHODS
  */
 function onClickConnect() {
-  toggleWalletSelectModal(true);
+  tryConnectWithInjectedProvider();
   trackGoal(Goals.ClickHeroConnectWallet);
 }
 </script>

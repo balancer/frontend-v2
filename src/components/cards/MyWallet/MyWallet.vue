@@ -10,7 +10,11 @@ import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
-const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
+const {
+  appNetworkConfig,
+  isWalletReady,
+  tryConnectWithInjectedProvider
+} = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { setTokenInAddress } = useTradeState();
 const {
@@ -118,7 +122,7 @@ const tokensWithBalance = computed(() => {
           </p>
         </div>
         <div v-else class="w-full mt-4 lg:mt-0 flex font-medium">
-          <BalLink @click="toggleWalletSelectModal"
+          <BalLink @click="tryConnectWithInjectedProvider"
             >Connect your wallet</BalLink
           >
         </div>
