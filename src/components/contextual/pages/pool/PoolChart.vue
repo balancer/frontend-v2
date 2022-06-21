@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
+import PoolChartPeriodSelect from '@/components/pool/PoolChartPeriodSelect.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
@@ -16,6 +17,11 @@ import { Pool, PoolSnapshot, PoolSnapshots } from '@/services/pool/types';
 /**
  * TYPES
  */
+export type PoolChartPeriod = {
+  text: string;
+  days: number;
+};
+
 type Props = {
   historicalPrices: HistoricalPrices;
   snapshots: PoolSnapshots;
@@ -97,13 +103,13 @@ const appLoading = computed(() => store.state.app.loading);
 const snapshotValues = computed(() => Object.values(props.snapshots || []));
 
 const periodOptions = computed(() => [
-  { text: t('poolChart.period.days', [90]), value: 90 },
-  { text: t('poolChart.period.days', [180]), value: 180 },
-  { text: t('poolChart.period.days', [365]), value: 365 },
-  { text: t('poolChart.period.all'), value: snapshotValues.value.length }
+  { text: t('poolChart.period.days', [90]), days: 90 },
+  { text: t('poolChart.period.days', [180]), days: 180 },
+  { text: t('poolChart.period.days', [365]), days: 365 },
+  { text: t('poolChart.period.all'), days: snapshotValues.value.length }
 ]);
 
-const currentPeriod = ref(90);
+const currentPeriod = ref<PoolChartPeriod>(periodOptions.value[0]);
 
 const timestamps = computed(() =>
   snapshotValues.value.map(snapshot => format(snapshot.timestamp, 'yyyy/MM/dd'))
@@ -259,9 +265,9 @@ function getVolumeData(
 const chartData = computed(
   (): PoolChartData => {
     const periodSnapshots =
-      currentPeriod.value === snapshotValues.value.length
+      currentPeriod.value.days === snapshotValues.value.length
         ? snapshotValues.value
-        : snapshotValues.value.slice(0, currentPeriod.value - 1);
+        : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
     const isAllTimeSelected =
       periodSnapshots.length === snapshotValues.value.length;
     const pariodLastSnapshotIdx = periodSnapshots.length - 1;
@@ -288,7 +294,7 @@ const chartData = computed(
 
 const defaultChartData = computed(() => {
   const currentPeriodOption = periodOptions.value.find(
-    option => option.value === currentPeriod.value
+    option => option.days === currentPeriod.value.days
   );
   let title = `${currentPeriodOption?.text} ${activeTab.value}`;
 
@@ -302,8 +308,8 @@ const defaultChartData = computed(() => {
 /**
  * METHODS
  */
-function setCurrentPeriod(period: string) {
-  currentPeriod.value = Number(period);
+function setCurrentPeriod(period: PoolChartPeriod) {
+  currentPeriod.value = period;
 }
 
 function setCurrentChartValue(payload: {
@@ -328,14 +334,11 @@ function setCurrentChartValue(payload: {
     >
       <div class="flex mb-4">
         <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
-        <div class="w-24 flex items-center">
-          <BalSelectInput
+        <div class="flex items-center">
+          <PoolChartPeriodSelect
             :options="periodOptions"
-            :model-value="currentPeriod.toString()"
-            @change="setCurrentPeriod"
-            name="periods"
-            no-margin
-            class="font-medium cursor-pointer"
+            :active-option="currentPeriod"
+            @change-option="setCurrentPeriod"
           />
         </div>
       </div>
