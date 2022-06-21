@@ -25,6 +25,14 @@ function setBlockNumber(n: number): void {
 /** INIT STATE */
 rpcProviderService.initBlockListener(setBlockNumber);
 
+const toggleWalletSelectModal = (value?: boolean) => {
+  if (value !== undefined && typeof value === 'boolean') {
+    isWalletSelectVisible.value = value;
+    return;
+  }
+  isWalletSelectVisible.value = !isWalletSelectVisible.value;
+};
+
 export default function useWeb3() {
   const {
     account,
@@ -94,18 +102,20 @@ export default function useWeb3() {
   const getSigner = () => getProvider().getSigner();
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
 
-  const toggleWalletSelectModal = (value: boolean) => {
-    // for 1 click connect (coinbase)
+  function tryConnectWithInjectedProvider(): void {
+    // Open wallet select modal because even if there's injected provider,
+    // user might want to reject it and use another wallet.
+    // If user has already accepted the injected provider, modal will be closed after
+    // wallet is connected
+    toggleWalletSelectModal();
     if (hasInjectedProvider()) {
-      connectWallet('metamask');
-      return;
+      // Immediately try to connect with injected provider
+      connectWallet('metamask').then(() => {
+        // Close the modal after connected
+        toggleWalletSelectModal(false);
+      });
     }
-    if (value !== undefined && typeof value === 'boolean') {
-      isWalletSelectVisible.value = value;
-      return;
-    }
-    isWalletSelectVisible.value = !isWalletSelectVisible.value;
-  };
+  }
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
     QUERY_KEYS.Account.Profile(networkId, account, chainId),
@@ -114,13 +124,6 @@ export default function useWeb3() {
       enabled: canLoadProfile
     })
   );
-
-  // WATCHERS
-  watch(account, newAccount => {
-    // if the account ref has changed, we know that
-    // the user has successfully connected a wallet
-    if (newAccount) toggleWalletSelectModal(false);
-  });
 
   return {
     // refs
@@ -156,6 +159,7 @@ export default function useWeb3() {
     getSigner,
     disconnectWallet,
     toggleWalletSelectModal,
+    tryConnectWithInjectedProvider,
     setBlockNumber
   };
 }

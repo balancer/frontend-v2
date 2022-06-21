@@ -14,7 +14,7 @@ import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
  * COMPOSABLES
  */
 const { isMobile, isDesktop } = useBreakpoints();
-const { account, connector, toggleWalletSelectModal } = useWeb3();
+const { account, connector, tryConnectWithInjectedProvider } = useWeb3();
 const { setSidebarOpen } = useSidebar();
 
 /**
@@ -32,7 +32,7 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
       v-else
       color="white"
       :size="isMobile ? 'md' : 'sm'"
-      @click="toggleWalletSelectModal"
+      @click="tryConnectWithInjectedProvider"
     >
       <WalletIcon class="mr-2" />
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
