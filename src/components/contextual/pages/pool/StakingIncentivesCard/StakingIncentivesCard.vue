@@ -84,136 +84,138 @@ async function handleActionSuccess() {
 </script>
 
 <template>
-  <AnimatePresence
-    :isVisible="
-      !isLoadingStakedShares &&
-        !isStakedSharesIdle &&
-        !isLoadingPoolEligibility &&
-        !isLoadingBoosts
-    "
-  >
-    <div class="relative">
-      <BalAccordion
-        :class="['shadow-2xl', { handle: isPoolEligibleForStaking }]"
-        :sections="[
-          {
-            title: $t('staking.stakingIncentives'),
-            id: 'staking-incentives',
-            handle: 'staking-handle',
-            isDisabled: !isPoolEligibleForStaking
-          }
-        ]"
-      >
-        <template v-slot:staking-handle>
-          <button
-            class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
-          >
-            <BalStack horizontal justify="between" align="center">
-              <BalStack spacing="sm" align="center">
-                <div
-                  :class="[
-                    'flex items-center p-1 text-white rounded-full',
-                    {
-                      'bg-green-500': isPoolEligibleForStaking,
-                      'bg-gray-400': !isPoolEligibleForStaking
-                    }
-                  ]"
-                >
-                  <BalIcon
-                    size="sm"
-                    name="check"
-                    v-if="isPoolEligibleForStaking"
-                  />
-                  <BalIcon size="sm" name="x" v-else />
-                </div>
-                <h6>{{ $t('staking.stakingIncentives') }}</h6>
-              </BalStack>
-              <BalStack
-                v-if="isPoolEligibleForStaking"
-                horizontal
-                spacing="sm"
-                align="center"
-              >
-                <BalIcon name="chevron-down" class="text-blue-500" />
-              </BalStack>
-            </BalStack>
-          </button>
-        </template>
-        <template v-slot:staking-incentives>
-          <div class="bg-white dark:bg-gray-850 relative">
-            <BalStack
-              vertical
-              spacing="sm"
-              class="px-4 py-4 border-t dark:border-gray-900"
+  <div>
+    <AnimatePresence
+      :isVisible="
+        !isLoadingStakedShares &&
+          !isStakedSharesIdle &&
+          !isLoadingPoolEligibility &&
+          !isLoadingBoosts
+      "
+    >
+      <div class="relative">
+        <BalAccordion
+          :class="['shadow-2xl', { handle: isPoolEligibleForStaking }]"
+          :sections="[
+            {
+              title: $t('staking.stakingIncentives'),
+              id: 'staking-incentives',
+              handle: 'staking-handle',
+              isDisabled: !isPoolEligibleForStaking
+            }
+          ]"
+        >
+          <template v-slot:staking-handle>
+            <button
+              class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
             >
-              <BalStack horizontal justify="between">
-                <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
-                <BalStack horizontal spacing="sm" align="center">
-                  <AnimatePresence :isVisible="isRefetchingStakedShares">
-                    <BalLoadingBlock class="h-5" />
-                  </AnimatePresence>
-                  <AnimatePresence :isVisible="!isRefetchingStakedShares">
-                    <span>
-                      {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
-                    </span>
-                  </AnimatePresence>
-                  <BalTooltip :text="$t('staking.stakedLpTokensTooltip')" />
+              <BalStack horizontal justify="between" align="center">
+                <BalStack spacing="sm" align="center">
+                  <div
+                    :class="[
+                      'flex items-center p-1 text-white rounded-full',
+                      {
+                        'bg-green-500': isPoolEligibleForStaking,
+                        'bg-gray-400': !isPoolEligibleForStaking
+                      }
+                    ]"
+                  >
+                    <BalIcon
+                      size="sm"
+                      name="check"
+                      v-if="isPoolEligibleForStaking"
+                    />
+                    <BalIcon size="sm" name="x" v-else />
+                  </div>
+                  <h6>{{ $t('staking.stakingIncentives') }}</h6>
+                </BalStack>
+                <BalStack
+                  v-if="isPoolEligibleForStaking"
+                  horizontal
+                  spacing="sm"
+                  align="center"
+                >
+                  <BalIcon name="chevron-down" class="text-blue-500" />
                 </BalStack>
               </BalStack>
-              <BalStack horizontal justify="between">
-                <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
-                <BalStack horizontal spacing="sm" align="center">
-                  <AnimatePresence :isVisible="isRefetchingStakedShares">
-                    <BalLoadingBlock class="h-5" />
-                  </AnimatePresence>
-                  <AnimatePresence :isVisible="!isRefetchingStakedShares">
-                    <span>
-                      {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
-                    </span>
-                  </AnimatePresence>
-                  <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
+            </button>
+          </template>
+          <template v-slot:staking-incentives>
+            <div class="bg-white dark:bg-gray-850 relative">
+              <BalStack
+                vertical
+                spacing="sm"
+                class="px-4 py-4 border-t dark:border-gray-900"
+              >
+                <BalStack horizontal justify="between">
+                  <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
+                  <BalStack horizontal spacing="sm" align="center">
+                    <AnimatePresence :isVisible="isRefetchingStakedShares">
+                      <BalLoadingBlock class="h-5" />
+                    </AnimatePresence>
+                    <AnimatePresence :isVisible="!isRefetchingStakedShares">
+                      <span>
+                        {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
+                      </span>
+                    </AnimatePresence>
+                    <BalTooltip :text="$t('staking.stakedLpTokensTooltip')" />
+                  </BalStack>
+                </BalStack>
+                <BalStack horizontal justify="between">
+                  <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
+                  <BalStack horizontal spacing="sm" align="center">
+                    <AnimatePresence :isVisible="isRefetchingStakedShares">
+                      <BalLoadingBlock class="h-5" />
+                    </AnimatePresence>
+                    <AnimatePresence :isVisible="!isRefetchingStakedShares">
+                      <span>
+                        {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
+                      </span>
+                    </AnimatePresence>
+                    <BalTooltip :text="$t('staking.unstakedLpTokensTooltip')" />
+                  </BalStack>
+                </BalStack>
+                <BalStack horizontal spacing="sm" class="mt-2">
+                  <BalBtn
+                    color="gradient"
+                    size="sm"
+                    @click="showStakePreview"
+                    :disabled="fiatValueOfUnstakedShares === '0'"
+                  >
+                    {{ $t('stake') }}
+                  </BalBtn>
+                  <BalBtn
+                    outline
+                    color="gray"
+                    size="sm"
+                    @click="showUnstakePreview"
+                    :disabled="fiatValueOfStakedShares === '0'"
+                  >
+                    {{ $t('unstake') }}
+                  </BalBtn>
                 </BalStack>
               </BalStack>
-              <BalStack horizontal spacing="sm" class="mt-2">
-                <BalBtn
-                  color="gradient"
-                  size="sm"
-                  @click="showStakePreview"
-                  :disabled="fiatValueOfUnstakedShares === '0'"
-                >
-                  {{ $t('stake') }}
-                </BalBtn>
-                <BalBtn
-                  outline
-                  color="gray"
-                  size="sm"
-                  @click="showUnstakePreview"
-                  :disabled="fiatValueOfStakedShares === '0'"
-                >
-                  {{ $t('unstake') }}
-                </BalBtn>
-              </BalStack>
-            </BalStack>
-          </div>
-        </template>
-      </BalAccordion>
-    </div>
-  </AnimatePresence>
-  <AnimatePresence
-    :isVisible="
-      isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
-    "
-    unmountInstantly
-  >
-    <BalLoadingBlock class="h-12" />
-  </AnimatePresence>
-  <StakePreviewModal
-    :isVisible="isStakePreviewVisible"
-    :pool="pool"
-    :action="stakeAction"
-    @close="handlePreviewClose"
-    @success="handleActionSuccess"
-  />
+            </div>
+          </template>
+        </BalAccordion>
+      </div>
+    </AnimatePresence>
+    <AnimatePresence
+      :isVisible="
+        isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
+      "
+      unmountInstantly
+    >
+      <BalLoadingBlock class="h-12" />
+    </AnimatePresence>
+    <StakePreviewModal
+      :isVisible="isStakePreviewVisible"
+      :pool="pool"
+      :action="stakeAction"
+      @close="handlePreviewClose"
+      @success="handleActionSuccess"
+    />
+  </div>
 </template>
 
 <style>

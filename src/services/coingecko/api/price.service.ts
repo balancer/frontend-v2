@@ -187,11 +187,8 @@ export class PriceService {
           }
         } else if (aggregateBy === 'day') {
           for (const key in result) {
-            const value = result[key];
-            const [timestamp, price] = value;
-            if (timestamp > start * 1000) {
-              prices[timestamp] = price;
-            }
+            const [timestamp, price] = result[key];
+            prices[timestamp] = price;
           }
         }
 

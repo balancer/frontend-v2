@@ -67,9 +67,7 @@ export default function usePoolSnapshotsQuery(
     if (isStablePhantomPool) {
       snapshots = await balancerSubgraphService.poolSnapshots.get(
         id,
-        shapshotDaysNum,
-        1,
-        aggregateBy
+        shapshotDaysNum
       );
 
       return {

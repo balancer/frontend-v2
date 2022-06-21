@@ -254,7 +254,10 @@ const chartConfig = computed(() => ({
         ? [
             {
               name: 'Latest',
-              yAxis: (last(props.data[i]?.values) || [])[1]
+              yAxis:
+                props.data[i]?.values.length > 0
+                  ? (last(props.data[i]?.values) || [])[1]
+                  : 0
             }
           ]
         : [],
