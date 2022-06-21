@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PoolChartPeriod } from '@/components/contextual/pages/pool/PoolChart.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
+
 /**
  * TYPES
  */
@@ -13,9 +13,6 @@ type Props = {
  * PROPS
  */
 defineProps<Props>();
-
-// COMPOSABLES
-const { upToLargeBreakpoint } = useBreakpoints();
 </script>
 
 <template>
