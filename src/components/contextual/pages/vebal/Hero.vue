@@ -81,7 +81,11 @@ function navigateToGetVeBAL() {
             />
           </div>
           <div class="caption font-semibold">
-            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
+            <p
+              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+            >
+              {{ $t('veBAL.hero.tokens.balWETH') }}
+            </p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1 font-medium">
               {{ $t('veBAL.hero.tokenInfo.balWETH') }}
             </BalTooltip>
@@ -98,7 +102,11 @@ function navigateToGetVeBAL() {
             />
           </div>
           <div class="caption font-semibold">
-            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
+            <p
+              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+            >
+              {{ $t('veBAL.hero.tokens.lpToken') }}
+            </p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.lpToken') }}
             </BalTooltip>
@@ -115,7 +123,11 @@ function navigateToGetVeBAL() {
             />
           </div>
           <div class="caption font-semibold">
-            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
+            <p
+              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+            >
+              {{ $t('veBAL.hero.tokens.veBAL') }}
+            </p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.veBAL') }}
             </BalTooltip>
@@ -133,23 +145,13 @@ function navigateToGetVeBAL() {
 
 .hero-container:before {
   content: ' ';
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.3;
-  /* background-image: url('/images/backgrounds/spirograph3.svg'); */
   background: linear-gradient(0deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
     url('/images/backgrounds/vebal-hero-noise.svg');
-  background-repeat: no-repeat;
-  background-position: 50% 0;
-  background-size: cover;
+  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-30 z-0;
 }
 
 .hero-content {
-  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full;
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full z-10;
 }
 .hero-text {
   opacity: 0;
@@ -170,21 +172,20 @@ function navigateToGetVeBAL() {
   background: linear-gradient(-45deg, #ae8d39, #684e09);
 }
 .coins {
-  @apply flex lg:gap-8;
+  @apply flex lg:gap-8 px-1 lg:px-0;
   flex-grow: 1;
 }
 .coin-wrapper {
   aspect-ratio: 7 / 8;
 }
 .coin {
-  @apply w-full flex flex-col items-center justify-end;
+  @apply w-full flex flex-col items-center justify-end relative;
 }
-
 .coin:hover .graphic {
   transform: translateY(-8px);
 }
 .graphic {
-  @apply transition-transform duration-300;
+  @apply transition-transform duration-300 relative;
 }
 .caption {
   @apply text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
