@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address';
+import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from 'ethers/lib/utils';
 import { intersection } from 'lodash';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
@@ -19,6 +20,7 @@ import { stakingRewardsService } from '@/services/staking/staking-rewards.servic
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { getGaugeAddress } from './staking.provider';
+
 export type UserGaugeShare = {
   id: string;
   gauge: {
@@ -267,6 +269,9 @@ export default function useUserStakingData(
       getAddress(poolAddress.value),
       getProvider()
     );
+
+    if (gaugeAddress === AddressZero) return '0';
+    console.log('gaugeAddress', gaugeAddress);
     const gauge = new LiquidityGauge(gaugeAddress);
     const balance = await gauge.balance(account.value);
     return formatUnits(balance.toString(), 18);

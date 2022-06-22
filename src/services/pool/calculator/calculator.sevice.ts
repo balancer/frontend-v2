@@ -104,11 +104,11 @@ export default class CalculatorService {
       let hasBalance = true;
       let balance;
       if (token === this.config.network.nativeAsset.address) {
-        balance = bnum(this.balances.value[token])
+        balance = bnum(this.balances.value[getAddress(token)])
           .minus(this.config.network.nativeAsset.minTransactionBuffer)
           .toString();
       } else {
-        balance = this.balances.value[token] || '0';
+        balance = this.balances.value[getAddress(token)] || '0';
       }
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
@@ -233,7 +233,7 @@ export default class CalculatorService {
   }
 
   public get bptBalance(): string {
-    return this.balances.value[this.pool.value.address];
+    return this.balances.value[getAddress(this.pool.value.address)];
   }
 
   public get isStablePool(): boolean {
