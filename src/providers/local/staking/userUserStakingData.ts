@@ -271,7 +271,7 @@ export default function useUserStakingData(
     );
 
     if (gaugeAddress === AddressZero) return '0';
-    console.log('gaugeAddress', gaugeAddress);
+
     const gauge = new LiquidityGauge(gaugeAddress);
     const balance = await gauge.balance(account.value);
     return formatUnits(balance.toString(), 18);
