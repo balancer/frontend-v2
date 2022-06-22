@@ -1,30 +1,4 @@
-<script setup lang="ts">
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-
-/**
- * COMPOSABLES
- */
-const { t } = useI18n();
-const router = useRouter();
-
-/**
- * COMPUTED
- */
-
-/**
- * METHODS
- */
-function navigateToGetVeBAL() {
-  router.push({
-    name: 'get-vebal',
-    query: {
-      returnRoute: 'vebal'
-    }
-  });
-}
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="bg">
@@ -49,7 +23,6 @@ function navigateToGetVeBAL() {
               src="@/assets/images/icons/claims-header/add-liquidity.svg"
             />
             <p class="tip-label font-semibold">
-              <!-- <span class="tip-number">1</span> -->
               Add liquidity
               <BalTooltip
                 iconSize="xs"
@@ -124,12 +97,9 @@ function navigateToGetVeBAL() {
 
 <style scoped>
 .bg {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.5) 0%,
-    rgba(255, 0, 255, 0) 25%
-  );
+  @apply bg-gradient-to-r from-pink-500 to-yellow-500;
   background-image: url('/images/backgrounds/claims-header.png');
+
   @apply bg-no-repeat bg-cover bg-center;
 }
 .hero-container {
@@ -159,6 +129,7 @@ function navigateToGetVeBAL() {
 }
 
 .tip:hover .tip-icon {
+  /* Tailwind class -translate-y-2 not working for some reason here */
   transform: translateY(-8px);
 }
 
