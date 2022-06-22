@@ -98,7 +98,8 @@ const POOLS_KOVAN: Pools = {
     '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
     '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'managedPool', // Kovan Managed
-    '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
+    '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool', // kovan stablephantom
+    '0x1f47ab83420cd1f818df9acbd6ee68341bb91592': 'stablePool' // stable pool v2
   },
   Stakable: {
     AllowList: [
@@ -139,7 +140,10 @@ const POOLS_MAINNET: Pools = {
       '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080', // Lido Metastable
       '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112', // Rocket Pool Metastable
       '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // Mainnet bb-a-USD
-      '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed' // wstETH/WETH #2
+      '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed', // wstETH/WETH #2
+      '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249', // b-auraBAL-Stable (auraBal / 8020 BALETH)
+      '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d', // sdBAL Stable Pool (sdBAL / 8020 BALETH)
+      '0x178e029173417b1f9c8bc16dcec6f697bc32374600000000000000000000025d' // Fiat DAO Stable Pool
     ]
   },
   Investment: {
@@ -157,7 +161,8 @@ const POOLS_MAINNET: Pools = {
     '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool', // Mainnet LBP
     '0x0f3e0c4218b7b0108a3643cfe9d3ec0d4f57c54e': 'liquidityBootstrappingPool', // Mainnet LBP (zero protocol fee)
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
-    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool' // mainnet stablephantom
+    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
+    '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool' // stable pool v2
   },
   Stakable: {
     AllowList: [
@@ -202,7 +207,9 @@ const POOLS_MAINNET: Pools = {
       '0x851523a36690bf267bbfec389c823072d82921a90002000000000000000001ed',
       '0xe8cc7e765647625b95f59c15848379d10b9ab4af0002000000000000000001de',
       '0x85370d9e3bb111391cc89f6de344e801760461830002000000000000000001ef',
-      '0xa7ff759dbef9f3efdd1d59beee44b966acafe214000200000000000000000180'
+      '0xa7ff759dbef9f3efdd1d59beee44b966acafe214000200000000000000000180',
+      '0x3f7c10701b14197e2695dec6428a2ca4cf7fc3b800020000000000000000023c',
+      '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d'
     ]
   }
 };
@@ -231,7 +238,9 @@ const POOLS_POLYGON: Pools = {
       '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366', // polygon staked matic
       '0xb4670d1389c758e4380c4211bcbc85342688b9c50002000000000000000003d8', // vQi,
       '0xc31a37105b94ab4efca1954a14f059af11fcd9bb000000000000000000000455', // 4pool
-      '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4' // maticx metastable
+      '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4', // maticx metastable
+      '0xb4b22bd6cdad0ab828be6f8a4086dfa54e9b373600020000000000000000058f', // Polygon tetuBAL-80BAL-20WETH
+      '0xb797adfb7b268faeaa90cadbfed464c76ee599cd0002000000000000000005ba' // tetuBAL-80BAL-20WETH V2 (with short name)
     ]
   },
   Investment: {
@@ -245,7 +254,8 @@ const POOLS_POLYGON: Pools = {
     '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool', // LBP
     '0x41b953164995c11c81da73d212ed8af25741b7ac': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
     '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
-    '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool' // polygon stablephantom
+    '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool', // polygon stablephantom
+    '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool' // stable pool v2
   },
   Stakable: {
     AllowList: [
@@ -308,7 +318,8 @@ const POOLS_ARBITRUM: Pools = {
     '0x142b9666a0a3a30477b052962dda81547e7029ab': 'liquidityBootstrappingPool', // Arbitrum LBP (old)
     '0x1802953277fd955f9a254b80aa0582f193cf1d77': 'liquidityBootstrappingPool', // Arbitrum LBP (new)
     '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // arbitrum managed
-    '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool' // arbitrum stablephantom
+    '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool', // arbitrum stablephantom
+    '0xef44d6786b2b4d544b7850fe67ce6381626bf2d6': 'stablePool' // stable pool v2
   },
   Stakable: {
     AllowList: [
