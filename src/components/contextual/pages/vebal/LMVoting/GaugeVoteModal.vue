@@ -73,12 +73,16 @@ const voteState = reactive<TransactionActionState>({
 /**
  * COMPUTED
  */
-const voteDisabled = computed((): boolean => {
+const voteButtonDisabled = computed((): boolean => {
   if (isVeBalGauge.value) {
-    return (!!voteWarning.value && isError.value) || !hasEnoughVotes.value;
+    return !!voteError.value || !hasEnoughVotes.value;
   }
 
-  return !!voteWarning.value || !hasEnoughVotes.value;
+  return !!voteWarning.value || !!voteError.value || !hasEnoughVotes.value;
+});
+
+const voteInputDisabled = computed((): boolean => {
+  return !!voteError.value;
 });
 
 const currentWeight = computed(() => props.gauge.userVotes);
@@ -178,20 +182,17 @@ const voteWarning = computed((): {
   title: string;
   description: string;
 } | null => {
-  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
-  if (noVeBalWarning.value) return noVeBalWarning.value;
-  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
   if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
   return null;
 });
 
-// Some warnings should not block voting
-const isError = computed(
-  (): boolean => voteWarning.value !== veBalVoteOverLimitWarning.value
-);
-
-const voteError = computed(() => {
-  if (isError.value) return voteWarning.value;
+const voteError = computed((): {
+  title: string;
+  description: string;
+} | null => {
+  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
+  if (noVeBalWarning.value) return noVeBalWarning.value;
+  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
   if (voteState.error) return voteState.error;
   return null;
 });
@@ -360,7 +361,7 @@ onMounted(() => {
         </ul>
       </div>
       <BalAlert
-        v-if="voteWarning && !isError"
+        v-if="voteWarning"
         type="warning"
         :title="voteWarning.title"
         :description="voteWarning.description"
@@ -418,7 +419,9 @@ onMounted(() => {
           placeholder="0"
           validateOn="input"
           :rules="inputRules"
-          :disabled="voteDisabled || transactionInProgress || voteState.receipt"
+          :disabled="
+            voteInputDisabled || transactionInProgress || voteState.receipt
+          "
           size="md"
           autoFocus
         >
@@ -431,7 +434,7 @@ onMounted(() => {
           </template>
         </BalTextInput>
         <div
-          v-if="isError"
+          v-if="voteError"
           class="mt-2 text-sm text-gray-500 dark:text-gray-400"
         >
           {{
@@ -462,7 +465,7 @@ onMounted(() => {
             v-else
             color="gradient"
             block
-            :disabled="voteDisabled"
+            :disabled="voteButtonDisabled"
             :loading="transactionInProgress"
             :loading-label="
               voteState.init
