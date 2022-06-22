@@ -1,8 +1,9 @@
 import { WalletError } from '@/types';
 
-import { Connector } from '../connector';
+import { Connector, ConnectorId } from '../connector';
+
 export class TallyConnector extends Connector {
-  id = 'injectedTally';
+  id = ConnectorId.InjectedTally;
   async connect() {
     const provider =
       (window as any).ethereum ||
