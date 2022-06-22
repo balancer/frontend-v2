@@ -155,7 +155,7 @@ export default {
         // the wallet parameter will be provided by the front-end by means of
         // modal selection or otherwise
         const connector = await getWalletConnector(wallet);
-        console.log({ connector });
+
         if (!connector) {
           throw new Error(
             `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
