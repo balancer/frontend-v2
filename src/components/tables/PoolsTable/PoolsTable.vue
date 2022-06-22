@@ -103,7 +103,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     id: 'myBalance',
     hidden: !props.showPoolShares,
     sortKey: pool => Number(pool.shares),
-    width: 150,
+    width: 160,
     cellClassName: 'font-numeric'
   },
   {
@@ -226,6 +226,7 @@ function aprLabelFor(pool: PoolWithShares): string {
     <BalTable
       :columns="visibleColumns"
       :data="data"
+      :noResultsLabel="noPoolsLabel"
       :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
