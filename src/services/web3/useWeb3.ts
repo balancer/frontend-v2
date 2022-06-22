@@ -26,11 +26,7 @@ function setBlockNumber(n: number): void {
 rpcProviderService.initBlockListener(setBlockNumber);
 
 const toggleWalletSelectModal = (value?: boolean) => {
-  if (value !== undefined && typeof value === 'boolean') {
-    isWalletSelectVisible.value = value;
-    return;
-  }
-  isWalletSelectVisible.value = !isWalletSelectVisible.value;
+  isWalletSelectVisible.value = value ?? !isWalletSelectVisible.value;
 };
 
 export default function useWeb3() {
