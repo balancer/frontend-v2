@@ -39,6 +39,9 @@ const VeBalPage = () =>
 const FaucetPage = () =>
   import(/* webpackChunkName: "FaucetPage" */ '@/pages/faucet.vue');
 
+const PortfolioPage = () =>
+  import(/* webpackChunkName: "PortfolioPage" */ '@/pages/portfolio.vue');
+
 declare module 'vue-router' {
   interface RouteMeta {
     layout?: string;
@@ -139,6 +142,11 @@ const routes: RouteRecordRaw[] = [
     path: '/claim',
     name: 'claim',
     component: ClaimPage
+  },
+  {
+    path: '/portfolio',
+    name: 'portfolio',
+    component: PortfolioPage
   }
 ];
 

@@ -226,6 +226,7 @@ function aprLabelFor(pool: PoolWithShares): string {
     <BalTable
       :columns="visibleColumns"
       :data="data"
+      :noResultsLabel="noPoolsLabel"
       :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"

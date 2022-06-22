@@ -17,12 +17,6 @@
         @amountChange="handleAmountChange"
         class="mb-4"
       />
-      <GasReimbursement
-        class="mb-5"
-        :address-in="tokenInAddress"
-        :address-out="tokenOutAddress"
-        :sorReturn="sorReturn"
-      />
       <BalAlert
         v-if="error"
         class="mb-4"
@@ -110,16 +104,13 @@ import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { isRequired } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import GasReimbursement from './GasReimbursement.vue';
-
 export default defineComponent({
   components: {
     SuccessOverlay,
     TradePair,
     TradePreviewModal,
     TradeRoute,
-    TradeSettingsPopover,
-    GasReimbursement
+    TradeSettingsPopover
   },
 
   setup() {
