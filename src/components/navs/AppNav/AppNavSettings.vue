@@ -183,6 +183,7 @@ export default defineComponent({
       disconnectWallet,
       toggleWalletSelectModal,
       connector,
+      provider,
       isEIP1559SupportedNetwork,
       userNetworkConfig,
       appNetworkConfig,
@@ -225,9 +226,12 @@ export default defineComponent({
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
-    const connectorName = computed(() => getConnectorName(connector.value?.id));
-
-    const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
+    const connectorName = computed(() =>
+      getConnectorName(connector.value?.id, provider.value)
+    );
+    const connectorLogo = computed(() =>
+      getConnectorLogo(connector.value?.id, provider.value)
+    );
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const isGnosisSupportedNetwork = computed(() =>
       GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)

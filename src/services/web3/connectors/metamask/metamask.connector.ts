@@ -1,6 +1,6 @@
 import { WalletError } from '@/types';
 
-import { Connector } from '../connector';
+import { Connector, ConnectorId } from '../connector';
 
 function getInjectedProvider() {
   const ethereum: any = window.ethereum;
@@ -19,7 +19,7 @@ export function hasInjectedProvider(): boolean {
   return !!getInjectedProvider();
 }
 export class MetamaskConnector extends Connector {
-  id = 'injectedMetamask';
+  id = ConnectorId.InjectedMetaMask;
   async connect() {
     const provider = getInjectedProvider();
 
