@@ -5,11 +5,11 @@
         <h5 v-text="$t('account')" class="leading-none" />
         <div class="flex items-center gap-2">
           <BalBtn color="gray" size="xs" @click="toggleWalletSelectModal">
-            Change
+            {{ $t('change') }}
           </BalBtn>
           <div v-if="!hideDisconnect">
             <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
-              Disconnect
+              {{ $t('disconnect') }}
             </BalBtn>
           </div>
         </div>
