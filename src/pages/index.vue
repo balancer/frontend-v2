@@ -55,7 +55,7 @@ watch(poolsQuery.error, () => {
 });
 
 const isInvestmentPoolsTableLoading = computed(
-  () => dataStates['basic'] === 'loading' || priceQueryLoading.value
+  () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
 );
 
 /**
