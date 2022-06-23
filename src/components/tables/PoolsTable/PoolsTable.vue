@@ -103,7 +103,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     id: 'myBalance',
     hidden: !props.showPoolShares,
     sortKey: pool => Number(pool.shares),
-    width: 150,
+    width: 160,
     cellClassName: 'font-numeric'
   },
   {
