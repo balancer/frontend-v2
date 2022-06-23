@@ -702,7 +702,7 @@
                     "label": "My veBAL",
                     "secondaryText": "{0} of all veBAL"
                 },
-                "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer get boosted yields on staked pools or on your locked 80% BAL / 20% WETH pool. However, you’ll still get the minimum 1.0x rate. Tap the plus icon to extend your lock on B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power. Tap the minus icon to redeem your LP tokens."
+                "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer earn protocol fees, boosted yields on staked Ethereum Mainnet pools or veBAL incentives. However, you’ll still get the minimum 1.0x rate. Tap the minus icon to redeem your expired locked B-80BAL-20WETH LP tokens and then create a new lock to get veBAL."
             }
         },
         "communityVeBAL": {
@@ -763,12 +763,13 @@
                         "loadingLabel": "Confirm vote in wallet"
                     }
                 },
-                "emissionsInfo": "Your vote will direct future liquidity mining emissions starting with the next period on Thursday at 0:00 UTC.",
+                "emissionsInfo": "Your vote directs future liquidity mining emissions starting from the next period on Thursday at 0:00 UTC.",
                 "voteForGauge": "{0} for {1}",
                 "remainingVotes": "Your remaining votes: {0}",
                 "remainingVotesEditing": "Your remaining votes: {0} ({1} current allocation in this pool + {2} unallocated votes)",
                 "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
-                "voteLockInfo": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation until {0}",
+                "resubmitVote": "Voting power is set at the time of the vote. If you get more veBAL later, resubmit your vote to use your increased power.",
+                "voteLockInfo": "Votes are timelocked for 10 days. If you vote now, no edits can be made until {0}.",
                 "warnings": {
                     "votedTooRecently": {
                         "title": "Votes are locked for 10 days.",
@@ -776,7 +777,8 @@
                     },
                     "noVeBal": {
                         "title": "You need some veBAL to vote on gauges",
-                        "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool."
+                        "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.",
+                        "inputHintText": "You can't vote since you have no veBAL"
                     },
                     "veBalLockTooShort": {
                         "title": "veBAL not locked for 7 days.",
