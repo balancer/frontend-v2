@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
@@ -15,16 +16,19 @@ import {
   orderedPoolTokens,
   poolURLFor
 } from '@/composables/usePool';
+import { isSameAddress } from '@/lib/utils';
 import { scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
+import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 
 /**
  * TYPES
  */
 type Props = {
+  expiredGauges?: string[];
   data?: VotingGaugeWithVotes[];
   isLoading?: boolean;
   noPoolsLabel?: string;
@@ -34,7 +38,8 @@ type Props = {
 /**
  * PROPS & EMITS
  */
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
+  expiredGauges: () => [],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false
@@ -113,7 +118,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'id',
     align: 'right',
     Cell: 'voteColumnCell',
-    width: 80,
+    width: 100,
     hidden: !isWalletReady.value
   }
 ]);
@@ -145,6 +150,20 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
     gauge.pool.poolType
   );
 }
+
+function getIsGaugeExpired(gaugeAddress: string): boolean {
+  return !!props.expiredGauges.some(item => isSameAddress(gaugeAddress, item));
+}
+
+function getHasUserVotes(userVotes: string): boolean {
+  return !!Number(userVotes);
+}
+
+function getTableRowClass(gauge: VotingGaugeWithVotes): string {
+  return getHasUserVotes(gauge.userVotes) && getIsGaugeExpired(gauge.address)
+    ? 'expired-gauge-row'
+    : '';
+}
 </script>
 
 <template>
@@ -165,6 +184,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       :square="upToLargeBreakpoint"
       :is-paginated="isPaginated"
       :on-row-click="redirectToPool"
+      :getTableRowClass="getTableRowClass"
       :initial-state="{
         sortColumn: 'nextPeriodVotes',
         sortDirection: 'desc'
@@ -198,7 +218,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template v-slot:poolCompositionCell="{ pool }">
+      <template v-slot:poolCompositionCell="{ pool, address }">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
             :tokens="
@@ -208,6 +228,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
+          <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
       <template v-slot:nextPeriodVotesCell="gauge">
@@ -217,19 +238,19 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
       </template>
       <template v-slot:voteColumnCell="gauge">
         <div v-if="isWalletReady" class="px-4">
-          <BalBtn
-            color="blue"
-            :outline="true"
-            size="sm"
-            class="hover:text-white dark:hover:text-white hover:bg-blue-500 focus:text-white focus:bg-blue-500"
-            flat
-            block
+          <GaugesTableVoteBtn
             @click.stop="emit('clickedVote', gauge)"
-          >
-            {{ $t('veBAL.liquidityMining.table.vote') }}
-          </BalBtn>
+            :hasUserVotes="getHasUserVotes(gauge.userVotes)"
+            :isGaugeExpired="getIsGaugeExpired(gauge.address)"
+          ></GaugesTableVoteBtn>
         </div>
       </template>
     </BalTable>
   </BalCard>
 </template>
+
+<style>
+tr.expired-gauge-row {
+  @apply bg-red-50  hover:bg-red-100 dark:border-red-600 dark:border;
+}
+</style>

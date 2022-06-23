@@ -241,6 +241,7 @@
     "etherscan": "Etherscan",
     "exceedsBalance": "Exceeds wallet balance",
     "exceedsPoolBalance": "Exceeds pool balance for this token",
+    "expired": "Expired",
     "explore": "Explore",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
     "explorePools": "Explore pools",
@@ -575,7 +576,7 @@
             "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem. A new version of the pool will be deployed in the next few weeks that can be migrated to."
         }
     },
-    "popularBases": "Popular:",
+    "popularBases": "Popular",
     "portfolio": "Portfolio",
     "potential": "Potential",
     "potentialWeeklyYield": "Potential weekly yield",
@@ -739,7 +740,8 @@
                 "composition": "Composition",
                 "nextPeriodVotes": "Next period votes",
                 "myVotes": "My votes",
-                "vote": "Vote"
+                "vote": "Vote",
+                "remove": "Remove"
             },
             "votesTooltip": {
                 "title": "Voting breakdown",

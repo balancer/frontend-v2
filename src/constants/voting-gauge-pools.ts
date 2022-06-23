@@ -169,6 +169,14 @@ export const MAINNET_POOLS: Pool[] = [
   {
     id: '0xa7ff759dbef9f3efdd1d59beee44b966acafe214000200000000000000000180',
     network: Network.MAINNET
+  },
+  {
+    id: '0x3f7c10701b14197e2695dec6428a2ca4cf7fc3b800020000000000000000023c',
+    network: Network.MAINNET
+  },
+  {
+    id: '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d',
+    network: Network.MAINNET
   }
 ];
 
@@ -329,6 +337,10 @@ export const POLYGON_POOLS: Pool[] = [
   },
   {
     id: '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4',
+    network: Network.POLYGON
+  },
+  {
+    id: '0x2dbc9ab0160087ae59474fb7bed95b9e808fa6bc0001000000000000000003db',
     network: Network.POLYGON
   }
 ];
