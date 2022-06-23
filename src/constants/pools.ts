@@ -111,6 +111,54 @@ const POOLS_KOVAN: Pools = {
   }
 };
 
+const POOLS_GOERLI: Pools = {
+  IdsMap: {
+    bbAaveUSD:
+      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
+    'B-80BAL-20WETH':
+      '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060'
+  },
+  Pagination: {
+    PerPage: 10,
+    PerPool: 10,
+    PerPoolInitial: 5
+  },
+  DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
+  ZeroAddress: '0x0000000000000000000000000000000000000000',
+  DynamicFees: {
+    Gauntlet: []
+  },
+  BlockList: [
+    '0x22d398c68030ef6b1c55321cca6e0cecc5c93b2f000200000000000000000678'
+  ],
+  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  Stable: {
+    AllowList: [
+      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
+      '0xb60e46d90f2de35f7062a27d3a98749414036d5d000200000000000000000061',
+      '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062'
+    ]
+  },
+  Investment: {
+    AllowList: []
+  },
+  Factories: {
+    '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
+    '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',
+    '0x44afeb87c871d8fea9398a026dea2bd3a13f5769': 'stablePool',
+    '0xa55f73e2281c60206ba43a3590db07b8955832be': 'stablePool', // Metastable
+    '0xb48cc42c45d262534e46d5965a9ac496f1b7a830': 'liquidityBootstrappingPool',
+    '0xb0c726778c3ae4b3454d85557a48e8fa502bdd6a': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
+    '0x41e9036ae350baedcc7107760a020dca3c0731ec': 'boostedPool'
+  },
+  Stakable: {
+    AllowList: [
+      '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
+      '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b'
+    ]
+  }
+};
+
 const POOLS_MAINNET: Pools = {
   IdsMap: {
     staBAL:
@@ -421,6 +469,7 @@ const POOLS_GENERIC: Pools = {
 
 const POOLS_MAP = {
   [Network.KOVAN]: POOLS_KOVAN,
+  [Network.GOERLI]: POOLS_GOERLI,
   [Network.MAINNET]: POOLS_MAINNET,
   [Network.POLYGON]: POOLS_POLYGON,
   [Network.ARBITRUM]: POOLS_ARBITRUM

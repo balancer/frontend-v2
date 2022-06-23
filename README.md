@@ -49,6 +49,7 @@ To change your local development app network, update the network key for
 `VUE_APP_NETWORK` in `.env.development`. Available networks:
 ```
 1 - Mainnet
+5 - Goerli
 42 - Kovan
 137 - Polygon
 42161 - Arbitrum

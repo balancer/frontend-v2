@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
 
+import useWeb3 from '@/services/web3/useWeb3';
+
+const { isGoerli } = useWeb3();
+
 import DesktopLinkItem from './DesktopLinkItem.vue';
 
 /**
@@ -24,6 +28,9 @@ function isActive(page: string): boolean {
     </DesktopLinkItem>
     <DesktopLinkItem to="/trade" :active="isActive('trade')">
       {{ $t('trade') }}
+    </DesktopLinkItem>
+    <DesktopLinkItem v-if="isGoerli" to="/faucet" :active="isActive('faucet')">
+      Faucet
     </DesktopLinkItem>
     <DesktopLinkItem to="/portfolio" :active="isActive('portfolio')">
       {{ $t('portfolio') }}

@@ -83,7 +83,8 @@ function getTrustWalletAssetsURI(
     [Network.MAINNET]: 'ethereum',
     [Network.ARBITRUM]: 'arbitrum',
     [Network.POLYGON]: 'polygon',
-    [Network.KOVAN]: 'kovan'
+    [Network.KOVAN]: 'kovan',
+    [Network.GOERLI]: 'goerli'
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
@@ -339,7 +340,7 @@ async function getGaugeAddress(
   network: Network
 ): Promise<string> {
   log(`getGaugeAddress. network: ${network} poolId: ${poolId}`);
-  if ([Network.MAINNET, Network.KOVAN].includes(network)) {
+  if ([Network.MAINNET, Network.KOVAN, Network.GOERLI].includes(network)) {
     const gauge = await getLiquidityGaugeAddress(poolId, network);
     return gauge;
   } else {
@@ -374,7 +375,7 @@ async function getGaugeAddress(
     })
   );
 
-  votingGauges = [vebalGauge as VotingGauge, ...votingGauges];
+  votingGauges = [...(vebalGauge as VotingGauge[]), ...votingGauges];
 
   const jsonFilePath = path.resolve(
     __dirname,

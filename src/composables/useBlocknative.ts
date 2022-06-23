@@ -10,7 +10,7 @@ const SUPPORTED_NETWORKS = [
   Network.KOVAN,
   Network.RINKEBY,
   Network.ROPSTEN,
-  Network.GÖRLI,
+  Network.GOERLI,
   Network.POLYGON
 ];
 
