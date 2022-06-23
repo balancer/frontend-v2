@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import AppHero from '@/components/heros/AppHero.vue';
@@ -17,6 +18,7 @@ import HeroConnectWalletButton from './HeroConnectWalletButton.vue';
  * COMPOSABLES
  */
 const router = useRouter();
+const { t } = useI18n();
 const { fNum2 } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { totalInvestedAmount, isLoadingUserPools } = usePools();
@@ -112,7 +114,7 @@ const isLoadingTotalValue = computed(
           <span v-if="lockFiatValue === '0'"
             >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
           >
-          <span v-else>{{ $t('inclXInVeBal', totalVeBalLabel) }}</span>
+          <span v-else>{{ $t('inclXInVeBal', [totalVeBalLabel]) }}</span>
         </div>
       </div>
     </template>
