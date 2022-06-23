@@ -109,7 +109,10 @@ export const TOKENS_KOVAN: TokenConstants = {
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
     // AAVE USDT
     '0x13512979ade267ab5100878e2e0f485b568328a4':
-      '0xdac17f958d2ee523a2206206994597c13d831ec7' // USDT
+      '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+    // wstETH
+    '0xa387b91e393cfb9356a460370842bc8dbb2f29af':
+      '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0'
   }
 };
 
