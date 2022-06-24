@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
@@ -167,6 +169,14 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     width: 250
   },
   {
+    name: 'Expiry date',
+    Cell: 'lockedEndDateCell',
+    accessor: 'lockedEndDate',
+    align: 'right',
+    id: 'lockedEndDate',
+    width: 150
+  },
+  {
     name: t('migrate'),
     Cell: 'migrateCell',
     accessor: 'migrate',
@@ -214,6 +224,10 @@ function aprLabelFor(pool: PoolWithShares): string {
   if (!poolAPRs) return '0';
 
   return totalAprLabel(poolAPRs, pool.boost);
+}
+
+function lockedUntil(lockedEndDate?: number) {
+  return lockedEndDate ? format(lockedEndDate, PRETTY_DATE_FORMAT) : '—';
 }
 </script>
 
@@ -315,6 +329,12 @@ function aprLabelFor(pool: PoolWithShares): string {
           >
             {{ $t('migrate') }}
           </BalBtn>
+        </div>
+      </template>
+      <template v-slot:lockedEndDateCell="pool">
+        <div class="px-6 py-4 text-right">
+          <!-- TODO: Make own component -->
+          {{ lockedUntil(pool.lockedEndDate) }}
         </div>
       </template>
       <template v-slot:stakeCell="pool">

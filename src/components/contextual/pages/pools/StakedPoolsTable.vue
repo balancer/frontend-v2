@@ -51,12 +51,19 @@ const poolsWithBoost = computed(() => {
 });
 
 const hiddenColumns = computed(() => {
-  const _hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'stake'];
+  const _hiddenColumns = [
+    'poolVolume',
+    'poolValue',
+    'migrate',
+    'stake',
+    'lockedEndDate'
+  ];
   if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;
 });
 
 /** METHODS */
+// TODO: Is staking related stuff needed for staked pools? Can be removed?
 function handleStake(pool: Pool) {
   setPoolAddress(pool.address);
   showStakeModal.value = true;

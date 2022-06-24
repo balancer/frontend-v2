@@ -104,7 +104,7 @@ const poolsToRender = computed(() => {
 });
 
 const hiddenColumns = computed((): string[] => {
-  const hiddenCols = ['poolVolume', 'poolValue', 'migrate'];
+  const hiddenCols = ['poolVolume', 'poolValue', 'migrate', 'lockedEndDate'];
   return hiddenCols;
 });
 

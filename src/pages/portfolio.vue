@@ -3,6 +3,7 @@ import { computed } from 'vue';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
+import VeBalPoolTable from '@/components/contextual/pages/pools/VeBalPoolTable.vue';
 import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
@@ -19,6 +20,13 @@ const { userPools, isLoadingUserPools } = usePools();
 const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
+
+const hiddenColumns = computed(() => [
+  'poolVolume',
+  'poolValue',
+  'stake',
+  'lockedEndDate'
+]);
 </script>
 
 <template>
@@ -32,6 +40,7 @@ const migratableUserPools = computed(() => {
           </BalStack>
         </div>
         <BalStack vertical spacing="xl">
+          <VeBalPoolTable />
           <UnstakedPoolsTable />
           <StakedPoolsTable />
 
@@ -44,7 +53,7 @@ const migratableUserPools = computed(() => {
               :noPoolsLabel="$t('noInvestments')"
               showPoolShares
               :selectedTokens="selectedTokens"
-              :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
+              :hiddenColumns="hiddenColumns"
             >
             </PoolsTable>
           </BalStack>
