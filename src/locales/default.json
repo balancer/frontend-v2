@@ -113,6 +113,7 @@
   "connect": "Connect",
   "connecting": "Connecting...",
   "connectWallet": "Connect wallet",
+  "connectYourWallet": "Connect your wallet",
   "copied": "Copied!",
   "copperLaunchPromo": {
     "buttonLabel": "View this auction on Copper",
@@ -240,6 +241,7 @@
   "etherscan": "Etherscan",
   "exceedsBalance": "Exceeds wallet balance",
   "exceedsPoolBalance": "Exceeds pool balance for this token",
+  "expired": "Expired",
   "explore": "Explore",
   "exploreBalancerV1Pools": "Explore V1 pools ->",
   "explorePools": "Explore pools",
@@ -271,53 +273,9 @@
       "header": "Your trade amount is too low",
       "body": "The fees for this transaction exceed the amount you want to trade."
     },
-    "available": "Available",
-    "availableToClaim": "Available to claim:",
-    "balance": "Balance",
-    "balancerGovernance": "Balancer governance",
-    "balances": "Balances",
-    "basedOnLast24h": "based on the last 24h",
-    "basedOnTokensInWallet": "Based on pool tokens in your wallet",
-    "best": "Best",
-    "browseLists": "Browse lists",
-    "browserWallet": "Browser Wallet",
-    "buy": "Buy",
-    "build": "Build",
-    "blog": "Blog",
-    "boostedPool": "Balancer Boosted pool",
-    "byConnectingWallet": "By connecting a wallet, I agree to Balancer Labs’",
-    "cancel": "Cancel",
-    "cancelling": "Cancelling",
-    "checkWallet": "Confirm in wallet",
-    "changeTheme": "Change theme",
-    "claim": "Claim",
-    "claimAll": "Claim all",
-    "claimBAL": "Claim $BAL for",
-    "claiming": "Claiming...",
-    "claimSuccess": "You successfully claimed $BAL!",
-    "classic": "Classic",
-    "clearTransactions": "Clear transactions",
-    "clickHere": "Click here",
-    "close": "Close",
-    "coingeckoPricingTooltip": "The data for this graph is pulled from our pricing provider, CoinGecko.",
-    "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
-    "composition": "Composition",
-    "configuration": "Configuration",
-    "confirm": "Confirm",
-    "confirming": "Confirming...",
-    "confirmTrade": "Confirm trade",
-    "confirmUnwrap": "Confirm {0} unwrap",
-    "confirmWrap": "Confirm {0} wrap",
-    "connect": "Connect",
-    "connecting": "Connecting...",
-    "connectWallet": "Connect wallet",
-    "connectYourWallet": "Connect your wallet",
-    "copied": "Copied!",
-    "copperLaunchPromo": {
-      "buttonLabel": "View this auction on Copper",
-      "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
-      "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstrapping Pools to power its FLAs",
-      "title": "A Copper fair launch auction pool (FLA)"
+    "lowBalance": {
+      "header": "Insufficient {0} balance",
+      "body": "The fees and potential slippage (up to {2}) set for this trade exceed your {0} balance. You need at least {1} {0} to proceed."
     },
     "noLiquidity": {
       "header": "No liquidity",
@@ -423,89 +381,9 @@
       "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to investors weekly in proportion to their contribution.",
       "title": "You have no token incentives to claim"
     },
-    "month": "month",
-    "months": "months",
-    "mustBeAtLeast": "must be at least {0} characters",
-    "mustBeInt": "must be an integer",
-    "mustBeLessThan": "must be less than {0}",
-    "mustBeMoreThan": "must be greater than {0}",
-    "mustBePositive": "must be a positive number",
-    "mustBeSame": "must be the same as {0}",
-    "mustBeValidEmail": "must be a valid email",
-    "mustBeValidNum": "must be a valid number",
-    "mustBeValidAddress": "This is not a valid Ethereum address",
-    "myApr": "My APR",
-    "myBalance": "My balance",
-    "myBalancerInvestments": "My Balancer investments",
-    "myBoost": "My boost",
-    "myPortfolio": "My portfolio",
-    "myShare": "My share",
-    "myInvestments": "My investments",
-    "myWallet": "My Ethereum wallet",
-    "myWallet2": "My wallet",
-    "name": "Name",
-    "namePlaceholder": "Name, symbol or contract address",
-    "nativeTokens": "Native tokens",
-    "network": "Network",
-    "networkMismatch": "Please switch to {0}",
-    "new": "New",
-    "newInvestment": "New investment",
-    "newTrade": "New Trade",
-    "newToEthereum": "New to Ethereum?",
-    "newWithdrawal": "New withdrawal",
-    "next": "Next",
-    "noContent": "No content",
-    "noClaimableIncentives": "No claimable incentives",
-    "noData": "No data available",
-    "noInitLiquidity": "This pool has no initial liquidity",
-    "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
-    "noInvestments": "No investments",
-    "noUnstakedInvestments": "You have no unstaked investments",
-    "noStakedInvestments": "You have no staked investments",
-    "noInvestmentsPool": "No investments in this pool",
-    "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
-    "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
-    "noPoolsFound": "No pools found",
-    "noPriceImpact": "Best price",
-    "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
-    "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
-    "noRecentActivity": "Your recent activity will appear here…",
-    "noResults": "No results.",
-    "noSwapsPool": "No swaps in this pool.",
-    "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
-    "numberOfPools": "Number of pools",
-    "notAvailable": "N/A",
-    "oneDay": "1D",
-    "oneMonth": "1M",
-    "oneWeek": "1W",
-    "optimize": "Optimize",
-    "optimized": "Optimized",
-    "optimizedPrefilled": "Optimized amounts have been pre-filled",
-    "oops": "Oops",
-    "oracleWeightedPool": "Oracle Weighted Pool",
-    "otherTokenEarnings": "Other token earnings",
-    "overview": "Overview",
-    "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
-    "payload": "Payload",
-    "pages": {
-      "claim": {
-        "title": "Claim your liquidity mining incentives",
-        "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
-        "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, invest in these pools and stake the LP tokens to receive incentives.",
-        "transitionInfo": {
-          "title": "veBAL liquidity mining incentives are live!",
-          "titleL2": "Transition to new veBAL tokenomics",
-          "description": "Token earnings accumulate every block and can be claimed at any time. Stake LP tokens in eligible pools to get incentives. Get veBAL to boost your yield and to vote on which pool should get token emissions for the next week.",
-          "descriptionL2": "Liquidity mining on Polygon & Arbitrum will be soon moving to the veBAL emission's system. When this happens, you'll need to stake your LP tokens in eligible pools to continue receiving liquidity mining incentives."
-        },
-        "titles": {
-          "incentivesOnOtherNetworks": "Incentives on other networks",
-          "legacyIncentives": "Legacy incentives"
-        },
-        "btns": {
-          "claimOn": "Claim on"
-        }
-      }
+    "tabs": {
+      "claimable": "Claimable now",
+      "currentEstimate": "Pending"
     },
     "title": "Token incentives"
   },
@@ -573,6 +451,8 @@
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
   "noInvestments": "No investments",
+  "noUnstakedInvestments": "You have no unstaked investments",
+  "noStakedInvestments": "You have no staked investments",
   "noInvestmentsPool": "No investments in this pool",
   "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
   "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
@@ -688,47 +568,16 @@
       "title": "This pool contains double-entrypoint tokens, which have been found to be incompatible with Balancer. It is currently not possible to withdraw all assets from the pool proportionally. While it is possible to withdraw in a single asset, liquidity providers are advised to wait. A mechanism is being implemented to allow for proportional withdrawals. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Learn more </a>"
     },
     "poolOwnerVulnWarningGovernance": {
-      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to."    },
-    "popularBases": "Popular",
-    "portfolio": "Portfolio",
-    "potential": "Potential",
-    "potentialWeeklyYield": "Potential weekly yield",
-    "preview": "Preview",
-    "previewPool": "Preview new {0} pool",
-    "previewTrade": "Preview trade",
-    "previewTradeTransactions": "Preview trade transactions",
-    "previewUnwrap": "Preview {0} Unwrap",
-    "previewWrap": "Preview {0} Wrap",
-    "previewMigrate": "Preview migrate",
-    "priceImpact": "Price impact",
-    "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
-    "priceImpactCheckbox": "Price impact acknowledgement",
-    "priceImpactTolerance": "Price impact tolerance",
-    "priceUpdatedAlert": {
-        "actionLabel": "Accept",
-        "description": "The trade price has updated by more than {0}",
-        "title": "Price updated"
+      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to."
+    },
+    "poolOwnerVulnWarningEcosystem": {
+      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem."
     },
     "poolOwnerVulnWarningEcosystemMigrate": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem. A new version of the pool will be deployed in the next few weeks that can be migrated to."
     }
   },
-  "poolChart": {
-    "tabs": {
-      "volume": "Volume",
-      "tvl": "TVL",
-      "fees": "Fees"
-    },
-    "period": {
-      "title": "Select a period",
-      "all": "All time",
-      "days": "{0} days"
-    },
-    "defaultTitle": {
-      "tvl": "Current TVL"
-    }
-  },
-  "popularBases": "Popular:",
+  "popularBases": "Popular",
   "portfolio": "Portfolio",
   "potential": "Potential",
   "potentialWeeklyYield": "Potential weekly yield",
@@ -854,7 +703,7 @@
           "label": "My veBAL",
           "secondaryText": "{0} of all veBAL"
         },
-        "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer get boosted yields on staked pools or on your locked 80% BAL / 20% WETH pool. However, you’ll still get the minimum 1.0x rate. Tap the plus icon to extend your lock on B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power. Tap the minus icon to redeem your LP tokens."
+        "myExpiredLockTooltip": "Your previous lockup period has expired, so you no longer have any veBAL or voting power. You will no longer earn protocol fees, boosted yields on staked Ethereum Mainnet pools or veBAL incentives. However, you’ll still get the minimum 1.0x rate. Tap the minus icon to redeem your expired locked B-80BAL-20WETH LP tokens and then create a new lock to get veBAL."
       }
     },
     "communityVeBAL": {
@@ -892,7 +741,8 @@
         "composition": "Composition",
         "nextPeriodVotes": "Next period votes",
         "myVotes": "My votes",
-        "vote": "Vote"
+        "vote": "Vote",
+        "remove": "Remove"
       },
       "votesTooltip": {
         "title": "Voting breakdown",
@@ -914,12 +764,13 @@
             "loadingLabel": "Confirm vote in wallet"
           }
         },
-        "emissionsInfo": "Your vote will direct future liquidity mining emissions starting with the next period on Thursday at 0:00 UTC.",
+        "emissionsInfo": "Your vote directs future liquidity mining emissions starting from the next period on Thursday at 0:00 UTC.",
         "voteForGauge": "{0} for {1}",
         "remainingVotes": "Your remaining votes: {0}",
         "remainingVotesEditing": "Your remaining votes: {0} ({1} current allocation in this pool + {2} unallocated votes)",
         "remainingVotesExceeded": "This exceeds your remaining votes of: {0}",
-        "voteLockInfo": "Votes are locked for 10 days. You won't be able to make any edits to this vote allocation until {0}",
+        "resubmitVote": "Voting power is set at the time of the vote. If you get more veBAL later, resubmit your vote to use your increased power.",
+        "voteLockInfo": "Votes are timelocked for 10 days. If you vote now, no edits can be made until {0}.",
         "warnings": {
           "votedTooRecently": {
             "title": "Votes are locked for 10 days.",
@@ -927,7 +778,8 @@
           },
           "noVeBal": {
             "title": "You need some veBAL to vote on gauges",
-            "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool."
+            "description": "Get veBAL by locking up LP tokens from the 80% BAL / 20% WETH pool.",
+            "inputHintText": "You can't vote since you have no veBAL"
           },
           "veBalLockTooShort": {
             "title": "veBAL not locked for 7 days.",
@@ -1379,5 +1231,20 @@
   "yourBalanceInPool": "Your balance in this pool",
   "trendingPairs": "Trending pairs",
   "chooseAPair": "Please select a valid pair",
-  "youCanInvest": "You can invest"
+  "youCanInvest": "You can invest",
+  "poolChart": {
+    "defaultTitle": {
+      "tvl": "Current TVL"
+    },
+    "period": {
+      "all": "All time",
+      "days": "{0} days",
+      "title": "Select a period"
+    },
+    "tabs": {
+      "fees": "Fees",
+      "tvl": "TVL",
+      "volume": "Volume"
+    }
+  }
 }

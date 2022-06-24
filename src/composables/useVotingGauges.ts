@@ -2,21 +2,26 @@ import { Duration, Interval, intervalToDuration, nextThursday } from 'date-fns';
 import { computed, onUnmounted, ref } from 'vue';
 
 import {
+  GOERLI_VOTING_GAUGES,
   KOVAN_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
   VotingGauge
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
-import { isKovan } from './useNetwork';
+import { isGoerli, isKovan } from './useNetwork';
 
 export default function useVotingGauges() {
   // Hard coded list of voting gauges
-  const _votingGauges = computed((): VotingGauge[] =>
-    isKovan.value
-      ? (KOVAN_VOTING_GAUGES as VotingGauge[])
-      : (MAINNET_VOTING_GAUGES as VotingGauge[])
-  );
+  const _votingGauges = computed((): VotingGauge[] => {
+    if (isKovan.value) {
+      return KOVAN_VOTING_GAUGES as VotingGauge[];
+    } else if (isGoerli.value) {
+      return GOERLI_VOTING_GAUGES as VotingGauge[];
+    } else {
+      return MAINNET_VOTING_GAUGES as VotingGauge[];
+    }
+  });
 
   // Fetch onchain votes data for given votingGauges
   const gaugeVotesQuery = useGaugeVotesQuery(_votingGauges.value);
