@@ -73,6 +73,8 @@ const { darkMode } = useDarkMode();
 /**
  * STATE
  */
+const BALANCER_BOOSTED_POOL_ADDRESS =
+  '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2';
 const MIN_CHART_VALUES = 2;
 
 const tabs = [
@@ -117,33 +119,66 @@ const timestamps = computed(() =>
 
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
   const tvlValues: (readonly (string | number)[])[] = [];
-  periodSnapshots.forEach((snapshot, idx) => {
-    const timestamp = timestamps.value[idx];
-    // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
-    if (idx === 0) {
-      tvlValues.push(
-        Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+
+  // temporary statement until we start get prices from coingecko for
+  if (props.pool.address === BALANCER_BOOSTED_POOL_ADDRESS) {
+    periodSnapshots.forEach((snapshot, idx) => {
+      const timestamp = timestamps.value[idx];
+      if (idx === 0) {
+        tvlValues.push(
+          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+        );
+        return;
+      }
+      tvlValues.push(Object.freeze([timestamp, Number(snapshot.liquidity)]));
+    });
+  } else {
+    periodSnapshots.forEach((snapshot, idx) => {
+      const timestamp = timestamps.value[idx];
+      // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
+      if (idx === 0) {
+        tvlValues.push(
+          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+        );
+        return;
+      }
+
+      const prices = props.historicalPrices[snapshot.timestamp];
+
+      // timestamp is removed if there are no prices from coingecko
+      if (!prices || prices.length < (props.tokensList?.length || 0)) {
+        return;
+      }
+
+      let amounts = [...snapshot.amounts];
+
+      /**
+       * @description
+       * There may be more amounts in snapshots than prices.
+       * For example in balancer boosted pool the largest one is the BPT of the pool itself.
+       * It is removed here to calculate properly snapshot pool value.
+       */
+      if (snapshot.amounts.length > prices.length) {
+        const maxValue = Math.max(
+          ...snapshot.amounts.map(amount => Number(amount))
+        );
+
+        amounts = amounts.filter(
+          amount => Number(amount).toFixed() !== maxValue?.toString()
+        );
+      }
+
+      const snapshotPoolValue = amounts.reduce(
+        (sum: number, amount: string, index: number) => {
+          sum += Number(amount) * prices[index];
+          return sum;
+        },
+        0
       );
-      return;
-    }
 
-    const prices = props.historicalPrices[snapshot.timestamp];
-
-    // timestamp is removed if there are no prices from coingecko
-    if (!prices || prices.length < (props.tokensList?.length || 0)) {
-      return;
-    }
-
-    const snapshotPoolValue = snapshot.amounts.reduce(
-      (sum: number, amount: string, index: number) => {
-        sum += Number(amount) * prices[index];
-        return sum;
-      },
-      0
-    );
-
-    tvlValues.push(Object.freeze([timestamp, snapshotPoolValue]));
-  });
+      tvlValues.push(Object.freeze([timestamp, snapshotPoolValue]));
+    });
+  }
 
   return {
     color: [tailwind.theme.colors.blue['600']],
@@ -328,6 +363,7 @@ function setCurrentChartValue(payload: {
 
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
+
   <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
     <div
       class="px-4 sm:px-0 flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
@@ -358,8 +394,15 @@ function setCurrentChartValue(payload: {
         </div>
       </div>
     </div>
-
+    <BalBlankSlate
+      v-if="chartData.data[0].values.length <= MIN_CHART_VALUES"
+      class="h-96"
+    >
+      <BalIcon name="bar-chart" />
+      {{ $t('noPriceInfo') }}
+    </BalBlankSlate>
     <BalChart
+      v-else
       height="96"
       :data="chartData.data"
       :axis-label-formatter="{

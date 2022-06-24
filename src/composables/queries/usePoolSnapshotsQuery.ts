@@ -52,7 +52,6 @@ export default function usePoolSnapshotsQuery(
     let snapshots: PoolSnapshots = {};
     let prices: HistoricalPrices = {};
 
-    const isStablePhantomPool = isStablePhantom(pool.value.poolType);
     const shapshotDaysNum =
       days ||
       differenceInDays(new Date(), new Date(pool.value.createTime * 1000));
@@ -64,28 +63,16 @@ export default function usePoolSnapshotsQuery(
      */
     const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
 
-    if (isStablePhantomPool) {
-      snapshots = await balancerSubgraphService.poolSnapshots.get(
-        id,
-        shapshotDaysNum
-      );
-
-      return {
-        prices,
-        snapshots
-      };
-    } else {
-      const tokens = pool.value.tokensList;
-      [prices, snapshots] = await Promise.all([
-        coingeckoService.prices.getTokensHistorical(
-          tokens,
-          shapshotDaysNum,
-          1,
-          aggregateBy
-        ),
-        balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
-      ]);
-    }
+    const tokens = pool.value.tokensList;
+    [prices, snapshots] = await Promise.all([
+      coingeckoService.prices.getTokensHistorical(
+        tokens,
+        shapshotDaysNum,
+        1,
+        aggregateBy
+      ),
+      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
+    ]);
 
     return { prices, snapshots };
   };
