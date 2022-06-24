@@ -51,7 +51,8 @@
     "veBAL": "",
     "veDelegationProxy": "",
     "veBALHelpers": "",
-    "feeDistributor": ""
+    "feeDistributor": "",
+    "faucet": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

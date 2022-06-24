@@ -29,15 +29,7 @@
                 }}
               </span>
             </div>
-            <BalChip
-              v-if="pool?.isNew"
-              color="red"
-              size="sm"
-              class="uppercase mt-2 mr-2"
-              :outline="false"
-            >
-              {{ $t('new') }}
-            </BalChip>
+            <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
             <APRTooltip :pool="pool" class="-ml-1 mt-1" />
             <BalLink
               :href="explorer.addressLink(pool?.address || '')"
@@ -180,6 +172,7 @@ import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
+import BalChipNew from '@/components/chips/BalChipNew.vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
@@ -211,7 +204,8 @@ export default defineComponent({
     APRTooltip,
     StakingIncentivesCard,
     StakingProvider,
-    ApyVisionPoolLink
+    ApyVisionPoolLink,
+    BalChipNew
   },
 
   setup() {
