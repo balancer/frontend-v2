@@ -41,7 +41,6 @@ type Props = {
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
-  poolAddress: string;
   pool: Pool;
 };
 

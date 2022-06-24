@@ -114,6 +114,9 @@
               :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
+              :totalLiquidity="pool?.totalLiquidity"
+              :tokensList="pool?.tokensList"
+              :poolType="pool?.poolType"
             />
           </div>
           <div class="mb-4 px-1 lg:px-0">
@@ -227,10 +230,7 @@ export default defineComponent({
      * QUERIES
      */
     const poolQuery = usePoolQuery(route.params.id as string);
-    const poolSnapshotsQuery = usePoolSnapshotsQuery(
-      route.params.id as string,
-      30
-    );
+    const poolSnapshotsQuery = usePoolSnapshotsQuery(route.params.id as string);
 
     /**
      * STATE

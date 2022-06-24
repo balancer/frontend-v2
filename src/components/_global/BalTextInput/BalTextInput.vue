@@ -69,6 +69,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
+  (e: 'mouseOver', value: Event);
+  (e: 'mouseLeave', value: Event);
 }>();
 
 /**
