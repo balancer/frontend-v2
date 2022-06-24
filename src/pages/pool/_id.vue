@@ -116,7 +116,6 @@
               :loading="isLoadingSnapshots"
               :totalLiquidity="pool?.totalLiquidity"
               :tokensList="pool?.tokensList"
-              :poolAddress="pool?.address"
             />
           </div>
           <div class="mb-4 px-1 lg:px-0">

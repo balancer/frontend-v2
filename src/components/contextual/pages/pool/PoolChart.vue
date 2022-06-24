@@ -12,7 +12,12 @@ import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
-import { Pool, PoolSnapshot, PoolSnapshots } from '@/services/pool/types';
+import {
+  Pool,
+  PoolSnapshot,
+  PoolSnapshots,
+  PoolType
+} from '@/services/pool/types';
 
 /**
  * TYPES
@@ -30,7 +35,6 @@ type Props = {
   // these props are added to prevent line chart rerender on each pool update
   totalLiquidity?: string;
   tokensList?: string[];
-  poolAddress?: string;
 };
 
 enum PoolChartTab {
@@ -74,8 +78,6 @@ const { darkMode } = useDarkMode();
 /**
  * STATE
  */
-const BALANCER_BOOSTED_POOL_ADDRESS =
-  '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2';
 const MIN_CHART_VALUES = 2;
 
 const tabs = [
@@ -122,7 +124,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
   const tvlValues: (readonly (string | number)[])[] = [];
 
   // temporary statement until we start get prices from coingecko for
-  if (props.poolAddress === BALANCER_BOOSTED_POOL_ADDRESS) {
+  if (props.pool.poolType === PoolType.StablePhantom) {
     periodSnapshots.forEach((snapshot, idx) => {
       const timestamp = timestamps.value[idx];
       if (idx === 0) {
