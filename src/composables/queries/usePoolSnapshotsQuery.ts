@@ -10,7 +10,6 @@ import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
-import { isStablePhantom } from '../usePool';
 import usePoolQuery from './usePoolQuery';
 
 /**
