@@ -35,6 +35,7 @@ type Props = {
   // these props are added to prevent line chart rerender on each pool update
   totalLiquidity?: string;
   tokensList?: string[];
+  poolType?: PoolType;
 };
 
 enum PoolChartTab {
@@ -124,7 +125,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
   const tvlValues: (readonly (string | number)[])[] = [];
 
   // temporary statement until we start get prices from coingecko for
-  if (props.pool.poolType === PoolType.StablePhantom) {
+  if (props.poolType === PoolType.StablePhantom) {
     periodSnapshots.forEach((snapshot, idx) => {
       const timestamp = timestamps.value[idx];
       if (idx === 0) {
