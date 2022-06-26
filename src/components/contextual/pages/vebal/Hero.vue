@@ -144,15 +144,15 @@ function navigateToGetVeBAL() {
   z-index: 0;
 }
 .hero-container {
-  background-color: #0B0F19;
+  background-color: #0b0f19;
 }
 .dark .hero-container {
-  background-color: #0E1420;
+  background-color: #0e1420;
 }
 
 .hero-container:before {
   content: ' ';
-  background: url('/images/backgrounds/scales4.png');
+  background: url('/images/backgrounds/scales.png');
   @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-10 z-0;
 }
 
