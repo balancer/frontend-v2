@@ -32,7 +32,7 @@ function navigateToGetVeBAL() {
 </script>
 
 <template>
-  <div class="w-full bg-black hero-container">
+  <div class="hero-container">
     <div class="hero-content">
       <div
         class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
@@ -139,15 +139,33 @@ function navigateToGetVeBAL() {
 </template>
 <style scoped>
 .hero-container {
-  @apply flex content-center relative;
+  @apply flex content-center relative w-full;
   min-height: 440px;
+  z-index: 0;
+}
+.hero-container {
+  background-color: #0B0F19;
+}
+.dark .hero-container {
+  background-color: #0E1420;
 }
 
 .hero-container:before {
   content: ' ';
-  background: linear-gradient(0deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
+  background: url('/images/backgrounds/scales4.png');
+  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-10 z-0;
+}
+
+.dark .hero-container:before {
+  @apply opacity-5;
+}
+
+.hero-container:after {
+  content: ' ';
+  background: linear-gradient(45deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5)),
     url('/images/backgrounds/vebal-hero-noise.svg');
-  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-30 z-0;
+  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-20 z-0;
+  min-height: 440px;
 }
 
 .hero-content {
