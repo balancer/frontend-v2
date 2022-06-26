@@ -501,9 +501,12 @@
     "pendingEstimate": "Pending: (estimate)",
     "perWeek": "per week",
     "policies": {
+        "balancerThirdPartyInfo": "Balancer is an open source, permissionless, decentralized protocol. The smart contracts that power the ecosystem may be used by anyone. This website is Balancer Labs’ front-end to the ecosystem and it is also open-source. You are free to fork it on Github and modify it as you wish",
         "cookiesPolicy": "Cookies Policy",
         "privacyPolicy": "Privacy Policy",
-        "termsOfUse": "Terms of Use"
+        "termsOfUse": "Terms of Use",
+        "thirdPartyServices": "3rd party services",
+        "usesFollowing": "This website uses the following"
     },
     "pool": "Pool",
     "pools": "Pools",
@@ -620,6 +623,15 @@
     "selectToken": "Select token",
     "sell": "Sell",
     "send": "Send",
+    "services": {
+        "infura": "Used to fetch on-chain data and constructs contract calls with an Infura API.",
+        "alchemy": "Used to fetch on-chain data and constructs contract calls with an Alchemy API.",
+        "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
+        "google-analytics": "Used to understand user behavior on the site and marketing performance.",
+        "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
+        "trm-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
+        "sentry": "Used for error tracking and performance monitoring."
+    },
     "settings": "Settings",
     "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.",
     "singleToken": "Single token",
@@ -1165,6 +1177,7 @@
     "unstaked": "Unstaked",
     "unwrap": "Unwrap",
     "usdValue": "USD Value",
+    "useOf": "use of",
     "v1": "V1",
     "v2": "V2",
     "value": "Value",
