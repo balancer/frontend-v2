@@ -64,6 +64,16 @@ type PluginState = {
   walletState: WalletState;
 };
 
+async function isSanctionedAddress(address: string) {
+  const response = await axios.post(SANCTIONS_ENDPOINT, [
+    {
+      address: '149w62rY42aZBox8fGcmqNsXUzSStKeq8C' || address.toLowerCase()
+    }
+  ]);
+  const isSanctioned = response.data[0].isSanctioned;
+  return isSanctioned;
+}
+
 export default {
   install: async app => {
     const { trackGoal, Goals } = useFathom();
