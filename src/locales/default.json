@@ -96,6 +96,12 @@
   "claimHero": {
     "title": "Claim liquidity incentives",
     "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
+    "tipLabel": {
+      "addLiquidity": "Add liquidity",
+      "stake": "Stake to earn",
+      "boost": "Get a boost",
+      "claim": "Claim anytime"
+    },
     "tips": {
       "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table onthe veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
       "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your LP tokens from that pool. Stake it to receive liquidity mining incentives in addition to any swap fees.",
@@ -531,7 +537,6 @@
       "swaps": "Swaps",
       "trades": "Trades"
     },
-<<<<<<< HEAD
     "noResults": {
       "allTransactions": "No transactions in this pool.",
       "myTransactions": "You haven't made any transactions in this pool.",
@@ -557,109 +562,6 @@
       "largest": "Largest trade {period}",
       "ave": "Ave. trade {period}",
       "total": "Total trades {period}"
-=======
-    "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
-    "loading": "Loading...",
-    "loadingBestPrice": "Looking for the best price...",
-    "loadMore": "Load more",
-    "logOut": "Log out",
-    "lost": "Lost",
-    "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
-    "lpTokens": "LP tokens",
-    "managedPool": "Managed pool",
-    "manageLists": "Manage lists",
-    "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
-    "max": "Max",
-    "maxed": "Maxed",
-    "maximum": "Maximum",
-    "minimumTotalApr": "Minimum total APR",
-    "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
-    "missingPoolNameOrSymbol": "Missing pool name or symbol",
-    "missingTokenPrices": "Missing token prices",
-    "missingPoolNameOrSymbolInfo": "There is a missing pool name or symbol, fill it in before creating the pool.",
-    "menu": "Menu",
-    "migrate": "Migrate",
-    "modals": {
-        "veBalRedirectModal": {
-            "title": "Proceed to Mainnet",
-            "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum Mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by investing in eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
-        }
-    },
-    "month": "month",
-    "months": "months",
-    "mustBeAtLeast": "must be at least {0} characters",
-    "mustBeInt": "must be an integer",
-    "mustBeLessThan": "must be less than {0}",
-    "mustBeMoreThan": "must be greater than {0}",
-    "mustBePositive": "must be a positive number",
-    "mustBeSame": "must be the same as {0}",
-    "mustBeValidEmail": "must be a valid email",
-    "mustBeValidNum": "must be a valid number",
-    "mustBeValidAddress": "This is not a valid Ethereum address",
-    "myApr": "My APR",
-    "myBalance": "My balance",
-    "myBalancerInvestments": "My Balancer investments",
-    "myBoost": "My boost",
-    "myPortfolio": "My portfolio",
-    "myShare": "My share",
-    "myInvestments": "My investments",
-    "myWallet": "My Ethereum wallet",
-    "myWallet2": "My wallet",
-    "name": "Name",
-    "namePlaceholder": "Name, symbol or contract address",
-    "nativeTokens": "Native tokens",
-    "network": "Network",
-    "networkMismatch": "Please switch to {0}",
-    "new": "New",
-    "newInvestment": "New investment",
-    "newTrade": "New Trade",
-    "newToEthereum": "New to Ethereum?",
-    "newWithdrawal": "New withdrawal",
-    "next": "Next",
-    "noContent": "No content",
-    "noClaimableIncentives": "No claimable incentives",
-    "noData": "No data available",
-    "noInitLiquidity": "This pool has no initial liquidity",
-    "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
-    "noInvestments": "No investments",
-    "noInvestmentsPool": "No investments in this pool",
-    "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
-    "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
-    "noPoolsFound": "No pools found",
-    "noPriceImpact": "Best price",
-    "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
-    "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
-    "noRecentActivity": "Your recent activity will appear here…",
-    "noResults": "No results.",
-    "noSwapsPool": "No swaps in this pool.",
-    "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
-    "numberOfPools": "Number of pools",
-    "notAvailable": "N/A",
-    "oneDay": "1D",
-    "oneMonth": "1M",
-    "oneWeek": "1W",
-    "optimize": "Optimize",
-    "optimized": "Optimized",
-    "optimizedPrefilled": "Optimized amounts have been pre-filled",
-    "oops": "Oops",
-    "oracleWeightedPool": "Oracle Weighted Pool",
-    "otherTokenEarnings": "Other token earnings",
-    "overview": "Overview",
-    "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
-    "payload": "Payload",
-    "pages": {
-        "claim": {
-            "title": "Claim your liquidity mining incentives",
-            "description": "Incentives to attract liquidity are set by the Balancer protocol and partners. Stakers in eligible pools can claim incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
-            "titles": {
-                "incentivesOnOtherNetworks": "Incentives on other networks",
-                "legacyIncentives": "Legacy incentives"
-            },
-            "btns": {
-                "claimOn": "Claim on"
-            }
-        }
->>>>>>> 83c28f26... Updated claims header
     },
     "investment": {
       "netTvl": "Net TVL {period}",
@@ -801,126 +703,9 @@
         "myLockedLpToken": {
           "label": "My locked B-80BAL-20WETH"
         },
-<<<<<<< HEAD
         "lockedEndDate": {
           "label": "Locked until",
           "secondaryText": "{0} days"
-=======
-        "poolOwnerVulnWarningEcosystem": {
-            "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem."
-        },
-        "poolOwnerVulnWarningEcosystemMigrate": {
-            "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem. A new version of the pool will be deployed in the next few weeks that can be migrated to."
-        }
-    },
-    "popularBases": "Popular:",
-    "portfolio": "Portfolio",
-    "potential": "Potential",
-    "potentialWeeklyYield": "Potential weekly yield",
-    "preview": "Preview",
-    "previewPool": "Preview new {0} pool",
-    "previewTrade": "Preview trade",
-    "previewTradeTransactions": "Preview trade transactions",
-    "previewUnwrap": "Preview {0} Unwrap",
-    "previewWrap": "Preview {0} Wrap",
-    "previewMigrate": "Preview migrate",
-    "priceImpact": "Price impact",
-    "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
-    "priceImpactCheckbox": "Price impact acknowledgement",
-    "priceImpactTolerance": "Price impact tolerance",
-    "priceUpdatedAlert": {
-        "actionLabel": "Accept",
-        "description": "The trade price has updated by more than {0}",
-        "title": "Price updated"
-    },
-    "proceed": "Proceed",
-    "profit": "Profit (1{0})",
-    "proportionalSuggestion": "Proportional suggestion",
-    "proportionalWithdrawal": "Proportional withdrawal",
-    "protocolFees": "Protocol fees",
-    "protocolEarnings": "Protocol & veBAL earnings",
-    "rank": "Rank (1{0})",
-    "receipt": "Receipt",
-    "receive": "Receive",
-    "recentActivityTitle": "Recent activity",
-    "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
-    "restoring": "Restoring...",
-    "returnToPool": "Return to pool page",
-    "returnToPoolCreation": "Return to pool creation",
-    "saveGas": " to save gas.",
-    "searchBy": "Name, symbol or address",
-    "searchByName": "Search by Name",
-    "seeMore": "See more",
-    "seeOnExplorer": "See on explorer",
-    "seePools": "See pools",
-    "seeV1BalancerInvestments": "Want to see your Balancer V1 investments?",
-    "select": "Select",
-    "selectToken": "Select token",
-    "sell": "Sell",
-    "send": "Send",
-    "settings": "Settings",
-    "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.",
-    "singleToken": "Single token",
-    "singleTokenMax": "Single token max",
-    "slippageTolerance": "Slippage tolerance",
-    "somethingWentWrong": "Something went wrong",
-    "stablePool": "Stable pool",
-    "stake": "Stake",
-    "staked": "Staked",
-    "staking": {
-        "minimumStakingApr": "Min staking APR",
-        "newTotalShare": "Your total share",
-        "potentialWeeklyEarningTooltip": "The approximate weekly earning based on your staked balance",
-        "stakedPools": "Staked pools",
-        "stakedLpTokensTooltip": "The fiat value of LP tokens you have staked in this pool.",
-        "stakeValueTooltip": "The approximate value of the LP tokens you will stake.",
-        "staking": "Staking",
-        "stakeTooltip": "Confirm staking of LP tokens to earn liquidity mining incentives on this pool",
-        "stakingApr": "Staking APR",
-        "stakingAprTooltip": "Your potential staking APR",
-        "stakingIncentives": "Staking incentives",
-        "totalShareTooltip": "Your current total share of LP tokens in the pool",
-        "unclaimedIncentives": "Unclaimed incentives",
-        "unstakedLpTokensTooltip": "The fiat value of LP tokens you can stake.",
-        "unstakedPools": "Unstaked pools",
-        "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
-        "unstaking": "Unstaking",
-        "unstakeTooltip": "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
-        "weeklyEarning": "weekly earning"
-    },
-    "stakeToGetExtra": "Stake this to earn extra",
-    "strategy": "Strategy",
-    "submit": "Submit",
-    "summary": "Summary",
-    "swap": "Swap",
-    "swapFee": "Swap fee",
-    "swapFeeAPR": "Swap fees APR",
-    "swapFeeManager": "Swap fee manager",
-    "switchNetwork": "Switch network",
-    "symbol": "Symbol",
-    "veBAL": {
-        "hero": {
-            "title": "Extra earnings & voting power",
-            "benefits": {
-                "earn": "Earn your share of protocol revenue",
-                "boost": "Boost liquidity mining yield up to 2.5x",
-                "vote": "Vote to direct liquidity mining emissions"
-            },
-            "tokens": {
-                "balWETH": "BAL + WETH",
-                "lpToken": "B-80BAL-20WETH",
-                "veBAL": "veBAL"
-            },
-            "tokenInfo": {
-                "balWETH": "Invest / add liquidity to the 80% BAL / 20% WETH pool to get the B-80BAL-20WETH LP token.",
-                "lpToken": "Lock up the LP tokens from the 80% BAL / 20% WETH pool for up to a year to get veBAL. The longer you lock, the more veBAL you get.",
-                "veBAL": "Use veBAL to earn extra on your staked pools. Only some pools are eligible for staking. Check any pools that you are in, and stake it to earn liquidity mining incentives. You can also use veBAL to vote to direct future liquidity mining emissions"
-            },
-            "buttons": {
-                "getVeBAL": "Get veBAL",
-                "learnMore": "Learn more"
-            }
->>>>>>> 83c28f26... Updated claims header
         },
         "myVeBAL": {
           "label": "My veBAL",
