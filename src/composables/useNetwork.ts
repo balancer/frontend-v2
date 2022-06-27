@@ -18,6 +18,7 @@ export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isKovan = computed(() => networkId.value === Network.KOVAN);
+export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
 export const isL2 = computed(() => isPolygon.value || isArbitrum.value);
 
@@ -32,6 +33,8 @@ export function networkFor(key: string | number): Network {
   switch (key.toString()) {
     case '1':
       return Network.MAINNET;
+    case '5':
+      return Network.GOERLI;
     case '42':
       return Network.KOVAN;
     case '137':
@@ -53,6 +56,8 @@ export function subdomainFor(network: Network): string {
       return 'app';
     case Network.KOVAN:
       return 'kovan';
+    case Network.GOERLI:
+      return 'goerli';
     case Network.POLYGON:
       return 'polygon';
     case Network.ARBITRUM:

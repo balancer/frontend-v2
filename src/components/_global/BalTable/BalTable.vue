@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import BalIcon from '../BalIcon/BalIcon.vue';
+import BalTableRow from './BalTableRow.vue';
+import TotalsRow from './TotalsRow.vue';
 export type Sticky = 'horizontal' | 'vertical' | 'both';
 export type Data = any;
 export type ColumnDefinition<T = Data> = {
@@ -64,6 +67,7 @@ type Props = {
   link?: { to?: string } | null;
   initialState?: InitialState;
   pin?: DataPinState;
+  getTableRowClass?: (rowData: Data, rowIndex: number) => string | undefined;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,7 +81,8 @@ const props = withDefaults(defineProps<Props>(), {
   }),
   skeletonClass: '',
   isLoading: false,
-  isLoadingMore: false
+  isLoadingMore: false,
+  getTableRowClass: () => undefined
 });
 
 const stickyHeaderRef = ref();
@@ -323,6 +328,7 @@ watch(
         <PinHeader v-if="pinnedData.length" />
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
+          :class="props.getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
@@ -341,6 +347,7 @@ watch(
         <!-- begin data rows -->
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
+          :class="props.getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
@@ -382,7 +389,9 @@ watch(
 
 <style>
 .horizontalSticky {
-  @apply z-10 bg-white dark:bg-gray-850 group-hover:bg-gray-50 dark:group-hover:bg-gray-800 opacity-95 xs:opacity-90;
+  @apply z-10 opacity-95 xs:opacity-90;
+  /* Set the sticky cell to inherit table row's background-color in order for the opacity property to have an effect */
+  background-color: inherit;
   position: sticky;
   left: 0;
   width: 100%;

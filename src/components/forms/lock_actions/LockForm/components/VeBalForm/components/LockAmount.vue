@@ -38,8 +38,10 @@ const lockAmountFiatValue = computed(() =>
 
 <template>
   <div class="mb-6">
-    <div class="pb-4">
-      {{ $t('getVeBAL.lockForm.lockAmount.title') }}
+    <div>
+      <p class="font-semibold pb-2">
+        {{ $t('getVeBAL.lockForm.lockAmount.title') }}
+      </p>
     </div>
     <TokenInput
       :address="lockablePoolTokenInfo.address"

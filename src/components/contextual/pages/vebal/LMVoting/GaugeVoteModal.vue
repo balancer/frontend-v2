@@ -73,14 +73,16 @@ const voteState = reactive<TransactionActionState>({
 /**
  * COMPUTED
  */
-const voteDisabled = computed((): boolean => {
+const voteButtonDisabled = computed((): boolean => {
   if (isVeBalGauge.value) {
-    return (
-      (!!voteWarning.value && isCriticalWarning.value) || !hasEnoughVotes.value
-    );
+    return !!voteError.value || !hasEnoughVotes.value;
   }
 
-  return !!voteWarning.value || !hasEnoughVotes.value;
+  return !!voteWarning.value || !!voteError.value || !hasEnoughVotes.value;
+});
+
+const voteInputDisabled = computed((): boolean => {
+  return !!voteError.value;
 });
 
 const currentWeight = computed(() => props.gauge.userVotes);
@@ -180,19 +182,17 @@ const voteWarning = computed((): {
   title: string;
   description: string;
 } | null => {
-  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
-  if (noVeBalWarning.value) return noVeBalWarning.value;
-  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
   if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
   return null;
 });
 
-// Some warnings should not block voting
-const isCriticalWarning = computed(
-  (): boolean => voteWarning.value !== veBalVoteOverLimitWarning.value
-);
-
-const voteError = computed(() => {
+const voteError = computed((): {
+  title: string;
+  description: string;
+} | null => {
+  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
+  if (noVeBalWarning.value) return noVeBalWarning.value;
+  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
   if (voteState.error) return voteState.error;
   return null;
 });
@@ -213,7 +213,9 @@ const unallocatedVotesFormatted = computed((): string =>
 );
 
 const unallocatedVotesClass = computed(() => {
-  return hasEnoughVotes.value ? ['text-gray-500'] : ['text-red-600'];
+  return hasEnoughVotes.value
+    ? ['text-gray-500 dark:text-gray-400']
+    : ['text-red-600'];
 });
 
 const remainingVotes = computed(() => {
@@ -342,7 +344,21 @@ onMounted(() => {
     </template>
     <div>
       <div class="mb-4 text-sm" v-if="!voteWarning">
-        {{ t('veBAL.liquidityMining.popover.emissionsInfo') }}
+        <ul class="list-disc ml-4 text-gray-600 dark:text-gray-400">
+          <li class="mb-1">
+            {{ t('veBAL.liquidityMining.popover.emissionsInfo') }}
+          </li>
+          <li class="mb-1">
+            {{ t('veBAL.liquidityMining.popover.resubmitVote') }}
+          </li>
+          <li>
+            {{
+              t('veBAL.liquidityMining.popover.voteLockInfo', [
+                voteLockedUntilText
+              ])
+            }}
+          </li>
+        </ul>
       </div>
       <BalAlert
         v-if="voteWarning"
@@ -351,13 +367,33 @@ onMounted(() => {
         :description="voteWarning.description"
         class="w-full rounded mb-4"
       />
+      <BalAlert
+        v-if="voteError"
+        type="error"
+        :title="voteError.title"
+        :description="voteError.description"
+        block
+        class="mt-2 mb-4"
+      />
 
       <div
         class="border dark:border-gray-800 p-2 rounded-lg mb-4 flex items-center justify-between"
       >
-        <div class="flex items-center h-full">
+        <div class="flex gap-4 items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
-          <span class="text-gray-500">{{ gauge.pool.symbol }}</span>
+          <div v-if="gauge.pool.name">
+            <p class="text-black dark:text-white font-medium">
+              {{ gauge.pool.name }}
+            </p>
+            <p class="text-sm text-gray-500 dark:gray-400">
+              {{ gauge.pool.symbol }}
+            </p>
+          </div>
+          <div v-else>
+            <p class="text-black dark:text-white font-medium">
+              {{ gauge.pool.symbol }}
+            </p>
+          </div>
         </div>
         <BalLink
           :href="poolURL"
@@ -371,7 +407,7 @@ onMounted(() => {
           />
         </BalLink>
       </div>
-      <BalForm>
+      <BalForm class="vote-form">
         <BalTextInput
           name="voteWeight"
           type="number"
@@ -380,29 +416,35 @@ onMounted(() => {
           spellcheck="false"
           step="any"
           v-model="voteWeight"
+          placeholder="0"
           validateOn="input"
           :rules="inputRules"
-          :disabled="voteDisabled || transactionInProgress || voteState.receipt"
-          size="sm"
+          :disabled="
+            voteInputDisabled || transactionInProgress || voteState.receipt
+          "
+          size="md"
           autoFocus
         >
           <template v-slot:append>
-            <div class="h-full flex flex-row justify-center items-center px-2">
-              <span class="text-gray-500">%</span>
+            <div
+              class="flex flex-row justify-center items-center px-2 bg-gray-200 dark:bg-gray-700 w-16 h-12 border-gray-100 dark:border-gray-800 rounded-r-lg"
+            >
+              <span class="text-black dark:text-white">%</span>
             </div>
           </template>
         </BalTextInput>
-        <div :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
+        <div
+          v-if="voteError"
+          class="mt-2 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{
+            t('veBAL.liquidityMining.popover.warnings.noVeBal.inputHintText')
+          }}
+        </div>
+        <div v-else :class="['mt-2 text-sm'].concat(unallocatedVotesClass)">
           {{ remainingVotes }}
         </div>
-        <BalAlert
-          v-if="voteError"
-          type="error"
-          :title="voteError.title"
-          :description="voteError.description"
-          block
-          class="mt-2"
-        />
+
         <div class="mt-4">
           <template v-if="voteState.receipt">
             <ConfirmationIndicator
@@ -423,7 +465,7 @@ onMounted(() => {
             v-else
             color="gradient"
             block
-            :disabled="voteDisabled"
+            :disabled="voteButtonDisabled"
             :loading="transactionInProgress"
             :loading-label="
               voteState.init
@@ -436,11 +478,20 @@ onMounted(() => {
           </BalBtn>
         </div>
       </BalForm>
-      <div class="text-gray-500 text-sm mt-4" v-if="!voteWarning">
-        {{
-          t('veBAL.liquidityMining.popover.voteLockInfo', [voteLockedUntilText])
-        }}
-      </div>
     </div>
   </BalModal>
 </template>
+<style scoped>
+.vote-form :deep(.input-container),
+.vote-form :deep(.input-group) {
+  @apply p-0;
+}
+
+.vote-form :deep(.input) {
+  @apply px-3 h-12;
+}
+
+.vote-form :deep(.input[disabled]) {
+  @apply cursor-not-allowed bg-gray-100 dark:bg-gray-800 rounded-l-lg;
+}
+</style>

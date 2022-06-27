@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 
+import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
@@ -29,6 +30,12 @@ const {
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
+
+const votingGaugeAddresses = computed<string[]>(
+  () => votingGauges.value?.map(gauge => gauge.address) || []
+);
+
+const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
 
 /**
  * COMPUTED
@@ -160,6 +167,7 @@ function handleVoteSuccess() {
     </div>
   </div>
   <GaugesTable
+    :expiredGauges="expiredGauges"
     :isLoading="isLoading"
     :data="votingGauges"
     :key="votingGauges && isLoading"
