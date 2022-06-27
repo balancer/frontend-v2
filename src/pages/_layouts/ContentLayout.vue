@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Footer from '@/components/footer/Footer.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 </script>
 
@@ -9,6 +10,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
       <router-view />
     </div>
   </section>
+  <Footer />
 </template>
 
 <style scoped>
