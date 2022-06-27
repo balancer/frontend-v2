@@ -40,7 +40,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 .content-container :deep(h2),
 .content-container :deep(h3) {
   @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 500;
+  font-variation-settings: 'wght' 700;
 }
 
 .content-container :deep(h3) {

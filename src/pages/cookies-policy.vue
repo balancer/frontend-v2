@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="subsection">
-      <h1>Balancer Labs OU Cookies&nbsp;Policy</h1>
-      <p><em>Last Updated: November 15, 2021</em></p>
+      <h1>Balancer Foundation Cookies&nbsp;Policy</h1>
+      <p><em>Last Updated: June 27, 2022</em></p>
     </div>
     <div class="subsection">
       <h2>Introduction and Scope of Policy</h2>
       <p>
-        This Balancer Labs OU Cookies Policy (“Policy”) applies to your
-        interaction with Balancer Labs OU or any of its subsidiaries or
-        affiliates (“Balancer Labs” or “we”).
+        This Balancer Foundation Cookies Policy (“Policy”) applies to your
+        interaction with Balancer Foundation or any of its subsidiaries or
+        affiliates (“Balancer Foundation” or “we”).
       </p>
     </div>
 

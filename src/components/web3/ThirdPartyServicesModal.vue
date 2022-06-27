@@ -19,7 +19,7 @@
           horizontal
           v-for="service in services"
           :key="service"
-          align="center"
+          align="start"
         >
           <img
             height="36"
