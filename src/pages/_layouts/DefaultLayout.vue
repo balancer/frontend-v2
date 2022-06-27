@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
-
-/**
- * COMPOSABLES
- */
-const { isDesktop } = useBreakpoints();
 </script>
 
 <template>
