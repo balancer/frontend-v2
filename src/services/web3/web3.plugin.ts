@@ -163,7 +163,7 @@ export default {
       try {
         if (!wallet || typeof wallet !== 'string') {
           throw new Error(
-            'Please provide a wallet to fa cilitate a web3 connection.'
+            'Please provide a wallet to facilitate a web3 connection.'
           );
         }
 
