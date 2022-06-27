@@ -115,10 +115,6 @@ watch(blockNumber, async () => {
     </div>
 
     <div class="mt-6 px-4">
-      <div id="intercom-activator" class="side-bar-btn">
-        <IntercomIcon />
-        <span class="ml-2">Chat for help</span>
-      </div>
       <div class="side-bar-btn mt-2" @click="toggleDarkMode">
         <MoonIcon v-if="!darkMode" class="mr-2" />
         <SunIcon v-else class="mr-2" />
@@ -187,10 +183,6 @@ watch(blockNumber, async () => {
 .social-link > svg {
   @apply w-6 h-6;
   fill: white;
-}
-
-#intercom-activator {
-  z-index: 2147483004;
 }
 
 .block-icon {
