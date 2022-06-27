@@ -25,7 +25,7 @@ const noPoolsLabel = computed(() => {
     : t('connectYourWallet');
 });
 
-const computedPools = computed<PoolWithShares[]>(() => {
+const lockPools = computed<PoolWithShares[]>(() => {
   if (lockPool.value) {
     return [
       {
@@ -70,10 +70,10 @@ const hiddenColumns = computed(() => {
 <template>
   <div class="mt-8">
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 lg:px-0">veBAL protocol liquidity</h5>
+      <h5 class="px-4 lg:px-0">{{ $t('veBalProtocolLiquidity') }}</h5>
       <PoolsTable
-        :key="computedPools"
-        :data="computedPools"
+        :key="lockPools"
+        :data="lockPools"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         :isLoading="isLoading"
