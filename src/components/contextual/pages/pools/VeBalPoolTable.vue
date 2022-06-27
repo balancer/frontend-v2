@@ -59,7 +59,7 @@ const hiddenColumns = computed(() => {
     'poolVolume',
     'poolValue',
     'migrate',
-    'stake',
+    'actions',
     'myBoost'
   ];
   if (isL2.value) _hiddenColumns.push('myBoost');

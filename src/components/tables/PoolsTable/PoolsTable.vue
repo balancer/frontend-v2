@@ -18,6 +18,7 @@ import {
   absMaxApr,
   isMigratablePool,
   isStableLike,
+  isVeBalPool,
   orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel
@@ -185,11 +186,11 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     width: 150
   },
   {
-    name: t('stake'),
-    Cell: 'stakeCell',
-    accessor: 'stake',
+    name: t('actions'),
+    Cell: 'actionsCell',
+    accessor: 'actions',
     align: 'center',
-    id: 'stake',
+    id: 'actions',
     width: 150
   }
 ]);
@@ -337,7 +338,7 @@ function lockedUntil(lockedEndDate?: number) {
           {{ lockedUntil(pool.lockedEndDate) }}
         </div>
       </template>
-      <template v-slot:stakeCell="pool">
+      <template v-slot:actionsCell="pool">
         <div class="px-2 py-4 flex justify-center">
           <BalBtn
             v-if="stakablePoolIds.includes(pool.id)"
@@ -346,6 +347,15 @@ function lockedUntil(lockedEndDate?: number) {
             @click.prevent="$emit('triggerStake', pool)"
           >
             {{ $t('stake') }}
+          </BalBtn>
+          <BalBtn
+            v-else-if="isVeBalPool(pool.id)"
+            tag="router-link"
+            :to="{ name: 'get-vebal', query: { returnRoute: $route.name } }"
+            color="gradient-pink-yellow"
+            size="sm"
+          >
+            {{ $t('transactionAction.createLock') }}
           </BalBtn>
           <div v-else>{{ $t('notAvailable') }}</div>
         </div>

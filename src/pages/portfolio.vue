@@ -24,7 +24,7 @@ const migratableUserPools = computed(() => {
 const hiddenColumns = computed(() => [
   'poolVolume',
   'poolValue',
-  'stake',
+  'actions',
   'lockedEndDate'
 ]);
 </script>

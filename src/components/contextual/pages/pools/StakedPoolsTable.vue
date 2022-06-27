@@ -55,7 +55,7 @@ const hiddenColumns = computed(() => {
     'poolVolume',
     'poolValue',
     'migrate',
-    'stake',
+    'actions',
     'lockedEndDate'
   ];
   if (isL2.value) _hiddenColumns.push('myBoost');
