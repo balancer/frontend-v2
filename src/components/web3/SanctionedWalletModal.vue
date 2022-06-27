@@ -5,12 +5,8 @@
       high risk by our compliance partner, TRM Labs.
     </p>
     <p class="pb-3 text-sm">
-      This front end instance is run by an organization subject to Anti Money
-      Laundering laws and other regulations.
-    </p>
-    <p class="pb-3 text-sm">
-      The Balancer protocol is open source and permissionless. Anyone can fork
-      and run their own front end.
+      This website is open source and permissionless. Anyone can fork and run
+      their own front end.
     </p>
   </BalModal>
 </template>
