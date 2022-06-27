@@ -27,7 +27,7 @@
             alt="Balancer 3rd party service"
           />
           <BalStack vertical spacing="none">
-            <h6 class="capitalize">{{ service }}</h6>
+            <h6 class="capitalize">{{ service.replaceAll('-', ' ') }}</h6>
             <span>{{ $t(`services.${service}`) }}</span>
           </BalStack>
         </BalStack>

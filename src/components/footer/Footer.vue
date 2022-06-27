@@ -206,7 +206,6 @@
 <script>
 import { useI18n } from 'vue-i18n';
 
-import BalLink from '@/components/_global/BalLink/BalLink.vue';
 import IconDiscord from '@/components/icons/IconDiscord.vue';
 import IconGithub from '@/components/icons/IconGithub.vue';
 import IconLinkedin from '@/components/icons/IconLinkedin.vue';

@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import LogotypeBalancer from '@/components/icons/LogotypeBalancer.vue';
-
-import AppIcon from './AppIcon.vue';
 </script>
 
 <template>
