@@ -42,9 +42,6 @@ const FaucetPage = () =>
 const PortfolioPage = () =>
   import(/* webpackChunkName: "PortfolioPage" */ '@/pages/portfolio.vue');
 
-const PortfolioPage = () =>
-  import(/* webpackChunkName: "PortfolioPage" */ '@/pages/portfolio.vue');
-
 declare module 'vue-router' {
   interface RouteMeta {
     layout?: string;
