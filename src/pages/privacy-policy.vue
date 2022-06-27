@@ -2,7 +2,7 @@
   <div>
     <div class="subsection">
       <h1>Balancer Foundation Privacy&nbsp;Policy</h1>
-      <p><em>Last Updated: June 17, 2021</em></p>
+      <p><em>Last Updated: June 27, 2022</em></p>
       <p>
         <em class="font-medium">
           This Privacy Policy explains how the Balancer Foundation, its
