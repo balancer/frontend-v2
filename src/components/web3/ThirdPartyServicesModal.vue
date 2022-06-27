@@ -5,12 +5,9 @@
     title="Use of 3rd party services"
     class="third-parties"
   >
-    <p class="text-sm">
-      {{ $t('policies.balancerThirdPartyInfo') }}
-    </p>
-    <br />
+    <p class="text-sm pb-3">{{ $t('policies.balancerThirdPartyInfo') }}.</p>
     <BalStack vertical class="pb-2">
-      <span class="text-sm">
+      <span class="text-sm font-medium">
         {{ $t('policies.usesFollowing') }}
         {{ $t('policies.thirdPartyServices') }}:
       </span>
@@ -27,6 +24,7 @@
             height="36"
             :src="require(`@/assets/images/services/${service}.svg`)"
             alt="Balancer 3rd party service"
+            class="mt-1"
           />
           <BalStack vertical spacing="none">
             <h6 class="capitalize">{{ service.replaceAll('-', ' ') }}</h6>
