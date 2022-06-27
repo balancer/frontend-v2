@@ -65,7 +65,12 @@ export default function useExpiredGaugesQuery(
     if (gaugeAddresses.value?.length) {
       const gaugesExpiredStatus = await callGaugesIsKilledStatus(
         gaugeAddresses.value
-      );
+      ).catch(error => {
+        console.error('Error when fetching voting gauges is_killed status', {
+          error
+        });
+        return [];
+      });
 
       for (const [address, value] of Object.entries(gaugesExpiredStatus)) {
         if (value.isKilled) {
