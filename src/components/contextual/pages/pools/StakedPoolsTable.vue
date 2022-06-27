@@ -1,18 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
-import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-
-import StakePreviewModal from '../../stake/StakePreviewModal.vue';
-
-/** STATE */
-const showStakeModal = ref(false);
-const stakePool = ref<Pool | undefined>();
 
 /** COMPOSABLES */
 const {
@@ -22,8 +15,7 @@ const {
     isLoadingStakedPools,
     isLoadingUserPools,
     poolBoosts
-  },
-  setPoolAddress
+  }
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -61,18 +53,6 @@ const hiddenColumns = computed(() => {
   if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;
 });
-
-/** METHODS */
-// TODO: Is staking related stuff needed for staked pools? Can be removed?
-function handleStake(pool: Pool) {
-  setPoolAddress(pool.address);
-  showStakeModal.value = true;
-  stakePool.value = pool;
-}
-
-function handleModalClose() {
-  showStakeModal.value = false;
-}
 </script>
 
 <template>
@@ -84,17 +64,10 @@ function handleModalClose() {
         :data="poolsWithBoost"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
-        @triggerStake="handleStake"
         :isLoading="isLoading"
         showPoolShares
         showBoost
       />
     </BalStack>
   </div>
-  <StakePreviewModal
-    :pool="stakePool"
-    :isVisible="showStakeModal"
-    @close="handleModalClose"
-    action="stake"
-  />
 </template>
