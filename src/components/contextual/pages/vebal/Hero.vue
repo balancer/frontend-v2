@@ -37,7 +37,8 @@ function navigateToGetVeBAL() {
       <div
         class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
       >
-        <h1 class="title mb-6 text-white">{{ $t('veBAL.hero.title') }}</h1>
+        <p class="eyebrow font-medium">veBAL</p>
+        <h1 class="title mb-5 text-white">{{ $t('veBAL.hero.title') }}</h1>
         <ul>
           <li
             v-for="(benefit, i) in benefits"
@@ -152,12 +153,13 @@ function navigateToGetVeBAL() {
 
 .hero-container:before {
   content: ' ';
-  background: url('/images/backgrounds/scales.png');
-  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-10 z-0;
+  background-image: url('/images/patterns/fish-scale.png');
+  background-repeat: repeat;
+  @apply block absolute left-0 top-0 w-full h-full opacity-10 z-0;
 }
 
 .dark .hero-container:before {
-  @apply opacity-5;
+  opacity: 0.07;
 }
 
 .hero-container:after {
@@ -171,8 +173,15 @@ function navigateToGetVeBAL() {
 .hero-content {
   @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full z-10;
 }
+.eyebrow {
+  @apply mb-4;
+  color: #ccb373;
+  background: -webkit-linear-gradient(#ccb373, #977622);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .hero-text {
-  opacity: 0;
+  @apply opacity-0;
   animation: fadeIn 1s ease-out 0.1s both;
 }
 .title {
