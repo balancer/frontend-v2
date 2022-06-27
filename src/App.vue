@@ -30,11 +30,8 @@ export default defineComponent({
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
-<<<<<<< HEAD
-=======
     SanctionedWalletModal,
     ThirdPartyServicesModal,
->>>>>>> dd107248... feature: 3rd party modals
     Notifications,
     AppSidebar,
     GlobalModalContainer
@@ -103,11 +100,8 @@ export default defineComponent({
     return {
       // state
       layout,
-<<<<<<< HEAD
-=======
       isSanctioned,
       isThirdPartyServicesModalVisible,
->>>>>>> dd107248... feature: 3rd party modals
       // computed
       isWalletSelectVisible,
       sidebarOpen,
