@@ -1,20 +1,43 @@
-{
-  "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
-  "network": 1,
-  "pool": {
-    "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
-    "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
-    "poolType": "Stable",
-    "symbol": "veBAL",
-    "tokens": [
-      {
-        "address": "0xc128a9954e6c874ea3d62ce62b468ba073093f25",
-        "weight": "null",
-        "symbol": "veBAL"
-      }
-    ]
+[
+  {
+    "address": "0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b",
+    "network": 1,
+    "pool": {
+      "id": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014",
+      "address": "0x5c6ee304399dbdb9c8ef030ab642b10820db8f56",
+      "poolType": "Stable",
+      "symbol": "veBAL",
+      "tokens": [
+        {
+          "address": "0xc128a9954e6c874ea3d62ce62b468ba073093f25",
+          "weight": "null",
+          "symbol": "veBAL"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+    }
   },
-  "tokenLogoURIs": {
-    "0xc128a9954e6c874ea3d62ce62b468ba073093f25": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+  {
+    "address": "0xF2ca6F8961e91F1ee0D688F9926183314D866f1E",
+    "network": 5,
+    "pool": {
+      "id": "0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060",
+      "address": "0xf8a0623ab66F985EfFc1C69D05F1af4BaDB01b00",
+      "poolType": "Stable",
+      "symbol": "veBAL",
+      "tokens": [
+        {
+          "address": "0x33A99Dcc4C85C014cf12626959111D5898bbCAbF",
+          "weight": "null",
+          "symbol": "veBAL"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x33A99Dcc4C85C014cf12626959111D5898bbCAbF": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56.png"
+    }
   }
-}
+]
+

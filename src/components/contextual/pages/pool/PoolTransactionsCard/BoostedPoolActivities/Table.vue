@@ -41,7 +41,10 @@ type Props = {
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
+<<<<<<< HEAD
   poolAddress: string;
+=======
+>>>>>>> origin/develop
   pool: Pool;
 };
 

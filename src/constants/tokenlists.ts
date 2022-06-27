@@ -26,6 +26,15 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       'https://www.gemini.com/uniswap/manifest.json'
     ]
   },
+  '5': {
+    Balancer: {
+      Default:
+        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/goerli.listed.tokenlist.json',
+      Vetted:
+        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/goerli.vetted.tokenlist.json'
+    },
+    External: []
+  },
   '42': {
     Balancer: {
       Default:

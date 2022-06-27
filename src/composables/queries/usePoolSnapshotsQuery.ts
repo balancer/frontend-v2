@@ -1,3 +1,4 @@
+import differenceInDays from 'date-fns/differenceInDays';
 import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
@@ -9,7 +10,6 @@ import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
-import { isStablePhantom } from '../usePool';
 import usePoolQuery from './usePoolQuery';
 
 /**
@@ -25,7 +25,7 @@ interface QueryResponse {
  */
 export default function usePoolSnapshotsQuery(
   id: string,
-  days: number,
+  days?: number,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
@@ -51,11 +51,18 @@ export default function usePoolSnapshotsQuery(
     let snapshots: PoolSnapshots = {};
     let prices: HistoricalPrices = {};
 
-    const isStablePhantomPool = isStablePhantom(pool.value.poolType);
+    const shapshotDaysNum =
+      days ||
+      differenceInDays(new Date(), new Date(pool.value.createTime * 1000));
 
-    if (isStablePhantomPool) {
-      snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
+    /**
+     * @description
+     * due to coin gecko docs if we query from 1 to 90 days from current time it returns hourly data
+     * @see https://www.coingecko.com/en/api/documentation
+     */
+    const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
 
+<<<<<<< HEAD
       return {
         prices,
         snapshots
@@ -67,6 +74,18 @@ export default function usePoolSnapshotsQuery(
         balancerSubgraphService.poolSnapshots.get(id, days)
       ]);
     }
+=======
+    const tokens = pool.value.tokensList;
+    [prices, snapshots] = await Promise.all([
+      coingeckoService.prices.getTokensHistorical(
+        tokens,
+        shapshotDaysNum,
+        1,
+        aggregateBy
+      ),
+      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
+    ]);
+>>>>>>> origin/develop
 
     return { prices, snapshots };
   };

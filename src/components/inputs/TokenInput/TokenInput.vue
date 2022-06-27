@@ -266,7 +266,10 @@ watchEffect(() => {
             </span>
 
             <template v-if="hasBalance && !noMax && !disableMax">
-              <span v-if="!isMaxed" class="text-blue-500">
+              <span
+                v-if="!isMaxed"
+                class="text-blue-500 hover:text-pink-500 focus:text-pink-500 transition-colors"
+              >
                 {{ $t('max') }}
               </span>
               <span v-else class="text-gray-400 dark:text-gray-600 lowercase">

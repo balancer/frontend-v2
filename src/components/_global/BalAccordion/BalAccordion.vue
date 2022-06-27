@@ -18,7 +18,7 @@ type Props = {
   // changing variables which can be used to
   // determine whether to re-render the height
   // of an accordion section
-  dependencies: Ref<unknown>;
+  dependencies?: Ref<unknown>;
   showSectionBorder?: boolean;
 };
 

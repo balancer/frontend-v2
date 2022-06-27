@@ -6,6 +6,8 @@ const network = ((): Network => {
   switch (configService.network.key) {
     case '1':
       return Network.MAINNET;
+    case '5':
+      return Network.GOERLI;
     case '42':
       return Network.KOVAN;
     case '137':

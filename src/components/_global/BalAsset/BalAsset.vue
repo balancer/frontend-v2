@@ -1,44 +1,33 @@
-<template>
-  <img
-    v-if="iconSRC && !error"
-    :src="iconSRC"
-    :style="{
-      width: `${size}px`,
-      height: `${size}px`,
-      background: 'white'
-    }"
-    @error="error = true"
-    class="rounded-full inline-block leading-none shadow-sm"
-  />
-  <Avatar v-else-if="!!address" :address="address" :size="size" />
-  <div
-    v-else
-    class="rounded-full inline-block leading-none shadow-sm overflow-visible"
-    :style="{
-      width: `${size}px`,
-      height: `${size}px`,
-      background: `${noIconColor} !important`
-    }"
-  />
-</template>
+<script setup lang="ts">
+import { computed, ref, toRefs, watch } from 'vue';
 
-<script>
-import { computed, defineComponent, ref, toRefs, watch } from 'vue';
-
-import useDarkMode from '@/composables/useDarkMode';
-import useTailwind from '@/composables/useTailwind';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
+import { TokenInfo } from '@/types/TokenList';
 
 import Avatar from '../../images/Avatar.vue';
 
-export default defineComponent({
-  name: 'BalAsset',
+type Props = {
+  address?: string;
+  iconURI?: string;
+  size?: number;
+  button?: boolean;
+};
 
-  components: {
-    Avatar
-  },
+const props = withDefaults(defineProps<Props>(), {
+  address: '',
+  iconURI: '',
+  size: 24,
+  button: false
+});
 
+/**
+ * COMPOSABLES
+ */
+const { getToken } = useTokens();
+const { resolve } = useUrls();
+
+<<<<<<< HEAD
   props: {
     address: {
       type: String
@@ -57,40 +46,83 @@ export default defineComponent({
     const { resolve } = useUrls();
     const { theme } = useTailwind();
     const { darkMode } = useDarkMode();
+=======
+/**
+ * STATE
+ */
+const { address } = toRefs(props);
+const error = ref(false);
+>>>>>>> origin/develop
 
-    /**
-     * STATE
-     */
-    const { address } = toRefs(props);
-    const error = ref(false);
+/**
+ * COMPUTED
+ */
+const token = computed<TokenInfo | undefined>(() => getToken(address.value));
 
-    /**
-     * COMPUTED
-     */
-    const iconSRC = computed(() => {
-      if (props.iconURI) return resolve(props.iconURI);
+const iconSRC = computed(() => {
+  if (props.iconURI) return resolve(props.iconURI);
 
+<<<<<<< HEAD
       const token = getToken(address.value);
       if (!token) return '';
       return resolve(token.logoURI);
     });
+=======
+  if (!token.value?.logoURI) return '';
+  return resolve(token.value.logoURI);
+});
+>>>>>>> origin/develop
 
-    const noIconColor = computed(() =>
-      darkMode.value ? theme.colors.gray['700'] : theme.colors.gray['300']
-    );
+const rootElement = computed(() => (props.button ? 'button' : 'div'));
 
-    /**
-     * WATCHERS
-     */
-    watch(iconSRC, newURL => {
-      if (newURL !== '') error.value = false;
-    });
+const rootElementAttrs = computed(() => ({
+  'aria-label': token.value?.symbol
+}));
 
-    return {
-      iconSRC,
-      error,
-      noIconColor
-    };
-  }
+/**
+ * WATCHERS
+ */
+watch(iconSRC, newURL => {
+  if (newURL !== '') error.value = false;
 });
 </script>
+
+<template>
+  <component
+    class="bal-asset rounded-full inline-block leading-none shadow-sm"
+    :style="{
+      width: `${size}px`,
+      height: `${size}px`
+    }"
+    :is="rootElement"
+    v-bind="rootElementAttrs"
+  >
+    <img
+      v-if="iconSRC && !error"
+      :src="iconSRC"
+      @error="error = true"
+      class="rounded-full bg-white"
+    />
+    <Avatar v-else-if="!!address" :address="address" :size="size" />
+    <div
+      v-else
+      class="rounded-full overflow-visible bg-gray-300 dark:bg-gray-700"
+      :style="{
+        width: `${size}px`,
+        height: `${size}px`
+      }"
+    />
+  </component>
+</template>
+
+<style scoped>
+button.bal-asset {
+  @apply transition-transform shadow;
+}
+
+button.bal-asset:hover,
+button.bal-asset:focus {
+  @apply scale-110 transform-gpu;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+</style>

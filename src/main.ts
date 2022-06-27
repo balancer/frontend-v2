@@ -3,15 +3,10 @@ import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 import { Web3Provider } from '@ethersproject/providers';
-import { BarChart, LineChart, PieChart } from 'echarts/charts';
+import { BarChart, LineChart } from 'echarts/charts';
 import {
   GridComponent,
   LegendComponent,
-  MarkLineComponent,
-  MarkPointComponent,
-  PolarComponent,
-  TitleComponent,
-  ToolboxComponent,
   TooltipComponent
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
@@ -33,17 +28,11 @@ import store from '@/store';
 import Root from './Root';
 
 echarts.use([
-  TitleComponent,
   TooltipComponent,
   CanvasRenderer,
   LineChart,
   GridComponent,
   LegendComponent,
-  ToolboxComponent,
-  MarkPointComponent,
-  MarkLineComponent,
-  PieChart,
-  PolarComponent,
   BarChart
 ]);
 

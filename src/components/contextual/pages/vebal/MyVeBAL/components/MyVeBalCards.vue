@@ -109,7 +109,7 @@ const cards = computed(() => {
       secondaryText: isWalletReady.value
         ? fNum2(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)
         : '—',
-      showPlusIcon: isWalletReady.value ? true : false,
+      showPlusIcon: isWalletReady.value && !isExpired ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
       showUnlockIcon: isExpired ? true : false
     },
@@ -123,7 +123,7 @@ const cards = computed(() => {
               differenceInDays(new Date(lockedUntil.value), new Date())
             ])
           : '-',
-      showPlusIcon: hasExistingLock ? true : false,
+      showPlusIcon: hasExistingLock && !isExpired ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } }
     },
     {

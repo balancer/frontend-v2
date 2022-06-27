@@ -16,6 +16,11 @@ export function blockTime(): number {
     case Network.KOVAN:
       // Should be ~4s but this causes subgraph to return with unindexed block error.
       return 1;
+<<<<<<< HEAD
+=======
+    case Network.GOERLI:
+      return 1;
+>>>>>>> origin/develop
     default:
       return 13;
   }

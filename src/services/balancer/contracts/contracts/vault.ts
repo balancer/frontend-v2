@@ -274,7 +274,10 @@ export default class Vault {
         totalSupply
       } = linearPools[address];
 
-      const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
+      const unwrappedAddress =
+        unwrappedTokenAddress ||
+        unwrappedERC4626Address ||
+        wrappedToken.address;
 
       _linearPools[address.toLowerCase()] = {
         id,

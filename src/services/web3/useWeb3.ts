@@ -56,6 +56,7 @@ export default function useWeb3() {
     () => appNetworkConfig.chainId === Network.MAINNET
   );
   const isKovan = computed(() => appNetworkConfig.chainId === Network.KOVAN);
+  const isGoerli = computed(() => appNetworkConfig.chainId === Network.GOERLI);
   const isPolygon = computed(
     () => appNetworkConfig.chainId === Network.POLYGON
   );
@@ -135,6 +136,7 @@ export default function useWeb3() {
     blockNumber,
     isMainnet,
     isKovan,
+    isGoerli,
     isPolygon,
     isArbitrum,
     isEIP1559SupportedNetwork,

@@ -150,3 +150,18 @@ export function includesAddress(addresses: string[], address: string): boolean {
   addresses = addresses.map(a => (a ? getAddress(a) : ''));
   return addresses.includes(getAddress(address));
 }
+<<<<<<< HEAD
+=======
+
+export function findByAddress<T>(
+  items: Record<string, T>,
+  address: string
+): T | undefined {
+  const foundAddress = Object.keys(items).find(itemAddress => {
+    if (isSameAddress(itemAddress, address)) {
+      return true;
+    }
+  });
+  if (foundAddress) return items[foundAddress];
+}
+>>>>>>> origin/develop
