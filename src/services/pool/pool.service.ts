@@ -53,7 +53,6 @@ export default class PoolService {
     currency: FiatCurrency,
     tokenMeta: TokenInfoMap = {}
   ): string {
-    if (isStablePhantom(this.pool.poolType)) console.log('setTotalLiquidity')
     const liquidityConcern = new this.liquidity(this.pool);
     const totalLiquidity = liquidityConcern.calcTotal(
       prices,
