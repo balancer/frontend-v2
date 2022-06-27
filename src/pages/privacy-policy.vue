@@ -1,16 +1,18 @@
 <template>
   <div>
     <div class="subsection">
-      <h1>Balancer Labs OU Privacy&nbsp;Policy</h1>
-      <p><em>Last Updated: November 16, 2021</em></p>
+      <h1>Balancer Foundation Privacy&nbsp;Policy</h1>
+      <p><em>Last Updated: June 17, 2021</em></p>
       <p>
         <em class="font-medium">
-          This Privacy Policy explains how Balancer Labs OU and its subsidiaries
-          and affiliates (“Balancer Labs,” “we,” “our,” or “us”) collects, uses,
-          and discloses information about you. This Privacy Policy applies when
-          you use our website, Balancer Protocol user-interface or application
-          and other online products (collectively, our “UI”), engage with us on
-          social media, or otherwise interact with us.</em
+          This Privacy Policy explains how the Balancer Foundation, its
+          subsidiary, Balancer OpCo Limited, and material service providers
+          operating under a legal agreement (“Balancer Foundation,” “we,” “our,”
+          or “us”) collects, uses, and discloses information about you. This
+          Privacy Policy applies when you use our website, Balancer Protocol
+          user-interface or application and other online products (collectively,
+          our “UI”), engage with us on social media, or otherwise interact with
+          us.</em
         >
       </p>
       <p>
@@ -22,8 +24,8 @@
           applicable law. Your continued use of this UI after we make changes is
           deemed to be acceptance of those changes when permissible. We
           encourage you to review this Privacy Policy regularly to stay informed
-          about our information practices and the choices available to you.
-        </em>
+          about our information practices and the choices available to you.</em
+        >
       </p>
     </div>
     <div class="subsection">
@@ -38,9 +40,9 @@
         customized and this policy reflects that practice.
       </p>
       <p>
-        The Balancer Labs UI is not directed to children under the age of 16. If
-        a parent or guardian becomes aware that his or her child has provided us
-        with personal information without your consent, please contact us at
+        The Balancer Foundation is not directed to children under the age of 16.
+        If a parent or guardian becomes aware that his or her child has provided
+        us with personal information without your consent, please contact us at
         <a class="link" href="mailto:privacypolicy@balancer.finance"
           >privacypolicy@balancer.finance</a
         >. If we become aware that a child under the age of 16 has provided us
@@ -97,7 +99,7 @@
         the information we have access to or receive, most importantly, from our
         service providers. For example, we may make inferences about your
         location based on your wallet or IP address. Wallet and IP address is
-        accessible to Balancer Labs and its vendor(s).
+        accessible to Balancer Foundation and its vendor(s).
       </p>
     </div>
     <div class="subsection">
@@ -110,7 +112,7 @@
         also use the information we collect to:
       </p>
       <ul>
-        <li>Ensure proper functioning of Balancer Labs and the UI;</li>
+        <li>Ensure proper functioning of Balancer Foundation and the UI;</li>
         <li>
           Provide services, content, material and other information on the UI;
         </li>
@@ -130,10 +132,10 @@
         <li>
           Detect, investigate, and prevent security incidents and other
           malicious, deceptive, fraudulent, or illegal activity and protect the
-          rights and property of Balancer Labs and others;
+          rights and property of Balancer Foundation and others;
         </li>
         <li>Debug to identify and repair errors in the UI;</li>
-        <li>Comply with our legal and financial obligations;</li>
+        <li>Comply with our legal, regulatory and financial obligations;</li>
         <li>
           Carry out any other purpose described to you at the time the
           information was collected; and
@@ -150,10 +152,10 @@
 
       <p>
         We do not have access to or share personally identifiable information in
-        the normal course of Balancer Labs business. However, when Balancer Labs
-        has access to personal information, such as your wallet and certain IP
-        addresses, it may share that information in the following circumstances
-        or as otherwise described in this policy:
+        the normal course of Balancer Foundation business. However, when
+        Balancer Foundation has access to personal information, such as your
+        wallet and certain IP addresses, it may share that information in the
+        following circumstances or as otherwise described in this policy:
       </p>
       <ul>
         <li>
@@ -177,7 +179,7 @@
           We may share personal information if we believe that your actions are
           inconsistent with our user agreements or policies, if we believe that
           you have violated the law, or if we believe it is necessary to protect
-          the rights, property, and safety of Balancer Labs, the Balancer
+          the rights, property, and safety of Balancer Foundation, the Balancer
           ecosystem, the public, or others.
         </li>
         <li>
@@ -195,18 +197,18 @@
           may have regarding the sharing of your personal information.
         </li>
         <li>
-          Personal information may be shared between and among Balancer Labs and
-          our current and future parents, affiliates, and subsidiaries and other
-          companies under common control and ownership (“corporate affiliates”).
-          This information may be used to provide you with offers, services, or
-          products that may be of interest to you and provide you with their
-          products and services. Any such corporate affiliate may use your
-          personal information only according to the terms of this Policy. If
-          you are located in a jurisdiction where such sharing requires your
-          permission, we will only share such information with your consent. If
-          you decide you no longer wish to receive these promotional
-          communications, please follow the instructions provided in Your
-          Choices section below.
+          Personal information may be shared between and among Balancer
+          Foundation and our current and future parents, affiliates, and
+          subsidiaries and other companies under common control and ownership
+          (“corporate affiliates”). This information may be used to provide you
+          with offers, services, or products that may be of interest to you and
+          provide you with their products and services. Any such corporate
+          affiliate may use your personal information only according to the
+          terms of this Policy. If you are located in a jurisdiction where such
+          sharing requires your permission, we will only share such information
+          with your consent. If you decide you no longer wish to receive these
+          promotional communications, please follow the instructions provided in
+          Your Choices section below.
         </li>
         <li>
           We share personal information with your consent or at your direction.
@@ -222,9 +224,9 @@
 
       <p>
         We do not work with third parties to serve ads to you as part of
-        customized campaigns on the UI or third-party UIs. Balancer Labs may
-        allow others to provide analytics services on our behalf across the web
-        and in mobile apps. These entities may use web beacons, device
+        customized campaigns on the UI or third-party UIs. Balancer Foundation
+        may allow others to provide analytics services on our behalf across the
+        web and in mobile apps. These entities may use web beacons, device
         identifiers, and other technologies to collect information about your
         use of the UI and other websites and applications, including your wallet
         address, web browser, mobile network information, pages viewed, time
@@ -238,22 +240,22 @@
       </h2>
 
       <p>
-        Balancer Labs is headquartered in Estonia. Therefore, we and our service
-        providers may transfer your personal information to, or store or access
-        it in, jurisdictions that may not provide levels of data protection that
-        are equivalent to those of your home jurisdiction. We will take steps to
-        ensure that your personal information receives an adequate level of
-        protection in the jurisdictions in which we process it.
+        Balancer Foundation is headquartered in the Cayman Islands. Therefore,
+        we and our service providers may transfer your personal information to,
+        or store or access it in, jurisdictions that may not provide levels of
+        data protection that are equivalent to those of your home jurisdiction.
+        We will take steps to ensure that your personal information receives an
+        adequate level of protection in the jurisdictions in which we process
+        it.
       </p>
     </div>
     <div class="subsection">
       <h2>Your Choices</h2>
       <h3>Cookies</h3>
       <p>
-        Balancer Labs does not typically use any cookies. It reserves the
+        Balancer Foundation does not typically use any cookies. It reserves the
         ability to use them to affect the availability and functionality of the
         UI. For more information about cookies and how to disable them, see our
-
         <router-link :to="{ name: 'cookies-policy' }">
           <span className="text-blue-500 hover:text-blue-800 transition-colors"
             >Cookies Policy</span
@@ -284,8 +286,9 @@
         <tr>
           <td>Identifiers</td>
           <td>
-            We share with vendors: wallet address, certain IP addresses, device
-            identifiers or other similar identifiers
+            We share with vendors such as TRM Labs and CloudFlare: wallet
+            address, certain IP addresses, device identifiers or other similar
+            identifiers
           </td>
         </tr>
         <tr>
@@ -298,8 +301,8 @@
       </table>
 
       <p>
-        Balancer Labs does not “sell” personal information to advertise our
-        products to you or otherwise.
+        Balancer Foundation does not “sell” personal information to advertise
+        our products to you or otherwise.
       </p>
 
       <p>
@@ -320,8 +323,8 @@
       <h3>Shine the Light</h3>
 
       <p>
-        Balancer Labs does not share such information with third parties for
-        direct marketing purposes..
+        Balancer Foundation does not share such information with third parties
+        for direct marketing purposes.
       </p>
 
       <h3>Do Not Track Signals</h3>
@@ -348,9 +351,9 @@
       <h3>Legal Basis for Processing</h3>
 
       <p>
-        Balancer Labs does not typically process user personal data. If Balancer
-        Labs processes data, such as a wallet address and certain IP addresses,
-        it will do so in reliance on the following lawful bases:
+        Balancer Foundation does not typically process user personal data. If
+        Balancer Foundation processes data, such as a wallet address and certain
+        IP addresses, it will do so in reliance on the following lawful bases:
       </p>
       <ul>
         <li>
