@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { useLock } from '@/composables/useLock';
@@ -15,8 +14,6 @@ const {
   lock,
   lockedFiatTotal
 } = useLock();
-
-const { t } = useI18n();
 
 /** COMPUTED */
 const isLoading = computed(() => {
