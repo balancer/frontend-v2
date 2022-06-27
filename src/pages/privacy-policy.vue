@@ -381,8 +381,8 @@
         the personal data we hold about you and to receive your data in a
         portable format, the right to ask that your personal data be corrected
         or erased, and the right to object to, or request that we restrict,
-        certain processing. Balancer Labs does not typically hold such personal
-        data.
+        certain processing. Balancer Foundation does not typically hold such
+        personal data.
       </p>
     </div>
     <div>
