@@ -12,7 +12,7 @@
   "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://etherscan.io",
   "explorerName": "Etherscan",
-  "subgraph": "https://gateway.thegraph.com/api/{{GRAPH_KEY}}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
@@ -60,8 +60,7 @@
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
-    "graph": "ac9034b771347f4143593f9feabe380f"
+    "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
   },
   "strategies": {
     "0": {

@@ -67,7 +67,6 @@ export interface Config {
   keys: {
     infura: string;
     alchemy: string;
-    graph?: string;
   };
   strategies: Record<
     string,
