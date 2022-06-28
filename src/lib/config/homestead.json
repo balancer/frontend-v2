@@ -12,7 +12,7 @@
   "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://etherscan.io",
   "explorerName": "Etherscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
+  "subgraph": "https://gateway.thegraph.com/api/{{GRAPH_KEY}}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
@@ -55,11 +55,13 @@
     "tokenAdmin": "0xf302f9F50958c5593770FDf4d4812309fF77414f",
     "veDelegationProxy": "0x6f5a2eE11E7a772AeB5114A20d0D7c0ff61EB8A0",
     "veBALHelpers": "0x8e5698dc4897dc12243c8642e77b4f21349db97c",
-    "feeDistributor": "0x26743984e3357eFC59f2fd6C1aFDC310335a61c9"
+    "feeDistributor": "0x26743984e3357eFC59f2fd6C1aFDC310335a61c9",
+    "faucet": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
+    "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
+    "graph": "ac9034b771347f4143593f9feabe380f"
   },
   "strategies": {
     "0": {

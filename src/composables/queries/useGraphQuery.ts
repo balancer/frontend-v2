@@ -9,7 +9,7 @@ import { configService } from '@/services/config/config.service';
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,
-  balancer: configService.network.subgraph
+  balancer: configService.subgraph
 };
 
 export default function useGraphQuery<T>(

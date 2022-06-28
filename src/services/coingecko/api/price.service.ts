@@ -176,7 +176,7 @@ export class PriceService {
         address = this.addressMapOut(address);
         const result = results[index].prices;
         const prices = {};
-        let dayTimestamp = start;
+
         if (aggregateBy === 'hour') {
           const pricesByHour = groupBy(result, r =>
             getUnixTime(startOfHour(fromUnixTime(r[0] / 1000)))
@@ -187,14 +187,11 @@ export class PriceService {
           }
         } else if (aggregateBy === 'day') {
           for (const key in result) {
-            const value = result[key];
-            const [timestamp, price] = value;
-            if (timestamp > dayTimestamp * 1000) {
-              prices[dayTimestamp * 1000] = price;
-              dayTimestamp += twentyFourHoursInSecs;
-            }
+            const [timestamp, price] = result[key];
+            prices[timestamp] = price;
           }
         }
+
         return [address, prices];
       })
     );

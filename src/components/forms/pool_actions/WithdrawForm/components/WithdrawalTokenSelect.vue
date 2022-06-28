@@ -2,9 +2,8 @@
 import { computed, ref, toRef } from 'vue';
 
 import { usePool } from '@/composables/usePool';
-// Composables
 import useTokens from '@/composables/useTokens';
-// Types
+import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -33,7 +32,7 @@ const selectedOption = ref(props.initToken);
 /**
  * COMPOSABLES
  */
-const { getTokens, getToken, nativeAsset } = useTokens();
+const { getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
@@ -46,8 +45,6 @@ const tokenAddresses = computed(() => {
   return props.pool.tokensList;
 });
 
-const tokens = computed(() => getTokens(tokenAddresses.value));
-
 const options = computed(() => ['all', ...tokenAddresses.value]);
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
@@ -55,6 +52,13 @@ const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 const assetSetWidth = computed(
   () => 40 + (tokenAddresses.value.length - 2) * 10
 );
+
+function isOptionSelected(option: string): boolean {
+  if (selectedOption.value === 'all' || option === 'all') {
+    return selectedOption.value === option;
+  }
+  return isSameAddress(selectedOption.value, option);
+}
 
 /**
  * METHODS
@@ -105,7 +109,7 @@ function handleSelected(newToken: string): void {
           {{ $t('allTokens') }}
         </div>
         <BalIcon
-          v-if="selectedOption === option"
+          v-if="isOptionSelected(option)"
           name="check"
           class="text-blue-500 ml-2"
         />
@@ -113,10 +117,10 @@ function handleSelected(newToken: string): void {
       <div v-else class="flex items-center justify-between">
         <div class="flex items-center">
           <BalAsset :address="option" class="mr-2" />
-          {{ tokens[option]?.symbol }}
+          {{ getToken(option)?.symbol }}
         </div>
         <BalIcon
-          v-if="selectedOption === option"
+          v-if="isOptionSelected(option)"
           name="check"
           class="text-blue-500 ml-2"
         />

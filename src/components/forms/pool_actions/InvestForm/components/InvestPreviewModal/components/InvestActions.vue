@@ -18,6 +18,7 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
+import { POOLS } from '@/constants/pools';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
@@ -117,6 +118,13 @@ const transactionInProgress = computed(
     investmentState.confirming ||
     investmentState.confirmed
 );
+
+const isStakablePool = computed((): boolean => {
+  return (
+    POOLS.Stakable.AllowList.includes(route.params.id as string) &&
+    isPoolEligibleForStaking.value
+  );
+});
 
 /**
  * METHODS
@@ -220,7 +228,7 @@ watch(blockNumber, async () => {
         <StarsIcon class="h-5 text-orange-300 mr-2" />{{ $t('lockToGetVeBAL') }}
       </BalBtn>
       <BalBtn
-        v-else-if="isPoolEligibleForStaking"
+        v-else-if="isStakablePool"
         color="gradient"
         block
         class="mt-2 flex"

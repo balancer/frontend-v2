@@ -1,6 +1,8 @@
 import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
+import { TOKENS } from '@/constants/tokens';
+import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
@@ -15,6 +17,13 @@ export default class AaveService {
 
   constructor(subgraphService = aaveSubgraphService) {
     this.subgraphService = subgraphService;
+  }
+
+  @returnChecksum()
+  public addressMapIn(address: string): string {
+    const addressMap = TOKENS?.PriceChainMap;
+    if (!addressMap) return address;
+    return addressMap[address.toLowerCase()] || address;
   }
 
   public async calcWeightedSupplyAPRFor(
@@ -48,14 +57,18 @@ export default class AaveService {
       linearPoolTotalSupplies
     } = await multicaller.execute();
 
-    const unwrappedTokens = wrappedTokens?.map((_, i) => {
-      return (unwrappedAave[i] || unwrappedERC4626[i]).toLowerCase();
+    const mappedUnwrappedTokens = wrappedTokens?.map((address, i) => {
+      return (
+        unwrappedAave[i] ||
+        unwrappedERC4626[i] ||
+        this.addressMapIn(address)
+      ).toLowerCase();
     });
 
     if (
       !mainTokens ||
       !wrappedTokens ||
-      !unwrappedTokens ||
+      !mappedUnwrappedTokens ||
       !hasAllWrappedTokenBalances
     )
       return { total: '0', breakdown: {} };
@@ -63,10 +76,14 @@ export default class AaveService {
     let total = bnum(0);
     const breakdown: Record<string, string> = {};
 
+    const mappedMainTokens = mainTokens?.map(address =>
+      this.addressMapIn(address)
+    );
+
     const reserves = await this.subgraphService.reserves.get({
       where: {
-        underlyingAsset_in: mainTokens,
-        aToken_in: unwrappedTokens,
+        underlyingAsset_in: mappedMainTokens,
+        aToken_in: mappedUnwrappedTokens,
         isActive: true
       }
     });
@@ -75,7 +92,7 @@ export default class AaveService {
       const supplyAPR = bnum(reserve.supplyAPR);
 
       if (supplyAPR.gt(0)) {
-        const tokenIndex = mainTokens.findIndex(token =>
+        const tokenIndex = mappedMainTokens.findIndex(token =>
           isSameAddress(token, reserve.underlyingAsset)
         );
         // Grabs the matching wrapped which generates the yield

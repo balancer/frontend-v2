@@ -94,7 +94,7 @@ watch(popoverOpened, () => {
       <slot name="activator" />
     </div>
     <div :class="['bal-popover-wrapper', popoverWrapperClasses]">
-      <BalCard shadow="lg" v-bind="$attrs" darkBgColor="800" class="">
+      <BalCard shadow="lg" v-bind="$attrs" darkBgColor="800">
         <slot :close="hidePopover" />
       </BalCard>
     </div>

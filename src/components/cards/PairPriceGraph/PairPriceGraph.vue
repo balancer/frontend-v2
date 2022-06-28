@@ -282,7 +282,7 @@ const chartGrid = computed(() => {
           v-if="!failedToLoadPriceData && !isLoadingPriceData"
           class="flex-col"
         >
-          <BalLineChart
+          <BalChart
             :data="chartData"
             :height="chartHeight"
             :show-legend="false"
@@ -297,6 +297,7 @@ const chartGrid = computed(() => {
               }
             ]"
             :show-tooltip="!upToLargeBreakpoint || isModal"
+            chart-type="line"
             hide-y-axis
             hide-x-axis
             show-header

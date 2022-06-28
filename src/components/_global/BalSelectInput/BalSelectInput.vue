@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bal-select-input', containerClasses]" @click="onClick">
+  <div :class="['bal-select-input', containerClasses]">
     <div class="flex items-center h-full">
       <div class="flex flex-col justify-center h-full flex-1">
         <div v-if="label || $slots.label" :class="['label', labelClasses]">
@@ -101,7 +101,7 @@ export default defineComponent({
         case 'lg':
           return 'h-16';
         default:
-          return 'h-12';
+          return 'h-10';
       }
     });
 
@@ -163,7 +163,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-select-input {
-  @apply relative w-full border rounded-lg shadow-sm overflow-hidden px-2;
+  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2 bg-gray-50 dark:bg-gray-800 transition-all;
 }
 
 .label {
@@ -171,10 +171,22 @@ export default defineComponent({
 }
 
 select {
-  @apply absolute w-full h-full leading-loose bg-transparent leading-none -ml-px pt-4;
+  @apply absolute w-full h-full leading-loose bg-transparent leading-none -ml-px text-xs;
   -webkit-appearance: none;
   -moz-appearance: none;
   text-indent: 1px;
   text-overflow: '';
+}
+
+.bal-select-input .bal-icon :deep(svg) {
+  @apply transition-all;
+  /* blue-500 */
+  stroke: #384aff;
+}
+
+.bal-select-input:hover .bal-icon :deep(svg),
+.bal-select-input:focus .bal-icon :deep(svg) {
+  /* pink-500 */
+  stroke: #f21bf6;
 }
 </style>
