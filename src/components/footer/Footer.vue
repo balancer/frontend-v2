@@ -192,10 +192,14 @@
               </router-link>
             </p>
             <p>
+              <router-link class="policy" :to="{ name: 'cookies-policy' }">
+                {{ $t('policies.cookiesPolicy') }}
+              </router-link>
+            </p>
+            <p>
               <a
                 @click="isThirdPartyServicesModalVisible = true"
                 class="policy"
-                href="#"
                 >{{ $t('policies.thirdPartyServices') }}</a
               >
             </p>
@@ -253,7 +257,7 @@ footer :deep(.logotype) {
 }
 
 .link {
-  @apply text-black dark:text-white transition-colors flex items-center;
+  @apply text-black dark:text-white transition-colors flex items-center no-underline hover:text-blue-600;
 }
 
 .link--external {

@@ -1,37 +1,36 @@
 <template>
-  <div>
+  <div class="pb-4">
     <div class="subsection">
-      <h1>Balancer Foundation Terms of Use</h1>
-      <p><em>Last updated: June 27, 2022</em></p>
+      <h1>Balancer Terms of Use</h1>
+      <p><em>Last updated: June 2022</em></p>
       <p>
-        <em class="font-medium">
-          Please do not access this site where such access is prohibited by
-          applicable law. Please carefully read these terms of use before using
-          the site. These terms apply to any person or entity accessing the site
-          and by using the site you agree to be bound by them. The terms of use
-          contain a mandatory individual arbitration and class action/jury trial
-          waiver provision that requires the use of arbitration on an individual
-          basis to resolve disputes, rather than jury trials or class actions.
-          If you do not want to be bound by these terms of use, you should not
-          access the site. By using the site in any capacity, you agree that you
-          have read, understood, and agree to be subject to these terms of
-          use.</em
+        <em class="font-semibold">
+          Do not access this site where such access is prohibited by applicable
+          law. Please carefully read these terms of use before using the site.
+          These terms apply to any person or entity accessing the site and by
+          using the site you agree to be bound by them. The terms of use contain
+          a mandatory individual arbitration and class action/jury trial waiver
+          provision that requires the use of arbitration on an individual basis
+          to resolve disputes, rather than jury trials or class actions. If you
+          do not want to be bound by these terms of use, you should not access
+          the site. By using the site in any capacity, you agree that you have
+          read, understood, and agree to be subject to these terms of use.</em
         >
       </p>
     </div>
     <div class="subsection">
       <h2>1. Overview</h2>
       <p>
-        This Balancer Foundation Terms of Use agreement (“Terms” or “agreement”)
-        (“Balancer Foundation”, “we” and “us” refers to Balancer Foundation)
-        covers the website, Balancer Protocol user-interface and free
-        application (collectively “the Site”) we own and administer, at times in
-        conjunction with others, which provides the ability to access the
-        decentralized Balancer Protocol. Additionally, you can access the
-        Balancer Protocol through third-party web or mobile interfaces. These
-        Terms apply to you (“You” or “you”) as a user of our Site including all
-        the products, services, tools and information, without limitation, made
-        available on the Site.
+        This Balancer Terms of Use document (“Terms” or “agreement”) (“Balancer
+        ”, “we” and “us” refers to the Balancer Foundation and its subsidiary
+        Balancer OpCo Limited) covers the website, Balancer Protocol
+        user-interface and free application (collectively “the Site”) we own and
+        administer, at times in conjunction with others, which provides the
+        ability to access the decentralized Balancer Protocol. Additionally, you
+        can access the Balancer Protocol through third-party web or mobile
+        interfaces. These Terms apply to you (“You” or “you”) as a user of our
+        Site including all the products, services, tools and information,
+        without limitation, made available on the Site.
       </p>
       <p>
         You must be able to form a legally binding contract online either as an
@@ -46,15 +45,15 @@
       </p>
       <p>
         You are advised to periodically review these Terms so you understand any
-        changes to the Terms. Balancer Foundation in its sole discretion,
-        reserves the right to make changes to our Terms. Changes are binding on
-        users of the Site and will take effect immediately upon posting. As a
-        user, you agree to be bound by any changes, variations, or modifications
-        to our Terms and your continued use of the Site shall constitute
-        acceptance of any such changes, revisions, variations, or modifications.
-        When we make changes, we will make the updated Terms available on the
-        interface and update the “Last Updated” date at the beginning of the
-        Terms accordingly.
+        changes to the Terms. Balancer in its sole discretion, reserves the
+        right to make changes to our Terms. Changes are binding on users of the
+        Site and will take effect immediately upon posting. As a user, you agree
+        to be bound by any changes, variations, or modifications to our Terms
+        and your continued use of the Site shall constitute acceptance of any
+        such changes, revisions, variations, or modifications. When we make
+        changes, we will make the updated Terms available on the interface and
+        update the “Last Updated” date at the beginning of the Terms
+        accordingly.
       </p>
       <p>
         You accept such changes, by continuing to use the Site and by doing so
@@ -67,28 +66,36 @@
         <router-link :to="{ name: 'cookies-policy' }">
           <span className="link">Cookies Policy</span>
         </router-link>
-        also apply to your access and use of the Site.
+        also apply to your access and use of the Site. You are entering into a
+        binding Agreement. Any failure by us to exercise any rights or
+        provisions of the Agreement shall not constitute a waiver of such right
+        or provision.
       </p>
     </div>
     <div class="subsection">
       <h2>2. Site</h2>
       <p>
-        As part of the Site, Balancer Foundation provides access to a
-        decentralized finance application (“Application” or “Balancer Protocol
-        app”) on the Ethereum blockchain, that allows traders or liquidity
-        providers of Ethereum assets (“Cryptocurrency Assets”) to transact using
-        smart contracts (“Smart Contracts”). Use of the Balancer Protocol may
-        require that you pay a fee, such as gas charges on the Ethereum network
-        to perform a transaction. You acknowledge and agree that Balancer
-        Foundation has no control over any activities, transactions, the method
-        of payment of any transactions, or any actual processing of payments of
-        transactions. You must ensure that you have a sufficient balance to
-        complete any transaction on the Balancer Protocol before initiating such
-        transaction.
+        As part of the Site, Balancer provides access to a decentralized finance
+        application (“Application” or “Balancer Protocol app”) on the Ethereum
+        blockchain, that allows traders or liquidity providers of Ethereum
+        assets (“Cryptocurrency Assets”) to transact using smart contracts
+        (“Smart Contracts”). Use of the Balancer Protocol may require that you
+        pay a fee, such as gas charges on the Ethereum network to perform a
+        transaction. You acknowledge and agree that Balancer has no control over
+        any activities, transactions, the method of payment of any transactions,
+        or any actual processing of payments of transactions. You must ensure
+        that you have a sufficient balance to complete any transaction on the
+        Balancer Protocol before initiating such transaction. You should not
+        take or refrain from taking any action based on any information
+        contained on the Site or any other available information at any time.
+        Before you make any legal, technical, or financial decisions involving
+        the Services, you should seek independent professional advice from a
+        licensed and qualified individual in the area for which such advice
+        would be appropriate.
       </p>
       <p>
-        You acknowledge and agree that Balancer Foundation has no control over
-        any transactions conducted through the Balancer Protocol, the method of
+        You acknowledge and agree that Balancer has no control over any
+        transactions conducted through the Balancer Protocol, the method of
         payment of any transactions or any actual payments of transactions
         including use of any third-party services such as Metamask, or other
         wallet services. Likewise, you must ensure that you have a sufficient
@@ -112,13 +119,18 @@
         RISK, AND YOU ARE SOLELY RESPONSIBLE FOR ANY DAMAGE RESULTING FROM THEIR
         USE. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN
         WARRANTIES, SO SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
+        TRANSACTIONS THAT ARE RECORDED VIA THE SITE MUST BE TREATED AS PERMANENT
+        AND CANNOT BE UNDONE BY US OR BY ANYONE.
       </p>
       <p>
         We do not guarantee or promise that the Site, or any content on it, will
         always be available, functional, usable or uninterrupted. From time to
         time, access may be interrupted, suspended or restricted, including
         because of a fault, error or unforeseen circumstances or because we are
-        carrying out planned maintenance or changes.
+        carrying out planned maintenance or changes. You acknowledge and agree
+        that you will access and use the site at your own risk. By using the
+        Site, you will be solely responsible for conducting your own due
+        diligence into the risks of a transaction.
       </p>
       <p>
         We reserve the right to limit the availability of the site to any
@@ -137,7 +149,9 @@
         have suffered as a result of the Site being unavailable at any time for
         any reason. You will comply with all applicable domestic and
         international laws, statutes, ordinances, rules and regulations
-        applicable to your use of the site (“Applicable Laws”).
+        applicable to your use of the site (“Applicable Laws”). Likewise, we are
+        not liable for any third-party services and are not responsible for the
+        content or services of these party’s.
       </p>
       <p>
         As a condition to accessing or using the Site, you agree and represent
@@ -193,9 +207,9 @@
         </li>
         <li>
           Attempt to circumvent or disable any content filtering techniques or
-          security measures that Balancer Foundation employs on the Site, or
-          attempt to access any service or area of the Site that you are not
-          authorized to access;
+          security measures that Balancer employs on the Site, or attempt to
+          access any service or area of the Site that you are not authorized to
+          access;
         </li>
         <li>
           Use any robot, spider, crawler, scraper, or other automated means or
@@ -227,7 +241,7 @@
     </div>
     <div class="subsection">
       <h3>
-        3(a) You acknowledge that the Site and your use of the Site present
+        3(a). You acknowledge that the Site and your use of the Site present
         certain risks, including without limitation the following risks:
       </h3>
       <ul>
@@ -257,13 +271,13 @@
           Risks associated with any Smart Contracts with which you interact.
         </li>
         <li>
-          Although Balancer Foundation does not have access to your assets, you
-          are reminded and acknowledge that at any time, your access to your
+          Although Balancer does not have access to your assets, you are
+          reminded and acknowledge that at any time, your access to your
           Cryptocurrency Assets through third party wallet services, unrelated
-          to Balancer Foundation or the Balancer.Fi website, may be suspended or
-          terminated or there may be a delay in your access or use of your
-          Cryptocurrency Assets, which may result in the Cryptocurrency Assets
-          diminishing in value or you being unable to complete a Smart Contract.
+          to Balancer or the Balancer.Fi website, may be suspended or terminated
+          or there may be a delay in your access or use of your Cryptocurrency
+          Assets, which may result in the Cryptocurrency Assets diminishing in
+          value or you being unable to complete a Smart Contract.
         </li>
         <li>
           You are reminded of the inherent risks with digital assets and
@@ -307,11 +321,22 @@
         <li>
           This list of risk factors is non-exhaustive, and other risks, arising
           either now or in the future, could additionally be relevant and
-          applicable to you in making an informed judgement to accept, or
+          applicable to you in making an informed judgment to accept, or
           continue to accept, these Terms and/or use, or continue to use the
           Site.
         </li>
       </ul>
+
+      <h3>Violating our rules may result in our intervention.</h3>
+      <p>
+        You agree and acknowledge that if you use the Site and its Services to
+        engage in conduct prohibited by applicable law, we reserve the right to
+        completely or partially restrict or revoke your access to the Services
+        at our sole discretion. We reserve the right to investigate violations
+        and prosecute any suspected breaches of this Agreement, including the
+        Terms. Any information may be disclosed to satisfy any new regulation,
+        law, government request, or legal process.
+      </p>
 
       <p>Accordingly, you expressly agree that:</p>
       <ol>
@@ -324,10 +349,10 @@
           Site, the Application and the Smart Contracts;
         </li>
         <li>
-          that you expressly waive and release Balancer Foundation from any and
-          all liability, claims, causes of action, responsibility or damages
-          arising from or in any way related to your use of the Site, the
-          Application or the Smart Contracts; and
+          that you expressly waive and release Balancer from any and all
+          liability, claims, causes of action, responsibility or damages arising
+          from or in any way related to your use of the Site, the Application or
+          the Smart Contracts.
         </li>
         <li>
           upgrades and modifications to the protocol are managed in a
@@ -344,9 +369,9 @@
     <div class="subsection">
       <h2>4. Third-Party Content</h2>
       <p>
-        The Site may contain hyperlinks or references to third-party websites or
+        The Site may contain hyperlinks or references to third party websites or
         content. Any such hyperlinks or references are provided for your
-        information and convenience only. We have no control over third-party
+        information and convenience only. We have no control over third party
         websites and accept no legal responsibility for any content, material or
         information contained in them. The display of any hyperlink and
         reference to any third-party website does not mean that we endorse that
@@ -377,60 +402,65 @@
     <div class="subsection">
       <h2>6. Intellectual Property Rights</h2>
       <p>
-        Balancer Foundation is the owner of all intellectual property rights in
-        the Site and the material published on them. To the extent practical,
-        these works are protected by copyright laws and all such rights are
-        reserved. www.Balancer.fi is the uniform resource locator (‘URL’) of
-        Balancer Foundation. You will not make use of this URL (or any other URL
-        owned by us) on another website or digital platform without our prior
-        written consent. Any unauthorized use or reproduction may be prosecuted.
-        You will retain ownership of all copyright in data you upload or submit
-        by, through or to the Site. You grant us a worldwide, royalty-free,
-        irrevocable license to use, copy, distribute or publish and send this
-        data in any manner.
+        Balancer is the owner of all intellectual property rights in the Site
+        and the material published on them. To the extent practical, these works
+        are protected by copyright laws and all such rights are reserved.
+        www.Balancer.fi is the uniform resource locator (‘URL’) of Balancer. You
+        will not make use of this URL (or any other URL owned by us) on another
+        website or digital platform without our prior written consent. Any
+        unauthorized use or reproduction may be prosecuted. You will retain
+        ownership of all copyright in data you upload or submit by, through or
+        to the Site. You grant us a worldwide, royalty-free, irrevocable license
+        to use, copy, distribute or publish and send this data in any manner.
       </p>
     </div>
     <div class="subsection">
       <h2>7. Limitation of Liability</h2>
       <p>
-        Under no circumstances shall we or any of our officers, directors,
-        employees, contractors, agents, affiliates, or subsidiaries be liable to
-        you for any indirect, punitive, incidental, special, consequential, or
-        exemplary damages, including (but not limited to) damages for loss of
-        profits, goodwill, use, data, or other intangible property, arising out
-        of or relating to any access or use of the Site including the
-        user-interface, nor will we be responsible for any damage, loss, or
-        injury resulting from hacking, tampering, or other unauthorized access
-        or use of the Site including the user-interface or the information
-        contained within it.
+        <em class="font-semibold">
+          Under no circumstances shall we or any of our officers, directors,
+          employees, contractors, agents, affiliates, or subsidiaries be liable
+          to you for any indirect, punitive, incidental, special, consequential,
+          or exemplary damages, including (but not limited to) damages for loss
+          of profits, goodwill, use, data, or other intangible property, arising
+          out of or relating to any access or use of the Site including the
+          user-interface, nor will we be responsible for any damage, loss, or
+          injury resulting from hacking, tampering, or other unauthorized access
+          or use of the Site including the user-interface or the information
+          contained within it.</em
+        >
       </p>
       <p>
-        We assume no liability or responsibility for any: (a) errors, mistakes,
-        or inaccuracies of content; (b) personal injury or property damage, of
-        any nature whatsoever, resulting from any access or use of the Site
-        including the user-interface; (c) unauthorized access or use of any
-        secure server or database in our control, or the use of any information
-        or data stored therein; (d) interruption or cessation of function
-        related to the Site; (e) bugs, viruses, trojan horses, or the like that
-        may be transmitted to or through the Site; (f) errors or omissions in,
-        or loss or damage incurred as a result of the use of, any content made
-        available through the Site; and (g) the defamatory, offensive, or
-        illegal conduct of any third party.
+        <em class="font-semibold">
+          We assume no liability or responsibility for any: (a) errors,
+          mistakes, or inaccuracies of content; (b) personal injury or property
+          damage, of any nature whatsoever, resulting from any access or use of
+          the Site including the user-interface; (c) unauthorized access or use
+          of any secure server or database in our control, or the use of any
+          information or data stored therein; (d) interruption or cessation of
+          function related to the Site; (e) bugs, viruses, trojan horses, or the
+          like that may be transmitted to or through the Site; (f) errors or
+          omissions in, or loss or damage incurred as a result of the use of,
+          any content made available through the Site; and (g) the defamatory,
+          offensive, or illegal conduct of any third party.</em
+        >
       </p>
       <p>
-        Under no circumstances shall we or any of our officers, directors,
-        employees, contractors, agents, affiliates, or subsidiaries be liable to
-        you for any claims, proceedings, liabilities, obligations, damages,
-        losses, or costs in an amount exceeding $100.00. This limitation of
-        liability applies regardless of whether the alleged liability is based
-        on contract, tort, negligence, strict liability, or any other basis, and
-        even if we have been advised of the possibility of such liability. Some
-        jurisdictions do not allow the exclusion of certain warranties or the
-        limitation or exclusion of certain liabilities, but your acceptance of
-        these Terms constitutes an agreement to limit the liability of Balancer
-        Labs and our officers, directors, employees, contractors, agents,
-        affiliates, or subsidiaries to the maximum extent possible under any
-        applicable laws.
+        <em class="font-semibold">
+          Under no circumstances shall we or any of our officers, directors,
+          employees, contractors, agents, affiliates, or subsidiaries be liable
+          to you for any claims, proceedings, liabilities, obligations, damages,
+          losses, or costs in an amount exceeding $100.00. This limitation of
+          liability applies regardless of whether the alleged liability is based
+          on contract, tort, negligence, strict liability, or any other basis,
+          and even if we have been advised of the possibility of such liability.
+          Some jurisdictions do not allow the exclusion of certain warranties or
+          the limitation or exclusion of certain liabilities, but your
+          acceptance of these Terms constitutes an agreement to limit the
+          liability of Balancer and our officers, directors, employees,
+          contractors, agents, affiliates, or subsidiaries to the maximum extent
+          possible under any applicable laws.</em
+        >
       </p>
     </div>
     <div class="subsection">
@@ -454,10 +484,12 @@
         recommendation by us, should not be regarded as an offer, solicitation,
         invitation or recommendation to buy or sell tokens or any other
         financial services and is not intended to be relied upon by you in
-        making any specific decision to buy or sell a token. We recommend that
-        you seek independent advice from financial, legal and tax advisors
-        before making any such decision particularly in light of the risks
-        associated with digital assets.
+        making any specific decision to buy or sell a token.
+        <em class="font-semibold"
+          >We recommend that you seek independent advice from financial, legal
+          and tax advisors before making any such decision particularly in light
+          of the risks associated with digital assets.</em
+        >
       </p>
       <p>
         Nothing included in the site constitutes an offer or solicitation to
@@ -474,11 +506,11 @@
     <div class="subsection">
       <h2>9. Indemnification</h2>
       <p>
-        You agree to indemnify and hold Balancer Foundation and our officers,
-        directors, employees, contractors, agents, affiliates, or subsidiaries
-        harmless from any claim or demand, including attorneys’ fees and costs,
-        made by any third-party due to or arising out of 1) your use of the site
-        or 2) this agreement.
+        You agree to indemnify and hold Balancer and our officers, directors,
+        employees, contractors, agents, affiliates, or subsidiaries harmless
+        from any claim or demand, including attorneys’ fees and costs, made by
+        any third-party due to or arising out of 1) your use of the site or 2)
+        this agreement.
       </p>
     </div>
     <div class="subsection">
@@ -513,34 +545,45 @@
       <p>
         These Terms and the documents referred to in them set out the entire
         agreement between you and us with respect to your use of the site,
-        Balancer Foundation and the services provided via the site and supersede
-        any and all prior or contemporaneous representations, communications or
+        Balancer and the services provided via the site and supersede any and
+        all prior or contemporaneous representations, communications or
         agreements (written or oral) made between you or us.
       </p>
       <p>
-        Any dispute, controversy, or claim arising out of or in relation to
-        these Terms, including the validity, invalidity, breach or termination
-        thereof, shall be settled by arbitration in accordance with the Swiss
-        Rules of International Arbitration of the Swiss Chambers of Commerce in
-        force on the date when the Notice of Arbitration is submitted in
-        accordance with these Rules. The number of arbitrators shall be one or
-        three; the seat of the arbitration shall be determined by the
-        arbitrator(s); the arbitral proceedings shall be conducted in English.
-        The applicable law shall be Estonian law or another choice of law
-        determined in Balancer Lab’s sole discretion.
+        <em class="font-semibold"
+          >Any dispute, controversy, or claim arising out of or in relation to
+          these Terms, including the validity, invalidity, breach or termination
+          thereof, shall be settled by arbitration in accordance with the Cayman
+          Islands Arbitration Law, 2012. There shall be one arbitrator; the
+          appointing authority may be based on mutual agreement, be chosen by
+          the parties or in the absence of such agreement, the court may
+          designate an appointing authority. The seat of the arbitration shall
+          be the Cayman Islands and the language of the arbitration shall be
+          English. The applicable law shall be Cayman Islands law or another
+          choice of law determined in Balancer’s sole discretion.</em
+        >
       </p>
       <p>
-        With respect to all persons and entities, regardless of whether they
-        have obtained or used the site for personal, commercial or other
-        purposes, all disputes, controversies or claims must be brought in the
-        parties’ individual capacity, and not as a plaintiff or class member in
-        any purported class action, collective action or other representative
-        proceeding. This waiver applies to class arbitration, and, unless we
-        agree otherwise, the arbitrator may not consolidate more than one
-        person’s claims. You agree that, by entering into this agreement, you
-        and Balancer are each waiving the right to a trial by jury or to
-        participate in a class action, collective action, or other
-        representative proceeding of any kind.
+        <em class="font-semibold">
+          With respect to all persons and entities, regardless of whether they
+          have obtained or used the site for personal, commercial or other
+          purposes, all disputes, controversies or claims must be brought in the
+          parties’ individual capacity, and not as a plaintiff or class member
+          in any purported class action, collective action or other
+          representative proceeding. This waiver applies to class arbitration,
+          and, unless we agree otherwise, the arbitrator may not consolidate
+          more than one person’s claims. You agree that, by entering into this
+          agreement, you and Balancer are each waiving the right to a trial by
+          jury or to participate in a class action, collective action, or other
+          representative proceeding of any kind.
+        </em>
+      </p>
+      <p>
+        <em class="font-semibold">
+          There is a Cayman Island International Arbitration Centre expected in
+          the near term, but in the meantime there is the modern Arbitration
+          Act, 2012.
+        </em>
       </p>
     </div>
     <div class="subsection">
@@ -549,19 +592,20 @@
         There is a risk that transactions effected through the Site may be
         affected by system failures resulting from adverse events, natural
         disasters, pandemics and other emergencies, as well as unforeseen
-        significant changes in the external environment. With regard to
+        significant changes in the external environment. With regards to
         opportunity loss (e.g., loss of opportunity to place a payment
         instruction, resulting in loss of profits which could have been
         obtained) due to occurrences such as emergency situations and force
-        majeure events, Balancer Foundation is under no obligation to take any
-        corrective action or measure and shall no under circumstances be liable
-        for any lost profits or other trading losses.
+        majeure events, Balancer is under no obligation to take any corrective
+        action or measure and shall no under circumstances be liable for any
+        lost profits or other trading losses.
       </p>
     </div>
     <div>
       <h2>12. Contact Us</h2>
       <p>
-        Balancer Foundation is headquartered in the Cayman Islands. Please
+        Balancer is a foundation company organized in the Cayman Islands with an
+        operating company organized in the British Virgin Islands (BVI). Please
         contact us if you have any questions about these Terms or other topics,
         by sending an email to
         <a class="link" href="mailto:termsofuse@balancer.finance"

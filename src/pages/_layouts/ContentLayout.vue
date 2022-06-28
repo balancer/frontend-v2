@@ -66,6 +66,10 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
   font-variation-settings: 'ital' 1, 'wght' 500;
 }
 
+.content-container :deep(em.font-semibold) {
+  font-variation-settings: 'ital' 1, 'wght' 600;
+}
+
 .content-container :deep(table),
 .content-container :deep(th),
 .content-container :deep(td) {
