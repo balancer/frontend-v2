@@ -117,7 +117,9 @@ export default function useSor({
       returnAmountConsideringFees: Zero,
       tokenIn: '',
       tokenOut: '',
-      marketSp: '0'
+      marketSp: '0',
+      swapAmountForSwaps: Zero,
+      returnAmountFromSwaps: Zero
     }
   });
   const trading = ref(false);
