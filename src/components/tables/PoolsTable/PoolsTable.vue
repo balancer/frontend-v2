@@ -18,7 +18,6 @@ import {
   absMaxApr,
   isMigratablePool,
   isStableLike,
-  isVeBalPool,
   orderedPoolTokens,
   orderedTokenAddresses,
   totalAprLabel
@@ -27,6 +26,7 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
 
+import PoolsTableActions from './PoolsTableActions.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
 /**
@@ -339,26 +339,10 @@ function lockedUntil(lockedEndDate?: number) {
         </div>
       </template>
       <template v-slot:actionsCell="pool">
-        <div class="px-2 py-4 flex justify-center">
-          <BalBtn
-            v-if="stakablePoolIds.includes(pool.id)"
-            color="gradient"
-            size="sm"
-            @click.prevent="$emit('triggerStake', pool)"
-          >
-            {{ $t('stake') }}
-          </BalBtn>
-          <BalBtn
-            v-else-if="isVeBalPool(pool.id)"
-            tag="router-link"
-            :to="{ name: 'get-vebal', query: { returnRoute: $route.name } }"
-            color="gradient-pink-yellow"
-            size="sm"
-          >
-            {{ $t('transactionAction.createLock') }}
-          </BalBtn>
-          <div v-else>{{ $t('notAvailable') }}</div>
-        </div>
+        <PoolsTableActions
+          :pool="pool"
+          @click:stake="pool => emit('triggerStake', pool)"
+        ></PoolsTableActions>
       </template>
     </BalTable>
   </BalCard>

@@ -43,13 +43,13 @@ const hiddenColumns = computed(() => [
           </BalStack>
         </div>
         <BalStack vertical spacing="xl">
+          <UnstakedPoolsTable />
+          <StakedPoolsTable />
           <VeBalPoolTable
             v-if="lockPool && lock"
             :lock="lock"
             :lockPool="lockPool"
           />
-          <UnstakedPoolsTable />
-          <StakedPoolsTable />
 
           <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
             <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
