@@ -174,7 +174,8 @@ const TOKENS_MAP = {
   [Network.GOERLI]: TOKENS_GOERLI,
   [Network.MAINNET]: TOKENS_MAINNET,
   [Network.POLYGON]: TOKENS_POLYGON,
-  [Network.ARBITRUM]: TOKENS_ARBITRUM
+  [Network.ARBITRUM]: TOKENS_ARBITRUM,
+  [31337]: TOKENS_MAINNET
 };
 
 export const TOKENS: TokenConstants = TOKENS_MAP[networkId.value]
