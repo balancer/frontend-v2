@@ -8,6 +8,7 @@ import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import usePools from '@/composables/pools/usePools';
+import { useLock } from '@/composables/useLock';
 import { isMigratablePool } from '@/composables/usePool';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 
@@ -16,6 +17,8 @@ import StakingProvider from '@/providers/local/staking/staking.provider';
 const { selectedTokens } = usePoolFilters();
 
 const { userPools, isLoadingUserPools } = usePools();
+
+const { lockPool, lock } = useLock();
 
 const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
@@ -40,7 +43,11 @@ const hiddenColumns = computed(() => [
           </BalStack>
         </div>
         <BalStack vertical spacing="xl">
-          <VeBalPoolTable />
+          <VeBalPoolTable
+            v-if="lockPool && lock"
+            :lock="lock"
+            :lockPool="lockPool"
+          />
           <UnstakedPoolsTable />
           <StakedPoolsTable />
 

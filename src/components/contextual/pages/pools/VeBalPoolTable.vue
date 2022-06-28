@@ -4,32 +4,32 @@ import { computed } from 'vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { useLock } from '@/composables/useLock';
 import { isL2 } from '@/composables/useNetwork';
-import { PoolWithShares } from '@/services/pool/types';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
+import { Pool, PoolWithShares } from '@/services/pool/types';
+
+/**
+ * PROPS & EMITS
+ */
+type Props = {
+  lockPool: Pool;
+  lock: VeBalLockInfo;
+};
+const props = defineProps<Props>();
 
 /** COMPOSABLES */
-const {
-  isLoadingLockPool,
-  isLoadingLockInfo,
-  lockPool,
-  lock,
-  lockedFiatTotal
-} = useLock();
+const { lockedFiatTotal } = useLock();
 
 /** COMPUTED */
-const isLoading = computed(() => {
-  return isLoadingLockPool.value || isLoadingLockInfo.value;
-});
-
 const lockPools = computed<PoolWithShares[]>(() => {
-  if (lockPool.value) {
+  if (props.lockPool) {
     return [
       {
-        ...lockPool.value,
+        ...props.lockPool,
         bpt: '',
         shares: lockedFiatTotal.value,
         lockedEndDate:
-          lock.value?.hasExistingLock && !lock.value?.isExpired
-            ? lock.value?.lockedEndDate
+          props.lock?.hasExistingLock && !props.lock?.isExpired
+            ? props.lock?.lockedEndDate
             : undefined
       }
     ];
@@ -51,15 +51,13 @@ const hiddenColumns = computed(() => {
 </script>
 
 <template>
-  <!-- TODO: Move lock pools datafetching to parent -->
-  <div class="mt-8" v-if="lockPools.length">
+  <div class="mt-8">
     <BalStack vertical spacing="sm">
       <h5 class="px-4 lg:px-0">{{ $t('veBalProtocolLiquidity') }}</h5>
       <PoolsTable
         :key="lockPools"
         :data="lockPools"
         :hiddenColumns="hiddenColumns"
-        :isLoading="isLoading"
         showPoolShares
       />
     </BalStack>
