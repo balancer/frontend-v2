@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
-import { configService } from '@/services/config/config.service';
+import { configService as _configService } from '@/services/config/config.service';
 
 export default class BalancerSubgraphClient {
-  constructor(private readonly url = configService.subgraph) {}
+  url: string;
+
+  constructor(private readonly configService = _configService) {
+    this.url = configService.network.subgraph;
+  }
 
   public async get(query) {
     try {
@@ -19,7 +23,7 @@ export default class BalancerSubgraphClient {
   }
 
   public toPayload(query) {
-    return { query: jsonToGraphQLQuery({ query }) };
+    return JSON.stringify({ query: jsonToGraphQLQuery({ query }) });
   }
 }
 
