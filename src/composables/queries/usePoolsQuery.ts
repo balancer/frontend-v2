@@ -69,10 +69,10 @@ export default function usePoolsQuery(
       }
     };
     if (filterOptions?.poolIds?.value.length) {
-      queryArgs.value.where.id_in = filterOptions.poolIds.value;
+      queryArgs.where.id_in = filterOptions.poolIds.value;
     }
     if (filterOptions?.poolAddresses?.value.length) {
-      queryArgs.value.where.address_in = filterOptions.poolAddresses.value;
+      queryArgs.where.address_in = filterOptions.poolAddresses.value;
     }
     return queryArgs;
   }
