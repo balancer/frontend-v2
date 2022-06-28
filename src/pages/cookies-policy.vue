@@ -2,7 +2,7 @@
   <div class="pb-4">
     <div class="subsection">
       <h1>Balancer Cookies&nbsp;Policy</h1>
-      <p><em>Last Updated: June 27, 2022</em></p>
+      <p><em>Last Updated: June 2022</em></p>
     </div>
     <div class="subsection">
       <h2>Introduction and Scope of Policy</h2>
