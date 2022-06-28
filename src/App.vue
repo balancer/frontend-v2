@@ -26,6 +26,8 @@ import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatche
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
+export const isThirdPartyServicesModalVisible = ref(false);
+
 export default defineComponent({
   components: {
     ...Layouts,
@@ -43,8 +45,6 @@ export default defineComponent({
      * STATE
      */
     const layout = ref('DefaultLayout');
-    const isThirdPartyServicesModalVisible = ref(false);
-
     /**
      * COMPOSABLES
      */

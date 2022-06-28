@@ -192,9 +192,12 @@
               </router-link>
             </p>
             <p>
-              <a class="policy" href="#">{{
-                $t('policies.thirdPartyServices')
-              }}</a>
+              <a
+                @click="isThirdPartyServicesModalVisible = true"
+                class="policy"
+                href="#"
+                >{{ $t('policies.thirdPartyServices') }}</a
+              >
             </p>
           </div>
         </div>
@@ -206,6 +209,7 @@
 <script>
 import { useI18n } from 'vue-i18n';
 
+import { isThirdPartyServicesModalVisible } from '@/App.vue';
 import IconDiscord from '@/components/icons/IconDiscord.vue';
 import IconGithub from '@/components/icons/IconGithub.vue';
 import IconLinkedin from '@/components/icons/IconLinkedin.vue';
@@ -221,7 +225,8 @@ export default {
     const { t } = useI18n();
     return {
       EXTERNAL_LINKS,
-      t
+      t,
+      isThirdPartyServicesModalVisible
     };
   },
   components: {

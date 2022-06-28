@@ -49,7 +49,7 @@ const services = [
   'the-graph',
   'google-analytics',
   'fathom-analytics',
-  'trm-labs',
+  'TRM-labs',
   'sentry'
 ];
 </script>
