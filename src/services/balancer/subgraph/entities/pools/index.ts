@@ -52,6 +52,7 @@ export default class Pools {
     tokens: TokenInfoMap
   ): Promise<Pool[]> {
     // Get past state of pools
+    console.time('DECORATED_CURRENT_BLOCK');
     const currentBlock = await this.service.rpcProviderService.getBlockNumber();
     const blockNumber = await getTimeTravelBlock(currentBlock, period);
     const block = { number: blockNumber };
@@ -68,14 +69,17 @@ export default class Pools {
     }
 
     const poolDecorator = new this.poolDecoratorClass(pools);
+    console.timeEnd('DECORATED_CURRENT_BLOCK');
 
-    return await poolDecorator.decorate(
+    const poolDecoratorDecorate = await poolDecorator.decorate(
       gauges,
       prices,
       currency,
       poolSnapshots,
       tokens
     );
+
+    return poolDecoratorDecorate;
   }
 
   public addressFor(poolId: string): string {

@@ -30,7 +30,9 @@ export default class ProtocolFeesCollector {
    * @returns Ethers Contract instance
    */
   public async getInstance(): Promise<Contract> {
+    console.time('getInstance GET ADDRESS');
     this.address = await this.getAddress();
+    console.timeEnd('getInstance GET ADDRESS');
     return new Contract(
       this.address,
       ProtocolFeesCollectorAbi,
@@ -45,8 +47,10 @@ export default class ProtocolFeesCollector {
    */
   public async getSwapFeePercentage(): Promise<number> {
     try {
+      console.time('getSwapFeePercentage');
       this.instance = await this.getInstance();
       const scaledPercentage = await this.instance.getSwapFeePercentage();
+      console.timeEnd('getSwapFeePercentage');
       return Number(formatUnits(scaledPercentage, 18));
     } catch (error) {
       console.error('Failed to fetch protocol fee', error);

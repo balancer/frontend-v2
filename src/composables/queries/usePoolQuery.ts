@@ -37,6 +37,7 @@ export default function usePoolQuery(
   const { account } = useWeb3();
   const { currency } = useUserSettings();
   const { data: subgraphGauges } = useGaugesQuery();
+  console.log('subgraphGauges', subgraphGauges.value);
   const { tokens } = useTokens();
 
   const gaugeAddresses = computed(() =>
@@ -71,7 +72,8 @@ export default function usePoolQuery(
    */
   const queryKey = QUERY_KEYS.Pools.Current(id, gaugeAddresses);
 
-  const queryFn = async () => {
+  const queryFn = async (): Promise<any> => {
+    console.time('usePoolQuery');
     let [pool] = await balancerSubgraphService.pools.get({
       where: {
         id: id.toLowerCase(),
@@ -79,6 +81,7 @@ export default function usePoolQuery(
         poolType_not_in: POOLS.ExcludedPoolTypes
       }
     });
+    // console.log('pool', pool);
 
     if (isBlocked(pool)) throw new Error('Pool not allowed');
 
@@ -91,23 +94,28 @@ export default function usePoolQuery(
       pool = poolService.pool;
     }
 
-    // Inject relevant pool tokens to fetch metadata
-    await injectTokens([
-      ...pool.tokensList,
-      ...lpTokensFor(pool),
-      balancerSubgraphService.pools.addressFor(pool.id)
-    ]);
-    await forChange(dynamicDataLoading, false);
+    console.time('usePoolQuery.injectTokens');
 
-    // Need to fetch onchain pool data first so that calculations can be
-    // performed in the decoration step.
     const poolTokenMeta = getTokens(pool.tokensList);
-    const onchainData = await balancerContractsService.vault.getPoolData(
-      id,
-      pool.poolType,
-      poolTokenMeta
-    );
+    const [onchainData] = await Promise.all([
+      // Need to fetch onchain pool data first so that calculations can be
+      // performed in the decoration step.
+      balancerContractsService.vault.getPoolData(
+        id,
+        pool.poolType,
+        poolTokenMeta
+      ),
+      // Inject relevant pool tokens to fetch metadata
+      injectTokens([
+        ...pool.tokensList,
+        ...lpTokensFor(pool),
+        balancerSubgraphService.pools.addressFor(pool.id)
+      ]),
+      forChange(dynamicDataLoading, false)
+    ]);
+    console.timeEnd('usePoolQuery.injectTokens');
 
+    console.time('usePoolQuery.getPoolData.decorate');
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
       [{ ...pool, onchain: onchainData }],
       '24h',
@@ -116,6 +124,9 @@ export default function usePoolQuery(
       subgraphGauges.value || [],
       tokens.value
     );
+
+    console.log('decoratedPool', decoratedPool);
+    console.timeEnd('usePoolQuery.getPoolData.decorate');
 
     let unwrappedTokens: Pool['unwrappedTokens'];
 
@@ -169,7 +180,7 @@ export default function usePoolQuery(
         decoratedPool.totalLiquidity = totalLiquidity.toString();
       }
     }
-
+    console.timeEnd('usePoolQuery');
     return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
   };
 
@@ -177,6 +188,7 @@ export default function usePoolQuery(
     enabled,
     ...options
   });
-
+  // eslint-disable-next-line
+  // @ts-ignore
   return useQuery<Pool>(queryKey, queryFn, queryOptions);
 }

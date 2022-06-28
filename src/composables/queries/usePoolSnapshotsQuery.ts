@@ -1,16 +1,15 @@
 import differenceInDays from 'date-fns/differenceInDays';
 import { QueryObserverOptions } from 'react-query/core';
-import { computed, reactive } from 'vue';
+import { computed, ComputedRef, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
-import { PoolSnapshots } from '@/services/pool/types';
+import { Pool, PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
-import usePoolQuery from './usePoolQuery';
 
 /**
  * TYPES
@@ -25,19 +24,18 @@ interface QueryResponse {
  */
 export default function usePoolSnapshotsQuery(
   id: string,
+  pool: ComputedRef<Pool>,
   days?: number,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
    * QUERY DEPENDENCIES
    */
-  const poolQuery = usePoolQuery(id);
   const { networkId } = useNetwork();
 
   /**
    * COMPUTED
    */
-  const pool = computed(() => poolQuery.data.value);
   const enabled = computed(() => !!pool.value?.id);
 
   /**

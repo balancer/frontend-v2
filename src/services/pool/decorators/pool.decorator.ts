@@ -30,12 +30,18 @@ export class PoolDecorator {
     poolSnapshots: Pool[],
     tokens: TokenInfoMap
   ): Promise<Pool[]> {
+    console.time('DECORATED_GETDATA');
     const [
       protocolFeePercentage,
-      gaugeBALAprs,
-      gaugeRewardTokenAprs
+      gaugeRewardTokenAprs,
+      gaugeBALAprs
     ] = await this.getData(prices, gauges, tokens);
+    // console.log('protocolFeePercentage', protocolFeePercentage);
+    // console.log('gaugeRewardTokenAprs', gaugeRewardTokenAprs);
+    // console.log('gaugeBALAprs', gaugeBALAprs);
 
+    console.timeEnd('DECORATED_GETDATA');
+    // console.time('PROMISES');
     const promises = this.pools.map(async pool => {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
@@ -52,11 +58,15 @@ export class PoolDecorator {
         gaugeBALAprs[pool.id],
         gaugeRewardTokenAprs[pool.id]
       );
+      // console.timeEnd('PROMISES');
 
       return poolService.pool;
     });
-
-    return await Promise.all(promises);
+    // console.time('resolvedPromises');
+    const resolvedPromises = await Promise.all(promises);
+    // console.timeEnd('resolvedPromises');
+    // console.log('decorate promises', resolvedPromises);
+    return resolvedPromises;
   }
 
   /**
@@ -66,19 +76,19 @@ export class PoolDecorator {
     prices: TokenPrices,
     gauges: SubgraphGauge[],
     tokens: TokenInfoMap
-  ): Promise<[number, GaugeBalAprs, GaugeRewardTokenAprs]> {
+  ): Promise<[number, GaugeRewardTokenAprs, GaugeBalAprs]> {
     return await Promise.all([
       this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
-      await this.stakingRewards.getGaugeBALAprs({
-        pools: this.pools,
-        prices,
-        gauges
-      }),
-      await this.stakingRewards.getRewardTokenAprs({
+      this.stakingRewards.getRewardTokenAprs({
         pools: this.pools,
         prices,
         gauges,
         tokens
+      }),
+      this.stakingRewards.getGaugeBALAprs({
+        pools: this.pools,
+        prices,
+        gauges
       })
     ]);
   }
