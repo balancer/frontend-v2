@@ -47,7 +47,7 @@ const ecosystemLinks = [
   { label: t('forum'), url: 'https://forum.balancer.fi/' },
   {
     label: t('grants'),
-    url: 'https://balancer.community/balancer-community-grants'
+    url: 'http://grants.balancer.community'
   }
 ];
 

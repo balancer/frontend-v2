@@ -7,7 +7,7 @@ export const EXTERNAL_LINKS = {
     BugBounty: 'https://immunefi.com/bounty/balancer/',
     Docs: 'https://docs.balancer.fi',
     Forum: 'https://forum.balancer.finance/',
-    Grants: 'https://balancer.community/balancer-community-grants',
+    Grants: 'http://grants.balancer.community/',
     Social: {
       Discord: 'https://discord.balancer.fi',
       Github: 'https://github.com/balancer-labs/',
