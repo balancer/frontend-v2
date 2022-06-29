@@ -14,11 +14,6 @@
       </BalBtn>
     </template>
     <div class="flex flex-col w-44 rounded-lg overflow-hidden">
-      <div
-        class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
-      >
-        Select a network
-      </div>
       <a
         v-for="network in networks"
         :key="network.id"

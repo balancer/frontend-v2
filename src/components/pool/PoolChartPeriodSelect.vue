@@ -30,11 +30,6 @@ defineProps<Props>();
     <template v-slot="{ close }">
       <div @click="close" class="flex flex-col w-44 rounded-lg overflow-hidden">
         <div
-          class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
-        >
-          {{ $t('poolChart.period.title') }}
-        </div>
-        <div
           v-for="option in options"
           :key="option.days"
           @click="$emit('change-option', option)"
