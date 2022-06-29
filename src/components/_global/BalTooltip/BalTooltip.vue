@@ -121,7 +121,7 @@ onUnmounted(() => {
     </slot>
   </button>
   <div ref="content" class="tooltip" :class="tooltipClasses" v-bind="$attrs">
-    <div :class="tooltipPad" class="tooltip-content">
+    <div :class="tooltipPad" class="tooltip-content font-medium">
       <p class="tooltip-text" v-if="text" v-text="text" />
       <slot v-else />
     </div>
@@ -206,7 +206,7 @@ onUnmounted(() => {
 }
 
 .tooltip-content {
-  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900 font-medium;
+  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900;
 }
 
 .tooltip-text {

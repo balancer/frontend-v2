@@ -109,7 +109,7 @@ defineExpose({ hide });
 }
 
 .modal-bg {
-  @apply absolute h-full w-full bg-black bg-opacity-80;
+  @apply absolute h-full w-full bg-black bg-opacity-90;
 }
 
 .modal-card {

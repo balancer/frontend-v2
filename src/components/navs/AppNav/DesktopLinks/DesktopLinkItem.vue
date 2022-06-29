@@ -11,7 +11,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const classes = computed(() => ({
   'border-white dark:border-gray-900': !props.active,
-  'border-blue-500 text-blue-500': props.active
+  'border-blue-600 dark:border-yellow-500 text-blue-600 dark:text-yellow-500':
+    props.active
 }));
 </script>
 

@@ -1,16 +1,25 @@
 import { differenceInWeeks } from 'date-fns';
 
-import { isStable } from '@/composables/usePool';
+import { isStable, isStablePhantom } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { LinearPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
+import {
+  LinearPool,
+  OnchainPoolData,
+  Pool,
+  PoolAPRs,
+  PoolToken,
+  RawOnchainPoolData
+} from '@/services/pool/types';
+import { TokenInfoMap } from '@/types/TokenList';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '../coingecko/api/price.service';
 import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
+import { OnchainDataFormater } from './decorators/onchain-data.formater';
 
 export default class PoolService {
   constructor(
@@ -41,10 +50,15 @@ export default class PoolService {
    */
   public setTotalLiquidity(
     prices: TokenPrices,
-    currency: FiatCurrency
+    currency: FiatCurrency,
+    tokenMeta: TokenInfoMap = {}
   ): string {
     const liquidityConcern = new this.liquidity(this.pool);
-    const totalLiquidity = liquidityConcern.calcTotal(prices, currency);
+    const totalLiquidity = liquidityConcern.calcTotal(
+      prices,
+      currency,
+      tokenMeta
+    );
     return (this.pool.totalLiquidity = totalLiquidity);
   }
 
@@ -76,7 +90,9 @@ export default class PoolService {
    * fetches StablePhantom linear pools and extracts
    * required attributes.
    */
-  public async setLinearPools(): Promise<Record<string, PoolToken>> {
+  public async setLinearPools(): Promise<Record<string, PoolToken> | null> {
+    if (!isStablePhantom(this.pool.poolType)) return null;
+
     // Fetch linear pools from subgraph
     const linearPools = (await balancerSubgraphService.pools.get(
       {
@@ -145,6 +161,25 @@ export default class PoolService {
       .toString();
 
     return (this.pool.volumeSnapshot = volumeSnapshot);
+  }
+
+  public setOnchainData(
+    rawOnchainData: RawOnchainPoolData,
+    tokenMeta: TokenInfoMap
+  ): OnchainPoolData | undefined {
+    const onchainData = new OnchainDataFormater(
+      this.pool,
+      rawOnchainData,
+      tokenMeta
+    );
+    return (this.pool.onchain = onchainData.format());
+  }
+
+  public setUnwrappedTokens(): string[] {
+    const unwrappedTokens = Object.entries(
+      this.pool?.onchain?.linearPools || {}
+    ).map(([, linearPool]) => linearPool.unwrappedTokenAddress);
+    return (this.pool.unwrappedTokens = unwrappedTokens);
   }
 
   public get isNew(): boolean {

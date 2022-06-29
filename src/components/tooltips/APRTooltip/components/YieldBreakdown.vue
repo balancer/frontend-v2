@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { PoolType } from '@balancer-labs/sdk';
+import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -64,7 +65,7 @@ const yieldBreakdownItems = computed((): [string, string][] =>
     <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
       {{ fNum2(amount, FNumFormats.percent) }}
       <span class="text-gray-500 text-xs ml-1">
-        {{ yieldAPRTokens[address].symbol }} {{ $t('apr') }}
+        {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
       </span>
     </template>
   </BalBreakdown>

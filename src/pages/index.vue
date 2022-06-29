@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import HomePageHero from '@/components/heros/HomePageHero.vue';
@@ -8,16 +7,13 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import usePools from '@/composables/pools/usePools';
 import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
-import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 
 // COMPOSABLES
 const router = useRouter();
-const { t } = useI18n();
 const { appNetworkConfig } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const {
@@ -26,33 +22,14 @@ const {
   removeSelectedToken
 } = usePoolFilters();
 
-const { isLoadingPools, poolsQuery } = usePools(selectedTokens);
 const {
   dataStates,
   result: investmentPools,
   loadMore,
   isLoadingMore
 } = useStreamedPoolsQuery(selectedTokens);
-const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
-
-// userPools.value[0].shares
-watch(poolsQuery.error, () => {
-  if (poolsQuery.error.value) {
-    addAlert({
-      id: 'pools-fetch-error',
-      label: t('alerts.pools-fetch-error'),
-      type: AlertType.ERROR,
-      persistent: true,
-      action: poolsQuery.refetch.value,
-      actionLabel: t('alerts.retry-label'),
-      priority: AlertPriority.MEDIUM
-    });
-  } else {
-    removeAlert('pools-fetch-error');
-  }
-});
 
 const isInvestmentPoolsTableLoading = computed(
   () => dataStates['basic'] === 'loading' || priceQueryLoading.value
@@ -77,7 +54,7 @@ function navigateToCreatePool() {
         >
           <TokenSearchInput
             v-model="selectedTokens"
-            :loading="isLoadingPools"
+            :loading="false"
             @add="addSelectedToken"
             @remove="removeSelectedToken"
             class="w-full md:w-2/3"

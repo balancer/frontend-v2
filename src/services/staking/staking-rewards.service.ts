@@ -19,6 +19,7 @@ import { VEBalHelpers } from '../balancer/contracts/contracts/vebal-helpers';
 import { VeBALProxy } from '../balancer/contracts/contracts/vebal-proxy';
 import { SubgraphGauge } from '../balancer/gauges/types';
 import { TokenPrices } from '../coingecko/api/price.service';
+import { PoolMulticaller } from '../pool/decorators/pool.multicaller';
 import PoolService from '../pool/pool.service';
 import { Pool } from '../pool/types';
 import {
@@ -126,7 +127,6 @@ export class StakingRewardsService {
       if (isNil(inflationRate)) return nilApr;
 
       const poolService = new PoolService(pool);
-      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
       if (!balAddress) return nilApr;
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
@@ -143,6 +143,7 @@ export class StakingRewardsService {
         relativeWeights,
         totalSupply
       });
+
       const range = getAprRange(gaugeBALApr || '0'.toString());
       return [poolId, { ...range }];
     });
@@ -162,20 +163,27 @@ export class StakingRewardsService {
     tokens: TokenInfoMap;
   }): Promise<GaugeRewardTokenAprs> {
     console.time('getRewardTokenAprs');
+    const poolMulticaller = new PoolMulticaller(pools);
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses
     );
-    const [rewardTokensMeta, totalSupplies] = await Promise.all([
+    const [
+      rewardTokensMeta,
+      totalSupplies,
+      rawOnchainDataMap
+    ] = await Promise.all([
       LiquidityGauge.getRewardTokenDataForGauges(rewardTokensForGauges),
-      this.getTotalSupplyForGauges(gaugeAddresses)
+      this.getTotalSupplyForGauges(gaugeAddresses),
+      poolMulticaller.fetch()
     ]);
     const aprs = gauges.map(gauge => {
       const poolId = gauge.poolId;
       const pool = pools.find(pool => pool.id === poolId);
       if (!pool) return [poolId, '0'];
       const poolService = new PoolService(pool);
-      poolService.setTotalLiquidity(prices, FiatCurrency.usd);
+      poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
+      poolService.setTotalLiquidity(prices, FiatCurrency.usd, tokens);
 
       const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
       const rewardTokens = rewardTokensMeta[getAddress(gauge.id)];

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import UnstakedPoolsTable from '@/components/contextual/pages/pools/UnstakedPoolsTable.vue';
@@ -8,36 +7,14 @@ import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import usePools from '@/composables/pools/usePools';
-import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import { isMigratablePool } from '@/composables/usePool';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 
 // COMPOSABLES
 
-const { t } = useI18n();
-
 const { selectedTokens } = usePoolFilters();
 
-const { userPools, isLoadingUserPools, poolsQuery } = usePools(selectedTokens);
-
-const { addAlert, removeAlert } = useAlerts();
-
-// userPools.value[0].shares
-watch(poolsQuery.error, () => {
-  if (poolsQuery.error.value) {
-    addAlert({
-      id: 'pools-fetch-error',
-      label: t('alerts.pools-fetch-error'),
-      type: AlertType.ERROR,
-      persistent: true,
-      action: poolsQuery.refetch.value,
-      actionLabel: t('alerts.retry-label'),
-      priority: AlertPriority.MEDIUM
-    });
-  } else {
-    removeAlert('pools-fetch-error');
-  }
-});
+const { userPools, isLoadingUserPools } = usePools();
 
 const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));

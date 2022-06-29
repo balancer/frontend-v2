@@ -1,4 +1,5 @@
 {
+  "about": "About",
   "accept": "Accept",
   "account": "Account",
   "action": "Action",
@@ -83,16 +84,33 @@
   "best": "Best",
   "browseLists": "Browse lists",
   "browserWallet": "Browser Wallet",
+  "bugBounty": "Bug bounty",
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",
   "boostedPool": "Balancer Boosted pool",
-  "byConnectingWallet": "By connecting a wallet, I agree to Balancer Labs’",
+  "byConnectingWallet": "By connecting a wallet, I agree to Balancer Foundation’s",
   "cancel": "Cancel",
   "cancelling": "Cancelling",
   "checkWallet": "Confirm in wallet",
   "changeTheme": "Change theme",
   "claim": "Claim",
+  "claimHero": {
+    "title": "Claim liquidity incentives",
+    "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
+    "tipLabel": {
+      "addLiquidity": "Add liquidity",
+      "stake": "Stake to earn",
+      "boost": "Get a boost",
+      "claim": "Claim anytime"
+    },
+    "tips": {
+      "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table onthe veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
+      "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your LP tokens from that pool. Stake it to receive liquidity mining incentives in addition to any swap fees.",
+      "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x (on Ethereum Mainnet only). The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions. Note, there is no additional boost from holding veBAL on Layer 2 pools like Polygon and Arbitrum.",
+      "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
+    }
+  },
   "claimAll": "Claim all",
   "claimBAL": "Claim $BAL for",
   "claiming": "Claiming...",
@@ -298,7 +316,7 @@
   "highGasFees": "High gas fees? Here's a helping hand",
   "highPriceImpact": "High price impact",
   "highPriceImpactDetailed": "This trade is significantly moving the market price.",
-  "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Labs is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
+  "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
   "home": "Home",
   "hourAbbrev": "h",
   "incentiveToken": "Incentive token",
@@ -481,14 +499,7 @@
   "pages": {
     "claim": {
       "title": "Claim your liquidity mining incentives",
-      "description": "The Balancer protocol and partners provide incentives to attract liquidity in eligible pools. Stakers in these pools accumulate incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
-      "descriptionL2": "The Balancer protocol and partners provide incentives to attract liquidity in certain pools (the ones with the sparkle icons). On Polygon and Arbitrum, invest in these pools and stake the LP tokens to receive incentives.",
-      "transitionInfo": {
-        "title": "veBAL liquidity mining incentives are live!",
-        "titleL2": "Transition to new veBAL tokenomics",
-        "description": "Token earnings accumulate every block and can be claimed at any time. Stake LP tokens in eligible pools to get incentives. Get veBAL to boost your yield and to vote on which pool should get token emissions for the next week.",
-        "descriptionL2": "Liquidity mining on Polygon & Arbitrum will be soon moving to the veBAL emission's system. When this happens, you'll need to stake your LP tokens in eligible pools to continue receiving liquidity mining incentives."
-      },
+      "description": "Incentives to attract liquidity are set by the Balancer protocol and partners. Stakers in eligible pools can claim incentives every block. People with veBAL get a boosted rate—up to 2.5x extra.",
       "titles": {
         "incentivesOnOtherNetworks": "Incentives on other networks",
         "legacyIncentives": "Legacy incentives"
@@ -502,9 +513,12 @@
   "pendingEstimate": "Pending: (estimate)",
   "perWeek": "per week",
   "policies": {
+    "balancerThirdPartyInfo": "Balancer is an open source, permissionless, decentralized protocol. The smart contracts that power the ecosystem may be used by anyone. This website is the Balancer Foundation's front-end to the ecosystem and it is also open-source. You are free to fork it on Github and modify it as you wish",
     "cookiesPolicy": "Cookies Policy",
     "privacyPolicy": "Privacy Policy",
-    "termsOfUse": "Terms of Use"
+    "termsOfUse": "Terms of Use",
+    "thirdPartyServices": "3rd party services",
+    "usesFollowing": "This website uses the following"
   },
   "pool": "Pool",
   "pools": "Pools",
@@ -622,6 +636,15 @@
   "selectToken": "Select token",
   "sell": "Sell",
   "send": "Send",
+  "services": {
+    "infura": "Used to fetch on-chain data and constructs contract calls with an Infura API.",
+    "alchemy": "Used to fetch on-chain data and constructs contract calls with an Alchemy API.",
+    "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
+    "google-analytics": "Used to understand user behavior on the site and marketing performance.",
+    "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
+    "TRM-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
+    "sentry": "Used for error tracking and performance monitoring."
+  },
   "settings": "Settings",
   "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.",
   "singleToken": "Single token",
@@ -664,7 +687,6 @@
   "symbol": "Symbol",
   "veBAL": {
     "hero": {
-      "eyebrow": "Introducing veBAL",
       "title": "Extra earnings & voting power",
       "benefits": {
         "earn": "Earn your share of protocol revenue",
@@ -987,7 +1009,7 @@
   "tokensLowerCase": "tokens",
   "tokensParen": "Token(s)",
   "tokenPrices": "Token prices",
-  "tokenWarning": "Balancer Labs is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
+  "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
   "tokenWarningTitle": "You have added a custom token",
   "tooltips": {
     "invest": {
@@ -1170,10 +1192,12 @@
   "unstaked": "Unstaked",
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
+  "useOf": "use of",
   "v1": "V1",
   "v2": "V2",
   "value": "Value",
   "vault": "Vault",
+  "vebal": "veBAL",
   "vestVote": "Vest+Vote",
   "viewAllAssets": "View all assets ({0})",
   "viewAndManangeOnElement": "View and manage all pools on Element.fi",
@@ -1185,6 +1209,7 @@
   "volume24h": "Volume (24{0})",
   "volume24hShort": "Vol (24h)",
   "volumeTime": "Volume ({0})",
+  "vote": "Vote",
   "wallet": "Wallet",
   "warning": "Warning",
   "week": "Week",
