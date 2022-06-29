@@ -25,7 +25,7 @@ import {
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
 
-import PoolsTableActions from './PoolsTableActions.vue';
+import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
 /**
@@ -169,7 +169,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     width: 250
   },
   {
-    name: 'Expiry date',
+    name: t('expiryDate'),
     Cell: 'lockedEndDateCell',
     accessor: 'lockedEndDate',
     align: 'right',
@@ -331,15 +331,14 @@ function lockedUntil(lockedEndDate?: number) {
       </template>
       <template v-slot:lockedEndDateCell="pool">
         <div class="px-6 py-4 text-right">
-          <!-- TODO: Make own component -->
           {{ lockedUntil(pool.lockedEndDate) }}
         </div>
       </template>
       <template v-slot:actionsCell="pool">
-        <PoolsTableActions
+        <PoolsTableActionsCell
           :pool="pool"
           @click:stake="pool => emit('triggerStake', pool)"
-        ></PoolsTableActions>
+        ></PoolsTableActionsCell>
       </template>
     </BalTable>
   </BalCard>

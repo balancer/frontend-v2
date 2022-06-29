@@ -23,13 +23,6 @@ const { lockPool, lock } = useLock();
 const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
-
-const hiddenColumns = computed(() => [
-  'poolVolume',
-  'poolValue',
-  'actions',
-  'lockedEndDate'
-]);
 </script>
 
 <template>
@@ -60,7 +53,12 @@ const hiddenColumns = computed(() => [
               :noPoolsLabel="$t('noInvestments')"
               showPoolShares
               :selectedTokens="selectedTokens"
-              :hiddenColumns="hiddenColumns"
+              :hiddenColumns="[
+                'poolVolume',
+                'poolValue',
+                'actions',
+                'lockedEndDate'
+              ]"
             >
             </PoolsTable>
           </BalStack>

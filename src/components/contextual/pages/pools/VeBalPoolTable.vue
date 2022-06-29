@@ -3,7 +3,6 @@ import { computed } from 'vue';
 
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import { useLock } from '@/composables/useLock';
-import { isL2 } from '@/composables/useNetwork';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { Pool, PoolWithShares } from '@/services/pool/types';
 
@@ -45,7 +44,6 @@ const hiddenColumns = computed(() => {
     'actions',
     'myBoost'
   ];
-  if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;
 });
 </script>
