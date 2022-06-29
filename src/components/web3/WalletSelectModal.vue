@@ -11,8 +11,16 @@
         >,
       </router-link>
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">
-        <span className="link">{{ $t('policies.cookiesPolicy') }}</span>
-      </router-link>
+        <span className="link">{{
+          $t('policies.cookiesPolicy')
+        }}</span> </router-link
+      >,
+      <span>{{ $t('useOf') }}&nbsp;</span>
+      <button @click="onShowThirdParty">
+        <BalLink>
+          <span>{{ $t('policies.thirdPartyServices') }}</span>
+        </BalLink>
+      </button>
       {{ $t('and') }}
       <router-link :to="{ name: 'privacy-policy' }" target="_blank">
         <span className="link">{{ $t('policies.privacyPolicy') }}</span
@@ -60,6 +68,9 @@ export default defineComponent({
     isVisible: {
       type: Boolean,
       default: false
+    },
+    onShowThirdParty: {
+      type: Function
     }
   },
   setup() {

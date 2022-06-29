@@ -41,7 +41,7 @@ function isActive(page: string): boolean {
     <DesktopLinkItem to="/claim" :active="isActive('claim')">
       <div class="flex items-center">
         {{ $t('claim') }}
-        <StarsIcon class="ml-1 h-5 w-4" />
+        <StarsIcon class="ml-0.5 h-5 w-3.5" />
       </div>
     </DesktopLinkItem>
   </div>

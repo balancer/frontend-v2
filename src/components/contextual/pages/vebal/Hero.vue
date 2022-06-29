@@ -32,29 +32,24 @@ function navigateToGetVeBAL() {
 </script>
 
 <template>
-  <div class="w-full bg-gray-850 hero-container">
+  <div class="hero-container">
     <div class="hero-content">
       <div
         class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
       >
-        <p class="text-white font-medium mb-3">
-          {{ $t('veBAL.hero.eyebrow') }}
-        </p>
-        <h1 class="title mb-6 text-white">{{ $t('veBAL.hero.title') }}</h1>
-        <div
-          v-for="(benefit, i) in benefits"
-          :key="i"
-          class="flex items-center mb-2 text-white"
-        >
-          <BalIcon name="check" class="text-green-500 mr-2" />
-          {{ benefit }}
-        </div>
-        <div class="flex mt-6">
-          <BalBtn
-            color="gradient"
-            @click="navigateToGetVeBAL"
-            class="mr-3 hero-btn"
+        <p class="eyebrow font-medium">veBAL</p>
+        <h1 class="title mb-5 text-white">{{ $t('veBAL.hero.title') }}</h1>
+        <ul>
+          <li
+            v-for="(benefit, i) in benefits"
+            :key="i"
+            class="flex items-center mb-2 text-white"
           >
+            – {{ benefit }}
+          </li>
+        </ul>
+        <div class="flex mt-6">
+          <BalBtn @click="navigateToGetVeBAL" class="mr-3 hero-btn btn-gold">
             {{ $t('veBAL.hero.buttons.getVeBAL') }}
           </BalBtn>
           <BalBtn
@@ -86,9 +81,13 @@ function navigateToGetVeBAL() {
               alt="BAL and WETH tokens"
             />
           </div>
-          <div class="caption">
-            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.balWETH') }}</p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+          <div class="caption font-semibold">
+            <p
+              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+            >
+              {{ $t('veBAL.hero.tokens.balWETH') }}
+            </p>
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1 font-medium">
               {{ $t('veBAL.hero.tokenInfo.balWETH') }}
             </BalTooltip>
           </div>
@@ -103,8 +102,12 @@ function navigateToGetVeBAL() {
               alt="B-80BAL-20WETH LP token"
             />
           </div>
-          <div class="caption">
-            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.lpToken') }}</p>
+          <div class="caption font-semibold">
+            <p
+              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+            >
+              {{ $t('veBAL.hero.tokens.lpToken') }}
+            </p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.lpToken') }}
             </BalTooltip>
@@ -120,8 +123,12 @@ function navigateToGetVeBAL() {
               alt="veBAL token"
             />
           </div>
-          <div class="caption">
-            <p class="inline mr-1">{{ $t('veBAL.hero.tokens.veBAL') }}</p>
+          <div class="caption font-semibold">
+            <p
+              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+            >
+              {{ $t('veBAL.hero.tokens.veBAL') }}
+            </p>
             <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.veBAL') }}
             </BalTooltip>
@@ -133,45 +140,82 @@ function navigateToGetVeBAL() {
 </template>
 <style scoped>
 .hero-container {
-  background-image: url('/images/backgrounds/spirograph.svg');
-  background-repeat: no-repeat;
-  background-position-x: right;
-  background-size: cover;
+  @apply flex content-center relative w-full;
   min-height: 440px;
-  @apply flex content-center;
+  z-index: 0;
 }
+.hero-container {
+  background-color: #0b0f19;
+}
+.dark .hero-container {
+  background-color: #0e1420;
+}
+
+.hero-container:before {
+  content: ' ';
+  background-image: url('/images/patterns/fish-scale.png');
+  background-repeat: repeat;
+  @apply block absolute left-0 top-0 w-full h-full opacity-10 z-0;
+}
+
+.dark .hero-container:before {
+  opacity: 0.07;
+}
+
+.hero-container:after {
+  content: ' ';
+  background: linear-gradient(45deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5)),
+    url('/images/backgrounds/vebal-hero-noise.svg');
+  @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-20 z-0;
+  min-height: 440px;
+}
+
 .hero-content {
-  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full;
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full z-10;
+}
+.eyebrow {
+  @apply mb-4;
+  color: #ccb373;
+  background: -webkit-linear-gradient(#ccb373, #977622);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .hero-text {
-  opacity: 0;
+  @apply opacity-0;
   animation: fadeIn 1s ease-out 0.1s both;
 }
 .title {
-  max-width: 820px;
+  @apply max-w-sm;
 }
 .hero-btn {
   min-width: 140px;
 }
+
+.btn-gold {
+  background: linear-gradient(45deg, #977622, #ccb373);
+  transition: 0.5s all ease-in-out;
+}
+.btn-gold:hover {
+  background: linear-gradient(-45deg, #ae8d39, #684e09);
+}
 .coins {
-  @apply flex lg:gap-8;
+  @apply flex lg:gap-8 px-1 lg:px-0;
   flex-grow: 1;
 }
 .coin-wrapper {
   aspect-ratio: 7 / 8;
 }
 .coin {
-  @apply w-full flex flex-col items-center justify-end;
+  @apply w-full flex flex-col items-center justify-end relative;
 }
-
 .coin:hover .graphic {
   transform: translateY(-8px);
 }
 .graphic {
-  @apply transition-transform duration-300;
+  @apply transition-transform duration-300 relative;
 }
 .caption {
-  @apply font-semibold text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
+  @apply text-sm md:text-base text-gray-400 transition-colors text-center group-hover:text-white;
   animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
 
@@ -180,9 +224,6 @@ function navigateToGetVeBAL() {
     min-width: 400px;
   }
 }
-</style>
-
-<style>
 .caption .bal-icon {
   animation: fadeInMoveUp 0.5s ease-out 0.15s both;
 }
