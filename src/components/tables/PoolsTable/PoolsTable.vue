@@ -22,7 +22,6 @@ import {
   orderedTokenAddresses,
   totalAprLabel
 } from '@/composables/usePool';
-import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
 
