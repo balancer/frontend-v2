@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
 import { FiatCurrency } from '@/constants/currency';
@@ -107,15 +108,16 @@ export default class AaveService {
           18
         );
 
-        if (prices[mainToken] != null && linearPoolTotalSupply) {
-          const price = prices[mainToken][currency] || 0;
+        const mainTokenPrice = prices[getAddress(mainToken)]?.[currency];
+
+        if (mainTokenPrice && linearPoolTotalSupply) {
           const balance = wrappedTokenBalances[tokenIndex];
           const linearPoolBalance = linearPoolToken?.balance || '0';
           const linearPoolShare = bnum(linearPoolBalance).div(
             linearPoolTotalSupply
           );
           const actualBalance = bnum(balance).times(linearPoolShare);
-          const value = bnum(actualBalance).times(price);
+          const value = bnum(actualBalance).times(mainTokenPrice);
           const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
 
           breakdown[wrappedToken] = weightedAPR.toString();

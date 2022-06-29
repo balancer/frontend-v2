@@ -61,7 +61,6 @@ export default function useTokenPricesQuery(
       };
     }
 
-    console.log('Injecting price data', pricesToInject.value);
     prices = injectCustomTokens(prices, pricesToInject.value);
     return prices;
   };
