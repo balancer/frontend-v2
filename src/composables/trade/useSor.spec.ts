@@ -8,7 +8,14 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-jest.mock('vue-i18n', () => jest.requireActual('@/__mocks__/legacy-vue-i18n'));
+jest.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    t: jest.fn().mockImplementation()
+  }),
+  createI18n: () => {
+    return {};
+  }
+}));
 jest.mock('vuex');
 jest.mock('@/composables/useEthereumTxType');
 jest.mock('@/composables/useEthers');

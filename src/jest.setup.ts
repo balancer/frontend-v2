@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom';
 
-import { config } from '@vue/test-utils';
+import { config, RouterLinkStub } from '@vue/test-utils';
 import nock from 'nock';
 import { createI18n } from 'vue-i18n';
 
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
+import BalChip from '@/components/_global/BalChip/BalChip.vue';
+import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
 import translations from '@/locales/default.json';
 
 const i18n = createI18n({
@@ -34,7 +36,18 @@ nock.disableNetConnect();
 // Enable for mocked websockets
 nock.enableNetConnect('balancer.fi');
 
+/**
+ * Global template mocks
+ */
+
 config.global.plugins = [i18n];
+config.global.stubs = {
+  RouterLink: RouterLinkStub
+};
+
+// TODO: Import all global components automatically
 config.global.components = {
-  BalBtn
+  BalBtn,
+  BalTooltip,
+  BalChip
 };
