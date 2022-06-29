@@ -1,35 +1,16 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
-import AppIcon from './AppIcon.vue';
-
-/**
- * TYPES
- */
-type Props = {
-  forceDark?: boolean;
-};
-
-/**
- * PROPS & EMITS
- */
-const props = withDefaults(defineProps<Props>(), {
-  forceDark: false
-});
-
-/**
- * COMPUTED
- */
-const textColor = computed(() =>
-  props.forceDark ? 'text-white' : 'text-black dark:text-white'
-);
+import LogotypeBalancer from '@/components/icons/LogotypeBalancer.vue';
 </script>
 
 <template>
-  <div class="flex items-center">
-    <AppIcon :forceDark="forceDark" />
-    <span :class="['mr-1 font-secondary text-xl font-semibold', textColor]">
-      Balancer
-    </span>
+  <div class="flex items-center balancer-logotype sm:mr-4">
+    <logotype-balancer />
   </div>
 </template>
+
+<style scoped>
+.balancer-logotype :deep(.logotype) {
+  @apply origin-top-left relative;
+  transform: scale(1.1);
+}
+</style>

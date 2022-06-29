@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 import Notifications from '@/components/notifications/Notifications.vue';
+import ThirdPartyServicesModal from '@/components/web3/ThirdPartyServicesModal.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
@@ -14,6 +15,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GlobalModalContainer from './components/modals/GlobalModalContainer.vue';
 import AppSidebar from './components/navs/AppNav/AppSidebar/AppSidebar.vue';
+import SanctionedWalletModal from './components/web3/SanctionedWalletModal.vue';
 import useBackgroundColor from './composables/useBackgroundColor';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
 import useNavigationGuards from './composables/useNavigationGuards';
@@ -24,11 +26,15 @@ import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatche
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
+export const isThirdPartyServicesModalVisible = ref(false);
+
 export default defineComponent({
   components: {
     ...Layouts,
     VueQueryDevTools,
     WalletSelectModal,
+    SanctionedWalletModal,
+    ThirdPartyServicesModal,
     Notifications,
     AppSidebar,
     GlobalModalContainer
@@ -39,7 +45,6 @@ export default defineComponent({
      * STATE
      */
     const layout = ref('DefaultLayout');
-
     /**
      * COMPOSABLES
      */
@@ -51,7 +56,8 @@ export default defineComponent({
     useNavigationGuards();
     const {
       isWalletSelectVisible,
-      toggleWalletSelectModal
+      toggleWalletSelectModal,
+      isSanctioned
       // isMainnet
     } = useWeb3();
     const route = useRoute();
@@ -77,6 +83,10 @@ export default defineComponent({
       store.dispatch('app/init');
     });
 
+    function handleThirdPartyModalToggle(value: boolean) {
+      isThirdPartyServicesModalVisible.value = value;
+    }
+
     /**
      * WATCHERS
      */
@@ -92,11 +102,14 @@ export default defineComponent({
     return {
       // state
       layout,
+      isSanctioned,
+      isThirdPartyServicesModalVisible,
       // computed
       isWalletSelectVisible,
       sidebarOpen,
       // methods
-      toggleWalletSelectModal
+      toggleWalletSelectModal,
+      handleThirdPartyModalToggle
     };
   }
 });
@@ -109,9 +122,14 @@ export default defineComponent({
     <VueQueryDevTools />
     <WalletSelectModal
       :isVisible="isWalletSelectVisible"
+      :onShowThirdParty="() => handleThirdPartyModalToggle(true, 'wallet')"
       @close="toggleWalletSelectModal"
     />
-    <Notifications />
+    <SanctionedWalletModal v-if="isSanctioned" />
+    <ThirdPartyServicesModal
+      :isVisible="isThirdPartyServicesModalVisible"
+      @close="handleThirdPartyModalToggle(false, 'third')"
+    />
     <AppSidebar v-if="sidebarOpen" />
   </div>
   <GlobalModalContainer />

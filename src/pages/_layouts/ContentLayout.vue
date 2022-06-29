@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Footer from '@/components/footer/Footer.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 </script>
 
@@ -9,6 +10,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
       <router-view />
     </div>
   </section>
+  <Footer />
 </template>
 
 <style scoped>
@@ -38,7 +40,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 .content-container :deep(h2),
 .content-container :deep(h3) {
   @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 500;
+  font-variation-settings: 'wght' 700;
 }
 
 .content-container :deep(h3) {
@@ -62,6 +64,10 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 
 .content-container :deep(em.font-medium) {
   font-variation-settings: 'ital' 1, 'wght' 500;
+}
+
+.content-container :deep(em.font-semibold) {
+  font-variation-settings: 'ital' 1, 'wght' 600;
 }
 
 .content-container :deep(table),
