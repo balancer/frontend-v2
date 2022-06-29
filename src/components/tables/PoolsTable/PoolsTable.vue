@@ -199,8 +199,6 @@ const visibleColumns = computed(() =>
   columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
 
-const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
-
 /**
  * METHODS
  */
