@@ -40,7 +40,7 @@ export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
-  walletlink: 'Coinbase',
+  walletlink: 'Coinbase Wallet',
   tally: 'Tally'
 };
 
