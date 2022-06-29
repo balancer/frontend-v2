@@ -1,20 +1,26 @@
 <template>
   <div>
     <div class="p-4 border-b dark:border-gray-900">
-      <div class="flex justify-between items-center mb-4">
-        <h5 v-text="$t('account')" class="leading-none" />
+      <div class="flex justify-between items-center mb-6">
+        <h5 v-text="$t('account')" class="leading-none tracking-tight" />
         <div class="flex items-center gap-2">
           <BalBtn color="gray" size="xs" @click="toggleWalletSelectModal">
             {{ $t('change') }}
           </BalBtn>
           <div v-if="!hideDisconnect">
-            <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
+            <BalBtn
+              outline
+              color="gray"
+              size="xs"
+              @click="disconnectWallet"
+              class="capitalize"
+            >
               {{ $t('disconnect') }}
             </BalBtn>
           </div>
         </div>
       </div>
-      <div class="flex mt-1">
+      <div class="flex mt-1 mb-1">
         <div class="flex">
           <div class="relative">
             <Avatar :iconURI="profile?.avatar" :address="account" :size="44" />
@@ -27,7 +33,10 @@
           </div>
           <div class="ml-2">
             <div class="address flex items-baseline">
-              <div v-text="_shorten(account)" />
+              <div
+                class="font-bold text-black dark:text-white"
+                v-text="_shorten(account)"
+              />
               <div class="ml-3 flex">
                 <BalTooltip width="auto">
                   <template v-slot:activator>
@@ -37,7 +46,6 @@
                       size="xs"
                       flat
                       @click="copyAddress"
-                      class="mr-2"
                     >
                       <BalIcon v-if="copiedAddress" name="check" size="xs" />
                       <BalIcon v-else name="clipboard" size="xs" />
@@ -57,6 +65,7 @@
                   :href="explorer.addressLink(account)"
                   target="_blank"
                   rel="noreferrer"
+                  class="ml-2"
                 >
                   <BalIcon name="arrow-up-right" size="xs" />
                 </BalBtn>
