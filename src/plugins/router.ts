@@ -1,6 +1,11 @@
+import './nprogress.css';
+
+import NProgress from 'nprogress';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 import { isGoerli } from '@/composables/useNetwork';
+// Progress bar config
+NProgress.configure({ showSpinner: false });
 
 const ClaimPage = () =>
   import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
@@ -176,6 +181,19 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   }
+});
+
+router.beforeEach((to, from, next) => {
+  // Start progress bar
+  NProgress.start();
+  next();
+});
+router.afterEach(() => {
+  // Complete the animation of the route progress bar.
+  NProgress.done();
+});
+router.onError(() => {
+  NProgress.done();
 });
 
 export default router;
