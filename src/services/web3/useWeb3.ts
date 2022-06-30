@@ -1,5 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 import { Web3Provider } from '@ethersproject/providers';
+import debounce from 'lodash/debounce';
 import { computed, inject, reactive, ref } from 'vue';
 import { useQuery } from 'vue-query';
 
@@ -28,6 +29,7 @@ rpcProviderService.initBlockListener(setBlockNumber);
 const toggleWalletSelectModal = (value?: boolean) => {
   isWalletSelectVisible.value = value ?? !isWalletSelectVisible.value;
 };
+const delayedToggleWalletSelectModal = debounce(toggleWalletSelectModal, 200);
 
 export default function useWeb3() {
   const {
@@ -99,17 +101,22 @@ export default function useWeb3() {
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
 
   function tryConnectWithInjectedProvider(): void {
-    // Open wallet select modal because even if there's injected provider,
-    // user might want to reject it and use another wallet.
-    // If user has already accepted the injected provider, modal will be closed after
-    // wallet is connected
-    toggleWalletSelectModal();
     if (hasInjectedProvider()) {
+      // Open wallet select modal because even if there's injected provider,
+      // user might want to reject it and use another wallet.
+      // If user has already accepted the injected provider, modal will be closed after
+      // wallet is connected
+      delayedToggleWalletSelectModal();
       // Immediately try to connect with injected provider
       connectWallet('metamask').then(() => {
-        // Close the modal after connected
+        // When wallet is connected, close modal
+        // and clear the delayed toggle timeout so the modal doesn't open
+        delayedToggleWalletSelectModal.flush();
         toggleWalletSelectModal(false);
       });
+    } else {
+      // If there's no injected provider, open the modal immediately
+      toggleWalletSelectModal();
     }
   }
 
