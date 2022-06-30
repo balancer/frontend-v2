@@ -1182,6 +1182,38 @@
     }
   },
   {
+    "address": "0xDD4Db3ff8A37FE418dB6FF34fC316655528B6bbC",
+    "network": 1,
+    "pool": {
+      "id": "0x178e029173417b1f9c8bc16dcec6f697bc32374600000000000000000000025d",
+      "address": "0x178E029173417b1F9C8bC16DCeC6f697bC323746",
+      "poolType": "Stable",
+      "symbol": "FUD",
+      "tokens": [
+        {
+          "address": "0x586Aa273F262909EEF8fA02d90Ab65F5015e0516",
+          "weight": "null",
+          "symbol": "FIAT"
+        },
+        {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+          "weight": "null",
+          "symbol": "DAI"
+        },
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "weight": "null",
+          "symbol": "USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x586Aa273F262909EEF8fA02d90Ab65F5015e0516": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x586aa273f262909eef8fa02d90ab65f5015e0516.png",
+      "0x6B175474E89094C44Da98b954EedeAC495271d0F": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+      "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+    }
+  },
+  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "pool": {
