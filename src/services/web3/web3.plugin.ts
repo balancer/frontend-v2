@@ -67,14 +67,18 @@ type PluginState = {
   walletState: WalletState;
 };
 
-async function isSanctionedAddress(address: string) {
-  const response = await axios.post(SANCTIONS_ENDPOINT, [
-    {
-      address: address.toLowerCase()
-    }
-  ]);
-  const isSanctioned = response.data[0].isSanctioned;
-  return isSanctioned;
+async function isSanctionedAddress(address: string): Promise<boolean | null> {
+  try {
+    const response = await axios.post(SANCTIONS_ENDPOINT, [
+      {
+        address: address.toLowerCase()
+      }
+    ]);
+    const isSanctioned = response.data[0].isSanctioned;
+    return isSanctioned;
+  } catch {
+    return null;
+  }
 }
 
 export default {
@@ -192,6 +196,12 @@ export default {
         if (account.value) {
           // fetch sanctioned status
           const _isSanctioned = await isSanctionedAddress(account.value);
+          if (_isSanctioned === null) {
+            await disconnectWallet();
+            throw new Error(
+              `Could not receive an appropriate response from the Sanctions API. Aborting.`
+            );
+          }
           isSanctioned.value = _isSanctioned;
           if (_isSanctioned) {
             disconnectWallet();
