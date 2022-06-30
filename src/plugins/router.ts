@@ -1,5 +1,3 @@
-import './nprogress.css';
-
 import NProgress from 'nprogress';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
