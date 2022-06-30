@@ -41,7 +41,7 @@ const showPreviewModal = ref(false);
 const { lockEndDate, lockAmount } = useLockState();
 const {
   isWalletReady,
-  tryConnectWithInjectedProvider,
+  startConnectWithInjectedProvider,
   isMismatchedNetwork
 } = useWeb3();
 
@@ -156,7 +156,7 @@ function handleShowPreviewModal() {
         :label="$t('connectWallet')"
         color="gradient"
         block
-        @click="tryConnectWithInjectedProvider"
+        @click="startConnectWithInjectedProvider"
       />
       <BalBtn
         v-else

@@ -44,7 +44,7 @@ const {
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
 const { nativeAsset, getToken } = useTokens();
-const { isWalletReady, tryConnectWithInjectedProvider } = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { t } = useI18n();
 const { darkMode } = useDarkMode();
 
@@ -299,7 +299,7 @@ async function handleRemoveToken(index: number) {
 
 function handleProceed() {
   if (!isWalletReady.value) {
-    tryConnectWithInjectedProvider();
+    startConnectWithInjectedProvider();
   } else {
     proceed();
   }

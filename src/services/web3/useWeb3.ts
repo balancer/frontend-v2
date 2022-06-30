@@ -100,7 +100,7 @@ export default function useWeb3() {
   const getSigner = () => getProvider().getSigner();
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
 
-  function tryConnectWithInjectedProvider(): void {
+  function startConnectWithInjectedProvider(): void {
     if (hasInjectedProvider()) {
       // Open wallet select modal because even if there's injected provider,
       // user might want to reject it and use another wallet.
@@ -162,7 +162,7 @@ export default function useWeb3() {
     getSigner,
     disconnectWallet,
     toggleWalletSelectModal,
-    tryConnectWithInjectedProvider,
+    startConnectWithInjectedProvider,
     setBlockNumber
   };
 }

@@ -13,7 +13,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 const {
   appNetworkConfig,
   isWalletReady,
-  tryConnectWithInjectedProvider
+  startConnectWithInjectedProvider
 } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { setTokenInAddress } = useTradeState();
@@ -122,7 +122,7 @@ const tokensWithBalance = computed(() => {
           </p>
         </div>
         <div v-else class="w-full mt-4 lg:mt-0 flex font-medium">
-          <BalLink @click="tryConnectWithInjectedProvider"
+          <BalLink @click="startConnectWithInjectedProvider"
             >Connect your wallet</BalLink
           >
         </div>

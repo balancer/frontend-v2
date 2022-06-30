@@ -35,7 +35,7 @@ const showPreviewModal = ref(false);
  */
 const {
   isWalletReady,
-  tryConnectWithInjectedProvider,
+  startConnectWithInjectedProvider,
   isMismatchedNetwork
 } = useWeb3();
 
@@ -89,7 +89,7 @@ const submissionDisabled = computed(() => {
         :label="$t('connectWallet')"
         color="gradient"
         block
-        @click="tryConnectWithInjectedProvider"
+        @click="startConnectWithInjectedProvider"
       />
       <BalBtn
         v-else
