@@ -4,6 +4,7 @@ import {
   JsonRpcSigner,
   Web3Provider
 } from '@ethersproject/providers';
+import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
@@ -17,6 +18,7 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom from '@/composables/useFathom';
+import { SANCTIONS_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 
@@ -65,9 +67,18 @@ type PluginState = {
   walletState: WalletState;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function isSanctionedAddress(address: string) {
-  return false;
+async function isSanctionedAddress(address: string): Promise<boolean | null> {
+  try {
+    const response = await axios.post(SANCTIONS_ENDPOINT, [
+      {
+        address: address.toLowerCase()
+      }
+    ]);
+    const isSanctioned = response.data[0].isSanctioned;
+    return isSanctioned;
+  } catch {
+    return null;
+  }
 }
 
 export default {
@@ -185,6 +196,12 @@ export default {
         if (account.value) {
           // fetch sanctioned status
           const _isSanctioned = await isSanctionedAddress(account.value);
+          if (_isSanctioned === null) {
+            await disconnectWallet();
+            throw new Error(
+              `Could not receive an appropriate response from the Sanctions API. Aborting.`
+            );
+          }
           isSanctioned.value = _isSanctioned;
           if (_isSanctioned) {
             disconnectWallet();
