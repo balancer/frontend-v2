@@ -57,7 +57,7 @@ const migratableUserPools = computed(() => {
                 'poolVolume',
                 'poolValue',
                 'actions',
-                'lockedEndDate'
+                'lockEndDate'
               ]"
             >
             </PoolsTable>

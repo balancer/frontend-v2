@@ -77,7 +77,7 @@ function navigateToCreatePool() {
         @loadMore="loadMore"
         :selectedTokens="selectedTokens"
         class="mb-8"
-        :hiddenColumns="['migrate', 'actions', 'lockedEndDate']"
+        :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
         :columnStates="dataStates"
         :isPaginated="true"
         :isLoading="isInvestmentPoolsTableLoading"

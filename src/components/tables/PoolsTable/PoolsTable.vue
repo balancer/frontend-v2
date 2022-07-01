@@ -170,10 +170,10 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   },
   {
     name: t('expiryDate'),
-    Cell: 'lockedEndDateCell',
+    Cell: 'lockEndDateCell',
     accessor: 'lockedEndDate',
     align: 'right',
-    id: 'lockedEndDate',
+    id: 'lockEndDate',
     width: 150
   },
   {
@@ -224,8 +224,8 @@ function aprLabelFor(pool: PoolWithShares): string {
   return totalAprLabel(poolAPRs, pool.boost);
 }
 
-function lockedUntil(lockedEndDate?: number) {
-  return lockedEndDate ? format(lockedEndDate, PRETTY_DATE_FORMAT) : '—';
+function lockedUntil(lockEndDate?: number) {
+  return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
 }
 </script>
 
@@ -329,7 +329,7 @@ function lockedUntil(lockedEndDate?: number) {
           </BalBtn>
         </div>
       </template>
-      <template v-slot:lockedEndDateCell="pool">
+      <template v-slot:lockEndDateCell="pool">
         <div class="px-6 py-4 text-right">
           {{ lockedUntil(pool.lockedEndDate) }}
         </div>
