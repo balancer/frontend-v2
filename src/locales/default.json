@@ -457,6 +457,7 @@
   "nativeTokens": "Native tokens",
   "network": "Network",
   "networkMismatch": "Please switch to {0}",
+  "networkSelection": "Network selection",
   "new": "New",
   "newInvestment": "New investment",
   "newTrade": "New Trade",
@@ -1264,7 +1265,7 @@
     "period": {
       "all": "All time",
       "days": "{0} days",
-      "title": "Select a period"
+      "title": "Time period"
     },
     "tabs": {
       "fees": "Fees",
