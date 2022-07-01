@@ -7,6 +7,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import { singlePoolService } from '@/services/pool/single-pool.service';
 import { Pool, PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
@@ -29,6 +30,13 @@ export default function usePoolSnapshotsQuery(
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
+   * @description
+   * If pool is already downloaded, we can use it instatly
+   * it may be if user came to pool page from home page
+   */
+  const poolInfo = singlePoolService.findPool(id);
+
+  /**
    * QUERY DEPENDENCIES
    */
   const { networkId } = useNetwork();
@@ -36,7 +44,7 @@ export default function usePoolSnapshotsQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !!pool.value?.id);
+  const enabled = computed(() => !!pool.value?.id || !!poolInfo);
 
   /**
    * QUERY INPUTS
@@ -44,14 +52,15 @@ export default function usePoolSnapshotsQuery(
   const queryKey = QUERY_KEYS.Pools.Snapshot(networkId, id);
 
   const queryFn = async () => {
-    if (!pool.value) throw new Error('No pool');
+    if (!pool.value && !poolInfo) throw new Error('No pool');
 
     let snapshots: PoolSnapshots = {};
     let prices: HistoricalPrices = {};
 
+    const createTime = poolInfo?.createTime || pool.value?.createTime;
+    const tokensList = poolInfo?.tokensList || pool.value?.tokensList;
     const shapshotDaysNum =
-      days ||
-      differenceInDays(new Date(), new Date(pool.value.createTime * 1000));
+      days || differenceInDays(new Date(), new Date(createTime * 1000));
 
     /**
      * @description
@@ -60,10 +69,9 @@ export default function usePoolSnapshotsQuery(
      */
     const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
 
-    const tokens = pool.value.tokensList;
     [prices, snapshots] = await Promise.all([
       coingeckoService.prices.getTokensHistorical(
-        tokens,
+        tokensList,
         shapshotDaysNum,
         1,
         aggregateBy

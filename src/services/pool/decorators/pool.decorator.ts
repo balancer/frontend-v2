@@ -35,7 +35,6 @@ export class PoolDecorator {
     currency: FiatCurrency,
     tokens: TokenInfoMap
   ): Promise<Pool[]> {
-    console.time('DECORATED_GETDATA');
     const [
       protocolFeePercentage,
       gaugeBALAprs,
@@ -43,12 +42,7 @@ export class PoolDecorator {
       poolSnapshots,
       rawOnchainDataMap
     ] = await this.getData(prices, gauges, tokens);
-    // console.log('protocolFeePercentage', protocolFeePercentage);
-    // console.log('gaugeRewardTokenAprs', gaugeRewardTokenAprs);
-    // console.log('gaugeBALAprs', gaugeBALAprs);
 
-    console.timeEnd('DECORATED_GETDATA');
-    // console.time('PROMISES');
     const promises = this.pools.map(async pool => {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
@@ -69,14 +63,45 @@ export class PoolDecorator {
         gaugeBALAprs[pool.id],
         gaugeRewardTokenAprs[pool.id]
       );
-      // console.timeEnd('PROMISES');
 
       return poolService.pool;
     });
-    // console.time('resolvedPromises');
+
+    return await Promise.all(promises);
+  }
+
+  public async decorateSinglePool(
+    prices: TokenPrices,
+    currency: FiatCurrency,
+    tokens: TokenInfoMap
+  ): Promise<Pool[]> {
+    // console.time('DECORATED_GETDATA');
+    const poolMulticaller = new PoolMulticaller(this.pools);
+
+    const [poolSnapshots, rawOnchainDataMap] = await Promise.all([
+      this.getSnapshots(),
+      poolMulticaller.fetch()
+    ]);
+
+    // console.log('poolsnaphsots', poolSnapshots);
+
+    // console.timeEnd('DECORATED_GETDATA');
+    const promises = this.pools.map(async pool => {
+      const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
+      const poolService = new this.poolServiceClass(pool);
+
+      poolService.removePreMintedBPT();
+      await poolService.setLinearPools();
+      poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
+      poolService.setTotalLiquidity(prices, currency, tokens);
+      poolService.setFeesSnapshot(poolSnapshot);
+      poolService.setVolumeSnapshot(poolSnapshot);
+      poolService.setUnwrappedTokens();
+
+      return poolService.pool;
+    });
+
     const resolvedPromises = await Promise.all(promises);
-    // console.timeEnd('resolvedPromises');
-    // console.log('decorate promises', resolvedPromises);
     return resolvedPromises;
   }
 

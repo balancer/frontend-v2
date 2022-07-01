@@ -101,7 +101,6 @@ export class StakingRewardsService {
     pools: Pool[];
   }): Promise<GaugeBalAprs> {
     if (isL2.value) return {};
-    console.time('getGaugeBALAprs');
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = TOKENS.Addresses.BAL;
     const [
@@ -147,7 +146,6 @@ export class StakingRewardsService {
       const range = getAprRange(gaugeBALApr || '0'.toString());
       return [poolId, { ...range }];
     });
-    console.timeEnd('getGaugeBALAprs');
     return Object.fromEntries(aprs);
   }
 
@@ -162,7 +160,6 @@ export class StakingRewardsService {
     pools: Pool[];
     tokens: TokenInfoMap;
   }): Promise<GaugeRewardTokenAprs> {
-    console.time('getRewardTokenAprs');
     const poolMulticaller = new PoolMulticaller(pools);
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
@@ -202,7 +199,6 @@ export class StakingRewardsService {
       }
       return [poolId, totalRewardStakingAPR.toString()];
     });
-    console.timeEnd('getRewardTokenAprs');
     return Object.fromEntries(aprs);
   }
 

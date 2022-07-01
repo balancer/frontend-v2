@@ -7,6 +7,7 @@ import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import { singlePoolService } from '@/services/pool/single-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -21,6 +22,12 @@ export default function usePoolQuery(
   options: QueryObserverOptions<Pool> = {}
 ) {
   /**
+   * @description
+   * If pool is already downloaded, we can use it instatly
+   * it may be if user came to pool page from home page
+   */
+  const poolInfo = singlePoolService.findPool(id);
+  /**
    * COMPOSABLES
    */
   const { injectTokens, prices, dynamicDataLoading } = useTokens();
@@ -28,9 +35,7 @@ export default function usePoolQuery(
   const { account } = useWeb3();
   const { currency } = useUserSettings();
   const { data: subgraphGauges } = useGaugesQuery();
-  console.log('subgraphGauges', subgraphGauges.value);
   const { tokens } = useTokens();
-
   const gaugeAddresses = computed(() =>
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
@@ -48,34 +53,40 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id, gaugeAddresses);
 
   const queryFn = async () => {
-    console.time('usePoolQuery');
-    // Fetch basic data from subgraph
-    const [pool] = await balancerSubgraphService.pools.get({
-      where: {
-        id: id.toLowerCase(),
-        totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-        poolType_not_in: POOLS.ExcludedPoolTypes
-      }
-    });
-    // console.log('pool', pool);
+    // console.time('usePoolQuery');
+    let pool: Pool;
+    if (poolInfo) {
+      pool = poolInfo;
+    } else {
+      // Fetch basic data from subgraph
+      [pool] = await balancerSubgraphService.pools.get({
+        where: {
+          id: id.toLowerCase(),
+          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
+          poolType_not_in: POOLS.ExcludedPoolTypes
+        }
+      });
+    }
 
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
 
     // Decorate subgraph data with additional data
     const poolDecorator = new PoolDecorator([pool]);
-    const [decoratedPool] = await poolDecorator.decorate(
-      subgraphGauges.value || [],
+    const [decoratedPool] = await poolDecorator.decorateSinglePool(
       prices.value,
       currency.value,
       tokens.value
     );
 
+    // console.time('INJECT TOKENS');
     // Inject pool tokens into token registry
     await injectTokens([
       ...decoratedPool.tokensList,
       ...lpTokensFor(decoratedPool),
       decoratedPool.address
     ]);
+    // console.timeEnd('INJECT TOKENS');
+    // console.timeEnd('usePoolQuery');
     return decoratedPool;
   };
 
@@ -83,7 +94,6 @@ export default function usePoolQuery(
     enabled,
     ...options
   });
-  // eslint-disable-next-line
-  // @ts-ignore
+
   return useQuery<Pool>(queryKey, queryFn, queryOptions);
 }

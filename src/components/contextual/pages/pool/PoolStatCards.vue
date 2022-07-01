@@ -6,13 +6,14 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolAPRs } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
+  poolApr: PoolAPRs;
   loading?: boolean;
 };
 
@@ -33,7 +34,7 @@ const { t } = useI18n();
  * COMPUTED
  */
 const aprLabel = computed((): string => {
-  const poolAPRs = props.pool?.apr;
+  const poolAPRs = props.poolApr;
   if (!poolAPRs) return '0';
 
   return totalAprLabel(poolAPRs, props.pool.boost);
@@ -62,7 +63,7 @@ const stats = computed(() => {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.pool?.apr?.total.unstaked || '0') * 100 > APR_THRESHOLD
+        Number(props.poolApr?.total.unstaked || '0') * 100 > APR_THRESHOLD
           ? '-'
           : aprLabel.value
     }

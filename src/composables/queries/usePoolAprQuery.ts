@@ -1,0 +1,102 @@
+import { QueryObserverOptions } from 'react-query/core';
+import { computed, ComputedRef, reactive } from 'vue';
+import { useQuery } from 'vue-query';
+
+import QUERY_KEYS from '@/constants/queryKeys';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { AprConcern } from '@/services/pool/concerns/apr/apr.concern';
+import { singlePoolService } from '@/services/pool/single-pool.service';
+import { Pool, PoolAPRs } from '@/services/pool/types';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+
+import useNetwork from '../useNetwork';
+import useTokens from '../useTokens';
+import useUserSettings from '../useUserSettings';
+import useGaugesQuery from './useGaugesQuery';
+
+/**
+ * HELPERS
+ */
+export default function usePoolAprQuery(
+  id: string,
+  pool: ComputedRef<Pool>,
+  options: QueryObserverOptions<PoolAPRs> = {}
+) {
+  /**
+   * @description
+   * If pool is already downloaded, we can use it instatly
+   * it may be if user came to pool page from home page
+   */
+  const poolInfo = singlePoolService.findPool(id);
+
+  /**
+   * COMPOSABLES
+   */
+  const { prices } = useTokens();
+  const { currency } = useUserSettings();
+  const { tokens } = useTokens();
+  const { data: subgraphGauges } = useGaugesQuery();
+
+  /**
+   * QUERY DEPENDENCIES
+   */
+  const { networkId } = useNetwork();
+
+  /**
+   * COMPUTED
+   */
+  const enabled = computed(() => !!pool.value?.id || !!poolInfo);
+
+  /**
+   * QUERY INPUTS
+   */
+  const queryKey = '';
+
+  const queryFn = async () => {
+    if (!pool.value && !poolInfo) throw new Error('No pool');
+
+    if (poolInfo?.apr) {
+      return poolInfo.apr;
+    }
+
+    const _pool = pool.value || poolInfo;
+    // console.log('_pool', _pool);
+    const payload = {
+      pools: [_pool],
+      prices: prices.value,
+      gauges: subgraphGauges.value || []
+    };
+    const [
+      protocolFeePercentage,
+      gaugeBALAprs,
+      gaugeRewardTokenAprs
+    ] = await Promise.all([
+      balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage(),
+      stakingRewardsService.getGaugeBALAprs(payload),
+      stakingRewardsService.getRewardTokenAprs({
+        ...payload,
+        tokens: tokens.value
+      })
+    ]);
+
+    const apr = await new AprConcern(poolInfo || pool.value).calc(
+      _pool,
+      prices.value,
+      currency.value,
+      protocolFeePercentage,
+      gaugeBALAprs[_pool.id],
+      gaugeRewardTokenAprs[_pool.id]
+    );
+
+    // console.log('APR', apr);
+
+    return apr;
+  };
+
+  const queryOptions = reactive({
+    enabled,
+    ...options
+  });
+
+  return useQuery<PoolAPRs>(queryKey, queryFn, queryOptions);
+}

@@ -30,7 +30,7 @@
               </span>
             </div>
             <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
-            <APRTooltip :pool="pool" class="-ml-1 mt-1" />
+            <APRTooltip :pool="pool" :pool-apr="poolApr" class="-ml-1 mt-1" />
             <BalLink
               :href="explorer.addressLink(pool?.address || '')"
               external
@@ -120,7 +120,11 @@
             />
           </div>
           <div class="mb-4 px-1 lg:px-0">
-            <PoolStatCards :pool="pool" :loading="loadingPool" />
+            <PoolStatCards
+              :pool="pool"
+              :pool-apr="poolApr"
+              :loading="loadingPool"
+            />
             <ApyVisionPoolLink
               v-if="!loadingPool"
               :poolId="pool?.id"
@@ -132,9 +136,7 @@
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div>
-            <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
-          </div>
+          <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
         </div>
       </div>
 
@@ -188,6 +190,7 @@ import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingInc
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
+import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
@@ -229,7 +232,7 @@ export default defineComponent({
     const { fNum2 } = useNumbers();
     const { explorerLinks, isWalletReady } = useWeb3();
     const { prices } = useTokens();
-    const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
+    const { isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
     const { balancerTokenListTokens } = useTokens();
     const { isAffected, warnings } = usePoolWarning(route.params.id as string);
@@ -238,7 +241,6 @@ export default defineComponent({
      * QUERIES
      */
     const poolQuery = usePoolQuery(route.params.id as string);
-
     /**
      * STATE
      */
@@ -249,11 +251,13 @@ export default defineComponent({
     /**
      * COMPUTED
      */
+
     const pool = computed(() => poolQuery.data.value);
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
       route.params.id as string,
       pool as ComputedRef<Pool>
     );
+
     const {
       isStableLikePool,
       isLiquidityBootstrappingPool,
@@ -294,8 +298,13 @@ export default defineComponent({
         poolQuery.isIdle.value ||
         poolQuery.error.value
     );
+    const aprQuery = usePoolAprQuery(
+      route.params.id as string,
+      pool as ComputedRef<Pool>
+    );
 
-    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
+    const poolApr = computed(() => aprQuery.data.value);
+    const loadingPool = computed(() => !pool.value);
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(
@@ -404,15 +413,6 @@ export default defineComponent({
     /**
      * WATCHERS
      */
-
-    watch(
-      () => poolQuery.isLoading.value,
-      val => {
-        console.log('VAL', val);
-      },
-      { immediate: true }
-    );
-
     watch(poolQuery.error, () => {
       if (poolQuery.error.value) {
         addAlert({
@@ -461,7 +461,8 @@ export default defineComponent({
       isStakablePool,
       // methods
       fNum2,
-      getAddressFromPoolId
+      getAddressFromPoolId,
+      poolApr
     };
   }
 });

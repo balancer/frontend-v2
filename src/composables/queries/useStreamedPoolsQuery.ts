@@ -1,10 +1,11 @@
 import { flatten } from 'lodash';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 
 import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import { singlePoolService } from '@/services/pool/single-pool.service';
 import { Pool } from '@/services/pool/types';
 
 import { lpTokensFor } from '../usePool';
@@ -109,6 +110,18 @@ export default function useStreamedPoolsQuery(
       }
     }
   });
+
+  watch(
+    () => result.value,
+    val => {
+      // console.log('RESULT', result.value);
+
+      if (val.length > 0) {
+        singlePoolService.setPools(val);
+      }
+    },
+    { deep: true }
+  );
 
   return {
     dataStates,
