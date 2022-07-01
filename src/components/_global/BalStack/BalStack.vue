@@ -74,7 +74,7 @@ export default defineComponent({
     const stackNodeClass = `dark:border-gray-600 ${spacingType}-${
       SpacingMap[this.spacing]
     } ${borderClass} ${widthClass}`;
-    console.log({ stackNodeClass });
+
     // @ts-ignore
     const vNodes = this.$slots.default() || [];
     // if a childs 'value' is 'v-if', it is not visible so filter it out
