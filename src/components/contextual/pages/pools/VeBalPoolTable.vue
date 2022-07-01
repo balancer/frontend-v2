@@ -7,7 +7,7 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { Pool, PoolWithShares } from '@/services/pool/types';
 
 /**
- * PROPS & EMITS
+ * PROPS
  */
 type Props = {
   lockPool: Pool;
@@ -36,16 +36,13 @@ const lockPools = computed<PoolWithShares[]>(() => {
   return [];
 });
 
-const hiddenColumns = computed(() => {
-  const _hiddenColumns = [
-    'poolVolume',
-    'poolValue',
-    'migrate',
-    'actions',
-    'myBoost'
-  ];
-  return _hiddenColumns;
-});
+const hiddenColumns = [
+  'poolVolume',
+  'poolValue',
+  'migrate',
+  'actions',
+  'myBoost'
+];
 </script>
 
 <template>

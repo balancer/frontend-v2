@@ -21,10 +21,6 @@ const emit = defineEmits<{
   (e: 'click:stake', value: PoolWithShares): void;
 }>();
 
-/**
- * COMPOSABLES
- */
-
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 const showVeBalLock = computed(() => isVeBalPool(props.pool.id));

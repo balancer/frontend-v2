@@ -103,10 +103,7 @@ const poolsToRender = computed(() => {
   return uniqBy([...nonMigratableUserPools, ...stakablePools], pool => pool.id);
 });
 
-const hiddenColumns = computed((): string[] => {
-  const hiddenCols = ['poolVolume', 'poolValue', 'migrate', 'lockedEndDate'];
-  return hiddenCols;
-});
+const hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'lockedEndDate'];
 
 /** METHODS */
 function handleStake(pool: Pool) {
