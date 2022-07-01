@@ -54,7 +54,6 @@ function navigateToCreatePool() {
         >
           <TokenSearchInput
             v-model="selectedTokens"
-            :loading="false"
             @add="addSelectedToken"
             @remove="removeSelectedToken"
             class="w-full md:w-2/3"
