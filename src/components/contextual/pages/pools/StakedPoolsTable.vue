@@ -56,7 +56,7 @@ const hiddenColumns = computed(() => {
 </script>
 
 <template>
-  <div class="mt-8">
+  <div>
     <BalStack vertical spacing="sm">
       <h5 class="px-4 lg:px-0">{{ $t('staking.stakedPools') }}</h5>
       <PoolsTable

@@ -35,7 +35,7 @@ const migratableUserPools = computed(() => {
             <h3>{{ $t('myInvestments') }}</h3>
           </BalStack>
         </div>
-        <BalStack vertical spacing="xl">
+        <BalStack vertical spacing="2xl">
           <UnstakedPoolsTable />
           <StakedPoolsTable />
           <VeBalPoolTable
@@ -44,24 +44,30 @@ const migratableUserPools = computed(() => {
             :lockPool="lockPool"
           />
 
-          <BalStack vertical spacing="sm" v-if="migratableUserPools.length > 0">
-            <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
-            <PoolsTable
-              :key="migratableUserPools"
-              :isLoading="isLoadingUserPools"
-              :data="migratableUserPools"
-              :noPoolsLabel="$t('noInvestments')"
-              showPoolShares
-              :selectedTokens="selectedTokens"
-              :hiddenColumns="[
-                'poolVolume',
-                'poolValue',
-                'actions',
-                'lockEndDate'
-              ]"
+          <div>
+            <BalStack
+              vertical
+              spacing="sm"
+              v-if="migratableUserPools.length > 0"
             >
-            </PoolsTable>
-          </BalStack>
+              <h5 class="px-4 lg:px-0">{{ $t('poolsToMigrate') }}</h5>
+              <PoolsTable
+                :key="migratableUserPools"
+                :isLoading="isLoadingUserPools"
+                :data="migratableUserPools"
+                :noPoolsLabel="$t('noInvestments')"
+                showPoolShares
+                :selectedTokens="selectedTokens"
+                :hiddenColumns="[
+                  'poolVolume',
+                  'poolValue',
+                  'actions',
+                  'lockEndDate'
+                ]"
+              >
+              </PoolsTable>
+            </BalStack>
+          </div>
         </BalStack>
       </BalStack>
     </div>
