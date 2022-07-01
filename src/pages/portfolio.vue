@@ -39,7 +39,7 @@ const migratableUserPools = computed(() => {
           <UnstakedPoolsTable />
           <StakedPoolsTable />
           <VeBalPoolTable
-            v-if="lockPool && lock"
+            v-if="lockPool && Number(lock?.lockedAmount) > 0"
             :lock="lock"
             :lockPool="lockPool"
           />
