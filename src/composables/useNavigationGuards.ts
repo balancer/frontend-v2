@@ -1,7 +1,12 @@
+import NProgress from 'nprogress';
 import { useRouter } from 'vue-router';
 
 import { useSidebar } from './useSidebar';
 import useVeBal from './useVeBAL';
+
+// Progress bar config
+NProgress.configure({ showSpinner: false });
+let delayedStartProgressBar;
 
 export default function useNavigationGuards() {
   const router = useRouter();
@@ -19,6 +24,22 @@ export default function useNavigationGuards() {
     } else {
       next();
     }
-    next();
+  });
+
+  router.beforeEach(() => {
+    // Delay start of progress bar so users with fast connection can't see it
+    delayedStartProgressBar = setTimeout(() => {
+      NProgress.start();
+    }, 1000);
+  });
+  router.afterEach(() => {
+    // Clear progress bar timeout, so it doesn't start after page load
+    clearTimeout(delayedStartProgressBar);
+
+    // Complete the animation of the route progress bar.
+    NProgress.done();
+  });
+  router.onError(() => {
+    NProgress.done();
   });
 }
