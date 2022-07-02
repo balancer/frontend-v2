@@ -195,12 +195,13 @@ export default {
         // need to store address to pre-load that connection
         if (account.value) {
           // fetch sanctioned status
-          const _isSanctioned = await isSanctionedAddress(account.value);
+          let _isSanctioned = await isSanctionedAddress(account.value);
           if (_isSanctioned === null) {
-            await disconnectWallet();
-            throw new Error(
-              `Could not receive an appropriate response from the Sanctions API. Aborting.`
-            );
+            // await disconnectWallet();
+            // throw new Error(
+            //   `Could not receive an appropriate response from the Sanctions API. Aborting.`
+            // );
+            _isSanctioned = false;
           }
           isSanctioned.value = _isSanctioned;
           if (_isSanctioned) {
