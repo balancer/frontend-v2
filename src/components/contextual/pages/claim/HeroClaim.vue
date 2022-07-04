@@ -111,7 +111,7 @@
 }
 
 .hero-container {
-  @apply grid grid-cols-1 lg:grid-cols-3 lg:container lg:mx-auto;
+  @apply grid grid-cols-1 lg:grid-cols-3 xl:container xl:mx-auto px-4;
 }
 
 .hero-graphic-container {
@@ -119,7 +119,7 @@
 }
 
 .hero-content {
-  @apply px-4 pt-12 lg:p-8 lg:pl-0 flex items-center w-full relative;
+  @apply pt-12 lg:pt-0 flex items-center w-full relative;
 }
 
 .hero-text {

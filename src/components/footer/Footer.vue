@@ -1,6 +1,8 @@
 <template>
   <footer>
-    <div class="lg:container lg:mx-auto dark:border-t dark:border-gray-800">
+    <div
+      class="xl:container xl:mx-auto lg:px-4 dark:border-t dark:border-gray-800"
+    >
       <div
         class="
           px-4

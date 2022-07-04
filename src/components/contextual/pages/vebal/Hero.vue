@@ -171,7 +171,7 @@ function navigateToGetVeBAL() {
 }
 
 .hero-content {
-  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full z-10;
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 xl:pl-4 w-full z-10;
 }
 .eyebrow {
   @apply mb-4;

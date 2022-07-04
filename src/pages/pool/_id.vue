@@ -1,9 +1,11 @@
 <template>
-  <div class="lg:container lg:mx-auto pt-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
-      <div class="col-span-2">
+  <div class="xl:container xl:mx-auto lg:px-4 pt-8">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-4 xl:gap-x-8"
+    >
+      <div class="col-span-2 px-4 lg:px-0">
         <BalLoadingBlock v-if="loadingPool" class="h-16" />
-        <div v-else class="px-4 lg:px-0 flex flex-col">
+        <div v-else class="flex flex-col">
           <div class="flex flex-wrap items-center -mt-2">
             <h3 class="pool-title">
               {{ poolTypeLabel }}
@@ -11,7 +13,7 @@
             <div
               v-for="([address, tokenMeta], i) in titleTokens"
               :key="i"
-              class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
+              class="mt-2 mr-2 flex items-center h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
             >
               <BalAsset :address="address" />
               <span class="ml-2">
@@ -113,7 +115,7 @@
 
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
-          <div class="px-1 lg:px-0">
+          <div class="px-4 lg:px-0">
             <PoolChart
               :pool="pool"
               :historicalPrices="historicalPrices"
@@ -124,7 +126,7 @@
               :poolType="pool?.poolType"
             />
           </div>
-          <div class="mb-4 px-1 lg:px-0">
+          <div class="mb-4 px-4 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
             <ApyVisionPoolLink
               v-if="!loadingPool"
@@ -145,7 +147,7 @@
 
       <div
         v-if="!isLiquidityBootstrappingPool"
-        class="order-1 lg:order-2 px-1 lg:px-0"
+        class="order-1 lg:order-2 px-4 lg:px-0"
       >
         <StakingProvider :poolAddress="getAddressFromPoolId(id)">
           <BalStack vertical>

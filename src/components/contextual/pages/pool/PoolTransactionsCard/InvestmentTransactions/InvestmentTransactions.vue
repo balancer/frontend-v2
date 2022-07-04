@@ -70,7 +70,7 @@ const activeTab = ref(tabs.value[0].value);
       class="px-4 lg:px-0 mb-5"
     />
     <div
-      class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
+      class="mx-4 lg:mx-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
     >
       <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
     </div>

@@ -211,7 +211,7 @@ onBeforeMount(async () => {
 <template>
   <HeroClaim />
   <div class="px-2 lg:px-0">
-    <div class="lg:container lg:mx-auto py-12">
+    <div class="xl:container xl:mx-auto xl:px-4 py-12">
       <h2 class="font-body font-semibold text-2xl">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>

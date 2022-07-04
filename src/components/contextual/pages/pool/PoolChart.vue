@@ -370,7 +370,7 @@ function setCurrentChartValue(payload: {
 
   <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
     <div
-      class="px-4 sm:px-0 flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
+      class="flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
     >
       <div class="flex mb-4">
         <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
