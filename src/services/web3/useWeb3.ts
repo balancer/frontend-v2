@@ -1,10 +1,12 @@
 import { Network } from '@balancer-labs/sdk';
 import { Web3Provider } from '@ethersproject/providers';
-import { computed, inject, reactive, ref, watch } from 'vue';
+import debounce from 'lodash/debounce';
+import { computed, inject, reactive, ref } from 'vue';
 import { useQuery } from 'vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { hasInjectedProvider } from '@/services/web3/connectors/metamask/metamask.connector';
 
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -23,6 +25,11 @@ function setBlockNumber(n: number): void {
 
 /** INIT STATE */
 rpcProviderService.initBlockListener(setBlockNumber);
+
+const toggleWalletSelectModal = (value?: boolean) => {
+  isWalletSelectVisible.value = value ?? !isWalletSelectVisible.value;
+};
+const delayedToggleWalletSelectModal = debounce(toggleWalletSelectModal, 200);
 
 export default function useWeb3() {
   const {
@@ -93,13 +100,25 @@ export default function useWeb3() {
   const getSigner = () => getProvider().getSigner();
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
 
-  const toggleWalletSelectModal = (value: boolean) => {
-    if (value !== undefined && typeof value === 'boolean') {
-      isWalletSelectVisible.value = value;
-      return;
+  function startConnectWithInjectedProvider(): void {
+    if (hasInjectedProvider()) {
+      // Open wallet select modal because even if there's injected provider,
+      // user might want to reject it and use another wallet.
+      // If user has already accepted the injected provider, modal will be closed after
+      // wallet is connected
+      delayedToggleWalletSelectModal();
+      // Immediately try to connect with injected provider
+      connectWallet('metamask').then(() => {
+        // When wallet is connected, close modal
+        // and clear the delayed toggle timeout so the modal doesn't open
+        delayedToggleWalletSelectModal.flush();
+        toggleWalletSelectModal(false);
+      });
+    } else {
+      // If there's no injected provider, open the modal immediately
+      toggleWalletSelectModal();
     }
-    isWalletSelectVisible.value = !isWalletSelectVisible.value;
-  };
+  }
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
     QUERY_KEYS.Account.Profile(networkId, account, chainId),
@@ -108,13 +127,6 @@ export default function useWeb3() {
       enabled: canLoadProfile
     })
   );
-
-  // WATCHERS
-  watch(account, () => {
-    // if the account ref has changed, we know that
-    // the user has successfully connected a wallet
-    toggleWalletSelectModal(false);
-  });
 
   return {
     // refs
@@ -150,6 +162,7 @@ export default function useWeb3() {
     getSigner,
     disconnectWallet,
     toggleWalletSelectModal,
+    startConnectWithInjectedProvider,
     setBlockNumber
   };
 }

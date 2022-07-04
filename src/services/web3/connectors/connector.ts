@@ -8,13 +8,22 @@ export type ConnectorPayload = {
   account: Ref<string | null>;
   chainId: Ref<number | null>;
 };
+
+export enum ConnectorId {
+  InjectedMetaMask = 'injectedMetamask',
+  InjectedTally = 'injectedTally',
+  WalletConnect = 'walletconnect',
+  WalletLink = 'walletlink',
+  Gnosis = 'gnosis',
+  Unknown = 'unknown'
+}
 export abstract class Connector {
   provider: any = null;
   account: Ref<string | null> = ref(null);
   chainId: Ref<number | null> = ref(null);
   active: Ref<boolean> = ref(false);
   selectedAccount = '';
-  id = 'unknown';
+  id: ConnectorId = ConnectorId.Unknown;
 
   constructor(selectedAccount: string) {
     this.selectedAccount = selectedAccount || '';
