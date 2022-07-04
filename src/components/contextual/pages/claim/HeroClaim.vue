@@ -8,7 +8,7 @@
           <h1 class="title mb-3 text-white text-shadow">
             {{ $t('claimHero.title') }}
           </h1>
-          <p class="body-text text-shadow">
+          <p class="body-text text-shadow max-w-3xl">
             {{ $t('claimHero.description') }}
           </p>
         </div>
@@ -119,7 +119,7 @@
 }
 
 .hero-content {
-  @apply pt-12 lg:pt-0 flex items-center w-full relative;
+  @apply pt-8 lg:py-4 flex items-center w-full relative;
 }
 
 .hero-text {
@@ -134,7 +134,7 @@
   @apply flex flex-col items-center text-center group;
 }
 .tip-icon {
-  @apply pb-4 transition-transform duration-300;
+  @apply pb-4 transition-transform duration-300 w-20 md:w-24 lg:w-full;
 }
 .tip-label {
   @apply text-white leading-5 transition-colors;
