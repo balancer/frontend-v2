@@ -86,7 +86,7 @@ const breakdownItems = computed(
     <div v-if="hasBoost">
       <div class="flex items-center">
         {{ boostedTotalAPR }}
-        <span class="ml-1 text-gray-500 text-xs">
+        <span class="ml-1 text-secondarytext-xs">
           {{ $t('staking.stakingApr') }}
         </span>
       </div>
@@ -95,20 +95,20 @@ const breakdownItems = computed(
       <BalBreakdown v-if="hasBalEmissions(pool.apr)" :items="breakdownItems">
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
-          <span class="ml-1 text-gray-500 text-xs">
+          <span class="ml-1 text-secondary text-xs">
             {{ $t('staking.minimumStakingApr') }}
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
           {{ fNum2(amount, FNumFormats.percent) }}
-          <span class="text-gray-500 text-xs ml-1 capitalize">
+          <span class="text-secondary text-xs ml-1 capitalize">
             {{ label }} {{ $t('apr') }}
           </span>
         </template>
       </BalBreakdown>
       <div v-else-if="hasRewardTokens" class="flex items-center">
         {{ fNum2(rewardTokensAPR, FNumFormats.percent) }}
-        <span class="ml-1 text-gray-500 text-xs">
+        <span class="ml-1 text-secondary text-xs">
           {{ $t('staking.stakingApr') }}
         </span>
       </div>

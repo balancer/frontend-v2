@@ -2,7 +2,7 @@
   <BalCard class="relative card-container" :shadow="tradeCardShadow" no-border>
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
-        <h4 class="font-bold">{{ title }}</h4>
+        <h4>{{ title }}</h4>
         <TradeSettingsPopover
           :context="TradeSettingsContext.trade"
           :isGasless="trading.tradeGasless.value"
@@ -70,7 +70,7 @@
         <Transition name="fade" mode="out-in">
           <div
             v-if="trading.isGaslessTradingDisabled.value"
-            class="text-gray-600 dark:text-gray-500"
+            class="text-secondary"
           >
             <div class="flex items-center gap-2">
               <span class="text-lg">⛽</span>
@@ -111,12 +111,12 @@
               <Transition name="fade" mode="out-in">
                 <span
                   v-if="trading.tradeGasless.value"
-                  class="text-sm pl-2 text-gray-600 dark:text-gray-500"
+                  class="text-sm pl-2 text-gray-600 dark:text-gray-400"
                   >{{ $t('tradeToggle.tradeGasless') }}</span
                 >
                 <span
                   v-else
-                  class="text-sm pl-2 text-gray-600 dark:text-gray-500"
+                  class="text-sm pl-2 text-gray-600 dark:text-gray-400"
                   >{{ $t('tradeToggle.tradeWithGas') }}</span
                 >
               </Transition>

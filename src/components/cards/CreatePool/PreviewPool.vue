@@ -168,7 +168,7 @@ function getSwapFeeManager() {
 
 function getInitialWeightHighlightClass(tokenAddress: string) {
   return {
-    'text-gray-500': initialWeights[tokenAddress]?.gte(0.01),
+    'text-secondary': initialWeights[tokenAddress]?.gte(0.01),
     'text-orange-500': initialWeights[tokenAddress]?.lt(0.01)
   };
 }
@@ -178,7 +178,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
   <BalStack vertical spacing="xs" class="mb-24">
     <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="xs">
-        <span class="text-xs text-gray-700 dark:text-gray-500">{{
+        <span class="text-xs text-secondary">{{
           userNetworkConfig?.name
         }}</span>
       </BalStack>
@@ -195,12 +195,12 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           <BalStack horizontal align="center" spacing="xs">
             <button
               @click="goBack"
-              class="text-blue-500 hover:text-blue-700 flex"
+              class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex transition-colors"
             >
               <BalIcon class="flex" name="chevron-left" />
             </button>
 
-            <h5 class="font-bold dark:text-gray-300">{{ title }}</h5>
+            <h5 class="font-semibold dark:text-gray-300">{{ title }}</h5>
           </BalStack>
         </div>
         <BalCard shadow="none" noPad>
@@ -243,7 +243,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                   <span class="font-semibold">
                     {{ fNum2(token.amount, FNumFormats.token) }}
                   </span>
-                  <span class="text-sm text-gray-500">
+                  <span class="text-sm text-secondary">
                     {{
                       fNum2(
                         bnum(token.amount)

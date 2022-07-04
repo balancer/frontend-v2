@@ -212,7 +212,7 @@ onBeforeMount(async () => {
   <HeroClaim />
   <div class="px-2 lg:px-0">
     <div class="lg:container lg:mx-auto py-12">
-      <h2 class="font-body font-bold text-2xl">
+      <h2 class="font-body font-semibold text-2xl">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
@@ -270,7 +270,7 @@ onBeforeMount(async () => {
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
 
-      <h2 class="font-body font-bold text-2xl mt-8">
+      <h2 class="font-body font-semibold text-2xl mt-8">
         {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
       </h2>
       <BalFlexGrid class="mt-4" flexWrap>
@@ -291,7 +291,7 @@ onBeforeMount(async () => {
       </BalFlexGrid>
 
       <template v-if="isWalletReady">
-        <h2 :class="['font-body font-bold text-2xl mt-8']">
+        <h2 :class="['font-body font-semibold text-2xl mt-8']">
           {{ $t('pages.claim.titles.legacyIncentives') }}
         </h2>
         <LegacyClaims />

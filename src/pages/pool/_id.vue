@@ -45,7 +45,7 @@
             </BalLink>
           </div>
           <div class="flex items-center mt-2">
-            <div v-html="poolFeeLabel" class="text-sm text-gray-600 mr-2" />
+            <div v-html="poolFeeLabel" class="text-sm text-secondary mr-1" />
             <BalTooltip>
               <template v-slot:activator>
                 <BalLink
@@ -55,7 +55,12 @@
                 >
                   <GauntletIcon />
                 </BalLink>
-                <BalIcon v-else name="info" size="xs" class="text-gray-400" />
+                <BalIcon
+                  v-else
+                  name="info"
+                  size="xs"
+                  class="text-gray-400 dark:text-gray-500"
+                />
               </template>
               <span>
                 {{ swapFeeToolTip }}

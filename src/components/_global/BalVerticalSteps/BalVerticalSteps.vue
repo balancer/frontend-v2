@@ -31,7 +31,10 @@ const visibleSteps = computed(() => {
 const stepTextClasses = computed(() => {
   return visibleSteps.value.map(step => {
     return getActiveClassName(step.state, [
-      [StepState.Active, 'text-blue-400 font-semibold hover:text-blue-800'],
+      [
+        StepState.Active,
+        'text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800'
+      ],
       [StepState.Todo, 'text-gray-400 font-normal'],
       [StepState.Success, 'text-green-500 font-semibold'],
       [StepState.Warning, 'text-red-500 font-semibold'],
@@ -45,11 +48,11 @@ const stepCircleClasses = computed(() => {
     return getActiveClassName(step.state, [
       [
         StepState.Active,
-        'border-2 border-none bg-gradient-from-l bg-gradient-to-r from-blue-600 to-blue-50 text-white active'
+        'border-2 border-none bg-gradient-from-l bg-gradient-to-r from-blue-600 to-blue-400 text-white active'
       ],
       [
         StepState.Todo,
-        'border-2 border-gray-300 dark:border-gray-600 text-gray-500'
+        'border-2 border-gray-300 dark:border-gray-600 text-secondary'
       ],
       [
         StepState.Success,
@@ -102,7 +105,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
                   "
                   >{{ step.label || i + 1 }}</span
                 >
-                <span class="font-bold" v-else>!</span>
+                <span class="font-semibold" v-else>!</span>
               </div>
             </div>
             <span :class="['text-sm', stepTextClasses[i]]">

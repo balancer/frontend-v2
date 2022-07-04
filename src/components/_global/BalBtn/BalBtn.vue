@@ -117,11 +117,11 @@ export default defineComponent({
         return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
       }
       if (props.loading) {
-        return `bg-gradient-to-tr from-${fromColor}-50 to-${toColor}-50`;
+        return `bg-gradient-to-tr from-${fromColor}-400 to-${toColor}-400`;
       }
       return `
-        bg-gradient-to-tr from-${fromColor}-500 to-${toColor}-500
-        hover:from-${fromColor}-600 hover:to-${toColor}-600
+        bg-gradient-to-tr from-${fromColor}-600 to-${toColor}-600
+        hover:from-${fromColor}-700 hover:to-${toColor}-700 transition-colors
       `;
     });
 
@@ -147,8 +147,8 @@ export default defineComponent({
         }
 
         return `
-          bg-${props.color}-500 hover:bg-${props.color}-600
-          dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
+          bg-${props.color}-600 hover:bg-${props.color}-600
+          dark:bg-${props.color}-dark-400 dark:hover:bg-${props.color}-dark-600
         `;
       }
     });
@@ -157,7 +157,7 @@ export default defineComponent({
       if (props.outline) {
         if (props.disabled)
           return `border border-gray-200 dark:border-gray-700`;
-        return `border border-${props.color}-200 dark:border-${props.color}-700`;
+        return `border border-${props.color}-400 dark:border-${props.color}-600`;
       }
       return 'border-none';
     });

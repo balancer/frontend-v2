@@ -296,6 +296,6 @@ export default defineComponent({
 }
 
 .slippage-input.active {
-  @apply text-blue-500 border-blue-500;
+  @apply text-blue-500 border-blue-500 border-2 ring;
 }
 </style>

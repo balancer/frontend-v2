@@ -383,16 +383,16 @@ function setCurrentChartValue(payload: {
         </div>
       </div>
       <div
-        class="flex flex-col items-start xs:items-end text-2xl font-bold tabular-nums"
+        class="flex flex-col items-start xs:items-end text-2xl font-semibold tabular-nums"
       >
         <p class="tracking-tighter">
           {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
         </p>
         <div
-          class="text-sm font-medium text-gray-500"
+          class="text-sm font-medium text-secondary"
           :class="{ 'text-pink-500': isFocusedOnChart }"
         >
-          <p class="tracking-tighter">
+          <p>
             {{ isFocusedOnChart ? currentChartDate : defaultChartData.title }}
           </p>
         </div>

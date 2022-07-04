@@ -105,7 +105,7 @@ function handleVoteSuccess() {
     <div class="flex gap-2 xs:gap-3">
       <BalCard shadow="none" class="min-w-max md:w-48">
         <div class="flex items-center">
-          <p class="text-sm text-gray-500 inline mr-1">
+          <p class="text-sm text-secondary inline mr-1">
             My unallocated votes
           </p>
           <BalTooltip
@@ -141,7 +141,7 @@ function handleVoteSuccess() {
         <div class="flex items-center">
           <p
             :class="{ 'text-orange-500 font-medium': votingPeriodLastHour }"
-            class="text-sm text-gray-500 inline mr-1"
+            class="text-sm text-secondary inline mr-1"
           >
             Voting period ends
           </p>

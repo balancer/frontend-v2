@@ -36,10 +36,10 @@ export default {};
 }
 
 .logotype:hover .logotype-path {
-  fill: #2e40f5; /* blue-600 */
+  fill: theme('colors.purple.700');
 }
 
 .dark .logotype:hover .logotype-path {
-  fill: #fed533; /* yellow-500 */
+  fill: theme('colors.yellow.500');
 }
 </style>

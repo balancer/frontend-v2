@@ -214,7 +214,7 @@ const unallocatedVotesFormatted = computed((): string =>
 
 const unallocatedVotesClass = computed(() => {
   return hasEnoughVotes.value
-    ? ['text-gray-500 dark:text-gray-400']
+    ? ['text-gray-600 dark:text-gray-400']
     : ['text-red-600'];
 });
 
@@ -276,7 +276,7 @@ async function submitVote() {
     voteState.init = false;
     voteState.confirming = false;
     voteState.error = {
-      title: 'Vote Failed',
+      title: 'Vote failed',
       description: error.message
     };
   }
@@ -385,7 +385,7 @@ onMounted(() => {
             <p class="text-black dark:text-white font-medium">
               {{ gauge.pool.name }}
             </p>
-            <p class="text-sm text-gray-500 dark:gray-400">
+            <p class="text-sm text-secondary">
               {{ gauge.pool.symbol }}
             </p>
           </div>
@@ -433,10 +433,7 @@ onMounted(() => {
             </div>
           </template>
         </BalTextInput>
-        <div
-          v-if="voteError"
-          class="mt-2 text-sm text-gray-500 dark:text-gray-400"
-        >
+        <div v-if="voteError" class="mt-2 text-sm text-secondary">
           {{
             t('veBAL.liquidityMining.popover.warnings.noVeBal.inputHintText')
           }}

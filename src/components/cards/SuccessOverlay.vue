@@ -10,7 +10,7 @@
         >
           <BalIcon name="check-circle" size="xl" />
         </div>
-        <p v-html="description" class="text-gray-500" />
+        <p v-html="description" class="text-secondary" />
       </div>
       <div class="grid grid-cols-2 gap-4 mt-4 w-full">
         <BalBtn

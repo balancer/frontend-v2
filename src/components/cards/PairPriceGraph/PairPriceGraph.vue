@@ -248,8 +248,8 @@ const chartGrid = computed(() => {
           @click="toggle"
           class="maximise m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
-          <BalIcon v-if="!isModal" name="maximize-2" class="text-gray-500" />
-          <BalIcon v-if="isModal" name="x" class="text-gray-500" />
+          <BalIcon v-if="!isModal" name="maximize-2" class="text-secondary" />
+          <BalIcon v-if="isModal" name="x" class="text-secondary" />
         </button>
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
@@ -321,7 +321,7 @@ const chartGrid = computed(() => {
                   'py-1 px-2 text-sm rounded-lg mr-2',
                   {
                     'text-white': activeTimespan.value === timespan.value,
-                    'text-gray-500': activeTimespan.value !== timespan.value,
+                    'text-secondary': activeTimespan.value !== timespan.value,
                     'bg-green-400':
                       !isNegativeTrend &&
                       activeTimespan.value === timespan.value,
@@ -337,16 +337,16 @@ const chartGrid = computed(() => {
               </button>
             </div>
             <div :class="{ 'mt-4': isModal }">
-              <span class="text-sm text-gray-500 mr-4"
+              <span class="text-sm text-secondary mr-4"
                 >Low: {{ dataMin.toPrecision(6) }}</span
               >
-              <span class="text-sm text-gray-500"
+              <span class="text-sm text-secondary"
                 >High: {{ dataMax.toPrecision(6) }}</span
               >
             </div>
           </div>
           <div class="-mt-2 lg:mt-2" v-else>
-            <span class="text-sm text-gray-500 w-full flex justify-end">{{
+            <span class="text-sm text-secondary w-full flex justify-end">{{
               activeTimespan.option
             }}</span>
           </div>

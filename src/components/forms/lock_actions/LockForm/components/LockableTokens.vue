@@ -53,7 +53,7 @@ const fiatTotal = computed((): string =>
         <div>{{ lockablePoolTokenInfo.symbol }}</div>
         <div>{{ fNum2(bptBalance, FNumFormats.token) }}</div>
       </div>
-      <div class="flex justify-between text-gray-500">
+      <div class="flex justify-between text-secondary">
         <div>{{ lockablePoolTokenInfo.name }}</div>
         <div>{{ fNum2(fiatTotal, FNumFormats.fiat) }}</div>
       </div>

@@ -77,7 +77,7 @@ function toggleModal(): void {
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
+      <span v-if="Number(weight) > 0" class="text-secondary ml-2">
         {{
           fNum2(weight, {
             style: 'percent',
@@ -89,7 +89,7 @@ function toggleModal(): void {
         v-if="!fixed"
         name="chevron-down"
         size="sm"
-        class="text-blue-500 group-hover:text-pink-500 ml-2"
+        class="text-blue-600 dark:text-blue-400 group-hover:text-purple-500 dark:group-hover:text-yellow-500 ml-2 transition-colors"
       />
     </div>
     <BalDropdown
@@ -106,7 +106,7 @@ function toggleModal(): void {
           <span class="text-base font-medium">
             {{ token?.symbol }}
           </span>
-          <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
+          <span v-if="Number(weight) > 0" class="text-secondary ml-2">
             {{
               fNum2(weight, {
                 style: 'percent',
@@ -117,7 +117,7 @@ function toggleModal(): void {
           <BalIcon
             name="chevron-down"
             size="sm"
-            class="text-blue-500 group-hover:text-pink-500 ml-2"
+            class="text-blue-500 dark:text-blue-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 ml-2 transition-colors"
           />
         </div>
       </template>
@@ -135,7 +135,7 @@ function toggleModal(): void {
           <BalIcon
             v-if="isSameAddress(optionToken.address, modelValue)"
             name="check"
-            class="text-blue-500 ml-4"
+            class="text-blue-500 dark:text-blue-400 ml-4"
           />
         </div>
       </template>
@@ -175,7 +175,7 @@ function toggleModal(): void {
 }
 
 .unselected {
-  @apply bg-blue-500 text-white;
+  @apply bg-blue-500 dark:bg-blue-400 text-white;
 }
 
 .selected {
