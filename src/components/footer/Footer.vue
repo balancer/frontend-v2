@@ -11,7 +11,7 @@
           md:flex-row
           md:justify-between
           gap-8
-          text-white 
+          text-primary 
         "
       >
         <div class="flex flex-col gap-8">
@@ -21,35 +21,48 @@
 
           <div class="md:hidden flex flex-col gap-2">
             <p>
-              <router-link class="link font-medium" :to="{ name: 'home' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'home' }"
+              >
                 {{ $t('invest') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'trade' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'trade' }"
+              >
                 {{ $t('trade') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'portfolio' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'portfolio' }"
+              >
                 {{ $t('portfolio') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'vebal' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'vebal' }"
+              >
                 {{ $t('vebal') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'claim' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'claim' }"
+              >
                 {{ $t('claim') }}
               </router-link>
             </p>
           </div>
 
-          <div
-            class="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 md:order-3"
-          >
+          <div class="flex flex-wrap gap-3 md:gap-4 md:order-3">
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Home"
               external
@@ -283,6 +296,6 @@ footer :deep(.logotype) {
 
 .router-link-active,
 .dark .router-link-active {
-  @apply text-red-500;
+  @apply text-blue-600 dark:text-blue-400;
 }
 </style>
