@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
 
 import { bnum } from '@/lib/utils';
+import { getBptBalanceFiatValue } from '@/lib/utils/balancer/pool';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
@@ -64,6 +65,12 @@ export function useLock() {
       : '0'
   );
 
+  const lockedFiatTotal = computed(() =>
+    lockPool.value && lock.value?.hasExistingLock
+      ? getBptBalanceFiatValue(lockPool.value, lock.value.lockedAmount)
+      : '0'
+  );
+
   return {
     isLoadingLockPool,
     isLoadingLockInfo,
@@ -71,6 +78,7 @@ export function useLock() {
     lockPoolToken,
     lockPool,
     lock,
-    lockFiatValue
+    lockFiatValue,
+    lockedFiatTotal
   };
 }
