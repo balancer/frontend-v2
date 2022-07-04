@@ -3,10 +3,10 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import ConfigService from '@/services/config/config.service';
 import { WalletError } from '@/types';
 
-import { Connector } from '../connector';
+import { Connector, ConnectorId } from '../connector';
 
 export class WalletConnectConnector extends Connector {
-  id = 'walletconnect';
+  id = ConnectorId.WalletConnect;
   async connect() {
     const configService = new ConfigService();
     const provider = new WalletConnectProvider({

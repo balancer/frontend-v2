@@ -176,6 +176,7 @@ export interface PoolShare {
 export interface PoolWithShares extends Pool {
   shares: string;
   bpt: string;
+  lockedEndDate?: number;
 }
 
 export type PoolActivityType = 'Join' | 'Exit';

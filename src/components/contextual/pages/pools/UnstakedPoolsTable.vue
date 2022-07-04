@@ -103,10 +103,7 @@ const poolsToRender = computed(() => {
   return uniqBy([...nonMigratableUserPools, ...stakablePools], pool => pool.id);
 });
 
-const hiddenColumns = computed((): string[] => {
-  const hiddenCols = ['poolVolume', 'poolValue', 'migrate'];
-  return hiddenCols;
-});
+const hiddenColumns = ['poolVolume', 'poolValue', 'migrate', 'lockEndDate'];
 
 /** METHODS */
 function handleStake(pool: Pool) {
@@ -131,22 +128,26 @@ function handleModalClose() {
 </script>
 
 <template>
-  <BalStack vertical spacing="sm">
-    <h5 class="px-4 lg:px-0" v-if="!isL2">{{ $t('staking.unstakedPools') }}</h5>
-    <PoolsTable
-      :key="poolsToRender"
-      :isLoading="isLoadingUserStakingData || isLoadingUserPools"
-      :data="poolsToRender"
-      :noPoolsLabel="noPoolsLabel"
-      :hiddenColumns="hiddenColumns"
-      @triggerStake="handleStake"
-      showPoolShares
+  <div>
+    <BalStack vertical spacing="sm">
+      <h5 class="px-4 lg:px-0" v-if="!isL2">
+        {{ $t('staking.unstakedPools') }}
+      </h5>
+      <PoolsTable
+        :key="poolsToRender"
+        :isLoading="isLoadingUserStakingData || isLoadingUserPools"
+        :data="poolsToRender"
+        :noPoolsLabel="noPoolsLabel"
+        :hiddenColumns="hiddenColumns"
+        @triggerStake="handleStake"
+        showPoolShares
+      />
+    </BalStack>
+    <StakePreviewModal
+      :pool="stakePool"
+      :isVisible="showStakeModal"
+      @close="handleModalClose"
+      action="stake"
     />
-  </BalStack>
-  <StakePreviewModal
-    :pool="stakePool"
-    :isVisible="showStakeModal"
-    @close="handleModalClose"
-    action="stake"
-  />
+  </div>
 </template>

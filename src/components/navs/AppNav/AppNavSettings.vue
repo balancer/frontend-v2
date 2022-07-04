@@ -1,15 +1,26 @@
 <template>
   <div>
     <div class="p-4 border-b dark:border-gray-900">
-      <div class="flex justify-between items-center mb-4">
-        <h5 v-text="$t('account')" class="leading-none" />
-        <div v-if="!hideDisconnect">
-          <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
-            Disconnect
+      <div class="flex justify-between items-center mb-6">
+        <h5 v-text="$t('account')" class="leading-none tracking-tight" />
+        <div class="flex items-center gap-2">
+          <BalBtn color="gray" size="xs" @click="toggleWalletSelectModal">
+            {{ $t('change') }}
           </BalBtn>
+          <div v-if="!hideDisconnect">
+            <BalBtn
+              outline
+              color="gray"
+              size="xs"
+              @click="disconnectWallet"
+              class="capitalize"
+            >
+              {{ $t('disconnect') }}
+            </BalBtn>
+          </div>
         </div>
       </div>
-      <div class="flex mt-1">
+      <div class="flex mt-1 mb-1">
         <div class="flex">
           <div class="relative">
             <Avatar :iconURI="profile?.avatar" :address="account" :size="44" />
@@ -22,7 +33,10 @@
           </div>
           <div class="ml-2">
             <div class="address flex items-baseline">
-              <div v-text="_shorten(account)" />
+              <div
+                class="font-bold text-black dark:text-white"
+                v-text="_shorten(account)"
+              />
               <div class="ml-3 flex">
                 <BalTooltip width="auto">
                   <template v-slot:activator>
@@ -32,7 +46,6 @@
                       size="xs"
                       flat
                       @click="copyAddress"
-                      class="mr-2"
                     >
                       <BalIcon v-if="copiedAddress" name="check" size="xs" />
                       <BalIcon v-else name="clipboard" size="xs" />
@@ -52,6 +65,7 @@
                   :href="explorer.addressLink(account)"
                   target="_blank"
                   rel="noreferrer"
+                  class="ml-2"
                 >
                   <BalIcon name="arrow-up-right" size="xs" />
                 </BalBtn>
@@ -176,7 +190,9 @@ export default defineComponent({
       account,
       profile,
       disconnectWallet,
+      toggleWalletSelectModal,
       connector,
+      provider,
       isEIP1559SupportedNetwork,
       userNetworkConfig,
       appNetworkConfig,
@@ -219,9 +235,12 @@ export default defineComponent({
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
-    const connectorName = computed(() => getConnectorName(connector.value?.id));
-
-    const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
+    const connectorName = computed(() =>
+      getConnectorName(connector.value?.id, provider.value)
+    );
+    const connectorLogo = computed(() =>
+      getConnectorLogo(connector.value?.id, provider.value)
+    );
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const isGnosisSupportedNetwork = computed(() =>
       GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
@@ -264,6 +283,7 @@ export default defineComponent({
       isUnsupportedNetwork,
       // methods
       disconnectWallet,
+      toggleWalletSelectModal,
       setDarkMode,
       setLocale,
       setTradeInterface,

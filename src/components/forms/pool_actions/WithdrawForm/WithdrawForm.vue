@@ -67,7 +67,7 @@ const {
 
 const {
   isWalletReady,
-  toggleWalletSelectModal,
+  startConnectWithInjectedProvider,
   isMismatchedNetwork
 } = useWeb3();
 
@@ -167,7 +167,7 @@ onBeforeMount(() => {
         :label="$t('connectWallet')"
         color="gradient"
         block
-        @click="toggleWalletSelectModal"
+        @click="startConnectWithInjectedProvider"
       />
       <BalBtn
         v-else

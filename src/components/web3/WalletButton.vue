@@ -1,5 +1,5 @@
 <template>
-  <button class="wallet-connect-btn" @click="connectWallet(wallet)">
+  <button class="wallet-connect-btn" @click="handleClick">
     <div class="flex items-center" style="width: 70%">
       <img
         :src="require(`@/assets/images/connectors/${wallet}.svg`)"
@@ -24,11 +24,15 @@ export default defineComponent({
       required: true
     }
   },
-  setup() {
-    const { connectWallet } = useWeb3();
+  setup(props) {
+    const { connectWallet, toggleWalletSelectModal } = useWeb3();
+    function handleClick() {
+      connectWallet(props.wallet);
+      toggleWalletSelectModal(false);
+    }
     return {
       WalletNameMap,
-      connectWallet
+      handleClick
     };
   }
 });
