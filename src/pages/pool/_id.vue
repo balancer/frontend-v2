@@ -124,6 +124,7 @@
               :pool="pool"
               :pool-apr="poolApr"
               :loading="loadingPool"
+              :loadingApr="loadingApr"
             />
             <ApyVisionPoolLink
               v-if="!loadingPool"
@@ -302,9 +303,17 @@ export default defineComponent({
       route.params.id as string,
       pool as ComputedRef<Pool>
     );
-
+    const loadingApr = computed(
+      () =>
+        aprQuery.isLoading.value ||
+        poolQuery.isIdle.value ||
+        poolQuery.error.value
+    );
     const poolApr = computed(() => aprQuery.data.value);
-    const loadingPool = computed(() => !pool.value);
+    const loadingPool = computed(
+      () => !pool.value
+      // && !singlePoolService.findPool(data.id)
+    );
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(
@@ -462,7 +471,8 @@ export default defineComponent({
       // methods
       fNum2,
       getAddressFromPoolId,
-      poolApr
+      poolApr,
+      loadingApr
     };
   }
 });

@@ -117,10 +117,13 @@ export class PoolDecorator {
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: this.pools.map(pool => pool.id) };
     try {
-      return await this.poolSubgraph.pools.get({
+      console.time('this.getSnapshots');
+      const data = await this.poolSubgraph.pools.get({
         where: isInPoolIds,
         block
       });
+      console.timeEnd('this.getSnapshots');
+      return data;
     } catch (error) {
       console.error('Failed to fetch pool snapshots', error);
       return [];

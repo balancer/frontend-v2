@@ -60,7 +60,7 @@ export default function usePoolAprQuery(
     }
 
     const _pool = pool.value || poolInfo;
-    // console.log('_pool', _pool);
+    console.log('_pool', _pool);
     const payload = {
       pools: [_pool],
       prices: prices.value,

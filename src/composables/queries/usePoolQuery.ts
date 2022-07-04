@@ -53,7 +53,7 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id, gaugeAddresses);
 
   const queryFn = async () => {
-    // console.time('usePoolQuery');
+    console.time('usePoolQuery');
     let pool: Pool;
     if (poolInfo) {
       pool = poolInfo;
@@ -78,15 +78,15 @@ export default function usePoolQuery(
       tokens.value
     );
 
-    // console.time('INJECT TOKENS');
+    console.time('INJECT TOKENS');
     // Inject pool tokens into token registry
-    await injectTokens([
+    void injectTokens([
       ...decoratedPool.tokensList,
       ...lpTokensFor(decoratedPool),
       decoratedPool.address
     ]);
-    // console.timeEnd('INJECT TOKENS');
-    // console.timeEnd('usePoolQuery');
+    console.timeEnd('INJECT TOKENS');
+    console.timeEnd('usePoolQuery');
     return decoratedPool;
   };
 
