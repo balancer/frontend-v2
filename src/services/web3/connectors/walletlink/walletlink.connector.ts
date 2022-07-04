@@ -3,10 +3,10 @@ import WalletLink from 'walletlink';
 import ConfigService from '@/services/config/config.service';
 import { WalletError } from '@/types';
 
-import { Connector } from '../connector';
+import { Connector, ConnectorId } from '../connector';
 
 export class WalletLinkConnector extends Connector {
-  id = 'walletlink';
+  id = ConnectorId.WalletLink;
   async connect() {
     const configService = new ConfigService();
     const walletLink = new WalletLink({

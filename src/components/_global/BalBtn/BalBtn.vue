@@ -157,7 +157,7 @@ export default defineComponent({
       if (props.outline) {
         if (props.disabled)
           return `border border-gray-200 dark:border-gray-700`;
-        return `border border-${props.color}-200 dark:border-${props.color}-700`;
+        return `border border-${props.color}-200 dark:border-${props.color}-700 dark:hover:border-${props.color}-600 dark:focus:border-${props.color}-600 hover:text-gray-600 dark:hover:text-gray-200 dark:focus:text-gray-200`;
       }
       return 'border-none';
     });

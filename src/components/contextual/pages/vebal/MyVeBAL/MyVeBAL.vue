@@ -14,7 +14,8 @@ const {
   isLoadingLockInfo,
   lockPool,
   lockPoolToken,
-  lock
+  lock,
+  lockedFiatTotal
 } = useLock();
 const { isWalletReady } = useWeb3();
 
@@ -40,6 +41,7 @@ const isLoading = computed(() =>
       :veBalLockInfo="lock"
       :lockablePool="lockPool"
       :lockablePoolTokenInfo="lockPoolToken"
+      :lockedFiatTotal="lockedFiatTotal"
     />
   </div>
 </template>

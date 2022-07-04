@@ -15,12 +15,10 @@ import TokenSearchInputSelectTokens from './TokenSearchInputSelectTokens.vue';
 
 type Props = {
   modelValue: string[];
-  loading?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => [],
-  loading: true
+  modelValue: () => []
 });
 
 const emit = defineEmits<{
@@ -103,7 +101,7 @@ function addToken(token: string) {
 }
 
 function onClick() {
-  if (!props.loading) selectTokenModal.value = true;
+  selectTokenModal.value = true;
 }
 </script>
 <template>
