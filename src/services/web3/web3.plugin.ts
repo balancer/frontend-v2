@@ -256,6 +256,9 @@ export function getConnectorName(
   connectorId: ConnectorId,
   provider: any
 ): string {
+  if (!provider) {
+    return i18n.global.t('unknown');
+  }
   if (connectorId === ConnectorId.InjectedMetaMask) {
     if (provider.isCoinbaseWallet) {
       return `Coinbase ${i18n.global.t('wallet')}`;
@@ -296,6 +299,9 @@ export function getConnectorLogo(
   connectorId: ConnectorId,
   provider: any
 ): string {
+  if (!provider) {
+    return defaultLogo;
+  }
   if (connectorId === ConnectorId.InjectedMetaMask) {
     if (provider.isTally) {
       return tallyLogo;
