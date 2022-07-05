@@ -30,7 +30,12 @@
               </span>
             </div>
             <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
-            <APRTooltip :pool="pool" :pool-apr="poolApr" class="-ml-1 mt-1" />
+            <APRTooltip
+              v-if="!loadingApr"
+              :pool="pool"
+              :pool-apr="poolApr"
+              class="-ml-1 mt-1"
+            />
             <BalLink
               :href="explorer.addressLink(pool?.address || '')"
               external
@@ -310,10 +315,8 @@ export default defineComponent({
         poolQuery.error.value
     );
     const poolApr = computed(() => aprQuery.data.value);
-    const loadingPool = computed(
-      () => !pool.value
-      // && !singlePoolService.findPool(data.id)
-    );
+    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
+
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(

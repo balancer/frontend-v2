@@ -75,17 +75,12 @@ export class PoolDecorator {
     currency: FiatCurrency,
     tokens: TokenInfoMap
   ): Promise<Pool[]> {
-    // console.time('DECORATED_GETDATA');
     const poolMulticaller = new PoolMulticaller(this.pools);
-
     const [poolSnapshots, rawOnchainDataMap] = await Promise.all([
       this.getSnapshots(),
       poolMulticaller.fetch()
     ]);
 
-    // console.log('poolsnaphsots', poolSnapshots);
-
-    // console.timeEnd('DECORATED_GETDATA');
     const promises = this.pools.map(async pool => {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
@@ -113,16 +108,14 @@ export class PoolDecorator {
    */
   private async getSnapshots(): Promise<Pool[]> {
     const currentBlock = await this.providerService.getBlockNumber();
-    const blockNumber = await getTimeTravelBlock(currentBlock);
+    const blockNumber = getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: this.pools.map(pool => pool.id) };
     try {
-      console.time('this.getSnapshots');
       const data = await this.poolSubgraph.pools.get({
         where: isInPoolIds,
         block
       });
-      console.timeEnd('this.getSnapshots');
       return data;
     } catch (error) {
       console.error('Failed to fetch pool snapshots', error);

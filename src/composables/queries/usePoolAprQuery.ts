@@ -2,11 +2,14 @@ import { QueryObserverOptions } from 'react-query/core';
 import { computed, ComputedRef, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
+import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { AprConcern } from '@/services/pool/concerns/apr/apr.concern';
 import { singlePoolService } from '@/services/pool/single-pool.service';
 import { Pool, PoolAPRs } from '@/services/pool/types';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 
 import useNetwork from '../useNetwork';
@@ -50,7 +53,24 @@ export default function usePoolAprQuery(
   /**
    * QUERY INPUTS
    */
-  const queryKey = '';
+  const queryKey = QUERY_KEYS.Pools.APR(networkId, id);
+
+  async function getSnapshot(id: string): Promise<Pool[]> {
+    const currentBlock = await rpcProviderService.getBlockNumber();
+    const blockNumber = getTimeTravelBlock(currentBlock);
+    const block = { number: blockNumber };
+    const isInPoolIds = { id_in: [id] };
+    try {
+      const data = await balancerSubgraphService.pools.get({
+        where: isInPoolIds,
+        block
+      });
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch pool snapshots', error);
+      return [];
+    }
+  }
 
   const queryFn = async () => {
     if (!pool.value && !poolInfo) throw new Error('No pool');
@@ -60,7 +80,7 @@ export default function usePoolAprQuery(
     }
 
     const _pool = pool.value || poolInfo;
-    console.log('_pool', _pool);
+
     const payload = {
       pools: [_pool],
       prices: prices.value,
@@ -79,16 +99,15 @@ export default function usePoolAprQuery(
       })
     ]);
 
+    const _snaphshot = await getSnapshot(_pool.id);
     const apr = await new AprConcern(poolInfo || pool.value).calc(
-      _pool,
+      _snaphshot[0],
       prices.value,
       currency.value,
       protocolFeePercentage,
       gaugeBALAprs[_pool.id],
       gaugeRewardTokenAprs[_pool.id]
     );
-
-    // console.log('APR', apr);
 
     return apr;
   };
