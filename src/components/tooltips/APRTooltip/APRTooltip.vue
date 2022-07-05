@@ -42,11 +42,9 @@ const hasYieldAPR = computed(() => bnum(apr.value?.yield.total || '0').gt(0));
 
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 
-const totalLabel = computed((): string => {
-  if (!apr.value) return '0';
-
-  return totalAprLabel(apr.value, props.pool.boost);
-});
+const totalLabel = computed((): string =>
+  apr.value ? totalAprLabel(apr.value, props.pool.boost) : '0'
+);
 </script>
 
 <template v-slot:aprCell="pool">

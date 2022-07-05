@@ -36,11 +36,8 @@ export default class PoolShares {
         return [`_${timestamp}`, timestampFragment];
       })
     );
-    // console.time('getSnapshots');
 
     const snapshots = await this.service.client.get(query);
-    // console.timeEnd('getSnapshots');
-
     const data = this.serialize(snapshots);
     return data;
   }

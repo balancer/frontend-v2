@@ -54,7 +54,7 @@ export default function useTokenPricesQuery(
         PER_PAGE * page,
         PER_PAGE * (page + 1)
       );
-      // console.log('Fetching', pageAddresses.length, 'prices');
+      console.log('Fetching', pageAddresses.length, 'prices');
       prices = {
         ...prices,
         ...(await coingeckoService.prices.getTokens(pageAddresses))

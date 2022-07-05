@@ -317,7 +317,6 @@ export default defineComponent({
     const poolApr = computed(() => aprQuery.data.value);
     const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
-
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(
       () => poolSnapshotsQuery.data.value?.prices
