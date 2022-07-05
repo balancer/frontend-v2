@@ -114,8 +114,6 @@ export default function useStreamedPoolsQuery(
   watch(
     () => result.value,
     val => {
-      // console.log('RESULT', result.value);
-
       if (val.length > 0) {
         singlePoolService.setPools(val);
       }

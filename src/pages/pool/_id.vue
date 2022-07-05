@@ -238,15 +238,10 @@ export default defineComponent({
     const { fNum2 } = useNumbers();
     const { explorerLinks, isWalletReady } = useWeb3();
     const { prices } = useTokens();
-    const { isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
     const { balancerTokenListTokens } = useTokens();
     const { isAffected, warnings } = usePoolWarning(route.params.id as string);
 
-    /**
-     * QUERIES
-     */
-    const poolQuery = usePoolQuery(route.params.id as string);
     /**
      * STATE
      */
@@ -254,21 +249,54 @@ export default defineComponent({
       id: route.params.id as string
     });
 
-    /**
-     * COMPUTED
-     */
-
+    //#region pool query
+    const poolQuery = usePoolQuery(route.params.id as string);
     const pool = computed(() => poolQuery.data.value);
-    const poolSnapshotsQuery = usePoolSnapshotsQuery(
-      route.params.id as string,
-      pool as ComputedRef<Pool>
+    const poolQueryLoading = computed(
+      () =>
+        poolQuery.isLoading.value ||
+        poolQuery.isIdle.value ||
+        poolQuery.error.value
     );
+    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
     const {
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isStablePhantomPool
     } = usePool(poolQuery.data);
+    //#endregion
+
+    //#region pool snapshot query
+    const poolSnapshotsQuery = usePoolSnapshotsQuery(
+      route.params.id as string,
+      pool as ComputedRef<Pool>
+    );
+    const isLoadingSnapshots = computed(
+      () =>
+        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
+    );
+
+    const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
+    const historicalPrices = computed(
+      () => poolSnapshotsQuery.data.value?.prices
+    );
+    //#endregion
+
+    // TODO: should be removed when fetching apr from sdk is implemented
+    //#region APR query
+    const aprQuery = usePoolAprQuery(
+      route.params.id as string,
+      pool as ComputedRef<Pool>
+    );
+    const loadingApr = computed(
+      () =>
+        aprQuery.isLoading.value ||
+        poolQuery.isIdle.value ||
+        poolQuery.error.value
+    );
+    const poolApr = computed(() => aprQuery.data.value);
+    //#endregion
 
     const noInitLiquidity = computed(
       () =>
@@ -298,37 +326,8 @@ export default defineComponent({
       }
     });
 
-    const poolQueryLoading = computed(
-      () =>
-        poolQuery.isLoading.value ||
-        poolQuery.isIdle.value ||
-        poolQuery.error.value
-    );
-    const aprQuery = usePoolAprQuery(
-      route.params.id as string,
-      pool as ComputedRef<Pool>
-    );
-    const loadingApr = computed(
-      () =>
-        aprQuery.isLoading.value ||
-        poolQuery.isIdle.value ||
-        poolQuery.error.value
-    );
-    const poolApr = computed(() => aprQuery.data.value);
-    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
-
-    const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
-    const historicalPrices = computed(
-      () => poolSnapshotsQuery.data.value?.prices
-    );
-    const isLoadingSnapshots = computed(
-      () =>
-        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-    );
-
     const titleTokens = computed(() => {
-      if (!pool.value) return [];
-      if (!pool.value?.onchain?.tokens) return [];
+      if (!pool.value || !pool.value?.onchain?.tokens) return [];
 
       return Object.entries(pool.value.onchain.tokens).sort(
         ([, a]: any[], [, b]: any[]) => b.weight - a.weight
@@ -343,8 +342,7 @@ export default defineComponent({
     });
 
     const poolFeeLabel = computed(() => {
-      if (!pool.value) return '';
-      if (!pool.value?.onchain?.swapFee) return '';
+      if (!pool.value || !pool.value?.onchain?.swapFee) return '';
 
       const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
         style: 'percent',
@@ -375,34 +373,6 @@ export default defineComponent({
         return !tokens.every(token => includesAddress(tokensWithPrice, token));
       }
       return false;
-    });
-
-    const isCopperNetworkSupported = computed(
-      () => isMainnet.value || isPolygon.value || isKovan.value
-    );
-
-    // Temporary solution to hide Copper card on Fei pool page.
-    // Longer terms solution is needed distinguish LBP platforms
-    // and display custom widgets linking to their pages.
-    const isCopperPool = computed((): boolean => {
-      const feiPoolId =
-        '0xede4efcc5492cf41ed3f0109d60bc0543cfad23a0002000000000000000000bb';
-      return (
-        !!pool.value &&
-        isLiquidityBootstrappingPool.value &&
-        pool.value.id !== feiPoolId &&
-        isCopperNetworkSupported.value
-      );
-    });
-
-    const copperNetworkPrefix = computed(() => {
-      if (isPolygon.value) {
-        return 'polygon.';
-      }
-      if (isKovan.value) {
-        return 'kovan.';
-      }
-      return '';
     });
 
     const hasCustomToken = computed(() => {
@@ -462,9 +432,7 @@ export default defineComponent({
       swapFeeToolTip,
       isStableLikePool,
       isLiquidityBootstrappingPool,
-      isCopperPool,
       isStablePhantomPool,
-      copperNetworkPrefix,
       hasCustomToken,
       isAffected,
       warnings,

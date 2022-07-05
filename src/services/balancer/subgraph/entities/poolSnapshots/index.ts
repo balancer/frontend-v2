@@ -38,8 +38,7 @@ export default class PoolShares {
     );
 
     const snapshots = await this.service.client.get(query);
-    const data = this.serialize(snapshots);
-    return data;
+    return this.serialize(snapshots);
   }
 
   private serialize(snapshotData: Record<string, PoolSnapshot>): PoolSnapshots {

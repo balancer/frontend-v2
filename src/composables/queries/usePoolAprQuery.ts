@@ -79,7 +79,8 @@ export default function usePoolAprQuery(
       return poolInfo.apr;
     }
 
-    const _pool = pool.value || poolInfo;
+    // copy computed pool to avoid mutation warnings
+    const _pool = { ...pool.value, tokens: [...pool.value.tokens] } || poolInfo;
 
     const payload = {
       pools: [_pool],
@@ -100,7 +101,7 @@ export default function usePoolAprQuery(
     ]);
 
     const _snaphshot = await getSnapshot(_pool.id);
-    const apr = await new AprConcern(poolInfo || pool.value).calc(
+    const apr = await new AprConcern(_pool).calc(
       _snaphshot[0],
       prices.value,
       currency.value,
