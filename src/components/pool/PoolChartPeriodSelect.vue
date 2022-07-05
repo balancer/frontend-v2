@@ -30,9 +30,9 @@ defineProps<Props>();
     <template v-slot="{ close }">
       <div @click="close" class="flex flex-col w-44 rounded-lg overflow-hidden">
         <div
-          class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
+          class="px-3 py-2 bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium text-sm"
         >
-          {{ $t('poolChart.period.title') }}
+          {{ $t('poolChart.period.title') }}:
         </div>
         <div
           v-for="option in options"
