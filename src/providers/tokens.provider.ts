@@ -249,22 +249,20 @@ export default {
      * Create token map from a token list tokens array.
      */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
-      const tokensMap = {};
       const tokens = [...tokenLists].map(list => list.tokens).flat();
 
-      tokens.forEach(token => {
+      const tokensMap = tokens.reduce<TokenInfoMap>((acc, token) => {
         const address: string = getAddress(token.address);
-        const existingAddresses = Object.keys(tokensMap);
-        // Don't include if already included
-        if (includesAddress(existingAddresses, address)) return;
-        // Don't include if not on app network
-        if (token.chainId !== networkConfig.chainId) return;
 
-        tokensMap[address] = {
-          ...token,
-          address
-        };
-      });
+        // Don't include if already included
+        if (acc[address]) return acc;
+
+        // Don't include if not on app network
+        if (token.chainId !== networkConfig.chainId) return acc;
+
+        acc[address] = token;
+        return acc;
+      }, {});
 
       return tokensMap;
     }

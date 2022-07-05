@@ -108,6 +108,8 @@ export interface RawOnchainPoolData {
   tokenRates?: BigNumber[];
 }
 
+export type RawOnchainPoolDataMap = Record<string, RawOnchainPoolData>;
+
 export interface OnchainPoolData {
   tokens: Record<Address, OnchainTokenData>;
   totalSupply: string;
@@ -118,6 +120,8 @@ export interface OnchainPoolData {
   linearPools?: Record<Address, LinearPoolData>;
   tokenRates?: string[];
 }
+
+export type OnchainPoolDataMap = Record<string, OnchainPoolData>;
 
 export interface RawLinearPoolToken {
   address: string;
@@ -172,6 +176,7 @@ export interface PoolShare {
 export interface PoolWithShares extends Pool {
   shares: string;
   bpt: string;
+  lockedEndDate?: number;
 }
 
 export type PoolActivityType = 'Join' | 'Exit';

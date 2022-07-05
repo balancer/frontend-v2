@@ -1,4 +1,5 @@
 import { Network } from '@balancer-labs/sdk';
+import { isAddress } from '@ethersproject/address';
 import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
@@ -192,6 +193,21 @@ export function removePreMintedBPT(pool: Pool): Pool {
     address => !isSameAddress(address, pool.address)
   );
   return pool;
+}
+
+/**
+ * @summary Check if pool should be accessible in UI
+ */
+export function isBlocked(pool: Pool, account: string): boolean {
+  const requiresAllowlisting =
+    isStableLike(pool.poolType) || isManaged(pool.poolType);
+  const isOwnedByUser =
+    isAddress(account) && isSameAddress(pool.owner, account);
+  const isAllowlisted =
+    POOLS.Stable.AllowList.includes(pool.id) ||
+    POOLS.Investment.AllowList.includes(pool.id);
+
+  return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
 }
 
 /**

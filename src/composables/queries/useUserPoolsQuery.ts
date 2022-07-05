@@ -9,6 +9,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { bnum, forChange } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import PoolService from '@/services/pool/pool.service';
 import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -88,22 +89,17 @@ export default function useUserPoolsQuery(
 
     const tokens = flatten(
       pools.map(pool => {
-        return [
-          ...pool.tokensList,
-          ...lpTokensFor(pool),
-          balancerSubgraphService.pools.addressFor(pool.id)
-        ];
+        return [...pool.tokensList, ...lpTokensFor(pool), pool.address];
       })
     );
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 
-    const decoratedPools = await balancerSubgraphService.pools.decorate(
-      pools,
-      '24h',
+    const poolDecorator = new PoolDecorator(pools);
+    const decoratedPools = await poolDecorator.decorate(
+      subgraphGauges.value || [],
       prices.value,
       currency.value,
-      subgraphGauges.value || [],
       tokenMeta.value
     );
 
