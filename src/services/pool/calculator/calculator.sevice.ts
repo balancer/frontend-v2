@@ -143,7 +143,7 @@ export default class CalculatorService {
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
     const fixedToken = this.allTokens.value[fixedTokenAddress];
-    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken.decimals);
+    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals);
     const fixedRatio = this.ratioOf(type, index);
     const amounts = {
       send: this.sendTokens.map(() => ''),

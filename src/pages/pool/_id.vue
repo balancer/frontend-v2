@@ -150,7 +150,7 @@ export default defineComponent({
       () =>
         poolQuery.isLoading.value ||
         poolQuery.isIdle.value ||
-        poolQuery.error.value
+        Boolean(poolQuery.error.value)
     );
     const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
