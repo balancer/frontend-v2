@@ -90,7 +90,7 @@ const totalLabel = computed((): string =>
         />
 
         <!-- STAKING APR BREAKDOWN -->
-        <StakingBreakdown :pool="pool" />
+        <StakingBreakdown :pool="pool" :poolApr="poolApr" />
       </div>
     </div>
   </BalTooltip>

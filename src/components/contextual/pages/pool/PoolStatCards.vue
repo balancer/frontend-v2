@@ -83,7 +83,11 @@ const stats = computed(() => {
       <BalCard v-else>
         <div class="text-sm text-gray-500 font-medium mb-2 flex">
           <span>{{ stat.label }}</span>
-          <APRTooltip v-if="stat.id === 'apr'" :pool="pool" />
+          <APRTooltip
+            v-if="stat.id === 'apr'"
+            :pool="pool"
+            :poolApr="poolApr"
+          />
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}

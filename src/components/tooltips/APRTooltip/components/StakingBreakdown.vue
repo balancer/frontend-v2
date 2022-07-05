@@ -11,6 +11,7 @@ import { hasBalEmissions } from '@/services/staking/utils';
  */
 type Props = {
   pool: Pool;
+  poolApr?: PoolAPRs;
 };
 
 /**
@@ -26,11 +27,12 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
+
+const apr = computed(() => props.pool?.apr || props.poolApr);
+
 const boost = computed((): string => props.pool?.boost || '');
 const hasBoost = computed((): boolean => !!boost.value);
-const stakingAPR = computed(
-  (): PoolAPRs['staking'] => props.pool?.apr?.staking
-);
+const stakingAPR = computed((): PoolAPRs['staking'] => apr.value?.staking);
 const minBalAPR = computed((): string => stakingAPR.value?.bal.min || '0');
 const maxBalAPR = computed((): string => stakingAPR.value?.bal.max || '0');
 const rewardTokensAPR = computed(
@@ -44,7 +46,7 @@ const hasRewardTokens = computed((): boolean =>
  * @summary The total APR if we have the user's boost.
  */
 const boostedTotalAPR = computed((): string => {
-  if (hasBalEmissions(props.pool.apr) && props.pool.apr) {
+  if (apr.value && hasBalEmissions(apr.value)) {
     const boostedStakingAPR = bnum(minBalAPR.value)
       .times(boost.value)
       .plus(rewardTokensAPR.value)
@@ -92,7 +94,7 @@ const breakdownItems = computed(
       </div>
     </div>
     <template v-else>
-      <BalBreakdown v-if="hasBalEmissions(pool.apr)" :items="breakdownItems">
+      <BalBreakdown v-if="hasBalEmissions(apr)" :items="breakdownItems">
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
           <span class="ml-1 text-gray-500 text-xs">

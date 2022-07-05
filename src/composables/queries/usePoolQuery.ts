@@ -23,7 +23,7 @@ export default function usePoolQuery(
 ) {
   /**
    * @description
-   * If pool is already downloaded, we can use it instatly
+   * If pool is already downloaded, we can use it instantly
    * it may be if user came to pool page from home page
    */
   const poolInfo = singlePoolService.findPool(id);
