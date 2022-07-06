@@ -15,9 +15,9 @@
     </template>
     <div class="flex flex-col w-44 rounded-lg overflow-hidden">
       <div
-        class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
+        class="px-3 py-2 bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium text-sm"
       >
-        Select a network
+        {{ $t('networkSelection') }}:
       </div>
       <a
         v-for="network in networks"
