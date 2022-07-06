@@ -160,7 +160,7 @@ export default class CalculatorService {
           const token = this.allTokens.value[tokenAddress];
           amounts[types[ratioType]][i] = formatUnits(
             fixedDenormAmount.mul(ratio).div(fixedRatio),
-            token.decimals
+            token?.decimals
           );
         }
       });

@@ -80,7 +80,7 @@ export default function usePoolAprQuery(
     }
 
     // copy computed pool to avoid mutation warnings
-    const _pool = { ...pool.value, tokens: [...pool.value.tokens] } || poolInfo;
+    const _pool = poolInfo || { ...pool.value, tokens: [...pool.value.tokens] };
 
     const payload = {
       pools: [_pool],
@@ -100,14 +100,14 @@ export default function usePoolAprQuery(
       })
     ]);
 
-    const _snaphshot = await getSnapshot(_pool.id);
+    const _snaphshot = await getSnapshot(id);
     const apr = await new AprConcern(_pool).calc(
       _snaphshot[0],
       prices.value,
       currency.value,
       protocolFeePercentage,
-      gaugeBALAprs[_pool.id],
-      gaugeRewardTokenAprs[_pool.id]
+      gaugeBALAprs[id],
+      gaugeRewardTokenAprs[id]
     );
 
     return apr;

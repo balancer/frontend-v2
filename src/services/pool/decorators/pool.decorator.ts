@@ -74,30 +74,25 @@ export class PoolDecorator {
     prices: TokenPrices,
     currency: FiatCurrency,
     tokens: TokenInfoMap
-  ): Promise<Pool[]> {
+  ): Promise<Pool> {
     const poolMulticaller = new PoolMulticaller(this.pools);
     const [poolSnapshots, rawOnchainDataMap] = await Promise.all([
       this.getSnapshots(),
       poolMulticaller.fetch()
     ]);
+    const pool = this.pools[0];
+    const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
+    const poolService = new this.poolServiceClass(pool);
 
-    const promises = this.pools.map(async pool => {
-      const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
-      const poolService = new this.poolServiceClass(pool);
+    poolService.removePreMintedBPT();
+    await poolService.setLinearPools();
+    poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
+    poolService.setTotalLiquidity(prices, currency, tokens);
+    poolService.setFeesSnapshot(poolSnapshot);
+    poolService.setVolumeSnapshot(poolSnapshot);
+    poolService.setUnwrappedTokens();
 
-      poolService.removePreMintedBPT();
-      await poolService.setLinearPools();
-      poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
-      poolService.setTotalLiquidity(prices, currency, tokens);
-      poolService.setFeesSnapshot(poolSnapshot);
-      poolService.setVolumeSnapshot(poolSnapshot);
-      poolService.setUnwrappedTokens();
-
-      return poolService.pool;
-    });
-
-    const resolvedPromises = await Promise.all(promises);
-    return resolvedPromises;
+    return poolService.pool;
   }
 
   /**

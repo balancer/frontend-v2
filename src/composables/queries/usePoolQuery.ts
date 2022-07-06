@@ -71,14 +71,14 @@ export default function usePoolQuery(
 
     // Decorate subgraph data with additional data
     const poolDecorator = new PoolDecorator([pool]);
-    const [decoratedPool] = await poolDecorator.decorateSinglePool(
+    const decoratedPool = await poolDecorator.decorateSinglePool(
       prices.value,
       currency.value,
       tokens.value
     );
 
     // Inject pool tokens into token registry
-    void injectTokens([
+    await injectTokens([
       ...decoratedPool.tokensList,
       ...lpTokensFor(decoratedPool),
       decoratedPool.address

@@ -164,7 +164,9 @@ export default defineComponent({
     //#region pool snapshot query
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
       route.params.id as string,
-      pool as ComputedRef<Pool>
+      pool as ComputedRef<Pool>,
+      undefined,
+      { refetchOnWindowFocus: false }
     );
     const isLoadingSnapshots = computed(
       () =>
