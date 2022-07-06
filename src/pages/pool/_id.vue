@@ -46,7 +46,12 @@
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
-          <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
+          <div ref="intersectionSentinel"></div>
+          <PoolTransactionsCard
+            v-if="isSentinelIntersected"
+            :pool="pool"
+            :loading="loadingPool"
+          />
         </div>
       </div>
 
@@ -87,7 +92,10 @@ import {
   computed,
   ComputedRef,
   defineComponent,
+  onBeforeUnmount,
+  onMounted,
   reactive,
+  ref,
   toRefs,
   watch
 } from 'vue';
@@ -194,6 +202,43 @@ export default defineComponent({
     const poolApr = computed(() => aprQuery.data.value);
     //#endregion
 
+    //#region Intersection Observer
+    const intersectionSentinel = ref<HTMLDivElement | null>(null);
+    const isSentinelIntersected = ref(false);
+    let observer: IntersectionObserver | undefined;
+
+    function addIntersectionObserver(): void {
+      if (
+        !('IntersectionObserver' in window) ||
+        !('IntersectionObserverEntry' in window) ||
+        !intersectionSentinel.value
+      ) {
+        isSentinelIntersected.value = true;
+        return;
+      }
+
+      const options = {
+        rootMargin: '-100px'
+      };
+
+      const callback = (entries: IntersectionObserverEntry[]): void => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            isSentinelIntersected.value = true;
+          }
+        });
+      };
+      observer = new IntersectionObserver(callback, options);
+      observer.observe(intersectionSentinel.value);
+    }
+    onMounted(() => {
+      addIntersectionObserver();
+    });
+    onBeforeUnmount(() => {
+      observer?.disconnect();
+    });
+    //#endregion
+
     const noInitLiquidity = computed(
       () =>
         !loadingPool.value &&
@@ -256,6 +301,8 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      intersectionSentinel,
+      isSentinelIntersected,
       // computed
       pool,
       explorer: explorerLinks,
