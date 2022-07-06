@@ -107,7 +107,7 @@ async function handleActionSuccess() {
         >
           <template v-slot:staking-handle>
             <button
-              class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
+              class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               <BalStack horizontal justify="between" align="center">
                 <BalStack spacing="sm" align="center">
@@ -186,7 +186,7 @@ async function handleActionSuccess() {
                   </BalBtn>
                   <BalBtn
                     outline
-                    color="gray"
+                    color="blue"
                     size="sm"
                     @click="showUnstakePreview"
                     :disabled="fiatValueOfStakedShares === '0'"
@@ -219,28 +219,50 @@ async function handleActionSuccess() {
 </template>
 
 <style>
-.handle::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  background: linear-gradient(90deg, #4254ff, #f441a5, #ffeb3b, #4254ff);
-  background-size: 400%;
-  animation: anim 8s linear infinite;
+.handle {
+  @apply overflow-hidden rounded-xl;
+}
 
+.handle::before {
+  @apply absolute left-0 w-full opacity-100;
+  content: '';
+  /* position: absolute; */
+  top: -2px;
+  /* left: 0; */
+  /* width: 100%; */
+  height: calc(100% + 4px);
+  background: linear-gradient(45deg, #4254ff, #f441a5, #ffeb3b, #4254ff);
+  background-size: 400%;
+  animation: anim-half 3s ease-out both;
   border-radius: 14px;
-  opacity: 1;
+  /* opacity: 1; */
   z-index: -1;
 }
 
-@keyframes anim {
+.handle:hover:before {
+  animation: anim 12s linear infinite;
+}
+
+.handle .bal-card {
+  width: calc(100% - 4px);
+  margin: 0 auto;
+}
+
+@keyframes anim-half {
   from {
     background-position: 0;
   }
   to {
-    background-position: 400%;
+    background-position: 200%;
+  }
+}
+
+@keyframes anim {
+  from {
+    background-position: 200%;
+  }
+  to {
+    background-position: 600%;
   }
 }
 </style>
