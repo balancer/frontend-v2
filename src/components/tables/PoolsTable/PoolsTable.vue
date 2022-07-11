@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
+import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
@@ -20,10 +22,10 @@ import {
   orderedTokenAddresses,
   totalAprLabel
 } from '@/composables/usePool';
-import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
 
+import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
 /**
@@ -167,6 +169,14 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     width: 250
   },
   {
+    name: t('expiryDate'),
+    Cell: 'lockEndDateCell',
+    accessor: 'lockedEndDate',
+    align: 'right',
+    id: 'lockEndDate',
+    width: 150
+  },
+  {
     name: t('migrate'),
     Cell: 'migrateCell',
     accessor: 'migrate',
@@ -175,11 +185,11 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     width: 150
   },
   {
-    name: t('stake'),
-    Cell: 'stakeCell',
-    accessor: 'stake',
+    name: t('actions'),
+    Cell: 'actionsCell',
+    accessor: 'actions',
     align: 'center',
-    id: 'stake',
+    id: 'actions',
     width: 150
   }
 ]);
@@ -187,8 +197,6 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
 const visibleColumns = computed(() =>
   columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
-
-const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 
 /**
  * METHODS
@@ -214,6 +222,10 @@ function aprLabelFor(pool: PoolWithShares): string {
   if (!poolAPRs) return '0';
 
   return totalAprLabel(poolAPRs, pool.boost);
+}
+
+function lockedUntil(lockEndDate?: number) {
+  return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
 }
 </script>
 
@@ -317,18 +329,16 @@ function aprLabelFor(pool: PoolWithShares): string {
           </BalBtn>
         </div>
       </template>
-      <template v-slot:stakeCell="pool">
-        <div class="px-2 py-4 flex justify-center">
-          <BalBtn
-            v-if="stakablePoolIds.includes(pool.id)"
-            color="gradient"
-            size="sm"
-            @click.prevent="$emit('triggerStake', pool)"
-          >
-            {{ $t('stake') }}
-          </BalBtn>
-          <div v-else>{{ $t('notAvailable') }}</div>
+      <template v-slot:lockEndDateCell="pool">
+        <div class="px-6 py-4 text-right">
+          {{ lockedUntil(pool.lockedEndDate) }}
         </div>
+      </template>
+      <template v-slot:actionsCell="pool">
+        <PoolsTableActionsCell
+          :pool="pool"
+          @click:stake="pool => emit('triggerStake', pool)"
+        ></PoolsTableActionsCell>
       </template>
     </BalTable>
   </BalCard>

@@ -71,12 +71,19 @@ export default class SwapService {
           userData: swaps[0].userData
         };
 
-        return vaultService.swap(
-          single,
-          funds,
-          tokenOut.amount.toString(),
-          overrides
-        );
+        /*
+        See docs in iVault:
+        If the swap is 'given in' (the number of tokens to send to the Pool is known), it returns the amount of tokens
+        taken from the Pool, which must be greater than or equal to `limit`.
+        If the swap is 'given out' (the number of tokens to take from the Pool is known), it returns the amount of tokens
+        sent to the Pool, which must be less than or equal to `limit`.
+        */
+        const limit =
+          swapKind === SwapType.SwapExactIn
+            ? tokenOut.amount.toString()
+            : tokenIn.amount.toString();
+
+        return vaultService.swap(single, funds, limit, overrides);
       }
 
       const limits: string[] = this.calculateLimits(

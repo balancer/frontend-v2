@@ -4,10 +4,10 @@ import {
   JsonRpcSigner,
   Web3Provider
 } from '@ethersproject/providers';
+import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
-import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
@@ -17,11 +17,12 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom from '@/composables/useFathom';
+import { SANCTIONS_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
-import { Connector } from './connectors/connector';
+import { Connector, ConnectorId } from './connectors/connector';
 import { web3Service } from './web3.service';
 
 export type Wallet =
@@ -41,7 +42,7 @@ export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
-  walletlink: 'Coinbase',
+  walletlink: 'Coinbase Wallet',
   tally: 'Tally'
 };
 
@@ -56,6 +57,7 @@ export type Web3Plugin = {
   connector: Ref<Connector>;
   walletState: Ref<WalletState>;
   signer: Ref<JsonRpcSigner>;
+  isSanctioned: Ref<boolean>;
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -64,11 +66,26 @@ type PluginState = {
   walletState: WalletState;
 };
 
+async function isSanctionedAddress(address: string): Promise<boolean | null> {
+  try {
+    const response = await axios.post(SANCTIONS_ENDPOINT, [
+      {
+        address: address.toLowerCase()
+      }
+    ]);
+    const isSanctioned = response.data[0].isSanctioned;
+    return isSanctioned;
+  } catch {
+    return null;
+  }
+}
+
 export default {
   install: async app => {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
+    const isSanctioned = ref(false);
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -176,6 +193,19 @@ export default {
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
         if (account.value) {
+          // fetch sanctioned status
+          let _isSanctioned = await isSanctionedAddress(account.value);
+          if (_isSanctioned === null) {
+            // await disconnectWallet();
+            // throw new Error(
+            //   `Could not receive an appropriate response from the Sanctions API. Aborting.`
+            // );
+            _isSanctioned = false;
+          }
+          isSanctioned.value = _isSanctioned;
+          if (_isSanctioned) {
+            disconnectWallet();
+          }
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
@@ -214,16 +244,25 @@ export default {
       account,
       chainId,
       provider,
-      signer
+      signer,
+      isSanctioned
     };
 
     app.provide(Web3ProviderSymbol, payload);
   }
 };
 
-export function getConnectorName(connectorId: string): string {
-  if (connectorId === 'injectedMetamask') {
-    const provider = window.ethereum as any;
+export function getConnectorName(
+  connectorId: ConnectorId,
+  provider: any
+): string {
+  if (!provider) {
+    return i18n.global.t('unknown');
+  }
+  if (connectorId === ConnectorId.InjectedMetaMask) {
+    if (provider.isCoinbaseWallet) {
+      return `Coinbase ${i18n.global.t('wallet')}`;
+    }
     if (provider.isMetaMask) {
       return 'MetaMask';
     }
@@ -241,32 +280,35 @@ export function getConnectorName(connectorId: string): string {
     }
     return i18n.global.t('browserWallet');
   }
-  if (connectorId === 'injectedTally') {
+  if (connectorId === ConnectorId.InjectedTally) {
     return 'Tally';
   }
-  if (connectorId === 'fortmatic') {
-    return 'Fortmatic';
-  }
-  if (connectorId === 'walletconnect') {
+  if (connectorId === ConnectorId.WalletConnect) {
     return 'WalletConnect';
   }
-  if (connectorId === 'walletlink') {
+  if (connectorId === ConnectorId.WalletLink) {
     return `Coinbase ${i18n.global.t('wallet')}`;
   }
-  if (connectorId === 'gnosis') {
+  if (connectorId === ConnectorId.Gnosis) {
     return 'Gnosis Safe';
   }
   return i18n.global.t('unknown');
 }
 
-export function getConnectorLogo(connectorId: string): string {
-  if (connectorId === 'injected') {
-    const provider = window.ethereum as any;
+export function getConnectorLogo(
+  connectorId: ConnectorId,
+  provider: any
+): string {
+  if (!provider) {
+    return defaultLogo;
+  }
+  if (connectorId === ConnectorId.InjectedMetaMask) {
     if (provider.isTally) {
       return tallyLogo;
     }
-    if (provider.isMetaMask) {
-      return metamaskLogo;
+    if (provider.isCoinbaseWallet) {
+      // walletlink is also a coinbase wallet
+      return walletlinkLogo;
     }
     if (provider.isImToken) {
       return imtokenLogo;
@@ -280,21 +322,15 @@ export function getConnectorLogo(connectorId: string): string {
     if (provider.isFrame) {
       return frameLogo;
     }
-    return defaultLogo;
-  }
-  if (connectorId === 'injectedMetamask') {
     return metamaskLogo;
   }
-  if (connectorId === 'injectedTally') {
+  if (connectorId === ConnectorId.InjectedTally) {
     return tallyLogo;
   }
-  if (connectorId === 'fortmatic') {
-    return fortmaticLogo;
-  }
-  if (connectorId === 'walletconnect') {
+  if (connectorId === ConnectorId.WalletConnect) {
     return walletconnectLogo;
   }
-  if (connectorId === 'walletlink') {
+  if (connectorId === ConnectorId.WalletLink) {
     return walletlinkLogo;
   }
   return defaultLogo;

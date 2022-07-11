@@ -32,13 +32,13 @@ withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { connector } = useWeb3();
+const { connector, provider } = useWeb3();
 
 /**
  * COMPUTED
  */
 const walletLogo = computed((): string =>
-  getConnectorLogo(connector?.value?.id)
+  getConnectorLogo(connector?.value?.id, provider)
 );
 
 /**

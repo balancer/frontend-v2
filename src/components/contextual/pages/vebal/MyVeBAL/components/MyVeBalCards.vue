@@ -21,6 +21,7 @@ type Props = {
   lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
   veBalLockInfo?: VeBalLockInfo;
+  lockedFiatTotal: string;
 };
 
 /**
@@ -53,12 +54,6 @@ const bptBalance = computed(() => balanceFor(props.lockablePool.address));
 
 const fiatTotal = computed(() =>
   poolShares.value.times(bptBalance.value).toString()
-);
-
-const lockedFiatTotal = computed(() =>
-  props.veBalLockInfo?.hasExistingLock
-    ? poolShares.value.times(props.veBalLockInfo.lockedAmount).toString()
-    : '0'
 );
 
 const lockedUntil = computed(() => {
@@ -104,7 +99,7 @@ const cards = computed(() => {
       id: 'myLockedLpToken',
       label: t('veBAL.myVeBAL.cards.myLockedLpToken.label'),
       value: isWalletReady.value
-        ? fNum2(lockedFiatTotal.value, FNumFormats.fiat)
+        ? fNum2(props.lockedFiatTotal, FNumFormats.fiat)
         : '—',
       secondaryText: isWalletReady.value
         ? fNum2(props.veBalLockInfo?.lockedAmount ?? '0', FNumFormats.token)

@@ -100,7 +100,7 @@ export default defineComponent({
     });
 
     const bgGradientClasses = computed(() => {
-      if (props.outline) return 'bg-transparent';
+      if (props.outline) return 'bg-transparent hover:bg-gray-50';
 
       let fromColor = 'blue';
       let toColor = 'pink';
@@ -157,7 +157,7 @@ export default defineComponent({
       if (props.outline) {
         if (props.disabled)
           return `border border-gray-200 dark:border-gray-700`;
-        return `border border-${props.color}-200 dark:border-${props.color}-700`;
+        return `border border-${props.color}-200 dark:border-${props.color}-700 dark:hover:border-${props.color}-600 dark:focus:border-${props.color}-600 hover:text-gray-600 dark:hover:text-gray-200 dark:focus:text-gray-200`;
       }
       return 'border-none';
     });
@@ -167,7 +167,7 @@ export default defineComponent({
         return 'text-gray-400 dark:text-gray-700';
       if (props.outline && props.color === 'gradient') return 'text-purple-700';
       if (props.color === 'white') {
-        if (props.outline) return 'text-white';
+        if (props.outline) return 'text-white hover:border-gray-400';
         else return 'text-gray-800 dark:text-gray-100';
       }
       if (props.outline || props.flat)
