@@ -27,7 +27,7 @@ export default function useNavigationGuards() {
   });
 
   router.beforeEach(() => {
-    // Delay start of progress bar so users with fast connection can't see it
+    // Delay start of progress bar so only the users with slow connections can see it
     delayedStartProgressBar = setTimeout(() => {
       NProgress.start();
     }, 1000);

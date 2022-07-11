@@ -8,11 +8,12 @@
 
 
 #nprogress .peg {
-  box-shadow: 0 0 10px #384aff, 0 0 5px #384aff;
+  box-shadow: 0 0 10px theme('colors.blue.500'), 0 0 5px theme('colors.blue.500');
 }
 
 #nprogress .spinner-icon {
-  border-top-color: #384aff;
-  border-left-color: #384aff;
+  border-top-color: theme('colors.blue.500');
+  border-left-color: theme('colors.blue.500');
+
 }
 
