@@ -9,7 +9,7 @@ module.exports = {
     {
       preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
       roots: ['<rootDir>/src/'],
-      setupFilesAfterEnv: ['./src/jest.setup.ts'],
+      setupFilesAfterEnv: ['./src/jest.setup.ts', './src/jest.setup.jsdom.ts'],
       displayName: 'dom',
       testEnvironment: 'jsdom',
       testMatch: null,

@@ -1,5 +1,3 @@
-// import '@/__mocks__/matchMedia';
-
 import { render, screen } from '@testing-library/vue';
 
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
@@ -58,12 +56,6 @@ GaugesTable.components = {
   BalCard
 };
 
-// TODO: Remove useDarkMode mock everywhere and polyfill window.matchMedia
-jest.mock('@/composables/useDarkMode', () => {
-  return jest.fn().mockImplementation(() => {
-    return { darkMode: true };
-  });
-});
 // jest.mock('@/composables/useTailwind', () => {
 //   return jest.fn().mockImplementation(() => {
 //     return { theme: { colors: {} } };
