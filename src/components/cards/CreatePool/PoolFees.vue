@@ -91,7 +91,7 @@ function onCustomInput(val: string): void {
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
 
-  if (Number(val) <= 0.0001 || Number(val) > 10) {
+  if (Number(val) < 0.0001 || Number(val) > 10) {
     isInvalidFee.value = true;
   } else {
     isInvalidFee.value = false;
