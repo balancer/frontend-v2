@@ -68,6 +68,10 @@ export default class ConfigService {
     });
   }
 
+  public get subgraphFallback(): string | void {
+    return this.network.subgraphFallback;
+  }
+
   public get ws(): string {
     return template(this.network.ws, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
