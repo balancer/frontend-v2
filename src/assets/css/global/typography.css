@@ -1,6 +1,6 @@
 h1,
 h2 {
-  font-variation-settings: 'wght' 700;  
+  font-variation-settings: 'wght' 700;
 }
 h1 {
   @apply text-4xl;
