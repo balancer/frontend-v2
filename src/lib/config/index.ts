@@ -25,9 +25,9 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
-  subgraphFallback?: string;
   poolsUrlV2: string;
   subgraphs: {
+    main?: string[];
     aave: string;
     gauge: string;
   };

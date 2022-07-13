@@ -1,63 +1,25 @@
-import { captureException } from '@sentry/browser';
-import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
-import { configService } from '@/services/config/config.service';
+import { subgraphFallbackService } from './subgraph-fallback.service';
 
 export default class BalancerSubgraphClient {
-  constructor(
-    private readonly url = configService.subgraph,
-    private readonly fallbackUrl = configService.subgraphFallback
-  ) {}
-
   public async get(query) {
     try {
       const payload = this.toPayload(query);
-      const response = await axios.post(this.url, payload);
+      const response = await subgraphFallbackService.get(payload);
 
-      const errorMessage = response.data.errors?.message;
-      if (errorMessage) {
-        throw new Error(errorMessage);
+      if (!response) {
+        return;
       }
 
-      return response.data;
+      return response.data.data;
     } catch (error) {
-      captureException(
-        `GraphQL request to [${this.url}] failed with message: ${
-          (error as Error).message
-        }. Payload:`,
-        query
-      );
       console.error(error);
-      if (this.fallbackUrl) {
-        return this.getByFallbackUrl(query);
-      }
     }
   }
 
   public toPayload(query) {
     return { query: jsonToGraphQLQuery({ query }) };
-  }
-
-  private async getByFallbackUrl(query) {
-    try {
-      if (!this.fallbackUrl) {
-        return;
-      }
-      const payload = this.toPayload(query);
-      const {
-        data: { data }
-      } = await axios.post(this.fallbackUrl, payload);
-      return data;
-    } catch (error) {
-      captureException(
-        `GraphQL request to [${this.fallbackUrl}] failed with message: ${
-          (error as Error).message
-        }. Payload:`,
-        query
-      );
-      console.error(error);
-    }
   }
 }
 

@@ -68,8 +68,15 @@ export default class ConfigService {
     });
   }
 
-  public get subgraphFallback(): string | void {
-    return this.network.subgraphFallback;
+  public get subgraphUrls(): string[] | void {
+    return this.network.subgraphs.main?.map(url => {
+      if (url.includes('GRAPH_KEY')) {
+        return template(url, {
+          GRAPH_KEY: this.env.GRAPH_KEY
+        });
+      }
+      return url;
+    });
   }
 
   public get ws(): string {

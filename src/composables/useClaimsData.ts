@@ -65,7 +65,8 @@ export function useClaimsData() {
         }
       }
     }),
-    reactive({ enabled: gaugePoolQueryEnabled })
+    reactive({ enabled: gaugePoolQueryEnabled }),
+    true
   );
 
   /**
