@@ -1,13 +1,28 @@
 import { render, screen } from '@testing-library/vue';
 
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
-import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
-import BalCard from '@/components/_global/BalCard/BalCard.vue';
-import BalTable from '@/components/_global/BalTable/BalTable.vue';
-import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
-import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 
 import GaugesTable from './GaugesTable.vue';
+GaugesTable.components = {
+  BalAssetSet
+};
+
+jest.mock('@/composables/useTokens');
+jest.mock('@/services/web3/useWeb3', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      isWalletReady: new Proxy(
+        {},
+        {
+          get() {
+            return true;
+          }
+        }
+      ),
+      account: '0x0000000000000000000000000000000000000000'
+    };
+  });
+});
 
 const gaugeId = '0x34f33CDaED8ba0E1CEECE80e5f4a73bcf234cfac';
 
@@ -47,92 +62,62 @@ const gauge = {
 const expiredGauges = [gaugeId];
 const gauges = [gauge];
 
-GaugesTable.components = {
-  NetworkIcon,
-  BalTable,
-  BalAssetSet,
-  BalBtn,
-  CompositionIcon,
-  BalCard
-};
+const queryExpiredLabel = () => screen.queryByText(/Expired/i);
+const queryVoteBtn = () => screen.queryByRole('button', { name: /Vote/i });
+const queryRemoveVotesBtn = () =>
+  screen.queryByRole('button', { name: /Remove/i });
 
-// jest.mock('@/composables/useTailwind', () => {
-//   return jest.fn().mockImplementation(() => {
-//     return { theme: { colors: {} } };
-//   });
-// });
-
-jest.mock('@/services/web3/useWeb3', () => {
-  return jest.fn().mockImplementation(() => {
-    return { isWalletReady: true, account: '0x1111' };
-  });
-});
-jest.mock('@/composables/useTokens', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      injectTokens: jest.fn().mockImplementation(),
-      priceFor: jest.fn().mockImplementation(),
-      hasBalance: jest.fn().mockReturnValue(false),
-      balanceFor: jest.fn().mockReturnValue('0'),
-      getToken: jest.fn().mockImplementation(address => {
-        const mockTokens = {
-          '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2': {
-            symbol: 'MKR'
-          },
-          '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
-            symbol: 'WETH'
-          },
-          '0xdac17f958d2ee523a2206206994597c13d831ec7': {
-            symbol: 'USDT'
-          },
-          '0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115': {
-            symbol: 'USDC',
-            decimals: 6
-          }
-        };
-        return mockTokens[address];
-      })
-    };
-  });
-});
-
-// TODO: Test
 describe('GaugesTable', () => {
   it('should render right tokens for gauge', async () => {
     render(GaugesTable, {
-      global: {
-        stubs: {
-          Jazzicon: { template: '<span />' },
-          BalLoadingBlock: { template: '<span />' }
-        }
-      },
       props: {
         data: gauges
       }
     });
     const usdt = await screen.findByText('USDT');
     const usdc = await screen.findByText('USDC');
+    const expiredLabel = queryExpiredLabel();
+    const voteBtn = queryVoteBtn();
+    const removeVotesBtn = queryRemoveVotesBtn();
 
     expect(usdt).toBeVisible();
     expect(usdc).toBeVisible();
+    expect(expiredLabel).not.toBeInTheDocument();
+    expect(removeVotesBtn).not.toBeInTheDocument();
+    expect(voteBtn).toBeEnabled();
   });
 
-  it('should render expired label if gauge is expired', async () => {
+  it('should render Expired label and disabled Vote btn, if gauge is expired', async () => {
     render(GaugesTable, {
-      global: {
-        stubs: {
-          Jazzicon: { template: '<span />' },
-          BalLoadingBlock: { template: '<span />' }
-        }
-      },
       props: {
         expiredGauges,
         data: gauges
       }
     });
 
-    const expired = await screen.findByText(/Expired/i);
+    const expiredLabel = queryExpiredLabel();
+    const voteBtn = queryVoteBtn();
+    const removeVotesBtn = queryRemoveVotesBtn();
 
-    expect(expired).toBeVisible();
+    expect(expiredLabel).toBeVisible();
+    expect(removeVotesBtn).not.toBeInTheDocument();
+    expect(voteBtn).toBeDisabled();
+  });
+
+  it("should render Expired label and Remove Votes btn if gauge is expired and has user's funds", async () => {
+    render(GaugesTable, {
+      props: {
+        expiredGauges,
+        data: [{ ...gauge, userVotes: '1' }]
+      }
+    });
+
+    const expiredLabel = queryExpiredLabel();
+    const voteBtn = queryVoteBtn();
+    const removeVotesBtn = queryRemoveVotesBtn();
+
+    expect(expiredLabel).toBeVisible();
+    expect(removeVotesBtn).toBeEnabled();
+    expect(voteBtn).not.toBeInTheDocument();
   });
 });

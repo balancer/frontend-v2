@@ -1,3 +1,7 @@
+// Setup file for jsdom.
+// This file will be executed in the testing environment before executing
+// setupFilesAfterEnv and before the test code itself.
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({

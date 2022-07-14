@@ -1,12 +1,17 @@
+// Setup test suite for jsdom.
 import '@testing-library/jest-dom';
 
 import { config, RouterLinkStub } from '@vue/test-utils';
-import nock from 'nock';
 import { createI18n } from 'vue-i18n';
 
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
+import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalChip from '@/components/_global/BalChip/BalChip.vue';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import BalTable from '@/components/_global/BalTable/BalTable.vue';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
+import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
+import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import translations from '@/locales/default.json';
 
 const i18n = createI18n({
@@ -25,29 +30,21 @@ const i18n = createI18n({
   },
 });
 
-/**
- * HTTP Requests
- *
- * We should not allow external http requests from tests
- * All http requests should be mocked with expected responses
- * See nock docs for details: https://github.com/nock/nock
- */
-nock.disableNetConnect();
-// Enable for mocked websockets
-nock.enableNetConnect('balancer.fi');
-
-/**
- * Global template mocks
- */
-
+// Testing Library config
 config.global.plugins = [i18n];
 config.global.stubs = {
-  RouterLink: RouterLinkStub
+  RouterLink: RouterLinkStub,
+  Jazzicon: { template: '<span />' }
 };
 
 // TODO: Import all global components automatically
 config.global.components = {
   BalBtn,
   BalTooltip,
-  BalChip
+  BalChip,
+  BalLoadingBlock,
+  NetworkIcon,
+  BalTable,
+  CompositionIcon,
+  BalCard
 };
