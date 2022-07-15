@@ -5,12 +5,15 @@ import { useRoute } from 'vue-router';
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
+import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
+import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 // Composables
 import useBreakpoints from '@/composables/useBreakpoints';
+import { isStablePhantom } from '@/composables/usePool';
 import { useReturnRoute } from '@/composables/useReturnRoute';
 
 /**
@@ -24,9 +27,18 @@ const id = ref<string>(route.params.id as string);
  */
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { pool, loadingPool, useNativeAsset, transfersAllowed } =
-  usePoolTransfers();
+const {
+  pool,
+  loadingPool,
+  useNativeAsset,
+  transfersAllowed
+} = usePoolTransfers();
+const { singleAssetInAddress } = useInvestState();
 usePoolTransfersGuard();
+
+function setTokenInAddress(tokenAddress) {
+  singleAssetInAddress.value = tokenAddress;
+}
 </script>
 
 <template>
@@ -41,6 +53,9 @@ usePoolTransfersGuard();
     <Col3Layout offsetGutters mobileHideGutters>
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
+        <div v-else-if="pool && isStablePhantom(pool.poolType)">
+          <MyWallet @click:asset="setTokenInAddress" />
+        </div>
         <MyWalletTokensCard
           v-else
           v-model:useNativeAsset="useNativeAsset"
