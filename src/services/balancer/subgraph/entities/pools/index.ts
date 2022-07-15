@@ -1,3 +1,4 @@
+import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { QueryBuilder } from '@/types/subgraph';
 
@@ -15,7 +16,9 @@ export default class Pools {
 
   public async get(args = {}, attrs = {}): Promise<Pool[]> {
     const query = this.query(args, attrs);
-    const data = await this.service.client.get(query);
+    const data = await this.service.client.get(query, {
+      url: configService.network.balancerApi
+    });
     return data.pools;
   }
 }

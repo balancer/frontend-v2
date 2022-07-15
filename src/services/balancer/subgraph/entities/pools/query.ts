@@ -4,12 +4,13 @@ import { POOLS } from '@/constants/pools';
 
 const defaultArgs = {
   first: 1000,
-  orderBy: 'totalLiquidity',
-  orderDirection: 'desc',
-  where: {
-    totalShares_gt: 0.01,
-    id_not_in: POOLS.BlockList
-  }
+  chainId: 1,
+  // orderBy: 'totalLiquidity',
+  // orderDirection: 'desc',
+  // where: {
+  //   totalShares_gt: 0.01,
+  //   id_not_in: POOLS.BlockList
+  // }
 };
 
 const defaultAttrs = {

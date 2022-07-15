@@ -25,6 +25,7 @@ export interface Config {
   explorer: string;
   explorerName: string;
   subgraph: string;
+  balancerApi?: string;
   poolsUrlV2: string;
   subgraphs: {
     aave: string;
