@@ -10,6 +10,7 @@ import {
   toPairs
 } from 'lodash';
 import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
 import { useStore } from 'vuex';
 
@@ -115,11 +116,12 @@ type Props = {
 
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { t } = useI18n();
 const store = useStore();
 const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
 const tailwind = useTailwind();
-const { chainId: userNetworkId } = useWeb3();
+const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 
 const chartHeight = ref(
   upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
@@ -179,17 +181,33 @@ const toggle = () => {
   props.toggleModal();
 };
 
+const equivalentTokenPairs = [
+  [appNetworkConfig.addresses.weth, appNetworkConfig.nativeAsset.address]
+];
+
+const allChartValuesEqual = computed(() =>
+  equivalentTokenPairs.some(
+    pair =>
+      pair.includes(tokenInAddress.value) &&
+      pair.includes(tokenOutAddress.value)
+  )
+);
+
 const chartData = computed(() => {
-  const allValuesEqual = priceData.value?.every(
-    ([, value]) => value === priceData.value[0][1]
-  );
-  if (allValuesEqual) return [];
+  if (allChartValuesEqual.value) return [];
   return [
     {
       name: `${outputSym.value}/${inputSym.value}`,
       values: priceData.value || []
     }
   ];
+});
+
+const chartBlankText = computed(() => {
+  if (allChartValuesEqual.value) {
+    return `${inputSym.value} -> ${outputSym.value} is 1:1`;
+  }
+  return t('noData');
 });
 
 const isNegativeTrend = computed(() => {
@@ -293,7 +311,7 @@ const chartGrid = computed(() => {
             :class="['mt-4', isModal ? 'h-96' : 'h-40']"
           >
             <BalIcon name="bar-chart" />
-            {{ $t('noData') }}
+            {{ chartBlankText }}
           </BalBlankSlate>
           <template v-else>
             <BalChart
