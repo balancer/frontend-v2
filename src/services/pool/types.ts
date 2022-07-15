@@ -193,6 +193,7 @@ export interface PoolSwap {
   tokenOut: string;
   tokenAmountIn: string;
   tokenAmountOut: string;
+  valueUSD: string;
   timestamp: number;
   tx: string;
   userAddress: {

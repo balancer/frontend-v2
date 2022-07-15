@@ -11,6 +11,7 @@ const defaultAttrs = {
   tokenOut: true,
   tokenAmountIn: true,
   tokenAmountOut: true,
+  valueUSD: true,
   tx: true,
   timestamp: true,
   userAddress: {

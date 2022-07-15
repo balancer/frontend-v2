@@ -108,15 +108,14 @@ const swapRows = computed<SwapRow[]>(() =>
           tokenOut,
           tokenAmountIn,
           tokenAmountOut,
+          valueUSD,
           timestamp,
           tx,
           userAddress,
           ensName,
           ensAvatar
         }) => {
-          const value = bnum(priceFor(tokenOut))
-            .times(tokenAmountOut)
-            .toNumber();
+          const value = bnum(valueUSD).toNumber();
 
           return {
             value,
