@@ -3,17 +3,16 @@ import { take } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { Address } from '@/types';
 
 const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
   useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { setTokenInAddress } = useTradeState();
 const {
   hasBalance,
   nativeAsset,
@@ -53,6 +52,10 @@ const tokensWithBalance = computed(() => {
     21
   );
 });
+
+const emit = defineEmits<{
+  (e: 'click:asset', tokenAddress: Address): void;
+}>();
 </script>
 
 <template>
@@ -102,13 +105,13 @@ const tokensWithBalance = computed(() => {
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <BalAssetSet
+            @click="tokenAddress => emit('click:asset', tokenAddress)"
             :balAssetProps="{ button: true }"
             :width="275"
             wrap
             :size="30"
             :addresses="tokensWithBalance"
             :maxAssetsPerLine="28"
-            @click="setTokenInAddress"
           />
           <p
             v-if="tokensWithBalance.length === 0"
