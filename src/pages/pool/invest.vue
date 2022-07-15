@@ -4,6 +4,7 @@ import { onBeforeMount } from 'vue';
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 // Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
+import InvestSingleAssetForm from '@/components/forms/pool_actions/InvestForm/InvestSingleAssetForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -56,7 +57,8 @@ onBeforeMount(async () => {
           </div>
         </div>
       </template>
-      <InvestForm :pool="pool" />
+      <InvestSingleAssetForm v-if="isStablePhantomPool" :pool="pool" />
+      <InvestForm v-else :pool="pool" />
     </BalCard>
   </div>
 </template>
