@@ -45,6 +45,22 @@ export default function useWeb3Watchers() {
     }
   }
 
+  function checkIsUnsupportedNetwork() {
+    if (isUnsupportedNetwork.value || isMismatchedNetwork.value) {
+      addAlert({
+        id: 'network-mismatch',
+        label: t('networkMismatch', [appNetworkConfig.name]),
+        type: AlertType.ERROR,
+        persistent: true,
+        action: connectToAppNetwork,
+        actionLabel: t('switchNetwork'),
+        priority: AlertPriority.HIGH
+      });
+    } else {
+      removeAlert('network-mismatch');
+    }
+  }
+
   // Watch for user account change:
   // -> Unsubscribe Blocknative from old account if exits
   // -> Listen to new account for transactions and update balances
@@ -81,19 +97,11 @@ export default function useWeb3Watchers() {
   // Watch for user network switch
   // -> Display alert message if unsupported or not the same as app network.
   watch(chainId, () => {
-    if (isUnsupportedNetwork.value || isMismatchedNetwork.value) {
-      addAlert({
-        id: 'network-mismatch',
-        label: t('networkMismatch', [appNetworkConfig.name]),
-        type: AlertType.ERROR,
-        persistent: true,
-        action: connectToAppNetwork,
-        actionLabel: t('switchNetwork'),
-        priority: AlertPriority.HIGH
-      });
-    } else {
-      removeAlert('network-mismatch');
-    }
+    checkIsUnsupportedNetwork();
+  });
+
+  watch(isWalletReady, () => {
+    checkIsUnsupportedNetwork();
   });
 
   watch(blockNumber, async () => {
