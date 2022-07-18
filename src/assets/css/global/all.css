@@ -3,6 +3,7 @@
 @import "./backgrounds.css";
 @import "./animations.css";
 @import "./social-icons.css";
+@import "./nprogress.css";
 
 html,
 body {

@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.62.5",
+  "version": "1.63.0",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -92,6 +92,7 @@
     "json-to-graphql-query": "^2.0.0",
     "lodash": "^4.17.15",
     "nock": "^13.1.1",
+    "nprogress": "^0.2.0",
     "numeral": "^2.0.4",
     "paraswap": "^4.18.0",
     "parse-filepath": "1.0.2",
