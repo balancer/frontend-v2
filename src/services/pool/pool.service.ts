@@ -59,7 +59,12 @@ export default class PoolService {
       currency,
       tokenMeta
     );
-    return (this.pool.totalLiquidity = totalLiquidity);
+    // if totalLiquidity can be computed from coingecko prices, use that
+    // else, use the value retrieved from the subgraph
+    if (bnum(totalLiquidity).gt(0)) {
+      this.pool.totalLiquidity = totalLiquidity;
+    }
+    return this.pool.totalLiquidity;
   }
 
   /**
