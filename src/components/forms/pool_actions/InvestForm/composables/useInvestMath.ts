@@ -1,7 +1,7 @@
-import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
-import { parseUnits } from '@ethersproject/units';
-import { BigNumber } from 'ethers';
-import { computed, Ref, ref, watch } from 'vue';
+import { SOR, SwapInfo } from '@balancer-labs/sdk';
+import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { formatUnits, parseUnits } from '@ethersproject/units';
+import { computed, onMounted, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
@@ -12,11 +12,12 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
+import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
-import { BatchSwap } from '@/types';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
 export type InvestMathResponse = ReturnType<typeof useInvestMath>;
@@ -25,15 +26,19 @@ export default function useInvestMath(
   pool: Ref<Pool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
-  useNativeAsset: Ref<boolean>,
-  sor: SOR
+  useNativeAsset: Ref<boolean>
 ) {
+  onMounted(() => {
+    fetchPools();
+  });
+
   /**
    * STATE
    */
   const proportionalAmounts = ref<string[]>([]);
-  const batchSwap = ref<BatchSwap | null>(null);
-  const batchSwapLoading = ref(false);
+  const swapRoute = ref<SwapInfo | null>(null);
+  const swapRouteLoading = ref(false);
+  const hasFetchedPools = ref(false);
 
   /**
    * COMPOSABLES
@@ -44,9 +49,10 @@ export default function useInvestMath(
   const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
   const {
     promises: batchSwapPromises,
-    processing: processingBatchSwaps,
-    processAll: processBatchSwaps,
+    processing: processingSwapRoute,
+    processAll: processSwapRoute
   } = usePromiseSequence();
+  const { getProvider } = useWeb3();
 
   /**
    * Services
@@ -111,6 +117,7 @@ export default function useInvestMath(
   );
 
   const priceImpact = computed((): number => {
+    return 0;
     if (!hasAmounts.value) return 0;
     try {
       return (
@@ -126,12 +133,12 @@ export default function useInvestMath(
   });
 
   const highPriceImpact = computed((): boolean => {
-    if (batchSwapLoading.value) return false;
+    if (swapRouteLoading.value) return false;
     return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
   });
 
   const rektPriceImpact = computed((): boolean => {
-    if (batchSwapLoading.value) return false;
+    if (swapRouteLoading.value) return false;
     return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
   });
 
@@ -158,8 +165,10 @@ export default function useInvestMath(
     let _bptOut: string;
 
     if (isStablePhantomPool.value) {
-      _bptOut = batchSwap.value
-        ? bnum(batchSwap.value.amountTokenOut).abs().toString()
+      _bptOut = swapRoute.value
+        ? bnum(swapRoute.value.returnAmountFromSwaps.toString())
+            .abs()
+            .toString()
         : '0';
     } else {
       _bptOut = poolCalculator
@@ -193,7 +202,7 @@ export default function useInvestMath(
     poolTokenBalances.value.every(balance => bnum(balance).gt(0))
   );
 
-  const shouldFetchBatchSwap = computed(
+  const shouldFetchSwapRoute = computed(
     (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
   );
 
@@ -204,6 +213,11 @@ export default function useInvestMath(
   /**
    * METHODS
    */
+
+  async function fetchPools() {
+    hasFetchedPools.value = await balancer.swaps.fetchPools();
+  }
+
   function tokenAmount(index: number): string {
     return fullAmounts.value[index] || '0';
   }
@@ -230,17 +244,36 @@ export default function useInvestMath(
     amounts.value = [...send];
   }
 
-  async function getBatchSwap(): Promise<void> {
-    batchSwapLoading.value = true;
-    batchSwap.value = await queryBatchSwapTokensIn(
-      sor,
-      balancerContractsService.vault.instance as any,
-      Object.keys(batchSwapAmountMap.value),
-      Object.values(batchSwapAmountMap.value),
-      pool.value.address.toLowerCase()
-    );
-
-    batchSwapLoading.value = false;
+  async function getSwapRoute(): Promise<void> {
+    swapRouteLoading.value = true;
+    if (!hasFetchedPools.value) {
+      await fetchPools();
+    }
+    const gasPrice = await getProvider().getGasPrice();
+    console.log({ gasPrice, clean: formatUnits(gasPrice, 'gwei') });
+    if (!gasPrice) {
+      swapRouteLoading.value = false;
+      throw new Error('No gas price');
+    }
+    const route = await balancer.swaps.findRouteGivenIn({
+      tokenIn: tokenAddresses.value[0],
+      tokenOut: pool.value.address,
+      amount: parseFixed(amounts.value[0], poolTokens.value[0].decimals),
+      gasPrice,
+      maxPools: 4
+    });
+    console.log({ route });
+    const decimals = BigNumber.from(pool.value.onchain?.decimals || 18);
+    console.log('clean', {
+      returnAmount: formatFixed(route.returnAmount, decimals),
+      returnAmountFromSwaps: formatFixed(route.returnAmountFromSwaps, decimals),
+      returnAmountConsideringFees: formatFixed(
+        route.returnAmountConsideringFees,
+        decimals
+      )
+    });
+    swapRoute.value = route;
+    swapRouteLoading.value = false;
   }
 
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
@@ -249,9 +282,9 @@ export default function useInvestMath(
     );
 
     if (changedIndex >= 0) {
-      if (shouldFetchBatchSwap.value) {
-        batchSwapPromises.value.push(getBatchSwap);
-        if (!processingBatchSwaps.value) processBatchSwaps();
+      if (shouldFetchSwapRoute.value) {
+        batchSwapPromises.value.push(getSwapRoute);
+        if (!processingSwapRoute.value) processSwapRoute();
       }
 
       const { send } = poolCalculator.propAmountsGiven(
@@ -264,6 +297,10 @@ export default function useInvestMath(
   });
 
   return {
+    // state
+    hasFetchedPools,
+    swapRoute,
+    swapRouteLoading,
     // computed
     hasAmounts,
     fullAmounts,
@@ -277,17 +314,15 @@ export default function useInvestMath(
     maximized,
     optimized,
     proportionalAmounts,
-    batchSwap,
     bptOut,
     hasZeroBalance,
     hasNoBalances,
     hasAllTokens,
-    shouldFetchBatchSwap,
-    batchSwapLoading,
+    shouldFetchSwapRoute,
     supportsPropotionalOptimization,
     // methods
     maximizeAmounts,
     optimizeAmounts,
-    getBatchSwap,
+    getSwapRoute
   };
 }

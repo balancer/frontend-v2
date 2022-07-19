@@ -54,6 +54,8 @@ const slippageScaled = computed((): string =>
   parseUnits(state.slippage, 18).toString()
 );
 
+// TODO: Add Slippage bsp
+
 /**
  * METHODS
  */
