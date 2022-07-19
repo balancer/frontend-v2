@@ -131,6 +131,7 @@ export default defineComponent({
       @close="handleThirdPartyModalToggle(false, 'third')"
     />
     <AppSidebar v-if="sidebarOpen" />
+    <Notifications />
   </div>
   <GlobalModalContainer />
 </template>
