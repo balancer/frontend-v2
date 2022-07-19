@@ -5,7 +5,7 @@ import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import { singlePoolService } from '@/services/pool/single-pool.service';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 
 import { lpTokensFor } from '../usePool';
@@ -115,7 +115,7 @@ export default function useStreamedPoolsQuery(
     () => result.value,
     val => {
       if (val.length > 0) {
-        singlePoolService.setPools(val);
+        poolsStoreService.setPools(val);
       }
     },
     { deep: true }

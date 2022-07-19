@@ -2,11 +2,13 @@ import { Ref, ref } from 'vue';
 
 import { Pool } from './types';
 
-export interface ISinglePoolService {
+export interface IPoolsStoreService {
   pools: Ref<Pool[] | null>;
+  setPools(pools: Pool[]): void;
+  findPool(id: string): Pool | void;
 }
 
-export class SinglePoolService implements ISinglePoolService {
+export class PoolsStoreService implements IPoolsStoreService {
   public pools = ref<Pool[] | null>(null);
 
   public setPools(pools: Pool[]): void {
@@ -18,4 +20,4 @@ export class SinglePoolService implements ISinglePoolService {
   }
 }
 
-export const singlePoolService = new SinglePoolService();
+export const poolsStoreService = new PoolsStoreService();

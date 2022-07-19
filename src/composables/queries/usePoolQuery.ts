@@ -7,7 +7,7 @@ import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
-import { singlePoolService } from '@/services/pool/single-pool.service';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -26,7 +26,7 @@ export default function usePoolQuery(
    * If pool is already downloaded, we can use it instantly
    * it may be if user came to pool page from home page
    */
-  const poolInfo = singlePoolService.findPool(id);
+  const poolInfo = poolsStoreService.findPool(id);
   /**
    * COMPOSABLES
    */

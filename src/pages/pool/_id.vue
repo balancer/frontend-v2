@@ -187,12 +187,8 @@ export default defineComponent({
     );
     //#endregion
 
-    // TODO: should be removed when fetching apr from sdk is implemented
     //#region APR query
-    const aprQuery = usePoolAprQuery(
-      route.params.id as string,
-      pool as ComputedRef<Pool>
-    );
+    const aprQuery = usePoolAprQuery(route.params.id as string);
     const loadingApr = computed(
       () =>
         aprQuery.isLoading.value ||

@@ -1,27 +1,20 @@
 import { QueryObserverOptions } from 'react-query/core';
-import { computed, ComputedRef, reactive } from 'vue';
+import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { getTimeTravelBlock } from '@/composables/useSnapshots';
+
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancer } from '@/lib/balancer.sdk';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { singlePoolService } from '@/services/pool/single-pool.service';
-import { Pool, PoolAPRs } from '@/services/pool/types';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
+import { bnSum, bnum } from '@/lib/utils';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
+import { PoolAPRs } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
-import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
-import useGaugesQuery from './useGaugesQuery';
-import { bnum } from '@/lib/utils';
 
 /**
  * HELPERS
  */
 export default function usePoolAprQuery(
   id: string,
-  pool: ComputedRef<Pool>,
   options: QueryObserverOptions<PoolAPRs> = {}
 ) {
   /**
@@ -29,15 +22,7 @@ export default function usePoolAprQuery(
    * If pool is already downloaded, we can use it instantly
    * it may be if user came to pool page from home page
    */
-  const poolInfo = singlePoolService.findPool(id);
-
-  /**
-   * COMPOSABLES
-   */
-  const { prices } = useTokens();
-  const { currency } = useUserSettings();
-  const { tokens } = useTokens();
-  const { data: subgraphGauges } = useGaugesQuery();
+  const poolInfo = poolsStoreService.findPool(id);
 
   /**
    * QUERY DEPENDENCIES
@@ -45,60 +30,70 @@ export default function usePoolAprQuery(
   const { networkId } = useNetwork();
 
   /**
-   * COMPUTED
-   */
-  const enabled = computed(() => !!pool.value?.id || !!poolInfo);
-
-  /**
    * QUERY INPUTS
    */
   const queryKey = QUERY_KEYS.Pools.APR(networkId, id);
 
-  function processApr(aprSDK: any) {
-    const calc = (boost = '1') => {
-      // const stakedBaseAPR = bnum(unstakedTotalAPR).plus(aprSDK.stakingApr);
-      // const boostedAPR = stakingBalApr?.min
-      //   ? bnum(stakingBalApr.min).times(boost)
-      //   : bnum('0');
+  /**
+   * METHODS
+   */
+  function processNum(num: number): string {
+    return (num / 10000).toString();
+  }
 
-      return 'stakedBaseAPR.plus(boostedAPR).toString()';
+  function processApr(aprSDK: any) {
+    const swapFeeAPR = processNum(aprSDK.swapFees);
+    const yieldAPR = processNum(aprSDK.tokenAprs);
+
+    const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR]).toString();
+    const stakingRewardApr = processNum(aprSDK.rewardsApr);
+    const stakingBalApr = {
+      min: processNum(aprSDK.stakingApr.min),
+      max: processNum(aprSDK.stakingApr.max)
     };
-    const divider = 10000;
+
+    const calc = (boost = '1') => {
+      const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
+      const boostedAPR = stakingBalApr?.min
+        ? bnum(stakingBalApr.min).times(boost)
+        : bnum('0');
+
+      return stakedBaseAPR.plus(boostedAPR).toString();
+    };
+
     return {
-      swap: (aprSDK.swapFees / divider).toString(),
+      swap: processNum(aprSDK.swapFees),
       yield: {
-        total: (aprSDK.tokenAprs / divider).toString(),
+        total: processNum(aprSDK.tokenAprs),
         breakdown: {}
       },
       staking: {
-        bal: {
-          min: (aprSDK.stakingApr.min / divider).toString(),
-          max: (aprSDK.stakingApr.max / divider).toString()
-        },
-        rewards: (aprSDK.rewardsApr / divider).toString()
+        bal: stakingBalApr,
+        rewards: stakingRewardApr
       },
       total: {
-        unstaked: '0.0160432637156567356545',
+        unstaked: unstakedTotalAPR,
         staked: {
           calc,
-          max: (aprSDK.max / divider).toString(),
-          min: (aprSDK.min / divider).toString()
+          max: processNum(aprSDK.max),
+          min: processNum(aprSDK.min)
         }
       }
     };
   }
 
   const queryFn = async () => {
-    if (!pool.value && !poolInfo) throw new Error('No pool');
     if (poolInfo?.apr) {
-      console.log('apr pool info', poolInfo.apr);
       return poolInfo.apr;
     }
 
     try {
+      console.time('balancer.pools.find');
       const poolSDK = await balancer.pools.find(id);
+      console.timeEnd('balancer.pools.find');
+      console.time('balancer.pools.apr');
       const aprSDK = await poolSDK?.apr();
-      console.log('aprSDK', aprSDK);
+      console.timeEnd('balancer.pools.apr');
 
       if (!aprSDK) throw new Error('No apr');
 
@@ -110,7 +105,7 @@ export default function usePoolAprQuery(
   };
 
   const queryOptions = reactive({
-    enabled,
+    enabled: true,
     ...options
   });
 
