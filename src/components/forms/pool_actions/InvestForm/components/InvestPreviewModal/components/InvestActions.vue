@@ -17,8 +17,10 @@ import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
+import useUserSettings from '@/composables/useUserSettings';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
+import { balancer } from '@/lib/balancer.sdk';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
@@ -72,11 +74,12 @@ const investmentState = reactive<InvestmentState>({
  */
 const route = useRoute();
 const { t } = useI18n();
-const { account, getProvider, blockNumber } = useWeb3();
+const { account, getProvider, blockNumber, getSigner } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
+const { slippage } = useUserSettings();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
@@ -84,8 +87,8 @@ const {
   batchSwapAmountMap,
   bptOut,
   fiatTotalLabel,
-  batchSwap,
-  shouldFetchBatchSwap,
+  swapRoute,
+  shouldFetchSwapRoute
 } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
@@ -163,47 +166,69 @@ async function handleTransaction(tx): Promise<void> {
 }
 
 async function submit(): Promise<TransactionResponse> {
-  try {
-    let tx;
-    investmentState.init = true;
+  const deadline = BigNumber.from(`${Math.ceil(Date.now() / 1000) + 60}`); // 60 seconds from now
+  const maxSlippage = parseFloat(slippage.value) * 10000;
+  console.log({ swapRoute: swapRoute.value });
 
-    if (batchSwap.value) {
-      tx = await boostedJoinBatchSwap(
-        batchSwap.value.swaps,
-        batchSwap.value.assets,
-        props.pool.address,
-        batchSwapAmountMap.value,
-        BigNumber.from(bptOut.value)
-      );
-    } else {
-      tx = await poolExchange.join(
-        getProvider(),
-        account.value,
-        fullAmounts.value,
-        props.tokenAddresses,
-        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
-      );
-    }
-
+  if (swapRoute.value) {
+    const transactionAttributes = balancer.swaps.buildSwap({
+      userAddress: account.value,
+      swapInfo: swapRoute.value,
+      kind: 0,
+      deadline,
+      maxSlippage
+    });
+    console.log({ transactionAttributes });
+    const { to, data, value } = transactionAttributes;
+    const tx = await getSigner().sendTransaction({ to, data, value });
+    console.log({ tx });
     investmentState.init = false;
     investmentState.confirming = true;
-
     console.log('Receipt', tx);
-
     handleTransaction(tx);
     return tx;
-  } catch (error) {
-    console.error(error);
-    return Promise.reject(error);
   }
+
+  // TODO
+  return Promise.reject(new Error('Not implemented'));
+  // try {
+  //   let tx;
+  //   investmentState.init = true;
+  //   if (batchSwap.value) {
+  //     tx = await boostedJoinBatchSwap(
+  //       batchSwap.value.swaps,
+  //       batchSwap.value.assets,
+  //       props.pool.address,
+  //       batchSwapAmountMap.value,
+  //       BigNumber.from(bptOut.value)
+  //     );
+  //   } else {
+  //     tx = await poolExchange.join(
+  //       getProvider(),
+  //       account.value,
+  //       fullAmounts.value,
+  //       props.tokenAddresses,
+  //       formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
+  //     );
+  //   }
+  //   investmentState.init = false;
+  //   investmentState.confirming = true;
+  //   console.log('Receipt', tx);
+  //   handleTransaction(tx);
+  //   return tx;
+  // } catch (error) {
+  //   console.error(error);
+  //   return Promise.reject(error);
+  // }
 }
 
 /**
  * WATCHERS
  */
 watch(blockNumber, async () => {
-  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
-    await props.math.getBatchSwap();
+  if (shouldFetchSwapRoute.value && !transactionInProgress.value) {
+    console.log('blockNumber changed');
+    await props.math.getSwapRoute();
   }
 });
 </script>

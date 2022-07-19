@@ -20,9 +20,9 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import InvestFormTotals from './components/InvestFormTotals.vue';
-import SingleAssetInvestPreviewModal from './components/InvestPreviewModal/SingleAssetInvestPreviewModal.vue';
+import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
+import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
-import useSingleAssetInvestMath from './composables/useSingleAssetInvestMath';
 
 /**
  * TYPES
@@ -60,19 +60,21 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  sor,
   singleAssetInAmount,
   singleAssetInAddress
 } = useInvestState();
 
-const investMath = useSingleAssetInvestMath(
+const singleAssetTokenAddresses = computed(() => [singleAssetInAddress.value]);
+const singleAssetAmounts = computed(() => [singleAssetInAmount.value]);
+
+const investMath = useInvestMath(
   pool,
-  singleAssetInAddress,
-  singleAssetInAmount,
+  singleAssetTokenAddresses,
+  singleAssetAmounts,
   useNativeAsset
 );
 
-const { hasAmount, highPriceImpact, swapRouteLoading, swapRoute } = investMath;
+const { hasAmounts, highPriceImpact, swapRouteLoading, swapRoute } = investMath;
 
 const {
   isWalletReady,
@@ -233,7 +235,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmount ||
+          !hasAmounts ||
             !hasValidInputs ||
             isMismatchedNetwork ||
             swapRouteLoading
@@ -245,11 +247,11 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <StakingProvider :poolAddress="pool.address">
       <teleport to="#modal">
-        <SingleAssetInvestPreviewModal
+        <InvestPreviewModal
           v-if="showInvestPreview"
           :pool="pool"
           :math="investMath"
-          :tokenAddress="singleAssetInAddress"
+          :tokenAddresses="singleAssetTokenAddresses"
           @close="showInvestPreview = false"
           @showStakeModal="showStakeModal = true"
         />

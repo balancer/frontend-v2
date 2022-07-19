@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -48,9 +49,14 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact, highPriceImpact, rektPriceImpact } = toRefs(
-  props.math
-);
+const {
+  fullAmounts,
+  fiatTotal,
+  priceImpact,
+  highPriceImpact,
+  rektPriceImpact,
+  swapRoute
+} = toRefs(props.math);
 const { resetAmounts } = useInvestState();
 
 /**
@@ -62,35 +68,86 @@ const title = computed((): string =>
     : t('investment.preview.titles.default')
 );
 
-const amountMap = computed((): AmountMap => {
-  const amountMap = {};
-  fullAmounts.value.forEach((amount, i) => {
-    amountMap[props.tokenAddresses[i]] = amount;
-  });
-  return amountMap;
-});
+const showTokensOut = computed<boolean>(
+  () => !!Object.keys(tokenOutMap).length
+);
 
-const tokenMap = computed((): TokenInfoMap => {
-  const tokenMap = {};
-  Object.keys(amountMap.value).forEach(address => {
-    tokenMap[address] = getToken(address);
-  });
-  return tokenMap;
-});
+const amountInMap = computed(
+  (): AmountMap => {
+    const amountMap = {};
+    fullAmounts.value.forEach((amount, i) => {
+      amountMap[props.tokenAddresses[i]] = amount;
+    });
+    return amountMap;
+  }
+);
 
-const fiatAmountMap = computed((): AmountMap => {
-  const fiatAmountMap = {};
-  Object.keys(amountMap.value).forEach(address => {
-    fiatAmountMap[address] = toFiat(amountMap.value[address], address);
-  });
-  return fiatAmountMap;
-});
+const amountOutMap = computed(
+  (): AmountMap => {
+    if (!swapRoute.value) return {};
+    const amountMap = {
+      [swapRoute.value.tokenOut]: formatFixed(
+        swapRoute.value.returnAmountFromSwaps,
+        BigNumber.from(props.pool.onchain?.decimals || 18)
+      )
+    };
 
-const fiatTotal = computed((): string =>
-  Object.values(fiatAmountMap.value).reduce(
-    (total, amount) => bnum(total).plus(amount).toString(),
+    return amountMap;
+  }
+);
+
+const tokenInMap = computed(
+  (): TokenInfoMap => {
+    const tokenMap = {};
+    Object.keys(amountInMap.value).forEach(address => {
+      tokenMap[address] = getToken(address);
+    });
+    return tokenMap;
+  }
+);
+
+const tokenOutMap = computed(
+  (): TokenInfoMap => {
+    if (!swapRoute.value) return {};
+    const tokenMap = {
+      [swapRoute.value.tokenOut]: getToken(swapRoute.value.tokenOut)
+    };
+    return tokenMap;
+  }
+);
+
+const fiatAmountInMap = computed(
+  (): AmountMap => {
+    const fiatAmountMap = {};
+    Object.keys(amountInMap.value).forEach(address => {
+      fiatAmountMap[address] = toFiat(amountInMap.value[address], address);
+    });
+    return fiatAmountMap;
+  }
+);
+
+const fiatTotalOut = computed((): string =>
+  Object.values(fiatAmountOutMap.value).reduce(
+    (total, amount) =>
+      bnum(total)
+        .plus(amount)
+        .toString(),
     '0'
   )
+);
+
+const fiatAmountOutMap = computed(
+  (): AmountMap => {
+    if (!swapRoute.value) return {};
+    const fiatAmountMap = {
+      [swapRoute.value.tokenOut]: toFiat(
+        amountOutMap.value[swapRoute.value.tokenOut],
+        swapRoute.value.tokenOut
+      )
+    };
+
+    return fiatAmountMap;
+  }
 );
 
 /**
@@ -128,11 +185,20 @@ function handleShowStakeModal() {
     </template>
 
     <TokenAmounts
-      :amountMap="amountMap"
-      :tokenMap="tokenMap"
-      :fiatAmountMap="fiatAmountMap"
+      :amountMap="amountInMap"
+      :tokenMap="tokenInMap"
+      :fiatAmountMap="fiatAmountInMap"
       :fiatTotal="fiatTotal"
     />
+    <template v-if="showTokensOut">
+      <div>Tokens Out</div>
+      <TokenAmounts
+        :amountMap="amountOutMap"
+        :tokenMap="tokenOutMap"
+        :fiatAmountMap="fiatAmountOutMap"
+        :fiatTotal="fiatTotalOut"
+      />
+    </template>
 
     <InvestSummary
       :pool="pool"
