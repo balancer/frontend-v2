@@ -20,9 +20,9 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import InvestFormTotals from './components/InvestFormTotals.vue';
-import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
-import useInvestMath from './composables/useInvestMath';
+import SingleAssetInvestPreviewModal from './components/InvestPreviewModal/SingleAssetInvestPreviewModal.vue';
 import useInvestState from './composables/useInvestState';
+import useSingleAssetInvestMath from './composables/useSingleAssetInvestMath';
 
 /**
  * TYPES
@@ -65,21 +65,14 @@ const {
   singleAssetInAddress
 } = useInvestState();
 
-const investMath = useInvestMath(
+const investMath = useSingleAssetInvestMath(
   pool,
-  tokenAddresses,
-  amounts,
-  useNativeAsset,
-  sor
+  singleAssetInAddress,
+  singleAssetInAmount,
+  useNativeAsset
 );
 
-const {
-  hasAmounts,
-  highPriceImpact,
-  maximizeAmounts,
-  optimizeAmounts,
-  batchSwapLoading
-} = investMath;
+const { hasAmount, highPriceImpact, swapRouteLoading, swapRoute } = investMath;
 
 const {
   isWalletReady,
@@ -208,8 +201,8 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <InvestFormTotals
       :math="investMath"
-      @maximize="maximizeAmounts"
-      @optimize="optimizeAmounts"
+      @maximize="() => {}"
+      @optimize="() => {}"
     />
 
     <div
@@ -240,10 +233,10 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmounts ||
+          !hasAmount ||
             !hasValidInputs ||
             isMismatchedNetwork ||
-            batchSwapLoading
+            swapRouteLoading
         "
         block
         @click="showInvestPreview = true"
@@ -252,11 +245,11 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <StakingProvider :poolAddress="pool.address">
       <teleport to="#modal">
-        <InvestPreviewModal
+        <SingleAssetInvestPreviewModal
           v-if="showInvestPreview"
           :pool="pool"
           :math="investMath"
-          :tokenAddresses="tokenAddresses"
+          :tokenAddress="singleAssetInAddress"
           @close="showInvestPreview = false"
           @showStakeModal="showStakeModal = true"
         />
