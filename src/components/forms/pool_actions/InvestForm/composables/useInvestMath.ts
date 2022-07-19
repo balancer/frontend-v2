@@ -86,17 +86,6 @@ export default function useInvestMath(
     )
   );
 
-  const batchSwapAmountMap = computed((): Record<string, BigNumber> => {
-    const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-      tokenAddresses.value[i].toLowerCase(),
-      amount,
-    ]);
-    const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-      (amount as BigNumber).gt(0)
-    );
-    return Object.fromEntries(onlyTokensWithAmounts);
-  });
-
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((_, i) => fiatAmount(i))
   );
@@ -305,7 +294,6 @@ export default function useInvestMath(
     hasAmounts,
     fullAmounts,
     fullAmountsScaled,
-    batchSwapAmountMap,
     fiatTotal,
     fiatTotalLabel,
     priceImpact,
