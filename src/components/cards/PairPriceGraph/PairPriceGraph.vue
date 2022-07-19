@@ -310,46 +310,6 @@ const chartGrid = computed(() => {
             v-if="chartData.length === 0"
             :class="['mt-4', isModal ? 'h-96' : 'h-40']"
           >
-<<<<<<< HEAD
-            <div>
-              <button
-                v-for="timespan in chartTimespans"
-                @click="activeTimespan = timespan"
-                :key="timespan.value"
-                :class="[
-                  'py-1 px-2 text-sm rounded-lg mr-2',
-                  {
-                    'text-white': activeTimespan.value === timespan.value,
-                    'text-secondary': activeTimespan.value !== timespan.value,
-                    'bg-green-400':
-                      !isNegativeTrend &&
-                      activeTimespan.value === timespan.value,
-                    'bg-red-400':
-                      isNegativeTrend &&
-                      activeTimespan.value === timespan.value,
-                    'hover:bg-red-200': isNegativeTrend,
-                    'hover:bg-green-200': !isNegativeTrend
-                  }
-                ]"
-              >
-                {{ timespan.option }}
-              </button>
-            </div>
-            <div :class="{ 'mt-4': isModal }">
-              <span class="text-sm text-secondary mr-4"
-                >Low: {{ dataMin.toPrecision(6) }}</span
-              >
-              <span class="text-sm text-secondary"
-                >High: {{ dataMax.toPrecision(6) }}</span
-              >
-            </div>
-          </div>
-          <div class="-mt-2 lg:mt-2" v-else>
-            <span class="text-sm text-secondary w-full flex justify-end">{{
-              activeTimespan.option
-            }}</span>
-          </div>
-=======
             <BalIcon name="bar-chart" />
             {{ chartBlankText }}
           </BalBlankSlate>
@@ -393,7 +353,7 @@ const chartGrid = computed(() => {
                     'py-1 px-2 text-sm rounded-lg mr-2',
                     {
                       'text-white': activeTimespan.value === timespan.value,
-                      'text-gray-500': activeTimespan.value !== timespan.value,
+                      'text-secondary': activeTimespan.value !== timespan.value,
                       'bg-green-400':
                         !isNegativeTrend &&
                         activeTimespan.value === timespan.value,
@@ -423,7 +383,6 @@ const chartGrid = computed(() => {
               }}</span>
             </div>
           </template>
->>>>>>> develop
         </div>
       </div>
     </BalCard>
