@@ -73,7 +73,7 @@ export function calculateRewardTokenAprs({
       const yearlyReward = weeklyReward
         .times(boost)
         .times(52)
-        .times(prices[rewardTokenAddress].usd);
+        .times(prices[rewardTokenAddress] ? prices[rewardTokenAddress].usd : 0);
       const apr = yearlyReward.div(bptPrice);
       return [rewardTokenAddress, apr.toString()];
     })
