@@ -21,7 +21,6 @@ import useUserSettings from '@/composables/useUserSettings';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
 import { balancer } from '@/lib/balancer.sdk';
-import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
 import { Pool } from '@/services/pool/types';
@@ -84,7 +83,6 @@ const { slippage } = useUserSettings();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
   fullAmounts,
-  batchSwapAmountMap,
   bptOut,
   fiatTotalLabel,
   swapRoute,
@@ -166,60 +164,45 @@ async function handleTransaction(tx): Promise<void> {
 }
 
 async function submit(): Promise<TransactionResponse> {
-  const deadline = BigNumber.from(`${Math.ceil(Date.now() / 1000) + 60}`); // 60 seconds from now
-  const maxSlippage = parseFloat(slippage.value) * 10000;
   console.log({ swapRoute: swapRoute.value });
 
-  if (swapRoute.value) {
-    const transactionAttributes = balancer.swaps.buildSwap({
-      userAddress: account.value,
-      swapInfo: swapRoute.value,
-      kind: 0,
-      deadline,
-      maxSlippage
-    });
-    console.log({ transactionAttributes });
-    const { to, data, value } = transactionAttributes;
-    const tx = await getSigner().sendTransaction({ to, data, value });
-    console.log({ tx });
+  investmentState.init = true;
+  let tx: TransactionResponse;
+  if (shouldFetchSwapRoute.value && !swapRoute.value)
+    await props.math.getSwapRoute();
+  try {
+    if (swapRoute.value) {
+      const deadline = BigNumber.from(`${Math.ceil(Date.now() / 1000) + 60}`); // 60 seconds from now
+      const maxSlippage = parseFloat(slippage.value) * 10000;
+
+      const transactionAttributes = balancer.swaps.buildSwap({
+        userAddress: account.value,
+        swapInfo: swapRoute.value,
+        kind: 0,
+        deadline,
+        maxSlippage
+      });
+      console.log({ transactionAttributes });
+      const { to, data, value } = transactionAttributes;
+      tx = await getSigner().sendTransaction({ to, data, value });
+    } else {
+      tx = await poolExchange.join(
+        getProvider(),
+        account.value,
+        fullAmounts.value,
+        props.tokenAddresses,
+        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
+      );
+    }
     investmentState.init = false;
     investmentState.confirming = true;
-    console.log('Receipt', tx);
+    console.log('Receipt', { tx });
+
     handleTransaction(tx);
     return tx;
+  } catch (error) {
+    return Promise.reject(error);
   }
-
-  // TODO
-  return Promise.reject(new Error('Not implemented'));
-  // try {
-  //   let tx;
-  //   investmentState.init = true;
-  //   if (batchSwap.value) {
-  //     tx = await boostedJoinBatchSwap(
-  //       batchSwap.value.swaps,
-  //       batchSwap.value.assets,
-  //       props.pool.address,
-  //       batchSwapAmountMap.value,
-  //       BigNumber.from(bptOut.value)
-  //     );
-  //   } else {
-  //     tx = await poolExchange.join(
-  //       getProvider(),
-  //       account.value,
-  //       fullAmounts.value,
-  //       props.tokenAddresses,
-  //       formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
-  //     );
-  //   }
-  //   investmentState.init = false;
-  //   investmentState.confirming = true;
-  //   console.log('Receipt', tx);
-  //   handleTransaction(tx);
-  //   return tx;
-  // } catch (error) {
-  //   console.error(error);
-  //   return Promise.reject(error);
-  // }
 }
 
 /**
