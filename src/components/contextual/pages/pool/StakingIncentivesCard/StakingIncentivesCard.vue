@@ -226,16 +226,12 @@ async function handleActionSuccess() {
 .handle::before {
   @apply absolute left-0 w-full opacity-100;
   content: '';
-  /* position: absolute; */
   top: -2px;
-  /* left: 0; */
-  /* width: 100%; */
   height: calc(100% + 4px);
   background: linear-gradient(45deg, #4254ff, #f441a5, #ffeb3b, #4254ff);
   background-size: 400%;
   animation: anim-half 3s ease-out both;
   border-radius: 14px;
-  /* opacity: 1; */
   z-index: -1;
 }
 
