@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
+import { isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
@@ -46,8 +47,8 @@ const tokensWithBalance = computed(() => {
     Object.keys(balances.value).filter(
       tokenAddress =>
         Number(balances.value[tokenAddress]) > 0 &&
-        tokenAddress !== appNetworkConfig.nativeAsset.address &&
-        tokenAddress !== appNetworkConfig.addresses.veBAL
+        !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address) &&
+        !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL)
     ),
     21
   );
