@@ -2,7 +2,7 @@ import { Network } from '@balancer-labs/sdk';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { networkId } from './useNetwork';
+import { FORKED_MAINNET_ID, networkId } from './useNetwork';
 
 const POOL_ISSUES = {
   [Network.KOVAN]: {},
@@ -43,7 +43,7 @@ const POOL_ISSUES = {
       '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d'
     ]
   },
-  [31337]: {
+  [FORKED_MAINNET_ID]: {
     poolOwnerVulnWarningGovernance: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
       '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066',

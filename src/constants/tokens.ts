@@ -1,6 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 
-import { networkId } from '@/composables/useNetwork';
+import { FORKED_MAINNET_ID, networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 
 /**
@@ -175,7 +175,7 @@ const TOKENS_MAP = {
   [Network.MAINNET]: TOKENS_MAINNET,
   [Network.POLYGON]: TOKENS_POLYGON,
   [Network.ARBITRUM]: TOKENS_ARBITRUM,
-  [31337]: TOKENS_MAINNET
+  [FORKED_MAINNET_ID]: TOKENS_MAINNET
 };
 
 export const TOKENS: TokenConstants = TOKENS_MAP[networkId.value]

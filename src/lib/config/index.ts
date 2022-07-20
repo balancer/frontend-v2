@@ -1,5 +1,7 @@
 import { Network } from '@balancer-labs/sdk';
 
+import { FORKED_MAINNET_ID } from '@/composables/useNetwork';
+
 import arbitrum from './arbitrum.json';
 import docker from './docker.json';
 import forkedMainnet from './forked-mainnet.json';
@@ -89,7 +91,7 @@ const config: Record<Network | number, Config> = {
   [Network.RINKEBY]: rinkeby,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
-  31337: forkedMainnet,
+  [FORKED_MAINNET_ID]: forkedMainnet,
   12345: test,
   // @ts-ignore
   17: docker
