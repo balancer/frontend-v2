@@ -87,7 +87,7 @@ const {
   fiatTotalLabel,
   swapRoute,
   shouldFetchSwapRoute
-} = toRefs(props.math);
+} = toRefs(reactive(props.math));
 
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
