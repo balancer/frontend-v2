@@ -109,7 +109,7 @@
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
-            <PoolChart
+            <!-- <PoolChart
               :pool="pool"
               :historicalPrices="historicalPrices"
               :snapshots="snapshots"
@@ -117,7 +117,7 @@
               :totalLiquidity="pool?.totalLiquidity"
               :tokensList="pool?.tokensList"
               :poolType="pool?.poolType"
-            />
+            /> -->
           </div>
           <div class="mb-4 px-1 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />

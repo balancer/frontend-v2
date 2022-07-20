@@ -23,6 +23,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   const { tokens, balances, balanceFor, getToken } = useTokens();
   const { fNum2, toFiat } = useNumbers();
   const toPoolTypes = usePool(toPool);
+  const fromPoolTypes = usePool(fromPool);
 
   /**
    * SERVICES
@@ -48,7 +49,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
    */
   const batchSwap = ref<BatchSwap | null>(null);
   const batchSwapLoading = ref(false);
-  const bptBalance = ref(balanceFor(fromPool.value.address));
+  const bptBalance = computed(() => balanceFor(fromPool.value.address));
 
   /**
    * COMPUTED
@@ -145,8 +146,15 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
     }
   );
 
+  const tokenAddresses = computed((): string[] => {
+    if (fromPoolTypes.isStablePhantomPool.value) {
+      return fromPool.value.mainTokens || [];
+    }
+    return fromPool.value.tokensList;
+  });
+
   const fiatAmounts = computed((): string[] =>
-    fromPool.value.tokensList.map((address, i) =>
+    tokenAddresses.value.map((address, i) =>
       toFiat(fullAmounts.value[i], address)
     )
   );

@@ -50,8 +50,8 @@ const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
 /**
  * CALLBACKS
  */
-onBeforeMount(() => {
-  migrateMath.getBatchSwap();
+onBeforeMount(async () => {
+  await migrateMath.getBatchSwap();
 
   if (bnum(fiatTotal.value).lt(MIN_FIAT_VALUE_POOL_MIGRATION)) {
     router.push({ name: 'pool', params: { id: fromPool.value.id } });
