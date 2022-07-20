@@ -1,5 +1,6 @@
 import { BalancerSDK, BalancerSdkConfig, Network } from '@balancer-labs/sdk';
 
+import { FORKED_MAINNET_ID } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 
 const network = ((): Network => {
@@ -29,7 +30,7 @@ const sdkConfig = (): BalancerSdkConfig => {
 
   // Skip multicall balance fetching when running a local node.
   // Otherwise it gets really slow and will probably crash.
-  if (key === '31337') {
+  if (key === FORKED_MAINNET_ID.toString()) {
     config = {
       ...config,
       sor: {

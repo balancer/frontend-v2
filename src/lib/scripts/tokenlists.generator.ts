@@ -1,3 +1,4 @@
+import { FORKED_MAINNET_ID } from '@/composables/useNetwork';
 import TokenListService from '@/services/token-list/token-list.service';
 import { TokenListMap } from '@/types/TokenList';
 const fs = require('fs');
@@ -15,7 +16,7 @@ async function generate() {
   let tokenlists: TokenListMap;
   // Handle special case where we are using local test node.
   // If we use the whole list of ~100 tokens, node will most likely crash
-  if (process.env.VUE_APP_NETWORK == '31337') {
+  if (process.env.VUE_APP_NETWORK == FORKED_MAINNET_ID.toString()) {
     tokenlists = require('../../fixtures/listed.tokenlist.json');
   } else {
     const tokenListService = new TokenListService(process.env.VUE_APP_NETWORK);

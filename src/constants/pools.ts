@@ -1,6 +1,10 @@
 import { Network } from '@balancer-labs/sdk';
 
-import { isMainnet, networkId } from '@/composables/useNetwork';
+import {
+  FORKED_MAINNET_ID,
+  isMainnet,
+  networkId
+} from '@/composables/useNetwork';
 
 export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
 
@@ -584,7 +588,7 @@ const POOLS_MAP = {
   [Network.MAINNET]: POOLS_MAINNET,
   [Network.POLYGON]: POOLS_POLYGON,
   [Network.ARBITRUM]: POOLS_ARBITRUM,
-  [31337]: POOLS_FORKED_MAINNET
+  [FORKED_MAINNET_ID]: POOLS_FORKED_MAINNET
 };
 export const POOLS: Pools = POOLS_MAP[networkId.value]
   ? POOLS_MAP[networkId.value]
