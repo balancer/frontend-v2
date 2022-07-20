@@ -12,14 +12,20 @@ const DEFAULT_NETWORK_ID =
     ? (Number(process.env.VUE_APP_NETWORK) as Network)
     : Network.MAINNET;
 
-export const networkId = ref<Network | 31337>(DEFAULT_NETWORK_ID);
+export const FORKED_MAINNET_ID = 31337;
+
+export const networkId = ref<Network | typeof FORKED_MAINNET_ID>(
+  DEFAULT_NETWORK_ID
+);
 
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
 export const isKovan = computed(() => networkId.value === Network.KOVAN);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
-export const isForkedMainnet = computed(() => networkId.value === 31337);
+export const isForkedMainnet = computed(
+  () => networkId.value === FORKED_MAINNET_ID
+);
 
 export const isL2 = computed(() => isPolygon.value || isArbitrum.value);
 
