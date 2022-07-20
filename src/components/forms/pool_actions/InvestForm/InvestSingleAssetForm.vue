@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
-// Composables
-import { useI18n } from 'vue-i18n';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
@@ -51,12 +49,11 @@ const pool = toRef(props, 'pool');
 /**
  * COMPOSABLES
  */
-const { t } = useI18n();
+
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { useNativeAsset } = usePoolTransfers();
 const {
   tokenAddresses,
-  amounts,
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
@@ -74,7 +71,7 @@ const investMath = useInvestMath(
   useNativeAsset
 );
 
-const { hasAmounts, highPriceImpact, swapRouteLoading, swapRoute } = investMath;
+const { hasAmounts, highPriceImpact, swapRouteLoading } = investMath;
 
 const {
   isWalletReady,
