@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BigNumber, formatFixed } from '@ethersproject/bignumber';
+import { formatFixed } from '@ethersproject/bignumber';
 import { computed, reactive, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -88,7 +88,7 @@ const amountOutMap = computed(
     const amountMap = {
       [swapRoute.value.tokenOut]: formatFixed(
         swapRoute.value.returnAmountFromSwaps,
-        BigNumber.from(props.pool.onchain?.decimals || 18)
+        props.pool.onchain?.decimals || 18
       )
     };
 

@@ -1,4 +1,4 @@
-import { SOR, SwapInfo } from '@balancer-labs/sdk';
+import { SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
@@ -14,7 +14,6 @@ import {
 } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -244,12 +243,19 @@ export default function useInvestMath(
       swapRouteLoading.value = false;
       throw new Error('No gas price');
     }
-    const route = await balancer.swaps.findRouteGivenIn({
+    console.log({
       tokenIn: tokenAddresses.value[0],
       tokenOut: pool.value.address,
       amount: parseFixed(amounts.value[0], poolTokens.value[0].decimals),
       gasPrice,
       maxPools: 4
+    });
+    const route = await balancer.swaps.findRouteGivenIn({
+      tokenIn: tokenAddresses.value[0],
+      tokenOut: pool.value.address,
+      amount: parseFixed(amounts.value[0], poolTokens.value[0].decimals),
+      gasPrice,
+      maxPools: 40
     });
     console.log({ route });
     const decimals = BigNumber.from(pool.value.onchain?.decimals || 18);
