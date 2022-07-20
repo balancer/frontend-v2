@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BigNumber, formatFixed } from '@ethersproject/bignumber';
-import { computed, ref, toRefs } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -56,7 +56,7 @@ const {
   highPriceImpact,
   rektPriceImpact,
   swapRoute
-} = toRefs(props.math);
+} = toRefs(reactive(props.math));
 const { resetAmounts } = useInvestState();
 
 /**
