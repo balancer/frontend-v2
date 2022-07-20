@@ -248,8 +248,8 @@ watch(
               isColumnStuck ? 'isSticky' : '',
               column.sortKey ? 'cursor-pointer' : '',
               currentSortColumn === column.id && currentSortDirection
-                ? 'text-blue-400'
-                : 'text-gray-800 dark:text-gray-100'
+                ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
+                : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors'
             ]"
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
@@ -297,7 +297,7 @@ watch(
       />
       <div
         v-else-if="!isLoading && !tableData.length"
-        class="max-w-full bg-white dark:bg-gray-850 row-bg h-40 flex items-center justify-center text-gray-500"
+        class="max-w-full bg-white dark:bg-gray-850 row-bg h-40 flex items-center justify-center text-secondary"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -377,7 +377,7 @@ watch(
   </div>
   <div
     v-if="isPaginated && !isLoading"
-    class="bal-table-pagination-btn"
+    class="bal-table-pagination-btn text-secondary"
     @click="!isLoadingMore && $emit('loadMore')"
   >
     <template v-if="isLoadingMore">{{ $t('loading') }}</template>
@@ -419,7 +419,7 @@ watch(
 
 .bal-table-pagination-btn {
   @apply flex items-center justify-center h-16 transition-all;
-  @apply text-gray-500 font-medium hover:text-gray-800 dark:hover:text-gray-400;
+  @apply font-medium hover:text-purple-600 dark:hover:text-yellow-500;
   @apply border-t dark:border-gray-900 rounded-b-lg;
   @apply hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer;
 }

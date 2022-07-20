@@ -370,7 +370,7 @@ function setCurrentChartValue(payload: {
 
   <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
     <div
-      class="px-4 sm:px-0 flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
+      class="flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
     >
       <div class="flex mb-4">
         <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
@@ -383,16 +383,16 @@ function setCurrentChartValue(payload: {
         </div>
       </div>
       <div
-        class="flex flex-col items-start xs:items-end text-2xl font-bold tabular-nums"
+        class="flex flex-col items-start xs:items-end text-2xl font-semibold tabular-nums"
       >
         <p class="tracking-tighter">
           {{ isFocusedOnChart ? currentChartValue : defaultChartData.value }}
         </p>
         <div
-          class="text-sm font-medium text-gray-500"
+          class="text-sm font-medium text-secondary"
           :class="{ 'text-pink-500': isFocusedOnChart }"
         >
-          <p class="tracking-tighter">
+          <p>
             {{ isFocusedOnChart ? currentChartDate : defaultChartData.title }}
           </p>
         </div>

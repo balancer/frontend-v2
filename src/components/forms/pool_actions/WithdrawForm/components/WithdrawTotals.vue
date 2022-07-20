@@ -80,6 +80,6 @@ const priceImpactClasses = computed(() => ({
 }
 
 .total-row {
-  @apply text-lg font-bold;
+  @apply text-lg font-semibold;
 }
 </style>

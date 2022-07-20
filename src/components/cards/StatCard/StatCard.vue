@@ -9,7 +9,7 @@ defineProps<Props>();
 
 <template>
   <BalCard>
-    <div class="text-sm text-gray-500 font-medium mb-2">
+    <div class="text-sm text-secondary font-medium mb-2">
       <slot name="label">
         {{ label }}
       </slot>

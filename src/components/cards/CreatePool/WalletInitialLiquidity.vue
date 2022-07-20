@@ -54,16 +54,14 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
     <div class="p-2 px-4">
       <div class="grid grid-cols-12 w-full gap-y-1.5">
         <div class="col-span-6">
-          <span
-            class="text-sm font-semibold text-gray-700 dark:text-gray-500"
-            >{{ $t('token') }}</span
-          >
+          <span class="text-sm font-semibold text-gray-700 text-secondary">{{
+            $t('token')
+          }}</span>
         </div>
         <div class="col-span-6 text-right">
-          <span
-            class="text-sm font-semibold text-gray-700 dark:text-gray-500"
-            >{{ $t('usdValue') }}</span
-          >
+          <span class="text-sm font-semibold text-gray-700 text-secondary">{{
+            $t('usdValue')
+          }}</span>
         </div>
         <template
           v-for="(token, i) in allocatedTokenWeights"

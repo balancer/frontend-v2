@@ -19,7 +19,7 @@ defineProps<Props>();
       </h6>
     </div>
     <div class="-mt-2 p-4">
-      <div class="text-gray-500">
+      <div class="text-secondary">
         {{ $t(`migratePool.${poolMigrationInfo.type}.whyMigrate.description`) }}
       </div>
     </div>

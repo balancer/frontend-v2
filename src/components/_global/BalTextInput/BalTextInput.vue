@@ -130,7 +130,7 @@ onMounted(() => {
     >
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
-          <span class="label">
+          <span class="label text-secondary">
             {{ label }}
           </span>
         </slot>
@@ -181,7 +181,7 @@ onMounted(() => {
 }
 
 .label {
-  @apply text-sm text-gray-500;
+  @apply text-sm;
 }
 
 .error {

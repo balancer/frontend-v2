@@ -48,7 +48,7 @@ const hiddenColumns = [
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 lg:px-0">{{ $t('veBalProtocolLiquidity') }}</h5>
+      <h5 class="px-4 xl:px-0">{{ $t('veBalProtocolLiquidity') }}</h5>
       <PoolsTable
         :key="lockPools"
         :data="lockPools"

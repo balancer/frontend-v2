@@ -60,7 +60,7 @@ defineProps<Props>();
 }
 
 .period-select-input__selected {
-  @apply flex items-center font-bold h-full leading-loose bg-transparent leading-none -ml-px text-xs;
+  @apply flex items-center font-semibold h-full leading-loose bg-transparent leading-none -ml-px text-xs;
   -webkit-appearance: none;
   -moz-appearance: none;
   text-indent: 1px;
@@ -69,13 +69,11 @@ defineProps<Props>();
 
 .period-select-input .bal-icon :deep(svg) {
   @apply transition-all;
-  /* blue-500 */
-  stroke: #384aff;
+  stroke: theme('colors.blue.500');
 }
 
 .period-select-input:hover .bal-icon :deep(svg),
 .period-select-input:focus .bal-icon :deep(svg) {
-  /* pink-500 */
-  stroke: #f21bf6;
+  stroke: theme('colors.pink.500');
 }
 </style>

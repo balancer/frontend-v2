@@ -26,7 +26,7 @@
             />
           </div>
           <div
-            class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors summary"
+            class="text-sm text-secondary dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors summary"
           >
             {{ transaction.summary }}
           </div>

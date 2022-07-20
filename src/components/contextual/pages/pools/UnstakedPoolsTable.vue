@@ -130,7 +130,7 @@ function handleModalClose() {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 lg:px-0" v-if="!isL2">
+      <h5 class="px-4 xl:px-0" v-if="!isL2">
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable

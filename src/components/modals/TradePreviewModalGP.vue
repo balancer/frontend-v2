@@ -31,7 +31,7 @@
                   }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
-                <div class="text-gray-500 dark:text-gray-400 text-sm">
+                <div class="text-secondary text-sm">
                   {{ tokenInFiatValue }}
                 </div>
               </div>
@@ -55,7 +55,7 @@
                   }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
-                <div class="text-gray-500 dark:text-gray-400 text-sm">
+                <div class="text-secondary text-sm">
                   {{ tokenOutFiatValue }}
                   <span
                     v-if="
@@ -140,7 +140,7 @@
               </div>
               <div v-html="summary.totalWithoutSlippage" />
             </div>
-            <div class="summary-item-row text-gray-500 dark:text-gray-400">
+            <div class="summary-item-row text-secondary">
               <div class="w-64">
                 {{ labels.tradeSummary.totalWithSlippage }}
               </div>

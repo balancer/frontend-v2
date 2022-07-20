@@ -63,7 +63,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .pill-weight {
-  @apply font-medium text-gray-500 dark:text-gray-400 text-xs;
+  @apply font-medium text-gray-600 dark:text-gray-400 text-xs;
   @apply mt-px ml-1;
 }
 
