@@ -58,17 +58,10 @@ const {
   amounts,
   validInputs,
   highPriceImpactAccepted,
-  resetAmounts,
-  sor
+  resetAmounts
 } = useInvestState();
 
-const investMath = useInvestMath(
-  pool,
-  tokenAddresses,
-  amounts,
-  useNativeAsset,
-  sor
-);
+const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
 
 const {
   hasAmounts,
@@ -76,7 +69,7 @@ const {
   maximizeAmounts,
   optimizeAmounts,
   proportionalAmounts,
-  batchSwapLoading,
+  swapRouteLoading
 } = investMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -290,9 +283,9 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         color="gradient"
         :disabled="
           !hasAmounts ||
-          !hasValidInputs ||
-          isMismatchedNetwork ||
-          batchSwapLoading
+            !hasValidInputs ||
+            isMismatchedNetwork ||
+            swapRouteLoading
         "
         block
         @click="showInvestPreview = true"
