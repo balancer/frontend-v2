@@ -57,19 +57,10 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  singleAssetInAmount,
-  singleAssetInAddress
+  amounts
 } = useInvestState();
 
-const singleAssetTokenAddresses = computed(() => [singleAssetInAddress.value]);
-const singleAssetAmounts = computed(() => [singleAssetInAmount.value]);
-
-const investMath = useInvestMath(
-  pool,
-  singleAssetTokenAddresses,
-  singleAssetAmounts,
-  useNativeAsset
-);
+const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
 
 const { hasAmounts, highPriceImpact, swapRouteLoading } = investMath;
 
@@ -189,12 +180,12 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     />
 
     <TokenInput
-      :amount="singleAssetInAmount"
-      :address="singleAssetInAddress"
+      :amount="amounts[0]"
+      :address="tokenAddresses[0]"
       name="tokenIn"
       class="mb-4"
-      @update:amount="amount => (singleAssetInAmount = amount)"
-      @update:address="address => (singleAssetInAddress = address)"
+      @update:amount="amount => (amounts[0] = amount)"
+      @update:address="address => (tokenAddresses[0] = address)"
       :excludedTokens="[veBalTokenInfo?.address]"
     />
 
@@ -248,7 +239,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
           v-if="showInvestPreview"
           :pool="pool"
           :math="investMath"
-          :tokenAddresses="singleAssetTokenAddresses"
+          :tokenAddresses="tokenAddresses"
           @close="showInvestPreview = false"
           @showStakeModal="showStakeModal = true"
         />

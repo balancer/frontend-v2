@@ -5,9 +5,7 @@ import { Address } from '@/types';
 
 type InvestState = {
   amounts: string[];
-  tokenAddresses: string[];
-  singleAssetInAmount: string;
-  singleAssetInAddress: Address;
+  tokenAddresses: Address[];
   propAmounts: string[];
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
@@ -21,8 +19,6 @@ type InvestState = {
 const state = reactive<InvestState>({
   amounts: [],
   tokenAddresses: [],
-  singleAssetInAmount: '',
-  singleAssetInAddress: '',
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
