@@ -25,6 +25,7 @@ export type TransactionAction = {
   pending: boolean;
   step: Step;
   promise: () => Promise<void>;
+  isSignAction?: boolean;
 };
 
 export type TransactionActionInfo = {
@@ -33,4 +34,5 @@ export type TransactionActionInfo = {
   confirmingLabel: string;
   stepTooltip: string;
   action: () => Promise<TransactionResponse>;
+  isSignAction?: boolean;
 };

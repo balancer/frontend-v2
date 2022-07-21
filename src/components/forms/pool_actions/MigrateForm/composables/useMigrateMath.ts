@@ -105,8 +105,6 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
         .toString();
     }
 
-    console.log('query BPT', _bptOut.toString());
-
     return _bptOut;
   });
 

@@ -19,8 +19,6 @@ const poolMigrationInfo = POOL_MIGRATIONS.find(
     poolMigrationInfo.fromPoolId === fromPoolId &&
     poolMigrationInfo.toPoolId === toPoolId
 );
-console.log('poolMigrationInfo', poolMigrationInfo)
-//http://localhost:8080/#/pool/migrate/0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f/0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f
 </script>
 
 <template>

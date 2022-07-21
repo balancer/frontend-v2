@@ -107,6 +107,7 @@ const actions = computed((): TransactionAction[] => {
         ? actionInfo.loadingLabel
         : actionInfo.confirmingLabel,
       pending: actionState.init || actionState.confirming,
+      isSignAction: actionInfo.isSignAction,
       promise: submit.bind(null, actionInfo.action, actionState),
       step: {
         tooltip: actionInfo.stepTooltip,
@@ -236,7 +237,14 @@ async function handleTransaction(
           block
           @click="currentAction.promise()"
         >
-          {{ currentAction?.label }}
+          <div class="flex flex-grow justify-between items-center">
+            <img
+              v-if="currentAction.isSignAction"
+              :src="require('@/assets/images/icons/signature.svg')"
+            />
+            {{ currentAction?.label }}
+            <div v-if="currentAction.isSignAction" class="w-8"></div>
+          </div>
         </BalBtn>
       </BalStack>
     </AnimatePresence>
