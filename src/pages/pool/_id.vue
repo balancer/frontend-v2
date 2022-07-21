@@ -188,7 +188,10 @@ export default defineComponent({
     //#endregion
 
     //#region APR query
-    const aprQuery = usePoolAprQuery(route.params.id as string);
+    const aprQuery = usePoolAprQuery(
+      route.params.id as string,
+      pool as ComputedRef<Pool>
+    );
     const loadingApr = computed(
       () =>
         aprQuery.isLoading.value ||

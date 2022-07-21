@@ -1,20 +1,25 @@
 import { QueryObserverOptions } from 'react-query/core';
-import { reactive } from 'vue';
+import { computed, ComputedRef, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
+import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancer } from '@/lib/balancer.sdk';
-import { bnSum, bnum } from '@/lib/utils';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { AprConcern } from '@/services/pool/concerns/apr/apr.concern';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
-import { PoolAPRs } from '@/services/pool/types';
+import { Pool, PoolAPRs } from '@/services/pool/types';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 
 import useNetwork from '../useNetwork';
+import useTokens from '../useTokens';
+import useUserSettings from '../useUserSettings';
+import useGaugesQuery from './useGaugesQuery';
 
-/**
- * HELPERS
- */
 export default function usePoolAprQuery(
   id: string,
+  pool: ComputedRef<Pool>,
   options: QueryObserverOptions<PoolAPRs> = {}
 ) {
   /**
@@ -25,89 +30,87 @@ export default function usePoolAprQuery(
   const poolInfo = poolsStoreService.findPool(id);
 
   /**
+   * COMPOSABLES
+   */
+  const { prices } = useTokens();
+  const { currency } = useUserSettings();
+  const { tokens } = useTokens();
+  const { data: subgraphGauges } = useGaugesQuery();
+
+  /**
    * QUERY DEPENDENCIES
    */
   const { networkId } = useNetwork();
+
+  /**
+   * COMPUTED
+   */
+  const enabled = computed(() => !!pool.value?.id || !!poolInfo);
 
   /**
    * QUERY INPUTS
    */
   const queryKey = QUERY_KEYS.Pools.APR(networkId, id);
 
-  /**
-   * METHODS
-   */
-  function processNum(num: number): string {
-    return (num / 10000).toString();
-  }
-
-  function processApr(aprSDK: any) {
-    const swapFeeAPR = processNum(aprSDK.swapFees);
-    const yieldAPR = processNum(aprSDK.tokenAprs);
-
-    const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR]).toString();
-    const stakingRewardApr = processNum(aprSDK.rewardsApr);
-    const stakingBalApr = {
-      min: processNum(aprSDK.stakingApr.min),
-      max: processNum(aprSDK.stakingApr.max)
-    };
-
-    const calc = (boost = '1') => {
-      const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
-      const boostedAPR = stakingBalApr?.min
-        ? bnum(stakingBalApr.min).times(boost)
-        : bnum('0');
-
-      return stakedBaseAPR.plus(boostedAPR).toString();
-    };
-
-    return {
-      swap: processNum(aprSDK.swapFees),
-      yield: {
-        total: processNum(aprSDK.tokenAprs),
-        breakdown: {}
-      },
-      staking: {
-        bal: stakingBalApr,
-        rewards: stakingRewardApr
-      },
-      total: {
-        unstaked: unstakedTotalAPR,
-        staked: {
-          calc,
-          max: processNum(aprSDK.max),
-          min: processNum(aprSDK.min)
-        }
-      }
-    };
+  async function getSnapshot(id: string): Promise<Pool[]> {
+    const currentBlock = await rpcProviderService.getBlockNumber();
+    const blockNumber = getTimeTravelBlock(currentBlock);
+    const block = { number: blockNumber };
+    const isInPoolIds = { id_in: [id] };
+    try {
+      const data = await balancerSubgraphService.pools.get({
+        where: isInPoolIds,
+        block
+      });
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch pool snapshots', error);
+      return [];
+    }
   }
 
   const queryFn = async () => {
+    if (!pool.value && !poolInfo) throw new Error('No pool');
     if (poolInfo?.apr) {
       return poolInfo.apr;
     }
 
-    try {
-      console.time('balancer.pools.find');
-      const poolSDK = await balancer.pools.find(id);
-      console.timeEnd('balancer.pools.find');
-      console.time('balancer.pools.apr');
-      const aprSDK = await poolSDK?.apr();
-      console.timeEnd('balancer.pools.apr');
+    // copy computed pool to avoid mutation warnings
+    const _pool = { ...pool.value, tokens: [...pool.value.tokens] } || poolInfo;
 
-      if (!aprSDK) throw new Error('No apr');
+    const payload = {
+      pools: [_pool],
+      prices: prices.value,
+      gauges: subgraphGauges.value || []
+    };
+    const [
+      protocolFeePercentage,
+      gaugeBALAprs,
+      gaugeRewardTokenAprs
+    ] = await Promise.all([
+      balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage(),
+      stakingRewardsService.getGaugeBALAprs(payload),
+      stakingRewardsService.getRewardTokenAprs({
+        ...payload,
+        tokens: tokens.value
+      })
+    ]);
 
-      return processApr(aprSDK);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const _snaphshot = await getSnapshot(_pool.id);
+    const apr = await new AprConcern(_pool).calc(
+      _snaphshot[0],
+      prices.value,
+      currency.value,
+      protocolFeePercentage,
+      gaugeBALAprs[_pool.id],
+      gaugeRewardTokenAprs[_pool.id]
+    );
+
+    return apr;
   };
-
   const queryOptions = reactive({
-    enabled: true,
+    enabled,
     ...options
   });
-
   return useQuery<PoolAPRs>(queryKey, queryFn, queryOptions);
 }
