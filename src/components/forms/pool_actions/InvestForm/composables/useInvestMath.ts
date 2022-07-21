@@ -1,6 +1,6 @@
 import { SwapInfo } from '@balancer-labs/sdk';
-import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { formatUnits, parseUnits } from '@ethersproject/units';
+import { BigNumber, parseFixed } from '@ethersproject/bignumber';
+import { parseUnits } from '@ethersproject/units';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -14,6 +14,7 @@ import {
 } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress } from '@/lib/utils';
+import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -232,41 +233,30 @@ export default function useInvestMath(
     amounts.value = [...send];
   }
 
+  async function getGasPrice(): Promise<BigNumber> {
+    const gasPriceParams = await gasPriceService.getLatest();
+    if (gasPriceParams) return BigNumber.from(gasPriceParams.price);
+    return getProvider().getGasPrice();
+  }
+
   async function getSwapRoute(): Promise<void> {
     swapRouteLoading.value = true;
     if (!hasFetchedPools.value) {
       await fetchPools();
     }
-    const gasPrice = await getProvider().getGasPrice();
-    console.log({ gasPrice, clean: formatUnits(gasPrice, 'gwei') });
-    if (!gasPrice) {
-      swapRouteLoading.value = false;
-      throw new Error('No gas price');
-    }
-    console.log({
+    const gasPrice = await getGasPrice();
+    const findRouteParams = {
       tokenIn: tokenAddresses.value[0],
       tokenOut: pool.value.address,
       amount: parseFixed(amounts.value[0], poolTokens.value[0].decimals),
       gasPrice,
       maxPools: 4
-    });
-    const route = await balancer.swaps.findRouteGivenIn({
-      tokenIn: tokenAddresses.value[0],
-      tokenOut: pool.value.address,
-      amount: parseFixed(amounts.value[0], poolTokens.value[0].decimals),
-      gasPrice,
-      maxPools: 40
-    });
+    };
+
+    console.log({ findRouteParams });
+    const route = await balancer.swaps.findRouteGivenIn(findRouteParams);
     console.log({ route });
-    const decimals = BigNumber.from(pool.value.onchain?.decimals || 18);
-    console.log('clean', {
-      returnAmount: formatFixed(route.returnAmount, decimals),
-      returnAmountFromSwaps: formatFixed(route.returnAmountFromSwaps, decimals),
-      returnAmountConsideringFees: formatFixed(
-        route.returnAmountConsideringFees,
-        decimals
-      )
-    });
+
     swapRoute.value = route;
     swapRouteLoading.value = false;
   }
@@ -317,6 +307,7 @@ export default function useInvestMath(
     // methods
     maximizeAmounts,
     optimizeAmounts,
-    getSwapRoute
+    getSwapRoute,
+    getGasPrice
   };
 }

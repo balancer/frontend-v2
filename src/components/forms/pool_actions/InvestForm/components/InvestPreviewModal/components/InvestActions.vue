@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { BatchSwap } from '@balancer-labs/sdk';
+import { Vault__factory } from '@balancer-labs/typechain';
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -21,6 +23,8 @@ import useUserSettings from '@/composables/useUserSettings';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
 import { balancer } from '@/lib/balancer.sdk';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { vaultService } from '@/services/contracts/vault.service';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
 import { Pool } from '@/services/pool/types';
@@ -173,6 +177,8 @@ async function submit(): Promise<TransactionResponse> {
   try {
     if (swapRoute.value) {
       const deadline = BigNumber.from(`${Math.ceil(Date.now() / 1000) + 60}`); // 60 seconds from now
+
+      // TODO: Get slippage from user settings
       const maxSlippage = parseFloat(slippage.value) * 10000;
 
       const transactionAttributes = balancer.swaps.buildSwap({
@@ -182,9 +188,18 @@ async function submit(): Promise<TransactionResponse> {
         deadline,
         maxSlippage
       });
+
       console.log({ transactionAttributes });
-      const { to, data, value } = transactionAttributes;
-      tx = await getSigner().sendTransaction({ to, data, value });
+      const attributes: BatchSwap = transactionAttributes.attributes as BatchSwap;
+
+      tx = await vaultService.batchSwap(
+        attributes.kind,
+        attributes.swaps,
+        attributes.assets,
+        attributes.funds,
+        // TODO: Fix type
+        attributes.limits as string[]
+      );
     } else {
       tx = await poolExchange.join(
         getProvider(),
@@ -194,7 +209,6 @@ async function submit(): Promise<TransactionResponse> {
         formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
       );
     }
-    investmentState.init = false;
     investmentState.confirming = true;
     console.log('Receipt', { tx });
 
@@ -202,6 +216,8 @@ async function submit(): Promise<TransactionResponse> {
     return tx;
   } catch (error) {
     return Promise.reject(error);
+  } finally {
+    investmentState.init = false;
   }
 }
 

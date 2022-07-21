@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -42,7 +42,7 @@ const {
   optimized,
   swapRouteLoading,
   supportsPropotionalOptimization
-} = toRefs(reactive(props.math));
+} = toRefs(props.math);
 
 /**
  * COMPUTED
