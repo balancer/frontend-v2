@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BatchSwap } from '@balancer-labs/sdk';
+import { BatchSwap, Swap } from '@balancer-labs/sdk';
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -179,7 +179,7 @@ async function submit(): Promise<TransactionResponse> {
       // TODO: Get slippage from user settings
       const maxSlippage = parseFloat(slippage.value) * 10000;
 
-      const transactionAttributes = balancer.swaps.buildSwap({
+      const buildSwapResult = balancer.swaps.buildSwap({
         userAddress: account.value,
         swapInfo: swapRoute.value,
         kind: 0,
@@ -187,17 +187,33 @@ async function submit(): Promise<TransactionResponse> {
         maxSlippage
       });
 
-      console.log({ transactionAttributes });
-      const attributes: BatchSwap = transactionAttributes.attributes as BatchSwap;
+      console.log({ buildSwapResult });
+      if (buildSwapResult.functionName === 'batchSwap') {
+        const attributes: BatchSwap = buildSwapResult.attributes as BatchSwap;
 
-      tx = await vaultService.batchSwap(
-        attributes.kind,
-        attributes.swaps,
-        attributes.assets,
-        attributes.funds,
-        // TODO: Fix type
-        attributes.limits as string[]
-      );
+        tx = await vaultService.batchSwap(
+          attributes.kind,
+          attributes.swaps,
+          attributes.assets,
+          attributes.funds,
+          // TODO: Fix type
+          attributes.limits as string[]
+        );
+      } else {
+        const swapAttributes: Swap = buildSwapResult.attributes as Swap;
+        tx = await vaultService.swap(
+          {
+            poolId: swapAttributes.request.poolId,
+            kind: swapAttributes.request.kind,
+            assetIn: swapAttributes.request.assetIn,
+            assetOut: swapAttributes.request.assetOut,
+            amount: swapAttributes.request.amount,
+            userData: swapAttributes.request.userData
+          },
+          swapAttributes.funds,
+          swapAttributes.limit as string
+        );
+      }
     } else {
       tx = await poolExchange.join(
         getProvider(),
