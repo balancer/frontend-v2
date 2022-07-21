@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { BatchSwap } from '@balancer-labs/sdk';
-import { Vault__factory } from '@balancer-labs/typechain';
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -23,7 +22,6 @@ import useUserSettings from '@/composables/useUserSettings';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
 import { balancer } from '@/lib/balancer.sdk';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { vaultService } from '@/services/contracts/vault.service';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
@@ -77,7 +75,7 @@ const investmentState = reactive<InvestmentState>({
  */
 const route = useRoute();
 const { t } = useI18n();
-const { account, getProvider, blockNumber, getSigner } = useWeb3();
+const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
