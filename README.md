@@ -60,21 +60,16 @@ To change your local development app network, update the network key for
 
 For local development purposes you may want to use a test node with a forked mainnet state.
 
-If you keep you RPC_URL in local .env
+[Hardhat](https://hardhat.org/):
 ```
-export RPC_URL=$(grep ALCHEMY_URL .env | cut -d '=' -f2)
+npx hardhat node --fork <YOUR_RPC_URL> --fork-block-number 14828550
 ```
+*Make sure to set the network ID to `1` for your localhost:8545 network in
+MetaMask settings.*
 
-Hardhat:
+Alternatively with [Anvil](https://github.com/foundry-rs/foundry/tree/master/anvil):
 ```
-npm run node
-or
-npx hardhat node --fork $RPC_URL --fork-block-number 14828550
-```
-
-Alternatively with anvil:
-```
-anvil -f $RPC_URL --fork-block-number 14828550
+anvil -f <YOUR_RPC_URL> --fork-block-number 14828550
 ```
 
 For better performance we prepared a test specific config with limited set of whitelisted tokens in public/test/listed.tokenlist.json.
