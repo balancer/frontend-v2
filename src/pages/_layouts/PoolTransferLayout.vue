@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
@@ -33,12 +33,16 @@ const {
   useNativeAsset,
   transfersAllowed
 } = usePoolTransfers();
-const { singleAssetInAddress } = useInvestState();
+const { tokenAddresses } = useInvestState();
 usePoolTransfersGuard();
 
 function setTokenInAddress(tokenAddress) {
-  singleAssetInAddress.value = tokenAddress;
+  tokenAddresses.value[0] = tokenAddress;
 }
+
+const isSingleAssetInvestPool = computed(() => {
+  return pool.value && isStablePhantom(pool.value.poolType);
+});
 </script>
 
 <template>
@@ -53,7 +57,7 @@ function setTokenInAddress(tokenAddress) {
     <Col3Layout offsetGutters mobileHideGutters>
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
-        <div v-else-if="pool && isStablePhantom(pool.poolType)">
+        <div v-else-if="isSingleAssetInvestPool">
           <MyWallet @click:asset="setTokenInAddress" />
         </div>
         <MyWalletTokensCard
