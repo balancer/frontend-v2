@@ -91,7 +91,7 @@ const config: Record<Network | number, Config> = {
   [Network.RINKEBY]: rinkeby,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
-  [FORKED_MAINNET_ID]: forkedMainnet,
+  31337: forkedMainnet,
   12345: test,
   // @ts-ignore
   17: docker
