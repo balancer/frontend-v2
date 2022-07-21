@@ -69,7 +69,7 @@ const title = computed((): string =>
 );
 
 const showTokensOut = computed<boolean>(
-  () => !!Object.keys(tokenOutMap).length
+  () => !!Object.keys(tokenOutMap.value).length
 );
 
 const amountInMap = computed(

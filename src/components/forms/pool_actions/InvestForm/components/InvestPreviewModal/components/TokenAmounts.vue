@@ -51,15 +51,7 @@ const groupedAmounts = computed(() =>
   )
 );
 
-const shouldShowCompactViewForZeroAmounts = computed(
-  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3
-);
-
-const amountsToShow = computed(() =>
-  shouldShowCompactViewForZeroAmounts.value
-    ? groupedAmounts.value.nonZeroAmounts
-    : sortedAmounts.value
-);
+const amountsToShow = computed(() => groupedAmounts.value.nonZeroAmounts);
 /**
  * METHODS
  */
@@ -91,25 +83,6 @@ function amountShare(address: string): string {
         </div>
       </div>
     </div>
-    <div
-      v-if="shouldShowCompactViewForZeroAmounts"
-      class="items-start -mb-2 token-amount-table-content"
-    >
-      <div class="flex flex-wrap mr-6">
-        <div
-          v-for="token in groupedAmounts.zeroAmounts"
-          :key="token.address"
-          class="token"
-        >
-          <BalAsset :address="token.address" class="mr-2" />
-          <span>{{ tokenMap[token.address]?.symbol }}</span>
-        </div>
-      </div>
-      <div class="text-sm whitespace-nowrap text-secondary font-numeric">
-        {{ fNum2(0, FNumFormats.fiat) }}
-        ({{ fNum2(0, FNumFormats.percent) }})
-      </div>
-    </div>
   </div>
 </template>
 
@@ -120,9 +93,5 @@ function amountShare(address: string): string {
 
 .token-amount-table-content {
   @apply p-3 flex justify-between;
-}
-
-.token {
-  @apply flex items-center px-2 py-1 mr-2 mb-2 rounded-lg bg-gray-100 dark:bg-gray-700;
 }
 </style>
