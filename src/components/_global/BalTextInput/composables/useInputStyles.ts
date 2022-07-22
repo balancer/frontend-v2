@@ -65,13 +65,15 @@ export default function useInputStyles(
   }));
 
   const inputContainerClasses = computed(() => ({
-    border: !props.noBorder,
+    'bg-white dark:bg-gray-800': !props.disabled,
+    'bg-gray-50 dark:bg-gray-850': props.disabled,
     [extPaddingClass()]: true,
+    border: !props.noBorder,
     'border-gray-100 dark:border-gray-800': !isInvalid.value && !isActive.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
     'border-blue-300 dark:border-blue-400': isActive.value && !isInvalid.value,
     'hover:border-gray-300 dark:hover:border-gray-700':
-      isHover.value && !isActive.value,
+      isHover.value && !isActive.value && !props.disabled,
     'shadow-inner': !props.noShadow
   }));
 
@@ -92,7 +94,8 @@ export default function useInputStyles(
     [inputTextSize()]: true,
     'text-right': props.inputAlignRight,
     'font-numeric': props.type === 'number',
-    'text-red-500': isInvalid.value
+    'text-red-500': isInvalid.value,
+    'cursor-not-allowed': props.disabled
   }));
 
   const prependClasses = computed(() => ({

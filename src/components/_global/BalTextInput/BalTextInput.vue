@@ -18,11 +18,11 @@ import useInputValidation from './composables/useInputValidation';
 /**
  * TYPES
  */
-type InputValue = string | number;
-type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
-type InputSize = 'xs' | 'sm' | 'md' | 'lg';
-type ValidationTrigger = 'input' | 'blur';
-type RuleFunction = (val: InputValue) => string;
+export type InputValue = string | number;
+export type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
+export type InputSize = 'xs' | 'sm' | 'md' | 'lg';
+export type ValidationTrigger = 'input' | 'blur';
+export type RuleFunction = (val: InputValue) => string;
 export type Rules = RuleFunction[];
 
 type Props = {
@@ -169,7 +169,7 @@ onMounted(() => {
 
 <style scoped>
 .input-container {
-  @apply bg-white dark:bg-gray-800 border transition-colors;
+  @apply transition-colors;
 }
 
 .input-group {
