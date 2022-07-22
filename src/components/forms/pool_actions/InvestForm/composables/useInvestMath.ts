@@ -3,6 +3,7 @@ import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { parseUnits } from '@ethersproject/units';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 
+import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
@@ -244,22 +245,42 @@ export default function useInvestMath(
     if (!hasFetchedPools.value) {
       await fetchPools();
     }
+
+    const amount = amounts.value[0];
+    const decimals = poolTokens.value[0].decimals;
+    const safeAmount = overflowProtected(amount, decimals);
+    const bnumAmount = parseFixed(safeAmount, decimals);
+
     const gasPrice = await getGasPrice();
     const findRouteParams = {
       tokenIn: tokenAddresses.value[0],
       tokenOut: pool.value.address,
-      amount: parseFixed(amounts.value[0], poolTokens.value[0].decimals),
+      amount: bnumAmount,
       gasPrice,
       maxPools: 4
     };
 
-    console.log({ findRouteParams });
     const route = await balancer.swaps.findRouteGivenIn(findRouteParams);
-    console.log({ route });
 
     swapRoute.value = route;
     swapRouteLoading.value = false;
   }
+
+  function updateSwapRoute(): void {
+    if (shouldFetchSwapRoute.value) {
+      batchSwapPromises.value.push(getSwapRoute);
+      if (!processingSwapRoute.value) processSwapRoute();
+    }
+  }
+
+  // WATCHERS
+  watch(
+    tokenAddresses,
+    () => {
+      updateSwapRoute();
+    },
+    { deep: true }
+  );
 
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
     const changedIndex = newAmounts.findIndex(
@@ -267,10 +288,7 @@ export default function useInvestMath(
     );
 
     if (changedIndex >= 0) {
-      if (shouldFetchSwapRoute.value) {
-        batchSwapPromises.value.push(getSwapRoute);
-        if (!processingSwapRoute.value) processSwapRoute();
-      }
+      updateSwapRoute();
 
       const { send } = poolCalculator.propAmountsGiven(
         fullAmounts.value[changedIndex],
