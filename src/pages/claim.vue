@@ -24,6 +24,7 @@ import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
@@ -100,20 +101,16 @@ const balRewardsData = computed((): RewardRow[] => {
 });
 
 const protocolRewardsData = computed((): ProtocolRewardRow[] => {
-  if (!isWalletReady.value || appLoading.value) return [];
-  return Object.keys(protocolRewards.value).map(tokenAddress => {
-    const token = getToken(tokenAddress);
-    const amount = formatUnits(
-      protocolRewards.value[tokenAddress],
-      token.decimals
-    );
+  return formatRewardsData(protocolRewards.value.v2);
+});
 
-    return {
-      token,
-      amount,
-      value: toFiat(amount, tokenAddress)
-    };
-  });
+/**
+ * The feeDistributor contract was updated and so we need to support the old
+ * one so that users can claim their rewards. Eventually we should be able to
+ * remove this.
+ */
+const protocolRewardsDataDeprecated = computed((): ProtocolRewardRow[] => {
+  return formatRewardsData(protocolRewards.value.v1);
 });
 
 const gaugesWithRewards = computed((): Gauge[] => {
@@ -173,6 +170,21 @@ function gaugeTitle(pool: GaugePool): string {
         })} ${token.symbol}`
     )
     .join(' / ');
+}
+
+function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
+  if (!isWalletReady.value || appLoading.value || !data) return [];
+
+  return Object.keys(data).map(tokenAddress => {
+    const token = getToken(tokenAddress);
+    const amount = formatUnits(data[tokenAddress], token.decimals);
+
+    return {
+      token,
+      amount,
+      value: toFiat(amount, tokenAddress)
+    };
+  });
 }
 
 /**
@@ -239,6 +251,11 @@ onBeforeMount(async () => {
           <ProtocolRewardsTable
             :rewardsData="protocolRewardsData"
             :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
+          />
+          <ProtocolRewardsTable
+            :rewardsData="protocolRewardsDataDeprecated"
+            :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
+            class="mt-8"
           />
         </div>
       </template>

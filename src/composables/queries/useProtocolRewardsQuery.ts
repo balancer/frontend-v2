@@ -13,7 +13,7 @@ import { isKovan, isL2, networkId } from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = {
+export type ProtocolRewardsQueryResponse = {
   v1?: BalanceMap;
   v2?: BalanceMap;
 };
@@ -32,7 +32,7 @@ const feeDistributorV2 = new FeeDistributor(
  * @summary Fetches claimable protocol reward balances.
  */
 export default function useProtocolRewardsQuery(
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<ProtocolRewardsQueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -64,6 +64,7 @@ export default function useProtocolRewardsQuery(
         feeDistributorV1.getClaimableBalances(account.value),
         feeDistributorV2.getClaimableBalances(account.value)
       ]);
+      console.log(v1, v2);
       return { v1, v2 };
     } catch (error) {
       console.error('Failed to fetch claimable protocol balances', error);
@@ -79,5 +80,9 @@ export default function useProtocolRewardsQuery(
     ...options
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<ProtocolRewardsQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions
+  );
 }
