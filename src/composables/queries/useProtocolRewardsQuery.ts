@@ -64,7 +64,6 @@ export default function useProtocolRewardsQuery(
         feeDistributorV1.getClaimableBalances(account.value),
         feeDistributorV2.getClaimableBalances(account.value)
       ]);
-      console.log(v1, v2);
       return { v1, v2 };
     } catch (error) {
       console.error('Failed to fetch claimable protocol balances', error);
