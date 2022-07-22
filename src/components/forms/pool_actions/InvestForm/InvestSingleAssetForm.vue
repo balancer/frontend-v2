@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
-// Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { isStablePhantom, usePool } from '@/composables/usePool';
@@ -13,7 +13,6 @@ import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
-// Types
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -59,10 +58,11 @@ const {
   resetAmounts,
   amounts
 } = useInvestState();
+const { t } = useI18n();
 
 const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
 
-const { hasAmounts, highPriceImpact, swapRouteLoading } = investMath;
+const { hasAmounts, highPriceImpact, swapRouteLoading, swapRoute } = investMath;
 
 const {
   isWalletReady,
@@ -73,16 +73,19 @@ const {
 const { managedPoolWithTradingHalted, isWethPool } = usePool(pool);
 const { veBalTokenInfo } = useVeBal();
 
-// console.log({
-//   isWethPool: isWethPool.value,
-//   isStableLikePool: isStableLikePool.value,
-//   isStablePhantomPool: isStablePhantomPool.value,
-//   isStablePhantom: isStablePhantom(props.pool.poolType)
-// });
-
 /**
  * COMPUTED
  */
+const error = computed(() => {
+  if (hasAmounts.value && swapRoute.value?.returnAmountFromSwaps.eq(0)) {
+    return {
+      header: t('insufficientLiquidity'),
+      body: t('insufficientLiquidityDetailed')
+    };
+  }
+  return null;
+});
+
 const hasValidInputs = computed(
   (): boolean =>
     validInputs.value.every(validInput => validInput === true) &&
@@ -211,6 +214,15 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     <WrapStEthLink :pool="pool" class="mt-4" />
 
     <div class="mt-4">
+      <BalAlert
+        v-if="error"
+        class="p-3 mb-4"
+        type="error"
+        size="sm"
+        :title="error.header"
+        :description="error.body"
+        block
+      />
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"
@@ -222,8 +234,11 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         v-else
         :label="$t('preview')"
         color="gradient"
+        :loading="swapRouteLoading"
+        :loading-label="$t('loadingBestPrice')"
         :disabled="
-          !hasAmounts ||
+          !!error ||
+            !hasAmounts ||
             !hasValidInputs ||
             isMismatchedNetwork ||
             swapRouteLoading
