@@ -427,9 +427,9 @@ onMounted(() => {
         >
           <template v-slot:append>
             <div
-              class="flex flex-row justify-center items-center px-2 bg-gray-200 dark:bg-gray-700 w-16 h-12 border-gray-100 dark:border-gray-800 rounded-r-lg"
+              class="flex flex-row justify-center h-full px-2 items-center border-gray-100 dark:border-gray-800 rounded-r-lg"
             >
-              <span class="text-black dark:text-white">%</span>
+              <span class="text-black text-xl dark:text-white">%</span>
             </div>
           </template>
         </BalTextInput>
@@ -478,17 +478,3 @@ onMounted(() => {
     </div>
   </BalModal>
 </template>
-<style scoped>
-.vote-form :deep(.input-container),
-.vote-form :deep(.input-group) {
-  @apply p-0;
-}
-
-.vote-form :deep(.input) {
-  @apply px-3 h-12;
-}
-
-.vote-form :deep(.input[disabled]) {
-  @apply cursor-not-allowed bg-gray-100 dark:bg-gray-800 rounded-l-lg;
-}
-</style>
