@@ -20,7 +20,7 @@ import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import useTokens from '@/composables/useTokens';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum } from '@/lib/utils';
+import { bnSum, bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
@@ -77,6 +77,11 @@ const networks = [
 /**
  * COMPUTED
  */
+const loading = computed(
+  (): boolean =>
+    (isClaimsLoading.value || appLoading.value) && isWalletReady.value
+);
+
 const networkBtns = computed(() => {
   return networks.filter(network => network.key !== configService.network.key);
 });
@@ -239,10 +244,7 @@ onBeforeMount(async () => {
               </h3>
             </div>
           </div>
-          <BalClaimsTable
-            :rewardsData="balRewardsData"
-            :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
-          />
+          <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
         </div>
         <div class="mb-16">
           <h3 class="text-xl mt-8 mb-3 px-4 xl:px-0">
@@ -250,11 +252,12 @@ onBeforeMount(async () => {
           </h3>
           <ProtocolRewardsTable
             :rewardsData="protocolRewardsData"
-            :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
+            :isLoading="loading"
           />
           <ProtocolRewardsTable
+            v-if="!loading"
             :rewardsData="protocolRewardsDataDeprecated"
-            :isLoading="(isClaimsLoading || appLoading) && isWalletReady"
+            :isLoading="loading"
             class="mt-8"
           />
         </div>
@@ -263,10 +266,7 @@ onBeforeMount(async () => {
       <h3 v-if="!isL2" class="text-xl mt-8 px-4 xl:px-0">
         {{ $t('otherTokenEarnings') }}
       </h3>
-      <BalLoadingBlock
-        v-if="(appLoading || isClaimsLoading) && isWalletReady"
-        class="mt-6 mb-2 h-56"
-      />
+      <BalLoadingBlock v-if="loading" class="mt-6 mb-2 h-56" />
       <template
         v-if="!isClaimsLoading && !appLoading && gaugeTables.length > 0"
       >

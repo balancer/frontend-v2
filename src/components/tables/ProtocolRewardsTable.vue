@@ -95,13 +95,15 @@ const totalClaimValue = computed((): string =>
     .toString()
 );
 
-const hasClaimableBalance = computed((): boolean =>
-  bnum(totalClaimAmount.value).gt(0)
-);
+const hasClaimableBalance = computed((): boolean => {
+  if (props.isLoading) return true;
+  return bnum(totalClaimAmount.value).gt(0);
+});
 </script>
 
 <template>
   <BalCard
+    v-if="hasClaimableBalance"
     shadow="lg"
     :square="upToLargeBreakpoint"
     :noBorder="upToLargeBreakpoint"
