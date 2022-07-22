@@ -11,7 +11,7 @@ import { InvestMathResponse } from '../composables/useInvestMath';
  */
 type Props = {
   math: InvestMathResponse;
-  showTotalRow: boolean;
+  showTotalRow?: boolean;
 };
 
 /**
