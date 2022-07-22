@@ -62,6 +62,7 @@ export interface Config {
     veDelegationProxy: string;
     veBALHelpers: string;
     feeDistributor: string;
+    feeDistributorDeprecated: string;
     faucet: string;
   };
   keys: {
