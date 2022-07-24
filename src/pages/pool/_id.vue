@@ -162,6 +162,7 @@
             <StakingIncentivesCard
               v-if="isStakablePool && !loadingPool"
               :pool="pool"
+              class="staking-incentives"
             />
           </BalStack>
         </StakingProvider>
@@ -473,5 +474,8 @@ export default defineComponent({
   .pool-actions-card {
     @apply sticky top-24;
   }
+}
+.staking-incentives :deep(.active-section) {
+  @apply border-transparent;
 }
 </style>
