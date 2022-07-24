@@ -196,7 +196,7 @@ const chartConfig = computed(() => ({
                   param => `
                     <span>
                       ${param.marker} ${param.seriesName}
-                      <span class='font-bold'>
+                      <span class='font-semibold'>
                         ${fNum2(param.value[1], props.axisLabelFormatter.yAxis)}
                       </span>
                     </span>

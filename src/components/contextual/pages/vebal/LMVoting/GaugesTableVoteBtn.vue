@@ -52,7 +52,7 @@ const disabled = computed(() => {
   @apply hover:text-white focus:text-white;
 }
 .vote-btn--blue:not(:disabled) {
-  @apply hover:bg-blue-500  focus:bg-blue-500;
+  @apply hover:bg-blue-500 focus:bg-blue-500 dark:hover:bg-blue-500 dark:focus:bg-blue-500;
 }
 .vote-btn--red:not(:disabled) {
   @apply hover:bg-red-500  focus:bg-red-500;

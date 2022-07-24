@@ -45,9 +45,9 @@ function navigateToCreatePool() {
 
 <template>
   <HomePageHero />
-  <div class="lg:container lg:mx-auto pt-10 md:pt-12">
+  <div class="xl:container xl:mx-auto xl:px-4 pt-10 md:pt-12">
     <BalStack vertical>
-      <div class="px-4 lg:px-0">
+      <div class="px-4 xl:px-0">
         <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
         <div
           class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
@@ -82,7 +82,7 @@ function navigateToCreatePool() {
         :isLoading="isInvestmentPoolsTableLoading"
       >
       </PoolsTable>
-      <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
+      <div v-if="isElementSupported" class="mt-16 p-4 xl:p-0">
         <FeaturedProtocols />
       </div>
     </BalStack>

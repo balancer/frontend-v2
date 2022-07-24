@@ -335,7 +335,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
-                class="text-gray-500 hover:text-blue-500 transition-colors"
+                class="text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               />
             </BalLink>
           </div>

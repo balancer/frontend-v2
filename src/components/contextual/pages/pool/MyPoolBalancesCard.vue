@@ -180,7 +180,7 @@ function navigateToPoolMigration(pool: Pool) {
               </span>
               {{ poolTokens[index].symbol }}
             </span>
-            <span class="text-gray-500 text-sm">
+            <span class="text-secondary text-sm">
               {{ poolTokens[index].name }}
             </span>
           </div>
@@ -192,7 +192,7 @@ function navigateToPoolMigration(pool: Pool) {
               ? fNum2(propTokenAmounts[index], FNumFormats.token)
               : '-'
           }}
-          <span class="text-gray-500 text-sm">
+          <span class="text-secondary text-sm">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>
         </span>

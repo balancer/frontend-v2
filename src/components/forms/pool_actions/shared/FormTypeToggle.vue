@@ -13,7 +13,7 @@
         <span>
           {{ type.label }}
         </span>
-        <span v-if="!missingPrices" class="text-xs text-gray-500">
+        <span v-if="!missingPrices" class="text-xs text-secondary">
           ({{ type.max }} {{ $t('max').toLowerCase() }})
         </span>
         <BalTooltip v-if="type.tooltip">

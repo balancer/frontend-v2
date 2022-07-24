@@ -165,7 +165,7 @@ function handleClose() {
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
-          <span class="text-gray-500">
+          <span class="text-secondary">
             {{ getToken(pool.address).symbol }}
           </span>
         </BalStack>
