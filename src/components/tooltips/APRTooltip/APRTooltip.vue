@@ -52,7 +52,7 @@ const totalLabel = computed((): string =>
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="hasYieldAPR || hasStakingRewards(pool.apr) || hasVebalAPR"
+          v-if="hasYieldAPR || hasStakingRewards(apr) || hasVebalAPR"
           :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
           class="h-4 -mr-1"
           v-bind="$attrs"
@@ -92,7 +92,7 @@ const totalLabel = computed((): string =>
         />
 
         <!-- STAKING APR BREAKDOWN -->
-        <StakingBreakdown :pool="pool" :poolApr="poolApr" />
+        <StakingBreakdown :pool="pool" :poolApr="apr" />
       </div>
     </div>
   </BalTooltip>
