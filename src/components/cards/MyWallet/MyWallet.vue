@@ -11,8 +11,19 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 
-const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
-  useWeb3();
+type Props = {
+  excludedTokens?: string[];
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  excludedTokens: () => []
+});
+
+const {
+  appNetworkConfig,
+  isWalletReady,
+  startConnectWithInjectedProvider
+} = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const {
   hasBalance,
@@ -42,14 +53,22 @@ const noTokensMessage = computed(() => {
   return t('noTokensInWallet', [networkName]);
 });
 
+function isExcludedToken(tokenAddress: Address) {
+  return props.excludedTokens.some(excludedAddress =>
+    isSameAddress(excludedAddress, tokenAddress)
+  );
+}
+
 const tokensWithBalance = computed(() => {
   return take(
-    Object.keys(balances.value).filter(
-      tokenAddress =>
+    Object.keys(balances.value).filter(tokenAddress => {
+      return (
         Number(balances.value[tokenAddress]) > 0 &&
+        !isExcludedToken(tokenAddress) &&
         !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address) &&
         !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL)
-    ),
+      );
+    }),
     21
   );
 });

@@ -43,6 +43,10 @@ function setTokenInAddress(tokenAddress) {
 const isSingleAssetInvestPool = computed(() => {
   return pool.value && isStablePhantom(pool.value.poolType);
 });
+
+const excludedTokens = computed<string[]>(() => {
+  return pool.value?.address ? [pool.value.address] : [];
+});
 </script>
 
 <template>
@@ -58,7 +62,10 @@ const isSingleAssetInvestPool = computed(() => {
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
         <div v-else-if="isSingleAssetInvestPool">
-          <MyWallet @click:asset="setTokenInAddress" />
+          <MyWallet
+            :excludedTokens="excludedTokens"
+            @click:asset="setTokenInAddress"
+          />
         </div>
         <MyWalletTokensCard
           v-else
