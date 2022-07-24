@@ -189,7 +189,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       class="mb-4"
       @update:amount="amount => (amounts[0] = amount)"
       @update:address="address => (tokenAddresses[0] = address)"
-      :excludedTokens="[veBalTokenInfo?.address]"
+      :excludedTokens="[veBalTokenInfo?.address, props.pool.address]"
     />
 
     <InvestFormTotals
