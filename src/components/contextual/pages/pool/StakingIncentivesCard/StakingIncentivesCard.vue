@@ -228,7 +228,7 @@ async function handleActionSuccess() {
   content: '';
   top: -2px;
   height: calc(100% + 4px);
-  background: linear-gradient(45deg, #4254ff, #f441a5, #ffeb3b, #4254ff);
+  background: linear-gradient(90deg, #4254ff, #f441a5, #ffeb3b, #4254ff);
   background-size: 400%;
   animation: anim-half 3s ease-out both;
   border-radius: 14px;
@@ -240,8 +240,8 @@ async function handleActionSuccess() {
 }
 
 .handle .bal-card {
+  @apply mx-auto;
   width: calc(100% - 4px);
-  margin: 0 auto;
 }
 
 @keyframes anim-half {
@@ -249,13 +249,13 @@ async function handleActionSuccess() {
     background-position: 0;
   }
   to {
-    background-position: 200%;
+    background-position: 125%;
   }
 }
 
 @keyframes anim {
   from {
-    background-position: 200%;
+    background-position: 125%;
   }
   to {
     background-position: 600%;
