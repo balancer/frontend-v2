@@ -20,7 +20,7 @@ import { isStableLike } from '@/composables/usePool';
 import { useTokenHelpers } from '@/composables/useTokenHelpers';
 import useTokens from '@/composables/useTokens';
 import { FiatCurrency } from '@/constants/currency';
-import { bnSum, bnum } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { bbAUSDToken } from '@/services/balancer/contracts/contracts/bb-a-usd-token';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
