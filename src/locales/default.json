@@ -349,7 +349,7 @@
         "tokenIn": "You’re investing",
         "tokenOut": "You’re expected to receive",
         "confirmed": "Investment confirmed",
-        "default": "Investment preview"
+        "default": "Preview investment"
       },
       "tooltips": {
         "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."

@@ -10,6 +10,7 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import useVeBal from '@/composables/useVeBAL';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, findByAddress, isSameAddress } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
@@ -69,19 +70,34 @@ const {
   maximizeAmounts,
   optimizeAmounts,
   proportionalAmounts,
-  swapRouteLoading
+  swapRouteLoading,
+  swapRoute
 } = investMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
-  pool
-);
+const {
+  managedPoolWithTradingHalted,
+  isWethPool,
+  isStableLikePool,
+  isStablePhantomPool
+} = usePool(pool);
+const { veBalTokenInfo } = useVeBal();
 
 /**
  * COMPUTED
  */
+const error = computed(() => {
+  if (hasAmounts.value && swapRoute.value?.returnAmountFromSwaps.eq(0)) {
+    return {
+      header: t('insufficientLiquidity'),
+      body: t('insufficientLiquidityDetailed')
+    };
+  }
+  return null;
+});
+
 const hasValidInputs = computed(
   (): boolean =>
     validInputs.value.every(validInput => validInput === true) &&
@@ -231,25 +247,38 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     />
 
     <TokenInput
-      v-for="(n, i) in tokenAddresses"
-      :key="n"
-      :name="tokenAddresses[i]"
-      v-model:address="tokenAddresses[i]"
-      v-model:amount="amounts[i]"
-      v-model:isValid="validInputs[i]"
-      :weight="tokenWeight(tokenAddresses[i])"
-      :hintAmount="propAmountFor(i)"
-      :hint="hint(i)"
+      v-if="isStablePhantomPool"
+      v-model:address="tokenAddresses[0]"
+      v-model:amount="amounts[0]"
+      v-model:isValid="validInputs[0]"
+      :name="tokenAddresses[0]"
       class="mb-4"
-      fixedToken
-      :options="tokenOptions(i)"
-      @update:amount="handleAmountChange($event, i)"
-      @update:address="handleAddressChange($event)"
+      @update:amount="amount => (amounts[0] = amount)"
+      @update:address="address => (tokenAddresses[0] = address)"
+      :excludedTokens="[veBalTokenInfo?.address, props.pool.address]"
     />
+    <template v-else>
+      <TokenInput
+        v-for="(n, i) in tokenAddresses"
+        :key="n"
+        :name="tokenAddresses[i]"
+        v-model:address="tokenAddresses[i]"
+        v-model:amount="amounts[i]"
+        v-model:isValid="validInputs[i]"
+        :weight="tokenWeight(tokenAddresses[i])"
+        :hintAmount="propAmountFor(i)"
+        :hint="hint(i)"
+        class="mb-4"
+        fixedToken
+        :options="tokenOptions(i)"
+        @update:amount="handleAmountChange($event, i)"
+        @update:address="handleAddressChange($event)"
+      />
+    </template>
 
     <InvestFormTotals
       :math="investMath"
-      showTotalRow
+      :showTotalRow="!isStablePhantomPool"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -270,6 +299,15 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     <WrapStEthLink :pool="pool" class="mt-4" />
 
     <div class="mt-4">
+      <BalAlert
+        v-if="error"
+        class="p-3 mb-4"
+        type="error"
+        size="sm"
+        :title="error.header"
+        :description="error.body"
+        block
+      />
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"
@@ -281,8 +319,11 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         v-else
         :label="$t('preview')"
         color="gradient"
+        :loading="swapRouteLoading"
+        :loading-label="$t('loadingBestPrice')"
         :disabled="
-          !hasAmounts ||
+          !!error ||
+            !hasAmounts ||
             !hasValidInputs ||
             isMismatchedNetwork ||
             swapRouteLoading
