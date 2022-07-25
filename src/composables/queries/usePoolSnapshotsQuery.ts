@@ -1,6 +1,6 @@
 import differenceInDays from 'date-fns/differenceInDays';
 import { QueryObserverOptions } from 'react-query/core';
-import { computed, ComputedRef, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -8,9 +8,10 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
-import { Pool, PoolSnapshots } from '@/services/pool/types';
+import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
+import usePoolQuery from './usePoolQuery';
 
 /**
  * TYPES
@@ -25,7 +26,6 @@ interface QueryResponse {
  */
 export default function usePoolSnapshotsQuery(
   id: string,
-  pool: ComputedRef<Pool>,
   days?: number,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
@@ -34,17 +34,19 @@ export default function usePoolSnapshotsQuery(
    * If pool is already downloaded, we can use it instantly
    * it may be if user came to pool page from home page
    */
-  const poolInfo = poolsStoreService.findPool(id);
+  const storedPool = poolsStoreService.findPool(id);
 
   /**
    * QUERY DEPENDENCIES
    */
   const { networkId } = useNetwork();
+  const poolQuery = usePoolQuery(id);
 
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !!pool.value?.id || !!poolInfo);
+  const pool = computed(() => poolQuery.data.value);
+  const enabled = computed(() => !!pool.value?.id || !!storedPool);
 
   /**
    * QUERY INPUTS
@@ -52,13 +54,13 @@ export default function usePoolSnapshotsQuery(
   const queryKey = QUERY_KEYS.Pools.Snapshot(networkId, id);
 
   const queryFn = async () => {
-    if (!pool.value && !poolInfo) throw new Error('No pool');
+    if (!pool.value && !storedPool) throw new Error('No pool');
 
     let snapshots: PoolSnapshots = {};
     let prices: HistoricalPrices = {};
 
-    const createTime = poolInfo?.createTime || pool.value?.createTime;
-    const tokensList = poolInfo?.tokensList || pool.value?.tokensList;
+    const createTime = storedPool?.createTime || pool.value?.createTime || 0;
+    const tokensList = storedPool?.tokensList || pool.value?.tokensList || [];
     const shapshotDaysNum =
       days || differenceInDays(new Date(), new Date(createTime * 1000));
 

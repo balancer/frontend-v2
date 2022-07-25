@@ -92,7 +92,6 @@
 <script lang="ts">
 import {
   computed,
-  ComputedRef,
   defineComponent,
   onBeforeUnmount,
   onMounted,
@@ -119,7 +118,6 @@ import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
-import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 interface PoolPageData {
@@ -174,8 +172,8 @@ export default defineComponent({
     //#region pool snapshot query
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
       route.params.id as string,
-      pool as ComputedRef<Pool>,
       undefined,
+      // in order to prevent multiple coingecko requests
       { refetchOnWindowFocus: false }
     );
     const isLoadingSnapshots = computed(
@@ -190,10 +188,7 @@ export default defineComponent({
     //#endregion
 
     //#region APR query
-    const aprQuery = usePoolAprQuery(
-      route.params.id as string,
-      pool as ComputedRef<Pool>
-    );
+    const aprQuery = usePoolAprQuery(route.params.id as string);
     const loadingApr = computed(
       () =>
         aprQuery.isLoading.value ||

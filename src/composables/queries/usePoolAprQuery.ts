@@ -1,5 +1,5 @@
 import { QueryObserverOptions } from 'react-query/core';
-import { computed, ComputedRef, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import { getTimeTravelBlock } from '@/composables/useSnapshots';
@@ -16,10 +16,10 @@ import useNetwork from '../useNetwork';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
+import usePoolQuery from './usePoolQuery';
 
 export default function usePoolAprQuery(
   id: string,
-  pool: ComputedRef<Pool>,
   options: QueryObserverOptions<PoolAPRs> = {}
 ) {
   /**
@@ -27,11 +27,12 @@ export default function usePoolAprQuery(
    * If pool is already downloaded, we can use it instantly
    * it may be if user came to pool page from home page
    */
-  const poolInfo = poolsStoreService.findPool(id);
+  const storedPool = poolsStoreService.findPool(id);
 
   /**
    * COMPOSABLES
    */
+  const poolQuery = usePoolQuery(id);
   const { prices } = useTokens();
   const { currency } = useUserSettings();
   const { tokens } = useTokens();
@@ -45,7 +46,8 @@ export default function usePoolAprQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !!pool.value?.id || !!poolInfo);
+  const pool = computed(() => poolQuery.data.value);
+  const enabled = computed(() => !!pool.value?.id || !!storedPool);
 
   /**
    * QUERY INPUTS
@@ -70,19 +72,26 @@ export default function usePoolAprQuery(
   }
 
   const queryFn = async () => {
-    if (!pool.value && !poolInfo) throw new Error('No pool');
-    if (poolInfo?.apr) {
-      return poolInfo.apr;
+    let _pool: Pool;
+    if (storedPool) {
+      _pool = storedPool;
+    } else if (pool.value) {
+      // copy computed pool to avoid mutation warnings
+      _pool = { ...pool.value, tokens: [...pool.value.tokens] };
+    } else {
+      throw new Error('No pool');
     }
 
-    // copy computed pool to avoid mutation warnings
-    const _pool = { ...pool.value, tokens: [...pool.value.tokens] } || poolInfo;
+    if (storedPool?.apr) {
+      return storedPool.apr;
+    }
 
     const payload = {
       pools: [_pool],
       prices: prices.value,
       gauges: subgraphGauges.value || []
     };
+
     const [
       protocolFeePercentage,
       gaugeBALAprs,
