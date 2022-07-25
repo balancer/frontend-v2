@@ -72,6 +72,8 @@ const showTokensOut = computed<boolean>(
   () => !!Object.keys(tokenOutMap.value).length
 );
 
+const isSingleAssetInvestment = computed<boolean>(() => !!swapRoute.value);
+
 const amountInMap = computed(
   (): AmountMap => {
     const amountMap = {};
@@ -190,6 +192,7 @@ function handleShowStakeModal() {
       :tokenMap="tokenInMap"
       :fiatAmountMap="fiatAmountInMap"
       :fiatTotal="fiatTotal"
+      :hideAmountShare="isSingleAssetInvestment"
     />
     <TokenAmounts
       v-if="showTokensOut"
@@ -199,6 +202,7 @@ function handleShowStakeModal() {
       :tokenMap="tokenOutMap"
       :fiatAmountMap="fiatAmountOutMap"
       :fiatTotal="fiatTotalOut"
+      hideAmountShare
     />
 
     <InvestSummary
