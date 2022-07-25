@@ -346,6 +346,8 @@
         "investment": "Confirm investment in wallet"
       },
       "titles": {
+        "tokenIn": "You’re investing",
+        "tokenOut": "You’re expected to receive",
         "confirmed": "Investment confirmed",
         "default": "Investment preview"
       },
