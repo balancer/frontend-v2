@@ -351,6 +351,9 @@
         "confirmed": "Investment confirmed",
         "default": "Preview investment"
       },
+      "summary": {
+        "total": "Total to invest"
+      },
       "tooltips": {
         "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
       }
