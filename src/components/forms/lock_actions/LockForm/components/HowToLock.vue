@@ -60,7 +60,7 @@ const steps = computed(() => [
     </template>
     <template v-slot:how-to-lock>
       <div class="p-4 border-t dark:border-gray-900">
-        <div class="text-gray-500">
+        <div class="text-secondary">
           <ol class="steps text-sm">
             <li>
               {{ $t('getVeBAL.howToLock.steps.investPart1') }}

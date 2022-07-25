@@ -317,10 +317,8 @@ function onAlertMountChange() {
     <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
-          <span class="text-xs text-gray-700 dark:text-gray-500">{{
-            networkName
-          }}</span>
-          <h5 class="font-bold dark:text-gray-300">
+          <span class="text-xs text-secondary">{{ networkName }}</span>
+          <h5 class="font-semibold dark:text-gray-300">
             {{ $t('createAPool.chooseTokenWeights') }}
           </h5>
         </BalStack>

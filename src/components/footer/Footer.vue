@@ -1,6 +1,8 @@
 <template>
   <footer>
-    <div class="lg:container lg:mx-auto dark:border-t dark:border-gray-800">
+    <div
+      class="xl:container xl:mx-auto lg:px-4 dark:border-t dark:border-gray-800"
+    >
       <div
         class="
           px-4
@@ -11,7 +13,7 @@
           md:flex-row
           md:justify-between
           gap-8
-          text-white 
+          text-primary 
         "
       >
         <div class="flex flex-col gap-8">
@@ -21,35 +23,48 @@
 
           <div class="md:hidden flex flex-col gap-2">
             <p>
-              <router-link class="link font-medium" :to="{ name: 'home' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'home' }"
+              >
                 {{ $t('invest') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'trade' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'trade' }"
+              >
                 {{ $t('trade') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'portfolio' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'portfolio' }"
+              >
                 {{ $t('portfolio') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'vebal' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'vebal' }"
+              >
                 {{ $t('vebal') }}
               </router-link>
             </p>
             <p>
-              <router-link class="link font-medium" :to="{ name: 'claim' }">
+              <router-link
+                class="link font-medium text-lg"
+                :to="{ name: 'claim' }"
+              >
                 {{ $t('claim') }}
               </router-link>
             </p>
           </div>
 
-          <div
-            class="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 md:order-3"
-          >
+          <div class="flex flex-wrap gap-3 md:gap-4 md:order-3">
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Home"
               external
@@ -257,7 +272,7 @@ footer :deep(.logotype) {
 }
 
 .link {
-  @apply text-black dark:text-white transition-colors flex items-center no-underline hover:text-blue-600;
+  @apply text-black dark:text-white transition-colors flex items-center no-underline hover:text-purple-600;
 }
 
 .link--external {
@@ -266,7 +281,7 @@ footer :deep(.logotype) {
 
 .link:hover,
 .link:focus-visible {
-  @apply text-blue-600 dark:text-yellow-500 no-underline;
+  @apply text-purple-600 dark:text-yellow-500 no-underline;
 }
 
 .link:focus:not(:focus-visible) {
@@ -274,15 +289,15 @@ footer :deep(.logotype) {
 }
 
 .policy {
-  @apply text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-yellow-500;
+  @apply text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-yellow-500;
 }
 
 .arrow {
-  @apply text-gray-300 dark:text-gray-600 group-hover:text-blue-600 dark:group-hover:text-yellow-500;
+  @apply text-gray-300 dark:text-gray-600 group-hover:text-purple-600 dark:group-hover:text-yellow-500;
 }
 
 .router-link-active,
 .dark .router-link-active {
-  @apply text-red-500;
+  @apply text-blue-600 dark:text-blue-400;
 }
 </style>

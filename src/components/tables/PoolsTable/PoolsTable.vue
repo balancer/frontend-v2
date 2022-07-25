@@ -291,7 +291,7 @@ function lockedUntil(lockEndDate?: number) {
           class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.volume"
         >
-          <span v-if="!pool?.volumeSnapshot">-</span>
+          <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="h-4 w-12" />
           <span v-else class="text-right">
             {{
               fNum2(pool?.volumeSnapshot, {

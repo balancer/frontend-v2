@@ -42,13 +42,17 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
           assetOut: wstETH.address
         }
       }"
-      class="text-xs text-gray-500 underline"
+      class="text-xs text-secondary underline"
     >
       {{ $t('wrapInstruction', [stETH.symbol, wstETH.symbol]) }}
     </router-link>
     <BalTooltip>
       <template v-slot:activator>
-        <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
+        <BalIcon
+          name="info"
+          size="xs"
+          class="text-gray-400 dark:text-gray-500 ml-2"
+        />
       </template>
       <div v-html="$t('wrapStEthTooltip')" />
     </BalTooltip>

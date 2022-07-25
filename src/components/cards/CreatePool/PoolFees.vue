@@ -48,7 +48,7 @@ const { userNetworkConfig } = useWeb3();
  * COMPUTED
  */
 const customInputClasses = computed(() => ({
-  'border border-blue-500 text-blue-500': isCustomFee.value,
+  'border border-blue-500 text-blue-600 dark:text-blue-400': isCustomFee.value,
   'border dark:border-gray-900': !isCustomFee.value
 }));
 
@@ -91,7 +91,7 @@ function onCustomInput(val: string): void {
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
 
-  if (Number(val) <= 0.0001 || Number(val) > 10) {
+  if (Number(val) < 0.0001 || Number(val) > 10) {
     isInvalidFee.value = true;
   } else {
     isInvalidFee.value = false;
@@ -140,7 +140,7 @@ async function onChangeFeeController(val: string) {
     <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
-          <span class="text-xs text-gray-700 dark:text-gray-500">{{
+          <span class="text-xs text-secondary">{{
             userNetworkConfig?.name
           }}</span>
           <BalStack horizontal align="center" spacing="xs">
@@ -150,7 +150,7 @@ async function onChangeFeeController(val: string) {
             >
               <BalIcon class="flex" name="chevron-left" />
             </button>
-            <h5 class="font-bold dark:text-gray-300">
+            <h5 class="font-semibold dark:text-gray-300">
               {{ $t('createAPool.setPoolFees') }}
             </h5>
           </BalStack>

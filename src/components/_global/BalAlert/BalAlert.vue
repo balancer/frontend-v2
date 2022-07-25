@@ -132,7 +132,7 @@ export default defineComponent({
         case 'error':
           return 'text-red-500 dark:text-white bg-red-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         default:
-          return 'text-gray-500 dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-secondary dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
       }
     });
 
@@ -144,7 +144,7 @@ export default defineComponent({
     });
 
     const titleClasses = computed(() => ({
-      'font-bold': !!props.description || slots.default
+      'font-semibold': !!props.description || slots.default
     }));
 
     const descriptionColor = computed(() => {

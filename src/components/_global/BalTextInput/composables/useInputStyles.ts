@@ -69,7 +69,7 @@ export default function useInputStyles(
     [extPaddingClass()]: true,
     'border-gray-100 dark:border-gray-800': !isInvalid.value && !isActive.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
-    'border-blue-300': isActive.value && !isInvalid.value,
+    'border-blue-300 dark:border-blue-400': isActive.value && !isInvalid.value,
     'hover:border-gray-300 dark:hover:border-gray-700':
       isHover.value && !isActive.value,
     'shadow-inner': !props.noShadow

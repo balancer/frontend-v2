@@ -87,7 +87,7 @@ function amountShare(address: string): string {
             </div>
           </div>
         </div>
-        <div class="text-sm text-gray-500 font-numeric">
+        <div class="text-sm text-secondary font-numeric">
           {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
           ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
         </div>
@@ -107,7 +107,7 @@ function amountShare(address: string): string {
           <span>{{ tokenMap[token.address].symbol }}</span>
         </div>
       </div>
-      <div class="text-sm text-gray-500 font-numeric whitespace-nowrap">
+      <div class="text-sm text-secondary font-numeric whitespace-nowrap">
         {{ fNum2(0, FNumFormats.fiat) }}
         ({{ fNum2(0, FNumFormats.percent) }})
       </div>

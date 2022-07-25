@@ -115,7 +115,7 @@ const tokensWithBalance = computed(() => {
           >
           </BalAssetSet>
           <p
-            class="text-sm text-gray-500 dark:text-gray-400 opacity-0 fade-in"
+            class="text-sm text-secondary opacity-0 fade-in"
             v-if="tokensWithBalance.length === 0"
           >
             {{ noTokensMessage }}.

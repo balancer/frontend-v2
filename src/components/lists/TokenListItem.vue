@@ -36,7 +36,7 @@
         numberHeight="4"
         class="text-sm font-normal"
       />
-      <div v-else class="text-gray-500 text-sm font-normal">
+      <div v-else class="text-secondary text-sm font-normal">
         <template v-if="value > 0">
           {{ fNum2(value, FNumFormats.fiat) }}
         </template>

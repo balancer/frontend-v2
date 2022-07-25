@@ -80,7 +80,7 @@ const isLoadingTotalValue = computed(
         class="h-10 w-40 mx-auto"
         white
       />
-      <div v-else class="text-3xl font-bold text-white mb-1">
+      <div v-else class="text-3xl font-semibold text-white mb-1">
         {{ totalInvestedLabel }}
       </div>
       <div v-if="!isL2" class="relative mt-2 inline-block">

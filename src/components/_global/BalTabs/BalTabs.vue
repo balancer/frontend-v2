@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="['bal-tab-container', containerClasses]">
+    <div :class="['bal-tab-container text-secondary', containerClasses]">
       <div
         v-for="(tab, i) in tabs"
         :key="i"
@@ -53,10 +53,10 @@ export default defineComponent({
 
     function stateClasses(tab: Tab): Record<string, boolean> {
       return {
-        'border-b-2 border-blue-500 text-blue-500 hover:text-blue-500 font-bold': isActiveTab(
+        'border-b-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:border-blue-500 font-semibold': isActiveTab(
           tab
         ),
-        'hover:text-black dark:hover:text-white dark:border-gray-700 transition-colors': !isActiveTab(
+        'hover:text-purple-600 dark:hover:text-yellow-500 dark:border-gray-700 transition-colors': !isActiveTab(
           tab
         )
       };
@@ -82,6 +82,6 @@ export default defineComponent({
 }
 
 .bal-tab-container {
-  @apply flex border-b text-gray-500 dark:border-gray-700;
+  @apply flex border-b dark:border-gray-700;
 }
 </style>
