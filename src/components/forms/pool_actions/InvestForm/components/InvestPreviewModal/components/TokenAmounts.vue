@@ -15,6 +15,7 @@ type Props = {
   tokenMap: TokenInfoMap;
   fiatTotal: string;
   title?: string;
+  hideAmountShare?: boolean;
 };
 
 type AmountMap = {
@@ -25,7 +26,8 @@ type AmountMap = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  title: ''
+  title: '',
+  hideAmountShare: false
 });
 
 /**
@@ -71,22 +73,22 @@ function amountShare(address: string): string {
       {{ props.title }}
     </div>
     <div v-for="token in amountsToShow" :key="token.address" class="relative">
-      <div class="items-center token-amount-table-content">
-        <div class="flex items-center">
-          <BalAsset :address="token.address" :size="36" />
-          <div class="flex flex-col ml-3">
-            <div class="text-lg font-medium">
-              <span class="font-numeric">
-                {{ fNum2(token.amount, FNumFormats.token) }}
-              </span>
-              {{ tokenMap[token.address]?.symbol }}
-            </div>
+      <div class="token-amount-table-content">
+        <div class="flex flex-col mr-3">
+          <div class="font-medium">
+            <span class="font-numeric">
+              {{ fNum2(token.amount, FNumFormats.token) }}
+            </span>
+            {{ tokenMap[token.address]?.symbol }}
+          </div>
+          <div class="text-sm text-secondary font-numeric">
+            {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
+            <span v-if="!hideAmountShare">
+              ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
+            </span>
           </div>
         </div>
-        <div class="text-sm text-secondary font-numeric">
-          {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
-          ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
-        </div>
+        <BalAsset :address="token.address" :size="36" />
       </div>
     </div>
   </div>
