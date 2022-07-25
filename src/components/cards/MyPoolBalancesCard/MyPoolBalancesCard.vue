@@ -8,6 +8,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
+import { TokenInfo } from '@/types/TokenList';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
@@ -29,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { tokens, balances, balanceFor } = useTokens();
+const { tokens, balances, balanceFor, getToken } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
@@ -80,6 +81,19 @@ const tokenAddresses = computed((): string[] => {
   return props.pool.tokensList;
 });
 
+const poolTokens = computed((): string[] => {
+  return tokenAddresses.value.map(address => {
+    const token = getToken(address);
+    return token.symbol;
+  });
+});
+
+const bpt = computed(
+  (): TokenInfo => {
+    return getToken(props.pool.address);
+  }
+);
+
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
@@ -93,12 +107,41 @@ const fiatTotal = computed(() => {
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
         <h6>
-          {{ $t('poolTransfer.myPoolBalancesCard.title') }}
+          {{ $t('poolTransfer.myPoolBalancesCard.longTitle') }}
         </h6>
       </div>
     </template>
 
-    <div class="p-4 -mt-2">
+    <div v-if="isStablePhantomPool" class="-mt-2">
+      <div class="p-4 font-medium w-full border-b dark:border-gray-900">
+        <div class="flex justify-between align-baseline">
+          <span> {{ bpt.symbol }}</span>
+          <span>
+            {{ fiatTotal }}
+          </span>
+        </div>
+        <span class="text-sm text-gray-600 dark:text-gray-400">
+          {{ bpt.name }}
+        </span>
+      </div>
+      <div class="p-4">
+        <div class="mb-2 text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('poolTransfer.myPoolBalancesCard.underlyingTokens') }}
+        </div>
+        <div class="flex gap-2 flex-wrap flex-row">
+          <div
+            class="p-2 flex items-center gap-2 border-0 bg-gray-100 dark:bg-gray-700 rounded-lg"
+            v-for="(address, i) in tokenAddresses"
+            :key="address"
+          >
+            <BalAsset :key="address" :address="address"></BalAsset
+            >{{ poolTokens[i] }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="-mt-2 p-4">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />
       </div>
