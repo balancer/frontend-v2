@@ -1,6 +1,5 @@
 import { reactive, toRefs } from 'vue';
 
-import { balancer } from '@/lib/balancer.sdk';
 import { Address } from '@/types';
 
 type InvestState = {
@@ -10,7 +9,6 @@ type InvestState = {
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
   submitting: boolean;
-  sorReady: boolean;
 };
 
 /**
@@ -22,11 +20,8 @@ const state = reactive<InvestState>({
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
-  submitting: false,
-  sorReady: false,
+  submitting: false
 });
-
-const sor = balancer.sor;
 
 /**
  * METHODS
@@ -38,7 +33,6 @@ function resetAmounts(): void {
 export default function useInvestState() {
   return {
     ...toRefs(state),
-    sor,
-    resetAmounts,
+    resetAmounts
   };
 }
