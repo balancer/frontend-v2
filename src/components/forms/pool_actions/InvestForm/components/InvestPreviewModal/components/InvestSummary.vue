@@ -31,7 +31,7 @@ const { currency } = useUserSettings();
     <div class="flex flex-col py-2">
       <div class="summary-table-row">
         <div class="summary-table-label">
-          {{ $t('total') }}
+          {{ $t('investment.preview.summary.total') }}
         </div>
         <div class="summary-table-number">
           {{ fNum2(fiatTotal, FNumFormats.fiat) }}
