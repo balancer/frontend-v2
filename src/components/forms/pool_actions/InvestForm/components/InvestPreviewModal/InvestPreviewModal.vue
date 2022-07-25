@@ -185,20 +185,21 @@ function handleShowStakeModal() {
     </template>
 
     <TokenAmounts
+      :title="$t('investment.preview.titles.tokenIn')"
       :amountMap="amountInMap"
       :tokenMap="tokenInMap"
       :fiatAmountMap="fiatAmountInMap"
       :fiatTotal="fiatTotal"
     />
-    <template v-if="showTokensOut">
-      <div>Tokens Out</div>
-      <TokenAmounts
-        :amountMap="amountOutMap"
-        :tokenMap="tokenOutMap"
-        :fiatAmountMap="fiatAmountOutMap"
-        :fiatTotal="fiatTotalOut"
-      />
-    </template>
+    <TokenAmounts
+      v-if="showTokensOut"
+      :title="$t('investment.preview.titles.tokenOut')"
+      class="mt-4"
+      :amountMap="amountOutMap"
+      :tokenMap="tokenOutMap"
+      :fiatAmountMap="fiatAmountOutMap"
+      :fiatTotal="fiatTotalOut"
+    />
 
     <InvestSummary
       :pool="pool"

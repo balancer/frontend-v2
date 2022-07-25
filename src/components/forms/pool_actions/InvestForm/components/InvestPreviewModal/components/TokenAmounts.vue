@@ -14,6 +14,7 @@ type Props = {
   fiatAmountMap: AmountMap;
   tokenMap: TokenInfoMap;
   fiatTotal: string;
+  title?: string;
 };
 
 type AmountMap = {
@@ -23,7 +24,9 @@ type AmountMap = {
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  title: ''
+});
 
 /**
  * COMPOSABLES
@@ -64,6 +67,9 @@ function amountShare(address: string): string {
 
 <template>
   <div class="token-amount-table">
+    <div class="title" v-if="props.title">
+      {{ props.title }}
+    </div>
     <div v-for="token in amountsToShow" :key="token.address" class="relative">
       <div class="items-center token-amount-table-content">
         <div class="flex items-center">
@@ -88,9 +94,13 @@ function amountShare(address: string): string {
 
 <style scoped>
 .token-amount-table {
-  @apply shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg;
+  @apply shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg overflow-hidden;
 }
 
+.title {
+  @apply dark:bg-gray-800 bg-gray-50 px-3 py-2;
+  @apply font-medium text-sm text-gray-600 dark:text-gray-400;
+}
 .token-amount-table-content {
   @apply p-3 flex justify-between;
 }
