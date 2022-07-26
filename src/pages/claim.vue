@@ -258,7 +258,7 @@ onBeforeMount(async () => {
             v-if="!loading"
             :rewardsData="protocolRewardsDataDeprecated"
             :isLoading="loading"
-            class="mt-8"
+            deprecated
           />
         </div>
       </template>
