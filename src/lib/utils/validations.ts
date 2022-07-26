@@ -29,10 +29,14 @@ export function isPositive() {
 }
 
 export function isLessThanOrEqualTo(max: number | string, msg = '') {
-  return v =>
-    !v ||
-    bnum(v).isLessThanOrEqualTo(max) ||
-    (msg ? msg : i18n.global.t('mustBeLessThan', [max]));
+  return v => {
+    console.log({ v, max });
+    return (
+      !v ||
+      bnum(v).isLessThanOrEqualTo(max) ||
+      (msg ? msg : i18n.global.t('mustBeLessThan', [max]))
+    );
+  };
 }
 
 export const isEmailCheck = email => {

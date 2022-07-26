@@ -270,7 +270,7 @@ export default function useWithdrawMath(
     if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;
 
     try {
-      return poolTokens.value.map((token, tokenIndex) => {
+      const result = poolTokens.value.map((token, tokenIndex) => {
         return formatUnits(
           poolCalculator
             .exactBPTInForTokenOut(bptBalanceScaled.value, tokenIndex)
@@ -278,6 +278,8 @@ export default function useWithdrawMath(
           token.decimals
         );
       });
+      console.log({ result });
+      return result;
     } catch (error) {
       if ((error as Error).message.includes('MIN_BPT_IN_FOR_TOKEN_OUT')) {
         setError(WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT);
@@ -566,7 +568,7 @@ export default function useWithdrawMath(
       [bptBalanceScaled.value],
       [tokenOut.value]
     );
-
+    console.log({ _batchSwap });
     const batchSwapAmountOut = bnum(
       _batchSwap.returnAmounts[0].toString()
     ).abs();
