@@ -513,6 +513,10 @@
       }
     }
   },
+  "pastEarnings": {
+    "title": "Past earnings",
+    "description": "This contract was deprecated on 25 July 2022. Any earnings after this date will be distributed by the upgraded contract."
+  },
   "pendingClaims": "Pending claims",
   "pendingEstimate": "Pending: (estimate)",
   "perWeek": "per week",
