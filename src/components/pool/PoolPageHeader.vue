@@ -24,7 +24,6 @@ type Props = {
   loadingApr: boolean;
   noInitLiquidity: boolean;
   isStableLikePool: boolean;
-  poolTypeLabel: string;
   pool: Pool;
   poolApr: PoolAPRs;
   titleTokens: [string, OnchainTokenData][];
@@ -80,6 +79,7 @@ const swapFeeToolTip = computed(() => {
     return t('ownerFeesTooltip');
   }
 });
+
 const poolFeeLabel = computed(() => {
   if (!props.pool || !props.pool?.onchain?.swapFee) return '';
 
@@ -110,6 +110,13 @@ const hasCustomToken = computed(() => {
       address => !includesAddress(knownTokens, address)
     )
   );
+});
+
+const poolTypeLabel = computed(() => {
+  if (!props.pool) return '';
+  const key = POOLS.Factories[props.pool.factory];
+
+  return key ? t(key) : t('unknownPoolType');
 });
 </script>
 

@@ -5,7 +5,6 @@
     >
       <PoolPageHeader
         :loadingPool="loadingPool"
-        :poolTypeLabel="poolTypeLabel"
         :loadingApr="loadingApr"
         :pool="pool"
         :poolApr="poolApr"
@@ -242,13 +241,6 @@ export default defineComponent({
         Number(pool.value?.onchain?.totalSupply || '0') === 0
     );
 
-    const poolTypeLabel = computed(() => {
-      if (!pool.value) return '';
-      const key = POOLS.Factories[pool.value.factory];
-
-      return key ? t(key) : t('unknownPoolType');
-    });
-
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(prices.value);
@@ -303,7 +295,6 @@ export default defineComponent({
       pool,
       explorer: explorerLinks,
       noInitLiquidity,
-      poolTypeLabel,
       historicalPrices,
       snapshots,
       isLoadingSnapshots,
