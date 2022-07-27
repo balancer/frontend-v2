@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, ref, toRef, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 // Composables
 import { useI18n } from 'vue-i18n';
 
@@ -46,7 +46,8 @@ const props = defineProps<Props>();
  */
 const showInvestPreview = ref(false);
 const showStakeModal = ref(false);
-const pool = toRef(props, 'pool');
+
+const pool = computed(() => props.pool);
 
 /**
  * COMPOSABLES

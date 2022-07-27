@@ -566,7 +566,7 @@
   "poolTransfer": {
     "myPoolBalancesCard": {
       "title": "My pool balance",
-      "longTitle": "My pool investment balance",
+      "altTitle": "My pool investment balance",
       "underlyingTokens": "Underlying pool tokens"
     },
     "myWalletTokensCard": {

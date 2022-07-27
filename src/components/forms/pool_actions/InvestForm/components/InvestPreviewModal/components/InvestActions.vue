@@ -80,7 +80,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
-const { slippage } = useUserSettings();
+const { slippageBsp } = useUserSettings();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
@@ -166,28 +166,26 @@ async function handleTransaction(tx): Promise<void> {
 }
 
 async function submit(): Promise<TransactionResponse> {
-  console.log({ swapRoute: swapRoute.value });
-
   investmentState.init = true;
+
   let tx: TransactionResponse;
+
   if (shouldFetchSwapRoute.value && !swapRoute.value)
     await props.math.getSwapRoute();
   try {
     if (swapRoute.value) {
-      const deadline = BigNumber.from(`${Math.ceil(Date.now() / 1000) + 60}`); // 60 seconds from now
+      // Do single asset swap
 
-      // TODO: Get slippage from user settings
-      const maxSlippage = parseFloat(slippage.value) * 10000;
+      const deadline = BigNumber.from(`${Math.ceil(Date.now() / 1000) + 60}`); // 60 seconds from now
 
       const buildSwapResult = balancer.swaps.buildSwap({
         userAddress: account.value,
         swapInfo: swapRoute.value,
         kind: 0,
         deadline,
-        maxSlippage
+        maxSlippage: slippageBsp.value
       });
 
-      console.log({ buildSwapResult });
       if (buildSwapResult.functionName === 'batchSwap') {
         const attributes: BatchSwap = buildSwapResult.attributes as BatchSwap;
 
@@ -196,7 +194,6 @@ async function submit(): Promise<TransactionResponse> {
           attributes.swaps,
           attributes.assets,
           attributes.funds,
-          // TODO: Fix type
           attributes.limits as string[]
         );
       } else {

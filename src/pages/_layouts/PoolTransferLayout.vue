@@ -46,6 +46,7 @@ const poolSupportsSingleAssetSwaps = computed(() => {
   return pool.value && isStablePhantom(pool.value.poolType);
 });
 
+// Exclude BPT from the list of tokens that can be used to invest in the pool.
 const excludedTokens = computed<string[]>(() => {
   return pool.value?.address ? [pool.value.address] : [];
 });

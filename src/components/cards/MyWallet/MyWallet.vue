@@ -64,9 +64,9 @@ const tokensWithBalance = computed(() => {
     Object.keys(balances.value).filter(tokenAddress => {
       return (
         Number(balances.value[tokenAddress]) > 0 &&
-        !isExcludedToken(tokenAddress) &&
         !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address) &&
-        !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL)
+        !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL) &&
+        !isExcludedToken(tokenAddress)
       );
     }),
     21

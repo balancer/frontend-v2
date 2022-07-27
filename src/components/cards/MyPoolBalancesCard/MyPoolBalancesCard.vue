@@ -81,18 +81,14 @@ const tokenAddresses = computed((): string[] => {
   return props.pool.tokensList;
 });
 
-const poolTokens = computed((): string[] => {
-  return tokenAddresses.value.map(address => {
+const poolTokens = computed<string[]>(() =>
+  tokenAddresses.value.map(address => {
     const token = getToken(address);
     return token.symbol;
-  });
-});
-
-const bpt = computed(
-  (): TokenInfo => {
-    return getToken(props.pool.address);
-  }
+  })
 );
+
+const bpt = computed<TokenInfo>(() => getToken(props.pool.address));
 
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
@@ -107,7 +103,7 @@ const fiatTotal = computed(() => {
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
         <h6>
-          {{ $t('poolTransfer.myPoolBalancesCard.longTitle') }}
+          {{ $t('poolTransfer.myPoolBalancesCard.altTitle') }}
         </h6>
       </div>
     </template>
@@ -115,7 +111,7 @@ const fiatTotal = computed(() => {
     <div v-if="isStablePhantomPool" class="-mt-2">
       <div class="p-4 font-medium w-full border-b dark:border-gray-900">
         <div class="flex justify-between align-baseline">
-          <span> {{ bpt.symbol }}</span>
+          <span>{{ bpt.symbol }}</span>
           <span>
             {{ fiatTotal }}
           </span>
@@ -134,13 +130,11 @@ const fiatTotal = computed(() => {
             v-for="(address, i) in tokenAddresses"
             :key="address"
           >
-            <BalAsset :key="address" :address="address"></BalAsset
-            >{{ poolTokens[i] }}
+            <BalAsset :key="address" :address="address" />{{ poolTokens[i] }}
           </div>
         </div>
       </div>
     </div>
-
     <div v-else class="-mt-2 p-4">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />

@@ -1,3 +1,6 @@
+/**
+ * Slices the decimals that exceed the given decimal limit
+ */
 export function overflowProtected(
   value: string | number,
   decimalLimit: number

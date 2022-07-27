@@ -128,16 +128,6 @@ const fiatAmountInMap = computed(
   }
 );
 
-const fiatTotalOut = computed((): string =>
-  Object.values(fiatAmountOutMap.value).reduce(
-    (total, amount) =>
-      bnum(total)
-        .plus(amount)
-        .toString(),
-    '0'
-  )
-);
-
 const fiatAmountOutMap = computed(
   (): AmountMap => {
     if (!swapRoute.value) return {};
@@ -150,6 +140,16 @@ const fiatAmountOutMap = computed(
 
     return fiatAmountMap;
   }
+);
+
+const fiatTotalOut = computed((): string =>
+  Object.values(fiatAmountOutMap.value).reduce(
+    (total, amount) =>
+      bnum(total)
+        .plus(amount)
+        .toString(),
+    '0'
+  )
 );
 
 /**
