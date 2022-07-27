@@ -18,11 +18,11 @@ export class FeeDistributor {
   ];
 
   constructor(
+    public readonly address: string,
     private readonly abi = FeeDistributorABI,
     private readonly staticAbi = FeeDistributorStaticABI,
     private readonly config = configService,
     private readonly web3 = web3Service,
-    public readonly address = config.network.addresses.feeDistributor,
     private readonly provider = rpcProviderService.jsonProvider
   ) {}
 
@@ -119,5 +119,3 @@ export class FeeDistributor {
     return formatUnits(amount, 18);
   }
 }
-
-export const feeDistributor = new FeeDistributor();

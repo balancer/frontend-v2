@@ -50,6 +50,7 @@
       "veDelegationProxy": "0xA1F107D1cD709514AE8A914eCB757E95f9cedB31",
       "veBALHelpers": "0xE9aac58a051314C085773668f27DD6F673fc0B3F",
       "feeDistributor": "0x7F91dcdE02F72b478Dc73cB21730cAcA907c8c44",
+      "feeDistributorDeprecated": "0x7F91dcdE02F72b478Dc73cB21730cAcA907c8c44",
       "faucet": "0xccb0F4Cf5D3F97f4a55bb5f5cA321C3ED033f244"
     },
     "keys": {

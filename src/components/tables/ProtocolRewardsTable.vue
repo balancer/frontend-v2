@@ -16,11 +16,13 @@ export type ProtocolRewardRow = {
   token: TokenInfo;
   amount: string;
   value: string;
+  deprecated?: boolean;
 };
 
 type Props = {
   rewardsData: ProtocolRewardRow[];
   isLoading: boolean;
+  deprecated: false;
 };
 
 /**
@@ -95,56 +97,67 @@ const totalClaimValue = computed((): string =>
     .toString()
 );
 
-const hasClaimableBalance = computed((): boolean =>
-  bnum(totalClaimAmount.value).gt(0)
-);
+const hasClaimableBalance = computed((): boolean => {
+  if (props.isLoading) return true;
+  return bnum(totalClaimAmount.value).gt(0);
+});
 </script>
 
 <template>
-  <BalCard
-    shadow="lg"
-    :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
-  >
-    <BalTable
-      :columns="columns"
-      :data="rewardsData"
-      :isLoading="isLoading"
-      skeleton-class="h-64"
+  <div>
+    <div v-if="deprecated && hasClaimableBalance" class="mb-2">
+      <h6>{{ $t('pastEarnings.title') }}</h6>
+      <p>{{ $t('pastEarnings.description') }}</p>
+    </div>
+    <BalCard
+      v-if="hasClaimableBalance || !deprecated"
+      shadow="lg"
       :square="upToLargeBreakpoint"
+      :noBorder="upToLargeBreakpoint"
+      noPad
+      class="mb-8"
     >
-      <template #tokenColumnCell="{ token }">
-        <div class="flex px-6 py-4">
-          <BalAsset :address="token.address" />
-        </div>
-      </template>
-      <template #symbolColumnCell="{ token }">
-        <div class="flex px-6 py-4">
-          {{ token.symbol }}
-        </div>
-      </template>
+      <BalTable
+        :columns="columns"
+        :data="rewardsData"
+        :isLoading="isLoading"
+        skeleton-class="h-64"
+        :square="upToLargeBreakpoint"
+      >
+        <template #tokenColumnCell="{ token }">
+          <div class="flex px-6 py-4">
+            <BalAsset :address="token.address" />
+          </div>
+        </template>
+        <template #symbolColumnCell="{ token }">
+          <div class="flex px-6 py-4">
+            {{ token.symbol }}
+          </div>
+        </template>
 
-      <template #totalValueCell>
-        <div class="flex justify-end">
-          {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
-        </div>
-      </template>
-      <template #claimColumnCell="{ token, amount, value }">
-        <div class="px-6 py-4">
+        <template #totalValueCell>
+          <div class="flex justify-end">
+            {{ fNum2(totalClaimValue, FNumFormats.fiat) }}
+          </div>
+        </template>
+        <template #claimColumnCell="{ token, amount, value }">
+          <div class="px-6 py-4">
+            <ClaimProtocolRewardsBtn
+              :tokenAddress="token.address"
+              :fiatValue="value"
+              :disabled="bnum(amount).eq(0)"
+              :deprecated="deprecated"
+            />
+          </div>
+        </template>
+        <template #claimTotalCell>
           <ClaimProtocolRewardsBtn
-            :tokenAddress="token.address"
-            :fiatValue="value"
-            :disabled="bnum(amount).eq(0)"
+            :fiatValue="totalClaimValue"
+            :disabled="!hasClaimableBalance"
+            :deprecated="deprecated"
           />
-        </div>
-      </template>
-      <template #claimTotalCell>
-        <ClaimProtocolRewardsBtn
-          :fiatValue="totalClaimValue"
-          :disabled="!hasClaimableBalance"
-        />
-      </template>
-    </BalTable>
-  </BalCard>
+        </template>
+      </BalTable>
+    </BalCard>
+  </div>
 </template>
