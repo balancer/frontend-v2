@@ -3,7 +3,8 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
+import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
+import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -12,13 +13,26 @@ import { isKovan, isL2, networkId } from '../useNetwork';
 /**
  * TYPES
  */
-type QueryResponse = BalanceMap;
+export type ProtocolRewardsQueryResponse = {
+  v1?: BalanceMap;
+  v2?: BalanceMap;
+};
+
+/**
+ * SERVICES
+ */
+const feeDistributorV1 = new FeeDistributor(
+  configService.network.addresses.feeDistributorDeprecated
+);
+const feeDistributorV2 = new FeeDistributor(
+  configService.network.addresses.feeDistributor
+);
 
 /**
  * @summary Fetches claimable protocol reward balances.
  */
 export default function useProtocolRewardsQuery(
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<ProtocolRewardsQueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -46,7 +60,11 @@ export default function useProtocolRewardsQuery(
    */
   const queryFn = async () => {
     try {
-      return await feeDistributor.getClaimableBalances(account.value);
+      const [v1, v2] = await Promise.all([
+        feeDistributorV1.getClaimableBalances(account.value),
+        feeDistributorV2.getClaimableBalances(account.value)
+      ]);
+      return { v1, v2 };
     } catch (error) {
       console.error('Failed to fetch claimable protocol balances', error);
       return {};
@@ -61,5 +79,9 @@ export default function useProtocolRewardsQuery(
     ...options
   });
 
-  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<ProtocolRewardsQueryResponse>(
+    queryKey,
+    queryFn,
+    queryOptions
+  );
 }
