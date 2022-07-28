@@ -10,8 +10,8 @@ module.exports = {
   },
 
   extends: [
-    'plugin:vue/vue3-essential',
     'eslint:recommended',
+    'plugin:vue/vue3-recommended',
     '@vue/eslint-config-typescript/recommended',
     '@vue/eslint-config-prettier'
   ],
@@ -32,6 +32,8 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
     'simple-import-sort/imports': 'warn',
     'simple-import-sort/exports': 'warn',
+    'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+
     // New ignore rule
     'vue/multi-word-component-names': 'off'
   },

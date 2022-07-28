@@ -9,12 +9,16 @@
     "serve": "NODE_ENV=development npm run generate:tokenlists && vue-cli-service serve",
     "build": "npm run generate:tokenlists && vue-cli-service build",
     "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
-    "lint": "vue-cli-service lint --no-fix --max-warnings 0",
+    "lint": "eslint . --debug --ext .js,.ts,.vue --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
+<<<<<<< HEAD
     "lint:fix": "vue-cli-service lint",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write . --loglevel warn",
+=======
+    "lint:fix": "npm run lint -- --fix",
+>>>>>>> f79e17b8 (Remove vue-cli eslint, use vue/vue3-recommended plugin and enforce component names in PascalCase)
     "prepare": "node ./prepare.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
@@ -57,7 +61,6 @@
     "@types/numeral": "^2.0.1",
     "@types/parse-filepath": "^1.0.0",
     "@vue/cli-plugin-babel": "^4.4.0",
-    "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-plugin-router": "^4.4.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "^5.0.0-rc.2",
