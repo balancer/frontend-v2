@@ -9,7 +9,6 @@ import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
-import { usePoolMigration } from '../pools/usePoolMigration';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
@@ -48,7 +47,6 @@ export default function useRelayerApproval(
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
   const relayerApproval = useRelayerApprovalQuery(relayerAddress);
-  const { getUserSignature } = usePoolMigration();
 
   /**
    * COMPUTED
@@ -70,25 +68,13 @@ export default function useRelayerApproval(
     loadingLabel: t('checkWallet'),
     confirmingLabel: t('approvingBatchRelayer'),
     stepTooltip: t('approveBatchRelayerTooltip'),
-    action: signMigration,
+    action: approve,
     isSignAction: true
   }));
 
   /**
    * METHODS
    */
-  async function signMigration(): Promise<any> {
-    try {
-      await getUserSignature(relayerAddress.value);
-      return;
-    } catch (e) {
-      console.log(e);
-      init.value = false;
-      approving.value = false;
-      return Promise.reject(e);
-    }
-  }
-
   async function approve(): Promise<TransactionResponse> {
     try {
       init.value = true;

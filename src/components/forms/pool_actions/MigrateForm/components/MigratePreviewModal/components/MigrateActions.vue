@@ -8,9 +8,7 @@ import { BigNumber, BigNumberish } from 'ethers';
 import { computed, onBeforeMount, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useRelayerApproval, {
-  Relayer
-} from '@/composables/trade/useRelayerApproval';
+import { usePoolMigration } from '@/composables/pools/usePoolMigration';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
 import { isStableLike } from '@/composables/usePool';
@@ -40,6 +38,7 @@ type Props = {
   toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
   disabled?: boolean;
+  fiatTotal: string;
 };
 
 type MigratePoolState = {
@@ -86,17 +85,7 @@ const { getProvider, explorerLinks, account, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { slippageScaled } = useUserSettings();
-const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
-
-const migrateAction: TransactionActionInfo = {
-  label: t('migratePool.previewModal.actions.title'),
-  loadingLabel: t('migratePool.previewModal.actions.loading'),
-  confirmingLabel: t('confirming'),
-  action: submit,
-  stepTooltip: t('migratePool.previewModal.actions.migrationStep')
-};
-
-const actions = ref<TransactionActionInfo[]>([migrateAction]);
+const { actions } = usePoolMigration(props.fiatTotal, props.fromPool.tokens);
 
 /**
  * COMPUTED
@@ -209,21 +198,11 @@ async function submit() {
 }
 
 /**
- * CALLBACKS
- */
-onBeforeMount(() => {
-  if (!batchRelayerApproval.isUnlocked.value) {
-    // Prepend relayer approval action if batch relayer not approved
-    actions.value.unshift(batchRelayerApproval.action.value);
-  }
-});
-
-/**
  * WATCHERS
  */
 watch(blockNumber, async () => {
   if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
-    await props.math.getBatchSwap();
+    // await props.math.getBatchSwap();
   }
 });
 </script>

@@ -130,6 +130,7 @@ function handleClose() {
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
       :fiatTotalLabel="fiatTotalLabel"
+      :fiatTotal="fiatTotal"
       :math="math"
       :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
       @success="migrateConfirmed = true"

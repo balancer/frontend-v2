@@ -177,10 +177,13 @@ async function handleTransaction(
   tx: TransactionResponse,
   state: TransactionActionState
 ): Promise<void> {
+  console.log('handleTransactionED');
+  currentActionIndex.value += 1;
+
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
-
+      console.log('CONFIRMED', receipt);
       // need to explicity wait for a number of confirmations
       // on polygon
       if (Number(configService.network.chainId) === ChainId.polygon) {

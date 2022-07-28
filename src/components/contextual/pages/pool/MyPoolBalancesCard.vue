@@ -8,7 +8,6 @@ import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
@@ -110,10 +109,9 @@ const fiatValue = computed(() =>
 
 const showMigrateButton = computed(
   () =>
-    bnum(bptBalance.value).gt(0) &&
-    isMigratablePool(props.pool) &&
-    // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
-    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+    (bnum(bptBalance.value).gt(0) ||
+      bnum(stakedSharesForProvidedPool.value).gt(0)) &&
+    isMigratablePool(props.pool)
 );
 /**
  * METHODS

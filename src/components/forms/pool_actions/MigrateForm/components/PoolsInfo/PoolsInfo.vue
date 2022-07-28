@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, toRefs } from 'vue';
+import { computed, onBeforeMount, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -39,13 +39,14 @@ const showPreviewModal = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
-
 const { fromPool, toPool } = toRefs(props);
 
 const router = useRouter();
 
 const migrateMath = useMigrateMath(fromPool, toPool);
 const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
+
+const hasValue = computed(() => hasBpt.value);
 
 /**
  * CALLBACKS
@@ -54,7 +55,7 @@ onBeforeMount(async () => {
   await migrateMath.getBatchSwap();
 
   if (bnum(fiatTotal.value).lt(MIN_FIAT_VALUE_POOL_MIGRATION)) {
-    router.push({ name: 'pool', params: { id: fromPool.value.id } });
+    // router.push({ name: 'pool', params: { id: fromPool.value.id } });
   }
 });
 </script>
