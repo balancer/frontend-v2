@@ -37,7 +37,6 @@ config.global.stubs = {
   Jazzicon: { template: '<span />' }
 };
 
-// TODO: Import all global components automatically
 config.global.components = {
   BalBtn,
   BalTooltip,
