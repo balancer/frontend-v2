@@ -11,9 +11,8 @@ module.exports = {
 
   extends: [
     'eslint:recommended',
+    "plugin:@typescript-eslint/recommended",
     'plugin:vue/vue3-recommended',
-    '@vue/eslint-config-typescript/recommended',
-    '@vue/eslint-config-prettier'
   ],
 
   plugins: ['simple-import-sort'],
@@ -30,8 +29,6 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
-    'simple-import-sort/imports': 'warn',
-    'simple-import-sort/exports': 'warn',
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
 
     // New ignore rule
