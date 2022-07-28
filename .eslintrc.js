@@ -7,11 +7,12 @@ module.exports = {
 
   extends: [
     'eslint:recommended',
+    "plugin:tailwindcss/recommended",
     "plugin:@typescript-eslint/recommended",
     'plugin:vue/vue3-recommended',
   ],
 
-  plugins: ['simple-import-sort'],
+  plugins: ['simple-import-sort', "tailwindcss"],
 
   parserOptions: {
     ecmaVersion: 2020,
@@ -26,6 +27,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     
+    "tailwindcss/no-custom-classname": "off",
     // Our component names are already written in PascalCase. 
     // And for consistency, it's now required too.
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],

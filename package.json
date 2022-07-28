@@ -85,6 +85,7 @@
     "echarts": "^5.3.2",
     "eslint": "^8.20.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-tailwindcss": "^2.0.1",
     "eslint-plugin-vue": "^9.3.0",
     "ethereumjs-util": "^7.0.7",
     "events": "^3.3.0",
