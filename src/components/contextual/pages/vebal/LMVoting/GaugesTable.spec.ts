@@ -104,7 +104,7 @@ describe('GaugesTable', () => {
     expect(voteBtn).toBeDisabled();
   });
 
-  it("should render Expired label and Remove Votes btn if gauge is expired and has user's funds", async () => {
+  it("should render Expired label and Remove Votes btn if gauge is expired and it has user's votes", async () => {
     render(GaugesTable, {
       props: {
         expiredGauges,

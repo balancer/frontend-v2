@@ -9,10 +9,10 @@ module.exports = {
     {
       preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
       roots: ['<rootDir>/src/'],
-      setupFiles: ['./src/jest.setup.jsdom.ts'],
+      setupFiles: ['./src/jest/jest.setup.jsdom.ts'],
       setupFilesAfterEnv: [
-        './src/jest.setup-suite.jsdom.ts',
-        './src/jest.setup-suite.ts'
+        './src/jest/jest.setup-suite.jsdom.ts',
+        './src/jest/jest.setup-suite.ts'
       ],
       displayName: 'dom',
       testEnvironment: 'jsdom',
@@ -22,7 +22,7 @@ module.exports = {
     {
       preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
       roots: ['<rootDir>/src/'],
-      setupFilesAfterEnv: ['./src/jest.setup-suite.ts'],
+      setupFilesAfterEnv: ['./src/jest/jest.setup-suite.ts'],
       displayName: 'node',
       testEnvironment: 'node',
       testMatch: null,
