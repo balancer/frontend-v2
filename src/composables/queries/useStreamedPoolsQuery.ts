@@ -29,15 +29,19 @@ async function fetchBasicPoolMetadata(
   const skip =
     POOLS.Pagination.PerPage * (currentPage - 1 < 0 ? 0 : currentPage - 1);
   const tokensListFilterKey = filterOptions?.isExactTokensList
-    ? 'tokensList'
-    : 'tokensList_contains';
+    ? 'is'
+    : 'contains';
   const queryArgs: any = {
     first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
-    // skip: skip,
-    // where: {
-    //   [tokensListFilterKey]: tokenList.value,
-    //   poolType_not_in: POOLS.ExcludedPoolTypes
-    // }
+    skip: skip,
+    where: {
+      tokensList: {
+        [tokensListFilterKey]: tokenList.value
+      },
+      poolType: {
+        not_in: POOLS.ExcludedPoolTypes
+      }
+    }
   };
   const pools = await balancerSubgraphService.pools.get(queryArgs);
   return pools;

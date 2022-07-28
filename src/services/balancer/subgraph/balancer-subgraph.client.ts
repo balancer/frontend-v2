@@ -4,7 +4,7 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { configService as _configService } from '@/services/config/config.service';
 
 export interface SubgraphQueryOptions {
-  url?: string
+  url?: string;
 }
 
 export default class BalancerSubgraphClient {
@@ -22,7 +22,7 @@ export default class BalancerSubgraphClient {
         data: { data }
       } = await axios.post(url, payload, {
         headers: {
-          'x-api-key': 'da2-7sdh767glzachomgehspnqphey'
+          'x-api-key': 'da2-yuqcoohpobgajdg7bmxuhnpbre'
         }
       });
       return data;
