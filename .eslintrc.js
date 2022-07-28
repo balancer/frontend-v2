@@ -24,14 +24,14 @@ module.exports = {
 
   rules: {
     'no-console': 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
+    
+    // New rules
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
-
-    // New ignore rule
     'vue/multi-word-component-names': 'off'
   },
 
