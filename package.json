@@ -9,7 +9,7 @@
     "serve": "NODE_ENV=development npm run generate:tokenlists && vue-cli-service serve",
     "build": "npm run generate:tokenlists && vue-cli-service build",
     "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
-    "lint": "eslint . --debug --ext .js,.ts,.vue --max-warnings 0",
+    "lint": "eslint . --debug --ext .js,.ts,.vue,.json --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
 <<<<<<< HEAD
