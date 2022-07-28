@@ -39,7 +39,7 @@ const activator = ref<HTMLElement>();
 const content = ref<HTMLElement>();
 const popper = ref<PopperInstance>();
 
-let delayTimeout: NodeJS.Timeout;
+let delayTimeout: ReturnType<typeof setTimeout>;
 
 const tooltipClasses = computed(() => {
   return {

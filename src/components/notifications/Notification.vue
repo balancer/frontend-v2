@@ -69,7 +69,7 @@ export default defineComponent({
       transition: TransitionPresets.linear,
     });
 
-    let notificationTimeout: NodeJS.Timeout;
+    let notificationTimeout: ReturnType<typeof setTimeout>;
 
     const { notifications, removeNotification } = useNotifications();
 
