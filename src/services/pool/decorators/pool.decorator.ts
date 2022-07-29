@@ -9,7 +9,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import {
   GaugeBalAprs,
   GaugeRewardTokenAprs,
-  stakingRewardsService
+  stakingRewardsService,
 } from '@/services/staking/staking-rewards.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -49,11 +49,11 @@ export class PoolDecorator {
     const [
       poolSnapshots,
       rawOnchainDataMap,
-      [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs]
+      [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs],
     ] = await Promise.all([
       this.getSnapshots(),
       poolMulticaller.fetch(),
-      this.getData(prices, gauges, tokens, processedPools, includeAprs)
+      this.getData(prices, gauges, tokens, processedPools, includeAprs),
     ]);
 
     const setAprCondition =
@@ -101,7 +101,7 @@ export class PoolDecorator {
     try {
       return await this.poolSubgraph.pools.get({
         where: isInPoolIds,
-        block
+        block,
       });
     } catch (error) {
       console.error('Failed to fetch pool snapshots', error);
@@ -129,14 +129,14 @@ export class PoolDecorator {
       this.stakingRewards.getGaugeBALAprs({
         pools,
         prices,
-        gauges
+        gauges,
       }),
       this.stakingRewards.getRewardTokenAprs({
         pools,
         prices,
         gauges,
-        tokens
-      })
+        tokens,
+      }),
     ]);
   }
 }

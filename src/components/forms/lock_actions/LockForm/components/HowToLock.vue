@@ -29,7 +29,7 @@ const { t } = useI18n();
 const steps = computed(() => [
   t('getVeBAL.howToLock.steps.lock', [props.lockablePoolTokenInfo.symbol]),
   t('getVeBAL.howToLock.earn.boost'),
-  t('getVeBAL.howToLock.earn.voting')
+  t('getVeBAL.howToLock.earn.voting'),
 ]);
 </script>
 
@@ -41,8 +41,8 @@ const steps = computed(() => [
       {
         title: $t('getVeBAL.howToLock.title'),
         id: 'how-to-lock',
-        handle: 'how-to-lock-handle'
-      }
+        handle: 'how-to-lock-handle',
+      },
     ]"
   >
     <template v-slot:how-to-lock-handle>

@@ -36,7 +36,7 @@ export default class PoolSwaps {
 
         return {
           ensName,
-          ensAvatar
+          ensAvatar,
         };
       })
     );
@@ -44,7 +44,7 @@ export default class PoolSwaps {
     return swaps.map((swap: PoolSwap, index: number) => ({
       ...swap,
       ensName: ensData[index].ensName,
-      ensAvatar: ensData[index].ensAvatar
+      ensAvatar: ensData[index].ensAvatar,
     }));
   }
 
@@ -55,7 +55,7 @@ export default class PoolSwaps {
       ...swap,
       tokenIn: getAddress(swap.tokenIn),
       tokenOut: getAddress(swap.tokenOut),
-      timestamp: toJsTimestamp(swap.timestamp)
+      timestamp: toJsTimestamp(swap.timestamp),
     }));
   }
 }

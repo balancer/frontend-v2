@@ -12,7 +12,7 @@ type Props = {
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
-  isSelected: false
+  isSelected: false,
 });
 </script>
 
@@ -29,8 +29,8 @@ withDefaults(defineProps<Props>(), {
           'pill',
           {
             'pill-selected': isSelected,
-            'pill-hoverable': hasBalance
-          }
+            'pill-hoverable': hasBalance,
+          },
         ]"
       >
         <div v-if="hasBalance" class="balance-indicator" />
@@ -38,8 +38,8 @@ withDefaults(defineProps<Props>(), {
           :class="[
             'pill-text',
             {
-              'font-medium': isSelected
-            }
+              'font-medium': isSelected,
+            },
           ]"
         >
           {{ symbol }}

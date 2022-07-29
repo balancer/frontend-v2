@@ -62,7 +62,7 @@ export default function useProtocolRewardsQuery(
     try {
       const [v1, v2] = await Promise.all([
         feeDistributorV1.getClaimableBalances(account.value),
-        feeDistributorV2.getClaimableBalances(account.value)
+        feeDistributorV2.getClaimableBalances(account.value),
       ]);
       return { v1, v2 };
     } catch (error) {
@@ -76,7 +76,7 @@ export default function useProtocolRewardsQuery(
    */
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<ProtocolRewardsQueryResponse>(

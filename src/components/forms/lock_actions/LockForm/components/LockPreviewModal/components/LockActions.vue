@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { parseUnits } from '@ethersproject/units';
 import { format } from 'date-fns';
@@ -57,7 +57,7 @@ const lockActionStates = reactive<LockActionState[]>(
     init: false,
     confirming: false,
     confirmed: false,
-    confirmedAt: ''
+    confirmedAt: '',
   }))
 );
 
@@ -77,12 +77,12 @@ const { fNum2 } = useNumbers();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
-    format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
+    format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT),
   ]),
   loadingLabel: t(`getVeBAL.previewModal.actions.${lockType}.loadingLabel`),
   confirmingLabel: t(`getVeBAL.previewModal.actions.${lockType}.confirming`),
   action: () => submit(lockType, actionIndex),
-  stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`)
+  stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`),
 }));
 
 const actions = ref<TransactionActionInfo[]>([...lockActions]);
@@ -109,7 +109,7 @@ async function handleTransaction(
     summary:
       lockType === LockType.EXTEND_LOCK
         ? t('transactionSummary.extendLock', [
-            format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
+            format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT),
           ])
         : `${fNum2(props.lockAmount, FNumFormats.token)} ${
             props.lockablePoolTokenInfo.symbol
@@ -117,8 +117,8 @@ async function handleTransaction(
     details: {
       lockAmount: props.lockAmount,
       lockEndDate: props.lockEndDate,
-      lockType
-    }
+      lockType,
+    },
   });
 
   lockActionStates[actionIndex].confirmed = await txListener(tx, {
@@ -131,7 +131,7 @@ async function handleTransaction(
     },
     onTxFailed: () => {
       lockActionStates[actionIndex].confirming = false;
-    }
+    },
   });
 }
 

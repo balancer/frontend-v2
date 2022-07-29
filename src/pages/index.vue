@@ -16,17 +16,14 @@ import useWeb3 from '@/services/web3/useWeb3';
 const router = useRouter();
 const { appNetworkConfig } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
-const {
-  selectedTokens,
-  addSelectedToken,
-  removeSelectedToken
-} = usePoolFilters();
+const { selectedTokens, addSelectedToken, removeSelectedToken } =
+  usePoolFilters();
 
 const {
   dataStates,
   result: investmentPools,
   loadMore,
-  isLoadingMore
+  isLoadingMore,
 } = useStreamedPoolsQuery(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();

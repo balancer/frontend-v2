@@ -21,14 +21,14 @@ export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'percent',
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   },
   token: {
-    maximumFractionDigits: 4
+    maximumFractionDigits: 4,
   },
   fiat: {
-    style: 'currency'
-  }
+    style: 'currency',
+  },
 };
 
 enum PresetFormats {
@@ -43,7 +43,7 @@ enum PresetFormats {
   usd_m = '$0,0.00a',
   percent = '0.00%',
   percent_variable = '0.[0000]%',
-  percent_lg = '0%'
+  percent_lg = '0%',
 }
 
 export type Preset = keyof typeof PresetFormats;
@@ -101,13 +101,13 @@ export function numF(
       { value: 1, symbol: '' },
       { value: 1e3, symbol: 'k' },
       { value: 1e6, symbol: 'm' },
-      { value: 1e9, symbol: 'b' }
+      { value: 1e9, symbol: 'b' },
     ];
     const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
     const item = lookup
       .slice()
       .reverse()
-      .find(function(item) {
+      .find(function (item) {
         return number >= item.value;
       });
     postfixSymbol = item ? item.symbol : '';

@@ -42,10 +42,10 @@ export default class TokenListService {
       All,
       Balancer: {
         All: balancerLists,
-        ...Balancer
+        ...Balancer,
       },
       Approved,
-      External
+      External,
     };
   }
 

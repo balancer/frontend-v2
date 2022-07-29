@@ -15,8 +15,8 @@ const {
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
-    poolBoosts
-  }
+    poolBoosts,
+  },
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -40,7 +40,7 @@ const noPoolsLabel = computed(() => {
 const poolsWithBoost = computed(() => {
   return stakedPools.value.map(pool => ({
     ...pool,
-    boost: (poolBoosts.value || {})[pool.id]
+    boost: (poolBoosts.value || {})[pool.id],
   }));
 });
 
@@ -50,7 +50,7 @@ const hiddenColumns = computed(() => {
     'poolValue',
     'migrate',
     'actions',
-    'lockEndDate'
+    'lockEndDate',
   ];
   if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;

@@ -45,7 +45,7 @@ const {
   tokensOut,
   error,
   parseError,
-  setError
+  setError,
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
@@ -62,14 +62,11 @@ const {
   tokenOutAmount,
   tokenOutPoolBalance,
   initMath,
-  loadingAmountsOut
+  loadingAmountsOut,
 } = withdrawMath;
 
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 /**
  * COMPUTED
@@ -83,7 +80,7 @@ const hasValidInputs = computed(
 );
 
 const singleAssetRules = computed(() => [
-  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance'))
+  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance')),
 ]);
 
 /**
@@ -175,9 +172,9 @@ onBeforeMount(() => {
         color="gradient"
         :disabled="
           !hasAmounts ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            loadingAmountsOut
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          loadingAmountsOut
         "
         block
         @click="showPreview = true"

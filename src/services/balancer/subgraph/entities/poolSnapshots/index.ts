@@ -50,13 +50,8 @@ export default class PoolShares {
           if (!data) {
             return [timestamp, null];
           }
-          const {
-            amounts,
-            totalShares,
-            swapVolume,
-            swapFees,
-            liquidity
-          } = data;
+          const { amounts, totalShares, swapVolume, swapFees, liquidity } =
+            data;
 
           return [
             timestamp,
@@ -66,8 +61,8 @@ export default class PoolShares {
               totalShares,
               swapVolume,
               swapFees,
-              liquidity
-            }
+              liquidity,
+            },
           ];
         })
         .filter(entry => !!entry[1])

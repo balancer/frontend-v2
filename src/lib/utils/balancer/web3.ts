@@ -3,12 +3,12 @@ import { ErrorCode } from '@ethersproject/logger';
 import {
   JsonRpcProvider,
   TransactionResponse,
-  Web3Provider
+  Web3Provider,
 } from '@ethersproject/providers';
 
 import {
   EthereumTxType,
-  ethereumTxType
+  ethereumTxType,
 } from '@/composables/useEthereumTxType';
 import { logFailedTx } from '@/lib/utils/logging';
 import GasPriceService from '@/services/gas-price/gas-price.service';

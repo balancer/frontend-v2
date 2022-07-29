@@ -19,7 +19,7 @@ type Props = {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**

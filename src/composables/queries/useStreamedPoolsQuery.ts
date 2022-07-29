@@ -37,8 +37,8 @@ async function fetchBasicPoolMetadata(
     skip: skip,
     where: {
       [tokensListFilterKey]: tokenList.value,
-      poolType_not_in: POOLS.ExcludedPoolTypes
-    }
+      poolType_not_in: POOLS.ExcludedPoolTypes,
+    },
   };
   const pools = await balancerSubgraphService.pools.get(queryArgs);
   return pools;
@@ -53,7 +53,7 @@ export default function useStreamedPoolsQuery(
     prices,
     tokens,
     injectTokens,
-    dynamicDataLoading
+    dynamicDataLoading,
   } = useTokens();
   const { currency } = useUserSettings();
   const gaugesQuery = useGaugesQuery();
@@ -68,7 +68,7 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    isComplete
+    isComplete,
   } = useQueryStreams('pools', {
     basic: {
       init: true,
@@ -79,7 +79,7 @@ export default function useStreamedPoolsQuery(
           filterOptions,
           currentPage.value
         );
-      }
+      },
     },
     injectTokens: {
       waitFor: ['basic.id'],
@@ -88,13 +88,13 @@ export default function useStreamedPoolsQuery(
           pools.value.map(pool => [
             ...pool.tokensList,
             ...lpTokensFor(pool),
-            pool.address
+            pool.address,
           ])
         );
         await injectTokens(_tokens);
         await forChange(dynamicDataLoading, false);
         return () => pools.value;
-      }
+      },
     },
     decoratePools: {
       waitFor: ['injectTokens.id'],
@@ -107,8 +107,8 @@ export default function useStreamedPoolsQuery(
           currency.value,
           tokens.value
         );
-      }
-    }
+      },
+    },
   });
 
   watch(
@@ -127,6 +127,6 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    isComplete
+    isComplete,
   };
 }

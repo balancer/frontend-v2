@@ -10,17 +10,17 @@ const defaultResponse = {
           confidence: 70,
           price: 32.12,
           maxFeePerGas: 32.12,
-          maxPriorityFeePerGas: 1.5
+          maxPriorityFeePerGas: 1.5,
         },
         {
           confidence: 90,
           price: 66.15,
           maxFeePerGas: 66.15,
-          maxPriorityFeePerGas: 1.5
-        }
-      ]
-    }
-  ]
+          maxPriorityFeePerGas: 1.5,
+        },
+      ],
+    },
+  ],
 };
 
 describe('Blocknative Provider', () => {

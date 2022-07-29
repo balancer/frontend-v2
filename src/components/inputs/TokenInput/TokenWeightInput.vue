@@ -27,7 +27,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   address: '',
   weight: 0,
-  hintAmount: ''
+  hintAmount: '',
 });
 
 const emit = defineEmits<{
@@ -74,7 +74,7 @@ function lockWeight(keepLocked?: boolean) {
     anime({
       targets: lockPath.value,
       d: 'M7 11V7a5 4 0 0 1 10 -2v-1',
-      easing: 'spring(0.2, 80, 10, 0)'
+      easing: 'spring(0.2, 80, 10, 0)',
     });
     isLocked.value = false;
   } else {
@@ -82,7 +82,7 @@ function lockWeight(keepLocked?: boolean) {
       anime({
         targets: lockPath.value,
         d: 'M7 11V7a5 5 0 0 1 10 0v4',
-        easing: 'spring(0.2, 80, 10, 0)'
+        easing: 'spring(0.2, 80, 10, 0)',
       });
 
       anime({
@@ -96,9 +96,9 @@ function lockWeight(keepLocked?: boolean) {
             targets: lockIcon.value,
             translateY: '0px',
             easing: 'linear',
-            duration: 100
+            duration: 100,
           });
-        }
+        },
       });
     }
     isLocked.value = true;
@@ -162,8 +162,8 @@ watchEffect(() => {
             'ml-2 ease-color mt-1 text-secondary hover:text-blue-800 dark:hover:text-blue-800 flex items-center shadow-sm border dark:border-0 bg-gray-50 dark:bg-gray-850 rounded-full p-1 justify-center',
             {
               'text-blue-600 dark:text-blue-400': isLocked,
-              'border-transparent': !isLocked
-            }
+              'border-transparent': !isLocked,
+            },
           ]"
         >
           <svg
@@ -186,7 +186,7 @@ watchEffect(() => {
         <button
           @click="emit('delete')"
           :class="[
-            'ml-2 ease-color mt-1 text-secondary hover:text-red-500 dark:hover:text-red-500 flex items-center shadow-sm border dark:border-0 bg-gray-50 dark:bg-gray-850 rounded-full p-1 justify-center'
+            'ml-2 ease-color mt-1 text-secondary hover:text-red-500 dark:hover:text-red-500 flex items-center shadow-sm border dark:border-0 bg-gray-50 dark:bg-gray-850 rounded-full p-1 justify-center',
           ]"
         >
           <BalIcon name="trash-2" size="sm" />

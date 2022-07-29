@@ -34,7 +34,7 @@ export default defineComponent({
   name: 'NavAlert',
 
   props: {
-    alert: { type: Object as PropType<Alert>, required: true }
+    alert: { type: Object as PropType<Alert>, required: true },
   },
 
   setup(props) {
@@ -63,7 +63,7 @@ export default defineComponent({
     const classes = computed(() => {
       return {
         [colorClass.value]: true,
-        'cursor-pointer': props.alert.actionOnClick
+        'cursor-pointer': props.alert.actionOnClick,
       };
     });
 
@@ -78,7 +78,7 @@ export default defineComponent({
     }
 
     return { classes, iconName, handleClose, handleClick };
-  }
+  },
 });
 </script>
 

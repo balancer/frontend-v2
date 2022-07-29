@@ -62,7 +62,7 @@ export default function usePoolAprQuery(
     try {
       const data = await balancerSubgraphService.pools.get({
         where: isInPoolIds,
-        block
+        block,
       });
       return data;
     } catch (error) {
@@ -89,21 +89,18 @@ export default function usePoolAprQuery(
     const payload = {
       pools: [_pool],
       prices: prices.value,
-      gauges: subgraphGauges.value || []
+      gauges: subgraphGauges.value || [],
     };
 
-    const [
-      protocolFeePercentage,
-      gaugeBALAprs,
-      gaugeRewardTokenAprs
-    ] = await Promise.all([
-      balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage(),
-      stakingRewardsService.getGaugeBALAprs(payload),
-      stakingRewardsService.getRewardTokenAprs({
-        ...payload,
-        tokens: tokens.value
-      })
-    ]);
+    const [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs] =
+      await Promise.all([
+        balancerContractsService.vault.protocolFeesCollector.getSwapFeePercentage(),
+        stakingRewardsService.getGaugeBALAprs(payload),
+        stakingRewardsService.getRewardTokenAprs({
+          ...payload,
+          tokens: tokens.value,
+        }),
+      ]);
 
     const _snaphshot = await getSnapshot(_pool.id);
     const apr = await new AprConcern(_pool).calc(
@@ -119,7 +116,7 @@ export default function usePoolAprQuery(
   };
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
   return useQuery<PoolAPRs>(queryKey, queryFn, queryOptions);
 }

@@ -16,7 +16,7 @@ type Props = {
  * PROPS
  */
 withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 </script>
 

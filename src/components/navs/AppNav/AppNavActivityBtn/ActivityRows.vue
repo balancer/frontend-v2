@@ -56,7 +56,7 @@
       <div
         v-if="
           transaction.type === 'order' &&
-            isPendingTransactionStatus(transaction.status)
+          isPendingTransactionStatus(transaction.status)
         "
         class="mt-1"
       >
@@ -85,25 +85,25 @@ export default defineComponent({
   props: {
     transactions: {
       type: Array as PropType<Transaction[]>,
-      required: true
+      required: true,
     },
     getExplorerLink: {
       type: Function as PropType<
         (id: string, type: Transaction['type']) => void
       >,
-      required: true
+      required: true,
     },
     cancelOrder: {
-      type: Function as PropType<(orderId: string) => void>
+      type: Function as PropType<(orderId: string) => void>,
     },
     isSuccessfulTransaction: {
       type: Function as PropType<(transaction: Transaction) => boolean>,
-      required: true
+      required: true,
     },
     isPendingTransactionStatus: {
       type: Function as PropType<(transaction: Transaction) => boolean>,
-      required: true
-    }
+      required: true,
+    },
   },
 
   setup() {
@@ -119,9 +119,9 @@ export default defineComponent({
 
     return {
       // computed
-      disablePending
+      disablePending,
     };
-  }
+  },
 });
 </script>
 <style scoped>

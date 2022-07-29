@@ -39,8 +39,8 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
         name: 'trade',
         params: {
           assetIn: stETH.address,
-          assetOut: wstETH.address
-        }
+          assetOut: wstETH.address,
+        },
       }"
       class="text-xs text-secondary underline"
     >

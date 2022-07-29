@@ -11,7 +11,7 @@ export async function approveToken(
 ): Promise<TransactionResponse> {
   return await sendTransaction(web3, token, abi, 'approve', [
     spender,
-    MaxUint256.toString()
+    MaxUint256.toString(),
   ]);
 }
 

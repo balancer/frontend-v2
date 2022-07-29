@@ -27,9 +27,9 @@ const {
     userLiquidityGauges,
     stakedPools,
     isLoadingUserStakingData,
-    poolBoosts
+    poolBoosts,
   },
-  setPoolAddress
+  setPoolAddress,
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -74,7 +74,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        boost: poolBoosts.value[pool.id]
+        boost: poolBoosts.value[pool.id],
       };
     });
 });
@@ -91,7 +91,7 @@ const unstakedPools = computed(() => {
     .map(pool => ({
       ...pool,
       stakedPct: '0',
-      stakedShares: '0'
+      stakedShares: '0',
     }));
 });
 

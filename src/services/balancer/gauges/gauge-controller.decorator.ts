@@ -5,7 +5,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import {
   oneWeekInMs,
   oneWeekInSecs,
-  toUnixTimestamp
+  toUnixTimestamp,
 } from '@/composables/useTime';
 import { VotingGauge } from '@/constants/voting-gauges';
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
@@ -80,7 +80,7 @@ export class GaugeControllerDecorator {
     const decoratedGauges = votingGauges.map(gauge => {
       return {
         ...gauge,
-        ...this.formatVotes(votesDataMap.gauges[gauge.address])
+        ...this.formatVotes(votesDataMap.gauges[gauge.address]),
       };
     });
     return decoratedGauges;
@@ -94,7 +94,7 @@ export class GaugeControllerDecorator {
       votes,
       votesNextPeriod,
       userVotes: votesData?.userVotes?.power.toString() || '0',
-      lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0
+      lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0,
     };
   }
 

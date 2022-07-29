@@ -55,7 +55,7 @@ function useFormValidations() {
   return {
     errors,
     validate,
-    validateInput
+    validateInput,
   };
 }
 
@@ -66,12 +66,12 @@ export default defineComponent({
 
   props: {
     action: { type: String, default: '' },
-    method: { type: String, default: 'post' }
+    method: { type: String, default: 'post' },
   },
 
   setup() {
     const { errors, validate, validateInput } = useFormValidations();
     return { errors, validate, validateInput };
-  }
+  },
 });
 </script>

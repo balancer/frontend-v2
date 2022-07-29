@@ -4,7 +4,7 @@ import {
   SubgraphPoolBase,
   SwapInfo,
   SwapOptions,
-  SwapTypes
+  SwapTypes,
 } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -40,7 +40,7 @@ export class SorManager {
   private weth: string;
   private fetchStatus: FetchStatus = {
     v2finishedFetch: false,
-    v2success: false
+    v2success: false,
   };
   private isFetching: boolean;
   maxPools: number;
@@ -140,7 +140,7 @@ export class SorManager {
       swapGas: BigNumber.from(SWAP_COST),
       poolTypeFilter: PoolFilter.All,
       timestamp: timestampSeconds,
-      forceRefresh: true
+      forceRefresh: true,
     };
 
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
@@ -167,7 +167,7 @@ export class SorManager {
       hasSwaps: swapInfoV2.swaps.length > 0,
       returnAmount: swapInfoV2.returnAmount,
       result: swapInfoV2,
-      marketSpNormalised: swapInfoV2.marketSp
+      marketSpNormalised: swapInfoV2.marketSp,
     };
   }
 

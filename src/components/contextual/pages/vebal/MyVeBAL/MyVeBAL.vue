@@ -15,7 +15,7 @@ const {
   lockPool,
   lockPoolToken,
   lock,
-  lockedFiatTotal
+  lockedFiatTotal,
 } = useLock();
 const { isWalletReady } = useWeb3();
 

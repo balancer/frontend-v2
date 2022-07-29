@@ -50,7 +50,7 @@ const services = [
   'google-analytics',
   'fathom-analytics',
   'TRM-labs',
-  'sentry'
+  'sentry',
 ];
 </script>
 <style scoped>

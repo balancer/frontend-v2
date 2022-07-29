@@ -1,7 +1,7 @@
 <script lang="ts">
 // https://v3.vuejs.org/api/sfc-script-setup.html#usage-alongside-normal-script
 export default {
-  inheritAttrs: false
+  inheritAttrs: false,
 };
 </script>
 
@@ -60,7 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
   noRadius: false,
   noShadow: false,
   noBorder: false,
-  autoFocus: false
+  autoFocus: false,
 });
 
 const emit = defineEmits<{
@@ -92,7 +92,7 @@ const {
   onClick,
   onFocus,
   onMouseOver,
-  onMouseLeave
+  onMouseLeave,
 } = useInputEvents(props, emit, validate);
 const {
   parentClasses,
@@ -103,7 +103,7 @@ const {
   inputClasses,
   prependClasses,
   appendClasses,
-  borderRadiusClasses
+  borderRadiusClasses,
 } = useInputStyles(props, isInvalid, isActive, isHover, attrs);
 
 /**

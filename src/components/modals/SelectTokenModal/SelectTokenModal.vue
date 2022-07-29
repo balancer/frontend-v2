@@ -23,7 +23,7 @@
         >
           <span class="text-xs text-secondary">{{ $t('tokenLists') }}</span>
           <div class="flex items-center ml-2">
-            <span class="mr-1 ">
+            <span class="mr-1">
               <img
                 v-for="(tokenlist, i) in activeTokenLists"
                 :key="i"
@@ -34,7 +34,7 @@
             <BalIcon
               name="chevron-down"
               size="sm"
-              class="ml-1 text-blue-500 dark:text-blue-400 group-hover:text-pink-500 group-focus:text-pink-500 transition-all duration-200 ease-out "
+              class="ml-1 text-blue-500 dark:text-blue-400 group-hover:text-pink-500 group-focus:text-pink-500 transition-all duration-200 ease-out"
             />
           </div>
         </div>
@@ -114,7 +114,7 @@ import {
   reactive,
   toRef,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -138,7 +138,7 @@ export default defineComponent({
   components: {
     TokenListItem,
     TokenListsListItem,
-    Search
+    Search,
   },
 
   emits: ['close', 'selectTokenlist', 'select'],
@@ -147,7 +147,7 @@ export default defineComponent({
     open: { type: Boolean, default: false },
     excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
     includeEther: { type: Boolean, default: false },
-    disableInjection: { type: Boolean, default: false }
+    disableInjection: { type: Boolean, default: false },
   },
 
   setup(props, { emit }) {
@@ -158,7 +158,7 @@ export default defineComponent({
       loading: false,
       selectTokenList: false,
       query: '',
-      results: {}
+      results: {},
     });
 
     /**
@@ -168,7 +168,7 @@ export default defineComponent({
       activeTokenLists,
       approvedTokenLists,
       toggleTokenList,
-      isActiveList
+      isActiveList,
     } = useTokenLists();
     const {
       getToken,
@@ -177,7 +177,7 @@ export default defineComponent({
       balanceFor,
       dynamicDataLoading,
       nativeAsset,
-      injectTokens
+      injectTokens,
     } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
@@ -208,7 +208,7 @@ export default defineComponent({
           ...token,
           price,
           balance,
-          value
+          value,
         };
       });
 
@@ -217,7 +217,7 @@ export default defineComponent({
 
     const excludedTokens = computed(() => [
       ...props.excludedTokens,
-      ...(props.includeEther ? [] : [nativeAsset.address])
+      ...(props.includeEther ? [] : [nativeAsset.address]),
     ]);
 
     /**
@@ -281,8 +281,8 @@ export default defineComponent({
       onListExit,
       toggleSelectTokenList,
       isActiveList,
-      resolve
+      resolve,
     };
-  }
+  },
 });
 </script>

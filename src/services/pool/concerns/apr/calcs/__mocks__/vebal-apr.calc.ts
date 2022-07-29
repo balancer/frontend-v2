@@ -1,6 +1,6 @@
 export default function VeBalAprCalc() {
   return {
-    calc: jest.fn().mockImplementation()
+    calc: jest.fn().mockImplementation(),
   };
 }
 

@@ -136,7 +136,7 @@ function normalizeTxReceipt(receipt: TransactionReceipt) {
     status: receipt.status,
     to: receipt.to,
     transactionHash: receipt.transactionHash,
-    transactionIndex: receipt.transactionIndex
+    transactionIndex: receipt.transactionIndex,
   };
 }
 
@@ -190,7 +190,7 @@ function updateTransaction(
       const newTxId = getId(updates.id, type);
 
       transactionsMap[newTxId] = merge({}, transaction, updates, {
-        originalId: id
+        originalId: id,
       });
       delete transactionsMap[txId];
     } else {
@@ -254,7 +254,7 @@ export default function useTransactions() {
     account,
     explorerLinks,
     getProvider: getWeb3Provider,
-    blockNumber
+    blockNumber,
   } = useWeb3();
   const { addNotification } = useNotifications();
   const { t } = useI18n();
@@ -303,7 +303,7 @@ export default function useTransactions() {
       ...newTransaction,
       from: account.value,
       addedTime: Date.now(),
-      status: 'pending'
+      status: 'pending',
     };
 
     setTransactions(transactionsMap);
@@ -320,7 +320,7 @@ export default function useTransactions() {
 
       if (transaction != null) {
         const updates: Partial<Transaction> = {
-          finalizedTime: Date.now()
+          finalizedTime: Date.now(),
         };
 
         if (type === 'tx') {
@@ -371,8 +371,8 @@ export default function useTransactions() {
         transactionMetadata: {
           id: transaction.id,
           status: transaction.status,
-          explorerLink: getExplorerLink(transaction.id, transaction.type)
-        }
+          explorerLink: getExplorerLink(transaction.id, transaction.type),
+        },
       });
     }
   }
@@ -395,7 +395,7 @@ export default function useTransactions() {
       )
       .finally(() => {
         updateTransaction(transaction.id, 'order', {
-          lastCheckedBlockNumber: blockNumber.value
+          lastCheckedBlockNumber: blockNumber.value,
         });
       });
   }
@@ -418,7 +418,7 @@ export default function useTransactions() {
         )
         .finally(() =>
           updateTransaction(transaction.id, 'tx', {
-            lastCheckedBlockNumber: blockNumber.value
+            lastCheckedBlockNumber: blockNumber.value,
           })
         );
     }
@@ -455,6 +455,6 @@ export default function useTransactions() {
     // computed
     pendingTransactions,
     finalizedTransactions,
-    transactions
+    transactions,
   };
 }

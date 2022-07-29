@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
   weight: 0,
   excludedTokens: () => [],
   options: () => [],
-  disableInjection: false
+  disableInjection: false,
 });
 
 const emit = defineEmits<{
@@ -81,7 +81,7 @@ function toggleModal(): void {
         {{
           fNum2(weight, {
             style: 'percent',
-            maximumFractionDigits: 0
+            maximumFractionDigits: 0,
           })
         }}
       </span>
@@ -110,7 +110,7 @@ function toggleModal(): void {
             {{
               fNum2(weight, {
                 style: 'percent',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 0,
               })
             }}
           </span>

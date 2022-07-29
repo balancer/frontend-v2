@@ -6,12 +6,12 @@ const mockTransactionResponse = {
       events: [
         {
           event: 'PoolCreated',
-          args: [mockPoolAddress]
-        }
-      ]
+          args: [mockPoolAddress],
+        },
+      ],
     };
     return mockReceipt;
-  })
+  }),
 };
 const sendTransaction = jest.fn().mockImplementation(() => {
   return mockTransactionResponse;

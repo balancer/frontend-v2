@@ -13,7 +13,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  minWidth: 'auto'
+  minWidth: 'auto',
 });
 
 const emit = defineEmits<{
@@ -29,7 +29,7 @@ const showDropdown = ref(false);
  * COMPUTED
  */
 const dropdownClasses = computed(() => ({
-  [`min-w-${props.minWidth}`]: true
+  [`min-w-${props.minWidth}`]: true,
 }));
 
 /**

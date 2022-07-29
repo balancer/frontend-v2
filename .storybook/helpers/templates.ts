@@ -4,5 +4,5 @@ export function generateTemplate(story: string): string {
   <div id="storybook-app">
     ${story}
   </div>
-</div>`
+</div>`;
 }

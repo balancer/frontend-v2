@@ -10,17 +10,17 @@ export default {
     darkMode: false,
     name: 'input1',
     label: 'Withdrawal type',
-    size: 'md'
+    size: 'md',
   },
   argTypes: {
     size: {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg']
-      }
-    }
-  }
+        options: ['sm', 'md', 'lg'],
+      },
+    },
+  },
 };
 
 type Props = {
@@ -40,12 +40,12 @@ const Template = (args: Props) => ({
   v-model="args.modelValue"
   v-bind="args"
 />
-`)
+`),
 });
 
 export const Default = Template.bind({});
 // @ts-ignore
 Default.args = {
   modelValue: 'Proportional',
-  options: ['Proportional', 'Custom']
+  options: ['Proportional', 'Custom'],
 };

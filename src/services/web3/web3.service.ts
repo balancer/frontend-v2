@@ -4,7 +4,7 @@ import { ErrorCode } from '@ethersproject/logger';
 import {
   JsonRpcProvider,
   TransactionResponse,
-  Web3Provider
+  Web3Provider,
 } from '@ethersproject/providers';
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
 import { ComputedRef } from 'vue';
@@ -16,7 +16,7 @@ import { WalletError } from '@/types';
 
 import {
   rpcProviderService as _rpcProviderService,
-  rpcProviderService
+  rpcProviderService,
 } from '../rpc-provider/rpc-provider.service';
 
 interface Web3Profile {
@@ -63,7 +63,7 @@ export default class Web3Service {
   async getProfile(address: string): Promise<Web3Profile> {
     return {
       ens: await this.getEnsName(address),
-      avatar: await this.getEnsAvatar(address)
+      avatar: await this.getEnsAvatar(address),
     };
   }
 
@@ -89,13 +89,14 @@ export default class Web3Service {
     console.log('Params: ', params);
 
     try {
-      const gasPriceSettings = await gasPriceService.getGasSettingsForContractCall(
-        contract,
-        action,
-        params,
-        options,
-        forceEthereumLegacyTxType
-      );
+      const gasPriceSettings =
+        await gasPriceService.getGasSettingsForContractCall(
+          contract,
+          action,
+          params,
+          options,
+          forceEthereumLegacyTxType
+        );
       options = { ...options, ...gasPriceSettings };
 
       return await contract[action](...params, options);

@@ -21,8 +21,8 @@ export default defineComponent({
   props: {
     wallet: {
       type: String as PropType<Wallet>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { connectWallet, toggleWalletSelectModal } = useWeb3();
@@ -32,9 +32,9 @@ export default defineComponent({
     }
     return {
       WalletNameMap,
-      handleClick
+      handleClick,
     };
-  }
+  },
 });
 </script>
 

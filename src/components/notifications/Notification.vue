@@ -45,7 +45,7 @@ import {
   onMounted,
   onUnmounted,
   PropType,
-  ref
+  ref,
 } from 'vue';
 
 import useNotifications, { Notification } from '@/composables/useNotifications';
@@ -56,8 +56,8 @@ export default defineComponent({
   props: {
     notification: {
       type: Object as PropType<Notification>,
-      required: true
-    }
+      required: true,
+    },
   },
 
   setup(props) {
@@ -66,7 +66,7 @@ export default defineComponent({
 
     const progress = useTransition(totalProgress, {
       duration: props.notification.autoCloseAfterMs,
-      transition: TransitionPresets.linear
+      transition: TransitionPresets.linear,
     });
 
     let notificationTimeout: NodeJS.Timeout;
@@ -116,9 +116,9 @@ export default defineComponent({
       // computed
       notifications,
       progressClasses,
-      progress
+      progress,
     };
-  }
+  },
 });
 </script>
 <style scoped>

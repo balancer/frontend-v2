@@ -5,22 +5,22 @@ export default {
   component: BalIcon,
   title: 'Components/BalIcon',
   parameters: {
-    layout: 'centered'
+    layout: 'centered',
   },
   args: {
     darkMode: false,
     name: 'coffee',
-    size: 'md'
+    size: 'md',
   },
   argTypes: {
     size: {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['xs', 'sm', 'md', 'lg']
-      }
-    }
-  }
+        options: ['xs', 'sm', 'md', 'lg'],
+      },
+    },
+  },
 };
 
 type Props = {
@@ -35,7 +35,7 @@ const Template = (args: Props) => ({
   },
   template: generateTemplate(`
 <BalIcon v-bind="args" />
-`)
+`),
 });
 
 export const Default = Template.bind({});

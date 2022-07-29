@@ -44,7 +44,7 @@ export default defineComponent({
   emits: ['change', 'update:modelValue'],
 
   components: {
-    BalIcon
+    BalIcon,
   },
 
   props: {
@@ -58,12 +58,12 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     rules: {
       type: Array as PropType<Rules>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
 
   setup(props, { emit }) {
@@ -109,7 +109,7 @@ export default defineComponent({
       return {
         [textSizeClasses.value]: true,
         [inputHeightClasses.value]: true,
-        'mb-5': !props.noMargin
+        'mb-5': !props.noMargin,
       };
     });
 
@@ -119,7 +119,7 @@ export default defineComponent({
 
     const labelClasses = computed(() => {
       return {
-        [labelSizeClasses.value]: true
+        [labelSizeClasses.value]: true,
       };
     });
 
@@ -155,9 +155,9 @@ export default defineComponent({
       textFor,
       validate,
       labelClasses,
-      onChange
+      onChange,
     };
-  }
+  },
 });
 </script>
 

@@ -19,7 +19,7 @@ const { trackGoal, Goals } = useFathom();
  */
 const classes = computed(() => ({
   ['h-64']: !isWalletReady.value && !isWalletConnecting.value,
-  ['h-44']: isWalletReady.value || isWalletConnecting.value
+  ['h-44']: isWalletReady.value || isWalletConnecting.value,
 }));
 </script>
 

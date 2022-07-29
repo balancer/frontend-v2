@@ -61,42 +61,33 @@ const title = computed((): string =>
     : t('withdraw.preview.titles.default')
 );
 
-const amountMap = computed(
-  (): AmountMap => {
-    const amountMap = {};
-    fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[tokensOut.value[i]] = amount;
-    });
-    return amountMap;
-  }
-);
+const amountMap = computed((): AmountMap => {
+  const amountMap = {};
+  fullAmounts.value.forEach((amount, i) => {
+    if (hasAmount(i)) amountMap[tokensOut.value[i]] = amount;
+  });
+  return amountMap;
+});
 
-const tokenMap = computed(
-  (): TokenInfoMap => {
-    const tokenMap = {};
-    Object.keys(amountMap.value).forEach(address => {
-      tokenMap[address] = getToken(address);
-    });
-    return tokenMap;
-  }
-);
+const tokenMap = computed((): TokenInfoMap => {
+  const tokenMap = {};
+  Object.keys(amountMap.value).forEach(address => {
+    tokenMap[address] = getToken(address);
+  });
+  return tokenMap;
+});
 
-const fiatAmountMap = computed(
-  (): AmountMap => {
-    const fiatAmountMap = {};
-    Object.keys(amountMap.value).forEach(address => {
-      fiatAmountMap[address] = toFiat(amountMap.value[address], address);
-    });
-    return fiatAmountMap;
-  }
-);
+const fiatAmountMap = computed((): AmountMap => {
+  const fiatAmountMap = {};
+  Object.keys(amountMap.value).forEach(address => {
+    fiatAmountMap[address] = toFiat(amountMap.value[address], address);
+  });
+  return fiatAmountMap;
+});
 
 const fiatTotal = computed((): string =>
   Object.values(fiatAmountMap.value).reduce(
-    (total, amount) =>
-      bnum(total)
-        .plus(amount)
-        .toString(),
+    (total, amount) => bnum(total).plus(amount).toString(),
     '0'
   )
 );

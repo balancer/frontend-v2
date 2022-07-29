@@ -9,7 +9,7 @@ import {
   reactive,
   Ref,
   toRef,
-  toRefs
+  toRefs,
 } from 'vue';
 
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
@@ -30,7 +30,7 @@ import {
   NativeAsset,
   TokenInfo,
   TokenInfoMap,
-  TokenList
+  TokenList,
 } from '@/types/TokenList';
 
 /**
@@ -92,9 +92,8 @@ export interface TokensProviderResponse {
 /**
  * SETUP
  */
-export const TokensProviderSymbol: InjectionKey<TokensProviderResponse> = Symbol(
-  symbolKeys.Providers.Tokens
-);
+export const TokensProviderSymbol: InjectionKey<TokensProviderResponse> =
+  Symbol(symbolKeys.Providers.Tokens);
 
 /**
  * TokensProvider
@@ -108,11 +107,8 @@ export default {
      * COMPOSABLES
      */
     const { networkConfig } = useConfig();
-    const {
-      allTokenLists,
-      activeTokenLists,
-      balancerTokenLists
-    } = useTokenLists();
+    const { allTokenLists, activeTokenLists, balancerTokenLists } =
+      useTokenLists();
     const { currency } = useUserSettings();
 
     /**
@@ -120,20 +116,20 @@ export default {
      */
     const nativeAsset: NativeAsset = {
       ...networkConfig.nativeAsset,
-      chainId: networkConfig.chainId
+      chainId: networkConfig.chainId,
     };
 
     const state: TokensProviderState = reactive({
       loading: true,
       injectedTokens: {
-        [networkConfig.nativeAsset.address]: nativeAsset
+        [networkConfig.nativeAsset.address]: nativeAsset,
       },
       allowanceContracts: compact([
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
-        configService.network.addresses.veBAL
+        configService.network.addresses.veBAL,
       ]),
-      injectedPrices: {}
+      injectedPrices: {},
     });
 
     /**
@@ -146,7 +142,7 @@ export default {
     const allTokenListTokens = computed(
       (): TokenInfoMap => ({
         ...mapTokenListTokens(Object.values(allTokenLists)),
-        ...state.injectedTokens
+        ...state.injectedTokens,
       })
     );
 
@@ -175,7 +171,7 @@ export default {
     const tokens = computed(
       (): TokenInfoMap => ({
         ...activeTokenListTokens.value,
-        ...state.injectedTokens
+        ...state.injectedTokens,
       })
     );
 
@@ -196,9 +192,9 @@ export default {
       isSuccess: priceQuerySuccess,
       isLoading: priceQueryLoading,
       isError: priceQueryError,
-      refetch: refetchPrices
+      refetch: refetchPrices,
     } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
-      keepPreviousData: true
+      keepPreviousData: true,
     });
 
     const {
@@ -206,7 +202,7 @@ export default {
       isSuccess: balanceQuerySuccess,
       isLoading: balanceQueryLoading,
       isError: balancesQueryError,
-      refetch: refetchBalances
+      refetch: refetchBalances,
     } = useBalancesQuery(tokens, { keepPreviousData: true });
 
     const {
@@ -214,7 +210,7 @@ export default {
       isSuccess: allowanceQuerySuccess,
       isLoading: allowanceQueryLoading,
       isError: allowancesQueryError,
-      refetch: refetchAllowances
+      refetch: refetchAllowances,
     } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
 
     const prices = computed(
@@ -432,7 +428,7 @@ export default {
     function injectPrices(pricesToInject: TokenPrices) {
       state.injectedPrices = {
         ...state.injectedPrices,
-        ...pricesToInject
+        ...pricesToInject,
       };
     }
 
@@ -445,7 +441,7 @@ export default {
         configService.network.addresses.wstETH,
         configService.network.addresses.veBAL,
         TOKENS.Addresses.BAL,
-        TOKENS.Addresses.wNativeAsset
+        TOKENS.Addresses.wNativeAsset,
       ]);
 
       await injectTokens(tokensToInject);
@@ -483,9 +479,9 @@ export default {
       balanceFor,
       getTokens,
       getToken,
-      injectPrices
+      injectPrices,
     });
 
     return () => slots.default();
-  }
+  },
 };

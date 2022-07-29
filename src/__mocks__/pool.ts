@@ -10,7 +10,7 @@ export const PoolMock: Pool = {
         symbol: 'GRO',
         name: 'Gro DAO Token',
         logoURI:
-          'https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x3ec8798b81485a254928b70cda1cf0a2bb0b74d7.png'
+          'https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x3ec8798b81485a254928b70cda1cf0a2bb0b74d7.png',
       },
       '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': {
         decimals: 18,
@@ -19,14 +19,14 @@ export const PoolMock: Pool = {
         symbol: 'WETH',
         name: 'Wrapped Ether',
         logoURI:
-          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
-      }
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
     },
     amp: '0',
     swapEnabled: true,
     totalSupply: '150501.891977546028526082',
     decimals: 18,
-    swapFee: '0.0037'
+    swapFee: '0.0037',
   },
   address: '0x702605F43471183158938C1a3e5f5A359d7b31ba',
   createTime: 1633385013,
@@ -40,21 +40,21 @@ export const PoolMock: Pool = {
       address: '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
       balance: '408784.606604112667634055',
       priceRate: '1',
-      weight: '0.8'
+      weight: '0.8',
     },
     {
       address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       balance: '95.094102533755196937',
       priceRate: '1',
-      weight: '0.2'
-    }
+      weight: '0.2',
+    },
   ],
   tokensList: [
     '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
-    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   ],
   totalLiquidity: '1203724.083931267693503729',
   totalShares: '150501.891977546028526082',
   totalSwapFee: '165820.9454823753843641664971705477',
-  totalSwapVolume: '52262349.4122392298543195893618041'
+  totalSwapVolume: '52262349.4122392298543195893618041',
 };

@@ -36,10 +36,10 @@ const {
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
-    isLoadingBoosts
+    isLoadingBoosts,
   },
   isPoolEligibleForStaking,
-  isLoadingPoolEligibility
+  isLoadingPoolEligibility,
 } = useStaking();
 
 /**
@@ -88,9 +88,9 @@ async function handleActionSuccess() {
     <AnimatePresence
       :isVisible="
         !isLoadingStakedShares &&
-          !isStakedSharesIdle &&
-          !isLoadingPoolEligibility &&
-          !isLoadingBoosts
+        !isStakedSharesIdle &&
+        !isLoadingPoolEligibility &&
+        !isLoadingBoosts
       "
     >
       <div class="relative">
@@ -101,8 +101,8 @@ async function handleActionSuccess() {
               title: $t('staking.stakingIncentives'),
               id: 'staking-incentives',
               handle: 'staking-handle',
-              isDisabled: !isPoolEligibleForStaking
-            }
+              isDisabled: !isPoolEligibleForStaking,
+            },
           ]"
         >
           <template v-slot:staking-handle>
@@ -116,8 +116,8 @@ async function handleActionSuccess() {
                       'flex items-center p-1 text-white rounded-full',
                       {
                         'bg-green-500': isPoolEligibleForStaking,
-                        'bg-gray-400': !isPoolEligibleForStaking
-                      }
+                        'bg-gray-400': !isPoolEligibleForStaking,
+                      },
                     ]"
                   >
                     <BalIcon

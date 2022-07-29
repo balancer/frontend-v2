@@ -98,7 +98,7 @@ import {
   reactive,
   ref,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -130,7 +130,7 @@ export default defineComponent({
     StakingIncentivesCard,
     StakingProvider,
     ApyVisionPoolLink,
-    PoolPageHeader
+    PoolPageHeader,
   },
 
   setup() {
@@ -148,7 +148,7 @@ export default defineComponent({
      * STATE
      */
     const data = reactive<PoolPageData>({
-      id: route.params.id as string
+      id: route.params.id as string,
     });
 
     //#region pool query
@@ -165,7 +165,7 @@ export default defineComponent({
     const {
       isStableLikePool,
       isLiquidityBootstrappingPool,
-      isStablePhantomPool
+      isStablePhantomPool,
     } = usePool(poolQuery.data);
     //#endregion
 
@@ -214,7 +214,7 @@ export default defineComponent({
       }
 
       const options = {
-        rootMargin: '-100px'
+        rootMargin: '-100px',
       };
 
       const callback = (entries: IntersectionObserverEntry[]): void => {
@@ -280,7 +280,7 @@ export default defineComponent({
           persistent: true,
           action: poolQuery.refetch.value,
           actionLabel: t('alerts.retry-label'),
-          priority: AlertPriority.MEDIUM
+          priority: AlertPriority.MEDIUM,
         });
       } else {
         removeAlert('pool-fetch-error');
@@ -312,9 +312,9 @@ export default defineComponent({
       // methods
       getAddressFromPoolId,
       poolApr,
-      loadingApr
+      loadingApr,
     };
-  }
+  },
 });
 </script>
 

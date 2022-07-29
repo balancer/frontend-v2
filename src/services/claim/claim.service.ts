@@ -27,7 +27,7 @@ import {
   MultiTokenPendingClaims,
   Report,
   Snapshot,
-  TokenClaimInfo
+  TokenClaimInfo,
 } from './types';
 
 export class ClaimService {
@@ -75,7 +75,7 @@ export class ClaimService {
       .map((report: Report) => {
         return {
           id: report[0],
-          amount: report[1][account]
+          amount: report[1][account],
         };
       });
 
@@ -88,22 +88,19 @@ export class ClaimService {
       claims,
       reports,
       tokenClaimInfo,
-      availableToClaim
+      availableToClaim,
     };
   }
 
-  public async getMultiTokensCurrentRewardsEstimate(
-    account: string
-  ): Promise<{
+  public async getMultiTokensCurrentRewardsEstimate(account: string): Promise<{
     data: MultiTokenCurrentRewardsEstimate[];
     timestamp: string | null;
   }> {
     try {
-      const response = await axios.get<
-        MultiTokenCurrentRewardsEstimateResponse
-      >(
-        `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider-multitoken/${account}`
-      );
+      const response =
+        await axios.get<MultiTokenCurrentRewardsEstimateResponse>(
+          `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider-multitoken/${account}`
+        );
       if (response.data.success) {
         const multiTokenLiquidityProviders = response.data.result[
           'liquidity-providers'
@@ -111,10 +108,11 @@ export class ClaimService {
           .filter(incentive => incentive.chain_id === networkId.value)
           .map(incentive => ({
             ...incentive,
-            token_address: getAddress(incentive.token_address)
+            token_address: getAddress(incentive.token_address),
           }));
 
-        const multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[] = [];
+        const multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[] =
+          [];
 
         const multiTokenLiquidityProvidersByToken = Object.entries(
           groupBy(multiTokenLiquidityProviders, 'token_address')
@@ -122,7 +120,7 @@ export class ClaimService {
 
         for (const [
           token,
-          liquidityProvider
+          liquidityProvider,
         ] of multiTokenLiquidityProvidersByToken) {
           const rewards = liquidityProvider
             .reduce(
@@ -140,14 +138,14 @@ export class ClaimService {
             multiTokenCurrentRewardsEstimate.push({
               rewards,
               velocity,
-              token: getAddress(token)
+              token: getAddress(token),
             });
           }
         }
 
         return {
           data: multiTokenCurrentRewardsEstimate,
-          timestamp: response.data.result.current_timestamp
+          timestamp: response.data.result.current_timestamp,
         };
       }
     } catch (e) {
@@ -155,7 +153,7 @@ export class ClaimService {
     }
     return {
       data: [],
-      timestamp: null
+      timestamp: null,
     };
   }
 
@@ -202,7 +200,7 @@ export class ClaimService {
           decimals: tokenPendingClaims.tokenClaimInfo.decimals,
           // objects must be cloned
           report: { ...tokenPendingClaims.reports[claim.id] },
-          claim: { ...claim }
+          claim: { ...claim },
         };
 
         return this.computeClaimProof(payload);
@@ -215,7 +213,7 @@ export class ClaimService {
   ): Promise<ClaimProofTuple> {
     const message: ClaimWorkerMessage<ComputeClaimProofPayload> = {
       type: 'computeClaimProof',
-      payload
+      payload,
     };
 
     return claimWorkerPoolService.worker.postMessage<ClaimProofTuple>(message);
@@ -232,7 +230,7 @@ export class ClaimService {
         decimals:
           tokenDecimals != null && tokenDecimals[tokenClaim.token]
             ? tokenDecimals[tokenClaim.token]
-            : 18
+            : 18,
       }));
     }
 
@@ -258,13 +256,13 @@ export class ClaimService {
     const claimStatusCalls = Array.from({ length: totalWeeks }).map((_, i) => [
       configService.network.addresses.merkleOrchard,
       'isClaimed',
-      [token, distributor, weekStart + i, account]
+      [token, distributor, weekStart + i, account],
     ]);
 
     const rootCalls = Array.from({ length: totalWeeks }).map((_, i) => [
       configService.network.addresses.merkleOrchard,
       'getDistributionRoot',
-      [token, distributor, weekStart + i]
+      [token, distributor, weekStart + i],
     ]);
 
     try {

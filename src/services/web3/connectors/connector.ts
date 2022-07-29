@@ -15,7 +15,7 @@ export enum ConnectorId {
   WalletConnect = 'walletconnect',
   WalletLink = 'walletlink',
   Gnosis = 'gnosis',
-  Unknown = 'unknown'
+  Unknown = 'unknown',
 }
 export abstract class Connector {
   provider: any = null;

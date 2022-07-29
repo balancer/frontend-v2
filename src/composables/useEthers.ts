@@ -1,13 +1,13 @@
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/providers';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 import { ref } from 'vue';
 
 import {
   retryPromiseWithDelay,
-  tryPromiseWithTimeout
+  tryPromiseWithTimeout,
 } from '@/lib/utils/promise';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
@@ -46,7 +46,7 @@ export default function useEthers() {
           },
           onTxFailed: () => {
             resolve(false);
-          }
+          },
         },
         false,
         false
@@ -86,7 +86,7 @@ export default function useEthers() {
         if (realTx.txHash !== null) {
           txHash = realTx.txHash;
           updateTransaction(tx.hash, 'tx', {
-            id: realTx.txHash
+            id: realTx.txHash,
           });
         }
       } catch {

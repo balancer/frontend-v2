@@ -8,7 +8,7 @@ import OperatorError from './errors/OperatorError';
 import {
   getSigningSchemeApiValue,
   OrderCancellation,
-  OrderCreation
+  OrderCreation,
 } from './signing';
 import {
   FeeInformation,
@@ -16,7 +16,7 @@ import {
   OrderID,
   OrderMetaData,
   PriceInformation,
-  PriceQuoteParams
+  PriceQuoteParams,
 } from './types';
 import { getCanonicalMarket, toErc20Address } from './utils';
 
@@ -26,7 +26,7 @@ export const API_URLS = {
     : 'https://protocol-mainnet.gnosis.io/api',
   [Network.RINKEBY]: IS_DEV
     ? 'https://protocol-rinkeby.dev.gnosisdev.com/api'
-    : 'https://protocol-rinkeby.gnosis.io/api'
+    : 'https://protocol-rinkeby.gnosis.io/api',
 };
 
 export default class GnosisProtocolService {
@@ -49,10 +49,10 @@ export default class GnosisProtocolService {
       {
         ...order,
         signingScheme: getSigningSchemeApiValue(order.signingScheme),
-        from: owner
+        from: owner,
       },
       {
-        validateStatus: () => true
+        validateStatus: () => true,
       }
     );
 
@@ -80,9 +80,9 @@ export default class GnosisProtocolService {
         data: {
           signature: cancellation.signature,
           signingScheme: getSigningSchemeApiValue(cancellation.signingScheme),
-          from: owner
+          from: owner,
         },
-        validateStatus: () => true
+        validateStatus: () => true,
       }
     );
 
@@ -117,7 +117,7 @@ export default class GnosisProtocolService {
       `${this.baseURL}/quote`,
       feeQuoteParams,
       {
-        validateStatus: () => true
+        validateStatus: () => true,
       }
     );
 
@@ -137,7 +137,7 @@ export default class GnosisProtocolService {
       const { baseToken, quoteToken } = getCanonicalMarket({
         sellToken,
         buyToken,
-        kind
+        kind,
       });
       const market = `${toErc20Address(baseToken)}-${toErc20Address(
         quoteToken

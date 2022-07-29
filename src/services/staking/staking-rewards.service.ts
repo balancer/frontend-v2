@@ -25,7 +25,7 @@ import { Pool } from '../pool/types';
 import {
   calculateGaugeApr,
   calculateRewardTokenAprs,
-  getAprRange
+  getAprRange,
 } from './utils';
 
 export type GaugeBalApr = { min: string; max: string };
@@ -94,7 +94,7 @@ export class StakingRewardsService {
   async getGaugeBALAprs({
     prices,
     gauges,
-    pools
+    pools,
   }: {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
@@ -103,19 +103,15 @@ export class StakingRewardsService {
     if (isL2.value) return {};
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const balAddress = TOKENS.Addresses.BAL;
-    const [
-      inflationRate,
-      relativeWeights,
-      workingSupplies,
-      totalSupplies
-    ] = await Promise.all([
-      new BalancerTokenAdmin(
-        configService.network.addresses.tokenAdmin
-      ).getInflationRate(),
-      this.getRelativeWeightsForGauges(gaugeAddresses),
-      this.getWorkingSupplyForGauges(gaugeAddresses),
-      this.getTotalSupplyForGauges(gaugeAddresses)
-    ]);
+    const [inflationRate, relativeWeights, workingSupplies, totalSupplies] =
+      await Promise.all([
+        new BalancerTokenAdmin(
+          configService.network.addresses.tokenAdmin
+        ).getInflationRate(),
+        this.getRelativeWeightsForGauges(gaugeAddresses),
+        this.getWorkingSupplyForGauges(gaugeAddresses),
+        this.getTotalSupplyForGauges(gaugeAddresses),
+      ]);
 
     const aprs = gauges.map(gauge => {
       const poolId = gauge.poolId;
@@ -140,7 +136,7 @@ export class StakingRewardsService {
         boost: '1',
         workingSupplies,
         relativeWeights,
-        totalSupply
+        totalSupply,
       });
 
       const range = getAprRange(gaugeBALApr || '0'.toString());
@@ -153,7 +149,7 @@ export class StakingRewardsService {
     prices,
     gauges,
     pools,
-    tokens
+    tokens,
   }: {
     prices: TokenPrices;
     gauges: SubgraphGauge[];
@@ -165,15 +161,12 @@ export class StakingRewardsService {
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
       gaugeAddresses
     );
-    const [
-      rewardTokensMeta,
-      totalSupplies,
-      rawOnchainDataMap
-    ] = await Promise.all([
-      LiquidityGauge.getRewardTokenDataForGauges(rewardTokensForGauges),
-      this.getTotalSupplyForGauges(gaugeAddresses),
-      poolMulticaller.fetch()
-    ]);
+    const [rewardTokensMeta, totalSupplies, rawOnchainDataMap] =
+      await Promise.all([
+        LiquidityGauge.getRewardTokenDataForGauges(rewardTokensForGauges),
+        this.getTotalSupplyForGauges(gaugeAddresses),
+        poolMulticaller.fetch(),
+      ]);
     const aprs = gauges.map(gauge => {
       const poolId = gauge.poolId;
       const pool = pools.find(pool => pool.id === poolId);
@@ -190,7 +183,7 @@ export class StakingRewardsService {
         rewardTokensMeta: rewardTokens,
         bptPrice: bnum(poolService.bptPrice),
         prices,
-        tokens
+        tokens,
       });
       // TODO BETTER INTEGRATION OF REWARD TOKEN APRS
       let totalRewardStakingAPR = bnum(0);
@@ -204,7 +197,7 @@ export class StakingRewardsService {
 
   async getUserBoosts({
     userAddress,
-    gaugeShares
+    gaugeShares,
   }: {
     userAddress: string;
     gaugeShares: UserGaugeShare[];

@@ -6,7 +6,7 @@ const tradeState = reactive({
   tokenInAddress: '',
   tokenOutAddress: '',
   tokenInAmount: '',
-  tokenOutAmount: ''
+  tokenOutAmount: '',
 });
 
 function setInitialized(val: boolean) {
@@ -36,6 +36,6 @@ export function useTradeState() {
     setTokenOutAddress,
     setTokenInAmount,
     setTokenOutAmount,
-    setInitialized
+    setInitialized,
   };
 }

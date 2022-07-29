@@ -63,7 +63,7 @@ export default function useRelayerApprovalQuery(
   const queryOptions = reactive({
     enabled,
     ...FETCH_ONCE_OPTIONS,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

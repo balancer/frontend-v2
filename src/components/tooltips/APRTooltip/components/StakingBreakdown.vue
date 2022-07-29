@@ -63,24 +63,20 @@ const boostedTotalAPR = computed((): string => {
  */
 const unboostedTotalAPR = computed((): string =>
   fNum2(
-    bnum(minBalAPR.value)
-      .plus(rewardTokensAPR.value)
-      .toString(),
+    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
     FNumFormats.percent
   )
 );
 
-const breakdownItems = computed(
-  (): Array<any> => {
-    const items: Array<any> = [];
+const breakdownItems = computed((): Array<any> => {
+  const items: Array<any> = [];
 
-    items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
+  items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
 
-    if (hasRewardTokens.value) items.push(['Rewards', rewardTokensAPR.value]);
+  if (hasRewardTokens.value) items.push(['Rewards', rewardTokensAPR.value]);
 
-    return items;
-  }
-);
+  return items;
+});
 </script>
 
 <template>

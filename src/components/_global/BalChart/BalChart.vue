@@ -62,7 +62,7 @@ const emit = defineEmits([
   'periodSelected',
   'setCurrentChartValue',
   'mouseLeaveEvent',
-  'mouseEnterEvent'
+  'mouseEnterEvent',
 ]);
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,7 +76,7 @@ const props = withDefaults(defineProps<Props>(), {
   axisLabelFormatter: () => ({}),
   showTooltip: true,
   showTooltipLayer: true,
-  useMinMax: false
+  useMinMax: false,
 });
 
 const chartInstance = ref<echarts.ECharts>();
@@ -109,11 +109,11 @@ const chartConfig = computed(() => ({
     textStyle: {
       color: darkMode.value
         ? tailwind.theme.colors.gray['100']
-        : tailwind.theme.colors.gray['800']
+        : tailwind.theme.colors.gray['800'],
     },
     inactiveColor: darkMode.value
       ? tailwind.theme.colors.gray['700']
-      : tailwind.theme.colors.gray['300']
+      : tailwind.theme.colors.gray['300'],
   },
   // controlling the display of the X-Axis
   xAxis: {
@@ -121,26 +121,26 @@ const chartConfig = computed(() => ({
     show: !props.hideXAxis,
     axisTick: { show: false },
     axisLine: {
-      show: false
+      show: false,
     },
     minInterval: props.xAxisMinInterval,
     axisLabel: {
       formatter: props.axisLabelFormatter.xAxis
         ? value => fNum2(value, props.axisLabelFormatter.xAxis)
         : undefined,
-      color: tailwind.theme.colors.gray['400']
+      color: tailwind.theme.colors.gray['400'],
     },
     splitArea: {
       show: false,
       areaStyle: {
-        color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)']
-      }
-    }
+        color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
+      },
+    },
   },
   // controlling the display of the Y-Axis
   yAxis: {
     axisLine: {
-      show: false
+      show: false,
     },
     axisTick: { show: false },
     min: props.useMinMax ? 'dataMin' : null,
@@ -149,7 +149,7 @@ const chartConfig = computed(() => ({
     show: !props.hideYAxis,
     splitNumber: 4,
     splitLine: {
-      show: false
+      show: false,
     },
     position: 'left',
     axisLabel: {
@@ -157,9 +157,9 @@ const chartConfig = computed(() => ({
       formatter: props.axisLabelFormatter.yAxis
         ? value => fNum2(value, props.axisLabelFormatter.yAxis)
         : undefined,
-      color: tailwind.theme.colors.gray['400']
+      color: tailwind.theme.colors.gray['400'],
     },
-    nameGap: 25
+    nameGap: 25,
   },
   color: props.color,
   // Controls the boundaries of the chart from the HTML defined rectangle
@@ -168,7 +168,7 @@ const chartConfig = computed(() => ({
     right: 0,
     top: '10%',
     bottom: '5%',
-    containLabel: true
+    containLabel: true,
   },
   tooltip: {
     show: props.showTooltip,
@@ -178,8 +178,8 @@ const chartConfig = computed(() => ({
     axisPointer: {
       type: 'shadow',
       label: {
-        show: false
-      }
+        show: false,
+      },
     },
     backgroundColor: darkMode.value
       ? tailwind.theme.colors.gray['800']
@@ -205,7 +205,7 @@ const chartConfig = computed(() => ({
                 .join('')}
             </div>
           `;
-    }
+    },
   },
   series: props.data.map((d, i) => ({
     data: d.values,
@@ -214,21 +214,21 @@ const chartConfig = computed(() => ({
     showSymbol: false,
     name: d.name,
     silent: true,
-    animationEasing: function(k) {
+    animationEasing: function (k) {
       return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
     },
     lineStyle: {
-      width: 2
+      width: 2,
     },
     areaStyle: props.areaStyle,
     itemStyle: {
-      borderRadius: 100
+      borderRadius: 100,
     },
     emphasis: {
       itemStyle: {
         color: props.hoverColor,
-        borderColor: props.hoverBorderColor
-      }
+        borderColor: props.hoverBorderColor,
+      },
     },
     // This is a retrofitted option to show the small pill with the
     // latest value of the series at the end of the line on the RHS
@@ -237,7 +237,7 @@ const chartConfig = computed(() => ({
       symbol: 'roundRect',
       symbolSize: 0,
       lineStyle: {
-        color: 'rgba(0, 0, 0, 0)'
+        color: 'rgba(0, 0, 0, 0)',
       },
       precision: 5,
       label: {
@@ -248,7 +248,7 @@ const chartConfig = computed(() => ({
           return fNum2(params.data.yAxis, props.axisLabelFormatter.yAxis);
         },
         color: '#FFF',
-        fontSize: 10
+        fontSize: 10,
       },
       data: props.isLastValueChipVisible
         ? [
@@ -257,13 +257,13 @@ const chartConfig = computed(() => ({
               yAxis:
                 props.data[i]?.values.length > 0
                   ? (last(props.data[i]?.values) || [])[1]
-                  : 0
-            }
+                  : 0,
+            },
           ]
         : [],
-      animation: false
-    }
-  }))
+      animation: false,
+    },
+  })),
 }));
 
 const styleOverrides = computed(() => {
@@ -299,7 +299,7 @@ function setCurrentValueToLatest(updateCurrentValue: boolean) {
       props.axisLabelFormatter.yAxis || {
         style: 'currency',
         currency: 'USD',
-        fixedFormat: true
+        fixedFormat: true,
       }
     );
     const currentChartValue = props.data[0].values[0];
@@ -307,7 +307,7 @@ function setCurrentValueToLatest(updateCurrentValue: boolean) {
     if (currentChartValue) {
       emit('setCurrentChartValue', {
         chartDate: currentChartValue[0],
-        chartValue: currentChartValue[1]
+        chartValue: currentChartValue[1],
       });
     }
   }
@@ -354,7 +354,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
 
     emit('setCurrentChartValue', {
       chartDate: currentChartValue[0],
-      chartValue: currentChartValue[1]
+      chartValue: currentChartValue[1],
     });
 
     currentValue.value = fNum2(
@@ -362,7 +362,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       props.axisLabelFormatter.yAxis || {
         style: 'currency',
         currency: 'USD',
-        fixedFormat: true
+        fixedFormat: true,
       }
     );
 
@@ -413,7 +413,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
         :class="{
           'text-green-400': change >= 0,
           'text-red-400': change < 0,
-          'font-medium': true
+          'font-medium': true,
         }"
         >{{ numeral(change).format('+0.0%') }}
       </span>
@@ -423,7 +423,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       :class="[
         height && typeof (height === 'string') ? `h-${height}` : '',
         'w-full',
-        chartClass
+        chartClass,
       ]"
       :option="chartConfig"
       autoresize

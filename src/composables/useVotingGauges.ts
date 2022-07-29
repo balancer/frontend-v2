@@ -5,7 +5,7 @@ import {
   GOERLI_VOTING_GAUGES,
   KOVAN_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
-  VotingGauge
+  VotingGauge,
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
@@ -65,7 +65,7 @@ export default function useVotingGauges() {
       (timeUntilEnd.days || 0) % 7,
       timeUntilEnd.hours || 0,
       timeUntilEnd.minutes || 0,
-      timeUntilEnd.seconds || 0
+      timeUntilEnd.seconds || 0,
     ];
     return formattedTime;
   });
@@ -96,6 +96,6 @@ export default function useVotingGauges() {
     unallocatedVotes,
     votingPeriodEnd,
     votingPeriodLastHour,
-    refetch: gaugeVotesQuery.refetch
+    refetch: gaugeVotesQuery.refetch,
   };
 }

@@ -62,8 +62,8 @@ export default function usePoolQuery(
         where: {
           id: id.toLowerCase(),
           totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-          poolType_not_in: POOLS.ExcludedPoolTypes
-        }
+          poolType_not_in: POOLS.ExcludedPoolTypes,
+        },
       });
     }
 
@@ -82,14 +82,14 @@ export default function usePoolQuery(
     await injectTokens([
       ...decoratedPool.tokensList,
       ...lpTokensFor(decoratedPool),
-      decoratedPool.address
+      decoratedPool.address,
     ]);
     return decoratedPool;
   };
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<Pool>(queryKey, queryFn, queryOptions);

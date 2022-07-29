@@ -78,6 +78,6 @@ export default function useInputEvents(props, emit, validate) {
     onClick,
     onFocus,
     onMouseOver,
-    onMouseLeave
+    onMouseLeave,
   };
 }

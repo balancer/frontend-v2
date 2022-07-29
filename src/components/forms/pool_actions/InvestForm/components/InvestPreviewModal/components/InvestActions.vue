@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
@@ -64,7 +64,7 @@ const investmentState = reactive<InvestmentState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -85,7 +85,7 @@ const {
   bptOut,
   fiatTotalLabel,
   batchSwap,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
 } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
@@ -108,8 +108,8 @@ const actions = computed((): TransactionActionInfo[] => [
     loadingLabel: t('investment.preview.loadingLabel.investment'),
     confirmingLabel: t('confirming'),
     action: submit,
-    stepTooltip: t('investmentTooltip')
-  }
+    stepTooltip: t('investmentTooltip'),
+  },
 ]);
 
 const transactionInProgress = computed(
@@ -137,12 +137,12 @@ async function handleTransaction(tx): Promise<void> {
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
       fiatTotalLabel.value,
-      poolWeightsLabel(props.pool)
+      poolWeightsLabel(props.pool),
     ]),
     details: {
       total: fiatTotalLabel.value,
-      pool: props.pool
-    }
+      pool: props.pool,
+    },
   });
 
   await txListener(tx, {
@@ -158,7 +158,7 @@ async function handleTransaction(tx): Promise<void> {
     onTxFailed: () => {
       console.error('Invest failed');
       investmentState.confirming = false;
-    }
+    },
   });
 }
 

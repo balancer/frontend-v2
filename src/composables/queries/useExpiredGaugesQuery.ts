@@ -67,7 +67,7 @@ export default function useExpiredGaugesQuery(
         gaugeAddresses.value
       ).catch(error => {
         console.error('Error when fetching voting gauges is_killed status', {
-          error
+          error,
         });
         return [];
       });
@@ -86,7 +86,7 @@ export default function useExpiredGaugesQuery(
    */
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    ...options
+    ...options,
   });
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
 }

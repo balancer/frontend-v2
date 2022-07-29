@@ -33,12 +33,10 @@ function getHorizontalStickyClass(index: number) {
         :class="[
           getHorizontalStickyClass(0),
           isColumnStuck ? 'isSticky' : '',
-          'text-left p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900 align-top'
+          'text-left p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900 align-top',
         ]"
       >
-        <span class="font-semibold text-left">
-          Total
-        </span>
+        <span class="font-semibold text-left"> Total </span>
       </td>
       <td
         v-for="(column, columnIndex) in tail(columns)"
@@ -47,7 +45,7 @@ function getHorizontalStickyClass(index: number) {
           column.align === 'right' ? 'text-left' : 'text-right',
           getHorizontalStickyClass(columnIndex + 1),
           isColumnStuck ? 'isSticky' : '',
-          'p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900'
+          'p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900',
         ]"
       >
         <slot v-if="column.totalsCell" :name="column.totalsCell"> </slot>

@@ -48,7 +48,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
-  isPaginated: false
+  isPaginated: false,
 });
 
 const emit = defineEmits(['loadMore']);
@@ -71,7 +71,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     accessor: 'tx',
     Cell: 'actionCell',
     width: 150,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('value'),
@@ -81,7 +81,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     align: 'right',
     className: 'align-center w-40',
     sortKey: pool => pool.value,
-    width: 125
+    width: 125,
   },
   {
     name: t('tokens'),
@@ -89,7 +89,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     accessor: '',
     Cell: 'detailsCell',
     width: 325,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('time'),
@@ -98,8 +98,8 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200
-  }
+    width: 200,
+  },
 ]);
 
 const activityRows = computed<ActivityRow[]>(() =>
@@ -120,7 +120,7 @@ const activityRows = computed<ActivityRow[]>(() =>
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
           type,
-          tokenAmounts: getJoinExitDetails(amounts)
+          tokenAmounts: getJoinExitDetails(amounts),
         };
       })
 );
@@ -155,7 +155,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     return {
       address,
       symbol,
-      amount: fNum2(amountNumber, FNumFormats.token)
+      amount: fNum2(amountNumber, FNumFormats.token),
     };
   });
 }
@@ -180,7 +180,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
       :no-results-label="noResultsLabel"
       :initial-state="{
         sortColumn: 'timeAgo',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
     >
       <template v-slot:actionCell="action">

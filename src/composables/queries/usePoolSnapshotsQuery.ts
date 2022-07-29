@@ -78,7 +78,7 @@ export default function usePoolSnapshotsQuery(
         1,
         aggregateBy
       ),
-      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
+      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum),
     ]);
 
     return { prices, snapshots };
@@ -86,7 +86,7 @@ export default function usePoolSnapshotsQuery(
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

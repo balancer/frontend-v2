@@ -1,6 +1,6 @@
 import {
   BalancerHelpers__factory,
-  Vault__factory
+  Vault__factory,
 } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';

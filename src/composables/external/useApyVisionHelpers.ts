@@ -26,6 +26,6 @@ export function useApyVisionHelpers() {
 
   return {
     apyVisionNetworkName,
-    poolPathSymbolSegment
+    poolPathSymbolSegment,
   };
 }

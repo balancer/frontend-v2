@@ -21,7 +21,7 @@ type Props = {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -32,22 +32,22 @@ const tabs = computed(() =>
     ? [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
-          label: t('poolTransactions.tabs.allTransactions')
+          label: t('poolTransactions.tabs.allTransactions'),
         },
         {
           value: PoolTransactionsTab.USER_ACTIVITY,
-          label: t('poolTransactions.tabs.myTransactions')
-        }
+          label: t('poolTransactions.tabs.myTransactions'),
+        },
       ]
     : [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
-          label: t('poolTransactions.tabs.allInvestments')
+          label: t('poolTransactions.tabs.allInvestments'),
         },
         {
           value: PoolTransactionsTab.USER_ACTIVITY,
-          label: t('poolTransactions.tabs.myInvestments')
-        }
+          label: t('poolTransactions.tabs.myInvestments'),
+        },
       ]
 );
 

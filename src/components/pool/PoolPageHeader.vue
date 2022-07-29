@@ -35,7 +35,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   loadingPool: true,
   loadingApr: true,
-  noInitLiquidity: false
+  noInitLiquidity: false,
 });
 
 /**
@@ -53,7 +53,7 @@ const { balancerTokenListTokens } = useTokens();
  * STATE
  */
 const data = reactive({
-  id: route.params.id as string
+  id: route.params.id as string,
 });
 
 /**
@@ -85,7 +85,7 @@ const poolFeeLabel = computed(() => {
 
   const feeLabel = `${fNum2(props.pool.onchain.swapFee, {
     style: 'percent',
-    maximumFractionDigits: 4
+    maximumFractionDigits: 4,
   })}`;
 
   if (feesFixed.value) {
@@ -144,7 +144,7 @@ const poolTypeLabel = computed(() => {
             {{
               fNum2(tokenMeta.weight, {
                 style: 'percent',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 0,
               })
             }}
           </span>
