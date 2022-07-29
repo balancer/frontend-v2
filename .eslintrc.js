@@ -26,7 +26,6 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
-    
     "tailwindcss/no-custom-classname": "off",
     // Our component names are already written in PascalCase. 
     // And for consistency, it's now required too.
