@@ -5,5 +5,8 @@
     "stylelint-config-recommended-vue",
     "stylelint-selector-bem-pattern",
     "stylelint-config-tailwindcss"
-  ]
+  ],
+  "rules": {
+    "string-quotes": "single",
+  }
 }
