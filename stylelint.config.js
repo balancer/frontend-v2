@@ -4,7 +4,8 @@ module.exports = {
     'stylelint-config-standard',
     'stylelint-selector-bem-pattern',
     'stylelint-config-recommended-vue',
-    'stylelint-config-tailwindcss'
+    'stylelint-config-tailwindcss',
+    'stylelint-config-prettier'
   ],
   rules: {
     'string-quotes': 'single',
