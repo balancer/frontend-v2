@@ -65,45 +65,47 @@ const activeTab = ref(tabs.value[0].value);
 
 <template>
   <div>
-    <h4
-      v-text="$t('poolTransactions.tabs.allInvestments')"
-      class="px-4 lg:px-0 mb-5"
-    />
-    <div
-      class="mx-4 lg:mx-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
-    >
-      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+    <div>
+      <h4
+        v-text="$t('poolTransactions.tabs.allInvestments')"
+        class="px-4 lg:px-0 mb-5"
+      />
+      <div
+        class="mx-4 lg:mx-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
+      >
+        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+      </div>
     </div>
-  </div>
 
-  <template v-if="isStablePhantomPool">
-    <BoostedActivities
-      v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-      :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
-      :pool="pool"
-      :loading="loading"
-    />
-    <BoostedActivities
-      v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-      :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
-      :pool="pool"
-      :loading="loading"
-    />
-  </template>
-  <template v-else>
-    <div class="mb-20">
-      <Activities
+    <template v-if="isStablePhantomPool">
+      <BoostedActivities
         v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
         :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
-      <Activities
+      <BoostedActivities
         v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
         :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
-    </div>
-  </template>
+    </template>
+    <template v-else>
+      <div class="mb-20">
+        <Activities
+          v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
+          :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
+          :pool="pool"
+          :loading="loading"
+        />
+        <Activities
+          v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
+          :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
+          :pool="pool"
+          :loading="loading"
+        />
+      </div>
+    </template>
+  </div>
 </template>
