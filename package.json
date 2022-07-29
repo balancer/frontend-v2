@@ -14,7 +14,7 @@
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "lint:fix": "vue-cli-service lint",
     "prettier": "prettier --check .",
-    "prettier:fix": "prettier --write .",
+    "prettier:fix": "prettier --write . --loglevel warn",
     "prepare": "node ./prepare.js",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
