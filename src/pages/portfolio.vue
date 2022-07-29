@@ -28,7 +28,7 @@ const migratableUserPools = computed(() => {
 <template>
   <StakingProvider>
     <PortfolioPageHero />
-    <div class="xl:container xl:mx-auto xl:px-4 pt-10 md:pt-12">
+    <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <BalStack horizontal justify="between" align="center">
@@ -41,31 +41,32 @@ const migratableUserPools = computed(() => {
           <VeBalPoolTable
             v-if="lockPool && Number(lock?.lockedAmount) > 0"
             :lock="lock"
-            :lockPool="lockPool"
+            :lock-pool="lockPool"
           />
 
           <div>
             <BalStack
+              v-if="migratableUserPools.length > 0"
               vertical
               spacing="sm"
-              v-if="migratableUserPools.length > 0"
             >
-              <h5 class="px-4 xl:px-0">{{ $t('poolsToMigrate') }}</h5>
+              <h5 class="px-4 xl:px-0">
+                {{ $t('poolsToMigrate') }}
+              </h5>
               <PoolsTable
                 :key="migratableUserPools"
-                :isLoading="isLoadingUserPools"
+                :is-loading="isLoadingUserPools"
                 :data="migratableUserPools"
-                :noPoolsLabel="$t('noInvestments')"
-                showPoolShares
-                :selectedTokens="selectedTokens"
-                :hiddenColumns="[
+                :no-pools-label="$t('noInvestments')"
+                show-pool-shares
+                :selected-tokens="selectedTokens"
+                :hidden-columns="[
                   'poolVolume',
                   'poolValue',
                   'actions',
                   'lockEndDate',
                 ]"
-              >
-              </PoolsTable>
+              />
             </BalStack>
           </div>
         </BalStack>

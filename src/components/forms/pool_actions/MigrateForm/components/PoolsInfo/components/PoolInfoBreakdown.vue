@@ -27,14 +27,14 @@ const { getToken } = useTokens();
 </script>
 
 <template>
-  <div class="rounded-lg border dark:border-gray-800 dark:bg-gray-800 p-3">
+  <div class="p-3 dark:bg-gray-800 rounded-lg border dark:border-gray-800">
     <BalBreakdown
       :items="pool.tokensList"
       class="w-full cursor-pointer select-none"
-      offsetClassOverrides="mt-4 ml-3"
-      initVertBarClassOverrides="h-6 -mt-6"
+      offset-class-overrides="mt-4 ml-3"
+      init-vert-bar-class-overrides="h-6 -mt-6"
       size="lg"
-      :hideItems="!isExpanded"
+      :hide-items="!isExpanded"
       @click="isExpanded = !isExpanded"
     >
       <div class="flex items-center">
@@ -48,7 +48,7 @@ const { getToken } = useTokens();
       </div>
       <template #item="{ item: address }">
         <div
-          class="ml-2 rounded-lg border dark:border-gray-800 bg-gray-50 dark:bg-gray-700 px-2 py-1 inline-flex items-center"
+          class="inline-flex items-center py-1 px-2 ml-2 bg-gray-50 dark:bg-gray-700 rounded-lg border dark:border-gray-800"
         >
           <BalAsset :address="address" class="mr-2" />
           {{ getToken(address).symbol }}

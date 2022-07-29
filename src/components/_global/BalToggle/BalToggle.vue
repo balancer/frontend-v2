@@ -1,5 +1,5 @@
 <template>
-  <div class="bal-toggle group" @click="onClick">
+  <div class="group bal-toggle" @click="onClick">
     <input
       type="checkbox"
       :name="name"
@@ -10,7 +10,7 @@
     />
     <label :for="name" class="bal-toggle-track" />
   </div>
-  <label v-if="label" class="text-xs dark:text-white ml-2">
+  <label v-if="label" class="ml-2 text-xs dark:text-white">
     {{ label }}
   </label>
 </template>
@@ -20,7 +20,6 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'BalToggle',
   inheritAttrs: false,
-  emits: ['update:modelValue', 'toggle'],
   props: {
     name: { type: String, required: true },
     modelValue: { type: Boolean, default: false },
@@ -32,6 +31,7 @@ export default defineComponent({
       validator: (val: string): boolean => ['green'].includes(val),
     },
   },
+  emits: ['update:modelValue', 'toggle'],
   setup(props, { emit }) {
     /**
      * METHODS

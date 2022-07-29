@@ -76,11 +76,11 @@ function loadMorePoolSwaps() {
     :is-loading="loading || isLoadingPoolSwaps"
     :is-loading-more="poolSwapsIsFetchingNextPage"
     :is-paginated="poolSwapsHasNextPage"
-    @load-more="loadMorePoolSwaps"
     :no-results-label="
       poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
         ? $t('poolTransactions.noResults.allTransactions')
         : $t('poolTransactions.noResults.myTransactions')
     "
+    @load-more="loadMorePoolSwaps"
   />
 </template>

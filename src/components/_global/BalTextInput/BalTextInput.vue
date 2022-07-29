@@ -146,12 +146,12 @@ onMounted(() => {
           :value="modelValue"
           v-bind="inputAttrs"
           :disabled="disabled"
+          :class="['input', inputClasses]"
           @blur="onBlur"
           @input="onInput"
           @keydown="onKeydown"
           @click="onClick"
           @focus="onFocus"
-          :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
           <slot name="append" />

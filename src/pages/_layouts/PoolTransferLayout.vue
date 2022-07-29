@@ -31,20 +31,20 @@ usePoolTransfersGuard();
 
 <template>
   <div class="pb-16">
-    <div class="layout-header mb-12">
-      <div></div>
+    <div class="mb-12 layout-header">
+      <div />
       <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
         <BalIcon name="x" size="lg" />
       </router-link>
     </div>
 
-    <Col3Layout offsetGutters mobileHideGutters>
-      <template #gutterLeft v-if="!upToLargeBreakpoint">
+    <Col3Layout offset-gutters mobile-hide-gutters>
+      <template v-if="!upToLargeBreakpoint" #gutterLeft>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
         <MyWalletTokensCard
           v-else
-          :pool="pool"
           v-model:useNativeAsset="useNativeAsset"
+          :pool="pool"
         />
       </template>
 
@@ -71,10 +71,10 @@ usePoolTransfersGuard();
           />
           <MyWalletTokensCard
             v-else
-            :pool="pool"
             v-model:useNativeAsset="useNativeAsset"
-            hideHeader
-            noBorder
+            :pool="pool"
+            hide-header
+            no-border
             square
           />
         </template>
@@ -83,11 +83,17 @@ usePoolTransfersGuard();
             v-if="loadingPool || !transfersAllowed"
             class="h-64"
           />
-          <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
+          <MyPoolBalancesCard
+            v-else
+            :pool="pool"
+            hide-header
+            no-border
+            square
+          />
         </template>
       </BalAccordion>
 
-      <template #gutterRight v-if="!upToLargeBreakpoint">
+      <template v-if="!upToLargeBreakpoint" #gutterRight>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
         <MyPoolBalancesCard v-else :pool="pool" />
       </template>

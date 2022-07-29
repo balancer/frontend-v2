@@ -107,7 +107,7 @@ function isSelectedNativeAsset(address: string): boolean {
 </script>
 
 <template>
-  <BalCard shadow="none" noPad>
+  <BalCard shadow="none" no-pad>
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
         <h6>
@@ -116,10 +116,10 @@ function isSelectedNativeAsset(address: string): boolean {
       </div>
     </template>
 
-    <div class="-mt-2 p-4">
+    <div class="p-4 -mt-2">
       <div v-for="address in tokenAddresses" :key="address" class="py-2">
         <div v-if="isSameAddress(address, wrappedNativeAsset.address)">
-          <div class="flex items-start justify-between">
+          <div class="flex justify-between items-start">
             <BalBreakdown
               :items="[nativeAsset, wrappedNativeAsset]"
               class="w-full"
@@ -159,7 +159,7 @@ function isSelectedNativeAsset(address: string): boolean {
 
         <AssetRow v-else :address="address" :selected="true" />
       </div>
-      <div class="pt-4 flex justify-between font-medium">
+      <div class="flex justify-between pt-4 font-medium">
         <span>
           {{ $t('total') }}
         </span>

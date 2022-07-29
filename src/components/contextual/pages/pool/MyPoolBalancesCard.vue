@@ -142,7 +142,7 @@ function navigateToPoolMigration(pool: Pool) {
 </script>
 
 <template>
-  <BalCard shadow="2xl" noPad class="rounded-xl">
+  <BalCard shadow="2xl" no-pad class="rounded-xl">
     <template #header>
       <div class="card-header">
         <h5>
@@ -153,7 +153,7 @@ function navigateToPoolMigration(pool: Pool) {
         </h5>
       </div>
     </template>
-    <div class="px-4 py-2">
+    <div class="py-2 px-4">
       <div
         v-for="(address, index) in tokenAddresses"
         :key="address"
@@ -172,7 +172,7 @@ function navigateToPoolMigration(pool: Pool) {
               </span>
               {{ poolTokens[index].symbol }}
             </span>
-            <span class="text-secondary text-sm">
+            <span class="text-sm text-secondary">
               {{ poolTokens[index].name }}
             </span>
           </div>
@@ -184,7 +184,7 @@ function navigateToPoolMigration(pool: Pool) {
               ? fNum2(propTokenAmounts[index], FNumFormats.token)
               : '-'
           }}
-          <span class="text-secondary text-sm">
+          <span class="text-sm text-secondary">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>
         </span>
@@ -200,7 +200,7 @@ function navigateToPoolMigration(pool: Pool) {
       </BalBtn>
     </div>
     <template #footer>
-      <PoolActionsCard :pool="pool" :missingPrices="missingPrices" />
+      <PoolActionsCard :pool="pool" :missing-prices="missingPrices" />
     </template>
   </BalCard>
 </template>

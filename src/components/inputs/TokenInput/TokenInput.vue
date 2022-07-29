@@ -217,15 +217,15 @@ watchEffect(() => {
     :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"
-    :decimalLimit="token?.decimals || 18"
+    :decimal-limit="token?.decimals || 18"
     :rules="inputRules"
-    validateOn="input"
+    validate-on="input"
     autocomplete="off"
     autocorrect="off"
     step="any"
     spellcheck="false"
     v-bind="$attrs"
-    inputAlignRight
+    input-align-right
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
     @update:modelValue="emit('update:amount', $event)"
@@ -240,8 +240,8 @@ watchEffect(() => {
           :fixed="fixedToken"
           :options="options"
           class="mr-2"
+          :excluded-tokens="excludedTokens"
           @update:modelValue="emit('update:address', $event)"
-          :excludedTokens="excludedTokens"
         />
       </slot>
     </template>
@@ -251,13 +251,13 @@ watchEffect(() => {
         class="flex flex-col pt-1"
       >
         <div
-          class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 leading-none"
+          class="flex justify-between items-center text-sm leading-none text-gray-600 dark:text-gray-400"
         >
           <div v-if="!isWalletReady || disableBalance" />
-          <div v-else class="cursor-pointer flex items-center" @click="setMax">
+          <div v-else class="flex items-center cursor-pointer" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
 
-            <BalLoadingBlock v-if="balanceLoading" class="w-12 h-4 mx-2" />
+            <BalLoadingBlock v-if="balanceLoading" class="mx-2 w-12 h-4" />
             <span v-else class="mx-1">
               {{ fNum2(tokenBalance, FNumFormats.token) }}
             </span>
@@ -265,7 +265,7 @@ watchEffect(() => {
             <template v-if="hasBalance && !noMax && !disableMax">
               <span
                 v-if="!isMaxed"
-                class="text-blue-600 dark:text-blue-400 hover:text-purple-600 focus:text-purple-600 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors"
+                class="text-blue-600 hover:text-purple-600 focus:text-purple-600 dark:text-blue-400 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors"
               >
                 {{ $t('max') }}
               </span>
@@ -305,7 +305,7 @@ watchEffect(() => {
         />
         <div
           v-if="shouldShowTxBufferMessage"
-          class="mt-2 text-orange-600 dark:text-orange-400 text-xs"
+          class="mt-2 text-xs text-orange-600 dark:text-orange-400"
         >
           {{
             t('minTransactionBuffer', [

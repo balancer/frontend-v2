@@ -1,20 +1,20 @@
 <template>
   <footer>
     <div
-      class="xl:container xl:mx-auto lg:px-4 dark:border-t dark:border-gray-800"
+      class="xl:container lg:px-4 xl:mx-auto dark:border-t dark:border-gray-800"
     >
       <div
-        class="px-4 lg:px-0 py-12 flex flex-col md:flex-row md:justify-between gap-8 text-primary"
+        class="flex flex-col md:flex-row gap-8 md:justify-between py-12 px-4 lg:px-0 text-primary"
       >
         <div class="flex flex-col gap-8">
-          <router-link class="link font-medium" :to="{ name: 'home' }">
-            <logotype-balancer class="mb-4" />
+          <router-link class="font-medium link" :to="{ name: 'home' }">
+            <LogotypeBalancer class="mb-4" />
           </router-link>
 
-          <div class="md:hidden flex flex-col gap-2">
+          <div class="flex md:hidden flex-col gap-2">
             <p>
               <router-link
-                class="link font-medium text-lg"
+                class="text-lg font-medium link"
                 :to="{ name: 'home' }"
               >
                 {{ $t('invest') }}
@@ -22,7 +22,7 @@
             </p>
             <p>
               <router-link
-                class="link font-medium text-lg"
+                class="text-lg font-medium link"
                 :to="{ name: 'trade' }"
               >
                 {{ $t('trade') }}
@@ -30,7 +30,7 @@
             </p>
             <p>
               <router-link
-                class="link font-medium text-lg"
+                class="text-lg font-medium link"
                 :to="{ name: 'portfolio' }"
               >
                 {{ $t('portfolio') }}
@@ -38,7 +38,7 @@
             </p>
             <p>
               <router-link
-                class="link font-medium text-lg"
+                class="text-lg font-medium link"
                 :to="{ name: 'vebal' }"
               >
                 {{ $t('vebal') }}
@@ -46,7 +46,7 @@
             </p>
             <p>
               <router-link
-                class="link font-medium text-lg"
+                class="text-lg font-medium link"
                 :to="{ name: 'claim' }"
               >
                 {{ $t('claim') }}
@@ -54,12 +54,12 @@
             </p>
           </div>
 
-          <div class="flex flex-wrap gap-3 md:gap-4 md:order-3">
+          <div class="flex flex-wrap md:order-3 gap-3 md:gap-4">
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Home"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('about') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -68,8 +68,8 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Docs"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('docs') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -78,8 +78,8 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Forum"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('forum') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -88,8 +88,8 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Vote"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('vote') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -98,8 +98,8 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Grants"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('grants') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -108,8 +108,8 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.BugBounty"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('bugBounty') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -118,8 +118,8 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Analytics"
               external
-              noStyle
-              class="link link--external group"
+              no-style
+              class="group link link--external"
             >
               {{ $t('analytics') }}
               <BalIcon name="arrow-up-right" size="sm" class="arrow" />
@@ -133,58 +133,58 @@
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Twitter"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-twitter />
+                  <IconTwitter />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Discord"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-discord />
+                  <IconDiscord />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Medium"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-medium />
+                  <IconMedium />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Youtube"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-youtube />
+                  <IconYoutube />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Github"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-github />
+                  <IconGithub />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Linkedin"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-linkedin />
+                  <IconLinkedin />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Mail"
                   external
-                  noStyle
+                  no-style
                 >
-                  <icon-mail />
+                  <IconMail />
                 </BalLink>
               </div>
             </div>
           </div>
 
           <div
-            class="flex flex-wrap gap-x-3 lg:gap-x-4 gap-y-2 md:order-3 md:justify-end"
+            class="flex flex-wrap md:order-3 gap-x-3 lg:gap-x-4 gap-y-2 md:justify-end"
           >
             <p>
               <router-link class="policy" :to="{ name: 'terms-of-use' }">
@@ -203,8 +203,8 @@
             </p>
             <p>
               <a
-                @click="isThirdPartyServicesModalVisible = true"
                 class="policy"
+                @click="isThirdPartyServicesModalVisible = true"
                 >{{ $t('policies.thirdPartyServices') }}</a
               >
             </p>
@@ -230,14 +230,6 @@ import LogotypeBalancer from '@/components/icons/LogotypeBalancer.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default {
-  setup() {
-    const { t } = useI18n();
-    return {
-      EXTERNAL_LINKS,
-      t,
-      isThirdPartyServicesModalVisible,
-    };
-  },
   components: {
     IconTwitter,
     IconDiscord,
@@ -247,6 +239,14 @@ export default {
     IconMail,
     IconLinkedin,
     LogotypeBalancer,
+  },
+  setup() {
+    const { t } = useI18n();
+    return {
+      EXTERNAL_LINKS,
+      t,
+      isThirdPartyServicesModalVisible,
+    };
   },
 };
 </script>

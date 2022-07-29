@@ -67,11 +67,11 @@ const activeTab = ref(tabs.value[0].value);
   <div>
     <div>
       <h4
-        v-text="$t('poolTransactions.tabs.allInvestments')"
         class="px-4 lg:px-0 mb-5"
+        v-text="$t('poolTransactions.tabs.allInvestments')"
       />
       <div
-        class="mx-4 lg:mx-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
+        class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
       >
         <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
       </div>

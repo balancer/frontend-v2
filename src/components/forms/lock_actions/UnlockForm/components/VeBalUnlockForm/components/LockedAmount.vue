@@ -29,7 +29,7 @@ const { fNum2 } = useNumbers();
     <div class="pb-4">
       {{ $t('unlockVeBAL.unlockForm.lockedAmount.title') }}
     </div>
-    <div class="rounded-lg border dark:border-gray-800 dark:bg-gray-800 p-3">
+    <div class="p-3 dark:bg-gray-800 rounded-lg border dark:border-gray-800">
       <div class="flex items-center">
         <BalAsset :address="lockablePool.address" class="mr-2" :size="36" />
         <div class="w-full">

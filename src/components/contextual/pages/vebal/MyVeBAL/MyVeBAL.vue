@@ -31,17 +31,19 @@ const isLoading = computed(() =>
 </script>
 
 <template>
-  <h3 class="mb-3">{{ $t('veBAL.myVeBAL.title') }}</h3>
+  <h3 class="mb-3">
+    {{ $t('veBAL.myVeBAL.title') }}
+  </h3>
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
     <template v-if="isLoading">
       <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
     </template>
     <MyVeBalCards
       v-else
-      :veBalLockInfo="lock"
-      :lockablePool="lockPool"
-      :lockablePoolTokenInfo="lockPoolToken"
-      :lockedFiatTotal="lockedFiatTotal"
+      :ve-bal-lock-info="lock"
+      :lockable-pool="lockPool"
+      :lockable-pool-token-info="lockPoolToken"
+      :locked-fiat-total="lockedFiatTotal"
     />
   </div>
 </template>

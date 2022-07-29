@@ -2,8 +2,8 @@
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
     :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
+    :no-border="upToLargeBreakpoint"
+    no-pad
   >
     <BalTable
       :columns="columns"
@@ -16,17 +16,19 @@
         sortDirection: 'desc',
       }"
     >
-      <template v-slot:tokenColumnCell="token">
-        <div class="px-6 py-4 flex flex-row">
+      <template #tokenColumnCell="token">
+        <div class="flex flex-row py-4 px-6">
           <BalLink
             :href="explorer.addressLink(token.address)"
             external
-            noStyle
+            no-style
             class="flex items-center w-full"
           >
-            <div><BalAsset :address="token.address" :size="36" /></div>
+            <div>
+              <BalAsset :address="token.address" :size="36" />
+            </div>
             <div
-              class="pl-4 font-medium eth-address truncate text-ellipsis overflow-hidden"
+              class="overflow-hidden pl-4 font-medium truncate eth-address text-ellipsis"
             >
               {{ symbolFor(token.address) }}
             </div>
@@ -38,18 +40,18 @@
           </BalLink>
         </div>
       </template>
-      <template v-slot:tokenWeightCell="token">
-        <div class="px-6 py-4 text-right font-numeric">
+      <template #tokenWeightCell="token">
+        <div class="py-4 px-6 text-right font-numeric">
           {{ weightFor(token.address) }}
         </div>
       </template>
-      <template v-slot:tokenBalanceCell="token">
-        <div class="px-6 py-4 text-right font-numeric">
+      <template #tokenBalanceCell="token">
+        <div class="py-4 px-6 text-right font-numeric">
           {{ balanceFor(token.address) }}
         </div>
       </template>
-      <template v-slot:tokenValueCell="token">
-        <div class="px-6 py-4 text-right font-numeric">
+      <template #tokenValueCell="token">
+        <div class="py-4 px-6 text-right font-numeric">
           {{ fiatValueFor(token.address) }}
         </div>
       </template>

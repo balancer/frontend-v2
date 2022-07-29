@@ -55,7 +55,7 @@ const blockClasses = computed(() => [
       <BalLoadingBlock :class="blockClasses" rounded="sm" darker />
     </template>
     <template v-else-if="type === 'fiat'">
-      <span class="text-gray-300 dark:text-gray-500 mr-px">
+      <span class="mr-px text-gray-300 dark:text-gray-500">
         {{ currencySymbol }}
       </span>
       <BalLoadingBlock :class="blockClasses" rounded="sm" darker />

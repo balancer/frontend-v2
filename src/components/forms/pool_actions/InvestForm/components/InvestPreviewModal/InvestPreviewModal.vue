@@ -111,13 +111,13 @@ function handleShowStakeModal() {
 
 <template>
   <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="investmentConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -128,17 +128,17 @@ function handleShowStakeModal() {
     </template>
 
     <TokenAmounts
-      :amountMap="amountMap"
-      :tokenMap="tokenMap"
-      :fiatAmountMap="fiatAmountMap"
-      :fiatTotal="fiatTotal"
+      :amount-map="amountMap"
+      :token-map="tokenMap"
+      :fiat-amount-map="fiatAmountMap"
+      :fiat-total="fiatTotal"
     />
 
     <InvestSummary
       :pool="pool"
-      :fiatTotal="fiatTotal"
-      :priceImpact="priceImpact"
-      :highPriceImpact="highPriceImpact"
+      :fiat-total="fiatTotal"
+      :price-impact="priceImpact"
+      :high-price-impact="highPriceImpact"
     />
 
     <BalAlert
@@ -152,7 +152,7 @@ function handleShowStakeModal() {
     <InvestActions
       :pool="pool"
       :math="math"
-      :tokenAddresses="tokenAddresses"
+      :token-addresses="tokenAddresses"
       :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"

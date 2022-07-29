@@ -290,17 +290,17 @@ watch(
 </script>
 
 <template>
-  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
+  <Col3Layout offset-gutters mobile-hide-gutters class="mt-8">
     <template #gutterLeft>
-      <div class="col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical v-if="!appLoading">
+      <div v-if="!upToLargeBreakpoint" class="col-span-3">
+        <BalStack v-if="!appLoading" vertical>
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
             @navigate="handleNavigate"
           />
           <AnimatePresence
-            :isVisible="
+            :is-visible="
               doSimilarPoolsExist && activeStep === 0 && validTokens.length
             "
           >
@@ -311,8 +311,8 @@ watch(
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="hasRestoredFromSavedState && !appLoading"
-        unmountInstantly
+        :is-visible="hasRestoredFromSavedState && !appLoading"
+        unmount-instantly
       >
         <BalAlert
           type="warning"
@@ -320,16 +320,16 @@ watch(
           :title="$t('createAPool.recoveredState')"
         >
           {{ $t('createAPool.recoveredStateInfo') }}
-          <button @click="handleReset" class="font-semibold text-blue-500">
+          <button class="font-semibold text-blue-500" @click="handleReset">
             {{ $t('clickHere') }}
           </button>
         </BalAlert>
       </AnimatePresence>
-      <AnimatePresence :isVisible="isLoading" unmountInstantly>
+      <AnimatePresence :is-visible="isLoading" unmount-instantly>
         <BalLoadingBlock class="h-64" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="
+        :is-visible="
           !appLoading && activeStep === 0 && !hasRestoredFromSavedState
         "
         :initial="initialAnimateProps"
@@ -339,7 +339,7 @@ watch(
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 1"
+        :is-visible="!appLoading && activeStep === 1"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -348,7 +348,7 @@ watch(
         <PoolFees @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
+        :is-visible="!appLoading && activeStep === 2 && similarPools.length > 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -357,7 +357,7 @@ watch(
         <SimilarPools />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!isLoading && activeStep === 3"
+        :is-visible="!isLoading && activeStep === 3"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -366,7 +366,7 @@ watch(
         <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
+        :is-visible="!appLoading && activeStep === 4 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -382,28 +382,28 @@ watch(
             { title: t('tokenPrices'), id: 'token-prices' },
           ]"
         >
-          <template v-slot:pool-summary>
+          <template #pool-summary>
             <PoolSummary />
           </template>
-          <template v-slot:token-prices>
+          <template #token-prices>
             <TokenPrices />
           </template>
         </BalAccordion>
       </div>
     </div>
     <template #gutterRight>
-      <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical spacing="base" v-if="!appLoading">
+      <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
+        <BalStack v-if="!appLoading" vertical spacing="base">
           <PoolSummary />
-          <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
+          <TokenPrices :toggle-unknown-price-modal="showUnknownTokenModal" />
         </BalStack>
       </div>
     </template>
   </Col3Layout>
   <UnknownTokenPriceModal
+    :is-visible="isUnknownTokenModalVisible"
+    :unknown-tokens="unknownTokens"
     @close="handleUnknownModalClose"
-    :isVisible="isUnknownTokenModalVisible"
-    :unknownTokens="unknownTokens"
   />
 </template>
 

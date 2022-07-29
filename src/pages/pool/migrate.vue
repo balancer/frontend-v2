@@ -24,10 +24,10 @@ const poolMigrationInfo = POOL_MIGRATIONS.find(
 <template>
   <MigrateForm
     v-if="poolMigrationInfo"
-    :poolMigrationInfo="poolMigrationInfo"
+    :pool-migration-info="poolMigrationInfo"
   />
   <div v-else class="text-center">
-    <div class="font-semibold text-lg">
+    <div class="text-lg font-semibold">
       {{ $t('migratePool.errorLoadingMigration.title') }}
     </div>
     <div>{{ $t('migratePool.errorLoadingMigration.description') }}</div>

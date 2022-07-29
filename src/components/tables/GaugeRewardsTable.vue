@@ -107,19 +107,19 @@ const totalRewardValue = computed((): string => {
   <BalCard
     shadow="lg"
     :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
+    :no-border="upToLargeBreakpoint"
+    no-pad
   >
     <BalTable
       :columns="columns"
       :data="rewardsData"
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       skeleton-class="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #tokenColumnCell="{ token }">
-        <div class="px-6 py-4 flex items-center">
-          <BalAsset :iconURI="token?.logoURI" />
+        <div class="flex items-center py-4 px-6">
+          <BalAsset :icon-u-r-i="token?.logoURI" />
           <span class="ml-2">{{ token.name }}</span>
         </div>
       </template>
@@ -130,7 +130,7 @@ const totalRewardValue = computed((): string => {
       </template>
       <template #totalClaimCell>
         <div class="">
-          <ClaimRewardsBtn :gauge="gauge" :fiatValue="totalRewardValue" />
+          <ClaimRewardsBtn :gauge="gauge" :fiat-value="totalRewardValue" />
         </div>
       </template>
     </BalTable>

@@ -42,13 +42,13 @@ onBeforeMount(async () => {
       v-if="loadingPool || !transfersAllowed || !sorReady"
       class="h-96"
     />
-    <BalCard v-else shadow="xl" exposeOverflow noBorder>
+    <BalCard v-else shadow="xl" expose-overflow no-border>
       <template #header>
         <div class="w-full">
-          <div class="text-xs text-secondary leading-none">
+          <div class="text-xs leading-none text-secondary">
             {{ network.chainName }}
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex justify-between items-center">
             <h4>{{ $t('investInPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>

@@ -396,7 +396,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
 </script>
 
 <template>
-  <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
+  <BalLoadingBlock v-if="isLoading" class="mt-16 h-96" />
   <div
     v-else
     :class="[wrapperClass]"
@@ -405,8 +405,8 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
     @mouseleave="handleMouseLeave"
     @touchend="handleMouseLeave"
   >
-    <div id="lineChartHeader" class="mb-4" v-if="showHeader">
-      <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
+    <div v-if="showHeader" id="lineChartHeader" class="mb-4">
+      <h3 class="text-xl tracking-wider text-gray-800 dark:text-gray-400">
         {{ currentValue }}
       </h3>
       <span
@@ -427,9 +427,9 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       ]"
       :option="chartConfig"
       autoresize
-      @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
       :style="[styleOverrides]"
+      @updateAxisPointer="handleAxisMoved"
     />
   </div>
 </template>

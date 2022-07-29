@@ -228,42 +228,45 @@ onBeforeMount(async () => {
 <template>
   <HeroClaim />
   <div>
-    <div class="xl:container xl:mx-auto xl:px-4 py-12">
-      <h2 class="font-body font-semibold text-2xl px-4 xl:px-0">
+    <div class="xl:container py-12 xl:px-4 xl:mx-auto">
+      <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
       <template v-if="!isL2">
         <div class="mb-16">
           <div class="px-4 xl:px-0">
-            <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
+            <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 w-64 h-8" />
             <div v-else class="flex items-center mt-6 mb-2">
               <BalAsset :address="balToken?.address" />
-              <h3 class="text-xl ml-2">
+              <h3 class="ml-2 text-xl">
                 Balancer (BAL) {{ $t('earnings').toLowerCase() }}
               </h3>
             </div>
           </div>
-          <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
+          <BalClaimsTable
+            :rewards-data="balRewardsData"
+            :is-loading="loading"
+          />
         </div>
         <div class="mb-16">
-          <h3 class="text-xl mt-8 mb-3 px-4 xl:px-0">
+          <h3 class="px-4 xl:px-0 mt-8 mb-3 text-xl">
             {{ $t('protocolEarnings') }}
           </h3>
           <ProtocolRewardsTable
-            :rewardsData="protocolRewardsData"
-            :isLoading="loading"
+            :rewards-data="protocolRewardsData"
+            :is-loading="loading"
           />
           <ProtocolRewardsTable
             v-if="!loading"
-            :rewardsData="protocolRewardsDataDeprecated"
-            :isLoading="loading"
+            :rewards-data="protocolRewardsDataDeprecated"
+            :is-loading="loading"
             deprecated
           />
         </div>
       </template>
 
-      <h3 v-if="!isL2" class="text-xl mt-8 px-4 xl:px-0">
+      <h3 v-if="!isL2" class="px-4 xl:px-0 mt-8 text-xl">
         {{ $t('otherTokenEarnings') }}
       </h3>
       <BalLoadingBlock v-if="loading" class="mt-6 mb-2 h-56" />
@@ -272,14 +275,14 @@ onBeforeMount(async () => {
       >
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="mb-16">
-            <div class="flex mt-4 px-4 xl:px-0">
-              <h4 class="text-base mb-2">
+            <div class="flex px-4 xl:px-0 mt-4">
+              <h4 class="mb-2 text-base">
                 {{ gaugeTitle(pool) }}
               </h4>
             </div>
             <GaugeRewardsTable
               :gauge="gauge"
-              :isLoading="isClaimsLoading || appLoading"
+              :is-loading="isClaimsLoading || appLoading"
             />
           </div>
         </div>
@@ -290,26 +293,26 @@ onBeforeMount(async () => {
           (!isClaimsLoading && !appLoading && gaugeTables.length === 0) ||
           !isWalletReady
         "
-        class="mt-4 px-4 xl:px-0 mb-16"
+        class="px-4 xl:px-0 mt-4 mb-16"
       >
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
       <div class="px-4 xl:px-0 mb-16">
-        <h2 class="font-body font-semibold text-2xl mt-8">
+        <h2 class="mt-8 font-body text-2xl font-semibold">
           {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
         </h2>
-        <BalFlexGrid class="mt-4" flexWrap>
+        <BalFlexGrid class="mt-4" flex-wrap>
           <BalBtn
-            tag="a"
             v-for="network in networkBtns"
             :key="network.id"
+            tag="a"
             :href="`https://${network.subdomain}.balancer.fi/#/claim`"
             color="white"
           >
             <img
               :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
               :alt="network.id"
-              class="w-6 h-6 rounded-full shadow-sm mr-2"
+              class="mr-2 w-6 h-6 rounded-full shadow-sm"
             />
             {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
           </BalBtn>

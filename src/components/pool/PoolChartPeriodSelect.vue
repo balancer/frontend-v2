@@ -17,9 +17,9 @@ defineProps<Props>();
 
 <template>
   <BalPopover no-pad>
-    <template v-slot:activator>
-      <div class="period-select-input h-10 text-base">
-        <div class="flex items-center justify-between h-full flex-1">
+    <template #activator>
+      <div class="h-10 text-base period-select-input">
+        <div class="flex flex-1 justify-between items-center h-full">
           <div class="period-select-input__selected">
             {{ activeOption.text }}
           </div>
@@ -27,18 +27,18 @@ defineProps<Props>();
         </div>
       </div>
     </template>
-    <template v-slot="{ close }">
-      <div @click="close" class="flex flex-col w-44 rounded-lg overflow-hidden">
+    <template #default="{ close }">
+      <div class="flex overflow-hidden flex-col w-44 rounded-lg" @click="close">
         <div
-          class="px-3 py-2 bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium text-sm"
+          class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
         >
           {{ $t('poolChart.period.title') }}:
         </div>
         <div
           v-for="option in options"
           :key="option.days"
+          class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
           @click="$emit('change-option', option)"
-          class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850"
         >
           <div class="flex items-center ml-1 font-medium">
             {{ option.text }}

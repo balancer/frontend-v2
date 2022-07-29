@@ -69,16 +69,20 @@ function getTokenShare(address: string) {
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
     :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
+    :no-border="upToLargeBreakpoint"
+    no-pad
   >
     <template #header>
       <div
-        class="p-4 w-full grid grid-cols-3 border-b dark:border-gray-900 text-base font-semibold"
+        class="grid grid-cols-3 p-4 w-full text-base font-semibold border-b dark:border-gray-900"
       >
         <div>{{ $t('token') }}</div>
-        <div class="justify-self-end">{{ $t('balance') }}</div>
-        <div class="justify-self-end">{{ $t('value') }}</div>
+        <div class="justify-self-end">
+          {{ $t('balance') }}
+        </div>
+        <div class="justify-self-end">
+          {{ $t('value') }}
+        </div>
       </div>
     </template>
 
@@ -87,14 +91,14 @@ function getTokenShare(address: string) {
         <BalBreakdown
           :items="getUnderlyingTokens(address)"
           class="w-full"
-          offsetClassOverrides="mt-4 ml-3"
-          initVertBarClassOverrides="h-6 -mt-6"
+          offset-class-overrides="mt-4 ml-3"
+          init-vert-bar-class-overrides="h-6 -mt-6"
           size="lg"
         >
           <BalLink
             :href="explorerLinks.addressLink(address)"
             external
-            noStyle
+            no-style
             class="flex items-center"
           >
             <BalAsset :address="address" class="mr-2" />

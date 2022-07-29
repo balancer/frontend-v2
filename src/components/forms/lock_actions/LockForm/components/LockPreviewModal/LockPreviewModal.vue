@@ -91,13 +91,13 @@ function handleSuccess() {
 
 <template>
   <BalModal show :fireworks="lockConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="lockConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -107,26 +107,29 @@ function handleSuccess() {
       </div>
     </template>
 
-    <LockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
+    <LockAmount
+      :lockable-pool="lockablePool"
+      :total-lp-tokens="totalLpTokens"
+    />
 
     <LockSummary
-      :lockablePool="lockablePool"
-      :totalLpTokens="totalLpTokens"
-      :lockAmount="lockAmount"
-      :lockEndDate="lockEndDate"
-      :expectedVeBalAmount="expectedVeBalAmount"
-      :lockType="lockType"
-      :veBalLockInfo="veBalLockInfo"
+      :lockable-pool="lockablePool"
+      :total-lp-tokens="totalLpTokens"
+      :lock-amount="lockAmount"
+      :lock-end-date="lockEndDate"
+      :expected-ve-bal-amount="expectedVeBalAmount"
+      :lock-type="lockType"
+      :ve-bal-lock-info="veBalLockInfo"
     />
 
     <LockActions
-      :lockablePool="lockablePool"
-      :lockAmount="lockAmount"
-      :lockEndDate="lockEndDate"
-      :lockType="lockType"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      @success="handleSuccess"
+      :lockable-pool="lockablePool"
+      :lock-amount="lockAmount"
+      :lock-end-date="lockEndDate"
+      :lock-type="lockType"
+      :lockable-pool-token-info="lockablePoolTokenInfo"
       class="mt-4"
+      @success="handleSuccess"
     />
   </BalModal>
 </template>

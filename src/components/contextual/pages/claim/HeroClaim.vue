@@ -5,10 +5,10 @@
     <div class="w-full hero-container">
       <div class="hero-content">
         <div class="hero-text fade-in-slow">
-          <h1 class="title mb-3 text-white text-shadow">
+          <h1 class="mb-3 text-white title text-shadow">
             {{ $t('claimHero.title') }}
           </h1>
-          <p class="body-text text-shadow max-w-3xl">
+          <p class="max-w-3xl body-text text-shadow">
             {{ $t('claimHero.description') }}
           </p>
         </div>
@@ -17,80 +17,80 @@
         <div
           class="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-4 xl:gap-12 items-center w-full fade-in-slow"
         >
-          <div class="tip group">
+          <div class="group tip">
             <img
               width="144"
               height="144"
               class="tip-icon"
               src="@/assets/images/icons/claims-header/add-liquidity.svg"
             />
-            <p class="tip-label font-semibold text-shadow">
+            <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.addLiquidity') }}
               <BalTooltip
-                iconSize="xs"
-                textAlign="left"
+                icon-size="xs"
+                text-align="left"
                 class="relative top-px"
-                iconClass="text-white"
+                icon-class="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.addLiquidity') }}
               </BalTooltip>
             </p>
           </div>
-          <div class="tip group">
+          <div class="group tip">
             <img
               width="144"
               height="144"
               class="tip-icon"
               src="@/assets/images/icons/claims-header/stake.svg"
             />
-            <p class="tip-label font-semibold text-shadow">
+            <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.stake') }}
               <BalTooltip
-                iconSize="xs"
-                textAlign="left"
+                icon-size="xs"
+                text-align="left"
                 class="relative top-px"
-                iconClass="text-white"
+                icon-class="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.stake') }}
               </BalTooltip>
             </p>
           </div>
-          <div class="tip group">
+          <div class="group tip">
             <img
               width="144"
               height="144"
               class="tip-icon"
               src="@/assets/images/icons/claims-header/vebal.svg"
             />
-            <p class="tip-label font-semibold text-shadow">
+            <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.boost') }}
               <BalTooltip
-                iconSize="xs"
-                textAlign="left"
+                icon-size="xs"
+                text-align="left"
                 class="relative top-px"
-                iconClass="text-white"
+                icon-class="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.boost') }}
               </BalTooltip>
             </p>
           </div>
-          <div class="tip group">
+          <div class="group tip">
             <img
               width="144"
               height="144"
               class="tip-icon"
               src="@/assets/images/icons/claims-header/claim.svg"
             />
-            <p class="tip-label font-semibold text-shadow">
+            <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.claim') }}
               <BalTooltip
-                iconSize="xs"
-                textAlign="left"
+                icon-size="xs"
+                text-align="left"
                 class="relative top-px"
-                iconClass="text-white"
+                icon-class="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.claim') }}

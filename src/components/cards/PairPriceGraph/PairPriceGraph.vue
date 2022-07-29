@@ -258,19 +258,19 @@ const chartGrid = computed(() => {
       }"
     />
     <BalCard
+      v-else
       :square="upToLargeBreakpoint"
       shadow="none"
-      hFull
-      growContent
-      noPad
-      :noBorder="upToLargeBreakpoint || isModal"
-      v-else
+      h-full
+      grow-content
+      no-pad
+      :no-border="upToLargeBreakpoint || isModal"
     >
-      <div class="relative h-full bg-transparent p-4">
+      <div class="relative p-4 h-full bg-transparent">
         <button
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
+          class="flex justify-center items-center p-2 m-4 rounded-full shadow-lg maximise"
           @click="toggle"
-          class="maximise m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
           <BalIcon v-if="!isModal" name="maximize-2" class="text-secondary" />
           <BalIcon v-if="isModal" name="x" class="text-secondary" />
@@ -281,14 +281,14 @@ const chartGrid = computed(() => {
         >
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
           <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
-            <template v-slot:activator>
+            <template #activator>
               <img class="h-5" src="@/assets/images/icons/coingecko.svg" />
             </template>
           </BalTooltip>
         </div>
         <div
           v-if="failedToLoadPriceData && tokenOutAddress"
-          class="h-full w-full flex justify-center items-center"
+          class="flex justify-center items-center w-full h-full"
         >
           <span class="text-sm text-gray-400">{{
             $t('insufficientData')
@@ -296,9 +296,9 @@ const chartGrid = computed(() => {
         </div>
         <div
           v-if="failedToLoadPriceData && !tokenOutAddress"
-          class="h-full w-full flex justify-center items-center"
+          class="flex justify-center items-center w-full h-full"
         >
-          <span class="text-sm text-gray-400 text-center">{{
+          <span class="text-sm text-center text-gray-400">{{
             $t('chooseAPair')
           }}</span>
         </div>
@@ -336,18 +336,17 @@ const chartGrid = computed(() => {
               use-min-max
             />
             <div
+              v-if="isModal"
               :class="[
                 'w-full flex justify-between mt-6',
                 {
                   'flex-col': isModal,
                 },
               ]"
-              v-if="isModal"
             >
               <div>
                 <button
                   v-for="timespan in chartTimespans"
-                  @click="activeTimespan = timespan"
                   :key="timespan.value"
                   :class="[
                     'py-1 px-2 text-sm rounded-lg mr-2',
@@ -364,12 +363,13 @@ const chartGrid = computed(() => {
                       'hover:bg-green-200': !isNegativeTrend,
                     },
                   ]"
+                  @click="activeTimespan = timespan"
                 >
                   {{ timespan.option }}
                 </button>
               </div>
               <div :class="{ 'mt-4': isModal }">
-                <span class="text-sm text-gray-500 mr-4"
+                <span class="mr-4 text-sm text-gray-500"
                   >Low: {{ dataMin.toPrecision(6) }}</span
                 >
                 <span class="text-sm text-gray-500"
@@ -377,8 +377,8 @@ const chartGrid = computed(() => {
                 >
               </div>
             </div>
-            <div class="-mt-2 lg:mt-2" v-else>
-              <span class="text-sm text-gray-500 w-full flex justify-end">{{
+            <div v-else class="-mt-2 lg:mt-2">
+              <span class="flex justify-end w-full text-sm text-gray-500">{{
                 activeTimespan.option
               }}</span>
             </div>

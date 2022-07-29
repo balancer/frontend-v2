@@ -44,7 +44,7 @@ function onLoaded() {
 <template>
   <div class="bal-image-wrapper" :style="wrapperStyles">
     <Transition name="bal-image-fade">
-      <img v-bind="$attrs" @load="onLoaded" v-show="loaded" />
+      <img v-show="loaded" v-bind="$attrs" @load="onLoaded" />
     </Transition>
   </div>
 </template>

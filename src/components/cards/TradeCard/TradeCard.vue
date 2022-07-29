@@ -1,8 +1,10 @@
 <template>
   <BalCard class="relative" :shadow="tradeCardShadow" :no-border="!darkMode">
-    <template v-slot:header>
-      <div class="w-full flex items-center justify-between">
-        <h4 class="font-semibold">{{ title }}</h4>
+    <template #header>
+      <div class="flex justify-between items-center w-full">
+        <h4 class="font-semibold">
+          {{ title }}
+        </h4>
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
@@ -13,9 +15,9 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
-        :priceImpact="priceImpact"
-        @amountChange="handleAmountChange"
+        :price-impact="priceImpact"
         class="mb-4"
+        @amountChange="handleAmountChange"
       />
       <BalAlert
         v-if="error"
@@ -57,7 +59,7 @@
       v-if="tradeSuccess"
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
-      :closeLabel="$t('close')"
+      :close-label="$t('close')"
       :explorer-link="explorer.txLink(txHash)"
       @close="tradeSuccess = false"
     />

@@ -110,13 +110,13 @@ function handleClose(): void {
 
 <template>
   <BalModal show :fireworks="withdrawalConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="withdrawalConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -127,16 +127,16 @@ function handleClose(): void {
     </template>
 
     <TokenAmounts
-      :amountMap="amountMap"
-      :tokenMap="tokenMap"
-      :fiatAmountMap="fiatAmountMap"
-      :fiatTotal="fiatTotal"
+      :amount-map="amountMap"
+      :token-map="tokenMap"
+      :fiat-amount-map="fiatAmountMap"
+      :fiat-total="fiatTotal"
     />
 
     <WithdrawSummary
       :pool="pool"
-      :fiatTotal="fiatTotal"
-      :priceImpact="priceImpact"
+      :fiat-total="fiatTotal"
+      :price-impact="priceImpact"
     />
 
     <WithdrawActions

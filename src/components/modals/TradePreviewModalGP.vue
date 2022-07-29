@@ -1,10 +1,10 @@
 <template>
-  <BalModal show @close="onClose" :title="labels.modalTitle">
+  <BalModal show :title="labels.modalTitle" @close="onClose">
     <div>
-      <BalCard noPad class="relative mb-6 overflow-auto">
-        <template v-slot:header>
+      <BalCard no-pad class="overflow-auto relative mb-6">
+        <template #header>
           <div
-            class="w-full p-3 border-b bg-gray-50 rounded-t-lg text-sm dark:border-gray-800 dark:bg-gray-800"
+            class="p-3 w-full text-sm bg-gray-50 dark:bg-gray-800 rounded-t-lg border-b dark:border-gray-800"
           >
             <span>
               {{ $t('effectivePrice') }}
@@ -18,7 +18,7 @@
         </template>
         <div>
           <div
-            class="p-3 border-gray-100 border-b relative dark:border-gray-900"
+            class="relative p-3 border-b border-gray-100 dark:border-gray-900"
           >
             <div class="flex items-center">
               <div class="mr-3">
@@ -31,7 +31,7 @@
                   }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
-                <div class="text-secondary text-sm">
+                <div class="text-sm text-secondary">
                   {{ tokenInFiatValue }}
                 </div>
               </div>
@@ -55,7 +55,7 @@
                   }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
-                <div class="text-secondary text-sm">
+                <div class="text-sm text-secondary">
                   {{ tokenOutFiatValue }}
                   <span
                     v-if="
@@ -74,15 +74,15 @@
           </div>
         </div>
       </BalCard>
-      <BalCard noPad shadow="none" class="mb-3">
-        <template v-slot:header>
+      <BalCard no-pad shadow="none" class="mb-3">
+        <template #header>
           <div
-            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
+            class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
           >
             <div class="font-semibold">
               {{ labels.tradeSummary.title }}
             </div>
-            <div class="flex divide-x dark:divide-gray-500 text-xs uppercase">
+            <div class="flex text-xs uppercase divide-x dark:divide-gray-500">
               <div
                 :class="[
                   'pr-2 cursor-pointer font-medium',
@@ -111,7 +111,7 @@
             </div>
             <div v-html="summary.amountBeforeFees" />
           </div>
-          <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
+          <div v-if="trading.isGnosisTrade.value" class="summary-item-row">
             <div>{{ $t('tradeSummary.gasCosts') }}</div>
             <div class="text-green-400">-{{ zeroFee }}</div>
           </div>
@@ -130,11 +130,11 @@
             />
           </div>
         </div>
-        <template v-slot:footer>
+        <template #footer>
           <div
-            class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
+            class="p-3 w-full text-sm bg-white dark:bg-gray-800 rounded-b-lg"
           >
-            <div class="summary-item-row font-medium">
+            <div class="font-medium summary-item-row">
               <div class="w-64">
                 {{ labels.tradeSummary.totalAfterFees }}
               </div>
@@ -172,11 +172,11 @@
       />
       <div
         v-if="totalRequiredTransactions > 1"
-        class="flex my-5 justify-center items-center"
+        class="flex justify-center items-center my-5"
       >
         <template v-if="showGnosisRelayerApprovalStep">
           <BalTooltip :disabled="!requiresGnosisRelayerApproval" width="64">
-            <template v-slot:activator>
+            <template #activator>
               <div
                 :class="[
                   'step',
@@ -192,7 +192,7 @@
                   name="check"
                   class="text-green-500"
                 />
-                <template v-else>1</template>
+                <template v-else> 1 </template>
               </div>
             </template>
             <div>
@@ -218,7 +218,7 @@
         </template>
         <template v-else-if="showLidoRelayerApprovalStep">
           <BalTooltip :disabled="!requiresLidoRelayerApproval" width="64">
-            <template v-slot:activator>
+            <template #activator>
               <div
                 :class="[
                   'step',
@@ -234,7 +234,7 @@
                   name="check"
                   class="text-green-500"
                 />
-                <template v-else>1</template>
+                <template v-else> 1 </template>
               </div>
             </template>
             <div>
@@ -264,7 +264,7 @@
             :disabled="!requiresTokenApproval"
             width="64"
           >
-            <template v-slot:activator>
+            <template #activator>
               <div
                 :class="[
                   'step',
@@ -279,11 +279,13 @@
                   name="check"
                   class="text-green-500"
                 />
-                <template v-else>{{
-                  showGnosisRelayerApprovalStep || showLidoRelayerApprovalStep
-                    ? 2
-                    : 1
-                }}</template>
+                <template v-else>
+                  {{
+                    showGnosisRelayerApprovalStep || showLidoRelayerApprovalStep
+                      ? 2
+                      : 1
+                  }}
+                </template>
               </div>
             </template>
             <div>
@@ -307,7 +309,7 @@
           <div class="step-seperator" />
         </template>
         <BalTooltip width="64">
-          <template v-slot:activator>
+          <template #activator>
             <div
               :class="[
                 'step',
@@ -341,12 +343,12 @@
         v-if="requiresGnosisRelayerApproval"
         color="gradient"
         block
-        @click.prevent="gnosisRelayerApproval.approve"
         :loading="
           gnosisRelayerApproval.init.value ||
           gnosisRelayerApproval.approving.value
         "
         :loading-label="`${$t('approvingGnosisRelayer')}...`"
+        @click.prevent="gnosisRelayerApproval.approve"
       >
         {{ $t('approveGnosisRelayer') }}
       </BalBtn>
@@ -354,11 +356,11 @@
         v-else-if="requiresLidoRelayerApproval"
         color="gradient"
         block
-        @click.prevent="lidoRelayerApproval.approve"
         :loading="
           lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
         "
         :loading-label="`${$t('approvingLidoRelayer')}...`"
+        @click.prevent="lidoRelayerApproval.approve"
       >
         {{ $t('approveLidoRelayer') }}
       </BalBtn>
@@ -376,11 +378,11 @@
         v-else
         color="gradient"
         block
-        @click.prevent="trade"
         :loading="trading.isConfirming.value"
         :loading-label="$t('confirming')"
         :disabled="tradeDisabled"
         class="relative"
+        @click.prevent="trade"
       >
         {{ labels.confirmTrade }}
       </BalBtn>

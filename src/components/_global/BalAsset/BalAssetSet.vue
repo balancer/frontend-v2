@@ -15,7 +15,6 @@
         :key="i"
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
-        @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
@@ -23,6 +22,7 @@
           width: `${size}px`,
           height: `${size}px`,
         }"
+        @click="$emit('click', addressOrURI)"
       />
     </div>
   </template>

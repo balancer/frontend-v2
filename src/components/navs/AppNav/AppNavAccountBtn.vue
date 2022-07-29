@@ -4,7 +4,7 @@
     :align="isMobile ? 'center' : undefined"
     :detached="isMobile ? true : undefined"
   >
-    <template v-slot:activator>
+    <template #activator>
       <BalBtn
         class="text-base"
         :class="{ btn: upToLargeBreakpoint }"
@@ -15,19 +15,19 @@
         :circle="upToLargeBreakpoint"
       >
         <Avatar
-          :iconURI="profile?.avatar"
+          :icon-u-r-i="profile?.avatar"
           :address="account"
           :size="avatarSize"
         />
         <span
           v-if="profile && profile.ens"
+          class="hidden lg:inline-block pl-2"
           v-text="profile && profile.ens"
-          class="pl-2 hidden lg:inline-block"
         />
         <span
           v-else
+          class="hidden lg:inline-block pl-2 eth-address"
           v-text="_shorten(account)"
-          class="pl-2 hidden lg:inline-block eth-address"
         />
       </BalBtn>
     </template>

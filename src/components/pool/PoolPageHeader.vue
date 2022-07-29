@@ -131,7 +131,7 @@ const poolTypeLabel = computed(() => {
         <div
           v-for="([address, tokenMeta], i) in titleTokens"
           :key="i"
-          class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
+          class="flex items-center px-2 mt-2 mr-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
         >
           <BalAsset :address="address" />
           <span class="ml-2">
@@ -139,7 +139,7 @@ const poolTypeLabel = computed(() => {
           </span>
           <span
             v-if="!isStableLikePool"
-            class="font-medium text-gray-400 text-xs mt-px ml-1"
+            class="mt-px ml-1 text-xs font-medium text-gray-400"
           >
             {{
               fNum2(tokenMeta.weight, {
@@ -154,25 +154,25 @@ const poolTypeLabel = computed(() => {
           v-if="!loadingApr"
           :pool="pool"
           :pool-apr="poolApr"
-          class="-ml-1 mt-1"
+          class="mt-1 -ml-1"
         />
         <BalLink
           :href="explorer.addressLink(pool?.address || '')"
           external
-          noStyle
+          no-style
           class="flex items-center"
         >
           <BalIcon
             name="arrow-up-right"
             size="sm"
-            class="ml-2 mt-2 text-gray-500 hover:text-blue-500 transition-colors"
+            class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
           />
         </BalLink>
       </div>
       <div class="flex items-center mt-2">
-        <div v-html="poolFeeLabel" class="text-sm text-secondary mr-1" />
+        <div class="mr-1 text-sm text-secondary" v-html="poolFeeLabel" />
         <BalTooltip>
-          <template v-slot:activator>
+          <template #activator>
             <BalLink
               v-if="feesManagedByGauntlet"
               :href="EXTERNAL_LINKS.Gauntlet.Home"

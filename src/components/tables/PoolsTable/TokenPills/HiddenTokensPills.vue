@@ -14,7 +14,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="relative flex mr-2 my-1">
+  <div class="flex relative my-1 mr-2">
     <div
       :class="[
         'pill',

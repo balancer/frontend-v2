@@ -2,12 +2,12 @@
   <transition
     class="relative"
     appear
+    :css="false"
     @enter="enter"
     @leave="leave"
-    :css="false"
   >
-    <div id="animateContainer" ref="animateContainer" v-if="isVisible">
-      <slot></slot>
+    <div v-if="isVisible" id="animateContainer" ref="animateContainer">
+      <slot />
     </div>
   </transition>
 </template>

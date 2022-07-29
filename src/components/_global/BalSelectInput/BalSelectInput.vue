@@ -1,9 +1,11 @@
 <template>
   <div :class="['bal-select-input', containerClasses]">
     <div class="flex items-center h-full">
-      <div class="flex flex-col justify-center h-full flex-1">
+      <div class="flex flex-col flex-1 justify-center h-full">
         <div v-if="label || $slots.label" :class="['label', labelClasses]">
-          <slot name="label">{{ label }}</slot>
+          <slot name="label">
+            {{ label }}
+          </slot>
         </div>
         <select
           ref="balSelectInput"
@@ -41,11 +43,11 @@ import BalIcon from '../BalIcon/BalIcon.vue';
 export default defineComponent({
   name: 'BalSelectInput',
 
-  emits: ['change', 'update:modelValue'],
-
   components: {
     BalIcon,
   },
+
+  emits: ['change', 'update:modelValue'],
 
   props: {
     modelValue: { type: String, default: '' },

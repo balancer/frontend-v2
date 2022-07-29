@@ -207,7 +207,7 @@ async function handleTransaction(
 
 <template>
   <div>
-    <AnimatePresence isVisible>
+    <AnimatePresence is-visible>
       <BalAlert
         v-if="currentActionState?.error && !isLoading"
         type="error"
@@ -220,7 +220,7 @@ async function handleTransaction(
         <BalHorizSteps
           v-if="actions.length > 1 && !lastActionState?.confirmed"
           :steps="steps"
-          :spacerWidth="spacerWidth"
+          :spacer-width="spacerWidth"
           class="flex justify-center"
         />
         <BalBtn

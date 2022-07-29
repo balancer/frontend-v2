@@ -67,9 +67,9 @@ const setTradePair = (pair: TrendingPair[]) => {
 <template>
   <BalCard
     :square="upToLargeBreakpoint"
-    noPad
-    growContent
-    :noBorder="upToLargeBreakpoint"
+    no-pad
+    grow-content
+    :no-border="upToLargeBreakpoint"
     shadow="none"
   >
     <div class="trending-pairs">
@@ -79,14 +79,14 @@ const setTradePair = (pair: TrendingPair[]) => {
       >
         <h6>{{ $t('trendingPairs') }}</h6>
       </div>
-      <div class="px-1 lg:p-3 flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-3 lg:p-3 px-1">
         <button
-          class="py-1 px-2 bg-transparent hover:bg-blue-500 dark:hover:bg-blue-400 hover:text-white text-sm rounded-lg border dark:border-gray-800 font-medium lg:font-normal shadow-sm transition-colors"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
+          class="py-1 px-2 text-sm font-medium lg:font-normal hover:text-white bg-transparent hover:bg-blue-500 dark:hover:bg-blue-400 rounded-lg border dark:border-gray-800 shadow-sm transition-colors"
           @click="setTradePair(pair)"
         >
-          {{ pair[0].symbol }} <span class="text-xs relative -top-px">-></span>
+          {{ pair[0].symbol }} <span class="relative -top-px text-xs">-></span>
           {{ pair[1].symbol }}
         </button>
       </div>

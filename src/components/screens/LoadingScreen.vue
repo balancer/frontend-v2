@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute top-0 left-0 h-screen w-full flex items-center justify-center bg-gray-50 z-50"
+    class="flex absolute top-0 left-0 z-50 justify-center items-center w-full h-screen bg-gray-50"
   >
     <BalLoadingIcon />
   </div>

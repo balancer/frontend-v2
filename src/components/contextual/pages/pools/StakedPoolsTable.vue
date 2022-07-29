@@ -60,15 +60,17 @@ const hiddenColumns = computed(() => {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 xl:px-0">{{ $t('staking.stakedPools') }}</h5>
+      <h5 class="px-4 xl:px-0">
+        {{ $t('staking.stakedPools') }}
+      </h5>
       <PoolsTable
         :key="poolsWithBoost"
         :data="poolsWithBoost"
-        :noPoolsLabel="noPoolsLabel"
-        :hiddenColumns="hiddenColumns"
-        :isLoading="isLoading"
-        showPoolShares
-        showBoost
+        :no-pools-label="noPoolsLabel"
+        :hidden-columns="hiddenColumns"
+        :is-loading="isLoading"
+        show-pool-shares
+        show-boost
       />
     </BalStack>
   </div>

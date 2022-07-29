@@ -59,11 +59,11 @@ defineExpose({ hide });
 
 <template>
   <div v-if="show" class="bal-modal" @keyup.esc="hide">
-    <transition name="overlay" @afterEnter="showContent = true" appear>
+    <transition name="overlay" appear @afterEnter="showContent = true">
       <div class="modal-bg" @click="hide">
         <div v-if="fireworks" class="fireworks">
-          <div class="before"></div>
-          <div class="after"></div>
+          <div class="before" />
+          <div class="after" />
         </div>
       </div>
     </transition>
@@ -76,14 +76,14 @@ defineExpose({ hide });
             :no-pad="noPad"
             :no-content-pad="noContentPad"
             class="modal-card"
-            noBorder
-            overflowYScroll
+            no-border
+            overflow-y-scroll
           >
-            <template v-if="$slots.header" v-slot:header>
+            <template v-if="$slots.header" #header>
               <slot name="header" />
             </template>
             <slot />
-            <template v-if="$slots.footer" v-slot:footer>
+            <template v-if="$slots.footer" #footer>
               <slot name="footer" />
             </template>
           </BalCard>

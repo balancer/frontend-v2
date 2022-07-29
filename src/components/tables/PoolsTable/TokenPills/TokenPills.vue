@@ -59,32 +59,32 @@ const MAX_PILLS = 11;
 </script>
 
 <template>
-  <div class="-mt-1 flex flex-wrap gap-y-2">
+  <div class="flex flex-wrap gap-y-2 -mt-1">
     <template v-if="isStablePool">
       <StableTokenPill
         v-for="token in visibleTokens"
         :key="token.address"
-        :hasBalance="hasBalance(token.address)"
+        :has-balance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :token="token"
-        :isSelected="includesAddress(selectedTokens, token.address)"
+        :is-selected="includesAddress(selectedTokens, token.address)"
       />
     </template>
     <template v-else>
       <WeightedTokenPill
         v-for="token in visibleTokens"
         :key="token.address"
-        :hasBalance="hasBalance(token.address)"
+        :has-balance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :weight="weightFor(token)"
         :token="token"
-        :isSelected="includesAddress(selectedTokens, token.address)"
+        :is-selected="includesAddress(selectedTokens, token.address)"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"
         :tokens="hiddenTokens"
-        :hasBalance="hasBalanceInHiddenTokens"
-        :isSelected="isSelectedInHiddenTokens"
+        :has-balance="hasBalanceInHiddenTokens"
+        :is-selected="isSelectedInHiddenTokens"
       />
     </template>
   </div>

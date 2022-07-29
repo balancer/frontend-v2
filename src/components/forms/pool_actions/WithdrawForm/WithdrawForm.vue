@@ -110,25 +110,25 @@ onBeforeMount(() => {
     <ProportionalWithdrawalInput
       v-if="isProportional"
       :pool="pool"
-      :tokenAddresses="tokensOut"
+      :token-addresses="tokensOut"
       :math="withdrawMath"
     />
     <TokenInput
       v-else
-      :name="tokenOut"
-      :address="tokenOut"
       v-model:amount="tokenOutAmount"
       v-model:isValid="validInput"
-      :disableBalance="singleAssetMaxes[tokenOutIndex] === '-'"
-      :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
+      :name="tokenOut"
+      :address="tokenOut"
+      :disable-balance="singleAssetMaxes[tokenOutIndex] === '-'"
+      :custom-balance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
-      :balanceLabel="$t('singleTokenMax')"
-      :balanceLoading="loadingAmountsOut"
-      fixedToken
-      disableNativeAssetBuffer
+      :balance-label="$t('singleTokenMax')"
+      :balance-loading="loadingAmountsOut"
+      fixed-token
+      disable-native-asset-buffer
     >
       <template #tokenSelect>
-        <WithdrawalTokenSelect :pool="pool" :initToken="tokenOut" />
+        <WithdrawalTokenSelect :pool="pool" :init-token="tokenOut" />
       </template>
     </TokenInput>
 
@@ -136,7 +136,7 @@ onBeforeMount(() => {
 
     <div
       v-if="highPriceImpact"
-      class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4"
+      class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -154,7 +154,7 @@ onBeforeMount(() => {
       :description="parseError(error).description"
       class="mt-4"
       block
-      actionLabel="Dismiss"
+      action-label="Dismiss"
       @actionClick="setError(null)"
     />
 

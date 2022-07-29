@@ -70,28 +70,28 @@ const isLoadingTotalValue = computed(
 <template>
   <AppHero :class="classes">
     <h1
+      class="mb-2 font-body text-base font-medium text-white opacity-90"
       v-text="$t('myBalancerInvestments')"
-      class="text-base font-medium text-white opacity-90 font-body mb-2"
     />
 
     <template v-if="isWalletReady || isWalletConnecting">
       <BalLoadingBlock
         v-if="isLoadingTotalValue"
-        class="h-10 w-40 mx-auto"
+        class="mx-auto w-40 h-10"
         white
       />
-      <div v-else class="text-3xl font-semibold text-white mb-1">
+      <div v-else class="mb-1 text-3xl font-semibold text-white">
         {{ totalInvestedLabel }}
       </div>
-      <div v-if="!isL2" class="relative mt-2 inline-block">
+      <div v-if="!isL2" class="inline-block relative mt-2">
         <BalLoadingBlock
           v-if="isLoadingTotalValue"
-          class="h-8 w-40 mx-auto"
+          class="mx-auto w-40 h-8"
           white
         />
         <div
           v-else
-          class="vebal-banner h-8 flex items-center px-3 text-yellow-500 text-sm font-medium cursor-pointer border border-yellow-500 group hover:text-white focus:text-white transition-colors rounded-bl rounded-tr"
+          class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
           @click="router.push({ name: 'vebal' })"
         >
           <span v-if="lockFiatValue === '0'"
@@ -101,7 +101,7 @@ const isLoadingTotalValue = computed(
         </div>
       </div>
     </template>
-    <HeroConnectWalletButton class="mt-4" v-else />
+    <HeroConnectWalletButton v-else class="mt-4" />
   </AppHero>
 </template>
 

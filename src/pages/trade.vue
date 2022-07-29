@@ -55,7 +55,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
+  <Col3Layout offset-gutters mobile-hide-gutters class="mt-8">
     <template #gutterLeft>
       <MyWallet />
       <TrendingPairs class="mt-4" />
@@ -71,30 +71,30 @@ onMounted(() => {
         <TradeCardGP />
       </template>
     </template>
-    <div class="mt-8 p-4 sm:p-0 lg:p-0">
+    <div class="p-4 sm:p-0 lg:p-0 mt-8">
       <BalAccordion
-        class="w-full"
         v-if="upToLargeBreakpoint"
+        class="w-full"
         :sections="[
           { title: 'My wallet', id: 'my-wallet' },
           { title: 'Trending pairs', id: 'trending-pairs' },
           { title: 'Price chart', id: 'price-chart' },
         ]"
       >
-        <template v-slot:my-wallet>
+        <template #my-wallet>
           <MyWallet />
         </template>
-        <template v-slot:trending-pairs>
+        <template #trending-pairs>
           <TrendingPairs />
         </template>
-        <template v-slot:price-chart>
-          <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+        <template #price-chart>
+          <PairPriceGraph :toggle-modal="togglePairPriceGraphModal" />
         </template>
       </BalAccordion>
     </div>
 
     <template #gutterRight>
-      <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+      <PairPriceGraph :toggle-modal="togglePairPriceGraphModal" />
     </template>
   </Col3Layout>
 
@@ -102,9 +102,9 @@ onMounted(() => {
     <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
       <div class="graph-modal">
         <PairPriceGraph
-          :toggleModal="togglePairPriceGraphModal"
-          isModal
-          :onCloseModal="onPriceGraphModalClose"
+          :toggle-modal="togglePairPriceGraphModal"
+          is-modal
+          :on-close-modal="onPriceGraphModalClose"
         />
       </div>
     </BalModal>

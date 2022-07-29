@@ -114,9 +114,9 @@ const isIncreaseLockOnly = computed(
           {{ fNum2(expectedVeBalAmount, FNumFormats.token) }}
           {{ veBalTokenInfo.symbol }}
           <VeBalTooltipExplainer
-            :expectedVeBalAmount="expectedVeBalAmount"
-            :lockEndDate="lockEndDate"
-            :totalLpTokens="totalLpTokens"
+            :expected-ve-bal-amount="expectedVeBalAmount"
+            :lock-end-date="lockEndDate"
+            :total-lp-tokens="totalLpTokens"
           />
         </div>
       </div>

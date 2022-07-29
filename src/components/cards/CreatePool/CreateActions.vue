@@ -132,14 +132,14 @@ function handleSuccess(details: any): void {
     <BalActionSteps
       :actions="requiredActions"
       :disabled="props.createDisabled"
-      :errorMessage="props.errorMessage"
+      :error-message="props.errorMessage"
+      :is-loading="createState.isLoadingRestoredTx"
+      :loading-label="$t('restoring')"
       @success="handleSuccess"
-      :isLoading="createState.isLoadingRestoredTx"
-      :loadingLabel="$t('restoring')"
     />
     <template v-if="createState.confirmed">
       <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
+        class="flex justify-between items-center mt-4 text-sm text-gray-400 dark:text-gray-600"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />
@@ -150,7 +150,7 @@ function handleSuccess(details: any): void {
         <BalLink
           :href="explorerLink"
           external
-          noStyle
+          no-style
           class="group flex items-center"
         >
           {{ networkConfig.explorerName }}

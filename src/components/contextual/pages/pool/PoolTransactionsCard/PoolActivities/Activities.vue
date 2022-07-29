@@ -81,11 +81,11 @@ function loadMorePoolActivities() {
     :is-loading="loading || isLoadingPoolActivities"
     :is-loading-more="poolActivitiesIsFetchingNextPage"
     :is-paginated="poolActivitiesHasNextPage"
-    @load-more="loadMorePoolActivities"
     :no-results-label="
       poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
         ? $t('poolTransactions.noResults.allInvestments')
         : $t('poolTransactions.noResults.myInvestments')
     "
+    @load-more="loadMorePoolActivities"
   />
 </template>

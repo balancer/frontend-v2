@@ -216,25 +216,25 @@ watch(blockNumber, async () => {
       :disabled="disabled"
     />
     <div v-else>
-      <ConfirmationIndicator :txReceipt="investmentState.receipt" />
+      <ConfirmationIndicator :tx-receipt="investmentState.receipt" />
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"
         :to="{ name: 'get-vebal' }"
         color="gradient"
         block
-        class="mt-2 flex"
+        class="flex mt-2"
       >
-        <StarsIcon class="h-5 text-orange-300 mr-2" />{{ $t('lockToGetVeBAL') }}
+        <StarsIcon class="mr-2 h-5 text-orange-300" />{{ $t('lockToGetVeBAL') }}
       </BalBtn>
       <BalBtn
         v-else-if="isStakablePool"
         color="gradient"
         block
-        class="mt-2 flex"
+        class="flex mt-2"
         @click="emit('showStakeModal')"
       >
-        <StarsIcon class="h-5 text-orange-300 mr-2" />{{
+        <StarsIcon class="mr-2 h-5 text-orange-300" />{{
           $t('stakeToGetExtra')
         }}
       </BalBtn>

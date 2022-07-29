@@ -78,24 +78,24 @@ const columns = ref<ColumnDefinition<any>[]>([
   <BalCard
     shadow="lg"
     :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
+    :no-border="upToLargeBreakpoint"
+    no-pad
   >
     <BalTable
       :columns="columns"
       :data="tokens"
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       skeleton-class="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #tokenColumnCell="{ name, logoURI }">
-        <div class="px-6 py-4 flex items-center">
-          <BalAsset :iconURI="logoURI" />
+        <div class="flex items-center py-4 px-6">
+          <BalAsset :icon-u-r-i="logoURI" />
           <span class="ml-2">{{ name }}</span>
         </div>
       </template>
       <template #dripColumnCell="{ address }">
-        <div class="px-2 py-4 flex justify-center">
+        <div class="flex justify-center py-4 px-2">
           <DripBtn :token="address" />
         </div>
       </template>

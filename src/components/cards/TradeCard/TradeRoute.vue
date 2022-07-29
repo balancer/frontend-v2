@@ -1,7 +1,7 @@
 <template>
-  <BalCard shadow="none" v-if="routes.length > 0">
+  <BalCard v-if="routes.length > 0" shadow="none">
     <div
-      class="flex text-secondary items-center cursor-pointer"
+      class="flex items-center cursor-pointer text-secondary"
       @click="toggleVisibility"
     >
       <div class="mr-2">
@@ -13,8 +13,8 @@
     <div v-if="visible" class="mt-5">
       <div
         v-if="routes.length === 0"
-        v-text="$t('noData')"
         class="mt-5 text-sm text-secondary"
+        v-text="$t('noData')"
       />
       <div v-else>
         <div>
@@ -38,9 +38,9 @@
           </div>
           <div class="relative mt-2">
             <div
-              class="pair-line absolute h-1/2 mx-9 border-b border-dashed border-gray-500"
+              class="absolute mx-9 h-1/2 border-b border-gray-500 border-dashed pair-line"
             />
-            <div class="relative z-10 flex justify-between">
+            <div class="flex relative z-10 justify-between">
               <BalAsset :address="input.address" :size="36" />
               <BalAsset :address="output.address" :size="36" />
             </div>
@@ -72,15 +72,15 @@
               width: `calc(100% - ${4 * (routes.length - index - 1)}px + 1px)`,
               margin: `0 ${2 * (routes.length - index - 1) - 1}px`,
             }"
-            class="absolute border-l border-r border-b border-gray-500 rounded-b-md"
+            class="absolute rounded-b-md border-r border-b border-l border-gray-500"
           />
           <div class="relative z-10">
             <div
               v-for="route in routes"
               :key="route.hops[0]?.pool?.address"
-              class="mt-9 first:mt-0 flex justify-between"
+              class="flex justify-between mt-9 first:mt-0"
             >
-              <div class="w-4 ml-4 flex items-center">
+              <div class="flex items-center ml-4 w-4">
                 <BalIcon
                   name="triangle"
                   size="xxs"
@@ -92,7 +92,7 @@
                 <div
                   v-for="hop in route.hops"
                   :key="hop?.pool?.address"
-                  class="ml-4 first:ml-0 flex bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 border border-gray-100 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-400 rounded-xl shadow transition-colors"
+                  class="flex ml-4 first:ml-0 bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-xl border border-gray-100 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-400 shadow transition-colors"
                 >
                   <a
                     class="flex p-1.5"
@@ -100,16 +100,16 @@
                     target="_blank"
                   >
                     <BalAsset
-                      class="ml-1.5 first:ml-0"
                       v-for="token in hop.pool.tokens"
                       :key="token.address"
+                      class="ml-1.5 first:ml-0"
                       :address="token.address"
                       :size="20"
                     />
                   </a>
                 </div>
               </div>
-              <div class="w-10 mr-4 text-xs text-right text-secondary">
+              <div class="mr-4 w-10 text-xs text-right text-secondary">
                 {{ formatShare(route.share) }}
               </div>
             </div>

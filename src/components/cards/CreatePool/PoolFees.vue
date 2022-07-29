@@ -137,7 +137,7 @@ async function onChangeFeeController(val: string) {
 
 <template>
   <div ref="cardWrapper">
-    <BalCard shadow="xl" noBorder>
+    <BalCard shadow="xl" no-border>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
           <span class="text-xs text-secondary">{{
@@ -145,8 +145,8 @@ async function onChangeFeeController(val: string) {
           }}</span>
           <BalStack horizontal align="center" spacing="xs">
             <button
+              class="flex text-blue-500 hover:text-blue-700"
               @click="goBack"
-              class="text-blue-500 hover:text-blue-700 flex"
             >
               <BalIcon class="flex" name="chevron-left" />
             </button>
@@ -158,19 +158,21 @@ async function onChangeFeeController(val: string) {
         <BalStack vertical spacing="sm">
           <div>
             <h6 class="mb-1">Initial swap fee</h6>
-            <p class="text-gray-600">{{ $t('createAPool.bestFeeOption') }}</p>
+            <p class="text-gray-600">
+              {{ $t('createAPool.bestFeeOption') }}
+            </p>
           </div>
           <BalStack spacing="xs" horizontal>
             <BalBtnGroup
-              :options="feeOptions"
               v-model="initialFee"
+              :options="feeOptions"
               @update:modelValue="onFixedInput"
             />
             <div>
               <div :class="['custom-input', customInputClasses]">
                 <input
-                  class="w-12 text-right bg-transparent h-full"
                   v-model="fee"
+                  class="w-12 h-full text-right bg-transparent"
                   placeholder="0.1"
                   type="number"
                   step="any"
@@ -193,38 +195,40 @@ async function onChangeFeeController(val: string) {
             </div>
           </BalStack>
           <BalAlert
+            v-if="isInvalidFee"
             class="w-full"
             :title="$t('invalidFee')"
             type="error"
-            v-if="isInvalidFee"
           >
             {{ $t('invalidFeeExplain') }}
           </BalAlert>
         </BalStack>
         <BalStack horizontal spacing="none" align="center">
           <BalCheckbox
-            @update:modelValue="onChangeFeeManagementType"
             v-model="checkboxState"
             name="areFeesGovernanceManaged"
             size="sm"
             :label="$t('createAPool.governanceFees')"
-            noMargin
+            no-margin
+            @update:modelValue="onChangeFeeManagementType"
           />
           <BalTooltip
             :text="$t('createAPool.governanceFeesTooltip')"
             icon-size="sm"
-            class="ml-2 mt-1"
+            class="mt-1 ml-2"
           />
         </BalStack>
-        <BalStack vertical spacing="sm" v-if="feeManagementType === 'self'">
-          <h6 class="mb-1">{{ $t('createAPool.alternativeFeeManagement') }}</h6>
+        <BalStack v-if="feeManagementType === 'self'" vertical spacing="sm">
+          <h6 class="mb-1">
+            {{ $t('createAPool.alternativeFeeManagement') }}
+          </h6>
           <BalRadio
             v-model="feeType"
             value="fixed"
-            @update:modelValue="onChangeFeeType"
             name="feeManagementOptions"
+            @update:modelValue="onChangeFeeType"
           >
-            <template v-slot:label>
+            <template #label>
               <span>
                 {{ $t('createAPool.fixedFeeRadioLabel') }}
               </span>
@@ -233,25 +237,27 @@ async function onChangeFeeController(val: string) {
           <BalRadio
             v-model="feeType"
             value="dynamic"
-            @update:modelValue="onChangeFeeType"
             name="feeManagementOptions"
+            @update:modelValue="onChangeFeeType"
           >
-            <template v-slot:label>
+            <template #label>
               <span>
                 {{ $t('createAPool.dynamicFeeRadioLabel') }}
               </span>
             </template>
           </BalRadio>
         </BalStack>
-        <BalStack vertical spacing="sm" v-if="feeType === 'dynamic'">
-          <h6 class="mb-1">{{ $t('createAPool.setAnAddress') }}</h6>
+        <BalStack v-if="feeType === 'dynamic'" vertical spacing="sm">
+          <h6 class="mb-1">
+            {{ $t('createAPool.setAnAddress') }}
+          </h6>
           <BalRadio
             v-model="feeController"
             value="self"
-            @update:modelValue="onChangeFeeController"
             name="addressOption"
+            @update:modelValue="onChangeFeeController"
           >
-            <template v-slot:label>
+            <template #label>
               <span>
                 {{ $t('createAPool.myAddressOption', [_shorten(account)]) }}
               </span>
@@ -260,10 +266,10 @@ async function onChangeFeeController(val: string) {
           <BalRadio
             v-model="feeController"
             value="other"
-            @update:modelValue="onChangeFeeController"
             name="addressOption"
+            @update:modelValue="onChangeFeeController"
           >
-            <template v-slot:label>
+            <template #label>
               <span>
                 {{ $t('createAPool.customAddressOption') }}
               </span>
@@ -271,12 +277,12 @@ async function onChangeFeeController(val: string) {
           </BalRadio>
         </BalStack>
         <BalStack
-          vertical
           v-if="feeController === 'other' && feeType === 'dynamic'"
+          vertical
           spacing="xs"
         >
           <h6>{{ $t('createAPool.customAddressTitle') }}</h6>
-          <p class="text-gray-600 mb-1">
+          <p class="mb-1 text-gray-600">
             {{ $t('createAPool.customAddressInfo') }}
           </p>
           <BalStack vertical spacing="xs">
@@ -285,7 +291,7 @@ async function onChangeFeeController(val: string) {
               placeholder="0xBA4...2069"
               type="text"
               size="sm"
-              validateOn="blur"
+              validate-on="blur"
               :rules="[
                 isRequired($t('A controller address')),
                 isValidAddress(),
@@ -299,10 +305,11 @@ async function onChangeFeeController(val: string) {
           type="submit"
           block
           color="gradient"
-          @click="proceed"
           :loading="isLoadingSimilarPools"
-          >{{ $t('next') }}</BalBtn
+          @click="proceed"
         >
+          {{ $t('next') }}
+        </BalBtn>
       </BalStack>
     </BalCard>
   </div>

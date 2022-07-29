@@ -121,34 +121,34 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
   <BalCard
     shadow="lg"
     :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
+    :no-border="upToLargeBreakpoint"
+    no-pad
   >
     <BalTable
       :columns="columns"
       :data="rewardsData"
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       :on-row-click="redirectToPool"
       skeleton-class="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #iconsColumnCell="{ pool }">
-        <div class="px-6 py-4">
+        <div class="py-4 px-6">
           <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
         </div>
       </template>
       <template #pillsColumnCell="{ pool }">
-        <div class="px-6 py-4">
+        <div class="py-4 px-6">
           <TokenPills
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
             "
-            :isStablePool="isStableLike(pool.poolType)"
+            :is-stable-pool="isStableLike(pool.poolType)"
           />
         </div>
       </template>
       <template #claimColumnCell="{ gauge, amount }">
-        <div class="px-6 py-4">
+        <div class="py-4 px-6">
           <ClaimBalBtn
             :label="$t('claim')"
             :gauges="[gauge]"

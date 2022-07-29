@@ -8,10 +8,10 @@
             disablePending && isPendingTransactionStatus(transaction.status)
           "
           external
-          noStyle
+          no-style
           class="group"
         >
-          <div class="font-semibold flex items-center">
+          <div class="flex items-center font-semibold">
             {{ $t(`transactionAction.${transaction.action}`) }}
             <BalIcon
               v-if="
@@ -22,11 +22,11 @@
               "
               name="arrow-up-right"
               size="sm"
-              class="ml-1 text-gray-400 dark:text-gray-600 group-hover:text-pink-500 transition-colors"
+              class="ml-1 text-gray-400 group-hover:text-pink-500 dark:text-gray-600 transition-colors"
             />
           </div>
           <div
-            class="text-sm text-secondary dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors summary"
+            class="text-sm group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white transition-colors text-secondary summary"
           >
             {{ transaction.summary }}
           </div>
@@ -34,7 +34,7 @@
         <div>
           <SpinnerIcon
             v-if="isPendingTransactionStatus(transaction.status)"
-            class="animate-spin text-orange-500"
+            class="text-orange-500 animate-spin"
           />
           <template v-else>
             <CheckIcon
@@ -42,7 +42,7 @@
               class="text-green-500"
             />
             <BalTooltip v-else class="cursor-default">
-              <template v-slot:activator>
+              <template #activator>
                 <BalIcon name="alert-circle" class="text-red-500" />
               </template>
               <div class="failed-reason-tooltip">

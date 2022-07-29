@@ -34,13 +34,13 @@ const aprLabel = computed((): string => {
 </script>
 
 <template>
-  <BalCard noPad shadow="none">
+  <BalCard no-pad shadow="none">
     <div class="p-4 w-full border-b dark:border-gray-900">
       <h6>
         {{ $t(`migratePool.${poolMigrationInfo.type}.poolStats.title`) }}
       </h6>
     </div>
-    <div class="-mt-2 p-4">
+    <div class="p-4 -mt-2">
       <div class="mb-3">
         <div class="text-secondary">
           {{ $t('poolValue') }}
@@ -58,7 +58,9 @@ const aprLabel = computed((): string => {
         </div>
       </div>
       <div>
-        <div class="text-secondary">{{ $t('apr') }}</div>
+        <div class="text-secondary">
+          {{ $t('apr') }}
+        </div>
         <div class="flex items-center font-semibold">
           {{ aprLabel }}
           <APRTooltip :pool="pool" />

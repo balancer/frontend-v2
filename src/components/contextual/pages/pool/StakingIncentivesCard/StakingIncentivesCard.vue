@@ -86,7 +86,7 @@ async function handleActionSuccess() {
 <template>
   <div>
     <AnimatePresence
-      :isVisible="
+      :is-visible="
         !isLoadingStakedShares &&
         !isStakedSharesIdle &&
         !isLoadingPoolEligibility &&
@@ -105,9 +105,9 @@ async function handleActionSuccess() {
             },
           ]"
         >
-          <template v-slot:staking-handle>
+          <template #staking-handle>
             <button
-              class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              class="p-4 w-full hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
             >
               <BalStack horizontal justify="between" align="center">
                 <BalStack spacing="sm" align="center">
@@ -121,11 +121,11 @@ async function handleActionSuccess() {
                     ]"
                   >
                     <BalIcon
+                      v-if="isPoolEligibleForStaking"
                       size="sm"
                       name="check"
-                      v-if="isPoolEligibleForStaking"
                     />
-                    <BalIcon size="sm" name="x" v-else />
+                    <BalIcon v-else size="sm" name="x" />
                   </div>
                   <h6>{{ $t('staking.stakingIncentives') }}</h6>
                 </BalStack>
@@ -140,20 +140,20 @@ async function handleActionSuccess() {
               </BalStack>
             </button>
           </template>
-          <template v-slot:staking-incentives>
-            <div class="bg-white dark:bg-gray-850 relative">
+          <template #staking-incentives>
+            <div class="relative bg-white dark:bg-gray-850">
               <BalStack
                 vertical
                 spacing="sm"
-                class="px-4 py-4 border-t dark:border-gray-900"
+                class="py-4 px-4 border-t dark:border-gray-900"
               >
                 <BalStack horizontal justify="between">
                   <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                   <BalStack horizontal spacing="sm" align="center">
-                    <AnimatePresence :isVisible="isRefetchingStakedShares">
+                    <AnimatePresence :is-visible="isRefetchingStakedShares">
                       <BalLoadingBlock class="h-5" />
                     </AnimatePresence>
-                    <AnimatePresence :isVisible="!isRefetchingStakedShares">
+                    <AnimatePresence :is-visible="!isRefetchingStakedShares">
                       <span>
                         {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
                       </span>
@@ -164,10 +164,10 @@ async function handleActionSuccess() {
                 <BalStack horizontal justify="between">
                   <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
                   <BalStack horizontal spacing="sm" align="center">
-                    <AnimatePresence :isVisible="isRefetchingStakedShares">
+                    <AnimatePresence :is-visible="isRefetchingStakedShares">
                       <BalLoadingBlock class="h-5" />
                     </AnimatePresence>
-                    <AnimatePresence :isVisible="!isRefetchingStakedShares">
+                    <AnimatePresence :is-visible="!isRefetchingStakedShares">
                       <span>
                         {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
                       </span>
@@ -179,8 +179,8 @@ async function handleActionSuccess() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    @click="showStakePreview"
                     :disabled="fiatValueOfUnstakedShares === '0'"
+                    @click="showStakePreview"
                   >
                     {{ $t('stake') }}
                   </BalBtn>
@@ -188,8 +188,8 @@ async function handleActionSuccess() {
                     outline
                     color="blue"
                     size="sm"
-                    @click="showUnstakePreview"
                     :disabled="fiatValueOfStakedShares === '0'"
+                    @click="showUnstakePreview"
                   >
                     {{ $t('unstake') }}
                   </BalBtn>
@@ -201,15 +201,15 @@ async function handleActionSuccess() {
       </div>
     </AnimatePresence>
     <AnimatePresence
-      :isVisible="
+      :is-visible="
         isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
       "
-      unmountInstantly
+      unmount-instantly
     >
       <BalLoadingBlock class="h-12" />
     </AnimatePresence>
     <StakePreviewModal
-      :isVisible="isStakePreviewVisible"
+      :is-visible="isStakePreviewVisible"
       :pool="pool"
       :action="stakeAction"
       @close="handlePreviewClose"

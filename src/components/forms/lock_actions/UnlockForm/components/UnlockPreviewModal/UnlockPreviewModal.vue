@@ -75,13 +75,13 @@ function handleSuccess() {
 
 <template>
   <BalModal show :fireworks="unlockConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="unlockConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -91,21 +91,24 @@ function handleSuccess() {
       </div>
     </template>
 
-    <UnlockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
+    <UnlockAmount
+      :lockable-pool="lockablePool"
+      :total-lp-tokens="totalLpTokens"
+    />
 
     <UnlockSummary
-      :fiatTotalLpTokens="fiatTotalLpTokens"
-      :veBalLockInfo="veBalLockInfo"
+      :fiat-total-lp-tokens="fiatTotalLpTokens"
+      :ve-bal-lock-info="veBalLockInfo"
     />
 
     <UnlockActions
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :totalLpTokens="totalLpTokens"
-      :veBalLockInfo="veBalLockInfo"
+      :lockable-pool="lockablePool"
+      :lockable-pool-token-info="lockablePoolTokenInfo"
+      :total-lp-tokens="totalLpTokens"
+      :ve-bal-lock-info="veBalLockInfo"
+      class="mt-4"
       @success="handleSuccess"
       @close="handleClose"
-      class="mt-4"
     />
   </BalModal>
 </template>

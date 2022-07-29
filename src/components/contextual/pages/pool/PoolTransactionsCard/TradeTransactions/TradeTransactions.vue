@@ -62,7 +62,7 @@ function loadMorePoolSwaps() {
 
 <template>
   <div>
-    <h4 v-text="$t('poolTransactions.tabs.trades')" class="px-4 lg:px-0 mb-5" />
+    <h4 class="px-4 lg:px-0 mb-5" v-text="$t('poolTransactions.tabs.trades')" />
 
     <Table
       :tokens="pool ? pool.tokensList : []"
@@ -70,8 +70,8 @@ function loadMorePoolSwaps() {
       :is-loading="loading || isLoadingPoolSwaps"
       :is-loading-more="poolSwapsIsFetchingNextPage"
       :is-paginated="poolSwapsHasNextPage"
-      @load-more="loadMorePoolSwaps"
       :no-results-label="$t('poolTransactions.noResults.swaps')"
+      @load-more="loadMorePoolSwaps"
     />
   </div>
 </template>

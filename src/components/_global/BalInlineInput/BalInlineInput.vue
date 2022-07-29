@@ -136,16 +136,16 @@ function handleBlur(e: HtmlInputEvent) {
             <slot name="prepend" />
           </div>
           <input
+            v-bind="inputAttrs"
+            ref="inputElement"
             :type="type"
             :name="name"
             :value="format ? format(modelValue) : modelValue"
-            v-bind="inputAttrs"
             :disabled="!isEditable || disabled"
+            :class="['input', inputClasses]"
             @blur="handleBlur"
             @input="onInput"
             @keydown="onKeydown"
-            :class="['input', inputClasses]"
-            ref="inputElement"
           />
           <BalStack horizontal spacing="none" align="center">
             <div v-if="$slots.append" :class="['append', appendClasses]">

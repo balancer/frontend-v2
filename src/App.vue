@@ -121,13 +121,13 @@ export default defineComponent({
     <component :is="layout" />
     <VueQueryDevTools />
     <WalletSelectModal
-      :isVisible="isWalletSelectVisible"
-      :onShowThirdParty="() => handleThirdPartyModalToggle(true, 'wallet')"
+      :is-visible="isWalletSelectVisible"
+      :on-show-third-party="() => handleThirdPartyModalToggle(true, 'wallet')"
       @close="toggleWalletSelectModal"
     />
     <SanctionedWalletModal v-if="isSanctioned" />
     <ThirdPartyServicesModal
-      :isVisible="isThirdPartyServicesModalVisible"
+      :is-visible="isThirdPartyServicesModalVisible"
       @close="handleThirdPartyModalToggle(false, 'third')"
     />
     <AppSidebar v-if="sidebarOpen" />

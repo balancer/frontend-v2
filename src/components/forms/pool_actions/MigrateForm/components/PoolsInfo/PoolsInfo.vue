@@ -60,13 +60,13 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <BalCard shadow="xl" exposeOverflow noBorder>
+  <BalCard shadow="xl" expose-overflow no-border>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-secondary leading-none">
+        <div class="text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ t(`migratePool.${poolMigrationInfo.type}.migrateToPool.title`) }}
           </h4>
@@ -75,16 +75,18 @@ onBeforeMount(() => {
       </div>
     </template>
     <div class="mb-6">
-      <div class="text-secondary">{{ $t('yourBalanceInPool') }}</div>
-      <div class="font-semibold text-lg">
+      <div class="text-secondary">
+        {{ $t('yourBalanceInPool') }}
+      </div>
+      <div class="text-lg font-semibold">
         {{ hasBpt ? fiatTotalLabel : '-' }}
       </div>
     </div>
-    <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
-    <div class="block flex justify-center dark:text-gray-50 my-4">
-      <ArrowDownIcon class="dark:text-secondary h-5 w-5" />
+    <PoolInfoBreakdown :pool="fromPool" :pool-token-info="fromPoolTokenInfo" />
+    <div class="block flex justify-center my-4 dark:text-gray-50">
+      <ArrowDownIcon class="w-5 h-5 dark:text-secondary" />
     </div>
-    <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
+    <PoolInfoBreakdown :pool="toPool" :pool-token-info="toPoolTokenInfo" />
     <BalBtn
       color="gradient"
       class="mt-6"
@@ -99,11 +101,11 @@ onBeforeMount(() => {
   <teleport to="#modal">
     <MigratePreviewModal
       v-if="showPreviewModal"
-      :fromPool="fromPool"
-      :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-      :poolMigrationInfo="poolMigrationInfo"
+      :from-pool="fromPool"
+      :to-pool="toPool"
+      :from-pool-token-info="fromPoolTokenInfo"
+      :to-pool-token-info="toPoolTokenInfo"
+      :pool-migration-info="poolMigrationInfo"
       :math="migrateMath"
       @close="showPreviewModal = false"
     />

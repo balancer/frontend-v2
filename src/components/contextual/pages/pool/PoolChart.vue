@@ -366,12 +366,12 @@ function setCurrentChartValue(payload: {
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
 
-  <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
+  <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
-      class="flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
+      class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >
       <div class="flex mb-4">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
+        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="mr-6 -mb-px" />
         <div class="flex items-center">
           <PoolChartPeriodSelect
             :options="periodOptions"
@@ -423,8 +423,8 @@ function setCurrentChartValue(payload: {
       need-chart-value
       :chart-type="chartData.chartType"
       :show-tooltip-layer="false"
-      @setCurrentChartValue="setCurrentChartValue"
       :hide-y-axis="isMobile"
+      @setCurrentChartValue="setCurrentChartValue"
       @mouseLeaveEvent="isFocusedOnChart = false"
       @mouseEnterEvent="isFocusedOnChart = true"
     />

@@ -171,7 +171,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
 
 <template>
   <BalStack vertical spacing="xs" class="mb-24">
-    <BalCard shadow="xl" noBorder>
+    <BalCard shadow="xl" no-border>
       <BalStack vertical spacing="xs">
         <span class="text-xs text-secondary">{{
           userNetworkConfig?.name
@@ -183,28 +183,30 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             v-if="poolCreated"
             size="8"
             color="green"
-            class="text-white mr-2"
+            class="mr-2 text-white"
           >
             <BalIcon name="check" />
           </BalCircle>
           <BalStack horizontal align="center" spacing="xs">
             <button
+              class="flex text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
               @click="goBack"
-              class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex transition-colors"
             >
               <BalIcon class="flex" name="chevron-left" />
             </button>
 
-            <h5 class="font-semibold dark:text-gray-300">{{ title }}</h5>
+            <h5 class="font-semibold dark:text-gray-300">
+              {{ title }}
+            </h5>
           </BalStack>
         </div>
-        <BalCard shadow="none" noPad>
-          <div class="bg-gray-50 dark:bg-gray-700 p-2">
+        <BalCard shadow="none" no-pad>
+          <div class="p-2 bg-gray-50 dark:bg-gray-700">
             <h6 class="text-sm">
               {{ $t('createAPool.tokensAndSeedLiquidity') }}
             </h6>
           </div>
-          <BalStack vertical spacing="none" withBorder>
+          <BalStack vertical spacing="none" with-border>
             <div
               v-for="token in seedTokens"
               :key="`tokenpreview-${token.tokenAddress}`"
@@ -263,27 +265,29 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             </h6>
           </BalStack>
         </BalCard>
-        <BalCard shadow="none" noPad>
-          <div class="bg-gray-50 dark:bg-gray-700 p-2">
-            <h6 class="text-sm">{{ $t('summary') }}</h6>
+        <BalCard shadow="none" no-pad>
+          <div class="p-2 bg-gray-50 dark:bg-gray-700">
+            <h6 class="text-sm">
+              {{ $t('summary') }}
+            </h6>
           </div>
           <BalStack vertical spacing="xs" class="p-3">
             <BalStack horizontal justify="between">
               <span class="text-sm">{{ $t('poolName') }}:</span>
               <BalInlineInput
-                size="xs"
                 v-model="poolName"
+                size="xs"
+                input-align-right
                 @save="saveState"
-                inputAlignRight
               />
             </BalStack>
             <BalStack horizontal justify="between">
               <span class="text-sm">{{ $t('poolSymbol') }}:</span>
               <BalInlineInput
-                size="xs"
                 v-model="poolSymbol"
+                size="xs"
+                input-align-right
                 @save="saveState"
-                inputAlignRight
               />
             </BalStack>
             <BalStack horizontal justify="between">
@@ -313,16 +317,16 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           </BalStack>
         </BalCard>
         <AnimatePresence
-          :isVisible="hasMissingPoolNameOrSymbol"
-          unmountInstantly
+          :is-visible="hasMissingPoolNameOrSymbol"
+          unmount-instantly
         >
           <BalAlert :title="$t('missingPoolNameOrSymbol')" type="error">
             {{ $t('missingPoolNameOrSymbolInfo') }}
           </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="hasInvalidInitialWeight && createPoolTxHash !== ''"
-          unmountInstantly
+          :is-visible="hasInvalidInitialWeight && createPoolTxHash !== ''"
+          unmount-instantly
         >
           <BalAlert
             :title="$t('createAPool.invalidInitialWeightsTitle')"
@@ -331,7 +335,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             {{ $t('createAPool.invalidInitialWeightsInfo') }}
           </BalAlert>
         </AnimatePresence>
-        <AnimatePresence :isVisible="showNativeAssetWarning" unmountInstantly>
+        <AnimatePresence :is-visible="showNativeAssetWarning" unmount-instantly>
           <BalAlert
             :title="$t('createAPool.invalidInitialWeightsTitle')"
             type="warning"
@@ -352,8 +356,8 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           {{ t('createAPool.arbReason') }}
         </BalAlert> -->
         <CreateActions
-          :createDisabled="hasMissingPoolNameOrSymbol"
-          :tokenAddresses="tokenAddresses"
+          :create-disabled="hasMissingPoolNameOrSymbol"
+          :token-addresses="tokenAddresses"
           :amounts="tokenAmounts"
           @success="handleSuccess"
         />

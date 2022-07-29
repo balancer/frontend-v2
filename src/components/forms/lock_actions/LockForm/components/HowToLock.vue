@@ -36,7 +36,7 @@ const steps = computed(() => [
 <template>
   <BalAccordion
     class="mt-4"
-    :showSectionBorder="false"
+    :show-section-border="false"
     :sections="[
       {
         title: $t('getVeBAL.howToLock.title'),
@@ -45,9 +45,9 @@ const steps = computed(() => [
       },
     ]"
   >
-    <template v-slot:how-to-lock-handle>
+    <template #how-to-lock-handle>
       <button
-        class="p-4 rounded-xl w-full flex justify-between items-center group"
+        class="group flex justify-between items-center p-4 w-full rounded-xl"
       >
         <h6 class="group-hover:text-blue-500 transition-colors">
           {{ $t('getVeBAL.howToLock.title') }}
@@ -58,10 +58,10 @@ const steps = computed(() => [
         />
       </button>
     </template>
-    <template v-slot:how-to-lock>
+    <template #how-to-lock>
       <div class="p-4 border-t dark:border-gray-900">
         <div class="text-secondary">
-          <ol class="steps text-sm">
+          <ol class="text-sm steps">
             <li>
               {{ $t('getVeBAL.howToLock.steps.investPart1') }}
               <BalLink

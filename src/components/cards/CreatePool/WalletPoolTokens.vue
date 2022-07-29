@@ -49,18 +49,18 @@ const totalFiat = computed(() => {
 </script>
 
 <template>
-  <BalCard noPad shadow="none">
+  <BalCard no-pad shadow="none">
     <div class="p-2 px-3 border-b">
       <h6>Pool tokens in my wallet</h6>
     </div>
     <BalStack vertical class="p-4" spacing="sm">
       <div>
-        <h6 class="branch relative">Native tokens</h6>
+        <h6 class="relative branch">Native tokens</h6>
         <BalStack vertical spacing="xs">
           <BalStack
-            class="ml-6 twig relative"
             v-for="token in nativeTokens"
             :key="`wallet-pool-token-${token}`"
+            class="relative ml-6 twig"
             horizontal
             justify="between"
           >
@@ -92,7 +92,7 @@ const totalFiat = computed(() => {
             :initial="initialAnimateProps"
             :animate="entryAnimateProps"
             :exit="exitAnimateProps"
-            :isVisible="true"
+            :is-visible="true"
           >
             <BalStack horizontal justify="between">
               <BalStack vertical spacing="none">

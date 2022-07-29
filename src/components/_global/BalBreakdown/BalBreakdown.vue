@@ -87,7 +87,7 @@ const offsetClass = computed(() => {
         <div v-else :class="['vert-bar', vertBarSizes]" />
         <div class="horiz-bar" />
         <div class="flex-grow">
-          <slot name="item" :item="item"></slot>
+          <slot name="item" :item="item" />
         </div>
       </div>
     </div>

@@ -117,13 +117,13 @@ function handleShowPreviewModal() {
 </script>
 
 <template>
-  <BalCard shadow="xl" exposeOverflow noBorder>
+  <BalCard shadow="xl" expose-overflow no-border>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-secondary leading-none pb-1.5">
+        <div class="pb-1.5 text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ $t('getVeBAL.lockForm.title') }}
           </h4>
@@ -132,17 +132,17 @@ function handleShowPreviewModal() {
     </template>
 
     <LockAmount
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :lockable-pool="lockablePool"
+      :lockable-pool-token-info="lockablePoolTokenInfo"
     />
 
     <LockEndDate
-      :minLockEndDateTimestamp="minLockEndDateTimestamp"
-      :maxLockEndDateTimestamp="maxLockEndDateTimestamp"
-      :veBalLockInfo="veBalLockInfo"
+      :min-lock-end-date-timestamp="minLockEndDateTimestamp"
+      :max-lock-end-date-timestamp="maxLockEndDateTimestamp"
+      :ve-bal-lock-info="veBalLockInfo"
     />
 
-    <Summary :expectedVeBalAmount="expectedVeBalAmount" />
+    <Summary :expected-ve-bal-amount="expectedVeBalAmount" />
 
     <div class="mt-6">
       <BalBtn
@@ -166,13 +166,13 @@ function handleShowPreviewModal() {
   <teleport to="#modal">
     <LockPreviewModal
       v-if="showPreviewModal"
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :lockAmount="lockAmount"
-      :lockEndDate="lockEndDate"
-      :lockType="lockType"
-      :veBalLockInfo="veBalLockInfo"
-      :totalLpTokens="totalLpTokens"
+      :lockable-pool="lockablePool"
+      :lockable-pool-token-info="lockablePoolTokenInfo"
+      :lock-amount="lockAmount"
+      :lock-end-date="lockEndDate"
+      :lock-type="lockType"
+      :ve-bal-lock-info="veBalLockInfo"
+      :total-lp-tokens="totalLpTokens"
       @close="handleClosePreviewModal"
     />
   </teleport>

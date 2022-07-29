@@ -35,9 +35,9 @@ async function dripTx() {
     label="Drip"
     color="gradient"
     size="sm"
-    :actionFn="dripTx"
+    :action-fn="dripTx"
     action="drip"
     summary="Dripping from faucet"
-    confirmingLabel="Drip"
+    confirming-label="Drip"
   />
 </template>

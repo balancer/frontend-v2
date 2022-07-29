@@ -58,7 +58,7 @@ const { currency } = useUserSettings();
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          <BalLoadingBlock v-if="isLoadingPriceImpact" class="h-6 w-10" />
+          <BalLoadingBlock v-if="isLoadingPriceImpact" class="w-10 h-6" />
           <template v-else>
             {{ fNum2(priceImpact, FNumFormats.percent) }}
             <BalTooltip

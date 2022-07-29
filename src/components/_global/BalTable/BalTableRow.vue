@@ -34,7 +34,6 @@ function getHorizontalStickyClass(index: number) {
 
 <template>
   <tr
-    @click="handleRowClick(data)"
     :class="[
       'bg-white z-10 row-bg group',
       {
@@ -42,6 +41,7 @@ function getHorizontalStickyClass(index: number) {
         'border-b dark:border-gray-700': pinned,
       },
     ]"
+    @click="handleRowClick(data)"
   >
     <td
       v-for="(column, columnIndex) in columns"
@@ -59,7 +59,7 @@ function getHorizontalStickyClass(index: number) {
           params: link.getParams(data),
         }"
       >
-        <slot v-if="column.Cell" v-bind="data" :name="column.Cell"></slot>
+        <slot v-if="column.Cell" v-bind="data" :name="column.Cell" />
         <div
           v-else
           :class="
@@ -78,7 +78,7 @@ function getHorizontalStickyClass(index: number) {
         </div>
       </router-link>
       <template v-else>
-        <slot v-if="column.Cell" v-bind="data" :name="column.Cell"></slot>
+        <slot v-if="column.Cell" v-bind="data" :name="column.Cell" />
         <div
           v-else
           :class="

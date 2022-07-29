@@ -48,7 +48,7 @@ function getHorizontalStickyClass(index: number) {
           'p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900',
         ]"
       >
-        <slot v-if="column.totalsCell" :name="column.totalsCell"> </slot>
+        <slot v-if="column.totalsCell" :name="column.totalsCell" />
       </td>
     </tr>
   </tbody>

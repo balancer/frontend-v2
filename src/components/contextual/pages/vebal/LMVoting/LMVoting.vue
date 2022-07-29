@@ -96,32 +96,36 @@ function handleVoteSuccess() {
 
 <template>
   <div
-    class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-2 gap-4"
+    class="flex flex-col lg:flex-row gap-4 lg:justify-between lg:items-end mb-2"
   >
-    <div class="max-w-3xl px-4 xl:px-0">
-      <h3 class="mb-2">{{ $t('veBAL.liquidityMining.title') }}</h3>
-      <p class="">{{ $t('veBAL.liquidityMining.description') }}</p>
+    <div class="px-4 xl:px-0 max-w-3xl">
+      <h3 class="mb-2">
+        {{ $t('veBAL.liquidityMining.title') }}
+      </h3>
+      <p class="">
+        {{ $t('veBAL.liquidityMining.description') }}
+      </p>
     </div>
     <div class="flex gap-2 xs:gap-3 px-4 xl:px-0">
-      <BalCard shadow="none" class="min-w-max md:w-48">
+      <BalCard shadow="none" class="md:w-48 min-w-max">
         <div class="flex items-center">
-          <p class="text-sm text-secondary inline mr-1">My unallocated votes</p>
+          <p class="inline mr-1 text-sm text-secondary">My unallocated votes</p>
           <BalTooltip
             :text="$t('veBAL.liquidityMining.myUnallocatedVotesTooltip')"
-            iconClass="text-gray-400 dark:text-gray-600"
+            icon-class="text-gray-400 dark:text-gray-600"
             icon-size="sm"
             width="72"
             class="mt-1"
           />
         </div>
         <p
-          class="text-lg font-semibold inline mr-1"
+          class="inline mr-1 text-lg font-semibold"
           :class="{ 'text-red-500': hasExpiredLock }"
         >
           <span v-if="hasLock">
             {{ unallocatedVotesFormatted }}
           </span>
-          <span class="mr-1" v-else>—</span>
+          <span v-else class="mr-1">—</span>
         </p>
         <BalTooltip
           v-if="hasExpiredLock"
@@ -133,26 +137,26 @@ function handleVoteSuccess() {
           class="relative top-0.5"
         />
       </BalCard>
-      <BalCard shadow="none" class="min-w-max md:w-48">
+      <BalCard shadow="none" class="md:w-48 min-w-max">
         <div class="flex items-center">
           <p
             :class="{ 'text-orange-500 font-medium': votingPeriodLastHour }"
-            class="text-sm text-secondary inline mr-1"
+            class="inline mr-1 text-sm text-secondary"
           >
             Voting period ends
           </p>
           <BalTooltip
             :text="$t('veBAL.liquidityMining.votingPeriodTooltip')"
             icon-size="sm"
-            iconClass="text-gray-400 dark:text-gray-600"
+            icon-class="text-gray-400 dark:text-gray-600"
             width="72"
             class="mt-1"
           />
         </div>
         <p class="text-lg font-semibold tabular-nums">
           <span
-            :class="{ 'text-orange-500': votingPeriodLastHour }"
             v-if="votingPeriodEnd.length"
+            :class="{ 'text-orange-500': votingPeriodLastHour }"
           >
             {{
               $t('veBAL.liquidityMining.votingPeriodCountdown', votingPeriodEnd)
@@ -163,12 +167,12 @@ function handleVoteSuccess() {
     </div>
   </div>
   <GaugesTable
-    :expiredGauges="expiredGauges"
-    :isLoading="isLoading"
-    :data="votingGauges"
     :key="votingGauges && isLoading"
-    :noPoolsLabel="$t('noInvestments')"
-    showPoolShares
+    :expired-gauges="expiredGauges"
+    :is-loading="isLoading"
+    :data="votingGauges"
+    :no-pools-label="$t('noInvestments')"
+    show-pool-shares
     class="mb-8"
     @clickedVote="setActiveGaugeVote"
   />
@@ -176,12 +180,12 @@ function handleVoteSuccess() {
     <GaugeVoteModal
       v-if="!!activeVotingGauge"
       :gauge="activeVotingGauge"
-      :logoURIs="orderedTokenURIs(activeVotingGauge)"
-      :poolURL="
+      :logo-u-r-is="orderedTokenURIs(activeVotingGauge)"
+      :pool-u-r-l="
         poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
       "
-      :unallocatedVoteWeight="unallocatedVoteWeight"
-      :veBalLockInfo="veBalLockInfoQuery.data"
+      :unallocated-vote-weight="unallocatedVoteWeight"
+      :ve-bal-lock-info="veBalLockInfoQuery.data"
       @success="handleVoteSuccess"
       @close="handleModalClose"
     />

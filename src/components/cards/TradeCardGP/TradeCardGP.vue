@@ -1,11 +1,11 @@
 <template>
   <BalCard class="relative card-container" :shadow="tradeCardShadow" no-border>
-    <template v-slot:header>
-      <div class="w-full flex items-center justify-between">
+    <template #header>
+      <div class="flex justify-between items-center w-full">
         <h4>{{ title }}</h4>
         <TradeSettingsPopover
           :context="TradeSettingsContext.trade"
-          :isGasless="trading.tradeGasless.value"
+          :is-gasless="trading.tradeGasless.value"
         />
       </div>
     </template>
@@ -16,12 +16,12 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
-        :tradeLoading="
+        :trade-loading="
           trading.isBalancerTrade.value ? trading.isLoading.value : false
         "
-        :effectivePriceMessage="trading.effectivePriceMessage"
-        @amountChange="trading.handleAmountChange"
+        :effective-price-message="trading.effectivePriceMessage"
         class="mb-4"
+        @amountChange="trading.handleAmountChange"
       />
       <BalAlert
         v-if="error"
@@ -65,14 +65,14 @@
           !ENABLE_LEGACY_TRADE_INTERFACE &&
           trading.isGnosisSupportedOnNetwork.value
         "
-        class="mt-5 text-sm flex items-center h-8"
+        class="flex items-center mt-5 h-8 text-sm"
       >
         <Transition name="fade" mode="out-in">
           <div
             v-if="trading.isGaslessTradingDisabled.value"
             class="text-secondary"
           >
-            <div class="flex items-center gap-2">
+            <div class="flex gap-2 items-center">
               <span class="text-lg">⛽</span>
               <Transition name="fade" mode="out-in">
                 <p v-if="trading.isWrap.value">
@@ -81,23 +81,25 @@
                 <p v-else-if="trading.isUnwrap.value">
                   {{ $t('tradeToggle.unwrapEth') }}
                 </p>
-                <p v-else>{{ $t('tradeToggle.fromEth') }}</p>
+                <p v-else>
+                  {{ $t('tradeToggle.fromEth') }}
+                </p>
               </Transition>
             </div>
           </div>
 
           <div v-else>
-            <div class="trade-gasless flex items-center">
+            <div class="flex items-center trade-gasless">
               <BalTooltip
                 width="64"
                 :disabled="!trading.isGaslessTradingDisabled.value"
               >
-                <template v-slot:activator>
+                <template #activator>
                   <BalToggle
                     name="tradeGasless"
                     :checked="trading.tradeGasless.value"
-                    @toggle="trading.toggleTradeGasless"
                     :disabled="trading.isGaslessTradingDisabled.value"
+                    @toggle="trading.toggleTradeGasless"
                   />
                 </template>
                 <div
@@ -106,26 +108,26 @@
                       ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
                       : $t('tradeGaslessToggle.disabledTooltip.eth')
                   "
-                ></div>
+                />
               </BalTooltip>
               <Transition name="fade" mode="out-in">
                 <span
                   v-if="trading.tradeGasless.value"
-                  class="text-sm pl-2 text-gray-600 dark:text-gray-400"
+                  class="pl-2 text-sm text-gray-600 dark:text-gray-400"
                   >{{ $t('tradeToggle.tradeGasless') }}</span
                 >
                 <span
                   v-else
-                  class="text-sm pl-2 text-gray-600 dark:text-gray-400"
+                  class="pl-2 text-sm text-gray-600 dark:text-gray-400"
                   >{{ $t('tradeToggle.tradeWithGas') }}</span
                 >
               </Transition>
               <BalTooltip width="64">
-                <template v-slot:activator>
+                <template #activator>
                   <BalIcon
                     name="info"
                     size="xs"
-                    class="text-gray-400 ml-1 flex"
+                    class="flex ml-1 text-gray-400"
                   />
                 </template>
                 <div v-html="$t('tradeGaslessToggle.tooltip')" />

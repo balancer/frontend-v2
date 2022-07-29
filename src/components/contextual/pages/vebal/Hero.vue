@@ -35,10 +35,12 @@ function navigateToGetVeBAL() {
   <div class="hero-container">
     <div class="hero-content">
       <div
-        class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
+        class="py-8 lg:py-4 px-4 lg:px-8 2xl:px-0 xl:pt-0 max-w-md hero-text"
       >
-        <p class="eyebrow font-medium">veBAL</p>
-        <h1 class="title mb-5 text-white">{{ $t('veBAL.hero.title') }}</h1>
+        <p class="font-medium eyebrow">veBAL</p>
+        <h1 class="mb-5 text-white title">
+          {{ $t('veBAL.hero.title') }}
+        </h1>
         <ul>
           <li
             v-for="(benefit, i) in benefits"
@@ -49,7 +51,7 @@ function navigateToGetVeBAL() {
           </li>
         </ul>
         <div class="flex mt-6">
-          <BalBtn @click="navigateToGetVeBAL" class="mr-3 hero-btn btn-gold">
+          <BalBtn class="mr-3 hero-btn btn-gold" @click="navigateToGetVeBAL">
             {{ $t('veBAL.hero.buttons.getVeBAL') }}
           </BalBtn>
           <BalBtn
@@ -71,8 +73,8 @@ function navigateToGetVeBAL() {
         </div>
       </div>
       <div class="coins">
-        <div class="coin group">
-          <div class="coin-wrapper w-full">
+        <div class="group coin">
+          <div class="w-full coin-wrapper">
             <BalImage
               class="graphic"
               width="330"
@@ -81,18 +83,22 @@ function navigateToGetVeBAL() {
               alt="BAL and WETH tokens"
             />
           </div>
-          <div class="caption font-semibold">
+          <div class="font-semibold caption">
             <p
-              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
             >
               {{ $t('veBAL.hero.tokens.balWETH') }}
             </p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1 font-medium">
+            <BalTooltip
+              icon-size="xs"
+              text-align="left"
+              class="mt-1 font-medium"
+            >
               {{ $t('veBAL.hero.tokenInfo.balWETH') }}
             </BalTooltip>
           </div>
         </div>
-        <div class="coin group">
+        <div class="group coin">
           <div class="coin-wrapper">
             <BalImage
               class="graphic"
@@ -102,18 +108,18 @@ function navigateToGetVeBAL() {
               alt="B-80BAL-20WETH LP token"
             />
           </div>
-          <div class="caption font-semibold">
+          <div class="font-semibold caption">
             <p
-              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
             >
               {{ $t('veBAL.hero.tokens.lpToken') }}
             </p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+            <BalTooltip icon-size="xs" text-align="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.lpToken') }}
             </BalTooltip>
           </div>
         </div>
-        <div class="coin group">
+        <div class="group coin">
           <div class="coin-wrapper">
             <BalImage
               class="graphic"
@@ -123,13 +129,13 @@ function navigateToGetVeBAL() {
               alt="veBAL token"
             />
           </div>
-          <div class="caption font-semibold">
+          <div class="font-semibold caption">
             <p
-              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
             >
               {{ $t('veBAL.hero.tokens.veBAL') }}
             </p>
-            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
+            <BalTooltip icon-size="xs" text-align="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.veBAL') }}
             </BalTooltip>
           </div>

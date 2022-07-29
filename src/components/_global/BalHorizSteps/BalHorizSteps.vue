@@ -67,8 +67,8 @@ function stateClasses(state: StepState): string {
         v-if="i !== 0"
         :class="['h-px bg-gray-100 dark:bg-gray-700', `w-${spacerWidth}`]"
       />
-      <BalTooltip :text="step.tooltip" width="44" textAlign="center">
-        <template v-slot:activator>
+      <BalTooltip :text="step.tooltip" width="44" text-align="center">
+        <template #activator>
           <div :class="['step', stateClasses(step.state)]">
             <BalIcon v-if="step.state === stepState.Success" name="check" />
             <img
@@ -82,7 +82,7 @@ function stateClasses(state: StepState): string {
               >
                 {{ i + 1 }}
               </span>
-              <SpinnerIcon class="h-8 w-8 animate-spin" />
+              <SpinnerIcon class="w-8 h-8 animate-spin" />
             </template>
             <span v-else>
               {{ i + 1 }}

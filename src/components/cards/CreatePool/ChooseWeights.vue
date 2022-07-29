@@ -314,7 +314,7 @@ function onAlertMountChange() {
 
 <template>
   <div ref="cardWrapper" class="mb-16">
-    <BalCard shadow="xl" noBorder>
+    <BalCard shadow="xl" no-border>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
           <span class="text-xs text-secondary">{{ networkName }}</span>
@@ -322,53 +322,54 @@ function onAlertMountChange() {
             {{ $t('createAPool.chooseTokenWeights') }}
           </h5>
         </BalStack>
-        <BalCard shadow="none" noPad>
+        <BalCard shadow="none" no-pad>
           <div ref="tokenWeightListWrapper">
             <div class="flex flex-col">
               <div
-                class="bg-gray-50 dark:bg-gray-850 w-full flex justify-between p-2 px-4"
+                class="flex justify-between p-2 px-4 w-full bg-gray-50 dark:bg-gray-850"
               >
                 <h6>{{ $t('token') }}</h6>
                 <h6>{{ $t('weight') }}</h6>
               </div>
               <div class="relative w-full">
                 <div
-                  class="absolute w-full"
                   v-for="(token, i) of seedTokens"
                   :key="`tokenweight-${token.id}`"
                   :ref="addTokenListElementRef"
+                  class="absolute w-full"
                 >
-                  <AnimatePresence isVisible>
+                  <AnimatePresence is-visible>
                     <TokenWeightInput
                       v-model:weight="seedTokens[i].weight"
                       v-model:address="seedTokens[i].tokenAddress"
+                      no-rules
+                      no-max
+                      :excluded-tokens="excludedTokens"
                       @update:weight="data => handleWeightChange(data, i)"
                       @update:address="data => handleAddressChange(data, i)"
                       @update:isLocked="data => handleLockedWeight(data, i)"
                       @delete="() => handleRemoveToken(i)"
-                      noRules
-                      noMax
-                      :excludedTokens="excludedTokens"
                     />
                   </AnimatePresence>
                 </div>
               </div>
 
-              <div class="p-3" ref="addTokenRowElement">
+              <div ref="addTokenRowElement" class="p-3">
                 <BalBtn
                   :disabled="maxTokenAmountReached"
-                  @click="addTokenToPool"
                   outline
                   :color="maxTokenAmountReached ? 'gray' : 'blue'"
                   size="sm"
-                  >{{ $t('addToken') }}
+                  @click="addTokenToPool"
+                >
+                  {{ $t('addToken') }}
                 </BalBtn>
               </div>
               <div
                 ref="totalsRowElement"
-                class="bg-gray-50 dark:bg-gray-850 w-full p-2 px-4"
+                class="p-2 px-4 w-full bg-gray-50 dark:bg-gray-850"
               >
-                <div class="w-full flex justify-between">
+                <div class="flex justify-between w-full">
                   <h6>{{ $t('totalAllocated') }}</h6>
                   <BalStack horizontal spacing="xs" align="center">
                     <h6 :class="weightColor">{{ totalAllocatedWeight }}%</h6>
@@ -376,7 +377,7 @@ function onAlertMountChange() {
                       v-if="
                         Number(totalWeight) > 100 || Number(totalWeight) <= 0
                       "
-                      class="text-red-500 mt-px"
+                      class="mt-px text-red-500"
                       name="alert-circle"
                       size="sm"
                     />
@@ -385,7 +386,7 @@ function onAlertMountChange() {
                 <BalProgressBar
                   :color="progressBarColor"
                   :width="totalAllocatedWeight"
-                  :bufferWidth="0"
+                  :buffer-width="0"
                   class="my-2"
                 />
               </div>
@@ -393,48 +394,48 @@ function onAlertMountChange() {
           </div>
         </BalCard>
         <AnimatePresence
-          :isVisible="showLiquidityAlert && isWalletReady"
+          :is-visible="showLiquidityAlert && isWalletReady"
+          unmount-instantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
-          unmountInstantly
         >
           <BalAlert
             :title="$t('createAPool.recommendedLiquidity')"
             type="warning"
-            >{{
+          >
+            {{
               $t('createAPool.youCanFundWithThisPoolWith', [
                 fNum2(totalLiquidity.toString(), FNumFormats.fiat),
               ])
-            }}</BalAlert
-          >
+            }}
+          </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="zeroWeightToken"
-          unmountInstantly
+          :is-visible="zeroWeightToken"
+          unmount-instantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
-          <BalAlert :title="$t('createAPool.zeroWeightTitle')" type="error">{{
-            $t('createAPool.zeroWeightInfo')
-          }}</BalAlert>
+          <BalAlert :title="$t('createAPool.zeroWeightTitle')" type="error">
+            {{ $t('createAPool.zeroWeightInfo') }}
+          </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
-          unmountInstantly
+          :is-visible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+          unmount-instantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
           <BalAlert
             :title="$t('createAPool.totalWeightAlertTitle')"
             type="error"
-            >{{
-              $t('createAPool.totalWeightAlert', [zeroWeightToken?.symbol])
-            }}</BalAlert
           >
+            {{ $t('createAPool.totalWeightAlert', [zeroWeightToken?.symbol]) }}
+          </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
-          unmountInstantly
+          :is-visible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
+          unmount-instantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
@@ -442,9 +443,9 @@ function onAlertMountChange() {
             <BalStack vertical spacing="xs">
               <span>{{ $t('tokenWarning') }}</span>
               <div>
-                <BalBtn @click="acceptCustomTokenDisclaimer" size="xs">{{
-                  $t('accept')
-                }}</BalBtn>
+                <BalBtn size="xs" @click="acceptCustomTokenDisclaimer">
+                  {{ $t('accept') }}
+                </BalBtn>
               </div>
             </BalStack>
           </BalAlert>
@@ -454,8 +455,9 @@ function onAlertMountChange() {
           color="gradient"
           :disabled="isProceedDisabled"
           @click="handleProceed"
-          >{{ walletLabel }}</BalBtn
         >
+          {{ walletLabel }}
+        </BalBtn>
       </BalStack>
     </BalCard>
   </div>

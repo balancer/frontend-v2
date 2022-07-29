@@ -66,9 +66,9 @@ const toPoolTokenInfo = computed(() =>
 </script>
 
 <template>
-  <Col3Layout offsetGutters>
+  <Col3Layout offset-gutters>
     <template #gutterLeft>
-      <MigrateExplainer :poolMigrationInfo="poolMigrationInfo" />
+      <MigrateExplainer :pool-migration-info="poolMigrationInfo" />
     </template>
 
     <BalLoadingBlock
@@ -82,16 +82,20 @@ const toPoolTokenInfo = computed(() =>
     />
     <PoolsInfo
       v-else
-      :fromPool="fromPool"
-      :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-      :poolMigrationInfo="poolMigrationInfo"
+      :from-pool="fromPool"
+      :to-pool="toPool"
+      :from-pool-token-info="fromPoolTokenInfo"
+      :to-pool-token-info="toPoolTokenInfo"
+      :pool-migration-info="poolMigrationInfo"
     />
 
     <template #gutterRight>
       <BalLoadingBlock v-if="toPoolLoading" class="h-64" />
-      <PoolStats v-else :pool="toPool" :poolMigrationInfo="poolMigrationInfo" />
+      <PoolStats
+        v-else
+        :pool="toPool"
+        :pool-migration-info="poolMigrationInfo"
+      />
     </template>
   </Col3Layout>
 </template>

@@ -231,7 +231,7 @@ watch(blockNumber, async () => {
   <transition>
     <BalActionSteps v-if="!withdrawalState.confirmed" :actions="actions" />
     <div v-else>
-      <ConfirmationIndicator :txReceipt="withdrawalState.receipt" />
+      <ConfirmationIndicator :tx-receipt="withdrawalState.receipt" />
       <BalBtn
         tag="router-link"
         :to="{ name: 'pool', params: { id: route.params.id } }"

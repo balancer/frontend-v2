@@ -43,20 +43,20 @@ const percentVeBAL = computed(() => {
 </script>
 
 <template>
-  <BalCard noPad shadow="none">
+  <BalCard no-pad shadow="none">
     <div class="p-4 w-full border-b dark:border-gray-900">
       <h6>
         {{ $t('getVeBAL.myVeBAL.title') }}
       </h6>
     </div>
-    <div class="-mt-2 p-10 flex items-center justify-center">
+    <div class="flex justify-center items-center p-10 -mt-2">
       <div class="text-2xl font-semibold">
         {{ fNum2(veBalBalance, FNumFormats.token) }}
         {{ veBalTokenInfo?.symbol }}
       </div>
     </div>
     <div class="flex justify-center border-t dark:border-gray-900">
-      <div class="border-r dark:border-gray-900 p-2 text-center w-1/2">
+      <div class="p-2 w-1/2 text-center border-r dark:border-gray-900">
         <div>
           {{
             veBalLockInfo?.hasExistingLock
@@ -71,7 +71,7 @@ const percentVeBAL = computed(() => {
           {{ $t('getVeBAL.myVeBAL.percentVeBAL') }}
         </div>
       </div>
-      <div class="p-3 text-center w-1/2">
+      <div class="p-3 w-1/2 text-center">
         <div>
           {{
             props.veBalLockInfo?.hasExistingLock

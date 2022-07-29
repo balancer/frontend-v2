@@ -90,7 +90,7 @@ function injectUnknownPrices() {
     :show="isVisible"
     @close="$emit('close')"
   >
-    <BalStack vertical isDynamic>
+    <BalStack vertical is-dynamic>
       <p>
         {{
           $t('createAPool.unknownTokenPriceWarning', [
@@ -102,26 +102,26 @@ function injectUnknownPrices() {
       <span class="font-semibold">
         {{ $t('createAPool.enterTokenPrice', [readableUnknownTokenSymbols]) }}
       </span>
-      <BalStack isDynamic vertical>
+      <BalStack is-dynamic vertical>
         <TokenInput
           v-for="(address, i) in unknownTokens"
           :key="i"
-          fixedToken
-          placeholder="$0.00"
           v-model:amount="unknownTokenPrices[address][FiatCurrency.usd]"
+          fixed-token
+          placeholder="$0.00"
           :address="address"
           :name="`initial-token-${
             seedTokens[getIndexOfUnknownToken(address)].tokenAddress
           }`"
-          noMax
-          hideFooter
+          no-max
+          hide-footer
           :rules="[isLessThanOrEqualTo(PRICE_CAP)]"
-          ignoreWalletBalance
+          ignore-wallet-balance
         />
       </BalStack>
-      <BalBtn @click="injectUnknownPrices" :disabled="isSubmitDisabled">{{
-        $t('submit')
-      }}</BalBtn>
+      <BalBtn :disabled="isSubmitDisabled" @click="injectUnknownPrices">
+        {{ $t('submit') }}
+      </BalBtn>
     </BalStack>
   </BalModal>
 </template>

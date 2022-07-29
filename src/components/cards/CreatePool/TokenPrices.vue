@@ -40,8 +40,8 @@ const hasUnknownPrice = computed(() =>
 </script>
 
 <template>
-  <BalCard noPad shadow="none" :noBorder="upToLargeBreakpoint">
-    <div class="p-4 dark:border-gray-600 border-b" v-if="!upToLargeBreakpoint">
+  <BalCard no-pad shadow="none" :no-border="upToLargeBreakpoint">
+    <div v-if="!upToLargeBreakpoint" class="p-4 border-b dark:border-gray-600">
       <BalStack horizontal spacing="sm" align="center">
         <h6 class="dark:text-gray-300">
           {{ $t('tokenPrices') }}
@@ -50,7 +50,7 @@ const hasUnknownPrice = computed(() =>
       </BalStack>
     </div>
     <div class="p-2 px-4">
-      <BalStack vertical isDynamic spacing="sm">
+      <BalStack vertical is-dynamic spacing="sm">
         <BalStack
           v-for="token in knownTokens"
           :key="`tokenPrice-known-${token}`"
@@ -73,12 +73,13 @@ const hasUnknownPrice = computed(() =>
       </BalStack>
       <BalStack
         vertical
-        isDynamic
+        is-dynamic
         spacing="xs"
         :class="{ 'mt-1': knownTokens.length }"
       >
         <button
-          @click="toggleUnknownPriceModal"
+          v-for="token in unknownTokens"
+          :key="`tokenPrice-unknown-${token}`"
           :class="[
             'mt-1',
             {
@@ -86,10 +87,9 @@ const hasUnknownPrice = computed(() =>
               'hover:text-blue-500': !hasUnknownPrice,
             },
           ]"
-          v-for="token in unknownTokens"
-          :key="`tokenPrice-unknown-${token}`"
+          @click="toggleUnknownPriceModal"
         >
-          <BalStack horizontal isDynamic justify="between">
+          <BalStack horizontal is-dynamic justify="between">
             <span
               :class="[
                 'w-1/2 text-left',
@@ -115,7 +115,7 @@ const hasUnknownPrice = computed(() =>
               align="center"
               class="w-3/4"
             >
-              <div class="w-full justify-end">
+              <div class="justify-end w-full">
                 <div class="-mr-1">
                   <span class="text-left">{{ $t('enterAPrice') }}</span>
                 </div>

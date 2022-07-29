@@ -58,11 +58,11 @@ function claimTx() {
     :label="tokenAddress ? $t('claim') : $t('claimAll')"
     color="gradient"
     size="sm"
-    :actionFn="claimTx"
-    :onConfirmFn="protocolRewardsQuery.refetch.value"
+    :action-fn="claimTx"
+    :on-confirm-fn="protocolRewardsQuery.refetch.value"
     action="claim"
     :summary="`${t('claim')} ${fNum2(fiatValue, FNumFormats.fiat)}`"
-    :confirmingLabel="$t('claiming')"
+    :confirming-label="$t('claiming')"
     v-bind="$attrs"
   />
 </template>

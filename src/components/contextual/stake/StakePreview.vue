@@ -161,7 +161,7 @@ function handleClose() {
       </BalCircle>
       <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
     </BalStack>
-    <BalCard shadow="none" noPad class="px-4 py-2">
+    <BalCard shadow="none" no-pad class="py-2 px-4">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
@@ -176,9 +176,11 @@ function handleClose() {
         />
       </BalStack>
     </BalCard>
-    <BalCard shadow="none" noPad>
-      <div class="border-b p-2">
-        <h6 class="text-sm">{{ $t('summary') }}</h6>
+    <BalCard shadow="none" no-pad>
+      <div class="p-2 border-b">
+        <h6 class="text-sm">
+          {{ $t('summary') }}
+        </h6>
       </div>
       <BalStack vertical spacing="xs" class="p-3">
         <BalStack horizontal justify="between">
@@ -199,7 +201,7 @@ function handleClose() {
                   : $t('staking.unstakeValueTooltip')
               "
               width="40"
-              textAlign="center"
+              text-align="center"
             />
           </BalStack>
         </BalStack>
@@ -212,7 +214,7 @@ function handleClose() {
             <BalTooltip
               :text="$t('staking.totalShareTooltip')"
               width="40"
-              textAlign="center"
+              text-align="center"
             />
           </BalStack>
         </BalStack>
@@ -221,13 +223,13 @@ function handleClose() {
     <BalActionSteps
       v-if="!isActionConfirmed"
       :actions="stakeActions"
-      :isLoading="isLoadingApprovalsForGauge"
+      :is-loading="isLoadingApprovalsForGauge"
       @success="handleSuccess"
     />
-    <BalStack vertical v-if="isActionConfirmed">
-      <ConfirmationIndicator :txReceipt="confirmationReceipt" />
-      <AnimatePresence :isVisible="isActionConfirmed">
-        <BalBtn @click="handleClose" color="gray" outline block>
+    <BalStack v-if="isActionConfirmed" vertical>
+      <ConfirmationIndicator :tx-receipt="confirmationReceipt" />
+      <AnimatePresence :is-visible="isActionConfirmed">
+        <BalBtn color="gray" outline block @click="handleClose">
           {{ $t('close') }}
         </BalBtn>
       </AnimatePresence>

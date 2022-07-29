@@ -59,13 +59,13 @@ const submissionDisabled = computed(() => {
 </script>
 
 <template>
-  <BalCard shadow="xl" exposeOverflow noBorder>
+  <BalCard shadow="xl" expose-overflow no-border>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-secondary leading-none">
+        <div class="text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ $t('unlockVeBAL.unlockForm.title') }}
           </h4>
@@ -74,10 +74,10 @@ const submissionDisabled = computed(() => {
     </template>
 
     <LockedAmount
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :totalLpTokens="totalLpTokens"
-      :fiatTotalLpTokens="fiatTotalLpTokens"
+      :lockable-pool="lockablePool"
+      :lockable-pool-token-info="lockablePoolTokenInfo"
+      :total-lp-tokens="totalLpTokens"
+      :fiat-total-lp-tokens="fiatTotalLpTokens"
     />
 
     <div class="mt-6">
@@ -102,11 +102,11 @@ const submissionDisabled = computed(() => {
   <teleport to="#modal">
     <UnlockPreviewModal
       v-if="showPreviewModal"
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :veBalLockInfo="veBalLockInfo"
-      :totalLpTokens="totalLpTokens"
-      :fiatTotalLpTokens="fiatTotalLpTokens"
+      :lockable-pool="lockablePool"
+      :lockable-pool-token-info="lockablePoolTokenInfo"
+      :ve-bal-lock-info="veBalLockInfo"
+      :total-lp-tokens="totalLpTokens"
+      :fiat-total-lp-tokens="fiatTotalLpTokens"
       @close="showPreviewModal = false"
     />
   </teleport>
