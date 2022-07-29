@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run prettier:fix
+npx pretty-quick --staged
 # npm run lint:fix -- --cache
