@@ -63,6 +63,8 @@ jobs:
       run: npm install -g npm@7 && npm ci
     - name: Run lint
       run: npm run lint
+    - name: Run prettier
+      run: npm run prettier
         
   Test:
     runs-on: ubuntu-latest
