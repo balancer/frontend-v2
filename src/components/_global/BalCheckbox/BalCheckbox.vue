@@ -70,7 +70,7 @@ export default defineComponent({
       errors.value = [];
       props.rules.forEach((rule: RuleFunction) => {
         const result = rule(val);
-        if (typeof result === 'string') errors.value.push(result);
+        if (typeof result === 'string') errors.value.push(result)
       });
     }
 
@@ -79,7 +79,7 @@ export default defineComponent({
       validate(event.target.checked);
     }
 
-    const sizeClasses = computed(() => {
+    const sizeClasses = computed((a) => {
       switch (props.size) {
         case 'sm':
           return 'w-4 h-4 -mt-px';
