@@ -1,4 +1,5 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { RelayerAuthorization } from '@balancer-labs/sdk';
+import { parseFixed } from '@ethersproject/bignumber';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -13,6 +14,7 @@ import useTransactions from '../useTransactions';
 import useUserSettings from '../useUserSettings';
 
 const HALF_HOUR = 30 * 60 * 1000;
+const MAX_GAS_LIMIT = 8e6;
 
 export function usePoolMigration(amount: string, tokens: PoolToken[]) {
   /**
@@ -58,53 +60,31 @@ export function usePoolMigration(amount: string, tokens: PoolToken[]) {
    */
   async function getUserSignature(): Promise<string> {
     try {
-      const domain = {
-        name: 'Balancer V2 Vault',
-        version: '1',
-        chainId: configService.network.chainId,
-        verifyingContract: vaultAddress
-      };
-
-      const types = {
-        SetRelayerApproval: [
-          { name: 'calldata', type: 'bytes' },
-          { name: 'sender', type: 'address' },
-          { name: 'nonce', type: 'uint256' },
-          { name: 'deadline', type: 'uint256' }
-        ]
-      };
-
-      const relayerAddress = configService.network.addresses.batchRelayer;
+      const deadline = new Date().getTime() + HALF_HOUR;
       const vaultInstance = balancerContractsService.vault?.instance;
       const nonce = await vaultInstance.getNextNonce(account.value);
+      const relayerAddress = configService.network.addresses.batchRelayer;
       const calldata = vaultInstance.interface.encodeFunctionData(
         'setRelayerApproval',
         [account.value, relayerAddress, true]
       );
 
-      console.log('nonce', nonce);
-
-      const values = {
+      const _signature = await RelayerAuthorization.signSetRelayerApprovalAuthorization(
+        vaultInstance,
+        getSigner(),
+        relayerAddress,
         calldata,
-        nonce,
-        sender: relayerAddress,
-        deadline: new Date().getTime() + HALF_HOUR
-      };
+        deadline,
+        nonce
+      );
 
-      console.log('values', values);
+      const encodedSign = RelayerAuthorization.encodeCalldataAuthorization(
+        '0x',
+        deadline,
+        _signature
+      );
 
-      const signer = getSigner();
-      signature.value = await signer._signTypedData(domain, types, values);
-      console.log('signature', signature);
-
-      await txListener(signature as any, {
-        onTxConfirmed: () => {
-          //
-        },
-        onTxFailed: () => {
-          //
-        }
-      });
+      signature.value = encodedSign;
       return signature.value;
     } catch (error) {
       console.error(error);
@@ -112,24 +92,53 @@ export function usePoolMigration(amount: string, tokens: PoolToken[]) {
     }
   }
 
-  async function approveMigration(limit = '0'): Promise<any> {
-    console.log('args', amount, tokens, signature.value);
-    const decimals = 10;
-    const _tokens: any[] = tokens.map(token => ({
-      ...token,
-      balance: BigNumber.from(token.balance)
-    }));
-    console.log('_tokens', _tokens);
-    const approve = balancer.zaps.migrations.bbaUsd(
-      account.value,
-      amount,
-      limit,
-      signature.value,
-      false,
-      _tokens
-    );
+  async function approveMigration(limit = 0): Promise<any> {
+    const signer = getSigner();
+    const signerAddress = account.value;
+    const staked = false;
+    const gasLimit = MAX_GAS_LIMIT;
 
-    return approve;
+    const _tokens: any[] = tokens
+      .filter(token => token.symbol !== 'bb-a-USD')
+      .map(token => parseFixed(token.balance, 18).toString());
+
+    console.log('_tije', _tokens);
+    console.log('signature,', signature.value);
+    let query = balancer.zaps.migrations.bbaUsd(
+      signerAddress,
+      amount,
+      limit.toString(),
+      staked,
+      _tokens,
+      signature.value
+    );
+    console.log('query', query);
+    const staticResult = await signer.call({
+      to: query.to,
+      data: query.data,
+      gasLimit
+    });
+    console.log('staticResult', staticResult);
+    const expectedBpts = query.decode(staticResult, staked);
+    console.log('expectedBpts', expectedBpts);
+    query = balancer.zaps.migrations.bbaUsd(
+      signerAddress,
+      amount.toString(),
+      limit ? limit.toString() : expectedBpts.bbausd2AmountOut,
+      staked,
+      _tokens,
+      signature.value
+    );
+    console.log('approve', query);
+
+    const transaction = await signer.sendTransaction({
+      to: query.to,
+      data: query.data,
+      gasLimit
+    });
+    console.log('transaction', transaction);
+    return transaction;
   }
+
   return { getUserSignature, approveMigration, actions };
 }

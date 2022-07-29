@@ -31,11 +31,6 @@ type Props = {
 const props = defineProps<Props>();
 
 /**
- * STATE
- */
-const showPreviewModal = ref(false);
-
-/**
  * COMPOSABLES
  */
 const { t } = useI18n();
@@ -47,6 +42,30 @@ const migrateMath = useMigrateMath(fromPool, toPool);
 const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
 
 const hasValue = computed(() => hasBpt.value);
+
+/**
+ * STATE
+ */
+const showPreviewModal = ref(false);
+const migrateStakeChooseArr = ref({
+  staked: {
+    title: t('migratePool.poolInfo.stakedLabel'),
+    value: true,
+    amount: '500'
+  },
+  unstaked: {
+    title: t('migratePool.poolInfo.unstakedLabel'),
+    value: true,
+    amount: '500'
+  }
+});
+
+/**
+ * COMPUTED
+ */
+const hasStakedUnstakedLiquidity = computed(() => {
+  return false;
+});
 
 /**
  * CALLBACKS
@@ -75,6 +94,30 @@ onBeforeMount(async () => {
         </div>
       </div>
     </template>
+    <div class="pb-3" v-if="hasStakedUnstakedLiquidity">
+      {{ t('migratePool.poolInfo.stakedUnstaked') }}
+      <BalCheckbox
+        v-for="(item, index) in Object.values(migrateStakeChooseArr)"
+        :key="index"
+        class="pt-2"
+        @update:modelValue="item.value = !item.value"
+        :modelValue="item.value"
+        name="areFeesGovernanceManaged"
+        size="lg"
+        noMargin
+      >
+        <template #label>
+          <div class="flex flex-col">
+            <div>
+              {{ item.title }}
+            </div>
+            <div>
+              {{ item.amount }}
+            </div>
+          </div>
+        </template>
+      </BalCheckbox>
+    </div>
     <div class="mb-6">
       <div class="text-gray-500">{{ $t('yourBalanceInPool') }}</div>
       <div class="font-semibold text-lg">

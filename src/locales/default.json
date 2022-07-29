@@ -199,6 +199,11 @@
         "title": "Boosted pool stats"
       }
     },
+    "poolInfo": {
+      "stakedUnstaked": "You have both unstaked and staked liquidity in this pool. You can migrate both or just one.",
+      "stakedLabel": "Staked liquidity",
+      "unstakedLabel": "Unstaked liquidity"
+    },
     "previewModal": {
       "titles": {
         "default": "Migrate preview",

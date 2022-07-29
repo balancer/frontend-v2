@@ -1,7 +1,7 @@
 <template>
   <div :class="['bal-checkbox', wrapperClasses]">
     <div class="flex">
-      <div>
+      <div class="flex items-center">
         <input
           type="checkbox"
           :name="name"

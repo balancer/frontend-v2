@@ -85,7 +85,10 @@ const { getProvider, explorerLinks, account, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { slippageScaled } = useUserSettings();
-const { actions } = usePoolMigration(props.fiatTotal, props.fromPool.tokens);
+const { actions } = usePoolMigration(
+  props.math.bptBalanceScaled.value,
+  props.fromPool.tokens
+);
 
 /**
  * COMPUTED

@@ -18,7 +18,7 @@ export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`
     ]
-  },
+  }
   // {
   //   type: PoolMigrationType.AAVE_BOOSTED_POOL,
   //   fromPoolId: GOERLY_stabal3_address,

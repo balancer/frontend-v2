@@ -178,7 +178,7 @@ async function handleTransaction(
   state: TransactionActionState
 ): Promise<void> {
   console.log('handleTransactionED');
-  currentActionIndex.value += 1;
+  // currentActionIndex.value += 1;
 
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
