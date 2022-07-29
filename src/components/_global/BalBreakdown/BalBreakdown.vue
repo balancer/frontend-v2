@@ -20,6 +20,8 @@ const props = withDefaults(defineProps<Props>(), {
   title: 'Title',
   hideItems: false,
   size: 'md',
+  offsetClassOverrides: '',
+  initVertBarClassOverrides: '',
 });
 
 /**

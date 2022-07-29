@@ -29,12 +29,12 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  emits: ['update:modelValue'],
-
   props: {
     modelValue: { type: [String, Number], required: true },
     options: { type: Array as PropType<Option[]>, required: true },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit, attrs }) {
     // COMPUTED

@@ -35,6 +35,13 @@ module.exports = {
     // regular html elements, but many component's names are already single
     // word, so had to turn this off.
     'vue/multi-word-component-names': 'off',
+    'vue/v-on-event-hyphenation': [
+      'error',
+      'always',
+      {
+        autofix: true,
+      },
+    ],
   },
 
   overrides: [

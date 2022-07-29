@@ -33,7 +33,7 @@ type AreaStyle = {
 type Props = {
   data: ChartData[];
   chartType: string;
-  onAxisMoved?: (value: string | number) => void;
+  onAxisMoved?: undefined | ((value: string | number) => void);
   isLoading?: boolean;
   hideYAxis?: boolean;
   hideXAxis?: boolean;
@@ -77,6 +77,8 @@ const props = withDefaults(defineProps<Props>(), {
   showTooltip: true,
   showTooltipLayer: true,
   useMinMax: false,
+  onAxisMoved: undefined,
+  xAxisMinInterval: undefined,
 });
 
 const chartInstance = ref<echarts.ECharts>();
@@ -429,7 +431,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       autoresize
       :update-options="{ replaceMerge: 'series' }"
       :style="[styleOverrides]"
-      @updateAxisPointer="handleAxisMoved"
+      @update-axis-pointer="handleAxisMoved"
     />
   </div>
 </template>

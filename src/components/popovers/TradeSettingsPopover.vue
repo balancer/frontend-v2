@@ -38,7 +38,7 @@
         <BalBtnGroup
           v-model="ethereumTxType"
           :options="ethereumTxTypeOptions"
-          @update:modelValue="setEthereumTxType"
+          @update:model-value="setEthereumTxType"
         />
       </div>
     </div>

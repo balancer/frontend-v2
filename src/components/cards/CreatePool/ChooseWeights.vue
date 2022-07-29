@@ -347,7 +347,7 @@ function onAlertMountChange() {
                       :excluded-tokens="excludedTokens"
                       @update:weight="data => handleWeightChange(data, i)"
                       @update:address="data => handleAddressChange(data, i)"
-                      @update:isLocked="data => handleLockedWeight(data, i)"
+                      @update:is-locked="data => handleLockedWeight(data, i)"
                       @delete="() => handleRemoveToken(i)"
                     />
                   </AnimatePresence>

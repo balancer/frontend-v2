@@ -166,7 +166,7 @@ async function onChangeFeeController(val: string) {
             <BalBtnGroup
               v-model="initialFee"
               :options="feeOptions"
-              @update:modelValue="onFixedInput"
+              @update:model-value="onFixedInput"
             />
             <div>
               <div :class="['custom-input', customInputClasses]">
@@ -210,7 +210,7 @@ async function onChangeFeeController(val: string) {
             size="sm"
             :label="$t('createAPool.governanceFees')"
             no-margin
-            @update:modelValue="onChangeFeeManagementType"
+            @update:model-value="onChangeFeeManagementType"
           />
           <BalTooltip
             :text="$t('createAPool.governanceFeesTooltip')"
@@ -226,7 +226,7 @@ async function onChangeFeeController(val: string) {
             v-model="feeType"
             value="fixed"
             name="feeManagementOptions"
-            @update:modelValue="onChangeFeeType"
+            @update:model-value="onChangeFeeType"
           >
             <template #label>
               <span>
@@ -238,7 +238,7 @@ async function onChangeFeeController(val: string) {
             v-model="feeType"
             value="dynamic"
             name="feeManagementOptions"
-            @update:modelValue="onChangeFeeType"
+            @update:model-value="onChangeFeeType"
           >
             <template #label>
               <span>
@@ -255,7 +255,7 @@ async function onChangeFeeController(val: string) {
             v-model="feeController"
             value="self"
             name="addressOption"
-            @update:modelValue="onChangeFeeController"
+            @update:model-value="onChangeFeeController"
           >
             <template #label>
               <span>
@@ -267,7 +267,7 @@ async function onChangeFeeController(val: string) {
             v-model="feeController"
             value="other"
             name="addressOption"
-            @update:modelValue="onChangeFeeController"
+            @update:model-value="onChangeFeeController"
           >
             <template #label>
               <span>

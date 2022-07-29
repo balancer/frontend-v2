@@ -142,8 +142,8 @@ onBeforeMount(() => {
           :min="slider.min"
           tooltip="none"
           :disabled="!hasBpt"
-          @update:modelValue="handleSliderChange"
-          @dragEnd="handleSliderEnd"
+          @update:model-value="handleSliderChange"
+          @drag-end="handleSliderEnd"
         />
       </div>
     </div>

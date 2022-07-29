@@ -305,7 +305,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
           :math="investMath"
           :token-addresses="tokenAddresses"
           @close="showInvestPreview = false"
-          @showStakeModal="showStakeModal = true"
+          @show-stake-modal="showStakeModal = true"
         />
         <StakePreviewModal
           :pool="pool"

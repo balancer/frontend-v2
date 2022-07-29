@@ -126,7 +126,7 @@
       <BalBtnGroup
         v-model="ethereumTxType"
         :options="ethereumTxTypeOptions"
-        @update:modelValue="setEthereumTxType"
+        @update:model-value="setEthereumTxType"
       />
     </div>
     <div
@@ -145,7 +145,7 @@
       <BalBtnGroup
         v-model="appTradeInterface"
         :options="tradeInterfaceOptions"
-        @update:modelValue="setTradeInterface"
+        @update:model-value="setTradeInterface"
       />
       <div class="flex mt-1" />
     </div>

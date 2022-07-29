@@ -140,8 +140,8 @@ watchEffect(() => {
     input-align-right
     @blur="emit('blur', $event)"
     @input="onInput"
-    @update:modelValue="emit('update:weight', $event)"
-    @update:isValid="emit('update:isValid', $event)"
+    @update:model-value="emit('update:weight', $event)"
+    @update:is-valid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template #prepend>
@@ -150,7 +150,7 @@ watchEffect(() => {
         :fixed="fixedToken"
         class="mr-2"
         :excluded-tokens="excludedTokens"
-        @update:modelValue="emit('update:address', $event)"
+        @update:model-value="emit('update:address', $event)"
       />
     </template>
     <template #append>

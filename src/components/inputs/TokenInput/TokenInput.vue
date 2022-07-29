@@ -228,8 +228,8 @@ watchEffect(() => {
     input-align-right
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:modelValue="emit('update:amount', $event)"
-    @update:isValid="emit('update:isValid', $event)"
+    @update:model-value="emit('update:amount', $event)"
+    @update:is-valid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template #prepend>
@@ -241,7 +241,7 @@ watchEffect(() => {
           :options="options"
           class="mr-2"
           :excluded-tokens="excludedTokens"
-          @update:modelValue="emit('update:address', $event)"
+          @update:model-value="emit('update:address', $event)"
         />
       </slot>
     </template>

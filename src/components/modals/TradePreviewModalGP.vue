@@ -168,7 +168,7 @@
         "
         :action-label="$t('priceUpdatedAlert.actionLabel')"
         block
-        @actionClick="cofirmPriceUpdate"
+        @action-click="cofirmPriceUpdate"
       />
       <div
         v-if="totalRequiredTransactions > 1"
@@ -395,7 +395,7 @@
         :description="trading.submissionError.value"
         block
         :action-label="$t('tradeSubmissionError.actionLabel')"
-        @actionClick="trading.resetSubmissionError"
+        @action-click="trading.resetSubmissionError"
       />
     </div>
     <TradeRoute

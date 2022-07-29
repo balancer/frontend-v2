@@ -142,7 +142,7 @@ function handleModalClose() {
         :no-pools-label="noPoolsLabel"
         :hidden-columns="hiddenColumns"
         show-pool-shares
-        @triggerStake="handleStake"
+        @trigger-stake="handleStake"
       />
     </BalStack>
     <StakePreviewModal

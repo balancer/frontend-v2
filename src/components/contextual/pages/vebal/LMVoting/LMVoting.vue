@@ -174,7 +174,7 @@ function handleVoteSuccess() {
     :no-pools-label="$t('noInvestments')"
     show-pool-shares
     class="mb-8"
-    @clickedVote="setActiveGaugeVote"
+    @clicked-vote="setActiveGaugeVote"
   />
   <teleport to="#modal">
     <GaugeVoteModal

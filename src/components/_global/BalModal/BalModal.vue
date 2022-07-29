@@ -59,7 +59,7 @@ defineExpose({ hide });
 
 <template>
   <div v-if="show" class="bal-modal" @keyup.esc="hide">
-    <transition name="overlay" appear @afterEnter="showContent = true">
+    <transition name="overlay" appear @after-enter="showContent = true">
       <div class="modal-bg" @click="hide">
         <div v-if="fireworks" class="fireworks">
           <div class="before" />
@@ -68,7 +68,7 @@ defineExpose({ hide });
       </div>
     </transition>
     <div class="content-container">
-      <Transition name="modal" @afterLeave="$emit('close')">
+      <Transition name="modal" @after-leave="$emit('close')">
         <div v-if="showContent" class="content">
           <BalCard
             :title="title"

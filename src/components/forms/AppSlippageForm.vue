@@ -85,7 +85,7 @@ watch(
     <BalBtnGroup
       v-model="state.fixedSlippage"
       :options="options"
-      @update:modelValue="onFixedInput"
+      @update:model-value="onFixedInput"
     />
     <div :class="['custom-input', customInputClasses]">
       <input

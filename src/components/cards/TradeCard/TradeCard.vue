@@ -17,7 +17,7 @@
         v-model:exactIn="exactIn"
         :price-impact="priceImpact"
         class="mb-4"
-        @amountChange="handleAmountChange"
+        @amount-change="handleAmountChange"
       />
       <BalAlert
         v-if="error"
@@ -28,7 +28,7 @@
         :description="error.body"
         :action-label="error.label"
         block
-        @actionClick="handleErrorButtonClick"
+        @action-click="handleErrorButtonClick"
       />
       <BalBtn
         v-if="poolsLoading || isLoadingApprovals"

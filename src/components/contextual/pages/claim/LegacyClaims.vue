@@ -310,7 +310,7 @@ async function claimAvailableRewards() {
         :description="claimError.description"
         block
         action-label="Dismiss"
-        @actionClick="claimError = null"
+        @action-click="claimError = null"
       />
     </div>
     <div v-if="!isAirdrop">

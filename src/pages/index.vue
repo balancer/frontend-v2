@@ -78,7 +78,7 @@ function navigateToCreatePool() {
         :column-states="dataStates"
         :is-paginated="true"
         :is-loading="isInvestmentPoolsTableLoading"
-        @loadMore="loadMore"
+        @load-more="loadMore"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
         <FeaturedProtocols />

@@ -17,9 +17,9 @@ const { setSidebarOpen } = useSidebar();
 </script>
 
 <template>
-  <Transition name="overlay" appear @afterEnter="showSidebar = true">
+  <Transition name="overlay" appear @after-enter="showSidebar = true">
     <div class="sidebar-overlay">
-      <Transition name="sidebar" @afterLeave="setSidebarOpen(false)">
+      <Transition name="sidebar" @after-leave="setSidebarOpen(false)">
         <div v-if="showSidebar" class="app-sidebar">
           <SidebarContent @close="showSidebar = false" />
         </div>

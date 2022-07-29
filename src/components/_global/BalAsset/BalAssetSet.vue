@@ -46,13 +46,14 @@ export default defineComponent({
   components: {
     BalAsset,
   },
-  emits: ['click'],
   props: {
     addresses: {
       type: Array as PropType<string[]>,
+      default: undefined,
     },
     logoURIs: {
       type: Array as PropType<string[]>,
+      default: undefined,
     },
     balAssetProps: {
       type: Object as PropType<BalAssetProps>,
@@ -74,6 +75,7 @@ export default defineComponent({
       type: Boolean,
     },
   },
+  emits: ['click'],
 
   setup(props) {
     /**

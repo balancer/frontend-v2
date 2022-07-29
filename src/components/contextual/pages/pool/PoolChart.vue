@@ -424,9 +424,9 @@ function setCurrentChartValue(payload: {
       :chart-type="chartData.chartType"
       :show-tooltip-layer="false"
       :hide-y-axis="isMobile"
-      @setCurrentChartValue="setCurrentChartValue"
-      @mouseLeaveEvent="isFocusedOnChart = false"
-      @mouseEnterEvent="isFocusedOnChart = true"
+      @set-current-chart-value="setCurrentChartValue"
+      @mouse-leave-event="isFocusedOnChart = false"
+      @mouse-enter-event="isFocusedOnChart = true"
     />
   </div>
   <BalBlankSlate v-else class="h-96">

@@ -155,7 +155,7 @@ onBeforeMount(() => {
       class="mt-4"
       block
       action-label="Dismiss"
-      @actionClick="setError(null)"
+      @action-click="setError(null)"
     />
 
     <div class="mt-4">

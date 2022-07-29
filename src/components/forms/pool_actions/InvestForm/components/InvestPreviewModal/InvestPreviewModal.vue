@@ -156,7 +156,7 @@ function handleShowStakeModal() {
       :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"
-      @showStakeModal="handleShowStakeModal"
+      @show-stake-modal="handleShowStakeModal"
     />
   </BalModal>
 </template>

@@ -21,7 +21,7 @@
         "
         :effective-price-message="trading.effectivePriceMessage"
         class="mb-4"
-        @amountChange="trading.handleAmountChange"
+        @amount-change="trading.handleAmountChange"
       />
       <BalAlert
         v-if="error"
@@ -32,7 +32,7 @@
         :description="error.body"
         :action-label="error.label"
         block
-        @actionClick="handleErrorButtonClick"
+        @action-click="handleErrorButtonClick"
       />
       <BalAlert
         v-else-if="warning"
