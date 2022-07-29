@@ -137,7 +137,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId
+      to: POOL_MIGRATIONS_MAP[PoolMigrationType.BBAUSD_POOL].toPoolId
     },
     query: {
       returnRoute: 'pool',

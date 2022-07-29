@@ -199,11 +199,38 @@
         "title": "Boosted pool stats"
       }
     },
+    "bbaUSDPool": {
+      "whyMigrate": {
+        "title": "Why migrate?",
+        "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."
+      },
+      "migrateToPool": {
+        "title": "Migrate to a boosted pool"
+      },
+      "poolStats": {
+        "title": "Boosted pool stats"
+      }
+    },
+    "stabal3Pool": {
+      "whyMigrate": {
+        "title": "Why migrate?",
+        "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."
+      },
+      "migrateToPool": {
+        "title": "Migrate to a boosted pool"
+      },
+      "poolStats": {
+        "title": "Boosted pool stats"
+      }
+    },
     "poolInfo": {
       "stakedUnstaked": "You have both unstaked and staked liquidity in this pool. You can migrate both or just one.",
       "stakedLabel": "Staked liquidity",
       "unstakedLabel": "Unstaked liquidity"
     },
+    "approve": "Approve migration",
+    "approving": "Approving migration",
+    "confirming": "Confirming migration",
     "previewModal": {
       "titles": {
         "default": "Migrate preview",
@@ -1180,6 +1207,7 @@
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
     "approveRelayer": "Approve {0} relayer",
+    "approveMigration": "Approve {0} migration",
     "createPool": "Create pool",
     "fundPool": "Fund pool",
     "investInPool": "{0} in {1}",

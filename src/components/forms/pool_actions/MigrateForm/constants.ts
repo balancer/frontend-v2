@@ -11,23 +11,23 @@ const GOERLY_stabal3_address =
 
 export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
-    type: PoolMigrationType.AAVE_BOOSTED_POOL,
+    type: PoolMigrationType.BBAUSD_POOL,
     fromPoolId: GOERLY_bbaUSD1_address,
     toPoolId: GOERLY_bbaUSD1_address,
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`
     ]
+  },
+  {
+    type: PoolMigrationType.STABAL3_POOL,
+    fromPoolId: GOERLY_stabal3_address,
+    toPoolId: GOERLY_bbaUSD1_address,
+    riskI18nLabels: [
+      `${riskI18nLabelPrefix}.loseUSDPeg`,
+      `${riskI18nLabelPrefix}.aaveStableExploit`
+    ]
   }
-  // {
-  //   type: PoolMigrationType.AAVE_BOOSTED_POOL,
-  //   fromPoolId: GOERLY_stabal3_address,
-  //   toPoolId: GOERLY_stabal3_address,
-  //   riskI18nLabels: [
-  //     `${riskI18nLabelPrefix}.loseUSDPeg`,
-  //     `${riskI18nLabelPrefix}.aaveStableExploit`
-  //   ]
-  // }
 ];
 
 export const POOL_MIGRATIONS_MAP = keyBy(POOL_MIGRATIONS, 'type');

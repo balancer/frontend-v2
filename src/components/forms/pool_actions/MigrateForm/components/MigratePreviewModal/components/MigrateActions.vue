@@ -5,7 +5,7 @@ import {
   TransactionResponse
 } from '@ethersproject/abstract-provider';
 import { BigNumber, BigNumberish } from 'ethers';
-import { computed, onBeforeMount, reactive, ref, toRefs, watch } from 'vue';
+import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { usePoolMigration } from '@/composables/pools/usePoolMigration';
@@ -92,8 +92,9 @@ const relayerApproval = useRelayerApprovalQuery(relayerAddress);
 
 const { actions } = usePoolMigration(
   props.math.bptBalanceScaled.value,
-  props.fromPool.tokens,
-  relayerApproval.data
+  props.fromPool,
+  relayerApproval.data,
+
 );
 
 /**
