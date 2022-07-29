@@ -146,7 +146,6 @@ export class StakingRewardsService {
       const range = getAprRange(gaugeBALApr || '0'.toString());
       return [poolId, { ...range }];
     });
-
     return Object.fromEntries(aprs);
   }
 

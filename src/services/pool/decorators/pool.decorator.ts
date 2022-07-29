@@ -4,7 +4,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { Pool, RawOnchainPoolDataMap } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import {
   GaugeBalAprs,
@@ -30,39 +30,56 @@ export class PoolDecorator {
   ) {}
 
   public async decorate(
-    gauges: SubgraphGauge[],
+    gauges: SubgraphGauge[] | undefined,
     prices: TokenPrices,
     currency: FiatCurrency,
-    tokens: TokenInfoMap
+    tokens: TokenInfoMap,
+    includeAprs = true
   ): Promise<Pool[]> {
-    const [
-      protocolFeePercentage,
-      gaugeBALAprs,
-      gaugeRewardTokenAprs,
-      poolSnapshots,
-      rawOnchainDataMap
-    ] = await this.getData(prices, gauges, tokens);
+    const processedPools = this.pools.map(pool => {
+      const poolService = new this.poolServiceClass(pool);
+      poolService.removePreMintedBPT();
+      poolService.setTotalLiquidity(prices, currency, tokens);
+      poolService.setUnwrappedTokens();
+      return poolService.pool;
+    });
 
-    const promises = this.pools.map(async pool => {
+    const poolMulticaller = new PoolMulticaller(processedPools);
+
+    const [
+      poolSnapshots,
+      rawOnchainDataMap,
+      [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs]
+    ] = await Promise.all([
+      this.getSnapshots(),
+      poolMulticaller.fetch(),
+      this.getData(prices, gauges, tokens, processedPools, includeAprs)
+    ]);
+
+    const setAprCondition =
+      gaugeBALAprs &&
+      gaugeRewardTokenAprs &&
+      typeof protocolFeePercentage === 'number';
+
+    const promises = processedPools.map(async pool => {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
 
-      poolService.removePreMintedBPT();
-      await poolService.setLinearPools();
       poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
-      poolService.setTotalLiquidity(prices, currency, tokens);
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
-      poolService.setUnwrappedTokens();
+      await poolService.setLinearPools();
 
-      await poolService.setAPR(
-        poolSnapshot,
-        prices,
-        currency,
-        protocolFeePercentage,
-        gaugeBALAprs[pool.id],
-        gaugeRewardTokenAprs[pool.id]
-      );
+      if (setAprCondition) {
+        await poolService.setAPR(
+          poolSnapshot,
+          prices,
+          currency,
+          protocolFeePercentage,
+          gaugeBALAprs[pool.id],
+          gaugeRewardTokenAprs[pool.id]
+        );
+      }
 
       return poolService.pool;
     });
@@ -78,7 +95,7 @@ export class PoolDecorator {
    */
   private async getSnapshots(): Promise<Pool[]> {
     const currentBlock = await this.providerService.getBlockNumber();
-    const blockNumber = await getTimeTravelBlock(currentBlock);
+    const blockNumber = getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: this.pools.map(pool => pool.id) };
     try {
@@ -97,28 +114,29 @@ export class PoolDecorator {
    */
   public async getData(
     prices: TokenPrices,
-    gauges: SubgraphGauge[],
-    tokens: TokenInfoMap
+    gauges: SubgraphGauge[] | undefined,
+    tokens: TokenInfoMap,
+    pools: Pool[],
+    includeAprs = true
   ): Promise<
-    [number, GaugeBalAprs, GaugeRewardTokenAprs, Pool[], RawOnchainPoolDataMap]
+    [number, GaugeBalAprs, GaugeRewardTokenAprs] | [null, null, null]
   > {
-    const poolMulticaller = new PoolMulticaller(this.pools);
-
+    if (!includeAprs || !gauges) {
+      return [null, null, null];
+    }
     return await Promise.all([
       this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
-      await this.stakingRewards.getGaugeBALAprs({
-        pools: this.pools,
+      this.stakingRewards.getGaugeBALAprs({
+        pools,
         prices,
         gauges
       }),
-      await this.stakingRewards.getRewardTokenAprs({
-        pools: this.pools,
+      this.stakingRewards.getRewardTokenAprs({
+        pools,
         prices,
         gauges,
         tokens
-      }),
-      await this.getSnapshots(),
-      await poolMulticaller.fetch()
+      })
     ]);
   }
 }

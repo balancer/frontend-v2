@@ -6,14 +6,16 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolAPRs } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
+  poolApr: PoolAPRs;
   loading?: boolean;
+  loadingApr?: boolean;
 };
 
 /**
@@ -33,7 +35,7 @@ const { t } = useI18n();
  * COMPUTED
  */
 const aprLabel = computed((): string => {
-  const poolAPRs = props.pool?.apr;
+  const poolAPRs = props.poolApr;
   if (!poolAPRs) return '0';
 
   return totalAprLabel(poolAPRs, props.pool.boost);
@@ -46,25 +48,29 @@ const stats = computed(() => {
     {
       id: 'poolValue',
       label: t('poolValue'),
-      value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat)
+      value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat),
+      loading: props.loading
     },
     {
       id: 'volumeTime',
       label: t('volumeTime', ['24h']),
-      value: fNum2(props.pool.volumeSnapshot || '0', FNumFormats.fiat)
+      value: fNum2(props.pool.volumeSnapshot || '0', FNumFormats.fiat),
+      loading: props.loading
     },
     {
       id: 'feesTime',
       label: t('feesTime', ['24h']),
-      value: fNum2(props.pool.feesSnapshot || '0', FNumFormats.fiat)
+      value: fNum2(props.pool.feesSnapshot || '0', FNumFormats.fiat),
+      loading: props.loading
     },
     {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.pool?.apr?.total.unstaked || '0') * 100 > APR_THRESHOLD
+        Number(props.poolApr?.total.unstaked || '0') * 100 > APR_THRESHOLD
           ? '-'
-          : aprLabel.value
+          : aprLabel.value,
+      loading: props.loadingApr
     }
   ];
 });
@@ -72,14 +78,16 @@ const stats = computed(() => {
 
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-    <template v-if="loading">
-      <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
-    </template>
-    <template v-else>
-      <BalCard v-for="(stat, i) in stats" :key="i">
+    <template v-for="stat in stats" :key="stat.id">
+      <BalLoadingBlock v-if="stat.loading" class="h-24" />
+      <BalCard v-else>
         <div class="text-sm text-secondary font-medium mb-2 flex">
           <span>{{ stat.label }}</span>
-          <APRTooltip v-if="stat.id === 'apr'" :pool="pool" />
+          <APRTooltip
+            v-if="stat.id === 'apr'"
+            :pool="pool"
+            :poolApr="poolApr"
+          />
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}

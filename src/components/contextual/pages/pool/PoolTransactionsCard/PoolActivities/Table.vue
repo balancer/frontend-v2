@@ -135,7 +135,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
     const amount = amounts[i];
     const address = getAddress(props.tokens[i]);
     const token = getToken(address);
-    const price = priceFor(token.address);
+    const price = priceFor(token?.address);
     const amountNumber = Math.abs(parseFloat(amount));
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
     if (amountNumber > 0 && price === 0) {
