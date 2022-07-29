@@ -34,19 +34,19 @@ export default class ExitParams {
     tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
-    exactOut: boolean
+    exactOut: boolean,
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
       bptIn,
-      this.pool.value?.onchain?.decimals || 18
+      this.pool.value?.onchain?.decimals || 18,
     );
     const assets = this.parseTokensOut(tokensOut);
     const txData = this.txData(
       parsedAmountsOut,
       parsedBptIn,
       exitTokenIndex,
-      exactOut
+      exactOut,
     );
 
     return [
@@ -58,11 +58,11 @@ export default class ExitParams {
         minAmountsOut: parsedAmountsOut.map(amount =>
           // This is a hack to get around rounding issues for MetaStable pools
           // TODO: do this more elegantly
-          amount.gt(0) ? amount.sub(1) : amount
+          amount.gt(0) ? amount.sub(1) : amount,
         ),
         userData: txData,
-        toInternalBalance: this.toInternalBalance
-      }
+        toInternalBalance: this.toInternalBalance,
+      },
     ];
   }
 
@@ -71,7 +71,7 @@ export default class ExitParams {
       const token = this.pool.value.tokensList[i];
       return parseUnits(
         amount,
-        this.pool.value?.onchain?.tokens?.[token]?.decimals || 18
+        this.pool.value?.onchain?.tokens?.[token]?.decimals || 18,
       );
     });
   }
@@ -80,7 +80,7 @@ export default class ExitParams {
     const nativeAsset = this.config.network.nativeAsset;
 
     return tokensOut.map(address =>
-      isSameAddress(address, nativeAsset.address) ? AddressZero : address
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address,
     );
   }
 
@@ -88,7 +88,7 @@ export default class ExitParams {
     amountsOut: BigNumberish[],
     bptIn: BigNumberish,
     exitTokenIndex: number | null,
-    exactOut: boolean
+    exactOut: boolean,
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
 
@@ -96,17 +96,17 @@ export default class ExitParams {
       return this.dataEncodeFn({
         kind: 'ExactBPTInForOneTokenOut',
         bptAmountIn: bptIn,
-        exitTokenIndex
+        exitTokenIndex,
       });
     } else if (exactOut) {
       return this.dataEncodeFn({
         amountsOut,
-        maxBPTAmountIn: bptIn
+        maxBPTAmountIn: bptIn,
       });
     } else {
       return this.dataEncodeFn({
         kind: 'ExactBPTInForTokensOut',
-        bptAmountIn: bptIn
+        bptAmountIn: bptIn,
       });
     }
   }

@@ -20,7 +20,7 @@ type QueryResponse = BalanceMap;
  */
 export default function useBalancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<QueryResponse> = {},
 ) {
   /**
    * COMPOSABLES
@@ -38,7 +38,7 @@ export default function useBalancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Balances(networkId, account, tokenAddresses)
+    QUERY_KEYS.Account.Balances(networkId, account, tokenAddresses),
   );
 
   const queryFn = async () => {
@@ -48,7 +48,7 @@ export default function useBalancesQuery(
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

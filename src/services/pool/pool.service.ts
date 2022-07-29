@@ -10,7 +10,7 @@ import {
   Pool,
   PoolAPRs,
   PoolToken,
-  RawOnchainPoolData
+  RawOnchainPoolData,
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -25,7 +25,7 @@ export default class PoolService {
   constructor(
     public pool: Pool,
     public liquidity = LiquidityConcern,
-    public apr = AprConcern
+    public apr = AprConcern,
   ) {
     this.format();
   }
@@ -40,9 +40,7 @@ export default class PoolService {
   }
 
   public get bptPrice(): string {
-    return bnum(this.pool.totalLiquidity)
-      .div(this.pool.totalShares)
-      .toString();
+    return bnum(this.pool.totalLiquidity).div(this.pool.totalShares).toString();
   }
 
   /**
@@ -51,13 +49,13 @@ export default class PoolService {
   public setTotalLiquidity(
     prices: TokenPrices,
     currency: FiatCurrency,
-    tokenMeta: TokenInfoMap = {}
+    tokenMeta: TokenInfoMap = {},
   ): string {
     const liquidityConcern = new this.liquidity(this.pool);
     const totalLiquidity = liquidityConcern.calcTotal(
       prices,
       currency,
-      tokenMeta
+      tokenMeta,
     );
     // if totalLiquidity can be computed from coingecko prices, use that
     // else, use the value retrieved from the subgraph
@@ -76,7 +74,7 @@ export default class PoolService {
     currency: FiatCurrency,
     protocolFeePercentage: number,
     stakingBalApr: GaugeBalApr,
-    stakingRewardApr = '0'
+    stakingRewardApr = '0',
   ): Promise<PoolAPRs> {
     const aprConcern = new this.apr(this.pool);
     const apr = await aprConcern.calc(
@@ -85,7 +83,7 @@ export default class PoolService {
       currency,
       protocolFeePercentage,
       stakingBalApr,
-      stakingRewardApr
+      stakingRewardApr,
     );
 
     return (this.pool.apr = apr);
@@ -103,10 +101,10 @@ export default class PoolService {
       {
         where: {
           address_in: this.pool.tokensList,
-          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-        }
+          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
+        },
       },
-      { mainIndex: true, wrappedIndex: true }
+      { mainIndex: true, wrappedIndex: true },
     )) as LinearPool[];
 
     const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
@@ -117,7 +115,7 @@ export default class PoolService {
       if (!this.pool.wrappedTokens) this.pool.wrappedTokens = [];
 
       const index = this.pool.tokensList.indexOf(
-        linearPool.address.toLowerCase()
+        linearPool.address.toLowerCase(),
       );
 
       this.pool.mainTokens[index] = linearPool.tokensList[linearPool.mainIndex];
@@ -136,7 +134,7 @@ export default class PoolService {
 
   removePreMintedBPT(): string[] {
     return (this.pool.tokensList = this.pool.tokensList.filter(
-      address => !isSameAddress(address, this.pool.address)
+      address => !isSameAddress(address, this.pool.address),
     ));
   }
 
@@ -144,7 +142,7 @@ export default class PoolService {
     if (isStable(this.pool.poolType)) return this.pool.tokens;
 
     return (this.pool.tokens = this.pool.tokens.sort(
-      (a, b) => parseFloat(b.weight) - parseFloat(a.weight)
+      (a, b) => parseFloat(b.weight) - parseFloat(a.weight),
     ));
   }
 
@@ -170,19 +168,19 @@ export default class PoolService {
 
   public setOnchainData(
     rawOnchainData: RawOnchainPoolData,
-    tokenMeta: TokenInfoMap
+    tokenMeta: TokenInfoMap,
   ): OnchainPoolData | undefined {
     const onchainData = new OnchainDataFormater(
       this.pool,
       rawOnchainData,
-      tokenMeta
+      tokenMeta,
     );
     return (this.pool.onchain = onchainData.format());
   }
 
   public setUnwrappedTokens(): string[] {
     const unwrappedTokens = Object.entries(
-      this.pool?.onchain?.linearPools || {}
+      this.pool?.onchain?.linearPools || {},
     ).map(([, linearPool]) => linearPool.unwrappedTokenAddress);
     return (this.pool.unwrappedTokens = unwrappedTokens);
   }

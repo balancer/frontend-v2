@@ -16,6 +16,6 @@ export default function usePromiseSequence() {
   return {
     promises,
     processing,
-    processAll
+    processAll,
   };
 }

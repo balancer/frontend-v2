@@ -45,14 +45,14 @@ const {
   tokensOut,
   error,
   parseError,
-  setError
+  setError,
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   isProportional,
   tokenOut,
-  tokenOutIndex
+  tokenOutIndex,
 );
 
 const {
@@ -62,28 +62,25 @@ const {
   tokenOutAmount,
   tokenOutPoolBalance,
   initMath,
-  loadingAmountsOut
+  loadingAmountsOut,
 } = withdrawMath;
 
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 /**
  * COMPUTED
  */
 const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? highPriceImpactAccepted.value : true
+  highPriceImpact.value ? highPriceImpactAccepted.value : true,
 );
 
 const hasValidInputs = computed(
-  (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
+  (): boolean => validInput.value && hasAcceptedHighPriceImpact.value,
 );
 
 const singleAssetRules = computed(() => [
-  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance'))
+  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance')),
 ]);
 
 /**
@@ -175,9 +172,9 @@ onBeforeMount(() => {
         color="gradient"
         :disabled="
           !hasAmounts ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            loadingAmountsOut
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          loadingAmountsOut
         "
         block
         @click="showPreview = true"

@@ -1,5 +1,5 @@
-version: "3.7"
-  
+version: '3.7'
+
 services:
   web:
     build:
@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.dev
     restart: always
     command: npm run serve
-    volumes: 
+    volumes:
       - ./:/app
     ports:
       - 8080:8080
@@ -19,7 +19,7 @@ services:
   #     dockerfile: Dockerfile.dev
   #   restart: always
   #   command: npm run storybook
-  #   volumes: 
+  #   volumes:
   #     - ./:/app
   #     - /app/node_modules
   #   ports:

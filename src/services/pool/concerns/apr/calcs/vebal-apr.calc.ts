@@ -17,27 +17,23 @@ export class VeBalAprCalc {
     private readonly config = configService,
     private readonly balAddress = getAddress(TOKENS.Addresses.BAL),
     private readonly bbAUSDAddress = getAddress(
-      TOKENS.Addresses.bbaUSD as string
-    )
+      TOKENS.Addresses.bbaUSD as string,
+    ),
   ) {}
 
   public async calc(
     totalLiquidity: string,
     totalSupply: string,
-    prices: TokenPrices
+    prices: TokenPrices,
   ) {
-    const {
-      balAmount,
-      bbAUSDAmount,
-      bbaUSDPrice,
-      veBalCurrentSupply
-    } = await this.getData();
+    const { balAmount, bbAUSDAmount, bbaUSDPrice, veBalCurrentSupply } =
+      await this.getData();
 
     const aggregateWeeklyRevenue = this.calcAggregateWeeklyRevenue(
       balAmount,
       bbAUSDAmount,
       bbaUSDPrice,
-      prices
+      prices,
     );
 
     const bptPrice = bnum(totalLiquidity).div(totalSupply);
@@ -63,26 +59,26 @@ export class VeBalAprCalc {
         address: this.config.network.addresses.feeDistributor,
         function: 'getTokensDistributedInWeek',
         abi: FeeDistributorABI,
-        params: [this.balAddress, epochBeforeLast]
+        params: [this.balAddress, epochBeforeLast],
       })
       .call({
         key: 'bbAUSDAmount',
         address: this.config.network.addresses.feeDistributor,
         function: 'getTokensDistributedInWeek',
         abi: FeeDistributorABI,
-        params: [this.bbAUSDAddress, epochBeforeLast]
+        params: [this.bbAUSDAddress, epochBeforeLast],
       })
       .call({
         key: 'veBalCurrentSupply',
         address: this.config.network.addresses.veBAL,
         function: 'totalSupply()',
-        abi: veBalAbi
+        abi: veBalAbi,
       })
       .call({
         key: 'bbaUSDPrice',
         address: this.bbAUSDAddress,
         function: 'getRate',
-        abi: StablePhantomAbi
+        abi: StablePhantomAbi,
       });
 
     const result = await multicaller.execute();
@@ -98,7 +94,7 @@ export class VeBalAprCalc {
     balAmount: string,
     bbAUSDAmount: string,
     bbaUSDPrice: string,
-    prices: TokenPrices
+    prices: TokenPrices,
   ) {
     const balPrice = prices[this.balAddress];
 

@@ -15,9 +15,9 @@ export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
     toPoolId: poolsIdsMap?.bbAaveUSD ?? '',
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
-      `${riskI18nLabelPrefix}.aaveStableExploit`
-    ]
-  }
+      `${riskI18nLabelPrefix}.aaveStableExploit`,
+    ],
+  },
 ];
 
 export const POOL_MIGRATIONS_MAP = keyBy(POOL_MIGRATIONS, 'type');

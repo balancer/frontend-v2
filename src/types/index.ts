@@ -59,7 +59,7 @@ export enum StepState {
   Success,
   Warning,
   Error,
-  Completed
+  Completed,
 }
 
 export type Step = {

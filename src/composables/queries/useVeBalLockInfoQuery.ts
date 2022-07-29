@@ -15,7 +15,7 @@ import { isVeBalSupported } from '../useVeBAL';
 type QueryResponse = VeBalLockInfo;
 
 export default function useVeBalQuery(
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<QueryResponse> = {},
 ) {
   /**
    * COMPOSABLES
@@ -33,12 +33,12 @@ export default function useVeBalQuery(
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(
     reactive(['tokens', 'veBAL', { networkId, account }]),
     queryFn,
-    queryOptions
+    queryOptions,
   );
 }

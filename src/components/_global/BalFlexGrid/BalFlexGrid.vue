@@ -6,20 +6,22 @@ export default defineComponent({
 
   props: {
     gap: { type: Number, default: 4 },
-    flexWrap: { type: Boolean, default: false }
+    flexWrap: { type: Boolean, default: false },
   },
 
   setup(props, { slots }) {
     const spacing = computed((): string => (props.gap / 2).toString());
 
     const flexClasses = computed(() => ({
-      'flex-wrap': props.flexWrap
+      'flex-wrap': props.flexWrap,
     }));
 
     // @ts-ignore
     const slotChildren = slots.default()[0].children as VNodeArrayChildren;
     const gridItems = slotChildren.map(slotItem =>
-      h('div', { class: `px-${spacing.value} mb-${spacing.value}` }, [slotItem])
+      h('div', { class: `px-${spacing.value} mb-${spacing.value}` }, [
+        slotItem,
+      ]),
     );
 
     return () =>
@@ -27,9 +29,9 @@ export default defineComponent({
         h(
           'div',
           { class: [`flex -mx-${props.gap}`, flexClasses.value] },
-          gridItems
-        )
+          gridItems,
+        ),
       ]);
-  }
+  },
 });
 </script>

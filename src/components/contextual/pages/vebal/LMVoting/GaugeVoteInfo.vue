@@ -27,11 +27,11 @@ const { fNum2 } = useNumbers();
  */
 
 const votesThisPeriod = computed<string>(() =>
-  formatVotesAsPercent(props.gauge.votes)
+  formatVotesAsPercent(props.gauge.votes),
 );
 
 const votesNextPeriod = computed<string>(() =>
-  formatVotesAsPercent(props.gauge.votesNextPeriod)
+  formatVotesAsPercent(props.gauge.votesNextPeriod),
 );
 
 const voteDifference = computed<number>(() => {
@@ -47,7 +47,7 @@ const voteDifferenceText = computed<string>(() => {
 const voteTextClass = computed(() => {
   return {
     'text-green-600': voteDifference.value > 0,
-    'text-red-600': voteDifference.value < 0
+    'text-red-600': voteDifference.value < 0,
   };
 });
 
@@ -59,7 +59,7 @@ function formatVotesAsPercent(votes: string): string {
   return fNum2(normalizedVotes.toString(), {
     style: 'percent',
     maximumFractionDigits: 2,
-    fixedFormat: true
+    fixedFormat: true,
   });
 }
 </script>
@@ -77,14 +77,14 @@ function formatVotesAsPercent(votes: string): string {
         <div class="mb-2">
           {{
             $t('veBAL.liquidityMining.votesTooltip.thisPeriod', [
-              votesThisPeriod
+              votesThisPeriod,
             ])
           }}
         </div>
         <div class="mb-2">
           {{
             $t('veBAL.liquidityMining.votesTooltip.nextPeriod', [
-              votesNextPeriod
+              votesNextPeriod,
             ])
           }}
           <span :class="voteTextClass">{{ voteDifferenceText }}</span>

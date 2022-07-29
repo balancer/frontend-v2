@@ -42,7 +42,7 @@ export default defineComponent({
     title: { type: String, required: true },
     description: { type: String, required: true },
     closeLabel: { type: String, required: true },
-    explorerLink: { type: String, required: true }
-  }
+    explorerLink: { type: String, required: true },
+  },
 });
 </script>

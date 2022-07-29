@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   noPad: false,
   noContentPad: false,
-  fireworks: false
+  fireworks: false,
 });
 
 defineEmits(['close']);
@@ -48,7 +48,7 @@ watch(
     } else {
       document.body.classList.remove('overflow-hidden');
     }
-  }
+  },
 );
 
 /**

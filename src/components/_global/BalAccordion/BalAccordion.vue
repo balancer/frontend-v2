@@ -23,7 +23,7 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  showSectionBorder: true
+  showSectionBorder: true,
 });
 
 const activeSection = ref('');
@@ -66,16 +66,16 @@ async function toggleSection(section: string, collapse = true) {
     anime({
       targets: handleBar,
       translateY: `0px`,
-      easing
+      easing,
     });
   });
 
   const activeSectionIndex = props.sections.findIndex(
-    s => s.id === activeSection.value
+    s => s.id === activeSection.value,
   );
   const handleBarsToTransform = takeRight(
     handleBarElements.value,
-    handleBarElements.value.length - (activeSectionIndex + 1)
+    handleBarElements.value.length - (activeSectionIndex + 1),
   );
 
   // unfortunately this does introduce reflow (animating height of total)
@@ -88,7 +88,7 @@ async function toggleSection(section: string, collapse = true) {
   anime({
     targets: wrapperElement.value,
     height: `${heightToAnimate}px`,
-    easing
+    easing,
   });
 
   handleBarsToTransform.forEach(handleBar => {
@@ -96,14 +96,14 @@ async function toggleSection(section: string, collapse = true) {
     anime({
       targets: handleBar,
       translateY: `${y}px`,
-      easing
+      easing,
     });
   });
 
   // animate the arrow
   anime({
     targets: arrowElement.value,
-    rotate: '90deg'
+    rotate: '90deg',
   });
 
   setTimeout(async () => {
@@ -115,11 +115,11 @@ async function toggleSection(section: string, collapse = true) {
         top: '0',
         left: '0',
         right: '0',
-        opacity: 0
+        opacity: 0,
       });
       anime({
         targets: activeSectionElement.value,
-        opacity: 1
+        opacity: 1,
       });
     }
   }, 300);
@@ -167,7 +167,7 @@ watch(
   () => props.dependencies,
   () => {
     toggleSection(activeSection.value, false);
-  }
+  },
 );
 </script>
 
@@ -194,8 +194,8 @@ watch(
           :class="[
             'w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800',
             {
-              'border-b dark:border-gray-900': i !== sections.length - 1
-            }
+              'border-b dark:border-gray-900': i !== sections.length - 1,
+            },
           ]"
         >
           <h6>{{ section.title }}</h6>
@@ -210,7 +210,7 @@ watch(
           <div
             ref="activeSectionElement"
             :class="{
-              'border-b active-section': isContentVisible && showSectionBorder
+              'border-b active-section': isContentVisible && showSectionBorder,
             }"
             v-if="isContentVisible"
           >

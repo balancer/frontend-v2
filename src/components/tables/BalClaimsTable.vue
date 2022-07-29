@@ -11,7 +11,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   isStableLike,
   orderedPoolTokens,
-  orderedTokenAddresses
+  orderedTokenAddresses,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/pages/claim.vue';
@@ -55,14 +55,14 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     accessor: 'icons',
     Cell: 'iconsColumnCell',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: '',
     id: 'pills',
     accessor: 'pills',
     Cell: 'pillsColumnCell',
-    width: 350
+    width: 350,
   },
   {
     name: t('amount'),
@@ -70,7 +70,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalAmountCell',
-    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`
+    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`,
   },
   {
     name: t('value'),
@@ -78,7 +78,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -86,27 +86,27 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     accessor: 'claim',
     Cell: 'claimColumnCell',
     totalsCell: 'claimTotalCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 /**
  * COMPUTED
  */
 const allGauges = computed((): Gauge[] =>
-  props.rewardsData.map(row => row.gauge)
+  props.rewardsData.map(row => row.gauge),
 );
 
 const totalClaimAmount = computed((): string =>
   props.rewardsData
     .reduce((acc, row) => acc.plus(row.amount), bnum('0'))
-    .toString()
+    .toString(),
 );
 
 const totalClaimValue = computed((): string =>
   props.rewardsData
     .reduce((acc, row) => acc.plus(row.value), bnum('0'))
-    .toString()
+    .toString(),
 );
 
 /**

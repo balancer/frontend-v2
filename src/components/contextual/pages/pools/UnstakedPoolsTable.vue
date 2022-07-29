@@ -27,9 +27,9 @@ const {
     userLiquidityGauges,
     stakedPools,
     isLoadingUserStakingData,
-    poolBoosts
+    poolBoosts,
   },
-  setPoolAddress
+  setPoolAddress,
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -68,13 +68,13 @@ const partiallyStakedPools = computed(() => {
       const stakedBalance = stakedBalanceMap.value[pool.id];
       const unstakedBalance = pool.bpt;
       const stakedPct = bnum(stakedBalance).div(
-        bnum(stakedBalance).plus(unstakedBalance)
+        bnum(stakedBalance).plus(unstakedBalance),
       );
       return {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        boost: poolBoosts.value[pool.id]
+        boost: poolBoosts.value[pool.id],
       };
     });
 });
@@ -82,7 +82,7 @@ const partiallyStakedPools = computed(() => {
 // Pools where there is no staked BPT at all
 const unstakedPools = computed(() => {
   const availableGaugePoolIds = (userLiquidityGauges.value || []).map(
-    gauge => gauge.poolId
+    gauge => gauge.poolId,
   );
   return (userPools.value?.pools || [])
     .filter(pool => {
@@ -91,7 +91,7 @@ const unstakedPools = computed(() => {
     .map(pool => ({
       ...pool,
       stakedPct: '0',
-      stakedShares: '0'
+      stakedShares: '0',
     }));
 });
 
@@ -116,7 +116,7 @@ function handleStake(pool: Pool) {
 
 function calculateFiatValueOfShares(
   pool: PoolWithShares | Pool,
-  stakedBalance: string
+  stakedBalance: string,
 ) {
   return bnum(pool.totalLiquidity)
     .div(pool.totalShares)

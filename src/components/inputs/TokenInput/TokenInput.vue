@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
   hideFooter: false,
   ignoreWalletBalance: false,
   options: () => [],
-  rules: () => []
+  rules: () => [],
 });
 
 const emit = defineEmits<{
@@ -97,10 +97,10 @@ const hasAmount = computed(() => amountBN.value.gt(0));
 const hasBalance = computed(() => tokenBalanceBN.value.gt(0));
 const shouldUseTxBuffer = computed(
   () =>
-    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer
+    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer,
 );
 const amountExceedsTokenBalance = computed(() =>
-  amountBN.value.gt(tokenBalance.value)
+  amountBN.value.gt(tokenBalance.value),
 );
 const shouldShowTxBufferMessage = computed(() => {
   if (
@@ -113,7 +113,7 @@ const shouldShowTxBufferMessage = computed(() => {
   }
 
   return amountBN.value.gte(
-    tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer)
+    tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer),
   );
 });
 
@@ -157,10 +157,7 @@ const inputRules = computed(() => {
 const maxPercentage = computed(() => {
   if (!hasBalance.value || !hasAmount.value) return '0';
 
-  return amountBN.value
-    .div(tokenBalance.value)
-    .times(100)
-    .toFixed(2);
+  return amountBN.value.div(tokenBalance.value).times(100).toFixed(2);
 });
 
 const bufferPercentage = computed(() => {
@@ -173,15 +170,15 @@ const bufferPercentage = computed(() => {
 });
 
 const barColor = computed(() =>
-  amountExceedsTokenBalance.value ? 'red' : 'green'
+  amountExceedsTokenBalance.value ? 'red' : 'green',
 );
 
 const priceImpactSign = computed(() =>
-  (props.priceImpact || 0) >= 0 ? '-' : '+'
+  (props.priceImpact || 0) >= 0 ? '-' : '+',
 );
 
 const priceImpactClass = computed(() =>
-  (props.priceImpact || 0) >= 0.01 ? 'text-red-500' : ''
+  (props.priceImpact || 0) >= 0.01 ? 'text-red-500' : '',
 );
 
 /**
@@ -313,7 +310,7 @@ watchEffect(() => {
           {{
             t('minTransactionBuffer', [
               nativeAsset.minTransactionBuffer,
-              nativeAsset.symbol
+              nativeAsset.symbol,
             ])
           }}
         </div>

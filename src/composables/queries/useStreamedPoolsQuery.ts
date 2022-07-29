@@ -25,7 +25,7 @@ type FilterOptions = {
 async function fetchBasicPoolMetadata(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions,
-  currentPage = 0
+  currentPage = 0,
 ) {
   const skip =
     POOLS.Pagination.PerPage * (currentPage - 1 < 0 ? 0 : currentPage - 1);
@@ -37,8 +37,8 @@ async function fetchBasicPoolMetadata(
     skip: skip,
     where: {
       [tokensListFilterKey]: tokenList.value,
-      poolType_not_in: POOLS.ExcludedPoolTypes
-    }
+      poolType_not_in: POOLS.ExcludedPoolTypes,
+    },
   };
   const pools = await balancerSubgraphService.pools.get(queryArgs);
   return pools;
@@ -46,20 +46,20 @@ async function fetchBasicPoolMetadata(
 
 export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
-  filterOptions?: FilterOptions
+  filterOptions?: FilterOptions,
 ) {
   const {
     priceQueryLoading,
     prices,
     tokens,
     injectTokens,
-    dynamicDataLoading
+    dynamicDataLoading,
   } = useTokens();
   const { currency } = useUserSettings();
   const gaugesQuery = useGaugesQuery();
 
   const decorationEnabled = computed(
-    (): boolean => !priceQueryLoading.value && !isQueryLoading(gaugesQuery)
+    (): boolean => !priceQueryLoading.value && !isQueryLoading(gaugesQuery),
   );
 
   const {
@@ -68,7 +68,7 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    isComplete
+    isComplete,
   } = useQueryStreams('pools', {
     basic: {
       init: true,
@@ -77,9 +77,9 @@ export default function useStreamedPoolsQuery(
         return await fetchBasicPoolMetadata(
           tokenList,
           filterOptions,
-          currentPage.value
+          currentPage.value,
         );
-      }
+      },
     },
     injectTokens: {
       waitFor: ['basic.id'],
@@ -88,13 +88,13 @@ export default function useStreamedPoolsQuery(
           pools.value.map(pool => [
             ...pool.tokensList,
             ...lpTokensFor(pool),
-            pool.address
-          ])
+            pool.address,
+          ]),
         );
         await injectTokens(_tokens);
         await forChange(dynamicDataLoading, false);
         return () => pools.value;
-      }
+      },
     },
     decoratePools: {
       waitFor: ['injectTokens.id'],
@@ -105,10 +105,10 @@ export default function useStreamedPoolsQuery(
           gaugesQuery.data.value || [],
           prices.value,
           currency.value,
-          tokens.value
+          tokens.value,
         );
-      }
-    }
+      },
+    },
   });
 
   watch(
@@ -118,7 +118,7 @@ export default function useStreamedPoolsQuery(
         poolsStoreService.setPools(val);
       }
     },
-    { deep: true }
+    { deep: true },
   );
 
   return {
@@ -127,6 +127,6 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    isComplete
+    isComplete,
   };
 }

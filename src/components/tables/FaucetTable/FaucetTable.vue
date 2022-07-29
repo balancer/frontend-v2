@@ -29,7 +29,7 @@ const tokens = computed(() => {
         ...token,
         price,
         balance,
-        value
+        value,
       };
     })
     .filter(t => t.address != '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE');
@@ -47,21 +47,21 @@ const columns = ref<ColumnDefinition<any>[]>([
     accessor: 'token',
     Cell: 'tokenColumnCell',
     width: 475,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('balance'),
     id: 'Balance',
     align: 'right',
     width: 150,
-    accessor: ({ balance }) => `${fNum2(balance, FNumFormats.token)}`
+    accessor: ({ balance }) => `${fNum2(balance, FNumFormats.token)}`,
   },
   {
     name: t('value'),
     id: 'value',
     align: 'right',
     width: 150,
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: 'Drip',
@@ -69,8 +69,8 @@ const columns = ref<ColumnDefinition<any>[]>([
     align: 'center',
     accessor: 'drip',
     Cell: 'dripColumnCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 </script>
 

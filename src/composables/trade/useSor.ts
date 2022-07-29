@@ -4,7 +4,7 @@ import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,
   WeiPerEther as ONE,
-  Zero
+  Zero,
 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
@@ -16,7 +16,7 @@ import {
   reactive,
   Ref,
   ref,
-  toRefs
+  toRefs,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -25,7 +25,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
 import {
   SorManager,
-  SorReturn
+  SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { getStETHByWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
@@ -33,7 +33,7 @@ import {
   getWrapOutput,
   unwrap,
   wrap,
-  WrapType
+  WrapType,
 } from '@/lib/utils/balancer/wrapper';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -60,9 +60,9 @@ const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive<SorState>({
   validationErrors: {
-    highPriceImpact: false
+    highPriceImpact: false,
   },
-  submissionError: null
+  submissionError: null,
 });
 
 type Props = {
@@ -94,11 +94,11 @@ export default function useSor({
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
-    handleAmountsOnFetchPools: true
+    handleAmountsOnFetchPools: true,
   },
   tokenIn,
   tokenOut,
-  slippageBufferRate
+  slippageBufferRate,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
@@ -119,8 +119,8 @@ export default function useSor({
       tokenOut: '',
       marketSp: '0',
       swapAmountForSwaps: Zero,
-      returnAmountFromSwaps: Zero
-    }
+      returnAmountFromSwaps: Zero,
+    },
   });
   const trading = ref(false);
   const confirming = ref(false);
@@ -163,7 +163,7 @@ export default function useSor({
       BigNumber.from(GAS_PRICE),
       Number(MAX_POOLS),
       configService.network.chainId,
-      configService.network.addresses.weth
+      configService.network.addresses.weth,
     );
 
     fetchPools();
@@ -198,7 +198,7 @@ export default function useSor({
       const deltas = await balancer.swaps.queryBatchSwap({
         kind: swapType,
         swaps: result.swaps,
-        assets: result.tokenAddresses
+        assets: result.tokenAddresses,
       });
 
       if (result !== sorReturn.value.result) {
@@ -229,28 +229,24 @@ export default function useSor({
           tokenOutAddress = configService.network.addresses.wstETH;
 
         const tokenInPosition = result.tokenAddresses.indexOf(
-          tokenInAddress.toLowerCase()
+          tokenInAddress.toLowerCase(),
         );
         const tokenOutPosition = result.tokenAddresses.indexOf(
-          tokenOutAddress.toLowerCase()
+          tokenOutAddress.toLowerCase(),
         );
 
         const tokenInAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[tokenInPosition])
-              .abs()
-              .toString(),
-            tokenInDecimals
-          )
+            bnum(deltas[tokenInPosition]).abs().toString(),
+            tokenInDecimals,
+          ),
         );
 
         const tokenOutAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[tokenOutPosition])
-              .abs()
-              .toString(),
-            tokenOutDecimals
-          )
+            bnum(deltas[tokenOutPosition]).abs().toString(),
+            tokenOutDecimals,
+          ),
         );
 
         if (swapType === SwapType.SwapExactOut) {
@@ -309,7 +305,7 @@ export default function useSor({
         const outputAmount = await getWrapOutput(
           wrapper,
           wrapType.value,
-          parseFixed(amount, tokenInDecimals)
+          parseFixed(amount, tokenInDecimals),
         );
         tokenOutAmountInput.value = formatFixed(outputAmount, tokenInDecimals);
       } else {
@@ -318,7 +314,7 @@ export default function useSor({
         const inputAmount = await getWrapOutput(
           wrapper,
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
-          parseFixed(amount, tokenOutDecimals)
+          parseFixed(amount, tokenOutDecimals),
         );
         tokenInAmountInput.value = formatFixed(inputAmount, tokenOutDecimals);
       }
@@ -338,13 +334,13 @@ export default function useSor({
       await setSwapCost(
         tokenOutAddressInput.value,
         tokenOutDecimals,
-        sorManager
+        sorManager,
       );
 
       const tokenInAmountNormalised = new OldBigNumber(amount); // Normalized value
       const tokenInAmountScaled = scale(
         tokenInAmountNormalised,
-        tokenInDecimals
+        tokenInDecimals,
       );
 
       console.log('[SOR Manager] swapExactIn');
@@ -355,12 +351,12 @@ export default function useSor({
         tokenInDecimals,
         tokenOutDecimals,
         SwapTypes.SwapExactIn,
-        tokenInAmountScaled
+        tokenInAmountScaled,
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
       const tokenOutAmountNormalised = bnum(
-        formatFixed(swapReturn.returnAmount, tokenOutDecimals)
+        formatFixed(swapReturn.returnAmount, tokenOutDecimals),
       );
       tokenOutAmountInput.value =
         tokenOutAmountNormalised.toNumber() > 0
@@ -371,13 +367,13 @@ export default function useSor({
         priceImpact.value = 0;
       } else {
         let returnAmtNormalised = bnum(
-          formatFixed(swapReturn.returnAmount, tokenOutDecimals)
+          formatFixed(swapReturn.returnAmount, tokenOutDecimals),
         );
 
         returnAmtNormalised = await adjustedPiAmount(
           returnAmtNormalised,
           tokenOutAddress,
-          tokenOutDecimals
+          tokenOutDecimals,
         );
 
         const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
@@ -387,7 +383,7 @@ export default function useSor({
 
         priceImpact.value = OldBigNumber.max(
           priceImpactCalc,
-          MIN_PRICE_IMPACT
+          MIN_PRICE_IMPACT,
         ).toNumber();
       }
     } else {
@@ -405,14 +401,14 @@ export default function useSor({
         tokenInDecimals,
         tokenOutDecimals,
         SwapTypes.SwapExactOut,
-        tokenOutAmount
+        tokenOutAmount,
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
       const tradeAmount: BigNumber = swapReturn.returnAmount;
       const tokenInAmountNormalised = bnum(
-        formatFixed(tradeAmount, tokenInDecimals)
+        formatFixed(tradeAmount, tokenInDecimals),
       );
       tokenInAmountInput.value =
         tokenInAmountNormalised.toNumber() > 0
@@ -425,11 +421,11 @@ export default function useSor({
         tokenOutAmountNormalised = await adjustedPiAmount(
           tokenOutAmountNormalised,
           tokenOutAddress,
-          tokenOutDecimals
+          tokenOutDecimals,
         );
 
         const effectivePrice = tokenInAmountNormalised.div(
-          tokenOutAmountNormalised
+          tokenOutAmountNormalised,
         );
         const priceImpactCalc = effectivePrice
           .div(swapReturn.marketSpNormalised)
@@ -437,7 +433,7 @@ export default function useSor({
 
         priceImpact.value = OldBigNumber.max(
           priceImpactCalc,
-          MIN_PRICE_IMPACT
+          MIN_PRICE_IMPACT,
         ).toNumber();
       }
     }
@@ -454,11 +450,11 @@ export default function useSor({
     let summary = '';
     const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
       ...FNumFormats.token,
-      maximumSignificantDigits: 6
+      maximumSignificantDigits: 6,
     });
     const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
       ...FNumFormats.token,
-      maximumSignificantDigits: 6
+      maximumSignificantDigits: 6,
     });
 
     const tokenInSymbol = tokenIn.value.symbol;
@@ -468,7 +464,7 @@ export default function useSor({
       summary = t('transactionSummary.wrapUnwrap', [
         tokenInAmountFormatted,
         tokenInSymbol,
-        tokenOutSymbol
+        tokenOutSymbol,
       ]);
     } else {
       summary = `${tokenInAmountFormatted} ${tokenInSymbol} -> ${tokenOutAmountFormatted} ${tokenOutSymbol}`;
@@ -489,8 +485,8 @@ export default function useSor({
         exactIn: exactIn.value,
         quote: getQuote(),
         priceImpact: priceImpact.value,
-        slippageBufferRate: slippageBufferRate.value
-      }
+        slippageBufferRate: slippageBufferRate.value,
+      },
     });
 
     txListener(tx, {
@@ -501,7 +497,7 @@ export default function useSor({
       },
       onTxFailed: () => {
         trading.value = false;
-      }
+      },
     });
   }
 
@@ -517,7 +513,7 @@ export default function useSor({
     const tokenOutDecimals = getToken(tokenOutAddress).decimals;
     const tokenInAmountScaled = parseFixed(
       tokenInAmountInput.value,
-      tokenInDecimals
+      tokenInDecimals,
     );
 
     if (wrapType.value == WrapType.Wrap) {
@@ -526,7 +522,7 @@ export default function useSor({
           appNetworkConfig.key,
           provider.value as any,
           tokenOutAddress,
-          tokenInAmountScaled
+          tokenInAmountScaled,
         );
         console.log('Wrap tx', tx);
 
@@ -548,7 +544,7 @@ export default function useSor({
           appNetworkConfig.key,
           provider.value as any,
           tokenInAddress,
-          tokenInAmountScaled
+          tokenInAmountScaled,
         );
         console.log('Unwrap tx', tx);
 
@@ -569,7 +565,7 @@ export default function useSor({
     if (exactIn.value) {
       const tokenOutAmount = parseFixed(
         tokenOutAmountInput.value,
-        tokenOutDecimals
+        tokenOutDecimals,
       );
       const minAmount = getMinOut(tokenOutAmount);
       const sr: SorReturn = sorReturn.value as SorReturn;
@@ -594,7 +590,7 @@ export default function useSor({
       const sr: SorReturn = sorReturn.value as SorReturn;
       const tokenOutAmountScaled = parseFixed(
         tokenOutAmountInput.value,
-        tokenOutDecimals
+        tokenOutDecimals,
       );
 
       try {
@@ -628,12 +624,12 @@ export default function useSor({
   async function setSwapCost(
     tokenAddress: string,
     tokenDecimals: number,
-    sorManager: SorManager
+    sorManager: SorManager,
   ): Promise<void> {
     await sorManager.setCostOutputToken(
       tokenAddress,
       tokenDecimals,
-      calculateEthPriceInToken(tokenAddress).toString()
+      calculateEthPriceInToken(tokenAddress).toString(),
     );
   }
 
@@ -662,7 +658,7 @@ export default function useSor({
       feeAmountInToken: '0',
       feeAmountOutToken: '0',
       maximumInAmount,
-      minimumOutAmount
+      minimumOutAmount,
     };
   }
 
@@ -670,7 +666,7 @@ export default function useSor({
     return fNum2(amount, {
       maximumSignificantDigits: 6,
       useGrouping: false,
-      fixedFormat: true
+      fixedFormat: true,
     });
   }
 
@@ -686,7 +682,7 @@ export default function useSor({
   async function adjustedPiAmount(
     amount: OldBigNumber,
     address: string,
-    decimals: number
+    decimals: number,
   ): Promise<OldBigNumber> {
     if (isSameAddress(address, appNetworkConfig.addresses.wstETH)) {
       const denormAmount = parseUnits(amount.toString(), decimals);
@@ -716,6 +712,6 @@ export default function useSor({
     updateTradeAmounts,
     resetInputAmounts,
     // For Tests
-    setSwapCost
+    setSwapCost,
   };
 }

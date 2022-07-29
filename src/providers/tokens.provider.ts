@@ -9,7 +9,7 @@ import {
   reactive,
   Ref,
   toRef,
-  toRefs
+  toRefs,
 } from 'vue';
 
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
@@ -30,7 +30,7 @@ import {
   NativeAsset,
   TokenInfo,
   TokenInfoMap,
-  TokenList
+  TokenList,
 } from '@/types/TokenList';
 
 /**
@@ -69,18 +69,18 @@ export interface TokensProviderResponse {
   searchTokens: (
     query: string,
     excluded: string[],
-    disableInjection?: boolean
+    disableInjection?: boolean,
   ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
     tokenAddress: string,
     amount: string,
-    contractAddress?: string
+    contractAddress?: string,
   ) => boolean;
   approvalsRequired: (
     tokenAddresses: string[],
     amounts: string[],
-    contractAddress?: string
+    contractAddress?: string,
   ) => string[];
   priceFor: (address: string) => number;
   balanceFor: (address: string) => string;
@@ -92,9 +92,8 @@ export interface TokensProviderResponse {
 /**
  * SETUP
  */
-export const TokensProviderSymbol: InjectionKey<TokensProviderResponse> = Symbol(
-  symbolKeys.Providers.Tokens
-);
+export const TokensProviderSymbol: InjectionKey<TokensProviderResponse> =
+  Symbol(symbolKeys.Providers.Tokens);
 
 /**
  * TokensProvider
@@ -108,11 +107,8 @@ export default {
      * COMPOSABLES
      */
     const { networkConfig } = useConfig();
-    const {
-      allTokenLists,
-      activeTokenLists,
-      balancerTokenLists
-    } = useTokenLists();
+    const { allTokenLists, activeTokenLists, balancerTokenLists } =
+      useTokenLists();
     const { currency } = useUserSettings();
 
     /**
@@ -120,20 +116,20 @@ export default {
      */
     const nativeAsset: NativeAsset = {
       ...networkConfig.nativeAsset,
-      chainId: networkConfig.chainId
+      chainId: networkConfig.chainId,
     };
 
     const state: TokensProviderState = reactive({
       loading: true,
       injectedTokens: {
-        [networkConfig.nativeAsset.address]: nativeAsset
+        [networkConfig.nativeAsset.address]: nativeAsset,
       },
       allowanceContracts: compact([
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
-        configService.network.addresses.veBAL
+        configService.network.addresses.veBAL,
       ]),
-      injectedPrices: {}
+      injectedPrices: {},
     });
 
     /**
@@ -146,8 +142,8 @@ export default {
     const allTokenListTokens = computed(
       (): TokenInfoMap => ({
         ...mapTokenListTokens(Object.values(allTokenLists)),
-        ...state.injectedTokens
-      })
+        ...state.injectedTokens,
+      }),
     );
 
     /**
@@ -155,7 +151,7 @@ export default {
      */
     const activeTokenListTokens = computed(
       (): TokenInfoMap =>
-        mapTokenListTokens(Object.values(activeTokenLists.value))
+        mapTokenListTokens(Object.values(activeTokenLists.value)),
     );
 
     /**
@@ -163,7 +159,7 @@ export default {
      */
     const balancerTokenListTokens = computed(
       (): TokenInfoMap =>
-        mapTokenListTokens(Object.values(balancerTokenLists.value))
+        mapTokenListTokens(Object.values(balancerTokenLists.value)),
     );
 
     /**
@@ -175,14 +171,14 @@ export default {
     const tokens = computed(
       (): TokenInfoMap => ({
         ...activeTokenListTokens.value,
-        ...state.injectedTokens
-      })
+        ...state.injectedTokens,
+      }),
     );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
     const wrappedNativeAsset = computed(
-      (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset)
+      (): TokenInfo => getToken(TOKENS.Addresses.wNativeAsset),
     );
 
     /****************************************************************
@@ -196,9 +192,9 @@ export default {
       isSuccess: priceQuerySuccess,
       isLoading: priceQueryLoading,
       isError: priceQueryError,
-      refetch: refetchPrices
+      refetch: refetchPrices,
     } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
-      keepPreviousData: true
+      keepPreviousData: true,
     });
 
     const {
@@ -206,7 +202,7 @@ export default {
       isSuccess: balanceQuerySuccess,
       isLoading: balanceQueryLoading,
       isError: balancesQueryError,
-      refetch: refetchBalances
+      refetch: refetchBalances,
     } = useBalancesQuery(tokens, { keepPreviousData: true });
 
     const {
@@ -214,32 +210,32 @@ export default {
       isSuccess: allowanceQuerySuccess,
       isLoading: allowanceQueryLoading,
       isError: allowancesQueryError,
-      refetch: refetchAllowances
+      refetch: refetchAllowances,
     } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
 
     const prices = computed(
-      (): TokenPrices => (priceData.value ? priceData.value : {})
+      (): TokenPrices => (priceData.value ? priceData.value : {}),
     );
     const balances = computed(
-      (): BalanceMap => (balanceData.value ? balanceData.value : {})
+      (): BalanceMap => (balanceData.value ? balanceData.value : {}),
     );
     const allowances = computed(
       (): ContractAllowancesMap =>
-        allowanceData.value ? allowanceData.value : {}
+        allowanceData.value ? allowanceData.value : {},
     );
 
     const dynamicDataLoaded = computed(
       () =>
         priceQuerySuccess.value &&
         balanceQuerySuccess.value &&
-        allowanceQuerySuccess.value
+        allowanceQuerySuccess.value,
     );
 
     const dynamicDataLoading = computed(
       () =>
         priceQueryLoading.value ||
         balanceQueryLoading.value ||
-        allowanceQueryLoading.value
+        allowanceQueryLoading.value,
     );
 
     /**
@@ -281,13 +277,13 @@ export default {
 
       // Only inject tokens that aren't already in tokens
       const injectable = addresses.filter(
-        address => !includesAddress(existingAddresses, address)
+        address => !includesAddress(existingAddresses, address),
       );
       if (injectable.length === 0) return;
 
       const newTokens = await tokenService.metadata.get(
         injectable,
-        allTokenLists
+        allTokenLists,
       );
 
       state.injectedTokens = { ...state.injectedTokens, ...newTokens };
@@ -300,7 +296,7 @@ export default {
     async function searchTokens(
       query: string,
       excluded: string[] = [],
-      disableInjection = false
+      disableInjection = false,
     ): Promise<TokenInfoMap> {
       if (!query) return removeExcluded(tokens.value, excluded);
 
@@ -322,7 +318,7 @@ export default {
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
-            token.symbol.toLowerCase().includes(query.toLowerCase())
+            token.symbol.toLowerCase().includes(query.toLowerCase()),
         );
         return removeExcluded(Object.fromEntries(results), excluded);
       }
@@ -333,7 +329,7 @@ export default {
      */
     function removeExcluded(
       tokens: TokenInfoMap,
-      excluded: string[]
+      excluded: string[],
     ): TokenInfoMap {
       return Object.keys(tokens)
         .filter(address => !includesAddress(excluded, address))
@@ -350,14 +346,14 @@ export default {
     function approvalRequired(
       tokenAddress: string,
       amount: string,
-      contractAddress = networkConfig.addresses.vault
+      contractAddress = networkConfig.addresses.vault,
     ): boolean {
       if (!amount || bnum(amount).eq(0)) return false;
       if (!contractAddress) return false;
       if (isSameAddress(tokenAddress, nativeAsset.address)) return false;
 
       const allowance = bnum(
-        (allowances.value[contractAddress] || {})[getAddress(tokenAddress)]
+        (allowances.value[contractAddress] || {})[getAddress(tokenAddress)],
       );
       return allowance.lt(amount);
     }
@@ -369,7 +365,7 @@ export default {
     function approvalsRequired(
       tokenAddresses: string[],
       amounts: string[],
-      contractAddress: string = networkConfig.addresses.vault
+      contractAddress: string = networkConfig.addresses.vault,
     ): string[] {
       return tokenAddresses.filter((address, index) => {
         if (!contractAddress) return false;
@@ -432,7 +428,7 @@ export default {
     function injectPrices(pricesToInject: TokenPrices) {
       state.injectedPrices = {
         ...state.injectedPrices,
-        ...pricesToInject
+        ...pricesToInject,
       };
     }
 
@@ -445,7 +441,7 @@ export default {
         configService.network.addresses.wstETH,
         configService.network.addresses.veBAL,
         TOKENS.Addresses.BAL,
-        TOKENS.Addresses.wNativeAsset
+        TOKENS.Addresses.wNativeAsset,
       ]);
 
       await injectTokens(tokensToInject);
@@ -483,9 +479,9 @@ export default {
       balanceFor,
       getTokens,
       getToken,
-      injectPrices
+      injectPrices,
     });
 
     return () => slots.default();
-  }
+  },
 };

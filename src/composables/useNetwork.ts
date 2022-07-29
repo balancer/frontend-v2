@@ -77,6 +77,6 @@ export function urlFor(network: Network): string {
 export default function useNetwork() {
   return {
     setNetworkId,
-    networkId
+    networkId,
   };
 }

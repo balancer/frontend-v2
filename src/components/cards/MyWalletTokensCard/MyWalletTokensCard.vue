@@ -25,7 +25,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  hideHeader: false
+  hideHeader: false,
 });
 
 const emit = defineEmits<{
@@ -86,11 +86,7 @@ const fiatTotal = computed(() => {
       const tokenBalance = balanceFor(address);
       return toFiat(tokenBalance, address);
     })
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    );
+    .reduce((total, value) => bnum(total).plus(value).toString());
 
   return fNum2(fiatValue, FNumFormats.fiat);
 });
@@ -139,7 +135,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   :text="
                     $t(
                       'poolTransfer.myWalletTokensCard.tooltips.nativeAssetSelection',
-                      [nativeAsset.symbol, wrappedNativeAsset.symbol]
+                      [nativeAsset.symbol, wrappedNativeAsset.symbol],
                     )
                   "
                 />
@@ -152,7 +148,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   @click="
                     emit(
                       'update:useNativeAsset',
-                      isSameAddress(asset.address, nativeAsset.address)
+                      isSameAddress(asset.address, nativeAsset.address),
                     )
                   "
                 />

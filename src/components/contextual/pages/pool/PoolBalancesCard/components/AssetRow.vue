@@ -38,9 +38,7 @@ const token = computed(() => getToken(props.address));
 const balance = computed(() => {
   const formattedBalance = formatUnits(props.balance, token.value.decimals);
   return props.share != null
-    ? bnum(formattedBalance)
-        .times(props.share)
-        .toString()
+    ? bnum(formattedBalance).times(props.share).toString()
     : formattedBalance;
 });
 

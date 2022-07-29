@@ -41,14 +41,14 @@ const {
   highPriceImpact,
   fiatTotal,
   fiatTotalLabel,
-  priceImpact
+  priceImpact,
 } = toRefs(props.math);
 
 const migrateConfirmed = ref(false);
 const highPriceImpactAccepted = ref(false);
 
 const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? highPriceImpactAccepted.value : true
+  highPriceImpact.value ? highPriceImpactAccepted.value : true,
 );
 
 const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
@@ -64,7 +64,7 @@ const { t } = useI18n();
 const title = computed((): string =>
   migrateConfirmed.value
     ? t('migratePool.previewModal.titles.confirmed')
-    : t('migratePool.previewModal.titles.default')
+    : t('migratePool.previewModal.titles.default'),
 );
 
 /**

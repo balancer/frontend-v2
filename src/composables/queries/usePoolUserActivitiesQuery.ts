@@ -17,7 +17,7 @@ type UserPoolActivitiesQueryResponse = {
 
 export default function usePoolUserActivitiesQuery(
   id: string,
-  options: UseInfiniteQueryOptions<UserPoolActivitiesQueryResponse> = {}
+  options: UseInfiniteQueryOptions<UserPoolActivitiesQueryResponse> = {},
 ) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
@@ -28,7 +28,7 @@ export default function usePoolUserActivitiesQuery(
 
   // DATA
   const queryKey = reactive(
-    QUERY_KEYS.Pools.UserActivities(networkId, id, account)
+    QUERY_KEYS.Pools.UserActivities(networkId, id, account),
   );
 
   // METHODS
@@ -43,14 +43,16 @@ export default function usePoolUserActivitiesQuery(
       skip: pageParam,
       where: {
         pool: id,
-        sender: account.value.toLowerCase()
-      }
+        sender: account.value.toLowerCase(),
+      },
     });
 
     return {
       poolActivities,
       skip:
-        poolActivities.length >= pagination ? pageParam + pagination : undefined
+        poolActivities.length >= pagination
+          ? pageParam + pagination
+          : undefined,
     };
   };
 
@@ -58,12 +60,12 @@ export default function usePoolUserActivitiesQuery(
     enabled,
     getNextPageParam: (lastPage: UserPoolActivitiesQueryResponse) =>
       lastPage.skip,
-    ...options
+    ...options,
   });
 
   return useInfiniteQuery<UserPoolActivitiesQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions,
   );
 }

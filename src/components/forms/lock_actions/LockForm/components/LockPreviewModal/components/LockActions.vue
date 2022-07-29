@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { parseUnits } from '@ethersproject/units';
 import { format } from 'date-fns';
@@ -57,8 +57,8 @@ const lockActionStates = reactive<LockActionState[]>(
     init: false,
     confirming: false,
     confirmed: false,
-    confirmedAt: ''
-  }))
+    confirmedAt: '',
+  })),
 );
 
 /**
@@ -71,18 +71,18 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.lockablePoolTokenInfo.address],
-  ref([props.lockAmount])
+  ref([props.lockAmount]),
 );
 const { fNum2 } = useNumbers();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
-    format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
+    format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT),
   ]),
   loadingLabel: t(`getVeBAL.previewModal.actions.${lockType}.loadingLabel`),
   confirmingLabel: t(`getVeBAL.previewModal.actions.${lockType}.confirming`),
   action: () => submit(lockType, actionIndex),
-  stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`)
+  stepTooltip: t(`getVeBAL.previewModal.actions.${lockType}.tooltip`),
 }));
 
 const actions = ref<TransactionActionInfo[]>([...lockActions]);
@@ -91,7 +91,7 @@ const actions = ref<TransactionActionInfo[]>([...lockActions]);
  * COMPUTED
  */
 const lockActionStatesConfirmed = computed(() =>
-  lockActionStates.every(lockActionState => lockActionState.confirmed)
+  lockActionStates.every(lockActionState => lockActionState.confirmed),
 );
 
 /**
@@ -100,7 +100,7 @@ const lockActionStatesConfirmed = computed(() =>
 async function handleTransaction(
   tx: TransactionResponse,
   lockType: LockType,
-  actionIndex: number
+  actionIndex: number,
 ): Promise<void> {
   addTransaction({
     id: tx.hash,
@@ -109,7 +109,7 @@ async function handleTransaction(
     summary:
       lockType === LockType.EXTEND_LOCK
         ? t('transactionSummary.extendLock', [
-            format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT)
+            format(new Date(props.lockEndDate), PRETTY_DATE_FORMAT),
           ])
         : `${fNum2(props.lockAmount, FNumFormats.token)} ${
             props.lockablePoolTokenInfo.symbol
@@ -117,8 +117,8 @@ async function handleTransaction(
     details: {
       lockAmount: props.lockAmount,
       lockEndDate: props.lockEndDate,
-      lockType
-    }
+      lockType,
+    },
   });
 
   lockActionStates[actionIndex].confirmed = await txListener(tx, {
@@ -131,7 +131,7 @@ async function handleTransaction(
     },
     onTxFailed: () => {
       lockActionStates[actionIndex].confirming = false;
-    }
+    },
   });
 }
 
@@ -144,17 +144,17 @@ async function submit(lockType: LockType, actionIndex: number) {
       tx = await balancerContractsService.veBAL.createLock(
         getProvider(),
         props.lockAmount,
-        props.lockEndDate
+        props.lockEndDate,
       );
     } else if (lockType === LockType.EXTEND_LOCK) {
       tx = await balancerContractsService.veBAL.extendLock(
         getProvider(),
-        props.lockEndDate
+        props.lockEndDate,
       );
     } else if (lockType === LockType.INCREASE_LOCK) {
       tx = await balancerContractsService.veBAL.increaseLock(
         getProvider(),
-        props.lockAmount
+        props.lockAmount,
       );
     } else {
       throw new Error('Unsupported lockType provided');
@@ -188,12 +188,12 @@ watch(lockActionStatesConfirmed, () => {
 onBeforeMount(async () => {
   const approvalAmount = parseUnits(
     props.lockAmount,
-    props.lockablePoolTokenInfo.decimals
+    props.lockablePoolTokenInfo.decimals,
   ).toString();
 
   const approvalActions = await getTokenApprovalActionsForSpender(
     configService.network.addresses.veBAL,
-    approvalAmount
+    approvalAmount,
   );
 
   actions.value.unshift(...approvalActions);

@@ -25,7 +25,7 @@ export function useLock() {
   const shouldFetchLockPool = computed((): boolean => !isL2.value);
   const lockPoolQuery = usePoolQuery(
     lockablePoolId.value as string,
-    shouldFetchLockPool
+    shouldFetchLockPool,
   );
   const lockQuery = useVeBalLockInfoQuery();
 
@@ -33,21 +33,21 @@ export function useLock() {
    * COMPUTED
    */
   const isLoadingLockPool = computed(
-    (): boolean => lockPoolQuery.isLoading.value || lockPoolQuery.isIdle.value
+    (): boolean => lockPoolQuery.isLoading.value || lockPoolQuery.isIdle.value,
   );
 
   const isLoadingLockInfo = computed(
-    (): boolean => lockQuery.isLoading.value || lockQuery.isIdle.value
+    (): boolean => lockQuery.isLoading.value || lockQuery.isIdle.value,
   );
 
   const isLoadingLock = computed(
-    (): boolean => isLoadingLockPool.value || isLoadingLockInfo.value
+    (): boolean => isLoadingLockPool.value || isLoadingLockInfo.value,
   );
 
   const lockPool = computed<Pool | undefined>(() => lockPoolQuery.data.value);
 
   const lockPoolToken = computed((): TokenInfo | null =>
-    lockPool.value != null ? getToken(lockPool.value.address) : null
+    lockPool.value != null ? getToken(lockPool.value.address) : null,
   );
 
   const lock = computed(() => lockQuery.data.value);
@@ -56,19 +56,19 @@ export function useLock() {
     (): BigNumber =>
       lockPool.value
         ? bnum(lockPool.value.totalLiquidity).div(lockPool.value.totalShares)
-        : bnum(0)
+        : bnum(0),
   );
 
   const lockFiatValue = computed((): string =>
     lock.value && lock.value.hasExistingLock
       ? poolShares.value.times(lock.value.lockedAmount).toString()
-      : '0'
+      : '0',
   );
 
   const lockedFiatTotal = computed(() =>
     lockPool.value && lock.value?.hasExistingLock
       ? getBptBalanceFiatValue(lockPool.value, lock.value.lockedAmount)
-      : '0'
+      : '0',
   );
 
   return {
@@ -79,6 +79,6 @@ export function useLock() {
     lockPool,
     lock,
     lockFiatValue,
-    lockedFiatTotal
+    lockedFiatTotal,
   };
 }

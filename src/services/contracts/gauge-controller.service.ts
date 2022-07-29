@@ -11,7 +11,7 @@ export default class GaugeControllerService {
 
   constructor(
     protected readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly web3: Web3Service = web3Service,
   ) {
     this.abi = GaugeControllerAbi;
   }
@@ -23,28 +23,28 @@ export default class GaugeControllerService {
   public voteForManyGaugeWeights(
     gaugeAddresses: string[],
     weights: BigNumber[],
-    options: Record<string, any> = {}
+    options: Record<string, any> = {},
   ): Promise<TransactionResponse> {
     return this.web3.sendTransaction(
       this.address,
       this.abi,
       'vote_for_many_gauge_weights',
       [gaugeAddresses, weights],
-      options
+      options,
     );
   }
 
   public voteForGaugeWeights(
     gaugeAddress: string,
     weight: BigNumber,
-    options: Record<string, any> = {}
+    options: Record<string, any> = {},
   ): Promise<TransactionResponse> {
     return this.web3.sendTransaction(
       this.address,
       this.abi,
       'vote_for_gauge_weights',
       [gaugeAddress, weight],
-      options
+      options,
     );
   }
 }

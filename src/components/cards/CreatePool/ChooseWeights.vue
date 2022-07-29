@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 import usePoolCreation, {
-  PoolSeedToken
+  PoolSeedToken,
 } from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -24,7 +24,7 @@ const emptyTokenWeight: PoolSeedToken = {
   weight: 0,
   id: '0',
   isLocked: false,
-  amount: '0'
+  amount: '0',
 };
 
 /**
@@ -39,7 +39,7 @@ const {
   tokensList,
   totalLiquidity,
   hasInjectedToken,
-  acceptedCustomTokenDisclaimer
+  acceptedCustomTokenDisclaimer,
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
@@ -65,7 +65,7 @@ const cardWrapperHeight = ref(0);
  * COMPUTED
  */
 const tokenWeightItemHeight = computed(() =>
-  upToLargeBreakpoint.value ? 56 : 64
+  upToLargeBreakpoint.value ? 56 : 64,
 );
 
 const zeroWeightToken = computed(() => {
@@ -147,8 +147,8 @@ watch(
     setTokensList(seedTokens.value.map(w => w.tokenAddress));
   },
   {
-    deep: true
-  }
+    deep: true,
+  },
 );
 
 /**
@@ -202,16 +202,16 @@ async function animateHeight(offset = 0) {
   emit('update:height', {
     height:
       (cardWrapper.value?.offsetHeight || 0) +
-      tokenWeightItemHeight.value * offset
+      tokenWeightItemHeight.value * offset,
   });
   anime({
     targets: tokenWeightListWrapper.value,
     height: `${wrapperHeight.value + tokenWeightItemHeight.value * offset}px`,
     complete: () => {
       emit('update:height', {
-        height: cardWrapper.value?.offsetHeight || 0
+        height: cardWrapper.value?.offsetHeight || 0,
       });
-    }
+    },
   });
   wrapperHeight.value += tokenWeightItemHeight.value * offset;
   // to avoid reflow we are going to transform the totals + add token
@@ -219,7 +219,7 @@ async function animateHeight(offset = 0) {
   anime({
     targets: [totalsRowElement.value, addTokenRowElement.value],
     translateY: `${tokenWeightItemHeight.value * seedTokens.value.length}px`,
-    easing: 'spring(0.4, 500, 9, 0)'
+    easing: 'spring(0.4, 500, 9, 0)',
   });
   await nextTick();
   // get the last added token weight element
@@ -227,7 +227,7 @@ async function animateHeight(offset = 0) {
     anime.set(seedTokenElement, {
       left: 0,
       right: 0,
-      top: `${tokenWeightItemHeight.value * i}px`
+      top: `${tokenWeightItemHeight.value * i}px`,
     });
   });
 }
@@ -235,7 +235,7 @@ async function animateHeight(offset = 0) {
 async function addTokenToPool() {
   const newWeights: PoolSeedToken[] = [
     ...seedTokens.value,
-    { ...emptyTokenWeight, id: uniqueId() } as PoolSeedToken
+    { ...emptyTokenWeight, id: uniqueId() } as PoolSeedToken,
   ];
   updateTokenWeights(newWeights);
   await animateHeight(1);
@@ -245,18 +245,18 @@ async function addTokenToPool() {
 function distributeWeights() {
   // get all the locked weights and sum those bad boys
   let lockedPct = sum(
-    seedTokens.value.filter(w => w.isLocked).map(w => w.weight / 100)
+    seedTokens.value.filter(w => w.isLocked).map(w => w.weight / 100),
   );
   // makes it so that new allocations are set as 0
   if (lockedPct > 1) lockedPct = 1;
   const pctAvailableToDistribute = bnum(1).minus(lockedPct);
   const unlockedWeights = seedTokens.value.filter(w => !w.isLocked);
   const evenDistributionWeight = pctAvailableToDistribute.div(
-    unlockedWeights.length
+    unlockedWeights.length,
   );
 
   const error = pctAvailableToDistribute.minus(
-    evenDistributionWeight.times(unlockedWeights.length)
+    evenDistributionWeight.times(unlockedWeights.length),
   );
   const isErrorDivisible = error.mod(unlockedWeights.length).eq(0);
   const distributableError = isErrorDivisible
@@ -291,7 +291,7 @@ async function handleRemoveToken(index: number) {
   updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
   await nextTick();
   seedTokenElements.value = seedTokenElements.value.filter(
-    (_, i) => i !== index
+    (_, i) => i !== index,
   );
   distributeWeights();
   animateHeight(-1);
@@ -307,7 +307,7 @@ function handleProceed() {
 
 function onAlertMountChange() {
   emit('update:height', {
-    height: cardWrapper.value?.offsetHeight || 0
+    height: cardWrapper.value?.offsetHeight || 0,
   });
 }
 </script>
@@ -403,7 +403,7 @@ function onAlertMountChange() {
             type="warning"
             >{{
               $t('createAPool.youCanFundWithThisPoolWith', [
-                fNum2(totalLiquidity.toString(), FNumFormats.fiat)
+                fNum2(totalLiquidity.toString(), FNumFormats.fiat),
               ])
             }}</BalAlert
           >

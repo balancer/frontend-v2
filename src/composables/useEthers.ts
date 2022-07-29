@@ -1,13 +1,13 @@
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/providers';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 import { ref } from 'vue';
 
 import {
   retryPromiseWithDelay,
-  tryPromiseWithTimeout
+  tryPromiseWithTimeout,
 } from '@/lib/utils/promise';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
@@ -29,7 +29,7 @@ export default function useEthers() {
 
   async function getTxConfirmedAt(receipt: TransactionReceipt): Promise<Date> {
     const block = await rpcProviderService.jsonProvider.getBlock(
-      receipt.blockNumber
+      receipt.blockNumber,
     );
 
     return new Date(toJsTimestamp(block.timestamp));
@@ -46,10 +46,10 @@ export default function useEthers() {
           },
           onTxFailed: () => {
             resolve(false);
-          }
+          },
         },
         false,
-        false
+        false,
       );
     });
 
@@ -63,7 +63,7 @@ export default function useEthers() {
       onTxFailed: FailedTxCallback;
     },
     shouldRefetchBalances = true,
-    shouldRetry = true
+    shouldRetry = true,
   ): Promise<boolean> {
     console.log('tx', tx);
     let confirmed = false;
@@ -81,12 +81,12 @@ export default function useEthers() {
         // We need to query the backend to get the actual transaction hash for the block explorer link
         const realTx = await tryPromiseWithTimeout(
           new SafeAppsSDK().txs.getBySafeTxHash(tx.hash),
-          1000
+          1000,
         );
         if (realTx.txHash !== null) {
           txHash = realTx.txHash;
           updateTransaction(tx.hash, 'tx', {
-            id: realTx.txHash
+            id: realTx.txHash,
           });
         }
       } catch {

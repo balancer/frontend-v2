@@ -10,7 +10,7 @@ import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 import {
   HIGH_PRICE_IMPACT,
-  REKT_PRICE_IMPACT
+  REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -26,7 +26,7 @@ export default function useInvestMath(
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,
-  sor: SOR
+  sor: SOR,
 ) {
   /**
    * STATE
@@ -45,7 +45,7 @@ export default function useInvestMath(
   const {
     promises: batchSwapPromises,
     processing: processingBatchSwaps,
-    processAll: processBatchSwaps
+    processAll: processBatchSwaps,
   } = usePromiseSequence();
 
   /**
@@ -56,7 +56,7 @@ export default function useInvestMath(
     tokens,
     balances,
     'join',
-    useNativeAsset
+    useNativeAsset,
   );
 
   /**
@@ -65,54 +65,51 @@ export default function useInvestMath(
   const tokenCount = computed(() => tokenAddresses.value.length);
 
   const poolTokens = computed((): TokenInfo[] =>
-    tokenAddresses.value.map(address => getToken(address))
+    tokenAddresses.value.map(address => getToken(address)),
   );
 
   // Input amounts can be null so fullAmounts returns amounts for all tokens
   // and zero if null.
   const fullAmounts = computed((): string[] =>
-    new Array(tokenCount.value).fill('0').map((_, i) => amounts.value[i] || '0')
+    new Array(tokenCount.value)
+      .fill('0')
+      .map((_, i) => amounts.value[i] || '0'),
   );
 
   const fullAmountsScaled = computed((): BigNumber[] =>
     fullAmounts.value.map((amount, i) =>
-      parseUnits(amount, poolTokens.value[i].decimals)
-    )
+      parseUnits(amount, poolTokens.value[i].decimals),
+    ),
   );
 
-  const batchSwapAmountMap = computed(
-    (): Record<string, BigNumber> => {
-      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        tokenAddresses.value[i].toLowerCase(),
-        amount
-      ]);
-      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-        (amount as BigNumber).gt(0)
-      );
-      return Object.fromEntries(onlyTokensWithAmounts);
-    }
-  );
+  const batchSwapAmountMap = computed((): Record<string, BigNumber> => {
+    const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+      tokenAddresses.value[i].toLowerCase(),
+      amount,
+    ]);
+    const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+      (amount as BigNumber).gt(0),
+    );
+    return Object.fromEntries(onlyTokensWithAmounts);
+  });
 
   const fiatAmounts = computed((): string[] =>
-    fullAmounts.value.map((_, i) => fiatAmount(i))
+    fullAmounts.value.map((_, i) => fiatAmount(i)),
   );
 
   const fiatTotal = computed((): string =>
     fiatAmounts.value.reduce(
-      (total, amount) =>
-        bnum(total)
-          .plus(amount)
-          .toString(),
-      '0'
-    )
+      (total, amount) => bnum(total).plus(amount).toString(),
+      '0',
+    ),
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum2(fiatTotal.value, FNumFormats.fiat)
+    fNum2(fiatTotal.value, FNumFormats.fiat),
   );
 
   const hasAmounts = computed(() =>
-    fullAmounts.value.some(amount => bnum(amount).gt(0))
+    fullAmounts.value.some(amount => bnum(amount).gt(0)),
   );
 
   const priceImpact = computed((): number => {
@@ -121,7 +118,7 @@ export default function useInvestMath(
       return (
         poolCalculator
           .priceImpact(fullAmounts.value, {
-            queryBPT: fullBPTOut.value.toString()
+            queryBPT: fullBPTOut.value.toString(),
           })
           .toNumber() || 0
       );
@@ -146,14 +143,12 @@ export default function useInvestMath(
         const balance = balanceFor(tokenAddresses.value[i]);
         return (
           amount ===
-          bnum(balance)
-            .minus(nativeAsset.minTransactionBuffer)
-            .toString()
+          bnum(balance).minus(nativeAsset.minTransactionBuffer).toString()
         );
       } else {
         return amount === balanceFor(tokenAddresses.value[i]);
       }
-    })
+    }),
   );
 
   const optimized = computed(() => {
@@ -166,9 +161,7 @@ export default function useInvestMath(
 
     if (isStablePhantomPool.value) {
       _bptOut = batchSwap.value
-        ? bnum(batchSwap.value.amountTokenOut)
-            .abs()
-            .toString()
+        ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
     } else {
       _bptOut = poolCalculator
@@ -187,27 +180,27 @@ export default function useInvestMath(
   });
 
   const poolTokenBalances = computed((): string[] =>
-    tokenAddresses.value.map(token => balanceFor(token))
+    tokenAddresses.value.map(token => balanceFor(token)),
   );
 
   const hasZeroBalance = computed((): boolean =>
-    poolTokenBalances.value.map(balance => bnum(balance).eq(0)).includes(true)
+    poolTokenBalances.value.map(balance => bnum(balance).eq(0)).includes(true),
   );
 
   const hasNoBalances = computed((): boolean =>
-    poolTokenBalances.value.every(balance => bnum(balance).eq(0))
+    poolTokenBalances.value.every(balance => bnum(balance).eq(0)),
   );
 
   const hasAllTokens = computed((): boolean =>
-    poolTokenBalances.value.every(balance => bnum(balance).gt(0))
+    poolTokenBalances.value.every(balance => bnum(balance).gt(0)),
   );
 
   const shouldFetchBatchSwap = computed(
-    (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
+    (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value,
   );
 
   const supportsPropotionalOptimization = computed(
-    (): boolean => !isStablePhantomPool.value
+    (): boolean => !isStablePhantomPool.value,
   );
 
   /**
@@ -226,9 +219,7 @@ export default function useInvestMath(
       if (isSameAddress(tokenAddresses.value[i], nativeAsset.address)) {
         const balance = balanceFor(tokenAddresses.value[i]);
         amounts.value[i] = bnum(balance).gt(nativeAsset.minTransactionBuffer)
-          ? bnum(balance)
-              .minus(nativeAsset.minTransactionBuffer)
-              .toString()
+          ? bnum(balance).minus(nativeAsset.minTransactionBuffer).toString()
           : '0';
       } else {
         amounts.value[i] = balanceFor(tokenAddresses.value[i]);
@@ -248,7 +239,7 @@ export default function useInvestMath(
       balancerContractsService.vault.instance as any,
       Object.keys(batchSwapAmountMap.value),
       Object.values(batchSwapAmountMap.value),
-      pool.value.address.toLowerCase()
+      pool.value.address.toLowerCase(),
     );
 
     batchSwapLoading.value = false;
@@ -256,7 +247,7 @@ export default function useInvestMath(
 
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
     const changedIndex = newAmounts.findIndex(
-      (amount, i) => oldAmounts[i] !== amount
+      (amount, i) => oldAmounts[i] !== amount,
     );
 
     if (changedIndex >= 0) {
@@ -268,7 +259,7 @@ export default function useInvestMath(
       const { send } = poolCalculator.propAmountsGiven(
         fullAmounts.value[changedIndex],
         changedIndex,
-        'send'
+        'send',
       );
       proportionalAmounts.value = send;
     }
@@ -299,6 +290,6 @@ export default function useInvestMath(
     // methods
     maximizeAmounts,
     optimizeAmounts,
-    getBatchSwap
+    getBatchSwap,
   };
 }

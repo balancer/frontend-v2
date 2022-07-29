@@ -43,7 +43,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
-  isPaginated: false
+  isPaginated: false,
 });
 
 const emit = defineEmits(['loadMore']);
@@ -67,7 +67,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     accessor: 'tx',
     Cell: 'actionCell',
     width: 190,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('value'),
@@ -77,7 +77,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     align: 'right',
     className: 'align-center w-40',
     sortKey: pool => pool.value,
-    width: 125
+    width: 125,
   },
   {
     name: t('tradeDetails'),
@@ -85,7 +85,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     accessor: '',
     Cell: 'detailsCell',
     width: 310,
-    sortable: false
+    sortable: false,
   },
 
   {
@@ -95,8 +95,8 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200
-  }
+    width: 200,
+  },
 ]);
 
 const swapRows = computed<SwapRow[]>(() =>
@@ -112,7 +112,7 @@ const swapRows = computed<SwapRow[]>(() =>
           tx,
           userAddress,
           ensName,
-          ensAvatar
+          ensAvatar,
         }) => {
           const value = bnum(priceFor(tokenOut))
             .times(tokenAmountOut)
@@ -133,10 +133,10 @@ const swapRows = computed<SwapRow[]>(() =>
             ensName,
             ensAvatar,
             formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
-            tx
+            tx,
           };
-        }
-      )
+        },
+      ),
 );
 </script>
 
@@ -159,7 +159,7 @@ const swapRows = computed<SwapRow[]>(() =>
       :no-results-label="noResultsLabel"
       :initial-state="{
         sortColumn: 'timeAgo',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
     >
       <template v-slot:actionCell="action">

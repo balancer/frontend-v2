@@ -10,7 +10,7 @@ import {
   SigningScheme,
   signOrder as signOrderGp,
   signOrderCancellation as signOrderCancellationGp,
-  TypedDataV3Signer
+  TypedDataV3Signer,
 } from '@gnosis.pm/gp-v2-contracts';
 
 import { networkId } from '@/composables/useNetwork';
@@ -26,7 +26,8 @@ const METHOD_NOT_FOUND_ERROR_CODE = -32601;
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i;
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i;
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i;
-const METAMASK_STRING_CHAINID_REGEX = /provided chainid .* must match the active chainid/i;
+const METAMASK_STRING_CHAINID_REGEX =
+  /provided chainid .* must match the active chainid/i;
 
 export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string };
 
@@ -58,11 +59,11 @@ interface SchemaInfo {
 }
 const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.EIP712, { libraryValue: 0, apiValue: 'eip712' }],
-  [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }]
+  [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }],
 ]);
 
 function _getSigningSchemeInfo(
-  ecdaSigningScheme: EcdsaSigningScheme
+  ecdaSigningScheme: EcdsaSigningScheme,
 ): SchemaInfo {
   const value = mapSigningSchema.get(ecdaSigningScheme);
   if (value === undefined) {
@@ -73,13 +74,13 @@ function _getSigningSchemeInfo(
 }
 
 export function getSigningSchemeApiValue(
-  ecdaSigningScheme: EcdsaSigningScheme
+  ecdaSigningScheme: EcdsaSigningScheme,
 ) {
   return _getSigningSchemeInfo(ecdaSigningScheme).apiValue;
 }
 
 export function getSigningSchemeLibValue(
-  ecdaSigningScheme: EcdsaSigningScheme
+  ecdaSigningScheme: EcdsaSigningScheme,
 ) {
   return _getSigningSchemeInfo(ecdaSigningScheme).libraryValue;
 }
@@ -92,19 +93,19 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   console.log('[Gnosis Signing] signOrder', {
     domain,
     order,
-    signer
+    signer,
   });
 
   return signOrderGp(
     domain,
     order,
     signer,
-    getSigningSchemeLibValue(signingScheme)
+    getSigningSchemeLibValue(signingScheme),
   );
 }
 
 async function _signOrderCancellation(
-  params: SingOrderCancellationParams
+  params: SingOrderCancellationParams,
 ): Promise<Signature> {
   const { signer, signingScheme, orderId } = params;
 
@@ -113,14 +114,14 @@ async function _signOrderCancellation(
   console.log('[Gnosis Signing] signOrderCancellation', {
     domain,
     orderId,
-    signer
+    signer,
   });
 
   return signOrderCancellationGp(
     domain,
     orderId,
     signer,
-    getSigningSchemeLibValue(signingScheme)
+    getSigningSchemeLibValue(signingScheme),
   );
 }
 
@@ -130,7 +131,7 @@ async function _signPayload(
   payload: any,
   signFn: typeof _signOrder | typeof _signOrderCancellation,
   signer: Signer,
-  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
+  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4',
 ): Promise<SigningResult> {
   const signingScheme =
     signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712;
@@ -157,7 +158,7 @@ async function _signPayload(
     signature = (await signFn({
       ...payload,
       signer: _signer,
-      signingScheme
+      signingScheme,
     })) as EcdsaSignature; // Only ECDSA signing supported for now
   } catch (e) {
     const error = e as WalletError;
@@ -203,14 +204,14 @@ async function _signPayload(
 
 export async function signOrder(
   order: UnsignedOrder,
-  signer: Signer
+  signer: Signer,
 ): Promise<SigningResult> {
   return _signPayload({ order }, _signOrder, signer);
 }
 
 export async function signOrderCancellation(
   orderId: string,
-  signer: Signer
+  signer: Signer,
 ): Promise<SigningResult> {
   return _signPayload({ orderId }, _signOrderCancellation, signer);
 }

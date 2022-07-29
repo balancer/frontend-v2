@@ -1,6 +1,6 @@
 import {
   BalancerHelpers__factory,
-  Vault__factory
+  Vault__factory,
 } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
@@ -20,7 +20,7 @@ export default class ExchangeService {
 
   constructor(
     pool: Ref<Pool>,
-    public readonly config: ConfigService = configService
+    public readonly config: ConfigService = configService,
   ) {
     this.pool = pool;
     this.vaultAddress = this.config.network.addresses.vault;
@@ -32,13 +32,13 @@ export default class ExchangeService {
     account: string,
     amountsIn: string[],
     tokensIn: string[],
-    bptOut = '0'
+    bptOut = '0',
   ) {
     const txParams = this.joinParams.serialize(
       account,
       amountsIn,
       tokensIn,
-      bptOut
+      bptOut,
     );
 
     return await callStatic(
@@ -46,7 +46,7 @@ export default class ExchangeService {
       this.helpersAddress,
       BalancerHelpers__factory.abi,
       'queryJoin',
-      txParams
+      txParams,
     );
   }
 
@@ -55,13 +55,13 @@ export default class ExchangeService {
     account: string,
     amountsIn: string[],
     tokensIn: string[],
-    bptOut = '0'
+    bptOut = '0',
   ): Promise<TransactionResponse> {
     const txParams = this.joinParams.serialize(
       account,
       amountsIn,
       tokensIn,
-      bptOut
+      bptOut,
     );
     const value = this.joinParams.value(amountsIn, tokensIn);
 
@@ -71,7 +71,7 @@ export default class ExchangeService {
       Vault__factory.abi,
       'joinPool',
       txParams,
-      { value }
+      { value },
     );
   }
 
@@ -82,7 +82,7 @@ export default class ExchangeService {
     tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
-    exactOut: boolean
+    exactOut: boolean,
   ) {
     const txParams = this.exitParams.serialize(
       account,
@@ -90,7 +90,7 @@ export default class ExchangeService {
       tokensOut,
       bptIn,
       exitTokenIndex,
-      exactOut
+      exactOut,
     );
 
     return await callStatic(
@@ -98,7 +98,7 @@ export default class ExchangeService {
       this.helpersAddress,
       BalancerHelpers__factory.abi,
       'queryExit',
-      txParams
+      txParams,
     );
   }
 
@@ -109,7 +109,7 @@ export default class ExchangeService {
     tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
-    exactOut: boolean
+    exactOut: boolean,
   ): Promise<TransactionResponse> {
     const txParams = this.exitParams.serialize(
       account,
@@ -117,7 +117,7 @@ export default class ExchangeService {
       tokensOut,
       bptIn,
       exitTokenIndex,
-      exactOut
+      exactOut,
     );
 
     return await sendTransaction(
@@ -125,7 +125,7 @@ export default class ExchangeService {
       this.vaultAddress,
       Vault__factory.abi,
       'exitPool',
-      txParams
+      txParams,
     );
   }
 

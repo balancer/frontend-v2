@@ -35,7 +35,7 @@ const poolWeightsLabel = computed(() =>
 
       return `${weightLabel} ${symbol}`;
     })
-    .join(' / ')
+    .join(' / '),
 );
 
 /**
@@ -44,7 +44,7 @@ const poolWeightsLabel = computed(() =>
 function formatWeightLabel(weight: string) {
   return fNum2(weight, {
     style: 'percent',
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   });
 }
 </script>
@@ -56,7 +56,7 @@ function formatWeightLabel(weight: string) {
         <div class="font-semibold">
           {{
             $t('getVeBAL.previewModal.lpTokens', [
-              fNum2(totalLpTokens, FNumFormats.token)
+              fNum2(totalLpTokens, FNumFormats.token),
             ])
           }}
         </div>

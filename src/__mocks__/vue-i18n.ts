@@ -1,6 +1,6 @@
 export function useI18n() {
   return {
-    t: jest.fn().mockImplementation()
+    t: jest.fn().mockImplementation(),
   };
 }
 

@@ -88,13 +88,13 @@ import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeSettingsPopover, {
-  TradeSettingsContext
+  TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import useSor from '@/composables/trade/useSor';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useValidation, {
-  TradeValidation
+  TradeValidation,
 } from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -110,7 +110,7 @@ export default defineComponent({
     TradePair,
     TradePreviewModal,
     TradeRoute,
-    TradeSettingsPopover
+    TradeSettingsPopover,
   },
 
   setup() {
@@ -130,7 +130,7 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAmount,
       setTokenInAddress,
-      setTokenOutAddress
+      setTokenOutAddress,
     } = useTradeState();
     const { slippage } = useUserSettings();
 
@@ -158,7 +158,7 @@ export default defineComponent({
     });
 
     const wrapType = computed(() =>
-      getWrapAction(tokenInAddress.value, tokenOutAddress.value)
+      getWrapAction(tokenInAddress.value, tokenOutAddress.value),
     );
     const isWrap = computed(() => wrapType.value === WrapType.Wrap);
     const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
@@ -178,7 +178,7 @@ export default defineComponent({
     const { isLoading: isLoadingApprovals } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
-      tokens
+      tokens,
     );
     const {
       trading,
@@ -190,7 +190,7 @@ export default defineComponent({
       latestTxHash,
       pools,
       fetchPools,
-      poolsLoading
+      poolsLoading,
     } = useSor({
       exactIn,
       tokenInAddressInput: tokenInAddress,
@@ -200,13 +200,13 @@ export default defineComponent({
       wrapType,
       tokenIn,
       tokenOut,
-      slippageBufferRate
+      slippageBufferRate,
     });
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount
+      tokenOutAmount,
     );
 
     const title = computed(() => {
@@ -220,14 +220,14 @@ export default defineComponent({
         return {
           header: t('highPriceImpact'),
           body: t('highPriceImpactDetailed'),
-          label: t('accept')
+          label: t('accept'),
         };
       }
       switch (errorMessage.value) {
         case TradeValidation.NO_LIQUIDITY:
           return {
             header: t('insufficientLiquidity'),
-            body: t('insufficientLiquidityDetailed')
+            body: t('insufficientLiquidityDetailed'),
           };
         default:
           return undefined;
@@ -310,8 +310,8 @@ export default defineComponent({
       bp,
       darkMode,
       tradeCardShadow,
-      explorer: explorerLinks
+      explorer: explorerLinks,
     };
-  }
+  },
 });
 </script>

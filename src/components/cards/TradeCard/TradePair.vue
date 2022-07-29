@@ -59,11 +59,11 @@ const isInRate = ref<boolean>(true);
  * COMPUTED
  */
 const missingToken = computed(
-  () => !_tokenInAddress.value || !_tokenOutAddress.value
+  () => !_tokenInAddress.value || !_tokenOutAddress.value,
 );
 
 const missingAmount = computed(
-  () => !_tokenInAmount.value || !_tokenOutAmount.value
+  () => !_tokenInAmount.value || !_tokenOutAmount.value,
 );
 
 const tokenIn = computed(() => getToken(_tokenInAddress.value));
@@ -80,15 +80,11 @@ const rateLabel = computed(() => {
   let rate, inSymbol, outSymbol;
 
   if (isInRate.value) {
-    rate = bnum(_tokenOutAmount.value)
-      .div(_tokenInAmount.value)
-      .toString();
+    rate = bnum(_tokenOutAmount.value).div(_tokenInAmount.value).toString();
     inSymbol = tokenIn.value.symbol;
     outSymbol = tokenOut.value.symbol;
   } else {
-    rate = bnum(_tokenInAmount.value)
-      .div(_tokenOutAmount.value)
-      .toString();
+    rate = bnum(_tokenInAmount.value).div(_tokenOutAmount.value).toString();
     inSymbol = tokenOut.value.symbol;
     outSymbol = tokenIn.value.symbol;
   }

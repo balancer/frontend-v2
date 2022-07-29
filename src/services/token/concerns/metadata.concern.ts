@@ -8,7 +8,7 @@ import {
   TokenInfo,
   TokenInfoMap,
   TokenList,
-  TokenListMap
+  TokenListMap,
 } from '@/types/TokenList';
 
 import TokenService from '../token.service';
@@ -23,7 +23,7 @@ export default class MetadataConcern {
    */
   async get(
     addresses: string[],
-    tokenLists: TokenListMap
+    tokenLists: TokenListMap,
   ): Promise<TokenInfoMap> {
     addresses = addresses.map(address => getAddress(address));
     const tokenListTokens = this.tokenListsTokensFrom(tokenLists);
@@ -32,7 +32,7 @@ export default class MetadataConcern {
     // If token meta can't be found in TokenLists, fetch onchain
     const existingAddresses = Object.keys(metaDict);
     const unknownAddresses = addresses.filter(
-      address => !includesAddress(existingAddresses, address)
+      address => !includesAddress(existingAddresses, address),
     );
     if (unknownAddresses.length > 0) {
       const onchainMeta = await this.getMetaOnchain(unknownAddresses);
@@ -50,18 +50,18 @@ export default class MetadataConcern {
 
   private getMetaFromLists(
     addresses: string[],
-    tokens: TokenInfo[]
+    tokens: TokenInfo[],
   ): TokenInfoMap {
     const metaDict = {};
 
     addresses.forEach(async address => {
       const tokenMeta = tokens.find(token =>
-        isSameAddress(token.address, address)
+        isSameAddress(token.address, address),
       );
       if (tokenMeta)
         metaDict[address] = {
           ...tokenMeta,
-          address
+          address,
         };
     });
 
@@ -80,7 +80,7 @@ export default class MetadataConcern {
         set(
           metaDict,
           `${address}.logoURI`,
-          `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
+          `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`,
         );
         multi.call(`${address}.name`, address, 'name');
         multi.call(`${address}.symbol`, address, 'symbol');

@@ -35,7 +35,7 @@ const { fNum2 } = useNumbers();
  */
 const apr = computed(() => props.pool?.apr || props.poolApr);
 const validAPR = computed(
-  () => Number(apr.value?.total?.unstaked || '0') * 100 <= APR_THRESHOLD
+  () => Number(apr.value?.total?.unstaked || '0') * 100 <= APR_THRESHOLD,
 );
 
 const hasYieldAPR = computed(() => bnum(apr.value?.yield.total || '0').gt(0));
@@ -43,7 +43,7 @@ const hasYieldAPR = computed(() => bnum(apr.value?.yield.total || '0').gt(0));
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 
 const totalLabel = computed((): string =>
-  apr.value ? totalAprLabel(apr.value, props.pool.boost) : '0'
+  apr.value ? totalAprLabel(apr.value, props.pool.boost) : '0',
 );
 </script>
 

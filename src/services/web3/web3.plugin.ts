@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import {
   JsonRpcProvider,
   JsonRpcSigner,
-  Web3Provider
+  Web3Provider,
 } from '@ethersproject/providers';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
@@ -36,14 +36,14 @@ export const SupportedWallets = [
   'walletconnect',
   'tally',
   'gnosis',
-  'walletlink'
+  'walletlink',
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase Wallet',
-  tally: 'Tally'
+  tally: 'Tally',
 };
 
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -70,8 +70,8 @@ async function isSanctionedAddress(address: string): Promise<boolean | null> {
   try {
     const response = await axios.post(SANCTIONS_ENDPOINT, [
       {
-        address: address.toLowerCase()
-      }
+        address: address.toLowerCase(),
+      },
     ]);
     const isSanctioned = response.data[0].isSanctioned;
     return isSanctioned;
@@ -90,7 +90,7 @@ export default {
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
       connector: null as any,
-      walletState: 'disconnected'
+      walletState: 'disconnected',
     });
 
     const account = computed(() => {
@@ -108,7 +108,7 @@ export default {
     const provider = computed(
       () =>
         pluginState.connector?.provider ??
-        rpcProviderService.getJsonProvider(chainId.value)
+        rpcProviderService.getJsonProvider(chainId.value),
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
     const userProvider = computed(() => {
@@ -116,7 +116,7 @@ export default {
     });
 
     async function getWalletConnector(
-      wallet: Wallet
+      wallet: Wallet,
     ): Promise<Connector | void> {
       if (wallet === 'metamask') {
         const { MetamaskConnector } = await import(
@@ -166,7 +166,7 @@ export default {
       try {
         if (!wallet || typeof wallet !== 'string') {
           throw new Error(
-            'Please provide a wallet to facilitate a web3 connection.'
+            'Please provide a wallet to facilitate a web3 connection.',
           );
         }
 
@@ -176,7 +176,7 @@ export default {
 
         if (!connector) {
           throw new Error(
-            `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
+            `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`,
           );
         }
         const { account } = await connector.connect();
@@ -221,7 +221,7 @@ export default {
     const disconnectWallet = async () => {
       if (!pluginState.connector) {
         throw new Error(
-          'Cannot disconnect a wallet. No wallet currently connected.'
+          'Cannot disconnect a wallet. No wallet currently connected.',
         );
       }
       const connector = pluginState.connector as Connector;
@@ -245,16 +245,16 @@ export default {
       chainId,
       provider,
       signer,
-      isSanctioned
+      isSanctioned,
     };
 
     app.provide(Web3ProviderSymbol, payload);
-  }
+  },
 };
 
 export function getConnectorName(
   connectorId: ConnectorId,
-  provider: any
+  provider: any,
 ): string {
   if (!provider) {
     return i18n.global.t('unknown');
@@ -297,7 +297,7 @@ export function getConnectorName(
 
 export function getConnectorLogo(
   connectorId: ConnectorId,
-  provider: any
+  provider: any,
 ): string {
   if (!provider) {
     return defaultLogo;

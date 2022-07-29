@@ -6,7 +6,7 @@ export default function useStaking() {
   const providedData = inject(StakingProviderSymbol);
   if (!providedData) {
     throw new Error(
-      `useStaking was called from a component that was not a child of <StakingProvider />`
+      `useStaking was called from a component that was not a child of <StakingProvider />`,
     );
   }
   return providedData;

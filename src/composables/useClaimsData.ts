@@ -8,7 +8,7 @@ import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
 import useProtocolRewardsQuery, {
-  ProtocolRewardsQueryResponse
+  ProtocolRewardsQueryResponse,
 } from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
 import { isKovan, isL2 } from './useNetwork';
@@ -31,7 +31,7 @@ type GaugePoolQueryResponse = {
 export function useClaimsData() {
   const protocolRewardsQuery = useProtocolRewardsQuery();
   const protocolRewards = computed(
-    (): ProtocolRewardsQueryResponse => protocolRewardsQuery.data.value || {}
+    (): ProtocolRewardsQueryResponse => protocolRewardsQuery.data.value || {},
   );
 
   // Fetch subgraph liquidity gauges
@@ -46,7 +46,7 @@ export function useClaimsData() {
 
   // Fetch pools associated with gauges
   const gaugePoolQueryEnabled = computed(
-    (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0
+    (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0,
   );
   const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
     subgraphs.balancer,
@@ -54,7 +54,7 @@ export function useClaimsData() {
     () => ({
       pools: {
         __args: {
-          where: { id_in: gaugePoolIds.value }
+          where: { id_in: gaugePoolIds.value },
         },
         id: true,
         address: true,
@@ -62,30 +62,30 @@ export function useClaimsData() {
         tokensList: true,
         tokens: {
           address: true,
-          weight: true
-        }
-      }
+          weight: true,
+        },
+      },
     }),
-    reactive({ enabled: gaugePoolQueryEnabled })
+    reactive({ enabled: gaugePoolQueryEnabled }),
   );
 
   /**
    * COMPUTED
    */
   const gaugePools = computed(
-    (): GaugePool[] => gaugePoolQuery.data.value?.pools || []
+    (): GaugePool[] => gaugePoolQuery.data.value?.pools || [],
   );
 
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(gaugePoolQuery) ||
-      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery))
+      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery)),
   );
 
   return {
     gauges,
     gaugePools,
     protocolRewards,
-    isLoading
+    isLoading,
   };
 }

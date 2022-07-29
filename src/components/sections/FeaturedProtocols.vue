@@ -9,9 +9,9 @@ export default defineComponent({
     const { t } = useI18n();
     return {
       EXTERNAL_LINKS,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

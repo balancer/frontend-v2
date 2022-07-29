@@ -1,7 +1,7 @@
 <script lang="ts">
 // https://v3.vuejs.org/api/sfc-script-setup.html#usage-alongside-normal-script
 export default {
-  inheritAttrs: false
+  inheritAttrs: false,
 };
 </script>
 
@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   inputAlignRight: false,
   decimalLimit: 18,
   validateOn: 'blur',
-  rules: () => []
+  rules: () => [],
 });
 
 const emit = defineEmits<{
@@ -85,7 +85,7 @@ const {
   inputClasses,
   prependClasses,
   appendClasses,
-  borderRadiusClasses
+  borderRadiusClasses,
 } = useInputStyles(props, isInvalid, attrs);
 const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 

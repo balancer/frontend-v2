@@ -37,7 +37,7 @@ const fiatTotal = computed((): string =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
     .times(bptBalance.value)
-    .toString()
+    .toString(),
 );
 </script>
 
@@ -65,7 +65,7 @@ const fiatTotal = computed((): string =>
       >
         {{
           $t('getVeBAL.lockableTokens.getMoreVeBAL', [
-            lockablePoolTokenInfo.symbol
+            lockablePoolTokenInfo.symbol,
           ])
         }}
       </BalLink>

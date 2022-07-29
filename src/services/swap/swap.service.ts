@@ -3,7 +3,7 @@ import {
   FundManagement,
   SingleSwap,
   SwapType,
-  SwapV2
+  SwapV2,
 } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -22,7 +22,7 @@ export type Address = string;
 export enum SwapTokenType {
   fixed,
   min,
-  max
+  max,
 }
 
 export interface SwapToken {
@@ -34,14 +34,14 @@ export interface SwapToken {
 export default class SwapService {
   constructor(
     private readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly web3: Web3Service = web3Service,
   ) {}
 
   public async batchSwapV2(
     tokenIn: SwapToken,
     tokenOut: SwapToken,
     swaps: SwapV2[],
-    tokenAddresses: string[]
+    tokenAddresses: string[],
   ): Promise<TransactionResponse> {
     if (isStETH(tokenIn.address, tokenOut.address)) {
       return this.lidoBatchSwap(tokenIn, tokenOut, swaps, tokenAddresses);
@@ -68,7 +68,7 @@ export default class SwapService {
           assetIn: tokenAddresses[swaps[0].assetInIndex],
           assetOut: tokenAddresses[swaps[0].assetOutIndex],
           amount: swaps[0].amount,
-          userData: swaps[0].userData
+          userData: swaps[0].userData,
         };
 
         /*
@@ -89,7 +89,7 @@ export default class SwapService {
       const limits: string[] = this.calculateLimits(
         [tokenIn],
         [tokenOut],
-        tokenAddresses
+        tokenAddresses,
       );
 
       return vaultService.batchSwap(
@@ -98,7 +98,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
-        overrides
+        overrides,
       );
     } catch (e) {
       console.log('[Swapper] batchSwapV2 Error:', e);
@@ -110,7 +110,7 @@ export default class SwapService {
     tokenIn: SwapToken,
     tokenOut: SwapToken,
     swaps: SwapV2[],
-    tokenAddresses: string[]
+    tokenAddresses: string[],
   ): Promise<TransactionResponse> {
     console.log('[Swapper] lidoBatchSwap');
     const overrides: any = {};
@@ -125,13 +125,13 @@ export default class SwapService {
       tokenIn = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenIn.amount),
-        type: tokenIn.type
+        type: tokenIn.type,
       };
     } else if (tokenOut.address.toLowerCase() === stETH.toLowerCase()) {
       tokenOut = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenOut.amount),
-        type: tokenOut.type
+        type: tokenOut.type,
       };
     }
 
@@ -150,21 +150,21 @@ export default class SwapService {
           assetIn: tokenAddresses[swaps[0].assetInIndex],
           assetOut: tokenAddresses[swaps[0].assetOutIndex],
           amount: swaps[0].amount,
-          userData: swaps[0].userData
+          userData: swaps[0].userData,
         };
 
         return lidoRelayerService.swap(
           single,
           funds,
           tokenOut.amount.toString(),
-          overrides
+          overrides,
         );
       }
 
       const limits = this.calculateLimits(
         [tokenIn],
         [tokenOut],
-        tokenAddresses
+        tokenAddresses,
       );
 
       return lidoRelayerService.batchSwap(
@@ -173,7 +173,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
-        overrides
+        overrides,
       );
     } catch (e) {
       console.log('[Swapper] lidoBatchSwap Error:', e);
@@ -188,7 +188,7 @@ export default class SwapService {
     tokensIn: SwapToken[],
     tokenOut: SwapToken,
     swaps: SwapV2[],
-    tokenAddresses: string[]
+    tokenAddresses: string[],
   ) {
     try {
       const overrides: any = {};
@@ -197,7 +197,7 @@ export default class SwapService {
       const limits: string[] = this.calculateLimits(
         tokensIn,
         [tokenOut],
-        tokenAddresses
+        tokenAddresses,
       );
 
       return vaultService.batchSwap(
@@ -206,7 +206,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
-        overrides
+        overrides,
       );
     } catch (error) {
       console.log('[Swapper] batchSwapGivenInV2 Error:', error);
@@ -222,7 +222,7 @@ export default class SwapService {
     tokensOut: SwapToken[],
     swaps: BatchSwapStep[],
     tokenAddresses: string[],
-    swapKind: SwapType
+    swapKind: SwapType,
   ): Promise<TransactionResponse> {
     try {
       const overrides: any = {};
@@ -231,7 +231,7 @@ export default class SwapService {
       const limits: string[] = this.calculateLimits(
         [tokenIn],
         tokensOut,
-        tokenAddresses
+        tokenAddresses,
       );
 
       console.log('limits', limits);
@@ -242,7 +242,7 @@ export default class SwapService {
         tokenAddresses,
         funds,
         limits,
-        overrides
+        overrides,
       );
     } catch (error) {
       console.log('[Swapper] batchSwapGivenInV2 Error:', error);
@@ -256,7 +256,7 @@ export default class SwapService {
       sender: userAddress,
       recipient: userAddress,
       fromInternalBalance: false,
-      toInternalBalance: false
+      toInternalBalance: false,
     };
     return funds;
   }
@@ -264,16 +264,16 @@ export default class SwapService {
   public calculateLimits(
     tokensIn: SwapToken[],
     tokensOut: SwapToken[],
-    tokenAddresses: string[]
+    tokenAddresses: string[],
   ): string[] {
     const limits: string[] = [];
 
     tokenAddresses.forEach((token, i) => {
       const tokenIn = tokensIn.find(
-        swapToken => token.toLowerCase() === swapToken.address.toLowerCase()
+        swapToken => token.toLowerCase() === swapToken.address.toLowerCase(),
       );
       const tokenOut = tokensOut.find(
-        swapToken => token.toLowerCase() === swapToken.address.toLowerCase()
+        swapToken => token.toLowerCase() === swapToken.address.toLowerCase(),
       );
       if (tokenIn) {
         limits[i] = tokenIn.amount.toString();

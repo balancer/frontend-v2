@@ -5,7 +5,7 @@ import {
   GOERLI_VOTING_GAUGES,
   KOVAN_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
-  VotingGauge
+  VotingGauge,
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
@@ -30,7 +30,7 @@ export default function useVotingGauges() {
     (): boolean =>
       gaugeVotesQuery.isLoading.value ||
       gaugeVotesQuery.isIdle.value ||
-      !!gaugeVotesQuery.error.value
+      !!gaugeVotesQuery.error.value,
   );
 
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);
@@ -42,7 +42,7 @@ export default function useVotingGauges() {
       (remainingVotes, gauge) => {
         return remainingVotes - parseFloat(gauge.userVotes);
       },
-      totalVotes
+      totalVotes,
     );
     return votesRemaining;
   });
@@ -65,7 +65,7 @@ export default function useVotingGauges() {
       (timeUntilEnd.days || 0) % 7,
       timeUntilEnd.hours || 0,
       timeUntilEnd.minutes || 0,
-      timeUntilEnd.seconds || 0
+      timeUntilEnd.seconds || 0,
     ];
     return formattedTime;
   });
@@ -85,7 +85,7 @@ export default function useVotingGauges() {
       n.getDate(),
       0,
       0,
-      0
+      0,
     );
     return epochEndTime;
   }
@@ -96,6 +96,6 @@ export default function useVotingGauges() {
     unallocatedVotes,
     votingPeriodEnd,
     votingPeriodLastHour,
-    refetch: gaugeVotesQuery.refetch
+    refetch: gaugeVotesQuery.refetch,
   };
 }

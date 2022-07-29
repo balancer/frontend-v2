@@ -14,7 +14,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  forceDark: false
+  forceDark: false,
 });
 
 /**

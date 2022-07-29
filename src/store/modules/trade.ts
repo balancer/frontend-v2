@@ -9,20 +9,20 @@ export interface TradeState {
 
 const state: TradeState = {
   inputAsset: '',
-  outputAsset: ''
+  outputAsset: '',
 };
 
 const actions = {
   init({ commit }) {
     commit(
       'setInputAsset',
-      lsGet('trade.inputAsset', initialTokens[networkId.value].input)
+      lsGet('trade.inputAsset', initialTokens[networkId.value].input),
     );
     commit(
       'setOutputAsset',
-      lsGet('trade.outputAsset', initialTokens[networkId.value].output)
+      lsGet('trade.outputAsset', initialTokens[networkId.value].output),
     );
-  }
+  },
 };
 
 const mutations = {
@@ -34,12 +34,12 @@ const mutations = {
   setOutputAsset(state: TradeState, asset: string): void {
     state.outputAsset = asset;
     lsSet('trade.outputAsset', asset);
-  }
+  },
 };
 
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
 };

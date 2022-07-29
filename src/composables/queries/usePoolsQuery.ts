@@ -33,7 +33,7 @@ type FilterOptions = {
 export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
-  filterOptions?: FilterOptions
+  filterOptions?: FilterOptions,
 ) {
   /**
    * COMPOSABLES
@@ -44,7 +44,7 @@ export default function usePoolsQuery(
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
   const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id)
+    (subgraphGauges.value || []).map(gauge => gauge.id),
   );
 
   /**
@@ -65,8 +65,8 @@ export default function usePoolsQuery(
       skip: pageParam,
       where: {
         [tokensListFilterKey]: tokenList.value,
-        poolType_not_in: POOLS.ExcludedPoolTypes
-      }
+        poolType_not_in: POOLS.ExcludedPoolTypes,
+      },
     };
     if (filterOptions?.poolIds?.value.length) {
       queryArgs.where.id_in = filterOptions.poolIds.value;
@@ -85,7 +85,7 @@ export default function usePoolsQuery(
     tokenList,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses,
-    gaugeAddresses
+    gaugeAddresses,
   );
 
   /**
@@ -100,15 +100,15 @@ export default function usePoolsQuery(
       subgraphGauges.value || [],
       prices.value,
       currency.value,
-      tokenMeta.value
+      tokenMeta.value,
     );
 
     const tokens = flatten(
       pools.map(pool => [
         ...pool.tokensList,
         ...lpTokensFor(pool),
-        pool.address
-      ])
+        pool.address,
+      ]),
     );
     await injectTokens(tokens);
 
@@ -118,14 +118,14 @@ export default function usePoolsQuery(
       skip:
         pools.length >= POOLS.Pagination.PerPage
           ? pageParam + POOLS.Pagination.PerPage
-          : undefined
+          : undefined,
     };
   };
 
   const queryOptions = reactive({
     ...options,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
-    enabled
+    enabled,
   });
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);

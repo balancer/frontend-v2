@@ -27,10 +27,10 @@ const props = defineProps<Props>();
  * SERVICES
  */
 const feeDistributorV1 = new FeeDistributor(
-  configService.network.addresses.feeDistributorDeprecated
+  configService.network.addresses.feeDistributorDeprecated,
 );
 const feeDistributorV2 = new FeeDistributor(
-  configService.network.addresses.feeDistributor
+  configService.network.addresses.feeDistributor,
 );
 
 /**

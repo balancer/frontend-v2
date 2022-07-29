@@ -23,7 +23,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  hideHeader: false
+  hideHeader: false,
 });
 
 /**
@@ -41,7 +41,7 @@ const poolCalculator = new PoolCalculator(
   tokens,
   balances,
   'exit',
-  ref(false)
+  ref(false),
 );
 
 /**
@@ -53,7 +53,7 @@ const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
     bptBalance.value,
     0,
-    'send'
+    'send',
   );
 
   if (isStablePhantomPool.value) {
@@ -64,9 +64,7 @@ const propTokenAmounts = computed((): string[] => {
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
+      return bnum(receive[i]).times(priceRate).toString();
     });
   }
 
@@ -85,11 +83,7 @@ const tokenAddresses = computed((): string[] => {
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    );
+    .reduce((total, value) => bnum(total).plus(value).toString());
   return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>

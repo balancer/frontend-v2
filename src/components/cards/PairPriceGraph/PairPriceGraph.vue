@@ -7,7 +7,7 @@ import {
   maxBy,
   minBy,
   pickBy,
-  toPairs
+  toPairs,
 } from 'lodash';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -37,7 +37,7 @@ async function getPairPriceData(
   nativeAsset: string,
   wrappedNativeAsset: string,
   days: number,
-  inverse?: boolean
+  inverse?: boolean,
 ) {
   let _inputAsset =
     inputAsset === nativeAsset ? wrappedNativeAsset : inputAsset;
@@ -52,19 +52,19 @@ async function getPairPriceData(
     [_inputAsset],
     days,
     1,
-    aggregateBy
+    aggregateBy,
   );
 
   const getOutputAssetData = coingeckoService.prices.getTokensHistorical(
     [_outputAsset],
     days,
     1,
-    aggregateBy
+    aggregateBy,
   );
 
   const [inputAssetData, outputAssetData] = await Promise.all([
     getInputAssetData,
-    getOutputAssetData
+    getOutputAssetData,
   ]);
 
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
@@ -72,14 +72,14 @@ async function getPairPriceData(
     return (1 / value[0]) * outputAssetData[timestamp][0];
   });
 
-  const calculatedPricingNoNulls = pickBy(calculatedPricing) as Dictionary<
-    number
-  >;
+  const calculatedPricingNoNulls = pickBy(
+    calculatedPricing,
+  ) as Dictionary<number>;
 
   const formatTimestamps = mapKeys(
     calculatedPricingNoNulls,
     (_, timestamp: any) =>
-      format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm')
+      format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm'),
   );
 
   return toPairs(formatTimestamps);
@@ -88,24 +88,24 @@ async function getPairPriceData(
 const chartTimespans = [
   {
     option: '1d',
-    value: 1
+    value: 1,
   },
   {
     option: '1w',
-    value: 7
+    value: 7,
   },
   {
     option: '1m',
-    value: 30
+    value: 30,
   },
   {
     option: '1y',
-    value: 365
+    value: 365,
   },
   {
     option: 'All',
-    value: 4000
-  }
+    value: 4000,
+  },
 ];
 
 type Props = {
@@ -124,7 +124,7 @@ const tailwind = useTailwind();
 const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 
 const chartHeight = ref(
-  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
+  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100,
 );
 const activeTimespan = ref(chartTimespans[0]);
 const appLoading = computed(() => store.state.app.loading);
@@ -149,7 +149,7 @@ const dataMax = computed(() => {
 const {
   isLoading: isLoadingPriceData,
   data: priceData,
-  error: failedToLoadPriceData
+  error: failedToLoadPriceData,
 } = useQuery(
   QUERY_KEYS.Tokens.PairPriceData(
     tokenInAddress,
@@ -157,7 +157,7 @@ const {
     activeTimespan,
     userNetworkId,
     nativeAsset,
-    wrappedNativeAsset
+    wrappedNativeAsset,
   ),
   () =>
     getPairPriceData(
@@ -166,15 +166,15 @@ const {
       nativeAsset?.address,
       wrappedNativeAsset.value?.address,
       activeTimespan.value.value,
-      true
+      true,
     ),
   reactive({
     enabled: initialized,
     retry: false,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
-    refetchOnWindowFocus: false
-  })
+    refetchOnWindowFocus: false,
+  }),
 );
 
 const toggle = () => {
@@ -182,15 +182,15 @@ const toggle = () => {
 };
 
 const equivalentTokenPairs = [
-  [appNetworkConfig.addresses.weth, appNetworkConfig.nativeAsset.address]
+  [appNetworkConfig.addresses.weth, appNetworkConfig.nativeAsset.address],
 ];
 
 const allChartValuesEqual = computed(() =>
   equivalentTokenPairs.some(
     pair =>
       pair.includes(tokenInAddress.value) &&
-      pair.includes(tokenOutAddress.value)
-  )
+      pair.includes(tokenOutAddress.value),
+  ),
 );
 
 const chartData = computed(() => {
@@ -198,8 +198,8 @@ const chartData = computed(() => {
   return [
     {
       name: `${outputSym.value}/${inputSym.value}`,
-      values: priceData.value || []
-    }
+      values: priceData.value || [],
+    },
   ];
 });
 
@@ -235,7 +235,7 @@ const chartGrid = computed(() => {
     right: '0',
     top: '10%',
     bottom: '15%',
-    containLabel: false
+    containLabel: false,
   };
 });
 </script>
@@ -246,15 +246,15 @@ const chartGrid = computed(() => {
       '',
       {
         'h-40 lg:h-56': !isModal,
-        'h-full lg:h-full': isModal
-      }
+        'h-full lg:h-full': isModal,
+      },
     ]"
   >
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
         'h-64': !isModal,
-        'h-112': isModal
+        'h-112': isModal,
       }"
     />
     <BalCard
@@ -325,8 +325,8 @@ const chartGrid = computed(() => {
                 'flex flex-row lg:flex-col',
                 {
                   'flex-row': !isModal,
-                  'flex-col': isModal
-                }
+                  'flex-col': isModal,
+                },
               ]"
               :show-tooltip="!upToLargeBreakpoint || isModal"
               chart-type="line"
@@ -339,8 +339,8 @@ const chartGrid = computed(() => {
               :class="[
                 'w-full flex justify-between mt-6',
                 {
-                  'flex-col': isModal
-                }
+                  'flex-col': isModal,
+                },
               ]"
               v-if="isModal"
             >
@@ -361,8 +361,8 @@ const chartGrid = computed(() => {
                         isNegativeTrend &&
                         activeTimespan.value === timespan.value,
                       'hover:bg-red-200': isNegativeTrend,
-                      'hover:bg-green-200': !isNegativeTrend
-                    }
+                      'hover:bg-green-200': !isNegativeTrend,
+                    },
                   ]"
                 >
                   {{ timespan.option }}

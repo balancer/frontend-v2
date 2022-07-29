@@ -28,7 +28,7 @@ type ClaimableToken = {
 
 enum Tabs {
   CLAIMABLE = 'claimable',
-  CURRENT_ESTIMATE = 'currentEstimate'
+  CURRENT_ESTIMATE = 'currentEstimate',
 }
 
 const { t } = useI18n();
@@ -37,8 +37,8 @@ const tabs = [
   { value: Tabs.CLAIMABLE, label: t('liquidityMiningPopover.tabs.claimable') },
   {
     value: Tabs.CURRENT_ESTIMATE,
-    label: t('liquidityMiningPopover.tabs.currentEstimate')
-  }
+    label: t('liquidityMiningPopover.tabs.currentEstimate'),
+  },
 ];
 
 const activeTab = ref(tabs[0].value);
@@ -56,7 +56,7 @@ const {
   isMainnet,
   isKovan,
   isPolygon,
-  isMismatchedNetwork
+  isMismatchedNetwork,
 } = useWeb3();
 const { txListener } = useEthers();
 const { addTransaction } = useTransactions();
@@ -70,7 +70,7 @@ const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
   token: BALTokenAddress,
   symbol: getToken(BALTokenAddress)?.symbol,
   amount: '0',
-  fiatValue: '0'
+  fiatValue: '0',
 }));
 
 // Polygon used to be an airdrop, now its claimable - leaving it here in case new networks will need to be airdropped first.
@@ -81,13 +81,13 @@ const legacyClaimUI = computed(() => {
     return [
       { token: '$BAL', subdomain: 'claim' },
       { token: '$VITA', subdomain: 'claim-vita' },
-      { token: '$LDO', subdomain: 'claim-lido' }
+      { token: '$LDO', subdomain: 'claim-lido' },
     ];
   } else if (isArbitrum.value) {
     return [
       { token: '$BAL', subdomain: 'claim-arbitrum' },
       { token: '$MCDEX', subdomain: 'claim-mcdex' },
-      { token: '$PICKLE', subdomain: 'claim-pickle' }
+      { token: '$PICKLE', subdomain: 'claim-pickle' },
     ];
   }
 
@@ -95,7 +95,7 @@ const legacyClaimUI = computed(() => {
 });
 
 const userClaims = computed(() =>
-  userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
+  userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null,
 );
 
 const claimableTokens = computed<ClaimableToken[]>(() => {
@@ -110,8 +110,8 @@ const claimableTokens = computed<ClaimableToken[]>(() => {
         amount: availableToClaim,
         fiatValue: bnum(availableToClaim)
           .times(priceFor(tokenClaimInfo.token))
-          .toString()
-      })
+          .toString(),
+      }),
     );
   }
   return [BALTokenPlaceholder.value];
@@ -125,7 +125,7 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
     return userClaims.value.multiTokenCurrentRewardsEstimate.map(
       ({ token, rewards, velocity }) => {
         const rewardsSinceTimestamp = bnum(velocity).times(
-          elapstedTimeSinceEstimateTimestamp.value
+          elapstedTimeSinceEstimateTimestamp.value,
         );
         const totalRewards = bnum(rewards).plus(rewardsSinceTimestamp);
 
@@ -133,9 +133,9 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
           token,
           symbol: getToken(token)?.symbol,
           amount: totalRewards.toString(),
-          fiatValue: totalRewards.times(priceFor(token)).toString()
+          fiatValue: totalRewards.times(priceFor(token)).toString(),
         };
-      }
+      },
     );
   }
   return [BALTokenPlaceholder.value];
@@ -144,20 +144,20 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
 const totalClaimableTokensFiatValue = computed(() =>
   claimableTokens.value
     .reduce((totalValue, { fiatValue }) => totalValue.plus(fiatValue), bnum(0))
-    .toString()
+    .toString(),
 );
 
 const hasClaimableTokens = computed(() =>
   claimableTokens.value.some(
-    claimableToken => Number(claimableToken.amount) > 0
-  )
+    claimableToken => Number(claimableToken.amount) > 0,
+  ),
 );
 
 useIntervalFn(async () => {
   if (userClaims.value != null && userClaims.value.timestamp != null) {
     const diffInSeconds = differenceInSeconds(
       new Date(),
-      new Date(userClaims.value.timestamp)
+      new Date(userClaims.value.timestamp),
     );
     elapstedTimeSinceEstimateTimestamp.value = diffInSeconds;
   }
@@ -177,7 +177,7 @@ async function claimAvailableRewards() {
       const tx = await claimService.multiTokenClaimRewards(
         getProvider(),
         account.value,
-        userClaims.value.multiTokenPendingClaims
+        userClaims.value.multiTokenPendingClaims,
       );
 
       const summary = claimableTokens.value
@@ -185,8 +185,8 @@ async function claimAvailableRewards() {
           claimableToken =>
             `${fNum2(claimableToken.amount, {
               minimumFractionDigits: 4,
-              maximumFractionDigits: 4
-            })} ${claimableToken.symbol}`
+              maximumFractionDigits: 4,
+            })} ${claimableToken.symbol}`,
         )
         .join(', ');
 
@@ -194,7 +194,7 @@ async function claimAvailableRewards() {
         id: tx.hash,
         type: 'tx',
         action: 'claim',
-        summary
+        summary,
       });
 
       txListener(tx, {
@@ -204,7 +204,7 @@ async function claimAvailableRewards() {
         },
         onTxFailed: () => {
           isClaiming.value = false;
-        }
+        },
       });
     } catch (e) {
       console.log(e);
@@ -326,9 +326,7 @@ async function claimAvailableRewards() {
               <BalLink
                 v-for="legacyClaim in legacyClaimUI"
                 :key="`token-${legacyClaim.token}`"
-                :href="
-                  `https://${legacyClaim.subdomain}.balancer.fi/#/${account}`
-                "
+                :href="`https://${legacyClaim.subdomain}.balancer.fi/#/${account}`"
                 external
                 >{{ legacyClaim.token }}</BalLink
               >

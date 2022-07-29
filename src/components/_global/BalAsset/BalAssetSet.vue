@@ -7,7 +7,7 @@
       :class="['addresses-row', assetRowClasses]"
       :style="{
         width: `${width}px`,
-        height: `${size}px`
+        height: `${size}px`,
       }"
     >
       <BalAsset
@@ -21,7 +21,7 @@
           left: `${leftOffsetFor(i)}px`,
           zIndex: `${20 - i}`,
           width: `${size}px`,
-          height: `${size}px`
+          height: `${size}px`,
         }"
       />
     </div>
@@ -44,35 +44,35 @@ type BalAssetProps = {
 
 export default defineComponent({
   components: {
-    BalAsset
+    BalAsset,
   },
   emits: ['click'],
   props: {
     addresses: {
-      type: Array as PropType<string[]>
+      type: Array as PropType<string[]>,
     },
     logoURIs: {
-      type: Array as PropType<string[]>
+      type: Array as PropType<string[]>,
     },
     balAssetProps: {
       type: Object as PropType<BalAssetProps>,
-      default: () => ({})
+      default: () => ({}),
     },
     width: {
       type: Number,
-      default: 200
+      default: 200,
     },
     size: {
       type: Number,
-      default: 26
+      default: 26,
     },
     maxAssetsPerLine: {
       type: Number,
-      default: 8
+      default: 8,
     },
     wrap: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
 
   setup(props) {
@@ -80,10 +80,10 @@ export default defineComponent({
      * COMPUTED
      */
     const hasAddresses = computed(
-      (): boolean => !!props.addresses && props.addresses.length > 0
+      (): boolean => !!props.addresses && props.addresses.length > 0,
     );
     const hasURIs = computed(
-      (): boolean => !!props.logoURIs && props.logoURIs.length > 0
+      (): boolean => !!props.logoURIs && props.logoURIs.length > 0,
     );
 
     const assetLength = computed((): number => {
@@ -107,14 +107,14 @@ export default defineComponent({
     });
 
     const assetRowClasses = computed(() => ({
-      'mb-3': assetChunks.value.length > 1
+      'mb-3': assetChunks.value.length > 1,
     }));
 
     const radius = computed(() => props.size / 2);
 
     const spacer = computed(
       () =>
-        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2)
+        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2),
     );
 
     /**
@@ -142,9 +142,9 @@ export default defineComponent({
 
       // methods
       leftOffsetFor,
-      assetAttrsFor
+      assetAttrsFor,
     };
-  }
+  },
 });
 </script>
 

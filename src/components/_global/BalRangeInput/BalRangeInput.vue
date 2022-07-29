@@ -37,7 +37,7 @@ export default defineComponent({
   name: 'BalRangeInput',
 
   components: {
-    VueSlider
+    VueSlider,
   },
 
   emits: ['change', 'update:modelValue', 'dragEnd'],
@@ -45,7 +45,7 @@ export default defineComponent({
   props: {
     modelValue: { type: [String, Number], default: '0' },
     leftLabel: { type: String, default: '' },
-    rightLabel: { type: String, default: '' }
+    rightLabel: { type: String, default: '' },
   },
 
   setup(props, { emit }) {
@@ -68,19 +68,19 @@ export default defineComponent({
         backgroundColor: colors.blue['500'],
         borderColor: colors.blue['500'],
         borderWidth: 0,
-        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`
+        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`,
       };
     });
 
     const railSyle = computed(() => {
       return {
-        background: darkMode.value ? colors.gray['900'] : colors.gray['100']
+        background: darkMode.value ? colors.gray['900'] : colors.gray['100'],
       };
     });
 
     const proccessStyle = computed(() => {
       return {
-        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`
+        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`,
       };
     });
 
@@ -89,7 +89,7 @@ export default defineComponent({
       newVal => {
         range.value = Number(newVal) || 0;
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     return {
@@ -98,9 +98,9 @@ export default defineComponent({
       onDragEnd,
       dotStyle,
       railSyle,
-      proccessStyle
+      proccessStyle,
     };
-  }
+  },
 });
 </script>
 

@@ -23,7 +23,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   type: 'token',
   numberWidth: '3',
-  numberHeight: '5'
+  numberHeight: '5',
 });
 
 /**
@@ -39,7 +39,7 @@ const currencySymbol = computed(() => FiatSymbol[currency.value]);
 const blockClasses = computed(() => [
   `w-${props.numberWidth}`,
   `h-${props.numberHeight}`,
-  'mr-px'
+  'mr-px',
 ]);
 </script>
 

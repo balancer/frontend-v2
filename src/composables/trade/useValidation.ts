@@ -11,14 +11,14 @@ export enum TradeValidation {
   EMPTY,
   NO_NATIVE_ASSET,
   NO_BALANCE,
-  NO_LIQUIDITY
+  NO_LIQUIDITY,
 }
 
 export default function useValidation(
   tokenInAddress: Ref<string>,
   tokenInAmount: Ref<string>,
   tokenOutAddress: Ref<string>,
-  tokenOutAmount: Ref<string>
+  tokenOutAmount: Ref<string>,
 ) {
   const { isWalletReady } = useWeb3();
   const { balances } = useTokens();
@@ -26,17 +26,17 @@ export default function useValidation(
   const noAmounts = computed(
     () =>
       !isValidTokenAmount(tokenInAmount.value) &&
-      !isValidTokenAmount(tokenOutAmount.value)
+      !isValidTokenAmount(tokenOutAmount.value),
   );
 
   const missingToken = computed(
-    () => !tokenInAddress.value || !tokenOutAddress.value
+    () => !tokenInAddress.value || !tokenOutAddress.value,
   );
 
   const exceedsBalance = computed(
     () =>
       !balances.value[tokenInAddress.value] ||
-      bnum(balances.value[tokenInAddress.value]).lt(tokenInAmount.value)
+      bnum(balances.value[tokenInAddress.value]).lt(tokenInAmount.value),
   );
 
   /**
@@ -48,7 +48,7 @@ export default function useValidation(
       bnum(tokenOutAmount.value).eq(0) ||
       tokenOutAmount.value.trim() === '' ||
       bnum(tokenInAmount.value).eq(0) ||
-      tokenInAmount.value.trim() === ''
+      tokenInAmount.value.trim() === '',
   );
 
   const validationStatus = computed(() => {
@@ -72,6 +72,6 @@ export default function useValidation(
   return {
     validationStatus,
     errorMessage,
-    isValidTokenAmount
+    isValidTokenAmount,
   };
 }

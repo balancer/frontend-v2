@@ -16,7 +16,7 @@ import useTransactions from '../useTransactions';
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: Ref<TokenInfoMap>
+  tokens: Ref<TokenInfoMap>,
 ) {
   /**
    * STATE
@@ -43,23 +43,23 @@ export default function useTokenApproval(
     ) {
       return {
         isUnlockedV2: true,
-        approvedSpenders: {}
+        approvedSpenders: {},
       };
     }
 
     if (!tokenInAddress.value || !amount.value || approved.value === true)
       return {
         isUnlockedV2: true,
-        approvedSpenders: {}
+        approvedSpenders: {},
       };
 
     const v2ApprovalRequired = approvalRequired(
       tokenInAddress.value,
-      amount.value
+      amount.value,
     );
 
     return {
-      isUnlockedV2: !v2ApprovalRequired
+      isUnlockedV2: !v2ApprovalRequired,
     };
   });
 
@@ -72,7 +72,7 @@ export default function useTokenApproval(
     approving.value = true;
     try {
       const [tx] = await approveTokens(getProvider(), spender, [
-        tokenInAddress.value
+        tokenInAddress.value,
       ]);
       txHandler(tx, spender);
     } catch (e) {
@@ -92,12 +92,12 @@ export default function useTokenApproval(
       type: 'tx',
       action: 'approve',
       summary: t('transactionSummary.approveForTrading', [
-        tokens.value[tokenInAddress.value]?.symbol
+        tokens.value[tokenInAddress.value]?.symbol,
       ]),
       details: {
         contractAddress: tokenInAddress.value,
-        spender
-      }
+        spender,
+      },
     });
 
     txListener(tx, {
@@ -107,7 +107,7 @@ export default function useTokenApproval(
       },
       onTxFailed: () => {
         approving.value = false;
-      }
+      },
     });
   }
 
@@ -131,6 +131,6 @@ export default function useTokenApproval(
     approveSpender,
     allowanceState,
     isUnlockedV2,
-    isLoading: dynamicDataLoading
+    isLoading: dynamicDataLoading,
   };
 }

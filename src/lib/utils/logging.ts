@@ -9,7 +9,7 @@ export function logFailedTx(
   contract: Contract,
   action: string,
   params: any,
-  overrides: any
+  overrides: any,
 ): void {
   captureException(`Failed transaction:
     Sender: ${sender}

@@ -37,28 +37,28 @@ const sortedAmounts = computed(() =>
   orderBy(
     Object.entries(props.fiatAmountMap),
     ([, fiatAmount]) => Number(fiatAmount),
-    'desc'
+    'desc',
   ).map(([address, fiatAmount]) => ({
     amount: props.amountMap[address],
     fiatAmount,
-    address
-  }))
+    address,
+  })),
 );
 
 const groupedAmounts = computed(() =>
   groupBy(sortedAmounts.value, amounts =>
-    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
-  )
+    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts',
+  ),
 );
 
 const shouldShowCompactViewForZeroAmounts = computed(
-  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3
+  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3,
 );
 
 const amountsToShow = computed(() =>
   shouldShowCompactViewForZeroAmounts.value
     ? groupedAmounts.value.nonZeroAmounts
-    : sortedAmounts.value
+    : sortedAmounts.value,
 );
 /**
  * METHODS
@@ -66,9 +66,7 @@ const amountsToShow = computed(() =>
 // The investment amount's relative percentage of the total fiat investment value.
 // This has nothing to do with the pool weights.
 function amountShare(address: string): string {
-  return bnum(props.fiatAmountMap[address])
-    .div(props.fiatTotal)
-    .toString();
+  return bnum(props.fiatAmountMap[address]).div(props.fiatTotal).toString();
 }
 </script>
 

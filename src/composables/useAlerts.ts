@@ -6,13 +6,13 @@ import { lsGet, lsSet } from '@/lib/utils';
 export enum AlertType {
   ERROR = 'error',
   INFO = 'info',
-  FEATURE = 'feature'
+  FEATURE = 'feature',
 }
 
 export enum AlertPriority {
   LOW,
   MEDIUM,
-  HIGH
+  HIGH,
 }
 
 export type Alert = {
@@ -33,10 +33,10 @@ export const alertsState = ref<Record<string, Alert>>({});
  * COMPUTED
  */
 const alerts = computed(() =>
-  Object.values(orderBy(alertsState.value, 'priority', 'desc'))
+  Object.values(orderBy(alertsState.value, 'priority', 'desc')),
 );
 const currentAlert = computed(() =>
-  alerts.value.length > 0 ? alerts.value[0] : null
+  alerts.value.length > 0 ? alerts.value[0] : null,
 );
 
 /**
@@ -48,7 +48,7 @@ function addAlert(alert: Alert) {
 
   alertsState.value[alert.id] = {
     ...alert,
-    priority: alert.priority ?? AlertPriority.LOW
+    priority: alert.priority ?? AlertPriority.LOW,
   };
 }
 
@@ -72,6 +72,6 @@ export default function useAlerts() {
     // methods
     addAlert,
     removeAlert,
-    removeAllAlerts
+    removeAllAlerts,
   };
 }

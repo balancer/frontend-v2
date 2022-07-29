@@ -60,7 +60,7 @@
                   <span
                     v-if="
                       trading.isBalancerTrade.value ||
-                        trading.isWrapUnwrapTrade.value
+                      trading.isWrapUnwrapTrade.value
                     "
                   >
                     / {{ $t('priceImpact') }}:
@@ -86,7 +86,7 @@
               <div
                 :class="[
                   'pr-2 cursor-pointer font-medium',
-                  { 'text-blue-600': !showSummaryInFiat }
+                  { 'text-blue-600': !showSummaryInFiat },
                 ]"
                 @click="showSummaryInFiat = false"
               >
@@ -95,7 +95,7 @@
               <div
                 :class="[
                   'pl-2 cursor-pointer font-medium uppercase',
-                  { 'text-blue-600': showSummaryInFiat }
+                  { 'text-blue-600': showSummaryInFiat },
                 ]"
                 @click="showSummaryInFiat = true"
               >
@@ -163,7 +163,7 @@
         :title="$t('priceUpdatedAlert.title')"
         :description="
           $t('priceUpdatedAlert.description', [
-            fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent)
+            fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent),
           ])
         "
         :action-label="$t('priceUpdatedAlert.actionLabel')"
@@ -183,8 +183,8 @@
                   {
                     'step-active':
                       activeTransactionType === 'gnosisRelayerApproval',
-                    'step-approved': !requiresGnosisRelayerApproval
-                  }
+                    'step-approved': !requiresGnosisRelayerApproval,
+                  },
                 ]"
               >
                 <BalIcon
@@ -200,7 +200,7 @@
                 <div>
                   {{
                     $t(
-                      'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title'
+                      'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title',
                     )
                   }}
                 </div>
@@ -208,7 +208,7 @@
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
+                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content',
                   )
                 }}
               </div>
@@ -225,8 +225,8 @@
                   {
                     'step-active':
                       activeTransactionType === 'lidoRelayerApproval',
-                    'step-approved': !requiresLidoRelayerApproval
-                  }
+                    'step-approved': !requiresLidoRelayerApproval,
+                  },
                 ]"
               >
                 <BalIcon
@@ -242,7 +242,7 @@
                 <div>
                   {{
                     $t(
-                      'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.title'
+                      'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.title',
                     )
                   }}
                 </div>
@@ -250,7 +250,7 @@
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content'
+                    'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content',
                   )
                 }}
               </div>
@@ -270,8 +270,8 @@
                   'step',
                   {
                     'step-active': activeTransactionType === 'tokenApproval',
-                    'step-approved': !requiresTokenApproval
-                  }
+                    'step-approved': !requiresTokenApproval,
+                  },
                 ]"
               >
                 <BalIcon
@@ -291,14 +291,14 @@
                 {{
                   $t(
                     'tradeSummary.transactionTypesTooltips.tokenApproval.title',
-                    [trading.tokenIn.value.symbol]
+                    [trading.tokenIn.value.symbol],
                   )
                 }}
               </div>
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.tokenApproval.content'
+                    'tradeSummary.transactionTypesTooltips.tokenApproval.content',
                   )
                 }}
               </div>
@@ -312,8 +312,8 @@
               :class="[
                 'step',
                 {
-                  'step-active': activeTransactionType === 'trade'
-                }
+                  'step-active': activeTransactionType === 'trade',
+                },
               ]"
             >
               {{ totalRequiredTransactions }}
@@ -344,7 +344,7 @@
         @click.prevent="gnosisRelayerApproval.approve"
         :loading="
           gnosisRelayerApproval.init.value ||
-            gnosisRelayerApproval.approving.value
+          gnosisRelayerApproval.approving.value
         "
         :loading-label="`${$t('approvingGnosisRelayer')}...`"
       >
@@ -418,7 +418,7 @@ import { useI18n } from 'vue-i18n';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { TradeQuote } from '@/composables/trade/types';
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import { UseTrading } from '@/composables/trade/useTrading';
@@ -435,14 +435,14 @@ const PRICE_UPDATE_THRESHOLD = 0.02;
 
 export default defineComponent({
   components: {
-    TradeRoute
+    TradeRoute,
   },
   emits: ['trade', 'close'],
   props: {
     trading: {
       type: Object as PropType<UseTrading>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props, { emit }) {
     // COMPOSABLES
@@ -454,7 +454,7 @@ export default defineComponent({
 
     // state
     const lastQuote = ref<TradeQuote | null>(
-      props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
+      props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote(),
     );
     const priceUpdated = ref(false);
     const priceUpdateAccepted = ref(false);
@@ -464,7 +464,7 @@ export default defineComponent({
 
     // COMPUTED
     const slippageRatePercent = computed(() =>
-      fNum2(slippage.value, FNumFormats.percent)
+      fNum2(slippage.value, FNumFormats.percent),
     );
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);
@@ -473,26 +473,26 @@ export default defineComponent({
       fNum2(
         toFiat(
           props.trading.tokenInAmountInput.value,
-          props.trading.tokenIn.value.address
+          props.trading.tokenIn.value.address,
         ),
-        FNumFormats.fiat
-      )
+        FNumFormats.fiat,
+      ),
     );
 
     const tokenOutFiatValue = computed(() =>
       fNum2(
         toFiat(
           props.trading.tokenOutAmountInput.value,
-          props.trading.tokenOut.value.address
+          props.trading.tokenOut.value.address,
         ),
-        FNumFormats.fiat
-      )
+        FNumFormats.fiat,
+      ),
     );
 
     const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 
     const zeroFee = computed(() =>
-      showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
+      showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH',
     );
 
     const summary = computed(() => {
@@ -500,7 +500,7 @@ export default defineComponent({
         amountBeforeFees: '',
         tradeFees: '',
         totalWithoutSlippage: '',
-        totalWithSlippage: ''
+        totalWithSlippage: '',
       };
 
       const exactIn = props.trading.exactIn.value;
@@ -523,31 +523,31 @@ export default defineComponent({
           summaryItems.amountBeforeFees = tokenOutAmountInput;
           summaryItems.tradeFees = formatUnits(
             quote.feeAmountOutToken,
-            tokenOut.decimals
+            tokenOut.decimals,
           );
           summaryItems.totalWithoutSlippage = bnum(
-            summaryItems.amountBeforeFees
+            summaryItems.amountBeforeFees,
           )
             .minus(summaryItems.tradeFees)
             .toString();
           summaryItems.totalWithSlippage = formatUnits(
             quote.minimumOutAmount,
-            tokenOut.decimals
+            tokenOut.decimals,
           );
         } else {
           summaryItems.amountBeforeFees = tokenInAmountInput;
           summaryItems.tradeFees = formatUnits(
             quote.feeAmountInToken,
-            tokenIn.decimals
+            tokenIn.decimals,
           );
           summaryItems.totalWithoutSlippage = bnum(
-            summaryItems.amountBeforeFees
+            summaryItems.amountBeforeFees,
           )
             .plus(summaryItems.tradeFees)
             .toString();
           summaryItems.totalWithSlippage = formatUnits(
             quote.maximumInAmount,
-            tokenIn.decimals
+            tokenIn.decimals,
           );
         }
       }
@@ -558,8 +558,8 @@ export default defineComponent({
           itemValue =>
             `${fNum2(
               toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
-              FNumFormats.fiat
-            )}`
+              FNumFormats.fiat,
+            )}`,
         );
       } else {
         return mapValues(
@@ -569,7 +569,7 @@ export default defineComponent({
               exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol
-            }`
+            }`,
         );
       }
     });
@@ -585,15 +585,15 @@ export default defineComponent({
             totalBeforeFees: t('tradeSummary.wrap.totalBeforeFees'),
             totalAfterFees: t('tradeSummary.wrap.totalAfterFees'),
             totalWithSlippage: t('tradeSummary.wrap.totalWithSlippage', [
-              props.trading.tokenIn.value.symbol
-            ])
-          }
+              props.trading.tokenIn.value.symbol,
+            ]),
+          },
         };
       } else if (props.trading.isUnwrap.value) {
         return {
           modalTitle: t('previewUnwrap', [props.trading.tokenOut.value.symbol]),
           confirmTrade: t('confirmUnwrap', [
-            props.trading.tokenOut.value.symbol
+            props.trading.tokenOut.value.symbol,
           ]),
           tradeSummary: {
             title: t('tradeSummary.unwrap.title'),
@@ -601,9 +601,9 @@ export default defineComponent({
             totalBeforeFees: t('tradeSummary.unwrap.totalBeforeFees'),
             totalAfterFees: t('tradeSummary.unwrap.totalAfterFees'),
             totalWithSlippage: t('tradeSummary.unwrap.totalWithSlippage', [
-              props.trading.tokenOut.value.symbol
-            ])
-          }
+              props.trading.tokenOut.value.symbol,
+            ]),
+          },
         };
       } else if (props.trading.exactIn.value) {
         return {
@@ -611,15 +611,15 @@ export default defineComponent({
           confirmTrade: t('confirmTrade'),
           tradeSummary: {
             title: t('tradeSummary.exactIn.title', [
-              props.trading.tokenIn.value.symbol
+              props.trading.tokenIn.value.symbol,
             ]),
             tradeFees: t('tradeSummary.exactIn.tradeFees'),
             totalBeforeFees: t('tradeSummary.exactIn.totalBeforeFees'),
             totalAfterFees: t('tradeSummary.exactIn.totalAfterFees'),
             totalWithSlippage: t('tradeSummary.exactIn.totalWithSlippage', [
-              slippageRatePercent.value
-            ])
-          }
+              slippageRatePercent.value,
+            ]),
+          },
         };
       }
       // exact out
@@ -628,40 +628,40 @@ export default defineComponent({
         confirmTrade: t('confirmTrade'),
         tradeSummary: {
           title: t('tradeSummary.exactOut.title', [
-            props.trading.tokenOut.value.symbol
+            props.trading.tokenOut.value.symbol,
           ]),
           tradeFees: t('tradeSummary.exactOut.tradeFees'),
           totalBeforeFees: t('tradeSummary.exactOut.totalBeforeFees'),
           totalAfterFees: t('tradeSummary.exactOut.totalAfterFees'),
           totalWithSlippage: t('tradeSummary.exactOut.totalWithSlippage', [
-            slippageRatePercent.value
-          ])
-        }
+            slippageRatePercent.value,
+          ]),
+        },
       };
     });
 
     const tokenApproval = useTokenApproval(
       addressIn,
       props.trading.tokenInAmountInput,
-      tokens
+      tokens,
     );
 
     const gnosisRelayerApproval = useRelayerApproval(
       Relayer.GNOSIS,
-      props.trading.isGnosisTrade
+      props.trading.isGnosisTrade,
     );
 
     const wrapType = computed(() =>
       getWrapAction(
         props.trading.tokenIn.value.address,
-        props.trading.tokenOut.value.address
-      )
+        props.trading.tokenOut.value.address,
+      ),
     );
 
     const isStETHTrade = computed(
       () =>
         isStETH(addressIn.value, props.trading.tokenOut.value.address) &&
-        wrapType.value === WrapType.NonWrap
+        wrapType.value === WrapType.NonWrap,
     );
 
     const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
@@ -671,7 +671,7 @@ export default defineComponent({
         return approvalRequired(
           props.trading.tokenIn.value.address,
           props.trading.tokenInAmountInput.value,
-          props.trading.tokenOut.value.address
+          props.trading.tokenOut.value.address,
         );
       } else if (props.trading.requiresTokenApproval.value) {
         return !tokenApproval.isUnlockedV2.value;
@@ -683,20 +683,20 @@ export default defineComponent({
       () =>
         props.trading.isGnosisTrade.value &&
         props.trading.requiresTokenApproval.value &&
-        !gnosisRelayerApproval.isUnlocked.value
+        !gnosisRelayerApproval.isUnlocked.value,
     );
 
     const requiresLidoRelayerApproval = computed(
       () =>
         props.trading.isBalancerTrade.value &&
-        !lidoRelayerApproval.isUnlocked.value
+        !lidoRelayerApproval.isUnlocked.value,
     );
 
     const showTokenApprovalStep = computed(
       () =>
         requiresTokenApproval.value ||
         tokenApproval.approved.value ||
-        tokenApproval.approving.value
+        tokenApproval.approving.value,
     );
 
     const showGnosisRelayerApprovalStep = computed(
@@ -704,7 +704,7 @@ export default defineComponent({
         requiresGnosisRelayerApproval.value ||
         gnosisRelayerApproval.init.value ||
         gnosisRelayerApproval.approved.value ||
-        gnosisRelayerApproval.approving.value
+        gnosisRelayerApproval.approving.value,
     );
 
     const showLidoRelayerApprovalStep = computed(
@@ -712,7 +712,7 @@ export default defineComponent({
         requiresLidoRelayerApproval.value ||
         lidoRelayerApproval.init.value ||
         lidoRelayerApproval.approved.value ||
-        lidoRelayerApproval.approving.value
+        lidoRelayerApproval.approving.value,
     );
 
     const totalRequiredTransactions = computed(() => {
@@ -752,18 +752,18 @@ export default defineComponent({
       () =>
         requiresGnosisRelayerApproval.value ||
         requiresLidoRelayerApproval.value ||
-        requiresTokenApproval.value
+        requiresTokenApproval.value,
     );
 
     const showPriceUpdateError = computed(
       () =>
         !requiresApproval.value &&
         priceUpdated.value &&
-        !priceUpdateAccepted.value
+        !priceUpdateAccepted.value,
     );
 
     const tradeDisabled = computed(
-      () => requiresApproval.value || showPriceUpdateError.value
+      () => requiresApproval.value || showPriceUpdateError.value,
     );
 
     // METHODS
@@ -797,7 +797,7 @@ export default defineComponent({
             .div(lastQuote.value.minimumOutAmount);
 
           priceUpdated.value = bnum(priceDiff.toString()).gt(
-            PRICE_UPDATE_THRESHOLD
+            PRICE_UPDATE_THRESHOLD,
           );
         } else {
           const priceDiff = lastQuote.value.maximumInAmount
@@ -806,7 +806,7 @@ export default defineComponent({
             .div(lastQuote.value.maximumInAmount);
 
           priceUpdated.value = bnum(priceDiff.toString()).gt(
-            PRICE_UPDATE_THRESHOLD
+            PRICE_UPDATE_THRESHOLD,
           );
         }
 
@@ -821,7 +821,7 @@ export default defineComponent({
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
         await tokenApproval.approveSpender(
-          props.trading.tokenOut.value.address
+          props.trading.tokenOut.value.address,
         );
       } else {
         await tokenApproval.approveV2();
@@ -871,9 +871,9 @@ export default defineComponent({
       activeTransactionType,
 
       // consants
-      PRICE_UPDATE_THRESHOLD
+      PRICE_UPDATE_THRESHOLD,
     };
-  }
+  },
 });
 </script>
 <style scoped>

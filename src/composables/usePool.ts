@@ -72,13 +72,13 @@ export function isTradingHaltable(poolType: PoolType): boolean {
 export function isWeth(pool: AnyPool): boolean {
   return includesAddress(
     pool.tokensList || [],
-    configService.network.addresses.weth
+    configService.network.addresses.weth,
   );
 }
 
 export function isMigratablePool(pool: AnyPool) {
   return POOL_MIGRATIONS.some(
-    poolMigrationInfo => poolMigrationInfo.fromPoolId === pool.id
+    poolMigrationInfo => poolMigrationInfo.fromPoolId === pool.id,
   );
 }
 
@@ -107,7 +107,7 @@ export function orderedTokenAddresses(pool: AnyPool): string[] {
   const sortedTokens = orderedPoolTokens(
     pool.poolType,
     pool.address,
-    pool.tokens
+    pool.tokens,
   );
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
@@ -118,7 +118,7 @@ export function orderedTokenAddresses(pool: AnyPool): string[] {
 export function orderedPoolTokens(
   poolType: PoolType,
   poolAddress: string,
-  tokens: Pick<PoolToken, 'address' | 'weight'>[]
+  tokens: Pick<PoolToken, 'address' | 'weight'>[],
 ): Partial<PoolToken>[] {
   if (isStablePhantom(poolType))
     return tokens.filter(token => !isSameAddress(token.address, poolAddress));
@@ -135,7 +135,7 @@ export function orderedPoolTokens(
 export function poolURLFor(
   poolId: string,
   network: Network,
-  poolType?: string | PoolType
+  poolType?: string | PoolType,
 ): string {
   if (poolType && poolType.toString() === 'Element') {
     return `https://app.element.fi/pools/${addressFor(poolId)}`;
@@ -168,9 +168,7 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
     return `${minAPR} - ${maxAPR}`;
   } else if (aprs.veBal) {
     const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxValue = bnum(aprs.total.staked.min)
-      .plus(aprs.veBal)
-      .toString();
+    const maxValue = bnum(aprs.total.staked.min).plus(aprs.veBal).toString();
     const maxAPR = numF(maxValue, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
@@ -190,7 +188,7 @@ export function isVeBalPool(poolId: string): boolean {
  */
 export function removePreMintedBPT(pool: Pool): Pool {
   pool.tokensList = pool.tokensList.filter(
-    address => !isSameAddress(address, pool.address)
+    address => !isSameAddress(address, pool.address),
   );
   return pool;
 }
@@ -235,8 +233,8 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
         token =>
           `${fNum2(token.weight, {
             style: 'percent',
-            maximumFractionDigits: 0
-          })} ${token.symbol}`
+            maximumFractionDigits: 0,
+          })} ${token.symbol}`,
       )
       .join(', ');
   }
@@ -245,41 +243,42 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
    * COMPUTED
    */
   const isStablePool = computed(
-    (): boolean => !!pool.value && isStable(pool.value.poolType)
+    (): boolean => !!pool.value && isStable(pool.value.poolType),
   );
   const isMetaStablePool = computed(
-    (): boolean => !!pool.value && isMetaStable(pool.value.poolType)
+    (): boolean => !!pool.value && isMetaStable(pool.value.poolType),
   );
   const isStablePhantomPool = computed(
-    (): boolean => !!pool.value && isStablePhantom(pool.value.poolType)
+    (): boolean => !!pool.value && isStablePhantom(pool.value.poolType),
   );
   const isStableLikePool = computed(
-    (): boolean => !!pool.value && isStableLike(pool.value.poolType)
+    (): boolean => !!pool.value && isStableLike(pool.value.poolType),
   );
   const isWeightedPool = computed(
-    (): boolean => !!pool.value && isWeighted(pool.value.poolType)
+    (): boolean => !!pool.value && isWeighted(pool.value.poolType),
   );
   const isWeightedLikePool = computed(
-    (): boolean => !!pool.value && isWeightedLike(pool.value.poolType)
+    (): boolean => !!pool.value && isWeightedLike(pool.value.poolType),
   );
   const isManagedPool = computed(
-    (): boolean => !!pool.value && isManaged(pool.value.poolType)
+    (): boolean => !!pool.value && isManaged(pool.value.poolType),
   );
   const isLiquidityBootstrappingPool = computed(
-    (): boolean => !!pool.value && isLiquidityBootstrapping(pool.value.poolType)
+    (): boolean =>
+      !!pool.value && isLiquidityBootstrapping(pool.value.poolType),
   );
   const managedPoolWithTradingHalted = computed(
     (): boolean =>
-      !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
+      !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled,
   );
   const isWethPool = computed(
-    (): boolean => !!pool.value && isWeth(pool.value)
+    (): boolean => !!pool.value && isWeth(pool.value),
   );
   const isWstETHPool = computed(
-    (): boolean => !!pool.value && includesWstEth(pool.value.tokensList)
+    (): boolean => !!pool.value && includesWstEth(pool.value.tokensList),
   );
   const noInitLiquidityPool = computed(
-    () => !!pool.value && noInitLiquidity(pool.value)
+    () => !!pool.value && noInitLiquidity(pool.value),
   );
 
   const lpTokens = computed(() => {
@@ -318,6 +317,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
-    orderedPoolTokens
+    orderedPoolTokens,
   };
 }

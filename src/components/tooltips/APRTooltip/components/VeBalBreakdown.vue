@@ -29,7 +29,7 @@ const aprLabel = computed((): string => fNum2(props.apr, FNumFormats.percent));
 
 const items = computed((): string[] => [
   t('tooltips.veBalApr.breakdown1'),
-  t('tooltips.veBalApr.breakdown2')
+  t('tooltips.veBalApr.breakdown2'),
 ]);
 </script>
 

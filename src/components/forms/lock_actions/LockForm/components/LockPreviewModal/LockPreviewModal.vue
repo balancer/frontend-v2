@@ -51,7 +51,7 @@ const totalLpTokens = ref(props.totalLpTokens);
 // This value should be static when modal is opened.
 const expectedVeBalAmount = expectedVeBal(
   totalLpTokens.value,
-  lockEndDate.value
+  lockEndDate.value,
 );
 
 /**

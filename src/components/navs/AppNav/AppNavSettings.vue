@@ -166,20 +166,20 @@ import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import {
   ethereumTxTypeOptions,
-  tradeInterfaceOptions
+  tradeInterfaceOptions,
 } from '@/constants/options';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   getConnectorLogo,
-  getConnectorName
+  getConnectorName,
 } from '@/services/web3/web3.plugin';
 import { TradeInterface } from '@/store/modules/app';
 
 export default defineComponent({
   components: {
     AppSlippageForm,
-    Avatar
+    Avatar,
   },
 
   setup() {
@@ -196,14 +196,14 @@ export default defineComponent({
       isEIP1559SupportedNetwork,
       userNetworkConfig,
       appNetworkConfig,
-      isUnsupportedNetwork
+      isUnsupportedNetwork,
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
     // DATA
     const data = reactive({
       tradeInterfaceOptions,
-      copiedAddress: false
+      copiedAddress: false,
     });
 
     // COMPUTED
@@ -236,14 +236,14 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const connectorName = computed(() =>
-      getConnectorName(connector.value?.id, provider.value)
+      getConnectorName(connector.value?.id, provider.value),
     );
     const connectorLogo = computed(() =>
-      getConnectorLogo(connector.value?.id, provider.value)
+      getConnectorLogo(connector.value?.id, provider.value),
     );
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const isGnosisSupportedNetwork = computed(() =>
-      GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
+      GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId),
     );
 
     // METHODS
@@ -291,9 +291,9 @@ export default defineComponent({
       explorer: explorerLinks,
       ethereumTxType,
       setEthereumTxType,
-      ethereumTxTypeOptions
+      ethereumTxTypeOptions,
     };
-  }
+  },
 });
 </script>
 

@@ -34,7 +34,7 @@ jest.mock('@/composables/useTokens', () => {
         return mockTokenPrice;
       }),
       useTokens: jest.fn().mockImplementation(),
-      getToken: jest.fn().mockImplementation()
+      getToken: jest.fn().mockImplementation(),
     };
   });
 });
@@ -44,7 +44,7 @@ const mockTokenInfo = {
   address: '0x0',
   name: 'mockTokenIn',
   decimals: 18,
-  symbol: 'MTI'
+  symbol: 'MTI',
 };
 
 const computedMockTokenInfo = computed(() => mockTokenInfo);
@@ -58,7 +58,7 @@ const mockProps = {
   wrapType: ref(0),
   tokenIn: computedMockTokenInfo,
   tokenOut: computedMockTokenInfo,
-  slippageBufferRate: computed(() => 1)
+  slippageBufferRate: computed(() => 1),
 };
 
 describe('useSor', () => {
@@ -75,7 +75,7 @@ describe('setSwapCost', () => {
     BigNumber.from(1),
     1,
     1,
-    '1'
+    '1',
   );
 
   const mockedSorManager = jest.mocked(sorManager);
@@ -93,14 +93,14 @@ describe('setSwapCost', () => {
     const tokenAddress = '0x0';
     const tokenDecimals = 5;
     const expectedTokenPriceInEth = new OldBigNumber(
-      mockEthPrice / mockTokenPrice
+      mockEthPrice / mockTokenPrice,
     ).toString();
 
     await sor.setSwapCost(tokenAddress, tokenDecimals, mockedSorManager as any);
     expect(mockedSorManager.setCostOutputToken).toBeCalledWith(
       tokenAddress,
       tokenDecimals,
-      expectedTokenPriceInEth
+      expectedTokenPriceInEth,
     );
   });
 });

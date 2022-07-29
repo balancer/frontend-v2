@@ -32,16 +32,16 @@ const { t } = useI18n();
 const conversationTableRows = computed(() => [
   {
     label: t('getVeBAL.lockForm.lockPeriods.1y'),
-    value: `~1 ${veBalTokenInfo.value.symbol}`
+    value: `~1 ${veBalTokenInfo.value.symbol}`,
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.6m'),
-    value: `~0.5 ${veBalTokenInfo.value.symbol}`
+    value: `~0.5 ${veBalTokenInfo.value.symbol}`,
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.3m'),
-    value: `~0.25 ${veBalTokenInfo.value.symbol}`
-  }
+    value: `~0.25 ${veBalTokenInfo.value.symbol}`,
+  },
 ]);
 </script>
 
@@ -61,7 +61,7 @@ const conversationTableRows = computed(() => [
         <div class="text-secondary mb-3">
           {{
             $t(
-              'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.explainer'
+              'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.explainer',
             )
           }}
         </div>
@@ -72,14 +72,14 @@ const conversationTableRows = computed(() => [
                 <th class="table-header-cell">
                   {{
                     $t(
-                      'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.table.lockPeriod'
+                      'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.table.lockPeriod',
                     )
                   }}
                 </th>
                 <th class="table-header-cell">
                   {{
                     $t(
-                      'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.table.totalVeBAL'
+                      'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.table.totalVeBAL',
                     )
                   }}
                 </th>

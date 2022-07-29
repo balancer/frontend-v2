@@ -11,7 +11,7 @@ const SUPPORTED_NETWORKS = [
   Network.RINKEBY,
   Network.ROPSTEN,
   Network.GOERLI,
-  Network.POLYGON
+  Network.POLYGON,
 ];
 
 export default function useBlocknative() {
@@ -22,11 +22,11 @@ export default function useBlocknative() {
 
   // TODO: blocknative is going to be deprecated for transaction tracking.
   const supportsBlocknative = computed(() =>
-    SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
+    SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId),
   );
 
   return {
     blocknative,
-    supportsBlocknative
+    supportsBlocknative,
   };
 }

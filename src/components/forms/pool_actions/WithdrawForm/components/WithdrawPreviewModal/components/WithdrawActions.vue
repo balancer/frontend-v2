@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
 import {
@@ -11,7 +11,7 @@ import {
   ref,
   toRef,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -67,7 +67,7 @@ const withdrawalState = reactive<WithdrawalState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -80,7 +80,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
-  toRef(props, 'pool')
+  toRef(props, 'pool'),
 );
 
 const {
@@ -94,7 +94,7 @@ const {
   batchSwapKind,
   shouldUseBatchRelayer,
   batchRelayerSwap,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
 } = toRefs(props.math);
 
 const withdrawalAction: TransactionActionInfo = {
@@ -102,7 +102,7 @@ const withdrawalAction: TransactionActionInfo = {
   loadingLabel: t('withdraw.preview.loadingLabel.withdraw'),
   confirmingLabel: t('confirming'),
   action: submit,
-  stepTooltip: t('withdraw.preview.tooltips.withdrawStep')
+  stepTooltip: t('withdraw.preview.tooltips.withdrawStep'),
 };
 
 const actions = ref<TransactionActionInfo[]>([withdrawalAction]);
@@ -119,7 +119,7 @@ const transactionInProgress = computed(
   (): boolean =>
     withdrawalState.init ||
     withdrawalState.confirming ||
-    withdrawalState.confirmed
+    withdrawalState.confirmed,
 );
 
 /**
@@ -132,12 +132,12 @@ async function handleTransaction(tx): Promise<void> {
     action: 'withdraw',
     summary: t('transactionSummary.withdrawFromPool', [
       fiatTotalLabel.value,
-      poolWeightsLabel(props.pool)
+      poolWeightsLabel(props.pool),
     ]),
     details: {
       total: fiatTotalLabel.value,
-      pool: props.pool
-    }
+      pool: props.pool,
+    },
   });
 
   withdrawalState.confirmed = await txListener(tx, {
@@ -151,7 +151,7 @@ async function handleTransaction(tx): Promise<void> {
     },
     onTxFailed: () => {
       withdrawalState.confirming = false;
-    }
+    },
   });
 }
 
@@ -163,7 +163,7 @@ async function submit(): Promise<TransactionResponse> {
     if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
       tx = await balancerContractsService.batchRelayer.execute(
         batchRelayerSwap.value,
-        getProvider()
+        getProvider(),
       );
     } else if (batchSwap.value) {
       tx = await boostedExitBatchSwap(
@@ -172,7 +172,7 @@ async function submit(): Promise<TransactionResponse> {
         props.pool.address,
         bptIn.value,
         batchSwapAmountsOutMap.value,
-        batchSwapKind.value
+        batchSwapKind.value,
       );
     } else {
       tx = await poolExchange.exit(
@@ -182,7 +182,7 @@ async function submit(): Promise<TransactionResponse> {
         tokensOut.value,
         formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
         singleAssetMaxOut.value ? tokenOutIndex.value : null,
-        exactOut.value
+        exactOut.value,
       );
     }
 

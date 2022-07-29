@@ -2,7 +2,7 @@ import {
   InvestmentPool__factory,
   StablePool__factory,
   Vault__factory,
-  WeightedPool__factory
+  WeightedPool__factory,
 } from '@balancer-labs/typechain';
 
 import {
@@ -10,7 +10,7 @@ import {
   isStablePhantom,
   isTradingHaltable,
   isWeightedLike,
-  removePreMintedBPT
+  removePreMintedBPT,
 } from '@/composables/usePool';
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
@@ -32,16 +32,16 @@ const PoolTypeABIs = Object.values(
       ...LinearPoolABI,
       ...StaticATokenLMABI,
       ...ERC20_ABI,
-      ...IERC4626
-    ].map(row => [row.name, row])
-  )
+      ...IERC4626,
+    ].map(row => [row.name, row]),
+  ),
 );
 
 export class PoolMulticaller {
   constructor(
     public readonly pools: Pool[],
     private readonly MulticallerClass = Multicaller,
-    private readonly vaultAddress = configService.network.addresses.vault
+    private readonly vaultAddress = configService.network.addresses.vault,
   ) {}
 
   public async fetch(): Promise<RawOnchainPoolDataMap> {
@@ -56,19 +56,19 @@ export class PoolMulticaller {
           key: `${pool.id}.totalSupply`,
           address: pool.address,
           function: 'totalSupply',
-          abi: PoolTypeABIs
+          abi: PoolTypeABIs,
         })
         .call({
           key: `${pool.id}.decimals`,
           address: pool.address,
           function: 'decimals',
-          abi: PoolTypeABIs
+          abi: PoolTypeABIs,
         })
         .call({
           key: `${pool.id}.swapFee`,
           address: pool.address,
           function: 'getSwapFeePercentage',
-          abi: PoolTypeABIs
+          abi: PoolTypeABIs,
         });
 
       if (isWeightedLike(pool.poolType)) {
@@ -76,7 +76,7 @@ export class PoolMulticaller {
           key: `${pool.id}.weights`,
           address: pool.address,
           function: 'getNormalizedWeights',
-          abi: PoolTypeABIs
+          abi: PoolTypeABIs,
         });
 
         if (isTradingHaltable(pool.poolType)) {
@@ -84,7 +84,7 @@ export class PoolMulticaller {
             key: `${pool.id}.swapEnabled`,
             address: pool.address,
             function: 'getSwapEnabled',
-            abi: PoolTypeABIs
+            abi: PoolTypeABIs,
           });
         }
       } else if (isStableLike(pool.poolType)) {
@@ -92,7 +92,7 @@ export class PoolMulticaller {
           key: `${pool.id}.amp`,
           address: pool.address,
           function: 'getAmplificationParameter',
-          abi: PoolTypeABIs
+          abi: PoolTypeABIs,
         });
 
         if (isStablePhantom(pool.poolType)) {
@@ -101,7 +101,7 @@ export class PoolMulticaller {
             key: `${pool.id}.totalSupply`,
             address: pool.address,
             function: 'getVirtualSupply',
-            abi: PoolTypeABIs
+            abi: PoolTypeABIs,
           });
 
           pool.tokensList.forEach((poolToken, i) => {
@@ -110,50 +110,50 @@ export class PoolMulticaller {
                 key: `${pool.id}.linearPools.${poolToken}.id`,
                 address: poolToken,
                 function: 'getPoolId',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               })
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.priceRate`,
                 address: poolToken,
                 function: 'getRate',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               })
               .call({
                 key: `${pool.id}.tokenRates[${i}]`,
                 address: pool.address,
                 function: 'getTokenRate',
                 abi: PoolTypeABIs,
-                params: [poolToken]
+                params: [poolToken],
               })
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.mainToken.address`,
                 address: poolToken,
                 function: 'getMainToken',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               })
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.mainToken.index`,
                 address: poolToken,
                 function: 'getMainIndex',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               })
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.wrappedToken.address`,
                 address: poolToken,
                 function: 'getWrappedToken',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               })
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.wrappedToken.index`,
                 address: poolToken,
                 function: 'getWrappedIndex',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               })
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.wrappedToken.rate`,
                 address: poolToken,
                 function: 'getWrappedTokenRate',
-                abi: PoolTypeABIs
+                abi: PoolTypeABIs,
               });
           });
         }
@@ -175,7 +175,7 @@ export class PoolMulticaller {
             address: this.vaultAddress,
             function: 'getPoolTokens',
             abi: Vault__factory.abi,
-            params: [linearPool.id]
+            params: [linearPool.id],
           });
 
           wrappedTokensMap[address] = linearPool.wrappedToken.address;
@@ -187,19 +187,19 @@ export class PoolMulticaller {
               key: `${pool.id}.linearPools.${address}.unwrappedTokenAddress`,
               address: wrappedToken,
               function: 'ATOKEN',
-              abi: PoolTypeABIs
+              abi: PoolTypeABIs,
             })
             .call({
               key: `${pool.id}.linearPools.${address}.unwrappedERC4626Address`,
               address: wrappedToken,
               function: 'asset',
-              abi: PoolTypeABIs
+              abi: PoolTypeABIs,
             })
             .call({
               key: `${pool.id}.linearPools.${address}.totalSupply`,
               address: address,
               function: 'getVirtualSupply',
-              abi: PoolTypeABIs
+              abi: PoolTypeABIs,
             });
         });
       }
@@ -209,7 +209,7 @@ export class PoolMulticaller {
         address: this.vaultAddress,
         function: 'getPoolTokens',
         abi: Vault__factory.abi,
-        params: [pool.id]
+        params: [pool.id],
       });
     });
 

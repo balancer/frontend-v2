@@ -19,7 +19,7 @@ const {
   setStep,
   proceed,
   resetPoolCreationState,
-  goBack
+  goBack,
 } = usePoolCreation();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
@@ -35,7 +35,7 @@ const title = computed(() => {
 const relevantSimilarPools = computed(() => {
   return take(
     orderBy(similarPools.value, pool => Number(pool.totalLiquidity), 'desc'),
-    4
+    4,
   );
 });
 
@@ -79,7 +79,7 @@ function cancel() {
           </BalStack>
           <BalStack horizontal spacing="lg">
             <BalStack vertical spacing="none">
-              <span class="font-medium  text-secondary">{{
+              <span class="font-medium text-secondary">{{
                 $t('poolValue')
               }}</span>
               <span class="font-semibold">{{

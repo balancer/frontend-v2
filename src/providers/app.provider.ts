@@ -18,7 +18,7 @@ export interface AppProviderResponse {
  * SETUP
  */
 export const AppProviderSymbol: InjectionKey<AppProviderResponse> = Symbol(
-  symbolKeys.Providers.App
+  symbolKeys.Providers.App,
 );
 
 /**
@@ -33,15 +33,15 @@ export default {
     const { loading: loadingTokens } = useTokens();
 
     const appLoading = computed(
-      () => store.state.app.loading || loadingTokens.value
+      () => store.state.app.loading || loadingTokens.value,
     );
 
     provide(AppProviderSymbol, {
       version,
       // computed
-      appLoading
+      appLoading,
     });
 
     return () => slots.default();
-  }
+  },
 };

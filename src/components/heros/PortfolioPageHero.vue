@@ -26,8 +26,8 @@ const {
     totalStakedFiatValue,
     isLoadingUserStakingData,
     isLoadingStakedPools,
-    isUserStakeDataIdle
-  }
+    isUserStakeDataIdle,
+  },
 } = useStaking();
 
 /**
@@ -35,7 +35,7 @@ const {
  */
 const classes = computed(() => ({
   ['h-48']: !isWalletReady.value && !isWalletConnecting.value,
-  ['h-44']: isWalletReady.value || isWalletConnecting.value
+  ['h-44']: isWalletReady.value || isWalletConnecting.value,
 }));
 
 const isStakingLoading = computed(() => {
@@ -55,15 +55,15 @@ const totalInvestedLabel = computed((): string => {
 });
 
 const totalVeBalLabel = computed((): string =>
-  fNum2(lockFiatValue.value, FNumFormats.fiat)
+  fNum2(lockFiatValue.value, FNumFormats.fiat),
 );
 
 const isLoadingLockAndStaking = computed(
-  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value
+  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value,
 );
 
 const isLoadingTotalValue = computed(
-  (): boolean => isLoadingUserPools.value || isLoadingLockAndStaking.value
+  (): boolean => isLoadingUserPools.value || isLoadingLockAndStaking.value,
 );
 </script>
 
@@ -91,22 +91,7 @@ const isLoadingTotalValue = computed(
         />
         <div
           v-else
-          class="
-              vebal-banner
-              h-8
-              flex
-              items-center
-              px-3
-              text-yellow-500 text-sm
-              font-medium
-              cursor-pointer
-              border border-yellow-500
-              group
-              hover:text-white
-              focus:text-white
-              transition-colors
-              rounded-bl rounded-tr
-            "
+          class="vebal-banner h-8 flex items-center px-3 text-yellow-500 text-sm font-medium cursor-pointer border border-yellow-500 group hover:text-white focus:text-white transition-colors rounded-bl rounded-tr"
           @click="router.push({ name: 'vebal' })"
         >
           <span v-if="lockFiatValue === '0'"

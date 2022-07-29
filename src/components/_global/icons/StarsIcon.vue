@@ -16,7 +16,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   gradFrom: 'yellow',
-  gradTo: 'pink'
+  gradTo: 'pink',
 });
 
 /**
@@ -28,7 +28,7 @@ const { theme } = useTailwind();
  * COMPUTED
  */
 const gradientId = computed(
-  (): string => `stars-gradient-${props.gradFrom}-${props.gradTo}`
+  (): string => `stars-gradient-${props.gradFrom}-${props.gradTo}`,
 );
 </script>
 

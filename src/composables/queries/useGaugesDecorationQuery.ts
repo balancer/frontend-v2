@@ -19,7 +19,7 @@ type QueryResponse = Gauge[] | undefined;
  */
 export default function useGaugesDecorationQuery(
   gauges: Ref<SubgraphGauge[] | undefined>,
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<QueryResponse> = {},
 ) {
   /**
    * COMPOSABLES
@@ -31,14 +31,14 @@ export default function useGaugesDecorationQuery(
    * COMPUTED
    */
   const isQueryEnabled = computed(
-    () => gauges?.value && gauges.value?.length > 0 && isWalletReady.value
+    () => gauges?.value && gauges.value?.length > 0 && isWalletReady.value,
   );
 
   /**
    * QUERY KEY
    */
   const queryKey = reactive(
-    QUERY_KEYS.Gauges.All.Onchain(gauges, account, networkId)
+    QUERY_KEYS.Gauges.All.Onchain(gauges, account, networkId),
   );
 
   /**
@@ -54,7 +54,7 @@ export default function useGaugesDecorationQuery(
    */
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

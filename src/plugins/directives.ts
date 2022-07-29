@@ -3,7 +3,7 @@ import { App } from 'vue';
 export default function registerDirectives(app: App) {
   app.directive('click-outside', {
     beforeMount(el, binding) {
-      el.__vueOnClickOutside = function(event) {
+      el.__vueOnClickOutside = function (event) {
         const callback = binding.value;
         const path = event.path || (event.composedPath && event.composedPath());
 
@@ -19,6 +19,6 @@ export default function registerDirectives(app: App) {
     },
     unmounted(el) {
       document.body.removeEventListener('click', el.__vueOnClickOutside);
-    }
+    },
   });
 }

@@ -21,14 +21,14 @@ export const FNumFormats: Record<string, FNumOptions> = {
   percent: {
     style: 'percent',
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   },
   token: {
-    maximumFractionDigits: 4
+    maximumFractionDigits: 4,
   },
   fiat: {
-    style: 'currency'
-  }
+    style: 'currency',
+  },
 };
 
 enum PresetFormats {
@@ -43,7 +43,7 @@ enum PresetFormats {
   usd_m = '$0,0.00a',
   percent = '0.00%',
   percent_variable = '0.[0000]%',
-  percent_lg = '0%'
+  percent_lg = '0%',
 }
 
 export type Preset = keyof typeof PresetFormats;
@@ -51,7 +51,7 @@ export type Preset = keyof typeof PresetFormats;
 export function fNum(
   number: number | string,
   preset: Preset | null = 'default',
-  options: Options = {}
+  options: Options = {},
 ): string {
   if (options.format) return numeral(number).format(options.format);
 
@@ -79,14 +79,14 @@ export function fNum(
   }
 
   return numeral(number).format(
-    PresetFormats[adjustedPreset || preset || 'default']
+    PresetFormats[adjustedPreset || preset || 'default'],
   );
 }
 
 export function numF(
   number: number | string,
   options: FNumOptions | undefined = {},
-  currency: FiatCurrency = FiatCurrency.usd
+  currency: FiatCurrency = FiatCurrency.usd,
 ): string {
   if (typeof number === 'string') {
     if (number === 'NaN') number = 0;
@@ -101,20 +101,20 @@ export function numF(
       { value: 1, symbol: '' },
       { value: 1e3, symbol: 'k' },
       { value: 1e6, symbol: 'm' },
-      { value: 1e9, symbol: 'b' }
+      { value: 1e9, symbol: 'b' },
     ];
     const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
     const item = lookup
       .slice()
       .reverse()
-      .find(function(item) {
+      .find(function (item) {
         return number >= item.value;
       });
     postfixSymbol = item ? item.symbol : '';
     const fractionDigits = 2;
     number = item
       ? new BigNumber(
-          (number / item.value).toFixed(fractionDigits).replace(rx, '$1')
+          (number / item.value).toFixed(fractionDigits).replace(rx, '$1'),
         ).toNumber()
       : number;
   }
@@ -178,7 +178,7 @@ export default function useNumbers() {
 
   function fNum2(
     number: number | string,
-    options: FNumOptions | undefined = {}
+    options: FNumOptions | undefined = {},
   ): string {
     const _currency = currency?.value || FiatCurrency.usd;
     return numF(number, options, _currency);

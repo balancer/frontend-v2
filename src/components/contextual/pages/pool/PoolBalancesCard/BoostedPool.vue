@@ -18,7 +18,7 @@ type Props = {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -44,8 +44,8 @@ function getUnderlyingTokens(address: string) {
         linearPools[address].mainToken,
         {
           ...linearPools[address].wrappedToken,
-          mainTokenAddress
-        }
+          mainTokenAddress,
+        },
       ]
     : [];
 }

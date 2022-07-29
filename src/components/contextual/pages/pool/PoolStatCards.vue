@@ -22,7 +22,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -49,19 +49,19 @@ const stats = computed(() => {
       id: 'poolValue',
       label: t('poolValue'),
       value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat),
-      loading: props.loading
+      loading: props.loading,
     },
     {
       id: 'volumeTime',
       label: t('volumeTime', ['24h']),
       value: fNum2(props.pool.volumeSnapshot || '0', FNumFormats.fiat),
-      loading: props.loading
+      loading: props.loading,
     },
     {
       id: 'feesTime',
       label: t('feesTime', ['24h']),
       value: fNum2(props.pool.feesSnapshot || '0', FNumFormats.fiat),
-      loading: props.loading
+      loading: props.loading,
     },
     {
       id: 'apr',
@@ -70,8 +70,8 @@ const stats = computed(() => {
         Number(props.poolApr?.total.unstaked || '0') * 100 > APR_THRESHOLD
           ? '-'
           : aprLabel.value,
-      loading: props.loadingApr
-    }
+      loading: props.loadingApr,
+    },
   ];
 });
 </script>

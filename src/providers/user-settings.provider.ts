@@ -6,7 +6,7 @@ import {
   provide,
   reactive,
   Ref,
-  toRefs
+  toRefs,
 } from 'vue';
 
 import { FiatCurrency } from '@/constants/currency';
@@ -33,9 +33,8 @@ export interface UserSettingsProviderResponse {
 /**
  * SETUP
  */
-export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderResponse> = Symbol(
-  symbolKeys.Providers.App
-);
+export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderResponse> =
+  Symbol(symbolKeys.Providers.App);
 
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
@@ -45,14 +44,14 @@ const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
  */
 const state: UserSettingsState = reactive({
   currency: lsCurrency,
-  slippage: lsSlippage
+  slippage: lsSlippage,
 });
 
 /**
  * COMPUTED
  */
 const slippageScaled = computed((): string =>
-  parseUnits(state.slippage, 18).toString()
+  parseUnits(state.slippage, 18).toString(),
 );
 
 /**
@@ -81,9 +80,9 @@ export default {
       // methods
       setCurrency,
       setSlippage,
-      slippageScaled
+      slippageScaled,
     });
 
     return () => slots.default();
-  }
+  },
 };

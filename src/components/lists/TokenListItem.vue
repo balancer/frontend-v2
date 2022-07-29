@@ -22,9 +22,7 @@
           <template v-if="balance >= 0.0001">
             {{ fNum2(balance, FNumFormats.token) }}
           </template>
-          <template v-else>
-            &#60; 0.0001
-          </template>
+          <template v-else> &#60; 0.0001 </template>
         </template>
         <template v-else>-</template>
       </template>
@@ -60,7 +58,7 @@ export default {
 
   props: {
     token: { type: Object as PropType<TokenInfo>, required: true },
-    balanceLoading: { type: Boolean, default: true }
+    balanceLoading: { type: Boolean, default: true },
   },
 
   setup(props) {
@@ -79,7 +77,7 @@ export default {
     const price = computed(() =>
       prices.value[props.token.address]
         ? prices.value[props.token.address][currency.value]
-        : 0
+        : 0,
     );
     const value = computed(() => balance.value * price.value);
 
@@ -90,14 +88,14 @@ export default {
       anime({
         opacity: 1,
         targets: animateRef.value,
-        delay: anime.stagger(100)
+        delay: anime.stagger(100),
       });
     });
 
     onUnmounted(() => {
       anime({
         opacity: 0,
-        targets: animateRef.value
+        targets: animateRef.value,
       });
     });
 
@@ -106,8 +104,8 @@ export default {
       FNumFormats,
       animateRef,
       balance,
-      value
+      value,
     };
-  }
+  },
 };
 </script>

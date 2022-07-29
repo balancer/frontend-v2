@@ -20,7 +20,7 @@ export default class PoolShares {
     poolId: string,
     days: number,
     args = {},
-    attrs = {}
+    attrs = {},
   ): Promise<PoolSnapshots> {
     const currentTimestamp = Math.ceil(Date.now() / 1000);
     const dayTimestamp = currentTimestamp - (currentTimestamp % DAY);
@@ -34,7 +34,7 @@ export default class PoolShares {
         const timestampArgs = { ...args, id: `${poolId}-${timestamp}` };
         const timestampFragment = this.query(timestampArgs, attrs).poolSnapshot;
         return [`_${timestamp}`, timestampFragment];
-      })
+      }),
     );
 
     const snapshots = await this.service.client.get(query);
@@ -50,13 +50,8 @@ export default class PoolShares {
           if (!data) {
             return [timestamp, null];
           }
-          const {
-            amounts,
-            totalShares,
-            swapVolume,
-            swapFees,
-            liquidity
-          } = data;
+          const { amounts, totalShares, swapVolume, swapFees, liquidity } =
+            data;
 
           return [
             timestamp,
@@ -66,11 +61,11 @@ export default class PoolShares {
               totalShares,
               swapVolume,
               swapFees,
-              liquidity
-            }
+              liquidity,
+            },
           ];
         })
-        .filter(entry => !!entry[1])
+        .filter(entry => !!entry[1]),
     );
   }
 }

@@ -19,7 +19,7 @@ import useGaugesQuery from './useGaugesQuery';
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {}
+  options: QueryObserverOptions<Pool> = {},
 ) {
   /**
    * @description
@@ -37,14 +37,14 @@ export default function usePoolQuery(
   const { data: subgraphGauges } = useGaugesQuery();
   const { tokens } = useTokens();
   const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id)
+    (subgraphGauges.value || []).map(gauge => gauge.id),
   );
 
   /**
    * COMPUTED
    */
   const enabled = computed(
-    () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value
+    () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value,
   );
 
   /**
@@ -62,8 +62,8 @@ export default function usePoolQuery(
         where: {
           id: id.toLowerCase(),
           totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-          poolType_not_in: POOLS.ExcludedPoolTypes
-        }
+          poolType_not_in: POOLS.ExcludedPoolTypes,
+        },
       });
     }
 
@@ -75,21 +75,21 @@ export default function usePoolQuery(
       undefined,
       prices.value,
       currency.value,
-      tokens.value
+      tokens.value,
     );
 
     // Inject pool tokens into token registry
     await injectTokens([
       ...decoratedPool.tokensList,
       ...lpTokensFor(decoratedPool),
-      decoratedPool.address
+      decoratedPool.address,
     ]);
     return decoratedPool;
   };
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<Pool>(queryKey, queryFn, queryOptions);

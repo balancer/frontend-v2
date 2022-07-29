@@ -39,14 +39,14 @@ const {
   userData: {
     stakedSharesForProvidedPool,
     refetchStakedShares,
-    refetchUserStakingData
+    refetchUserStakingData,
   },
   stakeBPT,
-  unstakeBPT
+  unstakeBPT,
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([balanceFor(props.pool.address).toString()])
+  ref([balanceFor(props.pool.address).toString()]),
 );
 
 const stakeAction = {
@@ -54,7 +54,7 @@ const stakeAction = {
   loadingLabel: t('staking.staking'),
   confirmingLabel: t('confirming'),
   action: stakeBPT,
-  stepTooltip: t('staking.stakeTooltip')
+  stepTooltip: t('staking.stakeTooltip'),
 };
 
 const unstakeAction = {
@@ -62,7 +62,7 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: unstakeBPT,
-  stepTooltip: t('staking.unstakeTooltip')
+  stepTooltip: t('staking.unstakeTooltip'),
 };
 
 /**
@@ -75,7 +75,7 @@ const stakeActions = ref<TransactionActionInfo[]>([]);
 const shareBalanceToDisplay = ref(
   props.action === 'unstake'
     ? stakedSharesForProvidedPool.value
-    : balanceFor(props.pool.address)
+    : balanceFor(props.pool.address),
 );
 
 /**
@@ -87,7 +87,7 @@ watch(
     stakeActions.value =
       props.action === 'stake' ? [stakeAction] : [unstakeAction];
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 /* COMPUTED */
@@ -96,24 +96,24 @@ const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 const numSharesToModify = ref(
   props.action === 'stake'
     ? balanceFor(getAddress(props.pool.address))
-    : stakedSharesForProvidedPool.value
+    : stakedSharesForProvidedPool.value,
 );
 
 const fiatValueOfModifiedShares = ref(
   bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
     .times(numSharesToModify.value)
-    .toString()
+    .toString(),
 );
 
 const totalUserPoolSharePct = ref(
   bnum(
     bnum(stakedSharesForProvidedPool.value).plus(
-      balanceFor(getAddress(props.pool.address))
-    )
+      balanceFor(getAddress(props.pool.address)),
+    ),
   )
     .div(props.pool.totalShares)
-    .toString()
+    .toString(),
 );
 
 /**

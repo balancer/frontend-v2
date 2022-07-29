@@ -16,7 +16,7 @@ export class AprConcern {
     public pool: Pool,
     private readonly lido = lidoService,
     private readonly aave = aaveService,
-    private readonly VeBalAprCalcClass = VeBalAprCalc
+    private readonly VeBalAprCalcClass = VeBalAprCalc,
   ) {}
 
   public async calc(
@@ -25,14 +25,14 @@ export class AprConcern {
     currency: FiatCurrency,
     protocolFeePercentage: number,
     stakingBalApr: AprRange,
-    stakingRewardApr = '0'
+    stakingRewardApr = '0',
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
 
     const yieldAPR = await this.calcYieldAPR(
       prices,
       currency,
-      protocolFeePercentage
+      protocolFeePercentage,
     );
 
     const veBalAPR = await this.calcVeBalAPR(prices);
@@ -44,13 +44,13 @@ export class AprConcern {
         unstakedTotalAPR,
         stakingBalApr,
         stakingRewardApr,
-        boost
+        boost,
       );
 
     const stakedAprRange = this.calcStakedAprRange(
       unstakedTotalAPR,
       stakingBalApr,
-      stakingRewardApr
+      stakingRewardApr,
     );
 
     return {
@@ -58,23 +58,23 @@ export class AprConcern {
       yield: yieldAPR,
       staking: {
         bal: stakingBalApr,
-        rewards: stakingRewardApr
+        rewards: stakingRewardApr,
       },
       total: {
         unstaked: unstakedTotalAPR,
         staked: {
           calc: aprGivenBoost,
-          ...stakedAprRange
-        }
+          ...stakedAprRange,
+        },
       },
       // Conditionally add the veBAL APR attribute if this is the BAL 80/20 pool.
-      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR })
+      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR }),
     };
   }
 
   private calcSwapFeeAPR(
     poolSnapshot: Pool | undefined,
-    protocolFeePercentage: number
+    protocolFeePercentage: number,
   ): string {
     if (!poolSnapshot)
       return bnum(this.pool.totalSwapFee)
@@ -84,7 +84,7 @@ export class AprConcern {
         .toString();
 
     const swapFees = bnum(this.pool.totalSwapFee).minus(
-      poolSnapshot.totalSwapFee
+      poolSnapshot.totalSwapFee,
     );
 
     return swapFees
@@ -101,7 +101,7 @@ export class AprConcern {
     unstakedTotalAPR: string,
     stakingBalApr: AprRange,
     stakingRewardApr = '0',
-    boost = '1'
+    boost = '1',
   ): string {
     const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
     const boostedAPR = stakingBalApr?.min
@@ -117,7 +117,7 @@ export class AprConcern {
   private calcStakedAprRange(
     unstakedTotalAPR: string,
     stakingBalApr: AprRange,
-    stakingRewardApr = '0'
+    stakingRewardApr = '0',
   ): AprRange {
     const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
     const maxBalApr = stakingBalApr?.max || '0';
@@ -125,7 +125,7 @@ export class AprConcern {
 
     return {
       max: stakedBaseAPR.plus(maxBalApr).toString(),
-      min: stakedBaseAPR.plus(minBalApr).toString()
+      min: stakedBaseAPR.plus(minBalApr).toString(),
     };
   }
 
@@ -137,7 +137,7 @@ export class AprConcern {
   private async calcYieldAPR(
     prices: TokenPrices,
     currency: FiatCurrency,
-    protocolFeePercentage: number
+    protocolFeePercentage: number,
   ): Promise<{ total: string; breakdown: Record<string, string> }> {
     let total = '0';
     let breakdown = {};
@@ -148,7 +148,7 @@ export class AprConcern {
       const aaveAPR = await this.aave.calcWeightedSupplyAPRFor(
         this.pool,
         prices,
-        currency
+        currency,
       );
       ({ total, breakdown } = aaveAPR);
 
@@ -158,7 +158,7 @@ export class AprConcern {
         '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f':
           '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425',
         '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445':
-          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f'
+          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f',
       };
       if (Object.keys(usdPlusPools).includes(this.pool.id)) {
         const linearPoolAddress = usdPlusPools[this.pool.id];
@@ -170,7 +170,7 @@ export class AprConcern {
             linearPool,
             linearPoolAddress,
             prices,
-            currency
+            currency,
           );
 
           breakdown[wrappedToken] = weightedAPR.toString();
@@ -182,7 +182,7 @@ export class AprConcern {
 
     return {
       total,
-      breakdown
+      breakdown,
     };
   }
 
@@ -193,7 +193,7 @@ export class AprConcern {
     return await veBalApr.calc(
       this.pool.totalLiquidity,
       this.pool.totalShares,
-      prices
+      prices,
     );
   }
 }

@@ -4,7 +4,7 @@ import i18n from '@/plugins/i18n';
 
 export enum TradeInterface {
   GNOSIS = 'gnosis',
-  BALANCER = 'balancer'
+  BALANCER = 'balancer',
 }
 
 export interface AppState {
@@ -20,7 +20,7 @@ const state: AppState = {
   modalOpen: false,
   locale: lsGet(LS_KEYS.App.Locale, 'en-US'),
   transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 20), // minutes
-  tradeInterface: lsGet(LS_KEYS.App.TradeInterface, TradeInterface.BALANCER)
+  tradeInterface: lsGet(LS_KEYS.App.TradeInterface, TradeInterface.BALANCER),
 };
 
 const actions = {
@@ -36,7 +36,7 @@ const actions = {
     } catch (error) {
       console.error('Failed to initialize app', error);
     }
-  }
+  },
 };
 
 const mutations = {
@@ -56,7 +56,7 @@ const mutations = {
 
   setTradeInterface(
     state: AppState,
-    tradeInterface: AppState['tradeInterface']
+    tradeInterface: AppState['tradeInterface'],
   ) {
     state.tradeInterface = tradeInterface;
     lsSet(LS_KEYS.App.TradeInterface, state.tradeInterface);
@@ -64,16 +64,16 @@ const mutations = {
 
   setTransactionDeadline(
     state: AppState,
-    transactionDeadline: AppState['transactionDeadline']
+    transactionDeadline: AppState['transactionDeadline'],
   ) {
     state.transactionDeadline = transactionDeadline;
     lsSet(LS_KEYS.App.TradeDeadline, state.transactionDeadline);
-  }
+  },
 };
 
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
 };

@@ -17,7 +17,7 @@ type PoolSwapsQueryResponse = {
 
 export default function useUserPoolSwapsQuery(
   id: string,
-  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {},
 ) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
@@ -36,8 +36,8 @@ export default function useUserPoolSwapsQuery(
       skip: pageParam,
       where: {
         userAddress: account.value.toLowerCase(),
-        poolId: id
-      }
+        poolId: id,
+      },
     });
 
     return {
@@ -45,19 +45,19 @@ export default function useUserPoolSwapsQuery(
       skip:
         poolSwaps.length >= POOLS.Pagination.PerPage
           ? pageParam + POOLS.Pagination.PerPage
-          : undefined
+          : undefined,
     };
   };
 
   const queryOptions = reactive({
     enabled,
     getNextPageParam: (lastPage: PoolSwapsQueryResponse) => lastPage.skip,
-    ...options
+    ...options,
   });
 
   return useInfiniteQuery<PoolSwapsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions,
   );
 }

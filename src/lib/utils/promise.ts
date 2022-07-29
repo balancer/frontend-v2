@@ -3,7 +3,7 @@ import { sleep } from '.';
 export async function retryPromiseWithDelay<T>(
   promise: Promise<T>,
   retryCount: number,
-  delayTime: number
+  delayTime: number,
 ): Promise<T> {
   try {
     return await promise;
@@ -20,10 +20,10 @@ export async function retryPromiseWithDelay<T>(
 
 export async function tryPromiseWithTimeout<T>(
   promise: Promise<T>,
-  timeout: number
+  timeout: number,
 ): Promise<T> {
   return Promise.race([
     promise,
-    new Promise<T>((_, reject) => setTimeout(reject, timeout))
+    new Promise<T>((_, reject) => setTimeout(reject, timeout)),
   ]);
 }

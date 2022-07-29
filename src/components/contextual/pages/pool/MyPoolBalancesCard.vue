@@ -36,10 +36,10 @@ const { tokens, balances, balanceFor, getTokens } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
-  toRef(props, 'pool')
+  toRef(props, 'pool'),
 );
 const {
-  userData: { stakedSharesForProvidedPool }
+  userData: { stakedSharesForProvidedPool },
 } = useStaking();
 const router = useRouter();
 
@@ -51,7 +51,7 @@ const poolCalculator = new PoolCalculator(
   tokens,
   balances,
   'exit',
-  ref(false)
+  ref(false),
 );
 
 /**
@@ -60,16 +60,14 @@ const poolCalculator = new PoolCalculator(
 const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const poolTokens = computed(() =>
-  Object.values(getTokens(props.pool.tokensList))
+  Object.values(getTokens(props.pool.tokensList)),
 );
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bnum(bptBalance.value)
-      .plus(stakedSharesForProvidedPool.value)
-      .toString(),
+    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
     0,
-    'send'
+    'send',
   );
 
   if (isStablePhantomPool.value) {
@@ -80,9 +78,7 @@ const propTokenAmounts = computed((): string[] => {
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
+      return bnum(receive[i]).times(priceRate).toString();
     });
   }
 
@@ -101,11 +97,7 @@ const tokenAddresses = computed((): string[] => {
 const fiatValue = computed(() =>
   tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    )
+    .reduce((total, value) => bnum(total).plus(value).toString()),
 );
 
 const showMigrateButton = computed(
@@ -113,7 +105,7 @@ const showMigrateButton = computed(
     bnum(bptBalance.value).gt(0) &&
     isMigratablePool(props.pool) &&
     // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
-    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION),
 );
 /**
  * METHODS
@@ -124,7 +116,7 @@ function weightLabelFor(address: string): string {
   return weight
     ? fNum2(weight, {
         style: 'percent',
-        maximumFractionDigits: 0
+        maximumFractionDigits: 0,
       })
     : '-';
 }
@@ -139,12 +131,12 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId
+      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId,
     },
     query: {
       returnRoute: 'pool',
-      returnParams: JSON.stringify({ id: pool.id })
-    }
+      returnParams: JSON.stringify({ id: pool.id }),
+    },
   });
 }
 </script>

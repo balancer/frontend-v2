@@ -18,7 +18,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   isStablePool: false,
-  selectedTokens: () => []
+  selectedTokens: () => [],
 });
 
 const { fNum2 } = useNumbers();
@@ -32,13 +32,13 @@ const visibleTokens = computed(() => props.tokens.slice(0, MAX_PILLS));
 const hiddenTokens = computed(() => props.tokens.slice(MAX_PILLS));
 
 const hasBalanceInHiddenTokens = computed(() =>
-  hiddenTokens.value.some(token => hasBalance(token.address))
+  hiddenTokens.value.some(token => hasBalance(token.address)),
 );
 
 const isSelectedInHiddenTokens = computed(() =>
   hiddenTokens.value.some(token =>
-    includesAddress(props.selectedTokens, token.address)
-  )
+    includesAddress(props.selectedTokens, token.address),
+  ),
 );
 
 /**
@@ -51,7 +51,7 @@ function symbolFor(token: PoolToken): string {
 function weightFor(token: PoolToken): string {
   return fNum2(token.weight, {
     style: 'percent',
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   });
 }
 

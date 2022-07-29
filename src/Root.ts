@@ -8,7 +8,7 @@ const providers = Object.values(providerMap);
 export default defineComponent({
   components: {
     App,
-    ...providerMap
+    ...providerMap,
   },
 
   render() {
@@ -22,11 +22,11 @@ export default defineComponent({
         {
           default() {
             return [renderProviders(remainingProviders)];
-          }
-        }
+          },
+        },
       );
     }
 
     return renderProviders(providers);
-  }
+  },
 });

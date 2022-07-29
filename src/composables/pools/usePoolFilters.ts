@@ -23,6 +23,6 @@ export default function usePoolFilters() {
     // methods
     setSelectedTokens,
     addSelectedToken,
-    removeSelectedToken
+    removeSelectedToken,
   };
 }

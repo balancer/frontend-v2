@@ -40,16 +40,16 @@ export function encodeJoinWeightedPool(joinData: JoinData): string {
   } else if (joinData.kind == 'ExactTokensInForBPTOut') {
     return WeightedPoolEncoder.joinExactTokensInForBPTOut(
       joinData.amountsIn,
-      joinData.minimumBPT
+      joinData.minimumBPT,
     );
   } else if (joinData.kind == 'AllTokensInForExactBPTOut') {
     return WeightedPoolEncoder.joinAllTokensInForExactBPTOut(
-      joinData.bptAmountOut
+      joinData.bptAmountOut,
     );
   } else {
     return WeightedPoolEncoder.joinTokenInForExactBPTOut(
       joinData.bptAmountOut,
-      joinData.enterTokenIndex
+      joinData.enterTokenIndex,
     );
   }
 }
@@ -75,14 +75,14 @@ export function encodeExitWeightedPool(exitData: ExitData): string {
   if (exitData.kind == 'ExactBPTInForOneTokenOut') {
     return WeightedPoolEncoder.exitExactBPTInForOneTokenOut(
       exitData.bptAmountIn,
-      exitData.exitTokenIndex
+      exitData.exitTokenIndex,
     );
   } else if (exitData.kind == 'ExactBPTInForTokensOut') {
     return WeightedPoolEncoder.exitExactBPTInForTokensOut(exitData.bptAmountIn);
   } else {
     return WeightedPoolEncoder.exitBPTInForExactTokensOut(
       exitData.amountsOut,
-      exitData.maxBPTAmountIn
+      exitData.maxBPTAmountIn,
     );
   }
 }

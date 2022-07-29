@@ -20,7 +20,7 @@ export default class Weighted {
     const weights = this.calc.poolTokenWeights.map(w => bnum(w.toString()));
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
-      this.calc.poolTokenDecimals
+      this.calc.poolTokenDecimals,
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
 
@@ -29,7 +29,7 @@ export default class Weighted {
       weights,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
-      bnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString()),
     );
   }
 
@@ -38,7 +38,7 @@ export default class Weighted {
     const weights = this.calc.poolTokenWeights.map(w => bnum(w.toString()));
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
-      this.calc.poolTokenDecimals
+      this.calc.poolTokenDecimals,
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
 
@@ -47,22 +47,22 @@ export default class Weighted {
       weights,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
-      bnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString()),
     );
   }
 
   public bptInForExactTokenOut(
     amount: string,
-    tokenIndex: number
+    tokenIndex: number,
   ): OldBigNumber {
     const tokenBalance = bnum(
-      this.calc.poolTokenBalances[tokenIndex].toString()
+      this.calc.poolTokenBalances[tokenIndex].toString(),
     );
     const tokenNormalizedWeight = bnum(
-      this.calc.poolTokenWeights[tokenIndex].toString()
+      this.calc.poolTokenWeights[tokenIndex].toString(),
     );
     const tokenAmountOut = bnum(
-      parseUnits(amount, this.calc.poolTokenDecimals[tokenIndex]).toString()
+      parseUnits(amount, this.calc.poolTokenDecimals[tokenIndex]).toString(),
     );
     const bptTotalSupply = bnum(this.calc.poolTotalSupply.toString());
     const swapFee = bnum(this.calc.poolSwapFee.toString());
@@ -72,19 +72,19 @@ export default class Weighted {
       tokenNormalizedWeight,
       tokenAmountOut,
       bptTotalSupply,
-      swapFee
+      swapFee,
     );
   }
 
   public exactBPTInForTokenOut(
     bptAmount: string,
-    tokenIndex: number
+    tokenIndex: number,
   ): OldBigNumber {
     const tokenBalance = bnum(
-      this.calc.poolTokenBalances[tokenIndex].toString()
+      this.calc.poolTokenBalances[tokenIndex].toString(),
     );
     const tokenNormalizedWeight = bnum(
-      this.calc.poolTokenWeights[tokenIndex].toString()
+      this.calc.poolTokenWeights[tokenIndex].toString(),
     );
 
     return SDK.WeightedMath._calcTokenOutGivenExactBptIn(
@@ -92,7 +92,7 @@ export default class Weighted {
       tokenNormalizedWeight,
       bnum(bptAmount),
       bnum(this.calc.poolTotalSupply.toString()),
-      bnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString()),
     );
   }
 
@@ -118,26 +118,24 @@ export default class Weighted {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
             bptAmount,
-            opts.tokenIndex
+            opts.tokenIndex,
           ).toString();
           return formatUnits(
             tokenAmount,
-            this.calc.poolTokenDecimals[opts.tokenIndex]
+            this.calc.poolTokenDecimals[opts.tokenIndex],
           ).toString();
         });
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       }
 
-      return bnum(bptAmount)
-        .div(bptZeroPriceImpact)
-        .minus(1);
+      return bnum(bptAmount).div(bptZeroPriceImpact).minus(1);
     }
   }
 
   public bptForTokensZeroPriceImpact(tokenAmounts: string[]): OldBigNumber {
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
-      this.calc.poolTokenDecimals
+      this.calc.poolTokenDecimals,
     );
 
     return bnum(
@@ -146,8 +144,8 @@ export default class Weighted {
         this.calc.poolTokenDecimals,
         this.calc.poolTokenWeights,
         denormAmounts,
-        this.calc.poolTotalSupply
-      ).toString()
+        this.calc.poolTotalSupply,
+      ).toString(),
     );
   }
 }

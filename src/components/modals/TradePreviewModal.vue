@@ -110,7 +110,7 @@
 import { computed, defineComponent, toRefs } from 'vue';
 
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -124,28 +124,28 @@ export default defineComponent({
   props: {
     open: {
       type: Boolean,
-      default: false
+      default: false,
     },
     addressIn: {
       type: String,
-      required: true
+      required: true,
     },
     amountIn: {
       type: String,
-      required: true
+      required: true,
     },
     addressOut: {
       type: String,
-      required: true
+      required: true,
     },
     amountOut: {
       type: String,
-      required: true
+      required: true,
     },
     trading: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props, { emit }) {
     const { fNum2, toFiat } = useNumbers();
@@ -155,7 +155,7 @@ export default defineComponent({
     const { tokens, getToken, approvalRequired } = useTokens();
 
     const wrapType = computed(() =>
-      getWrapAction(addressIn.value, addressOut.value)
+      getWrapAction(addressIn.value, addressOut.value),
     );
     const isWrap = computed(() => wrapType.value === WrapType.Wrap);
     const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
@@ -163,7 +163,7 @@ export default defineComponent({
     const isStETHTrade = computed(
       () =>
         isStETH(addressIn.value, addressOut.value) &&
-        wrapType.value === WrapType.NonWrap
+        wrapType.value === WrapType.NonWrap,
     );
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
@@ -191,20 +191,20 @@ export default defineComponent({
     const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
 
     const requiresTokenApproval = computed(() =>
-      isUnwrap.value || isEthTrade.value ? false : true
+      isUnwrap.value || isEthTrade.value ? false : true,
     );
 
     const isLidoRelayerApproved = computed(
-      () => lidoRelayerApproval.isUnlocked.value
+      () => lidoRelayerApproval.isUnlocked.value,
     );
     const requiresLidoRelayerApproval = computed(
       () =>
         isStETHTrade.value &&
-        (!isLidoRelayerApproved.value || lidoRelayerApproval.approved.value)
+        (!isLidoRelayerApproved.value || lidoRelayerApproval.approved.value),
     );
 
     const requiresApproval = computed(
-      () => requiresTokenApproval.value || requiresLidoRelayerApproval.value
+      () => requiresTokenApproval.value || requiresLidoRelayerApproval.value,
     );
 
     const isTokenApproved = computed(() => {
@@ -219,7 +219,7 @@ export default defineComponent({
         return !approvalRequired(
           addressIn.value,
           amountIn.value,
-          addressOut.value
+          addressOut.value,
         );
       }
       return isUnlockedV2;
@@ -243,7 +243,7 @@ export default defineComponent({
 
     const approvingLidoRelayer = computed(
       () =>
-        lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
+        lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value,
     );
 
     const totalRequiredTransactions = computed(() => {
@@ -287,9 +287,9 @@ export default defineComponent({
       approvingLidoRelayer,
       approvingToken,
       lidoRelayerApproval,
-      totalRequiredTransactions
+      totalRequiredTransactions,
     };
-  }
+  },
 });
 </script>
 <style scoped>

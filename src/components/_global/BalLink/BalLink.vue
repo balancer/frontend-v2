@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-  inheritAttrs: false
+  inheritAttrs: false,
 };
 </script>
 
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
   tag: 'a',
   external: false,
   disabled: false,
-  noStyle: false
+  noStyle: false,
 });
 
 /**
@@ -44,7 +44,7 @@ const attrs_ = computed(() => {
     attrs_ = {
       ...attrs_,
       target: '_blank',
-      rel: 'noopener noreferrer'
+      rel: 'noopener noreferrer',
     };
   }
 
@@ -54,7 +54,7 @@ const attrs_ = computed(() => {
 const classes = computed(() => {
   return {
     link: !props.noStyle,
-    'disabled-link': props.disabled
+    'disabled-link': props.disabled,
   };
 });
 </script>

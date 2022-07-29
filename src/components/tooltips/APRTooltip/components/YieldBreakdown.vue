@@ -35,11 +35,11 @@ const { t } = useI18n();
  * COMPUTED
  */
 const yieldAPRTokens = computed(() =>
-  getTokens(Object.keys(props.yieldAPR.breakdown))
+  getTokens(Object.keys(props.yieldAPR.breakdown)),
 );
 
 const hasMultiRewardTokens = computed(
-  () => Object.keys(yieldAPRTokens.value).length > 1
+  () => Object.keys(yieldAPRTokens.value).length > 1,
 );
 
 const yieldAPRLabel = computed(() => {
@@ -50,7 +50,7 @@ const yieldAPRLabel = computed(() => {
 });
 
 const yieldBreakdownItems = computed((): [string, string][] =>
-  Object.entries(props.yieldAPR.breakdown)
+  Object.entries(props.yieldAPR.breakdown),
 );
 </script>
 

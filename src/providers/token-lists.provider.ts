@@ -6,7 +6,7 @@ import {
   provide,
   reactive,
   Ref,
-  toRefs
+  toRefs,
 } from 'vue';
 
 import localStorageKeys from '@/constants/local-storage.keys';
@@ -34,9 +34,8 @@ export interface TokenListsProviderResponse {
 
 /** SETUP */
 const { uris } = tokenListService;
-export const TokenListsProviderSymbol: InjectionKey<TokenListsProviderResponse> = Symbol(
-  symbolKeys.Providers.TokenLists
-);
+export const TokenListsProviderSymbol: InjectionKey<TokenListsProviderResponse> =
+  Symbol(symbolKeys.Providers.TokenLists);
 
 export default {
   name: 'TokenListsProvider',
@@ -46,7 +45,7 @@ export default {
      * STATE
      */
     const state: TokenListsState = reactive({
-      activeListKeys: [uris.Balancer.Default]
+      activeListKeys: [uris.Balancer.Default],
     });
 
     let allTokenLists = {};
@@ -61,28 +60,28 @@ export default {
      * All active (toggled) tokenlists
      */
     const activeTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists, state.activeListKeys)
+      (): TokenListMap => pick(allTokenLists, state.activeListKeys),
     );
 
     /**
      * The default Balancer token list.
      */
     const defaultTokenList = computed(
-      (): TokenList => allTokenLists[uris.Balancer.Default]
+      (): TokenList => allTokenLists[uris.Balancer.Default],
     );
 
     /**
      * The Balancer vetted token list, contains LBP tokens.
      */
     const vettedTokenList = computed(
-      (): TokenList => allTokenLists[uris.Balancer.Vetted]
+      (): TokenList => allTokenLists[uris.Balancer.Vetted],
     );
 
     /**
      * All Balancer token lists mapped by URI.
      */
     const balancerTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists, uris.Balancer.All)
+      (): TokenListMap => pick(allTokenLists, uris.Balancer.All),
     );
 
     /**
@@ -91,7 +90,7 @@ export default {
      * This excludes lists like the Balancer vetted list.
      */
     const approvedTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists, uris.Approved)
+      (): TokenListMap => pick(allTokenLists, uris.Approved),
     );
 
     /**
@@ -132,9 +131,9 @@ export default {
       vettedTokenList,
       // methods
       toggleTokenList,
-      isActiveList
+      isActiveList,
     });
 
     return () => slots.default();
-  }
+  },
 };

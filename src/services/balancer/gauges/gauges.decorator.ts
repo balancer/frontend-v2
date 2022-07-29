@@ -10,7 +10,7 @@ import {
   Gauge,
   OnchainGaugeData,
   OnchainGaugeDataMap,
-  SubgraphGauge
+  SubgraphGauge,
 } from './types';
 
 const MAX_REWARD_TOKENS = 8;
@@ -21,7 +21,7 @@ export class GaugesDecorator {
   constructor(
     private readonly abi = LiquidityGaugeAbi,
     private readonly provider = rpcProviderService.jsonProvider,
-    private readonly config = configService
+    private readonly config = configService,
   ) {
     this.multicaller = this.resetMulticaller();
   }
@@ -31,7 +31,7 @@ export class GaugesDecorator {
    */
   async decorate(
     subgraphGauges: SubgraphGauge[],
-    userAddress: string
+    userAddress: string,
   ): Promise<Gauge[]> {
     this.multicaller = this.resetMulticaller();
     this.callRewardTokens(subgraphGauges);
@@ -42,12 +42,12 @@ export class GaugesDecorator {
     this.callClaimableRewards(subgraphGauges, userAddress, gaugesDataMap);
 
     gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
-      gaugesDataMap
+      gaugesDataMap,
     );
 
     return subgraphGauges.map(subgraphGauge => ({
       ...subgraphGauge,
-      ...this.format(gaugesDataMap[subgraphGauge.id])
+      ...this.format(gaugesDataMap[subgraphGauge.id]),
     }));
   }
 
@@ -59,7 +59,7 @@ export class GaugesDecorator {
       ...gaugeData,
       rewardTokens: this.formatRewardTokens(gaugeData.rewardTokens),
       claimableTokens: gaugeData.claimableTokens?.toString() || '0',
-      claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards)
+      claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards),
     };
   }
 
@@ -74,7 +74,7 @@ export class GaugesDecorator {
           `${gauge.id}.rewardTokens[${i}]`,
           gauge.id,
           'reward_tokens',
-          [i]
+          [i],
         );
       }
     });
@@ -97,14 +97,14 @@ export class GaugesDecorator {
    */
   private callClaimableTokens(
     subgraphGauges: SubgraphGauge[],
-    userAddress: string
+    userAddress: string,
   ) {
     subgraphGauges.forEach(gauge => {
       this.multicaller.call(
         `${gauge.id}.claimableTokens`,
         gauge.id,
         'claimable_tokens',
-        [userAddress]
+        [userAddress],
       );
     });
   }
@@ -116,7 +116,7 @@ export class GaugesDecorator {
   private callClaimableRewards(
     subgraphGauges: SubgraphGauge[],
     userAddress: string,
-    gaugesDataMap: OnchainGaugeDataMap
+    gaugesDataMap: OnchainGaugeDataMap,
   ) {
     const methodName = isL2.value
       ? 'claimable_reward_write'
@@ -129,7 +129,7 @@ export class GaugesDecorator {
           `${gauge.id}.claimableRewards.${rewardToken}`,
           gauge.id,
           methodName,
-          [userAddress, rewardToken]
+          [userAddress, rewardToken],
         );
       });
     });
@@ -139,7 +139,7 @@ export class GaugesDecorator {
    * @summary converts claimable reward values in map to strings from BigNumbers.
    */
   private formatClaimableRewards(
-    claimableRewards: Record<string, string>
+    claimableRewards: Record<string, string>,
   ): Record<string, string> {
     if (!claimableRewards) return {};
 

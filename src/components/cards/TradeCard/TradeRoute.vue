@@ -70,7 +70,7 @@
             :style="{
               height: `${18 + 70 * index}px`,
               width: `calc(100% - ${4 * (routes.length - index - 1)}px + 1px)`,
-              margin: `0 ${2 * (routes.length - index - 1) - 1}px`
+              margin: `0 ${2 * (routes.length - index - 1) - 1}px`,
             }"
             class="absolute border-l border-r border-b border-gray-500 rounded-b-md"
           />
@@ -160,28 +160,28 @@ export default defineComponent({
   props: {
     addressIn: {
       type: String,
-      required: true
+      required: true,
     },
     amountIn: {
       type: String,
-      required: true
+      required: true,
     },
     addressOut: {
       type: String,
-      required: true
+      required: true,
     },
     amountOut: {
       type: String,
-      required: true
+      required: true,
     },
     pools: {
       type: Array as PropType<(Pool | SubgraphPoolBase)[]>,
-      required: true
+      required: true,
     },
     sorReturn: {
       type: Object as PropType<SorReturn>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { fNum2 } = useNumbers();
@@ -200,7 +200,7 @@ export default defineComponent({
       return {
         amount: props.amountIn,
         address: props.addressIn,
-        symbol
+        symbol,
       };
     });
 
@@ -209,7 +209,7 @@ export default defineComponent({
       return {
         amount: props.amountOut,
         address: props.addressOut,
-        symbol
+        symbol,
       };
     });
 
@@ -234,7 +234,7 @@ export default defineComponent({
       addressOut: string,
       pools: SubgraphPoolBase[],
       swaps: SwapV2[],
-      addresses: string[]
+      addresses: string[],
     ) {
       const { addresses: constants } = appNetworkConfig;
 
@@ -292,7 +292,7 @@ export default defineComponent({
               return {
                 address: getAddress(token.address),
                 share:
-                  parseFloat(token.weight || '') || 1 / rawPool.tokens.length
+                  parseFloat(token.weight || '') || 1 / rawPool.tokens.length,
               };
             })
             .sort((a, b) => {
@@ -313,14 +313,14 @@ export default defineComponent({
             .filter((_token, index, tokens) => {
               // Show first 2 and last 2 tokens
               return index < 2 || index > tokens.length - 3;
-            })
+            }),
         };
 
         const hop = {
           pool,
           tokenIn,
           tokenOut,
-          amount: new BigNumber(swap.amount || '0')
+          amount: new BigNumber(swap.amount || '0'),
         };
 
         allHops.push(hop);
@@ -330,7 +330,7 @@ export default defineComponent({
           const share = hop.amount.div(totalSwapAmount).toNumber();
           const route = {
             share,
-            hops: [hop]
+            hops: [hop],
           } as Route;
           routes.push(route);
         } else {
@@ -341,7 +341,7 @@ export default defineComponent({
             const share = swapAmount.div(totalSwapAmount).toNumber();
             const route = {
               share,
-              hops: [allHops[i - 1], hop]
+              hops: [allHops[i - 1], hop],
             } as Route;
             routes.push(route);
           } else if (tokenIn === addressIn && swap.amount === '0') {
@@ -350,7 +350,7 @@ export default defineComponent({
             const share = swapAmount.div(totalSwapAmount).toNumber();
             const route = {
               share,
-              hops: [hop, allHops[i - 1]]
+              hops: [hop, allHops[i - 1]],
             } as Route;
             routes.push(route);
           }
@@ -371,7 +371,7 @@ export default defineComponent({
         [Network.KOVAN]: 'kovan.',
         [Network.GOERLI]: 'goerli.',
         [Network.POLYGON]: 'polygon.',
-        [Network.ARBITRUM]: 'arbitrum.'
+        [Network.ARBITRUM]: 'arbitrum.',
       };
       const prefix = prefixMap[chainId] || '';
 
@@ -387,9 +387,9 @@ export default defineComponent({
       routes,
 
       formatShare,
-      getPoolLink
+      getPoolLink,
     };
-  }
+  },
 });
 </script>
 

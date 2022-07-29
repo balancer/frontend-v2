@@ -40,7 +40,7 @@ export default class VeBAL {
     const veBalMulticaller = new Multicaller(
       this.service.config.key,
       this.service.provider,
-      veBalAbi
+      veBalAbi,
     );
 
     veBalMulticaller.call('locked', this.address, 'locked', [account]);
@@ -65,21 +65,21 @@ export default class VeBAL {
       totalSupply: formatUnits(lockInfo.totalSupply, 18),
       epoch: lockInfo.epoch.toString(),
       hasExistingLock,
-      isExpired
+      isExpired,
     };
   }
 
   public createLock(
     userProvider: Web3Provider,
     lockAmount: string,
-    lockEndDate: string
+    lockEndDate: string,
   ) {
     return sendTransaction(
       userProvider,
       this.address,
       veBalAbi,
       'create_lock',
-      [parseUnits(lockAmount, 18), this.parseDate(lockEndDate)]
+      [parseUnits(lockAmount, 18), this.parseDate(lockEndDate)],
     );
   }
 
@@ -89,7 +89,7 @@ export default class VeBAL {
       this.address,
       veBalAbi,
       'increase_amount',
-      [parseUnits(lockAmount, 18)]
+      [parseUnits(lockAmount, 18)],
     );
   }
 
@@ -99,7 +99,7 @@ export default class VeBAL {
       this.address,
       veBalAbi,
       'increase_unlock_time',
-      [this.parseDate(lockEndDate)]
+      [this.parseDate(lockEndDate)],
     );
   }
 
@@ -109,7 +109,7 @@ export default class VeBAL {
       this.address,
       veBalAbi,
       'withdraw',
-      []
+      [],
     );
   }
 

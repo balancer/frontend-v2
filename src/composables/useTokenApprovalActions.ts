@@ -3,7 +3,7 @@ import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useTokenApprovals, {
-  ApprovalStateMap
+  ApprovalStateMap,
 } from '@/composables/pools/useTokenApprovals';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -20,18 +20,15 @@ type ApprovalActionOptions = {
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
-  amounts: Ref<string[]>
+  amounts: Ref<string[]>,
 ) {
   /**
    * COMPOSABLES
    */
   const { t } = useI18n();
   const { getToken } = useTokens();
-  const {
-    vaultApprovalStateMap,
-    approveToken,
-    getApprovalStateMapFor
-  } = useTokenApprovals(tokenAddresses, amounts);
+  const { vaultApprovalStateMap, approveToken, getApprovalStateMapFor } =
+    useTokenApprovals(tokenAddresses, amounts);
   const { appNetworkConfig } = useWeb3();
   const vaultAddress = appNetworkConfig.addresses.vault;
 
@@ -39,30 +36,31 @@ export default function useTokenApprovalActions(
    * STATE
    */
   // Approval actions based on Vault approvals for tokenAddresses
-  const tokenApprovalActions: TransactionActionInfo[] = getTokenApprovalActions();
+  const tokenApprovalActions: TransactionActionInfo[] =
+    getTokenApprovalActions();
 
   /**
    * METHODS
    */
   async function getTokenApprovalActionsForSpender(
     spender: string,
-    amount: string = MaxUint256.toString()
+    amount: string = MaxUint256.toString(),
   ) {
     const stateMap = await getApprovalStateMapFor(spender);
     return getTokenApprovalActions({ spender, amount, stateMap });
   }
 
   function getTokenApprovalActions(
-    options: Partial<ApprovalActionOptions> = {}
+    options: Partial<ApprovalActionOptions> = {},
   ): TransactionActionInfo[] {
     const defaultOptions: ApprovalActionOptions = {
       spender: vaultAddress,
       amount: MaxUint256.toString(),
-      stateMap: vaultApprovalStateMap.value
+      stateMap: vaultApprovalStateMap.value,
     };
     const { spender, amount, stateMap } = Object.assign(
       defaultOptions,
-      options
+      options,
     );
 
     return Object.keys(stateMap).map(address => {
@@ -73,20 +71,20 @@ export default function useTokenApprovalActions(
           spender === appNetworkConfig.addresses.veBAL
             ? 'transactionSummary.approveForLocking'
             : 'transactionSummary.approveForInvesting',
-          [token.symbol]
+          [token.symbol],
         ),
         loadingLabel: t('investment.preview.loadingLabel.approval'),
         confirmingLabel: t('confirming'),
         stepTooltip: t('investment.preview.tooltips.approval', [token.symbol]),
         action: () => {
           return approveToken(token.address, { spender, state, amount });
-        }
+        },
       };
     });
   }
 
   return {
     tokenApprovalActions,
-    getTokenApprovalActionsForSpender
+    getTokenApprovalActionsForSpender,
   };
 }

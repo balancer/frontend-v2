@@ -18,18 +18,18 @@ const vaultAddress = configService.network.addresses.vault;
 export enum Relayer {
   GNOSIS = 'Gnosis',
   LIDO = 'Lido',
-  BATCH = 'Batch'
+  BATCH = 'Batch',
 }
 
 const relayerAddressMap = {
   [Relayer.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
   [Relayer.LIDO]: configService.network.addresses.lidoRelayer,
-  [Relayer.BATCH]: configService.network.addresses.batchRelayer
+  [Relayer.BATCH]: configService.network.addresses.batchRelayer,
 };
 
 export default function useRelayerApproval(
   relayer: Relayer,
-  isEnabled: Ref<boolean> = ref(true)
+  isEnabled: Ref<boolean> = ref(true),
 ) {
   /**
    * STATE
@@ -53,14 +53,15 @@ export default function useRelayerApproval(
    */
   const isUnlocked = computed(
     () =>
-      approved.value || (!isEnabled.value ? true : !!relayerApproval.data.value)
+      approved.value ||
+      (!isEnabled.value ? true : !!relayerApproval.data.value),
   );
 
   const loading = computed(
     (): boolean =>
       relayerApproval.isLoading.value ||
       relayerApproval.isError.value ||
-      relayerApproval.isIdle.value
+      relayerApproval.isIdle.value,
   );
 
   const action = computed(
@@ -69,8 +70,8 @@ export default function useRelayerApproval(
       loadingLabel: t('checkWallet'),
       confirmingLabel: t('approvingBatchRelayer'),
       stepTooltip: t('approveBatchRelayerTooltip'),
-      action: approve
-    })
+      action: approve,
+    }),
   );
 
   /**
@@ -85,7 +86,7 @@ export default function useRelayerApproval(
         configService.network.addresses.vault,
         Vault__factory.abi,
         'setRelayerApproval',
-        [account.value, relayerAddress.value, true]
+        [account.value, relayerAddress.value, true],
       );
 
       init.value = false;
@@ -109,8 +110,8 @@ export default function useRelayerApproval(
       summary: t('transactionSummary.approveRelayer', [relayer]),
       details: {
         contractAddress: vaultAddress,
-        spender: relayerAddress.value
-      }
+        spender: relayerAddress.value,
+      },
     });
 
     approved.value = await txListener(tx, {
@@ -120,7 +121,7 @@ export default function useRelayerApproval(
       },
       onTxFailed: () => {
         approving.value = false;
-      }
+      },
     });
   }
 
@@ -131,6 +132,6 @@ export default function useRelayerApproval(
     approving,
     approved,
     isUnlocked,
-    loading
+    loading,
   };
 }

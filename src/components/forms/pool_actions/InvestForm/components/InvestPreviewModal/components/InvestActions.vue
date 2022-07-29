@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
@@ -64,7 +64,7 @@ const investmentState = reactive<InvestmentState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -85,12 +85,12 @@ const {
   bptOut,
   fiatTotalLabel,
   batchSwap,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
 } = toRefs(props.math);
 
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  fullAmounts
+  fullAmounts,
 );
 
 /**
@@ -108,15 +108,15 @@ const actions = computed((): TransactionActionInfo[] => [
     loadingLabel: t('investment.preview.loadingLabel.investment'),
     confirmingLabel: t('confirming'),
     action: submit,
-    stepTooltip: t('investmentTooltip')
-  }
+    stepTooltip: t('investmentTooltip'),
+  },
 ]);
 
 const transactionInProgress = computed(
   (): boolean =>
     investmentState.init ||
     investmentState.confirming ||
-    investmentState.confirmed
+    investmentState.confirmed,
 );
 
 const isStakablePool = computed((): boolean => {
@@ -137,12 +137,12 @@ async function handleTransaction(tx): Promise<void> {
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
       fiatTotalLabel.value,
-      poolWeightsLabel(props.pool)
+      poolWeightsLabel(props.pool),
     ]),
     details: {
       total: fiatTotalLabel.value,
-      pool: props.pool
-    }
+      pool: props.pool,
+    },
   });
 
   await txListener(tx, {
@@ -158,7 +158,7 @@ async function handleTransaction(tx): Promise<void> {
     onTxFailed: () => {
       console.error('Invest failed');
       investmentState.confirming = false;
-    }
+    },
   });
 }
 
@@ -173,7 +173,7 @@ async function submit(): Promise<TransactionResponse> {
         batchSwap.value.assets,
         props.pool.address,
         batchSwapAmountMap.value,
-        BigNumber.from(bptOut.value)
+        BigNumber.from(bptOut.value),
       );
     } else {
       tx = await poolExchange.join(
@@ -181,7 +181,7 @@ async function submit(): Promise<TransactionResponse> {
         account.value,
         fullAmounts.value,
         props.tokenAddresses,
-        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
+        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18),
       );
     }
 

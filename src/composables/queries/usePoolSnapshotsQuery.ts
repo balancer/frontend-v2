@@ -27,7 +27,7 @@ interface QueryResponse {
 export default function usePoolSnapshotsQuery(
   id: string,
   days?: number,
-  options: QueryObserverOptions<QueryResponse> = {}
+  options: QueryObserverOptions<QueryResponse> = {},
 ) {
   /**
    * @description
@@ -76,9 +76,9 @@ export default function usePoolSnapshotsQuery(
         tokensList,
         shapshotDaysNum,
         1,
-        aggregateBy
+        aggregateBy,
       ),
-      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
+      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum),
     ]);
 
     return { prices, snapshots };
@@ -86,7 +86,7 @@ export default function usePoolSnapshotsQuery(
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

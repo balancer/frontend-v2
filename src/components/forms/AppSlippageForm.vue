@@ -19,7 +19,7 @@ const { slippage, setSlippage } = useUserSettings();
 const state = reactive({
   fixedSlippage: '',
   customSlippage: '',
-  isCustomInput: false
+  isCustomInput: false,
 });
 
 const options = FIXED_OPTIONS.map(option => {
@@ -28,9 +28,9 @@ const options = FIXED_OPTIONS.map(option => {
       style: 'percent',
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
-      fixedFormat: true
+      fixedFormat: true,
     }),
-    value: option
+    value: option,
   };
 });
 
@@ -44,7 +44,7 @@ const isFixedSlippage = computed(() => {
 const customInputClasses = computed(() => ({
   'border border-blue-500 text-blue-500':
     !isFixedSlippage.value || state.isCustomInput,
-  'border dark:border-gray-900': isFixedSlippage.value && !state.isCustomInput
+  'border dark:border-gray-900': isFixedSlippage.value && !state.isCustomInput,
 }));
 
 /**
@@ -58,9 +58,7 @@ function onFixedInput(val: string): void {
 
 function onCustomInput(val: string): void {
   state.isCustomInput = true;
-  val = bnum(val)
-    .div(100)
-    .toString();
+  val = bnum(val).div(100).toString();
   setSlippage(val);
 }
 
@@ -74,13 +72,11 @@ watch(
       state.fixedSlippage = newSlippage;
       state.customSlippage = '';
     } else {
-      state.customSlippage = bnum(newSlippage)
-        .times(100)
-        .toString();
+      state.customSlippage = bnum(newSlippage).times(100).toString();
       state.fixedSlippage = '';
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 
@@ -101,9 +97,7 @@ watch(
         min="0"
         @update:modelValue="onCustomInput"
       />
-      <div class="px-2">
-        %
-      </div>
+      <div class="px-2">%</div>
     </div>
   </div>
 </template>

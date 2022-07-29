@@ -1,5 +1,5 @@
 export default function useEthers() {
   return {
-    txListener: jest.fn().mockImplementation()
+    txListener: jest.fn().mockImplementation(),
   };
 }

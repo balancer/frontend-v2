@@ -21,14 +21,14 @@ export async function multicall<T>(
   abi: any[],
   calls: any[],
   options: any = {},
-  requireSuccess = false
+  requireSuccess = false,
 ): Promise<(T | null)[]> {
   const multi = new Contract(
     configs[network].addresses.multicall,
     [
-      'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)'
+      'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)',
     ],
-    provider
+    provider,
   );
   const itf = new Interface(abi);
   try {
@@ -37,9 +37,9 @@ export async function multicall<T>(
       requireSuccess,
       calls.map(call => [
         call[0].toLowerCase(),
-        itf.encodeFunctionData(call[1], call[2])
+        itf.encodeFunctionData(call[1], call[2]),
       ]),
-      options
+      options,
     );
 
     return res.map(([success, returnData], i) => {
@@ -65,7 +65,7 @@ export class Multicaller {
     network: string,
     provider: JsonRpcProvider,
     abi: any[],
-    options?
+    options?,
   ) {
     this.network = network;
     this.provider = provider;
@@ -86,7 +86,7 @@ export class Multicaller {
       this.provider,
       this.abi,
       this.calls,
-      this.options
+      this.options,
     );
     result.forEach((r, i) => set(obj, this.paths[i], r));
     this.calls = [];

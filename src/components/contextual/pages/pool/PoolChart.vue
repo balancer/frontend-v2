@@ -16,7 +16,7 @@ import {
   Pool,
   PoolSnapshot,
   PoolSnapshots,
-  PoolType
+  PoolType,
 } from '@/services/pool/types';
 
 /**
@@ -41,7 +41,7 @@ type Props = {
 enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
-  FEES = 'fees'
+  FEES = 'fees',
 }
 
 interface PoolChartData {
@@ -63,7 +63,7 @@ interface PoolChartData {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -84,16 +84,16 @@ const MIN_CHART_VALUES = 2;
 const tabs = [
   {
     value: PoolChartTab.VOLUME,
-    label: t('poolChart.tabs.volume')
+    label: t('poolChart.tabs.volume'),
   },
   {
     value: PoolChartTab.TVL,
-    label: t('poolChart.tabs.tvl')
+    label: t('poolChart.tabs.tvl'),
   },
   {
     value: PoolChartTab.FEES,
-    label: t('poolChart.tabs.fees')
-  }
+    label: t('poolChart.tabs.fees'),
+  },
 ];
 const activeTab = ref(tabs[0].value);
 
@@ -112,13 +112,15 @@ const periodOptions = computed(() => [
   { text: t('poolChart.period.days', [90]), days: 90 },
   { text: t('poolChart.period.days', [180]), days: 180 },
   { text: t('poolChart.period.days', [365]), days: 365 },
-  { text: t('poolChart.period.all'), days: snapshotValues.value.length }
+  { text: t('poolChart.period.all'), days: snapshotValues.value.length },
 ]);
 
 const currentPeriod = ref<PoolChartPeriod>(periodOptions.value[0]);
 
 const timestamps = computed(() =>
-  snapshotValues.value.map(snapshot => format(snapshot.timestamp, 'yyyy/MM/dd'))
+  snapshotValues.value.map(snapshot =>
+    format(snapshot.timestamp, 'yyyy/MM/dd'),
+  ),
 );
 
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
@@ -130,7 +132,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       const timestamp = timestamps.value[idx];
       if (idx === 0) {
         tvlValues.push(
-          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+          Object.freeze([timestamp, Number(props.totalLiquidity || 0)]),
         );
         return;
       }
@@ -142,7 +144,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
       if (idx === 0) {
         tvlValues.push(
-          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+          Object.freeze([timestamp, Number(props.totalLiquidity || 0)]),
         );
         return;
       }
@@ -164,11 +166,11 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
        */
       if (snapshot.amounts.length > prices.length) {
         const maxValue = Math.max(
-          ...snapshot.amounts.map(amount => Number(amount))
+          ...snapshot.amounts.map(amount => Number(amount)),
         );
 
         amounts = amounts.filter(
-          amount => Number(amount).toFixed() !== maxValue?.toString()
+          amount => Number(amount).toFixed() !== maxValue?.toString(),
         );
       }
 
@@ -177,7 +179,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
           sum += Number(amount) * prices[index];
           return sum;
         },
-        0
+        0,
       );
 
       tvlValues.push(Object.freeze([timestamp, snapshotPoolValue]));
@@ -194,31 +196,31 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
           offset: 0,
-          color: 'rgba(14, 165, 233, 0.08)'
+          color: 'rgba(14, 165, 233, 0.08)',
         },
         {
           offset: 1,
-          color: 'rgba(68, 9, 236, 0)'
-        }
-      ])
+          color: 'rgba(68, 9, 236, 0)',
+        },
+      ]),
     },
     chartType: 'line',
     data: [
       {
         name: 'TVL',
-        values: tvlValues
-      }
+        values: tvlValues,
+      },
     ],
     defaultHeaderStateValue: fNum2(tvlValues[0][1], {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
 function getFeesData(
   periodSnapshots: PoolSnapshot[],
   isAllTimeSelected: boolean,
-  pariodLastSnapshotIdx: number
+  pariodLastSnapshotIdx: number,
 ) {
   const feesValues = periodSnapshots.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapFees);
@@ -250,19 +252,19 @@ function getFeesData(
     data: [
       {
         name: 'Fees',
-        values: feesValues
-      }
+        values: feesValues,
+      },
     ],
     defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
 function getVolumeData(
   periodSnapshots: PoolSnapshot[],
   isAllTimeSelected: boolean,
-  pariodLastSnapshotIdx: number
+  pariodLastSnapshotIdx: number,
 ): PoolChartData {
   const volumeData = periodSnapshots.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapVolume);
@@ -292,48 +294,46 @@ function getVolumeData(
     data: [
       {
         name: 'Volume',
-        values: volumeData
-      }
+        values: volumeData,
+      },
     ],
     defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
-const chartData = computed(
-  (): PoolChartData => {
-    const periodSnapshots =
-      currentPeriod.value.days === snapshotValues.value.length
-        ? snapshotValues.value
-        : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
-    const isAllTimeSelected =
-      periodSnapshots.length === snapshotValues.value.length;
-    const pariodLastSnapshotIdx = periodSnapshots.length - 1;
+const chartData = computed((): PoolChartData => {
+  const periodSnapshots =
+    currentPeriod.value.days === snapshotValues.value.length
+      ? snapshotValues.value
+      : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
+  const isAllTimeSelected =
+    periodSnapshots.length === snapshotValues.value.length;
+  const pariodLastSnapshotIdx = periodSnapshots.length - 1;
 
-    if (activeTab.value === PoolChartTab.TVL) {
-      return getTVLData(periodSnapshots);
-    }
+  if (activeTab.value === PoolChartTab.TVL) {
+    return getTVLData(periodSnapshots);
+  }
 
-    if (activeTab.value === PoolChartTab.FEES) {
-      return getFeesData(
-        periodSnapshots,
-        isAllTimeSelected,
-        pariodLastSnapshotIdx
-      );
-    }
-
-    return getVolumeData(
+  if (activeTab.value === PoolChartTab.FEES) {
+    return getFeesData(
       periodSnapshots,
       isAllTimeSelected,
-      pariodLastSnapshotIdx
+      pariodLastSnapshotIdx,
     );
   }
-);
+
+  return getVolumeData(
+    periodSnapshots,
+    isAllTimeSelected,
+    pariodLastSnapshotIdx,
+  );
+});
 
 const defaultChartData = computed(() => {
   const currentPeriodOption = periodOptions.value.find(
-    option => option.days === currentPeriod.value.days
+    option => option.days === currentPeriod.value.days,
   );
   let title = `${currentPeriodOption?.text} ${activeTab.value}`;
 
@@ -356,11 +356,11 @@ function setCurrentChartValue(payload: {
   chartValue: number;
 }) {
   currentChartValue.value = fNum2(payload.chartValue, {
-    style: 'currency'
+    style: 'currency',
   });
   currentChartDate.value = format(
     new Date(payload.chartDate),
-    PRETTY_DATE_FORMAT
+    PRETTY_DATE_FORMAT,
   );
 }
 </script>
@@ -410,7 +410,11 @@ function setCurrentChartValue(payload: {
       height="96"
       :data="chartData.data"
       :axis-label-formatter="{
-        yAxis: { style: 'currency', abbreviate: true, maximumFractionDigits: 0 }
+        yAxis: {
+          style: 'currency',
+          abbreviate: true,
+          maximumFractionDigits: 0,
+        },
       }"
       :area-style="chartData.areaStyle"
       :color="chartData.color"

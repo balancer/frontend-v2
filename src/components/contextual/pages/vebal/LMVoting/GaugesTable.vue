@@ -14,7 +14,7 @@ import {
   isStableLike,
   isUnknownType,
   orderedPoolTokens,
-  poolURLFor
+  poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { scale } from '@/lib/utils';
@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
   expiredGauges: () => [],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
-  isPaginated: false
+  isPaginated: false,
 });
 
 const emit = defineEmits<{
@@ -68,7 +68,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     Header: 'chainColumnHeader',
     Cell: 'networkColumnCell',
     width: 80,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('veBAL.liquidityMining.table.assets'),
@@ -77,14 +77,14 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     Header: 'iconColumnHeader',
     Cell: 'iconColumnCell',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('veBAL.liquidityMining.table.composition'),
     id: 'poolComposition',
     accessor: 'id',
     Cell: 'poolCompositionCell',
-    width: 350
+    width: 350,
   },
   {
     name: t('veBAL.liquidityMining.table.nextPeriodVotes'),
@@ -94,7 +94,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     Cell: 'nextPeriodVotesCell',
     sortKey: gauge => Number(gauge.votesNextPeriod),
     width: 150,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
   },
   {
     name: t('veBAL.liquidityMining.table.myVotes'),
@@ -102,7 +102,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
       const normalizedVotes = scale(new BigNumber(gauge.userVotes), -4);
       return fNum2(normalizedVotes.toString(), {
         style: 'percent',
-        maximumFractionDigits: 2
+        maximumFractionDigits: 2,
       });
     },
     align: 'right',
@@ -110,7 +110,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     sortKey: gauge => Number(gauge.userVotes),
     width: 150,
     cellClassName: 'font-numeric',
-    hidden: !isWalletReady.value
+    hidden: !isWalletReady.value,
   },
   {
     name: t('veBAL.liquidityMining.table.vote'),
@@ -119,8 +119,8 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     align: 'right',
     Cell: 'voteColumnCell',
     width: 100,
-    hidden: !isWalletReady.value
-  }
+    hidden: !isWalletReady.value,
+  },
 ]);
 
 /**
@@ -130,16 +130,16 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
     gauge.pool.poolType,
     gauge.pool.address,
-    gauge.pool.tokens
+    gauge.pool.tokens,
   );
   return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+    token => gauge.tokenLogoURIs[token?.address || ''] || '',
   );
 }
 
 function networkSrc(network: Network) {
   return require(`@/assets/images/icons/networks/${networkNameFor(
-    network
+    network,
   )}.svg`);
 }
 
@@ -147,7 +147,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
   window.location.href = poolURLFor(
     gauge.pool.id,
     gauge.network,
-    gauge.pool.poolType
+    gauge.pool.poolType,
   );
 }
 
@@ -187,11 +187,11 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       :getTableRowClass="getTableRowClass"
       :initial-state="{
         sortColumn: 'nextPeriodVotes',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
       :pin="{
         pinOn: 'address',
-        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b']
+        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b'],
       }"
     >
       <template v-slot:chainColumnHeader>

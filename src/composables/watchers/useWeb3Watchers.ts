@@ -24,7 +24,7 @@ export default function useWeb3Watchers() {
     blockNumber,
     connectToAppNetwork,
     isWalletReady,
-    disconnectWallet
+    disconnectWallet,
   } = useWeb3();
   const { addAlert, removeAlert } = useAlerts();
   const { refetchBalances, refetchAllowances } = useTokens();
@@ -32,7 +32,7 @@ export default function useWeb3Watchers() {
 
   function handleTransactionReplacement(
     tx: EthereumTransactionData,
-    replacementReason: ReplacementReason
+    replacementReason: ReplacementReason,
   ) {
     const originalHash = tx.replaceHash;
 
@@ -40,7 +40,7 @@ export default function useWeb3Watchers() {
       updateTransaction(originalHash, 'tx', {
         // new id
         id: tx.hash,
-        replacementReason
+        replacementReason,
       });
     }
   }
@@ -54,7 +54,7 @@ export default function useWeb3Watchers() {
         persistent: true,
         action: connectToAppNetwork,
         actionLabel: t('switchNetwork'),
-        priority: AlertPriority.HIGH
+        priority: AlertPriority.HIGH,
       });
     } else {
       removeAlert('network-mismatch');
@@ -80,18 +80,18 @@ export default function useWeb3Watchers() {
         emitter.on('txSpeedUp', tx =>
           handleTransactionReplacement(
             tx as EthereumTransactionData,
-            'txSpeedUp'
-          )
+            'txSpeedUp',
+          ),
         );
 
         emitter.on('txCancel', tx =>
           handleTransactionReplacement(
             tx as EthereumTransactionData,
-            'txCancel'
-          )
+            'txCancel',
+          ),
         );
       }
-    }
+    },
   );
 
   // Watch for user network switch

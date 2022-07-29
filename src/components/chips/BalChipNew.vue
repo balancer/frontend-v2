@@ -7,7 +7,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  size: 'sm'
+  size: 'sm',
 });
 </script>
 

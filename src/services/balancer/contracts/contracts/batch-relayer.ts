@@ -20,7 +20,7 @@ export default class BatchRelayer {
     this.instance = new Contract(
       this.service.config.addresses.batchRelayer,
       this.abi,
-      this.service.provider
+      this.service.provider,
     );
   }
 
@@ -36,13 +36,13 @@ export default class BatchRelayer {
     rates: string[],
     slippage: string,
     exactOut = false,
-    fetchPools = true
+    fetchPools = true,
   ): Promise<TransactionData> {
     const funds: FundManagement = {
       sender: account,
       recipient: this.address, // Note relayer is recipient of swaps
       fromInternalBalance: false,
-      toInternalBalance: false
+      toInternalBalance: false,
     };
 
     const tokensIn = tokensOut.map(() => tokenIn);
@@ -60,21 +60,21 @@ export default class BatchRelayer {
       slippage,
       {
         fetchPools,
-        fetchOnChain: false
-      }
+        fetchOnChain: false,
+      },
     );
   }
 
   public async execute(
     txInfo: TransactionData,
-    userProvider: Web3Provider
+    userProvider: Web3Provider,
   ): Promise<TransactionResponse> {
     return await sendTransaction(
       userProvider,
       this.address,
       this.abi,
       txInfo.function,
-      [txInfo.params]
+      [txInfo.params],
     );
   }
 }

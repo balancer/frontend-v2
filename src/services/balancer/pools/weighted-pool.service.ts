@@ -2,7 +2,7 @@ import { toNormalizedWeights } from '@balancer-labs/sdk';
 import {
   Vault__factory,
   WeightedPool__factory,
-  WeightedPoolFactory__factory
+  WeightedPoolFactory__factory,
 } from '@balancer-labs/typechain';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
@@ -11,7 +11,7 @@ import { Contract } from '@ethersproject/contracts';
 import {
   JsonRpcProvider,
   TransactionResponse,
-  Web3Provider
+  Web3Provider,
 } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from 'ethers/lib/utils';
@@ -45,7 +45,7 @@ export default class WeightedPoolService {
     symbol: string,
     swapFee: string,
     tokens: PoolSeedToken[],
-    owner: Address
+    owner: Address,
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
@@ -65,7 +65,7 @@ export default class WeightedPoolService {
       tokenAddresses,
       seedTokens,
       swapFeeScaled.toString(),
-      owner
+      owner,
     ];
 
     return sendTransaction(
@@ -73,13 +73,13 @@ export default class WeightedPoolService {
       weightedPoolFactoryAddress,
       WeightedPoolFactory__factory.abi,
       'create',
-      params
+      params,
     );
   }
 
   public async retrievePoolIdAndAddress(
     provider: Web3Provider | JsonRpcProvider,
-    createHash: string
+    createHash: string,
   ): Promise<CreatePoolReturn> {
     const receipt: any = await provider.getTransactionReceipt(createHash);
     let poolAddress;
@@ -92,7 +92,7 @@ export default class WeightedPoolService {
 
     if (!poolAddress) {
       const logs = receipt.logs.filter(
-        l => l.topics?.length > 0 && l.topics[0] === TOPICS.PoolCreated
+        l => l.topics?.length > 0 && l.topics[0] === TOPICS.PoolCreated,
       );
       poolAddress = logs[0].address;
     }
@@ -102,7 +102,7 @@ export default class WeightedPoolService {
 
     const poolDetails: CreatePoolReturn = {
       id: poolId,
-      address: poolAddress
+      address: poolAddress,
     };
 
     return poolDetails;
@@ -110,15 +110,16 @@ export default class WeightedPoolService {
 
   public async retrievePoolDetailsFromCall(
     provider: Web3Provider | JsonRpcProvider,
-    hash: string
+    hash: string,
   ) {
     if (!hash) return;
     const transaction = await provider.getTransaction(hash);
 
-    const weightedPoolInterface = WeightedPoolFactory__factory.createInterface();
+    const weightedPoolInterface =
+      WeightedPoolFactory__factory.createInterface();
     const decodedInputData = weightedPoolInterface.decodeFunctionData(
       'create',
-      transaction.data
+      transaction.data,
     );
 
     const details = {
@@ -126,7 +127,7 @@ export default class WeightedPoolService {
       name: decodedInputData.name,
       owner: decodedInputData.owner,
       symbol: decodedInputData.symbol,
-      tokens: decodedInputData.tokens
+      tokens: decodedInputData.tokens,
     };
     return details;
   }
@@ -137,11 +138,11 @@ export default class WeightedPoolService {
     sender: Address,
     receiver: Address,
     tokenAddresses: Address[],
-    initialBalancesString: string[]
+    initialBalancesString: string[],
   ): Promise<TransactionResponse> {
     const initUserData = defaultAbiCoder.encode(
       ['uint256', 'uint256[]'],
-      [JOIN_KIND_INIT, initialBalancesString]
+      [JOIN_KIND_INIT, initialBalancesString],
     );
 
     const value = this.value(initialBalancesString, tokenAddresses);
@@ -152,7 +153,7 @@ export default class WeightedPoolService {
       assets: tokenAddresses,
       maxAmountsIn: initialBalancesString,
       userData: initUserData,
-      fromInternalBalance: false
+      fromInternalBalance: false,
     };
 
     const vaultAddress = configService.network.addresses.vault;
@@ -162,14 +163,14 @@ export default class WeightedPoolService {
       Vault__factory.abi,
       'joinPool',
       [poolId, sender, receiver, joinPoolRequest],
-      { value }
+      { value },
     );
   }
 
   public calculateTokenWeights(tokens: PoolSeedToken[]): string[] {
     const weights: EPBigNumber[] = tokens.map((token: PoolSeedToken) => {
       const normalizedWeight = new BigNumber(token.weight).multipliedBy(
-        new BigNumber(1e16)
+        new BigNumber(1e16),
       );
       return EPBigNumber.from(normalizedWeight.toString());
     });
@@ -198,7 +199,7 @@ export default class WeightedPoolService {
     const nativeAsset = configService.network.nativeAsset;
 
     return tokensIn.map(address =>
-      isSameAddress(address, nativeAsset.address) ? AddressZero : address
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address,
     );
   }
 }

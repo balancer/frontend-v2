@@ -17,7 +17,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   isVisible: false,
-  unknownTokens: () => []
+  unknownTokens: () => [],
 });
 
 const emit = defineEmits(['close']);
@@ -38,35 +38,33 @@ const { t } = useI18n();
 /**
  * LIFECYCLE
  */
-const unknownTokenPrices = computed(
-  (): TokenPrices => {
-    const _unknownTokenPrices = {};
-    for (const token of props.unknownTokens) {
-      _unknownTokenPrices[token] = {
-        [FiatCurrency.usd]:
-          injectedPrices.value?.[token]?.[FiatCurrency.usd] || null
-      };
-    }
-    return _unknownTokenPrices;
+const unknownTokenPrices = computed((): TokenPrices => {
+  const _unknownTokenPrices = {};
+  for (const token of props.unknownTokens) {
+    _unknownTokenPrices[token] = {
+      [FiatCurrency.usd]:
+        injectedPrices.value?.[token]?.[FiatCurrency.usd] || null,
+    };
   }
-);
+  return _unknownTokenPrices;
+});
 
 /**
  * COMPUTED
  */
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
-    tokenAddress => getToken(tokenAddress).symbol
+    tokenAddress => getToken(tokenAddress).symbol,
   );
   return formatWordListAsSentence(tokenSymbols, t);
 });
 
 const isSubmitDisabled = computed(() => {
   const noPricesEntered = props.unknownTokens.some(token =>
-    [null, ''].includes(unknownTokenPrices[token])
+    [null, ''].includes(unknownTokenPrices[token]),
   );
   const hasLargePrice = props.unknownTokens.some(token =>
-    bnum(unknownTokenPrices?.[token]?.[FiatCurrency.usd] || '0').gt(PRICE_CAP)
+    bnum(unknownTokenPrices?.[token]?.[FiatCurrency.usd] || '0').gt(PRICE_CAP),
   );
   return noPricesEntered || hasLargePrice;
 });
@@ -76,7 +74,7 @@ const isSubmitDisabled = computed(() => {
  */
 function getIndexOfUnknownToken(address: string) {
   return seedTokens.value.findIndex(token =>
-    isSameAddress(address, token.tokenAddress)
+    isSameAddress(address, token.tokenAddress),
   );
 }
 
@@ -96,7 +94,7 @@ function injectUnknownPrices() {
       <p>
         {{
           $t('createAPool.unknownTokenPriceWarning', [
-            readableUnknownTokenSymbols
+            readableUnknownTokenSymbols,
           ])
         }}
       </p>
@@ -112,11 +110,9 @@ function injectUnknownPrices() {
           placeholder="$0.00"
           v-model:amount="unknownTokenPrices[address][FiatCurrency.usd]"
           :address="address"
-          :name="
-            `initial-token-${
-              seedTokens[getIndexOfUnknownToken(address)].tokenAddress
-            }`
-          "
+          :name="`initial-token-${
+            seedTokens[getIndexOfUnknownToken(address)].tokenAddress
+          }`"
           noMax
           hideFooter
           :rules="[isLessThanOrEqualTo(PRICE_CAP)]"

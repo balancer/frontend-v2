@@ -155,7 +155,7 @@ export function loadTree(balances, decimals = 18) {
     const balance: string = scale(balances[address], decimals).toString(10);
     const leaf = soliditySha3(
       { t: 'address', v: address },
-      { t: 'uint', v: balance }
+      { t: 'uint', v: balance },
     );
     // @ts-ignore
     elements.push(leaf);

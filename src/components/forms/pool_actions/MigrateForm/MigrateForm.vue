@@ -4,7 +4,7 @@ import { computed, toRefs } from 'vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/services/pool/types';
@@ -41,15 +41,15 @@ const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
  * COMPUTED
  */
 const fromPoolLoading = computed(
-  () => fromPoolQuery.isLoading.value || fromPoolQuery.isIdle.value
+  () => fromPoolQuery.isLoading.value || fromPoolQuery.isIdle.value,
 );
 
 const toPoolLoading = computed(
-  () => toPoolQuery.isLoading.value || toPoolQuery.isIdle.value
+  () => toPoolQuery.isLoading.value || toPoolQuery.isIdle.value,
 );
 
 const isLoadingPools = computed(
-  () => toPoolLoading.value || fromPoolLoading.value
+  () => toPoolLoading.value || fromPoolLoading.value,
 );
 
 const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
@@ -57,11 +57,11 @@ const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
 const toPool = computed<Pool | undefined>(() => toPoolQuery.data.value);
 
 const fromPoolTokenInfo = computed(() =>
-  fromPool.value != null ? getToken(fromPool.value.address) : null
+  fromPool.value != null ? getToken(fromPool.value.address) : null,
 );
 
 const toPoolTokenInfo = computed(() =>
-  toPool.value != null ? getToken(toPool.value.address) : null
+  toPool.value != null ? getToken(toPool.value.address) : null,
 );
 </script>
 
@@ -74,9 +74,9 @@ const toPoolTokenInfo = computed(() =>
     <BalLoadingBlock
       v-if="
         isLoadingPools ||
-          fromPoolTokenInfo == null ||
-          toPoolTokenInfo == null ||
-          batchRelayerApprovalLoading
+        fromPoolTokenInfo == null ||
+        toPoolTokenInfo == null ||
+        batchRelayerApprovalLoading
       "
       class="h-96"
     />

@@ -9,7 +9,7 @@ type Props = {
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
-  isSelected: false
+  isSelected: false,
 });
 </script>
 
@@ -19,8 +19,8 @@ withDefaults(defineProps<Props>(), {
       :class="[
         'pill',
         {
-          'pill-selected': isSelected
-        }
+          'pill-selected': isSelected,
+        },
       ]"
       :style="{ zIndex: tokens.length }"
     >
@@ -37,12 +37,12 @@ withDefaults(defineProps<Props>(), {
       :class="[
         'pill pill-stacked',
         {
-          'pill-selected': isSelected
-        }
+          'pill-selected': isSelected,
+        },
       ]"
       :style="{
         transform: `translateX(${n * 8}px)`,
-        zIndex: tokens.length - n
+        zIndex: tokens.length - n,
       }"
     />
   </div>

@@ -3,13 +3,13 @@ import {
   isThursday,
   nextThursday,
   previousThursday,
-  startOfDay
+  startOfDay,
 } from 'date-fns';
 import { computed } from 'vue';
 
 import {
   MAX_LOCK_PERIOD_IN_DAYS,
-  MIN_LOCK_PERIOD_IN_DAYS
+  MIN_LOCK_PERIOD_IN_DAYS,
 } from '@/components/forms/lock_actions/constants';
 import { toUtcTime } from '@/composables/useTime';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
@@ -38,9 +38,9 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
         veBalLockInfo?.hasExistingLock
           ? veBalLockInfo.lockedEndDate
           : todaysDate,
-        MIN_LOCK_PERIOD_IN_DAYS
-      )
-    )
+        MIN_LOCK_PERIOD_IN_DAYS,
+      ),
+    ),
   ).getTime();
 
   const maxLockEndDateTimestamp = getMaxLockEndDateTimestamp(todaysDate);
@@ -56,17 +56,17 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   const lockEndDateTimestamp = computed(() =>
     lockEndDate.value === ''
       ? 0
-      : startOfDay(new Date(lockEndDate.value)).getTime()
+      : startOfDay(new Date(lockEndDate.value)).getTime(),
   );
 
   const isValidLockEndDate = computed(
     () =>
       lockEndDateTimestamp.value >= minLockEndDateTimestamp &&
-      lockEndDateTimestamp.value <= maxLockEndDateTimestamp
+      lockEndDateTimestamp.value <= maxLockEndDateTimestamp,
   );
 
   const isExtendedLockEndDate = computed(
-    () => veBalLockInfo?.hasExistingLock && isValidLockEndDate.value
+    () => veBalLockInfo?.hasExistingLock && isValidLockEndDate.value,
   );
 
   return {
@@ -77,6 +77,6 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
     minLockEndDateTimestamp,
     maxLockEndDateTimestamp,
     isValidLockEndDate,
-    isExtendedLockEndDate
+    isExtendedLockEndDate,
   };
 }

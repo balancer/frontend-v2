@@ -22,19 +22,19 @@ export function encodeJoinStablePool(
   joinData:
     | JoinStablePoolInit
     | JoinStablePoolExactTokensInForBPTOut
-    | JoinStablePoolTokenInForExactBPTOut
+    | JoinStablePoolTokenInForExactBPTOut,
 ): string {
   if (joinData.kind == 'Init') {
     return StablePoolEncoder.joinInit(joinData.amountsIn);
   } else if (joinData.kind == 'ExactTokensInForBPTOut') {
     return StablePoolEncoder.joinExactTokensInForBPTOut(
       joinData.amountsIn,
-      joinData.minimumBPT
+      joinData.minimumBPT,
     );
   } else {
     return StablePoolEncoder.joinTokenInForExactBPTOut(
       joinData.bptAmountOut,
-      joinData.enterTokenIndex
+      joinData.enterTokenIndex,
     );
   }
 }
@@ -60,19 +60,19 @@ export function encodeExitStablePool(
   exitData:
     | ExitStablePoolExactBPTInForOneTokenOut
     | ExitStablePoolExactBPTInForTokensOut
-    | ExitStablePoolBPTInForExactTokensOut
+    | ExitStablePoolBPTInForExactTokensOut,
 ): string {
   if (exitData.kind == 'ExactBPTInForOneTokenOut') {
     return StablePoolEncoder.exitExactBPTInForOneTokenOut(
       exitData.bptAmountIn,
-      exitData.exitTokenIndex
+      exitData.exitTokenIndex,
     );
   } else if (exitData.kind == 'ExactBPTInForTokensOut') {
     return StablePoolEncoder.exitExactBPTInForTokensOut(exitData.bptAmountIn);
   } else {
     return StablePoolEncoder.exitBPTInForExactTokensOut(
       exitData.amountsOut,
-      exitData.maxBPTAmountIn
+      exitData.maxBPTAmountIn,
     );
   }
 }

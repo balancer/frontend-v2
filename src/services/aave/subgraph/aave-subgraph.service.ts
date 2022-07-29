@@ -8,7 +8,7 @@ export default class AaveSubgraphService {
 
   constructor(
     readonly client = aaveSubgraphClient,
-    readonly rpcProviderService = _rpcProviderService
+    readonly rpcProviderService = _rpcProviderService,
   ) {
     // Init entities
     this.reserves = new Reserves(this);

@@ -63,7 +63,7 @@
       <div
         v-if="
           !ENABLE_LEGACY_TRADE_INTERFACE &&
-            trading.isGnosisSupportedOnNetwork.value
+          trading.isGnosisSupportedOnNetwork.value
         "
         class="mt-5 text-sm flex items-center h-8"
       >
@@ -166,13 +166,13 @@ import { useStore } from 'vuex';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
-  TradeSettingsContext
+  TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useTrading from '@/composables/trade/useTrading';
 import useValidation, {
-  TradeValidation
+  TradeValidation,
 } from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -192,7 +192,7 @@ export default defineComponent({
     TradePair,
     TradePreviewModalGP,
     TradeRoute,
-    TradeSettingsPopover
+    TradeSettingsPopover,
   },
 
   setup() {
@@ -211,14 +211,14 @@ export default defineComponent({
       tokenOutAmount,
       setTokenInAddress,
       setTokenOutAddress,
-      setInitialized
+      setInitialized,
     } = useTradeState();
 
     // DATA
     const exactIn = ref(true);
     const modalTradePreviewIsOpen = ref(false);
     const dismissedErrors = ref({
-      highPriceImpact: false
+      highPriceImpact: false,
     });
     const alwaysShowRoutes = lsGet('alwaysShowRoutes', false);
 
@@ -238,7 +238,7 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount
+      tokenOutAmount,
     );
 
     // COMPUTED
@@ -246,13 +246,13 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount
+      tokenOutAmount,
     );
 
     const isHighPriceImpact = computed(
       () =>
         trading.sor.validationErrors.value.highPriceImpact &&
-        !dismissedErrors.value.highPriceImpact
+        !dismissedErrors.value.highPriceImpact,
     );
 
     const tradeDisabled = computed(() => {
@@ -280,7 +280,7 @@ export default defineComponent({
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
             header: t('insufficientLiquidity'),
-            body: t('insufficientLiquidityDetailed')
+            body: t('insufficientLiquidityDetailed'),
           };
         }
       }
@@ -292,36 +292,36 @@ export default defineComponent({
           if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
             return {
               header: t('gnosisErrors.lowAmount.header'),
-              body: t('gnosisErrors.lowAmount.body')
+              body: t('gnosisErrors.lowAmount.body'),
             };
           } else if (validationError === ApiErrorCodes.PriceExceedsBalance) {
             return {
               header: t('gnosisErrors.lowBalance.header', [
-                trading.tokenIn.value.symbol
+                trading.tokenIn.value.symbol,
               ]),
               body: t('gnosisErrors.lowBalance.body', [
                 trading.tokenIn.value.symbol,
                 fNum2(
                   formatUnits(
                     trading.getQuote().maximumInAmount,
-                    trading.tokenIn.value.decimals
+                    trading.tokenIn.value.decimals,
                   ),
-                  FNumFormats.token
+                  FNumFormats.token,
                 ),
-                fNum2(trading.slippageBufferRate.value, FNumFormats.percent)
-              ])
+                fNum2(trading.slippageBufferRate.value, FNumFormats.percent),
+              ]),
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {
             return {
               header: t('gnosisErrors.noLiquidity.header', [
-                trading.tokenIn.value.symbol
+                trading.tokenIn.value.symbol,
               ]),
-              body: t('gnosisErrors.noLiquidity.body')
+              body: t('gnosisErrors.noLiquidity.body'),
             };
           } else {
             return {
               header: t('gnosisErrors.genericError.header'),
-              body: trading.gnosis.validationError.value
+              body: trading.gnosis.validationError.value,
             };
           }
         }
@@ -330,7 +330,7 @@ export default defineComponent({
           return {
             header: t('highPriceImpact'),
             body: t('highPriceImpactDetailed'),
-            label: t('accept')
+            label: t('accept'),
           };
         }
       }
@@ -343,7 +343,7 @@ export default defineComponent({
         if (trading.gnosis.warnings.value.highFees) {
           return {
             header: t('gnosisWarnings.highFees.header'),
-            body: t('gnosisWarnings.highFees.body')
+            body: t('gnosisWarnings.highFees.body'),
           };
         }
       }
@@ -438,9 +438,9 @@ export default defineComponent({
       // methods
       trade,
       switchToWETH,
-      handleErrorButtonClick
+      handleErrorButtonClick,
     };
-  }
+  },
 });
 </script>
 <style scoped>

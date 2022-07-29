@@ -15,7 +15,7 @@ import {
   isSameAddress,
   lsRemove,
   lsSet,
-  scale
+  scale,
 } from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
@@ -65,7 +65,7 @@ const emptyPoolCreationState = {
   type: PoolType.Weighted,
   acceptedCustomTokenDisclaimer: false,
   needsSeeding: false,
-  createPoolTxHash: ''
+  createPoolTxHash: '',
 };
 
 export const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -83,7 +83,7 @@ export default function usePoolCreation() {
     nativeAsset,
     wrappedNativeAsset,
     injectedTokens,
-    dynamicDataLoading
+    dynamicDataLoading,
   } = useTokens();
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
@@ -96,12 +96,12 @@ export default function usePoolCreation() {
   const tokensList = computed(() =>
     [...poolCreationState.tokensList].sort((tokenA, tokenB) => {
       return tokenA > tokenB ? 1 : -1;
-    })
+    }),
   );
 
   const hasInjectedToken = computed(() => {
     return tokensList.value.some(
-      token => injectedTokens.value[token]?.symbol !== undefined
+      token => injectedTokens.value[token]?.symbol !== undefined,
     );
   });
 
@@ -114,7 +114,7 @@ export default function usePoolCreation() {
     let bottleneckToken = validTokens[0];
     // keeping track of the lowest amt
     let currentMin = bnum(balanceFor(validTokens[0])).times(
-      priceFor(validTokens[0])
+      priceFor(validTokens[0]),
     );
 
     // find the bottleneck token
@@ -127,7 +127,7 @@ export default function usePoolCreation() {
     }
     let bottleneckWeight =
       poolCreationState.seedTokens.find(t =>
-        isSameAddress(t.tokenAddress, bottleneckToken)
+        isSameAddress(t.tokenAddress, bottleneckToken),
       )?.weight || 0;
     let bottleneckPrice = priceFor(bottleneckToken || '0');
 
@@ -144,7 +144,7 @@ export default function usePoolCreation() {
       bottleneckToken = nativeAsset.address;
       bottleneckWeight =
         poolCreationState.seedTokens.find(t =>
-          isSameAddress(t.tokenAddress, wrappedNativeAsset.value.address)
+          isSameAddress(t.tokenAddress, wrappedNativeAsset.value.address),
         )?.weight || 0;
       bottleneckPrice = priceFor(wrappedNativeAsset.value.address);
     }
@@ -157,27 +157,25 @@ export default function usePoolCreation() {
     return getTokensScaledByBIP(bip);
   }
 
-  const scaledLiquidity = computed(
-    (): Record<string, OptimisedLiquidity> => {
-      const scaledLiquidity = {};
-      const manuallySetToken =
-        poolCreationState.manuallySetToken === nativeAsset.address
-          ? wrappedNativeAsset.value.address
-          : poolCreationState.manuallySetToken;
-      const modifiedToken = findSeedTokenByAddress(manuallySetToken);
-      if (!modifiedToken) return scaledLiquidity;
+  const scaledLiquidity = computed((): Record<string, OptimisedLiquidity> => {
+    const scaledLiquidity = {};
+    const manuallySetToken =
+      poolCreationState.manuallySetToken === nativeAsset.address
+        ? wrappedNativeAsset.value.address
+        : poolCreationState.manuallySetToken;
+    const modifiedToken = findSeedTokenByAddress(manuallySetToken);
+    if (!modifiedToken) return scaledLiquidity;
 
-      const bip = bnum(priceFor(modifiedToken.tokenAddress || '0'))
-        .times(modifiedToken.amount)
-        .div(modifiedToken.weight);
+    const bip = bnum(priceFor(modifiedToken.tokenAddress || '0'))
+      .times(modifiedToken.amount)
+      .div(modifiedToken.weight);
 
-      return getTokensScaledByBIP(bip);
-    }
-  );
+    return getTokensScaledByBIP(bip);
+  });
 
   const maxInitialLiquidity = computed(() => {
     return sumBy(Object.values(getOptimisedLiquidity()), (liq: any) =>
-      Number(liq.liquidityRequired)
+      Number(liq.liquidityRequired),
     );
   });
 
@@ -193,7 +191,7 @@ export default function usePoolCreation() {
     let total = bnum(0);
     for (const token of poolCreationState.seedTokens) {
       total = total.plus(
-        bnum(token.amount).times(priceFor(token.tokenAddress))
+        bnum(token.amount).times(priceFor(token.tokenAddress)),
       );
     }
     return total;
@@ -233,11 +231,11 @@ export default function usePoolCreation() {
         let weightsMatch = true;
         for (const token of pool.tokens) {
           const relevantToken = poolCreationState.seedTokens.find(t =>
-            isSameAddress(t.tokenAddress, token.address)
+            isSameAddress(t.tokenAddress, token.address),
           );
           const similarPoolWeight = Number(token.weight).toFixed(2);
           const seedTokenWeight = ((relevantToken?.weight || 0) / 100).toFixed(
-            2
+            2,
           );
           if (similarPoolWeight !== seedTokenWeight) {
             weightsMatch = false;
@@ -253,7 +251,7 @@ export default function usePoolCreation() {
   const isWethPool = computed((): boolean => {
     return includesAddress(
       tokensList.value,
-      configService.network.addresses.weth
+      configService.network.addresses.weth,
     );
   });
 
@@ -272,10 +270,8 @@ export default function usePoolCreation() {
   /**
    * FUNCTIONS
    */
-  const {
-    data: similarPoolsResponse,
-    isLoading: isLoadingSimilarPools
-  } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+  const { data: similarPoolsResponse, isLoading: isLoadingSimilarPools } =
+    usePoolsQuery(tokensList, {}, { isExactTokensList: true });
 
   function resetPoolCreationState() {
     for (const key of Object.keys(poolCreationState)) {
@@ -320,7 +316,7 @@ export default function usePoolCreation() {
 
   function findSeedTokenByAddress(address: string) {
     return poolCreationState.seedTokens.find((token: PoolSeedToken) =>
-      isSameAddress(token.tokenAddress, address)
+      isSameAddress(token.tokenAddress, address),
     );
   }
 
@@ -369,7 +365,7 @@ export default function usePoolCreation() {
   }
 
   function getTokensScaledByBIP(
-    bip: BigNumber
+    bip: BigNumber,
   ): Record<string, OptimisedLiquidity> {
     const optimisedLiquidity = {};
     for (const token of poolCreationState.seedTokens) {
@@ -380,7 +376,7 @@ export default function usePoolCreation() {
       const balanceRequired: BigNumber = liquidityRequired.div(tokenPrice);
       optimisedLiquidity[token.tokenAddress] = {
         liquidityRequired: liquidityRequired.toString(),
-        balanceRequired: balanceRequired.toString()
+        balanceRequired: balanceRequired.toString(),
       };
     }
     return optimisedLiquidity;
@@ -395,7 +391,7 @@ export default function usePoolCreation() {
         const scaledAmount = scale(amount, tokenInfo.decimals);
         const scaledRoundedAmount = scaledAmount.dp(0, BigNumber.ROUND_FLOOR);
         return scaledRoundedAmount.toString();
-      }
+      },
     );
     return scaledAmounts;
   }
@@ -413,7 +409,7 @@ export default function usePoolCreation() {
         return tokenInfo
           ? `${Math.round(weightRounded)}${tokenInfo.symbol}`
           : '';
-      }
+      },
     );
 
     return valid ? tokenSymbols.join('-') : '';
@@ -428,7 +424,7 @@ export default function usePoolCreation() {
         poolCreationState.symbol,
         poolCreationState.initialFee,
         poolCreationState.seedTokens,
-        poolOwner.value
+        poolOwner.value,
       );
       poolCreationState.createPoolTxHash = tx.hash;
       saveState();
@@ -439,8 +435,8 @@ export default function usePoolCreation() {
         action: 'createPool',
         summary: t('transactionSummary.createPool'),
         details: {
-          name: poolCreationState.name
-        }
+          name: poolCreationState.name,
+        },
       });
       1;
       txListener(tx, {
@@ -449,7 +445,7 @@ export default function usePoolCreation() {
         },
         onTxFailed: () => {
           console.log('Create failed');
-        }
+        },
       });
 
       return tx;
@@ -467,14 +463,14 @@ export default function usePoolCreation() {
           if (
             isSameAddress(
               token.tokenAddress,
-              wrappedNativeAsset.value.address
+              wrappedNativeAsset.value.address,
             ) &&
             poolCreationState.useNativeAsset
           ) {
             return nativeAsset.address;
           }
           return token.tokenAddress;
-        }
+        },
       );
       const tx = await balancerService.pools.weighted.initJoin(
         provider,
@@ -482,14 +478,14 @@ export default function usePoolCreation() {
         account.value,
         account.value,
         tokenAddresses,
-        getScaledAmounts()
+        getScaledAmounts(),
       );
 
       addTransaction({
         id: tx.hash,
         type: 'tx',
         action: 'fundPool',
-        summary: t('transactionSummary.fundPool')
+        summary: t('transactionSummary.fundPool'),
       });
 
       txListener(tx, {
@@ -498,7 +494,7 @@ export default function usePoolCreation() {
         },
         onTxFailed: () => {
           console.log('Seed failed');
-        }
+        },
       });
 
       return tx;
@@ -520,7 +516,7 @@ export default function usePoolCreation() {
     lsSet(
       POOL_CREATION_STATE_KEY,
       JSON.stringify(poolCreationState),
-      POOL_CREATION_STATE_VERSION
+      POOL_CREATION_STATE_VERSION,
     );
   }
 
@@ -540,10 +536,11 @@ export default function usePoolCreation() {
   }
 
   async function retrievePoolAddress(hash: string) {
-    const response = await balancerService.pools.weighted.retrievePoolIdAndAddress(
-      getProvider(),
-      hash
-    );
+    const response =
+      await balancerService.pools.weighted.retrievePoolIdAndAddress(
+        getProvider(),
+        hash,
+      );
     poolCreationState.poolId = response.id;
     poolCreationState.poolAddress = response.address;
     poolCreationState.needsSeeding = true;
@@ -552,10 +549,11 @@ export default function usePoolCreation() {
 
   // when restoring from a pool creation transaction (not from localstorage)
   async function retrievePoolDetails(hash: string) {
-    const details = await balancerService.pools.weighted.retrievePoolDetailsFromCall(
-      getProvider(),
-      hash
-    );
+    const details =
+      await balancerService.pools.weighted.retrievePoolDetailsFromCall(
+        getProvider(),
+        hash,
+      );
     if (!details) return;
     poolCreationState.seedTokens = details.tokens.map((token, i) => {
       return {
@@ -563,7 +561,7 @@ export default function usePoolCreation() {
         weight: Number(details.weights[i]) * 100,
         isLocked: true,
         amount: '0',
-        id: i
+        id: i,
       };
     });
     poolCreationState.tokensList = details.tokens;
@@ -617,6 +615,6 @@ export default function usePoolCreation() {
     tokenColors,
     isWethPool,
     hasInjectedToken,
-    hasRestoredFromSavedState
+    hasRestoredFromSavedState,
   };
 }

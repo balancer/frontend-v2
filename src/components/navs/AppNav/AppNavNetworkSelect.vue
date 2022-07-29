@@ -74,20 +74,20 @@ export default defineComponent({
         id: 'ethereum',
         name: 'Ethereum',
         subdomain: 'app',
-        key: '1'
+        key: '1',
       },
       {
         id: 'polygon',
         name: 'Polygon',
         subdomain: 'polygon',
-        key: '137'
+        key: '137',
       },
       {
         id: 'arbitrum',
         name: 'Arbitrum',
         subdomain: 'arbitrum',
-        key: '42161'
-      }
+        key: '42161',
+      },
     ];
 
     const appNetworkSupported = networks
@@ -122,8 +122,8 @@ export default defineComponent({
       // methods
       isActive,
       appUrl,
-      iconSrc
+      iconSrc,
     };
-  }
+  },
 });
 </script>

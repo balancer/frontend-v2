@@ -3,7 +3,7 @@ export default function useGaugesDecorationQuery() {
     data: [],
     isLoading: false,
     refetch: {
-      value: jest.fn()
-    }
+      value: jest.fn(),
+    },
   };
 }

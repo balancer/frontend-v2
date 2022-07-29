@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
   iconName: 'info',
   iconSize: 'md',
   iconClass: 'text-gray-300',
-  delayMs: 0
+  delayMs: 0,
 });
 
 const activator = ref<HTMLElement>();
@@ -44,13 +44,13 @@ let delayTimeout: NodeJS.Timeout;
 const tooltipClasses = computed(() => {
   return {
     [`w-${props.width}`]: true,
-    [`text-${props.textAlign}`]: props.textAlign !== ''
+    [`text-${props.textAlign}`]: props.textAlign !== '',
   };
 });
 
 const tooltipPad = computed(() => {
   return {
-    'p-3': !props.noPad
+    'p-3': !props.noPad,
   };
 });
 
@@ -96,8 +96,8 @@ onMounted(() => {
       placement: props.placement,
       modifiers: [
         { name: 'offset', options: { offset: [0, 8] } },
-        { name: 'eventListeners', options: { scroll: false } }
-      ]
+        { name: 'eventListeners', options: { scroll: false } },
+      ],
     });
   }
 });

@@ -14,7 +14,7 @@ const SpacingMap: Record<Spacing, number> = {
   lg: 8,
   xl: 12,
   '2xl': 16,
-  none: 0
+  none: 0,
 };
 
 export default defineComponent({
@@ -29,26 +29,26 @@ export default defineComponent({
     horizontal: { type: Boolean, default: () => false },
     spacing: {
       type: String as PropType<Spacing>,
-      default: () => 'base'
+      default: () => 'base',
     },
     /**
      * Show a hairline border after each stack element
      */
     withBorder: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     /**
      * Flex align prop
      */
     align: {
-      type: String as PropType<Alignment>
+      type: String as PropType<Alignment>,
     },
     /**
      * Flex justify prop
      */
     justify: {
-      type: String as PropType<Alignment>
+      type: String as PropType<Alignment>,
     },
     /**
      * Will cause children of the stack to occupy
@@ -56,14 +56,14 @@ export default defineComponent({
      */
     expandChildren: {
       type: Boolean,
-      default: () => false
-    }
+      default: () => false,
+    },
   },
   setup(props, { slots, attrs }) {
     return {
       slotsWithContent: [],
       slots,
-      attrs
+      attrs,
     };
   },
   render() {
@@ -88,7 +88,7 @@ export default defineComponent({
       if (Array.isArray(styledNestedChildren)) {
         // and those children can be nullish too
         const nonNullishChildren = styledNestedChildren.filter(
-          nestedChild => nestedChild !== undefined || nestedChild !== null
+          nestedChild => nestedChild !== undefined || nestedChild !== null,
         );
         styledNestedChildren = nonNullishChildren.map(
           (nestedChild, nestedChildIndex) => {
@@ -97,20 +97,20 @@ export default defineComponent({
               class:
                 nestedChildIndex !== nonNullishChildren.length - 1
                   ? stackNodeClass
-                  : null
+                  : null,
             });
-          }
+          },
         );
         return h(
           child,
           {
-            class: childIndex !== children.length - 1 ? stackNodeClass : null
+            class: childIndex !== children.length - 1 ? stackNodeClass : null,
           },
-          [styledNestedChildren]
+          [styledNestedChildren],
         );
       }
       return h(child, {
-        class: childIndex !== children.length - 1 ? stackNodeClass : null
+        class: childIndex !== children.length - 1 ? stackNodeClass : null,
       });
     });
     return h(
@@ -129,12 +129,12 @@ export default defineComponent({
             'justify-center': this.justify === 'center',
             'justify-start': this.justify === 'start',
             'justify-end': this.justify === 'end',
-            'justify-between': this.justify === 'between'
-          }
-        ]
+            'justify-between': this.justify === 'between',
+          },
+        ],
       },
-      [styledChildren]
+      [styledChildren],
     );
-  }
+  },
 });
 </script>

@@ -39,11 +39,11 @@ export default function usePoolTransfers() {
     (): boolean =>
       (poolQuery.isLoading.value as boolean) ||
       (poolQuery.isIdle.value as boolean) ||
-      (poolQuery.error.value as boolean)
+      (poolQuery.error.value as boolean),
   );
 
   const loadingPool = computed(
-    (): boolean => poolQueryLoading.value || !pool.value
+    (): boolean => poolQueryLoading.value || !pool.value,
   );
 
   const tokenAddresses = computed(() => {
@@ -59,7 +59,7 @@ export default function usePoolTransfers() {
   const missingPrices = computed(() => {
     const tokensWithPrice = Object.keys(prices.value).map(t => t.toLowerCase());
     return !tokenAddresses.value.every(token =>
-      includesAddress(tokensWithPrice, token)
+      includesAddress(tokensWithPrice, token),
     );
   });
 
@@ -68,6 +68,6 @@ export default function usePoolTransfers() {
     loadingPool,
     useNativeAsset,
     missingPrices,
-    transfersAllowed
+    transfersAllowed,
   };
 }

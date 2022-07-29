@@ -22,17 +22,17 @@ export type ProtocolRewardsQueryResponse = {
  * SERVICES
  */
 const feeDistributorV1 = new FeeDistributor(
-  configService.network.addresses.feeDistributorDeprecated
+  configService.network.addresses.feeDistributorDeprecated,
 );
 const feeDistributorV2 = new FeeDistributor(
-  configService.network.addresses.feeDistributor
+  configService.network.addresses.feeDistributor,
 );
 
 /**
  * @summary Fetches claimable protocol reward balances.
  */
 export default function useProtocolRewardsQuery(
-  options: UseQueryOptions<ProtocolRewardsQueryResponse> = {}
+  options: UseQueryOptions<ProtocolRewardsQueryResponse> = {},
 ) {
   /**
    * COMPOSABLES
@@ -47,7 +47,7 @@ export default function useProtocolRewardsQuery(
       isWalletReady.value &&
       account.value != null &&
       !isL2.value &&
-      !isKovan.value
+      !isKovan.value,
   );
 
   /**
@@ -62,7 +62,7 @@ export default function useProtocolRewardsQuery(
     try {
       const [v1, v2] = await Promise.all([
         feeDistributorV1.getClaimableBalances(account.value),
-        feeDistributorV2.getClaimableBalances(account.value)
+        feeDistributorV2.getClaimableBalances(account.value),
       ]);
       return { v1, v2 };
     } catch (error) {
@@ -76,12 +76,12 @@ export default function useProtocolRewardsQuery(
    */
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<ProtocolRewardsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions,
   );
 }

@@ -89,7 +89,7 @@ export type UserStakingDataResponse = {
 };
 
 export default function useUserStakingData(
-  poolAddress: Ref<string>
+  poolAddress: Ref<string>,
 ): UserStakingDataResponse {
   /** COMPOSABLES */
   const { account, getProvider, isWalletReady } = useWeb3();
@@ -100,16 +100,16 @@ export default function useUserStakingData(
   const {
     data: userPoolsResponse,
     isLoading: isLoadingUserPools,
-    isIdle: isUserPoolsIdle
+    isIdle: isUserPoolsIdle,
   } = useUserPoolsQuery();
 
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
   const isStakedSharesQueryEnabled = computed(
-    () => !!poolAddress.value && poolAddress.value != '' && isWalletReady.value
+    () => !!poolAddress.value && poolAddress.value != '' && isWalletReady.value,
   );
   const stakeableUserPoolIds = computed(() =>
-    intersection(userPoolIds.value, POOLS.Stakable.AllowList)
+    intersection(userPoolIds.value, POOLS.Stakable.AllowList),
   );
   const userPoolIds = computed(() => {
     return userPools.value.map(pool => pool.id);
@@ -119,35 +119,35 @@ export default function useUserStakingData(
     data: stakingData,
     isLoading: isLoadingUserStakingData,
     isIdle: isUserStakeDataIdle,
-    refetch: refetchUserStakingData
+    refetch: refetchUserStakingData,
   } = useGraphQuery<UserGaugeSharesResponse>(
     subgraphs.gauge,
     ['staking', 'data', { account, userPoolIds }],
     () => ({
       gaugeShares: {
         __args: {
-          where: { user: account.value.toLowerCase(), balance_gt: '0' }
+          where: { user: account.value.toLowerCase(), balance_gt: '0' },
         },
         balance: true,
         gauge: {
           id: true,
           poolId: true,
-          totalSupply: true
-        }
+          totalSupply: true,
+        },
       },
       liquidityGauges: {
         __args: {
           where: {
-            poolId_in: stakeableUserPoolIds.value
-          }
+            poolId_in: stakeableUserPoolIds.value,
+          },
         },
-        poolId: true
-      }
+        poolId: true,
+      },
     }),
     reactive({
       refetchOnWindowFocus: false,
-      enabled: true
-    })
+      enabled: true,
+    }),
   );
 
   // we pull staked shares for a specific pool manually do to the
@@ -159,14 +159,14 @@ export default function useUserStakingData(
     isLoading: isLoadingStakedShares,
     isIdle: isStakedSharesIdle,
     isRefetching: isRefetchingStakedShares,
-    refetch: refetchStakedShares
+    refetch: refetchStakedShares,
   } = useQuery<string>(
     ['staking', 'pool', 'shares', { poolAddress }],
     () => getStakedShares(),
     reactive({
       enabled: isStakedSharesQueryEnabled,
-      refetchOnWindowFocus: false
-    })
+      refetchOnWindowFocus: false,
+    }),
   );
 
   /**
@@ -176,7 +176,7 @@ export default function useUserStakingData(
    * when returned by this composable
    */
   const stakedSharesForProvidedPool = computed(
-    () => stakedSharesResponse.value || '0'
+    () => stakedSharesResponse.value || '0',
   );
 
   const userGaugeShares = computed(() => {
@@ -193,8 +193,8 @@ export default function useUserStakingData(
     return Object.fromEntries(
       userGaugeShares.value.map(gaugeShare => [
         gaugeShare.gauge.poolId,
-        gaugeShare.balance
-      ])
+        gaugeShare.balance,
+      ]),
     );
   });
 
@@ -206,25 +206,24 @@ export default function useUserStakingData(
     });
   });
   const isStakedPoolsQueryEnabled = computed(
-    () => stakedPoolIds.value.length > 0
+    () => stakedPoolIds.value.length > 0,
   );
 
-  const {
-    data: stakedPoolsResponse,
-    isLoading: isLoadingStakedPools
-  } = usePoolsQuery(
-    ref([]),
-    reactive({
-      enabled: isStakedPoolsQueryEnabled
-    }),
-    {
-      poolIds: stakedPoolIds,
-      pageSize: 999
-    }
-  );
+  const { data: stakedPoolsResponse, isLoading: isLoadingStakedPools } =
+    usePoolsQuery(
+      ref([]),
+      reactive({
+        enabled: isStakedPoolsQueryEnabled,
+      }),
+      {
+        poolIds: stakedPoolIds,
+        pageSize: 999,
+      },
+    );
 
   const isBoostQueryEnabled = computed(
-    () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
+    () =>
+      isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value,
   );
 
   const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery(
@@ -232,13 +231,13 @@ export default function useUserStakingData(
     async () => {
       const boosts = stakingRewardsService.getUserBoosts({
         userAddress: account.value,
-        gaugeShares: userGaugeShares.value
+        gaugeShares: userGaugeShares.value,
       });
       return boosts;
     },
     reactive({
-      enabled: isBoostQueryEnabled
-    })
+      enabled: isBoostQueryEnabled,
+    }),
   );
 
   const stakedPools = computed<PoolWithShares[]>(() => {
@@ -247,7 +246,7 @@ export default function useUserStakingData(
       return {
         ...pool,
         shares: getBptBalanceFiatValue(pool, stakedBpt),
-        bpt: stakedBpt
+        bpt: stakedBpt,
       };
     });
   });
@@ -255,19 +254,19 @@ export default function useUserStakingData(
   const totalStakedFiatValue = computed((): string =>
     stakedPools.value
       .reduce((acc, { shares }) => acc.plus(shares), bnum(0))
-      .toString()
+      .toString(),
   );
 
   /** METHODS */
   async function getStakedShares() {
     if (!poolAddress.value) {
       throw new Error(
-        `Attempted to get staked shares, however useStaking was initialised without a pool address.`
+        `Attempted to get staked shares, however useStaking was initialised without a pool address.`,
       );
     }
     const gaugeAddress = await getGaugeAddress(
       getAddress(poolAddress.value),
-      getProvider()
+      getProvider(),
     );
 
     if (gaugeAddress === AddressZero) return '0';
@@ -302,6 +301,6 @@ export default function useUserStakingData(
     poolBoosts,
     isLoadingBoosts,
     getStakedShares,
-    getBoostFor
+    getBoostFor,
   };
 }

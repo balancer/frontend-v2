@@ -2,14 +2,14 @@
 import { StablePoolEncoder, WeightedPoolEncoder } from '@balancer-labs/sdk';
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { BigNumber, BigNumberish } from 'ethers';
 import { computed, onBeforeMount, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
@@ -60,7 +60,7 @@ const {
   bptBalanceScaled,
   fullAmountsScaled,
   tokenCount,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
 } = toRefs(props.math);
 
 const emit = defineEmits<{
@@ -74,7 +74,7 @@ const migratePoolState = reactive<MigratePoolState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -93,7 +93,7 @@ const migrateAction: TransactionActionInfo = {
   loadingLabel: t('migratePool.previewModal.actions.loading'),
   confirmingLabel: t('confirming'),
   action: submit,
-  stepTooltip: t('migratePool.previewModal.actions.migrationStep')
+  stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
 };
 
 const actions = ref<TransactionActionInfo[]>([migrateAction]);
@@ -104,14 +104,14 @@ const actions = ref<TransactionActionInfo[]>([migrateAction]);
 const explorerLink = computed(() =>
   migratePoolState.receipt
     ? explorerLinks.txLink(migratePoolState.receipt.transactionHash)
-    : ''
+    : '',
 );
 
 const transactionInProgress = computed(
   () =>
     migratePoolState.init ||
     migratePoolState.confirming ||
-    migratePoolState.confirmed
+    migratePoolState.confirmed,
 );
 
 /**
@@ -125,13 +125,13 @@ async function handleTransaction(tx): Promise<void> {
     summary: t('transactionSummary.migratePool', [
       fiatTotalLabel.value,
       props.fromPoolTokenInfo.symbol,
-      props.toPoolTokenInfo.symbol
+      props.toPoolTokenInfo.symbol,
     ]),
     details: {
       fromPool: props.fromPool,
       toPool: props.toPool,
-      totalFiatPoolInvestment: fiatTotalLabel.value
-    }
+      totalFiatPoolInvestment: fiatTotalLabel.value,
+    },
   });
 
   migratePoolState.confirmed = await txListener(tx, {
@@ -145,7 +145,7 @@ async function handleTransaction(tx): Promise<void> {
     },
     onTxFailed: () => {
       migratePoolState.confirming = false;
-    }
+    },
   });
 }
 
@@ -157,11 +157,11 @@ async function submit() {
     let userData = '';
     if (isStableLike(props.fromPool.poolType)) {
       userData = StablePoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value
+        bptBalanceScaled.value,
       );
     } else {
       userData = WeightedPoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value
+        bptBalanceScaled.value,
       );
     }
 
@@ -172,19 +172,19 @@ async function submit() {
       exitTokens: props.fromPool.tokensList.map(t => t.toLowerCase()),
       userData,
       expectedAmountsOut: fullAmountsScaled.value.map(amount =>
-        amount.toString()
+        amount.toString(),
       ),
       finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
       slippage: slippageScaled.value,
       fetchPools: {
         fetchPools: true,
-        fetchOnChain: false
-      }
+        fetchOnChain: false,
+      },
     });
 
-    const hasInvalidAmount = (
-      txInfo.outputs?.amountsOut || []
-    ).some((amount: BigNumberish) => BigNumber.from(amount).isZero());
+    const hasInvalidAmount = (txInfo.outputs?.amountsOut || []).some(
+      (amount: BigNumberish) => BigNumber.from(amount).isZero(),
+    );
 
     if (hasInvalidAmount) {
       throw new Error('exitPoolAndBatchSwap returned invalid amounts.');
@@ -192,7 +192,7 @@ async function submit() {
 
     tx = await balancerContractsService.batchRelayer.execute(
       txInfo,
-      getProvider()
+      getProvider(),
     );
 
     migratePoolState.init = false;

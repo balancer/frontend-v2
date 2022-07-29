@@ -2,7 +2,7 @@ module.exports = {
   root: true,
 
   env: {
-    node: true
+    node: true,
   },
 
   globals: {
@@ -10,21 +10,21 @@ module.exports = {
     withDefaults: true,
     defineProps: true,
     defineEmits: true,
-    defineExpose: true
+    defineExpose: true,
   },
 
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
     '@vue/typescript/recommended',
-    '@vue/typescript'
+    '@vue/typescript',
   ],
 
   plugins: ['simple-import-sort'],
 
   parserOptions: {
     ecmaVersion: 2020,
-    parser: '@typescript-eslint/parser'
+    parser: '@typescript-eslint/parser',
   },
 
   rules: {
@@ -39,18 +39,18 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'simple-import-sort/imports': 'warn',
-    'simple-import-sort/exports': 'warn'
+    'simple-import-sort/exports': 'warn',
   },
 
   overrides: [
     {
       files: [
         '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+        '**/tests/unit/**/*.spec.{j,t}s?(x)',
       ],
       env: {
-        jest: true
-      }
-    }
-  ]
+        jest: true,
+      },
+    },
+  ],
 };

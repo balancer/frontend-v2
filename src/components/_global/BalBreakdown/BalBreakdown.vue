@@ -19,7 +19,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   title: 'Title',
   hideItems: false,
-  size: 'md'
+  size: 'md',
 });
 
 /**

@@ -16,7 +16,7 @@ export class VeBALProxy {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = veBalProxyABI,
     private readonly config = configService,
-    private readonly web3 = web3Service
+    private readonly web3 = web3Service,
   ) {
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
@@ -30,7 +30,7 @@ export class VeBALProxy {
     const multicaller = this.getMulticaller();
     for (const address of addresses) {
       multicaller.call(address, this.address, 'adjustedBalanceOf', [
-        getAddress(address)
+        getAddress(address),
       ]);
     }
 

@@ -39,14 +39,12 @@ export default class StablePhantom {
         // Single asset max out case
         bptAmount = parseUnits(
           this.calc.bptBalance,
-          this.calc.poolDecimals
+          this.calc.poolDecimals,
         ).toString();
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       }
 
-      return bnum(bptAmount)
-        .div(bptZeroPriceImpact)
-        .minus(1);
+      return bnum(bptAmount).div(bptZeroPriceImpact).minus(1);
     }
   }
 
@@ -58,7 +56,7 @@ export default class StablePhantom {
     const ampAdjusted = BigNumber.from(this.adjustAmp(amp).toString());
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
-      this.calc.poolTokenDecimals
+      this.calc.poolTokenDecimals,
     );
     // This function should use pool balances (i.e. without rate conversion)
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
@@ -68,7 +66,7 @@ export default class StablePhantom {
       this.calc.poolTotalSupply,
       ampAdjusted,
       this.calc.poolSwapFee,
-      this.priceRates
+      this.priceRates,
     );
 
     console.log('bptZeroImpact', bptZeroImpact.toString());
@@ -80,11 +78,11 @@ export default class StablePhantom {
     return this.calc.poolTokenBalances.map((balance, i) => {
       const normalizedBalance = formatUnits(
         balance,
-        this.calc.poolTokenDecimals[i]
+        this.calc.poolTokenDecimals[i],
       );
       const scaledBalance = this.scaleInput(
         normalizedBalance,
-        this.calc.pool.value.tokens[i].priceRate
+        this.calc.pool.value.tokens[i].priceRate,
       );
       return scaledBalance;
     });
@@ -92,7 +90,7 @@ export default class StablePhantom {
 
   private scaleInput(
     normalizedAmount: string,
-    priceRate: string | null = null
+    priceRate: string | null = null,
   ): BigNumber {
     if (priceRate === null) priceRate = '1';
 

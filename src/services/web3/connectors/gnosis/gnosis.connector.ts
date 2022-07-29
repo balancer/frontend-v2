@@ -18,14 +18,14 @@ export class GnosisSafeConnector extends Connector {
       this.handleAccountsChanged([safe.safeAddress]);
     } else {
       console.error(
-        'Tried to connect to Gnosis Safe but it was not detected. Please install make sure you are using the Gnosis interface.'
+        'Tried to connect to Gnosis Safe but it was not detected. Please install make sure you are using the Gnosis interface.',
       );
     }
     return {
       // TODO type this
       provider: provider as any,
       account: this.account,
-      chainId: this.chainId
+      chainId: this.chainId,
     };
   }
 }

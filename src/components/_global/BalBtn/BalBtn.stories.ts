@@ -6,7 +6,7 @@ export default {
   title: 'Components/BalBtn',
   parameters: {
     layout: 'centered',
-    actions: { handles: ['click'] }
+    actions: { handles: ['click'] },
   },
   args: {
     darkMode: false,
@@ -14,31 +14,31 @@ export default {
     size: 'md',
     color: 'primary',
     label: '',
-    loadingLabel: 'Loading...'
+    loadingLabel: 'Loading...',
   },
   argTypes: {
     tag: {
       type: { name: 'string', default: 'button' },
       control: {
         type: 'select',
-        options: ['button', 'a', 'div']
-      }
+        options: ['button', 'a', 'div'],
+      },
     },
     size: {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg']
-      }
+        options: ['sm', 'md', 'lg'],
+      },
     },
     color: {
       type: { name: 'string', default: 'primary' },
       control: {
         type: 'select',
-        options: ['primary', 'gradient', 'gray', 'red']
-      }
-    }
-  }
+        options: ['primary', 'gradient', 'gray', 'red'],
+      },
+    },
+  },
 };
 
 type Props = {
@@ -62,7 +62,7 @@ const Template = (args: Props) => ({
   template: generateTemplate(`
 <BalBtn v-bind="args">
   Action
-</BalBtn>`)
+</BalBtn>`),
 });
 
 export const Primary = Template.bind({});

@@ -24,7 +24,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY
+  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY,
 });
 
 /**
@@ -52,18 +52,18 @@ const poolActivitiesQuery =
 const poolActivities = computed(() =>
   poolActivitiesQuery.data.value
     ? flatten(
-        poolActivitiesQuery.data.value.pages.map(page => page.poolActivities)
+        poolActivitiesQuery.data.value.pages.map(page => page.poolActivities),
       )
-    : []
+    : [],
 );
 const isLoadingPoolActivities = computed(
-  () => poolActivitiesQuery.isLoading.value
+  () => poolActivitiesQuery.isLoading.value,
 );
 const poolActivitiesHasNextPage = computed(
-  () => poolActivitiesQuery.hasNextPage?.value
+  () => poolActivitiesQuery.hasNextPage?.value,
 );
 const poolActivitiesIsFetchingNextPage = computed(
-  () => poolActivitiesQuery.isFetchingNextPage?.value
+  () => poolActivitiesQuery.isFetchingNextPage?.value,
 );
 
 /**

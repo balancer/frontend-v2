@@ -69,9 +69,7 @@
             @update:modelValue="setTransactionDeadline"
           />
         </div>
-        <div class="px-2">
-          minutes
-        </div>
+        <div class="px-2">minutes</div>
       </div>
     </div>
   </BalPopover>
@@ -90,22 +88,22 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 export enum TradeSettingsContext {
   trade,
-  invest
+  invest,
 }
 
 export default defineComponent({
   name: 'TradeSettingsPopover',
 
   components: {
-    AppSlippageForm
+    AppSlippageForm,
   },
 
   props: {
     context: {
       type: [String, Number] as PropType<TradeSettingsContext>,
-      required: true
+      required: true,
     },
-    isGassless: { type: Boolean, default: false }
+    isGassless: { type: Boolean, default: false },
   },
 
   setup(props) {
@@ -121,7 +119,7 @@ export default defineComponent({
 
     // COMPUTED
     const appTransactionDeadline = computed<number>(
-      () => store.state.app.transactionDeadline
+      () => store.state.app.transactionDeadline,
     );
 
     // METHODS
@@ -150,9 +148,9 @@ export default defineComponent({
       onActivatorClick,
       ethereumTxType,
       setEthereumTxType,
-      ethereumTxTypeOptions
+      ethereumTxTypeOptions,
     };
-  }
+  },
 });
 </script>
 

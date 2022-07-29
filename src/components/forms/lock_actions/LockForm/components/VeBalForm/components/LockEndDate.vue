@@ -39,29 +39,29 @@ const { lockEndDate } = useLockState();
 const lockDates = computed(() => [
   {
     label: t('getVeBAL.lockForm.lockPeriods.2w'),
-    action: () => updateLockEndDate(props.minLockEndDateTimestamp)
+    action: () => updateLockEndDate(props.minLockEndDateTimestamp),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.1m'),
     action: () =>
-      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 4).getTime())
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 4).getTime()),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.3m'),
     action: () =>
-      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 12).getTime())
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 12).getTime()),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.6m'),
     action: () =>
-      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 24).getTime())
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 24).getTime()),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.1y'),
     action: () => {
       lockEndDate.value = formatDateInput(props.maxLockEndDateTimestamp);
-    }
-  }
+    },
+  },
 ]);
 
 /**
@@ -78,7 +78,7 @@ onBeforeMount(() => {
  */
 function updateLockEndDate(timestamp: number) {
   lockEndDate.value = formatDateInput(
-    Math.min(timestamp, props.maxLockEndDateTimestamp)
+    Math.min(timestamp, props.maxLockEndDateTimestamp),
   );
 }
 

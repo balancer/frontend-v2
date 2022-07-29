@@ -45,7 +45,7 @@ const createState = reactive<CreateState>({
   confirmed: false,
   confirmedAt: '',
   isRestoredTxConfirmed: false,
-  isLoadingRestoredTx: false
+  isLoadingRestoredTx: false,
 });
 
 /*
@@ -58,7 +58,7 @@ const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  ref(props.amounts)
+  ref(props.amounts),
 );
 const {
   createPool,
@@ -67,7 +67,7 @@ const {
   poolTypeString,
   hasRestoredFromSavedState,
   needsSeeding,
-  createPoolTxHash
+  createPoolTxHash,
 } = usePoolCreation();
 
 /**
@@ -80,15 +80,15 @@ const actions = computed((): TransactionActionInfo[] => [
     loadingLabel: t('investment.preview.loadingLabel.create'),
     confirmingLabel: t('confirming'),
     action: createPool,
-    stepTooltip: t('createPoolTooltip', [poolTypeString.value])
+    stepTooltip: t('createPoolTooltip', [poolTypeString.value]),
   },
   {
     label: t('fundPool'),
     loadingLabel: t('investment.preview.loadingLabel.fund'),
     confirmingLabel: t('confirming'),
     action: joinPool,
-    stepTooltip: t('fundPoolTooltip')
-  }
+    stepTooltip: t('fundPoolTooltip'),
+  },
 ]);
 
 const requiredActions = computed(() => {
@@ -104,7 +104,7 @@ const requiredActions = computed(() => {
 const explorerLink = computed((): string =>
   createState.receipt
     ? explorerLinks.txLink(createState.receipt.transactionHash)
-    : ''
+    : '',
 );
 
 onBeforeMount(async () => {

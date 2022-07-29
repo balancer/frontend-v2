@@ -77,22 +77,22 @@ const props = withDefaults(defineProps<Props>(), {
   link: () => null,
   initialState: () => ({
     sortColumn: null,
-    sortDirection: null
+    sortDirection: null,
   }),
   skeletonClass: '',
   isLoading: false,
   isLoadingMore: false,
-  getTableRowClass: () => undefined
+  getTableRowClass: () => undefined,
 });
 
 const stickyHeaderRef = ref();
 const isColumnStuck = ref(false);
 const tableData = ref(props.data);
 const currentSortDirection = ref<InitialState['sortDirection']>(
-  props.initialState?.sortDirection || null
+  props.initialState?.sortDirection || null,
 );
 const currentSortColumn = ref<InitialState['sortColumn']>(
-  props.initialState?.sortColumn || null
+  props.initialState?.sortColumn || null,
 );
 const headerRef = ref<HTMLElement>();
 const bodyRef = ref<HTMLElement>();
@@ -135,7 +135,7 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
 
   const sortedData = sortBy(
     (props.data as any).value || props.data,
-    column.sortKey
+    column.sortKey,
   );
   if (currentSortDirection.value === 'asc') {
     tableData.value = sortedData;
@@ -188,23 +188,23 @@ onMounted(() => {
 const unpinnedData = computed(() => {
   if (!props.pin) return tableData.value;
   return (tableData.value || []).filter(
-    data => !props.pin?.pinnedData.includes(data[props.pin.pinOn])
+    data => !props.pin?.pinnedData.includes(data[props.pin.pinOn]),
   );
 });
 
 const pinnedData = computed(() => {
   if (!props.pin) return [];
   return (tableData.value || []).filter(data =>
-    props.pin?.pinnedData.includes(data[props.pin.pinOn])
+    props.pin?.pinnedData.includes(data[props.pin.pinOn]),
   );
 });
 
 const filteredColumns = computed(() =>
-  props.columns.filter(column => !column.hidden)
+  props.columns.filter(column => !column.hidden),
 );
 
 const shouldRenderTotals = computed(() =>
-  props.columns.some(column => column.totalsCell !== undefined)
+  props.columns.some(column => column.totalsCell !== undefined),
 );
 
 watch(
@@ -215,7 +215,7 @@ watch(
       return;
     }
     tableData.value = newData;
-  }
+  },
 );
 </script>
 
@@ -223,7 +223,7 @@ watch(
   <div
     :class="[
       'max-w-full whitespace-nowrap overflow-hidden',
-      { 'rounded-lg': !square }
+      { 'rounded-lg': !square },
     ]"
   >
     <div class="overflow-hidden" ref="headerRef">
@@ -249,7 +249,7 @@ watch(
               column.sortKey ? 'cursor-pointer' : '',
               currentSortColumn === column.id && currentSortDirection
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
-                : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors'
+                : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors',
             ]"
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
@@ -270,7 +270,7 @@ watch(
                 size="sm"
                 v-if="
                   currentSortColumn === column.id &&
-                    currentSortDirection === 'asc'
+                  currentSortDirection === 'asc'
                 "
                 class="ml-1 flex items-center"
               />
@@ -279,7 +279,7 @@ watch(
                 size="sm"
                 v-if="
                   currentSortColumn === column.id &&
-                    currentSortDirection === 'desc'
+                  currentSortDirection === 'desc'
                 "
                 class="ml-1 flex items-center"
               />
@@ -318,7 +318,7 @@ watch(
               column.align === 'right' ? 'text-left' : 'text-right',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              'bg-white dark:bg-gray-850 p-0 m-0 h-0'
+              'bg-white dark:bg-gray-850 p-0 m-0 h-0',
             ]"
           ></td>
         </tr>

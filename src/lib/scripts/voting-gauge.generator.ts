@@ -26,40 +26,40 @@ const log = debug('balancer:voting-gauge-generator');
 
 async function getAssetURIFromTokenlists(
   tokenAddress: string,
-  network: Network
+  network: Network,
 ): Promise<string> {
   log(
-    `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`
+    `getAssetURIFromTokenlists network: ${network} tokenAddress: ${tokenAddress}`,
   );
   const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
-    ...tokenListURIs.External
+    ...tokenListURIs.External,
   ].filter(uri => uri.includes('https'));
 
   log('getAssetURIFromTokenlists fetching Tokens');
   const responses = await Promise.all(allURIs.map(uri => fetch(uri)));
   const tokenLists = await Promise.all(
-    responses.map(response => response.json())
+    responses.map(response => response.json()),
   );
   const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
 
   log('getAssetURIFromTokenlists finding token');
   const token = allTokens.find(token =>
-    isSameAddress(token.address, tokenAddress)
+    isSameAddress(token.address, tokenAddress),
   );
   return token?.logoURI ? token.logoURI : '';
 }
 
 async function getMainnetTokenAddresss(
   tokenAddress: string,
-  network: Network
+  network: Network,
 ): Promise<string> {
   log(
-    `getMainnetTokenAddress network: ${network} tokenAddress: ${tokenAddress}`
+    `getMainnetTokenAddress network: ${network} tokenAddress: ${tokenAddress}`,
   );
   const coingeckoEndpoint = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
-    network.toString()
+    network.toString(),
   )}/contract/${tokenAddress.toLowerCase()}`;
 
   const response = await fetch(coingeckoEndpoint);
@@ -74,17 +74,17 @@ async function getMainnetTokenAddresss(
 
 function getTrustWalletAssetsURI(
   tokenAddress: string,
-  network: Network
+  network: Network,
 ): string {
   log(
-    `getTrustWalletAssetsURI network: ${network} tokenAddress: ${tokenAddress}`
+    `getTrustWalletAssetsURI network: ${network} tokenAddress: ${tokenAddress}`,
   );
   const networksMap = {
     [Network.MAINNET]: 'ethereum',
     [Network.ARBITRUM]: 'arbitrum',
     [Network.POLYGON]: 'polygon',
     [Network.KOVAN]: 'kovan',
-    [Network.GOERLI]: 'goerli'
+    [Network.GOERLI]: 'goerli',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
@@ -92,7 +92,7 @@ function getTrustWalletAssetsURI(
 
 async function getTokenLogoURI(
   tokenAddress: string,
-  network: Network
+  network: Network,
 ): Promise<string> {
   log(`getTokenLogoURI network: ${network} tokenAddress: ${tokenAddress}`);
   let logoUri = '';
@@ -129,7 +129,7 @@ async function getTokenLogoURI(
 async function getPoolInfo(
   poolId: string,
   network: Network,
-  retries = 5
+  retries = 5,
 ): Promise<VotingGauge['pool']> {
   log(`getPoolInfo. poolId: network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraph;
@@ -156,9 +156,9 @@ async function getPoolInfo(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -170,7 +170,7 @@ async function getPoolInfo(
         return {
           address: getAddress(token.address),
           weight: token.weight || 'null',
-          symbol: token.symbol
+          symbol: token.symbol,
         };
       });
 
@@ -179,7 +179,7 @@ async function getPoolInfo(
       address: getAddress(address),
       poolType,
       symbol,
-      tokens: tokensList
+      tokens: tokensList,
     };
   } catch {
     console.error('Pool not found:', poolId, 'chainId:', network);
@@ -193,7 +193,7 @@ async function getPoolInfo(
 async function getLiquidityGaugeAddress(
   poolId: string,
   network: Network,
-  retries = 5
+  retries = 5,
 ): Promise<string> {
   log(`getLiquidityGaugeAddress. network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraphs.gauge;
@@ -214,9 +214,9 @@ async function getLiquidityGaugeAddress(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -229,7 +229,7 @@ async function getLiquidityGaugeAddress(
       'LiquidityGauge not found for poolId:',
       poolId,
       'chainId:',
-      network
+      network,
     );
 
     return retries > 0
@@ -241,7 +241,7 @@ async function getLiquidityGaugeAddress(
 async function getStreamerAddress(
   poolId: string,
   network: Network,
-  retries = 5
+  retries = 5,
 ): Promise<string> {
   log(`getStreamerAddress. network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraphs.gauge;
@@ -263,9 +263,9 @@ async function getStreamerAddress(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -278,7 +278,7 @@ async function getStreamerAddress(
       'chainId:',
       network,
       'retries:',
-      retries
+      retries,
     );
 
     return retries > 0 ? getStreamerAddress(poolId, network, retries - 1) : '';
@@ -288,7 +288,7 @@ async function getStreamerAddress(
 async function getRootGaugeAddress(
   streamer: string,
   network: Network,
-  retries = 5
+  retries = 5,
 ): Promise<string> {
   log(`getRootGaugeAddress. network: ${network} streamer: ${streamer}`);
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
@@ -311,9 +311,9 @@ async function getRootGaugeAddress(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -326,7 +326,7 @@ async function getRootGaugeAddress(
       'RootGauge not found for Streamer:',
       streamer,
       'chainId:',
-      network
+      network,
     );
 
     return retries > 0
@@ -337,7 +337,7 @@ async function getRootGaugeAddress(
 
 async function getGaugeAddress(
   poolId: string,
-  network: Network
+  network: Network,
 ): Promise<string> {
   log(`getGaugeAddress. network: ${network} poolId: ${poolId}`);
   if ([Network.MAINNET, Network.KOVAN, Network.GOERLI].includes(network)) {
@@ -362,7 +362,7 @@ async function getGaugeAddress(
       for (let i = 0; i < pool.tokens.length; i++) {
         tokenLogoURIs[pool.tokens[i].address] = await getTokenLogoURI(
           pool.tokens[i].address,
-          network
+          network,
         );
       }
 
@@ -370,16 +370,16 @@ async function getGaugeAddress(
         address,
         network,
         pool,
-        tokenLogoURIs
+        tokenLogoURIs,
       };
-    })
+    }),
   );
 
   votingGauges = [...(vebalGauge as VotingGauge[]), ...votingGauges];
 
   const jsonFilePath = path.resolve(
     __dirname,
-    '../../../public/data/voting-gauges.json'
+    '../../../public/data/voting-gauges.json',
   );
 
   fs.writeFile(jsonFilePath, JSON.stringify(votingGauges, null, 2), err => {

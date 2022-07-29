@@ -2,7 +2,7 @@ import {
   FundManagement,
   SingleSwap,
   SwapType,
-  SwapV2
+  SwapV2,
 } from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -18,7 +18,7 @@ export default class VaultService {
 
   constructor(
     protected readonly config: ConfigService = configService,
-    private readonly web3: Web3Service = web3Service
+    private readonly web3: Web3Service = web3Service,
   ) {
     this.abi = Vault__factory.abi;
   }
@@ -31,14 +31,14 @@ export default class VaultService {
     single: SingleSwap,
     funds: FundManagement,
     tokenOutAmount: string,
-    options: Record<string, any> = {}
+    options: Record<string, any> = {},
   ): Promise<TransactionResponse> {
     return this.web3.sendTransaction(
       this.address,
       this.abi,
       'swap',
       [single, funds, tokenOutAmount, MaxUint256],
-      options
+      options,
     );
   }
 
@@ -48,14 +48,14 @@ export default class VaultService {
     tokenAddresses: string[],
     funds: FundManagement,
     limits: string[],
-    options: Record<string, any> = {}
+    options: Record<string, any> = {},
   ): Promise<TransactionResponse> {
     return this.web3.sendTransaction(
       this.address,
       this.abi,
       'batchSwap',
       [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
-      options
+      options,
     );
   }
 }

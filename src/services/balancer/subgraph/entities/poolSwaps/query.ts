@@ -3,7 +3,7 @@ import { merge } from 'lodash';
 const defaultArgs = {
   first: 100,
   orderBy: 'timestamp',
-  orderDirection: 'desc'
+  orderDirection: 'desc',
 };
 
 const defaultAttrs = {
@@ -14,13 +14,13 @@ const defaultAttrs = {
   tx: true,
   timestamp: true,
   userAddress: {
-    id: true
-  }
+    id: true,
+  },
 };
 
 export default (args = {}, attrs = {}) => ({
   swaps: {
     __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs)
-  }
+    ...merge({}, defaultAttrs, attrs),
+  },
 });

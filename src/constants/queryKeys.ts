@@ -16,73 +16,73 @@ const QUERY_KEYS = {
       tokens: Ref<string[]>,
       poolIds: Ref<string[]> | undefined,
       poolAddresses: Ref<string[]> | undefined,
-      gaugeAddresses: Ref<string[]>
+      gaugeAddresses: Ref<string[]>,
     ) => [
       POOLS_ROOT_KEY,
       'all',
-      { networkId, tokens, poolIds, poolAddresses, gaugeAddresses }
+      { networkId, tokens, poolIds, poolAddresses, gaugeAddresses },
     ],
     User: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      gaugeAddresses: Ref<string[]>
+      gaugeAddresses: Ref<string[]>,
     ) => [POOLS_ROOT_KEY, 'user', { networkId, account, gaugeAddresses }],
     Current: (id: string, gaugeAddresses: Ref<string[]>) => [
       POOLS_ROOT_KEY,
       'current',
-      { id, gaugeAddresses }
+      { id, gaugeAddresses },
     ],
     APR: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'apr',
-      { networkId, id }
+      { networkId, id },
     ],
     Snapshot: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'snapshot',
-      { networkId, id }
+      { networkId, id },
     ],
     Activities: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'activities',
       'all',
-      { networkId, id }
+      { networkId, id },
     ],
     UserActivities: (
       networkId: Ref<Network>,
       id: string,
-      account: Ref<string>
+      account: Ref<string>,
     ) => [POOLS_ROOT_KEY, 'activities', 'user', { networkId, account, id }],
     Swaps: (
       networkId: Ref<Network>,
       id: string,
-      subgraphQuery: Record<string, any>
+      subgraphQuery: Record<string, any>,
     ) => [POOLS_ROOT_KEY, 'swaps', { networkId, id, subgraphQuery }],
     UserSwaps: (networkId: Ref<Network>, id: string, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'swaps',
       'user',
-      { networkId, account, id }
-    ]
+      { networkId, account, id },
+    ],
   },
   TokenLists: {
-    All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }]
+    All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],
   },
   Claims: {
     All: (networkId: Ref<Network>, account: Ref<string>) => [
       CLAIMS_ROOT_KEY,
-      { networkId, account }
+      { networkId, account },
     ],
     Protocol: (networkId: Ref<Network>, account: Ref<string>) => [
       CLAIMS_ROOT_KEY,
       'protocol',
-      { networkId, account }
-    ]
+      { networkId, account },
+    ],
   },
   Tokens: {
     TrendingPairs: (userNetworkId: Ref<number>) => [
       'trendingTradePairs',
-      { userNetworkId }
+      { userNetworkId },
     ],
     PairPriceData: (
       tokenInAddress: Ref<string>,
@@ -90,7 +90,7 @@ const QUERY_KEYS = {
       activeTimespan: Ref<{ option: string; value: number }>,
       userNetworkId: Ref<number>,
       nativeAsset: NativeAsset,
-      wrappedNativeAsset: Ref<TokenInfo>
+      wrappedNativeAsset: Ref<TokenInfo>,
     ) => [
       'pairPriceData',
       {
@@ -99,47 +99,47 @@ const QUERY_KEYS = {
         activeTimespan,
         userNetworkId,
         nativeAsset,
-        wrappedNativeAsset
-      }
+        wrappedNativeAsset,
+      },
     ],
     Prices: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      pricesToInject: Ref<TokenPrices>
+      pricesToInject: Ref<TokenPrices>,
     ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
     AllPrices: ['tokens', 'prices'],
     VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [
       'tokens',
       'veBAL',
-      { networkId, account }
-    ]
+      { networkId, account },
+    ],
   },
   Account: {
     Balances: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      tokens: Ref<string[]>
+      tokens: Ref<string[]>,
     ) => ['account', 'balances', { networkId, account, tokens }],
     Allowances: (
       networkId: Ref<Network>,
       account: Ref<string>,
       contractAddresses: Ref<string[]>,
-      tokens: Ref<string[]>
+      tokens: Ref<string[]>,
     ) => [
       'account',
       'allowances',
-      { networkId, account, contractAddresses, tokens }
+      { networkId, account, contractAddresses, tokens },
     ],
     RelayerApprovals: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      relayer: Ref<string>
+      relayer: Ref<string>,
     ) => ['account', 'relayer', { networkId, account, relayer }],
     Profile: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      chainId: Ref<number | undefined>
-    ) => ['account', 'profile', { networkId, account, chainId }]
+      chainId: Ref<number | undefined>,
+    ) => ['account', 'profile', { networkId, account, chainId }],
   },
   Gauges: {
     All: {
@@ -147,24 +147,24 @@ const QUERY_KEYS = {
       Onchain: (
         gauges: Ref<SubgraphGauge[] | undefined>,
         account: Ref<string>,
-        networkId: Ref<Network>
-      ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }]
+        networkId: Ref<Network>,
+      ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }],
     },
     Expired: (gauges: Ref<string[] | undefined>, networkId: Ref<Network>) => [
       'gauges',
       'expired',
-      { gauges, networkId }
+      { gauges, networkId },
     ],
-    Voting: (account: Ref<string>) => ['gauges', 'voting', { account }]
+    Voting: (account: Ref<string>) => ['gauges', 'voting', { account }],
   },
   Transaction: {
     ConfirmationDate: (receipt: Ref<TransactionReceipt>) => [
       'tx',
       'confirmation',
       'date',
-      { receipt }
-    ]
-  }
+      { receipt },
+    ],
+  },
 };
 
 export default QUERY_KEYS;

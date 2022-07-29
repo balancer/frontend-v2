@@ -33,7 +33,7 @@ export default defineComponent({
 
   props: {
     modelValue: { type: [String, Number], required: true },
-    options: { type: Array as PropType<Option[]>, required: true }
+    options: { type: Array as PropType<Option[]>, required: true },
   },
 
   setup(props, { emit, attrs }) {
@@ -50,8 +50,8 @@ export default defineComponent({
       attrs_,
 
       // methods
-      onSelect
+      onSelect,
     };
-  }
+  },
 });
 </script>

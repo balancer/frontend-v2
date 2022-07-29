@@ -18,7 +18,7 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => []
+  modelValue: () => [],
 });
 
 const emit = defineEmits<{
@@ -47,11 +47,11 @@ const sortedBalances = computed(() => {
   const addressesWithBalance = Object.entries(balances.value)
     .filter(
       ([address, balance]) =>
-        balance !== '0.0' && address !== veBalTokenInfo.value?.address
+        balance !== '0.0' && address !== veBalTokenInfo.value?.address,
     )
     .map(([address]) => address);
   const tokensWithBalance = Object.values(
-    pick(tokens.value, addressesWithBalance)
+    pick(tokens.value, addressesWithBalance),
   );
 
   return take(tokensWithBalance, 6);
@@ -61,8 +61,8 @@ const hasNoBalances = computed(() => !sortedBalances.value.length);
 
 const whiteListedTokens = computed(() =>
   Object.values(tokens.value).filter(token =>
-    TOKENS.Popular.Symbols.includes(token.symbol)
-  )
+    TOKENS.Popular.Symbols.includes(token.symbol),
+  ),
 );
 
 const selectTokensLabel = computed(() => {
@@ -82,7 +82,7 @@ const selectableTokensAddresses = computed<string[]>(() => {
       includesAddress(props.modelValue, token.address)
         ? acc
         : [...acc, token.address],
-    [] as string[]
+    [] as string[],
   );
 });
 

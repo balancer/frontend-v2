@@ -4,7 +4,7 @@ import {
   NetworkID,
   OptimalRatesWithPartnerFees,
   ParaSwap,
-  SwapSide
+  SwapSide,
 } from 'paraswap';
 import { RateOptions } from 'paraswap/build/types';
 
@@ -25,21 +25,15 @@ export default class ParaSwapService {
 
   public async getPriceQuote(params: PriceQuoteParams) {
     try {
-      const {
-        amount,
-        sellToken,
-        buyToken,
-        kind,
-        fromDecimals,
-        toDecimals
-      } = params;
+      const { amount, sellToken, buyToken, kind, fromDecimals, toDecimals } =
+        params;
 
       const swapSide = kind === OrderKind.BUY ? SwapSide.BUY : SwapSide.SELL;
 
       // https://developers.paraswap.network/api/get-rate-for-a-token-pair
       const options: RateOptions | undefined = {
         maxImpact: 100,
-        excludeDEXS: 'ParaSwapPool4'
+        excludeDEXS: 'ParaSwapPool4',
       };
 
       const rateResult = await this.paraSwap.getRate(
@@ -49,7 +43,7 @@ export default class ParaSwapService {
         swapSide,
         options,
         fromDecimals,
-        toDecimals
+        toDecimals,
       );
 
       if (this.isGetRateSuccess(rateResult)) {
@@ -70,7 +64,7 @@ export default class ParaSwapService {
   }
 
   private toPriceInformation(
-    priceRaw: ParaSwapPriceQuote | null
+    priceRaw: ParaSwapPriceQuote | null,
   ): PriceInformation | null {
     if (!priceRaw || !priceRaw.details) {
       return null;
@@ -80,18 +74,18 @@ export default class ParaSwapService {
     if (side === SwapSide.SELL) {
       return {
         amount: destAmount,
-        token: details.tokenTo
+        token: details.tokenTo,
       };
     } else {
       return {
         amount: srcAmount,
-        token: details.tokenFrom
+        token: details.tokenFrom,
       };
     }
   }
 
   private isGetRateSuccess(
-    rateResult: OptimalRatesWithPartnerFees | APIError
+    rateResult: OptimalRatesWithPartnerFees | APIError,
   ): rateResult is OptimalRatesWithPartnerFees {
     return !!(rateResult as OptimalRatesWithPartnerFees).destAmount;
   }

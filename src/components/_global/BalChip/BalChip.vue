@@ -2,7 +2,7 @@
 import BalIcon from '../BalIcon/BalIcon.vue';
 import {
   useChipClasses,
-  useCloseIconClasses
+  useCloseIconClasses,
 } from './composables/useChipStyles';
 
 type Props = {
@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   color: 'gray',
   rounded: false,
-  outline: true
+  outline: true,
 });
 
 const emit = defineEmits(['closed']);

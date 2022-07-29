@@ -19,7 +19,7 @@ import {
   FeeInformation,
   FeeQuoteParams,
   OrderMetaData,
-  PriceQuoteParams
+  PriceQuoteParams,
 } from '@/services/gnosis/types';
 import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -46,10 +46,10 @@ type State = {
 
 const state = reactive<State>({
   warnings: {
-    highFees: false
+    highFees: false,
   },
   validationError: null,
-  submissionError: null
+  submissionError: null,
 });
 
 export type GnosisTransactionDetails = {
@@ -90,16 +90,16 @@ function getPriceQuotes(params: PriceQuoteParams) {
   return Promise.allSettled([
     tryPromiseWithTimeout(
       gnosisProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
+      PRICE_QUOTE_TIMEOUT,
     ),
     tryPromiseWithTimeout(
       match0xService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
+      PRICE_QUOTE_TIMEOUT,
     ),
     tryPromiseWithTimeout(
       paraSwapService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    )
+      PRICE_QUOTE_TIMEOUT,
+    ),
   ]);
 }
 
@@ -117,7 +117,7 @@ export default function useGnosis({
   tokenOutAmountScaled,
   tokenIn,
   tokenOut,
-  slippageBufferRate
+  slippageBufferRate,
 }: Props) {
   // COMPOSABLES
   const store = useStore();
@@ -133,7 +133,7 @@ export default function useGnosis({
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
-    () => store.state.app.transactionDeadline
+    () => store.state.app.transactionDeadline,
   );
 
   const hasValidationError = computed(() => state.validationError != null);
@@ -148,7 +148,7 @@ export default function useGnosis({
 
     return {
       feeAmountInToken,
-      feeAmountOutToken
+      feeAmountOutToken,
     };
   }
 
@@ -169,7 +169,7 @@ export default function useGnosis({
       feeAmountInToken,
       feeAmountOutToken,
       maximumInAmount,
-      minimumOutAmount
+      minimumOutAmount,
     };
   }
 
@@ -198,12 +198,12 @@ export default function useGnosis({
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
         partiallyFillable: false, // Always fill or kill,
-        sellTokenBalance: OrderBalance.EXTERNAL
+        sellTokenBalance: OrderBalance.EXTERNAL,
       };
 
       const { signature, signingScheme } = await signOrder(
         unsignedOrder,
-        getSigner()
+        getSigner(),
       );
 
       const orderId = await gnosisProtocolService.sendSignedOrder({
@@ -211,9 +211,9 @@ export default function useGnosis({
           ...unsignedOrder,
           signature,
           receiver: account.value,
-          signingScheme
+          signingScheme,
         },
-        owner: account.value
+        owner: account.value,
       });
 
       const sellAmount = exactIn.value
@@ -223,7 +223,7 @@ export default function useGnosis({
       const buyAmount = exactIn.value
         ? formatUnits(
             quote.minimumOutAmount,
-            tokenOut.value.decimals
+            tokenOut.value.decimals,
           ).toString()
         : tokenOutAmountInput.value;
 
@@ -232,10 +232,10 @@ export default function useGnosis({
 
       const summary = `${tokenInAmountEst}${fNum2(
         sellAmount,
-        FNumFormats.token
+        FNumFormats.token,
       )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(
         buyAmount,
-        FNumFormats.token
+        FNumFormats.token,
       )} ${tokenOut.value.symbol}`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
@@ -257,9 +257,9 @@ export default function useGnosis({
           slippageBufferRate: slippageBufferRate.value,
           order: {
             validTo,
-            partiallyFillable
-          }
-        }
+            partiallyFillable,
+          },
+        },
       });
 
       if (successCallback != null) {
@@ -320,7 +320,7 @@ export default function useGnosis({
         partiallyFillable: false,
         sellTokenBalance: OrderBalance.EXTERNAL,
         buyTokenBalance: OrderBalance.ERC20,
-        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY
+        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
       };
 
       if (exactIn.value) {
@@ -346,7 +346,7 @@ export default function useGnosis({
           amount: amountToExchange.toString(),
           kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
           fromDecimals: tokenIn.value.decimals,
-          toDecimals: tokenOut.value.decimals
+          toDecimals: tokenOut.value.decimals,
         };
 
         const priceQuotes = await priceQuotesResolveLast(priceQuoteParams);
@@ -362,18 +362,19 @@ export default function useGnosis({
             }
             return fulfilledPriceQuotes;
           },
-          []
+          [],
         );
 
         if (priceQuoteAmounts.length > 0) {
           // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
-          priceQuoteAmount = (exactIn.value
-            ? priceQuoteAmounts.reduce((a, b) =>
-                BigNumber.from(a).gt(b) ? a : b
-              )
-            : priceQuoteAmounts.reduce((a, b) =>
-                BigNumber.from(a).lt(b) ? a : b
-              )
+          priceQuoteAmount = (
+            exactIn.value
+              ? priceQuoteAmounts.reduce((a, b) =>
+                  BigNumber.from(a).gt(b) ? a : b,
+                )
+              : priceQuoteAmounts.reduce((a, b) =>
+                  BigNumber.from(a).lt(b) ? a : b,
+                )
           ).toString();
         }
 
@@ -392,27 +393,27 @@ export default function useGnosis({
 
           if (exactIn.value) {
             tokenOutAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenOut.value.decimals)
+              formatUnits(priceQuoteAmount, tokenOut.value.decimals),
             ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
             const { feeAmountInToken } = getQuote();
 
             state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE),
             );
           } else {
             tokenInAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenIn.value.decimals)
+              formatUnits(priceQuoteAmount, tokenIn.value.decimals),
             ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
             const { feeAmountOutToken, maximumInAmount } = getQuote();
 
             state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE),
             );
 
             const priceExceedsBalance = bnum(
-              formatUnits(maximumInAmount, tokenIn.value.decimals)
+              formatUnits(maximumInAmount, tokenIn.value.decimals),
             ).gt(balanceFor(tokenIn.value.address));
 
             if (priceExceedsBalance) {
@@ -440,6 +441,6 @@ export default function useGnosis({
     updatingQuotes,
     hasValidationError,
     confirming,
-    getQuote
+    getQuote,
   };
 }

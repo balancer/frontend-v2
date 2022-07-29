@@ -38,6 +38,6 @@ export default function useInputValidation(props, emit) {
   return {
     errors,
     isInvalid,
-    validate
+    validate,
   };
 }

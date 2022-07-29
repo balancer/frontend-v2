@@ -49,7 +49,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     accessor: 'token',
     Cell: 'tokenColumnCell',
     width: 475,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('amount'),
@@ -57,7 +57,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     accessor: ({ amount, token }) =>
-      `${fNum2(amount, FNumFormats.token)} ${token.symbol}`
+      `${fNum2(amount, FNumFormats.token)} ${token.symbol}`,
   },
   {
     name: t('value'),
@@ -65,7 +65,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -73,8 +73,8 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     accessor: 'claim',
     Cell: 'claimColumnCell',
     totalsCell: 'totalClaimCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 /**
@@ -85,13 +85,13 @@ const rewardsData = computed((): Reward[] => {
     const token = getToken(tokenAddress);
     const amount = formatUnits(
       props.gauge.claimableRewards[tokenAddress],
-      token.decimals
+      token.decimals,
     );
 
     return {
       token,
       amount,
-      value: toFiat(amount, token.address)
+      value: toFiat(amount, token.address),
     };
   });
 });

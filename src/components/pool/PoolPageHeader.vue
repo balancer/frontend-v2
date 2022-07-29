@@ -35,7 +35,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   loadingPool: true,
   loadingApr: true,
-  noInitLiquidity: false
+  noInitLiquidity: false,
 });
 
 /**
@@ -53,7 +53,7 @@ const { balancerTokenListTokens } = useTokens();
  * STATE
  */
 const data = reactive({
-  id: route.params.id as string
+  id: route.params.id as string,
 });
 
 /**
@@ -62,11 +62,11 @@ const data = reactive({
 const feesFixed = computed(() => props.pool?.owner == POOLS.ZeroAddress);
 
 const communityManagedFees = computed(
-  () => props.pool?.owner == POOLS.DelegateOwner
+  () => props.pool?.owner == POOLS.DelegateOwner,
 );
 const feesManagedByGauntlet = computed(
   () =>
-    communityManagedFees.value && POOLS.DynamicFees.Gauntlet.includes(data.id)
+    communityManagedFees.value && POOLS.DynamicFees.Gauntlet.includes(data.id),
 );
 const swapFeeToolTip = computed(() => {
   if (feesManagedByGauntlet.value) {
@@ -85,7 +85,7 @@ const poolFeeLabel = computed(() => {
 
   const feeLabel = `${fNum2(props.pool.onchain.swapFee, {
     style: 'percent',
-    maximumFractionDigits: 4
+    maximumFractionDigits: 4,
   })}`;
 
   if (feesFixed.value) {
@@ -107,7 +107,7 @@ const hasCustomToken = computed(() => {
     !props.isLiquidityBootstrappingPool &&
     !props.isStablePhantomPool &&
     props.pool.tokensList.some(
-      address => !includesAddress(knownTokens, address)
+      address => !includesAddress(knownTokens, address),
     )
   );
 });
@@ -144,7 +144,7 @@ const poolTypeLabel = computed(() => {
             {{
               fNum2(tokenMeta.weight, {
                 style: 'percent',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 0,
               })
             }}
           </span>

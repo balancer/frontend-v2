@@ -29,7 +29,7 @@ const { fNum2, toFiat } = useNumbers();
 const token = computed(() => getToken(props.address));
 
 const balanceLabel = computed(() =>
-  fNum2(balanceFor(props.address), FNumFormats.token)
+  fNum2(balanceFor(props.address), FNumFormats.token),
 );
 
 const fiatLabel = computed(() => {

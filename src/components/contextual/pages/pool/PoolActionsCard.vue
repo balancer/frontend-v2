@@ -50,11 +50,7 @@ const fiatTotal = computed(() => {
 
       return toFiat(tokenBalance, address);
     })
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    );
+    .reduce((total, value) => bnum(total).plus(value).toString());
 
   return fNum2(fiatValue, FNumFormats.fiat);
 });

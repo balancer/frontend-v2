@@ -39,8 +39,8 @@ export default defineComponent({
 
     return {
       isRotated,
-      toggle
+      toggle,
     };
-  }
+  },
 });
 </script>

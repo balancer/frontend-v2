@@ -5,12 +5,12 @@ export default {
   component: Tooltip,
   title: 'Components/BalTooltip',
   parameters: {
-    layout: 'centered'
+    layout: 'centered',
   },
   args: {
     title: 'Tooltip',
-    darkMode: false
-  }
+    darkMode: false,
+  },
 };
 
 type Props = {
@@ -28,7 +28,7 @@ const Template = (args: Props) => ({
     <Tooltip placement="left">
         This can be any sort of content I want
     </Tooltip>
-`)
+`),
 });
 
 export const DefaultTooltip = Template.bind({});

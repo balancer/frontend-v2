@@ -9,14 +9,14 @@ import { configService } from '@/services/config/config.service';
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,
-  balancer: configService.network.subgraph
+  balancer: configService.network.subgraph,
 };
 
 export default function useGraphQuery<T>(
   subgraphUrl: string,
   key: QueryKey,
   query: () => Record<any, any>,
-  options: UseQueryOptions<T> = {}
+  options: UseQueryOptions<T> = {},
 ) {
   const queryKey = reactive([
     // for our query key style, initial are the string
@@ -26,8 +26,8 @@ export default function useGraphQuery<T>(
     {
       // extend the dependencies from the query key and add
       // the current query key as a dependency
-      ...(last(key) as any)
-    }
+      ...(last(key) as any),
+    },
   ]);
 
   const queryFn = async () => {
@@ -36,9 +36,9 @@ export default function useGraphQuery<T>(
     }
     try {
       const {
-        data: { data }
+        data: { data },
       } = await axios.post(subgraphUrl, {
-        query: jsonToGraphQLQuery({ query: query() })
+        query: jsonToGraphQLQuery({ query: query() }),
       });
 
       return data;
@@ -47,7 +47,7 @@ export default function useGraphQuery<T>(
         `GraphQL request to [${subgraphUrl}] failed. Payload:`,
         query,
         'Error:',
-        error
+        error,
       );
       throw error;
     }

@@ -5,7 +5,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import {
   oneWeekInMs,
   oneWeekInSecs,
-  toUnixTimestamp
+  toUnixTimestamp,
 } from '@/composables/useTime';
 import { VotingGauge } from '@/constants/voting-gauges';
 import GaugeControllerAbi from '@/lib/abi/GaugeController.json';
@@ -53,7 +53,7 @@ export class GaugeControllerDecorator {
 
   constructor(
     private readonly abi = GaugeControllerAbi,
-    private readonly config = configService
+    private readonly config = configService,
   ) {
     this.network = this.getNetwork();
     this.provider = rpcProviderService.getJsonProvider(this.network);
@@ -65,7 +65,7 @@ export class GaugeControllerDecorator {
    */
   async decorateWithVotes(
     votingGauges: VotingGauge[],
-    userAddress: string
+    userAddress: string,
   ): Promise<VotingGaugeWithVotes[]> {
     this.multicaller = this.resetMulticaller();
     this.callGaugeWeightThisPeriod(votingGauges);
@@ -80,7 +80,7 @@ export class GaugeControllerDecorator {
     const decoratedGauges = votingGauges.map(gauge => {
       return {
         ...gauge,
-        ...this.formatVotes(votesDataMap.gauges[gauge.address])
+        ...this.formatVotes(votesDataMap.gauges[gauge.address]),
       };
     });
     return decoratedGauges;
@@ -94,7 +94,7 @@ export class GaugeControllerDecorator {
       votes,
       votesNextPeriod,
       userVotes: votesData?.userVotes?.power.toString() || '0',
-      lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0
+      lastUserVoteTime: votesData?.lastUserVoteTime?.toNumber() || 0,
     };
   }
 
@@ -103,7 +103,7 @@ export class GaugeControllerDecorator {
    */
   private callGaugeWeightThisPeriod(votingGauges: VotingGauge[]) {
     let thisWeekTimestamp = toUnixTimestamp(
-      Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs
+      Math.floor(Date.now() / oneWeekInMs) * oneWeekInMs,
     );
     // this makes sure we don't compute votes from before Mar31 in the "This period" entry,
     // since the system is not fully active between Mar31 and Apr6
@@ -116,7 +116,7 @@ export class GaugeControllerDecorator {
         `gauges.${gauge.address}.gaugeWeightThisPeriod`,
         this.config.network.addresses.gaugeController,
         'gauge_relative_weight_write',
-        [gauge.address, thisWeekTimestamp]
+        [gauge.address, thisWeekTimestamp],
       );
     });
   }
@@ -126,14 +126,14 @@ export class GaugeControllerDecorator {
    */
   private callGaugeWeightNextPeriod(votingGauges: VotingGauge[]) {
     const nextWeekTimestamp = toUnixTimestamp(
-      Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs
+      Math.floor((Date.now() + oneWeekInMs) / oneWeekInMs) * oneWeekInMs,
     );
     votingGauges.forEach(gauge => {
       this.multicaller.call(
         `gauges.${gauge.address}.gaugeWeightNextPeriod`,
         this.config.network.addresses.gaugeController,
         'gauge_relative_weight_write',
-        [gauge.address, nextWeekTimestamp]
+        [gauge.address, nextWeekTimestamp],
       );
     });
   }
@@ -147,7 +147,7 @@ export class GaugeControllerDecorator {
         `gauges.${gauge.address}.userVotes`,
         this.config.network.addresses.gaugeController,
         'vote_user_slopes',
-        [userAddress, gauge.address]
+        [userAddress, gauge.address],
       );
     });
   }
@@ -157,14 +157,14 @@ export class GaugeControllerDecorator {
    */
   private callUserGaugeVoteTime(
     votingGauges: VotingGauge[],
-    userAddress: string
+    userAddress: string,
   ) {
     votingGauges.forEach(gauge => {
       this.multicaller.call(
         `gauges.${gauge.address}.lastUserVoteTime`,
         this.config.network.addresses.gaugeController,
         'last_user_vote',
-        [userAddress, gauge.address]
+        [userAddress, gauge.address],
       );
     });
   }

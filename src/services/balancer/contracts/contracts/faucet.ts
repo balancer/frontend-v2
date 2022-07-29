@@ -7,7 +7,7 @@ export class Faucet {
     private readonly abi = FaucetAbi,
     private readonly config = configService,
     private readonly web3 = web3Service,
-    public readonly address = config.network.addresses.faucet
+    public readonly address = config.network.addresses.faucet,
   ) {
     if (!this.address) console.error('Faucet address not set');
   }
@@ -17,7 +17,7 @@ export class Faucet {
    */
   async drip(tokenAddress: string) {
     return await this.web3.sendTransaction(this.address, this.abi, 'drip', [
-      tokenAddress
+      tokenAddress,
     ]);
   }
 }

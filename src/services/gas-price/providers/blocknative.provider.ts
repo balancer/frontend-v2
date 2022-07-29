@@ -31,16 +31,16 @@ type BlocknativeGasPlatformResponse = {
 
 export default class BlocknativeProvider {
   public async getLatest(
-    confidence: BlocknativeGasPriceConfidence | 'best' = 'best'
+    confidence: BlocknativeGasPriceConfidence | 'best' = 'best',
   ): Promise<GasPrice | null> {
     try {
       const response = await axios.get<BlocknativeGasPlatformResponse>(
         'https://api.blocknative.com/gasprices/blockprices',
         {
           headers: {
-            Authorization: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID
-          }
-        }
+            Authorization: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID,
+          },
+        },
       );
       const estimatedPrices = response.data.blockPrices[0].estimatedPrices;
 
@@ -49,10 +49,10 @@ export default class BlocknativeProvider {
       // try to get 90% confidence, but make sure not to overpay. (otherwise grab 70%)
       if (confidence === 'best') {
         const gasPrice70 = estimatedPrices.find(
-          estimatedPrice => estimatedPrice.confidence === 70
+          estimatedPrice => estimatedPrice.confidence === 70,
         );
         const gasPrice90 = estimatedPrices.find(
-          estimatedPrice => estimatedPrice.confidence === 90
+          estimatedPrice => estimatedPrice.confidence === 90,
         );
 
         if (gasPrice70 != null && gasPrice90 != null) {
@@ -63,7 +63,7 @@ export default class BlocknativeProvider {
         }
       } else {
         gasPrice = estimatedPrices.find(
-          estimatedPrice => estimatedPrice.confidence === confidence
+          estimatedPrice => estimatedPrice.confidence === confidence,
         );
       }
 
@@ -73,8 +73,8 @@ export default class BlocknativeProvider {
           price: Math.round(gasPrice.price * GWEI_UNIT),
           maxFeePerGas: Math.round(gasPrice.maxFeePerGas * GWEI_UNIT),
           maxPriorityFeePerGas: Math.round(
-            gasPrice.maxPriorityFeePerGas * GWEI_UNIT
-          )
+            gasPrice.maxPriorityFeePerGas * GWEI_UNIT,
+          ),
         };
       }
     } catch (e) {

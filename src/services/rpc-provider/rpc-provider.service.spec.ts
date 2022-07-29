@@ -1,7 +1,7 @@
 import {
   JsonRpcBatchProvider,
   JsonRpcProvider,
-  WebSocketProvider
+  WebSocketProvider,
 } from '@ethersproject/providers';
 
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
@@ -16,9 +16,9 @@ jest.mock('@ethersproject/providers', () => {
     }),
     WebSocketProvider: jest.fn().mockImplementation(() => {
       return {
-        on: jest.fn().mockImplementation()
+        on: jest.fn().mockImplementation(),
       };
-    })
+    }),
   };
 });
 

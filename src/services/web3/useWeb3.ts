@@ -41,7 +41,7 @@ export default function useWeb3() {
     signer,
     disconnectWallet,
     connectWallet,
-    isSanctioned
+    isSanctioned,
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appNetworkConfig = configService.network;
 
@@ -60,22 +60,22 @@ export default function useWeb3() {
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isWalletConnecting = computed(() => walletState.value === 'connecting');
   const isMainnet = computed(
-    () => appNetworkConfig.chainId === Network.MAINNET
+    () => appNetworkConfig.chainId === Network.MAINNET,
   );
   const isKovan = computed(() => appNetworkConfig.chainId === Network.KOVAN);
   const isGoerli = computed(() => appNetworkConfig.chainId === Network.GOERLI);
   const isPolygon = computed(
-    () => appNetworkConfig.chainId === Network.POLYGON
+    () => appNetworkConfig.chainId === Network.POLYGON,
   );
   const isArbitrum = computed(
-    () => appNetworkConfig.chainId === Network.ARBITRUM
+    () => appNetworkConfig.chainId === Network.ARBITRUM,
   );
   const isEIP1559SupportedNetwork = computed(
-    () => appNetworkConfig.supportsEIP1559
+    () => appNetworkConfig.supportsEIP1559,
   );
 
   const canLoadProfile = computed(
-    () => account.value !== '' && userNetworkConfig.value !== null
+    () => account.value !== '' && userNetworkConfig.value !== null,
   );
   const isMismatchedNetwork = computed(() => {
     return (
@@ -92,7 +92,7 @@ export default function useWeb3() {
     addressLink: (address: string) =>
       `${configService.network.explorer}/address/${address}`,
     tokenLink: (address: string) =>
-      `${configService.network.explorer}/token/${address}`
+      `${configService.network.explorer}/token/${address}`,
   };
 
   // METHODS
@@ -124,8 +124,8 @@ export default function useWeb3() {
     QUERY_KEYS.Account.Profile(networkId, account, chainId),
     () => web3Service.getProfile(account.value),
     reactive({
-      enabled: canLoadProfile
-    })
+      enabled: canLoadProfile,
+    }),
   );
 
   return {
@@ -163,6 +163,6 @@ export default function useWeb3() {
     disconnectWallet,
     toggleWalletSelectModal,
     startConnectWithInjectedProvider,
-    setBlockNumber
+    setBlockNumber,
   };
 }

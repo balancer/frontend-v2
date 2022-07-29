@@ -29,15 +29,7 @@
     </p>
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
     <div
-      class="
-        p-4
-        rounded-lg
-        bg-gradient-to-b
-        from-gray-50
-        dark:from-gray-900
-        to-gray-100
-        dark:to-gray-850
-      "
+      class="p-4 rounded-lg bg-gradient-to-b from-gray-50 dark:from-gray-900 to-gray-100 dark:to-gray-850"
     >
       <h6>{{ $t('newToEthereum') }}</h6>
       <p class="text-sm">
@@ -62,22 +54,22 @@ import { SupportedWallets } from '@/services/web3/web3.plugin';
 export default defineComponent({
   emits: ['close'],
   components: {
-    WalletButton
+    WalletButton,
   },
   props: {
     isVisible: {
       type: Boolean,
-      default: false
+      default: false,
     },
     onShowThirdParty: {
-      type: Function
-    }
+      type: Function,
+    },
   },
   setup() {
     return {
       wallets: SupportedWallets.filter(id => id !== 'gnosis'),
-      EXTERNAL_LINKS
+      EXTERNAL_LINKS,
     };
-  }
+  },
 });
 </script>

@@ -13,7 +13,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   dateTimeLabelFor,
   toJsTimestamp,
-  toUtcTime
+  toUtcTime,
 } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
@@ -67,7 +67,7 @@ const voteState = reactive<TransactionActionState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -87,12 +87,12 @@ const voteInputDisabled = computed((): boolean => {
 
 const currentWeight = computed(() => props.gauge.userVotes);
 const currentWeightNormalized = computed(() =>
-  scale(bnum(currentWeight.value), -2).toString()
+  scale(bnum(currentWeight.value), -2).toString(),
 );
 const hasVotes = computed((): boolean => bnum(currentWeight.value).gt(0));
 
 const isVeBalGauge = computed((): boolean =>
-  isSameAddress(props.gauge.address, VEBAL_VOTING_GAUGE?.address || '')
+  isSameAddress(props.gauge.address, VEBAL_VOTING_GAUGE?.address || ''),
 );
 
 // Is votes next period value above 10%?
@@ -104,27 +104,27 @@ const votesNextPeriodGt10pct = computed((): boolean => {
 const voteTitle = computed(() =>
   hasVotes.value
     ? t('veBAL.liquidityMining.popover.title.edit')
-    : t('veBAL.liquidityMining.popover.title.vote')
+    : t('veBAL.liquidityMining.popover.title.vote'),
 );
 
 const voteButtonText = computed(() =>
   hasVotes.value
     ? t('veBAL.liquidityMining.popover.button.edit')
-    : t('veBAL.liquidityMining.popover.button.vote')
+    : t('veBAL.liquidityMining.popover.button.vote'),
 );
 
 const votedToRecentlyWarning = computed(() => {
   const lastUserVoteTime = toJsTimestamp(props.gauge.lastUserVoteTime);
   if (Date.now() < lastUserVoteTime + WEIGHT_VOTE_DELAY) {
     const remainingTime = formatDistanceToNow(
-      lastUserVoteTime + WEIGHT_VOTE_DELAY
+      lastUserVoteTime + WEIGHT_VOTE_DELAY,
     );
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
       description: t(
         'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
-        [remainingTime]
-      )
+        [remainingTime],
+      ),
     };
   }
   return null;
@@ -141,7 +141,9 @@ const noVeBalWarning = computed(() => {
   }
   return {
     title: t('veBAL.liquidityMining.popover.warnings.noVeBal.title'),
-    description: t('veBAL.liquidityMining.popover.warnings.noVeBal.description')
+    description: t(
+      'veBAL.liquidityMining.popover.warnings.noVeBal.description',
+    ),
   };
 });
 
@@ -151,11 +153,11 @@ const veBalLockTooShortWarning = computed(() => {
     if (lockEndDate < Date.now() + MINIMUM_LOCK_TIME) {
       return {
         title: t(
-          'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.title'
+          'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.title',
         ),
         description: t(
-          'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.description'
-        )
+          'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.description',
+        ),
       };
     }
   }
@@ -167,38 +169,42 @@ const veBalVoteOverLimitWarning = computed(() => {
   if (isVeBalGauge.value && votesNextPeriodGt10pct.value) {
     return {
       title: t(
-        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
+        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title',
       ),
       description: t(
-        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
-      )
+        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description',
+      ),
     };
   }
 
   return null;
 });
 
-const voteWarning = computed((): {
-  title: string;
-  description: string;
-} | null => {
-  if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
-  return null;
-});
+const voteWarning = computed(
+  (): {
+    title: string;
+    description: string;
+  } | null => {
+    if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
+    return null;
+  },
+);
 
-const voteError = computed((): {
-  title: string;
-  description: string;
-} | null => {
-  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
-  if (noVeBalWarning.value) return noVeBalWarning.value;
-  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-  if (voteState.error) return voteState.error;
-  return null;
-});
+const voteError = computed(
+  (): {
+    title: string;
+    description: string;
+  } | null => {
+    if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
+    if (noVeBalWarning.value) return noVeBalWarning.value;
+    if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
+    if (voteState.error) return voteState.error;
+    return null;
+  },
+);
 
 const transactionInProgress = computed(
-  (): boolean => voteState.init || voteState.confirming
+  (): boolean => voteState.init || voteState.confirming,
 );
 
 const hasEnoughVotes = computed((): boolean => {
@@ -208,8 +214,8 @@ const hasEnoughVotes = computed((): boolean => {
 const unallocatedVotesFormatted = computed((): string =>
   fNum2(
     scale(bnum(props.unallocatedVoteWeight), -4).toString(),
-    FNumFormats.percent
-  )
+    FNumFormats.percent,
+  ),
 );
 
 const unallocatedVotesClass = computed(() => {
@@ -230,18 +236,18 @@ const remainingVotes = computed(() => {
   const remainingVotesFormatted = fNum2(
     scale(
       bnum(props.unallocatedVoteWeight).plus(bnum(currentWeight.value)),
-      -4
+      -4,
     ).toString(),
-    FNumFormats.percent
+    FNumFormats.percent,
   );
   const currentVotesFormatted = fNum2(
     scale(bnum(currentWeight.value), -4).toString(),
-    FNumFormats.percent
+    FNumFormats.percent,
   );
   return t(remainingVotesText, [
     remainingVotesFormatted,
     currentVotesFormatted,
-    unallocatedVotesFormatted.value
+    unallocatedVotesFormatted.value,
   ]);
 });
 
@@ -265,7 +271,7 @@ async function submitVote() {
     voteState.error = null;
     const tx = await gaugeControllerService.voteForGaugeWeights(
       props.gauge.address,
-      BigNumber.from(totalVoteShares)
+      BigNumber.from(totalVoteShares),
     );
     voteState.init = false;
     voteState.confirming = true;
@@ -277,7 +283,7 @@ async function submitVote() {
     voteState.confirming = false;
     voteState.error = {
       title: 'Vote failed',
-      description: error.message
+      description: error.message,
     };
   }
 }
@@ -289,11 +295,11 @@ async function handleTransaction(tx) {
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
       fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
-      props.gauge.pool.symbol
+      props.gauge.pool.symbol,
     ]),
     details: {
-      voteWeight: voteWeight.value
-    }
+      voteWeight: voteWeight.value,
+    },
   });
 
   txListener(tx, {
@@ -310,10 +316,10 @@ async function handleTransaction(tx) {
       console.error('Vote failed');
       voteState.error = {
         title: 'Vote Failed',
-        description: 'Vote failed for an unknown reason'
+        description: 'Vote failed for an unknown reason',
       };
       voteState.confirming = false;
-    }
+    },
   });
 }
 
@@ -354,7 +360,7 @@ onMounted(() => {
           <li>
             {{
               t('veBAL.liquidityMining.popover.voteLockInfo', [
-                voteLockedUntilText
+                voteLockedUntilText,
               ])
             }}
           </li>

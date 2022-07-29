@@ -74,7 +74,7 @@ export default defineComponent({
 
   components: {
     ActivityCounter,
-    ActivityRows
+    ActivityRows,
   },
 
   setup() {
@@ -93,7 +93,7 @@ export default defineComponent({
       clearAllTransactions,
       isSuccessfulTransaction,
       updateTransaction,
-      isPendingTransactionStatus
+      isPendingTransactionStatus,
     } = useTransactions();
 
     const { addNotification } = useNotifications();
@@ -105,27 +105,27 @@ export default defineComponent({
       try {
         const { signature, signingScheme } = await signOrderCancellation(
           orderId,
-          getSigner()
+          getSigner(),
         );
 
         await gnosisProtocolService.sendSignedOrderCancellation({
           cancellation: {
             orderUid: orderId,
             signature,
-            signingScheme
+            signingScheme,
           },
-          owner: account.value
+          owner: account.value,
         });
 
         updateTransaction(orderId, 'order', {
-          status: 'cancelling'
+          status: 'cancelling',
         });
       } catch (e) {
         console.log(e);
         addNotification({
           type: 'error',
           title: t('errorCancellingOrder'),
-          message: (e as Error).message
+          message: (e as Error).message,
         });
       }
     }
@@ -146,8 +146,8 @@ export default defineComponent({
       transactions,
       pendingTransactions,
       finalizedTransactions,
-      isMobile
+      isMobile,
     };
-  }
+  },
 });
 </script>

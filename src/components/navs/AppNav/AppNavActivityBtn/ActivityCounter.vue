@@ -18,8 +18,8 @@ export default defineComponent({
   props: {
     count: {
       type: Number,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 </script>

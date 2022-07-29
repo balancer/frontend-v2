@@ -39,23 +39,17 @@ const props = defineProps<Props>();
 const showPreviewModal = ref(false);
 
 const { lockEndDate, lockAmount } = useLockState();
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
-const {
-  isValidLockAmount,
-  isIncreasedLockAmount,
-  totalLpTokens
-} = useLockAmount(toRef(props, 'veBalLockInfo'));
+const { isValidLockAmount, isIncreasedLockAmount, totalLpTokens } =
+  useLockAmount(toRef(props, 'veBalLockInfo'));
 
 const {
   minLockEndDateTimestamp,
   maxLockEndDateTimestamp,
   isValidLockEndDate,
-  isExtendedLockEndDate
+  isExtendedLockEndDate,
 } = useLockEndDate(props.veBalLockInfo);
 
 /**
@@ -67,7 +61,7 @@ const { balanceFor } = useTokens();
  * COMPUTED
  */
 const lockablePoolBptBalance = computed(() =>
-  balanceFor(props.lockablePool.address)
+  balanceFor(props.lockablePool.address),
 );
 
 const submissionDisabled = computed(() => {

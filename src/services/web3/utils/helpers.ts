@@ -10,7 +10,7 @@ export async function switchToAppNetwork(provider: ExternalProvider) {
     if (provider.request) {
       await provider.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: hexChainId }]
+        params: [{ chainId: hexChainId }],
       });
       return true;
     }
@@ -46,17 +46,17 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
           nativeCurrency: {
             name: appNetworkConfig.nativeAsset.name,
             symbol: appNetworkConfig.nativeAsset.symbol,
-            decimals: appNetworkConfig.nativeAsset.decimals
+            decimals: appNetworkConfig.nativeAsset.decimals,
           },
-          blockExplorerUrls: [appNetworkConfig.explorer]
-        }
-      ]
+          blockExplorerUrls: [appNetworkConfig.explorer],
+        },
+      ],
     };
     if (provider?.request) {
       const response = await provider.request(request);
       if (response?.error) {
         throw new Error(
-          `Failed to add network information to wallet. ${response.error.code}:${response.error.message}`
+          `Failed to add network information to wallet. ${response.error.code}:${response.error.message}`,
         );
       }
       return true;
@@ -67,7 +67,7 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
     console.error(
       `An error occurred while attempting to add network information to wallet. ${
         (err as Error).message
-      }`
+      }`,
     );
     return false;
   }

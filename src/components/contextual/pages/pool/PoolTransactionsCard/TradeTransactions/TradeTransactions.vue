@@ -20,7 +20,7 @@ type Props = {
  * PROPS
  */
 withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -44,12 +44,12 @@ const poolSwapsQuery = usePoolSwapsQuery(id);
 const poolSwaps = computed(() =>
   poolSwapsQuery.data.value
     ? flatten(poolSwapsQuery.data.value.pages.map(page => page.poolSwaps))
-    : []
+    : [],
 );
 const isLoadingPoolSwaps = computed(() => poolSwapsQuery.isLoading.value);
 const poolSwapsHasNextPage = computed(() => poolSwapsQuery.hasNextPage?.value);
 const poolSwapsIsFetchingNextPage = computed(
-  () => poolSwapsQuery.isFetchingNextPage?.value
+  () => poolSwapsQuery.isFetchingNextPage?.value,
 );
 
 /**

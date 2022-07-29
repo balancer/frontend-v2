@@ -15,7 +15,7 @@ type QueryResponse = SubgraphGauge[];
  * @summary Fetches guages list from subgraph
  */
 export default function useGaugesQuery(
-  options: UseQueryOptions<QueryResponse> = {}
+  options: UseQueryOptions<QueryResponse> = {},
 ) {
   /**
    * QUERY KEY
@@ -39,7 +39,7 @@ export default function useGaugesQuery(
    */
   const queryOptions = reactive({
     enabled: true,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

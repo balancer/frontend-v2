@@ -19,7 +19,7 @@ export class TallyConnector extends Connector {
       try {
         if (provider.request) {
           accounts = await provider.request({
-            method: 'eth_requestAccounts'
+            method: 'eth_requestAccounts',
           });
 
           chainId = await provider.request({ method: 'eth_chainId' });
@@ -48,14 +48,14 @@ export class TallyConnector extends Connector {
       }
     } else {
       console.error(
-        'Tried to connect to MetaMask but it was not detected. Please install MetaMask.'
+        'Tried to connect to MetaMask but it was not detected. Please install MetaMask.',
       );
     }
     return {
       // TODO type this
       provider: provider as any,
       account: this.account,
-      chainId: this.chainId
+      chainId: this.chainId,
     };
   }
 }

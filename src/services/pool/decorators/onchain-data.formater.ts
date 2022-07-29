@@ -10,7 +10,7 @@ import {
   OnchainPoolData,
   OnchainTokenDataMap,
   Pool,
-  RawOnchainPoolData
+  RawOnchainPoolData,
 } from '../types';
 
 /**
@@ -20,7 +20,7 @@ export class OnchainDataFormater {
   constructor(
     private readonly pool: Pool,
     private readonly rawData: RawOnchainPoolData,
-    private readonly tokenMeta: TokenInfoMap
+    private readonly tokenMeta: TokenInfoMap,
   ) {}
 
   public format(): OnchainPoolData {
@@ -46,13 +46,13 @@ export class OnchainDataFormater {
 
     if (this.rawData.tokenRates) {
       poolData.tokenRates = this.rawData.tokenRates.map(rate =>
-        formatUnits(rate.toString(), 18)
+        formatUnits(rate.toString(), 18),
       );
     }
 
     poolData.totalSupply = formatUnits(
       this.rawData.totalSupply,
-      this.rawData.decimals
+      this.rawData.decimals,
     );
     poolData.decimals = this.rawData.decimals;
     poolData.swapFee = formatUnits(this.rawData.swapFee, 18);
@@ -73,7 +73,7 @@ export class OnchainDataFormater {
         weight: weights[i],
         symbol: this.tokenMeta[token]?.symbol,
         name: this.tokenMeta[token]?.name,
-        logoURI: this.tokenMeta[token]?.logoURI
+        logoURI: this.tokenMeta[token]?.logoURI,
       };
     });
 
@@ -95,7 +95,7 @@ export class OnchainDataFormater {
         unwrappedTokenAddress,
         unwrappedERC4626Address,
         tokenData,
-        totalSupply
+        totalSupply,
       } = this.rawData.linearPools[address];
 
       const unwrappedAddress = unwrappedTokenAddress || unwrappedERC4626Address;
@@ -106,16 +106,16 @@ export class OnchainDataFormater {
         mainToken: {
           address: getAddress(mainToken.address),
           index: mainToken.index.toNumber(),
-          balance: tokenData.balances[mainToken.index.toNumber()].toString()
+          balance: tokenData.balances[mainToken.index.toNumber()].toString(),
         },
         wrappedToken: {
           address: getAddress(wrappedToken.address),
           index: wrappedToken.index.toNumber(),
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
-          priceRate: formatUnits(wrappedToken.rate, 18)
+          priceRate: formatUnits(wrappedToken.rate, 18),
         },
         unwrappedTokenAddress: unwrappedAddress,
-        totalSupply: formatUnits(totalSupply, 18)
+        totalSupply: formatUnits(totalSupply, 18),
       };
     }
 
@@ -126,11 +126,11 @@ export class OnchainDataFormater {
     if (isWeightedLike(this.pool.poolType)) {
       // toNormalizedWeights returns weights as 18 decimal fixed point
       return toNormalizedWeights(this.rawData.weights || []).map(w =>
-        Number(formatUnits(w, 18))
+        Number(formatUnits(w, 18)),
       );
     } else if (isStableLike(this.pool.poolType)) {
       const value = this.pool.tokensList.map(
-        () => 1 / this.pool.tokensList.length
+        () => 1 / this.pool.tokensList.length,
       );
       return this.rawData.poolTokens.tokens.map(() => value[0]);
     } else {

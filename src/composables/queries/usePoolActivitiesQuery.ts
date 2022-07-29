@@ -16,7 +16,7 @@ type PoolActivitiesQueryResponse = {
 
 export default function usePoolActivitiesQuery(
   id: string,
-  options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {},
 ) {
   // COMPOSABLES
   const { networkId } = useNetwork();
@@ -35,25 +35,27 @@ export default function usePoolActivitiesQuery(
       first: pagination,
       skip: pageParam,
       where: {
-        pool: id
-      }
+        pool: id,
+      },
     });
 
     return {
       poolActivities,
       skip:
-        poolActivities.length >= pagination ? pageParam + pagination : undefined
+        poolActivities.length >= pagination
+          ? pageParam + pagination
+          : undefined,
     };
   };
 
   const queryOptions = reactive({
     getNextPageParam: (lastPage: PoolActivitiesQueryResponse) => lastPage.skip,
-    ...options
+    ...options,
   });
 
   return useInfiniteQuery<PoolActivitiesQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions
+    queryOptions,
   );
 }

@@ -1,7 +1,7 @@
 import {
   InvestmentPool__factory,
   StablePool__factory,
-  WeightedPool__factory
+  WeightedPool__factory,
 } from '@balancer-labs/typechain';
 import { JsonRpcProvider } from '@ethersproject/providers';
 
@@ -29,7 +29,7 @@ export default class BalancerContractsService {
   constructor(
     readonly configService = _configService,
     readonly rpcProviderService = _rpcProviderService,
-    readonly sdk = balancer
+    readonly sdk = balancer,
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
     this.config = this.configService.network;
@@ -52,9 +52,9 @@ export default class BalancerContractsService {
           ...LinearPoolAbi,
           ...StaticATokenLMAbi,
           ...ERC20_ABI,
-          ...IERC4626
-        ].map(row => [row.name, row])
-      )
+          ...IERC4626,
+        ].map(row => [row.name, row]),
+      ),
     );
   }
 }

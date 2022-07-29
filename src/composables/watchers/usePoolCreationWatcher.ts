@@ -7,7 +7,7 @@ import { lsGet } from '@/lib/utils';
 import {
   POOL_CREATION_STATE_KEY,
   POOL_CREATION_STATE_VERSION,
-  poolCreationState
+  poolCreationState,
 } from '../pools/usePoolCreation';
 import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 
@@ -24,7 +24,7 @@ export default function usePoolCreationWatcher() {
     const previouslySavedState = lsGet(
       POOL_CREATION_STATE_KEY,
       null,
-      POOL_CREATION_STATE_VERSION
+      POOL_CREATION_STATE_VERSION,
     );
     if (previouslySavedState) {
       addAlert({
@@ -36,7 +36,7 @@ export default function usePoolCreationWatcher() {
         persistent: false,
         action: navigateToPoolCreation,
         actionLabel: t('returnToPoolCreation'),
-        priority: AlertPriority.LOW
+        priority: AlertPriority.LOW,
       });
     }
   });

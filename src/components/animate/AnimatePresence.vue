@@ -20,7 +20,7 @@ import {
   onMounted,
   PropType,
   ref,
-  watch
+  watch,
 } from 'vue';
 export default defineComponent({
   emits: ['on-exit', 'update-dimensions', 'on-presence'],
@@ -28,29 +28,29 @@ export default defineComponent({
     initial: {
       type: Object as PropType<AnimeParams>,
       default: () => ({
-        opacity: 0
-      })
+        opacity: 0,
+      }),
     },
     animate: {
       type: Object as PropType<AnimeParams>,
       default: () => ({
-        opacity: 1
-      })
+        opacity: 1,
+      }),
     },
     exit: {
       type: Object as PropType<AnimeParams>,
       default: () => ({
-        opacity: 0
-      })
+        opacity: 0,
+      }),
     },
     unmountInstantly: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     isVisible: {
       type: Boolean,
-      default: () => true
-    }
+      default: () => true,
+    },
   },
   setup(props, { emit }) {
     const animateContainer = ref<HTMLElement>();
@@ -58,7 +58,7 @@ export default defineComponent({
     onMounted(() => {
       if (animateContainer.value) {
         anime.set(animateContainer.value, {
-          ...props.initial
+          ...props.initial,
         });
       }
     });
@@ -70,11 +70,11 @@ export default defineComponent({
           await nextTick();
           if (animateContainer.value) {
             anime.set(animateContainer.value, {
-              ...props.initial
+              ...props.initial,
             });
           }
         }
-      }
+      },
     );
 
     const enter = async (el, done) => {
@@ -91,14 +91,14 @@ export default defineComponent({
           complete: () => {
             done();
             emit('on-presence', { isCompleted: true });
-          }
+          },
         });
       }, 0);
       setTimeout(() => {
         if (animateContainer.value) {
           emit('update-dimensions', {
             width: animateContainer.value.offsetWidth,
-            height: animateContainer.value.offsetHeight
+            height: animateContainer.value.offsetHeight,
           });
         }
       }, 0);
@@ -110,7 +110,7 @@ export default defineComponent({
         emit('on-exit', { isCompleted: true });
       }
       anime.set(el, {
-        'pointer-events': 'none'
+        'pointer-events': 'none',
       });
       anime({
         targets: el,
@@ -120,15 +120,15 @@ export default defineComponent({
         complete: () => {
           done();
           emit('on-exit', { isCompleted: true });
-        }
+        },
       });
     };
 
     return {
       animateContainer,
       enter,
-      leave
+      leave,
     };
-  }
+  },
 });
 </script>
