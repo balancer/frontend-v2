@@ -9,6 +9,7 @@ import { computed, onBeforeMount, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { usePoolMigration } from '@/composables/pools/usePoolMigration';
+import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
 import { isStableLike } from '@/composables/usePool';
@@ -19,12 +20,12 @@ import useUserSettings from '@/composables/useUserSettings';
 import { balancer } from '@/lib/balancer.sdk';
 // Services
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { configService } from '@/services/config/config.service';
 // Types
 import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
-import { TransactionActionInfo } from '@/types/transactions';
 
 import { MigrateMathResponse } from '../../../composables/useMigrateMath';
 
@@ -85,9 +86,14 @@ const { getProvider, explorerLinks, account, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { slippageScaled } = useUserSettings();
+
+const relayerAddress = ref(configService.network.addresses.batchRelayer);
+const relayerApproval = useRelayerApprovalQuery(relayerAddress);
+
 const { actions } = usePoolMigration(
   props.math.bptBalanceScaled.value,
-  props.fromPool.tokens
+  props.fromPool.tokens,
+  relayerApproval.data
 );
 
 /**

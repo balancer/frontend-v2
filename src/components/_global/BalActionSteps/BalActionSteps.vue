@@ -164,6 +164,11 @@ async function submit(
     state.init = false;
     state.confirming = true;
 
+    if (currentAction.value.isSignAction) {
+      handleSignAction(state);
+      return;
+    }
+
     handleTransaction(tx, state);
   } catch (error) {
     state.init = false;
@@ -173,17 +178,22 @@ async function submit(
   }
 }
 
+function handleSignAction(state: TransactionActionState) {
+  currentActionIndex.value += 1;
+  state.confirming = false;
+  state.confirmed = true;
+}
+
 async function handleTransaction(
   tx: TransactionResponse,
   state: TransactionActionState
 ): Promise<void> {
   console.log('handleTransactionED');
-  // currentActionIndex.value += 1;
 
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;
-      console.log('CONFIRMED', receipt);
+
       // need to explicity wait for a number of confirmations
       // on polygon
       if (Number(configService.network.chainId) === ChainId.polygon) {

@@ -1,6 +1,7 @@
 import { RelayerAuthorization } from '@balancer-labs/sdk';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { parseFixed } from '@ethersproject/bignumber';
-import { ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { balancer } from '@/lib/balancer.sdk';
@@ -8,6 +9,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import { configService } from '@/services/config/config.service';
 import { PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionActionInfo } from '@/types/transactions';
 
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
@@ -16,7 +18,11 @@ import useUserSettings from '../useUserSettings';
 const HALF_HOUR = 30 * 60 * 1000;
 const MAX_GAS_LIMIT = 8e6;
 
-export function usePoolMigration(amount: string, tokens: PoolToken[]) {
+export function usePoolMigration(
+  amount: string,
+  tokens: PoolToken[],
+  relayerApproval: Ref<boolean | undefined>
+) {
   /**
    * COMPOSABLES
    */
@@ -33,28 +39,33 @@ export function usePoolMigration(amount: string, tokens: PoolToken[]) {
    */
   const signature = ref('');
 
-  const actions = [
-    {
-      label: t('approveBatchRelayer'),
-      loadingLabel: t('checkWallet'),
-      confirmingLabel: t('approvingBatchRelayer'),
-      stepTooltip: t('approveBatchRelayerTooltip'),
-      action: getUserSignature,
-      isSignAction: true
-    },
-    {
-      label: t('migratePool.previewModal.actions.title'),
-      loadingLabel: t('migratePool.previewModal.actions.loading'),
-      confirmingLabel: t('confirming'),
-      action: approveMigration,
-      stepTooltip: t('migratePool.previewModal.actions.migrationStep')
-    }
-  ];
-
   /**
    * COMPUTED
    */
+  const actions = computed(() => {
+    const arr: TransactionActionInfo[] = [
+      {
+        label: t('migratePool.previewModal.actions.title'),
+        loadingLabel: t('migratePool.previewModal.actions.loading'),
+        confirmingLabel: t('confirming'),
+        action: approveMigration,
+        stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
+        isSignAction: false
+      }
+    ];
 
+    if (!relayerApproval.value) {
+      arr.unshift({
+        label: t('approveBatchRelayer'),
+        loadingLabel: t('checkWallet'),
+        confirmingLabel: t('approvingBatchRelayer'),
+        stepTooltip: t('approveBatchRelayerTooltip'),
+        action: getUserSignature as () => Promise<any>,
+        isSignAction: true
+      });
+    }
+    return arr;
+  });
   /**
    * METHODS
    */
@@ -92,12 +103,12 @@ export function usePoolMigration(amount: string, tokens: PoolToken[]) {
     }
   }
 
-  async function approveMigration(limit = 0): Promise<any> {
+  async function approveMigration(): Promise<TransactionResponse> {
     const signer = getSigner();
     const signerAddress = account.value;
     const staked = false;
     const gasLimit = MAX_GAS_LIMIT;
-
+    const _signature = relayerApproval.value ? undefined : signature.value;
     const _tokens: any[] = tokens
       .filter(token => token.symbol !== 'bb-a-USD')
       .map(token => parseFixed(token.balance, 18).toString());
@@ -107,10 +118,10 @@ export function usePoolMigration(amount: string, tokens: PoolToken[]) {
     let query = balancer.zaps.migrations.bbaUsd(
       signerAddress,
       amount,
-      limit.toString(),
+      '0',
       staked,
       _tokens,
-      signature.value
+      _signature
     );
     console.log('query', query);
     const staticResult = await signer.call({
@@ -124,10 +135,10 @@ export function usePoolMigration(amount: string, tokens: PoolToken[]) {
     query = balancer.zaps.migrations.bbaUsd(
       signerAddress,
       amount.toString(),
-      limit ? limit.toString() : expectedBpts.bbausd2AmountOut,
+      expectedBpts.bbausd2AmountOut,
       staked,
       _tokens,
-      signature.value
+      _signature
     );
     console.log('approve', query);
 
