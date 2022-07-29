@@ -37,28 +37,28 @@ const sortedAmounts = computed(() =>
   orderBy(
     Object.entries(props.fiatAmountMap),
     ([, fiatAmount]) => Number(fiatAmount),
-    'desc',
+    'desc'
   ).map(([address, fiatAmount]) => ({
     amount: props.amountMap[address],
     fiatAmount,
     address,
-  })),
+  }))
 );
 
 const groupedAmounts = computed(() =>
   groupBy(sortedAmounts.value, amounts =>
-    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts',
-  ),
+    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
+  )
 );
 
 const shouldShowCompactViewForZeroAmounts = computed(
-  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3,
+  () => (groupedAmounts.value.zeroAmounts?.length || 0) > 3
 );
 
 const amountsToShow = computed(() =>
   shouldShowCompactViewForZeroAmounts.value
     ? groupedAmounts.value.nonZeroAmounts
-    : sortedAmounts.value,
+    : sortedAmounts.value
 );
 /**
  * METHODS

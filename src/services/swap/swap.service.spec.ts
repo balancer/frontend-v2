@@ -105,7 +105,7 @@ describe('swap.service', () => {
           tokens.USDC,
           tokens.DAI,
           swaps,
-          tokenAddresses,
+          tokenAddresses
         );
         const vaultSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.swap.mock.calls[0];
@@ -134,7 +134,7 @@ describe('swap.service', () => {
           tokens.ETHv2,
           tokens.DAI,
           swaps,
-          tokenAddresses,
+          tokenAddresses
         );
         const vaultSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.swap.mock.calls[0];
@@ -228,7 +228,7 @@ describe('swap.service', () => {
           tokens.ETHv2,
           tokens.DAI,
           swaps,
-          tokenAddresses,
+          tokenAddresses
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];
@@ -261,7 +261,7 @@ describe('swap.service', () => {
             throw new Error('Failed to swap');
           });
         await expect(
-          service.batchSwapV2(tokens.ETH, tokens.DAI, swaps, tokenAddresses),
+          service.batchSwapV2(tokens.ETH, tokens.DAI, swaps, tokenAddresses)
         ).rejects.toThrow('Failed to swap');
       });
     });
@@ -298,7 +298,7 @@ describe('swap.service', () => {
           tokens.USDC,
           tokens.stETH,
           swaps,
-          tokenAddresses,
+          tokenAddresses
         );
         const lidoBatchSwapArgs =
           require('@/services/contracts/lido-relayer.service')
@@ -331,7 +331,7 @@ describe('swap.service', () => {
           tokens.ETHv2,
           tokens.stETH,
           swaps,
-          tokenAddresses,
+          tokenAddresses
         );
         const lidoBatchSwapArgs =
           require('@/services/contracts/lido-relayer.service')
@@ -360,7 +360,7 @@ describe('swap.service', () => {
             throw new Error('Failed to swap');
           });
         await expect(
-          service.batchSwapV2(tokens.USDC, tokens.stETH, swaps, tokenAddresses),
+          service.batchSwapV2(tokens.USDC, tokens.stETH, swaps, tokenAddresses)
         ).rejects.toThrow('Failed to swap');
       });
     });
@@ -484,7 +484,7 @@ describe('swap.service', () => {
           [tokens.USDC, tokens.USDT, tokens.DAI],
           tokens.bbaUSD,
           swaps,
-          tokenAddresses,
+          tokenAddresses
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];
@@ -574,7 +574,7 @@ describe('swap.service', () => {
           [tokens.USDC, tokens.USDT, tokens.DAI],
           swaps,
           tokenAddresses,
-          SwapType.SwapExactIn,
+          SwapType.SwapExactIn
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];

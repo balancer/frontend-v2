@@ -49,7 +49,7 @@ const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { fullAmounts, priceImpact, highPriceImpact, rektPriceImpact } = toRefs(
-  props.math,
+  props.math
 );
 const { resetAmounts } = useInvestState();
 
@@ -59,7 +59,7 @@ const { resetAmounts } = useInvestState();
 const title = computed((): string =>
   investmentConfirmed.value
     ? t('investment.preview.titles.confirmed')
-    : t('investment.preview.titles.default'),
+    : t('investment.preview.titles.default')
 );
 
 const amountMap = computed((): AmountMap => {
@@ -89,8 +89,8 @@ const fiatAmountMap = computed((): AmountMap => {
 const fiatTotal = computed((): string =>
   Object.values(fiatAmountMap.value).reduce(
     (total, amount) => bnum(total).plus(amount).toString(),
-    '0',
-  ),
+    '0'
+  )
 );
 
 /**

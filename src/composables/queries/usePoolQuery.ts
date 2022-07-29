@@ -19,7 +19,7 @@ import useGaugesQuery from './useGaugesQuery';
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {},
+  options: QueryObserverOptions<Pool> = {}
 ) {
   /**
    * @description
@@ -37,14 +37,14 @@ export default function usePoolQuery(
   const { data: subgraphGauges } = useGaugesQuery();
   const { tokens } = useTokens();
   const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id),
+    (subgraphGauges.value || []).map(gauge => gauge.id)
   );
 
   /**
    * COMPUTED
    */
   const enabled = computed(
-    () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value,
+    () => !appLoading.value && !dynamicDataLoading.value && isEnabled.value
   );
 
   /**
@@ -75,7 +75,7 @@ export default function usePoolQuery(
       undefined,
       prices.value,
       currency.value,
-      tokens.value,
+      tokens.value
     );
 
     // Inject pool tokens into token registry

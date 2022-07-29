@@ -90,7 +90,7 @@ const {
 
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  fullAmounts,
+  fullAmounts
 );
 
 /**
@@ -116,7 +116,7 @@ const transactionInProgress = computed(
   (): boolean =>
     investmentState.init ||
     investmentState.confirming ||
-    investmentState.confirmed,
+    investmentState.confirmed
 );
 
 const isStakablePool = computed((): boolean => {
@@ -173,7 +173,7 @@ async function submit(): Promise<TransactionResponse> {
         batchSwap.value.assets,
         props.pool.address,
         batchSwapAmountMap.value,
-        BigNumber.from(bptOut.value),
+        BigNumber.from(bptOut.value)
       );
     } else {
       tx = await poolExchange.join(
@@ -181,7 +181,7 @@ async function submit(): Promise<TransactionResponse> {
         account.value,
         fullAmounts.value,
         props.tokenAddresses,
-        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18),
+        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
       );
     }
 

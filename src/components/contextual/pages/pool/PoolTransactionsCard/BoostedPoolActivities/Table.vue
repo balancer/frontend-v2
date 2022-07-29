@@ -154,7 +154,7 @@ function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
     const mainTokenAddress = getUnderlyingTokenAddress(tokenAmounts[1].address);
     const mainEquivAmount = getMainTokenEquivalentAmount(
       tokenAmounts[1].address,
-      tokenAmounts[1].amount,
+      tokenAmounts[1].amount
     );
     return bnum(priceFor(mainTokenAddress)).times(mainEquivAmount).toNumber();
   }

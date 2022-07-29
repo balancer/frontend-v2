@@ -34,7 +34,7 @@ export default class Web3Service {
 
   constructor(
     private readonly rpcProviderService = _rpcProviderService,
-    private readonly config: ConfigService = configService,
+    private readonly config: ConfigService = configService
   ) {
     this.appProvider = this.rpcProviderService.jsonProvider;
     this.ensProvider = this.rpcProviderService.getJsonProvider(Network.MAINNET);
@@ -79,7 +79,7 @@ export default class Web3Service {
     action: string,
     params: any[] = [],
     options: Record<string, any> = {},
-    forceEthereumLegacyTxType = false,
+    forceEthereumLegacyTxType = false
   ): Promise<TransactionResponse> {
     const signer = this.userProvider.value.getSigner();
     const contract = new Contract(contractAddress, abi, signer);
@@ -95,7 +95,7 @@ export default class Web3Service {
           action,
           params,
           options,
-          forceEthereumLegacyTxType,
+          forceEthereumLegacyTxType
         );
       options = { ...options, ...gasPriceSettings };
 
@@ -114,7 +114,7 @@ export default class Web3Service {
           action,
           params,
           options,
-          true,
+          true
         );
       } else if (
         error.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
@@ -136,7 +136,7 @@ export default class Web3Service {
     abi: any[],
     action: string,
     params: any[] = [],
-    options: Record<string, any> = {},
+    options: Record<string, any> = {}
   ): Promise<T> {
     console.log('Sending transaction');
     console.log('Contract', contractAddress);

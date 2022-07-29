@@ -71,7 +71,7 @@ const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
 
 const wideCompositionWidth = computed(() =>
-  upToMediumBreakpoint.value ? 450 : undefined,
+  upToMediumBreakpoint.value ? 450 : undefined
 );
 
 /**
@@ -195,7 +195,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
 ]);
 
 const visibleColumns = computed(() =>
-  columns.value.filter(column => !props.hiddenColumns.includes(column.id)),
+  columns.value.filter(column => !props.hiddenColumns.includes(column.id))
 );
 
 /**

@@ -34,13 +34,13 @@ export type GaugeRewardTokenAprs = Record<string, string>;
 
 export class StakingRewardsService {
   private gaugeController = new GaugeController(
-    configService.network.addresses.gaugeController,
+    configService.network.addresses.gaugeController
   );
   private veBALHelpers = new VEBalHelpers(
-    configService.network.addresses.veBALHelpers,
+    configService.network.addresses.veBALHelpers
   );
   private tokenAdmin = new BalancerTokenAdmin(
-    configService.network.addresses.tokenAdmin,
+    configService.network.addresses.tokenAdmin
   );
 
   async getWorkingSupplyForGauges(gaugeAddresses: string[]) {
@@ -51,7 +51,7 @@ export class StakingRewardsService {
       multicaller.call(
         getAddress(gaugeAddress),
         getAddress(gaugeAddress),
-        'working_supply',
+        'working_supply'
       );
     }
     const result = await multicaller.execute();
@@ -67,12 +67,12 @@ export class StakingRewardsService {
       multicaller.call(
         getAddress(gaugeAddress),
         getAddress(gaugeAddress),
-        'totalSupply',
+        'totalSupply'
       );
     }
     const result = await multicaller.execute();
     const supplies = mapValues(result, totalSupply =>
-      formatUnits(totalSupply, 18),
+      formatUnits(totalSupply, 18)
     );
     return supplies;
   }
@@ -82,7 +82,7 @@ export class StakingRewardsService {
     if (configService.network.chainId === Network.KOVAN) {
       return await this.gaugeController.getRelativeWeights(
         gaugeAddresses,
-        timestamp,
+        timestamp
       );
     }
     // the ve bal helpers contract for gauge weights calls
@@ -106,7 +106,7 @@ export class StakingRewardsService {
     const [inflationRate, relativeWeights, workingSupplies, totalSupplies] =
       await Promise.all([
         new BalancerTokenAdmin(
-          configService.network.addresses.tokenAdmin,
+          configService.network.addresses.tokenAdmin
         ).getInflationRate(),
         this.getRelativeWeightsForGauges(gaugeAddresses),
         this.getWorkingSupplyForGauges(gaugeAddresses),
@@ -159,7 +159,7 @@ export class StakingRewardsService {
     const poolMulticaller = new PoolMulticaller(pools);
     const gaugeAddresses = gauges.map(gauge => gauge.id);
     const rewardTokensForGauges = await LiquidityGauge.getRewardTokensForGauges(
-      gaugeAddresses,
+      gaugeAddresses
     );
     const [rewardTokensMeta, totalSupplies, rawOnchainDataMap] =
       await Promise.all([
@@ -203,10 +203,10 @@ export class StakingRewardsService {
     gaugeShares: UserGaugeShare[];
   }) {
     const veBalProxy = new VeBALProxy(
-      configService.network.addresses.veDelegationProxy,
+      configService.network.addresses.veDelegationProxy
     );
     const veBALInfo = await balancerContractsService.veBAL.getLockInfo(
-      userAddress,
+      userAddress
     );
     // need to use veBAL balance from the proxy as the balance from the proxy takes
     // into account the amount of delegated veBAL as well
@@ -215,7 +215,7 @@ export class StakingRewardsService {
 
     const gaugeAddresses = gaugeShares.map(gaugeShare => gaugeShare.gauge.id);
     const workingSupplies = await this.getWorkingSupplyForGauges(
-      gaugeAddresses,
+      gaugeAddresses
     );
 
     const boosts = gaugeShares.map(gaugeShare => {
@@ -228,8 +228,8 @@ export class StakingRewardsService {
           bnum(0.6).times(
             bnum(veBALBalance)
               .div(veBALTotalSupply)
-              .times(gaugeShare.gauge.totalSupply),
-          ),
+              .times(gaugeShare.gauge.totalSupply)
+          )
         );
 
       // choose the minimum of either gauge balance or the adjusted gauge balance
@@ -244,7 +244,7 @@ export class StakingRewardsService {
 
       const boostedFraction = workingBalance.div(gaugeWorkingSupply);
       const unboostedFraction = zeroBoostWorkingBalance.div(
-        zeroBoostWorkingSupply,
+        zeroBoostWorkingSupply
       );
 
       const boost = boostedFraction.div(unboostedFraction);

@@ -16,7 +16,7 @@ export class WalletLinkConnector extends Connector {
     });
     const provider = walletLink.makeWeb3Provider(
       configService.rpc,
-      configService.network.chainId,
+      configService.network.chainId
     );
     this.provider = provider;
 

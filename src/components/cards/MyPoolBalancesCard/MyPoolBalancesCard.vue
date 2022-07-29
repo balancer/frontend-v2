@@ -41,7 +41,7 @@ const poolCalculator = new PoolCalculator(
   tokens,
   balances,
   'exit',
-  ref(false),
+  ref(false)
 );
 
 /**
@@ -53,7 +53,7 @@ const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
     bptBalance.value,
     0,
-    'send',
+    'send'
   );
 
   if (isStablePhantomPool.value) {

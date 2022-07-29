@@ -22,7 +22,7 @@ export default function useBlocknative() {
 
   // TODO: blocknative is going to be deprecated for transaction tracking.
   const supportsBlocknative = computed(() =>
-    SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId),
+    SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
   );
 
   return {

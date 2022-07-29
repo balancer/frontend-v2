@@ -48,7 +48,7 @@ const tabs = computed(() =>
           value: PoolTransactionsTab.USER_ACTIVITY,
           label: t('poolTransactions.tabs.myInvestments'),
         },
-      ],
+      ]
 );
 
 /**

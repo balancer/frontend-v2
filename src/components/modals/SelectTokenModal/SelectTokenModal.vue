@@ -194,7 +194,7 @@ export default defineComponent({
       const query = state.query.toLowerCase();
       const tokenListArray = Object.entries(approvedTokenLists.value);
       const results = tokenListArray.filter(([, tokenList]) =>
-        tokenList.name.toLowerCase().includes(query),
+        tokenList.name.toLowerCase().includes(query)
       );
       return Object.fromEntries(results);
     });
@@ -237,7 +237,7 @@ export default defineComponent({
       state.results = await searchTokens(
         state.query,
         excludedTokens.value,
-        props.disableInjection,
+        props.disableInjection
       );
     }
 
@@ -260,10 +260,10 @@ export default defineComponent({
         state.results = await searchTokens(
           newQuery,
           excludedTokens.value,
-          props.disableInjection,
+          props.disableInjection
         );
       },
-      { immediate: true },
+      { immediate: true }
     );
 
     return {

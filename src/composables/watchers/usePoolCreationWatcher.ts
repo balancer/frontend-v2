@@ -24,7 +24,7 @@ export default function usePoolCreationWatcher() {
     const previouslySavedState = lsGet(
       POOL_CREATION_STATE_KEY,
       null,
-      POOL_CREATION_STATE_VERSION,
+      POOL_CREATION_STATE_VERSION
     );
     if (previouslySavedState) {
       addAlert({

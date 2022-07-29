@@ -32,7 +32,7 @@ export type ApprovalOptions = {
 
 export default function useTokenApprovals(
   tokenAddresses: string[],
-  amounts: Ref<string[]>,
+  amounts: Ref<string[]>
 ) {
   /**
    * COMPOSABLES
@@ -52,12 +52,12 @@ export default function useTokenApprovals(
       approvalsRequired(
         tokenAddresses,
         amounts.value,
-        appNetworkConfig.addresses.vault,
+        appNetworkConfig.addresses.vault
       ).map(address => [
         address,
         { init: false, confirming: false, approved: false },
-      ]),
-    ),
+      ])
+    )
   );
 
   // Depreciate with new investment flow
@@ -70,15 +70,15 @@ export default function useTokenApprovals(
     approvalsRequired(
       tokenAddresses,
       amounts.value,
-      appNetworkConfig.addresses.vault,
-    ),
+      appNetworkConfig.addresses.vault
+    )
   );
   /**
    * METHODS
    */
   async function approveToken(
     address: string,
-    options: Partial<ApprovalOptions> = {},
+    options: Partial<ApprovalOptions> = {}
   ): Promise<TransactionResponse> {
     const defaultOptions: ApprovalOptions = {
       spender: appNetworkConfig.addresses.vault,
@@ -95,7 +95,7 @@ export default function useTokenApprovals(
         address,
         ERC20ABI,
         'approve',
-        [spender, amount],
+        [spender, amount]
       );
 
       state.init = false;
@@ -109,7 +109,7 @@ export default function useTokenApprovals(
           spender === appNetworkConfig.addresses.veBAL
             ? 'transactionSummary.approveForLocking'
             : 'transactionSummary.approveForInvesting',
-          [getToken(address)?.symbol],
+          [getToken(address)?.symbol]
         ),
         details: {
           contractAddress: address,
@@ -138,20 +138,20 @@ export default function useTokenApprovals(
   }
 
   async function getApprovalStateMapFor(
-    spender: string,
+    spender: string
   ): Promise<ApprovalStateMap> {
     const customTokenMap = getTokens(tokenAddresses);
 
     const allowances = await tokenService.allowances.get(
       account.value,
       [spender],
-      customTokenMap,
+      customTokenMap
     );
 
     const requiredApprovals = tokenAddresses
       .filter((tokenAddress, i) => {
         const allowance = bnum(
-          allowances[getAddress(spender)][getAddress(tokenAddress)],
+          allowances[getAddress(spender)][getAddress(tokenAddress)]
         );
         return allowance.lt(amounts.value[i]);
       })

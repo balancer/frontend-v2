@@ -48,9 +48,9 @@ const tokensWithBalance = computed(() => {
       tokenAddress =>
         Number(balances.value[tokenAddress]) > 0 &&
         tokenAddress !== appNetworkConfig.nativeAsset.address &&
-        tokenAddress !== appNetworkConfig.addresses.veBAL,
+        tokenAddress !== appNetworkConfig.addresses.veBAL
     ),
-    21,
+    21
   );
 });
 </script>

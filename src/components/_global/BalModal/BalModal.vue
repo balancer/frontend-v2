@@ -48,7 +48,7 @@ watch(
     } else {
       document.body.classList.remove('overflow-hidden');
     }
-  },
+  }
 );
 
 /**

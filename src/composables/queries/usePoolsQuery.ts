@@ -33,7 +33,7 @@ type FilterOptions = {
 export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
-  filterOptions?: FilterOptions,
+  filterOptions?: FilterOptions
 ) {
   /**
    * COMPOSABLES
@@ -44,7 +44,7 @@ export default function usePoolsQuery(
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
   const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id),
+    (subgraphGauges.value || []).map(gauge => gauge.id)
   );
 
   /**
@@ -85,7 +85,7 @@ export default function usePoolsQuery(
     tokenList,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses,
-    gaugeAddresses,
+    gaugeAddresses
   );
 
   /**
@@ -100,7 +100,7 @@ export default function usePoolsQuery(
       subgraphGauges.value || [],
       prices.value,
       currency.value,
-      tokenMeta.value,
+      tokenMeta.value
     );
 
     const tokens = flatten(
@@ -108,7 +108,7 @@ export default function usePoolsQuery(
         ...pool.tokensList,
         ...lpTokensFor(pool),
         pool.address,
-      ]),
+      ])
     );
     await injectTokens(tokens);
 

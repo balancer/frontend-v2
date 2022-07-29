@@ -15,7 +15,7 @@ export enum WrapType {
 
 export const isNativeAssetWrap = (
   tokenIn: string,
-  tokenOut: string,
+  tokenOut: string
 ): boolean => {
   const nativeAddress = configService.network.nativeAsset.address;
   const { weth } = configService.network.addresses;
@@ -38,7 +38,7 @@ export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
 export const getWrapOutput = (
   wrapper: string,
   wrapType: WrapType,
-  wrapAmount: BigNumberish,
+  wrapAmount: BigNumberish
 ): BigNumber => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
   const { weth, wstETH } = configService.network.addresses;
@@ -56,7 +56,7 @@ export async function wrap(
   network: string,
   web3: Web3Provider,
   wrapper: string,
-  amount: BigNumber,
+  amount: BigNumber
 ): Promise<TransactionResponse> {
   try {
     if (wrapper === configs[network].addresses.weth) {
@@ -75,7 +75,7 @@ export async function unwrap(
   network: string,
   web3: Web3Provider,
   wrapper: string,
-  amount: BigNumber,
+  amount: BigNumber
 ): Promise<TransactionResponse> {
   try {
     if (wrapper === configs[network].addresses.weth) {
@@ -93,7 +93,7 @@ export async function unwrap(
 const wrapNative = async (
   network: string,
   web3: Web3Provider,
-  amount: BigNumber,
+  amount: BigNumber
 ): Promise<TransactionResponse> =>
   sendTransaction(
     web3,
@@ -101,44 +101,44 @@ const wrapNative = async (
     ['function deposit() payable'],
     'deposit',
     [],
-    { value: amount },
+    { value: amount }
   );
 
 const unwrapNative = (
   network: string,
   web3: Web3Provider,
-  amount: BigNumber,
+  amount: BigNumber
 ): Promise<TransactionResponse> =>
   sendTransaction(
     web3,
     configs[network].addresses.weth,
     ['function withdraw(uint256 wad)'],
     'withdraw',
-    [amount],
+    [amount]
   );
 
 const wrapLido = async (
   network: string,
   web3: Web3Provider,
-  amount: BigNumber,
+  amount: BigNumber
 ): Promise<TransactionResponse> =>
   sendTransaction(
     web3,
     configs[network].addresses.wstETH,
     ['function wrap(uint256 _stETHAmount) returns (uint256)'],
     'wrap',
-    [amount],
+    [amount]
   );
 
 const unwrapLido = async (
   network: string,
   web3: Web3Provider,
-  amount: BigNumber,
+  amount: BigNumber
 ): Promise<TransactionResponse> =>
   sendTransaction(
     web3,
     configs[network].addresses.wstETH,
     ['function unwrap(uint256 _wstETHAmount) returns (uint256)'],
     'unwrap',
-    [amount],
+    [amount]
   );

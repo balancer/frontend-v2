@@ -24,25 +24,25 @@ export default class AllowancesConcern {
   async get(
     account: string,
     contractAddresses: string[],
-    tokens: TokenInfoMap,
+    tokens: TokenInfoMap
   ): Promise<ContractAllowancesMap> {
     try {
       // Filter out eth (or native asset) since it's not relevant for allowances.
       const tokenAddresses = Object.keys(tokens).filter(
-        address => !isSameAddress(address, this.nativeAssetAddress),
+        address => !isSameAddress(address, this.nativeAssetAddress)
       );
 
       const allContractAllowances = await Promise.all(
         contractAddresses.map(contractAddress =>
-          this.getForContract(account, contractAddress, tokenAddresses, tokens),
-        ),
+          this.getForContract(account, contractAddress, tokenAddresses, tokens)
+        )
       );
 
       const result = Object.fromEntries(
         contractAddresses.map((contract, i) => [
           getAddress(contract),
           allContractAllowances[i],
-        ]),
+        ])
       );
       return result;
     } catch (error) {
@@ -55,7 +55,7 @@ export default class AllowancesConcern {
     account: string,
     contractAddress: string,
     tokenAddresses: string[],
-    tokens: TokenInfoMap,
+    tokens: TokenInfoMap
   ): Promise<AllowanceMap> {
     const network = this.service.configService.network.key;
     const provider = this.service.rpcProviderService.jsonProvider;
@@ -68,7 +68,7 @@ export default class AllowancesConcern {
           token,
           'allowance',
           [account, contractAddress],
-        ]),
+        ])
       )
     ).map(balance => BigNumber.from(balance ?? '0')); // If we fail to read a token's allowance, treat it as zero;
 
@@ -76,7 +76,7 @@ export default class AllowancesConcern {
       tokenAddresses.map((token, i) => [
         getAddress(token),
         formatUnits(allowances[i], tokens[token].decimals),
-      ]),
+      ])
     );
   }
 }

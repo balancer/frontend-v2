@@ -19,9 +19,7 @@ export default defineComponent({
     // @ts-ignore
     const slotChildren = slots.default()[0].children as VNodeArrayChildren;
     const gridItems = slotChildren.map(slotItem =>
-      h('div', { class: `px-${spacing.value} mb-${spacing.value}` }, [
-        slotItem,
-      ]),
+      h('div', { class: `px-${spacing.value} mb-${spacing.value}` }, [slotItem])
     );
 
     return () =>
@@ -29,7 +27,7 @@ export default defineComponent({
         h(
           'div',
           { class: [`flex -mx-${props.gap}`, flexClasses.value] },
-          gridItems,
+          gridItems
         ),
       ]);
   },

@@ -77,7 +77,7 @@ export default {
     const price = computed(() =>
       prices.value[props.token.address]
         ? prices.value[props.token.address][currency.value]
-        : 0,
+        : 0
     );
     const value = computed(() => balance.value * price.value);
 

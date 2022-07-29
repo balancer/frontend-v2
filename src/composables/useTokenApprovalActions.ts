@@ -20,7 +20,7 @@ type ApprovalActionOptions = {
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
-  amounts: Ref<string[]>,
+  amounts: Ref<string[]>
 ) {
   /**
    * COMPOSABLES
@@ -44,14 +44,14 @@ export default function useTokenApprovalActions(
    */
   async function getTokenApprovalActionsForSpender(
     spender: string,
-    amount: string = MaxUint256.toString(),
+    amount: string = MaxUint256.toString()
   ) {
     const stateMap = await getApprovalStateMapFor(spender);
     return getTokenApprovalActions({ spender, amount, stateMap });
   }
 
   function getTokenApprovalActions(
-    options: Partial<ApprovalActionOptions> = {},
+    options: Partial<ApprovalActionOptions> = {}
   ): TransactionActionInfo[] {
     const defaultOptions: ApprovalActionOptions = {
       spender: vaultAddress,
@@ -60,7 +60,7 @@ export default function useTokenApprovalActions(
     };
     const { spender, amount, stateMap } = Object.assign(
       defaultOptions,
-      options,
+      options
     );
 
     return Object.keys(stateMap).map(address => {
@@ -71,7 +71,7 @@ export default function useTokenApprovalActions(
           spender === appNetworkConfig.addresses.veBAL
             ? 'transactionSummary.approveForLocking'
             : 'transactionSummary.approveForInvesting',
-          [token.symbol],
+          [token.symbol]
         ),
         loadingLabel: t('investment.preview.loadingLabel.approval'),
         confirmingLabel: t('confirming'),

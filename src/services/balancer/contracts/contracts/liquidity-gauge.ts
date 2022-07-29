@@ -29,7 +29,7 @@ export class LiquidityGauge {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = LiquidityGaugeAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service,
+    private readonly web3 = web3Service
   ) {
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
@@ -39,7 +39,7 @@ export class LiquidityGauge {
       this.address,
       this.abi,
       'deposit(uint256)',
-      [amount],
+      [amount]
     );
     return tx;
   }
@@ -49,7 +49,7 @@ export class LiquidityGauge {
       this.address,
       this.abi,
       'withdraw(uint256)',
-      [amount],
+      [amount]
     );
     return tx;
   }
@@ -70,7 +70,7 @@ export class LiquidityGauge {
     return await this.web3.sendTransaction(
       this.address,
       this.abi,
-      'claim_rewards()',
+      'claim_rewards()'
     );
   }
 
@@ -99,7 +99,7 @@ export class LiquidityGauge {
   }
 
   static async getRewardTokensForGauges(
-    gaugeAddresses: string[],
+    gaugeAddresses: string[]
   ): Promise<Record<string, string[]>> {
     const multicaller = LiquidityGauge.getMulticaller();
     gaugeAddresses.forEach(gaugeAddress => {
@@ -108,18 +108,18 @@ export class LiquidityGauge {
           `${getAddress(gaugeAddress)}.[${i}]`,
           getAddress(gaugeAddress),
           'reward_tokens',
-          [i],
+          [i]
         );
       }
     });
     const tokensForGauges = await multicaller.execute();
     return mapValues(tokensForGauges, rewardTokens =>
-      rewardTokens.filter(token => token !== AddressZero),
+      rewardTokens.filter(token => token !== AddressZero)
     );
   }
 
   static async getRewardTokenDataForGauges(
-    gaugeRewardTokenMap: Record<string, string[]>,
+    gaugeRewardTokenMap: Record<string, string[]>
   ) {
     const multicaller = this.getMulticaller();
     for (const gaugeAddress of Object.keys(gaugeRewardTokenMap)) {
@@ -130,7 +130,7 @@ export class LiquidityGauge {
           `${_gaugeAddress}.${_rewardToken}`,
           _gaugeAddress,
           'reward_data',
-          [_rewardToken],
+          [_rewardToken]
         );
       }
     }
@@ -146,7 +146,7 @@ export class LiquidityGauge {
     return new Multicaller(
       configService.network.key,
       provider || rpcProviderService.jsonProvider,
-      LiquidityGaugeAbi,
+      LiquidityGaugeAbi
     );
   }
 }

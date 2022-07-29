@@ -89,7 +89,7 @@ export type UserStakingDataResponse = {
 };
 
 export default function useUserStakingData(
-  poolAddress: Ref<string>,
+  poolAddress: Ref<string>
 ): UserStakingDataResponse {
   /** COMPOSABLES */
   const { account, getProvider, isWalletReady } = useWeb3();
@@ -106,10 +106,10 @@ export default function useUserStakingData(
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
   const isStakedSharesQueryEnabled = computed(
-    () => !!poolAddress.value && poolAddress.value != '' && isWalletReady.value,
+    () => !!poolAddress.value && poolAddress.value != '' && isWalletReady.value
   );
   const stakeableUserPoolIds = computed(() =>
-    intersection(userPoolIds.value, POOLS.Stakable.AllowList),
+    intersection(userPoolIds.value, POOLS.Stakable.AllowList)
   );
   const userPoolIds = computed(() => {
     return userPools.value.map(pool => pool.id);
@@ -147,7 +147,7 @@ export default function useUserStakingData(
     reactive({
       refetchOnWindowFocus: false,
       enabled: true,
-    }),
+    })
   );
 
   // we pull staked shares for a specific pool manually do to the
@@ -166,7 +166,7 @@ export default function useUserStakingData(
     reactive({
       enabled: isStakedSharesQueryEnabled,
       refetchOnWindowFocus: false,
-    }),
+    })
   );
 
   /**
@@ -176,7 +176,7 @@ export default function useUserStakingData(
    * when returned by this composable
    */
   const stakedSharesForProvidedPool = computed(
-    () => stakedSharesResponse.value || '0',
+    () => stakedSharesResponse.value || '0'
   );
 
   const userGaugeShares = computed(() => {
@@ -194,7 +194,7 @@ export default function useUserStakingData(
       userGaugeShares.value.map(gaugeShare => [
         gaugeShare.gauge.poolId,
         gaugeShare.balance,
-      ]),
+      ])
     );
   });
 
@@ -206,7 +206,7 @@ export default function useUserStakingData(
     });
   });
   const isStakedPoolsQueryEnabled = computed(
-    () => stakedPoolIds.value.length > 0,
+    () => stakedPoolIds.value.length > 0
   );
 
   const { data: stakedPoolsResponse, isLoading: isLoadingStakedPools } =
@@ -218,12 +218,11 @@ export default function useUserStakingData(
       {
         poolIds: stakedPoolIds,
         pageSize: 999,
-      },
+      }
     );
 
   const isBoostQueryEnabled = computed(
-    () =>
-      isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value,
+    () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
   );
 
   const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery(
@@ -237,7 +236,7 @@ export default function useUserStakingData(
     },
     reactive({
       enabled: isBoostQueryEnabled,
-    }),
+    })
   );
 
   const stakedPools = computed<PoolWithShares[]>(() => {
@@ -254,19 +253,19 @@ export default function useUserStakingData(
   const totalStakedFiatValue = computed((): string =>
     stakedPools.value
       .reduce((acc, { shares }) => acc.plus(shares), bnum(0))
-      .toString(),
+      .toString()
   );
 
   /** METHODS */
   async function getStakedShares() {
     if (!poolAddress.value) {
       throw new Error(
-        `Attempted to get staked shares, however useStaking was initialised without a pool address.`,
+        `Attempted to get staked shares, however useStaking was initialised without a pool address.`
       );
     }
     const gaugeAddress = await getGaugeAddress(
       getAddress(poolAddress.value),
-      getProvider(),
+      getProvider()
     );
 
     if (gaugeAddress === AddressZero) return '0';

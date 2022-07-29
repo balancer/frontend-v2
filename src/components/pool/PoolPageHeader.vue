@@ -62,11 +62,11 @@ const data = reactive({
 const feesFixed = computed(() => props.pool?.owner == POOLS.ZeroAddress);
 
 const communityManagedFees = computed(
-  () => props.pool?.owner == POOLS.DelegateOwner,
+  () => props.pool?.owner == POOLS.DelegateOwner
 );
 const feesManagedByGauntlet = computed(
   () =>
-    communityManagedFees.value && POOLS.DynamicFees.Gauntlet.includes(data.id),
+    communityManagedFees.value && POOLS.DynamicFees.Gauntlet.includes(data.id)
 );
 const swapFeeToolTip = computed(() => {
   if (feesManagedByGauntlet.value) {
@@ -107,7 +107,7 @@ const hasCustomToken = computed(() => {
     !props.isLiquidityBootstrappingPool &&
     !props.isStablePhantomPool &&
     props.pool.tokensList.some(
-      address => !includesAddress(knownTokens, address),
+      address => !includesAddress(knownTokens, address)
     )
   );
 });

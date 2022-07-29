@@ -99,7 +99,7 @@ const chartConfig = computed(() => {
             // .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
               const tokenLogoURI = resolve(
-                getToken(t.tokenAddress)?.logoURI || '',
+                getToken(t.tokenAddress)?.logoURI || ''
               );
               return {
                 name: t.tokenAddress,
@@ -147,7 +147,7 @@ watch(
     await nextTick();
     updateTokenColors(colors as string[]);
   },
-  { deep: true, immediate: true },
+  { deep: true, immediate: true }
 );
 
 /**

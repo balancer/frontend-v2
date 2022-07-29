@@ -23,7 +23,7 @@ export default defineComponent({
           default() {
             return [renderProviders(remainingProviders)];
           },
-        },
+        }
       );
     }
 

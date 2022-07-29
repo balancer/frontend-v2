@@ -22,7 +22,7 @@ export class Multicaller {
     public readonly network = configService.network.key,
     public readonly provider = rpcProviderService.jsonProvider,
     public readonly options: Record<string, any> = {},
-    public readonly requireAll = false,
+    public readonly requireAll = false
   ) {}
 
   public call(callParams: Call): Multicaller {
@@ -46,7 +46,7 @@ export class Multicaller {
       [
         'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)',
       ],
-      this.provider,
+      this.provider
     );
   }
 
@@ -72,14 +72,14 @@ export class Multicaller {
         // if false, allows individual calls to fail without causing entire multicall to fail
         this.requireAll,
         this.encodedCalls(),
-        this.options,
+        this.options
       );
 
       return res.map(([success, returnData], i) => {
         if (!success) return null;
         const decodedResult = interfaces[i].decodeFunctionResult(
           this.calls[i].function,
-          returnData,
+          returnData
         );
         // Automatically unwrap any simple return values
         return decodedResult.length > 1 ? decodedResult : decodedResult[0];

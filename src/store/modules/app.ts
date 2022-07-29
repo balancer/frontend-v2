@@ -56,7 +56,7 @@ const mutations = {
 
   setTradeInterface(
     state: AppState,
-    tradeInterface: AppState['tradeInterface'],
+    tradeInterface: AppState['tradeInterface']
   ) {
     state.tradeInterface = tradeInterface;
     lsSet(LS_KEYS.App.TradeInterface, state.tradeInterface);
@@ -64,7 +64,7 @@ const mutations = {
 
   setTransactionDeadline(
     state: AppState,
-    transactionDeadline: AppState['transactionDeadline'],
+    transactionDeadline: AppState['transactionDeadline']
   ) {
     state.transactionDeadline = transactionDeadline;
     lsSet(LS_KEYS.App.TradeDeadline, state.transactionDeadline);

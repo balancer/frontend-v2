@@ -44,7 +44,7 @@ export default class CalculatorService {
     weightedClass = Weighted,
     stableClass = Stable,
     stablePhantomClass = StablePhantom,
-    public readonly config = configService,
+    public readonly config = configService
   ) {
     this.weighted = new weightedClass(this);
     this.stable = new stableClass(this);
@@ -53,7 +53,7 @@ export default class CalculatorService {
 
   public priceImpact(
     tokenAmounts: string[],
-    opts: PiOptions = { exactOut: false, tokenIndex: 0 },
+    opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): OldBigNumber {
     if (this.isStableLikePool) {
       if (this.isStablePhantomPool) {
@@ -74,7 +74,7 @@ export default class CalculatorService {
 
   public exactBPTInForTokenOut(
     bptAmount: string,
-    tokenIndex: number,
+    tokenIndex: number
   ): OldBigNumber {
     if (this.isStableLikePool) {
       return this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
@@ -84,7 +84,7 @@ export default class CalculatorService {
 
   public bptInForExactTokenOut(
     amount: string,
-    tokenIndex: number,
+    tokenIndex: number
   ): OldBigNumber {
     if (this.isStableLikePool) {
       return this.stable.bptInForExactTokenOut(amount, tokenIndex);
@@ -114,7 +114,7 @@ export default class CalculatorService {
 
       amounts.send.forEach((amount, amountIndex) => {
         const greaterThanBalance = bnum(amount).gt(
-          this.balances.value[this.tokenOf(type, amountIndex)],
+          this.balances.value[this.tokenOf(type, amountIndex)]
         );
         if (greaterThanBalance) hasBalance = false;
       });
@@ -135,7 +135,7 @@ export default class CalculatorService {
   public propAmountsGiven(
     fixedAmount: string,
     index: number,
-    type: 'send' | 'receive',
+    type: 'send' | 'receive'
   ): Amounts {
     if (fixedAmount.trim() === '')
       return { send: [], receive: [], fixedToken: 0 };
@@ -160,7 +160,7 @@ export default class CalculatorService {
           const token = this.allTokens.value[tokenAddress];
           amounts[types[ratioType]][i] = formatUnits(
             fixedDenormAmount.mul(ratio).div(fixedRatio),
-            token?.decimals,
+            token?.decimals
           );
         }
       });
@@ -201,10 +201,10 @@ export default class CalculatorService {
     if (!this.pool.value?.onchain?.tokens) return [];
 
     const normalizedBalances = Object.values(this.poolTokens).map(
-      t => t.balance,
+      t => t.balance
     );
     return normalizedBalances.map((balance, i) =>
-      parseUnits(balance, this.poolTokenDecimals[i]),
+      parseUnits(balance, this.poolTokenDecimals[i])
     );
   }
 
@@ -220,7 +220,7 @@ export default class CalculatorService {
   public get poolTotalSupply(): BigNumber {
     return parseUnits(
       this.pool.value?.onchain?.totalSupply || '0',
-      this.poolDecimals,
+      this.poolDecimals
     );
   }
 

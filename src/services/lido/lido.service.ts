@@ -38,7 +38,7 @@ export default class LidoService {
 
   async calcStEthAPRFor(
     pool: Pool,
-    protocolFeePercentage: number,
+    protocolFeePercentage: number
   ): Promise<string> {
     const stethAPR = await this.getStEthAPR();
     const wethBalance =

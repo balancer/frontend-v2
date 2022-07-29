@@ -43,7 +43,7 @@ function _mapActionToErrorDetail(action?: ApiActionType) {
       return i18n.global.t('apiErrorCodeDetails.UnhandledDeleteError');
     default:
       console.error(
-        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.',
+        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
       );
       return i18n.global.t('apiErrorCodeDetails.UnhandledError');
   }
@@ -59,7 +59,7 @@ export default class OperatorError extends Error {
 
   public static getErrorMessage(
     orderPostError: ApiErrorObject,
-    action: ApiActionType,
+    action: ApiActionType
   ) {
     try {
       console.log(orderPostError);
@@ -73,20 +73,20 @@ export default class OperatorError extends Error {
       } else {
         console.error(
           'Unknown reason for bad order submission',
-          orderPostError,
+          orderPostError
         );
         return orderPostError.description;
       }
     } catch (error) {
       console.error(
-        'Error handling a 400 error. Likely a problem deserialising the JSON response',
+        'Error handling a 400 error. Likely a problem deserialising the JSON response'
       );
       return _mapActionToErrorDetail(action);
     }
   }
   static getErrorFromStatusCode(
     response: AxiosResponse,
-    action: ApiActionType,
+    action: ApiActionType
   ) {
     switch (response.status) {
       case 400:
@@ -109,7 +109,7 @@ export default class OperatorError extends Error {
           `[OperatorError::getErrorFromStatusCode] Error ${
             action === 'create' ? 'creating' : 'cancelling'
           } the order, status code:`,
-          response.status || 'unknown',
+          response.status || 'unknown'
         );
         return i18n.global.t('apiErrorCodeDetails.Error500', [
           action === 'create'

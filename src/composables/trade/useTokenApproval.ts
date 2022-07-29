@@ -16,7 +16,7 @@ import useTransactions from '../useTransactions';
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: Ref<TokenInfoMap>,
+  tokens: Ref<TokenInfoMap>
 ) {
   /**
    * STATE
@@ -55,7 +55,7 @@ export default function useTokenApproval(
 
     const v2ApprovalRequired = approvalRequired(
       tokenInAddress.value,
-      amount.value,
+      amount.value
     );
 
     return {

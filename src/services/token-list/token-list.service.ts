@@ -24,7 +24,7 @@ export default class TokenListService {
   constructor(
     private readonly appNetwork = configService.network.key,
     private readonly provider = rpcProviderService.jsonProvider,
-    private readonly ipfs = ipfsService,
+    private readonly ipfs = ipfsService
   ) {}
 
   /**
@@ -55,7 +55,7 @@ export default class TokenListService {
   async getAll(uris: string[] = this.uris.All): Promise<TokenListMap> {
     const allFetchFns = uris.map(uri => this.get(uri));
     const lists = await Promise.all(
-      allFetchFns.map(fetchList => fetchList.catch(e => e)),
+      allFetchFns.map(fetchList => fetchList.catch(e => e))
     );
     const listsWithKey = lists.map((list, i) => [uris[i], list]);
     const validLists = listsWithKey.filter(list => !(list[1] instanceof Error));

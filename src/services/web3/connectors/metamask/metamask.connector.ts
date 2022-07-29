@@ -62,7 +62,7 @@ export class MetamaskConnector extends Connector {
       }
     } else {
       console.error(
-        'Tried to connect to MetaMask but it was not detected. Please install MetaMask.',
+        'Tried to connect to MetaMask but it was not detected. Please install MetaMask.'
       );
     }
     return {

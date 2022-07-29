@@ -40,18 +40,18 @@ export default class BalancesConcern {
 
     const paginatedBalances = await Promise.all<BalanceMap>(multicalls);
     const validPages = paginatedBalances.filter(
-      page => !(page instanceof Error),
+      page => !(page instanceof Error)
     );
 
     return validPages.reduce((result, current) =>
-      Object.assign(result, current),
+      Object.assign(result, current)
     );
   }
 
   private async fetchBalances(
     account: string,
     addresses: string[],
-    tokens: TokenInfoMap,
+    tokens: TokenInfoMap
   ): Promise<BalanceMap> {
     try {
       const balanceMap = {};
@@ -60,10 +60,10 @@ export default class BalancesConcern {
       // multicall, but fetch indpendently and inject.
       if (includesAddress(addresses, this.nativeAssetAddress)) {
         addresses = addresses.filter(
-          address => !isSameAddress(address, this.nativeAssetAddress),
+          address => !isSameAddress(address, this.nativeAssetAddress)
         );
         balanceMap[this.nativeAssetAddress] = await this.fetchNativeBalance(
-          account,
+          account
         );
       }
 
@@ -72,7 +72,7 @@ export default class BalancesConcern {
           this.network,
           this.provider,
           erc20Abi,
-          addresses.map(address => [address, 'balanceOf', [account]]),
+          addresses.map(address => [address, 'balanceOf', [account]])
         )
       ).map(result => BigNumber.from(result ?? '0')); // If we fail to read a token's balance, treat it as zero
 
@@ -94,13 +94,13 @@ export default class BalancesConcern {
   private associateBalances(
     balances: BigNumber[],
     addresses: string[],
-    tokens: TokenInfoMap,
+    tokens: TokenInfoMap
   ): BalanceMap {
     return Object.fromEntries(
       addresses.map((address, i) => [
         getAddress(address),
         formatUnits(balances[i], tokens[address].decimals),
-      ]),
+      ])
     );
   }
 }

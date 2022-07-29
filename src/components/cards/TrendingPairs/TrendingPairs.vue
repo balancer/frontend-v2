@@ -32,7 +32,7 @@ const getTrendingTradePairs = async () => {
 
 const { data: tradePairSnapshots } = useQuery(
   QUERY_KEYS.Tokens.TrendingPairs(userNetworkId),
-  () => getTrendingTradePairs(),
+  () => getTrendingTradePairs()
 );
 
 function formatToken({ address, symbol }: { address: string; symbol: string }) {

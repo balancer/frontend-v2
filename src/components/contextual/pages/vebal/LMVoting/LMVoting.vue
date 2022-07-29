@@ -32,7 +32,7 @@ const { fNum2 } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
 
 const votingGaugeAddresses = computed<string[]>(
-  () => votingGauges.value?.map(gauge => gauge.address) || [],
+  () => votingGauges.value?.map(gauge => gauge.address) || []
 );
 
 const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
@@ -41,10 +41,7 @@ const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
  * COMPUTED
  */
 const unallocatedVotesFormatted = computed<string>(() =>
-  fNum2(
-    scale(bnum(unallocatedVotes.value), -4).toString(),
-    FNumFormats.percent,
-  ),
+  fNum2(scale(bnum(unallocatedVotes.value), -4).toString(), FNumFormats.percent)
 );
 
 const unallocatedVoteWeight = computed(() => {
@@ -60,13 +57,13 @@ const unallocatedVoteWeight = computed(() => {
 const hasLock = computed(
   (): boolean =>
     !!veBalLockInfoQuery.data.value?.hasExistingLock &&
-    !veBalLockInfoQuery.data.value?.isExpired,
+    !veBalLockInfoQuery.data.value?.isExpired
 );
 
 const hasExpiredLock = computed(
   (): boolean =>
     !!veBalLockInfoQuery.data.value?.hasExistingLock &&
-    veBalLockInfoQuery.data.value?.isExpired,
+    veBalLockInfoQuery.data.value?.isExpired
 );
 
 /**
@@ -80,10 +77,10 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
     gauge.pool.poolType,
     gauge.pool.address,
-    gauge.pool.tokens,
+    gauge.pool.tokens
   );
   return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || '',
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );
 }
 

@@ -23,7 +23,7 @@ export class FeeDistributor {
     private readonly staticAbi = FeeDistributorStaticABI,
     private readonly config = configService,
     private readonly web3 = web3Service,
-    private readonly provider = rpcProviderService.jsonProvider,
+    private readonly provider = rpcProviderService.jsonProvider
   ) {}
 
   /**
@@ -51,7 +51,7 @@ export class FeeDistributor {
       this.address,
       this.staticAbi,
       'claimTokens',
-      [userAddress, this.claimableTokens],
+      [userAddress, this.claimableTokens]
     );
     const stringBalances = balances.map(balance => balance.toString());
 
@@ -62,13 +62,13 @@ export class FeeDistributor {
    * @summary Claim all protocol reward token balances.
    */
   public async claimBalances(
-    userAddress: string,
+    userAddress: string
   ): Promise<TransactionResponse> {
     return await this.web3.sendTransaction(
       this.address,
       this.abi,
       'claimTokens',
-      [userAddress, this.claimableTokens],
+      [userAddress, this.claimableTokens]
     );
   }
 
@@ -77,13 +77,13 @@ export class FeeDistributor {
    */
   public async claimBalance(
     userAddress: string,
-    tokenAddress: string,
+    tokenAddress: string
   ): Promise<TransactionResponse> {
     return await this.web3.sendTransaction(
       this.address,
       this.abi,
       'claimToken',
-      [userAddress, tokenAddress],
+      [userAddress, tokenAddress]
     );
   }
 
@@ -96,7 +96,7 @@ export class FeeDistributor {
   public async getTokensDistributedInWeek(
     token: string,
     timestamp: number,
-    instance?: Contract,
+    instance?: Contract
   ): Promise<string> {
     if (!instance) instance = this.getInstance();
     const amount = await instance.getTokensDistributedInWeek(token, timestamp);
@@ -111,7 +111,7 @@ export class FeeDistributor {
    */
   public async getTotalSupply(
     timestamp: number,
-    instance?: Contract,
+    instance?: Contract
   ): Promise<string> {
     if (!instance) instance = this.getInstance();
     const amount = await instance.getTotalSupplyAtTimestamp(timestamp);

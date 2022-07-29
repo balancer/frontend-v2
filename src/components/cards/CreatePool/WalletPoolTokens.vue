@@ -37,13 +37,13 @@ const { fNum2 } = useNumbers();
  * COMPUTED
  */
 const nativeTokens = computed(() =>
-  [nativeAsset, wrappedNativeAsset.value].map(t => t?.address),
+  [nativeAsset, wrappedNativeAsset.value].map(t => t?.address)
 );
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 const totalFiat = computed(() => {
   return sumBy(
     [...nativeTokens.value, ...validTokens.value],
-    t => priceFor(t) * Number(balanceFor(t)),
+    t => priceFor(t) * Number(balanceFor(t))
   );
 });
 </script>
@@ -77,7 +77,7 @@ const totalFiat = computed(() => {
               <span class="text-sm text-gray-600">{{
                 fNum2(
                   priceFor(token) * Number(balanceFor(token)),
-                  FNumFormats.fiat,
+                  FNumFormats.fiat
                 )
               }}</span>
             </BalStack>
@@ -108,7 +108,7 @@ const totalFiat = computed(() => {
                 <span class="text-sm text-gray-600">{{
                   fNum2(
                     priceFor(token) * Number(balanceFor(token)),
-                    FNumFormats.fiat,
+                    FNumFormats.fiat
                   )
                 }}</span>
               </BalStack>

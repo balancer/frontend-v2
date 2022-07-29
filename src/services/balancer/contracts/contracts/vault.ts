@@ -39,7 +39,7 @@ export default class Vault {
     this.instance = new Contract(
       this.service.config.addresses.vault,
       instanceABI,
-      this.service.provider,
+      this.service.provider
     );
   }
 
@@ -50,7 +50,7 @@ export default class Vault {
   public async getPoolData(
     id: string,
     type: PoolType,
-    tokens: TokenInfoMap,
+    tokens: TokenInfoMap
   ): Promise<OnchainPoolData> {
     const poolAddress = getAddress(id.slice(0, 42));
     let result = <RawOnchainPoolData>{};
@@ -58,13 +58,13 @@ export default class Vault {
     const vaultMultiCaller = new Multicaller(
       this.service.config.key,
       this.service.provider,
-      Vault__factory.abi,
+      Vault__factory.abi
     );
 
     const poolMulticaller = new Multicaller(
       this.service.config.key,
       this.service.provider,
-      this.service.allPoolABIs,
+      this.service.allPoolABIs
     );
 
     poolMulticaller.call('totalSupply', poolAddress, 'totalSupply');
@@ -89,38 +89,38 @@ export default class Vault {
           poolMulticaller.call(
             `linearPools.${token}.priceRate`,
             token,
-            'getRate',
+            'getRate'
           );
           poolMulticaller.call(
             `tokenRates[${i}]`,
             poolAddress,
             'getTokenRate',
-            [token],
+            [token]
           );
           poolMulticaller.call(
             `linearPools.${token}.mainToken.address`,
             token,
-            'getMainToken',
+            'getMainToken'
           );
           poolMulticaller.call(
             `linearPools.${token}.mainToken.index`,
             token,
-            'getMainIndex',
+            'getMainIndex'
           );
           poolMulticaller.call(
             `linearPools.${token}.wrappedToken.address`,
             token,
-            'getWrappedToken',
+            'getWrappedToken'
           );
           poolMulticaller.call(
             `linearPools.${token}.wrappedToken.index`,
             token,
-            'getWrappedIndex',
+            'getWrappedIndex'
           );
           poolMulticaller.call(
             `linearPools.${token}.wrappedToken.rate`,
             token,
-            'getWrappedTokenRate',
+            'getWrappedTokenRate'
           );
         });
       }
@@ -139,7 +139,7 @@ export default class Vault {
           `linearPools.${address}.tokenData`,
           this.address,
           'getPoolTokens',
-          [linearPool.id],
+          [linearPool.id]
         );
 
         wrappedTokensMap[address] = linearPool.wrappedToken.address;
@@ -152,18 +152,18 @@ export default class Vault {
         poolMulticaller.call(
           `linearPools.${address}.unwrappedTokenAddress`,
           wrappedToken,
-          'ATOKEN',
+          'ATOKEN'
         );
         poolMulticaller.call(
           `linearPools.${address}.unwrappedERC4626Address`,
           wrappedToken,
-          'asset',
+          'asset'
         );
 
         poolMulticaller.call(
           `linearPools.${address}.totalSupply`,
           address,
-          'getVirtualSupply',
+          'getVirtualSupply'
         );
       });
 
@@ -180,27 +180,27 @@ export default class Vault {
     rawData: RawOnchainPoolData,
     type: PoolType,
     tokens: TokenInfoMap,
-    poolAddress: string,
+    poolAddress: string
   ): OnchainPoolData {
     const poolData = <OnchainPoolData>{};
 
     // Filter out pre-minted BPT token if exists
     const validTokens = Object.keys(tokens).filter(
-      address => !isSameAddress(address, poolAddress),
+      address => !isSameAddress(address, poolAddress)
     );
     tokens = pick(tokens, validTokens);
 
     const normalizedWeights = this.normalizeWeights(
       rawData?.weights || [],
       type,
-      tokens,
+      tokens
     );
 
     poolData.tokens = this.formatPoolTokens(
       rawData.poolTokens,
       tokens,
       normalizedWeights,
-      poolAddress,
+      poolAddress
     );
 
     poolData.amp = '0';
@@ -219,7 +219,7 @@ export default class Vault {
 
     if (rawData.tokenRates) {
       poolData.tokenRates = rawData.tokenRates.map(rate =>
-        formatUnits(rate.toString(), 18),
+        formatUnits(rate.toString(), 18)
       );
     }
 
@@ -234,7 +234,7 @@ export default class Vault {
     poolTokens: RawPoolTokens,
     tokenInfo: TokenInfoMap,
     weights: number[],
-    poolAddress: string,
+    poolAddress: string
   ): OnchainTokenDataMap {
     const tokens = <OnchainTokenDataMap>{};
 
@@ -258,7 +258,7 @@ export default class Vault {
   }
 
   private formatLinearPools(
-    linearPools: RawLinearPoolDataMap,
+    linearPools: RawLinearPoolDataMap
   ): LinearPoolDataMap {
     const _linearPools = <LinearPoolDataMap>{};
 
@@ -304,7 +304,7 @@ export default class Vault {
   public normalizeWeights(
     weights: BigNumber[],
     type: PoolType,
-    tokens: TokenInfoMap,
+    tokens: TokenInfoMap
   ): number[] {
     if (isWeightedLike(type)) {
       // toNormalizedWeights returns weights as 18 decimal fixed point

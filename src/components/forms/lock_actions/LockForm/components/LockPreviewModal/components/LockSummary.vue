@@ -40,31 +40,30 @@ const { veBalTokenInfo } = useVeBal();
  * COMPUTED
  */
 const poolShares = computed(() =>
-  bnum(props.lockablePool.totalLiquidity).div(props.lockablePool.totalShares),
+  bnum(props.lockablePool.totalLiquidity).div(props.lockablePool.totalShares)
 );
 
 const fiatTotalLockedAmount = computed(() =>
-  poolShares.value.times(props.veBalLockInfo.lockedAmount).toString(),
+  poolShares.value.times(props.veBalLockInfo.lockedAmount).toString()
 );
 
 const fiatTotalLockAmount = computed(() =>
-  poolShares.value.times(props.lockAmount).toString(),
+  poolShares.value.times(props.lockAmount).toString()
 );
 
 const fiatTotalLpTokens = computed(() =>
-  poolShares.value.times(props.totalLpTokens).toString(),
+  poolShares.value.times(props.totalLpTokens).toString()
 );
 
 const isExtendLockOnly = computed(
   () =>
-    props.lockType.length === 1 &&
-    props.lockType.includes(LockType.EXTEND_LOCK),
+    props.lockType.length === 1 && props.lockType.includes(LockType.EXTEND_LOCK)
 );
 
 const isIncreaseLockOnly = computed(
   () =>
     props.lockType.length === 1 &&
-    props.lockType.includes(LockType.INCREASE_LOCK),
+    props.lockType.includes(LockType.INCREASE_LOCK)
 );
 
 // const fiatWeeklyYield = computed(() => '0');
@@ -88,7 +87,7 @@ const isIncreaseLockOnly = computed(
           {{
             fNum2(
               isIncreaseLockOnly ? fiatTotalLockedAmount : fiatTotalLpTokens,
-              FNumFormats.fiat,
+              FNumFormats.fiat
             )
           }}
         </div>

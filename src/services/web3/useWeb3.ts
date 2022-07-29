@@ -60,22 +60,22 @@ export default function useWeb3() {
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isWalletConnecting = computed(() => walletState.value === 'connecting');
   const isMainnet = computed(
-    () => appNetworkConfig.chainId === Network.MAINNET,
+    () => appNetworkConfig.chainId === Network.MAINNET
   );
   const isKovan = computed(() => appNetworkConfig.chainId === Network.KOVAN);
   const isGoerli = computed(() => appNetworkConfig.chainId === Network.GOERLI);
   const isPolygon = computed(
-    () => appNetworkConfig.chainId === Network.POLYGON,
+    () => appNetworkConfig.chainId === Network.POLYGON
   );
   const isArbitrum = computed(
-    () => appNetworkConfig.chainId === Network.ARBITRUM,
+    () => appNetworkConfig.chainId === Network.ARBITRUM
   );
   const isEIP1559SupportedNetwork = computed(
-    () => appNetworkConfig.supportsEIP1559,
+    () => appNetworkConfig.supportsEIP1559
   );
 
   const canLoadProfile = computed(
-    () => account.value !== '' && userNetworkConfig.value !== null,
+    () => account.value !== '' && userNetworkConfig.value !== null
   );
   const isMismatchedNetwork = computed(() => {
     return (
@@ -125,7 +125,7 @@ export default function useWeb3() {
     () => web3Service.getProfile(account.value),
     reactive({
       enabled: canLoadProfile,
-    }),
+    })
   );
 
   return {

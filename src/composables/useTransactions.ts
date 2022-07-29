@@ -96,38 +96,34 @@ export type TransactionState = {
 
 // TODO: What happens if the structure changes? Either keep a version or schema validator.
 export const transactionsState = ref<TransactionState>(
-  lsGet<TransactionState>(
-    LS_KEYS.Transactions,
-    {},
-    TRANSACTIONS_SCHEMA_VERSION,
-  ),
+  lsGet<TransactionState>(LS_KEYS.Transactions, {}, TRANSACTIONS_SCHEMA_VERSION)
 );
 
 // COMPUTED
 const transactions = computed(() =>
   orderBy(Object.values(getTransactions()), 'addedTime', 'desc').filter(
-    isTransactionRecent,
-  ),
+    isTransactionRecent
+  )
 );
 
 const pendingTransactions = computed(() =>
   transactions.value.filter(transaction =>
-    isPendingTransactionStatus(transaction.status),
-  ),
+    isPendingTransactionStatus(transaction.status)
+  )
 );
 
 const finalizedTransactions = computed(() =>
   transactions.value.filter(transaction =>
-    isFinalizedTransactionStatus(transaction.status),
-  ),
+    isFinalizedTransactionStatus(transaction.status)
+  )
 );
 
 const pendingOrderActivity = computed(() =>
-  pendingTransactions.value.filter(({ type }) => type === 'order'),
+  pendingTransactions.value.filter(({ type }) => type === 'order')
 );
 
 const pendingTxActivity = computed(() =>
-  pendingTransactions.value.filter(({ type }) => type === 'tx'),
+  pendingTransactions.value.filter(({ type }) => type === 'tx')
 );
 
 // METHODS
@@ -168,7 +164,7 @@ function setTransactions(transactionsMap: TransactionsMap) {
   lsSet(
     LS_KEYS.Transactions,
     transactionsState.value,
-    TRANSACTIONS_SCHEMA_VERSION,
+    TRANSACTIONS_SCHEMA_VERSION
   );
 }
 
@@ -182,7 +178,7 @@ function getTransaction(id: string, type: TransactionType) {
 function updateTransaction(
   id: string,
   type: TransactionType,
-  updates: Partial<Transaction>,
+  updates: Partial<Transaction>
 ) {
   const transactionsMap = getTransactions();
   const txId = getId(id, type);
@@ -270,7 +266,7 @@ export default function useTransactions() {
   // METHODS
   function getSettledOrderSummary(
     transaction: Transaction,
-    receipt: OrderReceipt,
+    receipt: OrderReceipt
   ) {
     const details = transaction.details as GnosisTransactionDetails;
 
@@ -279,12 +275,12 @@ export default function useTransactions() {
 
       const tokenInAmount = formatUnits(
         receipt.executedSellAmount,
-        tokenIn.decimals,
+        tokenIn.decimals
       );
 
       const tokenOutAmount = formatUnits(
         receipt.executedBuyAmount,
-        tokenOut.decimals,
+        tokenOut.decimals
       );
 
       return `${fNum2(tokenInAmount, FNumFormats.token)} ${
@@ -317,7 +313,7 @@ export default function useTransactions() {
   function finalizeTransaction(
     id: string,
     type: TransactionType,
-    receipt: Transaction['receipt'],
+    receipt: Transaction['receipt']
   ) {
     if (receipt != null) {
       const transaction = getTransaction(id, type);
@@ -369,7 +365,7 @@ export default function useTransactions() {
             : 'error'
           : 'info',
         title: `${t(`transactionAction.${transaction.action}`)} ${t(
-          `transactionStatus.${transaction.status}`,
+          `transactionStatus.${transaction.status}`
         )}`,
         message: transaction.summary,
         transactionMetadata: {
@@ -394,8 +390,8 @@ export default function useTransactions() {
         console.log(
           '[Transactions]: Failed to fetch order information',
           transaction,
-          e,
-        ),
+          e
+        )
       )
       .finally(() => {
         updateTransaction(transaction.id, 'order', {
@@ -417,13 +413,13 @@ export default function useTransactions() {
           console.log(
             '[Transactions]: Failed to fetch tx information',
             transaction,
-            e,
-          ),
+            e
+          )
         )
         .finally(() =>
           updateTransaction(transaction.id, 'tx', {
             lastCheckedBlockNumber: blockNumber.value,
-          }),
+          })
         );
     }
   }

@@ -97,10 +97,10 @@ const hasAmount = computed(() => amountBN.value.gt(0));
 const hasBalance = computed(() => tokenBalanceBN.value.gt(0));
 const shouldUseTxBuffer = computed(
   () =>
-    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer,
+    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer
 );
 const amountExceedsTokenBalance = computed(() =>
-  amountBN.value.gt(tokenBalance.value),
+  amountBN.value.gt(tokenBalance.value)
 );
 const shouldShowTxBufferMessage = computed(() => {
   if (
@@ -113,7 +113,7 @@ const shouldShowTxBufferMessage = computed(() => {
   }
 
   return amountBN.value.gte(
-    tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer),
+    tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer)
   );
 });
 
@@ -170,15 +170,15 @@ const bufferPercentage = computed(() => {
 });
 
 const barColor = computed(() =>
-  amountExceedsTokenBalance.value ? 'red' : 'green',
+  amountExceedsTokenBalance.value ? 'red' : 'green'
 );
 
 const priceImpactSign = computed(() =>
-  (props.priceImpact || 0) >= 0 ? '-' : '+',
+  (props.priceImpact || 0) >= 0 ? '-' : '+'
 );
 
 const priceImpactClass = computed(() =>
-  (props.priceImpact || 0) >= 0.01 ? 'text-red-500' : '',
+  (props.priceImpact || 0) >= 0.01 ? 'text-red-500' : ''
 );
 
 /**

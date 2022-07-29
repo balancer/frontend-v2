@@ -108,7 +108,7 @@ export default {
     const provider = computed(
       () =>
         pluginState.connector?.provider ??
-        rpcProviderService.getJsonProvider(chainId.value),
+        rpcProviderService.getJsonProvider(chainId.value)
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
     const userProvider = computed(() => {
@@ -116,7 +116,7 @@ export default {
     });
 
     async function getWalletConnector(
-      wallet: Wallet,
+      wallet: Wallet
     ): Promise<Connector | void> {
       if (wallet === 'metamask') {
         const { MetamaskConnector } = await import(
@@ -166,7 +166,7 @@ export default {
       try {
         if (!wallet || typeof wallet !== 'string') {
           throw new Error(
-            'Please provide a wallet to facilitate a web3 connection.',
+            'Please provide a wallet to facilitate a web3 connection.'
           );
         }
 
@@ -176,7 +176,7 @@ export default {
 
         if (!connector) {
           throw new Error(
-            `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`,
+            `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
           );
         }
         const { account } = await connector.connect();
@@ -221,7 +221,7 @@ export default {
     const disconnectWallet = async () => {
       if (!pluginState.connector) {
         throw new Error(
-          'Cannot disconnect a wallet. No wallet currently connected.',
+          'Cannot disconnect a wallet. No wallet currently connected.'
         );
       }
       const connector = pluginState.connector as Connector;
@@ -254,7 +254,7 @@ export default {
 
 export function getConnectorName(
   connectorId: ConnectorId,
-  provider: any,
+  provider: any
 ): string {
   if (!provider) {
     return i18n.global.t('unknown');
@@ -297,7 +297,7 @@ export function getConnectorName(
 
 export function getConnectorLogo(
   connectorId: ConnectorId,
-  provider: any,
+  provider: any
 ): string {
   if (!provider) {
     return defaultLogo;

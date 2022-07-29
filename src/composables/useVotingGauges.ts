@@ -30,7 +30,7 @@ export default function useVotingGauges() {
     (): boolean =>
       gaugeVotesQuery.isLoading.value ||
       gaugeVotesQuery.isIdle.value ||
-      !!gaugeVotesQuery.error.value,
+      !!gaugeVotesQuery.error.value
   );
 
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);
@@ -42,7 +42,7 @@ export default function useVotingGauges() {
       (remainingVotes, gauge) => {
         return remainingVotes - parseFloat(gauge.userVotes);
       },
-      totalVotes,
+      totalVotes
     );
     return votesRemaining;
   });
@@ -85,7 +85,7 @@ export default function useVotingGauges() {
       n.getDate(),
       0,
       0,
-      0,
+      0
     );
     return epochEndTime;
   }

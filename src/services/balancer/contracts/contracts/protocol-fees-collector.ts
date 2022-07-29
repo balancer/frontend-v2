@@ -34,7 +34,7 @@ export default class ProtocolFeesCollector {
     return new Contract(
       this.address,
       ProtocolFeesCollectorAbi,
-      this.vault.service.provider,
+      this.vault.service.provider
     );
   }
 

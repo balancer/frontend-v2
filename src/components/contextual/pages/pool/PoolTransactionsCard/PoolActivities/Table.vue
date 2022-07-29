@@ -122,7 +122,7 @@ const activityRows = computed<ActivityRow[]>(() =>
           type,
           tokenAmounts: getJoinExitDetails(amounts),
         };
-      }),
+      })
 );
 
 /**

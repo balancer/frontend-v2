@@ -200,7 +200,7 @@
                 <div>
                   {{
                     $t(
-                      'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title',
+                      'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title'
                     )
                   }}
                 </div>
@@ -208,7 +208,7 @@
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content',
+                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
                   )
                 }}
               </div>
@@ -242,7 +242,7 @@
                 <div>
                   {{
                     $t(
-                      'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.title',
+                      'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.title'
                     )
                   }}
                 </div>
@@ -250,7 +250,7 @@
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content',
+                    'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content'
                   )
                 }}
               </div>
@@ -291,14 +291,14 @@
                 {{
                   $t(
                     'tradeSummary.transactionTypesTooltips.tokenApproval.title',
-                    [trading.tokenIn.value.symbol],
+                    [trading.tokenIn.value.symbol]
                   )
                 }}
               </div>
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.tokenApproval.content',
+                    'tradeSummary.transactionTypesTooltips.tokenApproval.content'
                   )
                 }}
               </div>
@@ -454,7 +454,7 @@ export default defineComponent({
 
     // state
     const lastQuote = ref<TradeQuote | null>(
-      props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote(),
+      props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
     );
     const priceUpdated = ref(false);
     const priceUpdateAccepted = ref(false);
@@ -464,7 +464,7 @@ export default defineComponent({
 
     // COMPUTED
     const slippageRatePercent = computed(() =>
-      fNum2(slippage.value, FNumFormats.percent),
+      fNum2(slippage.value, FNumFormats.percent)
     );
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);
@@ -473,26 +473,26 @@ export default defineComponent({
       fNum2(
         toFiat(
           props.trading.tokenInAmountInput.value,
-          props.trading.tokenIn.value.address,
+          props.trading.tokenIn.value.address
         ),
-        FNumFormats.fiat,
-      ),
+        FNumFormats.fiat
+      )
     );
 
     const tokenOutFiatValue = computed(() =>
       fNum2(
         toFiat(
           props.trading.tokenOutAmountInput.value,
-          props.trading.tokenOut.value.address,
+          props.trading.tokenOut.value.address
         ),
-        FNumFormats.fiat,
-      ),
+        FNumFormats.fiat
+      )
     );
 
     const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 
     const zeroFee = computed(() =>
-      showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH',
+      showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
     );
 
     const summary = computed(() => {
@@ -523,31 +523,31 @@ export default defineComponent({
           summaryItems.amountBeforeFees = tokenOutAmountInput;
           summaryItems.tradeFees = formatUnits(
             quote.feeAmountOutToken,
-            tokenOut.decimals,
+            tokenOut.decimals
           );
           summaryItems.totalWithoutSlippage = bnum(
-            summaryItems.amountBeforeFees,
+            summaryItems.amountBeforeFees
           )
             .minus(summaryItems.tradeFees)
             .toString();
           summaryItems.totalWithSlippage = formatUnits(
             quote.minimumOutAmount,
-            tokenOut.decimals,
+            tokenOut.decimals
           );
         } else {
           summaryItems.amountBeforeFees = tokenInAmountInput;
           summaryItems.tradeFees = formatUnits(
             quote.feeAmountInToken,
-            tokenIn.decimals,
+            tokenIn.decimals
           );
           summaryItems.totalWithoutSlippage = bnum(
-            summaryItems.amountBeforeFees,
+            summaryItems.amountBeforeFees
           )
             .plus(summaryItems.tradeFees)
             .toString();
           summaryItems.totalWithSlippage = formatUnits(
             quote.maximumInAmount,
-            tokenIn.decimals,
+            tokenIn.decimals
           );
         }
       }
@@ -558,8 +558,8 @@ export default defineComponent({
           itemValue =>
             `${fNum2(
               toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
-              FNumFormats.fiat,
-            )}`,
+              FNumFormats.fiat
+            )}`
         );
       } else {
         return mapValues(
@@ -569,7 +569,7 @@ export default defineComponent({
               exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol
-            }`,
+            }`
         );
       }
     });
@@ -643,25 +643,25 @@ export default defineComponent({
     const tokenApproval = useTokenApproval(
       addressIn,
       props.trading.tokenInAmountInput,
-      tokens,
+      tokens
     );
 
     const gnosisRelayerApproval = useRelayerApproval(
       Relayer.GNOSIS,
-      props.trading.isGnosisTrade,
+      props.trading.isGnosisTrade
     );
 
     const wrapType = computed(() =>
       getWrapAction(
         props.trading.tokenIn.value.address,
-        props.trading.tokenOut.value.address,
-      ),
+        props.trading.tokenOut.value.address
+      )
     );
 
     const isStETHTrade = computed(
       () =>
         isStETH(addressIn.value, props.trading.tokenOut.value.address) &&
-        wrapType.value === WrapType.NonWrap,
+        wrapType.value === WrapType.NonWrap
     );
 
     const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
@@ -671,7 +671,7 @@ export default defineComponent({
         return approvalRequired(
           props.trading.tokenIn.value.address,
           props.trading.tokenInAmountInput.value,
-          props.trading.tokenOut.value.address,
+          props.trading.tokenOut.value.address
         );
       } else if (props.trading.requiresTokenApproval.value) {
         return !tokenApproval.isUnlockedV2.value;
@@ -683,20 +683,20 @@ export default defineComponent({
       () =>
         props.trading.isGnosisTrade.value &&
         props.trading.requiresTokenApproval.value &&
-        !gnosisRelayerApproval.isUnlocked.value,
+        !gnosisRelayerApproval.isUnlocked.value
     );
 
     const requiresLidoRelayerApproval = computed(
       () =>
         props.trading.isBalancerTrade.value &&
-        !lidoRelayerApproval.isUnlocked.value,
+        !lidoRelayerApproval.isUnlocked.value
     );
 
     const showTokenApprovalStep = computed(
       () =>
         requiresTokenApproval.value ||
         tokenApproval.approved.value ||
-        tokenApproval.approving.value,
+        tokenApproval.approving.value
     );
 
     const showGnosisRelayerApprovalStep = computed(
@@ -704,7 +704,7 @@ export default defineComponent({
         requiresGnosisRelayerApproval.value ||
         gnosisRelayerApproval.init.value ||
         gnosisRelayerApproval.approved.value ||
-        gnosisRelayerApproval.approving.value,
+        gnosisRelayerApproval.approving.value
     );
 
     const showLidoRelayerApprovalStep = computed(
@@ -712,7 +712,7 @@ export default defineComponent({
         requiresLidoRelayerApproval.value ||
         lidoRelayerApproval.init.value ||
         lidoRelayerApproval.approved.value ||
-        lidoRelayerApproval.approving.value,
+        lidoRelayerApproval.approving.value
     );
 
     const totalRequiredTransactions = computed(() => {
@@ -752,18 +752,18 @@ export default defineComponent({
       () =>
         requiresGnosisRelayerApproval.value ||
         requiresLidoRelayerApproval.value ||
-        requiresTokenApproval.value,
+        requiresTokenApproval.value
     );
 
     const showPriceUpdateError = computed(
       () =>
         !requiresApproval.value &&
         priceUpdated.value &&
-        !priceUpdateAccepted.value,
+        !priceUpdateAccepted.value
     );
 
     const tradeDisabled = computed(
-      () => requiresApproval.value || showPriceUpdateError.value,
+      () => requiresApproval.value || showPriceUpdateError.value
     );
 
     // METHODS
@@ -797,7 +797,7 @@ export default defineComponent({
             .div(lastQuote.value.minimumOutAmount);
 
           priceUpdated.value = bnum(priceDiff.toString()).gt(
-            PRICE_UPDATE_THRESHOLD,
+            PRICE_UPDATE_THRESHOLD
           );
         } else {
           const priceDiff = lastQuote.value.maximumInAmount
@@ -806,7 +806,7 @@ export default defineComponent({
             .div(lastQuote.value.maximumInAmount);
 
           priceUpdated.value = bnum(priceDiff.toString()).gt(
-            PRICE_UPDATE_THRESHOLD,
+            PRICE_UPDATE_THRESHOLD
           );
         }
 
@@ -821,7 +821,7 @@ export default defineComponent({
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
         await tokenApproval.approveSpender(
-          props.trading.tokenOut.value.address,
+          props.trading.tokenOut.value.address
         );
       } else {
         await tokenApproval.approveV2();

@@ -18,7 +18,7 @@ type QueryResponse = boolean;
 
 export default function useRelayerApprovalQuery(
   relayer: Ref<string>,
-  options: UseQueryOptions<QueryResponse> = {},
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -36,15 +36,15 @@ export default function useRelayerApprovalQuery(
       new Contract(
         configService.network.addresses.vault,
         Vault__factory.abi,
-        getProvider(),
-      ),
+        getProvider()
+      )
   );
 
   /**
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.RelayerApprovals(networkId, account, relayer),
+    QUERY_KEYS.Account.RelayerApprovals(networkId, account, relayer)
   );
 
   const queryFn = async (): Promise<boolean> => {
@@ -54,7 +54,7 @@ export default function useRelayerApprovalQuery(
 
     const approved = await vaultContract.value.hasApprovedRelayer(
       account.value,
-      relayer.value,
+      relayer.value
     );
 
     return approved;

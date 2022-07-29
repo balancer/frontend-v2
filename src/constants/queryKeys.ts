@@ -16,7 +16,7 @@ const QUERY_KEYS = {
       tokens: Ref<string[]>,
       poolIds: Ref<string[]> | undefined,
       poolAddresses: Ref<string[]> | undefined,
-      gaugeAddresses: Ref<string[]>,
+      gaugeAddresses: Ref<string[]>
     ) => [
       POOLS_ROOT_KEY,
       'all',
@@ -25,7 +25,7 @@ const QUERY_KEYS = {
     User: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      gaugeAddresses: Ref<string[]>,
+      gaugeAddresses: Ref<string[]>
     ) => [POOLS_ROOT_KEY, 'user', { networkId, account, gaugeAddresses }],
     Current: (id: string, gaugeAddresses: Ref<string[]>) => [
       POOLS_ROOT_KEY,
@@ -51,12 +51,12 @@ const QUERY_KEYS = {
     UserActivities: (
       networkId: Ref<Network>,
       id: string,
-      account: Ref<string>,
+      account: Ref<string>
     ) => [POOLS_ROOT_KEY, 'activities', 'user', { networkId, account, id }],
     Swaps: (
       networkId: Ref<Network>,
       id: string,
-      subgraphQuery: Record<string, any>,
+      subgraphQuery: Record<string, any>
     ) => [POOLS_ROOT_KEY, 'swaps', { networkId, id, subgraphQuery }],
     UserSwaps: (networkId: Ref<Network>, id: string, account: Ref<string>) => [
       POOLS_ROOT_KEY,
@@ -90,7 +90,7 @@ const QUERY_KEYS = {
       activeTimespan: Ref<{ option: string; value: number }>,
       userNetworkId: Ref<number>,
       nativeAsset: NativeAsset,
-      wrappedNativeAsset: Ref<TokenInfo>,
+      wrappedNativeAsset: Ref<TokenInfo>
     ) => [
       'pairPriceData',
       {
@@ -105,7 +105,7 @@ const QUERY_KEYS = {
     Prices: (
       networkId: Ref<Network>,
       tokens: Ref<string[]>,
-      pricesToInject: Ref<TokenPrices>,
+      pricesToInject: Ref<TokenPrices>
     ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
     AllPrices: ['tokens', 'prices'],
     VeBAL: (networkId: Ref<Network>, account: Ref<string>) => [
@@ -118,13 +118,13 @@ const QUERY_KEYS = {
     Balances: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      tokens: Ref<string[]>,
+      tokens: Ref<string[]>
     ) => ['account', 'balances', { networkId, account, tokens }],
     Allowances: (
       networkId: Ref<Network>,
       account: Ref<string>,
       contractAddresses: Ref<string[]>,
-      tokens: Ref<string[]>,
+      tokens: Ref<string[]>
     ) => [
       'account',
       'allowances',
@@ -133,12 +133,12 @@ const QUERY_KEYS = {
     RelayerApprovals: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      relayer: Ref<string>,
+      relayer: Ref<string>
     ) => ['account', 'relayer', { networkId, account, relayer }],
     Profile: (
       networkId: Ref<Network>,
       account: Ref<string>,
-      chainId: Ref<number | undefined>,
+      chainId: Ref<number | undefined>
     ) => ['account', 'profile', { networkId, account, chainId }],
   },
   Gauges: {
@@ -147,7 +147,7 @@ const QUERY_KEYS = {
       Onchain: (
         gauges: Ref<SubgraphGauge[] | undefined>,
         account: Ref<string>,
-        networkId: Ref<Network>,
+        networkId: Ref<Network>
       ) => ['gauges', 'all', 'onchain', { gauges, account, networkId }],
     },
     Expired: (gauges: Ref<string[] | undefined>, networkId: Ref<Network>) => [

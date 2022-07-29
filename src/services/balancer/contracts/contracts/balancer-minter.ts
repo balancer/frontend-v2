@@ -7,7 +7,7 @@ export class BalancerMinter {
     private readonly abi = BalancerMinterAbi,
     private readonly config = configService,
     private readonly web3 = web3Service,
-    public readonly address = config.network.addresses.balancerMinter,
+    public readonly address = config.network.addresses.balancerMinter
   ) {}
 
   /**

@@ -37,7 +37,7 @@ const fiatTotal = computed((): string =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
     .times(bptBalance.value)
-    .toString(),
+    .toString()
 );
 </script>
 

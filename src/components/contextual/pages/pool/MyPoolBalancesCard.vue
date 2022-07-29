@@ -36,7 +36,7 @@ const { tokens, balances, balanceFor, getTokens } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
-  toRef(props, 'pool'),
+  toRef(props, 'pool')
 );
 const {
   userData: { stakedSharesForProvidedPool },
@@ -51,7 +51,7 @@ const poolCalculator = new PoolCalculator(
   tokens,
   balances,
   'exit',
-  ref(false),
+  ref(false)
 );
 
 /**
@@ -60,14 +60,14 @@ const poolCalculator = new PoolCalculator(
 const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const poolTokens = computed(() =>
-  Object.values(getTokens(props.pool.tokensList)),
+  Object.values(getTokens(props.pool.tokensList))
 );
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
     bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
     0,
-    'send',
+    'send'
   );
 
   if (isStablePhantomPool.value) {
@@ -97,7 +97,7 @@ const tokenAddresses = computed((): string[] => {
 const fiatValue = computed(() =>
   tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
-    .reduce((total, value) => bnum(total).plus(value).toString()),
+    .reduce((total, value) => bnum(total).plus(value).toString())
 );
 
 const showMigrateButton = computed(
@@ -105,7 +105,7 @@ const showMigrateButton = computed(
     bnum(bptBalance.value).gt(0) &&
     isMigratablePool(props.pool) &&
     // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
-    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION),
+    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
 );
 /**
  * METHODS

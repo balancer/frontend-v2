@@ -35,7 +35,7 @@ const poolWeightsLabel = computed(() =>
 
       return `${weightLabel} ${symbol}`;
     })
-    .join(' / '),
+    .join(' / ')
 );
 
 /**

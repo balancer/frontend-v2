@@ -42,7 +42,7 @@ describe('AprConcern', () => {
       calcParams.currency,
       calcParams.protocolFeePercentage,
       calcParams.stakingBalApr,
-      calcParams.stakingRewardApr,
+      calcParams.stakingRewardApr
     );
 
     expect(bnum(aprs.swap).toFixed(2)).toEqual('0.01');
@@ -59,7 +59,7 @@ describe('AprConcern', () => {
       calcParams.currency,
       calcParams.protocolFeePercentage,
       calcParams.stakingBalApr,
-      calcParams.stakingRewardApr,
+      calcParams.stakingRewardApr
     );
 
     expect(bnum(aprs.total.staked.calc('2.5')).toFixed(3)).toEqual('0.035');

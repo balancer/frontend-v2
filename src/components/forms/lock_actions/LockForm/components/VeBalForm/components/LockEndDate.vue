@@ -78,7 +78,7 @@ onBeforeMount(() => {
  */
 function updateLockEndDate(timestamp: number) {
   lockEndDate.value = formatDateInput(
-    Math.min(timestamp, props.maxLockEndDateTimestamp),
+    Math.min(timestamp, props.maxLockEndDateTimestamp)
   );
 }
 

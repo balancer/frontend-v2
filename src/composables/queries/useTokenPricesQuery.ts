@@ -25,16 +25,16 @@ const PER_PAGE = 1000;
 export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
   pricesToInject: Ref<TokenPrices> = ref({}),
-  options: UseQueryOptions<QueryResponse> = {},
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   const { networkId } = useNetwork();
   const queryKey = reactive(
-    QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject),
+    QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
   );
 
   function injectCustomTokens(
     prices: TokenPrices,
-    pricesToInject: TokenPrices,
+    pricesToInject: TokenPrices
   ): TokenPrices {
     for (const address of Object.keys(pricesToInject)) {
       prices[address] = pricesToInject[address];
@@ -52,7 +52,7 @@ export default function useTokenPricesQuery(
       if (page !== 0) await sleep(1000);
       const pageAddresses = addresses.value.slice(
         PER_PAGE * page,
-        PER_PAGE * (page + 1),
+        PER_PAGE * (page + 1)
       );
       console.log('Fetching', pageAddresses.length, 'prices');
       prices = {

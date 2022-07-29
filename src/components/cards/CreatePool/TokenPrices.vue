@@ -26,16 +26,16 @@ const { fNum2 } = useNumbers();
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 const knownTokens = computed(() =>
   validTokens.value.filter(
-    token => priceFor(token) !== 0 && !injectedPrices.value[token]?.usd,
-  ),
+    token => priceFor(token) !== 0 && !injectedPrices.value[token]?.usd
+  )
 );
 const unknownTokens = computed(() =>
   validTokens.value.filter(
-    token => priceFor(token) === 0 || injectedPrices.value[token]?.usd,
-  ),
+    token => priceFor(token) === 0 || injectedPrices.value[token]?.usd
+  )
 );
 const hasUnknownPrice = computed(() =>
-  validTokens.value.some(token => priceFor(token) === 0),
+  validTokens.value.some(token => priceFor(token) === 0)
 );
 </script>
 

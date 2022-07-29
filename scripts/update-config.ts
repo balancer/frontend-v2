@@ -11,7 +11,7 @@ function contractAddress(contractName) {
       networkCamelcase +
       '/' +
       contractName +
-      '.json',
+      '.json'
   );
   const file = fs.readFileSync(contractArtifactPath, 'utf8');
   const json = JSON.parse(file);
@@ -24,7 +24,7 @@ function capitalizeFirstLetter(string) {
 
 const jsonConfigFilePath = path.resolve(
   __dirname,
-  '../src/lib/utils/balancer/configs/' + network + '.json',
+  '../src/lib/utils/balancer/configs/' + network + '.json'
 );
 let doc = JSON.parse(fs.readFileSync(jsonConfigFilePath, 'utf8'));
 

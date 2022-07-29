@@ -17,7 +17,7 @@ const toPoolId = route.params.to as string;
 const poolMigrationInfo = POOL_MIGRATIONS.find(
   poolMigrationInfo =>
     poolMigrationInfo.fromPoolId === fromPoolId &&
-    poolMigrationInfo.toPoolId === toPoolId,
+    poolMigrationInfo.toPoolId === toPoolId
 );
 </script>
 

@@ -83,7 +83,7 @@ onBeforeMount(async () => {
   let previouslySavedState = lsGet(
     POOL_CREATION_STATE_KEY,
     null,
-    POOL_CREATION_STATE_VERSION,
+    POOL_CREATION_STATE_VERSION
   );
   if (
     activeStep.value === 0 &&
@@ -123,7 +123,7 @@ const unknownTokens = computed(() => {
 });
 
 const hasUnknownToken = computed(() =>
-  validTokens.value.some(t => priceFor(t) === 0),
+  validTokens.value.some(t => priceFor(t) === 0)
 );
 
 const steps = computed(() => [
@@ -179,7 +179,7 @@ const exitAnimateProps = computed(() => ({
 }));
 
 const isLoading = computed(
-  () => appLoading.value || dynamicDataLoading.value || isRestoring.value,
+  () => appLoading.value || dynamicDataLoading.value || isRestoring.value
 );
 
 /**
@@ -285,7 +285,7 @@ watch(
   },
   {
     immediate: true,
-  },
+  }
 );
 </script>
 

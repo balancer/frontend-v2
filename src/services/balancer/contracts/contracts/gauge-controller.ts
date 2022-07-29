@@ -14,7 +14,7 @@ export class GaugeController {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = GaugeControllerAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service,
+    private readonly web3 = web3Service
   ) {}
 
   async getRelativeWeights(gaugeAddresses: string[], timestamp: number) {
@@ -24,7 +24,7 @@ export class GaugeController {
         getAddress(gaugeAddress),
         this.address,
         'gauge_relative_weight(address, uint256)',
-        [getAddress(gaugeAddress), timestamp || getUnixTime(new Date())],
+        [getAddress(gaugeAddress), timestamp || getUnixTime(new Date())]
       );
     }
     const result = await multicaller.execute();

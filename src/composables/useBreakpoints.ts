@@ -19,11 +19,11 @@ export default function useBreakpoints() {
   const width = computed(() => windowWidth.value);
 
   const upToLargeBreakpoint = computed(() =>
-    ['xs', 'sm', 'md', 'lg'].includes(bp.value),
+    ['xs', 'sm', 'md', 'lg'].includes(bp.value)
   );
 
   const upToMediumBreakpoint = computed(() =>
-    ['xs', 'sm', 'md'].includes(bp.value),
+    ['xs', 'sm', 'md'].includes(bp.value)
   );
 
   const isMobile = computed(() => ['xs', 'sm', 'md', 'lg'].includes(bp.value));

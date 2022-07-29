@@ -33,15 +33,15 @@ const PoolTypeABIs = Object.values(
       ...StaticATokenLMABI,
       ...ERC20_ABI,
       ...IERC4626,
-    ].map(row => [row.name, row]),
-  ),
+    ].map(row => [row.name, row])
+  )
 );
 
 export class PoolMulticaller {
   constructor(
     public readonly pools: Pool[],
     private readonly MulticallerClass = Multicaller,
-    private readonly vaultAddress = configService.network.addresses.vault,
+    private readonly vaultAddress = configService.network.addresses.vault
   ) {}
 
   public async fetch(): Promise<RawOnchainPoolDataMap> {

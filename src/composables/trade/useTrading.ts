@@ -22,7 +22,7 @@ export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 export type UseTrading = ReturnType<typeof useTrading>;
 
 export const tradeGasless = ref<boolean>(
-  lsGet<boolean>(LS_KEYS.Trade.Gasless, true),
+  lsGet<boolean>(LS_KEYS.Trade.Gasless, true)
 );
 
 export default function useTrading(
@@ -30,7 +30,7 @@ export default function useTrading(
   tokenInAddressInput: Ref<string>,
   tokenInAmountInput: Ref<string>,
   tokenOutAddressInput: Ref<string>,
-  tokenOutAmountInput: Ref<string>,
+  tokenOutAmountInput: Ref<string>
 ) {
   // COMPOSABLES
   const store = useStore();
@@ -43,7 +43,7 @@ export default function useTrading(
   const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
   const wrapType = computed(() =>
-    getWrapAction(tokenInAddressInput.value, tokenOutAddressInput.value),
+    getWrapAction(tokenInAddressInput.value, tokenOutAddressInput.value)
   );
   const isWrap = computed(() => wrapType.value === WrapType.Wrap);
   const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
@@ -53,15 +53,15 @@ export default function useTrading(
   const tokenOut = computed(() => getToken(tokenOutAddressInput.value));
 
   const isEthTrade = computed(
-    () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS,
+    () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
   );
 
   const tokenInAmountScaled = computed(() =>
-    parseFixed(tokenInAmountInput.value, tokenIn.value.decimals),
+    parseFixed(tokenInAmountInput.value, tokenIn.value.decimals)
   );
 
   const tokenOutAmountScaled = computed(() =>
-    parseFixed(tokenOutAmountInput.value, tokenOut.value.decimals),
+    parseFixed(tokenOutAmountInput.value, tokenOut.value.decimals)
   );
 
   const requiresTokenApproval = computed(() => {
@@ -79,11 +79,11 @@ export default function useTrading(
       return {
         tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum2(
           bnum(tokenOutAmount).div(tokenInAmount).toString(),
-          FNumFormats.token,
+          FNumFormats.token
         )} ${tokenOut.value?.symbol}`,
         tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum2(
           bnum(tokenInAmount).div(tokenOutAmount).toString(),
-          FNumFormats.token,
+          FNumFormats.token
         )} ${tokenIn.value?.symbol}`,
       };
     }
@@ -94,7 +94,7 @@ export default function useTrading(
   });
 
   const isGnosisSupportedOnNetwork = computed(() =>
-    GP_SUPPORTED_NETWORKS.includes(networkId.value),
+    GP_SUPPORTED_NETWORKS.includes(networkId.value)
   );
 
   const tradeRoute = computed<TradeRoute>(() => {
@@ -120,13 +120,13 @@ export default function useTrading(
   const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
 
   const isGaslessTradingDisabled = computed(
-    () => isEthTrade.value || isWrapUnwrapTrade.value,
+    () => isEthTrade.value || isWrapUnwrapTrade.value
   );
 
   const hasTradeQuote = computed(
     () =>
       parseFloat(tokenInAmountInput.value) > 0 &&
-      parseFloat(tokenOutAmountInput.value) > 0,
+      parseFloat(tokenOutAmountInput.value) > 0
   );
 
   const sor = useSor({
@@ -170,11 +170,11 @@ export default function useTrading(
   });
 
   const isConfirming = computed(
-    () => sor.confirming.value || gnosis.confirming.value,
+    () => sor.confirming.value || gnosis.confirming.value
   );
 
   const submissionError = computed(
-    () => sor.submissionError.value || gnosis.submissionError.value,
+    () => sor.submissionError.value || gnosis.submissionError.value
   );
 
   // METHODS

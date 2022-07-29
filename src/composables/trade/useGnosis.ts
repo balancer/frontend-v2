@@ -90,15 +90,15 @@ function getPriceQuotes(params: PriceQuoteParams) {
   return Promise.allSettled([
     tryPromiseWithTimeout(
       gnosisProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT,
+      PRICE_QUOTE_TIMEOUT
     ),
     tryPromiseWithTimeout(
       match0xService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT,
+      PRICE_QUOTE_TIMEOUT
     ),
     tryPromiseWithTimeout(
       paraSwapService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT,
+      PRICE_QUOTE_TIMEOUT
     ),
   ]);
 }
@@ -133,7 +133,7 @@ export default function useGnosis({
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
-    () => store.state.app.transactionDeadline,
+    () => store.state.app.transactionDeadline
   );
 
   const hasValidationError = computed(() => state.validationError != null);
@@ -203,7 +203,7 @@ export default function useGnosis({
 
       const { signature, signingScheme } = await signOrder(
         unsignedOrder,
-        getSigner(),
+        getSigner()
       );
 
       const orderId = await gnosisProtocolService.sendSignedOrder({
@@ -223,7 +223,7 @@ export default function useGnosis({
       const buyAmount = exactIn.value
         ? formatUnits(
             quote.minimumOutAmount,
-            tokenOut.value.decimals,
+            tokenOut.value.decimals
           ).toString()
         : tokenOutAmountInput.value;
 
@@ -232,10 +232,10 @@ export default function useGnosis({
 
       const summary = `${tokenInAmountEst}${fNum2(
         sellAmount,
-        FNumFormats.token,
+        FNumFormats.token
       )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(
         buyAmount,
-        FNumFormats.token,
+        FNumFormats.token
       )} ${tokenOut.value.symbol}`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
@@ -362,7 +362,7 @@ export default function useGnosis({
             }
             return fulfilledPriceQuotes;
           },
-          [],
+          []
         );
 
         if (priceQuoteAmounts.length > 0) {
@@ -370,10 +370,10 @@ export default function useGnosis({
           priceQuoteAmount = (
             exactIn.value
               ? priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).gt(b) ? a : b,
+                  BigNumber.from(a).gt(b) ? a : b
                 )
               : priceQuoteAmounts.reduce((a, b) =>
-                  BigNumber.from(a).lt(b) ? a : b,
+                  BigNumber.from(a).lt(b) ? a : b
                 )
           ).toString();
         }
@@ -393,27 +393,27 @@ export default function useGnosis({
 
           if (exactIn.value) {
             tokenOutAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenOut.value.decimals),
+              formatUnits(priceQuoteAmount, tokenOut.value.decimals)
             ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
             const { feeAmountInToken } = getQuote();
 
             state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE),
+              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
             );
           } else {
             tokenInAmountInput.value = bnum(
-              formatUnits(priceQuoteAmount, tokenIn.value.decimals),
+              formatUnits(priceQuoteAmount, tokenIn.value.decimals)
             ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
             const { feeAmountOutToken, maximumInAmount } = getQuote();
 
             state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
-              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE),
+              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
             );
 
             const priceExceedsBalance = bnum(
-              formatUnits(maximumInAmount, tokenIn.value.decimals),
+              formatUnits(maximumInAmount, tokenIn.value.decimals)
             ).gt(balanceFor(tokenIn.value.address));
 
             if (priceExceedsBalance) {

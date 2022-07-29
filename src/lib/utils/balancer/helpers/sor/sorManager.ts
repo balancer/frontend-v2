@@ -52,7 +52,7 @@ export class SorManager {
     gasPrice: BigNumber,
     maxPools: number,
     chainId: number,
-    weth: string,
+    weth: string
   ) {
     this.sorV2 = balancer.sor;
     this.weth = weth;
@@ -66,14 +66,14 @@ export class SorManager {
   async setCostOutputToken(
     tokenAddr: string,
     tokenDecimals: number,
-    manualCost: string | null = null,
+    manualCost: string | null = null
   ): Promise<BigNumber> {
     tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
 
     if (manualCost) {
       await this.sorV2.swapCostCalculator.setNativeAssetPriceInToken(
         tokenAddr,
-        manualCost,
+        manualCost
       );
     }
 
@@ -81,7 +81,7 @@ export class SorManager {
       tokenAddr,
       tokenDecimals,
       this.gasPrice,
-      BigNumber.from(SWAP_COST),
+      BigNumber.from(SWAP_COST)
     );
 
     console.log(`[SorManager] Cost for token ${tokenAddr}: ${cost.toString()}`);
@@ -105,13 +105,13 @@ export class SorManager {
       this.fetchStatus.v2success = v2result;
     } catch (err) {
       console.log(
-        `[SorManager] V2 fetchPools issue: ${(err as Error).message}`,
+        `[SorManager] V2 fetchPools issue: ${(err as Error).message}`
       );
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = false;
     }
     console.log(
-      `[SorManager] V2 fetchPools result: ${this.fetchStatus.v2success}`,
+      `[SorManager] V2 fetchPools result: ${this.fetchStatus.v2success}`
     );
     console.timeEnd(`[SorManager] V2 fetchPools`);
 
@@ -125,7 +125,7 @@ export class SorManager {
     tokenInDecimals: number,
     tokenOutDecimals: number,
     swapType: SwapTypes,
-    amountScaled: OldBigNumber,
+    amountScaled: OldBigNumber
   ): Promise<SorReturn> {
     const v2TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? AddressZero : tokenIn;
     const v2TokenOut =
@@ -148,15 +148,15 @@ export class SorManager {
       v2TokenOut.toLowerCase(),
       swapType,
       BigNumber.from(amountScaled.toString()),
-      swapOptions,
+      swapOptions
     );
 
     // Both are scaled amounts
     console.log(
-      `[SorManager] ${swapInfoV2.returnAmount.toString()}: V2 return amount`,
+      `[SorManager] ${swapInfoV2.returnAmount.toString()}: V2 return amount`
     );
     console.log(
-      `[SorManager] ${swapInfoV2.returnAmountConsideringFees.toString()}: V2 return amount with fees`,
+      `[SorManager] ${swapInfoV2.returnAmountConsideringFees.toString()}: V2 return amount with fees`
     );
 
     return {
@@ -177,7 +177,7 @@ export class SorManager {
       // TO DO - This could be used to provide more info to UI?
       if (this.fetchStatus.v2success === false) {
         console.log(
-          `[SorManager] Error Fetching V2 Pools - No Liquidity Sources.`,
+          `[SorManager] Error Fetching V2 Pools - No Liquidity Sources.`
         );
         return false;
       }

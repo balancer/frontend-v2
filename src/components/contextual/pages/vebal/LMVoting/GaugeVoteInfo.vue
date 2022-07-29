@@ -27,11 +27,11 @@ const { fNum2 } = useNumbers();
  */
 
 const votesThisPeriod = computed<string>(() =>
-  formatVotesAsPercent(props.gauge.votes),
+  formatVotesAsPercent(props.gauge.votes)
 );
 
 const votesNextPeriod = computed<string>(() =>
-  formatVotesAsPercent(props.gauge.votesNextPeriod),
+  formatVotesAsPercent(props.gauge.votesNextPeriod)
 );
 
 const voteDifference = computed<number>(() => {

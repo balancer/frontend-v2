@@ -130,16 +130,16 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
     gauge.pool.poolType,
     gauge.pool.address,
-    gauge.pool.tokens,
+    gauge.pool.tokens
   );
   return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || '',
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );
 }
 
 function networkSrc(network: Network) {
   return require(`@/assets/images/icons/networks/${networkNameFor(
-    network,
+    network
   )}.svg`);
 }
 
@@ -147,7 +147,7 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
   window.location.href = poolURLFor(
     gauge.pool.id,
     gauge.network,
-    gauge.pool.poolType,
+    gauge.pool.poolType
   );
 }
 

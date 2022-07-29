@@ -71,10 +71,10 @@ export default class Match0xService {
 
       const response = await axios.get<MatchaPriceQuote | null>(
         `${this.baseURL}/price?sellToken=${toErc20Address(
-          sellToken,
+          sellToken
         )}&buyToken=${toErc20Address(
-          buyToken,
-        )}&${swapSide}=${amount}&${MATCHA_DEFAULT_OPTIONS}`,
+          buyToken
+        )}&${swapSide}=${amount}&${MATCHA_DEFAULT_OPTIONS}`
       );
       return this.toPriceInformation(response.data, kind);
     } catch (e) {
@@ -86,7 +86,7 @@ export default class Match0xService {
 
   private toPriceInformation(
     priceRaw: MatchaPriceQuote | null,
-    kind: OrderKind,
+    kind: OrderKind
   ): PriceInformation | null {
     if (!priceRaw || !priceRaw.price) {
       return null;

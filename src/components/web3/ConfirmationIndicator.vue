@@ -52,12 +52,12 @@ const {
       explorerLink,
     };
   },
-  reactive({ enabled: isQueryEnabled }),
+  reactive({ enabled: isQueryEnabled })
 );
 
 const isLoading = computed(
   (): boolean =>
-    isFetchingConfirmationDate.value || isIdle.value || !!error.value,
+    isFetchingConfirmationDate.value || isIdle.value || !!error.value
 );
 </script>
 

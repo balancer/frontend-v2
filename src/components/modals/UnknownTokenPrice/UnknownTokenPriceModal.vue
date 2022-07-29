@@ -54,17 +54,17 @@ const unknownTokenPrices = computed((): TokenPrices => {
  */
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
-    tokenAddress => getToken(tokenAddress).symbol,
+    tokenAddress => getToken(tokenAddress).symbol
   );
   return formatWordListAsSentence(tokenSymbols, t);
 });
 
 const isSubmitDisabled = computed(() => {
   const noPricesEntered = props.unknownTokens.some(token =>
-    [null, ''].includes(unknownTokenPrices[token]),
+    [null, ''].includes(unknownTokenPrices[token])
   );
   const hasLargePrice = props.unknownTokens.some(token =>
-    bnum(unknownTokenPrices?.[token]?.[FiatCurrency.usd] || '0').gt(PRICE_CAP),
+    bnum(unknownTokenPrices?.[token]?.[FiatCurrency.usd] || '0').gt(PRICE_CAP)
   );
   return noPricesEntered || hasLargePrice;
 });
@@ -74,7 +74,7 @@ const isSubmitDisabled = computed(() => {
  */
 function getIndexOfUnknownToken(address: string) {
   return seedTokens.value.findIndex(token =>
-    isSameAddress(address, token.tokenAddress),
+    isSameAddress(address, token.tokenAddress)
   );
 }
 

@@ -58,7 +58,7 @@ const lockActionStates = reactive<LockActionState[]>(
     confirming: false,
     confirmed: false,
     confirmedAt: '',
-  })),
+  }))
 );
 
 /**
@@ -71,7 +71,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.lockablePoolTokenInfo.address],
-  ref([props.lockAmount]),
+  ref([props.lockAmount])
 );
 const { fNum2 } = useNumbers();
 
@@ -91,7 +91,7 @@ const actions = ref<TransactionActionInfo[]>([...lockActions]);
  * COMPUTED
  */
 const lockActionStatesConfirmed = computed(() =>
-  lockActionStates.every(lockActionState => lockActionState.confirmed),
+  lockActionStates.every(lockActionState => lockActionState.confirmed)
 );
 
 /**
@@ -100,7 +100,7 @@ const lockActionStatesConfirmed = computed(() =>
 async function handleTransaction(
   tx: TransactionResponse,
   lockType: LockType,
-  actionIndex: number,
+  actionIndex: number
 ): Promise<void> {
   addTransaction({
     id: tx.hash,
@@ -144,17 +144,17 @@ async function submit(lockType: LockType, actionIndex: number) {
       tx = await balancerContractsService.veBAL.createLock(
         getProvider(),
         props.lockAmount,
-        props.lockEndDate,
+        props.lockEndDate
       );
     } else if (lockType === LockType.EXTEND_LOCK) {
       tx = await balancerContractsService.veBAL.extendLock(
         getProvider(),
-        props.lockEndDate,
+        props.lockEndDate
       );
     } else if (lockType === LockType.INCREASE_LOCK) {
       tx = await balancerContractsService.veBAL.increaseLock(
         getProvider(),
-        props.lockAmount,
+        props.lockAmount
       );
     } else {
       throw new Error('Unsupported lockType provided');
@@ -188,12 +188,12 @@ watch(lockActionStatesConfirmed, () => {
 onBeforeMount(async () => {
   const approvalAmount = parseUnits(
     props.lockAmount,
-    props.lockablePoolTokenInfo.decimals,
+    props.lockablePoolTokenInfo.decimals
   ).toString();
 
   const approvalActions = await getTokenApprovalActionsForSpender(
     configService.network.addresses.veBAL,
-    approvalAmount,
+    approvalAmount
   );
 
   actions.value.unshift(...approvalActions);

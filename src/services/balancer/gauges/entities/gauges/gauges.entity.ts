@@ -5,7 +5,7 @@ import { gaugeQueryBuilder } from './query';
 export class GaugesEntity {
   constructor(
     private readonly service: GaugesSubgraphService,
-    private readonly query: QueryBuilder = gaugeQueryBuilder,
+    private readonly query: QueryBuilder = gaugeQueryBuilder
   ) {}
 
   public async get(args = {}, attrs = {}): Promise<SubgraphGauge[]> {

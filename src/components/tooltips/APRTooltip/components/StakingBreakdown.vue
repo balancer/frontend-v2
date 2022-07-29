@@ -36,10 +36,10 @@ const stakingAPR = computed((): PoolAPRs['staking'] => apr.value?.staking);
 const minBalAPR = computed((): string => stakingAPR.value?.bal.min || '0');
 const maxBalAPR = computed((): string => stakingAPR.value?.bal.max || '0');
 const rewardTokensAPR = computed(
-  (): string => stakingAPR.value?.rewards || '0',
+  (): string => stakingAPR.value?.rewards || '0'
 );
 const hasRewardTokens = computed((): boolean =>
-  bnum(rewardTokensAPR.value).gt(0),
+  bnum(rewardTokensAPR.value).gt(0)
 );
 
 /**
@@ -64,8 +64,8 @@ const boostedTotalAPR = computed((): string => {
 const unboostedTotalAPR = computed((): string =>
   fNum2(
     bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
-    FNumFormats.percent,
-  ),
+    FNumFormats.percent
+  )
 );
 
 const breakdownItems = computed((): Array<any> => {

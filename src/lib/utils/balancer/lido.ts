@@ -25,7 +25,7 @@ export function isWstEthAddress(address: string): boolean {
 
 export function includesWstEth(
   addresses: string[],
-  wstEthAddress = configService.network.addresses.wstETH,
+  wstEthAddress = configService.network.addresses.wstETH
 ): boolean {
   if (!wstEthAddress) return false;
 
@@ -41,7 +41,7 @@ export function getWstETHByStETH(stETHAmount: BigNumberish) {
     [
       'function getWstETHByStETH(uint256 stETHAmount) external view returns (uint256)',
     ],
-    rpcProviderService.jsonProvider,
+    rpcProviderService.jsonProvider
   );
   return wstETH.getWstETHByStETH(stETHAmount);
 }
@@ -55,7 +55,7 @@ export function getStETHByWstETH(wstETHAmount: BigNumberish) {
     [
       'function getStETHByWstETH(uint256 wstETHAmount) external view returns (uint256)',
     ],
-    rpcProviderService.jsonProvider,
+    rpcProviderService.jsonProvider
   );
   return wstETH.getStETHByWstETH(wstETHAmount);
 }

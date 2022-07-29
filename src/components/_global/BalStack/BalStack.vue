@@ -88,7 +88,7 @@ export default defineComponent({
       if (Array.isArray(styledNestedChildren)) {
         // and those children can be nullish too
         const nonNullishChildren = styledNestedChildren.filter(
-          nestedChild => nestedChild !== undefined || nestedChild !== null,
+          nestedChild => nestedChild !== undefined || nestedChild !== null
         );
         styledNestedChildren = nonNullishChildren.map(
           (nestedChild, nestedChildIndex) => {
@@ -99,14 +99,14 @@ export default defineComponent({
                   ? stackNodeClass
                   : null,
             });
-          },
+          }
         );
         return h(
           child,
           {
             class: childIndex !== children.length - 1 ? stackNodeClass : null,
           },
-          [styledNestedChildren],
+          [styledNestedChildren]
         );
       }
       return h(child, {
@@ -133,7 +133,7 @@ export default defineComponent({
           },
         ],
       },
-      [styledChildren],
+      [styledChildren]
     );
   },
 });

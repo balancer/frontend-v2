@@ -32,7 +32,7 @@ const { lockAmount } = useLockState();
 const lockAmountFiatValue = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
-    .times(lockAmount.value),
+    .times(lockAmount.value)
 );
 </script>
 

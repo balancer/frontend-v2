@@ -39,7 +39,7 @@ export class PriceService {
 
   constructor(
     service: CoingeckoService,
-    private readonly configService = _configService,
+    private readonly configService = _configService
   ) {
     this.client = service.client;
     this.fiatParam = service.supportedFiat;
@@ -53,7 +53,7 @@ export class PriceService {
   async getNativeAssetPrice(): Promise<Price> {
     try {
       const response = await this.client.get<PriceResponse>(
-        `/simple/price?ids=${this.nativeAssetId}&vs_currencies=${this.fiatParam}`,
+        `/simple/price?ids=${this.nativeAssetId}&vs_currencies=${this.fiatParam}`
       );
       return response[this.nativeAssetId];
     } catch (error) {
@@ -67,7 +67,7 @@ export class PriceService {
    */
   async getTokens(
     addresses: string[],
-    addressesPerRequest = 100,
+    addressesPerRequest = 100
   ): Promise<TokenPrices> {
     try {
       if (addresses.length / addressesPerRequest > 10)
@@ -81,13 +81,13 @@ export class PriceService {
       pages.forEach(page => {
         const addressString = addresses.slice(
           addressesPerRequest * page,
-          addressesPerRequest * (page + 1),
+          addressesPerRequest * (page + 1)
         );
         const endpoint = `/simple/token_price/${this.platformId}?contract_addresses=${addressString}&vs_currencies=${this.fiatParam}`;
         const request = retryPromiseWithDelay(
           this.client.get<PriceResponse>(endpoint),
           3,
-          2000,
+          2000
         );
         requests.push(request);
       });
@@ -111,7 +111,7 @@ export class PriceService {
     addresses: string[],
     days: number,
     addressesPerRequest = 1,
-    aggregateBy: 'hour' | 'day' = 'day',
+    aggregateBy: 'hour' | 'day' = 'day'
   ): Promise<HistoricalPrices> {
     try {
       if (addresses.length / addressesPerRequest > 10)
@@ -134,7 +134,7 @@ export class PriceService {
         const request = retryPromiseWithDelay(
           this.client.get<HistoricalPriceResponse>(endpoint),
           2, // retryCount
-          2000, // delayTime
+          2000 // delayTime
         );
         requests.push(request);
       });
@@ -144,7 +144,7 @@ export class PriceService {
         paginatedResults,
         addresses,
         start,
-        aggregateBy,
+        aggregateBy
       );
       return results;
     } catch (error) {
@@ -156,7 +156,7 @@ export class PriceService {
   private parsePaginatedTokens(paginatedResults: TokenPrices[]): TokenPrices {
     const results = paginatedResults.reduce(
       (result, page) => ({ ...result, ...page }),
-      {},
+      {}
     );
     const entries = Object.entries(results);
     const parsedEntries = entries
@@ -169,7 +169,7 @@ export class PriceService {
     results: HistoricalPriceResponse[],
     addresses: string[],
     start: number,
-    aggregateBy: 'day' | 'hour' = 'day',
+    aggregateBy: 'day' | 'hour' = 'day'
   ): HistoricalPrices {
     const assetPrices = Object.fromEntries(
       addresses.map((address, index) => {
@@ -179,7 +179,7 @@ export class PriceService {
 
         if (aggregateBy === 'hour') {
           const pricesByHour = groupBy(result, r =>
-            getUnixTime(startOfHour(fromUnixTime(r[0] / 1000))),
+            getUnixTime(startOfHour(fromUnixTime(r[0] / 1000)))
           );
           for (const key of Object.keys(pricesByHour)) {
             const price = (last(pricesByHour[key]) || [])[1] || 0;
@@ -193,7 +193,7 @@ export class PriceService {
         }
 
         return [address, prices];
-      }),
+      })
     );
 
     const prices = {};

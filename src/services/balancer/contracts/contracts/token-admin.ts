@@ -13,7 +13,7 @@ export class BalancerTokenAdmin {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = TokenAdminAbi,
     private readonly config = configService,
-    private readonly web3 = web3Service,
+    private readonly web3 = web3Service
   ) {}
 
   async getInflationRate() {

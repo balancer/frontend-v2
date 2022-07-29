@@ -12,10 +12,10 @@ export async function calcUSDPlusWeightedAPR(
   linearPool: LinearPoolData,
   linearPoolAddress: string,
   prices: TokenPrices,
-  currency: FiatCurrency,
+  currency: FiatCurrency
 ): Promise<string> {
   const { data: apr } = await axios.get(
-    'https://app.overnight.fi/api/balancer/week/apr',
+    'https://app.overnight.fi/api/balancer/week/apr'
   );
 
   const mainToken = linearPool.mainToken.address;

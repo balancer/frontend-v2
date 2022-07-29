@@ -89,10 +89,10 @@ const stickyHeaderRef = ref();
 const isColumnStuck = ref(false);
 const tableData = ref(props.data);
 const currentSortDirection = ref<InitialState['sortDirection']>(
-  props.initialState?.sortDirection || null,
+  props.initialState?.sortDirection || null
 );
 const currentSortColumn = ref<InitialState['sortColumn']>(
-  props.initialState?.sortColumn || null,
+  props.initialState?.sortColumn || null
 );
 const headerRef = ref<HTMLElement>();
 const bodyRef = ref<HTMLElement>();
@@ -135,7 +135,7 @@ const handleSort = (columnId: string | null, updateDirection = true) => {
 
   const sortedData = sortBy(
     (props.data as any).value || props.data,
-    column.sortKey,
+    column.sortKey
   );
   if (currentSortDirection.value === 'asc') {
     tableData.value = sortedData;
@@ -188,23 +188,23 @@ onMounted(() => {
 const unpinnedData = computed(() => {
   if (!props.pin) return tableData.value;
   return (tableData.value || []).filter(
-    data => !props.pin?.pinnedData.includes(data[props.pin.pinOn]),
+    data => !props.pin?.pinnedData.includes(data[props.pin.pinOn])
   );
 });
 
 const pinnedData = computed(() => {
   if (!props.pin) return [];
   return (tableData.value || []).filter(data =>
-    props.pin?.pinnedData.includes(data[props.pin.pinOn]),
+    props.pin?.pinnedData.includes(data[props.pin.pinOn])
   );
 });
 
 const filteredColumns = computed(() =>
-  props.columns.filter(column => !column.hidden),
+  props.columns.filter(column => !column.hidden)
 );
 
 const shouldRenderTotals = computed(() =>
-  props.columns.some(column => column.totalsCell !== undefined),
+  props.columns.some(column => column.totalsCell !== undefined)
 );
 
 watch(
@@ -215,7 +215,7 @@ watch(
       return;
     }
     tableData.value = newData;
-  },
+  }
 );
 </script>
 

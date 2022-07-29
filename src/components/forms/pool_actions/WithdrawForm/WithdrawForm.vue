@@ -52,7 +52,7 @@ const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   isProportional,
   tokenOut,
-  tokenOutIndex,
+  tokenOutIndex
 );
 
 const {
@@ -72,11 +72,11 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
  * COMPUTED
  */
 const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? highPriceImpactAccepted.value : true,
+  highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
 
 const hasValidInputs = computed(
-  (): boolean => validInput.value && hasAcceptedHighPriceImpact.value,
+  (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
 );
 
 const singleAssetRules = computed(() => [

@@ -6,5 +6,5 @@ export default Object.fromEntries(
     .map(fileName => [
       fileName.replace('./', '').replace('.json', ''),
       requireFile(fileName),
-    ]),
+    ])
 );

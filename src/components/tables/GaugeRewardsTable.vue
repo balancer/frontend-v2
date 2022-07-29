@@ -85,7 +85,7 @@ const rewardsData = computed((): Reward[] => {
     const token = getToken(tokenAddress);
     const amount = formatUnits(
       props.gauge.claimableRewards[tokenAddress],
-      token.decimals,
+      token.decimals
     );
 
     return {

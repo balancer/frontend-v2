@@ -158,7 +158,7 @@ export default defineComponent({
     });
 
     const wrapType = computed(() =>
-      getWrapAction(tokenInAddress.value, tokenOutAddress.value),
+      getWrapAction(tokenInAddress.value, tokenOutAddress.value)
     );
     const isWrap = computed(() => wrapType.value === WrapType.Wrap);
     const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
@@ -178,7 +178,7 @@ export default defineComponent({
     const { isLoading: isLoadingApprovals } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
-      tokens,
+      tokens
     );
     const {
       trading,
@@ -206,7 +206,7 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
+      tokenOutAmount
     );
 
     const title = computed(() => {

@@ -26,7 +26,7 @@ export class PoolDecorator {
     private readonly stakingRewards = stakingRewardsService,
     private readonly poolServiceClass = PoolService,
     private readonly providerService = rpcProviderService,
-    private readonly poolSubgraph = balancerSubgraphService,
+    private readonly poolSubgraph = balancerSubgraphService
   ) {}
 
   public async decorate(
@@ -34,7 +34,7 @@ export class PoolDecorator {
     prices: TokenPrices,
     currency: FiatCurrency,
     tokens: TokenInfoMap,
-    includeAprs = true,
+    includeAprs = true
   ): Promise<Pool[]> {
     const processedPools = this.pools.map(pool => {
       const poolService = new this.poolServiceClass(pool);
@@ -77,7 +77,7 @@ export class PoolDecorator {
           currency,
           protocolFeePercentage,
           gaugeBALAprs[pool.id],
-          gaugeRewardTokenAprs[pool.id],
+          gaugeRewardTokenAprs[pool.id]
         );
       }
 
@@ -117,7 +117,7 @@ export class PoolDecorator {
     gauges: SubgraphGauge[] | undefined,
     tokens: TokenInfoMap,
     pools: Pool[],
-    includeAprs = true,
+    includeAprs = true
   ): Promise<
     [number, GaugeBalAprs, GaugeRewardTokenAprs] | [null, null, null]
   > {

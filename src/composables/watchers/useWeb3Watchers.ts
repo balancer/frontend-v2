@@ -32,7 +32,7 @@ export default function useWeb3Watchers() {
 
   function handleTransactionReplacement(
     tx: EthereumTransactionData,
-    replacementReason: ReplacementReason,
+    replacementReason: ReplacementReason
   ) {
     const originalHash = tx.replaceHash;
 
@@ -80,18 +80,18 @@ export default function useWeb3Watchers() {
         emitter.on('txSpeedUp', tx =>
           handleTransactionReplacement(
             tx as EthereumTransactionData,
-            'txSpeedUp',
-          ),
+            'txSpeedUp'
+          )
         );
 
         emitter.on('txCancel', tx =>
           handleTransactionReplacement(
             tx as EthereumTransactionData,
-            'txCancel',
-          ),
+            'txCancel'
+          )
         );
       }
-    },
+    }
   );
 
   // Watch for user network switch

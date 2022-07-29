@@ -79,7 +79,7 @@ const networks = [
  */
 const loading = computed(
   (): boolean =>
-    (isClaimsLoading.value || appLoading.value) && isWalletReady.value,
+    (isClaimsLoading.value || appLoading.value) && isWalletReady.value
 );
 
 const networkBtns = computed(() => {
@@ -128,7 +128,7 @@ const gaugeTables = computed((): GaugeTable[] => {
     const pool = gaugePools.value.find(pool => pool.id === gauge.poolId);
     const totalRewardValue = Object.values(gauge.claimableRewards).reduce(
       (acc, reward) => acc.plus(reward),
-      bnum(0),
+      bnum(0)
     );
 
     if (pool && totalRewardValue.gt(0))
@@ -172,7 +172,7 @@ function gaugeTitle(pool: GaugePool): string {
         `${fNum2(token.weight, {
           style: 'percent',
           maximumFractionDigits: 0,
-        })} ${token.symbol}`,
+        })} ${token.symbol}`
     )
     .join(' / ');
 }

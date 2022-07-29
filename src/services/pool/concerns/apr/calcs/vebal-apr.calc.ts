@@ -17,14 +17,14 @@ export class VeBalAprCalc {
     private readonly config = configService,
     private readonly balAddress = getAddress(TOKENS.Addresses.BAL),
     private readonly bbAUSDAddress = getAddress(
-      TOKENS.Addresses.bbaUSD as string,
-    ),
+      TOKENS.Addresses.bbaUSD as string
+    )
   ) {}
 
   public async calc(
     totalLiquidity: string,
     totalSupply: string,
-    prices: TokenPrices,
+    prices: TokenPrices
   ) {
     const { balAmount, bbAUSDAmount, bbaUSDPrice, veBalCurrentSupply } =
       await this.getData();
@@ -33,7 +33,7 @@ export class VeBalAprCalc {
       balAmount,
       bbAUSDAmount,
       bbaUSDPrice,
-      prices,
+      prices
     );
 
     const bptPrice = bnum(totalLiquidity).div(totalSupply);
@@ -94,7 +94,7 @@ export class VeBalAprCalc {
     balAmount: string,
     bbAUSDAmount: string,
     bbaUSDPrice: string,
-    prices: TokenPrices,
+    prices: TokenPrices
   ) {
     const balPrice = prices[this.balAddress];
 

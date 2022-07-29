@@ -98,11 +98,11 @@ const chartConfig = computed(() => ({
     itemHeight: 5,
     formatter: (legendName: string) => {
       const latestValue = last(
-        props.data.find(d => d.name === legendName)?.values as any,
+        props.data.find(d => d.name === legendName)?.values as any
       ) as [string | number, string | number];
       return `${legendName}: ${fNum2(
         latestValue[1],
-        props.axisLabelFormatter.yAxis,
+        props.axisLabelFormatter.yAxis
       )}`;
     },
     selected: props.legendState || {},
@@ -200,7 +200,7 @@ const chartConfig = computed(() => ({
                         ${fNum2(param.value[1], props.axisLabelFormatter.yAxis)}
                       </span>
                     </span>
-                  `,
+                  `
                 )
                 .join('')}
             </div>
@@ -285,12 +285,12 @@ watch(
     if (chartInstance.value) {
       chartInstance.value.resize();
     }
-  },
+  }
 );
 
 function setCurrentValueToLatest(updateCurrentValue: boolean) {
   const currentDayValue = numeral(
-    (props.data[0].values[props.data[0].values.length - 1] || [])[1],
+    (props.data[0].values[props.data[0].values.length - 1] || [])[1]
   );
 
   if (updateCurrentValue) {
@@ -300,7 +300,7 @@ function setCurrentValueToLatest(updateCurrentValue: boolean) {
         style: 'currency',
         currency: 'USD',
         fixedFormat: true,
-      },
+      }
     );
     const currentChartValue = props.data[0].values[0];
 
@@ -323,7 +323,7 @@ watch(
   () => props.data,
   () => {
     setCurrentValueToLatest(true);
-  },
+  }
 );
 
 // make sure to update the latest values when we get a fresh set of data
@@ -363,7 +363,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
         style: 'currency',
         currency: 'USD',
         fixedFormat: true,
-      },
+      }
     );
 
     // if first point in chart, show overall change

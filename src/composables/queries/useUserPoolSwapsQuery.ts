@@ -17,7 +17,7 @@ type PoolSwapsQueryResponse = {
 
 export default function useUserPoolSwapsQuery(
   id: string,
-  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {},
+  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {}
 ) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
@@ -58,6 +58,6 @@ export default function useUserPoolSwapsQuery(
   return useInfiniteQuery<PoolSwapsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions,
+    queryOptions
   );
 }

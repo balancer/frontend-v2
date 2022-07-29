@@ -74,7 +74,7 @@ export default defineComponent({
             });
           }
         }
-      },
+      }
     );
 
     const enter = async (el, done) => {

@@ -96,12 +96,12 @@ export default function usePoolCreation() {
   const tokensList = computed(() =>
     [...poolCreationState.tokensList].sort((tokenA, tokenB) => {
       return tokenA > tokenB ? 1 : -1;
-    }),
+    })
   );
 
   const hasInjectedToken = computed(() => {
     return tokensList.value.some(
-      token => injectedTokens.value[token]?.symbol !== undefined,
+      token => injectedTokens.value[token]?.symbol !== undefined
     );
   });
 
@@ -114,7 +114,7 @@ export default function usePoolCreation() {
     let bottleneckToken = validTokens[0];
     // keeping track of the lowest amt
     let currentMin = bnum(balanceFor(validTokens[0])).times(
-      priceFor(validTokens[0]),
+      priceFor(validTokens[0])
     );
 
     // find the bottleneck token
@@ -127,7 +127,7 @@ export default function usePoolCreation() {
     }
     let bottleneckWeight =
       poolCreationState.seedTokens.find(t =>
-        isSameAddress(t.tokenAddress, bottleneckToken),
+        isSameAddress(t.tokenAddress, bottleneckToken)
       )?.weight || 0;
     let bottleneckPrice = priceFor(bottleneckToken || '0');
 
@@ -144,7 +144,7 @@ export default function usePoolCreation() {
       bottleneckToken = nativeAsset.address;
       bottleneckWeight =
         poolCreationState.seedTokens.find(t =>
-          isSameAddress(t.tokenAddress, wrappedNativeAsset.value.address),
+          isSameAddress(t.tokenAddress, wrappedNativeAsset.value.address)
         )?.weight || 0;
       bottleneckPrice = priceFor(wrappedNativeAsset.value.address);
     }
@@ -175,7 +175,7 @@ export default function usePoolCreation() {
 
   const maxInitialLiquidity = computed(() => {
     return sumBy(Object.values(getOptimisedLiquidity()), (liq: any) =>
-      Number(liq.liquidityRequired),
+      Number(liq.liquidityRequired)
     );
   });
 
@@ -191,7 +191,7 @@ export default function usePoolCreation() {
     let total = bnum(0);
     for (const token of poolCreationState.seedTokens) {
       total = total.plus(
-        bnum(token.amount).times(priceFor(token.tokenAddress)),
+        bnum(token.amount).times(priceFor(token.tokenAddress))
       );
     }
     return total;
@@ -231,11 +231,11 @@ export default function usePoolCreation() {
         let weightsMatch = true;
         for (const token of pool.tokens) {
           const relevantToken = poolCreationState.seedTokens.find(t =>
-            isSameAddress(t.tokenAddress, token.address),
+            isSameAddress(t.tokenAddress, token.address)
           );
           const similarPoolWeight = Number(token.weight).toFixed(2);
           const seedTokenWeight = ((relevantToken?.weight || 0) / 100).toFixed(
-            2,
+            2
           );
           if (similarPoolWeight !== seedTokenWeight) {
             weightsMatch = false;
@@ -251,7 +251,7 @@ export default function usePoolCreation() {
   const isWethPool = computed((): boolean => {
     return includesAddress(
       tokensList.value,
-      configService.network.addresses.weth,
+      configService.network.addresses.weth
     );
   });
 
@@ -316,7 +316,7 @@ export default function usePoolCreation() {
 
   function findSeedTokenByAddress(address: string) {
     return poolCreationState.seedTokens.find((token: PoolSeedToken) =>
-      isSameAddress(token.tokenAddress, address),
+      isSameAddress(token.tokenAddress, address)
     );
   }
 
@@ -365,7 +365,7 @@ export default function usePoolCreation() {
   }
 
   function getTokensScaledByBIP(
-    bip: BigNumber,
+    bip: BigNumber
   ): Record<string, OptimisedLiquidity> {
     const optimisedLiquidity = {};
     for (const token of poolCreationState.seedTokens) {
@@ -391,7 +391,7 @@ export default function usePoolCreation() {
         const scaledAmount = scale(amount, tokenInfo.decimals);
         const scaledRoundedAmount = scaledAmount.dp(0, BigNumber.ROUND_FLOOR);
         return scaledRoundedAmount.toString();
-      },
+      }
     );
     return scaledAmounts;
   }
@@ -409,7 +409,7 @@ export default function usePoolCreation() {
         return tokenInfo
           ? `${Math.round(weightRounded)}${tokenInfo.symbol}`
           : '';
-      },
+      }
     );
 
     return valid ? tokenSymbols.join('-') : '';
@@ -424,7 +424,7 @@ export default function usePoolCreation() {
         poolCreationState.symbol,
         poolCreationState.initialFee,
         poolCreationState.seedTokens,
-        poolOwner.value,
+        poolOwner.value
       );
       poolCreationState.createPoolTxHash = tx.hash;
       saveState();
@@ -463,14 +463,14 @@ export default function usePoolCreation() {
           if (
             isSameAddress(
               token.tokenAddress,
-              wrappedNativeAsset.value.address,
+              wrappedNativeAsset.value.address
             ) &&
             poolCreationState.useNativeAsset
           ) {
             return nativeAsset.address;
           }
           return token.tokenAddress;
-        },
+        }
       );
       const tx = await balancerService.pools.weighted.initJoin(
         provider,
@@ -478,7 +478,7 @@ export default function usePoolCreation() {
         account.value,
         account.value,
         tokenAddresses,
-        getScaledAmounts(),
+        getScaledAmounts()
       );
 
       addTransaction({
@@ -516,7 +516,7 @@ export default function usePoolCreation() {
     lsSet(
       POOL_CREATION_STATE_KEY,
       JSON.stringify(poolCreationState),
-      POOL_CREATION_STATE_VERSION,
+      POOL_CREATION_STATE_VERSION
     );
   }
 
@@ -539,7 +539,7 @@ export default function usePoolCreation() {
     const response =
       await balancerService.pools.weighted.retrievePoolIdAndAddress(
         getProvider(),
-        hash,
+        hash
       );
     poolCreationState.poolId = response.id;
     poolCreationState.poolAddress = response.address;
@@ -552,7 +552,7 @@ export default function usePoolCreation() {
     const details =
       await balancerService.pools.weighted.retrievePoolDetailsFromCall(
         getProvider(),
-        hash,
+        hash
       );
     if (!details) return;
     poolCreationState.seedTokens = details.tokens.map((token, i) => {

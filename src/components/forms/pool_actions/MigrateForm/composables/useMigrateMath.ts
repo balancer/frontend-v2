@@ -32,7 +32,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
     tokens,
     balances,
     'exit',
-    ref(false),
+    ref(false)
   );
 
   const toPoolCalculator = new PoolCalculator(
@@ -40,7 +40,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
     tokens,
     balances,
     'join',
-    ref(false),
+    ref(false)
   );
 
   /**
@@ -63,30 +63,30 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   const batchSwapLoaded = computed(() => batchSwap.value != null);
 
   const bptBalanceScaled = computed(() =>
-    parseUnits(bptBalance.value, poolDecimals.value).toString(),
+    parseUnits(bptBalance.value, poolDecimals.value).toString()
   );
 
   const shouldFetchBatchSwap = computed(
-    () => toPoolTypes.isStablePhantomPool.value,
+    () => toPoolTypes.isStablePhantomPool.value
   );
 
   const poolTokens = computed(() =>
-    fromPool.value.tokensList.map(address => getToken(address)),
+    fromPool.value.tokensList.map(address => getToken(address))
   );
 
   const fullAmounts = computed(() => {
     const { receive } = fromPoolCalculator.propAmountsGiven(
       bptBalance.value,
       0,
-      'send',
+      'send'
     );
     return receive;
   });
 
   const fullAmountsScaled = computed(() =>
     fullAmounts.value.map((amount, i) =>
-      parseUnits(amount, poolTokens.value[i].decimals),
-    ),
+      parseUnits(amount, poolTokens.value[i].decimals)
+    )
   );
 
   const fullBPTOut = computed((): string => {
@@ -136,21 +136,21 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
       amount,
     ]);
     const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-      (amount as BigNumber).gt(0),
+      (amount as BigNumber).gt(0)
     );
     return Object.fromEntries(onlyTokensWithAmounts);
   });
 
   const fiatAmounts = computed((): string[] =>
     fromPool.value.tokensList.map((address, i) =>
-      toFiat(fullAmounts.value[i], address),
-    ),
+      toFiat(fullAmounts.value[i], address)
+    )
   );
 
   const fiatTotal = computed(() => bnSum(fiatAmounts.value).toString());
 
   const fiatTotalLabel = computed(() =>
-    fNum2(fiatTotal.value, FNumFormats.fiat),
+    fNum2(fiatTotal.value, FNumFormats.fiat)
   );
 
   /**
@@ -168,7 +168,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
       balancerContractsService.vault.instance as any,
       Object.keys(batchSwapAmountMap.value),
       Object.values(batchSwapAmountMap.value),
-      toPool.value.address.toLowerCase(),
+      toPool.value.address.toLowerCase()
     );
 
     batchSwapLoading.value = false;

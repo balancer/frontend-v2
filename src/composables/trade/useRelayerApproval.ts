@@ -29,7 +29,7 @@ const relayerAddressMap = {
 
 export default function useRelayerApproval(
   relayer: Relayer,
-  isEnabled: Ref<boolean> = ref(true),
+  isEnabled: Ref<boolean> = ref(true)
 ) {
   /**
    * STATE
@@ -53,15 +53,14 @@ export default function useRelayerApproval(
    */
   const isUnlocked = computed(
     () =>
-      approved.value ||
-      (!isEnabled.value ? true : !!relayerApproval.data.value),
+      approved.value || (!isEnabled.value ? true : !!relayerApproval.data.value)
   );
 
   const loading = computed(
     (): boolean =>
       relayerApproval.isLoading.value ||
       relayerApproval.isError.value ||
-      relayerApproval.isIdle.value,
+      relayerApproval.isIdle.value
   );
 
   const action = computed(
@@ -71,7 +70,7 @@ export default function useRelayerApproval(
       confirmingLabel: t('approvingBatchRelayer'),
       stepTooltip: t('approveBatchRelayerTooltip'),
       action: approve,
-    }),
+    })
   );
 
   /**
@@ -86,7 +85,7 @@ export default function useRelayerApproval(
         configService.network.addresses.vault,
         Vault__factory.abi,
         'setRelayerApproval',
-        [account.value, relayerAddress.value, true],
+        [account.value, relayerAddress.value, true]
       );
 
       init.value = false;

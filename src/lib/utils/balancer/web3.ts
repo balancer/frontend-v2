@@ -32,7 +32,7 @@ export async function sendTransaction(
   action: string,
   params: any[],
   overrides: Record<string, any> = {},
-  forceEthereumLegacyTxType = false,
+  forceEthereumLegacyTxType = false
 ): Promise<TransactionResponse> {
   console.log('Sending transaction');
   console.log('Contract', contractAddress);
@@ -47,7 +47,7 @@ export async function sendTransaction(
     // Gas estimation
     const gasLimitNumber = await contractWithSigner.estimateGas[action](
       ...params,
-      paramsOverrides,
+      paramsOverrides
     );
 
     const gasLimit = gasLimitNumber.toNumber();
@@ -90,7 +90,7 @@ export async function sendTransaction(
         action,
         params,
         overrides,
-        true,
+        true
       );
     } else if (
       error.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
@@ -109,7 +109,7 @@ export async function callStatic(
   abi: any[],
   action: string,
   params: any[],
-  overrides = {},
+  overrides = {}
 ) {
   console.log('Sending transaction');
   console.log('Contract', contractAddress);

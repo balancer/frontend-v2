@@ -80,7 +80,7 @@ const percentageLabel = computed(() => {
 });
 
 const seedTokens = computed((): number[] =>
-  Object.values(props.pool?.onchain?.tokens || []).map(token => token.weight),
+  Object.values(props.pool?.onchain?.tokens || []).map(token => token.weight)
 );
 
 /**

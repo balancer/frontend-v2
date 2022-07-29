@@ -135,8 +135,8 @@ const swapRows = computed<SwapRow[]>(() =>
             formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
             tx,
           };
-        },
-      ),
+        }
+      )
 );
 </script>
 

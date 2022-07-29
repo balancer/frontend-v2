@@ -29,7 +29,7 @@ export default class BalancerContractsService {
   constructor(
     readonly configService = _configService,
     readonly rpcProviderService = _rpcProviderService,
-    readonly sdk = balancer,
+    readonly sdk = balancer
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
     this.config = this.configService.network;
@@ -53,8 +53,8 @@ export default class BalancerContractsService {
           ...StaticATokenLMAbi,
           ...ERC20_ABI,
           ...IERC4626,
-        ].map(row => [row.name, row]),
-      ),
+        ].map(row => [row.name, row])
+      )
     );
   }
 }

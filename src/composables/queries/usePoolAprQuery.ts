@@ -20,7 +20,7 @@ import usePoolQuery from './usePoolQuery';
 
 export default function usePoolAprQuery(
   id: string,
-  options: QueryObserverOptions<PoolAPRs> = {},
+  options: QueryObserverOptions<PoolAPRs> = {}
 ) {
   /**
    * @description
@@ -109,7 +109,7 @@ export default function usePoolAprQuery(
       currency.value,
       protocolFeePercentage,
       gaugeBALAprs[_pool.id],
-      gaugeRewardTokenAprs[_pool.id],
+      gaugeRewardTokenAprs[_pool.id]
     );
 
     return apr;

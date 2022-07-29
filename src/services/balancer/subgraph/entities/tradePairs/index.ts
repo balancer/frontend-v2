@@ -25,7 +25,7 @@ export default class TradePairSnapshots {
 
   constructor(
     service: Service,
-    query: QueryBuilder = tradePairSnapshotQueryBuilder,
+    query: QueryBuilder = tradePairSnapshotQueryBuilder
   ) {
     this.service = service;
     this.query = query;

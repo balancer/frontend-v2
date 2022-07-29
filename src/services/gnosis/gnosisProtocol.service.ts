@@ -53,7 +53,7 @@ export default class GnosisProtocolService {
       },
       {
         validateStatus: () => true,
-      },
+      }
     );
 
     if (response.status >= 200 && response.status < 300) {
@@ -62,7 +62,7 @@ export default class GnosisProtocolService {
 
     const errorMessage = OperatorError.getErrorFromStatusCode(
       response,
-      'create',
+      'create'
     );
 
     throw new Error(errorMessage);
@@ -83,7 +83,7 @@ export default class GnosisProtocolService {
           from: owner,
         },
         validateStatus: () => true,
-      },
+      }
     );
 
     if (response.status >= 200 && response.status < 300) {
@@ -92,7 +92,7 @@ export default class GnosisProtocolService {
 
     const errorMessage = OperatorError.getErrorFromStatusCode(
       response,
-      'delete',
+      'delete'
     );
 
     throw new Error(errorMessage);
@@ -101,7 +101,7 @@ export default class GnosisProtocolService {
   public async getOrder(orderId: OrderID) {
     try {
       const { data } = await axios.get<OrderMetaData>(
-        `${this.baseURL}/orders/${orderId}`,
+        `${this.baseURL}/orders/${orderId}`
       );
 
       return data;
@@ -118,7 +118,7 @@ export default class GnosisProtocolService {
       feeQuoteParams,
       {
         validateStatus: () => true,
-      },
+      }
     );
 
     if (response.status >= 200 && response.status < 300) {
@@ -140,11 +140,11 @@ export default class GnosisProtocolService {
         kind,
       });
       const market = `${toErc20Address(baseToken)}-${toErc20Address(
-        quoteToken,
+        quoteToken
       )}`;
 
       const response = await axios.get<PriceInformation>(
-        `${this.baseURL}/markets/${market}/${kind}/${amount}`,
+        `${this.baseURL}/markets/${market}/${kind}/${amount}`
       );
 
       return response.data;

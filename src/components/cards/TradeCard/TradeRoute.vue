@@ -234,7 +234,7 @@ export default defineComponent({
       addressOut: string,
       pools: SubgraphPoolBase[],
       swaps: SwapV2[],
-      addresses: string[],
+      addresses: string[]
     ) {
       const { addresses: constants } = appNetworkConfig;
 

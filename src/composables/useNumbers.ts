@@ -51,7 +51,7 @@ export type Preset = keyof typeof PresetFormats;
 export function fNum(
   number: number | string,
   preset: Preset | null = 'default',
-  options: Options = {},
+  options: Options = {}
 ): string {
   if (options.format) return numeral(number).format(options.format);
 
@@ -79,14 +79,14 @@ export function fNum(
   }
 
   return numeral(number).format(
-    PresetFormats[adjustedPreset || preset || 'default'],
+    PresetFormats[adjustedPreset || preset || 'default']
   );
 }
 
 export function numF(
   number: number | string,
   options: FNumOptions | undefined = {},
-  currency: FiatCurrency = FiatCurrency.usd,
+  currency: FiatCurrency = FiatCurrency.usd
 ): string {
   if (typeof number === 'string') {
     if (number === 'NaN') number = 0;
@@ -114,7 +114,7 @@ export function numF(
     const fractionDigits = 2;
     number = item
       ? new BigNumber(
-          (number / item.value).toFixed(fractionDigits).replace(rx, '$1'),
+          (number / item.value).toFixed(fractionDigits).replace(rx, '$1')
         ).toNumber()
       : number;
   }
@@ -178,7 +178,7 @@ export default function useNumbers() {
 
   function fNum2(
     number: number | string,
-    options: FNumOptions | undefined = {},
+    options: FNumOptions | undefined = {}
   ): string {
     const _currency = currency?.value || FiatCurrency.usd;
     return numF(number, options, _currency);

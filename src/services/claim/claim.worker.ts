@@ -21,8 +21,8 @@ registerPromiseWorker((message: ClaimWorkerMessage) => {
     const proof = merkleTree.getHexProof(
       soliditySha3(
         { t: 'address', v: account },
-        { t: 'uint', v: scaledBalance },
-      ),
+        { t: 'uint', v: scaledBalance }
+      )
     ) as string[];
 
     return [parseInt(claim.id), scaledBalance, distributor, tokenIndex, proof];

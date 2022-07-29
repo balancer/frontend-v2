@@ -28,7 +28,7 @@ const { theme } = useTailwind();
  * COMPUTED
  */
 const gradientId = computed(
-  (): string => `stars-gradient-${props.gradFrom}-${props.gradTo}`,
+  (): string => `stars-gradient-${props.gradFrom}-${props.gradTo}`
 );
 </script>
 

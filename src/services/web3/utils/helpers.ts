@@ -56,7 +56,7 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
       const response = await provider.request(request);
       if (response?.error) {
         throw new Error(
-          `Failed to add network information to wallet. ${response.error.code}:${response.error.message}`,
+          `Failed to add network information to wallet. ${response.error.code}:${response.error.message}`
         );
       }
       return true;
@@ -67,7 +67,7 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
     console.error(
       `An error occurred while attempting to add network information to wallet. ${
         (err as Error).message
-      }`,
+      }`
     );
     return false;
   }

@@ -10,7 +10,7 @@ export enum EthereumTxType {
 
 const lsEthereumTxType = lsGet(
   LS_KEYS.App.EthereumTxType,
-  EthereumTxType.EIP1559,
+  EthereumTxType.EIP1559
 );
 
 // STATE

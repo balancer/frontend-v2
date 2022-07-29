@@ -37,7 +37,7 @@ async function getPairPriceData(
   nativeAsset: string,
   wrappedNativeAsset: string,
   days: number,
-  inverse?: boolean,
+  inverse?: boolean
 ) {
   let _inputAsset =
     inputAsset === nativeAsset ? wrappedNativeAsset : inputAsset;
@@ -52,14 +52,14 @@ async function getPairPriceData(
     [_inputAsset],
     days,
     1,
-    aggregateBy,
+    aggregateBy
   );
 
   const getOutputAssetData = coingeckoService.prices.getTokensHistorical(
     [_outputAsset],
     days,
     1,
-    aggregateBy,
+    aggregateBy
   );
 
   const [inputAssetData, outputAssetData] = await Promise.all([
@@ -73,13 +73,13 @@ async function getPairPriceData(
   });
 
   const calculatedPricingNoNulls = pickBy(
-    calculatedPricing,
+    calculatedPricing
   ) as Dictionary<number>;
 
   const formatTimestamps = mapKeys(
     calculatedPricingNoNulls,
     (_, timestamp: any) =>
-      format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm'),
+      format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm')
   );
 
   return toPairs(formatTimestamps);
@@ -124,7 +124,7 @@ const tailwind = useTailwind();
 const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 
 const chartHeight = ref(
-  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100,
+  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
 );
 const activeTimespan = ref(chartTimespans[0]);
 const appLoading = computed(() => store.state.app.loading);
@@ -157,7 +157,7 @@ const {
     activeTimespan,
     userNetworkId,
     nativeAsset,
-    wrappedNativeAsset,
+    wrappedNativeAsset
   ),
   () =>
     getPairPriceData(
@@ -166,7 +166,7 @@ const {
       nativeAsset?.address,
       wrappedNativeAsset.value?.address,
       activeTimespan.value.value,
-      true,
+      true
     ),
   reactive({
     enabled: initialized,
@@ -174,7 +174,7 @@ const {
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
     refetchOnWindowFocus: false,
-  }),
+  })
 );
 
 const toggle = () => {
@@ -189,8 +189,8 @@ const allChartValuesEqual = computed(() =>
   equivalentTokenPairs.some(
     pair =>
       pair.includes(tokenInAddress.value) &&
-      pair.includes(tokenOutAddress.value),
-  ),
+      pair.includes(tokenOutAddress.value)
+  )
 );
 
 const chartData = computed(() => {

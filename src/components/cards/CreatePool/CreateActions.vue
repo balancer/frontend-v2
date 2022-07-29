@@ -58,7 +58,7 @@ const { networkConfig } = useConfig();
 const { isTxConfirmed } = useEthers();
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  ref(props.amounts),
+  ref(props.amounts)
 );
 const {
   createPool,
@@ -104,7 +104,7 @@ const requiredActions = computed(() => {
 const explorerLink = computed((): string =>
   createState.receipt
     ? explorerLinks.txLink(createState.receipt.transactionHash)
-    : '',
+    : ''
 );
 
 onBeforeMount(async () => {

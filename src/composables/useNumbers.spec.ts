@@ -24,7 +24,7 @@ jest.mock('@/composables/useTokens', () => {
         .fn()
         .mockImplementation((address, currency = mockDefaultCurrency) => {
           const token = Object.values(mockTokens).find(
-            token => address === token.address,
+            token => address === token.address
           );
           return token?.price[currency];
         }),

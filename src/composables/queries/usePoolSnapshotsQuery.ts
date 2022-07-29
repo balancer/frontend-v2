@@ -27,7 +27,7 @@ interface QueryResponse {
 export default function usePoolSnapshotsQuery(
   id: string,
   days?: number,
-  options: QueryObserverOptions<QueryResponse> = {},
+  options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
    * @description
@@ -76,7 +76,7 @@ export default function usePoolSnapshotsQuery(
         tokensList,
         shapshotDaysNum,
         1,
-        aggregateBy,
+        aggregateBy
       ),
       balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum),
     ]);

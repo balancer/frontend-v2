@@ -16,7 +16,7 @@ export default function useGraphQuery<T>(
   subgraphUrl: string,
   key: QueryKey,
   query: () => Record<any, any>,
-  options: UseQueryOptions<T> = {},
+  options: UseQueryOptions<T> = {}
 ) {
   const queryKey = reactive([
     // for our query key style, initial are the string
@@ -47,7 +47,7 @@ export default function useGraphQuery<T>(
         `GraphQL request to [${subgraphUrl}] failed. Payload:`,
         query,
         'Error:',
-        error,
+        error
       );
       throw error;
     }

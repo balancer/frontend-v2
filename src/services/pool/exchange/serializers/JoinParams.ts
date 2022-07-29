@@ -37,12 +37,12 @@ export default class JoinParams {
     account: string,
     amountsIn: string[],
     tokensIn: string[],
-    bptOut: string,
+    bptOut: string
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn, tokensIn);
     const parsedBptOut = parseUnits(
       bptOut,
-      this.pool.value?.onchain?.decimals || 18,
+      this.pool.value?.onchain?.decimals || 18
     );
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
@@ -92,7 +92,7 @@ export default class JoinParams {
     const nativeAsset = this.config.network.nativeAsset;
 
     return tokensIn.map(address =>
-      isSameAddress(address, nativeAsset.address) ? AddressZero : address,
+      isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
   }
 

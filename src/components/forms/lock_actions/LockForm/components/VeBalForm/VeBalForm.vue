@@ -61,7 +61,7 @@ const { balanceFor } = useTokens();
  * COMPUTED
  */
 const lockablePoolBptBalance = computed(() =>
-  balanceFor(props.lockablePool.address),
+  balanceFor(props.lockablePool.address)
 );
 
 const submissionDisabled = computed(() => {

@@ -55,15 +55,15 @@ const totalInvestedLabel = computed((): string => {
 });
 
 const totalVeBalLabel = computed((): string =>
-  fNum2(lockFiatValue.value, FNumFormats.fiat),
+  fNum2(lockFiatValue.value, FNumFormats.fiat)
 );
 
 const isLoadingLockAndStaking = computed(
-  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value,
+  (): boolean => (!isL2.value && isLoadingLock.value) || isStakingLoading.value
 );
 
 const isLoadingTotalValue = computed(
-  (): boolean => isLoadingUserPools.value || isLoadingLockAndStaking.value,
+  (): boolean => isLoadingUserPools.value || isLoadingLockAndStaking.value
 );
 </script>
 

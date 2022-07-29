@@ -38,7 +38,7 @@ export default class PoolSwaps {
           ensName,
           ensAvatar,
         };
-      }),
+      })
     );
 
     return swaps.map((swap: PoolSwap, index: number) => ({

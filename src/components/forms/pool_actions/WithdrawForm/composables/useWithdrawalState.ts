@@ -65,7 +65,7 @@ export function parseError(error: WithdrawalError): BaseContent {
       return {
         title: i18n.global.t('warning'),
         description: i18n.global.t(
-          `withdraw.errors.${WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT}`,
+          `withdraw.errors.${WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT}`
         ),
       };
     default:

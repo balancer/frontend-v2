@@ -18,7 +18,7 @@ type UserClaimsQueryResponse = {
 };
 
 export default function useUserClaimsQuery(
-  options: UseQueryOptions<UserClaimsQueryResponse> = {},
+  options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();

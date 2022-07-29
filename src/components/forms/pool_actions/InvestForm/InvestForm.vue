@@ -66,7 +66,7 @@ const investMath = useInvestMath(
   tokenAddresses,
   amounts,
   useNativeAsset,
-  sor,
+  sor
 );
 
 const {
@@ -82,7 +82,7 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
 const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
-  toRef(props, 'pool'),
+  toRef(props, 'pool')
 );
 
 /**
@@ -91,19 +91,19 @@ const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
 const hasValidInputs = computed(
   (): boolean =>
     validInputs.value.every(validInput => validInput === true) &&
-    hasAcceptedHighPriceImpact.value,
+    hasAcceptedHighPriceImpact.value
 );
 
 const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? highPriceImpactAccepted.value : true,
+  highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
 
 const forceProportionalInputs = computed(
-  (): boolean => managedPoolWithTradingHalted.value,
+  (): boolean => managedPoolWithTradingHalted.value
 );
 
 const poolHasLowLiquidity = computed((): boolean =>
-  bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD),
+  bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
 const investmentTokens = computed((): string[] => {
@@ -159,7 +159,7 @@ function hint(index: number): string {
 function tokenOptions(index: number): string[] {
   return isSameAddress(
     props.pool.tokensList[index],
-    wrappedNativeAsset.value.address,
+    wrappedNativeAsset.value.address
   )
     ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
@@ -169,7 +169,7 @@ function tokenOptions(index: number): string[] {
 function setNativeAssetByBalance(): void {
   const nativeAssetBalance = balanceFor(nativeAsset.address);
   const wrappedNativeAssetBalance = balanceFor(
-    wrappedNativeAsset.value.address,
+    wrappedNativeAsset.value.address
   );
 
   if (bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)) {

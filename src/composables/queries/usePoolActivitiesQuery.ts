@@ -16,7 +16,7 @@ type PoolActivitiesQueryResponse = {
 
 export default function usePoolActivitiesQuery(
   id: string,
-  options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {},
+  options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {}
 ) {
   // COMPOSABLES
   const { networkId } = useNetwork();
@@ -56,6 +56,6 @@ export default function usePoolActivitiesQuery(
   return useInfiniteQuery<PoolActivitiesQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions,
+    queryOptions
   );
 }

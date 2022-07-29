@@ -41,15 +41,15 @@ const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
  * COMPUTED
  */
 const fromPoolLoading = computed(
-  () => fromPoolQuery.isLoading.value || fromPoolQuery.isIdle.value,
+  () => fromPoolQuery.isLoading.value || fromPoolQuery.isIdle.value
 );
 
 const toPoolLoading = computed(
-  () => toPoolQuery.isLoading.value || toPoolQuery.isIdle.value,
+  () => toPoolQuery.isLoading.value || toPoolQuery.isIdle.value
 );
 
 const isLoadingPools = computed(
-  () => toPoolLoading.value || fromPoolLoading.value,
+  () => toPoolLoading.value || fromPoolLoading.value
 );
 
 const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
@@ -57,11 +57,11 @@ const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
 const toPool = computed<Pool | undefined>(() => toPoolQuery.data.value);
 
 const fromPoolTokenInfo = computed(() =>
-  fromPool.value != null ? getToken(fromPool.value.address) : null,
+  fromPool.value != null ? getToken(fromPool.value.address) : null
 );
 
 const toPoolTokenInfo = computed(() =>
-  toPool.value != null ? getToken(toPool.value.address) : null,
+  toPool.value != null ? getToken(toPool.value.address) : null
 );
 </script>
 

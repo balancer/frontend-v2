@@ -40,7 +40,7 @@ export function lsSet(key: string, value: any, version?: string) {
 export function lsGet<T = any>(
   key: string,
   defaultValue: any = null,
-  version?: string,
+  version?: string
 ): T {
   const rawValue = localStorage.getItem(lsGetKey(key));
 
@@ -81,7 +81,7 @@ export const bnumZero = bnum(0);
 
 export function scale(
   input: BigNumber | string,
-  decimalPlaces: number,
+  decimalPlaces: number
 ): BigNumber {
   const unscaled = typeof input === 'string' ? new BigNumber(input) : input;
   const scalePow = new BigNumber(decimalPlaces.toString());
@@ -103,7 +103,7 @@ export async function forChange(
   expected: any,
   checkCount = 0,
   checkDelay = 500,
-  checkLimit = 20,
+  checkLimit = 20
 ): Promise<void> {
   if (reactiveVar.value === expected || checkCount >= checkLimit) return;
   await sleep(checkDelay);
@@ -123,7 +123,7 @@ export function bnSum(amounts: string[]): BigNumber {
  */
 export function formatWordListAsSentence(
   words: string[],
-  t: (key: Path | number) => string,
+  t: (key: Path | number) => string
 ) {
   if (!words.length) return '';
   if (words.length >= 2) {
@@ -153,7 +153,7 @@ export function includesAddress(addresses: string[], address: string): boolean {
 
 export function findByAddress<T>(
   items: Record<string, T>,
-  address: string,
+  address: string
 ): T | undefined {
   const foundAddress = Object.keys(items).find(itemAddress => {
     if (isSameAddress(itemAddress, address)) {

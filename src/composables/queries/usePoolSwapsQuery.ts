@@ -17,14 +17,14 @@ type PoolSwapsQueryResponse = {
 export default function usePoolSwapsQuery(
   id: string,
   subgraphQuery: Record<string, any> = {},
-  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {},
+  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {}
 ) {
   // COMPOSABLES
   const { networkId } = useNetwork();
 
   // DATA
   const queryKey = reactive(
-    QUERY_KEYS.Pools.Swaps(networkId, id, subgraphQuery),
+    QUERY_KEYS.Pools.Swaps(networkId, id, subgraphQuery)
   );
 
   // METHODS
@@ -41,7 +41,7 @@ export default function usePoolSwapsQuery(
         {
           poolId: id,
         },
-        subgraphQuery,
+        subgraphQuery
       ),
     });
 
@@ -59,6 +59,6 @@ export default function usePoolSwapsQuery(
   return useInfiniteQuery<PoolSwapsQueryResponse>(
     queryKey,
     queryFn,
-    queryOptions,
+    queryOptions
   );
 }

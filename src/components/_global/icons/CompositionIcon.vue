@@ -8,7 +8,7 @@ const { theme } = useTailwind();
 const { darkMode } = useDarkMode();
 
 const color = computed(() =>
-  darkMode.value ? theme.colors.white : theme.colors.black,
+  darkMode.value ? theme.colors.white : theme.colors.black
 );
 </script>
 

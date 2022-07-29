@@ -19,17 +19,17 @@ interface PolygonGasStationResponse {
 
 export default class PolygonProvider {
   public async getLatest(
-    txSpeed: TxSpeedOptions = 'standard',
+    txSpeed: TxSpeedOptions = 'standard'
   ): Promise<GasPrice | null> {
     try {
       const { data } = await axios.get<PolygonGasStationResponse>(
-        'https://gasstation-mainnet.matic.network/v2',
+        'https://gasstation-mainnet.matic.network/v2'
       );
       return {
         price: Math.floor(data[txSpeed].maxFee * GWEI_UNIT),
         maxFeePerGas: Math.floor(data[txSpeed].maxFee * GWEI_UNIT),
         maxPriorityFeePerGas: Math.floor(
-          data[txSpeed].maxPriorityFee * GWEI_UNIT,
+          data[txSpeed].maxPriorityFee * GWEI_UNIT
         ),
       };
     } catch (error) {

@@ -12,7 +12,7 @@ import {
 export async function swapIn(
   sorReturn: SorReturn,
   tokenInAmount: BigNumber,
-  tokenOutAmountMin: BigNumber,
+  tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
   const tokenInAddress = sorReturn.result.tokenIn;
   const tokenOutAddress = sorReturn.result.tokenOut;
@@ -33,14 +33,14 @@ export async function swapIn(
     tokenIn,
     tokenOut,
     sorReturn.result.swaps,
-    sorReturn.result.tokenAddresses,
+    sorReturn.result.tokenAddresses
   );
 }
 
 export async function swapOut(
   sorReturn: SorReturn,
   tokenInAmountMax: BigNumber,
-  tokenOutAmount: BigNumber,
+  tokenOutAmount: BigNumber
 ): Promise<TransactionResponse> {
   const tokenInAddress = sorReturn.result.tokenIn;
   const tokenOutAddress = sorReturn.result.tokenOut;
@@ -61,7 +61,7 @@ export async function swapOut(
     tokenIn,
     tokenOut,
     sorReturn.result.swaps,
-    sorReturn.result.tokenAddresses,
+    sorReturn.result.tokenAddresses
   );
 }
 
@@ -70,7 +70,7 @@ export async function boostedJoinBatchSwap(
   tokenAddresses: string[],
   tokenOutAddress: string,
   amountsInMap: Record<string, BigNumber>,
-  amountOutMin: BigNumber,
+  amountOutMin: BigNumber
 ) {
   const tokensIn: SwapToken[] = Object.entries(amountsInMap).map(
     ([address, amount]) => {
@@ -79,7 +79,7 @@ export async function boostedJoinBatchSwap(
         amount,
         type: SwapTokenType.fixed,
       };
-    },
+    }
   );
   const tokenOut: SwapToken = {
     address: tokenOutAddress,
@@ -90,7 +90,7 @@ export async function boostedJoinBatchSwap(
     tokensIn,
     tokenOut,
     swaps,
-    tokenAddresses,
+    tokenAddresses
   );
 }
 
@@ -100,7 +100,7 @@ export async function boostedExitBatchSwap(
   tokenInAddress: string,
   amountIn: string,
   amountsOutMap: Record<string, string>,
-  swapKind: SwapType = SwapType.SwapExactIn,
+  swapKind: SwapType = SwapType.SwapExactIn
 ): Promise<TransactionResponse> {
   const tokenIn: SwapToken = {
     address: tokenInAddress,
@@ -115,13 +115,13 @@ export async function boostedExitBatchSwap(
         amount: BigNumber.from(amount),
         type: SwapTokenType.fixed,
       };
-    },
+    }
   );
   return swapService.boostedExitBatchSwap(
     tokenIn,
     tokensOut,
     swaps,
     tokenAddresses,
-    swapKind,
+    swapKind
   );
 }

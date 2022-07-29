@@ -15,7 +15,7 @@ type QueryResponse = SubgraphGauge[];
  * @summary Fetches guages list from subgraph
  */
 export default function useGaugesQuery(
-  options: UseQueryOptions<QueryResponse> = {},
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * QUERY KEY

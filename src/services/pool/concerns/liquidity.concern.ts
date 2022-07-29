@@ -21,7 +21,7 @@ export default class LiquidityConcern {
 
   constructor(
     public readonly pool: AnyPool,
-    private readonly poolType = pool.poolType,
+    private readonly poolType = pool.poolType
   ) {
     this.poolTokens = this.onchainPoolTokens || this.pool.tokens;
   }
@@ -29,7 +29,7 @@ export default class LiquidityConcern {
   public calcTotal(
     prices: TokenPrices,
     currency: FiatCurrency,
-    tokenMeta: TokenInfoMap = {},
+    tokenMeta: TokenInfoMap = {}
   ): string {
     if (!this.hasPoolTokens) throw new Error('Missing pool token data');
 
@@ -58,7 +58,7 @@ export default class LiquidityConcern {
         (token: OnchainTokenData, i: number) => ({
           ...token,
           address: addresses[i],
-        }),
+        })
       );
     }
     return null;
@@ -66,12 +66,12 @@ export default class LiquidityConcern {
 
   public calcWeightedTotal(
     prices: TokenPrices,
-    currency: FiatCurrency,
+    currency: FiatCurrency
   ): string {
     const weights = this.poolTokens.map<number>(token => token.weight);
     const totalWeight = weights.reduce(
       (total, weight) => total + Number(weight),
-      0,
+      0
     );
     let sumWeight = bnum(0);
     let sumValue = bnum(0);
@@ -159,24 +159,24 @@ export default class LiquidityConcern {
   private calcStablePhantom(
     prices: TokenPrices,
     currency: FiatCurrency,
-    tokenMeta: TokenInfoMap,
+    tokenMeta: TokenInfoMap
   ): string {
     let totalLiquidity = bnum(0);
 
     Object.entries(this.pool?.onchain?.linearPools || {}).forEach(
       ([address, token]) => {
         const tokenShare = bnum(
-          this.pool?.onchain?.tokens?.[address]?.balance || '0',
+          this.pool?.onchain?.tokens?.[address]?.balance || '0'
         ).div(token.totalSupply);
 
         const mainTokenBalance = formatUnits(
           token.mainToken.balance,
-          tokenMeta[getAddress(token.mainToken.address)]?.decimals,
+          tokenMeta[getAddress(token.mainToken.address)]?.decimals
         );
 
         const wrappedTokenBalance = formatUnits(
           token.wrappedToken.balance,
-          tokenMeta[getAddress(token.wrappedToken.address)]?.decimals,
+          tokenMeta[getAddress(token.wrappedToken.address)]?.decimals
         );
 
         const mainTokenPrice =
@@ -198,7 +198,7 @@ export default class LiquidityConcern {
             .plus(mainTokenValue)
             .plus(wrappedTokenValue);
         }
-      },
+      }
     );
 
     return totalLiquidity.toString();

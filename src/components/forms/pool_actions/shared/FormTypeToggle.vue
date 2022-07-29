@@ -65,7 +65,7 @@ export default defineComponent({
       () => props.modelValue,
       newVal => {
         if (selected.value != newVal) selected.value = newVal as FormTypes;
-      },
+      }
     );
 
     return {

@@ -70,7 +70,7 @@ onBeforeMount(() => {
 const title = computed((): string =>
   poolCreated.value
     ? t('poolCreated')
-    : t('previewPool', [poolTypeString.value]),
+    : t('previewPool', [poolTypeString.value])
 );
 
 // translations are breaking when directly using this label
@@ -110,19 +110,19 @@ const initialWeights = computed(() => {
 // is less than 1% of the pools value
 const hasInvalidInitialWeight = computed(() => {
   return Object.values(initialWeights.value).some(initialWeight =>
-    initialWeight.lt(0.01),
+    initialWeight.lt(0.01)
   );
 });
 
 const showNativeAssetWarning = computed(() => {
   const nativeAssetBalance = balanceFor(nativeAsset.address);
   const wrappedNativeAssetBalance = balanceFor(
-    wrappedNativeAsset.value.address,
+    wrappedNativeAsset.value.address
   );
 
   const seedAmount =
     seedTokens.value.find(token =>
-      isSameAddress(token.tokenAddress, wrappedNativeAsset.value.address),
+      isSameAddress(token.tokenAddress, wrappedNativeAsset.value.address)
     )?.amount || '0';
   // when the UI is set to use the native asset and the user does
   // not have the required native asset amount to cover the fund
@@ -228,7 +228,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                       {{
                         fNum2(
                           initialWeights[token.tokenAddress].toString(),
-                          FNumFormats.percent,
+                          FNumFormats.percent
                         )
                       }}
                     </span>
@@ -244,7 +244,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                         bnum(token.amount)
                           .times(priceFor(token.tokenAddress))
                           .toString(),
-                        FNumFormats.fiat,
+                        FNumFormats.fiat
                       )
                     }}
                   </span>

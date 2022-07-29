@@ -20,7 +20,7 @@ export class OnchainDataFormater {
   constructor(
     private readonly pool: Pool,
     private readonly rawData: RawOnchainPoolData,
-    private readonly tokenMeta: TokenInfoMap,
+    private readonly tokenMeta: TokenInfoMap
   ) {}
 
   public format(): OnchainPoolData {
@@ -46,13 +46,13 @@ export class OnchainDataFormater {
 
     if (this.rawData.tokenRates) {
       poolData.tokenRates = this.rawData.tokenRates.map(rate =>
-        formatUnits(rate.toString(), 18),
+        formatUnits(rate.toString(), 18)
       );
     }
 
     poolData.totalSupply = formatUnits(
       this.rawData.totalSupply,
-      this.rawData.decimals,
+      this.rawData.decimals
     );
     poolData.decimals = this.rawData.decimals;
     poolData.swapFee = formatUnits(this.rawData.swapFee, 18);
@@ -126,11 +126,11 @@ export class OnchainDataFormater {
     if (isWeightedLike(this.pool.poolType)) {
       // toNormalizedWeights returns weights as 18 decimal fixed point
       return toNormalizedWeights(this.rawData.weights || []).map(w =>
-        Number(formatUnits(w, 18)),
+        Number(formatUnits(w, 18))
       );
     } else if (isStableLike(this.pool.poolType)) {
       const value = this.pool.tokensList.map(
-        () => 1 / this.pool.tokensList.length,
+        () => 1 / this.pool.tokensList.length
       );
       return this.rawData.poolTokens.tokens.map(() => value[0]);
     } else {

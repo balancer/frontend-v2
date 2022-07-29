@@ -59,11 +59,11 @@ const isInRate = ref<boolean>(true);
  * COMPUTED
  */
 const missingToken = computed(
-  () => !_tokenInAddress.value || !_tokenOutAddress.value,
+  () => !_tokenInAddress.value || !_tokenOutAddress.value
 );
 
 const missingAmount = computed(
-  () => !_tokenInAmount.value || !_tokenOutAmount.value,
+  () => !_tokenInAmount.value || !_tokenOutAmount.value
 );
 
 const tokenIn = computed(() => getToken(_tokenInAddress.value));

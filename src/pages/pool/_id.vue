@@ -158,7 +158,7 @@ export default defineComponent({
       () =>
         poolQuery.isLoading.value ||
         poolQuery.isIdle.value ||
-        Boolean(poolQuery.error.value),
+        Boolean(poolQuery.error.value)
     );
     const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
@@ -174,16 +174,16 @@ export default defineComponent({
       route.params.id as string,
       undefined,
       // in order to prevent multiple coingecko requests
-      { refetchOnWindowFocus: false },
+      { refetchOnWindowFocus: false }
     );
     const isLoadingSnapshots = computed(
       () =>
-        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value,
+        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
     );
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(
-      () => poolSnapshotsQuery.data.value?.prices,
+      () => poolSnapshotsQuery.data.value?.prices
     );
     //#endregion
 
@@ -193,7 +193,7 @@ export default defineComponent({
       () =>
         aprQuery.isLoading.value ||
         aprQuery.isIdle.value ||
-        Boolean(aprQuery.error.value),
+        Boolean(aprQuery.error.value)
     );
     const poolApr = computed(() => aprQuery.data.value);
     //#endregion
@@ -239,7 +239,7 @@ export default defineComponent({
       () =>
         !loadingPool.value &&
         pool.value &&
-        Number(pool.value?.onchain?.totalSupply || '0') === 0,
+        Number(pool.value?.onchain?.totalSupply || '0') === 0
     );
 
     const missingPrices = computed(() => {
@@ -260,12 +260,12 @@ export default defineComponent({
       if (!pool.value || !pool.value.onchain?.tokens) return [];
 
       return Object.entries(pool.value.onchain.tokens).sort(
-        ([, a]: any[], [, b]: any[]) => b.weight - a.weight,
+        ([, a]: any[], [, b]: any[]) => b.weight - a.weight
       );
     });
 
     const isStakablePool = computed((): boolean =>
-      POOLS.Stakable.AllowList.includes(route.params.id as string),
+      POOLS.Stakable.AllowList.includes(route.params.id as string)
     );
 
     /**

@@ -16,7 +16,7 @@ export class AprConcern {
     public pool: Pool,
     private readonly lido = lidoService,
     private readonly aave = aaveService,
-    private readonly VeBalAprCalcClass = VeBalAprCalc,
+    private readonly VeBalAprCalcClass = VeBalAprCalc
   ) {}
 
   public async calc(
@@ -25,14 +25,14 @@ export class AprConcern {
     currency: FiatCurrency,
     protocolFeePercentage: number,
     stakingBalApr: AprRange,
-    stakingRewardApr = '0',
+    stakingRewardApr = '0'
   ): Promise<PoolAPRs> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
 
     const yieldAPR = await this.calcYieldAPR(
       prices,
       currency,
-      protocolFeePercentage,
+      protocolFeePercentage
     );
 
     const veBalAPR = await this.calcVeBalAPR(prices);
@@ -44,13 +44,13 @@ export class AprConcern {
         unstakedTotalAPR,
         stakingBalApr,
         stakingRewardApr,
-        boost,
+        boost
       );
 
     const stakedAprRange = this.calcStakedAprRange(
       unstakedTotalAPR,
       stakingBalApr,
-      stakingRewardApr,
+      stakingRewardApr
     );
 
     return {
@@ -74,7 +74,7 @@ export class AprConcern {
 
   private calcSwapFeeAPR(
     poolSnapshot: Pool | undefined,
-    protocolFeePercentage: number,
+    protocolFeePercentage: number
   ): string {
     if (!poolSnapshot)
       return bnum(this.pool.totalSwapFee)
@@ -84,7 +84,7 @@ export class AprConcern {
         .toString();
 
     const swapFees = bnum(this.pool.totalSwapFee).minus(
-      poolSnapshot.totalSwapFee,
+      poolSnapshot.totalSwapFee
     );
 
     return swapFees
@@ -101,7 +101,7 @@ export class AprConcern {
     unstakedTotalAPR: string,
     stakingBalApr: AprRange,
     stakingRewardApr = '0',
-    boost = '1',
+    boost = '1'
   ): string {
     const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
     const boostedAPR = stakingBalApr?.min
@@ -117,7 +117,7 @@ export class AprConcern {
   private calcStakedAprRange(
     unstakedTotalAPR: string,
     stakingBalApr: AprRange,
-    stakingRewardApr = '0',
+    stakingRewardApr = '0'
   ): AprRange {
     const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
     const maxBalApr = stakingBalApr?.max || '0';
@@ -137,7 +137,7 @@ export class AprConcern {
   private async calcYieldAPR(
     prices: TokenPrices,
     currency: FiatCurrency,
-    protocolFeePercentage: number,
+    protocolFeePercentage: number
   ): Promise<{ total: string; breakdown: Record<string, string> }> {
     let total = '0';
     let breakdown = {};
@@ -148,7 +148,7 @@ export class AprConcern {
       const aaveAPR = await this.aave.calcWeightedSupplyAPRFor(
         this.pool,
         prices,
-        currency,
+        currency
       );
       ({ total, breakdown } = aaveAPR);
 
@@ -170,7 +170,7 @@ export class AprConcern {
             linearPool,
             linearPoolAddress,
             prices,
-            currency,
+            currency
           );
 
           breakdown[wrappedToken] = weightedAPR.toString();
@@ -193,7 +193,7 @@ export class AprConcern {
     return await veBalApr.calc(
       this.pool.totalLiquidity,
       this.pool.totalShares,
-      prices,
+      prices
     );
   }
 }

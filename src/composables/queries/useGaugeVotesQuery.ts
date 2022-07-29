@@ -20,7 +20,7 @@ type QueryResponse = VotingGaugeWithVotes[];
  */
 export default function useGaugeVotesQuery(
   votingGauges: VotingGauge[],
-  options: UseQueryOptions<QueryResponse> = {},
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -39,7 +39,7 @@ export default function useGaugeVotesQuery(
     try {
       return await gaugeControllerDecorator.decorateWithVotes(
         votingGauges,
-        account.value,
+        account.value
       );
     } catch (error) {
       console.error('Failed to get gauge votes', error);

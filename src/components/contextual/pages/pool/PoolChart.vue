@@ -118,9 +118,7 @@ const periodOptions = computed(() => [
 const currentPeriod = ref<PoolChartPeriod>(periodOptions.value[0]);
 
 const timestamps = computed(() =>
-  snapshotValues.value.map(snapshot =>
-    format(snapshot.timestamp, 'yyyy/MM/dd'),
-  ),
+  snapshotValues.value.map(snapshot => format(snapshot.timestamp, 'yyyy/MM/dd'))
 );
 
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
@@ -132,7 +130,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       const timestamp = timestamps.value[idx];
       if (idx === 0) {
         tvlValues.push(
-          Object.freeze([timestamp, Number(props.totalLiquidity || 0)]),
+          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
         );
         return;
       }
@@ -144,7 +142,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
       if (idx === 0) {
         tvlValues.push(
-          Object.freeze([timestamp, Number(props.totalLiquidity || 0)]),
+          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
         );
         return;
       }
@@ -166,11 +164,11 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
        */
       if (snapshot.amounts.length > prices.length) {
         const maxValue = Math.max(
-          ...snapshot.amounts.map(amount => Number(amount)),
+          ...snapshot.amounts.map(amount => Number(amount))
         );
 
         amounts = amounts.filter(
-          amount => Number(amount).toFixed() !== maxValue?.toString(),
+          amount => Number(amount).toFixed() !== maxValue?.toString()
         );
       }
 
@@ -179,7 +177,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
           sum += Number(amount) * prices[index];
           return sum;
         },
-        0,
+        0
       );
 
       tvlValues.push(Object.freeze([timestamp, snapshotPoolValue]));
@@ -220,7 +218,7 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
 function getFeesData(
   periodSnapshots: PoolSnapshot[],
   isAllTimeSelected: boolean,
-  pariodLastSnapshotIdx: number,
+  pariodLastSnapshotIdx: number
 ) {
   const feesValues = periodSnapshots.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapFees);
@@ -264,7 +262,7 @@ function getFeesData(
 function getVolumeData(
   periodSnapshots: PoolSnapshot[],
   isAllTimeSelected: boolean,
-  pariodLastSnapshotIdx: number,
+  pariodLastSnapshotIdx: number
 ): PoolChartData {
   const volumeData = periodSnapshots.map((snapshot, idx) => {
     const value = parseFloat(snapshot.swapVolume);
@@ -320,20 +318,20 @@ const chartData = computed((): PoolChartData => {
     return getFeesData(
       periodSnapshots,
       isAllTimeSelected,
-      pariodLastSnapshotIdx,
+      pariodLastSnapshotIdx
     );
   }
 
   return getVolumeData(
     periodSnapshots,
     isAllTimeSelected,
-    pariodLastSnapshotIdx,
+    pariodLastSnapshotIdx
   );
 });
 
 const defaultChartData = computed(() => {
   const currentPeriodOption = periodOptions.value.find(
-    option => option.days === currentPeriod.value.days,
+    option => option.days === currentPeriod.value.days
   );
   let title = `${currentPeriodOption?.text} ${activeTab.value}`;
 
@@ -360,7 +358,7 @@ function setCurrentChartValue(payload: {
   });
   currentChartDate.value = format(
     new Date(payload.chartDate),
-    PRETTY_DATE_FORMAT,
+    PRETTY_DATE_FORMAT
   );
 }
 </script>

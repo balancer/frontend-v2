@@ -29,7 +29,7 @@ export const GOERLI_VOTING_GAUGES: VotingGauge[] = (
 export const MAINNET_VOTING_GAUGES: VotingGauge[] = (
   ALL_VOTING_GAUGES as VotingGauge[]
 ).filter(
-  gauge => gauge.network !== Network.KOVAN && gauge.network !== Network.GOERLI,
+  gauge => gauge.network !== Network.KOVAN && gauge.network !== Network.GOERLI
 );
 
 export const VEBAL_VOTING_GAUGE: VotingGauge | undefined = (

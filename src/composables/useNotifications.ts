@@ -54,7 +54,7 @@ function attemptToRemoveExistingNotification(newNotification: NewNotification) {
     const previousNotificationFound = notifications.value.find(
       previousNotification =>
         previousNotification.transactionMetadata?.id ===
-        newNotification.transactionMetadata?.id,
+        newNotification.transactionMetadata?.id
     );
     if (previousNotificationFound != null) {
       removeNotification(previousNotificationFound.id);
@@ -100,7 +100,7 @@ function setNotifications(notifications: NotificationsMap) {
 }
 
 const notifications = computed(() =>
-  orderBy(Object.values(getNotifications()), 'addedTime', 'desc'),
+  orderBy(Object.values(getNotifications()), 'addedTime', 'desc')
 );
 
 export default function useNotifications() {

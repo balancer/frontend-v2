@@ -119,7 +119,7 @@ export default defineComponent({
 
     // COMPUTED
     const appTransactionDeadline = computed<number>(
-      () => store.state.app.transactionDeadline,
+      () => store.state.app.transactionDeadline
     );
 
     // METHODS

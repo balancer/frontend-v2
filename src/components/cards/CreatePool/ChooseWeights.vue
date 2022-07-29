@@ -65,7 +65,7 @@ const cardWrapperHeight = ref(0);
  * COMPUTED
  */
 const tokenWeightItemHeight = computed(() =>
-  upToLargeBreakpoint.value ? 56 : 64,
+  upToLargeBreakpoint.value ? 56 : 64
 );
 
 const zeroWeightToken = computed(() => {
@@ -148,7 +148,7 @@ watch(
   },
   {
     deep: true,
-  },
+  }
 );
 
 /**
@@ -245,18 +245,18 @@ async function addTokenToPool() {
 function distributeWeights() {
   // get all the locked weights and sum those bad boys
   let lockedPct = sum(
-    seedTokens.value.filter(w => w.isLocked).map(w => w.weight / 100),
+    seedTokens.value.filter(w => w.isLocked).map(w => w.weight / 100)
   );
   // makes it so that new allocations are set as 0
   if (lockedPct > 1) lockedPct = 1;
   const pctAvailableToDistribute = bnum(1).minus(lockedPct);
   const unlockedWeights = seedTokens.value.filter(w => !w.isLocked);
   const evenDistributionWeight = pctAvailableToDistribute.div(
-    unlockedWeights.length,
+    unlockedWeights.length
   );
 
   const error = pctAvailableToDistribute.minus(
-    evenDistributionWeight.times(unlockedWeights.length),
+    evenDistributionWeight.times(unlockedWeights.length)
   );
   const isErrorDivisible = error.mod(unlockedWeights.length).eq(0);
   const distributableError = isErrorDivisible
@@ -291,7 +291,7 @@ async function handleRemoveToken(index: number) {
   updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
   await nextTick();
   seedTokenElements.value = seedTokenElements.value.filter(
-    (_, i) => i !== index,
+    (_, i) => i !== index
   );
   distributeWeights();
   animateHeight(-1);

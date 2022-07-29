@@ -13,7 +13,7 @@ export class VEBalHelpers {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = VEBalHelpersABI,
     private readonly config = configService,
-    private readonly web3 = web3Service,
+    private readonly web3 = web3Service
   ) {}
 
   async getRelativeWeights(gaugeAddresses: string[]) {
@@ -23,7 +23,7 @@ export class VEBalHelpers {
         getAddress(gaugeAddress),
         this.address,
         'gauge_relative_weight',
-        [getAddress(gaugeAddress)],
+        [getAddress(gaugeAddress)]
       );
     }
     const result = await multicaller.execute();

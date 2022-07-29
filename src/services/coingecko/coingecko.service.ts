@@ -33,7 +33,7 @@ export class CoingeckoService {
 
   constructor(
     public readonly client = coingeckoClient,
-    priceServiceClass = PriceService,
+    priceServiceClass = PriceService
   ) {
     this.supportedFiat = SUPPORTED_FIAT.join(',');
     this.prices = new priceServiceClass(this);

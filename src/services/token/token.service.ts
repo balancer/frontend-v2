@@ -17,7 +17,7 @@ export default class TokenService {
     readonly balancesConcernClass = BalancesConcern,
     readonly allowancesConcernClass = AllowancesConcern,
     readonly rpcProviderService = _rpcProviderService,
-    readonly configService = _configService,
+    readonly configService = _configService
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
     this.metadata = new metadataConcernClass(this);

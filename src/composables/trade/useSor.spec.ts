@@ -75,7 +75,7 @@ describe('setSwapCost', () => {
     BigNumber.from(1),
     1,
     1,
-    '1',
+    '1'
   );
 
   const mockedSorManager = jest.mocked(sorManager);
@@ -93,14 +93,14 @@ describe('setSwapCost', () => {
     const tokenAddress = '0x0';
     const tokenDecimals = 5;
     const expectedTokenPriceInEth = new OldBigNumber(
-      mockEthPrice / mockTokenPrice,
+      mockEthPrice / mockTokenPrice
     ).toString();
 
     await sor.setSwapCost(tokenAddress, tokenDecimals, mockedSorManager as any);
     expect(mockedSorManager.setCostOutputToken).toBeCalledWith(
       tokenAddress,
       tokenDecimals,
-      expectedTokenPriceInEth,
+      expectedTokenPriceInEth
     );
   });
 });

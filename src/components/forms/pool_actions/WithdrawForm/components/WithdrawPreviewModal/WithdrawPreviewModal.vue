@@ -58,7 +58,7 @@ const { tokensOut, maxSlider } = useWithdrawalState(toRef(props, 'pool'));
 const title = computed((): string =>
   withdrawalConfirmed.value
     ? t('withdraw.preview.titles.confirmed')
-    : t('withdraw.preview.titles.default'),
+    : t('withdraw.preview.titles.default')
 );
 
 const amountMap = computed((): AmountMap => {
@@ -88,8 +88,8 @@ const fiatAmountMap = computed((): AmountMap => {
 const fiatTotal = computed((): string =>
   Object.values(fiatAmountMap.value).reduce(
     (total, amount) => bnum(total).plus(amount).toString(),
-    '0',
-  ),
+    '0'
+  )
 );
 
 /**

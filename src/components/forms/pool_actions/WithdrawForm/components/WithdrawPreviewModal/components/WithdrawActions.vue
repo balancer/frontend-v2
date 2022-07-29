@@ -80,7 +80,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
-  toRef(props, 'pool'),
+  toRef(props, 'pool')
 );
 
 const {
@@ -119,7 +119,7 @@ const transactionInProgress = computed(
   (): boolean =>
     withdrawalState.init ||
     withdrawalState.confirming ||
-    withdrawalState.confirmed,
+    withdrawalState.confirmed
 );
 
 /**
@@ -163,7 +163,7 @@ async function submit(): Promise<TransactionResponse> {
     if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
       tx = await balancerContractsService.batchRelayer.execute(
         batchRelayerSwap.value,
-        getProvider(),
+        getProvider()
       );
     } else if (batchSwap.value) {
       tx = await boostedExitBatchSwap(
@@ -172,7 +172,7 @@ async function submit(): Promise<TransactionResponse> {
         props.pool.address,
         bptIn.value,
         batchSwapAmountsOutMap.value,
-        batchSwapKind.value,
+        batchSwapKind.value
       );
     } else {
       tx = await poolExchange.exit(
@@ -182,7 +182,7 @@ async function submit(): Promise<TransactionResponse> {
         tokensOut.value,
         formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
         singleAssetMaxOut.value ? tokenOutIndex.value : null,
-        exactOut.value,
+        exactOut.value
       );
     }
 

@@ -71,11 +71,11 @@ async function toggleSection(section: string, collapse = true) {
   });
 
   const activeSectionIndex = props.sections.findIndex(
-    s => s.id === activeSection.value,
+    s => s.id === activeSection.value
   );
   const handleBarsToTransform = takeRight(
     handleBarElements.value,
-    handleBarElements.value.length - (activeSectionIndex + 1),
+    handleBarElements.value.length - (activeSectionIndex + 1)
   );
 
   // unfortunately this does introduce reflow (animating height of total)
@@ -167,7 +167,7 @@ watch(
   () => props.dependencies,
   () => {
     toggleSection(activeSection.value, false);
-  },
+  }
 );
 </script>
 

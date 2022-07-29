@@ -29,7 +29,7 @@ const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
 
 const isInvestmentPoolsTableLoading = computed(
-  () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value,
+  () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
 );
 
 /**

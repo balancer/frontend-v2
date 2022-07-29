@@ -80,10 +80,10 @@ export default defineComponent({
      * COMPUTED
      */
     const hasAddresses = computed(
-      (): boolean => !!props.addresses && props.addresses.length > 0,
+      (): boolean => !!props.addresses && props.addresses.length > 0
     );
     const hasURIs = computed(
-      (): boolean => !!props.logoURIs && props.logoURIs.length > 0,
+      (): boolean => !!props.logoURIs && props.logoURIs.length > 0
     );
 
     const assetLength = computed((): number => {
@@ -114,7 +114,7 @@ export default defineComponent({
 
     const spacer = computed(
       () =>
-        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2),
+        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2)
     );
 
     /**

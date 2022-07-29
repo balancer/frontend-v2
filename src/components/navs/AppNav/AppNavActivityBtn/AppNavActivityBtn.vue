@@ -105,7 +105,7 @@ export default defineComponent({
       try {
         const { signature, signingScheme } = await signOrderCancellation(
           orderId,
-          getSigner(),
+          getSigner()
         );
 
         await gnosisProtocolService.sendSignedOrderCancellation({

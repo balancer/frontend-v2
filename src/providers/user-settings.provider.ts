@@ -51,7 +51,7 @@ const state: UserSettingsState = reactive({
  * COMPUTED
  */
 const slippageScaled = computed((): string =>
-  parseUnits(state.slippage, 18).toString(),
+  parseUnits(state.slippage, 18).toString()
 );
 
 /**

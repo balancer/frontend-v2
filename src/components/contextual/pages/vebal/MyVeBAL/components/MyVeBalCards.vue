@@ -47,13 +47,13 @@ const { isWalletReady } = useWeb3();
  * COMPUTED
  */
 const poolShares = computed(() =>
-  bnum(props.lockablePool.totalLiquidity).div(props.lockablePool.totalShares),
+  bnum(props.lockablePool.totalLiquidity).div(props.lockablePool.totalShares)
 );
 
 const bptBalance = computed(() => balanceFor(props.lockablePool.address));
 
 const fiatTotal = computed(() =>
-  poolShares.value.times(bptBalance.value).toString(),
+  poolShares.value.times(bptBalance.value).toString()
 );
 
 const lockedUntil = computed(() => {
@@ -65,13 +65,13 @@ const lockedUntil = computed(() => {
 });
 
 const totalExpiredLpTokens = computed(() =>
-  props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0',
+  props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0'
 );
 
 const fiatTotalExpiredLpTokens = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
-    .times(totalExpiredLpTokens.value),
+    .times(totalExpiredLpTokens.value)
 );
 
 const cards = computed(() => {
@@ -134,7 +134,7 @@ const cards = computed(() => {
                 {
                   style: 'percent',
                   maximumFractionDigits: 4,
-                },
+                }
               ),
             ])
           : '-',

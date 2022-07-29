@@ -88,13 +88,13 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
 const totalClaimAmount = computed((): string =>
   props.rewardsData
     .reduce((acc, row) => acc.plus(row.amount), bnum('0'))
-    .toString(),
+    .toString()
 );
 
 const totalClaimValue = computed((): string =>
   props.rewardsData
     .reduce((acc, row) => acc.plus(row.value), bnum('0'))
-    .toString(),
+    .toString()
 );
 
 const hasClaimableBalance = computed((): boolean => {

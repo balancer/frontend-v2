@@ -135,7 +135,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   :text="
                     $t(
                       'poolTransfer.myWalletTokensCard.tooltips.nativeAssetSelection',
-                      [nativeAsset.symbol, wrappedNativeAsset.symbol],
+                      [nativeAsset.symbol, wrappedNativeAsset.symbol]
                     )
                   "
                 />
@@ -148,7 +148,7 @@ function isSelectedNativeAsset(address: string): boolean {
                   @click="
                     emit(
                       'update:useNativeAsset',
-                      isSameAddress(asset.address, nativeAsset.address),
+                      isSameAddress(asset.address, nativeAsset.address)
                     )
                   "
                 />

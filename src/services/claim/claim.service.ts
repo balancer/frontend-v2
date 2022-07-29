@@ -32,18 +32,18 @@ import {
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
-    account: string,
+    account: string
   ): Promise<MultiTokenPendingClaims[]> {
     const tokenClaimsInfo = this.getTokenClaimsInfo();
     if (tokenClaimsInfo != null) {
       const multiTokenPendingClaims = await Promise.all(
         tokenClaimsInfo.map(tokenClaimInfo =>
-          this.getTokenPendingClaims(tokenClaimInfo, account),
-        ),
+          this.getTokenPendingClaims(tokenClaimInfo, account)
+        )
       );
 
       const multiTokenPendingClaimsWithRewards = multiTokenPendingClaims.filter(
-        pendingClaim => Number(pendingClaim.availableToClaim) > 0,
+        pendingClaim => Number(pendingClaim.availableToClaim) > 0
       );
 
       return multiTokenPendingClaimsWithRewards;
@@ -53,14 +53,14 @@ export class ClaimService {
 
   public async getTokenPendingClaims(
     tokenClaimInfo: TokenClaimInfo,
-    account: string,
+    account: string
   ): Promise<MultiTokenPendingClaims> {
     const snapshot = await this.getSnapshot(tokenClaimInfo.manifest);
     const weekStart = tokenClaimInfo.weekStart;
     const claimStatus = await this.getClaimStatus(
       Object.keys(snapshot).length,
       account,
-      tokenClaimInfo,
+      tokenClaimInfo
     );
 
     const pendingWeeks = claimStatus
@@ -99,7 +99,7 @@ export class ClaimService {
     try {
       const response =
         await axios.get<MultiTokenCurrentRewardsEstimateResponse>(
-          `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider-multitoken/${account}`,
+          `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider-multitoken/${account}`
         );
       if (response.data.success) {
         const multiTokenLiquidityProviders = response.data.result[
@@ -115,7 +115,7 @@ export class ClaimService {
           [];
 
         const multiTokenLiquidityProvidersByToken = Object.entries(
-          groupBy(multiTokenLiquidityProviders, 'token_address'),
+          groupBy(multiTokenLiquidityProviders, 'token_address')
         );
 
         for (const [
@@ -125,7 +125,7 @@ export class ClaimService {
           const rewards = liquidityProvider
             .reduce(
               (total, { current_estimate }) => total.plus(current_estimate),
-              bnum(0),
+              bnum(0)
             )
             .toString();
 
@@ -160,17 +160,17 @@ export class ClaimService {
   public async multiTokenClaimRewards(
     provider: Web3Provider,
     account: string,
-    multiTokenPendingClaims: MultiTokenPendingClaims[],
+    multiTokenPendingClaims: MultiTokenPendingClaims[]
   ): Promise<TransactionResponse> {
     try {
       const tokens = multiTokenPendingClaims.map(
-        tokenPendingClaims => tokenPendingClaims.tokenClaimInfo.token,
+        tokenPendingClaims => tokenPendingClaims.tokenClaimInfo.token
       );
 
       const multiTokenClaims = await Promise.all(
         multiTokenPendingClaims.map((tokenPendingClaims, tokenIndex) =>
-          this.computeClaimProofs(tokenPendingClaims, account, tokenIndex),
-        ),
+          this.computeClaimProofs(tokenPendingClaims, account, tokenIndex)
+        )
       );
 
       return sendTransaction(
@@ -178,7 +178,7 @@ export class ClaimService {
         configs[networkId.value].addresses.merkleOrchard,
         merkleOrchardAbi,
         'claimDistributions',
-        [account, flatten(multiTokenClaims), tokens],
+        [account, flatten(multiTokenClaims), tokens]
       );
     } catch (e) {
       console.log('[Claim] Claim Rewards Error:', e);
@@ -189,7 +189,7 @@ export class ClaimService {
   private async computeClaimProofs(
     tokenPendingClaims: MultiTokenPendingClaims,
     account: string,
-    tokenIndex: number,
+    tokenIndex: number
   ): Promise<Promise<ClaimProofTuple[]>> {
     return Promise.all(
       tokenPendingClaims.claims.map(claim => {
@@ -204,12 +204,12 @@ export class ClaimService {
         };
 
         return this.computeClaimProof(payload);
-      }),
+      })
     );
   }
 
   private computeClaimProof(
-    payload: ComputeClaimProofPayload,
+    payload: ComputeClaimProofPayload
   ): Promise<ClaimProofTuple> {
     const message: ClaimWorkerMessage<ComputeClaimProofPayload> = {
       type: 'computeClaimProof',
@@ -249,7 +249,7 @@ export class ClaimService {
   private async getClaimStatus(
     totalWeeks: number,
     account: string,
-    tokenClaimInfo: TokenClaimInfo,
+    tokenClaimInfo: TokenClaimInfo
   ): Promise<ClaimStatus[]> {
     const { token, distributor, weekStart } = tokenClaimInfo;
 
@@ -272,7 +272,7 @@ export class ClaimService {
         merkleOrchardAbi,
         [...claimStatusCalls, ...rootCalls],
         {},
-        true,
+        true
       )) as (boolean | string)[];
 
       if (result.length > 0) {
@@ -283,7 +283,7 @@ export class ClaimService {
 
         return claimedResult.filter(
           (_, index) =>
-            distributionRootResult[index] !== ethers.constants.HashZero,
+            distributionRootResult[index] !== ethers.constants.HashZero
         );
       }
     } catch (e) {
@@ -297,7 +297,7 @@ export class ClaimService {
     const reports = await Promise.all<Report>(
       weeks
         .filter(week => snapshot[week] != null)
-        .map(week => ipfsService.get(snapshot[week])),
+        .map(week => ipfsService.get(snapshot[week]))
     );
     return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
   }

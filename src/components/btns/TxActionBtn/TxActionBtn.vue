@@ -65,7 +65,7 @@ const isWaitingOnWallet = computed(() => btnState.value === BtnStates.Init);
 const isConfirming = computed(() => btnState.value === BtnStates.Confirming);
 
 const loadingLabel = computed(() =>
-  isWaitingOnWallet.value ? t('confirm') : props.confirmingLabel,
+  isWaitingOnWallet.value ? t('confirm') : props.confirmingLabel
 );
 
 /**

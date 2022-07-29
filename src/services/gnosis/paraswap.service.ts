@@ -43,7 +43,7 @@ export default class ParaSwapService {
         swapSide,
         options,
         fromDecimals,
-        toDecimals,
+        toDecimals
       );
 
       if (this.isGetRateSuccess(rateResult)) {
@@ -64,7 +64,7 @@ export default class ParaSwapService {
   }
 
   private toPriceInformation(
-    priceRaw: ParaSwapPriceQuote | null,
+    priceRaw: ParaSwapPriceQuote | null
   ): PriceInformation | null {
     if (!priceRaw || !priceRaw.details) {
       return null;
@@ -85,7 +85,7 @@ export default class ParaSwapService {
   }
 
   private isGetRateSuccess(
-    rateResult: OptimalRatesWithPartnerFees | APIError,
+    rateResult: OptimalRatesWithPartnerFees | APIError
   ): rateResult is OptimalRatesWithPartnerFees {
     return !!(rateResult as OptimalRatesWithPartnerFees).destAmount;
   }

@@ -24,7 +24,7 @@ const emit = defineEmits(['navigate']);
  */
 const visibleSteps = computed(() => {
   return props.steps.filter(
-    step => step.isVisible === undefined || step.isVisible,
+    step => step.isVisible === undefined || step.isVisible
   );
 });
 

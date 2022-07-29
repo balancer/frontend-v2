@@ -50,7 +50,7 @@ const options = computed(() => ['all', ...tokenAddresses.value]);
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
 const assetSetWidth = computed(
-  () => 40 + (tokenAddresses.value.length - 2) * 10,
+  () => 40 + (tokenAddresses.value.length - 2) * 10
 );
 
 function isOptionSelected(option: string): boolean {

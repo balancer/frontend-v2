@@ -16,7 +16,7 @@ type QueryResponse = Address[];
 type MulticallerResult = Record<Address, { isKilled: boolean }>;
 
 function callGaugesIsKilledStatus(
-  gaugeAddresses: Address[],
+  gaugeAddresses: Address[]
 ): Promise<MulticallerResult> {
   const multicaller = LiquidityGauge.getMulticaller();
 
@@ -24,7 +24,7 @@ function callGaugesIsKilledStatus(
     multicaller.call(
       `${getAddress(gaugeAddress)}.isKilled`,
       getAddress(gaugeAddress),
-      'is_killed',
+      'is_killed'
     );
   }
   return multicaller.execute<MulticallerResult>();
@@ -36,7 +36,7 @@ function callGaugesIsKilledStatus(
  */
 export default function useExpiredGaugesQuery(
   gaugeAddresses: Ref<Address[] | undefined>,
-  options: UseQueryOptions<QueryResponse> = {},
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -54,7 +54,7 @@ export default function useExpiredGaugesQuery(
    * QUERY KEY
    */
   const queryKey = reactive(
-    QUERY_KEYS.Gauges.Expired(gaugeAddresses, networkId),
+    QUERY_KEYS.Gauges.Expired(gaugeAddresses, networkId)
   );
 
   /**
@@ -64,7 +64,7 @@ export default function useExpiredGaugesQuery(
     const expiredGaugeAddresses: Address[] = [];
     if (gaugeAddresses.value?.length) {
       const gaugesExpiredStatus = await callGaugesIsKilledStatus(
-        gaugeAddresses.value,
+        gaugeAddresses.value
       ).catch(error => {
         console.error('Error when fetching voting gauges is_killed status', {
           error,

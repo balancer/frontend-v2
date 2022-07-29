@@ -25,14 +25,14 @@ const ERC20ABIs = Object.values(
       ...StaticATokenLMAbi,
       ...ERC20_ABI,
       ...IERC4626,
-    ].map(row => [row.name, row]),
-  ),
+    ].map(row => [row.name, row])
+  )
 );
 
 export class ERC20Multicaller extends Multicaller {
   constructor(
     private readonly config = configService,
-    private readonly jsonProvider = rpcProviderService.jsonProvider,
+    private readonly jsonProvider = rpcProviderService.jsonProvider
   ) {
     super(config.network.key, jsonProvider, ERC20ABIs);
   }

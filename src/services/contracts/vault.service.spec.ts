@@ -84,7 +84,7 @@ describe('vault.service', () => {
         swaps,
         tokenAddresses,
         funds,
-        limits,
+        limits
       );
       const sendTransactionArgs = require('@/services/web3/web3.service')
         .web3Service.sendTransaction.mock.calls[0];

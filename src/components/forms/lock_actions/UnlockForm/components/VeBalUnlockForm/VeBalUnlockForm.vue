@@ -40,13 +40,13 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
  * COMPUTED
  */
 const totalLpTokens = computed(() =>
-  props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0',
+  props.veBalLockInfo?.isExpired ? props.veBalLockInfo.lockedAmount : '0'
 );
 
 const fiatTotalLpTokens = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
-    .times(totalLpTokens.value),
+    .times(totalLpTokens.value)
 );
 
 const submissionDisabled = computed(() => {

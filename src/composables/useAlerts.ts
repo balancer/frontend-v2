@@ -33,10 +33,10 @@ export const alertsState = ref<Record<string, Alert>>({});
  * COMPUTED
  */
 const alerts = computed(() =>
-  Object.values(orderBy(alertsState.value, 'priority', 'desc')),
+  Object.values(orderBy(alertsState.value, 'priority', 'desc'))
 );
 const currentAlert = computed(() =>
-  alerts.value.length > 0 ? alerts.value[0] : null,
+  alerts.value.length > 0 ? alerts.value[0] : null
 );
 
 /**

@@ -89,7 +89,7 @@ export default defineComponent({
       newVal => {
         range.value = Number(newVal) || 0;
       },
-      { immediate: true },
+      { immediate: true }
     );
 
     return {

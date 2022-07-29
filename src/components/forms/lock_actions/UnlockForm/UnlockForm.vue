@@ -29,19 +29,19 @@ const veBalLockInfoQuery = useVeBalLockInfoQuery();
  * COMPUTED
  */
 const lockablePoolLoading = computed(
-  () => lockablePoolQuery.isLoading.value || lockablePoolQuery.isIdle.value,
+  () => lockablePoolQuery.isLoading.value || lockablePoolQuery.isIdle.value
 );
 
 const veBalQueryLoading = computed(
-  () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value,
+  () => veBalLockInfoQuery.isLoading.value || veBalLockInfoQuery.isIdle.value
 );
 
 const lockablePool = computed<Pool | undefined>(
-  () => lockablePoolQuery.data.value,
+  () => lockablePoolQuery.data.value
 );
 
 const lockablePoolTokenInfo = computed(() =>
-  lockablePool.value != null ? getToken(lockablePool.value.address) : null,
+  lockablePool.value != null ? getToken(lockablePool.value.address) : null
 );
 
 const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);
@@ -49,7 +49,7 @@ const veBalLockInfo = computed(() => veBalLockInfoQuery.data.value);
 const isLoading = computed(() =>
   isWalletReady.value
     ? lockablePoolLoading.value || veBalQueryLoading.value
-    : lockablePoolLoading.value,
+    : lockablePoolLoading.value
 );
 </script>
 

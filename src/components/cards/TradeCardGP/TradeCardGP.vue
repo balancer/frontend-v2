@@ -238,7 +238,7 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
+      tokenOutAmount
     );
 
     // COMPUTED
@@ -246,13 +246,13 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
+      tokenOutAmount
     );
 
     const isHighPriceImpact = computed(
       () =>
         trading.sor.validationErrors.value.highPriceImpact &&
-        !dismissedErrors.value.highPriceImpact,
+        !dismissedErrors.value.highPriceImpact
     );
 
     const tradeDisabled = computed(() => {
@@ -304,9 +304,9 @@ export default defineComponent({
                 fNum2(
                   formatUnits(
                     trading.getQuote().maximumInAmount,
-                    trading.tokenIn.value.decimals,
+                    trading.tokenIn.value.decimals
                   ),
-                  FNumFormats.token,
+                  FNumFormats.token
                 ),
                 fNum2(trading.slippageBufferRate.value, FNumFormats.percent),
               ]),

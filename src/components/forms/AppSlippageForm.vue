@@ -76,7 +76,7 @@ watch(
       state.fixedSlippage = '';
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 

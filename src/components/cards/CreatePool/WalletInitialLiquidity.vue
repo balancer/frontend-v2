@@ -20,13 +20,13 @@ const { upToLargeBreakpoint } = useBreakpoints();
  * COMPUTED
  */
 const allocatedTokenWeights = computed(() =>
-  seedTokens.value.filter(t => t.tokenAddress !== ''),
+  seedTokens.value.filter(t => t.tokenAddress !== '')
 );
 const unallocatedTokenWeight = computed(() =>
   sumBy(
     seedTokens.value.filter(t => t.tokenAddress === ''),
-    'weight',
-  ),
+    'weight'
+  )
 );
 
 const totalsClass = computed(() => ({
@@ -79,7 +79,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
             {{
               fNum2(
                 optimisedLiquidity[token.tokenAddress].liquidityRequired,
-                FNumFormats.fiat,
+                FNumFormats.fiat
               )
             }}
           </div>

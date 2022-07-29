@@ -30,12 +30,12 @@ export default class AaveService {
   public async calcWeightedSupplyAPRFor(
     pool: Pool,
     prices: TokenPrices,
-    currency: FiatCurrency,
+    currency: FiatCurrency
   ) {
     const { mainTokens, wrappedTokens, linearPoolTokensMap } = pool;
 
     const wrappedTokenBalances = wrappedTokens?.map(
-      token => linearPoolTokensMap?.[token].balance || '',
+      token => linearPoolTokensMap?.[token].balance || ''
     );
     const hasAllWrappedTokenBalances =
       wrappedTokenBalances && wrappedTokenBalances.every(balance => !!balance);
@@ -48,7 +48,7 @@ export default class AaveService {
       multicaller.call(
         `linearPoolTotalSupplies[${i}]`,
         pool.tokensList[i],
-        'getVirtualSupply',
+        'getVirtualSupply'
       );
     });
 
@@ -75,7 +75,7 @@ export default class AaveService {
     const breakdown: Record<string, string> = {};
 
     const mappedMainTokens = mainTokens?.map(address =>
-      this.addressMapIn(address),
+      this.addressMapIn(address)
     );
 
     const reserves = await this.subgraphService.reserves.get({
@@ -91,18 +91,18 @@ export default class AaveService {
 
       if (supplyAPR.gt(0)) {
         const tokenIndex = mappedMainTokens.findIndex(token =>
-          isSameAddress(token, reserve.underlyingAsset),
+          isSameAddress(token, reserve.underlyingAsset)
         );
         // Grabs the matching wrapped which generates the yield
         const wrappedToken = wrappedTokens[tokenIndex];
         const mainToken = mainTokens[tokenIndex];
         const linearPoolAddress = pool.tokensList[tokenIndex];
         const linearPoolToken = pool.tokens.find(token =>
-          isSameAddress(token.address, linearPoolAddress),
+          isSameAddress(token.address, linearPoolAddress)
         );
         const linearPoolTotalSupply = formatUnits(
           linearPoolTotalSupplies[tokenIndex],
-          18,
+          18
         );
 
         const mainTokenPrice = prices[getAddress(mainToken)]?.[currency];
@@ -111,7 +111,7 @@ export default class AaveService {
           const balance = wrappedTokenBalances[tokenIndex];
           const linearPoolBalance = linearPoolToken?.balance || '0';
           const linearPoolShare = bnum(linearPoolBalance).div(
-            linearPoolTotalSupply,
+            linearPoolTotalSupply
           );
           const actualBalance = bnum(balance).times(linearPoolShare);
           const value = bnum(actualBalance).times(mainTokenPrice);

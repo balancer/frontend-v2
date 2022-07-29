@@ -5,7 +5,7 @@ export default function useInputStyles(
   isInvalid: Ref<boolean>,
   isActive: Ref<boolean>,
   isHover: Ref<boolean>,
-  attrs,
+  attrs
 ) {
   const extPaddingClass = (): string => {
     switch (props.size) {

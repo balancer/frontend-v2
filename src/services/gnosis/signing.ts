@@ -63,7 +63,7 @@ const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
 ]);
 
 function _getSigningSchemeInfo(
-  ecdaSigningScheme: EcdsaSigningScheme,
+  ecdaSigningScheme: EcdsaSigningScheme
 ): SchemaInfo {
   const value = mapSigningSchema.get(ecdaSigningScheme);
   if (value === undefined) {
@@ -74,13 +74,13 @@ function _getSigningSchemeInfo(
 }
 
 export function getSigningSchemeApiValue(
-  ecdaSigningScheme: EcdsaSigningScheme,
+  ecdaSigningScheme: EcdsaSigningScheme
 ) {
   return _getSigningSchemeInfo(ecdaSigningScheme).apiValue;
 }
 
 export function getSigningSchemeLibValue(
-  ecdaSigningScheme: EcdsaSigningScheme,
+  ecdaSigningScheme: EcdsaSigningScheme
 ) {
   return _getSigningSchemeInfo(ecdaSigningScheme).libraryValue;
 }
@@ -100,12 +100,12 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
     domain,
     order,
     signer,
-    getSigningSchemeLibValue(signingScheme),
+    getSigningSchemeLibValue(signingScheme)
   );
 }
 
 async function _signOrderCancellation(
-  params: SingOrderCancellationParams,
+  params: SingOrderCancellationParams
 ): Promise<Signature> {
   const { signer, signingScheme, orderId } = params;
 
@@ -121,7 +121,7 @@ async function _signOrderCancellation(
     domain,
     orderId,
     signer,
-    getSigningSchemeLibValue(signingScheme),
+    getSigningSchemeLibValue(signingScheme)
   );
 }
 
@@ -131,7 +131,7 @@ async function _signPayload(
   payload: any,
   signFn: typeof _signOrder | typeof _signOrderCancellation,
   signer: Signer,
-  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4',
+  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
 ): Promise<SigningResult> {
   const signingScheme =
     signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712;
@@ -204,14 +204,14 @@ async function _signPayload(
 
 export async function signOrder(
   order: UnsignedOrder,
-  signer: Signer,
+  signer: Signer
 ): Promise<SigningResult> {
   return _signPayload({ order }, _signOrder, signer);
 }
 
 export async function signOrderCancellation(
   orderId: string,
-  signer: Signer,
+  signer: Signer
 ): Promise<SigningResult> {
   return _signPayload({ orderId }, _signOrderCancellation, signer);
 }

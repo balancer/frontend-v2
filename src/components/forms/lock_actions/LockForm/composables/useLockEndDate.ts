@@ -38,9 +38,9 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
         veBalLockInfo?.hasExistingLock
           ? veBalLockInfo.lockedEndDate
           : todaysDate,
-        MIN_LOCK_PERIOD_IN_DAYS,
-      ),
-    ),
+        MIN_LOCK_PERIOD_IN_DAYS
+      )
+    )
   ).getTime();
 
   const maxLockEndDateTimestamp = getMaxLockEndDateTimestamp(todaysDate);
@@ -56,17 +56,17 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
   const lockEndDateTimestamp = computed(() =>
     lockEndDate.value === ''
       ? 0
-      : startOfDay(new Date(lockEndDate.value)).getTime(),
+      : startOfDay(new Date(lockEndDate.value)).getTime()
   );
 
   const isValidLockEndDate = computed(
     () =>
       lockEndDateTimestamp.value >= minLockEndDateTimestamp &&
-      lockEndDateTimestamp.value <= maxLockEndDateTimestamp,
+      lockEndDateTimestamp.value <= maxLockEndDateTimestamp
   );
 
   const isExtendedLockEndDate = computed(
-    () => veBalLockInfo?.hasExistingLock && isValidLockEndDate.value,
+    () => veBalLockInfo?.hasExistingLock && isValidLockEndDate.value
   );
 
   return {

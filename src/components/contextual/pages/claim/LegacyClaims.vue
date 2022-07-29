@@ -95,7 +95,7 @@ const legacyClaimUI = computed(() => {
 });
 
 const userClaims = computed(() =>
-  userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null,
+  userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
 );
 
 const claimableTokens = computed<ClaimableToken[]>(() => {
@@ -111,7 +111,7 @@ const claimableTokens = computed<ClaimableToken[]>(() => {
         fiatValue: bnum(availableToClaim)
           .times(priceFor(tokenClaimInfo.token))
           .toString(),
-      }),
+      })
     );
   }
   return [BALTokenPlaceholder.value];
@@ -125,7 +125,7 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
     return userClaims.value.multiTokenCurrentRewardsEstimate.map(
       ({ token, rewards, velocity }) => {
         const rewardsSinceTimestamp = bnum(velocity).times(
-          elapstedTimeSinceEstimateTimestamp.value,
+          elapstedTimeSinceEstimateTimestamp.value
         );
         const totalRewards = bnum(rewards).plus(rewardsSinceTimestamp);
 
@@ -135,7 +135,7 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
           amount: totalRewards.toString(),
           fiatValue: totalRewards.times(priceFor(token)).toString(),
         };
-      },
+      }
     );
   }
   return [BALTokenPlaceholder.value];
@@ -144,20 +144,20 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
 const totalClaimableTokensFiatValue = computed(() =>
   claimableTokens.value
     .reduce((totalValue, { fiatValue }) => totalValue.plus(fiatValue), bnum(0))
-    .toString(),
+    .toString()
 );
 
 const hasClaimableTokens = computed(() =>
   claimableTokens.value.some(
-    claimableToken => Number(claimableToken.amount) > 0,
-  ),
+    claimableToken => Number(claimableToken.amount) > 0
+  )
 );
 
 useIntervalFn(async () => {
   if (userClaims.value != null && userClaims.value.timestamp != null) {
     const diffInSeconds = differenceInSeconds(
       new Date(),
-      new Date(userClaims.value.timestamp),
+      new Date(userClaims.value.timestamp)
     );
     elapstedTimeSinceEstimateTimestamp.value = diffInSeconds;
   }
@@ -177,7 +177,7 @@ async function claimAvailableRewards() {
       const tx = await claimService.multiTokenClaimRewards(
         getProvider(),
         account.value,
-        userClaims.value.multiTokenPendingClaims,
+        userClaims.value.multiTokenPendingClaims
       );
 
       const summary = claimableTokens.value
@@ -186,7 +186,7 @@ async function claimAvailableRewards() {
             `${fNum2(claimableToken.amount, {
               minimumFractionDigits: 4,
               maximumFractionDigits: 4,
-            })} ${claimableToken.symbol}`,
+            })} ${claimableToken.symbol}`
         )
         .join(', ');
 

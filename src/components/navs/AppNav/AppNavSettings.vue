@@ -236,14 +236,14 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const connectorName = computed(() =>
-      getConnectorName(connector.value?.id, provider.value),
+      getConnectorName(connector.value?.id, provider.value)
     );
     const connectorLogo = computed(() =>
-      getConnectorLogo(connector.value?.id, provider.value),
+      getConnectorLogo(connector.value?.id, provider.value)
     );
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const isGnosisSupportedNetwork = computed(() =>
-      GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId),
+      GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
     );
 
     // METHODS

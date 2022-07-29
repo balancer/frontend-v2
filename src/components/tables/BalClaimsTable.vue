@@ -94,19 +94,19 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
  * COMPUTED
  */
 const allGauges = computed((): Gauge[] =>
-  props.rewardsData.map(row => row.gauge),
+  props.rewardsData.map(row => row.gauge)
 );
 
 const totalClaimAmount = computed((): string =>
   props.rewardsData
     .reduce((acc, row) => acc.plus(row.amount), bnum('0'))
-    .toString(),
+    .toString()
 );
 
 const totalClaimValue = computed((): string =>
   props.rewardsData
     .reduce((acc, row) => acc.plus(row.value), bnum('0'))
-    .toString(),
+    .toString()
 );
 
 /**

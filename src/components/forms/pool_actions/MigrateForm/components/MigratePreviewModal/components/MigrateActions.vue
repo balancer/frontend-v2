@@ -104,14 +104,14 @@ const actions = ref<TransactionActionInfo[]>([migrateAction]);
 const explorerLink = computed(() =>
   migratePoolState.receipt
     ? explorerLinks.txLink(migratePoolState.receipt.transactionHash)
-    : '',
+    : ''
 );
 
 const transactionInProgress = computed(
   () =>
     migratePoolState.init ||
     migratePoolState.confirming ||
-    migratePoolState.confirmed,
+    migratePoolState.confirmed
 );
 
 /**
@@ -157,11 +157,11 @@ async function submit() {
     let userData = '';
     if (isStableLike(props.fromPool.poolType)) {
       userData = StablePoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value,
+        bptBalanceScaled.value
       );
     } else {
       userData = WeightedPoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value,
+        bptBalanceScaled.value
       );
     }
 
@@ -172,7 +172,7 @@ async function submit() {
       exitTokens: props.fromPool.tokensList.map(t => t.toLowerCase()),
       userData,
       expectedAmountsOut: fullAmountsScaled.value.map(amount =>
-        amount.toString(),
+        amount.toString()
       ),
       finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
       slippage: slippageScaled.value,
@@ -183,7 +183,7 @@ async function submit() {
     });
 
     const hasInvalidAmount = (txInfo.outputs?.amountsOut || []).some(
-      (amount: BigNumberish) => BigNumber.from(amount).isZero(),
+      (amount: BigNumberish) => BigNumber.from(amount).isZero()
     );
 
     if (hasInvalidAmount) {
@@ -192,7 +192,7 @@ async function submit() {
 
     tx = await balancerContractsService.batchRelayer.execute(
       txInfo,
-      getProvider(),
+      getProvider()
     );
 
     migratePoolState.init = false;

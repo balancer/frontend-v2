@@ -25,7 +25,7 @@ type FilterOptions = {
 async function fetchBasicPoolMetadata(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions,
-  currentPage = 0,
+  currentPage = 0
 ) {
   const skip =
     POOLS.Pagination.PerPage * (currentPage - 1 < 0 ? 0 : currentPage - 1);
@@ -46,7 +46,7 @@ async function fetchBasicPoolMetadata(
 
 export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
-  filterOptions?: FilterOptions,
+  filterOptions?: FilterOptions
 ) {
   const {
     priceQueryLoading,
@@ -59,7 +59,7 @@ export default function useStreamedPoolsQuery(
   const gaugesQuery = useGaugesQuery();
 
   const decorationEnabled = computed(
-    (): boolean => !priceQueryLoading.value && !isQueryLoading(gaugesQuery),
+    (): boolean => !priceQueryLoading.value && !isQueryLoading(gaugesQuery)
   );
 
   const {
@@ -77,7 +77,7 @@ export default function useStreamedPoolsQuery(
         return await fetchBasicPoolMetadata(
           tokenList,
           filterOptions,
-          currentPage.value,
+          currentPage.value
         );
       },
     },
@@ -89,7 +89,7 @@ export default function useStreamedPoolsQuery(
             ...pool.tokensList,
             ...lpTokensFor(pool),
             pool.address,
-          ]),
+          ])
         );
         await injectTokens(_tokens);
         await forChange(dynamicDataLoading, false);
@@ -105,7 +105,7 @@ export default function useStreamedPoolsQuery(
           gaugesQuery.data.value || [],
           prices.value,
           currency.value,
-          tokens.value,
+          tokens.value
         );
       },
     },
@@ -118,7 +118,7 @@ export default function useStreamedPoolsQuery(
         poolsStoreService.setPools(val);
       }
     },
-    { deep: true },
+    { deep: true }
   );
 
   return {

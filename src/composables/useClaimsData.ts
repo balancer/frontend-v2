@@ -31,7 +31,7 @@ type GaugePoolQueryResponse = {
 export function useClaimsData() {
   const protocolRewardsQuery = useProtocolRewardsQuery();
   const protocolRewards = computed(
-    (): ProtocolRewardsQueryResponse => protocolRewardsQuery.data.value || {},
+    (): ProtocolRewardsQueryResponse => protocolRewardsQuery.data.value || {}
   );
 
   // Fetch subgraph liquidity gauges
@@ -46,7 +46,7 @@ export function useClaimsData() {
 
   // Fetch pools associated with gauges
   const gaugePoolQueryEnabled = computed(
-    (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0,
+    (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0
   );
   const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
     subgraphs.balancer,
@@ -66,20 +66,20 @@ export function useClaimsData() {
         },
       },
     }),
-    reactive({ enabled: gaugePoolQueryEnabled }),
+    reactive({ enabled: gaugePoolQueryEnabled })
   );
 
   /**
    * COMPUTED
    */
   const gaugePools = computed(
-    (): GaugePool[] => gaugePoolQuery.data.value?.pools || [],
+    (): GaugePool[] => gaugePoolQuery.data.value?.pools || []
   );
 
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(gaugePoolQuery) ||
-      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery)),
+      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery))
   );
 
   return {

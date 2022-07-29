@@ -18,7 +18,7 @@ export default class GasPriceService {
   constructor(
     private readonly configService = new ConfigService(),
     private readonly blocknativeProvider = new BlocknativeProvider(),
-    private readonly polygonProvider = new PolygonProvider(),
+    private readonly polygonProvider = new PolygonProvider()
   ) {}
 
   public async getLatest(): Promise<GasPrice | null> {
@@ -37,11 +37,11 @@ export default class GasPriceService {
     action: string,
     params: any[],
     options: Record<string, any>,
-    forceEthereumLegacyTxType = false,
+    forceEthereumLegacyTxType = false
   ): Promise<GasSettings> {
     const gasLimitNumber = await contractWithSigner.estimateGas[action](
       ...params,
-      options,
+      options
     );
 
     const gasSettings: GasSettings = {};

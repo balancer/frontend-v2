@@ -9,7 +9,7 @@ export class BBAUSDToken {
   constructor(
     private readonly abi = StablePhantomAbi,
     public readonly address = TOKENS.Addresses.bbaUSD,
-    private readonly provider = rpcProviderService.jsonProvider,
+    private readonly provider = rpcProviderService.jsonProvider
   ) {}
 
   /**

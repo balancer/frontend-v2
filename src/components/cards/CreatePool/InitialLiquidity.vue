@@ -60,7 +60,7 @@ const tokenAddresses = ref([] as string[]);
  */
 const areAmountsMaxed = computed(() => {
   const isMaxed = seedTokens.value.every(t =>
-    bnum(t.amount).eq(balanceFor(t.tokenAddress)),
+    bnum(t.amount).eq(balanceFor(t.tokenAddress))
   );
   return isMaxed;
 });
@@ -69,7 +69,7 @@ const isExceedingWalletBalance = computed(() => {
   // need to perform rounding here as JS cuts off those
   // really long numbers which makes it impossible to compare
   const isExceeding = tokenAddresses.value.some((t, i) =>
-    bnum(seedTokens.value[i].amount).gt(balanceFor(t)),
+    bnum(seedTokens.value[i].amount).gt(balanceFor(t))
   );
   return isExceeding;
 });
@@ -185,7 +185,7 @@ function tokenOptions(index: number): string[] {
 function setNativeAssetIfRequired(): void {
   const nativeAssetBalance = balanceFor(nativeAsset.address);
   const wrappedNativeAssetBalance = balanceFor(
-    wrappedNativeAsset.value.address,
+    wrappedNativeAsset.value.address
   );
 
   if (
