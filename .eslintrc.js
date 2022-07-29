@@ -10,7 +10,7 @@ module.exports = {
     'plugin:tailwindcss/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended',
-    "prettier"
+    'plugin:prettier-vue/recommended',
   ],
 
   plugins: ['simple-import-sort', 'tailwindcss'],
