@@ -96,6 +96,8 @@ const fiatTotal = computed(() => {
         :to="{ name: 'withdraw' }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
+        color="blue"
+        outline
         block
       />
     </div>

@@ -9,6 +9,7 @@ import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
 import { Pool, PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -17,6 +18,7 @@ import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 /** STATE */
 const showStakeModal = ref(false);
 const stakePool = ref<Pool | undefined>();
+const networkName = configService.network.shortName;
 
 /** COMPOSABLES */
 const {
@@ -45,7 +47,7 @@ const stakedBalanceMap = computed(() => {
 
 const noPoolsLabel = computed(() => {
   return isWalletReady.value || isWalletConnecting.value
-    ? t('noUnstakedInvestments')
+    ? t('noUnstakedInvestments', [networkName])
     : t('connectYourWallet');
 });
 

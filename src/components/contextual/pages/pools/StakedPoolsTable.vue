@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
+import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /** COMPOSABLES */
@@ -19,6 +20,7 @@ const {
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
+const networkName = configService.network.shortName;
 
 /** COMPUTED */
 const isLoading = computed(() => {
@@ -31,7 +33,7 @@ const isLoading = computed(() => {
 
 const noPoolsLabel = computed(() => {
   return isWalletReady.value || isWalletConnecting.value
-    ? t('noStakedInvestments')
+    ? t('noStakedInvestments', [networkName])
     : t('connectYourWallet');
 });
 
