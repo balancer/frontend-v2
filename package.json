@@ -13,6 +13,7 @@
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "prettier": "prettier --check '**/*.*(md|json|yaml|html)'",
+    "prettier:fix": "prettier --write '**/*.*(md|json|yaml|html)'",
     "lint:fix": "npm run lint -- --fix",
     "prepare": "node ./prepare.js && husky install",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
