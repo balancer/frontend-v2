@@ -123,6 +123,10 @@
     "web3-utils": "^1.3.1",
     "worker-loader": "^3.0.8"
   },
+  "lint-staged": {
+    "*.{js,ts,vue}": "eslint --cache --fix",
+    "*.{md,json,yaml,html}": "prettier --write"
+  },
   "license": "MIT",
   "repository": "balancer-labs/frontend-v2"
 }

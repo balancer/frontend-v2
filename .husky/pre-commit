@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run lint:fix -- --cache
-npm run pretty-quick
+npx lint-staged

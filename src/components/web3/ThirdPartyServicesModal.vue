@@ -13,7 +13,10 @@
       </span>
       <BalStack vertical class="pl-2">
         <BalStack
-          v-for="service in services"  :key="service"  spacing="base"  horizontal
+          v-for="service in services"
+          :key="service"
+          spacing="base"
+          horizontal
           align="start"
         >
           <img
