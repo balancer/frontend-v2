@@ -46,6 +46,7 @@ type Props = {
 defineProps<Props>();
 
 // const emit = defineEmits<{
+//
 //   (e: 'close'): void;
 // }>();
 
