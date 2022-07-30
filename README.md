@@ -11,6 +11,7 @@ git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
 ```
 
 ### Local env
+
 Install dependencies:
 
 ```bash
