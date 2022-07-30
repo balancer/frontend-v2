@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .js,.ts,.vue --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
+    "prettier": "prettier --check '**/*.*(md|json|yaml|html)'",
     "pretty-quick": "pretty-quick --staged --pattern '**/*.*(md|json|yaml|html)'",
     "lint:fix": "npm run lint -- --fix",
     "prepare": "node ./prepare.js",
