@@ -3,7 +3,7 @@
     :show="isVisible"
     title="Use of 3rd party services"
     class="third-parties"
-    @close="$emit('close')"
+    @close="emit('close')"
   >
     <p class="pb-3 text-sm">{{ $t('policies.balancerThirdPartyInfo') }}.</p>
     <BalStack vertical class="pb-2">
@@ -13,8 +13,7 @@
       </span>
       <BalStack vertical class="pl-2">
         <BalStack
-          v-for="service in services"
-          :key="service"
+          v-for="service in services" :key="service"
           spacing="base"
           horizontal
           align="start"
@@ -44,6 +43,10 @@ type Props = {
 };
 
 defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'close'): void;
+}>();
 
 const services = [
   'infura',

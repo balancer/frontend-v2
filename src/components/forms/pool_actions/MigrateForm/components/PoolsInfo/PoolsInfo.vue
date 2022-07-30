@@ -83,7 +83,7 @@ onBeforeMount(() => {
       </div>
     </div>
     <PoolInfoBreakdown :pool="fromPool" :pool-token-info="fromPoolTokenInfo" />
-    <div class="block flex justify-center my-4 dark:text-gray-50">
+    <div class="flex justify-center my-4 dark:text-gray-50">
       <ArrowDownIcon class="w-5 h-5 dark:text-secondary" />
     </div>
     <PoolInfoBreakdown :pool="toPool" :pool-token-info="toPoolTokenInfo" />

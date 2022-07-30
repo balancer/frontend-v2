@@ -28,13 +28,21 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'tailwindcss/no-custom-classname': 'off',
+
+    // Inserting html is a potential XSS risk. Consider disabling this rule case-by-case basis
+    'vue/no-v-html': 'off',
+
     // Our component names are already written in PascalCase.
     // And for consistency, it's now required too.
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+
     // Vue recommends multi word component names, so they don't get mixed with
     // regular html elements, but many component's names are already single
     // word, so had to turn this off.
     'vue/multi-word-component-names': 'off',
+
+    // Event names are written in kebab-case, as it's in plugin:vue/vue3-recommended.
+    // This just turns the autofix option on.
     'vue/v-on-event-hyphenation': [
       'error',
       'always',

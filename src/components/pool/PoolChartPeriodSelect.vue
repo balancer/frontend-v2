@@ -9,6 +9,10 @@ type Props = {
   activeOption: PoolChartPeriod;
 };
 
+const emit = defineEmits<{
+  (e: 'change-option', value: PoolChartPeriod): void;
+}>();
+
 /**
  * PROPS
  */
@@ -38,7 +42,7 @@ defineProps<Props>();
           v-for="option in options"
           :key="option.days"
           class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
-          @click="$emit('change-option', option)"
+          @click="emit('change-option', option)"
         >
           <div class="flex items-center ml-1 font-medium">
             {{ option.text }}

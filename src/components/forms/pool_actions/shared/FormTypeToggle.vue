@@ -44,8 +44,6 @@ interface FormType {
 export default defineComponent({
   name: 'TypeToggle',
 
-  emits: ['update:modelValue'],
-
   props: {
     formTypes: { type: Object as PropType<FormType[]>, required: true },
     modelValue: { type: String, required: true },
@@ -53,6 +51,8 @@ export default defineComponent({
     hasZeroBalance: { type: Boolean, default: false },
     missingPrices: { type: Boolean, default: false },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     const selected = ref(props.formTypes[0].value);

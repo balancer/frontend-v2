@@ -141,14 +141,14 @@ export default defineComponent({
     Search,
   },
 
-  emits: ['close', 'selectTokenlist', 'select'],
-
   props: {
     open: { type: Boolean, default: false },
     excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
     includeEther: { type: Boolean, default: false },
     disableInjection: { type: Boolean, default: false },
   },
+
+  emits: ['close', 'selectTokenlist', 'select'],
 
   setup(props, { emit }) {
     /**

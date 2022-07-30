@@ -439,13 +439,13 @@ export default defineComponent({
   components: {
     TradeRoute,
   },
-  emits: ['trade', 'close'],
   props: {
     trading: {
       type: Object as PropType<UseTrading>,
       required: true,
     },
   },
+  emits: ['trade', 'close'],
   setup(props, { emit }) {
     // COMPOSABLES
     const { t } = useI18n();
