@@ -8,7 +8,7 @@
     <p class="pb-3 text-sm">{{ $t('policies.balancerThirdPartyInfo') }}.</p>
     <BalStack vertical class="pb-2">
       <span class="text-sm font-medium">
-        {{ $t('policies.usesFollowing') }}asd
+        {{ $t('policies.usesFollowing') }}
         {{ $t('policies.thirdPartyServices') }}:
       </span>
       <BalStack vertical class="pl-2">
