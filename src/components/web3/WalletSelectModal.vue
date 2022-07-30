@@ -62,6 +62,7 @@ export default defineComponent({
     },
     onShowThirdParty: {
       type: Function,
+      required: true,
     },
   },
   emits: ['close'],

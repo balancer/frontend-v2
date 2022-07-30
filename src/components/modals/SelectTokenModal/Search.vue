@@ -16,7 +16,10 @@
 
 <script>
 export default {
-  props: ['modelValue', 'placeholder'],
+  props: {
+    modelValue: { type: String, default: '' },
+    placeholder: { type: String, default: '' },
+  },
 
   emits: ['update:modelValue'],
 

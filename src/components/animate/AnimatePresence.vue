@@ -23,7 +23,6 @@ import {
   watch,
 } from 'vue';
 export default defineComponent({
-  emits: ['on-exit', 'update-dimensions', 'on-presence'],
   props: {
     initial: {
       type: Object as PropType<AnimeParams>,
@@ -52,6 +51,7 @@ export default defineComponent({
       default: () => true,
     },
   },
+  emits: ['on-exit', 'update-dimensions', 'on-presence'],
   setup(props, { emit }) {
     const animateContainer = ref<HTMLElement>();
 

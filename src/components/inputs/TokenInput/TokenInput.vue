@@ -39,6 +39,7 @@ type Props = {
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
   ignoreWalletBalance?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokenValue?: string;
   placeholder?: string;
 };
@@ -62,6 +63,13 @@ const props = withDefaults(defineProps<Props>(), {
   ignoreWalletBalance: false,
   options: () => [],
   rules: () => [],
+  priceImpact: 0,
+  label: '',
+  customBalance: '',
+  balanceLabel: '',
+  hint: '',
+  excludedTokens: () => [],
+  placeholder: '',
 });
 
 const emit = defineEmits<{
@@ -173,12 +181,10 @@ const barColor = computed(() =>
   amountExceedsTokenBalance.value ? 'red' : 'green'
 );
 
-const priceImpactSign = computed(() =>
-  (props.priceImpact || 0) >= 0 ? '-' : '+'
-);
+const priceImpactSign = computed(() => (props.priceImpact >= 0 ? '-' : '+'));
 
 const priceImpactClass = computed(() =>
-  (props.priceImpact || 0) >= 0.01 ? 'text-red-500' : ''
+  props.priceImpact >= 0.01 ? 'text-red-500' : ''
 );
 
 /**

@@ -43,6 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPoolShares: false,
   noPoolsLabel: 'No pools',
   isPaginated: false,
+  data: () => [],
 });
 
 const emit = defineEmits<{

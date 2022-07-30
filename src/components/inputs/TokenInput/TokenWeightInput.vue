@@ -28,6 +28,9 @@ const props = withDefaults(defineProps<Props>(), {
   address: '',
   weight: 0,
   hintAmount: '',
+  label: '',
+  hint: '',
+  excludedTokens: () => [],
 });
 
 const emit = defineEmits<{

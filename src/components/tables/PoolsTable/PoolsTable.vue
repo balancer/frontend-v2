@@ -56,6 +56,8 @@ const props = withDefaults(defineProps<Props>(), {
   hiddenColumns: () => [],
   showBoost: false,
   columnStates: () => ({}),
+  data: () => [],
+  selectedTokens: () => [],
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);

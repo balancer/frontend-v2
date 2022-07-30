@@ -59,14 +59,17 @@ type Props = {
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onRowClick?: (data: Data) => void;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   sticky?: Sticky;
   square?: boolean;
   isPaginated?: boolean;
   noResultsLabel?: string;
   link?: { to?: string } | null;
   initialState?: InitialState;
-  pin?: DataPinState;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
+  pin?: DataPinState | null;
   getTableRowClass?: (rowData: Data, rowIndex: number) => string | undefined;
 };
 

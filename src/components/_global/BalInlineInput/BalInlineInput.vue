@@ -53,6 +53,8 @@ const props = withDefaults(defineProps<Props>(), {
   decimalLimit: 18,
   validateOn: 'blur',
   rules: () => [],
+  label: '',
+  format: val => val,
 });
 
 const emit = defineEmits<{
@@ -140,7 +142,7 @@ function handleBlur(e: HtmlInputEvent) {
             ref="inputElement"
             :type="type"
             :name="name"
-            :value="format ? format(modelValue) : modelValue"
+            :value="format(modelValue)"
             :disabled="!isEditable || disabled"
             :class="['input', inputClasses]"
             @blur="handleBlur"

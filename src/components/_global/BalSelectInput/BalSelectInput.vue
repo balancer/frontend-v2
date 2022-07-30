@@ -47,8 +47,6 @@ export default defineComponent({
     BalIcon,
   },
 
-  emits: ['change', 'update:modelValue'],
-
   props: {
     modelValue: { type: String, default: '' },
     options: { type: Array, required: true },
@@ -67,6 +65,8 @@ export default defineComponent({
       default: () => [],
     },
   },
+
+  emits: ['change', 'update:modelValue'],
 
   setup(props, { emit }) {
     const balSelectInput = ref({} as HTMLSelectElement);

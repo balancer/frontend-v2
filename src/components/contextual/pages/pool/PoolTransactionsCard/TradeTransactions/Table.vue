@@ -32,6 +32,7 @@ type Props = {
   poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
@@ -44,6 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
   isPaginated: false,
+  noResultsLabel: '',
 });
 
 const emit = defineEmits(['loadMore']);

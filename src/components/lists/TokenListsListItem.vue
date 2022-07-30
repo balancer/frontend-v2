@@ -48,6 +48,7 @@ export default {
   props: {
     tokenlist: {
       type: Object as PropType<TokenList>,
+      required: true,
     },
     uri: {
       type: String,

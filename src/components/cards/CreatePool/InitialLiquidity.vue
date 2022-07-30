@@ -289,6 +289,7 @@ function saveAndProceed() {
                   class="flex ml-1 text-gray-400"
                 />
               </template>
+              <!-- eslint-disable-next-line vue/no-v-html -->
               <div v-html="t('autoOptimiseLiquidityToggle.tooltip')" />
             </BalTooltip>
           </div>

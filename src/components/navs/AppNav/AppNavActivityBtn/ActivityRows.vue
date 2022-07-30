@@ -95,6 +95,7 @@ export default defineComponent({
     },
     cancelOrder: {
       type: Function as PropType<(orderId: string) => void>,
+      required: true,
     },
     isSuccessfulTransaction: {
       type: Function as PropType<(transaction: Transaction) => boolean>,
