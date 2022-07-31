@@ -49,11 +49,11 @@ export default defineComponent({
   props: {
     addresses: {
       type: Array as PropType<string[]>,
-      default: undefined,
+      default: () => [],
     },
     logoURIs: {
       type: Array as PropType<string[]>,
-      default: undefined,
+      default: () => [],
     },
     balAssetProps: {
       type: Object as PropType<BalAssetProps>,
