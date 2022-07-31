@@ -18,7 +18,9 @@ type Props = {
   // changing variables which can be used to
   // determine whether to re-render the height
   // of an accordion section
-  dependencies: Ref<unknown>;
+
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
+  dependencies?: Ref<unknown>;
   showSectionBorder?: boolean;
 };
 
