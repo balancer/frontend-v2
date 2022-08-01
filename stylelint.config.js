@@ -7,7 +7,13 @@ module.exports = {
     'stylelint-config-prettier',
   ],
   rules: {
-    'string-quotes': 'single',
+    // 'string-quotes': 'single',
+
+    // Ignore display: -webkit-box;
+    // It only works in with the webkit prefix.
+    // https://css-tricks.com/line-clampin/
+    'value-no-vendor-prefix': [true, { ignoreValues: ['box'] }],
+
     // stylelint-config-tailwindcss and stylelint-config-prettier
     // somehow conflict with each other, so we need to allow
     // tailwind's theme, and vue's v-bind functions here.
