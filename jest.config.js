@@ -12,7 +12,7 @@ module.exports = {
       setupFiles: ['./src/jest/jest.setup.jsdom.ts'],
       setupFilesAfterEnv: [
         './src/jest/jest.setup-suite.jsdom.ts',
-        './src/jest/jest.setup-suite.ts'
+        './src/jest/jest.setup-suite.ts',
       ],
       displayName: 'dom',
       testEnvironment: 'jsdom',

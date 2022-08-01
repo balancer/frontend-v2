@@ -4,7 +4,7 @@ import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 
 import GaugesTable from './GaugesTable.vue';
 GaugesTable.components = {
-  BalAssetSet
+  BalAssetSet,
 };
 
 jest.mock('@/composables/useTokens');
@@ -16,10 +16,10 @@ jest.mock('@/services/web3/useWeb3', () => {
         {
           get() {
             return true;
-          }
+          },
         }
       ),
-      account: '0x0000000000000000000000000000000000000000'
+      account: '0x0000000000000000000000000000000000000000',
     };
   });
 });
@@ -38,25 +38,25 @@ const gauge = {
       {
         address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         weight: 'null',
-        symbol: 'USDC'
+        symbol: 'USDC',
       },
       {
         address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         weight: 'null',
-        symbol: 'USDT'
-      }
-    ]
+        symbol: 'USDT',
+      },
+    ],
   },
   tokenLogoURIs: {
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48':
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
     '0xdAC17F958D2ee523a2206206994597C13D831ec7':
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png'
+      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
   },
   votes: '8212341531532800',
   votesNextPeriod: '6934407282299320',
   userVotes: '0',
-  lastUserVoteTime: 0
+  lastUserVoteTime: 0,
 };
 
 const expiredGauges = [gaugeId];
@@ -71,8 +71,8 @@ describe('GaugesTable', () => {
   it('should render right tokens for gauge', async () => {
     render(GaugesTable, {
       props: {
-        data: gauges
-      }
+        data: gauges,
+      },
     });
     const usdt = await screen.findByText('USDT');
     const usdc = await screen.findByText('USDC');
@@ -91,8 +91,8 @@ describe('GaugesTable', () => {
     render(GaugesTable, {
       props: {
         expiredGauges,
-        data: gauges
-      }
+        data: gauges,
+      },
     });
 
     const expiredLabel = queryExpiredLabel();
@@ -108,8 +108,8 @@ describe('GaugesTable', () => {
     render(GaugesTable, {
       props: {
         expiredGauges,
-        data: [{ ...gauge, userVotes: '1' }]
-      }
+        data: [{ ...gauge, userVotes: '1' }],
+      },
     });
 
     const expiredLabel = queryExpiredLabel();
