@@ -6,7 +6,8 @@
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px theme('colors.blue.500'),
+  box-shadow:
+    0 0 10px theme('colors.blue.500'),
     0 0 5px theme('colors.blue.500');
 }
 

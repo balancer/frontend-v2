@@ -62,24 +62,26 @@ withDefaults(defineProps<Props>(), {
   @apply w-full h-full;
   @apply absolute;
   @apply bg-gray-100 dark:bg-gray-700;
+
   content: '';
   transform: skew(-12deg);
 }
 
 .pill:first-child::before {
-  border-radius: 4px 0px 0px 4px;
+  border-radius: 4px 0 0 4px;
 }
 
 .pill:last-child::before {
-  border-radius: 0px 4px 4px 0px;
+  border-radius: 0 4px 4px 0;
 }
 
 .pill:only-child::before {
-  border-radius: 4px 4px 4px 4px;
+  border-radius: 4px;
 }
 
 .pill-text {
   @apply px-2 py-1;
+
   z-index: 1;
 }
 

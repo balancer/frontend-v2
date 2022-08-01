@@ -258,6 +258,7 @@ footer {
 
 footer :deep(.logotype) {
   @apply origin-top-left;
+
   transform: scale(1.5);
 }
 

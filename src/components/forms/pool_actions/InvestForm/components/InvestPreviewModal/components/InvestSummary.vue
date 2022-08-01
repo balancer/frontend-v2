@@ -84,12 +84,15 @@ const { currency } = useUserSettings();
 .summary-table {
   @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg mt-4;
 }
+
 .summary-table-row {
   @apply grid grid-cols-2 px-2 py-1;
 }
+
 .summary-table-label {
   @apply flex items-center;
 }
+
 .summary-table-number {
   @apply flex items-center justify-end;
 }

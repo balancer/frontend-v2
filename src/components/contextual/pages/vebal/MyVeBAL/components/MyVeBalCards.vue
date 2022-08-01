@@ -214,6 +214,7 @@ const cards = computed(() => {
 .label {
   @apply text-sm mb-2;
 }
+
 .value {
   @apply text-xl font-medium flex flex-wrap items-center justify-between mb-0.5;
 }
@@ -232,6 +233,7 @@ const cards = computed(() => {
 .plus-circle:hover :deep(svg.feather-plus-circle),
 .plus-circle:focus :deep(svg.feather-plus-circle) {
   @apply transition-all text-white;
+
   fill: theme('colors.blue.600');
 }
 
@@ -243,6 +245,7 @@ const cards = computed(() => {
 .minus-circle:hover :deep(svg.feather-minus-circle),
 .minus-circle:focus :deep(svg.feather-minus-circle) {
   @apply transition-all text-white;
+
   fill: theme('colors.red.500');
 }
 

@@ -392,6 +392,7 @@ const chartGrid = computed(() => {
 <style scoped>
 .maximise {
   @apply absolute;
+
   right: 0;
   top: 0;
 }

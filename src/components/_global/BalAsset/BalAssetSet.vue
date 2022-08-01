@@ -157,6 +157,7 @@ export default defineComponent({
 
 .my-wallet .addresses-row {
   @apply flex-wrap gap-2;
+
   width: auto !important;
   height: auto !important;
 }
@@ -179,6 +180,7 @@ export default defineComponent({
 
 .token-icon {
   margin-left: -2px;
+
   @apply rounded-full overflow-hidden shadow-none;
   @apply bg-white dark:bg-gray-850;
   @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;

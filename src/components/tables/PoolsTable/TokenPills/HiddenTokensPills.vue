@@ -55,7 +55,8 @@ withDefaults(defineProps<Props>(), {
   @apply bg-gray-50 dark:bg-gray-600 text-gray-600 dark:text-gray-400;
   @apply text-sm;
   @apply flex items-center;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
+
+  box-shadow: 2px 2px 4px rgb(0 0 0 / 7%);
 }
 
 .pill-selected {
@@ -66,7 +67,8 @@ withDefaults(defineProps<Props>(), {
 .pill-stacked {
   @apply h-full w-full;
   @apply absolute top-0 left-0;
-  box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.07);
+
+  box-shadow: 2px 0 4px rgb(0 0 0 / 7%);
 }
 
 .balance-indicator {

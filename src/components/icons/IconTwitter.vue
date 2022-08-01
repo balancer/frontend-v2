@@ -30,6 +30,6 @@ export default {};
 
 <style scoped>
 .social-icon:hover .bg {
-  fill: rgba(29, 161, 242, 1);
+  fill: rgb(29 161 242 / 100%);
 }
 </style>

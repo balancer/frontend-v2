@@ -11,6 +11,7 @@ import LogotypeBalancer from '@/components/icons/LogotypeBalancer.vue';
 <style scoped>
 .balancer-logotype :deep(.logotype) {
   @apply origin-top-left relative;
+
   transform: scale(1.1);
 }
 </style>

@@ -62,23 +62,25 @@ const classes = computed(() => {
   0% {
     background-position: -5000px 0;
   }
+
   100% {
     background-position: 5000px 0;
   }
 }
 
 .shimmer-white {
-  --startColor: rgba(255, 255, 255, 0.1);
-  --midColor: rgba(255, 255, 255, 0.2);
-  --endColor: rgba(255, 255, 255, 0.1);
+  --startColor: rgb(255 255 255 / 10%);
+  --midColor: rgb(255 255 255 / 20%);
+  --endColor: rgb(255 255 255 / 10%);
 
   animation: shimmerBackground 10s infinite;
-  background: linear-gradient(
-    to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
-  );
+  background:
+    linear-gradient(
+      to right,
+      var(--startColor) 4%,
+      var(--midColor) 25%,
+      var(--endColor) 36%
+    );
   background-size: 1000px 100%;
 }
 
@@ -88,12 +90,13 @@ const classes = computed(() => {
   --endColor: theme('colors.gray.50');
 
   animation: shimmerBackground 10s infinite;
-  background: linear-gradient(
-    to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
-  );
+  background:
+    linear-gradient(
+      to right,
+      var(--startColor) 4%,
+      var(--midColor) 25%,
+      var(--endColor) 36%
+    );
   background-size: 1000px 100%;
 }
 
@@ -103,12 +106,13 @@ const classes = computed(() => {
   --endColor: theme('colors.gray.100');
 
   animation: shimmerBackground 10s infinite;
-  background: linear-gradient(
-    to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
-  );
+  background:
+    linear-gradient(
+      to right,
+      var(--startColor) 4%,
+      var(--midColor) 25%,
+      var(--endColor) 36%
+    );
   background-size: 1000px 100%;
 }
 
@@ -118,12 +122,13 @@ const classes = computed(() => {
   --endColor: theme('colors.gray.850');
 
   animation: shimmerBackground 10s infinite;
-  background: linear-gradient(
-    to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
-  );
+  background:
+    linear-gradient(
+      to right,
+      var(--startColor) 4%,
+      var(--midColor) 25%,
+      var(--endColor) 36%
+    );
   background-size: 1000px 100%;
 }
 
@@ -133,12 +138,13 @@ const classes = computed(() => {
   --endColor: theme('colors.gray.700');
 
   animation: shimmerBackground 10s infinite;
-  background: linear-gradient(
-    to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
-  );
+  background:
+    linear-gradient(
+      to right,
+      var(--startColor) 4%,
+      var(--midColor) 25%,
+      var(--endColor) 36%
+    );
   background-size: 1000px 100%;
 }
 </style>

@@ -38,12 +38,15 @@ const { setSidebarOpen } = useSidebar();
 <style scoped>
 .sidebar-overlay {
   z-index: 999999999;
+
   @apply fixed top-0 left-0 h-screen w-full bg-black bg-opacity-80 cursor-pointer flex;
+
   backdrop-filter: blur(5px);
 }
 
 .app-sidebar {
   @apply text-white shadow-xl h-full w-3/4 max-w-sm bg-gray-900 cursor-default overflow-y-auto pb-4;
+
   will-change: transform;
 }
 
@@ -74,14 +77,16 @@ const { setSidebarOpen } = useSidebar();
 
 .close-icon {
   @apply overflow-hidden rounded-full w-9 h-9;
+
   animation: spin-quarter 0.3s ease-out both;
 }
 
-.close-icon:before {
+.close-icon::before {
   @apply w-9 h-9 flex items-center justify-center absolute rounded-full;
+
   content: '';
   z-index: -1;
-  background: rgba(150, 150, 150, 0.2);
+  background: rgb(150 150 150 / 20%);
   backdrop-filter: blur(4px);
 }
 </style>

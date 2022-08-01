@@ -180,15 +180,16 @@ watch(blockNumber, async () => {
 
 .social-link > svg {
   @apply w-6 h-6;
+
   fill: white;
 }
 
 .block-icon {
-  box-shadow: 0px 0px 3px 2px theme('colors.green.500');
+  box-shadow: 0 0 3px 2px theme('colors.green.500');
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .block-change {
-  box-shadow: 0px 0px 6px 4px theme('colors.green.500');
+  box-shadow: 0 0 6px 4px theme('colors.green.500');
 }
 </style>

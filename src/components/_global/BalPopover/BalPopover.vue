@@ -104,6 +104,7 @@ watch(popoverOpened, () => {
 <style scoped>
 .bal-popover-wrapper {
   @apply invisible opacity-0 absolute z-30 pt-3;
+
   transition: all 0.2s ease-in-out;
 }
 
@@ -116,14 +117,15 @@ watch(popoverOpened, () => {
 }
 
 .align-center-transform {
-  -webkit-transform: translateX(
-    -webkit-calc(-50% + v-bind(activatorHalfWidthPx))
-  );
+  transform:
+    translateX(
+      -webkit-calc(-50% + v-bind(activatorHalfWidthPx))
+    );
   transform: translateX(calc(-50% + v-bind(activatorHalfWidthPx)));
 }
 
 .align-right-transform {
-  -webkit-transform: translateX(-webkit-calc(-100% + v-bind(activatorWidthPx)));
+  transform: translateX(-webkit-calc(-100% + v-bind(activatorWidthPx)));
   transform: translateX(calc(-100% + v-bind(activatorWidthPx)));
 }
 </style>

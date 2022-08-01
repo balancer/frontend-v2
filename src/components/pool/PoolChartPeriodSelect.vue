@@ -65,14 +65,16 @@ defineProps<Props>();
 
 .period-select-input__selected {
   @apply flex items-center font-semibold h-full leading-loose bg-transparent leading-none -ml-px text-xs;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+
+  appearance: none;
+  appearance: none;
   text-indent: 1px;
   text-overflow: '';
 }
 
 .period-select-input .bal-icon :deep(svg) {
   @apply transition-all;
+
   stroke: theme('colors.blue.500');
 }
 

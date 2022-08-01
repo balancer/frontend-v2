@@ -34,6 +34,7 @@ const { isDesktop } = useBreakpoints();
 
 .app-body {
   @apply mb-8;
+
   min-height: calc(100vh - 2rem);
 }
 

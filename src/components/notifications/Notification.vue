@@ -129,11 +129,14 @@ export default defineComponent({
 .title {
   @apply lowercase;
 }
+
 .title::first-letter {
   @apply uppercase;
 }
+
 .message {
   @apply overflow-hidden;
+
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
