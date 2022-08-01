@@ -8,7 +8,7 @@ module.exports = {
   rules: {
     'string-quotes': 'single',
     'selector-class-pattern': '',
-
+    'keyframes-name-pattern': '',
     // Ignore display: -webkit-box;
     // It only works with the webkit prefix.
     // https://css-tricks.com/line-clampin/
