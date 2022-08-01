@@ -226,12 +226,12 @@ function navigateToGetVeBAL() {
   @apply w-full flex flex-col items-center justify-end relative;
 }
 
-.coin:hover .graphic {
-  transform: translateY(-8px);
-}
-
 .graphic {
   @apply transition-transform duration-300 relative;
+}
+
+.coin:hover .graphic {
+  transform: translateY(-8px);
 }
 
 .caption {

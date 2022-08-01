@@ -164,6 +164,10 @@ onUnmounted(() => {
   @apply block;
 }
 
+.tooltip-content {
+  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900;
+}
+
 .tooltip[data-popper-placement='top'] .tooltip-content {
   @apply opacity-0;
 
@@ -207,10 +211,6 @@ onUnmounted(() => {
 
 .dark .tooltip[data-popper-placement='bottom'] .tooltip-content::after {
   border-bottom: solid #0f172a 8px; /* gray-900 */
-}
-
-.tooltip-content {
-  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900;
 }
 
 .tooltip-text {

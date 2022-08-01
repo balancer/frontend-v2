@@ -24,7 +24,7 @@ const classes = computed(() => ({
 
 <style scoped>
 .desktop-link-item {
-  @apply h-full flex flex-col justify-center cursor-pointer hover:text-purple-600 dark:hover:text-yellow-500 flex relative overflow-hidden p-0 transition-all ease-in-out duration-500;
+  @apply h-full flex-col justify-center cursor-pointer hover:text-purple-600 dark:hover:text-yellow-500 flex relative overflow-hidden p-0 transition-all ease-in-out duration-500;
 }
 
 .desktop-link-item::before {
@@ -54,16 +54,16 @@ const classes = computed(() => ({
   border-color: theme('colors.blue.400');
 }
 
+.desktop-link-item.router-link-active:hover::before {
+  border-color: theme('colors.blue.700');
+}
+
 .dark .desktop-link-item.router-link-active:hover::before {
   border-color: theme('colors.blue.300');
 }
 
 .desktop-link-item.router-link-active {
   @apply text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors;
-}
-
-.desktop-link-item.router-link-active:hover::before {
-  border-color: theme('colors.blue.700');
 }
 
 .desktop-link-item:hover::before {
