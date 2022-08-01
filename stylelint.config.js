@@ -4,10 +4,11 @@ module.exports = {
     'stylelint-selector-bem-pattern',
     'stylelint-config-recommended-vue',
     'stylelint-config-tailwindcss',
-    'stylelint-config-prettier',
+    'stylelint-prettier',
   ],
   rules: {
     // 'string-quotes': 'single',
+    'prettier/prettier': true,
 
     // Ignore display: -webkit-box;
     // It only works in with the webkit prefix.
