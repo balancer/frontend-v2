@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import { useLock } from '@/composables/useLock';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { Pool } from '@/services/pool/types';
-import { useLock } from '@/composables/useLock';
 import { bnum } from '@/lib/utils';
+import { Pool } from '@/services/pool/types';
 
 type Props = {
   pool: Pool;
