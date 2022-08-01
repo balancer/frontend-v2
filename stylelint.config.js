@@ -7,11 +7,10 @@ module.exports = {
     'stylelint-prettier',
   ],
   rules: {
-    // 'string-quotes': 'single',
-    'prettier/prettier': true,
+    'string-quotes': 'single',
 
     // Ignore display: -webkit-box;
-    // It only works in with the webkit prefix.
+    // It only works with the webkit prefix.
     // https://css-tricks.com/line-clampin/
     'value-no-vendor-prefix': [true, { ignoreValues: ['box'] }],
 
