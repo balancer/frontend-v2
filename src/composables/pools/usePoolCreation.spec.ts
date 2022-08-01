@@ -6,14 +6,7 @@ import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 
 const tokens: Record<string, PoolSeedToken> = {};
 
-jest.mock('vue-i18n', () => ({
-  useI18n: () => ({
-    t: jest.fn().mockImplementation()
-  }),
-  createI18n: () => {
-    return {};
-  }
-}));
+jest.mock('vue-i18n');
 jest.mock('@/locales');
 jest.mock('@/composables/useTokens');
 jest.mock('@/services/web3/useWeb3');

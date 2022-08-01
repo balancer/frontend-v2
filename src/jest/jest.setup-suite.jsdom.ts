@@ -1,4 +1,5 @@
 // Setup test suite for jsdom.
+jest.unmock('vue-i18n');
 import '@testing-library/jest-dom';
 
 import { config, RouterLinkStub } from '@vue/test-utils';
@@ -34,7 +35,7 @@ const i18n = createI18n({
 config.global.plugins = [i18n];
 config.global.stubs = {
   RouterLink: RouterLinkStub,
-  Jazzicon: { template: '<span />' }
+  Jazzicon: { template: '<span />' },
 };
 
 config.global.components = {
@@ -45,5 +46,5 @@ config.global.components = {
   NetworkIcon,
   BalTable,
   CompositionIcon,
-  BalCard
+  BalCard,
 };
