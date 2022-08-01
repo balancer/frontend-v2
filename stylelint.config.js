@@ -1,13 +1,13 @@
 module.exports = {
   extends: [
     'stylelint-config-standard',
-    'stylelint-selector-bem-pattern',
     'stylelint-config-recommended-vue',
     'stylelint-config-tailwindcss',
-    'stylelint-prettier',
   ],
+  plugins: ['stylelint-prettier'],
   rules: {
     'string-quotes': 'single',
+    'selector-class-pattern': '',
 
     // Ignore display: -webkit-box;
     // It only works with the webkit prefix.

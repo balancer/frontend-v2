@@ -92,12 +92,10 @@ export default defineComponent({
   top: 0;
   left: 0;
   animation: sk-bounce 2s infinite ease-in-out;
-  animation: sk-bounce 2s infinite ease-in-out;
 }
 
 .double-bounce2 {
   animation-delay: -1s;
-  animation-delay: -1s;
 }
 
 @keyframes sk-bounce {
@@ -115,11 +113,9 @@ export default defineComponent({
   0%,
   100% {
     transform: scale(0);
-    transform: scale(0);
   }
 
   50% {
-    transform: scale(1);
     transform: scale(1);
   }
 }

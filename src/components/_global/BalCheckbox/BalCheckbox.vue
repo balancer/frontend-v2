@@ -146,15 +146,10 @@ export default defineComponent({
   @apply text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded leading-none;
 
   appearance: none;
-  appearance: none;
-  appearance: none;
   -webkit-print-color-adjust: exact;
   color-adjust: exact;
   vertical-align: middle;
   background-origin: border-box;
-  user-select: none;
-  user-select: none;
-  user-select: none;
   user-select: none;
 }
 

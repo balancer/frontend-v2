@@ -67,7 +67,6 @@ defineProps<Props>();
   @apply flex items-center font-semibold h-full leading-loose bg-transparent leading-none -ml-px text-xs;
 
   appearance: none;
-  appearance: none;
   text-indent: 1px;
   text-overflow: '';
 }
