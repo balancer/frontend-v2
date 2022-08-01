@@ -15,7 +15,7 @@ export class BalancerMinter {
    */
   async mint(gaugeAddress: string) {
     return await this.web3.sendTransaction(this.address, this.abi, 'mint', [
-      gaugeAddress
+      gaugeAddress,
     ]);
   }
 
@@ -24,7 +24,7 @@ export class BalancerMinter {
    */
   async mintMany(gaugeAddresses: string[]) {
     return await this.web3.sendTransaction(this.address, this.abi, 'mintMany', [
-      gaugeAddresses
+      gaugeAddresses,
     ]);
   }
 }

@@ -77,12 +77,12 @@ const props = withDefaults(defineProps<Props>(), {
   link: () => null,
   initialState: () => ({
     sortColumn: null,
-    sortDirection: null
+    sortDirection: null,
   }),
   skeletonClass: '',
   isLoading: false,
   isLoadingMore: false,
-  getTableRowClass: () => undefined
+  getTableRowClass: () => undefined,
 });
 
 const stickyHeaderRef = ref();
@@ -223,7 +223,7 @@ watch(
   <div
     :class="[
       'max-w-full whitespace-nowrap overflow-hidden',
-      { 'rounded-lg': !square }
+      { 'rounded-lg': !square },
     ]"
   >
     <div class="overflow-hidden" ref="headerRef">
@@ -249,7 +249,7 @@ watch(
               column.sortKey ? 'cursor-pointer' : '',
               currentSortColumn === column.id && currentSortDirection
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
-                : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors'
+                : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors',
             ]"
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
@@ -270,7 +270,7 @@ watch(
                 size="sm"
                 v-if="
                   currentSortColumn === column.id &&
-                    currentSortDirection === 'asc'
+                  currentSortDirection === 'asc'
                 "
                 class="ml-1 flex items-center"
               />
@@ -279,7 +279,7 @@ watch(
                 size="sm"
                 v-if="
                   currentSortColumn === column.id &&
-                    currentSortDirection === 'desc'
+                  currentSortDirection === 'desc'
                 "
                 class="ml-1 flex items-center"
               />
@@ -318,7 +318,7 @@ watch(
               column.align === 'right' ? 'text-left' : 'text-right',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              'bg-white dark:bg-gray-850 p-0 m-0 h-0'
+              'bg-white dark:bg-gray-850 p-0 m-0 h-0',
             ]"
           ></td>
         </tr>

@@ -41,7 +41,7 @@ export default function useWeb3() {
     signer,
     disconnectWallet,
     connectWallet,
-    isSanctioned
+    isSanctioned,
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appNetworkConfig = configService.network;
 
@@ -92,7 +92,7 @@ export default function useWeb3() {
     addressLink: (address: string) =>
       `${configService.network.explorer}/address/${address}`,
     tokenLink: (address: string) =>
-      `${configService.network.explorer}/token/${address}`
+      `${configService.network.explorer}/token/${address}`,
   };
 
   // METHODS
@@ -124,7 +124,7 @@ export default function useWeb3() {
     QUERY_KEYS.Account.Profile(networkId, account, chainId),
     () => web3Service.getProfile(account.value),
     reactive({
-      enabled: canLoadProfile
+      enabled: canLoadProfile,
     })
   );
 
@@ -163,6 +163,6 @@ export default function useWeb3() {
     disconnectWallet,
     toggleWalletSelectModal,
     startConnectWithInjectedProvider,
-    setBlockNumber
+    setBlockNumber,
   };
 }

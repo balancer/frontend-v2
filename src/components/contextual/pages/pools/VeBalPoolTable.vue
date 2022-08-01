@@ -29,8 +29,8 @@ const lockPools = computed<PoolWithShares[]>(() => {
         lockedEndDate:
           props.lock?.hasExistingLock && !props.lock?.isExpired
             ? props.lock?.lockedEndDate
-            : undefined
-      }
+            : undefined,
+      },
     ];
   }
   return [];
@@ -41,7 +41,7 @@ const hiddenColumns = [
   'poolValue',
   'migrate',
   'actions',
-  'myBoost'
+  'myBoost',
 ];
 </script>
 

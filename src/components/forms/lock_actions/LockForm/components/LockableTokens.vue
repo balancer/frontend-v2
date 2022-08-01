@@ -65,7 +65,7 @@ const fiatTotal = computed((): string =>
       >
         {{
           $t('getVeBAL.lockableTokens.getMoreVeBAL', [
-            lockablePoolTokenInfo.symbol
+            lockablePoolTokenInfo.symbol,
           ])
         }}
       </BalLink>

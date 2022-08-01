@@ -13,7 +13,7 @@
           fNum2(tokenlist.tokens.length, {
             style: 'decimal',
             maximumFractionDigits: 1,
-            abbreviate: true
+            abbreviate: true,
           })
         }}
         {{ $t('tokensLowerCase') }}
@@ -47,16 +47,16 @@ export default {
 
   props: {
     tokenlist: {
-      type: Object as PropType<TokenList>
+      type: Object as PropType<TokenList>,
     },
     uri: {
       type: String,
-      required: true
+      required: true,
     },
     isActive: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   emits: ['toggle'],
@@ -73,13 +73,13 @@ export default {
      */
     const state = reactive({
       notBalancer: props.tokenlist?.name !== 'Balancer',
-      listUrl: resolve(props.uri)
+      listUrl: resolve(props.uri),
     });
 
     return {
       ...toRefs(state),
-      fNum2
+      fNum2,
     };
-  }
+  },
 };
 </script>

@@ -5,7 +5,7 @@ export default {
   component: BalAlert,
   title: 'Components/BalAlert',
   parameters: {
-    layout: 'centered'
+    layout: 'centered',
   },
   args: {
     type: 'warning',
@@ -13,24 +13,24 @@ export default {
     title: 'A title message',
     description: 'A description message',
     actionLabel: 'Action',
-    raised: false
+    raised: false,
   },
   argTypes: {
     type: {
       type: { name: 'string', default: 'button' },
       control: {
         type: 'select',
-        options: ['warning', 'error', 'info']
-      }
+        options: ['warning', 'error', 'info'],
+      },
     },
     size: {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg']
-      }
-    }
-  }
+        options: ['sm', 'md', 'lg'],
+      },
+    },
+  },
 };
 
 type Props = {
@@ -46,7 +46,7 @@ const Template = (args: Props) => ({
   },
   template: generateTemplate(`
 <BalAlert v-bind="args" />
-`)
+`),
 });
 
 export const Primary = Template.bind({});

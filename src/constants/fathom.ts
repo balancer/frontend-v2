@@ -14,7 +14,7 @@ export const MAINNET_GOALS = {
   Withdrawal: 'X4NINEBD',
   ConnectedWallet: '2QHQLTRF',
   ClickSwap: 'OGZ8QPE8',
-  Swapped: 'VYZUMRKD'
+  Swapped: 'VYZUMRKD',
 };
 
 export const POLYGON_GOALS = {
@@ -33,7 +33,7 @@ export const POLYGON_GOALS = {
   Withdrawal: 'AIWFJX9X',
   ConnectedWallet: 'NG87QMMZ',
   ClickSwap: 'MJFXHNG6',
-  Swapped: 'I7LE2TCF'
+  Swapped: 'I7LE2TCF',
 };
 
 export const ARBITRUM_GOALS = {
@@ -52,11 +52,11 @@ export const ARBITRUM_GOALS = {
   Withdrawal: 'KHW0PABJ',
   ConnectedWallet: '4V2BGAGL',
   ClickSwap: '9MAKWBEK',
-  Swapped: 'NXCV9WGC'
+  Swapped: 'NXCV9WGC',
 };
 
 export const GOALS_MAP = {
   '1': MAINNET_GOALS,
   '137': POLYGON_GOALS,
-  '42161': ARBITRUM_GOALS
+  '42161': ARBITRUM_GOALS,
 };

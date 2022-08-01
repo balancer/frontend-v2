@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 
 const defaultArgs = {
-  first: 999
+  first: 999,
 };
 
 const defaultAttrs = {
@@ -10,13 +10,13 @@ const defaultAttrs = {
   poolId: true,
   totalSupply: true,
   factory: {
-    id: true
-  }
+    id: true,
+  },
 };
 
 export const gaugeQueryBuilder = (args = {}, attrs = {}) => ({
   liquidityGauges: {
     __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs)
-  }
+    ...merge({}, defaultAttrs, attrs),
+  },
 });

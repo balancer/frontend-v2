@@ -38,7 +38,7 @@ const {
   maximized,
   optimized,
   batchSwapLoading,
-  supportsPropotionalOptimization
+  supportsPropotionalOptimization,
 } = toRefs(props.math);
 
 /**
@@ -46,12 +46,12 @@ const {
  */
 const priceImpactClasses = computed(() => ({
   'dark:bg-gray-800': !highPriceImpact.value,
-  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value,
 }));
 
 const optimizeBtnClasses = computed(() => ({
   'text-gradient': !highPriceImpact.value,
-  'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value
+  'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value,
 }));
 </script>
 

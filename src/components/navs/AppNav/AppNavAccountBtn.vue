@@ -49,7 +49,7 @@ export default defineComponent({
 
   components: {
     AppNavSettings,
-    Avatar
+    Avatar,
   },
 
   setup() {
@@ -74,8 +74,8 @@ export default defineComponent({
       avatarSize,
       upToLargeBreakpoint,
       isLoadingProfile,
-      isMobile
+      isMobile,
     };
-  }
+  },
 });
 </script>

@@ -39,9 +39,9 @@ export default {
     provide(AppProviderSymbol, {
       version,
       // computed
-      appLoading
+      appLoading,
     });
 
     return () => slots.default();
-  }
+  },
 };

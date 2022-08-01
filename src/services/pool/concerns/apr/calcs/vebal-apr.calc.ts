@@ -26,12 +26,8 @@ export class VeBalAprCalc {
     totalSupply: string,
     prices: TokenPrices
   ) {
-    const {
-      balAmount,
-      bbAUSDAmount,
-      bbaUSDPrice,
-      veBalCurrentSupply
-    } = await this.getData();
+    const { balAmount, bbAUSDAmount, bbaUSDPrice, veBalCurrentSupply } =
+      await this.getData();
 
     const aggregateWeeklyRevenue = this.calcAggregateWeeklyRevenue(
       balAmount,
@@ -63,26 +59,26 @@ export class VeBalAprCalc {
         address: this.config.network.addresses.feeDistributor,
         function: 'getTokensDistributedInWeek',
         abi: FeeDistributorABI,
-        params: [this.balAddress, epochBeforeLast]
+        params: [this.balAddress, epochBeforeLast],
       })
       .call({
         key: 'bbAUSDAmount',
         address: this.config.network.addresses.feeDistributor,
         function: 'getTokensDistributedInWeek',
         abi: FeeDistributorABI,
-        params: [this.bbAUSDAddress, epochBeforeLast]
+        params: [this.bbAUSDAddress, epochBeforeLast],
       })
       .call({
         key: 'veBalCurrentSupply',
         address: this.config.network.addresses.veBAL,
         function: 'totalSupply()',
-        abi: veBalAbi
+        abi: veBalAbi,
       })
       .call({
         key: 'bbaUSDPrice',
         address: this.bbAUSDAddress,
         function: 'getRate',
-        abi: StablePhantomAbi
+        abi: StablePhantomAbi,
       });
 
     const result = await multicaller.execute();

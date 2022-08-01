@@ -1,6 +1,6 @@
 export default function AaveService() {
   return {
-    calcWeightedSupplyAPRFor: jest.fn().mockImplementation()
+    calcWeightedSupplyAPRFor: jest.fn().mockImplementation(),
   };
 }
 

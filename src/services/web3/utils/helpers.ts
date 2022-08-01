@@ -10,7 +10,7 @@ export async function switchToAppNetwork(provider: ExternalProvider) {
     if (provider.request) {
       await provider.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: hexChainId }]
+        params: [{ chainId: hexChainId }],
       });
       return true;
     }
@@ -46,11 +46,11 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
           nativeCurrency: {
             name: appNetworkConfig.nativeAsset.name,
             symbol: appNetworkConfig.nativeAsset.symbol,
-            decimals: appNetworkConfig.nativeAsset.decimals
+            decimals: appNetworkConfig.nativeAsset.decimals,
           },
-          blockExplorerUrls: [appNetworkConfig.explorer]
-        }
-      ]
+          blockExplorerUrls: [appNetworkConfig.explorer],
+        },
+      ],
     };
     if (provider?.request) {
       const response = await provider.request(request);

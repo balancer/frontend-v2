@@ -10,7 +10,7 @@ import {
   Gauge,
   OnchainGaugeData,
   OnchainGaugeDataMap,
-  SubgraphGauge
+  SubgraphGauge,
 } from './types';
 
 const MAX_REWARD_TOKENS = 8;
@@ -47,7 +47,7 @@ export class GaugesDecorator {
 
     return subgraphGauges.map(subgraphGauge => ({
       ...subgraphGauge,
-      ...this.format(gaugesDataMap[subgraphGauge.id])
+      ...this.format(gaugesDataMap[subgraphGauge.id]),
     }));
   }
 
@@ -59,7 +59,7 @@ export class GaugesDecorator {
       ...gaugeData,
       rewardTokens: this.formatRewardTokens(gaugeData.rewardTokens),
       claimableTokens: gaugeData.claimableTokens?.toString() || '0',
-      claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards)
+      claimableRewards: this.formatClaimableRewards(gaugeData.claimableRewards),
     };
   }
 

@@ -43,14 +43,16 @@ export default function usePoolUserActivitiesQuery(
       skip: pageParam,
       where: {
         pool: id,
-        sender: account.value.toLowerCase()
-      }
+        sender: account.value.toLowerCase(),
+      },
     });
 
     return {
       poolActivities,
       skip:
-        poolActivities.length >= pagination ? pageParam + pagination : undefined
+        poolActivities.length >= pagination
+          ? pageParam + pagination
+          : undefined,
     };
   };
 
@@ -58,7 +60,7 @@ export default function usePoolUserActivitiesQuery(
     enabled,
     getNextPageParam: (lastPage: UserPoolActivitiesQueryResponse) =>
       lastPage.skip,
-    ...options
+    ...options,
   });
 
   return useInfiniteQuery<UserPoolActivitiesQueryResponse>(

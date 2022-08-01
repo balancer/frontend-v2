@@ -15,13 +15,13 @@ export default defineComponent({
     color: {
       type: String,
       default: 'gray',
-      validator: value => ['gray', 'primary', 'white'].includes(value)
+      validator: value => ['gray', 'primary', 'white'].includes(value),
     },
     size: {
       type: String,
       default: 'md',
-      validator: value => ['xs', 'sm', 'md', 'lg'].includes(value)
-    }
+      validator: value => ['xs', 'sm', 'md', 'lg'].includes(value),
+    },
   },
 
   setup(props) {
@@ -51,9 +51,9 @@ export default defineComponent({
 
     return {
       sizeClasses,
-      colorClasses
+      colorClasses,
     };
-  }
+  },
 });
 </script>
 

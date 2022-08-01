@@ -1,7 +1,7 @@
 import { computed, reactive, Ref, toRefs } from 'vue';
 
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
@@ -14,7 +14,7 @@ import { BaseContent } from '@/types';
  * TYPES
  */
 export enum WithdrawalError {
-  SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT = 'SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT'
+  SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT = 'SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT',
 }
 
 type WithdrawalState = {
@@ -47,9 +47,9 @@ const state = reactive<WithdrawalState>({
     val: 1000,
     max: 1000,
     min: 0,
-    interval: 1
+    interval: 1,
   },
-  error: null
+  error: null,
 });
 
 /**
@@ -66,12 +66,12 @@ export function parseError(error: WithdrawalError): BaseContent {
         title: i18n.global.t('warning'),
         description: i18n.global.t(
           `withdraw.errors.${WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT}`
-        )
+        ),
       };
     default:
       return {
         title: i18n.global.t('Ooops'),
-        description: i18n.global.t('somethingWentWrong')
+        description: i18n.global.t('somethingWentWrong'),
       };
   }
 }
@@ -123,6 +123,6 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
     // methods
     maxSlider,
     setError,
-    parseError
+    parseError,
   };
 }

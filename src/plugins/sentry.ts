@@ -17,7 +17,7 @@ const networkMap = {
   [Network.KOVAN]: 'kovan',
   [Network.GOERLI]: 'goerli',
   [Network.POLYGON]: 'polygon',
-  [Network.ARBITRUM]: 'arbitrum-one'
+  [Network.ARBITRUM]: 'arbitrum-one',
 };
 const environment = `${ENV}-${networkMap[networkId.value]}`;
 const release = `frontend-v2@${version}`;
@@ -29,8 +29,8 @@ export default function initSentry(app: App) {
         setTag('info', info);
         captureException(error, {
           extra: {
-            error: error
-          }
+            error: error,
+          },
         });
       } catch (error) {
         console.error('Failed to send error to Sentry', error);
@@ -38,8 +38,7 @@ export default function initSentry(app: App) {
     };
 
     init({
-      dsn:
-        'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
+      dsn: 'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
       environment,
@@ -47,7 +46,7 @@ export default function initSentry(app: App) {
       beforeSend: event => {
         console.error(event);
         return event;
-      }
+      },
     });
   }
 }

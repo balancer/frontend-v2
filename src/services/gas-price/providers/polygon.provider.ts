@@ -30,7 +30,7 @@ export default class PolygonProvider {
         maxFeePerGas: Math.floor(data[txSpeed].maxFee * GWEI_UNIT),
         maxPriorityFeePerGas: Math.floor(
           data[txSpeed].maxPriorityFee * GWEI_UNIT
-        )
+        ),
       };
     } catch (error) {
       console.log('[Polygon] Gas Platform Error', error);

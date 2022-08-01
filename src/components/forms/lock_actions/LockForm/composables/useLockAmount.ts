@@ -34,6 +34,6 @@ export default function useLockAmount(
     // computed
     isValidLockAmount,
     isIncreasedLockAmount,
-    totalLpTokens
+    totalLpTokens,
   };
 }

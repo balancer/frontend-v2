@@ -110,7 +110,7 @@
 import { computed, defineComponent, toRefs } from 'vue';
 
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -124,28 +124,28 @@ export default defineComponent({
   props: {
     open: {
       type: Boolean,
-      default: false
+      default: false,
     },
     addressIn: {
       type: String,
-      required: true
+      required: true,
     },
     amountIn: {
       type: String,
-      required: true
+      required: true,
     },
     addressOut: {
       type: String,
-      required: true
+      required: true,
     },
     amountOut: {
       type: String,
-      required: true
+      required: true,
     },
     trading: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props, { emit }) {
     const { fNum2, toFiat } = useNumbers();
@@ -287,9 +287,9 @@ export default defineComponent({
       approvingLidoRelayer,
       approvingToken,
       lidoRelayerApproval,
-      totalRequiredTransactions
+      totalRequiredTransactions,
     };
-  }
+  },
 });
 </script>
 <style scoped>

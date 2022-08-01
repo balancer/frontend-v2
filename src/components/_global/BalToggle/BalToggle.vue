@@ -10,7 +10,7 @@
     />
     <label :for="name" class="bal-toggle-track" />
   </div>
-  <label v-if="label" class="text-xs  dark:text-white ml-2">
+  <label v-if="label" class="text-xs dark:text-white ml-2">
     {{ label }}
   </label>
 </template>
@@ -29,8 +29,8 @@ export default defineComponent({
     color: {
       type: String,
       default: 'green',
-      validator: (val: string): boolean => ['green'].includes(val)
-    }
+      validator: (val: string): boolean => ['green'].includes(val),
+    },
   },
   setup(props, { emit }) {
     /**
@@ -44,9 +44,9 @@ export default defineComponent({
     }
     return {
       // methods
-      onClick
+      onClick,
     };
-  }
+  },
 });
 </script>
 

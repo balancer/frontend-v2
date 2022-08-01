@@ -8,7 +8,7 @@ import {
   TokenInfo,
   TokenInfoMap,
   TokenList,
-  TokenListMap
+  TokenListMap,
 } from '@/types/TokenList';
 
 import TokenService from '../token.service';
@@ -61,7 +61,7 @@ export default class MetadataConcern {
       if (tokenMeta)
         metaDict[address] = {
           ...tokenMeta,
-          address
+          address,
         };
     });
 

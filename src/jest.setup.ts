@@ -20,5 +20,5 @@ nock.enableNetConnect('balancer.fi');
  * Global template mocks
  */
 config.global.mocks = {
-  $t: msg => translations[msg]
+  $t: msg => translations[msg],
 };

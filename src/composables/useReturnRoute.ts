@@ -12,7 +12,7 @@ export function useReturnRoute() {
       if (queryReturnParams) {
         return {
           name: queryReturnRoute,
-          params: JSON.parse(queryReturnParams)
+          params: JSON.parse(queryReturnParams),
         };
       }
 

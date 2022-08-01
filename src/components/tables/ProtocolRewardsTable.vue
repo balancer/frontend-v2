@@ -48,21 +48,21 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     Cell: 'tokenColumnCell',
     align: 'left',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: '',
     id: 'symbol',
     accessor: 'symbol',
     Cell: 'symbolColumnCell',
-    width: 350
+    width: 350,
   },
   {
     name: t('amount'),
     id: 'amount',
     align: 'right',
     width: 150,
-    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)}`
+    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)}`,
   },
   {
     name: t('value'),
@@ -70,7 +70,7 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -78,8 +78,8 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     accessor: 'claim',
     Cell: 'claimColumnCell',
     totalsCell: 'claimTotalCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 /**

@@ -30,51 +30,51 @@ export const DEFAULT_TOKEN_DECIMALS = 18;
 
 export const TOKENS_MAINNET: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     WETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     BAL: '0xba100000625a3754423978a60c9317c58a424e3d',
-    bbaUSD: '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2'
-  }
+    bbaUSD: '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2',
+  },
 };
 
 export const TOKENS_POLYGON: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-    BAL: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
-  }
+    BAL: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3',
+  },
 };
 
 export const TOKENS_ARBITRUM: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
     WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
-    BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8'
-  }
+    BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8',
+  },
 };
 
 export const TOKENS_KOVAN: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     BAL: '0xcb355677E36f390Ccc4a5d4bEADFbF1Eb2071c81',
-    bbaUSD: '0x8fd162f338B770F7E879030830cDe9173367f301'
+    bbaUSD: '0x8fd162f338B770F7E879030830cDe9173367f301',
   },
   PriceChainMap: {
     /**
@@ -112,20 +112,20 @@ export const TOKENS_KOVAN: TokenConstants = {
       '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
     // wstETH
     '0xa387b91e393cfb9356a460370842bc8dbb2f29af':
-      '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0'
-  }
+      '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+  },
 };
 
 export const TOKENS_GOERLI: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'USDT', 'WETH']
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'USDT', 'WETH'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     WETH: '0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1',
     BAL: '0xfA8449189744799aD2AcE7e0EBAC8BB7575eff47',
-    bbaUSD: '0x13ACD41C585d7EbB4a9460f7C8f50BE60DC080Cd'
+    bbaUSD: '0x13ACD41C585d7EbB4a9460f7C8f50BE60DC080Cd',
   },
   PriceChainMap: {
     /**
@@ -153,20 +153,20 @@ export const TOKENS_GOERLI: TokenConstants = {
     '0x829f35cebbcd47d3c120793c12f7a232c903138b':
       '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
     '0xff386a3d08f80ac38c77930d173fa56c6286dc8b':
-      '0x6810e776880c02933d47db1b9fc05908e5386b96'
-  }
+      '0x6810e776880c02933d47db1b9fc05908e5386b96',
+  },
 };
 
 export const TOKENS_GENERIC: TokenConstants = {
   Popular: {
-    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
+    Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'],
   },
   Addresses: {
     nativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     wNativeAsset: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     WETH: '0x0000000000000000000000000000000000000000',
-    BAL: '0x0000000000000000000000000000000000000000'
-  }
+    BAL: '0x0000000000000000000000000000000000000000',
+  },
 };
 
 const TOKENS_MAP = {
@@ -174,7 +174,7 @@ const TOKENS_MAP = {
   [Network.GOERLI]: TOKENS_GOERLI,
   [Network.MAINNET]: TOKENS_MAINNET,
   [Network.POLYGON]: TOKENS_POLYGON,
-  [Network.ARBITRUM]: TOKENS_ARBITRUM
+  [Network.ARBITRUM]: TOKENS_ARBITRUM,
 };
 
 export const TOKENS: TokenConstants = TOKENS_MAP[networkId.value]

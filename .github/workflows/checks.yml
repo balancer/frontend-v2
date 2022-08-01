@@ -11,68 +11,70 @@ jobs:
   Version:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Get package.json version
-      run: echo PACKAGE_VERSION=$(node -p -e "require('./package.json').version") >> $GITHUB_ENV
-    - name: Get package-lock.json version
-      run: echo PACKAGE_LOCK_VERSION=$(node -p -e "require('./package-lock.json').version") >> $GITHUB_ENV
-    - name: Check lockfile sync
-      if: env.PACKAGE_VERSION != env.PACKAGE_LOCK_VERSION
-      run: |
-        echo "package-lock.json out of sync"
-        exit 1
-    - name: Check if version has been updated
-      id: check
-      uses: EndBug/version-check@v2
-      with:
-        diff-search: true
-    - name: Log when changed
-      if: steps.check.outputs.changed == 'true'
-      run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
-    - name: Fail if version not updated and PR base is master
-      if: steps.check.outputs.changed == 'false' && github.event.pull_request.base.ref == 'master'
-      run: exit 1
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Get package.json version
+        run: echo PACKAGE_VERSION=$(node -p -e "require('./package.json').version") >> $GITHUB_ENV
+      - name: Get package-lock.json version
+        run: echo PACKAGE_LOCK_VERSION=$(node -p -e "require('./package-lock.json').version") >> $GITHUB_ENV
+      - name: Check lockfile sync
+        if: env.PACKAGE_VERSION != env.PACKAGE_LOCK_VERSION
+        run: |
+          echo "package-lock.json out of sync"
+          exit 1
+      - name: Check if version has been updated
+        id: check
+        uses: EndBug/version-check@v2
+        with:
+          diff-search: true
+      - name: Log when changed
+        if: steps.check.outputs.changed == 'true'
+        run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
+      - name: Fail if version not updated and PR base is master
+        if: steps.check.outputs.changed == 'false' && github.event.pull_request.base.ref == 'master'
+        run: exit 1
 
   Build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install deps
-      run: npm install -g npm@7 && npm ci
-    - name: Run build
-      run: npm run build
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install deps
+        run: npm install -g npm@7 && npm ci
+      - name: Run build
+        run: npm run build
 
   Lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install deps
-      run: npm install -g npm@7 && npm ci
-    - name: Run lint
-      run: npm run lint
-        
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install deps
+        run: npm install -g npm@7 && npm ci
+      - name: Run lint
+        run: npm run lint
+      - name: Run prettier
+        run: npm run prettier
+
   Test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install deps
-      run: npm install -g npm@7 && npm ci
-    - name: Run tests
-      run: npm run test:unit
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install deps
+        run: npm install -g npm@7 && npm ci
+      - name: Run tests
+        run: npm run test:unit

@@ -66,6 +66,6 @@ export default function useBackgroundColor() {
   watch(darkMode, () => newRouteHandler(route));
 
   return {
-    newRouteHandler
+    newRouteHandler,
   };
 }

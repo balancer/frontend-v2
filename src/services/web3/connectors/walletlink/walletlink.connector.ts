@@ -12,7 +12,7 @@ export class WalletLinkConnector extends Connector {
     const walletLink = new WalletLink({
       appName: 'Balancer',
       appLogoUrl: '~@/assets/images/logo-dark.svg',
-      darkMode: false
+      darkMode: false,
     });
     const provider = walletLink.makeWeb3Provider(
       configService.rpc,
@@ -39,7 +39,7 @@ export class WalletLinkConnector extends Connector {
       // TODO type this
       provider: provider as any,
       account: this.account,
-      chainId: this.chainId
+      chainId: this.chainId,
     };
   }
 }

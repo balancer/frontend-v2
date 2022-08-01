@@ -1,7 +1,7 @@
 import {
   InvestmentPool__factory,
   StablePool__factory,
-  WeightedPool__factory
+  WeightedPool__factory,
 } from '@balancer-labs/typechain';
 
 import ERC20_ABI from '@/lib/abi/ERC20.json';
@@ -24,7 +24,7 @@ const ERC20ABIs = Object.values(
       ...LinearPoolAbi,
       ...StaticATokenLMAbi,
       ...ERC20_ABI,
-      ...IERC4626
+      ...IERC4626,
     ].map(row => [row.name, row])
   )
 );

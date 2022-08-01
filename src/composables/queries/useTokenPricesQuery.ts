@@ -57,7 +57,7 @@ export default function useTokenPricesQuery(
       console.log('Fetching', pageAddresses.length, 'prices');
       prices = {
         ...prices,
-        ...(await coingeckoService.prices.getTokens(pageAddresses))
+        ...(await coingeckoService.prices.getTokens(pageAddresses)),
       };
     }
 
@@ -67,7 +67,7 @@ export default function useTokenPricesQuery(
 
   const queryOptions = reactive({
     enabled: true,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

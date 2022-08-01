@@ -23,8 +23,10 @@ export default class BalancesConcern {
   constructor(private readonly service: TokenService) {
     this.network = this.service.configService.network.key;
     this.provider = this.service.rpcProviderService.jsonProvider;
-    this.nativeAssetAddress = this.service.configService.network.nativeAsset.address;
-    this.nativeAssetDecimals = this.service.configService.network.nativeAsset.decimals;
+    this.nativeAssetAddress =
+      this.service.configService.network.nativeAsset.address;
+    this.nativeAssetDecimals =
+      this.service.configService.network.nativeAsset.decimals;
   }
 
   async get(account: string, tokens: TokenInfoMap): Promise<BalanceMap> {
@@ -76,7 +78,7 @@ export default class BalancesConcern {
 
       return {
         ...this.associateBalances(balances, addresses, tokens),
-        ...balanceMap
+        ...balanceMap,
       };
     } catch (error) {
       console.error('Failed to fetch balances for:', addresses);
@@ -97,7 +99,7 @@ export default class BalancesConcern {
     return Object.fromEntries(
       addresses.map((address, i) => [
         getAddress(address),
-        formatUnits(balances[i], tokens[address].decimals)
+        formatUnits(balances[i], tokens[address].decimals),
       ])
     );
   }

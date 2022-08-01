@@ -28,7 +28,7 @@ const { priceImpact, highPriceImpact, loadingAmountsOut } = toRefs(props.math);
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'bg-red-500 text-white divide-red-400 border-none': highPriceImpact.value
+  'bg-red-500 text-white divide-red-400 border-none': highPriceImpact.value,
 }));
 </script>
 

@@ -9,7 +9,7 @@ export interface TradeState {
 
 const state: TradeState = {
   inputAsset: '',
-  outputAsset: ''
+  outputAsset: '',
 };
 
 const actions = {
@@ -22,7 +22,7 @@ const actions = {
       'setOutputAsset',
       lsGet('trade.outputAsset', initialTokens[networkId.value].output)
     );
-  }
+  },
 };
 
 const mutations = {
@@ -34,12 +34,12 @@ const mutations = {
   setOutputAsset(state: TradeState, asset: string): void {
     state.outputAsset = asset;
     lsSet('trade.outputAsset', asset);
-  }
+  },
 };
 
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
 };

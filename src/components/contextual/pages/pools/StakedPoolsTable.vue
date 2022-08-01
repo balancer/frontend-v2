@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
+import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /** COMPOSABLES */
@@ -14,11 +15,12 @@ const {
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
-    poolBoosts
-  }
+    poolBoosts,
+  },
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
+const networkName = configService.network.shortName;
 
 /** COMPUTED */
 const isLoading = computed(() => {
@@ -31,14 +33,14 @@ const isLoading = computed(() => {
 
 const noPoolsLabel = computed(() => {
   return isWalletReady.value || isWalletConnecting.value
-    ? t('noStakedInvestments')
+    ? t('noStakedInvestments', [networkName])
     : t('connectYourWallet');
 });
 
 const poolsWithBoost = computed(() => {
   return stakedPools.value.map(pool => ({
     ...pool,
-    boost: (poolBoosts.value || {})[pool.id]
+    boost: (poolBoosts.value || {})[pool.id],
   }));
 });
 
@@ -48,7 +50,7 @@ const hiddenColumns = computed(() => {
     'poolValue',
     'migrate',
     'actions',
-    'lockEndDate'
+    'lockEndDate',
   ];
   if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;

@@ -45,16 +45,11 @@ const {
   sortSeedTokens,
   getScaledAmounts,
   saveState,
-  getPoolSymbol
+  getPoolSymbol,
 } = usePoolCreation();
 
-const {
-  getToken,
-  priceFor,
-  nativeAsset,
-  wrappedNativeAsset,
-  balanceFor
-} = useTokens();
+const { getToken, priceFor, nativeAsset, wrappedNativeAsset, balanceFor } =
+  useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { userNetworkConfig, account } = useWeb3();
@@ -169,7 +164,7 @@ function getSwapFeeManager() {
 function getInitialWeightHighlightClass(tokenAddress: string) {
   return {
     'text-secondary': initialWeights[tokenAddress]?.gte(0.01),
-    'text-orange-500': initialWeights[tokenAddress]?.lt(0.01)
+    'text-orange-500': initialWeights[tokenAddress]?.lt(0.01),
   };
 }
 </script>
@@ -226,7 +221,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                     <span
                       :class="[
                         'text-sm',
-                        getInitialWeightHighlightClass(token.tokenAddress)
+                        getInitialWeightHighlightClass(token.tokenAddress),
                       ]"
                     >
                       {{ initialWeightLabel }}:

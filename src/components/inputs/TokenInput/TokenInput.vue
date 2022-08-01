@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
   hideFooter: false,
   ignoreWalletBalance: false,
   options: () => [],
-  rules: () => []
+  rules: () => [],
 });
 
 const emit = defineEmits<{
@@ -157,10 +157,7 @@ const inputRules = computed(() => {
 const maxPercentage = computed(() => {
   if (!hasBalance.value || !hasAmount.value) return '0';
 
-  return amountBN.value
-    .div(tokenBalance.value)
-    .times(100)
-    .toFixed(2);
+  return amountBN.value.div(tokenBalance.value).times(100).toFixed(2);
 });
 
 const bufferPercentage = computed(() => {
@@ -313,7 +310,7 @@ watchEffect(() => {
           {{
             t('minTransactionBuffer', [
               nativeAsset.minTransactionBuffer,
-              nativeAsset.symbol
+              nativeAsset.symbol,
             ])
           }}
         </div>

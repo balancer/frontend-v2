@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'Notifications',
 
   components: {
-    Notification
+    Notification,
   },
 
   setup() {
@@ -31,9 +31,9 @@ export default defineComponent({
 
     return {
       // computed
-      notifications
+      notifications,
     };
-  }
+  },
 });
 </script>
 <style scoped>

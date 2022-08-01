@@ -26,7 +26,7 @@ const {
   unallocatedVotes,
   votingPeriodEnd,
   votingPeriodLastHour,
-  refetch: refetchVotingGauges
+  refetch: refetchVotingGauges,
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
@@ -105,9 +105,7 @@ function handleVoteSuccess() {
     <div class="flex gap-2 xs:gap-3 px-4 xl:px-0">
       <BalCard shadow="none" class="min-w-max md:w-48">
         <div class="flex items-center">
-          <p class="text-sm text-secondary inline mr-1">
-            My unallocated votes
-          </p>
+          <p class="text-sm text-secondary inline mr-1">My unallocated votes</p>
           <BalTooltip
             :text="$t('veBAL.liquidityMining.myUnallocatedVotesTooltip')"
             iconClass="text-gray-400 dark:text-gray-600"
@@ -130,9 +128,7 @@ function handleVoteSuccess() {
           :text="$t('veBAL.liquidityMining.votingPowerExpiredTooltip')"
           icon-size="sm"
           :icon-name="'alert-triangle'"
-          :icon-class="
-            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
-          "
+          :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />

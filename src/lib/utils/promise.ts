@@ -24,6 +24,6 @@ export async function tryPromiseWithTimeout<T>(
 ): Promise<T> {
   return Promise.race([
     promise,
-    new Promise<T>((_, reject) => setTimeout(reject, timeout))
+    new Promise<T>((_, reject) => setTimeout(reject, timeout)),
   ]);
 }

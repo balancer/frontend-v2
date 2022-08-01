@@ -45,7 +45,7 @@ export default defineComponent({
 
   components: {
     BalIcon,
-    BalBtn
+    BalBtn,
   },
 
   emits: ['actionClick'],
@@ -55,13 +55,13 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     title: { type: String, default: 'A title message' },
     description: { type: String },
     actionLabel: { type: String },
     raised: { type: Boolean, default: false },
-    block: { type: Boolean, default: false }
+    block: { type: Boolean, default: false },
   },
 
   setup(props, { slots }) {
@@ -101,17 +101,17 @@ export default defineComponent({
         [bgColorClass.value]: true,
         [paddingClasses.value]: true,
         'shadow-sm': props.raised,
-        'w-full': props.block
+        'w-full': props.block,
       };
     });
 
     const containerClasses = computed(() => ({
-      'items-center': !props.description && !slots.default
+      'items-center': !props.description && !slots.default,
     }));
 
     const contentClasses = computed(() => ({
       'items-center': !props.description && !slots.default,
-      'flex-col': !!props.description || slots.default
+      'flex-col': !!props.description || slots.default,
     }));
 
     const iconSizeClasses = computed(() => {
@@ -139,12 +139,12 @@ export default defineComponent({
     const iconClasses = computed(() => {
       return {
         [iconSizeClasses.value]: true,
-        [iconColorClasses.value]: true
+        [iconColorClasses.value]: true,
       };
     });
 
     const titleClasses = computed(() => ({
-      'font-semibold': !!props.description || slots.default
+      'font-semibold': !!props.description || slots.default,
     }));
 
     const descriptionColor = computed(() => {
@@ -175,7 +175,7 @@ export default defineComponent({
 
     const actionClasses = computed(() => ({
       'pl-4': !props.description && !slots.default,
-      'mt-1': !!props.description || slots.default
+      'mt-1': !!props.description || slots.default,
     }));
 
     return {
@@ -188,9 +188,9 @@ export default defineComponent({
       textSizeClass,
       descriptionColor,
       btnColor,
-      actionClasses
+      actionClasses,
     };
-  }
+  },
 });
 </script>
 

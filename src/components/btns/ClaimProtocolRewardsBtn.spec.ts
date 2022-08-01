@@ -31,10 +31,10 @@ describe.only('ClaimProtocolRewardsBtn', () => {
       return {
         claimableTokens: [
           '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2',
-          '0xba100000625a3754423978a60c9317c58a424e3D'
+          '0xba100000625a3754423978a60c9317c58a424e3D',
         ],
         claimBalance: mockClaimBalance,
-        claimBalances: mockClaimBalances
+        claimBalances: mockClaimBalances,
       };
     });
   });
@@ -47,8 +47,8 @@ describe.only('ClaimProtocolRewardsBtn', () => {
   it('should render props', () => {
     const { getByText } = render(ClaimProtocolRewardsBtn, {
       props: {
-        fiatValue: '1000'
-      }
+        fiatValue: '1000',
+      },
     });
 
     expect(getByText('Claim all')).toBeVisible();
@@ -57,8 +57,8 @@ describe.only('ClaimProtocolRewardsBtn', () => {
   it('Calls FeeDistributor.claimBalances on click: Claim all', async () => {
     const { getByText } = render(ClaimProtocolRewardsBtn, {
       props: {
-        fiatValue: '1000'
-      }
+        fiatValue: '1000',
+      },
     });
 
     const btn = getByText('Claim all');
@@ -72,8 +72,8 @@ describe.only('ClaimProtocolRewardsBtn', () => {
     const { getByText } = render(ClaimProtocolRewardsBtn, {
       props: {
         tokenAddress: '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2',
-        fiatValue: '1000'
-      }
+        fiatValue: '1000',
+      },
     });
 
     const btn = getByText('Claim');

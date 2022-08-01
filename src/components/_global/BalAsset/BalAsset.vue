@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
   address: '',
   iconURI: '',
   size: 24,
-  button: false
+  button: false,
 });
 
 /**
@@ -48,7 +48,7 @@ const iconSRC = computed(() => {
 const rootElement = computed(() => (props.button ? 'button' : 'div'));
 
 const rootElementAttrs = computed(() => ({
-  'aria-label': token.value?.symbol
+  'aria-label': token.value?.symbol,
 }));
 
 /**
@@ -64,7 +64,7 @@ watch(iconSRC, newURL => {
     class="bal-asset rounded-full inline-block leading-none shadow-sm"
     :style="{
       width: `${size}px`,
-      height: `${size}px`
+      height: `${size}px`,
     }"
     :is="rootElement"
     v-bind="rootElementAttrs"
@@ -81,7 +81,7 @@ watch(iconSRC, newURL => {
       class="rounded-full overflow-visible bg-gray-300 dark:bg-gray-700"
       :style="{
         width: `${size}px`,
-        height: `${size}px`
+        height: `${size}px`,
       }"
     />
   </component>

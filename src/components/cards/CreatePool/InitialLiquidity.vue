@@ -28,7 +28,7 @@ const {
   priceFor,
   nativeAsset,
   wrappedNativeAsset,
-  dynamicDataLoading
+  dynamicDataLoading,
 } = useTokens();
 const { fNum2 } = useNumbers();
 const {
@@ -49,7 +49,7 @@ const {
   proceed,
   clearAmounts,
   setAmountsToMaxBalances,
-  saveState
+  saveState,
 } = usePoolCreation();
 const { t } = useI18n();
 
@@ -86,7 +86,7 @@ const arbitrageDelta = computed(() => {
   }
   return {
     delta: totalPctDelta,
-    value: totalPctDelta.times(poolLiquidity.value)
+    value: totalPctDelta.times(poolLiquidity.value),
   };
 });
 
@@ -210,7 +210,7 @@ function handleClearAll() {
 
 function onAlertMountChange() {
   emit('update:height', {
-    height: cardWrapper.value?.offsetHeight || 0
+    height: cardWrapper.value?.offsetHeight || 0,
   });
 }
 
@@ -315,8 +315,8 @@ function saveAndProceed() {
                     'text-sm font-semibold3',
                     {
                       'text-gray-400 dark:text-gray-600': areAmountsMaxed,
-                      'text-blue-500 hover:text-blue-50': !areAmountsMaxed
-                    }
+                      'text-blue-500 hover:text-blue-50': !areAmountsMaxed,
+                    },
                   ]"
                   @click="handleMax"
                 >
@@ -336,7 +336,7 @@ function saveAndProceed() {
               >
                 <button
                   @click="optimiseLiquidity(true)"
-                  class="bg-clip-text text-sm text-transparent font-medium bg-gradient-to-tr from-blue-500 to-pink-500  hover:from-blue-800 hover:to-pink-800"
+                  class="bg-clip-text text-sm text-transparent font-medium bg-gradient-to-tr from-blue-500 to-pink-500 hover:from-blue-800 hover:to-pink-800"
                 >
                   {{ t('optimize') }}
                 </button>
@@ -355,7 +355,7 @@ function saveAndProceed() {
             :title="
               t('createAPool.arbTitle', [
                 fNum2(arbitrageDelta.value.toString(), FNumFormats.fiat),
-                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent)
+                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent),
               ])
             "
           >

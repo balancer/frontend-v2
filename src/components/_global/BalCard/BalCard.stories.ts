@@ -8,17 +8,17 @@ export default {
     darkMode: false,
     title: '',
     titleTag: 'h3',
-    shadow: ''
+    shadow: '',
   },
   argTypes: {
     titleTag: { control: { type: 'select', options: ['h1', 'h2', 'h3'] } },
     shadow: {
       control: {
         type: 'select',
-        options: ['', 'none', 'sm', 'md', 'lg', 'xl', '2xl']
-      }
-    }
-  }
+        options: ['', 'none', 'sm', 'md', 'lg', 'xl', '2xl'],
+      },
+    },
+  },
 };
 
 type Props = {
@@ -37,7 +37,7 @@ const Template = (args: Props) => ({
   template: generateTemplate(`
 <BalCard v-bind="args">
   content
-</BalCard>`)
+</BalCard>`),
 });
 
 export const OnlyContent = Template.bind({});
@@ -57,7 +57,7 @@ export const WithFooter = (args: Props) => ({
   <template v-slot:footer>
     Action
   </template>
-</BalCard>`)
+</BalCard>`),
 });
 
 export const Complete = WithFooter.bind({});

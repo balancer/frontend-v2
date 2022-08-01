@@ -10,11 +10,8 @@ import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
-const {
-  appNetworkConfig,
-  isWalletReady,
-  startConnectWithInjectedProvider
-} = useWeb3();
+const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
+  useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { setTokenInAddress } = useTradeState();
 const {
@@ -22,7 +19,7 @@ const {
   nativeAsset,
   balanceFor,
   balances,
-  dynamicDataLoading: isLoadingBalances
+  dynamicDataLoading: isLoadingBalances,
 } = useTokens();
 const nativeCurrency = configService.network.nativeAsset.symbol;
 const networkName = configService.network.name;
@@ -90,9 +87,7 @@ const tokensWithBalance = computed(() => {
               "
               icon-size="sm"
               :icon-name="'alert-triangle'"
-              :icon-class="
-                'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
-              "
+              :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
               width="72"
               class="relative top-0.5"
             />

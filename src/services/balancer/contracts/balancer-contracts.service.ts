@@ -1,7 +1,7 @@
 import {
   InvestmentPool__factory,
   StablePool__factory,
-  WeightedPool__factory
+  WeightedPool__factory,
 } from '@balancer-labs/typechain';
 import { JsonRpcProvider } from '@ethersproject/providers';
 
@@ -52,7 +52,7 @@ export default class BalancerContractsService {
           ...LinearPoolAbi,
           ...StaticATokenLMAbi,
           ...ERC20_ABI,
-          ...IERC4626
+          ...IERC4626,
         ].map(row => [row.name, row])
       )
     );

@@ -30,7 +30,7 @@ export class VeBALProxy {
     const multicaller = this.getMulticaller();
     for (const address of addresses) {
       multicaller.call(address, this.address, 'adjustedBalanceOf', [
-        getAddress(address)
+        getAddress(address),
       ]);
     }
 

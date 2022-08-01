@@ -50,7 +50,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
-  isPaginated: false
+  isPaginated: false,
 });
 
 const emit = defineEmits(['loadMore']);
@@ -74,7 +74,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     accessor: 'tx',
     Cell: 'actionCell',
     width: 150,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('details'),
@@ -82,7 +82,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     accessor: '',
     Cell: 'detailsCell',
     width: 325,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('value'),
@@ -92,7 +92,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     align: 'right',
     className: 'align-center w-40',
     sortKey: pool => pool.value,
-    width: 125
+    width: 125,
   },
   {
     name: t('time'),
@@ -101,8 +101,8 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200
-  }
+    width: 200,
+  },
 ]);
 
 const swapRows = computed<SwapRow[]>(() => {
@@ -141,7 +141,7 @@ const swapRows = computed<SwapRow[]>(() => {
       timestamp,
       formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
       tx,
-      tokenAmounts
+      tokenAmounts,
     };
   });
 });
@@ -156,9 +156,7 @@ function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
       tokenAmounts[1].address,
       tokenAmounts[1].amount
     );
-    return bnum(priceFor(mainTokenAddress))
-      .times(mainEquivAmount)
-      .toNumber();
+    return bnum(priceFor(mainTokenAddress)).times(mainEquivAmount).toNumber();
   }
 
   let total = bnum(0);
@@ -190,12 +188,12 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
     return [
       {
         address: tokenIn,
-        amount: tokenAmountIn
+        amount: tokenAmountIn,
       },
       {
         address: tokenOut,
-        amount: tokenAmountOut
-      }
+        amount: tokenAmountOut,
+      },
     ];
   }
   return swaps.map(swap => {
@@ -203,7 +201,7 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
 
     return {
       address,
-      amount: isInvest ? swap.tokenAmountIn : swap.tokenAmountOut
+      amount: isInvest ? swap.tokenAmountIn : swap.tokenAmountOut,
     };
   });
 }
@@ -242,7 +240,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
       :no-results-label="noResultsLabel"
       :initial-state="{
         sortColumn: 'timeAgo',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
     >
       <template v-slot:actionCell="action">

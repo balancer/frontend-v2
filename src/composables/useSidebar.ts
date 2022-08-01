@@ -15,6 +15,6 @@ function setSidebarOpen(newVal: boolean): void {
 export function useSidebar() {
   return {
     sidebarOpen,
-    setSidebarOpen
+    setSidebarOpen,
   };
 }

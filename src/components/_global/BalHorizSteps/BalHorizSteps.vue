@@ -24,9 +24,9 @@ withDefaults(defineProps<Props>(), {
     { tooltip: 'Wallet is tiggered', state: StepState.WalletOpen },
     { tooltip: 'This is pending', state: StepState.Pending },
     { tooltip: 'Do this now', state: StepState.Active },
-    { tooltip: 'Do this next', state: StepState.Todo }
+    { tooltip: 'Do this next', state: StepState.Todo },
   ],
-  spacerWidth: 16
+  spacerWidth: 16,
 });
 
 /**

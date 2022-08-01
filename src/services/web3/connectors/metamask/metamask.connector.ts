@@ -33,7 +33,7 @@ export class MetamaskConnector extends Connector {
       try {
         if (provider.request) {
           accounts = await provider.request({
-            method: 'eth_requestAccounts'
+            method: 'eth_requestAccounts',
           });
 
           chainId = await provider.request({ method: 'eth_chainId' });
@@ -69,7 +69,7 @@ export class MetamaskConnector extends Connector {
       // TODO type this
       provider: provider as any,
       account: this.account,
-      chainId: this.chainId
+      chainId: this.chainId,
     };
   }
 }

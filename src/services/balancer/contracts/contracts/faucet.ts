@@ -17,7 +17,7 @@ export class Faucet {
    */
   async drip(tokenAddress: string) {
     return await this.web3.sendTransaction(this.address, this.abi, 'drip', [
-      tokenAddress
+      tokenAddress,
     ]);
   }
 }

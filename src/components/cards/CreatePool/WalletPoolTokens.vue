@@ -11,14 +11,14 @@ import useTokens from '@/composables/useTokens';
  * STATIC
  */
 const initialAnimateProps = {
-  opacity: 0
+  opacity: 0,
 };
 
 const entryAnimateProps = {
-  opacity: 1
+  opacity: 1,
 };
 const exitAnimateProps = {
-  opacity: 0
+  opacity: 0,
 };
 
 /**
@@ -29,7 +29,7 @@ const {
   nativeAsset,
   wrappedNativeAsset,
   balanceFor,
-  priceFor
+  priceFor,
 } = useTokens();
 const { tokensList } = usePoolCreation();
 const { fNum2 } = useNumbers();

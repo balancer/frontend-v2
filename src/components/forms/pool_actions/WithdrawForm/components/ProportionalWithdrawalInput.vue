@@ -43,7 +43,7 @@ const {
   fiatAmounts,
   proportionalAmounts,
   shouldFetchBatchSwap,
-  loadingAmountsOut
+  loadingAmountsOut,
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -57,14 +57,12 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const tokens = computed(
-  (): TokenInfoMap => {
-    if (isStablePhantom(props.pool.poolType)) {
-      return getTokens(props.pool.mainTokens || []);
-    }
-    return getTokens(props.pool.tokensList);
+const tokens = computed((): TokenInfoMap => {
+  if (isStablePhantom(props.pool.poolType)) {
+    return getTokens(props.pool.mainTokens || []);
   }
-);
+  return getTokens(props.pool.tokensList);
+});
 
 const percentageLabel = computed(() => {
   try {
@@ -166,7 +164,7 @@ onBeforeMount(() => {
                   {{
                     fNum2(seedTokens[i], {
                       style: 'percent',
-                      maximumFractionDigits: 0
+                      maximumFractionDigits: 0,
                     })
                   }}
                 </span>

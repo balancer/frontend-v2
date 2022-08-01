@@ -16,7 +16,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   size: '1',
-  color: 'green'
+  color: 'green',
 });
 
 /**
@@ -24,20 +24,20 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const barClasses = computed(() => ({
   [`h-${props.size}`]: true,
-  [`bg-${props.color}-400`]: true
+  [`bg-${props.color}-400`]: true,
 }));
 
 const bufferBarClasses = computed(() => ({
   [`h-${props.size}`]: true,
-  [`bg-orange-500`]: true
+  [`bg-orange-500`]: true,
 }));
 
 const barStyles = computed(() => ({
-  width: `${props.width}%`
+  width: `${props.width}%`,
 }));
 
 const bufferBarStyles = computed(() => ({
-  width: `${props.bufferWidth}%`
+  width: `${props.bufferWidth}%`,
 }));
 </script>
 

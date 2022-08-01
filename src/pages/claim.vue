@@ -6,11 +6,11 @@ import { computed, onBeforeMount, watch } from 'vue';
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import BalClaimsTable, {
-  RewardRow
+  RewardRow,
 } from '@/components/tables/BalClaimsTable.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
 import ProtocolRewardsTable, {
-  ProtocolRewardRow
+  ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
@@ -47,7 +47,7 @@ const {
   gauges,
   gaugePools,
   protocolRewards,
-  isLoading: isClaimsLoading
+  isLoading: isClaimsLoading,
 } = useClaimsData();
 
 /**
@@ -58,20 +58,20 @@ const networks = [
     id: 'ethereum',
     name: 'Ethereum',
     subdomain: 'app',
-    key: '1'
+    key: '1',
   },
   {
     id: 'polygon',
     name: 'Polygon',
     subdomain: 'polygon',
-    key: '137'
+    key: '137',
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
     subdomain: 'arbitrum',
-    key: '42161'
-  }
+    key: '42161',
+  },
 ];
 
 /**
@@ -98,7 +98,7 @@ const balRewardsData = computed((): RewardRow[] => {
         gauge,
         pool,
         amount,
-        value: toFiat(amount, balToken.value.address)
+        value: toFiat(amount, balToken.value.address),
       });
 
     return arr;
@@ -134,7 +134,7 @@ const gaugeTables = computed((): GaugeTable[] => {
     if (pool && totalRewardValue.gt(0))
       arr.push({
         gauge,
-        pool
+        pool,
       });
 
     return arr;
@@ -157,7 +157,7 @@ async function injectPoolTokens(pools: GaugePool[]): Promise<void> {
 function gaugeTitle(pool: GaugePool): string {
   const _tokens = pool.tokens.map(token => ({
     ...token,
-    ...getToken(getAddress(token.address))
+    ...getToken(getAddress(token.address)),
   }));
 
   if (isStableLike(pool.poolType)) {
@@ -171,7 +171,7 @@ function gaugeTitle(pool: GaugePool): string {
       token =>
         `${fNum2(token.weight, {
           style: 'percent',
-          maximumFractionDigits: 0
+          maximumFractionDigits: 0,
         })} ${token.symbol}`
     )
     .join(' / ');
@@ -187,7 +187,7 @@ function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
     return {
       token,
       amount,
-      value: toFiat(amount, tokenAddress)
+      value: toFiat(amount, tokenAddress),
     };
   });
 }
@@ -200,8 +200,8 @@ async function getBBaUSDPrice() {
     const appoxPrice = await bbAUSDToken.getRate();
     injectPrices({
       [FiatCurrency.usd]: {
-        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber()
-      }
+        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber(),
+      },
     });
   }
 }
@@ -288,7 +288,7 @@ onBeforeMount(async () => {
       <BalBlankSlate
         v-else-if="
           (!isClaimsLoading && !appLoading && gaugeTables.length === 0) ||
-            !isWalletReady
+          !isWalletReady
         "
         class="mt-4 px-4 xl:px-0 mb-16"
       >

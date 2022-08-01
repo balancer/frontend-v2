@@ -51,7 +51,7 @@ export default defineComponent({
     modelValue: { type: String, required: true },
     loading: { type: Boolean, default: false },
     hasZeroBalance: { type: Boolean, default: false },
-    missingPrices: { type: Boolean, default: false }
+    missingPrices: { type: Boolean, default: false },
   },
 
   setup(props, { emit }) {
@@ -69,8 +69,8 @@ export default defineComponent({
     );
 
     return {
-      selected
+      selected,
     };
-  }
+  },
 });
 </script>

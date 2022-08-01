@@ -13,7 +13,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   dateTimeLabelFor,
   toJsTimestamp,
-  toUtcTime
+  toUtcTime,
 } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
@@ -67,7 +67,7 @@ const voteState = reactive<TransactionActionState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -124,7 +124,7 @@ const votedToRecentlyWarning = computed(() => {
       description: t(
         'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
         [remainingTime]
-      )
+      ),
     };
   }
   return null;
@@ -141,7 +141,9 @@ const noVeBalWarning = computed(() => {
   }
   return {
     title: t('veBAL.liquidityMining.popover.warnings.noVeBal.title'),
-    description: t('veBAL.liquidityMining.popover.warnings.noVeBal.description')
+    description: t(
+      'veBAL.liquidityMining.popover.warnings.noVeBal.description'
+    ),
   };
 });
 
@@ -155,7 +157,7 @@ const veBalLockTooShortWarning = computed(() => {
         ),
         description: t(
           'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.description'
-        )
+        ),
       };
     }
   }
@@ -171,31 +173,35 @@ const veBalVoteOverLimitWarning = computed(() => {
       ),
       description: t(
         'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
-      )
+      ),
     };
   }
 
   return null;
 });
 
-const voteWarning = computed((): {
-  title: string;
-  description: string;
-} | null => {
-  if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
-  return null;
-});
+const voteWarning = computed(
+  (): {
+    title: string;
+    description: string;
+  } | null => {
+    if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
+    return null;
+  }
+);
 
-const voteError = computed((): {
-  title: string;
-  description: string;
-} | null => {
-  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
-  if (noVeBalWarning.value) return noVeBalWarning.value;
-  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-  if (voteState.error) return voteState.error;
-  return null;
-});
+const voteError = computed(
+  (): {
+    title: string;
+    description: string;
+  } | null => {
+    if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
+    if (noVeBalWarning.value) return noVeBalWarning.value;
+    if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
+    if (voteState.error) return voteState.error;
+    return null;
+  }
+);
 
 const transactionInProgress = computed(
   (): boolean => voteState.init || voteState.confirming
@@ -241,7 +247,7 @@ const remainingVotes = computed(() => {
   return t(remainingVotesText, [
     remainingVotesFormatted,
     currentVotesFormatted,
-    unallocatedVotesFormatted.value
+    unallocatedVotesFormatted.value,
   ]);
 });
 
@@ -277,7 +283,7 @@ async function submitVote() {
     voteState.confirming = false;
     voteState.error = {
       title: 'Vote failed',
-      description: error.message
+      description: error.message,
     };
   }
 }
@@ -289,11 +295,11 @@ async function handleTransaction(tx) {
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
       fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
-      props.gauge.pool.symbol
+      props.gauge.pool.symbol,
     ]),
     details: {
-      voteWeight: voteWeight.value
-    }
+      voteWeight: voteWeight.value,
+    },
   });
 
   txListener(tx, {
@@ -310,10 +316,10 @@ async function handleTransaction(tx) {
       console.error('Vote failed');
       voteState.error = {
         title: 'Vote Failed',
-        description: 'Vote failed for an unknown reason'
+        description: 'Vote failed for an unknown reason',
       };
       voteState.confirming = false;
-    }
+    },
   });
 }
 
@@ -354,7 +360,7 @@ onMounted(() => {
           <li>
             {{
               t('veBAL.liquidityMining.popover.voteLockInfo', [
-                voteLockedUntilText
+                voteLockedUntilText,
               ])
             }}
           </li>

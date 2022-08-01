@@ -41,7 +41,7 @@ const {
   highPriceImpact,
   fiatTotal,
   fiatTotalLabel,
-  priceImpact
+  priceImpact,
 } = toRefs(props.math);
 
 const migrateConfirmed = ref(false);

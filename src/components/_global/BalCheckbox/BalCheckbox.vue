@@ -47,18 +47,18 @@ export default defineComponent({
     noMargin: { type: Boolean, default: false },
     rules: {
       type: Array as PropType<Rules>,
-      default: () => []
+      default: () => [],
     },
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     color: {
       type: String,
       default: 'blue',
-      validator: (val: string): boolean => ['blue'].includes(val)
-    }
+      validator: (val: string): boolean => ['blue'].includes(val),
+    },
   },
 
   setup(props, { emit }) {
@@ -107,20 +107,20 @@ export default defineComponent({
 
     const wrapperClasses = computed(() => {
       return {
-        'mb-5': !props.noMargin
+        'mb-5': !props.noMargin,
       };
     });
 
     const inputClasses = computed(() => {
       return {
         [sizeClasses.value]: true,
-        [colorClasses.value]: true
+        [colorClasses.value]: true,
       };
     });
 
     const labelClasses = computed(() => {
       return {
-        [textSizeClass.value]: true
+        [textSizeClass.value]: true,
       };
     });
 
@@ -131,9 +131,9 @@ export default defineComponent({
       validate,
       hasError,
       errors,
-      onChange
+      onChange,
     };
-  }
+  },
 });
 </script>
 
