@@ -8,7 +8,10 @@ module.exports = {
   ],
   rules: {
     'string-quotes': 'single',
-    // Allow tailwind's theme, and vue's v-bind functions
+    // stylelint-config-tailwindcss and stylelint-config-prettier
+    // somehow conflict with each other, so we need to allow
+    // tailwind's theme, and vue's v-bind functions here.
+    // Check back later if this is a bug in stylelint-config-tailwindcss and it's fixed.
     'function-no-unknown': [true, { ignoreFunctions: ['v-bind', 'theme'] }],
 
     // Allow v-bind function (a method to use component state properties inside <style> tag)
