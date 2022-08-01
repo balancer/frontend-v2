@@ -143,12 +143,7 @@ onUnmounted(() => {
   @apply w-full h-full block absolute top-0 left-0 opacity-0 blur-2xl;
 
   background-blend-mode: soft-light, soft-light, normal;
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgb(0 0 0 / 60%),
-      transparent
-    );
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 60%), transparent);
   content: '';
   filter: blur(40px);
   z-index: -1;

@@ -117,10 +117,7 @@ watch(popoverOpened, () => {
 }
 
 .align-center-transform {
-  transform:
-    translateX(
-      -webkit-calc(-50% + v-bind(activatorHalfWidthPx))
-    );
+  transform: translateX(-webkit-calc(-50% + v-bind(activatorHalfWidthPx)));
   transform: translateX(calc(-50% + v-bind(activatorHalfWidthPx)));
 }
 

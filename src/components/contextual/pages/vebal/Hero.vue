@@ -146,9 +146,6 @@ function navigateToGetVeBAL() {
 
   min-height: 440px;
   z-index: 0;
-}
-
-.hero-container {
   background-color: #0b0f19;
 }
 
