@@ -49,7 +49,7 @@ function cancel() {
 </script>
 
 <template>
-  <BalCard shadow="xl" no-border :class="{ 'border-red-400': existingPool }">
+  <BalCard shadow="xl" noBorder :class="{ 'border-red-400': existingPool }">
     <BalStack vertical>
       <BalStack vertical spacing="xs">
         <span
@@ -161,7 +161,7 @@ function cancel() {
         creation gas costs and liquidity will be fractured which is likely to
         result in your new pool being less profitable.
       </BalAlert>
-      <BalStack horizontal expand-children>
+      <BalStack horizontal expandChildren>
         <BalBtn block outline color="black" @click="cancel">
           {{ $t('cancel') }}
         </BalBtn>

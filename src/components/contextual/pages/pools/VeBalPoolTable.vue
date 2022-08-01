@@ -54,8 +54,8 @@ const hiddenColumns = [
       <PoolsTable
         :key="lockPools"
         :data="lockPools"
-        :hidden-columns="hiddenColumns"
-        show-pool-shares
+        :hiddenColumns="hiddenColumns"
+        showPoolShares
       />
     </BalStack>
   </div>

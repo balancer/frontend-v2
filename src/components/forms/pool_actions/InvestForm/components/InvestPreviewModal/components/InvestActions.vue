@@ -216,7 +216,7 @@ watch(blockNumber, async () => {
       :disabled="disabled"
     />
     <div v-else>
-      <ConfirmationIndicator :tx-receipt="investmentState.receipt" />
+      <ConfirmationIndicator :txReceipt="investmentState.receipt" />
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"

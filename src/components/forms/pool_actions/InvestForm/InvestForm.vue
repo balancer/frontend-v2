@@ -244,10 +244,10 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       v-model:isValid="validInputs[i]"
       :name="tokenAddresses[i]"
       :weight="tokenWeight(tokenAddresses[i])"
-      :hint-amount="propAmountFor(i)"
+      :hintAmount="propAmountFor(i)"
       :hint="hint(i)"
       class="mb-4"
-      fixed-token
+      fixedToken
       :options="tokenOptions(i)"
       @update:amount="handleAmountChange($event, i)"
       @update:address="handleAddressChange($event)"
@@ -297,19 +297,19 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       />
     </div>
 
-    <StakingProvider :pool-address="pool.address">
+    <StakingProvider :poolAddress="pool.address">
       <teleport to="#modal">
         <InvestPreviewModal
           v-if="showInvestPreview"
           :pool="pool"
           :math="investMath"
-          :token-addresses="tokenAddresses"
+          :tokenAddresses="tokenAddresses"
           @close="showInvestPreview = false"
           @show-stake-modal="showStakeModal = true"
         />
         <StakePreviewModal
           :pool="pool"
-          :is-visible="showStakeModal"
+          :isVisible="showStakeModal"
           action="stake"
           @close="showStakeModal = false"
         />

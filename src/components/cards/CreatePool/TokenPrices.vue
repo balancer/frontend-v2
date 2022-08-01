@@ -40,7 +40,7 @@ const hasUnknownPrice = computed(() =>
 </script>
 
 <template>
-  <BalCard no-pad shadow="none" :no-border="upToLargeBreakpoint">
+  <BalCard noPad shadow="none" :noBorder="upToLargeBreakpoint">
     <div v-if="!upToLargeBreakpoint" class="p-4 border-b dark:border-gray-600">
       <BalStack horizontal spacing="sm" align="center">
         <h6 class="dark:text-gray-300">
@@ -50,7 +50,7 @@ const hasUnknownPrice = computed(() =>
       </BalStack>
     </div>
     <div class="p-2 px-4">
-      <BalStack vertical is-dynamic spacing="sm">
+      <BalStack vertical isDynamic spacing="sm">
         <BalStack
           v-for="token in knownTokens"
           :key="`tokenPrice-known-${token}`"
@@ -73,7 +73,7 @@ const hasUnknownPrice = computed(() =>
       </BalStack>
       <BalStack
         vertical
-        is-dynamic
+        isDynamic
         spacing="xs"
         :class="{ 'mt-1': knownTokens.length }"
       >
@@ -89,7 +89,7 @@ const hasUnknownPrice = computed(() =>
           ]"
           @click="toggleUnknownPriceModal"
         >
-          <BalStack horizontal is-dynamic justify="between">
+          <BalStack horizontal isDynamic justify="between">
             <span
               :class="[
                 'w-1/2 text-left',

@@ -162,9 +162,9 @@ const cards = computed(() => {
         <BalTooltip
           v-if="bnum(totalExpiredLpTokens).gt(0)"
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
-          icon-size="sm"
-          :icon-name="'alert-triangle'"
-          :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
+          iconSize="sm"
+          :iconName="'alert-triangle'"
+          :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />
@@ -200,11 +200,11 @@ const cards = computed(() => {
   <teleport to="#modal">
     <UnlockPreviewModal
       v-if="showUnlockPreviewModal"
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :ve-bal-lock-info="veBalLockInfo"
-      :total-lp-tokens="totalExpiredLpTokens"
-      :fiat-total-lp-tokens="fiatTotalExpiredLpTokens"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
+      :totalLpTokens="totalExpiredLpTokens"
+      :fiatTotalLpTokens="fiatTotalExpiredLpTokens"
       @close="showUnlockPreviewModal = false"
     />
   </teleport>

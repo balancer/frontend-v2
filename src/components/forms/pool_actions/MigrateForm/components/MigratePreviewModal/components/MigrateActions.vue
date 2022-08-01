@@ -248,7 +248,7 @@ watch(blockNumber, async () => {
         <BalLink
           :href="explorerLink"
           external
-          no-style
+          noStyle
           class="group flex items-center"
         >
           {{ networkConfig.explorerName }}

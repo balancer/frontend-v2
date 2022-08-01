@@ -314,7 +314,7 @@ function onAlertMountChange() {
 
 <template>
   <div ref="cardWrapper" class="mb-16">
-    <BalCard shadow="xl" no-border>
+    <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
           <span class="text-xs text-secondary">{{ networkName }}</span>
@@ -322,7 +322,7 @@ function onAlertMountChange() {
             {{ $t('createAPool.chooseTokenWeights') }}
           </h5>
         </BalStack>
-        <BalCard shadow="none" no-pad>
+        <BalCard shadow="none" noPad>
           <div ref="tokenWeightListWrapper">
             <div class="flex flex-col">
               <div
@@ -338,13 +338,13 @@ function onAlertMountChange() {
                   :ref="addTokenListElementRef"
                   class="absolute w-full"
                 >
-                  <AnimatePresence is-visible>
+                  <AnimatePresence isVisible>
                     <TokenWeightInput
                       v-model:weight="seedTokens[i].weight"
                       v-model:address="seedTokens[i].tokenAddress"
-                      no-rules
-                      no-max
-                      :excluded-tokens="excludedTokens"
+                      noRules
+                      noMax
+                      :excludedTokens="excludedTokens"
                       @update:weight="data => handleWeightChange(data, i)"
                       @update:address="data => handleAddressChange(data, i)"
                       @update:is-locked="data => handleLockedWeight(data, i)"
@@ -386,7 +386,7 @@ function onAlertMountChange() {
                 <BalProgressBar
                   :color="progressBarColor"
                   :width="totalAllocatedWeight"
-                  :buffer-width="0"
+                  :bufferWidth="0"
                   class="my-2"
                 />
               </div>
@@ -394,8 +394,8 @@ function onAlertMountChange() {
           </div>
         </BalCard>
         <AnimatePresence
-          :is-visible="showLiquidityAlert && isWalletReady"
-          unmount-instantly
+          :isVisible="showLiquidityAlert && isWalletReady"
+          unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
@@ -411,8 +411,8 @@ function onAlertMountChange() {
           </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :is-visible="zeroWeightToken"
-          unmount-instantly
+          :isVisible="zeroWeightToken"
+          unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
@@ -421,8 +421,8 @@ function onAlertMountChange() {
           </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :is-visible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
-          unmount-instantly
+          :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+          unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >
@@ -434,8 +434,8 @@ function onAlertMountChange() {
           </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :is-visible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
-          unmount-instantly
+          :isVisible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
+          unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >

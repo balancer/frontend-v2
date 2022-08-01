@@ -335,10 +335,10 @@ watch(
           :class="props.getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
-          :on-row-click="onRowClick"
+          :onRowClick="onRowClick"
           :link="link"
           :sticky="sticky"
-          :is-column-stuck="isColumnStuck"
+          :isColumnStuck="isColumnStuck"
           pinned
         >
           <template v-for="(_, name) in $slots" #[name]="slotData">
@@ -354,10 +354,10 @@ watch(
           :class="props.getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
-          :on-row-click="onRowClick"
+          :onRowClick="onRowClick"
           :link="link"
           :sticky="sticky"
-          :is-column-stuck="isColumnStuck"
+          :isColumnStuck="isColumnStuck"
         >
           <template v-for="(_, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData" />
@@ -367,9 +367,9 @@ watch(
         <TotalsRow
           v-if="!isLoading && tableData.length && shouldRenderTotals"
           :columns="filteredColumns"
-          :on-row-click="onRowClick"
+          :onRowClick="onRowClick"
           :sticky="sticky"
-          :is-column-stuck="isColumnStuck"
+          :isColumnStuck="isColumnStuck"
         >
           <template v-for="(_, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData" />

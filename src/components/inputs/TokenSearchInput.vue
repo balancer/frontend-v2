@@ -116,7 +116,7 @@ function onClick() {
           v-for="token in modelValue"
           :key="token"
           color="white"
-          icon-size="sm"
+          iconSize="sm"
           :closeable="true"
           @closed="emit('remove', token)"
         >
@@ -134,7 +134,7 @@ function onClick() {
     <teleport to="#modal">
       <SelectTokenModal
         v-if="selectTokenModal"
-        :excluded-tokens="compact([...modelValue, veBalTokenInfo?.address])"
+        :excludedTokens="compact([...modelValue, veBalTokenInfo?.address])"
         @close="selectTokenModal = false"
         @select="addToken"
       />

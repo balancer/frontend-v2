@@ -29,6 +29,9 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
     'tailwindcss/no-custom-classname': 'off',
 
+    // Require passing prop names in camelCase
+    'vue/attribute-hyphenation': ['error', 'never'],
+
     // Inserting html is a potential XSS risk. Consider disabling this rule case-by-case basis
     'vue/no-v-html': 'off',
 

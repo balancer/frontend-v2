@@ -137,17 +137,17 @@ function handleModalClose() {
       </h5>
       <PoolsTable
         :key="poolsToRender"
-        :is-loading="isLoadingUserStakingData || isLoadingUserPools"
+        :isLoading="isLoadingUserStakingData || isLoadingUserPools"
         :data="poolsToRender"
-        :no-pools-label="noPoolsLabel"
-        :hidden-columns="hiddenColumns"
-        show-pool-shares
+        :noPoolsLabel="noPoolsLabel"
+        :hiddenColumns="hiddenColumns"
+        showPoolShares
         @trigger-stake="handleStake"
       />
     </BalStack>
     <StakePreviewModal
       :pool="stakePool"
-      :is-visible="showStakeModal"
+      :isVisible="showStakeModal"
       action="stake"
       @close="handleModalClose"
     />

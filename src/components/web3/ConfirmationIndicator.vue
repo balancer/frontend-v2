@@ -76,7 +76,7 @@ const isLoading = computed(
     <BalLink
       :href="confirmationData?.explorerLink"
       external
-      no-style
+      noStyle
       class="group flex items-center"
     >
       {{ networkConfig.explorerName }}

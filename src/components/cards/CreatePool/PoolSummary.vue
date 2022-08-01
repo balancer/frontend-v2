@@ -181,7 +181,7 @@ async function calculateColors() {
 </script>
 
 <template>
-  <BalCard no-pad shadow="none">
+  <BalCard noPad shadow="none">
     <div v-if="!upToLargeBreakpoint" class="p-4 border-b dark:border-gray-600">
       <h6 class="dark:text-gray-300">
         {{ $t('createAPool.poolSummary') }}
@@ -198,7 +198,7 @@ async function calculateColors() {
     <BalStack class="mb-2" vertical spacing="none" align="center">
       <BalStack horizontal spacing="xs">
         <h6>{{ $t('inYourWallet') }}</h6>
-        <BalTooltip icon-size="sm" class="mt-1">
+        <BalTooltip iconSize="sm" class="mt-1">
           {{ $t('createAPool.maxLiquidityTooltip') }}
         </BalTooltip>
       </BalStack>

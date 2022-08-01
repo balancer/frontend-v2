@@ -54,7 +54,7 @@ const isLoading = computed(() =>
 </script>
 
 <template>
-  <Col3Layout offset-gutters>
+  <Col3Layout offsetGutters>
     <BalLoadingBlock v-if="isLoading" class="h-96" />
     <VeBalUnlockForm
       v-else
@@ -63,14 +63,14 @@ const isLoading = computed(() =>
           ? 'veBalUnlockForm-hasLock'
           : 'veBalUnlockForm-noLock'
       "
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :ve-bal-lock-info="veBalLockInfo"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
     />
 
     <template #gutterRight>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
-      <MyVeBAL v-else :ve-bal-lock-info="veBalLockInfo" />
+      <MyVeBAL v-else :veBalLockInfo="veBalLockInfo" />
     </template>
   </Col3Layout>
 </template>

@@ -5,7 +5,7 @@
   >
     <BalAsset
       :address="token.address"
-      :icon-u-r-i="token.logoURI"
+      :iconURI="token.logoURI"
       :size="34"
       class="mr-3"
     />
@@ -30,8 +30,8 @@
       <BalLoadingNumber
         v-if="balanceLoading"
         type="fiat"
-        number-width="2"
-        number-height="4"
+        numberWidth="2"
+        numberHeight="4"
         class="text-sm font-normal"
       />
       <div v-else class="text-sm font-normal text-secondary">

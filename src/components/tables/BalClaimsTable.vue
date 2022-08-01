@@ -121,15 +121,15 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
   <BalCard
     shadow="lg"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <BalTable
       :columns="columns"
       :data="rewardsData"
-      :is-loading="isLoading"
-      :on-row-click="redirectToPool"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :onRowClick="redirectToPool"
+      skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #iconsColumnCell="{ pool }">
@@ -143,7 +143,7 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
             "
-            :is-stable-pool="isStableLike(pool.poolType)"
+            :isStablePool="isStableLike(pool.poolType)"
           />
         </div>
       </template>

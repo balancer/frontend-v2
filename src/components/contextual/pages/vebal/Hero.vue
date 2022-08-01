@@ -89,11 +89,7 @@ function navigateToGetVeBAL() {
             >
               {{ $t('veBAL.hero.tokens.balWETH') }}
             </p>
-            <BalTooltip
-              icon-size="xs"
-              text-align="left"
-              class="mt-1 font-medium"
-            >
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1 font-medium">
               {{ $t('veBAL.hero.tokenInfo.balWETH') }}
             </BalTooltip>
           </div>
@@ -114,7 +110,7 @@ function navigateToGetVeBAL() {
             >
               {{ $t('veBAL.hero.tokens.lpToken') }}
             </p>
-            <BalTooltip icon-size="xs" text-align="left" class="mt-1">
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.lpToken') }}
             </BalTooltip>
           </div>
@@ -135,7 +131,7 @@ function navigateToGetVeBAL() {
             >
               {{ $t('veBAL.hero.tokens.veBAL') }}
             </p>
-            <BalTooltip icon-size="xs" text-align="left" class="mt-1">
+            <BalTooltip iconSize="xs" textAlign="left" class="mt-1">
               {{ $t('veBAL.hero.tokenInfo.veBAL') }}
             </BalTooltip>
           </div>

@@ -75,7 +75,7 @@ const fiatLabel = computed(() => {
       <BalLink
         :href="explorerLinks.addressLink(token.address)"
         external
-        no-style
+        noStyle
         class="flex items-center"
       >
         <BalAsset :address="token.address" class="mr-2" />

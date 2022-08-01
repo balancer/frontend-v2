@@ -8,7 +8,7 @@
             disablePending && isPendingTransactionStatus(transaction.status)
           "
           external
-          no-style
+          noStyle
           class="group"
         >
           <div class="flex items-center font-semibold">
@@ -64,7 +64,7 @@
           size="xs"
           :label="$t('cancel')"
           :loading="transaction.status === 'cancelling'"
-          :loading-label="$t('cancelling')"
+          :loadingLabel="$t('cancelling')"
           color="white"
           @click.prevent="cancelOrder(transaction.id)"
         />

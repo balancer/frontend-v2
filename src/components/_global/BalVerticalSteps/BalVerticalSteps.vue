@@ -74,7 +74,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
 </script>
 
 <template>
-  <BalCard no-pad shadow="none">
+  <BalCard noPad shadow="none">
     <div class="p-4 border-b dark:border-gray-600">
       <h6 class="dark:text-gray-300">
         {{ title }}

@@ -261,10 +261,10 @@ const chartGrid = computed(() => {
       v-else
       :square="upToLargeBreakpoint"
       shadow="none"
-      h-full
-      grow-content
-      no-pad
-      :no-border="upToLargeBreakpoint || isModal"
+      hFull
+      growContent
+      noPad
+      :noBorder="upToLargeBreakpoint || isModal"
     >
       <div class="relative p-4 h-full bg-transparent">
         <button
@@ -317,23 +317,23 @@ const chartGrid = computed(() => {
             <BalChart
               :data="chartData"
               :height="chartHeight"
-              :show-legend="false"
+              :showLegend="false"
               :color="chartColors"
-              :custom-grid="chartGrid"
-              :axis-label-formatter="{ yAxis: '0.000000' }"
-              :wrapper-class="[
+              :customGrid="chartGrid"
+              :axisLabelFormatter="{ yAxis: '0.000000' }"
+              :wrapperClass="[
                 'flex flex-row lg:flex-col',
                 {
                   'flex-row': !isModal,
                   'flex-col': isModal,
                 },
               ]"
-              :show-tooltip="!upToLargeBreakpoint || isModal"
-              chart-type="line"
-              hide-y-axis
-              hide-x-axis
-              show-header
-              use-min-max
+              :showTooltip="!upToLargeBreakpoint || isModal"
+              chartType="line"
+              hideYAxis
+              hideXAxis
+              showHeader
+              useMinMax
             />
             <div
               v-if="isModal"

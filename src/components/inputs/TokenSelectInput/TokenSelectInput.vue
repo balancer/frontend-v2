@@ -95,7 +95,7 @@ function toggleModal(): void {
     <BalDropdown
       v-else-if="hasToken && fixed && options.length > 0"
       :options="options"
-      min-width="40"
+      minWidth="40"
       @selected="emit('update:modelValue', $event)"
     >
       <template #activator>
@@ -153,9 +153,9 @@ function toggleModal(): void {
     <teleport to="#modal">
       <SelectTokenModal
         v-if="openTokenModal"
-        :excluded-tokens="[...excludedTokens, modelValue]"
-        :include-ether="true"
-        :disable-injection="disableInjection"
+        :excludedTokens="[...excludedTokens, modelValue]"
+        :includeEther="true"
+        :disableInjection="disableInjection"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />

@@ -24,7 +24,7 @@ const poolMigrationInfo = POOL_MIGRATIONS.find(
 <template>
   <MigrateForm
     v-if="poolMigrationInfo"
-    :pool-migration-info="poolMigrationInfo"
+    :poolMigrationInfo="poolMigrationInfo"
   />
   <div v-else class="text-center">
     <div class="text-lg font-semibold">

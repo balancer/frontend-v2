@@ -20,7 +20,7 @@ defineProps<Props>();
 </script>
 
 <template>
-  <BalPopover no-pad>
+  <BalPopover noPad>
     <template #activator>
       <div class="h-10 text-base period-select-input">
         <div class="flex flex-1 justify-between items-center h-full">

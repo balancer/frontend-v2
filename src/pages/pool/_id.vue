@@ -4,16 +4,16 @@
       class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
     >
       <PoolPageHeader
-        :loading-pool="loadingPool"
-        :loading-apr="loadingApr"
+        :loadingPool="loadingPool"
+        :loadingApr="loadingApr"
         :pool="pool"
-        :pool-apr="poolApr"
-        :is-stable-like-pool="isStableLikePool"
-        :no-init-liquidity="noInitLiquidity"
-        :title-tokens="titleTokens"
-        :missing-prices="missingPrices"
-        :is-liquidity-bootstrapping-pool="isLiquidityBootstrappingPool"
-        :is-stable-phantom-pool="isLiquidityBootstrappingPool"
+        :poolApr="poolApr"
+        :isStableLikePool="isStableLikePool"
+        :noInitLiquidity="noInitLiquidity"
+        :titleTokens="titleTokens"
+        :missingPrices="missingPrices"
+        :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
+        :isStablePhantomPool="isLiquidityBootstrappingPool"
       />
       <div class="hidden lg:block" />
       <div class="order-2 lg:order-1 col-span-2">
@@ -21,25 +21,25 @@
           <div class="px-4 lg:px-0">
             <PoolChart
               :pool="pool"
-              :historical-prices="historicalPrices"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
-              :total-liquidity="pool?.totalLiquidity"
-              :tokens-list="pool?.tokensList"
-              :pool-type="pool?.poolType"
+              :totalLiquidity="pool?.totalLiquidity"
+              :tokensList="pool?.tokensList"
+              :poolType="pool?.poolType"
             />
           </div>
           <div class="px-4 lg:px-0 mb-4">
             <PoolStatCards
               :pool="pool"
-              :pool-apr="poolApr"
+              :poolApr="poolApr"
               :loading="loadingPool"
-              :loading-apr="loadingApr"
+              :loadingApr="loadingApr"
             />
             <ApyVisionPoolLink
               v-if="!loadingPool"
-              :pool-id="pool?.id"
-              :title-tokens="titleTokens"
+              :poolId="pool?.id"
+              :titleTokens="titleTokens"
             />
           </div>
           <div class="mb-4">
@@ -60,7 +60,7 @@
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
-        <StakingProvider :pool-address="getAddressFromPoolId(id)">
+        <StakingProvider :poolAddress="getAddressFromPoolId(id)">
           <BalStack vertical>
             <BalLoadingBlock
               v-if="loadingPool"
@@ -69,7 +69,7 @@
             <MyPoolBalancesCard
               v-else-if="!noInitLiquidity"
               :pool="pool"
-              :missing-prices="missingPrices"
+              :missingPrices="missingPrices"
               class="mb-4"
             />
 

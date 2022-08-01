@@ -221,7 +221,7 @@ async function claimAvailableRewards() {
       {{ $t('liquidityMiningPopover.airdropExplainer', ['Polygon']) }}
     </div>
     <div v-if="!isAirdrop" class="">
-      <BalCard no-pad class="mb-4">
+      <BalCard noPad class="mb-4">
         <template #header>
           <div
             class="px-3 w-full bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
@@ -230,7 +230,7 @@ async function claimAvailableRewards() {
               v-model="activeTab"
               :tabs="tabs"
               class="p-0 m-0 -mb-px whitespace-nowrap"
-              no-pad
+              noPad
             />
           </div>
         </template>
@@ -292,7 +292,7 @@ async function claimAvailableRewards() {
         block
         class="mb-6"
         :loading="isClaiming"
-        :loading-label="$t('claiming')"
+        :loadingLabel="$t('claiming')"
         :disabled="!hasClaimableTokens"
         @click="claimAvailableRewards"
       >
@@ -309,7 +309,7 @@ async function claimAvailableRewards() {
         :title="claimError.title"
         :description="claimError.description"
         block
-        action-label="Dismiss"
+        actionLabel="Dismiss"
         @action-click="claimError = null"
       />
     </div>

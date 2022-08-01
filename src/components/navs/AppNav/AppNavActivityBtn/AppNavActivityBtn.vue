@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad :align="isMobile ? 'left' : undefined">
+  <BalPopover noPad :align="isMobile ? 'left' : undefined">
     <template #activator>
       <BalBtn
         color="white"
@@ -11,7 +11,7 @@
         <ActivityCounter v-else :count="pendingTransactions.length" />
       </BalBtn>
     </template>
-    <BalCard class="w-72" no-pad no-border>
+    <BalCard class="w-72" noPad noBorder>
       <template #header>
         <div
           class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
@@ -23,10 +23,10 @@
         <template v-if="transactions.length > 0">
           <ActivityRows
             :transactions="pendingTransactions"
-            :get-explorer-link="getExplorerLink"
-            :is-successful-transaction="isSuccessfulTransaction"
-            :is-pending-transaction-status="isPendingTransactionStatus"
-            :cancel-order="cancelOrder"
+            :getExplorerLink="getExplorerLink"
+            :isSuccessfulTransaction="isSuccessfulTransaction"
+            :isPendingTransactionStatus="isPendingTransactionStatus"
+            :cancelOrder="cancelOrder"
           />
           <div
             v-if="
@@ -36,10 +36,10 @@
           />
           <ActivityRows
             :transactions="finalizedTransactions"
-            :get-explorer-link="getExplorerLink"
-            :is-successful-transaction="isSuccessfulTransaction"
-            :is-pending-transaction-status="isPendingTransactionStatus"
-            :cancel-order="cancelOrder"
+            :getExplorerLink="getExplorerLink"
+            :isSuccessfulTransaction="isSuccessfulTransaction"
+            :isPendingTransactionStatus="isPendingTransactionStatus"
+            :cancelOrder="cancelOrder"
           />
         </template>
         <template v-else>

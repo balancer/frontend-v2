@@ -112,8 +112,8 @@ function handleVoteSuccess() {
           <p class="inline mr-1 text-sm text-secondary">My unallocated votes</p>
           <BalTooltip
             :text="$t('veBAL.liquidityMining.myUnallocatedVotesTooltip')"
-            icon-class="text-gray-400 dark:text-gray-600"
-            icon-size="sm"
+            iconClass="text-gray-400 dark:text-gray-600"
+            iconSize="sm"
             width="72"
             class="mt-1"
           />
@@ -130,9 +130,9 @@ function handleVoteSuccess() {
         <BalTooltip
           v-if="hasExpiredLock"
           :text="$t('veBAL.liquidityMining.votingPowerExpiredTooltip')"
-          icon-size="sm"
-          :icon-name="'alert-triangle'"
-          :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
+          iconSize="sm"
+          :iconName="'alert-triangle'"
+          :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />
@@ -147,8 +147,8 @@ function handleVoteSuccess() {
           </p>
           <BalTooltip
             :text="$t('veBAL.liquidityMining.votingPeriodTooltip')"
-            icon-size="sm"
-            icon-class="text-gray-400 dark:text-gray-600"
+            iconSize="sm"
+            iconClass="text-gray-400 dark:text-gray-600"
             width="72"
             class="mt-1"
           />
@@ -168,11 +168,11 @@ function handleVoteSuccess() {
   </div>
   <GaugesTable
     :key="votingGauges && isLoading"
-    :expired-gauges="expiredGauges"
-    :is-loading="isLoading"
+    :expiredGauges="expiredGauges"
+    :isLoading="isLoading"
     :data="votingGauges"
-    :no-pools-label="$t('noInvestments')"
-    show-pool-shares
+    :noPoolsLabel="$t('noInvestments')"
+    showPoolShares
     class="mb-8"
     @clicked-vote="setActiveGaugeVote"
   />
@@ -180,12 +180,12 @@ function handleVoteSuccess() {
     <GaugeVoteModal
       v-if="!!activeVotingGauge"
       :gauge="activeVotingGauge"
-      :logo-u-r-is="orderedTokenURIs(activeVotingGauge)"
-      :pool-u-r-l="
+      :logoURIs="orderedTokenURIs(activeVotingGauge)"
+      :poolURL="
         poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
       "
-      :unallocated-vote-weight="unallocatedVoteWeight"
-      :ve-bal-lock-info="veBalLockInfoQuery.data"
+      :unallocatedVoteWeight="unallocatedVoteWeight"
+      :veBalLockInfo="veBalLockInfoQuery.data"
       @success="handleVoteSuccess"
       @close="handleModalClose"
     />

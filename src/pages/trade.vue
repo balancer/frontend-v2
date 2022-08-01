@@ -55,7 +55,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Col3Layout offset-gutters mobile-hide-gutters class="mt-8">
+  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
       <MyWallet />
       <TrendingPairs class="mt-4" />
@@ -88,13 +88,13 @@ onMounted(() => {
           <TrendingPairs />
         </template>
         <template #price-chart>
-          <PairPriceGraph :toggle-modal="togglePairPriceGraphModal" />
+          <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
         </template>
       </BalAccordion>
     </div>
 
     <template #gutterRight>
-      <PairPriceGraph :toggle-modal="togglePairPriceGraphModal" />
+      <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </template>
   </Col3Layout>
 
@@ -102,9 +102,9 @@ onMounted(() => {
     <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
       <div class="graph-modal">
         <PairPriceGraph
-          :toggle-modal="togglePairPriceGraphModal"
-          is-modal
-          :on-close-modal="onPriceGraphModalClose"
+          :toggleModal="togglePairPriceGraphModal"
+          isModal
+          :onCloseModal="onPriceGraphModalClose"
         />
       </div>
     </BalModal>

@@ -227,19 +227,19 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
   <BalCard
     class="overflow-x-auto"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <BalTable
       :columns="columns"
       :data="swapRows"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      :is-paginated="isPaginated"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      skeletonClass="h-64"
       sticky="both"
-      :no-results-label="noResultsLabel"
-      :initial-state="{
+      :noResultsLabel="noResultsLabel"
+      :initialState="{
         sortColumn: 'timeAgo',
         sortDirection: 'desc',
       }"

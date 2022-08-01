@@ -86,7 +86,7 @@ const stats = computed(() => {
           <APRTooltip
             v-if="stat.id === 'apr'"
             :pool="pool"
-            :pool-apr="poolApr"
+            :poolApr="poolApr"
           />
         </div>
         <div class="flex items-center text-xl font-medium truncate">

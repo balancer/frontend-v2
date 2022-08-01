@@ -132,9 +132,9 @@ function handleSuccess(details: any): void {
     <BalActionSteps
       :actions="requiredActions"
       :disabled="props.createDisabled"
-      :error-message="props.errorMessage"
-      :is-loading="createState.isLoadingRestoredTx"
-      :loading-label="$t('restoring')"
+      :errorMessage="props.errorMessage"
+      :isLoading="createState.isLoadingRestoredTx"
+      :loadingLabel="$t('restoring')"
       @success="handleSuccess"
     />
     <template v-if="createState.confirmed">
@@ -150,7 +150,7 @@ function handleSuccess(details: any): void {
         <BalLink
           :href="explorerLink"
           external
-          no-style
+          noStyle
           class="group flex items-center"
         >
           {{ networkConfig.explorerName }}

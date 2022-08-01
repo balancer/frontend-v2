@@ -66,11 +66,11 @@ const hiddenColumns = computed(() => {
       <PoolsTable
         :key="poolsWithBoost"
         :data="poolsWithBoost"
-        :no-pools-label="noPoolsLabel"
-        :hidden-columns="hiddenColumns"
-        :is-loading="isLoading"
-        show-pool-shares
-        show-boost
+        :noPoolsLabel="noPoolsLabel"
+        :hiddenColumns="hiddenColumns"
+        :isLoading="isLoading"
+        showPoolShares
+        showBoost
       />
     </BalStack>
   </div>

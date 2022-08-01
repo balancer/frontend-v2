@@ -167,19 +167,19 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
   <BalCard
     class="overflow-x-auto"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <BalTable
       :columns="columns"
       :data="activityRows"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      :is-paginated="isPaginated"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      skeletonClass="h-64"
       sticky="both"
-      :no-results-label="noResultsLabel"
-      :initial-state="{
+      :noResultsLabel="noResultsLabel"
+      :initialState="{
         sortColumn: 'timeAgo',
         sortDirection: 'desc',
       }"

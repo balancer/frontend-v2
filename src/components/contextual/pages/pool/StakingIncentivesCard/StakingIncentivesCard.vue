@@ -86,7 +86,7 @@ async function handleActionSuccess() {
 <template>
   <div>
     <AnimatePresence
-      :is-visible="
+      :isVisible="
         !isLoadingStakedShares &&
         !isStakedSharesIdle &&
         !isLoadingPoolEligibility &&
@@ -150,10 +150,10 @@ async function handleActionSuccess() {
                 <BalStack horizontal justify="between">
                   <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                   <BalStack horizontal spacing="sm" align="center">
-                    <AnimatePresence :is-visible="isRefetchingStakedShares">
+                    <AnimatePresence :isVisible="isRefetchingStakedShares">
                       <BalLoadingBlock class="h-5" />
                     </AnimatePresence>
-                    <AnimatePresence :is-visible="!isRefetchingStakedShares">
+                    <AnimatePresence :isVisible="!isRefetchingStakedShares">
                       <span>
                         {{ fNum2(fiatValueOfStakedShares, FNumFormats.fiat) }}
                       </span>
@@ -164,10 +164,10 @@ async function handleActionSuccess() {
                 <BalStack horizontal justify="between">
                   <span>{{ $t('unstaked') }} {{ $t('lpTokens') }}</span>
                   <BalStack horizontal spacing="sm" align="center">
-                    <AnimatePresence :is-visible="isRefetchingStakedShares">
+                    <AnimatePresence :isVisible="isRefetchingStakedShares">
                       <BalLoadingBlock class="h-5" />
                     </AnimatePresence>
-                    <AnimatePresence :is-visible="!isRefetchingStakedShares">
+                    <AnimatePresence :isVisible="!isRefetchingStakedShares">
                       <span>
                         {{ fNum2(fiatValueOfUnstakedShares, FNumFormats.fiat) }}
                       </span>
@@ -201,15 +201,15 @@ async function handleActionSuccess() {
       </div>
     </AnimatePresence>
     <AnimatePresence
-      :is-visible="
+      :isVisible="
         isLoadingStakedShares || isLoadingPoolEligibility || isLoadingBoosts
       "
-      unmount-instantly
+      unmountInstantly
     >
       <BalLoadingBlock class="h-12" />
     </AnimatePresence>
     <StakePreviewModal
-      :is-visible="isStakePreviewVisible"
+      :isVisible="isStakePreviewVisible"
       :pool="pool"
       :action="stakeAction"
       @close="handlePreviewClose"

@@ -24,10 +24,10 @@ export default defineComponent({
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
           title="Element Finance"
-          img-src="/images/banners/element.jpg"
+          imgSrc="/images/banners/element.jpg"
           class="hover:shadow-xl transition-shadow"
-          h-full
-          grow-content
+          hFull
+          growContent
         >
           <p>
             {{ $t('featuredProtocols.Element') }}
@@ -47,10 +47,10 @@ export default defineComponent({
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
           title="Copper Launch"
-          img-src="/images/banners/copper.png"
+          imgSrc="/images/banners/copper.png"
           class="hover:shadow-xl transition-shadow"
-          h-full
-          grow-content
+          hFull
+          growContent
         >
           <p>{{ $t('featuredProtocols.Copper') }}</p>
           <template #footer>
@@ -68,10 +68,10 @@ export default defineComponent({
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
           title="Tracer DAO"
-          img-src="/images/banners/tracer.jpg"
+          imgSrc="/images/banners/tracer.jpg"
           class="hover:shadow-xl transition-shadow"
-          h-full
-          grow-content
+          hFull
+          growContent
         >
           <div>
             <p>{{ $t('featuredProtocols.Tracer') }}</p>
@@ -91,10 +91,10 @@ export default defineComponent({
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
           title="Sense Finance"
-          img-src="/images/banners/sense.png"
+          imgSrc="/images/banners/sense.png"
           class="hover:shadow-xl transition-shadow"
-          h-full
-          grow-content
+          hFull
+          growContent
         >
           <div>
             <p>{{ $t('featuredProtocols.Sense') }}</p>

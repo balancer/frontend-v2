@@ -1,11 +1,11 @@
 <template>
-  <BalCard class="relative card-container" :shadow="tradeCardShadow" no-border>
+  <BalCard class="relative card-container" :shadow="tradeCardShadow" noBorder>
     <template #header>
       <div class="flex justify-between items-center w-full">
         <h4>{{ title }}</h4>
         <TradeSettingsPopover
           :context="TradeSettingsContext.trade"
-          :is-gasless="trading.tradeGasless.value"
+          :isGasless="trading.tradeGasless.value"
         />
       </div>
     </template>
@@ -16,10 +16,10 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
-        :trade-loading="
+        :tradeLoading="
           trading.isBalancerTrade.value ? trading.isLoading.value : false
         "
-        :effective-price-message="trading.effectivePriceMessage"
+        :effectivePriceMessage="trading.effectivePriceMessage"
         class="mb-4"
         @amount-change="trading.handleAmountChange"
       />
@@ -30,7 +30,7 @@
         size="sm"
         :title="error.header"
         :description="error.body"
-        :action-label="error.label"
+        :actionLabel="error.label"
         block
         @action-click="handleErrorButtonClick"
       />
@@ -47,7 +47,7 @@
         v-if="trading.isLoading.value"
         loading
         disabled
-        :loading-label="
+        :loadingLabel="
           trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
         "
         block
@@ -138,12 +138,12 @@
       </div>
       <TradeRoute
         v-if="alwaysShowRoutes"
-        :address-in="trading.tokenIn.value.address"
-        :amount-in="trading.tokenInAmountInput.value"
-        :address-out="trading.tokenOut.value.address"
-        :amount-out="trading.tokenOutAmountInput.value"
+        :addressIn="trading.tokenIn.value.address"
+        :amountIn="trading.tokenInAmountInput.value"
+        :addressOut="trading.tokenOut.value.address"
+        :amountOut="trading.tokenOutAmountInput.value"
         :pools="trading.sor.pools.value"
-        :sor-return="trading.sor.sorReturn.value"
+        :sorReturn="trading.sor.sorReturn.value"
         class="mt-4"
       />
     </div>

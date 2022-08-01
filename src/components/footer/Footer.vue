@@ -58,7 +58,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Home"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('about') }}
@@ -68,7 +68,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Docs"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('docs') }}
@@ -78,7 +78,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Forum"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('forum') }}
@@ -88,7 +88,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Vote"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('vote') }}
@@ -98,7 +98,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Grants"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('grants') }}
@@ -108,7 +108,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.BugBounty"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('bugBounty') }}
@@ -118,7 +118,7 @@
             <BalLink
               :href="EXTERNAL_LINKS.Balancer.Analytics"
               external
-              no-style
+              noStyle
               class="group link link--external"
             >
               {{ $t('analytics') }}
@@ -133,49 +133,49 @@
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Twitter"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconTwitter />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Discord"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconDiscord />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Medium"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconMedium />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Youtube"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconYoutube />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Github"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconGithub />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Linkedin"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconLinkedin />
                 </BalLink>
                 <BalLink
                   :href="EXTERNAL_LINKS.Balancer.Social.Mail"
                   external
-                  no-style
+                  noStyle
                 >
                   <IconMail />
                 </BalLink>

@@ -41,7 +41,7 @@ const migratableUserPools = computed(() => {
           <VeBalPoolTable
             v-if="lockPool && Number(lock?.lockedAmount) > 0"
             :lock="lock"
-            :lock-pool="lockPool"
+            :lockPool="lockPool"
           />
 
           <div>
@@ -55,12 +55,12 @@ const migratableUserPools = computed(() => {
               </h5>
               <PoolsTable
                 :key="migratableUserPools"
-                :is-loading="isLoadingUserPools"
+                :isLoading="isLoadingUserPools"
                 :data="migratableUserPools"
-                :no-pools-label="$t('noInvestments')"
-                show-pool-shares
-                :selected-tokens="selectedTokens"
-                :hidden-columns="[
+                :noPoolsLabel="$t('noInvestments')"
+                showPoolShares
+                :selectedTokens="selectedTokens"
+                :hiddenColumns="[
                   'poolVolume',
                   'poolValue',
                   'actions',

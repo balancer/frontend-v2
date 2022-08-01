@@ -223,15 +223,15 @@ watchEffect(() => {
     :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"
-    :decimal-limit="token?.decimals || 18"
+    :decimalLimit="token?.decimals || 18"
     :rules="inputRules"
-    validate-on="input"
+    validateOn="input"
     autocomplete="off"
     autocorrect="off"
     step="any"
     spellcheck="false"
     v-bind="$attrs"
-    input-align-right
+    inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
     @update:model-value="emit('update:amount', $event)"
@@ -246,7 +246,7 @@ watchEffect(() => {
           :fixed="fixedToken"
           :options="options"
           class="mr-2"
-          :excluded-tokens="excludedTokens"
+          :excludedTokens="excludedTokens"
           @update:model-value="emit('update:address', $event)"
         />
       </slot>
@@ -305,7 +305,7 @@ watchEffect(() => {
         <BalProgressBar
           v-if="hasBalance && !noMax"
           :width="maxPercentage"
-          :buffer-width="bufferPercentage"
+          :bufferWidth="bufferPercentage"
           :color="barColor"
           class="mt-2"
         />

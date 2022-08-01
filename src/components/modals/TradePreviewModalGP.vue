@@ -1,7 +1,7 @@
 <template>
   <BalModal show :title="labels.modalTitle" @close="onClose">
     <div>
-      <BalCard no-pad class="overflow-auto relative mb-6">
+      <BalCard noPad class="overflow-auto relative mb-6">
         <template #header>
           <div
             class="p-3 w-full text-sm bg-gray-50 dark:bg-gray-800 rounded-t-lg border-b dark:border-gray-800"
@@ -74,7 +74,7 @@
           </div>
         </div>
       </BalCard>
-      <BalCard no-pad shadow="none" class="mb-3">
+      <BalCard noPad shadow="none" class="mb-3">
         <template #header>
           <div
             class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
@@ -166,7 +166,7 @@
             fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent),
           ])
         "
-        :action-label="$t('priceUpdatedAlert.actionLabel')"
+        :actionLabel="$t('priceUpdatedAlert.actionLabel')"
         block
         @action-click="cofirmPriceUpdate"
       />
@@ -347,7 +347,7 @@
           gnosisRelayerApproval.init.value ||
           gnosisRelayerApproval.approving.value
         "
-        :loading-label="`${$t('approvingGnosisRelayer')}...`"
+        :loadingLabel="`${$t('approvingGnosisRelayer')}...`"
         @click.prevent="gnosisRelayerApproval.approve"
       >
         {{ $t('approveGnosisRelayer') }}
@@ -359,7 +359,7 @@
         :loading="
           lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
         "
-        :loading-label="`${$t('approvingLidoRelayer')}...`"
+        :loadingLabel="`${$t('approvingLidoRelayer')}...`"
         @click.prevent="lidoRelayerApproval.approve"
       >
         {{ $t('approveLidoRelayer') }}
@@ -367,7 +367,7 @@
       <BalBtn
         v-else-if="requiresTokenApproval"
         :loading="tokenApproval.approving.value"
-        :loading-label="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
+        :loadingLabel="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
         color="gradient"
         block
         @click.prevent="approveToken"
@@ -379,7 +379,7 @@
         color="gradient"
         block
         :loading="trading.isConfirming.value"
-        :loading-label="$t('confirming')"
+        :loadingLabel="$t('confirming')"
         :disabled="tradeDisabled"
         class="relative"
         @click.prevent="trade"
@@ -394,18 +394,18 @@
         :title="$t('tradeSubmissionError.title')"
         :description="trading.submissionError.value"
         block
-        :action-label="$t('tradeSubmissionError.actionLabel')"
+        :actionLabel="$t('tradeSubmissionError.actionLabel')"
         @action-click="trading.resetSubmissionError"
       />
     </div>
     <TradeRoute
       v-if="showTradeRoute"
-      :address-in="trading.tokenIn.value.address"
-      :amount-in="trading.tokenInAmountInput.value"
-      :address-out="trading.tokenOut.value.address"
-      :amount-out="trading.tokenOutAmountInput.value"
+      :addressIn="trading.tokenIn.value.address"
+      :amountIn="trading.tokenInAmountInput.value"
+      :addressOut="trading.tokenOut.value.address"
+      :amountOut="trading.tokenOutAmountInput.value"
       :pools="trading.sor.pools.value"
-      :sor-return="trading.sor.sorReturn.value"
+      :sorReturn="trading.sor.sorReturn.value"
       class="mt-3"
     />
   </BalModal>

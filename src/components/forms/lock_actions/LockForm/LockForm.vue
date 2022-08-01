@@ -58,20 +58,20 @@ const isLoading = computed(() =>
 </script>
 
 <template>
-  <Col3Layout offset-gutters>
+  <Col3Layout offsetGutters>
     <template #gutterLeft>
       <BalLoadingBlock v-if="isLoading" class="h-36" />
       <LockableTokens
         v-else
-        :lockable-pool="lockablePool"
-        :lockable-pool-token-info="lockablePoolTokenInfo"
+        :lockablePool="lockablePool"
+        :lockablePoolTokenInfo="lockablePoolTokenInfo"
       />
       <template v-if="isDesktop">
         <BalLoadingBlock v-if="isLoading" class="mt-4 h-12" />
         <HowToLock
           v-else
-          :lockable-pool="lockablePool"
-          :lockable-pool-token-info="lockablePoolTokenInfo"
+          :lockablePool="lockablePool"
+          :lockablePoolTokenInfo="lockablePoolTokenInfo"
         />
       </template>
     </template>
@@ -79,20 +79,20 @@ const isLoading = computed(() =>
     <BalLoadingBlock v-if="isLoading" class="h-96" />
     <VeBalForm
       v-else
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :ve-bal-lock-info="veBalLockInfo"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
     />
 
     <template #gutterRight>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
-      <MyVeBAL v-else :ve-bal-lock-info="veBalLockInfo" />
+      <MyVeBAL v-else :veBalLockInfo="veBalLockInfo" />
       <template v-if="isMobile">
         <BalLoadingBlock v-if="isLoading" class="mt-4 h-12" />
         <HowToLock
           v-else
-          :lockable-pool="lockablePool"
-          :lockable-pool-token-info="lockablePoolTokenInfo"
+          :lockablePool="lockablePool"
+          :lockablePoolTokenInfo="lockablePoolTokenInfo"
         />
       </template>
     </template>

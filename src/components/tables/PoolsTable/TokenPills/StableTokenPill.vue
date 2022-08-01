@@ -20,8 +20,8 @@ withDefaults(defineProps<Props>(), {
   <BalTooltip
     :disabled="!hasBalance"
     class="mr-1 last:mr-0 leading-normal cursor-pointer"
-    text-align="left"
-    :delay-ms="50"
+    textAlign="left"
+    :delayMs="50"
   >
     <template #activator>
       <div

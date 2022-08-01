@@ -130,17 +130,17 @@ watchEffect(() => {
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
-    :decimal-limit="token?.decimals || 18"
-    validate-on="input"
+    :decimalLimit="token?.decimals || 18"
+    validateOn="input"
     autocomplete="off"
     autocorrect="off"
-    no-shadow
-    no-border
-    no-radius
+    noShadow
+    noBorder
+    noRadius
     step="any"
     spellcheck="false"
     v-bind="$attrs"
-    input-align-right
+    inputAlignRight
     @blur="emit('blur', $event)"
     @input="onInput"
     @update:model-value="emit('update:weight', $event)"
@@ -152,7 +152,7 @@ watchEffect(() => {
         v-model="_address"
         :fixed="fixedToken"
         class="mr-2"
-        :excluded-tokens="excludedTokens"
+        :excludedTokens="excludedTokens"
         @update:model-value="emit('update:address', $event)"
       />
     </template>

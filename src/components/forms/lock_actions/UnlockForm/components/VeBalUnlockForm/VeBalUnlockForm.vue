@@ -59,7 +59,7 @@ const submissionDisabled = computed(() => {
 </script>
 
 <template>
-  <BalCard shadow="xl" expose-overflow no-border>
+  <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
         <div class="text-xs leading-none text-secondary">
@@ -74,10 +74,10 @@ const submissionDisabled = computed(() => {
     </template>
 
     <LockedAmount
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :total-lp-tokens="totalLpTokens"
-      :fiat-total-lp-tokens="fiatTotalLpTokens"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :totalLpTokens="totalLpTokens"
+      :fiatTotalLpTokens="fiatTotalLpTokens"
     />
 
     <div class="mt-6">
@@ -102,11 +102,11 @@ const submissionDisabled = computed(() => {
   <teleport to="#modal">
     <UnlockPreviewModal
       v-if="showPreviewModal"
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :ve-bal-lock-info="veBalLockInfo"
-      :total-lp-tokens="totalLpTokens"
-      :fiat-total-lp-tokens="fiatTotalLpTokens"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
+      :totalLpTokens="totalLpTokens"
+      :fiatTotalLpTokens="fiatTotalLpTokens"
       @close="showPreviewModal = false"
     />
   </teleport>

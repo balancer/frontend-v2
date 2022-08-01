@@ -176,7 +176,7 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard h-full no-pad shadow="none" class="rounded-xl">
+    <BalCard hFull noPad shadow="none" class="rounded-xl">
       <div
         v-for="(section, i) in sections"
         :key="section.id"

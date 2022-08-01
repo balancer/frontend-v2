@@ -69,8 +69,8 @@ function getTokenShare(address: string) {
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <template #header>
       <div
@@ -91,14 +91,14 @@ function getTokenShare(address: string) {
         <BalBreakdown
           :items="getUnderlyingTokens(address)"
           class="w-full"
-          offset-class-overrides="mt-4 ml-3"
-          init-vert-bar-class-overrides="h-6 -mt-6"
+          offsetClassOverrides="mt-4 ml-3"
+          initVertBarClassOverrides="h-6 -mt-6"
           size="lg"
         >
           <BalLink
             :href="explorerLinks.addressLink(address)"
             external
-            no-style
+            noStyle
             class="flex items-center"
           >
             <BalAsset :address="address" class="mr-2" />
@@ -112,9 +112,9 @@ function getTokenShare(address: string) {
           <template #item="{ item: asset }">
             <AssetRow
               :address="asset.address"
-              :main-token-address="asset.mainTokenAddress"
+              :mainTokenAddress="asset.mainTokenAddress"
               :balance="asset.balance"
-              :price-rate="asset.priceRate"
+              :priceRate="asset.priceRate"
               :share="getTokenShare(address)"
             />
           </template>

@@ -36,7 +36,7 @@ const steps = computed(() => [
 <template>
   <BalAccordion
     class="mt-4"
-    :show-section-border="false"
+    :showSectionBorder="false"
     :sections="[
       {
         title: $t('getVeBAL.howToLock.title'),

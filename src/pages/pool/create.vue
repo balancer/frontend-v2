@@ -290,7 +290,7 @@ watch(
 </script>
 
 <template>
-  <Col3Layout offset-gutters mobile-hide-gutters class="mt-8">
+  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
       <div v-if="!upToLargeBreakpoint" class="col-span-3">
         <BalStack v-if="!appLoading" vertical>
@@ -300,7 +300,7 @@ watch(
             @navigate="handleNavigate"
           />
           <AnimatePresence
-            :is-visible="
+            :isVisible="
               doSimilarPoolsExist && activeStep === 0 && validTokens.length
             "
           >
@@ -311,8 +311,8 @@ watch(
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :is-visible="hasRestoredFromSavedState && !appLoading"
-        unmount-instantly
+        :isVisible="hasRestoredFromSavedState && !appLoading"
+        unmountInstantly
       >
         <BalAlert
           type="warning"
@@ -325,11 +325,11 @@ watch(
           </button>
         </BalAlert>
       </AnimatePresence>
-      <AnimatePresence :is-visible="isLoading" unmount-instantly>
+      <AnimatePresence :isVisible="isLoading" unmountInstantly>
         <BalLoadingBlock class="h-64" />
       </AnimatePresence>
       <AnimatePresence
-        :is-visible="
+        :isVisible="
           !appLoading && activeStep === 0 && !hasRestoredFromSavedState
         "
         :initial="initialAnimateProps"
@@ -339,7 +339,7 @@ watch(
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :is-visible="!appLoading && activeStep === 1"
+        :isVisible="!appLoading && activeStep === 1"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -348,7 +348,7 @@ watch(
         <PoolFees @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :is-visible="!appLoading && activeStep === 2 && similarPools.length > 0"
+        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -357,7 +357,7 @@ watch(
         <SimilarPools />
       </AnimatePresence>
       <AnimatePresence
-        :is-visible="!isLoading && activeStep === 3"
+        :isVisible="!isLoading && activeStep === 3"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -366,7 +366,7 @@ watch(
         <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :is-visible="!appLoading && activeStep === 4 && !dynamicDataLoading"
+        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -395,14 +395,14 @@ watch(
       <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
         <BalStack v-if="!appLoading" vertical spacing="base">
           <PoolSummary />
-          <TokenPrices :toggle-unknown-price-modal="showUnknownTokenModal" />
+          <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>
       </div>
     </template>
   </Col3Layout>
   <UnknownTokenPriceModal
-    :is-visible="isUnknownTokenModalVisible"
-    :unknown-tokens="unknownTokens"
+    :isVisible="isUnknownTokenModalVisible"
+    :unknownTokens="unknownTokens"
     @close="handleUnknownModalClose"
   />
 </template>

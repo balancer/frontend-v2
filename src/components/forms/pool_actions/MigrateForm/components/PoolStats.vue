@@ -34,7 +34,7 @@ const aprLabel = computed((): string => {
 </script>
 
 <template>
-  <BalCard no-pad shadow="none">
+  <BalCard noPad shadow="none">
     <div class="p-4 w-full border-b dark:border-gray-900">
       <h6>
         {{ $t(`migratePool.${poolMigrationInfo.type}.poolStats.title`) }}

@@ -142,7 +142,7 @@ function navigateToPoolMigration(pool: Pool) {
 </script>
 
 <template>
-  <BalCard shadow="2xl" no-pad class="rounded-xl">
+  <BalCard shadow="2xl" noPad class="rounded-xl">
     <template #header>
       <div class="card-header">
         <h5>
@@ -200,7 +200,7 @@ function navigateToPoolMigration(pool: Pool) {
       </BalBtn>
     </div>
     <template #footer>
-      <PoolActionsCard :pool="pool" :missing-prices="missingPrices" />
+      <PoolActionsCard :pool="pool" :missingPrices="missingPrices" />
     </template>
   </BalCard>
 </template>

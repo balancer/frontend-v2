@@ -50,10 +50,10 @@ function claimTx() {
     :label="$t('claimAll')"
     color="gradient"
     size="sm"
-    :action-fn="claimTx"
-    :on-confirm-fn="gaugesQuery.refetch.value"
+    :actionFn="claimTx"
+    :onConfirmFn="gaugesQuery.refetch.value"
     action="claim"
     :summary="`${t('claim')} ${fNum2(props.fiatValue, FNumFormats.fiat)}`"
-    :confirming-label="$t('claiming')"
+    :confirmingLabel="$t('claiming')"
   />
 </template>

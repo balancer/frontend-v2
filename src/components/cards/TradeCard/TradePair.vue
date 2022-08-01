@@ -150,7 +150,7 @@ watchEffect(() => {
       :address="_tokenInAddress"
       name="tokenIn"
       :disabled="tradeLoading"
-      :excluded-tokens="[veBalTokenInfo?.address]"
+      :excludedTokens="[veBalTokenInfo?.address]"
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
     />
@@ -170,12 +170,12 @@ watchEffect(() => {
       :amount="_tokenOutAmount"
       :address="_tokenOutAddress"
       name="tokenOut"
-      :price-impact="priceImpact"
-      no-rules
-      no-max
+      :priceImpact="priceImpact"
+      noRules
+      noMax
       :disabled="tradeLoading"
-      disable-native-asset-buffer
-      :excluded-tokens="[veBalTokenInfo?.address]"
+      disableNativeAssetBuffer
+      :excludedTokens="[veBalTokenInfo?.address]"
       @update:amount="handleOutAmountChange"
       @update:address="handleOutputTokenChange"
     />

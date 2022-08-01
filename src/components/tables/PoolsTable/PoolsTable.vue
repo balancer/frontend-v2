@@ -235,25 +235,25 @@ function lockedUntil(lockEndDate?: number) {
   <BalCard
     shadow="lg"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <BalTable
       :columns="visibleColumns"
       :data="data"
-      :no-results-label="noPoolsLabel"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      skeleton-class="h-64"
+      :noResultsLabel="noPoolsLabel"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      skeletonClass="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
         getParams: pool => ({ id: pool.id || '' }),
       }"
-      :on-row-click="handleRowClick"
-      :is-paginated="isPaginated"
-      :initial-state="{
+      :onRowClick="handleRowClick"
+      :isPaginated="isPaginated"
+      :initialState="{
         sortColumn: 'poolValue',
         sortDirection: 'desc',
       }"
@@ -282,8 +282,8 @@ function lockedUntil(lockEndDate?: number) {
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
             "
-            :is-stable-pool="isStableLike(pool.poolType)"
-            :selected-tokens="selectedTokens"
+            :isStablePool="isStableLike(pool.poolType)"
+            :selectedTokens="selectedTokens"
           />
           <BalChipNew v-if="pool?.isNew" class="ml-2" />
         </div>

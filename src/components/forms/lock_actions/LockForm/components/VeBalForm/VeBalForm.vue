@@ -117,7 +117,7 @@ function handleShowPreviewModal() {
 </script>
 
 <template>
-  <BalCard shadow="xl" expose-overflow no-border>
+  <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
         <div class="pb-1.5 text-xs leading-none text-secondary">
@@ -132,17 +132,17 @@ function handleShowPreviewModal() {
     </template>
 
     <LockAmount
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
     />
 
     <LockEndDate
-      :min-lock-end-date-timestamp="minLockEndDateTimestamp"
-      :max-lock-end-date-timestamp="maxLockEndDateTimestamp"
-      :ve-bal-lock-info="veBalLockInfo"
+      :minLockEndDateTimestamp="minLockEndDateTimestamp"
+      :maxLockEndDateTimestamp="maxLockEndDateTimestamp"
+      :veBalLockInfo="veBalLockInfo"
     />
 
-    <Summary :expected-ve-bal-amount="expectedVeBalAmount" />
+    <Summary :expectedVeBalAmount="expectedVeBalAmount" />
 
     <div class="mt-6">
       <BalBtn
@@ -166,13 +166,13 @@ function handleShowPreviewModal() {
   <teleport to="#modal">
     <LockPreviewModal
       v-if="showPreviewModal"
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :lock-amount="lockAmount"
-      :lock-end-date="lockEndDate"
-      :lock-type="lockType"
-      :ve-bal-lock-info="veBalLockInfo"
-      :total-lp-tokens="totalLpTokens"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :lockAmount="lockAmount"
+      :lockEndDate="lockEndDate"
+      :lockType="lockType"
+      :veBalLockInfo="veBalLockInfo"
+      :totalLpTokens="totalLpTokens"
       @close="handleClosePreviewModal"
     />
   </teleport>

@@ -172,21 +172,21 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
     shadow="lg"
     class="mt-4"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <BalTable
       :key="data"
       :columns="columns"
       :data="data"
-      :is-loading="isLoading"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      skeletonClass="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :is-paginated="isPaginated"
-      :on-row-click="redirectToPool"
-      :get-table-row-class="getTableRowClass"
-      :initial-state="{
+      :isPaginated="isPaginated"
+      :onRowClick="redirectToPool"
+      :getTableRowClass="getTableRowClass"
+      :initialState="{
         sortColumn: 'nextPeriodVotes',
         sortDirection: 'desc',
       }"
@@ -216,7 +216,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       </template>
       <template #iconColumnCell="gauge">
         <div v-if="!isLoading" class="py-4 px-6">
-          <BalAssetSet :logo-u-r-is="orderedTokenURIs(gauge)" :width="100" />
+          <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
       <template #poolCompositionCell="{ pool, address }">
@@ -225,7 +225,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
             "
-            :is-stable-pool="
+            :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
@@ -240,8 +240,8 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       <template #voteColumnCell="gauge">
         <div v-if="isWalletReady" class="px-4">
           <GaugesTableVoteBtn
-            :has-user-votes="getHasUserVotes(gauge.userVotes)"
-            :is-gauge-expired="getIsGaugeExpired(gauge.address)"
+            :hasUserVotes="getHasUserVotes(gauge.userVotes)"
+            :isGaugeExpired="getIsGaugeExpired(gauge.address)"
             @click.stop="emit('clickedVote', gauge)"
           />
         </div>

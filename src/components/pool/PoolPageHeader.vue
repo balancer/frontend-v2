@@ -153,13 +153,13 @@ const poolTypeLabel = computed(() => {
         <APRTooltip
           v-if="!loadingApr"
           :pool="pool"
-          :pool-apr="poolApr"
+          :poolApr="poolApr"
           class="mt-1 -ml-1"
         />
         <BalLink
           :href="explorer.addressLink(pool?.address || '')"
           external
-          no-style
+          noStyle
           class="flex items-center"
         >
           <BalIcon

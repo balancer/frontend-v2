@@ -95,20 +95,20 @@ function handleClose() {
 
     <MigratePoolRisks
       v-if="poolMigrationInfo.riskI18nLabels != null"
-      :pool-migration-info="poolMigrationInfo"
+      :poolMigrationInfo="poolMigrationInfo"
     />
 
     <MigratePoolsInfo
-      :from-pool-token-info="fromPoolTokenInfo"
-      :to-pool-token-info="toPoolTokenInfo"
+      :fromPoolTokenInfo="fromPoolTokenInfo"
+      :toPoolTokenInfo="toPoolTokenInfo"
     />
 
     <InvestSummary
       :pool="toPool"
-      :fiat-total="fiatTotal"
-      :price-impact="priceImpact"
-      :is-loading-price-impact="isLoadingPriceImpact"
-      :high-price-impact="highPriceImpact"
+      :fiatTotal="fiatTotal"
+      :priceImpact="priceImpact"
+      :isLoadingPriceImpact="isLoadingPriceImpact"
+      :highPriceImpact="highPriceImpact"
     />
 
     <div
@@ -120,16 +120,16 @@ function handleClose() {
         name="highPriceImpactAccepted"
         size="sm"
         :label="$t('migratePool.previewModal.priceImpactAccept')"
-        no-margin
+        noMargin
       />
     </div>
 
     <MigrateActions
-      :from-pool="fromPool"
-      :to-pool="toPool"
-      :from-pool-token-info="fromPoolTokenInfo"
-      :to-pool-token-info="toPoolTokenInfo"
-      :fiat-total-label="fiatTotalLabel"
+      :fromPool="fromPool"
+      :toPool="toPool"
+      :fromPoolTokenInfo="fromPoolTokenInfo"
+      :toPoolTokenInfo="toPoolTokenInfo"
+      :fiatTotalLabel="fiatTotalLabel"
       :math="math"
       :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
       class="mt-4"

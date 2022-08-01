@@ -48,12 +48,12 @@ const totalLabel = computed((): string =>
 </script>
 
 <template v-slot:aprCell="pool">
-  <BalTooltip v-if="validAPR" width="auto" no-pad>
+  <BalTooltip v-if="validAPR" width="auto" noPad>
     <template #activator>
       <div class="ml-1">
         <StarsIcon
           v-if="hasYieldAPR || hasStakingRewards(apr) || hasVebalAPR"
-          :grad-from="hasVebalAPR ? 'purple' : 'yellow'"
+          :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
           class="-mr-1 h-4"
           v-bind="$attrs"
         />
@@ -88,13 +88,13 @@ const totalLabel = computed((): string =>
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
           v-if="hasYieldAPR"
-          :yield-a-p-r="apr?.yield"
-          :pool-tokens="pool.tokensList"
-          :pool-type="pool.poolType"
+          :yieldAPR="apr?.yield"
+          :poolTokens="pool.tokensList"
+          :poolType="pool.poolType"
         />
 
         <!-- STAKING APR BREAKDOWN -->
-        <StakingBreakdown :pool="pool" :pool-apr="apr" />
+        <StakingBreakdown :pool="pool" :poolApr="apr" />
       </div>
     </div>
   </BalTooltip>

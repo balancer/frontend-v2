@@ -1,6 +1,6 @@
 <template>
   <BalPopover
-    no-pad
+    noPad
     :align="isMobile ? 'center' : undefined"
     :detached="isMobile ? true : undefined"
   >
@@ -9,13 +9,13 @@
         class="text-base"
         :class="{ btn: upToLargeBreakpoint }"
         :loading="isLoadingProfile"
-        :loading-label="upToLargeBreakpoint ? '' : $t('connecting')"
+        :loadingLabel="upToLargeBreakpoint ? '' : $t('connecting')"
         color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
         <Avatar
-          :icon-u-r-i="profile?.avatar"
+          :iconURI="profile?.avatar"
           :address="account"
           :size="avatarSize"
         />

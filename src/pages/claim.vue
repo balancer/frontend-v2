@@ -244,23 +244,20 @@ onBeforeMount(async () => {
               </h3>
             </div>
           </div>
-          <BalClaimsTable
-            :rewards-data="balRewardsData"
-            :is-loading="loading"
-          />
+          <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
         </div>
         <div class="mb-16">
           <h3 class="px-4 xl:px-0 mt-8 mb-3 text-xl">
             {{ $t('protocolEarnings') }}
           </h3>
           <ProtocolRewardsTable
-            :rewards-data="protocolRewardsData"
-            :is-loading="loading"
+            :rewardsData="protocolRewardsData"
+            :isLoading="loading"
           />
           <ProtocolRewardsTable
             v-if="!loading"
-            :rewards-data="protocolRewardsDataDeprecated"
-            :is-loading="loading"
+            :rewardsData="protocolRewardsDataDeprecated"
+            :isLoading="loading"
             deprecated
           />
         </div>
@@ -282,7 +279,7 @@ onBeforeMount(async () => {
             </div>
             <GaugeRewardsTable
               :gauge="gauge"
-              :is-loading="isClaimsLoading || appLoading"
+              :isLoading="isClaimsLoading || appLoading"
             />
           </div>
         </div>
@@ -301,7 +298,7 @@ onBeforeMount(async () => {
         <h2 class="mt-8 font-body text-2xl font-semibold">
           {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
         </h2>
-        <BalFlexGrid class="mt-4" flex-wrap>
+        <BalFlexGrid class="mt-4" flexWrap>
           <BalBtn
             v-for="network in networkBtns"
             :key="network.id"

@@ -113,15 +113,15 @@ const hasClaimableBalance = computed((): boolean => {
       v-if="hasClaimableBalance || !deprecated"
       shadow="lg"
       :square="upToLargeBreakpoint"
-      :no-border="upToLargeBreakpoint"
-      no-pad
+      :noBorder="upToLargeBreakpoint"
+      noPad
       class="mb-8"
     >
       <BalTable
         :columns="columns"
         :data="rewardsData"
-        :is-loading="isLoading"
-        skeleton-class="h-64"
+        :isLoading="isLoading"
+        skeletonClass="h-64"
         :square="upToLargeBreakpoint"
       >
         <template #tokenColumnCell="{ token }">
@@ -143,8 +143,8 @@ const hasClaimableBalance = computed((): boolean => {
         <template #claimColumnCell="{ token, amount, value }">
           <div class="py-4 px-6">
             <ClaimProtocolRewardsBtn
-              :token-address="token.address"
-              :fiat-value="value"
+              :tokenAddress="token.address"
+              :fiatValue="value"
               :disabled="bnum(amount).eq(0)"
               :deprecated="deprecated"
             />
@@ -152,7 +152,7 @@ const hasClaimableBalance = computed((): boolean => {
         </template>
         <template #claimTotalCell>
           <ClaimProtocolRewardsBtn
-            :fiat-value="totalClaimValue"
+            :fiatValue="totalClaimValue"
             :disabled="!hasClaimableBalance"
             :deprecated="deprecated"
           />

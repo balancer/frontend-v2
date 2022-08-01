@@ -2,16 +2,16 @@
   <BalCard
     class="overflow-x-auto whitespace-nowrap"
     :square="upToLargeBreakpoint"
-    :no-border="upToLargeBreakpoint"
-    no-pad
+    :noBorder="upToLargeBreakpoint"
+    noPad
   >
     <BalTable
       :columns="columns"
       :data="tableData"
-      :is-loading="loading"
-      skeleton-class="h-64"
+      :isLoading="loading"
+      skeletonClass="h-64"
       sticky="both"
-      :initial-state="{
+      :initialState="{
         sortColumn: 'weight',
         sortDirection: 'desc',
       }"
@@ -21,7 +21,7 @@
           <BalLink
             :href="explorer.addressLink(token.address)"
             external
-            no-style
+            noStyle
             class="flex items-center w-full"
           >
             <div>

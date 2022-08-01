@@ -38,7 +38,7 @@ usePoolTransfersGuard();
       </router-link>
     </div>
 
-    <Col3Layout offset-gutters mobile-hide-gutters>
+    <Col3Layout offsetGutters mobileHideGutters>
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
         <MyWalletTokensCard
@@ -73,8 +73,8 @@ usePoolTransfersGuard();
             v-else
             v-model:useNativeAsset="useNativeAsset"
             :pool="pool"
-            hide-header
-            no-border
+            hideHeader
+            noBorder
             square
           />
         </template>
@@ -83,13 +83,7 @@ usePoolTransfersGuard();
             v-if="loadingPool || !transfersAllowed"
             class="h-64"
           />
-          <MyPoolBalancesCard
-            v-else
-            :pool="pool"
-            hide-header
-            no-border
-            square
-          />
+          <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
         </template>
       </BalAccordion>
 

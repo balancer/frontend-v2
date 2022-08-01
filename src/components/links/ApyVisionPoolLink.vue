@@ -36,7 +36,7 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
         getAddressFromPoolId(poolId)
       "
       external
-      no-style
+      noStyle
       class="flex items-center font-medium link link-black"
     >
       <img

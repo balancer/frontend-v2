@@ -73,11 +73,11 @@ defineExpose({ hide });
           <BalCard
             :title="title"
             shadow="lg"
-            :no-pad="noPad"
-            :no-content-pad="noContentPad"
+            :noPad="noPad"
+            :noContentPad="noContentPad"
             class="modal-card"
-            no-border
-            overflow-y-scroll
+            noBorder
+            overflowYScroll
           >
             <template v-if="$slots.header" #header>
               <slot name="header" />

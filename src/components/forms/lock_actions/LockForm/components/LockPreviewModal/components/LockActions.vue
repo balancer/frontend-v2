@@ -219,7 +219,7 @@ onBeforeMount(async () => {
           v-if="lockActionState.receipt"
           :href="explorerLinks.txLink(lockActionState.receipt.transactionHash)"
           external
-          no-style
+          noStyle
           class="group flex items-center"
         >
           {{ networkConfig.explorerName }}

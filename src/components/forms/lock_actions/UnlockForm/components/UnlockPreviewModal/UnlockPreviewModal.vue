@@ -91,21 +91,18 @@ function handleSuccess() {
       </div>
     </template>
 
-    <UnlockAmount
-      :lockable-pool="lockablePool"
-      :total-lp-tokens="totalLpTokens"
-    />
+    <UnlockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
 
     <UnlockSummary
-      :fiat-total-lp-tokens="fiatTotalLpTokens"
-      :ve-bal-lock-info="veBalLockInfo"
+      :fiatTotalLpTokens="fiatTotalLpTokens"
+      :veBalLockInfo="veBalLockInfo"
     />
 
     <UnlockActions
-      :lockable-pool="lockablePool"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
-      :total-lp-tokens="totalLpTokens"
-      :ve-bal-lock-info="veBalLockInfo"
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :totalLpTokens="totalLpTokens"
+      :veBalLockInfo="veBalLockInfo"
       class="mt-4"
       @success="handleSuccess"
       @close="handleClose"

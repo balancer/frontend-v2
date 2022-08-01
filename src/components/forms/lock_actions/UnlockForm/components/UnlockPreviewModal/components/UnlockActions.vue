@@ -149,7 +149,7 @@ async function submit() {
             explorerLinks.txLink(unlockActionState.receipt.transactionHash)
           "
           external
-          no-style
+          noStyle
           class="group flex items-center"
         >
           {{ networkConfig.explorerName }}

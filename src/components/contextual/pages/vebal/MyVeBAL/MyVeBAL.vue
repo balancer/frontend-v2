@@ -40,10 +40,10 @@ const isLoading = computed(() =>
     </template>
     <MyVeBalCards
       v-else
-      :ve-bal-lock-info="lock"
-      :lockable-pool="lockPool"
-      :lockable-pool-token-info="lockPoolToken"
-      :locked-fiat-total="lockedFiatTotal"
+      :veBalLockInfo="lock"
+      :lockablePool="lockPool"
+      :lockablePoolTokenInfo="lockPoolToken"
+      :lockedFiatTotal="lockedFiatTotal"
     />
   </div>
 </template>

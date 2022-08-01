@@ -60,7 +60,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <BalCard shadow="xl" expose-overflow no-border>
+  <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
         <div class="text-xs leading-none text-secondary">
@@ -82,11 +82,11 @@ onBeforeMount(() => {
         {{ hasBpt ? fiatTotalLabel : '-' }}
       </div>
     </div>
-    <PoolInfoBreakdown :pool="fromPool" :pool-token-info="fromPoolTokenInfo" />
+    <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
     <div class="flex justify-center my-4 dark:text-gray-50">
       <ArrowDownIcon class="w-5 h-5 dark:text-secondary" />
     </div>
-    <PoolInfoBreakdown :pool="toPool" :pool-token-info="toPoolTokenInfo" />
+    <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
     <BalBtn
       color="gradient"
       class="mt-6"
@@ -101,11 +101,11 @@ onBeforeMount(() => {
   <teleport to="#modal">
     <MigratePreviewModal
       v-if="showPreviewModal"
-      :from-pool="fromPool"
-      :to-pool="toPool"
-      :from-pool-token-info="fromPoolTokenInfo"
-      :to-pool-token-info="toPoolTokenInfo"
-      :pool-migration-info="poolMigrationInfo"
+      :fromPool="fromPool"
+      :toPool="toPool"
+      :fromPoolTokenInfo="fromPoolTokenInfo"
+      :toPoolTokenInfo="toPoolTokenInfo"
+      :poolMigrationInfo="poolMigrationInfo"
       :math="migrateMath"
       @close="showPreviewModal = false"
     />

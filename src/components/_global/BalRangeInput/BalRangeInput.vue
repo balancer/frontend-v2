@@ -15,9 +15,9 @@
     <VueSlider
       v-model="range"
       v-bind="$attrs"
-      :dot-style="dotStyle"
-      :rail-style="railSyle"
-      :process-style="proccessStyle"
+      :dotStyle="dotStyle"
+      :railStyle="railSyle"
+      :processStyle="proccessStyle"
       @change="onChange"
       @drag-end="onDragEnd"
     />

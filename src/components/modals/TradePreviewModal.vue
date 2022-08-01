@@ -77,7 +77,7 @@
         class="mt-5"
         :label="$t('approveLidoRelayer')"
         :loading="approvingLidoRelayer"
-        :loading-label="`${$t('approvingLidoRelayer')}…`"
+        :loadingLabel="`${$t('approvingLidoRelayer')}…`"
         color="gradient"
         block
         @click.prevent="approveLidoRelayer"
@@ -87,7 +87,7 @@
         class="mt-5"
         :label="`${$t('approve')} ${symbolIn}`"
         :loading="approvingToken"
-        :loading-label="`${$t('approving')} ${symbolIn}…`"
+        :loadingLabel="`${$t('approving')} ${symbolIn}…`"
         color="gradient"
         block
         @click.prevent="approveToken"
@@ -97,7 +97,7 @@
         class="mt-5"
         :label="$t('confirmTrade')"
         :loading="trading"
-        :loading-label="$t('confirming')"
+        :loadingLabel="$t('confirming')"
         color="gradient"
         block
         @click.prevent="trade"

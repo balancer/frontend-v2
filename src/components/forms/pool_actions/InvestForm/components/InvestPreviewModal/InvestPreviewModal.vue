@@ -128,17 +128,17 @@ function handleShowStakeModal() {
     </template>
 
     <TokenAmounts
-      :amount-map="amountMap"
-      :token-map="tokenMap"
-      :fiat-amount-map="fiatAmountMap"
-      :fiat-total="fiatTotal"
+      :amountMap="amountMap"
+      :tokenMap="tokenMap"
+      :fiatAmountMap="fiatAmountMap"
+      :fiatTotal="fiatTotal"
     />
 
     <InvestSummary
       :pool="pool"
-      :fiat-total="fiatTotal"
-      :price-impact="priceImpact"
-      :high-price-impact="highPriceImpact"
+      :fiatTotal="fiatTotal"
+      :priceImpact="priceImpact"
+      :highPriceImpact="highPriceImpact"
     />
 
     <BalAlert
@@ -152,7 +152,7 @@ function handleShowStakeModal() {
     <InvestActions
       :pool="pool"
       :math="math"
-      :token-addresses="tokenAddresses"
+      :tokenAddresses="tokenAddresses"
       :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"

@@ -110,7 +110,7 @@ onBeforeMount(() => {
     <ProportionalWithdrawalInput
       v-if="isProportional"
       :pool="pool"
-      :token-addresses="tokensOut"
+      :tokenAddresses="tokensOut"
       :math="withdrawMath"
     />
     <TokenInput
@@ -119,16 +119,16 @@ onBeforeMount(() => {
       v-model:isValid="validInput"
       :name="tokenOut"
       :address="tokenOut"
-      :disable-balance="singleAssetMaxes[tokenOutIndex] === '-'"
-      :custom-balance="singleAssetMaxes[tokenOutIndex] || '0'"
+      :disableBalance="singleAssetMaxes[tokenOutIndex] === '-'"
+      :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
-      :balance-label="$t('singleTokenMax')"
-      :balance-loading="loadingAmountsOut"
-      fixed-token
-      disable-native-asset-buffer
+      :balanceLabel="$t('singleTokenMax')"
+      :balanceLoading="loadingAmountsOut"
+      fixedToken
+      disableNativeAssetBuffer
     >
       <template #tokenSelect>
-        <WithdrawalTokenSelect :pool="pool" :init-token="tokenOut" />
+        <WithdrawalTokenSelect :pool="pool" :initToken="tokenOut" />
       </template>
     </TokenInput>
 
@@ -154,7 +154,7 @@ onBeforeMount(() => {
       :description="parseError(error).description"
       class="mt-4"
       block
-      action-label="Dismiss"
+      actionLabel="Dismiss"
       @action-click="setError(null)"
     />
 

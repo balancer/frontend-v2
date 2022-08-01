@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad>
+  <BalPopover noPad>
     <template #activator>
       <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
         <img

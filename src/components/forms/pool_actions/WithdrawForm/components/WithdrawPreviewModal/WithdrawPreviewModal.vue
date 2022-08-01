@@ -127,16 +127,16 @@ function handleClose(): void {
     </template>
 
     <TokenAmounts
-      :amount-map="amountMap"
-      :token-map="tokenMap"
-      :fiat-amount-map="fiatAmountMap"
-      :fiat-total="fiatTotal"
+      :amountMap="amountMap"
+      :tokenMap="tokenMap"
+      :fiatAmountMap="fiatAmountMap"
+      :fiatTotal="fiatTotal"
     />
 
     <WithdrawSummary
       :pool="pool"
-      :fiat-total="fiatTotal"
-      :price-impact="priceImpact"
+      :fiatTotal="fiatTotal"
+      :priceImpact="priceImpact"
     />
 
     <WithdrawActions

@@ -161,7 +161,7 @@ function handleClose() {
       </BalCircle>
       <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
     </BalStack>
-    <BalCard shadow="none" no-pad class="py-2 px-4">
+    <BalCard shadow="none" noPad class="py-2 px-4">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
@@ -176,7 +176,7 @@ function handleClose() {
         />
       </BalStack>
     </BalCard>
-    <BalCard shadow="none" no-pad>
+    <BalCard shadow="none" noPad>
       <div class="p-2 border-b">
         <h6 class="text-sm">
           {{ $t('summary') }}
@@ -201,7 +201,7 @@ function handleClose() {
                   : $t('staking.unstakeValueTooltip')
               "
               width="40"
-              text-align="center"
+              textAlign="center"
             />
           </BalStack>
         </BalStack>
@@ -214,7 +214,7 @@ function handleClose() {
             <BalTooltip
               :text="$t('staking.totalShareTooltip')"
               width="40"
-              text-align="center"
+              textAlign="center"
             />
           </BalStack>
         </BalStack>
@@ -223,12 +223,12 @@ function handleClose() {
     <BalActionSteps
       v-if="!isActionConfirmed"
       :actions="stakeActions"
-      :is-loading="isLoadingApprovalsForGauge"
+      :isLoading="isLoadingApprovalsForGauge"
       @success="handleSuccess"
     />
     <BalStack v-if="isActionConfirmed" vertical>
-      <ConfirmationIndicator :tx-receipt="confirmationReceipt" />
-      <AnimatePresence :is-visible="isActionConfirmed">
+      <ConfirmationIndicator :txReceipt="confirmationReceipt" />
+      <AnimatePresence :isVisible="isActionConfirmed">
         <BalBtn color="gray" outline block @click="handleClose">
           {{ $t('close') }}
         </BalBtn>

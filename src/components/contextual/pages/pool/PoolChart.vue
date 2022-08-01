@@ -374,11 +374,11 @@ function setCurrentChartValue(payload: {
       class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >
       <div class="flex mb-4">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="mr-6 -mb-px" />
+        <BalTabs v-model="activeTab" :tabs="tabs" noPad class="mr-6 -mb-px" />
         <div class="flex items-center">
           <PoolChartPeriodSelect
             :options="periodOptions"
-            :active-option="currentPeriod"
+            :activeOption="currentPeriod"
             @change-option="setCurrentPeriod"
           />
         </div>
@@ -410,23 +410,23 @@ function setCurrentChartValue(payload: {
       v-else
       height="96"
       :data="chartData.data"
-      :axis-label-formatter="{
+      :axisLabelFormatter="{
         yAxis: {
           style: 'currency',
           abbreviate: true,
           maximumFractionDigits: 0,
         },
       }"
-      :area-style="chartData.areaStyle"
+      :areaStyle="chartData.areaStyle"
       :color="chartData.color"
-      :hover-color="chartData.hoverColor"
-      :hover-border-color="chartData.hoverBorderColor"
-      :x-axis-min-interval="3600 * 1000 * 24 * 30"
-      :show-legend="false"
-      need-chart-value
-      :chart-type="chartData.chartType"
-      :show-tooltip-layer="false"
-      :hide-y-axis="isMobile"
+      :hoverColor="chartData.hoverColor"
+      :hoverBorderColor="chartData.hoverBorderColor"
+      :xAxisMinInterval="3600 * 1000 * 24 * 30"
+      :showLegend="false"
+      needChartValue
+      :chartType="chartData.chartType"
+      :showTooltipLayer="false"
+      :hideYAxis="isMobile"
       @set-current-chart-value="setCurrentChartValue"
       @mouse-leave-event="isFocusedOnChart = false"
       @mouse-enter-event="isFocusedOnChart = true"

@@ -64,27 +64,27 @@ const MAX_PILLS = 11;
       <StableTokenPill
         v-for="token in visibleTokens"
         :key="token.address"
-        :has-balance="hasBalance(token.address)"
+        :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :token="token"
-        :is-selected="includesAddress(selectedTokens, token.address)"
+        :isSelected="includesAddress(selectedTokens, token.address)"
       />
     </template>
     <template v-else>
       <WeightedTokenPill
         v-for="token in visibleTokens"
         :key="token.address"
-        :has-balance="hasBalance(token.address)"
+        :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :weight="weightFor(token)"
         :token="token"
-        :is-selected="includesAddress(selectedTokens, token.address)"
+        :isSelected="includesAddress(selectedTokens, token.address)"
       />
       <HiddenTokensPills
         v-if="hiddenTokens.length > 0"
         :tokens="hiddenTokens"
-        :has-balance="hasBalanceInHiddenTokens"
-        :is-selected="isSelectedInHiddenTokens"
+        :hasBalance="hasBalanceInHiddenTokens"
+        :isSelected="isSelectedInHiddenTokens"
       />
     </template>
   </div>

@@ -58,10 +58,10 @@ const tokensWithBalance = computed(() => {
 <template>
   <BalCard
     :square="upToLargeBreakpoint"
-    no-pad
-    :no-border="upToLargeBreakpoint"
-    grow-content
-    :h-full="upToLargeBreakpoint"
+    noPad
+    :noBorder="upToLargeBreakpoint"
+    growContent
+    :hFull="upToLargeBreakpoint"
     shadow="none"
   >
     <div class="flex flex-col w-full h-full bg-transparent">
@@ -87,9 +87,9 @@ const tokensWithBalance = computed(() => {
                   ? noNativeCurrencyMessageEthereum
                   : noNativeCurrencyMessage
               "
-              icon-size="sm"
-              :icon-name="'alert-triangle'"
-              :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
+              iconSize="sm"
+              :iconName="'alert-triangle'"
+              :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
               width="72"
               class="relative top-0.5"
             />
@@ -102,12 +102,12 @@ const tokensWithBalance = computed(() => {
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <BalAssetSet
-            :bal-asset-props="{ button: true }"
+            :balAssetProps="{ button: true }"
             :width="275"
             wrap
             :size="30"
             :addresses="tokensWithBalance"
-            :max-assets-per-line="28"
+            :maxAssetsPerLine="28"
             @click="setTokenInAddress"
           />
           <p

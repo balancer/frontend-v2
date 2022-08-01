@@ -137,7 +137,7 @@ async function onChangeFeeController(val: string) {
 
 <template>
   <div ref="cardWrapper">
-    <BalCard shadow="xl" no-border>
+    <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
           <span class="text-xs text-secondary">{{
@@ -209,12 +209,12 @@ async function onChangeFeeController(val: string) {
             name="areFeesGovernanceManaged"
             size="sm"
             :label="$t('createAPool.governanceFees')"
-            no-margin
+            noMargin
             @update:model-value="onChangeFeeManagementType"
           />
           <BalTooltip
             :text="$t('createAPool.governanceFeesTooltip')"
-            icon-size="sm"
+            iconSize="sm"
             class="mt-1 ml-2"
           />
         </BalStack>
@@ -291,7 +291,7 @@ async function onChangeFeeController(val: string) {
               placeholder="0xBA4...2069"
               type="text"
               size="sm"
-              validate-on="blur"
+              validateOn="blur"
               :rules="[
                 isRequired($t('A controller address')),
                 isValidAddress(),

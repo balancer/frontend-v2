@@ -46,8 +46,8 @@ const lockAmountFiatValue = computed(() =>
     <TokenInput
       v-model:amount="lockAmount"
       :address="lockablePoolTokenInfo.address"
-      :token-value="lockAmountFiatValue"
-      fixed-token
+      :tokenValue="lockAmountFiatValue"
+      fixedToken
       name="lockAmount"
     />
   </div>

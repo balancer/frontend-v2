@@ -38,7 +38,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
 </script>
 
 <template>
-  <BalCard no-pad shadow="none">
+  <BalCard noPad shadow="none">
     <div
       v-if="!upToLargeBreakpoint"
       class="p-2 px-3 border-b dark:border-gray-600"

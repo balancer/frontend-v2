@@ -46,7 +46,7 @@ const conversationTableRows = computed(() => [
 </script>
 
 <template>
-  <BalTooltip width="72" no-pad class="ml-2">
+  <BalTooltip width="72" noPad class="ml-2">
     <template #activator>
       <BalIcon name="info" size="sm" class="text-secondary" />
     </template>

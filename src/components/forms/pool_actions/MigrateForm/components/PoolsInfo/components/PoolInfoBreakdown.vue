@@ -31,10 +31,10 @@ const { getToken } = useTokens();
     <BalBreakdown
       :items="pool.tokensList"
       class="w-full cursor-pointer select-none"
-      offset-class-overrides="mt-4 ml-3"
-      init-vert-bar-class-overrides="h-6 -mt-6"
+      offsetClassOverrides="mt-4 ml-3"
+      initVertBarClassOverrides="h-6 -mt-6"
       size="lg"
-      :hide-items="!isExpanded"
+      :hideItems="!isExpanded"
       @click="isExpanded = !isExpanded"
     >
       <div class="flex items-center">

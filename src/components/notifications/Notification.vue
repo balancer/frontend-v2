@@ -7,7 +7,7 @@
         v-if="notification.transactionMetadata"
         :href="notification.transactionMetadata.explorerLink"
         external
-        no-style
+        noStyle
       >
         <div class="flex items-center mb-1 font-semibold">
           <span class="title">{{ notification.title }}</span>

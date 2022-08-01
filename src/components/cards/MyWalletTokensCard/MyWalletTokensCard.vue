@@ -107,7 +107,7 @@ function isSelectedNativeAsset(address: string): boolean {
 </script>
 
 <template>
-  <BalCard shadow="none" no-pad>
+  <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
         <h6>

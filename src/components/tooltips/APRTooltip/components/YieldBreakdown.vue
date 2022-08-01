@@ -55,10 +55,7 @@ const yieldBreakdownItems = computed((): [string, string][] =>
 </script>
 
 <template>
-  <BalBreakdown
-    :items="yieldBreakdownItems"
-    :hide-items="!hasMultiRewardTokens"
-  >
+  <BalBreakdown :items="yieldBreakdownItems" :hideItems="!hasMultiRewardTokens">
     <div class="flex items-center">
       {{ fNum2(yieldAPR.total, FNumFormats.percent) }}
       <span class="ml-1 text-xs text-secondary">

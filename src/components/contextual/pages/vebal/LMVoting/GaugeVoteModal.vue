@@ -386,7 +386,7 @@ onMounted(() => {
         class="flex justify-between items-center p-2 mb-4 rounded-lg border dark:border-gray-800"
       >
         <div class="flex gap-4 items-center h-full">
-          <BalAssetSet :logo-u-r-is="logoURIs" :width="100" :size="32" />
+          <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
           <div v-if="gauge.pool.name">
             <p class="font-medium text-black dark:text-white">
               {{ gauge.pool.name }}
@@ -404,7 +404,7 @@ onMounted(() => {
         <BalLink
           :href="poolURL"
           external
-          no-style
+          noStyle
           class="group flex items-center"
         >
           <BalIcon
@@ -423,13 +423,13 @@ onMounted(() => {
           spellcheck="false"
           step="any"
           placeholder="0"
-          validate-on="input"
+          validateOn="input"
           :rules="inputRules"
           :disabled="
             voteInputDisabled || transactionInProgress || voteState.receipt
           "
           size="md"
-          auto-focus
+          autoFocus
         >
           <template #append>
             <div
@@ -451,7 +451,7 @@ onMounted(() => {
         <div class="mt-4">
           <template v-if="voteState.receipt">
             <ConfirmationIndicator
-              :tx-receipt="voteState.receipt"
+              :txReceipt="voteState.receipt"
               class="mb-2"
             />
             <BalBtn
@@ -470,7 +470,7 @@ onMounted(() => {
             block
             :disabled="voteButtonDisabled"
             :loading="transactionInProgress"
-            :loading-label="
+            :loadingLabel="
               voteState.init
                 ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
                 : $t('veBAL.liquidityMining.popover.actions.vote.confirming')

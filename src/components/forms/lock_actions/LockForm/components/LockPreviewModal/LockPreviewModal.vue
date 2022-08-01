@@ -107,27 +107,24 @@ function handleSuccess() {
       </div>
     </template>
 
-    <LockAmount
-      :lockable-pool="lockablePool"
-      :total-lp-tokens="totalLpTokens"
-    />
+    <LockAmount :lockablePool="lockablePool" :totalLpTokens="totalLpTokens" />
 
     <LockSummary
-      :lockable-pool="lockablePool"
-      :total-lp-tokens="totalLpTokens"
-      :lock-amount="lockAmount"
-      :lock-end-date="lockEndDate"
-      :expected-ve-bal-amount="expectedVeBalAmount"
-      :lock-type="lockType"
-      :ve-bal-lock-info="veBalLockInfo"
+      :lockablePool="lockablePool"
+      :totalLpTokens="totalLpTokens"
+      :lockAmount="lockAmount"
+      :lockEndDate="lockEndDate"
+      :expectedVeBalAmount="expectedVeBalAmount"
+      :lockType="lockType"
+      :veBalLockInfo="veBalLockInfo"
     />
 
     <LockActions
-      :lockable-pool="lockablePool"
-      :lock-amount="lockAmount"
-      :lock-end-date="lockEndDate"
-      :lock-type="lockType"
-      :lockable-pool-token-info="lockablePoolTokenInfo"
+      :lockablePool="lockablePool"
+      :lockAmount="lockAmount"
+      :lockEndDate="lockEndDate"
+      :lockType="lockType"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
       class="mt-4"
       @success="handleSuccess"
     />

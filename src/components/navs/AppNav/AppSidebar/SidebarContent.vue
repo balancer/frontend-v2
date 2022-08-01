@@ -85,7 +85,7 @@ watch(blockNumber, async () => {
     <div
       class="flex flex-col justify-center px-4 h-20 border-b border-gray-800"
     >
-      <AppLogo force-dark />
+      <AppLogo forceDark />
     </div>
 
     <div class="grid mt-2 text-lg grid-col-1">
@@ -107,7 +107,7 @@ watch(blockNumber, async () => {
         :href="link.url"
         class="flex items-center side-bar-link"
         external
-        no-style
+        noStyle
       >
         {{ link.label }}
         <BalIcon name="arrow-up-right" size="sm" class="ml-1 text-secondary" />
@@ -128,7 +128,7 @@ watch(blockNumber, async () => {
         :key="link.component"
         :href="link.url"
         class="social-link"
-        no-style
+        noStyle
         external
       >
         <component :is="link.component" />
@@ -136,7 +136,7 @@ watch(blockNumber, async () => {
       <BalLink
         href="mailto:contact@balancer.finance"
         class="social-link"
-        no-style
+        noStyle
       >
         <EmailIcon />
       </BalLink>
@@ -156,7 +156,7 @@ watch(blockNumber, async () => {
         :href="`https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`"
         class="flex items-center mt-2 text-gray-300"
         external
-        no-style
+        noStyle
       >
         App: v{{ version }}
         <BalIcon name="arrow-up-right" size="xs" class="ml-1" />

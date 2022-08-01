@@ -222,7 +222,7 @@ function saveAndProceed() {
 
 <template>
   <div ref="cardWrapper">
-    <BalCard shadow="xl" no-border>
+    <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
           <span class="text-xs text-secondary">{{
@@ -241,7 +241,7 @@ function saveAndProceed() {
               Set initial liquidity
             </h5>
           </BalStack>
-          <AnimatePresence :is-visible="isOptimised" unmount-instantly>
+          <AnimatePresence :isVisible="isOptimised" unmountInstantly>
             <BalStack
               horizontal
               align="center"
@@ -267,7 +267,7 @@ function saveAndProceed() {
             :key="i"
             v-model:amount="seedTokens[i].amount"
             v-model:address="tokenAddresses[i]"
-            fixed-token
+            fixedToken
             :weight="seedTokens[i].weight / 100"
             :name="`initial-token-${seedTokens[i].tokenAddress}`"
             :options="tokenOptions(i)"
@@ -330,8 +330,8 @@ function saveAndProceed() {
                 {{ fNum2(currentLiquidity.toString(), FNumFormats.fiat) }}
               </h6>
               <AnimatePresence
-                :is-visible="!isOptimised"
-                unmount-instantly
+                :isVisible="!isOptimised"
+                unmountInstantly
                 @on-presence="onAlertMountChange"
                 @on-exit="onAlertMountChange"
               >
@@ -346,8 +346,8 @@ function saveAndProceed() {
           </BalStack>
         </div>
         <AnimatePresence
-          :is-visible="arbitrageDelta.delta > 0.05"
-          unmount-instantly
+          :isVisible="arbitrageDelta.delta > 0.05"
+          unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
         >

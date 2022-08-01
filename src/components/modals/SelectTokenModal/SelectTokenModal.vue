@@ -1,5 +1,5 @@
 <template>
-  <BalModal show no-content-pad @close="$emit('close')">
+  <BalModal show noContentPad @close="$emit('close')">
     <template #header>
       <div class="flex justify-between items-center w-full">
         <div class="flex items-center">
@@ -54,7 +54,7 @@
           <TokenListsListItem
             v-for="(tokenList, uri) in tokenLists"
             :key="uri"
-            :is-active="isActiveList(uri)"
+            :isActive="isActiveList(uri)"
             :tokenlist="tokenList"
             :uri="uri"
             @toggle="onToggleList(uri)"
@@ -81,14 +81,14 @@
           v-slot="{ item: token }"
           class="overflow-y-scroll h-96"
           :items="tokens"
-          :item-size="64"
-          key-field="address"
+          :itemSize="64"
+          keyField="address"
           :buffer="100"
         >
           <a @click="onSelectToken(token.address)">
             <TokenListItem
               :token="token"
-              :balance-loading="dynamicDataLoading"
+              :balanceLoading="dynamicDataLoading"
             />
           </a>
         </RecycleScroller>

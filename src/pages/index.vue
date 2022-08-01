@@ -70,14 +70,14 @@ function navigateToCreatePool() {
       </div>
       <PoolsTable
         :data="investmentPools"
-        :no-pools-label="$t('noPoolsFound')"
-        :is-loading-more="isLoadingMore"
-        :selected-tokens="selectedTokens"
+        :noPoolsLabel="$t('noPoolsFound')"
+        :isLoadingMore="isLoadingMore"
+        :selectedTokens="selectedTokens"
         class="mb-8"
-        :hidden-columns="['migrate', 'actions', 'lockEndDate']"
-        :column-states="dataStates"
-        :is-paginated="true"
-        :is-loading="isInvestmentPoolsTableLoading"
+        :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
+        :columnStates="dataStates"
+        :isPaginated="true"
+        :isLoading="isInvestmentPoolsTableLoading"
         @load-more="loadMore"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">

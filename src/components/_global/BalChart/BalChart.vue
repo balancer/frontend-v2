@@ -438,7 +438,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       ]"
       :option="chartConfig"
       autoresize
-      :update-options="{ replaceMerge: 'series' }"
+      :updateOptions="{ replaceMerge: 'series' }"
       :style="[styleOverrides]"
       @update-axis-pointer="handleAxisMoved"
     />

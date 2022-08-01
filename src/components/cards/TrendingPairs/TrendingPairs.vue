@@ -67,9 +67,9 @@ const setTradePair = (pair: TrendingPair[]) => {
 <template>
   <BalCard
     :square="upToLargeBreakpoint"
-    no-pad
-    grow-content
-    :no-border="upToLargeBreakpoint"
+    noPad
+    growContent
+    :noBorder="upToLargeBreakpoint"
     shadow="none"
   >
     <div class="trending-pairs">

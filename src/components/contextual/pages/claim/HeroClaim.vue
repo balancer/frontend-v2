@@ -27,10 +27,10 @@
             <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.addLiquidity') }}
               <BalTooltip
-                icon-size="xs"
-                text-align="left"
+                iconSize="xs"
+                textAlign="left"
                 class="relative top-px"
-                icon-class="text-white"
+                iconClass="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.addLiquidity') }}
@@ -47,10 +47,10 @@
             <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.stake') }}
               <BalTooltip
-                icon-size="xs"
-                text-align="left"
+                iconSize="xs"
+                textAlign="left"
                 class="relative top-px"
-                icon-class="text-white"
+                iconClass="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.stake') }}
@@ -67,10 +67,10 @@
             <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.boost') }}
               <BalTooltip
-                icon-size="xs"
-                text-align="left"
+                iconSize="xs"
+                textAlign="left"
                 class="relative top-px"
-                icon-class="text-white"
+                iconClass="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.boost') }}
@@ -87,10 +87,10 @@
             <p class="font-semibold tip-label text-shadow">
               {{ $t('claimHero.tipLabel.claim') }}
               <BalTooltip
-                icon-size="xs"
-                text-align="left"
+                iconSize="xs"
+                textAlign="left"
                 class="relative top-px"
-                icon-class="text-white"
+                iconClass="text-white"
                 width="60"
               >
                 {{ $t('claimHero.tips.claim') }}
