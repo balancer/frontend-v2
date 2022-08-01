@@ -24,12 +24,8 @@ const id = ref<string>(route.params.id as string);
  */
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  pool,
-  loadingPool,
-  useNativeAsset,
-  transfersAllowed
-} = usePoolTransfers();
+const { pool, loadingPool, useNativeAsset, transfersAllowed } =
+  usePoolTransfers();
 usePoolTransfersGuard();
 </script>
 
@@ -60,12 +56,12 @@ usePoolTransfersGuard();
         :sections="[
           {
             title: $t('poolTransfer.myWalletTokensCard.title'),
-            id: 'myWalletTokens'
+            id: 'myWalletTokens',
           },
           {
             title: $t('poolTransfer.myPoolBalancesCard.title'),
-            id: 'myPoolBalances'
-          }
+            id: 'myPoolBalances',
+          },
         ]"
       >
         <template #myWalletTokens>

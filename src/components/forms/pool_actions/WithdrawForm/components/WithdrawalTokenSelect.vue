@@ -21,7 +21,7 @@ type Props = {
  * Props
  */
 const props = withDefaults(defineProps<Props>(), {
-  initToken: 'all'
+  initToken: 'all',
 });
 
 /**

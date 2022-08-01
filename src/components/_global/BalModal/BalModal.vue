@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   noPad: false,
   noContentPad: false,
-  fireworks: false
+  fireworks: false,
 });
 
 defineEmits(['close']);

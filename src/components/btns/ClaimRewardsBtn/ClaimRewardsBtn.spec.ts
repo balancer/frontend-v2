@@ -26,9 +26,9 @@ jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
   return {
     LiquidityGauge: jest.fn().mockImplementation(() => {
       return {
-        claimRewards: mockClaimRewards
+        claimRewards: mockClaimRewards,
       };
-    })
+    }),
   };
 });
 
@@ -41,8 +41,8 @@ describe.only('ClaimRewardsBtn', () => {
     const { getByText } = render(ClaimRewardsBtn, {
       props: {
         gauge,
-        fiatValue: '1000'
-      }
+        fiatValue: '1000',
+      },
     });
 
     expect(getByText('Claim all')).toBeVisible();
@@ -52,8 +52,8 @@ describe.only('ClaimRewardsBtn', () => {
     const { getByText } = render(ClaimRewardsBtn, {
       props: {
         gauge,
-        fiatValue: '1000'
-      }
+        fiatValue: '1000',
+      },
     });
 
     const btn = getByText('Claim all');

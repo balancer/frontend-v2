@@ -34,9 +34,7 @@ const percentVeBAL = computed(() => {
     const totalSupply = bnum(props.veBalLockInfo.totalSupply);
 
     if (totalSupply.gt(0)) {
-      return bnum(veBalBalance.value)
-        .div(totalSupply)
-        .toString();
+      return bnum(veBalBalance.value).div(totalSupply).toString();
     }
   }
 
@@ -64,7 +62,7 @@ const percentVeBAL = computed(() => {
             veBalLockInfo?.hasExistingLock
               ? fNum2(percentVeBAL, {
                   style: 'percent',
-                  maximumFractionDigits: 4
+                  maximumFractionDigits: 4,
                 })
               : '-'
           }}

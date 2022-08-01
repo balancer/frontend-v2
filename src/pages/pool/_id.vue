@@ -3,116 +3,19 @@
     <div
       class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-4 xl:gap-x-8"
     >
-      <div class="col-span-2 px-4 lg:px-0">
-        <BalLoadingBlock v-if="loadingPool" class="h-16" />
-        <div v-else class="flex flex-col">
-          <div class="flex flex-wrap items-center -mt-2">
-            <h3 class="pool-title">
-              {{ poolTypeLabel }}
-            </h3>
-            <div
-              v-for="([address, tokenMeta], i) in titleTokens"
-              :key="i"
-              class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
-            >
-              <BalAsset :address="address" />
-              <span class="ml-2">
-                {{ tokenMeta.symbol }}
-              </span>
-              <span
-                v-if="!isStableLikePool"
-                class="font-medium text-gray-400 text-xs mt-px ml-1"
-              >
-                {{
-                  fNum2(tokenMeta.weight, {
-                    style: 'percent',
-                    maximumFractionDigits: 0
-                  })
-                }}
-              </span>
-            </div>
-            <BalChipNew v-if="pool?.isNew" class="mt-2 mr-2" />
-            <APRTooltip :pool="pool" class="-ml-1 mt-1" />
-            <BalLink
-              :href="explorer.addressLink(pool?.address || '')"
-              external
-              noStyle
-              class="flex items-center"
-            >
-              <BalIcon
-                name="arrow-up-right"
-                size="sm"
-                class="ml-2 mt-2 text-gray-500 hover:text-blue-500 transition-colors"
-              />
-            </BalLink>
-          </div>
-          <div class="flex items-center mt-2">
-            <div v-html="poolFeeLabel" class="text-sm text-secondary mr-1" />
-            <BalTooltip>
-              <template v-slot:activator>
-                <BalLink
-                  v-if="feesManagedByGauntlet"
-                  :href="EXTERNAL_LINKS.Gauntlet.Home"
-                  external
-                >
-                  <GauntletIcon />
-                </BalLink>
-                <BalIcon
-                  v-else
-                  name="info"
-                  size="xs"
-                  class="text-gray-400 dark:text-gray-500"
-                />
-              </template>
-              <span>
-                {{ swapFeeToolTip }}
-              </span>
-            </BalTooltip>
-          </div>
-        </div>
-
-        <BalAlert
-          v-if="!appLoading && !loadingPool && missingPrices"
-          type="warning"
-          :title="$t('noPriceInfo')"
-          class="mt-2"
-          block
-        />
-        <BalAlert
-          v-if="!appLoading && !loadingPool && hasCustomToken"
-          type="error"
-          :title="$t('highRiskPool')"
-          class="mt-2"
-          block
-        />
-        <template v-if="!appLoading && !loadingPool && isAffected">
-          <BalAlert
-            v-for="(warning, i) in warnings"
-            :key="`warning-${i}`"
-            type="error"
-            class="mt-2"
-            block
-          >
-            <template #title>
-              <div v-html="warning.title" />
-            </template>
-            <template #description>
-              <div v-html="warning.description" />
-            </template>
-          </BalAlert>
-        </template>
-        <BalAlert
-          v-if="!appLoading && noInitLiquidity"
-          type="warning"
-          :title="$t('noInitLiquidity')"
-          :description="$t('noInitLiquidityDetail')"
-          class="mt-2"
-          block
-        />
-      </div>
-
+      <PoolPageHeader
+        :loadingPool="loadingPool"
+        :loadingApr="loadingApr"
+        :pool="pool"
+        :poolApr="poolApr"
+        :isStableLikePool="isStableLikePool"
+        :noInitLiquidity="noInitLiquidity"
+        :titleTokens="titleTokens"
+        :missingPrices="missingPrices"
+        :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
+        :isStablePhantomPool="isLiquidityBootstrappingPool"
+      />
       <div class="hidden lg:block" />
-
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-4 lg:px-0">
@@ -127,7 +30,12 @@
             />
           </div>
           <div class="mb-4 px-4 lg:px-0">
-            <PoolStatCards :pool="pool" :loading="loadingPool" />
+            <PoolStatCards
+              :pool="pool"
+              :poolApr="poolApr"
+              :loading="loadingPool"
+              :loadingApr="loadingApr"
+            />
             <ApyVisionPoolLink
               v-if="!loadingPool"
               :poolId="pool?.id"
@@ -139,9 +47,12 @@
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div>
-            <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
-          </div>
+          <div ref="intersectionSentinel"></div>
+          <PoolTransactionsCard
+            v-if="isSentinelIntersected"
+            :pool="pool"
+            :loading="loadingPool"
+          />
         </div>
       </div>
 
@@ -169,6 +80,7 @@
             <StakingIncentivesCard
               v-if="isStakablePool && !loadingPool"
               :pool="pool"
+              class="staking-incentives"
             />
           </BalStack>
         </StakingProvider>
@@ -178,26 +90,31 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
+import {
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
-import BalChipNew from '@/components/chips/BalChipNew.vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
-import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
-import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
+import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
+import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import useApp from '@/composables/useApp';
 import { isL2 } from '@/composables/useNetwork';
-import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
-import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
@@ -210,51 +127,113 @@ interface PoolPageData {
 export default defineComponent({
   components: {
     ...PoolPageComponents,
-    GauntletIcon,
-    APRTooltip,
     StakingIncentivesCard,
     StakingProvider,
     ApyVisionPoolLink,
-    BalChipNew
+    PoolPageHeader,
   },
 
   setup() {
     /**
      * COMPOSABLES
      */
-    const { appLoading } = useApp();
     const { t } = useI18n();
     const route = useRoute();
-    const { fNum2 } = useNumbers();
-    const { explorerLinks, isWalletReady } = useWeb3();
+    const { explorerLinks } = useWeb3();
     const { prices } = useTokens();
-    const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
-    const { balancerTokenListTokens } = useTokens();
     const { isAffected, warnings } = usePoolWarning(route.params.id as string);
-
-    /**
-     * QUERIES
-     */
-    const poolQuery = usePoolQuery(route.params.id as string);
-    const poolSnapshotsQuery = usePoolSnapshotsQuery(route.params.id as string);
 
     /**
      * STATE
      */
     const data = reactive<PoolPageData>({
-      id: route.params.id as string
+      id: route.params.id as string,
     });
 
-    /**
-     * COMPUTED
-     */
+    //#region pool query
+    const poolQuery = usePoolQuery(route.params.id as string);
     const pool = computed(() => poolQuery.data.value);
+    const poolQueryLoading = computed(
+      () =>
+        poolQuery.isLoading.value ||
+        poolQuery.isIdle.value ||
+        Boolean(poolQuery.error.value)
+    );
+    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
+
     const {
       isStableLikePool,
       isLiquidityBootstrappingPool,
-      isStablePhantomPool
+      isStablePhantomPool,
     } = usePool(poolQuery.data);
+    //#endregion
+
+    //#region pool snapshot query
+    const poolSnapshotsQuery = usePoolSnapshotsQuery(
+      route.params.id as string,
+      undefined,
+      // in order to prevent multiple coingecko requests
+      { refetchOnWindowFocus: false }
+    );
+    const isLoadingSnapshots = computed(
+      () =>
+        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
+    );
+
+    const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
+    const historicalPrices = computed(
+      () => poolSnapshotsQuery.data.value?.prices
+    );
+    //#endregion
+
+    //#region APR query
+    const aprQuery = usePoolAprQuery(route.params.id as string);
+    const loadingApr = computed(
+      () =>
+        aprQuery.isLoading.value ||
+        aprQuery.isIdle.value ||
+        Boolean(aprQuery.error.value)
+    );
+    const poolApr = computed(() => aprQuery.data.value);
+    //#endregion
+
+    //#region Intersection Observer
+    const intersectionSentinel = ref<HTMLDivElement | null>(null);
+    const isSentinelIntersected = ref(false);
+    let observer: IntersectionObserver | undefined;
+
+    function addIntersectionObserver(): void {
+      if (
+        !('IntersectionObserver' in window) ||
+        !('IntersectionObserverEntry' in window) ||
+        !intersectionSentinel.value
+      ) {
+        isSentinelIntersected.value = true;
+        return;
+      }
+
+      const options = {
+        rootMargin: '-100px',
+      };
+
+      const callback = (entries: IntersectionObserverEntry[]): void => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            isSentinelIntersected.value = true;
+          }
+        });
+      };
+      observer = new IntersectionObserver(callback, options);
+      observer.observe(intersectionSentinel.value);
+    }
+    onMounted(() => {
+      addIntersectionObserver();
+    });
+    onBeforeUnmount(() => {
+      observer?.disconnect();
+    });
+    //#endregion
 
     const noInitLiquidity = computed(
       () =>
@@ -262,82 +241,6 @@ export default defineComponent({
         pool.value &&
         Number(pool.value?.onchain?.totalSupply || '0') === 0
     );
-
-    const communityManagedFees = computed(
-      () => pool.value?.owner == POOLS.DelegateOwner
-    );
-    const feesManagedByGauntlet = computed(
-      () =>
-        communityManagedFees.value &&
-        POOLS.DynamicFees.Gauntlet.includes(data.id)
-    );
-    const feesFixed = computed(() => pool.value?.owner == POOLS.ZeroAddress);
-    const swapFeeToolTip = computed(() => {
-      if (feesManagedByGauntlet.value) {
-        return t('feesManagedByGauntlet');
-      } else if (communityManagedFees.value) {
-        return t('delegateFeesTooltip');
-      } else if (feesFixed.value) {
-        return t('fixedFeesTooltip');
-      } else {
-        return t('ownerFeesTooltip');
-      }
-    });
-
-    const poolQueryLoading = computed(
-      () =>
-        poolQuery.isLoading.value ||
-        poolQuery.isIdle.value ||
-        poolQuery.error.value
-    );
-
-    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
-
-    const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
-    const historicalPrices = computed(
-      () => poolSnapshotsQuery.data.value?.prices
-    );
-    const isLoadingSnapshots = computed(
-      () =>
-        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-    );
-
-    const titleTokens = computed(() => {
-      if (!pool.value) return [];
-      if (!pool.value?.onchain?.tokens) return [];
-
-      return Object.entries(pool.value.onchain.tokens).sort(
-        ([, a]: any[], [, b]: any[]) => b.weight - a.weight
-      );
-    });
-
-    const poolTypeLabel = computed(() => {
-      if (!pool.value) return '';
-      const key = POOLS.Factories[pool.value.factory];
-
-      return key ? t(key) : t('unknownPoolType');
-    });
-
-    const poolFeeLabel = computed(() => {
-      if (!pool.value) return '';
-      if (!pool.value?.onchain?.swapFee) return '';
-
-      const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
-        style: 'percent',
-        maximumFractionDigits: 4
-      })}`;
-
-      if (feesFixed.value) {
-        return t('fixedSwapFeeLabel', [feeLabel]);
-      } else if (communityManagedFees.value) {
-        return feesManagedByGauntlet.value
-          ? t('dynamicSwapFeeLabel', [feeLabel])
-          : t('communitySwapFeeLabel', [feeLabel]);
-      }
-
-      // Must be owner-controlled
-      return t('dynamicSwapFeeLabel', [feeLabel]);
-    });
 
     const missingPrices = computed(() => {
       if (pool.value) {
@@ -353,43 +256,11 @@ export default defineComponent({
       return false;
     });
 
-    const isCopperNetworkSupported = computed(
-      () => isMainnet.value || isPolygon.value || isKovan.value
-    );
+    const titleTokens = computed(() => {
+      if (!pool.value || !pool.value.onchain?.tokens) return [];
 
-    // Temporary solution to hide Copper card on Fei pool page.
-    // Longer terms solution is needed distinguish LBP platforms
-    // and display custom widgets linking to their pages.
-    const isCopperPool = computed((): boolean => {
-      const feiPoolId =
-        '0xede4efcc5492cf41ed3f0109d60bc0543cfad23a0002000000000000000000bb';
-      return (
-        !!pool.value &&
-        isLiquidityBootstrappingPool.value &&
-        pool.value.id !== feiPoolId &&
-        isCopperNetworkSupported.value
-      );
-    });
-
-    const copperNetworkPrefix = computed(() => {
-      if (isPolygon.value) {
-        return 'polygon.';
-      }
-      if (isKovan.value) {
-        return 'kovan.';
-      }
-      return '';
-    });
-
-    const hasCustomToken = computed(() => {
-      const knownTokens = Object.keys(balancerTokenListTokens.value);
-      return (
-        !!pool.value &&
-        !isLiquidityBootstrappingPool.value &&
-        !isStablePhantomPool.value &&
-        pool.value.tokensList.some(
-          address => !includesAddress(knownTokens, address)
-        )
+      return Object.entries(pool.value.onchain.tokens).sort(
+        ([, a]: any[], [, b]: any[]) => b.weight - a.weight
       );
     });
 
@@ -398,19 +269,8 @@ export default defineComponent({
     );
 
     /**
-     * METHODS
-     */
-    function onNewTx(): void {
-      poolQuery.refetch.value();
-    }
-
-    /**
      * WATCHERS
      */
-    watch(blockNumber, () => {
-      poolQuery.refetch.value();
-    });
-
     watch(poolQuery.error, () => {
       if (poolQuery.error.value) {
         addAlert({
@@ -420,7 +280,7 @@ export default defineComponent({
           persistent: true,
           action: poolQuery.refetch.value,
           actionLabel: t('alerts.retry-label'),
-          priority: AlertPriority.MEDIUM
+          priority: AlertPriority.MEDIUM,
         });
       } else {
         removeAlert('pool-fetch-error');
@@ -430,48 +290,35 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
-      EXTERNAL_LINKS,
+      intersectionSentinel,
+      isSentinelIntersected,
       // computed
-      appLoading,
       pool,
       explorer: explorerLinks,
       noInitLiquidity,
-      poolTypeLabel,
-      poolFeeLabel,
       historicalPrices,
       snapshots,
       isLoadingSnapshots,
       loadingPool,
-      titleTokens,
-      isWalletReady,
       missingPrices,
-      feesManagedByGauntlet,
-      swapFeeToolTip,
       isStableLikePool,
       isLiquidityBootstrappingPool,
-      isCopperPool,
       isStablePhantomPool,
-      copperNetworkPrefix,
-      hasCustomToken,
       isAffected,
       warnings,
       isL2,
       isStakablePool,
+      titleTokens,
       // methods
-      fNum2,
-      onNewTx,
-      getAddressFromPoolId
+      getAddressFromPoolId,
+      poolApr,
+      loadingApr,
     };
-  }
+  },
 });
 </script>
 
 <style scoped>
-.pool-title {
-  @apply mr-4 capitalize mt-2;
-  font-variation-settings: 'wght' 700;
-}
-
 .pool-actions-card {
   @apply relative;
 }
@@ -480,5 +327,8 @@ export default defineComponent({
   .pool-actions-card {
     @apply sticky top-24;
   }
+}
+.staking-incentives :deep(.active-section) {
+  @apply border-transparent;
 }
 </style>

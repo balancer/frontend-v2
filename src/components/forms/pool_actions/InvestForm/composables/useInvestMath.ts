@@ -10,7 +10,7 @@ import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 import {
   HIGH_PRICE_IMPACT,
-  REKT_PRICE_IMPACT
+  REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -45,7 +45,7 @@ export default function useInvestMath(
   const {
     promises: batchSwapPromises,
     processing: processingBatchSwaps,
-    processAll: processBatchSwaps
+    processAll: processBatchSwaps,
   } = usePromiseSequence();
 
   /**
@@ -80,18 +80,16 @@ export default function useInvestMath(
     )
   );
 
-  const batchSwapAmountMap = computed(
-    (): Record<string, BigNumber> => {
-      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        tokenAddresses.value[i].toLowerCase(),
-        amount
-      ]);
-      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-        (amount as BigNumber).gt(0)
-      );
-      return Object.fromEntries(onlyTokensWithAmounts);
-    }
-  );
+  const batchSwapAmountMap = computed((): Record<string, BigNumber> => {
+    const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+      tokenAddresses.value[i].toLowerCase(),
+      amount,
+    ]);
+    const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+      (amount as BigNumber).gt(0)
+    );
+    return Object.fromEntries(onlyTokensWithAmounts);
+  });
 
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((_, i) => fiatAmount(i))
@@ -99,10 +97,7 @@ export default function useInvestMath(
 
   const fiatTotal = computed((): string =>
     fiatAmounts.value.reduce(
-      (total, amount) =>
-        bnum(total)
-          .plus(amount)
-          .toString(),
+      (total, amount) => bnum(total).plus(amount).toString(),
       '0'
     )
   );
@@ -121,7 +116,7 @@ export default function useInvestMath(
       return (
         poolCalculator
           .priceImpact(fullAmounts.value, {
-            queryBPT: fullBPTOut.value.toString()
+            queryBPT: fullBPTOut.value.toString(),
           })
           .toNumber() || 0
       );
@@ -146,9 +141,7 @@ export default function useInvestMath(
         const balance = balanceFor(tokenAddresses.value[i]);
         return (
           amount ===
-          bnum(balance)
-            .minus(nativeAsset.minTransactionBuffer)
-            .toString()
+          bnum(balance).minus(nativeAsset.minTransactionBuffer).toString()
         );
       } else {
         return amount === balanceFor(tokenAddresses.value[i]);
@@ -166,9 +159,7 @@ export default function useInvestMath(
 
     if (isStablePhantomPool.value) {
       _bptOut = batchSwap.value
-        ? bnum(batchSwap.value.amountTokenOut)
-            .abs()
-            .toString()
+        ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
     } else {
       _bptOut = poolCalculator
@@ -226,9 +217,7 @@ export default function useInvestMath(
       if (isSameAddress(tokenAddresses.value[i], nativeAsset.address)) {
         const balance = balanceFor(tokenAddresses.value[i]);
         amounts.value[i] = bnum(balance).gt(nativeAsset.minTransactionBuffer)
-          ? bnum(balance)
-              .minus(nativeAsset.minTransactionBuffer)
-              .toString()
+          ? bnum(balance).minus(nativeAsset.minTransactionBuffer).toString()
           : '0';
       } else {
         amounts.value[i] = balanceFor(tokenAddresses.value[i]);
@@ -299,6 +288,6 @@ export default function useInvestMath(
     // methods
     maximizeAmounts,
     optimizeAmounts,
-    getBatchSwap
+    getBatchSwap,
   };
 }

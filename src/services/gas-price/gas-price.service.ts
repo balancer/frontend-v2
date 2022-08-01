@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 
 import {
   EthereumTxType,
-  ethereumTxType
+  ethereumTxType,
 } from '@/composables/useEthereumTxType';
 
 import ConfigService from '../config/config.service';

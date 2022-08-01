@@ -13,7 +13,7 @@ import {
   provide,
   reactive,
   Ref,
-  ref
+  ref,
 } from 'vue';
 
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
@@ -26,7 +26,7 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useUserStakingData, {
-  UserStakingDataResponse
+  UserStakingDataResponse,
 } from './userUserStakingData';
 
 export const isL2StakingAprLive = isAfter(new Date(), fromUnixTime(1651104000));
@@ -68,8 +68,8 @@ export const StakingProviderSymbol: InjectionKey<StakingProvider> = Symbol(
 export default defineComponent({
   props: {
     poolAddress: {
-      type: String
-    }
+      type: String,
+    },
   },
   setup(props) {
     /**
@@ -110,7 +110,7 @@ export default defineComponent({
       poolBoosts,
       isLoadingBoosts,
       getStakedShares,
-      getBoostFor
+      getBoostFor,
     } = useUserStakingData(poolAddress);
 
     const isPoolAddressRegistered = computed(
@@ -121,7 +121,7 @@ export default defineComponent({
     // is eligible for staking rewards or not
     const {
       data: poolEligibilityResponse,
-      isLoading: isLoadingPoolEligibility
+      isLoading: isLoadingPoolEligibility,
     } = useGraphQuery<{ liquidityGauges: TLiquidityGauge[] }>(
       subgraphs.gauge,
       ['pool', 'eligibility', { poolAddress: poolAddress.value }],
@@ -129,15 +129,15 @@ export default defineComponent({
         liquidityGauges: {
           __args: {
             where: {
-              poolAddress: (poolAddress.value || '').toLowerCase()
-            }
+              poolAddress: (poolAddress.value || '').toLowerCase(),
+            },
           },
-          id: true
-        }
+          id: true,
+        },
       }),
       reactive({
         enabled: isPoolAddressRegistered,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
       })
     );
 
@@ -213,15 +213,15 @@ export default defineComponent({
         isLoadingBoosts,
         poolBoosts,
         getStakedShares,
-        getBoostFor
+        getBoostFor,
       },
       stakeBPT,
       unstakeBPT,
-      setPoolAddress
+      setPoolAddress,
     });
   },
 
   render() {
     return h('div', this.$slots?.default ? this.$slots.default() : []);
-  }
+  },
 });

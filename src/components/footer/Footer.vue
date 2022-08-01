@@ -4,17 +4,7 @@
       class="xl:container xl:mx-auto lg:px-4 dark:border-t dark:border-gray-800"
     >
       <div
-        class="
-          px-4
-          lg:px-0
-          py-12          
-          flex
-          flex-col
-          md:flex-row
-          md:justify-between
-          gap-8
-          text-primary 
-        "
+        class="px-4 lg:px-0 py-12 flex flex-col md:flex-row md:justify-between gap-8 text-primary"
       >
         <div class="flex flex-col gap-8">
           <router-link class="link font-medium" :to="{ name: 'home' }">
@@ -245,7 +235,7 @@ export default {
     return {
       EXTERNAL_LINKS,
       t,
-      isThirdPartyServicesModalVisible
+      isThirdPartyServicesModalVisible,
     };
   },
   components: {
@@ -256,8 +246,8 @@ export default {
     IconGithub,
     IconMail,
     IconLinkedin,
-    LogotypeBalancer
-  }
+    LogotypeBalancer,
+  },
 };
 </script>
 

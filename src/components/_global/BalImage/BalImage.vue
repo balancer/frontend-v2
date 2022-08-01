@@ -12,7 +12,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  noFade: false
+  noFade: false,
 });
 
 /**
@@ -30,7 +30,7 @@ const attrs = useAttrs();
  */
 const wrapperStyles = computed(() => ({
   width: attrs?.width || 'auto',
-  height: attrs?.height || 'auto'
+  height: attrs?.height || 'auto',
 }));
 
 /**

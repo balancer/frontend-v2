@@ -24,7 +24,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY
+  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY,
 });
 
 /**

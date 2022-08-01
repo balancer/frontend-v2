@@ -10,7 +10,7 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { ERC20Multicaller } from '../multicalls/erc20.multicaller';
 import { Pool } from '../pool/types';
 import AaveSubgraphService, {
-  aaveSubgraphService
+  aaveSubgraphService,
 } from './subgraph/aave-subgraph.service';
 
 export default class AaveService {
@@ -52,11 +52,8 @@ export default class AaveService {
       );
     });
 
-    const {
-      unwrappedAave,
-      unwrappedERC4626,
-      linearPoolTotalSupplies
-    } = await multicaller.execute();
+    const { unwrappedAave, unwrappedERC4626, linearPoolTotalSupplies } =
+      await multicaller.execute();
 
     const mappedUnwrappedTokens = wrappedTokens?.map((address, i) => {
       return (
@@ -85,8 +82,8 @@ export default class AaveService {
       where: {
         underlyingAsset_in: mappedMainTokens,
         aToken_in: mappedUnwrappedTokens,
-        isActive: true
-      }
+        isActive: true,
+      },
     });
 
     reserves.forEach(reserve => {
@@ -129,7 +126,7 @@ export default class AaveService {
 
     return {
       total: total.toString(),
-      breakdown
+      breakdown,
     };
   }
 }

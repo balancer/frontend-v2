@@ -39,10 +39,10 @@ const {
   userData: {
     stakedSharesForProvidedPool,
     refetchStakedShares,
-    refetchUserStakingData
+    refetchUserStakingData,
   },
   stakeBPT,
-  unstakeBPT
+  unstakeBPT,
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -54,7 +54,7 @@ const stakeAction = {
   loadingLabel: t('staking.staking'),
   confirmingLabel: t('confirming'),
   action: stakeBPT,
-  stepTooltip: t('staking.stakeTooltip')
+  stepTooltip: t('staking.stakeTooltip'),
 };
 
 const unstakeAction = {
@@ -62,7 +62,7 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: unstakeBPT,
-  stepTooltip: t('staking.unstakeTooltip')
+  stepTooltip: t('staking.unstakeTooltip'),
 };
 
 /**

@@ -6,7 +6,7 @@ import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import {
   swapService,
   SwapToken,
-  SwapTokenType
+  SwapTokenType,
 } from '@/services/swap/swap.service';
 
 export async function swapIn(
@@ -20,13 +20,13 @@ export async function swapIn(
   const tokenIn: SwapToken = {
     address: tokenInAddress,
     amount: tokenInAmount,
-    type: SwapTokenType.fixed
+    type: SwapTokenType.fixed,
   };
 
   const tokenOut: SwapToken = {
     address: tokenOutAddress,
     amount: tokenOutAmountMin,
-    type: SwapTokenType.min
+    type: SwapTokenType.min,
   };
 
   return swapService.batchSwapV2(
@@ -48,13 +48,13 @@ export async function swapOut(
   const tokenIn: SwapToken = {
     address: tokenInAddress,
     amount: tokenInAmountMax,
-    type: SwapTokenType.max
+    type: SwapTokenType.max,
   };
 
   const tokenOut: SwapToken = {
     address: tokenOutAddress,
     amount: tokenOutAmount,
-    type: SwapTokenType.fixed
+    type: SwapTokenType.fixed,
   };
 
   return swapService.batchSwapV2(
@@ -77,14 +77,14 @@ export async function boostedJoinBatchSwap(
       return {
         address,
         amount,
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
     }
   );
   const tokenOut: SwapToken = {
     address: tokenOutAddress,
     amount: amountOutMin,
-    type: SwapTokenType.min
+    type: SwapTokenType.min,
   };
   return swapService.boostedJoinBatchSwap(
     tokensIn,
@@ -105,7 +105,7 @@ export async function boostedExitBatchSwap(
   const tokenIn: SwapToken = {
     address: tokenInAddress,
     amount: BigNumber.from(amountIn),
-    type: SwapTokenType.min
+    type: SwapTokenType.min,
   };
 
   const tokensOut: SwapToken[] = Object.entries(amountsOutMap).map(
@@ -113,7 +113,7 @@ export async function boostedExitBatchSwap(
       return {
         address,
         amount: BigNumber.from(amount),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
     }
   );

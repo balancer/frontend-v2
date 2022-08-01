@@ -6,11 +6,11 @@ const RpcProviderService = jest.fn().mockImplementation(() => {
         _isSigner: true,
         getAddress: jest.fn().mockImplementation(() => {
           return '0x0';
-        })
+        }),
       };
     },
     initBlockListener: jest.fn().mockImplementation(),
-    getJsonProvider: jest.fn().mockImplementation()
+    getJsonProvider: jest.fn().mockImplementation(),
   };
 });
 

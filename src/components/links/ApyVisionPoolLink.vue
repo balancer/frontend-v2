@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   TitleTokens,
-  useApyVisionHelpers
+  useApyVisionHelpers,
 } from '@/composables/external/useApyVisionHelpers';
 import { getAddressFromPoolId } from '@/lib/utils';
 
@@ -29,11 +29,11 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
     <BalLink
       :href="
         'https://app.apy.vision/pools/balancerv2_' +
-          apyVisionNetworkName +
-          '-' +
-          poolPathSymbolSegment(titleTokens) +
-          '-' +
-          getAddressFromPoolId(poolId)
+        apyVisionNetworkName +
+        '-' +
+        poolPathSymbolSegment(titleTokens) +
+        '-' +
+        getAddressFromPoolId(poolId)
       "
       external
       noStyle

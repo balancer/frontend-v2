@@ -10,7 +10,7 @@ import {
   isStableLike,
   isStablePhantom,
   isTradingHaltable,
-  isWeightedLike
+  isWeightedLike,
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { isSameAddress } from '@/lib/utils';
@@ -23,7 +23,7 @@ import {
   RawLinearPoolData,
   RawLinearPoolDataMap,
   RawOnchainPoolData,
-  RawPoolTokens
+  RawPoolTokens,
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -247,7 +247,7 @@ export default class Vault {
         weight: weights[i],
         symbol: tokenInfo[token]?.symbol,
         name: tokenInfo[token]?.name,
-        logoURI: tokenInfo[token]?.logoURI
+        logoURI: tokenInfo[token]?.logoURI,
       };
     });
 
@@ -271,7 +271,7 @@ export default class Vault {
         unwrappedTokenAddress,
         unwrappedERC4626Address,
         tokenData,
-        totalSupply
+        totalSupply,
       } = linearPools[address];
 
       const unwrappedAddress =
@@ -285,16 +285,16 @@ export default class Vault {
         mainToken: {
           address: getAddress(mainToken.address),
           index: mainToken.index.toNumber(),
-          balance: tokenData.balances[mainToken.index.toNumber()].toString()
+          balance: tokenData.balances[mainToken.index.toNumber()].toString(),
         },
         wrappedToken: {
           address: getAddress(wrappedToken.address),
           index: wrappedToken.index.toNumber(),
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
-          priceRate: formatUnits(wrappedToken.rate, 18)
+          priceRate: formatUnits(wrappedToken.rate, 18),
         },
         unwrappedTokenAddress: unwrappedAddress,
-        totalSupply: formatUnits(totalSupply, 18)
+        totalSupply: formatUnits(totalSupply, 18),
       };
     });
 

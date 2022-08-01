@@ -13,7 +13,7 @@
       sticky="both"
       :initial-state="{
         sortColumn: 'weight',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
     >
       <template v-slot:tokenColumnCell="token">
@@ -74,9 +74,9 @@ export default defineComponent({
   props: {
     pool: {
       type: Object as PropType<Pool>,
-      required: true
+      required: true,
     },
-    loading: { type: Boolean, default: false }
+    loading: { type: Boolean, default: false },
   },
   setup(props) {
     /**
@@ -102,7 +102,7 @@ export default defineComponent({
       const onchainTokens = pool.value?.onchain?.tokens || [];
       return Object.keys(onchainTokens).map((address, index) => ({
         address,
-        index
+        index,
       }));
     });
 
@@ -112,7 +112,7 @@ export default defineComponent({
         id: 'token',
         accessor: 'address',
         Cell: 'tokenColumnCell',
-        width: 175
+        width: 175,
       },
       {
         name: t('weight'),
@@ -122,7 +122,7 @@ export default defineComponent({
         align: 'right',
         sortKey: pool => weightFor(pool.address),
         width: 125,
-        hidden: !props.loading && isStableLikePool.value
+        hidden: !props.loading && isStableLikePool.value,
       },
       {
         name: t('balance'),
@@ -131,7 +131,7 @@ export default defineComponent({
         Cell: 'tokenBalanceCell',
         align: 'right',
         sortKey: pool => balanceFor(pool.address),
-        width: 125
+        width: 125,
       },
       {
         name: t('value'),
@@ -140,8 +140,8 @@ export default defineComponent({
         Cell: 'tokenValueCell',
         align: 'right',
         sortKey: pool => numeral(fiatValueFor(pool.address)).value(),
-        width: 125
-      }
+        width: 125,
+      },
     ]);
 
     /**
@@ -182,8 +182,8 @@ export default defineComponent({
       explorer: explorerLinks,
       columns,
       tableData,
-      upToLargeBreakpoint
+      upToLargeBreakpoint,
     };
-  }
+  },
 });
 </script>

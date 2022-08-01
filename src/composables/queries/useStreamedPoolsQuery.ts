@@ -1,10 +1,11 @@
 import { flatten } from 'lodash';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 
 import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 
 import { lpTokensFor } from '../usePool';
@@ -36,8 +37,8 @@ async function fetchBasicPoolMetadata(
     skip: skip,
     where: {
       [tokensListFilterKey]: tokenList.value,
-      poolType_not_in: POOLS.ExcludedPoolTypes
-    }
+      poolType_not_in: POOLS.ExcludedPoolTypes,
+    },
   };
   const pools = await balancerSubgraphService.pools.get(queryArgs);
   return pools;
@@ -52,7 +53,7 @@ export default function useStreamedPoolsQuery(
     prices,
     tokens,
     injectTokens,
-    dynamicDataLoading
+    dynamicDataLoading,
   } = useTokens();
   const { currency } = useUserSettings();
   const gaugesQuery = useGaugesQuery();
@@ -67,7 +68,7 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    isComplete
+    isComplete,
   } = useQueryStreams('pools', {
     basic: {
       init: true,
@@ -78,7 +79,7 @@ export default function useStreamedPoolsQuery(
           filterOptions,
           currentPage.value
         );
-      }
+      },
     },
     injectTokens: {
       waitFor: ['basic.id'],
@@ -87,13 +88,13 @@ export default function useStreamedPoolsQuery(
           pools.value.map(pool => [
             ...pool.tokensList,
             ...lpTokensFor(pool),
-            pool.address
+            pool.address,
           ])
         );
         await injectTokens(_tokens);
         await forChange(dynamicDataLoading, false);
         return () => pools.value;
-      }
+      },
     },
     decoratePools: {
       waitFor: ['injectTokens.id'],
@@ -106,9 +107,19 @@ export default function useStreamedPoolsQuery(
           currency.value,
           tokens.value
         );
-      }
-    }
+      },
+    },
   });
+
+  watch(
+    () => result.value,
+    val => {
+      if (val.length > 0) {
+        poolsStoreService.setPools(val);
+      }
+    },
+    { deep: true }
+  );
 
   return {
     dataStates,
@@ -116,6 +127,6 @@ export default function useStreamedPoolsQuery(
     loadMore,
     currentPage,
     isLoadingMore,
-    isComplete
+    isComplete,
   };
 }

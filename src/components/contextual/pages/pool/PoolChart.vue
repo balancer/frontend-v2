@@ -16,7 +16,7 @@ import {
   Pool,
   PoolSnapshot,
   PoolSnapshots,
-  PoolType
+  PoolType,
 } from '@/services/pool/types';
 
 /**
@@ -41,7 +41,7 @@ type Props = {
 enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
-  FEES = 'fees'
+  FEES = 'fees',
 }
 
 interface PoolChartData {
@@ -63,7 +63,7 @@ interface PoolChartData {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -84,16 +84,16 @@ const MIN_CHART_VALUES = 2;
 const tabs = [
   {
     value: PoolChartTab.VOLUME,
-    label: t('poolChart.tabs.volume')
+    label: t('poolChart.tabs.volume'),
   },
   {
     value: PoolChartTab.TVL,
-    label: t('poolChart.tabs.tvl')
+    label: t('poolChart.tabs.tvl'),
   },
   {
     value: PoolChartTab.FEES,
-    label: t('poolChart.tabs.fees')
-  }
+    label: t('poolChart.tabs.fees'),
+  },
 ];
 const activeTab = ref(tabs[0].value);
 
@@ -112,7 +112,7 @@ const periodOptions = computed(() => [
   { text: t('poolChart.period.days', [90]), days: 90 },
   { text: t('poolChart.period.days', [180]), days: 180 },
   { text: t('poolChart.period.days', [365]), days: 365 },
-  { text: t('poolChart.period.all'), days: snapshotValues.value.length }
+  { text: t('poolChart.period.all'), days: snapshotValues.value.length },
 ]);
 
 const currentPeriod = ref<PoolChartPeriod>(periodOptions.value[0]);
@@ -194,24 +194,24 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
           offset: 0,
-          color: 'rgba(14, 165, 233, 0.08)'
+          color: 'rgba(14, 165, 233, 0.08)',
         },
         {
           offset: 1,
-          color: 'rgba(68, 9, 236, 0)'
-        }
-      ])
+          color: 'rgba(68, 9, 236, 0)',
+        },
+      ]),
     },
     chartType: 'line',
     data: [
       {
         name: 'TVL',
-        values: tvlValues
-      }
+        values: tvlValues,
+      },
     ],
     defaultHeaderStateValue: fNum2(tvlValues[0][1], {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
@@ -250,12 +250,12 @@ function getFeesData(
     data: [
       {
         name: 'Fees',
-        values: feesValues
-      }
+        values: feesValues,
+      },
     ],
     defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
@@ -292,44 +292,42 @@ function getVolumeData(
     data: [
       {
         name: 'Volume',
-        values: volumeData
-      }
+        values: volumeData,
+      },
     ],
     defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
-const chartData = computed(
-  (): PoolChartData => {
-    const periodSnapshots =
-      currentPeriod.value.days === snapshotValues.value.length
-        ? snapshotValues.value
-        : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
-    const isAllTimeSelected =
-      periodSnapshots.length === snapshotValues.value.length;
-    const pariodLastSnapshotIdx = periodSnapshots.length - 1;
+const chartData = computed((): PoolChartData => {
+  const periodSnapshots =
+    currentPeriod.value.days === snapshotValues.value.length
+      ? snapshotValues.value
+      : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
+  const isAllTimeSelected =
+    periodSnapshots.length === snapshotValues.value.length;
+  const pariodLastSnapshotIdx = periodSnapshots.length - 1;
 
-    if (activeTab.value === PoolChartTab.TVL) {
-      return getTVLData(periodSnapshots);
-    }
+  if (activeTab.value === PoolChartTab.TVL) {
+    return getTVLData(periodSnapshots);
+  }
 
-    if (activeTab.value === PoolChartTab.FEES) {
-      return getFeesData(
-        periodSnapshots,
-        isAllTimeSelected,
-        pariodLastSnapshotIdx
-      );
-    }
-
-    return getVolumeData(
+  if (activeTab.value === PoolChartTab.FEES) {
+    return getFeesData(
       periodSnapshots,
       isAllTimeSelected,
       pariodLastSnapshotIdx
     );
   }
-);
+
+  return getVolumeData(
+    periodSnapshots,
+    isAllTimeSelected,
+    pariodLastSnapshotIdx
+  );
+});
 
 const defaultChartData = computed(() => {
   const currentPeriodOption = periodOptions.value.find(
@@ -356,7 +354,7 @@ function setCurrentChartValue(payload: {
   chartValue: number;
 }) {
   currentChartValue.value = fNum2(payload.chartValue, {
-    style: 'currency'
+    style: 'currency',
   });
   currentChartDate.value = format(
     new Date(payload.chartDate),
@@ -410,7 +408,11 @@ function setCurrentChartValue(payload: {
       height="96"
       :data="chartData.data"
       :axis-label-formatter="{
-        yAxis: { style: 'currency', abbreviate: true, maximumFractionDigits: 0 }
+        yAxis: {
+          style: 'currency',
+          abbreviate: true,
+          maximumFractionDigits: 0,
+        },
       }"
       :area-style="chartData.areaStyle"
       :color="chartData.color"

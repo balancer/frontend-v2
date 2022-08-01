@@ -20,7 +20,7 @@ import {
   isStableLike,
   orderedPoolTokens,
   orderedTokenAddresses,
-  totalAprLabel
+  totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   isPaginated: false,
   hiddenColumns: () => [],
   showBoost: false,
-  columnStates: () => ({})
+  columnStates: () => ({}),
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -85,14 +85,14 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     Header: 'iconColumnHeader',
     Cell: 'iconColumnCell',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('composition'),
     id: 'poolName',
     accessor: 'id',
     Cell: 'poolNameCell',
-    width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350
+    width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350,
   },
   {
     name: t('myBalance'),
@@ -100,21 +100,21 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
       fNum2(pool.shares, {
         style: 'currency',
         maximumFractionDigits: 0,
-        fixedFormat: true
+        fixedFormat: true,
       }),
     align: 'right',
     id: 'myBalance',
     hidden: !props.showPoolShares,
     sortKey: pool => Number(pool.shares),
     width: 160,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
   },
   {
     name: t('poolValue'),
     accessor: pool =>
       fNum2(pool.totalLiquidity, {
         style: 'currency',
-        maximumFractionDigits: 0
+        maximumFractionDigits: 0,
       }),
     align: 'right',
     id: 'poolValue',
@@ -124,7 +124,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
       return apr;
     },
     width: 150,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
   },
   {
     name: t('volume24h', [t('hourAbbrev')]),
@@ -138,7 +138,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
       return volume;
     },
     width: 175,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
   },
   {
     name: t('myBoost'),
@@ -149,7 +149,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     hidden: !props.showBoost,
     sortKey: pool => Number(pool?.boost || '0'),
     width: 150,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
   },
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
@@ -166,7 +166,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
 
       return isFinite(apr) ? apr : 0;
     },
-    width: 250
+    width: 250,
   },
   {
     name: t('expiryDate'),
@@ -174,7 +174,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     accessor: 'lockedEndDate',
     align: 'right',
     id: 'lockEndDate',
-    width: 150
+    width: 150,
   },
   {
     name: t('migrate'),
@@ -182,7 +182,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     accessor: 'migrate',
     align: 'center',
     id: 'migrate',
-    width: 150
+    width: 150,
   },
   {
     name: t('actions'),
@@ -190,8 +190,8 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     accessor: 'actions',
     align: 'center',
     id: 'actions',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 const visibleColumns = computed(() =>
@@ -211,9 +211,9 @@ function navigateToPoolMigration(pool: PoolWithShares) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId
+      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId,
     },
-    query: { returnRoute: 'home' }
+    query: { returnRoute: 'home' },
   });
 }
 
@@ -247,14 +247,14 @@ function lockedUntil(lockEndDate?: number) {
       :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
-        getParams: pool => ({ id: pool.id || '' })
+        getParams: pool => ({ id: pool.id || '' }),
       }"
       :on-row-click="handleRowClick"
       :is-paginated="isPaginated"
       @load-more="emit('loadMore')"
       :initial-state="{
         sortColumn: 'poolValue',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
     >
       <template v-slot:iconColumnHeader>
@@ -296,7 +296,7 @@ function lockedUntil(lockEndDate?: number) {
             {{
               fNum2(pool?.volumeSnapshot, {
                 style: 'currency',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 0,
               })
             }}
           </span>
@@ -304,7 +304,7 @@ function lockedUntil(lockEndDate?: number) {
       </template>
       <template v-slot:aprCell="pool">
         <div
-          class="px-6 py-4 -mt-1 flex justify-end font-numeric"
+          class="px-6 py-4 -mt-1 flex justify-end font-numeric text-right"
           :key="columnStates.aprs"
         >
           <BalLoadingBlock

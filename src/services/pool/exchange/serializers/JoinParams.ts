@@ -55,8 +55,8 @@ export default class JoinParams {
         assets,
         maxAmountsIn: parsedAmountsIn,
         userData: txData,
-        fromInternalBalance: this.fromInternalBalance
-      }
+        fromInternalBalance: this.fromInternalBalance,
+      },
     ];
   }
 
@@ -106,13 +106,13 @@ export default class JoinParams {
       if (this.isManagedPool && !this.isSwapEnabled) {
         return this.dataEncodeFn({
           kind: 'AllTokensInForExactBPTOut',
-          bptAmountOut: minimumBPT
+          bptAmountOut: minimumBPT,
         });
       } else {
         return this.dataEncodeFn({
           kind: 'ExactTokensInForBPTOut',
           amountsIn,
-          minimumBPT
+          minimumBPT,
         });
       }
     }

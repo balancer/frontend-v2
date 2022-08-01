@@ -7,7 +7,7 @@ import {
   mapValues,
   merge,
   nth,
-  tail
+  tail,
 } from 'lodash';
 import { QueryKey } from 'react-query';
 import { computed, reactive, Ref, ref, watch } from 'vue';
@@ -77,7 +77,7 @@ export default function useQueryStreams(
   const successStates = ref({
     [initialQueryHash.value]: Object.fromEntries(
       Object.keys(queryTemplates).map(queryKey => [queryKey, false])
-    )
+    ),
   });
 
   // Same as success, internal data is keyed by the query hash first, and then the id
@@ -85,7 +85,7 @@ export default function useQueryStreams(
   const internalData = ref({
     [initialQueryHash.value]: Object.fromEntries(
       Object.keys(queryTemplates).map(queryKey => [queryKey, undefined])
-    )
+    ),
   });
 
   // when the query hash changes. e.g. when a filter is hit
@@ -155,12 +155,12 @@ export default function useQueryStreams(
         ? reactive(
             Object.assign({}, query.dependencies, {
               currentPage,
-              otherQueryDependency
+              otherQueryDependency,
             })
           )
         : reactive(
             Object.assign({}, query.dependencies, {
-              otherQueryDependency
+              otherQueryDependency,
             })
           ) || {};
 
@@ -211,7 +211,7 @@ export default function useQueryStreams(
           )
       ),
       refetchOnWindowFocus: false,
-      keepPreviousData: true
+      keepPreviousData: true,
     };
     template.onSuccess = response => {
       if (
@@ -327,6 +327,6 @@ export default function useQueryStreams(
     result: _result,
     currentPage,
     isLoadingMore,
-    loadMore
+    loadMore,
   };
 }

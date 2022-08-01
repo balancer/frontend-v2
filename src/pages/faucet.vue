@@ -7,9 +7,7 @@ import FaucetTable from '@/components/tables/FaucetTable/FaucetTable.vue';
     <div class="lg:container lg:mx-auto py-12">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div>
-          <h1 class="mb-4">
-            Faucet
-          </h1>
+          <h1 class="mb-4">Faucet</h1>
         </div>
       </div>
       <FaucetTable />

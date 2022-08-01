@@ -39,13 +39,13 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     color: {
       type: String,
       default: 'blue',
-      validator: (val: string): boolean => ['blue'].includes(val)
-    }
+      validator: (val: string): boolean => ['blue'].includes(val),
+    },
   },
 
   setup(props, { emit }) {
@@ -89,23 +89,23 @@ export default defineComponent({
       return {
         [sizeClasses.value]: true,
         [colorClass.value]: true,
-        [cursrorClass.value]: true
+        [cursrorClass.value]: true,
       };
     });
 
     const labelClasses = computed(() => {
       return {
         [textSizeClass.value]: true,
-        [cursrorClass.value]: true
+        [cursrorClass.value]: true,
       };
     });
 
     return {
       onChange,
       inputClasses,
-      labelClasses
+      labelClasses,
     };
-  }
+  },
 });
 </script>
 

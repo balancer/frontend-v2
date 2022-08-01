@@ -17,7 +17,7 @@ type Props = {
  */
 withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
-  highPriceImpact: false
+  highPriceImpact: false,
 });
 /**
  * COMPOSABLES
@@ -49,8 +49,9 @@ const { currency } = useUserSettings();
         :class="[
           'summary-table-row',
           {
-            'bg-red-50 dark:bg-red-500 text-red-500 dark:text-white': highPriceImpact
-          }
+            'bg-red-50 dark:bg-red-500 text-red-500 dark:text-white':
+              highPriceImpact,
+          },
         ]"
       >
         <div class="summary-table-label">

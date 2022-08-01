@@ -83,8 +83,8 @@ const hasUnknownPrice = computed(() =>
             'mt-1',
             {
               'text-red-500 hover:text-red-700': hasUnknownPrice,
-              'hover:text-blue-500': !hasUnknownPrice
-            }
+              'hover:text-blue-500': !hasUnknownPrice,
+            },
           ]"
           v-for="token in unknownTokens"
           :key="`tokenPrice-unknown-${token}`"
@@ -93,7 +93,7 @@ const hasUnknownPrice = computed(() =>
             <span
               :class="[
                 'w-1/2 text-left',
-                { 'font-medium': injectedPrices[token]?.usd === undefined }
+                { 'font-medium': injectedPrices[token]?.usd === undefined },
               ]"
               >{{ getToken(token)?.symbol }}</span
             >

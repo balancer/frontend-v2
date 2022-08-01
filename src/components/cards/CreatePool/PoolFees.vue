@@ -39,7 +39,7 @@ const {
   fee,
   proceed,
   goBack,
-  isLoadingSimilarPools
+  isLoadingSimilarPools,
 } = usePoolCreation();
 const { account } = useWeb3();
 const { userNetworkConfig } = useWeb3();
@@ -49,7 +49,7 @@ const { userNetworkConfig } = useWeb3();
  */
 const customInputClasses = computed(() => ({
   'border border-blue-500 text-blue-600 dark:text-blue-400': isCustomFee.value,
-  'border dark:border-gray-900': !isCustomFee.value
+  'border dark:border-gray-900': !isCustomFee.value,
 }));
 
 const isProceedDisabled = computed(() => {
@@ -72,9 +72,9 @@ const feeOptions = FIXED_FEE_OPTIONS.map(option => {
       style: 'percent',
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
-      fixedFormat: true
+      fixedFormat: true,
     }),
-    value: option
+    value: option,
   };
 });
 
@@ -109,7 +109,7 @@ async function onChangeFeeManagementType(val: boolean) {
   }
   await nextTick();
   emit('update:height', {
-    height: cardWrapper.value?.offsetHeight || 0
+    height: cardWrapper.value?.offsetHeight || 0,
   });
 }
 
@@ -120,7 +120,7 @@ async function onChangeFeeType(val: string) {
   }
   await nextTick();
   emit('update:height', {
-    height: cardWrapper.value?.offsetHeight || 0
+    height: cardWrapper.value?.offsetHeight || 0,
   });
 }
 
@@ -130,7 +130,7 @@ async function onChangeFeeController(val: string) {
   }
   await nextTick();
   emit('update:height', {
-    height: cardWrapper.value?.offsetHeight || 0
+    height: cardWrapper.value?.offsetHeight || 0,
   });
 }
 </script>
@@ -188,9 +188,7 @@ async function onChangeFeeController(val: string) {
                 %
               </template>
             </BalTextInput> -->
-                <div class="px-1">
-                  %
-                </div>
+                <div class="px-1">%</div>
               </div>
             </div>
           </BalStack>
@@ -290,7 +288,7 @@ async function onChangeFeeController(val: string) {
               validateOn="blur"
               :rules="[
                 isRequired($t('A controller address')),
-                isValidAddress()
+                isValidAddress(),
               ]"
               name="customAddress"
             />

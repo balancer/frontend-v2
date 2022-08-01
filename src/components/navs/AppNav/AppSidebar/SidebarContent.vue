@@ -35,7 +35,7 @@ const navLinks = [
   { label: t('trade'), path: '/trade' },
   { label: t('portfolio'), path: '/portfolio' },
   { label: 'veBAL', path: '/vebal' },
-  { label: t('claim'), path: '/claim' }
+  { label: t('claim'), path: '/claim' },
 ];
 
 const ecosystemLinks = [
@@ -47,8 +47,8 @@ const ecosystemLinks = [
   { label: t('forum'), url: 'https://forum.balancer.fi/' },
   {
     label: t('grants'),
-    url: 'http://grants.balancer.community'
-  }
+    url: 'http://grants.balancer.community',
+  },
 ];
 
 const socialLinks = [
@@ -57,9 +57,9 @@ const socialLinks = [
   { component: 'MediumIcon', url: 'https://medium.com/balancer-protocol' },
   {
     component: 'YoutubeIcon',
-    url: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow'
+    url: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow',
   },
-  { component: 'GithubIcon', url: 'https://github.com/balancer-labs/' }
+  { component: 'GithubIcon', url: 'https://github.com/balancer-labs/' },
 ];
 
 /**
@@ -153,9 +153,7 @@ watch(blockNumber, async () => {
         </span>
       </div>
       <BalLink
-        :href="
-          `https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`
-        "
+        :href="`https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`"
         class="text-gray-300 flex items-center mt-2"
         external
         noStyle

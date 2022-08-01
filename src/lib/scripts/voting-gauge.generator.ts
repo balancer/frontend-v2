@@ -34,7 +34,7 @@ async function getAssetURIFromTokenlists(
   const tokenListURIs = TOKEN_LIST_MAP[network.toString()];
   const allURIs = [
     ...Object.values(tokenListURIs.Balancer),
-    ...tokenListURIs.External
+    ...tokenListURIs.External,
   ].filter(uri => uri.includes('https'));
 
   log('getAssetURIFromTokenlists fetching Tokens');
@@ -84,7 +84,7 @@ function getTrustWalletAssetsURI(
     [Network.ARBITRUM]: 'arbitrum',
     [Network.POLYGON]: 'polygon',
     [Network.KOVAN]: 'kovan',
-    [Network.GOERLI]: 'goerli'
+    [Network.GOERLI]: 'goerli',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
@@ -156,9 +156,9 @@ async function getPoolInfo(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -170,7 +170,7 @@ async function getPoolInfo(
         return {
           address: getAddress(token.address),
           weight: token.weight || 'null',
-          symbol: token.symbol
+          symbol: token.symbol,
         };
       });
 
@@ -179,7 +179,7 @@ async function getPoolInfo(
       address: getAddress(address),
       poolType,
       symbol,
-      tokens: tokensList
+      tokens: tokensList,
     };
   } catch {
     console.error('Pool not found:', poolId, 'chainId:', network);
@@ -214,9 +214,9 @@ async function getLiquidityGaugeAddress(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -263,9 +263,9 @@ async function getStreamerAddress(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -311,9 +311,9 @@ async function getRootGaugeAddress(
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     });
 
     const { data } = await response.json();
@@ -370,7 +370,7 @@ async function getGaugeAddress(
         address,
         network,
         pool,
-        tokenLogoURIs
+        tokenLogoURIs,
       };
     })
   );

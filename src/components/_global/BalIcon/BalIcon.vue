@@ -18,7 +18,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
-  filled: false
+  filled: false,
 });
 
 /**

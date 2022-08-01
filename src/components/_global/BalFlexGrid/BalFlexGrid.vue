@@ -6,14 +6,14 @@ export default defineComponent({
 
   props: {
     gap: { type: Number, default: 4 },
-    flexWrap: { type: Boolean, default: false }
+    flexWrap: { type: Boolean, default: false },
   },
 
   setup(props, { slots }) {
     const spacing = computed((): string => (props.gap / 2).toString());
 
     const flexClasses = computed(() => ({
-      'flex-wrap': props.flexWrap
+      'flex-wrap': props.flexWrap,
     }));
 
     // @ts-ignore
@@ -28,8 +28,8 @@ export default defineComponent({
           'div',
           { class: [`flex -mx-${props.gap}`, flexClasses.value] },
           gridItems
-        )
+        ),
       ]);
-  }
+  },
 });
 </script>

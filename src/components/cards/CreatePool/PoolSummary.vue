@@ -19,7 +19,7 @@ const manualColorMap = {
   ETH: '#627EEA',
   WETH: '#627EEA',
   WBTC: '#F7931A',
-  BAL: '#00265A'
+  BAL: '#00265A',
 };
 
 /** STATE */
@@ -35,7 +35,7 @@ const {
   updateTokenColors,
   totalLiquidity,
   tokensList,
-  hasRestoredFromSavedState
+  hasRestoredFromSavedState,
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
@@ -53,7 +53,7 @@ const chartConfig = computed(() => {
     tooltip: {
       show: true,
       borderRadius: 50,
-      confine: true
+      confine: true,
     },
     legend: {
       show: true,
@@ -67,8 +67,8 @@ const chartConfig = computed(() => {
       textStyle: {
         color: darkMode.value
           ? tailwind.theme.colors.gray['300']
-          : tailwind.theme.colors.gray['850']
-      }
+          : tailwind.theme.colors.gray['850'],
+      },
     },
     series: [
       {
@@ -83,14 +83,14 @@ const chartConfig = computed(() => {
             : '#fff',
           borderWidth: 5,
           borderCap: 'butt',
-          borderJoin: 'round'
+          borderJoin: 'round',
         },
         label: {
           show: false,
-          position: 'center'
+          position: 'center',
         },
         labelLine: {
-          show: false
+          show: false,
         },
         top: -20,
         colors: colors.value,
@@ -106,7 +106,7 @@ const chartConfig = computed(() => {
                 value: t.weight,
                 tooltip: {
                   show: false,
-                  borderWidth: '0'
+                  borderWidth: '0',
                 },
                 emphasis: {
                   label: {
@@ -115,25 +115,25 @@ const chartConfig = computed(() => {
                     fontSize: '1rem',
                     fontWeight: 'bold',
                     backgroundColor: {
-                      image: tokenLogoURI
+                      image: tokenLogoURI,
                     },
                     width: 48,
                     height: 48,
                     borderRadius: 48,
-                    overflow: 'hidden'
-                  }
+                    overflow: 'hidden',
+                  },
                 },
                 itemStyle: {
                   color:
                     t.tokenAddress === ''
                       ? tailwind.theme.colors.gray[`${i + 1}00`]
-                      : colors.value[i]
-                }
+                      : colors.value[i],
+                },
               };
-            })
-        ]
-      }
-    ]
+            }),
+        ],
+      },
+    ],
   };
 });
 
@@ -162,7 +162,7 @@ async function calculateColors() {
         const tokenLogoURI = resolve(token.logoURI || '');
         const color = await prominent(tokenLogoURI, {
           amount: 2,
-          format: 'hex'
+          format: 'hex',
         });
         if (manualColorMap[token.symbol]) {
           return manualColorMap[token.symbol];

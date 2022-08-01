@@ -1,7 +1,9 @@
 # Balancer Components
+
 A set of foundational components for use throughout the UI.
 
 ## Forms
+
 Forms are difficult to demo via the storybook UI because they include stitching together a couple of different components plus validations. So instead here is a simple example of how a form can be used:
 
 ```vue
@@ -28,12 +30,12 @@ export default defineComponent({
     const form = reactive({
       name: '',
       email: '',
-      pass: ''
+      pass: '',
     });
     const rules = {
       name: [isRequired()],
       email: [isRequired(), isEmail()],
-      pass: [isRequired(), minChar(5)]
+      pass: [isRequired(), minChar(5)],
     };
 
     function submit() {
@@ -45,7 +47,7 @@ export default defineComponent({
     }
 
     return { exampleUserForm, form, rules, submit };
-  }
+  },
 });
 </script>
 ```

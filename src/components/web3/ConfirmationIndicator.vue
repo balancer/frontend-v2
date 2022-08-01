@@ -41,7 +41,7 @@ const {
   data: confirmationData,
   isLoading: isFetchingConfirmationDate,
   isIdle,
-  error
+  error,
 } = useQuery<ConfirmationData>(
   QUERY_KEYS.Transaction.ConfirmationDate(receipt),
   async () => {
@@ -49,7 +49,7 @@ const {
     const explorerLink = explorerLinks.txLink(receipt.value.transactionHash);
     return {
       confirmedAt: dateTimeLabelFor(confirmedAt),
-      explorerLink
+      explorerLink,
     };
   },
   reactive({ enabled: isQueryEnabled })

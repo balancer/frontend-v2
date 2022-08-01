@@ -45,7 +45,7 @@ export interface MatchaPriceQuote extends MatchaBaseQuote {
 
 export const API_URLS = {
   [Network.MAINNET]: 'https://api.0x.org/swap',
-  [Network.ROPSTEN]: 'https://ropsten.api.0x.org/swap'
+  [Network.ROPSTEN]: 'https://ropsten.api.0x.org/swap',
 };
 
 // GPV2Settlement
@@ -92,12 +92,8 @@ export default class Match0xService {
       return null;
     }
 
-    const {
-      sellAmount,
-      buyAmount,
-      sellTokenAddress,
-      buyTokenAddress
-    } = priceRaw;
+    const { sellAmount, buyAmount, sellTokenAddress, buyTokenAddress } =
+      priceRaw;
 
     if (kind === OrderKind.BUY) {
       return { amount: sellAmount, token: sellTokenAddress };

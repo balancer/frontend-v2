@@ -11,12 +11,8 @@ import useTokens from '@/composables/useTokens';
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const {
-  seedTokens,
-  maxInitialLiquidity,
-  tokenColors,
-  getOptimisedLiquidity
-} = usePoolCreation();
+const { seedTokens, maxInitialLiquidity, tokenColors, getOptimisedLiquidity } =
+  usePoolCreation();
 const { fNum2 } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -35,7 +31,7 @@ const unallocatedTokenWeight = computed(() =>
 
 const totalsClass = computed(() => ({
   'text-gray-700 ': maxInitialLiquidity.value >= 20000,
-  'text-orange-500': maxInitialLiquidity.value < 20000
+  'text-orange-500': maxInitialLiquidity.value < 20000,
 }));
 
 const optimisedLiquidity = computed(() => getOptimisedLiquidity());
@@ -67,7 +63,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
           v-for="(token, i) in allocatedTokenWeights"
           :key="token.tokenAddress"
         >
-          <div class="col-span-6 text-left  font-medium">
+          <div class="col-span-6 text-left font-medium">
             <div class="flex flex-row items-center">
               <div
                 class="rounded-full w-1.5 h-1.5 mr-2"
@@ -103,7 +99,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
         <div
           :class="[
             'col-span-6 text-sm font-semibold flex items-center justify-end',
-            totalsClass
+            totalsClass,
           ]"
         >
           {{ fNum2(maxInitialLiquidity, FNumFormats.fiat) }}

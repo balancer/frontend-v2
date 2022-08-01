@@ -168,9 +168,7 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
     return `${minAPR} - ${maxAPR}`;
   } else if (aprs.veBal) {
     const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxValue = bnum(aprs.total.staked.min)
-      .plus(aprs.veBal)
-      .toString();
+    const maxValue = bnum(aprs.total.staked.min).plus(aprs.veBal).toString();
     const maxAPR = numF(maxValue, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
@@ -235,7 +233,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
         token =>
           `${fNum2(token.weight, {
             style: 'percent',
-            maximumFractionDigits: 0
+            maximumFractionDigits: 0,
           })} ${token.symbol}`
       )
       .join(', ');
@@ -318,6 +316,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
-    orderedPoolTokens
+    orderedPoolTokens,
   };
 }

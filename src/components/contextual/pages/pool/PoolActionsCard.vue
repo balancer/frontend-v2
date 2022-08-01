@@ -50,11 +50,7 @@ const fiatTotal = computed(() => {
 
       return toFiat(tokenBalance, address);
     })
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    );
+    .reduce((total, value) => bnum(total).plus(value).toString());
 
   return fNum2(fiatValue, FNumFormats.fiat);
 });
@@ -96,6 +92,8 @@ const fiatTotal = computed(() => {
         :to="{ name: 'withdraw' }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
+        color="blue"
+        outline
         block
       />
     </div>

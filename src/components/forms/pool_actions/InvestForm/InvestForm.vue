@@ -28,7 +28,7 @@ import useInvestState from './composables/useInvestState';
  */
 enum NativeAsset {
   wrapped = 'wrapped',
-  unwrapped = 'unwrapped'
+  unwrapped = 'unwrapped',
 }
 
 type Props = {
@@ -58,7 +58,7 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  sor
+  sor,
 } = useInvestState();
 
 const investMath = useInvestMath(
@@ -75,14 +75,11 @@ const {
   maximizeAmounts,
   optimizeAmounts,
   proportionalAmounts,
-  batchSwapLoading
+  batchSwapLoading,
 } = investMath;
 
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
   toRef(props, 'pool')
@@ -291,9 +288,9 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         color="gradient"
         :disabled="
           !hasAmounts ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            batchSwapLoading
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          batchSwapLoading
         "
         block
         @click="showInvestPreview = true"

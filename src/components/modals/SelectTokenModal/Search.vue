@@ -28,7 +28,7 @@ export default {
     handleInput(e) {
       const input = e.target.value;
       this.$emit('update:modelValue', input);
-    }
-  }
+    },
+  },
 };
 </script>

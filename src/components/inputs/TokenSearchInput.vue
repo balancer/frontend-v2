@@ -18,7 +18,7 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => []
+  modelValue: () => [],
 });
 
 const emit = defineEmits<{

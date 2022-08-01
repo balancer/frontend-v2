@@ -6,13 +6,13 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  active: false
+  active: false,
 });
 
 const classes = computed(() => ({
   'border-white dark:border-gray-900': !props.active,
   'border-blue-600 dark:border-blue-400 text-blue-700 dark:text-blue-400':
-    props.active
+    props.active,
 }));
 </script>
 

@@ -9,7 +9,7 @@ import { configService } from '@/services/config/config.service';
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,
-  balancer: configService.network.subgraph
+  balancer: configService.network.subgraph,
 };
 
 export default function useGraphQuery<T>(
@@ -26,8 +26,8 @@ export default function useGraphQuery<T>(
     {
       // extend the dependencies from the query key and add
       // the current query key as a dependency
-      ...(last(key) as any)
-    }
+      ...(last(key) as any),
+    },
   ]);
 
   const queryFn = async () => {
@@ -36,9 +36,9 @@ export default function useGraphQuery<T>(
     }
     try {
       const {
-        data: { data }
+        data: { data },
       } = await axios.post(subgraphUrl, {
-        query: jsonToGraphQLQuery({ query: query() })
+        query: jsonToGraphQLQuery({ query: query() }),
       });
 
       return data;

@@ -39,8 +39,8 @@ function getHorizontalStickyClass(index: number) {
       'bg-white z-10 row-bg group',
       {
         'cursor-pointer': handleRowClick,
-        'border-b dark:border-gray-700': pinned
-      }
+        'border-b dark:border-gray-700': pinned,
+      },
     ]"
   >
     <td
@@ -49,14 +49,14 @@ function getHorizontalStickyClass(index: number) {
       :class="[
         column.align === 'right' ? 'text-left' : 'text-right',
         getHorizontalStickyClass(columnIndex),
-        isColumnStuck ? 'isSticky' : ''
+        isColumnStuck ? 'isSticky' : '',
       ]"
     >
       <router-link
         v-if="link"
         :to="{
           name: link.to,
-          params: link.getParams(data)
+          params: link.getParams(data),
         }"
       >
         <slot v-if="column.Cell" v-bind="data" :name="column.Cell"></slot>
@@ -66,7 +66,7 @@ function getHorizontalStickyClass(index: number) {
             compact([
               'px-6 py-4',
               column.align === 'right' ? 'text-right' : 'text-left',
-              column.cellClassName
+              column.cellClassName,
             ])
           "
         >
@@ -85,7 +85,7 @@ function getHorizontalStickyClass(index: number) {
             compact([
               'px-6 py-4',
               column.align === 'right' ? 'text-right' : 'text-left',
-              column.cellClassName
+              column.cellClassName,
             ])
           "
         >

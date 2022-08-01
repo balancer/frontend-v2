@@ -65,8 +65,8 @@ export default function usePoolsQuery(
       skip: pageParam,
       where: {
         [tokensListFilterKey]: tokenList.value,
-        poolType_not_in: POOLS.ExcludedPoolTypes
-      }
+        poolType_not_in: POOLS.ExcludedPoolTypes,
+      },
     };
     if (filterOptions?.poolIds?.value.length) {
       queryArgs.where.id_in = filterOptions.poolIds.value;
@@ -107,7 +107,7 @@ export default function usePoolsQuery(
       pools.map(pool => [
         ...pool.tokensList,
         ...lpTokensFor(pool),
-        pool.address
+        pool.address,
       ])
     );
     await injectTokens(tokens);
@@ -118,14 +118,14 @@ export default function usePoolsQuery(
       skip:
         pools.length >= POOLS.Pagination.PerPage
           ? pageParam + POOLS.Pagination.PerPage
-          : undefined
+          : undefined,
     };
   };
 
   const queryOptions = reactive({
     ...options,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
-    enabled
+    enabled,
   });
 
   return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);

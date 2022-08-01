@@ -92,8 +92,8 @@ const cards = computed(() => {
       plusIconTo: {
         name: 'invest',
         params: { id: lockablePoolId.value },
-        query: { returnRoute: 'vebal' }
-      }
+        query: { returnRoute: 'vebal' },
+      },
     },
     {
       id: 'myLockedLpToken',
@@ -106,7 +106,7 @@ const cards = computed(() => {
         : '—',
       showPlusIcon: isWalletReady.value && !isExpired ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
-      showUnlockIcon: isExpired ? true : false
+      showUnlockIcon: isExpired ? true : false,
     },
     {
       id: 'lockedEndDate',
@@ -115,11 +115,11 @@ const cards = computed(() => {
       secondaryText:
         hasExistingLock && !isExpired
           ? t('veBAL.myVeBAL.cards.lockedEndDate.secondaryText', [
-              differenceInDays(new Date(lockedUntil.value), new Date())
+              differenceInDays(new Date(lockedUntil.value), new Date()),
             ])
           : '-',
       showPlusIcon: hasExistingLock && !isExpired ? true : false,
-      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } }
+      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
     },
     {
       id: 'myVeBAL',
@@ -133,16 +133,16 @@ const cards = computed(() => {
                   .toString(),
                 {
                   style: 'percent',
-                  maximumFractionDigits: 4
+                  maximumFractionDigits: 4,
                 }
-              )
+              ),
             ])
           : '-',
       showPlusIcon: false,
       value: hasExistingLock
         ? fNum2(veBalBalance.value, FNumFormats.token)
-        : '—'
-    }
+        : '—',
+    },
   ];
 });
 </script>
@@ -164,9 +164,7 @@ const cards = computed(() => {
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
           icon-size="sm"
           :icon-name="'alert-triangle'"
-          :icon-class="
-            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
-          "
+          :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />

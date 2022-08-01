@@ -32,10 +32,10 @@ const i18n = createI18n({
         month: 'short',
         day: 'numeric',
         hour: 'numeric',
-        minute: 'numeric'
-      }
-    }
-  }
+        minute: 'numeric',
+      },
+    },
+  },
 });
 
 export default i18n;

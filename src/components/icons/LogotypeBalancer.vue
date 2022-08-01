@@ -9,9 +9,7 @@
     role="img"
   >
     <title id="logoTitle">Balancer logo homepage link</title>
-    <desc id="logoDesc">
-      Balancer Logotype homepage link
-    </desc>
+    <desc id="logoDesc">Balancer Logotype homepage link</desc>
     <g fill="#000" fill-rule="nonzero">
       <path
         class="logotype-path"

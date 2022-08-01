@@ -11,7 +11,7 @@ const SUPPORTED_NETWORKS = [
   Network.RINKEBY,
   Network.ROPSTEN,
   Network.GOERLI,
-  Network.POLYGON
+  Network.POLYGON,
 ];
 
 export default function useBlocknative() {
@@ -27,6 +27,6 @@ export default function useBlocknative() {
 
   return {
     blocknative,
-    supportsBlocknative
+    supportsBlocknative,
   };
 }

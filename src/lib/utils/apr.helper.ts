@@ -32,8 +32,5 @@ export async function calcUSDPlusWeightedAPR(
 
   const value = actualBalance.times(price);
 
-  return value
-    .times(apr)
-    .div(pool.totalLiquidity)
-    .toString();
+  return value.times(apr).div(pool.totalLiquidity).toString();
 }

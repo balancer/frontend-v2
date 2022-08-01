@@ -58,17 +58,17 @@ export class AprConcern {
       yield: yieldAPR,
       staking: {
         bal: stakingBalApr,
-        rewards: stakingRewardApr
+        rewards: stakingRewardApr,
       },
       total: {
         unstaked: unstakedTotalAPR,
         staked: {
           calc: aprGivenBoost,
-          ...stakedAprRange
-        }
+          ...stakedAprRange,
+        },
       },
       // Conditionally add the veBAL APR attribute if this is the BAL 80/20 pool.
-      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR })
+      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR }),
     };
   }
 
@@ -125,7 +125,7 @@ export class AprConcern {
 
     return {
       max: stakedBaseAPR.plus(maxBalApr).toString(),
-      min: stakedBaseAPR.plus(minBalApr).toString()
+      min: stakedBaseAPR.plus(minBalApr).toString(),
     };
   }
 
@@ -158,7 +158,7 @@ export class AprConcern {
         '0xb973ca96a3f0d61045f53255e319aedb6ed4924000000000000000000000042f':
           '0x1aAFc31091d93C3Ff003Cff5D2d8f7bA2e728425',
         '0xf48f01dcb2cbb3ee1f6aab0e742c2d3941039d56000000000000000000000445':
-          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f'
+          '0x6933ec1CA55C06a894107860c92aCdFd2Dd8512f',
       };
       if (Object.keys(usdPlusPools).includes(this.pool.id)) {
         const linearPoolAddress = usdPlusPools[this.pool.id];
@@ -182,7 +182,7 @@ export class AprConcern {
 
     return {
       total,
-      breakdown
+      breakdown,
     };
   }
 
