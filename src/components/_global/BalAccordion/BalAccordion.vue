@@ -173,7 +173,7 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard hFull no-pad shadow="none" class="rounded-xl">
+    <BalCard hFull no-pad shadow="none" class="rounded-xl overflow-visible">
       <div
         class="flex flex-col"
         v-for="(section, i) in sections"
@@ -210,7 +210,7 @@ watch(
           <div
             ref="activeSectionElement"
             :class="{
-              'border-b active-section': isContentVisible && showSectionBorder,
+              'border-b active-section rounded-b': isContentVisible && showSectionBorder,
             }"
             v-if="isContentVisible"
           >

@@ -1,7 +1,13 @@
 <template>
   <div class="xl:container xl:mx-auto lg:px-4 pt-8">
     <div
-      class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-4 xl:gap-x-8"
+      class="
+        grid grid-cols-1
+        lg:grid-cols-3
+        gap-y-8 gap-x-0
+        lg:gap-x-4
+        xl:gap-x-8
+      "
     >
       <PoolPageHeader
         :loadingPool="loadingPool"
@@ -82,6 +88,11 @@
               :pool="pool"
               class="staking-incentives"
             />
+            <PoolLockingCard
+              v-if="isVeBalPool && !loadingPool"
+              :pool="pool"
+              class="pool-locking"
+            />
           </BalStack>
         </StakingProvider>
       </div>
@@ -105,6 +116,7 @@ import { useRoute } from 'vue-router';
 
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
 import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
@@ -112,7 +124,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import { isL2 } from '@/composables/useNetwork';
-import { usePool } from '@/composables/usePool';
+import { isVeBalPool, usePool } from '@/composables/usePool';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
@@ -131,6 +143,7 @@ export default defineComponent({
     StakingProvider,
     ApyVisionPoolLink,
     PoolPageHeader,
+    PoolLockingCard
   },
 
   setup() {
@@ -143,6 +156,7 @@ export default defineComponent({
     const { prices } = useTokens();
     const { addAlert, removeAlert } = useAlerts();
     const { isAffected, warnings } = usePoolWarning(route.params.id as string);
+    const _isVeBalPool = isVeBalPool(route.params.id as string);
 
     /**
      * STATE
@@ -309,6 +323,7 @@ export default defineComponent({
       isL2,
       isStakablePool,
       titleTokens,
+      isVeBalPool: _isVeBalPool,
       // methods
       getAddressFromPoolId,
       poolApr,
@@ -328,7 +343,7 @@ export default defineComponent({
     @apply sticky top-24;
   }
 }
-.staking-incentives :deep(.active-section) {
+.staking-incentives,.pool-locking :deep(.active-section) {
   @apply border-transparent;
 }
 </style>
