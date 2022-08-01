@@ -24,7 +24,9 @@ const classes = computed(() => ({
 
 <style scoped>
 .desktop-link-item {
-  @apply h-full flex-col justify-center cursor-pointer hover:text-purple-600 dark:hover:text-yellow-500 flex relative overflow-hidden p-0 transition-all ease-in-out duration-500;
+  @apply h-full flex-col justify-center cursor-pointer hover:text-purple-600 dark:hover:text-yellow-500 flex relative
+    overflow-hidden p-0 transition-all
+    ease-in-out duration-500;
 }
 
 .desktop-link-item::before {

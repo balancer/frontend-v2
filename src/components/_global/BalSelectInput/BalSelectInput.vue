@@ -165,7 +165,8 @@ export default defineComponent({
 
 <style scoped>
 .bal-select-input {
-  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2 bg-gray-50 dark:bg-gray-800 transition-all;
+  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2
+    bg-gray-50 dark:bg-gray-800 transition-all;
 }
 
 .label {

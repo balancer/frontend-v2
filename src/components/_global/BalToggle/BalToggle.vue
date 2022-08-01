@@ -56,15 +56,18 @@ export default defineComponent({
 }
 
 .bal-toggle-checkbox {
-  @apply absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 group-hover:border-gray-300 dark:border-gray-700 dark:group-hover:border-gray-900 appearance-none cursor-pointer transition-colors;
+  @apply absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 group-hover:border-gray-300
+    dark:border-gray-700 dark:group-hover:border-gray-900 appearance-none cursor-pointer transition-colors;
 }
 
 .bal-toggle-track {
-  @apply block overflow-hidden h-6 rounded-full bg-gray-200 group-hover:bg-gray-300 dark:bg-gray-700 dark:group-hover:bg-gray-900 bg-none cursor-pointer transition-colors;
+  @apply block overflow-hidden h-6 rounded-full bg-gray-200 group-hover:bg-gray-300 dark:bg-gray-700
+    dark:group-hover:bg-gray-900 bg-none cursor-pointer transition-colors;
 }
 
 .bal-toggle-checkbox:checked {
-  @apply right-0 border-green-400 group-hover:border-green-500 dark:border-green-500 dark:group-hover:border-green-400 transition-colors;
+  @apply right-0 border-green-400 group-hover:border-green-500 dark:border-green-500
+    dark:group-hover:border-green-400 transition-colors;
 }
 
 .bal-toggle-track[for='tradeGasless'] {
