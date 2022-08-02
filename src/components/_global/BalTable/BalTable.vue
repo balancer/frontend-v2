@@ -103,12 +103,6 @@ const bodyRef = ref<HTMLElement>();
 // for loading and no results
 const placeholderBlockWidth = computed(() => sumBy(props.columns, 'width'));
 
-const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
-  if (el && columnIndex === 0) {
-    stickyHeaderRef.value = el;
-  }
-};
-
 // Need a method for horizontal stickiness as we need to
 // check whether the table item belongs in the first column
 const getHorizontalStickyClass = (index: number) => {
@@ -244,7 +238,7 @@ watch(
           <th
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
-            :ref="setHeaderRef(columnIndex)"
+            :ref="columnIndex == 0 ? 'stickyHeaderRef' : undefined"
             :class="[
               'p-6 bg-white dark:bg-gray-850 headingShadow border-b dark:border-gray-900',
               column.className,
