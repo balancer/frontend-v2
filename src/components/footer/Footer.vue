@@ -7,7 +7,7 @@
         class="flex flex-col md:flex-row gap-8 md:justify-between py-12 px-4 lg:px-0 text-primary"
       >
         <div class="flex flex-col gap-8">
-          <router-link class="link font-medium" :to="{ name: 'home' }">
+          <router-link class="font-medium link" :to="{ name: 'home' }">
             <AppLogo class="mb-4" />
           </router-link>
 
