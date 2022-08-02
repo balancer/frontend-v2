@@ -21,7 +21,8 @@
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
-    "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts"
+    "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts",
+    "typecheck": "vue-tsc --noEmit"
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
@@ -124,6 +125,7 @@
     "vue-query": "^1.6.0",
     "vue-router": "^4.0.10",
     "vue-slider-component": "^4.0.0-beta.3",
+    "vue-tsc": "^0.39.4",
     "vue3-jazzicon": "^0.1.2",
     "vue3-virtual-scroller": "^0.2.1",
     "vuex": "^4.0.2",
