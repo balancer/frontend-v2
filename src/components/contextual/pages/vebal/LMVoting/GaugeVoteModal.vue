@@ -43,7 +43,10 @@ const MINIMUM_LOCK_TIME = 86_400_000 * 7;
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  // TODO: Not optimal fix
+  veBalLockInfo: undefined,
+});
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -418,7 +421,7 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="
-            voteInputDisabled || transactionInProgress || voteState.receipt
+            voteInputDisabled || transactionInProgress || !!voteState.receipt
           "
           size="md"
           autoFocus
