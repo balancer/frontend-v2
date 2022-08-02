@@ -8,7 +8,7 @@
       >
         <div class="flex flex-col gap-8">
           <router-link class="font-medium link" :to="{ name: 'home' }">
-            <LogotypeBalancer class="mb-4" />
+            <AppLogo class="mb-4" />
           </router-link>
 
           <div class="flex md:hidden flex-col gap-2">
@@ -226,8 +226,9 @@ import IconMail from '@/components/icons/IconMail.vue';
 import IconMedium from '@/components/icons/IconMedium.vue';
 import IconTwitter from '@/components/icons/IconTwitter.vue';
 import IconYoutube from '@/components/icons/IconYoutube.vue';
-import LogotypeBalancer from '@/components/icons/LogotypeBalancer.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
+
+import AppLogo from '../images/AppLogo.vue';
 
 export default {
   components: {
@@ -238,7 +239,7 @@ export default {
     IconGithub,
     IconMail,
     IconLinkedin,
-    LogotypeBalancer,
+    AppLogo,
   },
   setup() {
     const { t } = useI18n();
