@@ -228,7 +228,7 @@ async function handleTransaction(
           :disabled="props.disabled"
           color="gradient"
           :loading="currentAction?.pending || isLoading"
-          :loading-label="
+          :loadingLabel="
             isLoading
               ? loadingLabel || $t('loading')
               : currentAction?.loadingLabel

@@ -20,11 +20,11 @@ withDefaults(defineProps<Props>(), {
 <template>
   <BalTooltip
     :disabled="!hasBalance"
-    class="mr-2 last:mr-0 cursor-pointer leading-normal"
+    class="mr-2 last:mr-0 leading-normal cursor-pointer"
     textAlign="left"
     :delayMs="50"
   >
-    <template v-slot:activator>
+    <template #activator>
       <div
         :class="[
           'pill',

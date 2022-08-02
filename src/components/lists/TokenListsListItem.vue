@@ -1,14 +1,14 @@
 <template>
-  <div class="flex py-3 px-4 highlight items-center leading-5 text-base">
+  <div class="flex items-center py-3 px-4 text-base leading-5 highlight">
     <img
       :src="_url(tokenlist.logoURI)"
-      class="rounded-full inline-block align-middle mr-3"
+      class="inline-block mr-3 align-middle rounded-full"
       width="34"
       height="34"
     />
     <div class="flex-auto">
       {{ tokenlist.name }}
-      <div class="text-gray text-sm flex items-center">
+      <div class="flex items-center text-sm text-gray">
         {{
           fNum2(tokenlist.tokens.length, {
             style: 'decimal',
@@ -48,6 +48,7 @@ export default {
   props: {
     tokenlist: {
       type: Object as PropType<TokenList>,
+      required: true,
     },
     uri: {
       type: String,

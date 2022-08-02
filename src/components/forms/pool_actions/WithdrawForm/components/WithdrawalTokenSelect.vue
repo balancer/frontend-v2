@@ -78,7 +78,7 @@ function handleSelected(newToken: string): void {
 <template>
   <BalDropdown :options="options" minWidth="44" @selected="handleSelected">
     <template #activator>
-      <div class="token-select-input selected group selectable">
+      <div class="group token-select-input selected selectable">
         <div>
           <BalAssetSet
             v-if="isProportional"
@@ -88,7 +88,7 @@ function handleSelected(newToken: string): void {
           <BalAsset
             v-else
             :address="selectedToken.address"
-            class="shadow mr-2"
+            class="mr-2 shadow"
           />
         </div>
         <span class="text-base font-medium">
@@ -98,12 +98,12 @@ function handleSelected(newToken: string): void {
         <BalIcon
           name="chevron-down"
           size="sm"
-          class="text-blue-500 dark:text-blue-400 group-hover:text-pink-500 dark:group-hover:text-yellow-500 ml-2 transition-colors"
+          class="ml-2 text-blue-500 group-hover:text-pink-500 dark:text-blue-400 dark:group-hover:text-yellow-500 transition-colors"
         />
       </div>
     </template>
     <template #option="{ option }">
-      <div v-if="option === 'all'" class="flex items-center justify-between">
+      <div v-if="option === 'all'" class="flex justify-between items-center">
         <div class="flex items-center">
           <BalAssetSet :addresses="tokenAddresses" :width="assetSetWidth" />
           {{ $t('allTokens') }}
@@ -111,10 +111,10 @@ function handleSelected(newToken: string): void {
         <BalIcon
           v-if="isOptionSelected(option)"
           name="check"
-          class="text-blue-500 dark:text-blue-400 ml-2"
+          class="ml-2 text-blue-500 dark:text-blue-400"
         />
       </div>
-      <div v-else class="flex items-center justify-between">
+      <div v-else class="flex justify-between items-center">
         <div class="flex items-center">
           <BalAsset :address="option" class="mr-2" />
           {{ getToken(option)?.symbol }}
@@ -122,7 +122,7 @@ function handleSelected(newToken: string): void {
         <BalIcon
           v-if="isOptionSelected(option)"
           name="check"
-          class="text-blue-500 dark:text-blue-400 ml-2"
+          class="ml-2 text-blue-500 dark:text-blue-400"
         />
       </div>
     </template>

@@ -74,11 +74,15 @@ function getTokenShare(address: string) {
   >
     <template #header>
       <div
-        class="p-4 w-full grid grid-cols-3 border-b dark:border-gray-900 text-base font-semibold"
+        class="grid grid-cols-3 p-4 w-full text-base font-semibold border-b dark:border-gray-900"
       >
         <div>{{ $t('token') }}</div>
-        <div class="justify-self-end">{{ $t('balance') }}</div>
-        <div class="justify-self-end">{{ $t('value') }}</div>
+        <div class="justify-self-end">
+          {{ $t('balance') }}
+        </div>
+        <div class="justify-self-end">
+          {{ $t('value') }}
+        </div>
       </div>
     </template>
 
@@ -108,9 +112,9 @@ function getTokenShare(address: string) {
           <template #item="{ item: asset }">
             <AssetRow
               :address="asset.address"
-              :main-token-address="asset.mainTokenAddress"
+              :mainTokenAddress="asset.mainTokenAddress"
               :balance="asset.balance"
-              :price-rate="asset.priceRate"
+              :priceRate="asset.priceRate"
               :share="getTokenShare(address)"
             />
           </template>

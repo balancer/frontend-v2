@@ -1,7 +1,7 @@
 <template>
   <div class="app-hero">
-    <div class="w-full max-w-2xl mx-auto">
-      <slot></slot>
+    <div class="mx-auto w-full max-w-2xl">
+      <slot />
     </div>
   </div>
 </template>

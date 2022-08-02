@@ -58,12 +58,12 @@ onMounted(() => (isMounted.value = true));
       height: `${size}px`,
       background: 'white',
     }"
+    class="inline-block leading-none rounded-full shadow-sm"
     @error="error = true"
-    class="rounded-full inline-block leading-none shadow-sm"
   />
   <div
     v-else
-    class="leading-none rounded-full overflow-hidden"
+    class="overflow-hidden leading-none rounded-full"
     :style="{
       width: `${size}px`,
       height: `${size}px`,

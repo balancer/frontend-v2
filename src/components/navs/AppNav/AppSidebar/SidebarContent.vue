@@ -83,12 +83,12 @@ watch(blockNumber, async () => {
 <template>
   <div class="opacity-0 fade-in-delay">
     <div
-      class="h-20 px-4 border-b border-gray-800 flex flex-col justify-center"
+      class="flex flex-col justify-center px-4 h-20 border-b border-gray-800"
     >
       <AppLogo forceDark />
     </div>
 
-    <div class="grid grid-col-1 text-lg mt-2">
+    <div class="grid mt-2 text-lg grid-col-1">
       <div
         v-for="link in navLinks"
         :key="link.label"
@@ -99,13 +99,13 @@ watch(blockNumber, async () => {
       </div>
     </div>
 
-    <div class="grid grid-col-1 text-sm mt-5">
-      <span class="text-secondary px-4 pb-1 font-medium">Ecosystem</span>
+    <div class="grid mt-5 text-sm grid-col-1">
+      <span class="px-4 pb-1 font-medium text-secondary">Ecosystem</span>
       <BalLink
         v-for="link in ecosystemLinks"
         :key="link.url"
         :href="link.url"
-        class="side-bar-link flex items-center"
+        class="flex items-center side-bar-link"
         external
         noStyle
       >
@@ -114,15 +114,15 @@ watch(blockNumber, async () => {
       </BalLink>
     </div>
 
-    <div class="mt-6 px-4">
-      <div class="side-bar-btn mt-2" @click="toggleDarkMode">
+    <div class="px-4 mt-6">
+      <div class="mt-2 side-bar-btn" @click="toggleDarkMode">
         <MoonIcon v-if="!darkMode" class="mr-2" />
         <SunIcon v-else class="mr-2" />
         <span>{{ darkMode ? 'Light' : 'Dark' }} mode</span>
       </div>
     </div>
 
-    <div class="mt-4 px-4 grid grid-rows-1 grid-flow-col auto-cols-min gap-2">
+    <div class="grid grid-rows-1 grid-flow-col auto-cols-min gap-2 px-4 mt-4">
       <BalLink
         v-for="link in socialLinks"
         :key="link.component"
@@ -142,11 +142,11 @@ watch(blockNumber, async () => {
       </BalLink>
     </div>
 
-    <div class="mt-6 px-4 text-xs">
+    <div class="px-4 mt-6 text-xs">
       <div class="flex items-center">
         <div
           ref="blockIcon"
-          class="block-icon w-2 h-2 rounded-full bg-green-500"
+          class="w-2 h-2 bg-green-500 rounded-full block-icon"
         />
         <span class="ml-2 text-gray-300">
           {{ networkConfig.name }}: Block {{ blockNumber }}
@@ -154,7 +154,7 @@ watch(blockNumber, async () => {
       </div>
       <BalLink
         :href="`https://github.com/balancer-labs/frontend-v2/releases/tag/${version}`"
-        class="text-gray-300 flex items-center mt-2"
+        class="flex items-center mt-2 text-gray-300"
         external
         noStyle
       >

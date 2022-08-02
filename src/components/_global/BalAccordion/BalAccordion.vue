@@ -18,6 +18,8 @@ type Props = {
   // changing variables which can be used to
   // determine whether to re-render the height
   // of an accordion section
+
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   dependencies?: Ref<unknown>;
   showSectionBorder?: boolean;
 };
@@ -154,7 +156,8 @@ onMounted(async () => {
   isContentVisible.value = false;
 });
 
-function setHandleBars(el: HTMLElement) {
+function setHandleBars(el: HTMLElement | null) {
+  if (!el) return;
   if (!handleBarElements.value?.includes(el)) {
     handleBarElements.value.push(el);
   }
@@ -173,46 +176,46 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard hFull no-pad shadow="none" class="rounded-xl">
+    <BalCard hFull noPad shadow="none" class="rounded-xl">
       <div
-        class="flex flex-col"
         v-for="(section, i) in sections"
         :key="section.id"
         :ref="setHandleBars"
+        class="flex flex-col"
       >
         <div
+          v-if="section.handle"
           ref="handleBarElement"
           @click="toggleSection(section.id)"
-          v-if="section.handle"
         >
           <slot :name="section.handle" />
         </div>
         <button
           v-else
           ref="handleBarElement"
-          @click="toggleSection(section.id)"
           :class="[
             'w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800',
             {
               'border-b dark:border-gray-900': i !== sections.length - 1,
             },
           ]"
+          @click="toggleSection(section.id)"
         >
           <h6>{{ section.title }}</h6>
           <BalIcon class="text-blue-400" name="chevron-down" />
         </button>
         <div
-          class="relative"
-          ref="accordionHeightSetterElement"
           v-if="activeSection === section.id"
+          ref="accordionHeightSetterElement"
+          class="relative"
         >
           <!-- content -->
           <div
+            v-if="isContentVisible"
             ref="activeSectionElement"
             :class="{
               'border-b active-section': isContentVisible && showSectionBorder,
             }"
-            v-if="isContentVisible"
           >
             <slot :name="section.id" />
           </div>

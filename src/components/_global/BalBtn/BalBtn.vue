@@ -4,7 +4,7 @@
     :class="['bal-btn', btnClasses]"
     :disabled="disabled || loading"
   >
-    <div v-if="loading" class="flex items-center justify-center">
+    <div v-if="loading" class="flex justify-center items-center">
       <BalLoadingIcon :size="size" :color="iconColor" />
       <span v-if="loadingLabel" class="ml-2">
         {{ loadingLabel }}

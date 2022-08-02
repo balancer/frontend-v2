@@ -1,22 +1,25 @@
 <template>
   <div class="flex items-center">
-    <BalIcon name="search" size="sm" class="text-gray-500 mr-2" />
+    <BalIcon name="search" size="sm" class="mr-2 text-gray-500" />
     <input
       ref="searchInput"
       :value="modelValue"
       :placeholder="placeholder"
-      @input="handleInput"
       type="text"
       autocorrect="off"
       autocapitalize="none"
-      class="border-0 input flex-auto w-full bg-transparent"
+      class="flex-auto w-full bg-transparent border-0 input"
+      @input="handleInput"
     />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['modelValue', 'placeholder'],
+  props: {
+    modelValue: { type: String, default: '' },
+    placeholder: { type: String, default: '' },
+  },
 
   emits: ['update:modelValue'],
 

@@ -121,16 +121,16 @@ const hasClaimableBalance = computed((): boolean => {
         :columns="columns"
         :data="rewardsData"
         :isLoading="isLoading"
-        skeleton-class="h-64"
+        skeletonClass="h-64"
         :square="upToLargeBreakpoint"
       >
         <template #tokenColumnCell="{ token }">
-          <div class="flex px-6 py-4">
+          <div class="flex py-4 px-6">
             <BalAsset :address="token.address" />
           </div>
         </template>
         <template #symbolColumnCell="{ token }">
-          <div class="flex px-6 py-4">
+          <div class="flex py-4 px-6">
             {{ token.symbol }}
           </div>
         </template>
@@ -141,7 +141,7 @@ const hasClaimableBalance = computed((): boolean => {
           </div>
         </template>
         <template #claimColumnCell="{ token, amount, value }">
-          <div class="px-6 py-4">
+          <div class="py-4 px-6">
             <ClaimProtocolRewardsBtn
               :tokenAddress="token.address"
               :fiatValue="value"

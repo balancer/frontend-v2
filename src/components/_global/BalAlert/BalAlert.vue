@@ -23,7 +23,7 @@
           </p>
         </div>
         <div v-if="actionLabel" :class="[actionClasses]">
-          <BalBtn :color="btnColor" size="xs" @click="$emit('actionClick')">
+          <BalBtn :color="btnColor" size="xs" @click="$emit('action-click')">
             {{ actionLabel }}
           </BalBtn>
         </div>
@@ -48,8 +48,6 @@ export default defineComponent({
     BalBtn,
   },
 
-  emits: ['actionClick'],
-
   props: {
     type: { type: String as PropType<AlertType>, default: 'info' },
     size: {
@@ -58,11 +56,13 @@ export default defineComponent({
       validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     title: { type: String, default: 'A title message' },
-    description: { type: String },
-    actionLabel: { type: String },
+    description: { type: String, default: '' },
+    actionLabel: { type: String, default: '' },
     raised: { type: Boolean, default: false },
     block: { type: Boolean, default: false },
   },
+
+  emits: ['action-click'],
 
   setup(props, { slots }) {
     const bgColorClass = computed(() => {

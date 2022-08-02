@@ -1,6 +1,6 @@
 <template>
-  <BalPopover no-pad>
-    <template v-slot:activator>
+  <BalPopover noPad>
+    <template #activator>
       <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
         <img
           :src="iconSrc(activeNetwork)"
@@ -13,9 +13,9 @@
         <BalIcon name="chevron-down" size="sm" class="ml-2" />
       </BalBtn>
     </template>
-    <div class="flex flex-col w-44 rounded-lg overflow-hidden">
+    <div class="flex overflow-hidden flex-col w-44 rounded-lg">
       <div
-        class="px-3 py-2 bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium text-sm"
+        class="py-2 px-3 text-sm font-medium text-gray-500 whitespace-nowrap bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
       >
         {{ $t('networkSelection') }}:
       </div>
@@ -23,13 +23,13 @@
         v-for="network in networks"
         :key="network.id"
         :href="appUrl(network)"
-        class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850"
+        class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
       >
         <div class="flex items-center">
           <img
             :src="iconSrc(network)"
             :alt="network.name"
-            class="w-6 h-6 rounded-full mr-2"
+            class="mr-2 w-6 h-6 rounded-full"
           />
           <span class="ml-1 font-medium">
             {{ network.name }}

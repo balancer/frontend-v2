@@ -5,9 +5,9 @@
       :value="value"
       :checked="modelValue === value"
       :name="name"
-      @change="onChange(value)"
       :class="['bal-radio-input', inputClasses]"
       :disabled="disabled"
+      @change="onChange(value)"
     />
     <label
       v-if="$slots.label || label"
@@ -28,8 +28,6 @@ import { computed, defineComponent } from 'vue';
 export default defineComponent({
   name: 'BalRadio',
 
-  emits: ['update:modelValue'],
-
   props: {
     name: { type: String, required: true },
     value: { type: [String, Number], required: true },
@@ -47,6 +45,8 @@ export default defineComponent({
       validator: (val: string): boolean => ['blue'].includes(val),
     },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     function onChange(value) {

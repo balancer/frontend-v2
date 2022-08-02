@@ -15,7 +15,6 @@
         :key="i"
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
-        @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
@@ -23,6 +22,7 @@
           width: `${size}px`,
           height: `${size}px`,
         }"
+        @click="$emit('click', addressOrURI)"
       />
     </div>
   </template>
@@ -46,13 +46,14 @@ export default defineComponent({
   components: {
     BalAsset,
   },
-  emits: ['click'],
   props: {
     addresses: {
       type: Array as PropType<string[]>,
+      default: () => [],
     },
     logoURIs: {
       type: Array as PropType<string[]>,
+      default: () => [],
     },
     balAssetProps: {
       type: Object as PropType<BalAssetProps>,
@@ -74,6 +75,7 @@ export default defineComponent({
       type: Boolean,
     },
   },
+  emits: ['click'],
 
   setup(props) {
     /**

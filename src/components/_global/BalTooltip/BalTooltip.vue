@@ -10,7 +10,9 @@ type TextAlign = 'left' | 'center' | 'right' | '';
 type Props = {
   text?: string;
   placement?: Placement;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onShow?: () => void;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onHide?: () => void;
   noPad?: boolean;
   disabled?: boolean;
@@ -39,7 +41,7 @@ const activator = ref<HTMLElement>();
 const content = ref<HTMLElement>();
 const popper = ref<PopperInstance>();
 
-let delayTimeout: NodeJS.Timeout;
+let delayTimeout: ReturnType<typeof setTimeout>;
 
 const tooltipClasses = computed(() => {
   return {
@@ -111,18 +113,18 @@ onUnmounted(() => {
 <template>
   <button
     ref="activator"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
     :class="['leading-none', { 'cursor-default': disabled }]"
     v-bind="$attrs"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
   >
     <slot name="activator">
       <BalIcon :name="iconName" :size="iconSize" :class="iconClass" />
     </slot>
   </button>
   <div ref="content" class="tooltip" :class="tooltipClasses">
-    <div :class="tooltipPad" class="tooltip-content font-medium">
-      <p class="tooltip-text" v-if="text" v-text="text" />
+    <div :class="tooltipPad" class="font-medium tooltip-content">
+      <p v-if="text" class="tooltip-text" v-text="text" />
       <slot v-else />
     </div>
   </div>

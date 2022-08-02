@@ -90,23 +90,23 @@ function formatDateInput(date: Date | number) {
 <template>
   <div class="mb-6">
     <div>
-      <p class="font-semibold pb-2">
+      <p class="pb-2 font-semibold">
         {{ $t('getVeBAL.lockForm.lockEndDate.title') }}
       </p>
     </div>
     <BalTextInput
+      v-model="lockEndDate"
       name="lockEndDate"
       type="date"
-      v-model="lockEndDate"
       :min="formatDateInput(minLockEndDateTimestamp)"
       :max="formatDateInput(maxLockEndDateTimestamp)"
       step="7"
     />
-    <div class="flex text-sm mt-2 px-1 text-secondary">
+    <div class="flex px-1 mt-2 text-sm text-secondary">
       <div
         v-for="(lockDate, index) in lockDates"
         :key="index"
-        class="mr-3 cursor-pointer hover:text-pink-500 focus:text-pink-500"
+        class="mr-3 hover:text-pink-500 focus:text-pink-500 cursor-pointer"
         @click="lockDate.action"
       >
         ~{{ lockDate.label }}

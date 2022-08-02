@@ -17,9 +17,9 @@ const { setSidebarOpen } = useSidebar();
 </script>
 
 <template>
-  <Transition name="overlay" @afterEnter="showSidebar = true" appear>
+  <Transition name="overlay" appear @after-enter="showSidebar = true">
     <div class="sidebar-overlay">
-      <Transition name="sidebar" @afterLeave="setSidebarOpen(false)">
+      <Transition name="sidebar" @after-leave="setSidebarOpen(false)">
         <div v-if="showSidebar" class="app-sidebar">
           <SidebarContent @close="showSidebar = false" />
         </div>
@@ -28,7 +28,7 @@ const { setSidebarOpen } = useSidebar();
         <BalIcon
           name="x"
           size="lg"
-          class="close-icon flex justify-center items-center fixed top-4 right-2 text-white cursor-pointer"
+          class="flex fixed top-4 right-2 justify-center items-center text-white cursor-pointer close-icon"
         />
       </div>
     </div>

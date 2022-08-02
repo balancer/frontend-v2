@@ -1,7 +1,7 @@
 <template>
   <div
     ref="animateRef"
-    class="flex py-3 px-4 highlight items-center leading-5 text-base opacity-0"
+    class="flex items-center py-3 px-4 text-base leading-5 opacity-0 highlight"
   >
     <BalAsset
       :address="token.address"
@@ -11,11 +11,11 @@
     />
     <div class="flex-auto">
       {{ token.symbol }}
-      <div class="text-gray text-sm w-40 md:w-60 truncate">
+      <div class="w-40 md:w-60 text-sm truncate text-gray">
         {{ token.name }}
       </div>
     </div>
-    <span class="flex flex-col items-end text-right font-medium">
+    <span class="flex flex-col items-end font-medium text-right">
       <BalLoadingNumber v-if="balanceLoading" type="token" />
       <template v-else>
         <template v-if="balance > 0">
@@ -34,7 +34,7 @@
         numberHeight="4"
         class="text-sm font-normal"
       />
-      <div v-else class="text-secondary text-sm font-normal">
+      <div v-else class="text-sm font-normal text-secondary">
         <template v-if="value > 0">
           {{ fNum2(value, FNumFormats.fiat) }}
         </template>

@@ -98,11 +98,11 @@ const fiatTotal = computed(() => {
       </div>
     </template>
 
-    <div class="-mt-2 p-4">
+    <div class="p-4 -mt-2">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />
       </div>
-      <div class="pt-4 flex justify-between font-medium">
+      <div class="flex justify-between pt-4 font-medium">
         <span>
           {{ $t('total') }}
         </span>

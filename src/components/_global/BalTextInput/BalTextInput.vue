@@ -32,6 +32,7 @@ type Props = {
   type?: InputType;
   size?: InputSize;
   disabled?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   label?: string;
   inputAlignRight?: boolean;
   decimalLimit?: number;
@@ -41,6 +42,7 @@ type Props = {
   noShadow?: boolean;
   noBorder?: boolean;
   autoFocus?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   format?: (input: string | number) => string | number;
 };
 
@@ -146,12 +148,12 @@ onMounted(() => {
           :value="modelValue"
           v-bind="inputAttrs"
           :disabled="disabled"
+          :class="['input', inputClasses]"
           @blur="onBlur"
           @input="onInput"
           @keydown="onKeydown"
           @click="onClick"
           @focus="onFocus"
-          :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
           <slot name="append" />

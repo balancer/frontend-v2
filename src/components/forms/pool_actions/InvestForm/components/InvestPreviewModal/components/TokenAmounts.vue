@@ -73,11 +73,11 @@ function amountShare(address: string): string {
 <template>
   <div class="token-amount-table">
     <div v-for="token in amountsToShow" :key="token.address" class="relative">
-      <div class="token-amount-table-content items-center">
+      <div class="items-center token-amount-table-content">
         <div class="flex items-center">
           <BalAsset :address="token.address" :size="36" />
           <div class="flex flex-col ml-3">
-            <div class="font-medium text-lg">
+            <div class="text-lg font-medium">
               <span class="font-numeric">
                 {{ fNum2(token.amount, FNumFormats.token) }}
               </span>
@@ -93,19 +93,19 @@ function amountShare(address: string): string {
     </div>
     <div
       v-if="shouldShowCompactViewForZeroAmounts"
-      class="token-amount-table-content -mb-2 items-start"
+      class="items-start -mb-2 token-amount-table-content"
     >
       <div class="flex flex-wrap mr-6">
         <div
-          class="token"
           v-for="token in groupedAmounts.zeroAmounts"
           :key="token.address"
+          class="token"
         >
           <BalAsset :address="token.address" class="mr-2" />
           <span>{{ tokenMap[token.address].symbol }}</span>
         </div>
       </div>
-      <div class="text-sm text-secondary font-numeric whitespace-nowrap">
+      <div class="text-sm whitespace-nowrap text-secondary font-numeric">
         {{ fNum2(0, FNumFormats.fiat) }}
         ({{ fNum2(0, FNumFormats.percent) }})
       </div>

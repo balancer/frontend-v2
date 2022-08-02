@@ -24,13 +24,13 @@ interface Tab {
 export default defineComponent({
   name: 'BalTabs',
 
-  emits: ['selected', 'update:modelValue'],
-
   props: {
     tabs: { type: Array as PropType<Tab[]>, required: true },
     modelValue: { type: String, default: '' },
     noPad: { type: Boolean, default: false },
   },
+
+  emits: ['selected', 'update:modelValue'],
 
   setup(props, { emit }) {
     const activeTab = ref(props.modelValue);

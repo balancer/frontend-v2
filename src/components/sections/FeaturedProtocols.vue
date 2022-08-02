@@ -17,26 +17,28 @@ export default defineComponent({
 
 <template>
   <div class="featured-protocols">
-    <h3 class="mb-4">{{ $t('featuredProtocols.title') }}</h3>
+    <h3 class="mb-4">
+      {{ $t('featuredProtocols.title') }}
+    </h3>
     <div class="grid grid-cols-12 gap-4">
       <div class="col-span-12 xs:col-span-6 lg:col-span-3">
         <BalCard
           title="Element Finance"
           imgSrc="/images/banners/element.jpg"
-          class="transition-shadow hover:shadow-xl"
+          class="hover:shadow-xl transition-shadow"
           hFull
           growContent
         >
           <p>
             {{ $t('featuredProtocols.Element') }}
           </p>
-          <template v-slot:footer>
+          <template #footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Home" external>
               <span>{{ $t('learnMore') }}</span>
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
-                class="ml-0.5 relative top-0.5"
+                class="relative top-0.5 ml-0.5"
               />
             </BalLink>
           </template>
@@ -46,18 +48,18 @@ export default defineComponent({
         <BalCard
           title="Copper Launch"
           imgSrc="/images/banners/copper.png"
-          class="transition-shadow hover:shadow-xl"
+          class="hover:shadow-xl transition-shadow"
           hFull
           growContent
         >
           <p>{{ $t('featuredProtocols.Copper') }}</p>
-          <template v-slot:footer>
+          <template #footer>
             <BalLink :href="EXTERNAL_LINKS.Copper.Home" external>
               <span>{{ $t('learnMore') }}</span>
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
-                class="ml-0.5 relative top-0.5"
+                class="relative top-0.5 ml-0.5"
               />
             </BalLink>
           </template>
@@ -67,20 +69,20 @@ export default defineComponent({
         <BalCard
           title="Tracer DAO"
           imgSrc="/images/banners/tracer.jpg"
-          class="transition-shadow hover:shadow-xl"
+          class="hover:shadow-xl transition-shadow"
           hFull
           growContent
         >
           <div>
             <p>{{ $t('featuredProtocols.Tracer') }}</p>
           </div>
-          <template v-slot:footer>
+          <template #footer>
             <BalLink :href="EXTERNAL_LINKS.Tracer.Home" external>
               <span>{{ $t('learnMore') }}</span>
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
-                class="ml-0.5 relative top-0.5"
+                class="relative top-0.5 ml-0.5"
               />
             </BalLink>
           </template>
@@ -90,20 +92,20 @@ export default defineComponent({
         <BalCard
           title="Sense Finance"
           imgSrc="/images/banners/sense.png"
-          class="transition-shadow hover:shadow-xl"
+          class="hover:shadow-xl transition-shadow"
           hFull
           growContent
         >
           <div>
             <p>{{ $t('featuredProtocols.Sense') }}</p>
           </div>
-          <template v-slot:footer>
+          <template #footer>
             <BalLink :href="EXTERNAL_LINKS.Sense.Home" external>
               <span>{{ $t('learnMore') }}</span>
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
-                class="ml-0.5 relative top-0.5"
+                class="relative top-0.5 ml-0.5"
               />
             </BalLink>
           </template>
