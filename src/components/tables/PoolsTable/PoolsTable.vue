@@ -24,7 +24,7 @@ import {
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
-import { POOLS_NAMES_MAP } from '@/constants/pools';
+import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -276,7 +276,7 @@ function lockedUntil(lockEndDate?: number) {
         <div v-if="!isLoading" class="py-4 px-6">
           <BalAssetSet
             :addresses="
-              POOLS_NAMES_MAP[pool.id]
+              POOLS.Names[pool.id]
                 ? [pool.address]
                 : orderedTokenAddresses(pool)
             "
@@ -286,8 +286,8 @@ function lockedUntil(lockEndDate?: number) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="POOLS_NAMES_MAP[pool.id]" class="text-left">
-            {{ POOLS_NAMES_MAP[pool.id] }}
+          <div v-if="POOLS.Names[pool.id]" class="text-left">
+            {{ POOLS.Names[pool.id] }}
           </div>
           <div v-else>
             <TokenPills
