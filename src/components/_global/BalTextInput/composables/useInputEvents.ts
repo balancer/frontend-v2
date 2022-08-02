@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 
+// TODO: Remove, and use native type?
 import { HtmlInputEvent } from '@/types';
 
 export default function useInputEvents(props, emit, validate) {
@@ -28,25 +29,25 @@ export default function useInputEvents(props, emit, validate) {
     emit('update:modelValue', event.target.value);
   }
 
-  function onClick(event: HtmlInputEvent) {
+  function onClick(event: MouseEvent) {
     isActive.value = true;
     emit('click', event);
   }
 
-  function onFocus(event: HtmlInputEvent) {
+  function onFocus(event: FocusEvent) {
     isActive.value = true;
     emit('focus', event);
   }
-  function onMouseOver(event: HtmlInputEvent) {
+  function onMouseOver(event: MouseEvent) {
     isHover.value = true;
     emit('mouseOver', event);
   }
-  function onMouseLeave(event: HtmlInputEvent) {
+  function onMouseLeave(event: MouseEvent) {
     isHover.value = false;
     emit('mouseLeave', event);
   }
 
-  function onKeydown(event: HtmlInputEvent): void {
+  function onKeydown(event: KeyboardEvent): void {
     if (props.type === 'number') {
       blockInvalidChar(event);
     }
@@ -56,7 +57,7 @@ export default function useInputEvents(props, emit, validate) {
   /**
    * HELPERS
    */
-  function blockInvalidChar(event: HtmlInputEvent): void {
+  function blockInvalidChar(event: KeyboardEvent): void {
     ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
   }
 
