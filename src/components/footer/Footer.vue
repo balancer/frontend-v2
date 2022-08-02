@@ -247,7 +247,7 @@ export default {
     IconGithub,
     IconMail,
     IconLinkedin,
-    AppLogo
+    AppLogo,
   },
 };
 </script>
