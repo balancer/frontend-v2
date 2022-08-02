@@ -24,6 +24,7 @@ import {
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { PoolWithShares } from '@/services/pool/types';
+import { POOLS_NAMES_MAP } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -273,19 +274,31 @@ function lockedUntil(lockEndDate?: number) {
       </template>
       <template #iconColumnCell="pool">
         <div v-if="!isLoading" class="py-4 px-6">
-          <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
+          <BalAssetSet
+            :addresses="
+              POOLS_NAMES_MAP[pool.id]
+                ? [pool.address]
+                : orderedTokenAddresses(pool)
+            "
+            :width="100"
+          />
         </div>
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <TokenPills
-            :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-            "
-            :isStablePool="isStableLike(pool.poolType)"
-            :selectedTokens="selectedTokens"
-          />
-          <BalChipNew v-if="pool?.isNew" class="ml-2" />
+          <div v-if="POOLS_NAMES_MAP[pool.id]" class="text-left">
+            {{ POOLS_NAMES_MAP[pool.id] }}
+          </div>
+          <div v-else>
+            <TokenPills
+              :tokens="
+                orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+              "
+              :isStablePool="isStableLike(pool.poolType)"
+              :selectedTokens="selectedTokens"
+            />
+            <BalChipNew v-if="pool?.isNew" class="ml-2" />
+          </div>
         </div>
       </template>
       <template #volumeCell="pool">

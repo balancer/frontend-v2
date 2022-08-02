@@ -11,7 +11,7 @@ import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { POOLS } from '@/constants/pools';
+import { POOLS, POOLS_NAMES_MAP } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import { OnchainTokenData, Pool, PoolAPRs } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -125,7 +125,15 @@ const poolTypeLabel = computed(() => {
     <BalLoadingBlock v-if="loadingPool" class="h-16" />
     <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
-        <h3 class="pool-title">
+        <div v-if="POOLS_NAMES_MAP[pool?.id]">
+          <h3 class="pool-title">
+            {{ POOLS_NAMES_MAP[pool.id] }}
+          </h3>
+          <h5 class="text-sm">
+            {{ poolTypeLabel }}
+          </h5>
+        </div>
+        <h3 v-else class="pool-title">
           {{ poolTypeLabel }}
         </h3>
         <div
