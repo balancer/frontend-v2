@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center py-3 px-4 text-base leading-5 highlight">
     <img
-      :src="_url(tokenlist.logoURI)"
+      :src="url(tokenlist.logoURI)"
       class="inline-block mr-3 align-middle rounded-full"
       width="34"
       height="34"
@@ -77,8 +77,16 @@ export default {
       listUrl: resolve(props.uri),
     });
 
+    function url(url) {
+      if (!url) return '';
+      return url
+        .replace('ipfs://', `https://${process.env.VUE_APP_IPFS_NODE}/ipfs/`)
+        .replace('ipns://', `https://${process.env.VUE_APP_IPFS_NODE}/ipns/`);
+    }
+
     return {
       ...toRefs(state),
+      url,
       fNum2,
     };
   },

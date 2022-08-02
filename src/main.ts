@@ -18,7 +18,6 @@ import blocknative from '@/plugins/blocknative';
 import { registerGlobalComponents } from '@/plugins/components';
 import registerDirectives from '@/plugins/directives';
 import i18n from '@/plugins/i18n';
-import mixins from '@/plugins/mixins';
 import router from '@/plugins/router';
 import initSentry from '@/plugins/sentry';
 import vueQuery from '@/plugins/vueQuery';
@@ -43,7 +42,6 @@ const app = createApp(Root)
   .use(blocknative)
   .use(vueQuery)
   .use(Web3Plugin, Web3Provider)
-  .mixin(mixins)
   .use(VueVirtualScroller);
 
 registerDirectives(app);

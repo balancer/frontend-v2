@@ -27,7 +27,7 @@
         <span
           v-else
           class="hidden lg:inline-block pl-2 eth-address"
-          v-text="_shorten(account)"
+          v-text="shorten(account)"
         />
       </BalBtn>
     </template>
@@ -41,6 +41,7 @@ import { computed, defineComponent } from 'vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useWeb3 from '@/services/web3/useWeb3';
+import { shorten } from '@/lib/utils';
 
 import AppNavSettings from './AppNavSettings.vue';
 
@@ -67,6 +68,7 @@ export default defineComponent({
     });
 
     return {
+      shorten,
       // computed
       bp,
       account,

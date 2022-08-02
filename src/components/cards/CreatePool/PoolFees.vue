@@ -6,6 +6,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers from '@/composables/useNumbers';
 import { isRequired, isValidAddress } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
+import { shorten } from '@/lib/utils';
 
 const emit = defineEmits(['update:height']);
 
@@ -259,7 +260,7 @@ async function onChangeFeeController(val: string) {
           >
             <template #label>
               <span>
-                {{ $t('createAPool.myAddressOption', [_shorten(account)]) }}
+                {{ $t('createAPool.myAddressOption', [shorten(account)]) }}
               </span>
             </template>
           </BalRadio>
