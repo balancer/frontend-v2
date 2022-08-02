@@ -211,6 +211,9 @@ export default {
           pluginState.walletState = 'connected';
 
           trackGoal(Goals.ConnectedWallet);
+        } else {
+          // Account not set and wallet is not connected
+          pluginState.walletState = 'disconnected';
         }
       } catch (err) {
         console.error(err);
