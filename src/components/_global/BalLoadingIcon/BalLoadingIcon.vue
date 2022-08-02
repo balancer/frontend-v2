@@ -108,15 +108,4 @@ export default defineComponent({
     transform: scale(1);
   }
 }
-
-@keyframes sk-bounce {
-  0%,
-  100% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1);
-  }
-}
 </style>
