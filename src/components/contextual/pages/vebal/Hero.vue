@@ -167,8 +167,7 @@ function navigateToGetVeBAL() {
 
 .hero-container::after {
   content: ' ';
-  background:
-    linear-gradient(45deg, rgb(0 0 0 / 100%), rgb(0 0 0 / 50%)),
+  background: linear-gradient(45deg, rgb(0 0 0 / 100%), rgb(0 0 0 / 50%)),
     url('/images/backgrounds/vebal-hero-noise.svg');
 
   @apply block absolute left-0 top-0 w-full h-full bg-no-repeat bg-cover opacity-20 z-0;

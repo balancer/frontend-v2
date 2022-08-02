@@ -132,7 +132,8 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 0",
-    "*.{md,json,yaml,html}": "prettier --write"
+    "*.{md,json,yaml,html}": "prettier --write",
+    "*.{css,vue}": "stylelint --fix"
   },
   "license": "MIT",
   "repository": "balancer-labs/frontend-v2"
