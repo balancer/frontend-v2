@@ -81,12 +81,12 @@ watch(popoverOpened, () => {
 
 <template>
   <div
-    :class="[popoverActivatorWrapperClasses]"
     v-click-outside="handleClickOutside"
+    :class="[popoverActivatorWrapperClasses]"
   >
     <div
-      class="bal-popover-activator group"
       ref="activatorWrapper"
+      class="group bal-popover-activator"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"

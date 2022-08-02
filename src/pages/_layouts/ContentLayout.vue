@@ -5,7 +5,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 
 <template>
   <AppNav />
-  <section class="dark:bg-gray-900 lg:py-8">
+  <section class="lg:py-8 dark:bg-gray-900">
     <div class="content-container">
       <router-view />
     </div>

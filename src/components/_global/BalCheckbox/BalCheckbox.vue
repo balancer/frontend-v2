@@ -10,7 +10,7 @@
           @change="onChange"
         />
       </div>
-      <div class="relative ml-2 flex-col">
+      <div class="relative flex-col ml-2">
         <label
           v-if="$slots.label || label"
           :for="name"
@@ -38,8 +38,6 @@ import { RuleFunction, Rules } from '@/types';
 export default defineComponent({
   name: 'BalCheckbox',
 
-  emits: ['update:modelValue'],
-
   props: {
     name: { type: String, required: true },
     modelValue: { type: Boolean, default: false },
@@ -60,6 +58,8 @@ export default defineComponent({
       validator: (val: string): boolean => ['blue'].includes(val),
     },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     const errors = ref([] as Array<string>);

@@ -292,8 +292,8 @@ watch(
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
-      <div class="col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical v-if="!appLoading">
+      <div v-if="!upToLargeBreakpoint" class="col-span-3">
+        <BalStack v-if="!appLoading" vertical>
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
@@ -320,7 +320,7 @@ watch(
           :title="$t('createAPool.recoveredState')"
         >
           {{ $t('createAPool.recoveredStateInfo') }}
-          <button @click="handleReset" class="font-semibold text-blue-500">
+          <button class="font-semibold text-blue-500" @click="handleReset">
             {{ $t('clickHere') }}
           </button>
         </BalAlert>
@@ -382,18 +382,18 @@ watch(
             { title: t('tokenPrices'), id: 'token-prices' },
           ]"
         >
-          <template v-slot:pool-summary>
+          <template #pool-summary>
             <PoolSummary />
           </template>
-          <template v-slot:token-prices>
+          <template #token-prices>
             <TokenPrices />
           </template>
         </BalAccordion>
       </div>
     </div>
     <template #gutterRight>
-      <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical spacing="base" v-if="!appLoading">
+      <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
+        <BalStack v-if="!appLoading" vertical spacing="base">
           <PoolSummary />
           <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>
@@ -401,9 +401,9 @@ watch(
     </template>
   </Col3Layout>
   <UnknownTokenPriceModal
-    @close="handleUnknownModalClose"
     :isVisible="isUnknownTokenModalVisible"
     :unknownTokens="unknownTokens"
+    @close="handleUnknownModalClose"
   />
 </template>
 

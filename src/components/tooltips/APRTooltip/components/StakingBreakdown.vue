@@ -93,20 +93,20 @@ const breakdownItems = computed((): Array<any> => {
       <BalBreakdown v-if="hasBalEmissions(apr)" :items="breakdownItems">
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
-          <span class="ml-1 text-secondary text-xs">
+          <span class="ml-1 text-xs text-secondary">
             {{ $t('staking.minimumStakingApr') }}
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
           {{ fNum2(amount, FNumFormats.percent) }}
-          <span class="text-secondary text-xs ml-1 capitalize">
+          <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>
         </template>
       </BalBreakdown>
       <div v-else-if="hasRewardTokens" class="flex items-center">
         {{ fNum2(rewardTokensAPR, FNumFormats.percent) }}
-        <span class="ml-1 text-secondary text-xs">
+        <span class="ml-1 text-xs text-secondary">
           {{ $t('staking.stakingApr') }}
         </span>
       </div>

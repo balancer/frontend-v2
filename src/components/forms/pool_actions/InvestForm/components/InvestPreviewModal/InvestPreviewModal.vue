@@ -111,13 +111,13 @@ function handleShowStakeModal() {
 
 <template>
   <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="investmentConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -156,7 +156,7 @@ function handleShowStakeModal() {
       :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"
-      @showStakeModal="handleShowStakeModal"
+      @show-stake-modal="handleShowStakeModal"
     />
   </BalModal>
 </template>

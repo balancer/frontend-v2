@@ -51,7 +51,7 @@ function formatWeightLabel(weight: string) {
 
 <template>
   <div class="container">
-    <div class="p-3 flex justify-between items-center">
+    <div class="flex justify-between items-center p-3">
       <div>
         <div class="font-semibold">
           {{
@@ -64,7 +64,7 @@ function formatWeightLabel(weight: string) {
           {{ poolWeightsLabel }}
         </div>
       </div>
-      <div class="grid gap-1 grid-cols-2">
+      <div class="grid grid-cols-2 gap-1">
         <BalAsset
           v-for="tokenAddress in lockablePool.tokensList"
           :key="tokenAddress"

@@ -1,32 +1,36 @@
 <template>
   <div
-    class="relative p-3 overflow-hidden rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850 w-64"
+    class="overflow-hidden relative p-3 w-64 text-sm dark:text-white bg-white dark:bg-gray-800 rounded dark:border-gray-850 shadow-lg"
   >
-    <div class="justify-between group">
+    <div class="group justify-between">
       <BalLink
         v-if="notification.transactionMetadata"
         :href="notification.transactionMetadata.explorerLink"
         external
         noStyle
       >
-        <div class="font-semibold flex items-center mb-1">
+        <div class="flex items-center mb-1 font-semibold">
           <span class="title">{{ notification.title }}</span>
           <BalIcon
             name="arrow-up-right"
             size="sm"
-            class="ml-1 text-gray-400 dark:text-gray-600 group-hover:text-pink-500 transition-colors"
+            class="ml-1 text-gray-400 group-hover:text-pink-500 dark:text-gray-600 transition-colors"
           />
         </div>
-        <div class="message">{{ notification.message }}</div>
+        <div class="message">
+          {{ notification.message }}
+        </div>
       </BalLink>
       <div v-else>
-        <div class="font-semibold title mb-1">
+        <div class="mb-1 font-semibold title">
           {{ notification.title }}
         </div>
-        <div class="message">{{ notification.message }}</div>
+        <div class="message">
+          {{ notification.message }}
+        </div>
       </div>
       <BalCloseIcon
-        class="cursor-pointer text-black dark:text-white flex-shrink-0 absolute top-3 right-2"
+        class="absolute top-3 right-2 flex-shrink-0 text-black dark:text-white cursor-pointer"
         @click="closeNotification()"
       />
     </div>
@@ -69,7 +73,7 @@ export default defineComponent({
       transition: TransitionPresets.linear,
     });
 
-    let notificationTimeout: NodeJS.Timeout;
+    let notificationTimeout: ReturnType<typeof setTimeout>;
 
     const { notifications, removeNotification } = useNotifications();
 

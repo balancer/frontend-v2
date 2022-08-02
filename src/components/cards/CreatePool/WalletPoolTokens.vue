@@ -55,12 +55,12 @@ const totalFiat = computed(() => {
     </div>
     <BalStack vertical class="p-4" spacing="sm">
       <div>
-        <h6 class="branch relative">Native tokens</h6>
+        <h6 class="relative branch">Native tokens</h6>
         <BalStack vertical spacing="xs">
           <BalStack
-            class="ml-6 twig relative"
             v-for="token in nativeTokens"
             :key="`wallet-pool-token-${token}`"
+            class="relative ml-6 twig"
             horizontal
             justify="between"
           >

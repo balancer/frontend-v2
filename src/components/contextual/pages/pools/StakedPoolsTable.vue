@@ -60,7 +60,9 @@ const hiddenColumns = computed(() => {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 xl:px-0">{{ $t('staking.stakedPools') }}</h5>
+      <h5 class="px-4 xl:px-0">
+        {{ $t('staking.stakedPools') }}
+      </h5>
       <PoolsTable
         :key="poolsWithBoost"
         :data="poolsWithBoost"

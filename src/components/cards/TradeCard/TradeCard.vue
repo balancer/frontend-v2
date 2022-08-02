@@ -1,8 +1,10 @@
 <template>
-  <BalCard class="relative" :shadow="tradeCardShadow" :no-border="!darkMode">
-    <template v-slot:header>
-      <div class="w-full flex items-center justify-between">
-        <h4 class="font-semibold">{{ title }}</h4>
+  <BalCard class="relative" :shadow="tradeCardShadow" :noBorder="!darkMode">
+    <template #header>
+      <div class="flex justify-between items-center w-full">
+        <h4 class="font-semibold">
+          {{ title }}
+        </h4>
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
@@ -14,8 +16,8 @@
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
         :priceImpact="priceImpact"
-        @amountChange="handleAmountChange"
         class="mb-4"
+        @amount-change="handleAmountChange"
       />
       <BalAlert
         v-if="error"
@@ -24,33 +26,33 @@
         size="sm"
         :title="error.header"
         :description="error.body"
-        :action-label="error.label"
+        :actionLabel="error.label"
         block
-        @actionClick="handleErrorButtonClick"
+        @action-click="handleErrorButtonClick"
       />
       <BalBtn
         v-if="poolsLoading || isLoadingApprovals"
         :loading="true"
-        :loading-label="$t('loading')"
+        :loadingLabel="$t('loading')"
         block
       />
       <BalBtn
         v-else
         :label="'Preview trade'"
         :disabled="tradeDisabled"
-        :loading-label="$t('confirming')"
+        :loadingLabel="$t('confirming')"
         color="gradient"
         block
         @click.prevent="showTradePreviewModal"
       />
       <TradeRoute
         class="mt-5"
-        :address-in="tokenInAddress"
-        :amount-in="tokenInAmount"
-        :address-out="tokenOutAddress"
-        :amount-out="tokenOutAmount"
+        :addressIn="tokenInAddress"
+        :amountIn="tokenInAmount"
+        :addressOut="tokenOutAddress"
+        :amountOut="tokenOutAmount"
         :pools="pools"
-        :sor-return="sorReturn"
+        :sorReturn="sorReturn"
       />
     </div>
     <SuccessOverlay
@@ -58,17 +60,17 @@
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
-      :explorer-link="explorer.txLink(txHash)"
+      :explorerLink="explorer.txLink(txHash)"
       @close="tradeSuccess = false"
     />
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModal
       v-if="modalTradePreviewIsOpen"
-      :address-in="tokenInAddress"
-      :amount-in="tokenInAmount"
-      :address-out="tokenOutAddress"
-      :amount-out="tokenOutAmount"
+      :addressIn="tokenInAddress"
+      :amountIn="tokenInAmount"
+      :addressOut="tokenOutAddress"
+      :amountOut="tokenOutAmount"
       :trading="trading"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"

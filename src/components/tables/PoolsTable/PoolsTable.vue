@@ -56,6 +56,8 @@ const props = withDefaults(defineProps<Props>(), {
   hiddenColumns: () => [],
   showBoost: false,
   columnStates: () => ({}),
+  data: () => [],
+  selectedTokens: () => [],
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -240,24 +242,24 @@ function lockedUntil(lockEndDate?: number) {
       :columns="visibleColumns"
       :data="data"
       :noResultsLabel="noPoolsLabel"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      skeletonClass="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
         getParams: pool => ({ id: pool.id || '' }),
       }"
-      :on-row-click="handleRowClick"
-      :is-paginated="isPaginated"
-      @load-more="emit('loadMore')"
-      :initial-state="{
+      :onRowClick="handleRowClick"
+      :isPaginated="isPaginated"
+      :initialState="{
         sortColumn: 'poolValue',
         sortDirection: 'desc',
       }"
+      @load-more="emit('loadMore')"
     >
-      <template v-slot:iconColumnHeader>
+      <template #iconColumnHeader>
         <div class="flex items-center">
           <img
             v-if="darkMode"
@@ -269,13 +271,13 @@ function lockedUntil(lockEndDate?: number) {
           />
         </div>
       </template>
-      <template v-slot:iconColumnCell="pool">
-        <div v-if="!isLoading" class="px-6 py-4">
+      <template #iconColumnCell="pool">
+        <div v-if="!isLoading" class="py-4 px-6">
           <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
         </div>
       </template>
-      <template v-slot:poolNameCell="pool">
-        <div v-if="!isLoading" class="px-6 py-4 flex items-center">
+      <template #poolNameCell="pool">
+        <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
@@ -286,12 +288,12 @@ function lockedUntil(lockEndDate?: number) {
           <BalChipNew v-if="pool?.isNew" class="ml-2" />
         </div>
       </template>
-      <template v-slot:volumeCell="pool">
+      <template #volumeCell="pool">
         <div
-          class="px-6 py-4 -mt-1 flex justify-end font-numeric"
           :key="columnStates.volume"
+          class="flex justify-end py-4 px-6 -mt-1 font-numeric"
         >
-          <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="h-4 w-12" />
+          <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
               fNum2(pool?.volumeSnapshot, {
@@ -302,14 +304,14 @@ function lockedUntil(lockEndDate?: number) {
           </span>
         </div>
       </template>
-      <template v-slot:aprCell="pool">
+      <template #aprCell="pool">
         <div
-          class="px-6 py-4 -mt-1 flex justify-end font-numeric text-right"
           :key="columnStates.aprs"
+          class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
         >
           <BalLoadingBlock
             v-if="!pool?.apr?.total?.unstaked"
-            class="h-4 w-12"
+            class="w-12 h-4"
           />
           <template v-else>
             {{ aprLabelFor(pool) }}
@@ -317,8 +319,8 @@ function lockedUntil(lockEndDate?: number) {
           </template>
         </div>
       </template>
-      <template v-slot:migrateCell="pool">
-        <div class="px-2 py-4 flex justify-center">
+      <template #migrateCell="pool">
+        <div class="flex justify-center py-4 px-2">
           <BalBtn
             v-if="isMigratablePool(pool)"
             color="gradient"
@@ -329,16 +331,16 @@ function lockedUntil(lockEndDate?: number) {
           </BalBtn>
         </div>
       </template>
-      <template v-slot:lockEndDateCell="pool">
-        <div class="px-6 py-4 text-right">
+      <template #lockEndDateCell="pool">
+        <div class="py-4 px-6 text-right">
           {{ lockedUntil(pool.lockedEndDate) }}
         </div>
       </template>
-      <template v-slot:actionsCell="pool">
+      <template #actionsCell="pool">
         <PoolsTableActionsCell
           :pool="pool"
           @click:stake="pool => emit('triggerStake', pool)"
-        ></PoolsTableActionsCell>
+        />
       </template>
     </BalTable>
   </BalCard>

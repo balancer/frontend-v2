@@ -38,6 +38,7 @@ type Props = {
   poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
@@ -51,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
   isPaginated: false,
+  noResultsLabel: '',
 });
 
 const emit = defineEmits(['loadMore']);
@@ -231,22 +233,22 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
     <BalTable
       :columns="columns"
       :data="swapRows"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      :is-paginated="isPaginated"
-      @load-more="emit('loadMore')"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      skeletonClass="h-64"
       sticky="both"
-      :no-results-label="noResultsLabel"
-      :initial-state="{
+      :noResultsLabel="noResultsLabel"
+      :initialState="{
         sortColumn: 'timeAgo',
         sortDirection: 'desc',
       }"
+      @load-more="emit('loadMore')"
     >
-      <template v-slot:actionCell="action">
-        <div class="px-6 py-2">
+      <template #actionCell="action">
+        <div class="py-2 px-6">
           <div class="flex items-center">
-            <div class="flex center mr-3">
+            <div class="flex mr-3 center">
               <BalIcon
                 v-if="action.type === 'invest'"
                 name="plus"
@@ -271,13 +273,13 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
         </div>
       </template>
 
-      <template v-slot:detailsCell="action">
-        <div class="px-6 py-4 flex -mt-1 flex-wrap items-center">
+      <template #detailsCell="action">
+        <div class="flex flex-wrap items-center py-4 px-6 -mt-1">
           <template v-if="action.type === 'trade'">
             <div class="token-item">
               <BalAsset
                 :address="action.tokenAmounts[0].address"
-                class="mr-2 flex-shrink-0"
+                class="flex-shrink-0 mr-2"
               />
               <span class="font-numeric">{{
                 fNum2(action.tokenAmounts[0].amount, FNumFormats.token)
@@ -287,7 +289,7 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
             <div class="token-item">
               <BalAsset
                 :address="action.tokenAmounts[1].address"
-                class="mr-2 flex-shrink-0"
+                class="flex-shrink-0 mr-2"
               />
               <span class="font-numeric">{{
                 fNum2(action.tokenAmounts[1].amount, FNumFormats.token)
@@ -297,12 +299,12 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
           <template v-else>
             <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
               <div
-                class="m-1 flex items-center p-1 px-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
                 v-if="tokenAmount.amount !== '0'"
+                class="flex items-center p-1 px-2 m-1 bg-gray-50 dark:bg-gray-700 rounded-lg"
               >
                 <BalAsset
                   :address="tokenAmount.address"
-                  class="mr-2 flex-shrink-0"
+                  class="flex-shrink-0 mr-2"
                 />
                 <span class="font-numeric">{{
                   fNum2(tokenAmount.amount, FNumFormats.token)
@@ -313,27 +315,27 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
         </div>
       </template>
 
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end font-numeric">
+      <template #valueCell="action">
+        <div class="flex justify-end py-4 px-6 font-numeric">
           {{ action.formattedValue }}
         </div>
       </template>
 
-      <template v-slot:timeCell="action">
-        <div class="px-6 py-4">
+      <template #timeCell="action">
+        <div class="py-4 px-6">
           <div
-            class="flex items-center justify-end wrap whitespace-nowrap text-right"
+            class="flex justify-end items-center text-right whitespace-nowrap wrap"
           >
             {{ action.formattedDate }}
             <BalLink
               :href="explorerLinks.txLink(action.tx)"
               external
-              class="ml-2 flex items-center"
+              class="flex items-center ml-2"
             >
               <BalIcon
                 name="arrow-up-right"
                 size="sm"
-                class="text-secondary hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-secondary"
               />
             </BalLink>
           </div>

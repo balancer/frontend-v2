@@ -50,11 +50,11 @@ function handleRowClick(option: any): void {
 </script>
 
 <template>
-  <div class="relative" v-click-outside="hideDropdown">
+  <div v-click-outside="hideDropdown" class="relative">
     <div class="activator" @click="toggleDropdown">
       <slot name="activator" />
     </div>
-    <div :class="['bal-dropdown', dropdownClasses]" v-if="showDropdown">
+    <div v-if="showDropdown" :class="['bal-dropdown', dropdownClasses]">
       <div
         v-for="(option, i) in options"
         :key="i"

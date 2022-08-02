@@ -6,7 +6,7 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
 <template>
   <LockForm v-if="isVeBalSupported" />
   <div v-else class="text-center">
-    <div class="font-semibold text-lg">
+    <div class="text-lg font-semibold">
       {{ $t('veBAL.notSupported.title') }}
     </div>
     <div>{{ $t('veBAL.notSupported.description') }}</div>

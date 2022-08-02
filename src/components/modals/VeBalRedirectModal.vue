@@ -45,7 +45,7 @@ function handleInternalClose() {
         {{ $t('modals.veBalRedirectModal.description') }}
       </p>
 
-      <div class="grid gap-4 grid-cols-2 grid-rows-1 mt-4">
+      <div class="grid grid-cols-2 grid-rows-1 gap-4 mt-4">
         <BalBtn
           tag="a"
           :href="mainnetURL"

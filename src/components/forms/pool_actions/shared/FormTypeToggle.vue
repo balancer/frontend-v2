@@ -9,7 +9,7 @@
       class="py-2"
       :disabled="loading"
     >
-      <template v-slot:label>
+      <template #label>
         <span>
           {{ type.label }}
         </span>
@@ -17,8 +17,8 @@
           ({{ type.max }} {{ $t('max').toLowerCase() }})
         </span>
         <BalTooltip v-if="type.tooltip">
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 -mb-px ml-2" />
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-2 text-gray-400" />
           </template>
           <div>
             {{ type.tooltip }}
@@ -44,8 +44,6 @@ interface FormType {
 export default defineComponent({
   name: 'TypeToggle',
 
-  emits: ['update:modelValue'],
-
   props: {
     formTypes: { type: Object as PropType<FormType[]>, required: true },
     modelValue: { type: String, required: true },
@@ -53,6 +51,8 @@ export default defineComponent({
     hasZeroBalance: { type: Boolean, default: false },
     missingPrices: { type: Boolean, default: false },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     const selected = ref(props.formTypes[0].value);

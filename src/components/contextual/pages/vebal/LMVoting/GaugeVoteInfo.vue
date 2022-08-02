@@ -66,7 +66,7 @@ function formatVotesAsPercent(votes: string): string {
 
 <template>
   <BalTooltip textAlign="left">
-    <template v-slot:activator>
+    <template #activator>
       <span :class="voteTextClass">{{ votesNextPeriod }}</span>
     </template>
     <div>

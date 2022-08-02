@@ -33,28 +33,39 @@ type AreaStyle = {
 type Props = {
   data: ChartData[];
   chartType: string;
-  onAxisMoved?: (value: string | number) => void;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
+  onAxisMoved?: undefined | ((value: string | number) => void);
   isLoading?: boolean;
   hideYAxis?: boolean;
   hideXAxis?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   xAxisMinInterval?: number;
   showHeader?: boolean;
   needChartValue?: boolean;
   axisLabelFormatter?: AxisLabelFormat;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   color?: string[];
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   hoverColor?: string;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   hoverBorderColor?: string;
   height: number | string;
   showLegend?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   legendState?: Dictionary<boolean>;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   forceResizeTick?: number; // manually uptick this variable to force a resize calculation on the chart
   isLastValueChipVisible?: boolean; // whether to show the little rectangle with the last value of the data
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   customGrid?: echarts.ComposeOption<GridOption>; // provide a custom grid for the chart
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   chartClass?: string; // sets the class for the chart container
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   wrapperClass?: string[]; // sets the class for the element which wraps the chart and the header
   showTooltip?: boolean; // shows the tooltip
   showTooltipLayer?: boolean; // hides tooltip floating layer
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   areaStyle?: AreaStyle;
 };
 
@@ -396,7 +407,7 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
 </script>
 
 <template>
-  <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
+  <BalLoadingBlock v-if="isLoading" class="mt-16 h-96" />
   <div
     v-else
     :class="[wrapperClass]"
@@ -405,8 +416,8 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
     @mouseleave="handleMouseLeave"
     @touchend="handleMouseLeave"
   >
-    <div id="lineChartHeader" class="mb-4" v-if="showHeader">
-      <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
+    <div v-if="showHeader" id="lineChartHeader" class="mb-4">
+      <h3 class="text-xl tracking-wider text-gray-800 dark:text-gray-400">
         {{ currentValue }}
       </h3>
       <span
@@ -427,9 +438,9 @@ const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       ]"
       :option="chartConfig"
       autoresize
-      @updateAxisPointer="handleAxisMoved"
-      :update-options="{ replaceMerge: 'series' }"
+      :updateOptions="{ replaceMerge: 'series' }"
       :style="[styleOverrides]"
+      @update-axis-pointer="handleAxisMoved"
     />
   </div>
 </template>

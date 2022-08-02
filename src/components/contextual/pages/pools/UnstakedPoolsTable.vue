@@ -132,7 +132,7 @@ function handleModalClose() {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 xl:px-0" v-if="!isL2">
+      <h5 v-if="!isL2" class="px-4 xl:px-0">
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable
@@ -141,15 +141,15 @@ function handleModalClose() {
         :data="poolsToRender"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
-        @triggerStake="handleStake"
         showPoolShares
+        @trigger-stake="handleStake"
       />
     </BalStack>
     <StakePreviewModal
       :pool="stakePool"
       :isVisible="showStakeModal"
-      @close="handleModalClose"
       action="stake"
+      @close="handleModalClose"
     />
   </div>
 </template>

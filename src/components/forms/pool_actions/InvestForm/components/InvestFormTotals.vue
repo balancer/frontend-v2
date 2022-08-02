@@ -58,7 +58,9 @@ const optimizeBtnClasses = computed(() => ({
 <template>
   <div class="data-table">
     <div class="data-table-row total-row">
-      <div class="p-2">{{ $t('total') }}</div>
+      <div class="p-2">
+        {{ $t('total') }}
+      </div>
       <div class="data-table-number-col">
         {{ fNum2(fiatTotal, FNumFormats.fiat) }}
         <div v-if="isWalletReady && !hasNoBalances" class="text-sm">
@@ -76,7 +78,9 @@ const optimizeBtnClasses = computed(() => ({
       </div>
     </div>
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
-      <div class="p-2">{{ $t('priceImpact') }}</div>
+      <div class="p-2">
+        {{ $t('priceImpact') }}
+      </div>
       <div class="data-table-number-col">
         <div class="flex">
           <span v-if="!batchSwapLoading">
@@ -85,7 +89,7 @@ const optimizeBtnClasses = computed(() => ({
           <BalLoadingBlock v-else class="w-10" />
 
           <BalTooltip :text="$t('customAmountsTip')">
-            <template v-slot:activator>
+            <template #activator>
               <BalIcon
                 v-if="highPriceImpact"
                 name="alert-triangle"
@@ -96,7 +100,7 @@ const optimizeBtnClasses = computed(() => ({
                 v-else
                 name="info"
                 size="xs"
-                class="text-gray-400 -mb-px ml-1"
+                class="-mb-px ml-1 text-gray-400"
               />
             </template>
           </BalTooltip>

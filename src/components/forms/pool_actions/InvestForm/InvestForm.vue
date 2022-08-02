@@ -239,10 +239,10 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     <TokenInput
       v-for="(n, i) in tokenAddresses.length"
       :key="i"
-      :name="tokenAddresses[i]"
       v-model:address="tokenAddresses[i]"
       v-model:amount="amounts[i]"
       v-model:isValid="validInputs[i]"
+      :name="tokenAddresses[i]"
       :weight="tokenWeight(tokenAddresses[i])"
       :hintAmount="propAmountFor(i)"
       :hint="hint(i)"
@@ -261,7 +261,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <div
       v-if="highPriceImpact"
-      class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4"
+      class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -305,13 +305,13 @@ watch(useNativeAsset, shouldUseNativeAsset => {
           :math="investMath"
           :tokenAddresses="tokenAddresses"
           @close="showInvestPreview = false"
-          @showStakeModal="showStakeModal = true"
+          @show-stake-modal="showStakeModal = true"
         />
         <StakePreviewModal
           :pool="pool"
           :isVisible="showStakeModal"
-          @close="showStakeModal = false"
           action="stake"
+          @close="showStakeModal = false"
         />
       </teleport>
     </StakingProvider>

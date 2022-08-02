@@ -35,14 +35,16 @@ const priceImpactClasses = computed(() => ({
 <template>
   <div class="data-table">
     <div :class="['data-table-row', priceImpactClasses]">
-      <div class="p-2">{{ $t('priceImpact') }}</div>
+      <div class="p-2">
+        {{ $t('priceImpact') }}
+      </div>
       <div class="data-table-number-col">
         <div class="flex items-center">
           <BalLoadingBlock v-if="loadingAmountsOut" class="w-10 h-6" />
           <span v-else>{{ fNum2(priceImpact, FNumFormats.percent) }}</span>
 
           <BalTooltip :text="$t('withdraw.tooltips.priceImpact')">
-            <template v-slot:activator>
+            <template #activator>
               <BalIcon
                 v-if="highPriceImpact"
                 name="alert-triangle"
@@ -53,7 +55,7 @@ const priceImpactClasses = computed(() => ({
                 v-else
                 name="info"
                 size="xs"
-                class="text-gray-400 -mb-px ml-1"
+                class="-mb-px ml-1 text-gray-400"
               />
             </template>
           </BalTooltip>

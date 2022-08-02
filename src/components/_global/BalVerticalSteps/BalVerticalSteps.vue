@@ -76,7 +76,9 @@ function handleNavigate(state: StepState, stepIndex: number) {
 <template>
   <BalCard noPad shadow="none">
     <div class="p-4 border-b dark:border-gray-600">
-      <h6 class="dark:text-gray-300">{{ title }}</h6>
+      <h6 class="dark:text-gray-300">
+        {{ title }}
+      </h6>
     </div>
     <BalStack vertical spacing="base" class="p-4" justify="center">
       <div
@@ -85,8 +87,8 @@ function handleNavigate(state: StepState, stepIndex: number) {
         class="flex items-center"
       >
         <button
-          @click="handleNavigate(step.state, i)"
           :class="{ 'cursor-default': step.state === StepState.Todo }"
+          @click="handleNavigate(step.state, i)"
         >
           <BalStack horizontal align="center" spacing="sm">
             <div
@@ -97,7 +99,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
               ]"
             >
               <div
-                class="absolute top-0 left-0 right-0 bottom-0 w-4 mx-auto flex justify-center items-center"
+                class="flex absolute top-0 right-0 bottom-0 left-0 justify-center items-center mx-auto w-4"
               >
                 <span
                   v-if="
@@ -105,7 +107,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
                   "
                   >{{ step.label || i + 1 }}</span
                 >
-                <span class="font-semibold" v-else>!</span>
+                <span v-else class="font-semibold">!</span>
               </div>
             </div>
             <span :class="['text-sm', stepTextClasses[i]]">
