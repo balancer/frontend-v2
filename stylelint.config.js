@@ -11,8 +11,9 @@ module.exports = {
     'string-quotes': 'single',
     'selector-class-pattern': '',
     'keyframes-name-pattern': '',
-    // Ignore display: -webkit-box;
-    // It only works with the webkit prefix.
+
+    // Ignore "display: -webkit-box;"
+    // This line clampin technique only works with the webkit prefix.
     // https://css-tricks.com/line-clampin/
     'value-no-vendor-prefix': [true, { ignoreValues: ['box'] }],
 
