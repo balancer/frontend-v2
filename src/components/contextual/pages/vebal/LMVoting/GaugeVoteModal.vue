@@ -387,15 +387,7 @@ onMounted(() => {
       >
         <div class="flex gap-4 items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
-          <div v-if="gauge.pool.name">
-            <p class="font-medium text-black dark:text-white">
-              {{ gauge.pool.name }}
-            </p>
-            <p class="text-sm text-secondary">
-              {{ gauge.pool.symbol }}
-            </p>
-          </div>
-          <div v-else>
+          <div>
             <p class="font-medium text-black dark:text-white">
               {{ gauge.pool.symbol }}
             </p>

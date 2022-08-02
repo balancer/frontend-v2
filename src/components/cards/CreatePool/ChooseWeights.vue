@@ -280,7 +280,8 @@ function distributeWeights() {
   });
 }
 
-function addTokenListElementRef(el: HTMLElement) {
+function addTokenListElementRef(el: HTMLElement | null) {
+  if (!el) return;
   // const filteredElements = seedTokenElements.value.filter(e => e !== null);
   if (!seedTokenElements.value.includes(el) && el) {
     seedTokenElements.value.push(el);
