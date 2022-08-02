@@ -15,7 +15,7 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier --check '**/*.*(md|json|yaml|html)' --loglevel warn",
     "prettier:fix": "npm run prettier -- --write",
-    "prepare": "node ./prepare.js && husky install",
+    "prepare": "node ./prepare.js",
     "stylelint": "stylelint '**/*.{vue,css}'",
     "stylelint:fix": "npm run stylelint -- --fix",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
