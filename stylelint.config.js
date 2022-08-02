@@ -6,6 +6,7 @@ module.exports = {
   ],
   plugins: ['stylelint-prettier'],
   rules: {
+    'prettier/prettier': true,
     'string-quotes': 'single',
     'selector-class-pattern': '',
     'keyframes-name-pattern': '',
