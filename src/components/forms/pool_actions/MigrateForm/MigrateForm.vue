@@ -7,6 +7,7 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 
 import MigrateExplainer from './components/MigrateExplainer.vue';
@@ -80,14 +81,15 @@ const toPoolTokenInfo = computed(() =>
       "
       class="h-96"
     />
-    <PoolsInfo
-      v-else
-      :fromPool="fromPool"
-      :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-      :poolMigrationInfo="poolMigrationInfo"
-    />
+    <StakingProvider v-else>
+      <PoolsInfo
+        :fromPool="fromPool"
+        :toPool="toPool"
+        :fromPoolTokenInfo="fromPoolTokenInfo"
+        :toPoolTokenInfo="toPoolTokenInfo"
+        :poolMigrationInfo="poolMigrationInfo"
+      />
+    </StakingProvider>
 
     <template #gutterRight>
       <BalLoadingBlock v-if="toPoolLoading" class="h-64" />

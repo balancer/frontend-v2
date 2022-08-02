@@ -38,8 +38,11 @@ type Props = {
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
-  disabled?: boolean;
   fiatTotal: string;
+  disabled?: boolean;
+  stakedPoolValue?: string;
+  isStakedMigrationEnabled: boolean;
+  isUnstakedMigrationEnabled: boolean;
 };
 
 type MigratePoolState = {
@@ -55,13 +58,7 @@ type MigratePoolState = {
  */
 const props = defineProps<Props>();
 
-const {
-  fiatTotalLabel,
-  bptBalanceScaled,
-  fullAmountsScaled,
-  tokenCount,
-  shouldFetchBatchSwap
-} = toRefs(props.math);
+const { shouldFetchBatchSwap } = toRefs(props.math);
 
 const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
@@ -91,10 +88,12 @@ const relayerAddress = ref(configService.network.addresses.batchRelayer);
 const relayerApproval = useRelayerApprovalQuery(relayerAddress);
 
 const { actions } = usePoolMigration(
-  props.math.bptBalanceScaled.value,
+  props.math.bptBalance.value,
+  props.isUnstakedMigrationEnabled,
+  props.stakedPoolValue,
+  props.isStakedMigrationEnabled,
   props.fromPool,
-  relayerApproval.data,
-
+  relayerApproval.data
 );
 
 /**
@@ -112,100 +111,6 @@ const transactionInProgress = computed(
     migratePoolState.confirming ||
     migratePoolState.confirmed
 );
-
-/**
- * METHODS
- */
-async function handleTransaction(tx): Promise<void> {
-  addTransaction({
-    id: tx.hash,
-    type: 'tx',
-    action: 'migratePool',
-    summary: t('transactionSummary.migratePool', [
-      fiatTotalLabel.value,
-      props.fromPoolTokenInfo.symbol,
-      props.toPoolTokenInfo.symbol
-    ]),
-    details: {
-      fromPool: props.fromPool,
-      toPool: props.toPool,
-      totalFiatPoolInvestment: fiatTotalLabel.value
-    }
-  });
-
-  migratePoolState.confirmed = await txListener(tx, {
-    onTxConfirmed: async (receipt: TransactionReceipt) => {
-      emit('success', receipt);
-      migratePoolState.confirming = false;
-      migratePoolState.receipt = receipt;
-
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      migratePoolState.confirmedAt = dateTimeLabelFor(confirmedAt);
-    },
-    onTxFailed: () => {
-      migratePoolState.confirming = false;
-    }
-  });
-}
-
-async function submit() {
-  try {
-    let tx: TransactionResponse;
-    migratePoolState.init = true;
-
-    let userData = '';
-    if (isStableLike(props.fromPool.poolType)) {
-      userData = StablePoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value
-      );
-    } else {
-      userData = WeightedPoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value
-      );
-    }
-
-    const txInfo = await balancer.relayer.exitPoolAndBatchSwap({
-      exiter: account.value,
-      swapRecipient: account.value,
-      poolId: props.fromPool.id,
-      exitTokens: props.fromPool.tokensList.map(t => t.toLowerCase()),
-      userData,
-      expectedAmountsOut: fullAmountsScaled.value.map(amount =>
-        amount.toString()
-      ),
-      finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
-      slippage: slippageScaled.value,
-      fetchPools: {
-        fetchPools: true,
-        fetchOnChain: false
-      }
-    });
-
-    const hasInvalidAmount = (
-      txInfo.outputs?.amountsOut || []
-    ).some((amount: BigNumberish) => BigNumber.from(amount).isZero());
-
-    if (hasInvalidAmount) {
-      throw new Error('exitPoolAndBatchSwap returned invalid amounts.');
-    }
-
-    tx = await balancerContractsService.batchRelayer.execute(
-      txInfo,
-      getProvider()
-    );
-
-    migratePoolState.init = false;
-    migratePoolState.confirming = true;
-
-    console.log('Receipt', tx);
-
-    handleTransaction(tx);
-    return tx;
-  } catch (error) {
-    console.error(error);
-    return Promise.reject(error);
-  }
-}
 
 /**
  * WATCHERS

@@ -1,6 +1,7 @@
 import { RelayerAuthorization } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { parseFixed } from '@ethersproject/bignumber';
+import { parseUnits } from 'ethers/lib/utils';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -20,7 +21,10 @@ const HALF_HOUR = 30 * 60 * 1000;
 const MAX_GAS_LIMIT = 8e6;
 
 export function usePoolMigration(
-  amount: string,
+  unstakedAmount: string,
+  isUnstakedMigrationEnabled: boolean,
+  stakedAmount = '0',
+  isStakedMigrationEnabled: boolean,
   fromPool: Pool,
   relayerApproval: Ref<boolean | undefined>
 ) {
@@ -45,17 +49,40 @@ export function usePoolMigration(
   /**
    * COMPUTED
    */
+  const poolDecimals = computed(() => fromPool?.onchain?.decimals || 18);
+
+  // const
   const actions = computed(() => {
-    const arr: TransactionActionInfo[] = [
-      {
-        label: t('migratePool.previewModal.actions.title'),
+    const arr: TransactionActionInfo[] = [];
+    const stakedSum = Number(stakedAmount);
+    const unstakedSum = Number(unstakedAmount);
+
+    if (isStakedMigrationEnabled) {
+      arr.push({
+        label: t('migratePool.previewModal.actions.staked.title'),
         loadingLabel: t('migratePool.previewModal.actions.loading'),
         confirmingLabel: t('migratePool.confirming'),
-        action: approveMigration,
+        action: approveMigration.bind(null, true, stakedAmount),
         stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
         isSignAction: false
-      }
-    ];
+      });
+    }
+
+    if (isUnstakedMigrationEnabled) {
+      const scaledUnstakedSum = scaleAmount(unstakedAmount, poolDecimals.value);
+
+      const data = {
+        label: t('migratePool.previewModal.actions.unstaked.title'),
+        loadingLabel: t('migratePool.previewModal.actions.loading'),
+        confirmingLabel: t('migratePool.confirming'),
+        action: approveMigration.bind(null, false, scaledUnstakedSum),
+        stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
+        isSignAction: false
+      };
+      console.log('ACTIONS', unstakedSum, stakedSum);
+      // the biggest one is migrated first
+      unstakedSum > stakedSum ? arr.unshift(data) : arr.push(data);
+    }
 
     if (!relayerApproval.value) {
       arr.unshift({
@@ -75,6 +102,7 @@ export function usePoolMigration(
       migration => migration.fromPoolId === fromPool.id
     );
   });
+
   /**
    * METHODS
    */
@@ -112,10 +140,13 @@ export function usePoolMigration(
     }
   }
 
-  async function approveMigration(): Promise<TransactionResponse> {
+  async function approveMigration(
+    staked = true,
+    amount: string
+  ): Promise<TransactionResponse> {
+    console.log('_staked', amount);
     const signer = getSigner();
     const signerAddress = account.value;
-    const staked = false;
     const gasLimit = MAX_GAS_LIMIT;
     const _signature = relayerApproval.value ? undefined : signature.value;
     const _tokens = fromPool.tokens
@@ -207,6 +238,12 @@ export function usePoolMigration(
         approving.value = false;
       }
     });
+  }
+
+  function scaleAmount(amount: string, decimals = 18) {
+    console.log('scaleAmount', amount);
+    return parseUnits(amount, decimals).toString();
+    // return amount;
   }
 
   return { getUserSignature, approveMigration, actions };

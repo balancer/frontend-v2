@@ -6,6 +6,8 @@ import { useRouter } from 'vue-router';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
+import useStaking from '@/composables/staking/useStaking';
+import useNumbers from '@/composables/useNumbers';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -35,13 +37,58 @@ const props = defineProps<Props>();
  */
 const { t } = useI18n();
 const { fromPool, toPool } = toRefs(props);
+const { fNum2 } = useNumbers();
+
+const {
+  userData: {
+    stakedPools,
+    isLoadingUserStakingData,
+    isLoadingStakedPools,
+    isLoadingUserPools,
+    poolBoosts
+  }
+} = useStaking();
+
+const poolsWithBoost = computed(() => {
+  console.log('poolBoosts', poolBoosts);
+  return stakedPools.value.map(pool => ({
+    ...pool,
+    boost: (poolBoosts.value || {})[pool.id]
+  }));
+});
+
+const stakedPool = computed(() => {
+  return poolsWithBoost.value.find(pool => pool.id === fromPool.value.id);
+});
 
 const router = useRouter();
 
 const migrateMath = useMigrateMath(fromPool, toPool);
-const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
+const { fiatTotal } = migrateMath;
 
-const hasValue = computed(() => hasBpt.value);
+const hasValue = computed(
+  () => Number(stakedPool.value?.shares) > 0 || Number(fiatTotal.value) > 0
+);
+
+const balanceLabel = computed(() => {
+  let balance = 0;
+
+  if (stakedPool.value) {
+    balance += Number(stakedPool.value?.shares);
+  }
+
+  if (Number(fiatTotal.value) > 0) {
+    balance += Number(fiatTotal.value);
+  }
+
+  return balance > 0
+    ? fNum2(balance, {
+        style: 'currency',
+        maximumFractionDigits: 0,
+        fixedFormat: true
+      })
+    : '-';
+});
 
 /**
  * STATE
@@ -50,21 +97,36 @@ const showPreviewModal = ref(false);
 const migrateStakeChooseArr = ref({
   staked: {
     title: t('migratePool.poolInfo.stakedLabel'),
-    value: true,
-    amount: '500'
+    value: Number(stakedPool.value?.shares) > 0,
+    amount: fNum2(stakedPool.value?.shares || '0', {
+      style: 'currency',
+      maximumFractionDigits: 0,
+      fixedFormat: true
+    })
   },
   unstaked: {
     title: t('migratePool.poolInfo.unstakedLabel'),
-    value: true,
-    amount: '500'
+    value: Number(fiatTotal.value) > 0,
+    amount: fNum2(fiatTotal.value, {
+      style: 'currency',
+      maximumFractionDigits: 0,
+      fixedFormat: true
+    })
   }
 });
 
 /**
  * COMPUTED
  */
+const isPreviewModalBtnDisabled = computed(() => {
+  return (
+    !hasValue.value ||
+    Object.values(migrateStakeChooseArr.value).every(item => !item.value)
+  );
+});
+
 const hasStakedUnstakedLiquidity = computed(() => {
-  return false;
+  return Number(stakedPool.value?.shares) > 0 && Number(fiatTotal.value) > 0;
 });
 
 /**
@@ -107,21 +169,21 @@ onBeforeMount(async () => {
         noMargin
       >
         <template #label>
-          <div class="flex flex-col">
-            <div>
+          <div class="flex flex-col text-base">
+            <div class="font-semibold">
               {{ item.title }}
             </div>
-            <div>
+            <div class="font-normal text-gray-600">
               {{ item.amount }}
             </div>
           </div>
         </template>
       </BalCheckbox>
     </div>
-    <div class="mb-6">
+    <div v-if="!hasStakedUnstakedLiquidity" class="mb-6">
       <div class="text-gray-500">{{ $t('yourBalanceInPool') }}</div>
       <div class="font-semibold text-lg">
-        {{ hasBpt ? fiatTotalLabel : '-' }}
+        {{ balanceLabel }}
       </div>
     </div>
     <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
@@ -133,7 +195,7 @@ onBeforeMount(async () => {
       color="gradient"
       class="mt-6"
       block
-      :disabled="!hasBpt"
+      :disabled="isPreviewModalBtnDisabled"
       @click="showPreviewModal = true"
     >
       {{ $t('previewMigrate') }}
@@ -143,6 +205,9 @@ onBeforeMount(async () => {
   <teleport to="#modal">
     <MigratePreviewModal
       v-if="showPreviewModal"
+      :stakedPoolValue="stakedPool?.shares"
+      :isStakedMigrationEnabled="migrateStakeChooseArr.staked.value"
+      :isUnstakedMigrationEnabled="migrateStakeChooseArr.unstaked.value"
       :fromPool="fromPool"
       :toPool="toPool"
       :fromPoolTokenInfo="fromPoolTokenInfo"

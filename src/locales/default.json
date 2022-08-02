@@ -249,7 +249,15 @@
       "actions": {
         "title": "Migrate pool",
         "loading": "Confirm pool migration in wallet",
-        "migrationStep": "Confirm pool migration"
+        "migrationStep": "Confirm pool migration",
+        "staked": {
+          "title": "Migrate staked liquidity",
+          "migrationStep": "Migrate staked liquidity"
+        },
+        "unstaked": {
+          "title": "Migrate unstaked liquidity",
+          "migrationStep": "Migrate unstaked liquidity"
+        }
       },
       "priceImpactAccept": "I accept the high price impact from pool migration."
     },
