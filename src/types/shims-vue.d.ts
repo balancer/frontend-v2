@@ -9,8 +9,13 @@ declare module '*.svg' {
   export default content;
 }
 
-declare namespace React {
-  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    class?: any;
-  }
-}
+// declare namespace React {
+//   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+//     class?: any;
+//   }
+// interface SVGProps<T> extends AriaAttributes, DOMAttributes<T> {
+//   // extends React's SVGProps
+//   class?: string | string[]
+//   'xml:space'?: string
+// }
+// }
