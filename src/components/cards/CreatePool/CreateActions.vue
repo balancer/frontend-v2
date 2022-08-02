@@ -18,7 +18,6 @@ type Props = {
   tokenAddresses: string[];
   amounts: string[];
   createDisabled: boolean;
-  errorMessage: boolean;
 };
 
 type CreateState = {
@@ -132,7 +131,6 @@ function handleSuccess(details: any): void {
     <BalActionSteps
       :actions="requiredActions"
       :disabled="props.createDisabled"
-      :errorMessage="props.errorMessage"
       :isLoading="createState.isLoadingRestoredTx"
       :loadingLabel="$t('restoring')"
       @success="handleSuccess"
