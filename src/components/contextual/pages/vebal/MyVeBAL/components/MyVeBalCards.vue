@@ -253,5 +253,4 @@ const cards = computed(() => {
 
   fill: theme('colors.red.500');
 }
-
 </style>

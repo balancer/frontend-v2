@@ -119,8 +119,7 @@ defineExpose({ hide });
 
 .dark .bal-modal .content::before {
   background-blend-mode: soft-light, soft-light, normal;
-  background:
-    radial-gradient(circle at left, yellow, transparent),
+  background: radial-gradient(circle at left, yellow, transparent),
     radial-gradient(circle at bottom right, blue, transparent),
     radial-gradient(circle at top, red, transparent);
   content: '';

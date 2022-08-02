@@ -1,6 +1,6 @@
 <template>
   <button class="wallet-connect-btn" @click="handleClick">
-    <div class="flex items-center" style="width: 70%;">
+    <div class="flex items-center" style="width: 70%">
       <img
         :src="require(`@/assets/images/connectors/${wallet}.svg`)"
         class="mr-4 w-10 h-10"

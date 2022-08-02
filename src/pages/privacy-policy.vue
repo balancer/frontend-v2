@@ -282,7 +282,7 @@
         purposes to the following categories of recipients:
       </p>
 
-      <table border="1" cellpadding="0" cellspacing="0" style="width: 100%;">
+      <table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
         <tr>
           <th>Category of Personal Information</th>
           <th>Type of Information &amp; Categories of Recipients</th>
