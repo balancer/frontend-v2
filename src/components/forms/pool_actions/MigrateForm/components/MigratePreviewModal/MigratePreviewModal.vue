@@ -44,7 +44,7 @@ const {
   highPriceImpact,
   fiatTotal,
   fiatTotalLabel,
-  priceImpact
+  priceImpact,
 } = toRefs(props.math);
 
 const migrateConfirmed = ref(false);
@@ -80,13 +80,13 @@ function handleClose() {
 
 <template>
   <BalModal show :fireworks="migrateConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="migrateConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -116,7 +116,7 @@ function handleClose() {
 
     <div
       v-if="highPriceImpact"
-      class="border dark:border-gray-700 rounded-lg p-3 mt-4"
+      class="p-3 mt-4 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -139,8 +139,8 @@ function handleClose() {
       :fiatTotal="fiatTotal"
       :math="math"
       :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
-      @success="migrateConfirmed = true"
       class="mt-4"
+      @success="migrateConfirmed = true"
     />
   </BalModal>
 </template>

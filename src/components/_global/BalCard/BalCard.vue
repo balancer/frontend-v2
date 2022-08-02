@@ -3,11 +3,12 @@
     <div
       :class="[
         'card-container',
-        { 'overflow-y-scroll max-h-screen': overflowYScroll }
+        { 'overflow-y-scroll max-h-screen': overflowYScroll },
       ]"
     >
       <div v-if="imgSrc" class="feature" :style="featureStyles" />
       <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
+        <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -- Not sure if this is fine -->
         <component :is="titleTag" v-if="!!title" v-text="title" />
         <div
           v-if="$slots.header"
@@ -59,10 +60,10 @@ export default defineComponent({
           'xl',
           '2xl',
           '3xl',
-          '4xl'
+          '4xl',
         ].includes(val);
-      }
-    }
+      },
+    },
   },
 
   setup(props) {
@@ -77,38 +78,38 @@ export default defineComponent({
         [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
-        'h-full': props.hFull
+        'h-full': props.hFull,
       };
     });
 
     const headerClasses = computed(() => {
       return {
-        'p-4 pb-0': !props.noPad
+        'p-4 pb-0': !props.noPad,
       };
     });
 
     const headerContentClasses = computed(() => {
       return {
-        'justify-end': props.rightAlignHeader
+        'justify-end': props.rightAlignHeader,
       };
     });
 
     const contentClasses = computed(() => {
       return {
         'p-4': !props.noPad && !props.noContentPad,
-        'flex-grow': props.growContent
+        'flex-grow': props.growContent,
       };
     });
 
     const footerClasses = computed(() => {
       return {
         'rounded-b-lg': !props.square,
-        'p-4 pt-0': !props.noPad
+        'p-4 pt-0': !props.noPad,
       };
     });
 
     const featureStyles = computed(() => ({
-      backgroundImage: `url('${props.imgSrc}')`
+      backgroundImage: `url('${props.imgSrc}')`,
     }));
 
     return {
@@ -117,9 +118,9 @@ export default defineComponent({
       headerClasses,
       headerContentClasses,
       footerClasses,
-      featureStyles
+      featureStyles,
     };
-  }
+  },
 });
 </script>
 

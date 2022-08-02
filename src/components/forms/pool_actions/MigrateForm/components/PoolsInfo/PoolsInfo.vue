@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import TradeSettingsPopover, {
-  TradeSettingsContext
+  TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers from '@/composables/useNumbers';
@@ -45,15 +45,15 @@ const {
     isLoadingUserStakingData,
     isLoadingStakedPools,
     isLoadingUserPools,
-    poolBoosts
-  }
+    poolBoosts,
+  },
 } = useStaking();
 
 const poolsWithBoost = computed(() => {
   console.log('poolBoosts', poolBoosts);
   return stakedPools.value.map(pool => ({
     ...pool,
-    boost: (poolBoosts.value || {})[pool.id]
+    boost: (poolBoosts.value || {})[pool.id],
   }));
 });
 
@@ -85,7 +85,7 @@ const balanceLabel = computed(() => {
     ? fNum2(balance, {
         style: 'currency',
         maximumFractionDigits: 0,
-        fixedFormat: true
+        fixedFormat: true,
       })
     : '-';
 });
@@ -101,8 +101,8 @@ const migrateStakeChooseArr = ref({
     amount: fNum2(stakedPool.value?.shares || '0', {
       style: 'currency',
       maximumFractionDigits: 0,
-      fixedFormat: true
-    })
+      fixedFormat: true,
+    }),
   },
   unstaked: {
     title: t('migratePool.poolInfo.unstakedLabel'),
@@ -110,9 +110,9 @@ const migrateStakeChooseArr = ref({
     amount: fNum2(fiatTotal.value, {
       style: 'currency',
       maximumFractionDigits: 0,
-      fixedFormat: true
-    })
-  }
+      fixedFormat: true,
+    }),
+  },
 });
 
 /**
@@ -145,10 +145,10 @@ onBeforeMount(async () => {
   <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-gray-500 leading-none">
+        <div class="text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ t(`migratePool.${poolMigrationInfo.type}.migrateToPool.title`) }}
           </h4>
@@ -156,17 +156,17 @@ onBeforeMount(async () => {
         </div>
       </div>
     </template>
-    <div class="pb-3" v-if="hasStakedUnstakedLiquidity">
+    <div v-if="hasStakedUnstakedLiquidity" class="pb-3">
       {{ t('migratePool.poolInfo.stakedUnstaked') }}
       <BalCheckbox
         v-for="(item, index) in Object.values(migrateStakeChooseArr)"
         :key="index"
         class="pt-2"
-        @update:modelValue="item.value = !item.value"
         :modelValue="item.value"
         name="areFeesGovernanceManaged"
         size="lg"
         noMargin
+        @update:model-value="item.value = !item.value"
       >
         <template #label>
           <div class="flex flex-col text-base">
@@ -182,13 +182,13 @@ onBeforeMount(async () => {
     </div>
     <div v-if="!hasStakedUnstakedLiquidity" class="mb-6">
       <div class="text-gray-500">{{ $t('yourBalanceInPool') }}</div>
-      <div class="font-semibold text-lg">
+      <div class="text-lg font-semibold">
         {{ balanceLabel }}
       </div>
     </div>
     <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
-    <div class="block flex justify-center dark:text-gray-50 my-4">
-      <ArrowDownIcon class="dark:text-gray-500 h-5 w-5" />
+    <div class="flex justify-center my-4 dark:text-gray-50">
+      <ArrowDownIcon class="w-5 h-5 dark:text-secondary" />
     </div>
     <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
     <BalBtn

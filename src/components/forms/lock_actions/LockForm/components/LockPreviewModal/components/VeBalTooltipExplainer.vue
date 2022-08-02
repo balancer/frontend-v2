@@ -32,23 +32,23 @@ const { t } = useI18n();
 const conversationTableRows = computed(() => [
   {
     label: t('getVeBAL.lockForm.lockPeriods.1y'),
-    value: `~1 ${veBalTokenInfo.value.symbol}`
+    value: `~1 ${veBalTokenInfo.value.symbol}`,
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.6m'),
-    value: `~0.5 ${veBalTokenInfo.value.symbol}`
+    value: `~0.5 ${veBalTokenInfo.value.symbol}`,
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.3m'),
-    value: `~0.25 ${veBalTokenInfo.value.symbol}`
-  }
+    value: `~0.25 ${veBalTokenInfo.value.symbol}`,
+  },
 ]);
 </script>
 
 <template>
   <BalTooltip width="72" noPad class="ml-2">
-    <template v-slot:activator>
-      <BalIcon name="info" size="sm" class="text-gray-400 dark:text-gray-500" />
+    <template #activator>
+      <BalIcon name="info" size="sm" class="text-secondary" />
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-t">
@@ -58,14 +58,14 @@ const conversationTableRows = computed(() => [
         </h5>
       </div>
       <div class="p-3">
-        <div class="text-gray-500 dark:text-gray-400 mb-3">
+        <div class="mb-3 text-secondary">
           {{
             $t(
               'getVeBAL.previewModal.summary.totalVotingEscrowTooltip.explainer'
             )
           }}
         </div>
-        <div class="whitespace-nowrap flex items-center mb-1">
+        <div class="flex items-center mb-1 whitespace-nowrap">
           <table class="w-full table-fixed">
             <thead>
               <tr>
@@ -90,7 +90,9 @@ const conversationTableRows = computed(() => [
                 <td class="table-body-cell">
                   {{ row.label }}
                 </td>
-                <td class="table-body-cell">{{ row.value }}</td>
+                <td class="table-body-cell">
+                  {{ row.value }}
+                </td>
               </tr>
             </tbody>
           </table>

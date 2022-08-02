@@ -10,7 +10,7 @@
 import { ChainId } from '@aave/protocol-js';
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { computed, ref, watch } from 'vue';
 
@@ -23,7 +23,7 @@ import { Step, StepState } from '@/types';
 import {
   TransactionAction,
   TransactionActionInfo,
-  TransactionActionState
+  TransactionActionState,
 } from '@/types/transactions';
 
 /**
@@ -46,7 +46,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   isLoading: false,
-  loadingLabel: ''
+  loadingLabel: '',
 });
 
 const emit = defineEmits<{
@@ -57,7 +57,7 @@ const defaultActionState: TransactionActionState = {
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 };
 
 /**
@@ -68,7 +68,7 @@ const _actions = ref<TransactionActionInfo[]>(props.actions);
 
 const actionStates = ref(
   _actions.value.map(() => ({
-    ...defaultActionState
+    ...defaultActionState,
   }))
 );
 
@@ -80,11 +80,11 @@ watch(
   () => {
     _actions.value = props.actions;
     actionStates.value = _actions.value.map(() => ({
-      ...defaultActionState
+      ...defaultActionState,
     }));
   },
   {
-    deep: true
+    deep: true,
   }
 );
 
@@ -111,8 +111,8 @@ const actions = computed((): TransactionAction[] => {
       promise: submit.bind(null, actionInfo.action, actionState),
       step: {
         tooltip: actionInfo.stepTooltip,
-        state: getStepState(actionState, idx)
-      }
+        state: getStepState(actionState, idx),
+      },
     };
   });
 });
@@ -214,7 +214,7 @@ async function handleTransaction(
     },
     onTxFailed: () => {
       state.confirming = false;
-    }
+    },
   });
 }
 </script>
@@ -242,7 +242,7 @@ async function handleTransaction(
           :disabled="props.disabled"
           color="gradient"
           :loading="currentAction?.pending || isLoading"
-          :loading-label="
+          :loadingLabel="
             isLoading
               ? loadingLabel || $t('loading')
               : currentAction?.loadingLabel

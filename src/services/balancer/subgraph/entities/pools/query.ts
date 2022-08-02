@@ -8,8 +8,8 @@ const defaultArgs = {
   orderDirection: 'desc',
   where: {
     totalShares_gt: 0.01,
-    id_not_in: POOLS.BlockList
-  }
+    id_not_in: POOLS.BlockList,
+  },
 };
 
 const defaultAttrs = {
@@ -32,13 +32,13 @@ const defaultAttrs = {
     balance: true,
     weight: true,
     priceRate: true,
-    symbol: true
-  }
+    symbol: true,
+  },
 };
 
 export default (args = {}, attrs = {}) => ({
   pools: {
     __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs)
-  }
+    ...merge({}, defaultAttrs, attrs),
+  },
 });

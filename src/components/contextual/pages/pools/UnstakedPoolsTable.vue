@@ -9,6 +9,7 @@ import useStaking from '@/composables/staking/useStaking';
 import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
 import { Pool, PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -17,6 +18,7 @@ import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 /** STATE */
 const showStakeModal = ref(false);
 const stakePool = ref<Pool | undefined>();
+const networkName = configService.network.shortName;
 
 /** COMPOSABLES */
 const {
@@ -25,9 +27,9 @@ const {
     userLiquidityGauges,
     stakedPools,
     isLoadingUserStakingData,
-    poolBoosts
+    poolBoosts,
   },
-  setPoolAddress
+  setPoolAddress,
 } = useStaking();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { t } = useI18n();
@@ -45,7 +47,7 @@ const stakedBalanceMap = computed(() => {
 
 const noPoolsLabel = computed(() => {
   return isWalletReady.value || isWalletConnecting.value
-    ? t('noUnstakedInvestments')
+    ? t('noUnstakedInvestments', [networkName])
     : t('connectYourWallet');
 });
 
@@ -72,7 +74,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        boost: poolBoosts.value[pool.id]
+        boost: poolBoosts.value[pool.id],
       };
     });
 });
@@ -89,7 +91,7 @@ const unstakedPools = computed(() => {
     .map(pool => ({
       ...pool,
       stakedPct: '0',
-      stakedShares: '0'
+      stakedShares: '0',
     }));
 });
 
@@ -130,7 +132,7 @@ function handleModalClose() {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 lg:px-0" v-if="!isL2">
+      <h5 v-if="!isL2" class="px-4 xl:px-0">
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable
@@ -139,15 +141,15 @@ function handleModalClose() {
         :data="poolsToRender"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
-        @triggerStake="handleStake"
         showPoolShares
+        @trigger-stake="handleStake"
       />
     </BalStack>
     <StakePreviewModal
       :pool="stakePool"
       :isVisible="showStakeModal"
-      @close="handleModalClose"
       action="stake"
+      @close="handleModalClose"
     />
   </div>
 </template>

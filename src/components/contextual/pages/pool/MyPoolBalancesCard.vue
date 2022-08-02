@@ -38,7 +38,7 @@ const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
   toRef(props, 'pool')
 );
 const {
-  userData: { stakedSharesForProvidedPool }
+  userData: { stakedSharesForProvidedPool },
 } = useStaking();
 const router = useRouter();
 
@@ -64,9 +64,7 @@ const poolTokens = computed(() =>
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bnum(bptBalance.value)
-      .plus(stakedSharesForProvidedPool.value)
-      .toString(),
+    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
     0,
     'send'
   );
@@ -79,9 +77,7 @@ const propTokenAmounts = computed((): string[] => {
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
+      return bnum(receive[i]).times(priceRate).toString();
     });
   }
 
@@ -100,11 +96,7 @@ const tokenAddresses = computed((): string[] => {
 const fiatValue = computed(() =>
   tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    )
+    .reduce((total, value) => bnum(total).plus(value).toString())
 );
 
 const showMigrateButton = computed(
@@ -122,7 +114,7 @@ function weightLabelFor(address: string): string {
   return weight
     ? fNum2(weight, {
         style: 'percent',
-        maximumFractionDigits: 0
+        maximumFractionDigits: 0,
       })
     : '-';
 }
@@ -137,12 +129,12 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.BBAUSD_POOL].toPoolId
+      to: POOL_MIGRATIONS_MAP[PoolMigrationType.BBAUSD_POOL].toPoolId,
     },
     query: {
       returnRoute: 'pool',
-      returnParams: JSON.stringify({ id: pool.id })
-    }
+      returnParams: JSON.stringify({ id: pool.id }),
+    },
   });
 }
 </script>
@@ -159,7 +151,7 @@ function navigateToPoolMigration(pool: Pool) {
         </h5>
       </div>
     </template>
-    <div class="px-4 py-2">
+    <div class="py-2 px-4">
       <div
         v-for="(address, index) in tokenAddresses"
         :key="address"
@@ -178,7 +170,7 @@ function navigateToPoolMigration(pool: Pool) {
               </span>
               {{ poolTokens[index].symbol }}
             </span>
-            <span class="text-gray-500 text-sm">
+            <span class="text-sm text-secondary">
               {{ poolTokens[index].name }}
             </span>
           </div>
@@ -190,7 +182,7 @@ function navigateToPoolMigration(pool: Pool) {
               ? fNum2(propTokenAmounts[index], FNumFormats.token)
               : '-'
           }}
-          <span class="text-gray-500 text-sm">
+          <span class="text-sm text-secondary">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>
         </span>

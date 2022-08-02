@@ -6,31 +6,31 @@ export default {
   title: 'Components/BalChip',
   parameters: {
     layout: 'centered',
-    actions: { handles: ['click .close'] }
+    actions: { handles: ['click .close'] },
   },
   args: {
     darkMode: false,
     label: 'tag',
     closeable: true,
     size: 'md',
-    color: 'gray'
+    color: 'gray',
   },
   argTypes: {
     size: {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg']
-      }
+        options: ['sm', 'md', 'lg'],
+      },
     },
     color: {
       type: { name: 'string', default: 'text' },
       control: {
         type: 'select',
-        options: ['gray', 'gradient']
-      }
-    }
-  }
+        options: ['gray', 'gradient'],
+      },
+    },
+  },
 };
 
 type Props = {
@@ -45,7 +45,7 @@ const Template = (args: Props) => ({
   },
   template: generateTemplate(`
 <BalChip v-bind="args" />
-`)
+`),
 });
 
 export const Default = Template.bind({});

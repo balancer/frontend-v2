@@ -1,9 +1,11 @@
 <template>
   <div :class="['app-nav-alert', classes]" @click="handleClick">
-    <div class="flex-1 flex md:justify-center fade-in-slow">
+    <div class="flex flex-1 md:justify-center fade-in-slow">
       <BalIcon v-if="iconName" :name="iconName" class="mr-3" />
       <div>
-        <p class="alert-label">{{ alert.label }}</p>
+        <p class="alert-label">
+          {{ alert.label }}
+        </p>
         <BalBtn
           v-if="alert.action && alert.actionLabel"
           class="cursor-pointer"
@@ -18,7 +20,7 @@
     <div v-if="!alert.persistent" class="flex items-start">
       <BalIcon
         name="x"
-        class="cursor-pointer mt-0.5 fade-in-slow"
+        class="mt-0.5 cursor-pointer fade-in-slow"
         @click.stop="handleClose"
       />
     </div>
@@ -34,7 +36,7 @@ export default defineComponent({
   name: 'NavAlert',
 
   props: {
-    alert: { type: Object as PropType<Alert>, required: true }
+    alert: { type: Object as PropType<Alert>, required: true },
   },
 
   setup(props) {
@@ -63,7 +65,7 @@ export default defineComponent({
     const classes = computed(() => {
       return {
         [colorClass.value]: true,
-        'cursor-pointer': props.alert.actionOnClick
+        'cursor-pointer': props.alert.actionOnClick,
       };
     });
 
@@ -78,7 +80,7 @@ export default defineComponent({
     }
 
     return { classes, iconName, handleClose, handleClick };
-  }
+  },
 });
 </script>
 

@@ -11,12 +11,8 @@ import useTokens from '@/composables/useTokens';
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const {
-  seedTokens,
-  maxInitialLiquidity,
-  tokenColors,
-  getOptimisedLiquidity
-} = usePoolCreation();
+const { seedTokens, maxInitialLiquidity, tokenColors, getOptimisedLiquidity } =
+  usePoolCreation();
 const { fNum2 } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -35,7 +31,7 @@ const unallocatedTokenWeight = computed(() =>
 
 const totalsClass = computed(() => ({
   'text-gray-700 ': maxInitialLiquidity.value >= 20000,
-  'text-orange-500': maxInitialLiquidity.value < 20000
+  'text-orange-500': maxInitialLiquidity.value < 20000,
 }));
 
 const optimisedLiquidity = computed(() => getOptimisedLiquidity());
@@ -44,42 +40,40 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
 <template>
   <BalCard noPad shadow="none">
     <div
-      class="p-2 px-3 border-b dark:border-gray-600"
       v-if="!upToLargeBreakpoint"
+      class="p-2 px-3 border-b dark:border-gray-600"
     >
       <h6 class="dark:text-gray-300">
         {{ $t('createAPool.maxInitialLiquidity') }}
       </h6>
     </div>
     <div class="p-2 px-4">
-      <div class="grid grid-cols-12 w-full gap-y-1.5">
+      <div class="grid grid-cols-12 gap-y-1.5 w-full">
         <div class="col-span-6">
-          <span
-            class="text-sm font-semibold text-gray-700 dark:text-gray-500"
-            >{{ $t('token') }}</span
-          >
+          <span class="text-sm font-semibold text-gray-700 text-secondary">{{
+            $t('token')
+          }}</span>
         </div>
         <div class="col-span-6 text-right">
-          <span
-            class="text-sm font-semibold text-gray-700 dark:text-gray-500"
-            >{{ $t('usdValue') }}</span
-          >
+          <span class="text-sm font-semibold text-gray-700 text-secondary">{{
+            $t('usdValue')
+          }}</span>
         </div>
         <template
           v-for="(token, i) in allocatedTokenWeights"
           :key="token.tokenAddress"
         >
-          <div class="col-span-6 text-left  font-medium">
+          <div class="col-span-6 font-medium text-left">
             <div class="flex flex-row items-center">
               <div
-                class="rounded-full w-1.5 h-1.5 mr-2"
+                class="mr-2 w-1.5 h-1.5 rounded-full"
                 :style="{ backgroundColor: tokenColors[i] }"
-              ></div>
+              />
               <span class="text-sm">{{
                 tokens[token.tokenAddress]?.symbol
               }}</span>
             </div>
-            <div v-if="token.tokenAddress === 'unallocated'"></div>
+            <div v-if="token.tokenAddress === 'unallocated'" />
           </div>
           <div class="col-span-6 text-sm text-right">
             {{
@@ -91,12 +85,12 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
           </div>
         </template>
         <div
-          class="col-span-6 text-left font-medium text-sm"
           v-if="unallocatedTokenWeight > 0"
+          class="col-span-6 text-sm font-medium text-left"
         >
           {{ $t('unallocated') }}
         </div>
-        <div class="col-span-6 text-right" v-if="unallocatedTokenWeight > 0">
+        <div v-if="unallocatedTokenWeight > 0" class="col-span-6 text-right">
           -
         </div>
         <div class="col-span-6">
@@ -105,7 +99,7 @@ const optimisedLiquidity = computed(() => getOptimisedLiquidity());
         <div
           :class="[
             'col-span-6 text-sm font-semibold flex items-center justify-end',
-            totalsClass
+            totalsClass,
           ]"
         >
           {{ fNum2(maxInitialLiquidity, FNumFormats.fiat) }}

@@ -1,9 +1,9 @@
-@import "./fonts.css";
-@import "./typography.css";
-@import "./backgrounds.css";
-@import "./animations.css";
-@import "./social-icons.css";
-@import "./nprogress.css";
+@import './fonts.css';
+@import './typography.css';
+@import './backgrounds.css';
+@import './animations.css';
+@import './social-icons.css';
+@import './nprogress.css';
 
 html,
 body {
@@ -44,8 +44,8 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
-  -moz-appearance:textfield; /* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
 }
 
 *::-webkit-scrollbar {

@@ -95,9 +95,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
 
     if (toPoolTypes.isStablePhantomPool.value) {
       _bptOut = batchSwap.value
-        ? bnum(batchSwap.value.amountTokenOut)
-            .abs()
-            .toString()
+        ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
     } else {
       _bptOut = toPoolCalculator
@@ -117,7 +115,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
       return (
         toPoolCalculator
           .priceImpact(fullAmounts.value, {
-            queryBPT: fullBPTOut.value.toString()
+            queryBPT: fullBPTOut.value.toString(),
           })
           .toNumber() || 0
       );
@@ -131,18 +129,16 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
     return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
   });
 
-  const batchSwapAmountMap = computed(
-    (): Record<string, BigNumber> => {
-      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        fromPool.value.tokensList[i].toLowerCase(),
-        amount
-      ]);
-      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-        (amount as BigNumber).gt(0)
-      );
-      return Object.fromEntries(onlyTokensWithAmounts);
-    }
-  );
+  const batchSwapAmountMap = computed((): Record<string, BigNumber> => {
+    const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+      fromPool.value.tokensList[i].toLowerCase(),
+      amount,
+    ]);
+    const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+      (amount as BigNumber).gt(0)
+    );
+    return Object.fromEntries(onlyTokensWithAmounts);
+  });
 
   const tokenAddresses = computed((): string[] => {
     if (fromPoolTypes.isStablePhantomPool.value) {
@@ -200,6 +196,6 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
     batchSwapLoaded,
     highPriceImpact,
     // methods
-    getBatchSwap
+    getBatchSwap,
   };
 }

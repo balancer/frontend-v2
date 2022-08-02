@@ -7,6 +7,7 @@ import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -21,6 +22,12 @@ export default function usePoolQuery(
   options: QueryObserverOptions<Pool> = {}
 ) {
   /**
+   * @description
+   * If pool is already downloaded, we can use it instantly
+   * it may be if user came to pool page from home page
+   */
+  const poolInfo = poolsStoreService.findPool(id);
+  /**
    * COMPOSABLES
    */
   const { injectTokens, prices, dynamicDataLoading } = useTokens();
@@ -29,7 +36,6 @@ export default function usePoolQuery(
   const { currency } = useUserSettings();
   const { data: subgraphGauges } = useGaugesQuery();
   const { tokens } = useTokens();
-
   const gaugeAddresses = computed(() =>
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
@@ -47,21 +53,26 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id, gaugeAddresses);
 
   const queryFn = async () => {
-    // Fetch basic data from subgraph
-    const [pool] = await balancerSubgraphService.pools.get({
-      where: {
-        id: id.toLowerCase(),
-        totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-        poolType_not_in: POOLS.ExcludedPoolTypes
-      }
-    });
+    let pool: Pool;
+    if (poolInfo) {
+      pool = poolInfo;
+    } else {
+      // Fetch basic data from subgraph
+      [pool] = await balancerSubgraphService.pools.get({
+        where: {
+          id: id.toLowerCase(),
+          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
+          poolType_not_in: POOLS.ExcludedPoolTypes,
+        },
+      });
+    }
 
     if (isBlocked(pool, account.value)) throw new Error('Pool not allowed');
 
     // Decorate subgraph data with additional data
     const poolDecorator = new PoolDecorator([pool]);
     const [decoratedPool] = await poolDecorator.decorate(
-      subgraphGauges.value || [],
+      undefined,
       prices.value,
       currency.value,
       tokens.value
@@ -71,15 +82,14 @@ export default function usePoolQuery(
     await injectTokens([
       ...decoratedPool.tokensList,
       ...lpTokensFor(decoratedPool),
-      decoratedPool.address
+      decoratedPool.address,
     ]);
-
     return decoratedPool;
   };
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<Pool>(queryKey, queryFn, queryOptions);

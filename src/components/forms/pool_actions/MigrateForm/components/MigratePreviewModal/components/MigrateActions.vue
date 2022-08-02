@@ -2,7 +2,7 @@
 import { StablePoolEncoder, WeightedPoolEncoder } from '@balancer-labs/sdk';
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { BigNumber, BigNumberish } from 'ethers';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
@@ -71,7 +71,7 @@ const migratePoolState = reactive<MigratePoolState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -131,7 +131,7 @@ watch(blockNumber, async () => {
     />
     <template v-else>
       <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
+        class="flex justify-between items-center mt-4 text-sm text-gray-400 dark:text-gray-600"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />

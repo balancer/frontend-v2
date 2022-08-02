@@ -13,33 +13,33 @@ type Props = {
 
 withDefaults(defineProps<Props>(), {
   hasBalance: false,
-  isSelected: false
+  isSelected: false,
 });
 </script>
 
 <template>
   <BalTooltip
     :disabled="!hasBalance"
-    class="mr-2 last:mr-0 cursor-pointer leading-normal"
+    class="mr-2 last:mr-0 leading-normal cursor-pointer"
     textAlign="left"
     :delayMs="50"
   >
-    <template v-slot:activator>
+    <template #activator>
       <div
         :class="[
           'pill',
           {
             'pill-selected': isSelected,
-            'pill-hoverable': hasBalance
-          }
+            'pill-hoverable': hasBalance,
+          },
         ]"
       >
         <div v-if="hasBalance" class="balance-indicator" />
         <span
           :class="[
             {
-              'font-medium': isSelected
-            }
+              'font-medium': isSelected,
+            },
           ]"
         >
           {{ symbol }}
@@ -63,7 +63,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .pill-weight {
-  @apply font-medium text-gray-500 dark:text-gray-400 text-xs;
+  @apply font-medium text-gray-600 dark:text-gray-400 text-xs;
   @apply mt-px ml-1;
 }
 

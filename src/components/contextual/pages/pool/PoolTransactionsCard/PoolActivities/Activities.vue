@@ -24,7 +24,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY
+  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY,
 });
 
 /**
@@ -77,15 +77,15 @@ function loadMorePoolActivities() {
 <template>
   <Table
     :tokens="pool ? pool.tokensList : []"
-    :pool-activities="poolActivities"
-    :is-loading="loading || isLoadingPoolActivities"
-    :is-loading-more="poolActivitiesIsFetchingNextPage"
-    :is-paginated="poolActivitiesHasNextPage"
-    @load-more="loadMorePoolActivities"
-    :no-results-label="
+    :poolActivities="poolActivities"
+    :isLoading="loading || isLoadingPoolActivities"
+    :isLoadingMore="poolActivitiesIsFetchingNextPage"
+    :isPaginated="poolActivitiesHasNextPage"
+    :noResultsLabel="
       poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
         ? $t('poolTransactions.noResults.allInvestments')
         : $t('poolTransactions.noResults.myInvestments')
     "
+    @load-more="loadMorePoolActivities"
   />
 </template>

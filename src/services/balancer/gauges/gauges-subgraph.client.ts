@@ -11,7 +11,7 @@ export class GaugesSubgraphClient {
     try {
       const payload = this.payloadFor(query);
       const {
-        data: { data }
+        data: { data },
       } = await axios.post(this.url, payload);
       return data;
     } catch (error) {

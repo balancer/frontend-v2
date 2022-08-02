@@ -18,7 +18,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   isStablePool: false,
-  selectedTokens: () => []
+  selectedTokens: () => [],
 });
 
 const { fNum2 } = useNumbers();
@@ -51,7 +51,7 @@ function symbolFor(token: PoolToken): string {
 function weightFor(token: PoolToken): string {
   return fNum2(token.weight, {
     style: 'percent',
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   });
 }
 
@@ -59,7 +59,7 @@ const MAX_PILLS = 11;
 </script>
 
 <template>
-  <div class="-mt-1 flex flex-wrap gap-y-2">
+  <div class="flex flex-wrap gap-y-2 -mt-1">
     <template v-if="isStablePool">
       <StableTokenPill
         v-for="token in visibleTokens"

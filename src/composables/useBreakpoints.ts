@@ -38,6 +38,6 @@ export default function useBreakpoints() {
     isDesktop,
     upToLargeBreakpoint,
     upToMediumBreakpoint,
-    upToSmallBreakpoint
+    upToSmallBreakpoint,
   };
 }

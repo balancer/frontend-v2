@@ -67,7 +67,7 @@ const isLoading = computed(() =>
         :lockablePoolTokenInfo="lockablePoolTokenInfo"
       />
       <template v-if="isDesktop">
-        <BalLoadingBlock v-if="isLoading" class="h-12 mt-4" />
+        <BalLoadingBlock v-if="isLoading" class="mt-4 h-12" />
         <HowToLock
           v-else
           :lockablePool="lockablePool"
@@ -88,7 +88,7 @@ const isLoading = computed(() =>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
       <MyVeBAL v-else :veBalLockInfo="veBalLockInfo" />
       <template v-if="isMobile">
-        <BalLoadingBlock v-if="isLoading" class="h-12 mt-4" />
+        <BalLoadingBlock v-if="isLoading" class="mt-4 h-12" />
         <HowToLock
           v-else
           :lockablePool="lockablePool"

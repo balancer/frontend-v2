@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   white: false,
   darker: false,
   square: false,
-  rounded: 'lg'
+  rounded: 'lg',
 });
 
 /**
@@ -44,7 +44,7 @@ const bgClass = computed(() => {
 const classes = computed(() => {
   return {
     [`rounded-${props.rounded}`]: !props.square,
-    [bgClass.value]: true
+    [bgClass.value]: true,
   };
 });
 </script>

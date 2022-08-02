@@ -23,7 +23,7 @@ export function clone(item) {
 function lsAddVersion(value: any, version: string) {
   return {
     data: value,
-    _version: version
+    _version: version,
   };
 }
 

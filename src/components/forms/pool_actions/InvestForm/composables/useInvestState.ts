@@ -22,7 +22,7 @@ const state = reactive<InvestState>({
   validInputs: [],
   highPriceImpactAccepted: false,
   submitting: false,
-  sorReady: false
+  sorReady: false,
 });
 
 const sor = balancer.sor;
@@ -38,6 +38,6 @@ export default function useInvestState() {
   return {
     ...toRefs(state),
     sor,
-    resetAmounts
+    resetAmounts,
   };
 }

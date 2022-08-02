@@ -58,14 +58,14 @@ const isLoading = computed(() =>
     <BalLoadingBlock v-if="isLoading" class="h-96" />
     <VeBalUnlockForm
       v-else
-      :lockablePool="lockablePool"
-      :lockablePoolTokenInfo="lockablePoolTokenInfo"
-      :veBalLockInfo="veBalLockInfo"
       :key="
         veBalLockInfo?.hasExistingLock
           ? 'veBalUnlockForm-hasLock'
           : 'veBalUnlockForm-noLock'
       "
+      :lockablePool="lockablePool"
+      :lockablePoolTokenInfo="lockablePoolTokenInfo"
+      :veBalLockInfo="veBalLockInfo"
     />
 
     <template #gutterRight>

@@ -27,10 +27,7 @@ export function calculateTokenPayableToGauge(
   inflationRate: BigNumber,
   gaugeRelativeWeight: BigNumber
 ) {
-  return bnum(inflationRate)
-    .times(7)
-    .times(86400)
-    .times(gaugeRelativeWeight);
+  return bnum(inflationRate).times(7).times(86400).times(gaugeRelativeWeight);
 }
 
 export function calculateRewardTokenAprs({
@@ -39,7 +36,7 @@ export function calculateRewardTokenAprs({
   rewardTokensMeta,
   tokens,
   totalSupply,
-  bptPrice
+  bptPrice,
 }: {
   rewardTokensMeta: Record<string, RewardTokenData>;
   prices: TokenPrices;
@@ -87,7 +84,7 @@ export function calculateGaugeApr({
   bptPrice,
   workingSupplies,
   relativeWeights,
-  boost = '1'
+  boost = '1',
 }: {
   gaugeAddress: string;
   inflationRate: string;
@@ -106,10 +103,7 @@ export function calculateGaugeApr({
   );
   // 0.4 is the working balance for 1 BPT
   const weeklyReward = calculateWeeklyReward(0.4, workingSupply, balPayable);
-  const yearlyReward = weeklyReward
-    .times(boost)
-    .times(52)
-    .times(balPrice);
+  const yearlyReward = weeklyReward.times(boost).times(52).times(balPrice);
 
   // bal apr
   const apr = yearlyReward.div(bptPrice).toString();
@@ -122,7 +116,7 @@ export function getAprRange(apr: string) {
   const max = bnum(apr).times(MAX_BOOST);
   return {
     min: min.toString(),
-    max: max.toString()
+    max: max.toString(),
   };
 }
 

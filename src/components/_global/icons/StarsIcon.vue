@@ -16,7 +16,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   gradFrom: 'yellow',
-  gradTo: 'pink'
+  gradTo: 'pink',
 });
 
 /**

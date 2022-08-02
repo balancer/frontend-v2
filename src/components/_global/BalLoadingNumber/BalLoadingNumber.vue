@@ -23,7 +23,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   type: 'token',
   numberWidth: '3',
-  numberHeight: '5'
+  numberHeight: '5',
 });
 
 /**
@@ -39,7 +39,7 @@ const currencySymbol = computed(() => FiatSymbol[currency.value]);
 const blockClasses = computed(() => [
   `w-${props.numberWidth}`,
   `h-${props.numberHeight}`,
-  'mr-px'
+  'mr-px',
 ]);
 </script>
 
@@ -55,7 +55,7 @@ const blockClasses = computed(() => [
       <BalLoadingBlock :class="blockClasses" rounded="sm" darker />
     </template>
     <template v-else-if="type === 'fiat'">
-      <span class="text-gray-300 dark:text-gray-500 mr-px">
+      <span class="mr-px text-gray-300 dark:text-gray-500">
         {{ currencySymbol }}
       </span>
       <BalLoadingBlock :class="blockClasses" rounded="sm" darker />

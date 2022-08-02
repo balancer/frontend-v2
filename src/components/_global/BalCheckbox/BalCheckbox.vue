@@ -10,7 +10,7 @@
           @change="onChange"
         />
       </div>
-      <div class="relative ml-2 flex-col">
+      <div class="relative flex-col ml-2">
         <label
           v-if="$slots.label || label"
           :for="name"
@@ -38,8 +38,6 @@ import { RuleFunction, Rules } from '@/types';
 export default defineComponent({
   name: 'BalCheckbox',
 
-  emits: ['update:modelValue'],
-
   props: {
     name: { type: String, required: true },
     modelValue: { type: Boolean, default: false },
@@ -47,19 +45,21 @@ export default defineComponent({
     noMargin: { type: Boolean, default: false },
     rules: {
       type: Array as PropType<Rules>,
-      default: () => []
+      default: () => [],
     },
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     color: {
       type: String,
       default: 'blue',
-      validator: (val: string): boolean => ['blue'].includes(val)
-    }
+      validator: (val: string): boolean => ['blue'].includes(val),
+    },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     const errors = ref([] as Array<string>);
@@ -107,20 +107,20 @@ export default defineComponent({
 
     const wrapperClasses = computed(() => {
       return {
-        'mb-5': !props.noMargin
+        'mb-5': !props.noMargin,
       };
     });
 
     const inputClasses = computed(() => {
       return {
         [sizeClasses.value]: true,
-        [colorClasses.value]: true
+        [colorClasses.value]: true,
       };
     });
 
     const labelClasses = computed(() => {
       return {
-        [textSizeClass.value]: true
+        [textSizeClass.value]: true,
       };
     });
 
@@ -131,9 +131,9 @@ export default defineComponent({
       validate,
       hasError,
       errors,
-      onChange
+      onChange,
     };
-  }
+  },
 });
 </script>
 
@@ -143,7 +143,7 @@ export default defineComponent({
 }
 
 .bal-checkbox-input {
-  @apply text-blue-500 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded leading-none;
+  @apply text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded leading-none;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

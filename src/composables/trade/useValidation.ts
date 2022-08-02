@@ -11,7 +11,7 @@ export enum TradeValidation {
   EMPTY,
   NO_NATIVE_ASSET,
   NO_BALANCE,
-  NO_LIQUIDITY
+  NO_LIQUIDITY,
 }
 
 export default function useValidation(
@@ -72,6 +72,6 @@ export default function useValidation(
   return {
     validationStatus,
     errorMessage,
-    isValidTokenAmount
+    isValidTokenAmount,
   };
 }

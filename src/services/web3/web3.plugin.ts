@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import {
   JsonRpcProvider,
   JsonRpcSigner,
-  Web3Provider
+  Web3Provider,
 } from '@ethersproject/providers';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
@@ -36,14 +36,14 @@ export const SupportedWallets = [
   'walletconnect',
   'tally',
   'gnosis',
-  'walletlink'
+  'walletlink',
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase Wallet',
-  tally: 'Tally'
+  tally: 'Tally',
 };
 
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -70,8 +70,8 @@ async function isSanctionedAddress(address: string): Promise<boolean | null> {
   try {
     const response = await axios.post(SANCTIONS_ENDPOINT, [
       {
-        address: address.toLowerCase()
-      }
+        address: address.toLowerCase(),
+      },
     ]);
     const isSanctioned = response.data[0].isSanctioned;
     return isSanctioned;
@@ -90,7 +90,7 @@ export default {
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
       connector: null as any,
-      walletState: 'disconnected'
+      walletState: 'disconnected',
     });
 
     const account = computed(() => {
@@ -245,11 +245,11 @@ export default {
       chainId,
       provider,
       signer,
-      isSanctioned
+      isSanctioned,
     };
 
     app.provide(Web3ProviderSymbol, payload);
-  }
+  },
 };
 
 export function getConnectorName(

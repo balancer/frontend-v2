@@ -96,7 +96,7 @@ export default class CalculatorService {
     let maxAmounts: Amounts = {
       send: [],
       receive: [],
-      fixedToken: 0
+      fixedToken: 0,
     };
     const type = this.action === 'join' ? 'send' : 'receive';
 
@@ -143,12 +143,12 @@ export default class CalculatorService {
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
     const fixedToken = this.allTokens.value[fixedTokenAddress];
-    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken.decimals);
+    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals);
     const fixedRatio = this.ratioOf(type, index);
     const amounts = {
       send: this.sendTokens.map(() => ''),
       receive: this.receiveTokens.map(() => ''),
-      fixedToken: index
+      fixedToken: index,
     };
 
     amounts[type][index] = fixedAmount;
@@ -160,7 +160,7 @@ export default class CalculatorService {
           const token = this.allTokens.value[tokenAddress];
           amounts[types[ratioType]][i] = formatUnits(
             fixedDenormAmount.mul(ratio).div(fixedRatio),
-            token.decimals
+            token?.decimals
           );
         }
       });

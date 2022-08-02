@@ -10,7 +10,7 @@ type LockState = {
  */
 const state = reactive<LockState>({
   lockAmount: '',
-  lockEndDate: ''
+  lockEndDate: '',
 });
 
 /**
@@ -23,6 +23,6 @@ function resetState(): void {
 export default function useLockState() {
   return {
     ...toRefs(state),
-    resetState
+    resetState,
   };
 }

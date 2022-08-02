@@ -41,7 +41,7 @@ const hasUnknownPrice = computed(() =>
 
 <template>
   <BalCard noPad shadow="none" :noBorder="upToLargeBreakpoint">
-    <div class="p-4 dark:border-gray-600 border-b" v-if="!upToLargeBreakpoint">
+    <div v-if="!upToLargeBreakpoint" class="p-4 border-b dark:border-gray-600">
       <BalStack horizontal spacing="sm" align="center">
         <h6 class="dark:text-gray-300">
           {{ $t('tokenPrices') }}
@@ -78,22 +78,22 @@ const hasUnknownPrice = computed(() =>
         :class="{ 'mt-1': knownTokens.length }"
       >
         <button
-          @click="toggleUnknownPriceModal"
+          v-for="token in unknownTokens"
+          :key="`tokenPrice-unknown-${token}`"
           :class="[
             'mt-1',
             {
               'text-red-500 hover:text-red-700': hasUnknownPrice,
-              'hover:text-blue-500': !hasUnknownPrice
-            }
+              'hover:text-blue-500': !hasUnknownPrice,
+            },
           ]"
-          v-for="token in unknownTokens"
-          :key="`tokenPrice-unknown-${token}`"
+          @click="toggleUnknownPriceModal"
         >
           <BalStack horizontal isDynamic justify="between">
             <span
               :class="[
                 'w-1/2 text-left',
-                { 'font-medium': injectedPrices[token]?.usd === undefined }
+                { 'font-medium': injectedPrices[token]?.usd === undefined },
               ]"
               >{{ getToken(token)?.symbol }}</span
             >
@@ -115,7 +115,7 @@ const hasUnknownPrice = computed(() =>
               align="center"
               class="w-3/4"
             >
-              <div class="w-full justify-end">
+              <div class="justify-end w-full">
                 <div class="-mr-1">
                   <span class="text-left">{{ $t('enterAPrice') }}</span>
                 </div>

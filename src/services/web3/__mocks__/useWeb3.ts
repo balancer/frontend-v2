@@ -7,11 +7,11 @@ export default function useWeb3Mock() {
     getProvider: jest.fn().mockImplementation(),
     appNetworkConfig: {
       nativeAsset: {
-        address: configService.network.nativeAsset.address
-      }
+        address: configService.network.nativeAsset.address,
+      },
     },
     account: {
-      value: AddressZero
-    }
+      value: AddressZero,
+    },
   };
 }

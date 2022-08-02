@@ -11,9 +11,9 @@ jest.mock('ethers', () => {
       return {
         getSwapFeePercentage: jest.fn().mockImplementation(() => {
           return '100000000000000000'; // 10%
-        })
+        }),
       };
-    })
+    }),
   };
 });
 

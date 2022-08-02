@@ -41,7 +41,7 @@ function addNotification(newNotification: NewNotification) {
     type: newNotification.type ?? 'info',
     addedTime: Date.now(),
     autoCloseAfterMs:
-      newNotification.autoCloseAfterMs ?? DEFAULT_NOTIFICATION_TIMEOUT
+      newNotification.autoCloseAfterMs ?? DEFAULT_NOTIFICATION_TIMEOUT,
   };
 
   setNotifications(notificationsMap);
@@ -113,6 +113,6 @@ export default function useNotifications() {
     removeNotification,
 
     // computed
-    notifications
+    notifications,
   };
 }

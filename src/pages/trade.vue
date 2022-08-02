@@ -71,23 +71,23 @@ onMounted(() => {
         <TradeCardGP />
       </template>
     </template>
-    <div class="mt-8 p-4 sm:p-0 lg:p-0">
+    <div class="p-4 sm:p-0 lg:p-0 mt-8">
       <BalAccordion
-        class="w-full"
         v-if="upToLargeBreakpoint"
+        class="w-full"
         :sections="[
           { title: 'My wallet', id: 'my-wallet' },
           { title: 'Trending pairs', id: 'trending-pairs' },
-          { title: 'Price chart', id: 'price-chart' }
+          { title: 'Price chart', id: 'price-chart' },
         ]"
       >
-        <template v-slot:my-wallet>
+        <template #my-wallet>
           <MyWallet />
         </template>
-        <template v-slot:trending-pairs>
+        <template #trending-pairs>
           <TrendingPairs />
         </template>
-        <template v-slot:price-chart>
+        <template #price-chart>
           <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
         </template>
       </BalAccordion>

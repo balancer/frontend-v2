@@ -12,7 +12,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { urlFor } from './useNetwork';
+import { isTestnet, urlFor } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 
 /**
@@ -168,9 +168,7 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
     return `${minAPR} - ${maxAPR}`;
   } else if (aprs.veBal) {
     const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxValue = bnum(aprs.total.staked.min)
-      .plus(aprs.veBal)
-      .toString();
+    const maxValue = bnum(aprs.total.staked.min).plus(aprs.veBal).toString();
     const maxAPR = numF(maxValue, FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
@@ -207,7 +205,9 @@ export function isBlocked(pool: Pool, account: string): boolean {
     POOLS.Stable.AllowList.includes(pool.id) ||
     POOLS.Investment.AllowList.includes(pool.id);
 
-  return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
+  return (
+    !isTestnet.value && requiresAllowlisting && !isAllowlisted && !isOwnedByUser
+  );
 }
 
 /**
@@ -233,7 +233,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
         token =>
           `${fNum2(token.weight, {
             style: 'percent',
-            maximumFractionDigits: 0
+            maximumFractionDigits: 0,
           })} ${token.symbol}`
       )
       .join(', ');
@@ -316,6 +316,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,
-    orderedPoolTokens
+    orderedPoolTokens,
   };
 }

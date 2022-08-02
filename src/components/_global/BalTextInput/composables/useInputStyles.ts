@@ -61,7 +61,7 @@ export default function useInputStyles(
 
   const parentClasses = computed(() => ({
     [attrs.class]: true,
-    'shadow-lg rounded-lg': !props.noShadow
+    'shadow-lg rounded-lg': !props.noShadow,
   }));
 
   const inputContainerClasses = computed(() => ({
@@ -69,22 +69,22 @@ export default function useInputStyles(
     [extPaddingClass()]: true,
     'border-gray-100 dark:border-gray-800': !isInvalid.value && !isActive.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
-    'border-blue-300': isActive.value && !isInvalid.value,
+    'border-blue-300 dark:border-blue-400': isActive.value && !isInvalid.value,
     'hover:border-gray-300 dark:hover:border-gray-700':
       isHover.value && !isActive.value,
-    'shadow-inner': !props.noShadow
+    'shadow-inner': !props.noShadow,
   }));
 
   const inputGroupClasses = computed(() => ({
-    [intPaddingClass()]: true
+    [intPaddingClass()]: true,
   }));
 
   const headerClasses = computed(() => ({
-    [intPaddingClass()]: true
+    [intPaddingClass()]: true,
   }));
 
   const footerClasses = computed(() => ({
-    [intPaddingClass()]: true
+    [intPaddingClass()]: true,
   }));
 
   const inputClasses = computed(() => ({
@@ -92,19 +92,19 @@ export default function useInputStyles(
     [inputTextSize()]: true,
     'text-right': props.inputAlignRight,
     'font-numeric': props.type === 'number',
-    'text-red-500': isInvalid.value
+    'text-red-500': isInvalid.value,
   }));
 
   const prependClasses = computed(() => ({
-    [inputHeightClass()]: true
+    [inputHeightClass()]: true,
   }));
 
   const appendClasses = computed(() => ({
-    [inputHeightClass()]: true
+    [inputHeightClass()]: true,
   }));
 
   const borderRadiusClasses = computed(() => ({
-    'rounded-lg': !props.noRadius
+    'rounded-lg': !props.noRadius,
   }));
 
   return {
@@ -116,6 +116,6 @@ export default function useInputStyles(
     inputClasses,
     prependClasses,
     appendClasses,
-    borderRadiusClasses
+    borderRadiusClasses,
   };
 }

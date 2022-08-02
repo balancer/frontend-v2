@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="['bal-tab-container', containerClasses]">
+    <div :class="['bal-tab-container text-secondary', containerClasses]">
       <div
         v-for="(tab, i) in tabs"
         :key="i"
@@ -24,13 +24,13 @@ interface Tab {
 export default defineComponent({
   name: 'BalTabs',
 
-  emits: ['selected', 'update:modelValue'],
-
   props: {
     tabs: { type: Array as PropType<Tab[]>, required: true },
     modelValue: { type: String, default: '' },
-    noPad: { type: Boolean, default: false }
+    noPad: { type: Boolean, default: false },
   },
+
+  emits: ['selected', 'update:modelValue'],
 
   setup(props, { emit }) {
     const activeTab = ref(props.modelValue);
@@ -47,18 +47,16 @@ export default defineComponent({
 
     const containerClasses = computed(() => {
       return {
-        'px-4': !props.noPad
+        'px-4': !props.noPad,
       };
     });
 
     function stateClasses(tab: Tab): Record<string, boolean> {
       return {
-        'border-b-2 border-blue-500 text-blue-500 hover:text-blue-500 font-bold': isActiveTab(
-          tab
-        ),
-        'hover:text-black dark:hover:text-white dark:border-gray-700 transition-colors': !isActiveTab(
-          tab
-        )
+        'border-b-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:border-blue-500 font-semibold':
+          isActiveTab(tab),
+        'hover:text-purple-600 dark:hover:text-yellow-500 dark:border-gray-700 transition-colors':
+          !isActiveTab(tab),
       };
     }
 
@@ -66,9 +64,9 @@ export default defineComponent({
       activeTab,
       onClick,
       containerClasses,
-      stateClasses
+      stateClasses,
     };
-  }
+  },
 });
 </script>
 
@@ -82,6 +80,6 @@ export default defineComponent({
 }
 
 .bal-tab-container {
-  @apply flex border-b text-gray-500 dark:border-gray-700;
+  @apply flex border-b dark:border-gray-700;
 }
 </style>

@@ -37,7 +37,7 @@ export default function useUserPoolsQuery(
     prices,
     dynamicDataLoading,
     getTokens,
-    tokens: tokenMeta
+    tokens: tokenMeta,
   } = useTokens();
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
@@ -62,8 +62,8 @@ export default function useUserPoolsQuery(
   const queryFn = async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({
       where: {
-        userAddress: account.value.toLowerCase()
-      }
+        userAddress: account.value.toLowerCase(),
+      },
     });
 
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
@@ -72,8 +72,8 @@ export default function useUserPoolsQuery(
     const pools = await balancerSubgraphService.pools.get({
       where: {
         id_in: poolSharesIds,
-        poolType_not_in: POOLS.ExcludedPoolTypes
-      }
+        poolType_not_in: POOLS.ExcludedPoolTypes,
+      },
     });
 
     for (let i = 0; i < pools.length; i++) {
@@ -178,7 +178,7 @@ export default function useUserPoolsQuery(
         .div(pool.totalShares)
         .times(poolSharesMap[pool.id].balance)
         .toString(),
-      bpt: poolSharesMap[pool.id].balance
+      bpt: poolSharesMap[pool.id].balance,
     }));
 
     const totalInvestedAmount = poolsWithShares
@@ -189,13 +189,13 @@ export default function useUserPoolsQuery(
     return {
       pools: poolsWithShares,
       tokens,
-      totalInvestedAmount
+      totalInvestedAmount,
     };
   };
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<UserPoolsQueryResponse>(queryKey, queryFn, queryOptions);

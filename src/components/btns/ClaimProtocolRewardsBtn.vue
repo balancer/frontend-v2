@@ -3,7 +3,8 @@ import { useI18n } from 'vue-i18n';
 
 import useProtocolRewardsQuery from '@/composables/queries/useProtocolRewardsQuery';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { feeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
+import { FeeDistributor } from '@/services/balancer/contracts/contracts/fee-distributor';
+import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import TxActionBtn from './TxActionBtn/TxActionBtn.vue';
@@ -14,12 +15,23 @@ import TxActionBtn from './TxActionBtn/TxActionBtn.vue';
 type Props = {
   tokenAddress?: string;
   fiatValue: string;
+  deprecated?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
+
+/**
+ * SERVICES
+ */
+const feeDistributorV1 = new FeeDistributor(
+  configService.network.addresses.feeDistributorDeprecated
+);
+const feeDistributorV2 = new FeeDistributor(
+  configService.network.addresses.feeDistributor
+);
 
 /**
  * COMPOSABLES
@@ -33,6 +45,8 @@ const protocolRewardsQuery = useProtocolRewardsQuery();
  * METHODS
  */
 function claimTx() {
+  const feeDistributor = props.deprecated ? feeDistributorV1 : feeDistributorV2;
+
   if (props.tokenAddress)
     return feeDistributor.claimBalance(account.value, props.tokenAddress);
   return feeDistributor.claimBalances(account.value);

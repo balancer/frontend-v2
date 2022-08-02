@@ -15,7 +15,7 @@ const router = useRouter();
 const benefits = computed(() => [
   t('veBAL.hero.benefits.boost'),
   t('veBAL.hero.benefits.vote'),
-  t('veBAL.hero.benefits.earn')
+  t('veBAL.hero.benefits.earn'),
 ]);
 
 /**
@@ -25,8 +25,8 @@ function navigateToGetVeBAL() {
   router.push({
     name: 'get-vebal',
     query: {
-      returnRoute: 'vebal'
-    }
+      returnRoute: 'vebal',
+    },
   });
 }
 </script>
@@ -35,10 +35,12 @@ function navigateToGetVeBAL() {
   <div class="hero-container">
     <div class="hero-content">
       <div
-        class="hero-text py-8 lg:py-4 xl:pt-0 px-4 lg:px-8 2xl:px-0 max-w-md"
+        class="py-8 lg:py-4 px-4 lg:px-8 2xl:px-0 xl:pt-0 max-w-md hero-text"
       >
-        <p class="eyebrow font-medium">veBAL</p>
-        <h1 class="title mb-5 text-white">{{ $t('veBAL.hero.title') }}</h1>
+        <p class="font-medium eyebrow">veBAL</p>
+        <h1 class="mb-5 text-white title">
+          {{ $t('veBAL.hero.title') }}
+        </h1>
         <ul>
           <li
             v-for="(benefit, i) in benefits"
@@ -49,7 +51,7 @@ function navigateToGetVeBAL() {
           </li>
         </ul>
         <div class="flex mt-6">
-          <BalBtn @click="navigateToGetVeBAL" class="mr-3 hero-btn btn-gold">
+          <BalBtn class="mr-3 hero-btn btn-gold" @click="navigateToGetVeBAL">
             {{ $t('veBAL.hero.buttons.getVeBAL') }}
           </BalBtn>
           <BalBtn
@@ -71,8 +73,8 @@ function navigateToGetVeBAL() {
         </div>
       </div>
       <div class="coins">
-        <div class="coin group">
-          <div class="coin-wrapper w-full">
+        <div class="group coin">
+          <div class="w-full coin-wrapper">
             <BalImage
               class="graphic"
               width="330"
@@ -81,9 +83,9 @@ function navigateToGetVeBAL() {
               alt="BAL and WETH tokens"
             />
           </div>
-          <div class="caption font-semibold">
+          <div class="font-semibold caption">
             <p
-              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
             >
               {{ $t('veBAL.hero.tokens.balWETH') }}
             </p>
@@ -92,7 +94,7 @@ function navigateToGetVeBAL() {
             </BalTooltip>
           </div>
         </div>
-        <div class="coin group">
+        <div class="group coin">
           <div class="coin-wrapper">
             <BalImage
               class="graphic"
@@ -102,9 +104,9 @@ function navigateToGetVeBAL() {
               alt="B-80BAL-20WETH LP token"
             />
           </div>
-          <div class="caption font-semibold">
+          <div class="font-semibold caption">
             <p
-              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
             >
               {{ $t('veBAL.hero.tokens.lpToken') }}
             </p>
@@ -113,7 +115,7 @@ function navigateToGetVeBAL() {
             </BalTooltip>
           </div>
         </div>
-        <div class="coin group">
+        <div class="group coin">
           <div class="coin-wrapper">
             <BalImage
               class="graphic"
@@ -123,9 +125,9 @@ function navigateToGetVeBAL() {
               alt="veBAL token"
             />
           </div>
-          <div class="caption font-semibold">
+          <div class="font-semibold caption">
             <p
-              class="inline mr-1 tracking-tighter lg:tracking-normal text-sm lg:text-base"
+              class="inline mr-1 text-sm lg:text-base tracking-tighter lg:tracking-normal"
             >
               {{ $t('veBAL.hero.tokens.veBAL') }}
             </p>
@@ -171,7 +173,7 @@ function navigateToGetVeBAL() {
 }
 
 .hero-content {
-  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 w-full z-10;
+  @apply flex flex-col md:flex-row md:items-center max-w-screen-2xl mx-auto md:gap-4 lg:gap-8 py-4 md:py-8 xl:pl-4 w-full z-10;
 }
 .eyebrow {
   @apply mb-4;

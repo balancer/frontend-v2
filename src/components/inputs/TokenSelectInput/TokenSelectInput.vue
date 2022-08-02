@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
   weight: 0,
   excludedTokens: () => [],
   options: () => [],
-  disableInjection: false
+  disableInjection: false,
 });
 
 const emit = defineEmits<{
@@ -77,11 +77,11 @@ function toggleModal(): void {
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
+      <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
         {{
           fNum2(weight, {
             style: 'percent',
-            maximumFractionDigits: 0
+            maximumFractionDigits: 0,
           })
         }}
       </span>
@@ -89,7 +89,7 @@ function toggleModal(): void {
         v-if="!fixed"
         name="chevron-down"
         size="sm"
-        class="text-blue-500 group-hover:text-pink-500 ml-2"
+        class="ml-2 text-blue-600 group-hover:text-purple-500 dark:text-blue-400 dark:group-hover:text-yellow-500 transition-colors"
       />
     </div>
     <BalDropdown
@@ -99,32 +99,32 @@ function toggleModal(): void {
       @selected="emit('update:modelValue', $event)"
     >
       <template #activator>
-        <div class="token-select-input selected group selectable">
+        <div class="group token-select-input selected selectable">
           <div class="w-8">
             <BalAsset :address="token?.address" class="shadow" />
           </div>
           <span class="text-base font-medium">
             {{ token?.symbol }}
           </span>
-          <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
+          <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
             {{
               fNum2(weight, {
                 style: 'percent',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 0,
               })
             }}
           </span>
           <BalIcon
             name="chevron-down"
             size="sm"
-            class="text-blue-500 group-hover:text-pink-500 ml-2"
+            class="ml-2 text-blue-500 group-hover:text-purple-500 dark:text-blue-400 dark:group-hover:text-purple-400 transition-colors"
           />
         </div>
       </template>
       <template #option="{ option: address }">
         <div
           :set="(optionToken = getToken(address) || {})"
-          class="flex items-center justify-between"
+          class="flex justify-between items-center"
         >
           <div class="flex items-center">
             <BalAsset :address="optionToken?.address" class="shadow" />
@@ -135,7 +135,7 @@ function toggleModal(): void {
           <BalIcon
             v-if="isSameAddress(optionToken.address, modelValue)"
             name="check"
-            class="text-blue-500 ml-4"
+            class="ml-4 text-blue-500 dark:text-blue-400"
           />
         </div>
       </template>
@@ -175,7 +175,7 @@ function toggleModal(): void {
 }
 
 .unselected {
-  @apply bg-blue-500 text-white;
+  @apply bg-blue-500 dark:bg-blue-400 text-white;
 }
 
 .selected {

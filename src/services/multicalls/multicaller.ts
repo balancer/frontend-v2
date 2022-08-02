@@ -44,7 +44,7 @@ export class Multicaller {
     return new Contract(
       this.address,
       [
-        'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)'
+        'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)',
       ],
       this.provider
     );
@@ -59,7 +59,7 @@ export class Multicaller {
 
     return this.calls.map((call, i) => [
       call.address.toLowerCase(),
-      interfaces[i].encodeFunctionData(call.function, call.params)
+      interfaces[i].encodeFunctionData(call.function, call.params),
     ]);
   }
 

@@ -15,9 +15,9 @@ module.exports = {
         'dark',
         /^dark:/,
         /^mr/,
-        /^w/
-      ]
-    }
+        /^w/,
+      ],
+    },
   },
   darkMode: 'class', // false or 'media' or 'class'
   theme: {
@@ -31,14 +31,14 @@ module.exports = {
         'Arial',
         'sans-serif',
         '"Apple Color Emoji"',
-        '"Segoe UI Emoji"'
+        '"Segoe UI Emoji"',
       ],
       display: [
         '"Tiempos Headline Medium"',
         'Times',
         '"Times New Roman"',
-        'serif'
-      ]
+        'serif',
+      ],
     },
     boxShadow: {
       sm: '0 2px 4px 0 rgba(0,0,0,0.05)',
@@ -51,22 +51,22 @@ module.exports = {
         '0px 10px 10px -5px rgba(0, 0, 0, 0.02), 0px 20px 25px -5px rgba(0, 0, 0, 0.03)',
       '4xl': '25px 25px 50px -12px rgba(0, 0, 0, 0.03)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
-      none: 'none'
+      none: 'none',
     },
     borderColor: theme => ({
       ...theme('colors'),
-      DEFAULT: theme('colors.gray.100', 'currentColor')
+      DEFAULT: theme('colors.gray.100', 'currentColor'),
     }),
     screens: {
       xs: '440px',
-      ...defaultTheme.screens
+      ...defaultTheme.screens,
     },
     extend: {
       height: {
-        '112': '28rem'
+        112: '28rem',
       },
       borderRadius: {
-        '2xl': '1.25rem'
+        '2xl': '1.25rem',
       },
       colors: {
         gray: {
@@ -80,7 +80,7 @@ module.exports = {
           700: '#334155',
           800: '#1E293B',
           850: '#162031',
-          900: '#0F172A'
+          900: '#0F172A',
         },
         primary: {
           50: '#53555e',
@@ -92,7 +92,7 @@ module.exports = {
           600: '#171922',
           700: '#0d0f18',
           800: '#03050e',
-          900: '#000004'
+          900: '#000004',
         },
         'primary-dark': {
           50: '#6a7cff',
@@ -104,19 +104,19 @@ module.exports = {
           600: '#2e40f5',
           700: '#2436eb',
           800: '#1a2ce1',
-          900: '#1022d7'
+          900: '#1022d7',
         },
         blue: {
-          50: '#6a7cff',
-          100: '#6072ff',
-          200: '#5668ff',
-          300: '#4c5eff',
-          400: '#4254ff',
-          500: '#384aff',
-          600: '#2e40f5',
-          700: '#2436eb',
-          800: '#1a2ce1',
-          900: '#1022d7'
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
         },
         pink: {
           50: '#ff4dff',
@@ -128,7 +128,19 @@ module.exports = {
           600: '#e811ec',
           700: '#de07e2',
           800: '#d400d8',
-          900: '#ca00ce'
+          900: '#ca00ce',
+        },
+        purple: {
+          50: '#faf5ff',
+          100: '#faf5ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#581c87',
         },
         yellow: {
           50: '#FFFBEA',
@@ -140,7 +152,7 @@ module.exports = {
           600: '#F8C601',
           700: '#C09901',
           800: '#886D01',
-          900: '#504000'
+          900: '#504000',
         },
         orange: {
           50: '#fffbeb',
@@ -152,18 +164,18 @@ module.exports = {
           600: '#d97706',
           700: '#b45309',
           800: '#92400e',
-          900: '#78350f'
-        }
-      }
-    }
+          900: '#78350f',
+        },
+      },
+    },
   },
   variants: {
     extend: {
       margin: ['first'],
       borderRadius: ['first', 'last'],
       zIndex: ['hover'],
-      borderWidth: ['dark', 'last']
-    }
+      borderWidth: ['dark', 'last'],
+    },
   },
-  plugins: []
+  plugins: [],
 };

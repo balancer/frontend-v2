@@ -40,9 +40,9 @@ const aprLabel = computed((): string => {
         {{ $t(`migratePool.${poolMigrationInfo.type}.poolStats.title`) }}
       </h6>
     </div>
-    <div class="-mt-2 p-4">
+    <div class="p-4 -mt-2">
       <div class="mb-3">
-        <div class="text-gray-500">
+        <div class="text-secondary">
           {{ $t('poolValue') }}
         </div>
         <div class="font-semibold">
@@ -50,7 +50,7 @@ const aprLabel = computed((): string => {
         </div>
       </div>
       <div class="mb-3">
-        <div class="text-gray-500">
+        <div class="text-secondary">
           {{ $t('volumeTime', ['24h']) }}
         </div>
         <div class="font-semibold">
@@ -58,7 +58,9 @@ const aprLabel = computed((): string => {
         </div>
       </div>
       <div>
-        <div class="text-gray-500">{{ $t('apr') }}</div>
+        <div class="text-secondary">
+          {{ $t('apr') }}
+        </div>
         <div class="flex items-center font-semibold">
           {{ aprLabel }}
           <APRTooltip :pool="pool" />

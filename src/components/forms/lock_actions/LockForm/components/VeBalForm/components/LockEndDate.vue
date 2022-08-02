@@ -39,29 +39,29 @@ const { lockEndDate } = useLockState();
 const lockDates = computed(() => [
   {
     label: t('getVeBAL.lockForm.lockPeriods.2w'),
-    action: () => updateLockEndDate(props.minLockEndDateTimestamp)
+    action: () => updateLockEndDate(props.minLockEndDateTimestamp),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.1m'),
     action: () =>
-      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 4).getTime())
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 4).getTime()),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.3m'),
     action: () =>
-      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 12).getTime())
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 12).getTime()),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.6m'),
     action: () =>
-      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 24).getTime())
+      updateLockEndDate(addWeeks(props.minLockEndDateTimestamp, 24).getTime()),
   },
   {
     label: t('getVeBAL.lockForm.lockPeriods.1y'),
     action: () => {
       lockEndDate.value = formatDateInput(props.maxLockEndDateTimestamp);
-    }
-  }
+    },
+  },
 ]);
 
 /**
@@ -90,23 +90,23 @@ function formatDateInput(date: Date | number) {
 <template>
   <div class="mb-6">
     <div>
-      <p class="font-semibold pb-2">
+      <p class="pb-2 font-semibold">
         {{ $t('getVeBAL.lockForm.lockEndDate.title') }}
       </p>
     </div>
     <BalTextInput
+      v-model="lockEndDate"
       name="lockEndDate"
       type="date"
-      v-model="lockEndDate"
       :min="formatDateInput(minLockEndDateTimestamp)"
       :max="formatDateInput(maxLockEndDateTimestamp)"
       step="7"
     />
-    <div class="flex text-sm mt-2 px-1 text-gray-500 dark:text-gray-400">
+    <div class="flex px-1 mt-2 text-sm text-secondary">
       <div
         v-for="(lockDate, index) in lockDates"
         :key="index"
-        class="mr-3 cursor-pointer hover:text-pink-500 focus:text-pink-500"
+        class="mr-3 hover:text-pink-500 focus:text-pink-500 cursor-pointer"
         @click="lockDate.action"
       >
         ~{{ lockDate.label }}

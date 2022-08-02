@@ -62,42 +62,33 @@ const title = computed((): string =>
     : t('investment.preview.titles.default')
 );
 
-const amountMap = computed(
-  (): AmountMap => {
-    const amountMap = {};
-    fullAmounts.value.forEach((amount, i) => {
-      amountMap[props.tokenAddresses[i]] = amount;
-    });
-    return amountMap;
-  }
-);
+const amountMap = computed((): AmountMap => {
+  const amountMap = {};
+  fullAmounts.value.forEach((amount, i) => {
+    amountMap[props.tokenAddresses[i]] = amount;
+  });
+  return amountMap;
+});
 
-const tokenMap = computed(
-  (): TokenInfoMap => {
-    const tokenMap = {};
-    Object.keys(amountMap.value).forEach(address => {
-      tokenMap[address] = getToken(address);
-    });
-    return tokenMap;
-  }
-);
+const tokenMap = computed((): TokenInfoMap => {
+  const tokenMap = {};
+  Object.keys(amountMap.value).forEach(address => {
+    tokenMap[address] = getToken(address);
+  });
+  return tokenMap;
+});
 
-const fiatAmountMap = computed(
-  (): AmountMap => {
-    const fiatAmountMap = {};
-    Object.keys(amountMap.value).forEach(address => {
-      fiatAmountMap[address] = toFiat(amountMap.value[address], address);
-    });
-    return fiatAmountMap;
-  }
-);
+const fiatAmountMap = computed((): AmountMap => {
+  const fiatAmountMap = {};
+  Object.keys(amountMap.value).forEach(address => {
+    fiatAmountMap[address] = toFiat(amountMap.value[address], address);
+  });
+  return fiatAmountMap;
+});
 
 const fiatTotal = computed((): string =>
   Object.values(fiatAmountMap.value).reduce(
-    (total, amount) =>
-      bnum(total)
-        .plus(amount)
-        .toString(),
+    (total, amount) => bnum(total).plus(amount).toString(),
     '0'
   )
 );
@@ -120,13 +111,13 @@ function handleShowStakeModal() {
 
 <template>
   <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="investmentConfirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -165,7 +156,7 @@ function handleShowStakeModal() {
       :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"
-      @showStakeModal="handleShowStakeModal"
+      @show-stake-modal="handleShowStakeModal"
     />
   </BalModal>
 </template>

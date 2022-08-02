@@ -12,8 +12,8 @@ describe.only('StatCard', () => {
       const { getByText } = render(StatCard, {
         props: {
           label: 'Prop label',
-          value: '$10,000'
-        }
+          value: '$10,000',
+        },
       });
 
       // check that elements are actually rendered as children
@@ -25,8 +25,8 @@ describe.only('StatCard', () => {
       const { getByText } = render(StatCard, {
         slots: {
           label: '<span>Slot label</span>',
-          value: '<span>$100,000</span>'
-        }
+          value: '<span>$100,000</span>',
+        },
       });
 
       expect(getByText('Slot label')).toBeVisible();

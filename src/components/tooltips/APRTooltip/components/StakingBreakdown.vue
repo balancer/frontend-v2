@@ -11,6 +11,7 @@ import { hasBalEmissions } from '@/services/staking/utils';
  */
 type Props = {
   pool: Pool;
+  poolApr?: PoolAPRs;
 };
 
 /**
@@ -26,11 +27,12 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
+
+const apr = computed(() => props.pool?.apr || props.poolApr);
+
 const boost = computed((): string => props.pool?.boost || '');
 const hasBoost = computed((): boolean => !!boost.value);
-const stakingAPR = computed(
-  (): PoolAPRs['staking'] => props.pool?.apr?.staking
-);
+const stakingAPR = computed((): PoolAPRs['staking'] => apr.value?.staking);
 const minBalAPR = computed((): string => stakingAPR.value?.bal.min || '0');
 const maxBalAPR = computed((): string => stakingAPR.value?.bal.max || '0');
 const rewardTokensAPR = computed(
@@ -44,7 +46,7 @@ const hasRewardTokens = computed((): boolean =>
  * @summary The total APR if we have the user's boost.
  */
 const boostedTotalAPR = computed((): string => {
-  if (hasBalEmissions(props.pool.apr) && props.pool.apr) {
+  if (apr.value && hasBalEmissions(apr.value)) {
     const boostedStakingAPR = bnum(minBalAPR.value)
       .times(boost.value)
       .plus(rewardTokensAPR.value)
@@ -61,24 +63,20 @@ const boostedTotalAPR = computed((): string => {
  */
 const unboostedTotalAPR = computed((): string =>
   fNum2(
-    bnum(minBalAPR.value)
-      .plus(rewardTokensAPR.value)
-      .toString(),
+    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
     FNumFormats.percent
   )
 );
 
-const breakdownItems = computed(
-  (): Array<any> => {
-    const items: Array<any> = [];
+const breakdownItems = computed((): Array<any> => {
+  const items: Array<any> = [];
 
-    items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
+  items.push(['Min BAL', minBalAPR.value], ['Max BAL', maxBalAPR.value]);
 
-    if (hasRewardTokens.value) items.push(['Rewards', rewardTokensAPR.value]);
+  if (hasRewardTokens.value) items.push(['Rewards', rewardTokensAPR.value]);
 
-    return items;
-  }
-);
+  return items;
+});
 </script>
 
 <template>
@@ -86,29 +84,29 @@ const breakdownItems = computed(
     <div v-if="hasBoost">
       <div class="flex items-center">
         {{ boostedTotalAPR }}
-        <span class="ml-1 text-gray-500 text-xs">
+        <span class="ml-1 text-secondarytext-xs">
           {{ $t('staking.stakingApr') }}
         </span>
       </div>
     </div>
     <template v-else>
-      <BalBreakdown v-if="hasBalEmissions(pool.apr)" :items="breakdownItems">
+      <BalBreakdown v-if="hasBalEmissions(apr)" :items="breakdownItems">
         <div class="flex items-center">
           {{ unboostedTotalAPR }}
-          <span class="ml-1 text-gray-500 text-xs">
+          <span class="ml-1 text-xs text-secondary">
             {{ $t('staking.minimumStakingApr') }}
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
           {{ fNum2(amount, FNumFormats.percent) }}
-          <span class="text-gray-500 text-xs ml-1 capitalize">
+          <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>
         </template>
       </BalBreakdown>
       <div v-else-if="hasRewardTokens" class="flex items-center">
         {{ fNum2(rewardTokensAPR, FNumFormats.percent) }}
-        <span class="ml-1 text-gray-500 text-xs">
+        <span class="ml-1 text-xs text-secondary">
           {{ $t('staking.stakingApr') }}
         </span>
       </div>

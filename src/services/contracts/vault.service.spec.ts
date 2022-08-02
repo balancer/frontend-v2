@@ -2,7 +2,7 @@ import {
   FundManagement,
   SingleSwap,
   SwapType,
-  SwapV2
+  SwapV2,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 
@@ -23,7 +23,7 @@ describe('vault.service', () => {
     sender: userAddress,
     recipient: userAddress,
     fromInternalBalance: false,
-    toInternalBalance: false
+    toInternalBalance: false,
   };
 
   beforeEach(() => {
@@ -31,12 +31,12 @@ describe('vault.service', () => {
     tokens.USDC = {
       address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
       amount: BigNumber.from('1000000'),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
     tokens.DAI = {
       address: '0x04df6e4121c27713ed22341e7c7df330f56f289b',
       amount: BigNumber.from('1000000'),
-      type: SwapTokenType.min
+      type: SwapTokenType.min,
     };
     swaps = [
       {
@@ -44,8 +44,8 @@ describe('vault.service', () => {
         amount: '1000000',
         assetInIndex: 0,
         assetOutIndex: 1,
-        userData: ''
-      }
+        userData: '',
+      },
     ];
   });
 
@@ -57,7 +57,7 @@ describe('vault.service', () => {
         assetIn: tokens.USDC.address,
         assetOut: tokens.DAI.address,
         kind: SwapType.SwapExactIn,
-        userData: ''
+        userData: '',
       };
       const tokenOutAmount = '10';
 

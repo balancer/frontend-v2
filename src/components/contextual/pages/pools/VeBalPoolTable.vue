@@ -29,8 +29,8 @@ const lockPools = computed<PoolWithShares[]>(() => {
         lockedEndDate:
           props.lock?.hasExistingLock && !props.lock?.isExpired
             ? props.lock?.lockedEndDate
-            : undefined
-      }
+            : undefined,
+      },
     ];
   }
   return [];
@@ -41,14 +41,16 @@ const hiddenColumns = [
   'poolValue',
   'migrate',
   'actions',
-  'myBoost'
+  'myBoost',
 ];
 </script>
 
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 class="px-4 lg:px-0">{{ $t('veBalProtocolLiquidity') }}</h5>
+      <h5 class="px-4 xl:px-0">
+        {{ $t('veBalProtocolLiquidity') }}
+      </h5>
       <PoolsTable
         :key="lockPools"
         :data="lockPools"

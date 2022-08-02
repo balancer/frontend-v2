@@ -12,7 +12,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   trigger: 'click',
   align: 'right',
-  detached: false
+  detached: false,
 });
 
 const emit = defineEmits<{
@@ -33,11 +33,11 @@ const popoverWrapperClasses = computed(() => ({
   'bal-popover-wrapper-visible': popoverOpened.value,
   [`${props.align}-0`]: !props.detached,
   'align-center-transform': props.detached && props.align === 'center',
-  'align-right-transform': props.detached && props.align === 'right'
+  'align-right-transform': props.detached && props.align === 'right',
 }));
 
 const popoverActivatorWrapperClasses = computed(() => ({
-  relative: !props.detached
+  relative: !props.detached,
 }));
 
 const activatorWidth = computed(() => activatorWrapper.value?.clientWidth || 0);
@@ -81,12 +81,12 @@ watch(popoverOpened, () => {
 
 <template>
   <div
-    :class="[popoverActivatorWrapperClasses]"
     v-click-outside="handleClickOutside"
+    :class="[popoverActivatorWrapperClasses]"
   >
     <div
-      class="bal-popover-activator group"
       ref="activatorWrapper"
+      class="group bal-popover-activator"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"

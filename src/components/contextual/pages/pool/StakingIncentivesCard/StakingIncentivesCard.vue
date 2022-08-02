@@ -36,10 +36,10 @@ const {
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
-    isLoadingBoosts
+    isLoadingBoosts,
   },
   isPoolEligibleForStaking,
-  isLoadingPoolEligibility
+  isLoadingPoolEligibility,
 } = useStaking();
 
 /**
@@ -88,9 +88,9 @@ async function handleActionSuccess() {
     <AnimatePresence
       :isVisible="
         !isLoadingStakedShares &&
-          !isStakedSharesIdle &&
-          !isLoadingPoolEligibility &&
-          !isLoadingBoosts
+        !isStakedSharesIdle &&
+        !isLoadingPoolEligibility &&
+        !isLoadingBoosts
       "
     >
       <div class="relative">
@@ -101,13 +101,13 @@ async function handleActionSuccess() {
               title: $t('staking.stakingIncentives'),
               id: 'staking-incentives',
               handle: 'staking-handle',
-              isDisabled: !isPoolEligibleForStaking
-            }
+              isDisabled: !isPoolEligibleForStaking,
+            },
           ]"
         >
-          <template v-slot:staking-handle>
+          <template #staking-handle>
             <button
-              class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800"
+              class="p-4 w-full hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
             >
               <BalStack horizontal justify="between" align="center">
                 <BalStack spacing="sm" align="center">
@@ -116,16 +116,16 @@ async function handleActionSuccess() {
                       'flex items-center p-1 text-white rounded-full',
                       {
                         'bg-green-500': isPoolEligibleForStaking,
-                        'bg-gray-400': !isPoolEligibleForStaking
-                      }
+                        'bg-gray-400': !isPoolEligibleForStaking,
+                      },
                     ]"
                   >
                     <BalIcon
+                      v-if="isPoolEligibleForStaking"
                       size="sm"
                       name="check"
-                      v-if="isPoolEligibleForStaking"
                     />
-                    <BalIcon size="sm" name="x" v-else />
+                    <BalIcon v-else size="sm" name="x" />
                   </div>
                   <h6>{{ $t('staking.stakingIncentives') }}</h6>
                 </BalStack>
@@ -140,12 +140,12 @@ async function handleActionSuccess() {
               </BalStack>
             </button>
           </template>
-          <template v-slot:staking-incentives>
-            <div class="bg-white dark:bg-gray-850 relative">
+          <template #staking-incentives>
+            <div class="relative bg-white dark:bg-gray-850">
               <BalStack
                 vertical
                 spacing="sm"
-                class="px-4 py-4 border-t dark:border-gray-900"
+                class="py-4 px-4 border-t dark:border-gray-900"
               >
                 <BalStack horizontal justify="between">
                   <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
@@ -179,17 +179,17 @@ async function handleActionSuccess() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    @click="showStakePreview"
                     :disabled="fiatValueOfUnstakedShares === '0'"
+                    @click="showStakePreview"
                   >
                     {{ $t('stake') }}
                   </BalBtn>
                   <BalBtn
                     outline
-                    color="gray"
+                    color="blue"
                     size="sm"
-                    @click="showUnstakePreview"
                     :disabled="fiatValueOfStakedShares === '0'"
+                    @click="showUnstakePreview"
                   >
                     {{ $t('unstake') }}
                   </BalBtn>
@@ -219,28 +219,46 @@ async function handleActionSuccess() {
 </template>
 
 <style>
+.handle {
+  @apply overflow-hidden rounded-xl;
+}
+
 .handle::before {
+  @apply absolute left-0 w-full opacity-100;
   content: '';
-  position: absolute;
   top: -2px;
-  left: -2px;
-  width: calc(100% + 4px);
   height: calc(100% + 4px);
   background: linear-gradient(90deg, #4254ff, #f441a5, #ffeb3b, #4254ff);
   background-size: 400%;
-  animation: anim 8s linear infinite;
-
+  animation: anim-half 3s ease-out both;
   border-radius: 14px;
-  opacity: 1;
   z-index: -1;
 }
 
-@keyframes anim {
+.handle:hover:before {
+  animation: anim 12s linear infinite;
+}
+
+.handle .bal-card {
+  @apply mx-auto;
+  width: calc(100% - 4px);
+}
+
+@keyframes anim-half {
   from {
     background-position: 0;
   }
   to {
-    background-position: 400%;
+    background-position: 125%;
+  }
+}
+
+@keyframes anim {
+  from {
+    background-position: 125%;
+  }
+  to {
+    background-position: 600%;
   }
 }
 </style>

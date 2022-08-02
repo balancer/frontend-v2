@@ -61,8 +61,8 @@ export default class ExitParams {
           amount.gt(0) ? amount.sub(1) : amount
         ),
         userData: txData,
-        toInternalBalance: this.toInternalBalance
-      }
+        toInternalBalance: this.toInternalBalance,
+      },
     ];
   }
 
@@ -96,17 +96,17 @@ export default class ExitParams {
       return this.dataEncodeFn({
         kind: 'ExactBPTInForOneTokenOut',
         bptAmountIn: bptIn,
-        exitTokenIndex
+        exitTokenIndex,
       });
     } else if (exactOut) {
       return this.dataEncodeFn({
         amountsOut,
-        maxBPTAmountIn: bptIn
+        maxBPTAmountIn: bptIn,
       });
     } else {
       return this.dataEncodeFn({
         kind: 'ExactBPTInForTokensOut',
-        bptAmountIn: bptIn
+        bptAmountIn: bptIn,
       });
     }
   }

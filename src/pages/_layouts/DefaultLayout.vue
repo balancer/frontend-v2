@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Footer from '@/components/footer/Footer.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+const { isDesktop } = useBreakpoints();
 </script>
 
 <template>
@@ -16,7 +18,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
         circle
         size="lg"
         color="blue"
-        class="fixed bottom-0 right-0 m-4 z-100"
+        class="fixed right-0 bottom-0 m-4 z-100"
       >
         <BalIcon name="message-square" size="lg" />
       </BalBtn>

@@ -3,8 +3,8 @@ import LogotypeBalancer from '@/components/icons/LogotypeBalancer.vue';
 </script>
 
 <template>
-  <div class="flex items-center balancer-logotype sm:mr-4">
-    <logotype-balancer />
+  <div class="flex items-center sm:mr-4 balancer-logotype">
+    <LogotypeBalancer />
   </div>
 </template>
 

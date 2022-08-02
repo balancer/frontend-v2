@@ -5,9 +5,9 @@
       :value="value"
       :checked="modelValue === value"
       :name="name"
-      @change="onChange(value)"
       :class="['bal-radio-input', inputClasses]"
       :disabled="disabled"
+      @change="onChange(value)"
     />
     <label
       v-if="$slots.label || label"
@@ -28,8 +28,6 @@ import { computed, defineComponent } from 'vue';
 export default defineComponent({
   name: 'BalRadio',
 
-  emits: ['update:modelValue'],
-
   props: {
     name: { type: String, required: true },
     value: { type: [String, Number], required: true },
@@ -39,14 +37,16 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     color: {
       type: String,
       default: 'blue',
-      validator: (val: string): boolean => ['blue'].includes(val)
-    }
+      validator: (val: string): boolean => ['blue'].includes(val),
+    },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     function onChange(value) {
@@ -89,23 +89,23 @@ export default defineComponent({
       return {
         [sizeClasses.value]: true,
         [colorClass.value]: true,
-        [cursrorClass.value]: true
+        [cursrorClass.value]: true,
       };
     });
 
     const labelClasses = computed(() => {
       return {
         [textSizeClass.value]: true,
-        [cursrorClass.value]: true
+        [cursrorClass.value]: true,
       };
     });
 
     return {
       onChange,
       inputClasses,
-      labelClasses
+      labelClasses,
     };
-  }
+  },
 });
 </script>
 
