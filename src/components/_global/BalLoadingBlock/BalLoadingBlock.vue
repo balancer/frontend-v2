@@ -74,13 +74,12 @@ const classes = computed(() => {
   --end-color: rgb(255 255 255 / 10%);
 
   animation: shimmerBackground 10s infinite;
-  background:
-    linear-gradient(
-      to right,
-      var(--start-color) 4%,
-      var(--mid-color) 25%,
-      var(--end-color) 36%
-    );
+  background: linear-gradient(
+    to right,
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
+  );
   background-size: 1000px 100%;
 }
 
@@ -90,13 +89,12 @@ const classes = computed(() => {
   --end-color: theme('colors.gray.50');
 
   animation: shimmerBackground 10s infinite;
-  background:
-    linear-gradient(
-      to right,
-      var(--start-color) 4%,
-      var(--mid-color) 25%,
-      var(--end-color) 36%
-    );
+  background: linear-gradient(
+    to right,
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
+  );
   background-size: 1000px 100%;
 }
 
@@ -106,13 +104,12 @@ const classes = computed(() => {
   --end-color: theme('colors.gray.100');
 
   animation: shimmerBackground 10s infinite;
-  background:
-    linear-gradient(
-      to right,
-      var(--start-color) 4%,
-      var(--mid-color) 25%,
-      var(--end-color) 36%
-    );
+  background: linear-gradient(
+    to right,
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
+  );
   background-size: 1000px 100%;
 }
 
@@ -122,13 +119,12 @@ const classes = computed(() => {
   --end-color: theme('colors.gray.850');
 
   animation: shimmerBackground 10s infinite;
-  background:
-    linear-gradient(
-      to right,
-      var(--start-color) 4%,
-      var(--mid-color) 25%,
-      var(--end-color) 36%
-    );
+  background: linear-gradient(
+    to right,
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
+  );
   background-size: 1000px 100%;
 }
 
@@ -138,13 +134,12 @@ const classes = computed(() => {
   --end-color: theme('colors.gray.700');
 
   animation: shimmerBackground 10s infinite;
-  background:
-    linear-gradient(
-      to right,
-      var(--start-color) 4%,
-      var(--mid-color) 25%,
-      var(--end-color) 36%
-    );
+  background: linear-gradient(
+    to right,
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
+  );
   background-size: 1000px 100%;
 }
 </style>
