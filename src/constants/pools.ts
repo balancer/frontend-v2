@@ -16,6 +16,11 @@ export type FactoryType =
   | 'liquidityBootstrappingPool'
   | 'boostedPool';
 
+type PoolMetadata = {
+  name: string;
+  hasIcon: boolean;
+};
+
 export type Pools = {
   IdsMap: Partial<Record<'staBAL' | 'bbAaveUSD' | 'B-80BAL-20WETH', string>>;
   Pagination: {
@@ -40,6 +45,7 @@ export type Pools = {
   Stakable: {
     AllowList: string[];
   };
+  Metadata: Record<string, PoolMetadata>;
 };
 
 const POOLS_KOVAN: Pools = {
@@ -109,6 +115,20 @@ const POOLS_KOVAN: Pools = {
       '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8',
     ],
   },
+  Metadata: {
+    '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8': {
+      name: 'Balancer Boosted Aave USD',
+      hasIcon: false,
+    },
+    '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e': {
+      name: 'Balancer Stable USD',
+      hasIcon: false,
+    },
+    '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701': {
+      name: 'Balancer Protocol Liquidity',
+      hasIcon: false,
+    },
+  },
 };
 
 const POOLS_GOERLI: Pools = {
@@ -156,6 +176,16 @@ const POOLS_GOERLI: Pools = {
     AllowList: [
       '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b',
     ],
+  },
+  Metadata: {
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f': {
+      name: 'Balancer Boosted Aave USD',
+      hasIcon: false,
+    },
+    '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060': {
+      name: 'Balancer Protocol Liquidity',
+      hasIcon: false,
+    },
   },
 };
 
@@ -267,6 +297,24 @@ const POOLS_MAINNET: Pools = {
       '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc',
     ],
   },
+  Metadata: {
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
+      name: 'Balancer Boosted Aave USD',
+      hasIcon: true,
+    },
+    '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
+      name: 'Balancer Stable USD',
+      hasIcon: true,
+    },
+    '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014': {
+      name: 'Balancer Protocol Liquidity',
+      hasIcon: true,
+    },
+    '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249': {
+      name: 'AuraBAL Stable Pool',
+      hasIcon: false,
+    },
+  },
 };
 
 const POOLS_POLYGON: Pools = {
@@ -339,6 +387,7 @@ const POOLS_POLYGON: Pools = {
       '0x8f9dd2064eb38e8e40f2ab67bde27c0e16ea9b080002000000000000000004ca',
     ],
   },
+  Metadata: {},
 };
 
 const POOLS_ARBITRUM: Pools = {
@@ -398,6 +447,7 @@ const POOLS_ARBITRUM: Pools = {
       '0xb3028ca124b80cfe6e9ca57b70ef2f0ccc41ebd40002000000000000000000ba',
     ],
   },
+  Metadata: {},
 };
 
 const POOLS_GENERIC: Pools = {
@@ -475,6 +525,20 @@ const POOLS_GENERIC: Pools = {
   Stakable: {
     AllowList: [],
   },
+  Metadata: {
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
+      name: 'Balancer Boosted Aave USD',
+      hasIcon: true,
+    },
+    '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8': {
+      name: 'Balancer Boosted Aave USD',
+      hasIcon: true,
+    },
+    '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e': {
+      name: 'Balancer Stable USD',
+      hasIcon: true,
+    },
+  },
 };
 
 const POOLS_MAP = {
@@ -484,6 +548,7 @@ const POOLS_MAP = {
   [Network.POLYGON]: POOLS_POLYGON,
   [Network.ARBITRUM]: POOLS_ARBITRUM,
 };
+
 export const POOLS: Pools = POOLS_MAP[networkId.value]
   ? POOLS_MAP[networkId.value]
   : POOLS_GENERIC;
