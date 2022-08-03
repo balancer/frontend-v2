@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PoolType } from '@balancer-labs/sdk';
+import { PoolType } from '@/services/pool/types';
 import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
