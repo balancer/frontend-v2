@@ -76,7 +76,9 @@ const toPoolTokenInfo = computed(() =>
         isLoadingPools ||
         fromPoolTokenInfo == null ||
         toPoolTokenInfo == null ||
-        batchRelayerApprovalLoading
+        batchRelayerApprovalLoading ||
+        !fromPool ||
+        !toPool
       "
       class="h-96"
     />
@@ -90,7 +92,7 @@ const toPoolTokenInfo = computed(() =>
     />
 
     <template #gutterRight>
-      <BalLoadingBlock v-if="toPoolLoading" class="h-64" />
+      <BalLoadingBlock v-if="toPoolLoading || !toPool" class="h-64" />
       <PoolStats v-else :pool="toPool" :poolMigrationInfo="poolMigrationInfo" />
     </template>
   </Col3Layout>
