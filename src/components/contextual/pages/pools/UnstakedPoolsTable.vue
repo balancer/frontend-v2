@@ -74,7 +74,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        boost: poolBoosts.value[pool.id],
+        boost: poolBoosts.value && poolBoosts.value[pool.id],
       };
     });
 });
