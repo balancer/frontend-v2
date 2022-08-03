@@ -138,11 +138,6 @@ const steps = computed(() => [
     label: 2,
   },
   {
-    tooltip: 'Similar pools',
-    state: StepState.Warning,
-    isVisible: doSimilarPoolsExist.value && activeStep.value === 2,
-  },
-  {
     tooltip: 'Set initial liquidity',
     state: getStepState(3),
     label: 3,
@@ -301,7 +296,7 @@ watch(
           />
           <AnimatePresence
             :isVisible="
-              doSimilarPoolsExist && activeStep === 0 && validTokens.length
+              doSimilarPoolsExist && activeStep === 0 && !!validTokens.length
             "
           >
             <SimilarPoolsCompact />
@@ -311,7 +306,7 @@ watch(
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="hasRestoredFromSavedState && !appLoading"
+        :isVisible="!!hasRestoredFromSavedState && !appLoading"
         unmountInstantly
       >
         <BalAlert

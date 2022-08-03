@@ -346,7 +346,7 @@ function saveAndProceed() {
           </BalStack>
         </div>
         <AnimatePresence
-          :isVisible="arbitrageDelta.delta > 0.05"
+          :isVisible="arbitrageDelta.delta > bnum(0.05)"
           unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
