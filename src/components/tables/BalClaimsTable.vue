@@ -14,7 +14,8 @@ import {
   orderedTokenAddresses,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { GaugePool } from '@/pages/claim.vue';
+import { GaugePool } from '@/composables/useClaimsData';
+
 import { Gauge } from '@/services/balancer/gauges/types';
 
 /**
