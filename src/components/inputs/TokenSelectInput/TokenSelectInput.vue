@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onUpdated, ref } from 'vue';
 
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useNumbers from '@/composables/useNumbers';
@@ -18,6 +18,10 @@ type Props = {
   options?: string[];
   disableInjection?: boolean;
 };
+
+onUpdated(() => {
+  console.log({ optionToken });
+});
 
 /**
  * PROPS & EMITS
@@ -39,6 +43,7 @@ const emit = defineEmits<{
  * STATE
  */
 const openTokenModal = ref(false);
+const optionToken = ref<TokenInfo | null>(null);
 
 /**
  * COMPOSABLEs
@@ -123,7 +128,7 @@ function toggleModal(): void {
       </template>
       <template #option="{ option: address }">
         <div
-          :set="(optionToken = getToken(address) || {})"
+          :set="(optionToken = getToken(address))"
           class="flex justify-between items-center"
         >
           <div class="flex items-center">
