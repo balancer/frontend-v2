@@ -65,6 +65,10 @@ const fiatValueOfUnstakedShares = computed(() => {
     .toString();
 });
 
+const unstakedBptBalance = computed(() => {
+  return balanceFor(getAddress(props.fromPool.address));
+});
+
 const stakedPool = computed(() => {
   return poolsWithBoost.value.find(pool => pool.id === fromPool.value.id);
 });
@@ -223,10 +227,10 @@ const isUnstakedMigrationEnabled = computed(() => {
       :unstakedPoolValue="fiatValueOfUnstakedShares"
       :isStakedMigrationEnabled="isStakedMigrationEnabled"
       :isUnstakedMigrationEnabled="isUnstakedMigrationEnabled"
+      :stakedBptBalance="stakedSharesForProvidedPool"
+      :unstakedBptBalance="unstakedBptBalance"
       :fromPool="fromPool"
       :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
       :poolMigrationInfo="poolMigrationInfo"
       :math="migrateMath"
       @close="showPreviewModal = false"

@@ -9,7 +9,6 @@ import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenInfo } from '@/types/TokenList';
 import { MigrateMathResponse } from '../../../composables/useMigrateMath';
 
 /**
@@ -18,13 +17,13 @@ import { MigrateMathResponse } from '../../../composables/useMigrateMath';
 type Props = {
   fromPool: Pool;
   toPool: Pool;
-  fromPoolTokenInfo: TokenInfo;
-  toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
   fiatTotal: string;
   disabled?: boolean;
   stakedPoolValue?: string;
   unstakedPoolValue?: string;
+  stakedBptBalance: string;
+  unstakedBptBalance: string;
   isStakedMigrationEnabled: boolean;
   isUnstakedMigrationEnabled: boolean;
 };
@@ -62,7 +61,8 @@ const relayerAddress = ref(configService.network.addresses.batchRelayer);
 const relayerApproval = useRelayerApprovalQuery(relayerAddress);
 
 const { actions } = usePoolMigration(
-  props.math.bptBalanceScaled.value,
+  props.stakedBptBalance,
+  props.unstakedBptBalance,
   props.unstakedPoolValue,
   props.isUnstakedMigrationEnabled,
   props.stakedPoolValue,

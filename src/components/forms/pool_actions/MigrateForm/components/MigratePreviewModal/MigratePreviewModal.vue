@@ -24,6 +24,8 @@ type Props = {
   math: MigrateMathResponse;
   stakedPoolValue?: string;
   unstakedPoolValue?: string;
+  stakedBptBalance: string;
+  unstakedBptBalance: string;
   isStakedMigrationEnabled: boolean;
   isUnstakedMigrationEnabled: boolean;
 };
@@ -133,10 +135,10 @@ function handleClose() {
       :isUnstakedMigrationEnabled="isUnstakedMigrationEnabled"
       :stakedPoolValue="stakedPoolValue"
       :unstakedPoolValue="unstakedPoolValue"
+      :stakedBptBalance="stakedBptBalance"
+      :unstakedBptBalance="unstakedBptBalance"
       :fromPool="fromPool"
       :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
       :fiatTotalLabel="fiatTotalLabel"
       :fiatTotal="fiatTotal"
       :math="math"

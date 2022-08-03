@@ -15,12 +15,14 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
+import { parseUnits } from 'ethers/lib/utils';
 
 const HALF_HOUR = 30 * 60 * 1000;
 const MAX_GAS_LIMIT = 8e6;
 
 export function usePoolMigration(
-  bptBalanceScaled: string,
+  stakedBptBalance: string,
+  unstakedBptBalance: string,
   unstakedAmount = '0',
   isUnstakedMigrationEnabled: boolean,
   stakedAmount = '0',
@@ -54,7 +56,11 @@ export function usePoolMigration(
         label: t('migratePool.previewModal.actions.staked.title'),
         loadingLabel: t('migratePool.previewModal.actions.loading'),
         confirmingLabel: t('migratePool.confirming'),
-        action: approveMigration.bind(null, true, bptBalanceScaled),
+        action: approveMigration.bind(
+          null,
+          true,
+          scaleNum(stakedBptBalance, fromPool.onchain?.decimals)
+        ),
         stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
         isSignAction: false,
       });
@@ -65,7 +71,11 @@ export function usePoolMigration(
         label: t('migratePool.previewModal.actions.unstaked.title'),
         loadingLabel: t('migratePool.previewModal.actions.loading'),
         confirmingLabel: t('migratePool.confirming'),
-        action: approveMigration.bind(null, false, bptBalanceScaled),
+        action: approveMigration.bind(
+          null,
+          false,
+          scaleNum(unstakedBptBalance, fromPool.onchain?.decimals)
+        ),
         stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
         isSignAction: false,
       };
@@ -223,6 +233,10 @@ export function usePoolMigration(
         approving.value = false;
       },
     });
+  }
+
+  function scaleNum(balance: string, decimals = 18): string {
+    return parseUnits(balance, decimals).toString();
   }
 
   return { getUserSignature, approveMigration, actions };
