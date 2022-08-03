@@ -39,7 +39,7 @@ onBeforeMount(async () => {
 <template>
   <div>
     <BalLoadingBlock
-      v-if="loadingPool || !transfersAllowed || !sorReady"
+      v-if="loadingPool || !transfersAllowed || !sorReady || !pool"
       class="h-96"
     />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
