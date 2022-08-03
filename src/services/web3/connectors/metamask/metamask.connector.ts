@@ -22,6 +22,8 @@ export class MetamaskConnector extends Connector {
   id = ConnectorId.InjectedMetaMask;
   async connect() {
     const provider = getInjectedProvider();
+    // store userRejectedRequest error if the user rejects connection
+    let userRejectedRequest = false;
 
     if (provider) {
       this.provider = provider;
@@ -42,14 +44,15 @@ export class MetamaskConnector extends Connector {
         if ((err as WalletError).code === 4001) {
           // EIP-1193 userRejectedRequest error
           // If this happens, the user rejected the connection request.
+          userRejectedRequest = true;
           console.log('Please connect to MetaMask.');
         } else {
           console.error(err);
         }
       }
 
-      // if account is still moot, try the bad old way - enable()
-      if (!accounts) {
+      // if account is still moot and user did not reject the connection request, try the bad old way - enable()
+      if (!accounts && !userRejectedRequest) {
         // have to any it, since enable technically shouldn't be there anymore.
         // but might, for legacy clients.
         const response = await (provider as any).enable();
