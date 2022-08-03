@@ -232,7 +232,9 @@ function lockedUntil(lockEndDate?: number) {
 }
 
 function iconAddresses(pool: PoolWithShares) {
-  return POOLS.Names[pool.id] ? [pool.address] : orderedTokenAddresses(pool);
+  return POOLS.Metadata[pool.id]?.hasIcon
+    ? [pool.address]
+    : orderedTokenAddresses(pool);
 }
 </script>
 
@@ -283,8 +285,8 @@ function iconAddresses(pool: PoolWithShares) {
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <div v-if="POOLS.Names[pool.id]" class="text-left">
-            {{ POOLS.Names[pool.id] }}
+          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
+            {{ POOLS.Metadata[pool.id].name }}
           </div>
           <div v-else>
             <TokenPills

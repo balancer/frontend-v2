@@ -125,9 +125,9 @@ const poolTypeLabel = computed(() => {
     <BalLoadingBlock v-if="loadingPool" class="h-16" />
     <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
-        <div v-if="POOLS.Names[pool?.id]">
+        <div v-if="POOLS.Metadata[pool?.id]">
           <h3 class="pool-title">
-            {{ POOLS.Names[pool.id] }}
+            {{ POOLS.Metadata[pool.id].name }}
           </h3>
           <h5 class="text-sm">
             {{ poolTypeLabel }}
