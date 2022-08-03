@@ -51,6 +51,8 @@ const noPoolsLabel = computed(() => {
     : t('connectYourWallet');
 });
 
+const poolsToRenderKey = computed(() => JSON.stringify(poolsToRender.value));
+
 // first retrieve all the pools the user has liquidity for
 const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
 
@@ -136,7 +138,7 @@ function handleModalClose() {
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable
-        :key="poolsToRender"
+        :key="poolsToRenderKey"
         :isLoading="isLoadingUserStakingData || isLoadingUserPools"
         :data="poolsToRender"
         :noPoolsLabel="noPoolsLabel"
