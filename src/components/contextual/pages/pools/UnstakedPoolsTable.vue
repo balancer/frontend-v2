@@ -146,6 +146,7 @@ function handleModalClose() {
       />
     </BalStack>
     <StakePreviewModal
+      v-if="stakePool"
       :pool="stakePool"
       :isVisible="showStakeModal"
       action="stake"
