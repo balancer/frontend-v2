@@ -15,15 +15,13 @@ import useInputEvents from './composables/useInputEvents';
 import useInputStyles from './composables/useInputStyles';
 import useInputValidation from './composables/useInputValidation';
 
-/**
- * TYPES
- */
-type InputValue = string | number;
-type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
-type InputSize = 'xs' | 'sm' | 'md' | 'lg';
-type ValidationTrigger = 'input' | 'blur';
-type RuleFunction = (val: InputValue) => string | boolean;
-export type Rules = RuleFunction[];
+import {
+  InputValue,
+  InputType,
+  InputSize,
+  ValidationTrigger,
+  Rules,
+} from './types';
 
 type Props = {
   name: string;
