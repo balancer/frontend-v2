@@ -84,7 +84,6 @@ const columns = ref<ColumnDefinition<any>[]>([
     <BalTable
       :columns="columns"
       :data="tokens"
-      :isLoading="isLoading"
       skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >
