@@ -30,6 +30,7 @@ export type TransactionStatus =
   | 'failed';
 
 export type TransactionAction =
+  | 'drip'
   | 'claim'
   | 'approve'
   | 'trade'
