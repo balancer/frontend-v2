@@ -72,6 +72,7 @@ const fiatTotalExpiredLpTokens = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
     .times(totalExpiredLpTokens.value)
+    .toString()
 );
 
 const cards = computed(() => {
