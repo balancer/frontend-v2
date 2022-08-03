@@ -35,7 +35,7 @@ export type ColumnDefinition<T = Data> = {
   cellClassName?: string;
 };
 import { sortBy, sumBy } from 'lodash';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, toRef } from 'vue';
 
 import PinHeader from './PinHeader.vue';
 
@@ -70,14 +70,14 @@ type Props = {
   initialState?: InitialState;
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   pin?: DataPinState | null;
-  getTableRowClass?: (rowData: Data, rowIndex: number) => string | undefined;
+  getTableRowClass?: (rowData: Data, rowIndex: number) => string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   square: false,
   isPaginated: false,
   noResultsLabel: '',
-  link: () => null,
+  link: null,
   initialState: () => ({
     sortColumn: null,
     sortDirection: null,
@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
   skeletonClass: '',
   isLoading: false,
   isLoadingMore: false,
-  getTableRowClass: () => undefined,
+  getTableRowClass: () => '',
 });
 
 const stickyHeaderRef = ref();
@@ -99,6 +99,8 @@ const currentSortColumn = ref<InitialState['sortColumn']>(
 );
 const headerRef = ref<HTMLElement>();
 const bodyRef = ref<HTMLElement>();
+
+const getTableRowClass = toRef(props, 'getTableRowClass');
 
 // for loading and no results
 const placeholderBlockWidth = computed(() => sumBy(props.columns, 'width'));
@@ -326,7 +328,7 @@ watch(
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
           :key="`tableRow-${index}`"
-          :class="props.getTableRowClass(dataItem, index)"
+          :class="getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
@@ -345,7 +347,11 @@ watch(
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
           :key="`tableRow-${index}`"
-          :class="props.getTableRowClass(dataItem, index)"
+          :class="
+            props.getTableRowClass
+              ? props.getTableRowClass(dataItem, index)
+              : undefined
+          "
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
