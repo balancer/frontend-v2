@@ -231,6 +231,8 @@ const isUnstakedMigrationEnabled = computed(() => {
       :unstakedBptBalance="unstakedBptBalance"
       :fromPool="fromPool"
       :toPool="toPool"
+      :fromPoolTokenInfo="fromPoolTokenInfo"
+      :toPoolTokenInfo="toPoolTokenInfo"
       :poolMigrationInfo="poolMigrationInfo"
       :math="migrateMath"
       @close="showPreviewModal = false"

@@ -51,11 +51,14 @@ const migratePoolState = reactive<MigratePoolState>({
   confirmedAt: '',
 });
 
+const { shouldFetchBatchSwap } = toRefs(props.math);
+
 /**
  * COMPOSABLES
  */
+
 const { networkConfig } = useConfig();
-const { explorerLinks } = useWeb3();
+const { explorerLinks, blockNumber } = useWeb3();
 
 const relayerAddress = ref(configService.network.addresses.batchRelayer);
 const relayerApproval = useRelayerApprovalQuery(relayerAddress);
@@ -86,6 +89,15 @@ const transactionInProgress = computed(
     migratePoolState.confirming ||
     migratePoolState.confirmed
 );
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, async () => {
+  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+    await props.math.getBatchSwap();
+  }
+});
 </script>
 
 <template>
