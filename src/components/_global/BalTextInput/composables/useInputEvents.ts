@@ -1,8 +1,5 @@
 import { ref } from 'vue';
 
-// TODO: Remove, and use native type?
-import { HtmlInputEvent } from '@/types';
-
 export default function useInputEvents(props, emit, validate) {
   /**
    * STATE
@@ -13,20 +10,26 @@ export default function useInputEvents(props, emit, validate) {
    * EVENTS
    */
 
-  function onBlur(event: HtmlInputEvent) {
-    emit('blur', event.target.value);
-    isActive.value = false;
-    if (props.validateOn === 'blur') validate(event.target.value);
+  function onBlur(event: FocusEvent) {
+    if (event.target) {
+      const value = (event.target as HTMLInputElement).value;
+      emit('blur', value);
+      isActive.value = false;
+      if (props.validateOn === 'blur') validate(value);
+    }
   }
 
-  function onInput(event: HtmlInputEvent): void {
-    if (props.type === 'number') {
-      const overflowProtectedVal = overflowProtected(event.target.value);
-      if (overflowProtectedVal) event.target.value = overflowProtectedVal;
+  function onInput(event: Event): void {
+    if (event.target) {
+      let value = (event.target as HTMLInputElement).value;
+      if (props.type === 'number') {
+        const overflowProtectedVal = overflowProtected(value);
+        if (overflowProtectedVal) value = overflowProtectedVal;
+      }
+      isActive.value = true;
+      emit('input', value);
+      emit('update:modelValue', value);
     }
-    isActive.value = true;
-    emit('input', event.target.value);
-    emit('update:modelValue', event.target.value);
   }
 
   function onClick(event: MouseEvent) {

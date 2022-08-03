@@ -29,6 +29,7 @@ export interface Claim {
   amount: string;
 }
 
+// TODO: Can be removed?
 export interface HtmlInputEvent {
   target: HTMLInputElement;
   key: string;
