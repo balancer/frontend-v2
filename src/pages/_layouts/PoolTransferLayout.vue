@@ -40,7 +40,10 @@ usePoolTransfersGuard();
 
     <Col3Layout offsetGutters mobileHideGutters>
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
-        <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
+        <BalLoadingBlock
+          v-if="loadingPool || !transfersAllowed || !pool"
+          class="h-64"
+        />
         <MyWalletTokensCard
           v-else
           v-model:useNativeAsset="useNativeAsset"
