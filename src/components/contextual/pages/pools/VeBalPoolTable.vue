@@ -36,6 +36,8 @@ const lockPools = computed<PoolWithShares[]>(() => {
   return [];
 });
 
+const poolsToRenderKey = computed(() => JSON.stringify(lockPools.value));
+
 const hiddenColumns = [
   'poolVolume',
   'poolValue',
@@ -52,7 +54,7 @@ const hiddenColumns = [
         {{ $t('veBalProtocolLiquidity') }}
       </h5>
       <PoolsTable
-        :key="lockPools"
+        :key="poolsToRenderKey"
         :data="lockPools"
         :hiddenColumns="hiddenColumns"
         showPoolShares
