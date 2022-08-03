@@ -230,6 +230,10 @@ function aprLabelFor(pool: PoolWithShares): string {
 function lockedUntil(lockEndDate?: number) {
   return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
 }
+
+function iconAddresses(pool: PoolWithShares) {
+  return POOLS.Names[pool.id] ? [pool.address] : orderedTokenAddresses(pool);
+}
 </script>
 
 <template>
@@ -274,14 +278,7 @@ function lockedUntil(lockEndDate?: number) {
       </template>
       <template #iconColumnCell="pool">
         <div v-if="!isLoading" class="py-4 px-6">
-          <BalAssetSet
-            :addresses="
-              POOLS.Names[pool.id]
-                ? [pool.address]
-                : orderedTokenAddresses(pool)
-            "
-            :width="100"
-          />
+          <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
         </div>
       </template>
       <template #poolNameCell="pool">
