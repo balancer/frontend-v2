@@ -229,7 +229,10 @@ watch(blockNumber, async () => {
 
 <template>
   <transition>
-    <BalActionSteps v-if="!withdrawalState.confirmed" :actions="actions" />
+    <BalActionSteps
+      v-if="!withdrawalState.confirmed || !withdrawalState.receipt"
+      :actions="actions"
+    />
     <div v-else>
       <ConfirmationIndicator :txReceipt="withdrawalState.receipt" />
       <BalBtn
