@@ -14,7 +14,7 @@ import useLockState from '../../../composables/useLockState';
 type Props = {
   minLockEndDateTimestamp: number;
   maxLockEndDateTimestamp: number;
-  veBalLockInfo: VeBalLockInfo;
+  veBalLockInfo?: VeBalLockInfo | null;
 };
 
 /**
@@ -26,8 +26,9 @@ const { t } = useI18n();
 /**
  * PROPS
  */
-const props = defineProps<Props>();
-
+const props = withDefaults(defineProps<Props>(), {
+  veBalLockInfo: null,
+});
 /**
  * STATE
  */
