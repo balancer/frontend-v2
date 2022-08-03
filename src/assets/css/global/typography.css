@@ -2,9 +2,11 @@ h1,
 h2 {
   font-variation-settings: 'wght' 700;
 }
+
 h1 {
   @apply text-4xl;
 }
+
 h2 {
   @apply text-3xl tracking-tight;
 }
@@ -15,19 +17,26 @@ h5,
 h6 {
   @apply font-body;
 }
+
 h3 {
   @apply text-2xl tracking-tight;
+
   font-variation-settings: 'wght' 600;
 }
+
 h4 {
   @apply text-xl tracking-tight;
+
   font-variation-settings: 'wght' 600;
 }
+
 h5 {
   @apply text-lg;
+
   font-weight: unset;
   font-variation-settings: 'wght' 600;
 }
+
 h6 {
   font-variation-settings: 'wght' 600;
 }

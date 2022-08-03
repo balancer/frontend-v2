@@ -50,6 +50,7 @@ const classes = computed(() => ({
 <style>
 .headline {
   @apply text-white text-center text-4xl md:text-5xl pb-2 font-display font-black;
+
   font-weight: 600;
   font-variation-settings: 'wght' 700;
 }

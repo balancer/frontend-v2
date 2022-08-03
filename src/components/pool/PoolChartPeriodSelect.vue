@@ -60,19 +60,21 @@ defineProps<Props>();
 
 <style scoped>
 .period-select-input {
-  @apply relative w-28 rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2 bg-gray-50 dark:bg-gray-800 transition-all;
+  @apply relative w-28 rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2
+    bg-gray-50 dark:bg-gray-800 transition-all;
 }
 
 .period-select-input__selected {
   @apply flex items-center font-semibold h-full leading-loose bg-transparent leading-none -ml-px text-xs;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+
+  appearance: none;
   text-indent: 1px;
   text-overflow: '';
 }
 
 .period-select-input .bal-icon :deep(svg) {
   @apply transition-all;
+
   stroke: theme('colors.blue.500');
 }
 

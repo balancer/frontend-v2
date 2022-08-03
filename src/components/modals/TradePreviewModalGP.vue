@@ -880,7 +880,9 @@ export default defineComponent({
 </script>
 <style scoped>
 .arrow-down {
-  @apply absolute right-0 rounded-full border border-gray-100 flex items-center h-8 w-8 justify-center bg-white mr-3 dark:border-gray-800 dark:bg-gray-800;
+  @apply absolute right-0 rounded-full border border-gray-100 flex items-center h-8 w-8 justify-center bg-white mr-3
+    dark:border-gray-800 dark:bg-gray-800;
+
   transform: translateY(-50%);
 }
 
@@ -889,8 +891,10 @@ export default defineComponent({
 }
 
 .step {
-  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-purple-500 relative;
+  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center
+    justify-center text-purple-500 relative;
 }
+
 .step-seperator {
   @apply bg-gray-200 dark:bg-gray-700 h-px w-6;
 }
@@ -898,6 +902,7 @@ export default defineComponent({
 .step-active {
   @apply border-purple-500 dark:border-purple-500;
 }
+
 .step-approved {
   @apply border-green-500 dark:border-green-500;
 }

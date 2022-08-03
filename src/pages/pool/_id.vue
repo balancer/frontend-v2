@@ -328,6 +328,7 @@ export default defineComponent({
     @apply sticky top-24;
   }
 }
+
 .staking-incentives :deep(.active-section) {
   @apply border-transparent;
 }

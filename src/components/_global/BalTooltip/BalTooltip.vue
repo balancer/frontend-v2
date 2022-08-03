@@ -139,14 +139,11 @@ onUnmounted(() => {
 }
 
 /* Light mode gray shadow */
-.tooltip:before {
+.tooltip::before {
   @apply w-full h-full block absolute top-0 left-0 opacity-0 blur-2xl;
+
   background-blend-mode: soft-light, soft-light, normal;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 0, 0, 0.6),
-    transparent
-  );
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 60%), transparent);
   content: '';
   filter: blur(40px);
   z-index: -1;
@@ -154,7 +151,7 @@ onUnmounted(() => {
 }
 
 /* Dark mode radial gradient shadow */
-.dark .tooltip:before {
+.dark .tooltip::before {
   background-blend-mode: soft-light, soft-light, normal;
   background: radial-gradient(ellipse at left, yellow, transparent),
     radial-gradient(ellipse at bottom right, blue, transparent),
@@ -166,49 +163,53 @@ onUnmounted(() => {
   @apply block;
 }
 
+.tooltip-content {
+  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900;
+}
+
 .tooltip[data-popper-placement='top'] .tooltip-content {
   @apply opacity-0;
+
   animation: fadeInMoveUp 0.2s ease-out both;
 }
 
 .tooltip[data-popper-placement='bottom'] .tooltip-content {
   @apply opacity-0;
+
   animation: fadeInMoveDown 0.2s ease-out both;
 }
 
-.tooltip[data-popper-placement='top'] .tooltip-content:before,
-.tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+.tooltip[data-popper-placement='top'] .tooltip-content::before,
+.tooltip[data-popper-placement='bottom'] .tooltip-content::after {
   @apply w-0 h-0 absolute;
+
   content: ' ';
   left: calc(50% - 7px);
 }
 
 /* bottom triangle for top placed tooltips */
-.tooltip[data-popper-placement='top'] .tooltip-content:before {
+.tooltip[data-popper-placement='top'] .tooltip-content::before {
   border-top: solid #fff 8px;
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
   bottom: -7px;
 }
 
-.dark .tooltip[data-popper-placement='top'] .tooltip-content:before {
+.dark .tooltip[data-popper-placement='top'] .tooltip-content::before {
   border-top: solid #0f172a 8px; /* gray-900 */
 }
 
 /* Top triangle for top placed tooltips */
-.tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+.tooltip[data-popper-placement='bottom'] .tooltip-content::after {
   @apply -top-2;
+
   border-left: solid transparent 8px;
   border-right: solid transparent 8px;
   border-bottom: solid #fff 8px;
 }
 
-.dark .tooltip[data-popper-placement='bottom'] .tooltip-content:after {
+.dark .tooltip[data-popper-placement='bottom'] .tooltip-content::after {
   border-bottom: solid #0f172a 8px; /* gray-900 */
-}
-
-.tooltip-content {
-  @apply rounded-md text-xs text-black dark:text-white bg-white dark:bg-gray-900;
 }
 
 .tooltip-text {

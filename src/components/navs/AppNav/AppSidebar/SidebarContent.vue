@@ -175,20 +175,22 @@ watch(blockNumber, async () => {
 }
 
 .social-link {
-  @apply w-11 h-11 xs:w-12 xs:h-12  rounded-full bg-gray-850 hover:bg-gray-800 flex items-center justify-center text-white cursor-pointer;
+  @apply w-11 h-11 xs:w-12 xs:h-12  rounded-full bg-gray-850 hover:bg-gray-800 flex items-center justify-center
+    text-white cursor-pointer;
 }
 
 .social-link > svg {
   @apply w-6 h-6;
+
   fill: white;
 }
 
 .block-icon {
-  box-shadow: 0px 0px 3px 2px theme('colors.green.500');
+  box-shadow: 0 0 3px 2px theme('colors.green.500');
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .block-change {
-  box-shadow: 0px 0px 6px 4px theme('colors.green.500');
+  box-shadow: 0 0 6px 4px theme('colors.green.500');
 }
 </style>

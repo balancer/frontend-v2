@@ -454,13 +454,16 @@ export default defineComponent({
 .trade-gasless :deep(.bal-toggle) {
   width: 3rem;
 }
+
 .gas-symbol {
   @apply h-8 w-8 rounded-full flex items-center justify-center text-lg bg-gray-50 dark:bg-gray-800;
 }
-.gas-symbol:before {
+
+.gas-symbol::before {
   content: '⛽';
 }
-.signature-symbol:before {
+
+.signature-symbol::before {
   content: '✍️';
 }
 </style>

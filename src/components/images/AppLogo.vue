@@ -61,6 +61,7 @@ const fillColor = computed(() => {
 <style scoped>
 .app-logo :deep(.logotype) {
   @apply origin-top-left relative;
+
   transform: scale(1.1);
 }
 

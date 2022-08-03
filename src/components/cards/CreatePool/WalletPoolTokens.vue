@@ -132,6 +132,7 @@ const totalFiat = computed(() => {
   width: 1px;
   bottom: -5.25rem;
   left: 0.5rem;
+
   @apply bg-gray-300;
 }
 
@@ -142,6 +143,7 @@ const totalFiat = computed(() => {
   height: 0.5px;
   top: 50%;
   left: -1rem;
+
   @apply bg-gray-300;
 }
 </style>

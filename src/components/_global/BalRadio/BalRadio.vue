@@ -113,25 +113,21 @@ export default defineComponent({
 .bal-radio-input {
   @apply bg-white dark:bg-gray-900 rounded-full m-0;
   @apply border border-gray-300 dark:border-gray-900;
+
   transition: all ease 0.25s;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   -webkit-print-color-adjust: exact;
   color-adjust: exact;
   display: inline-block;
   vertical-align: middle;
   background-origin: border-box;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
 .bal-radio-input:checked {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
   border-color: transparent;
-  background-color: currentColor;
+  background-color: currentcolor;
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;

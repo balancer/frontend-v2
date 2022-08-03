@@ -95,6 +95,7 @@ button.bal-asset {
 button.bal-asset:hover,
 button.bal-asset:focus {
   @apply scale-110 transform-gpu;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+
+  box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
 }
 </style>

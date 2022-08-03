@@ -16,6 +16,7 @@
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -38,9 +39,10 @@
     opacity: 0;
     transform: translateY(5px);
   }
+
   100% {
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 }
 
@@ -49,9 +51,10 @@
     opacity: 0;
     transform: translateY(-5px);
   }
+
   100% {
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 }
 
@@ -60,6 +63,7 @@
     transform: rotate(0deg);
     opacity: 0;
   }
+
   to {
     transform: rotate(-90deg);
     opacity: 1;
@@ -71,9 +75,10 @@
     opacity: 0;
     transform: scale(0.96) translateY(-10px);
   }
+
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0px);
+    transform: scale(1) translateY(0);
   }
 }
 

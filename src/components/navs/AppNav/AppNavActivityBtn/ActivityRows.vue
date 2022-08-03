@@ -129,18 +129,23 @@ export default defineComponent({
 .row {
   @apply flex justify-between items-center;
 }
+
 .row:last-child {
   @apply mb-0;
 }
+
 .summary {
   @apply overflow-hidden;
+
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
 .failed-reason-tooltip {
   @apply lowercase;
 }
+
 .failed-reason-tooltip::first-letter {
   @apply uppercase;
 }

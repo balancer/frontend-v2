@@ -133,6 +133,7 @@ function handleSelected(newToken: string): void {
 .token-select-input {
   @apply shadow rounded-lg flex items-center h-10 px-2 whitespace-nowrap;
   @apply text-sm;
+
   font-variation-settings: 'wght' 700;
 }
 

@@ -104,6 +104,7 @@ defineExpose({ hide });
 
 .content {
   @apply relative w-full h-3/4 sm:h-auto max-h-screen;
+
   max-width: 450px;
   transform-style: preserve-3d;
 }
@@ -116,7 +117,7 @@ defineExpose({ hide });
   @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border-0;
 }
 
-.dark .bal-modal .content:before {
+.dark .bal-modal .content::before {
   background-blend-mode: soft-light, soft-light, normal;
   background: radial-gradient(circle at left, yellow, transparent),
     radial-gradient(circle at bottom right, blue, transparent),
@@ -152,6 +153,7 @@ defineExpose({ hide });
 .modal-leave-active {
   transition: all 0.2s ease-out;
 }
+
 .modal-enter-from,
 .modal-leave-to {
   transform: translateY(10px);
