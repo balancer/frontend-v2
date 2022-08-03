@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { PoolWithShares } from '@/services/pool/types';
+import { AnyPool } from '@/services/pool/types';
 
 import StakePreview, { StakeAction } from './StakePreview.vue';
 
 type Props = {
   isVisible: boolean;
-  pool: PoolWithShares;
+  pool: AnyPool;
   action: StakeAction;
 };
 

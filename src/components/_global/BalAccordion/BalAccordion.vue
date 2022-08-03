@@ -156,13 +156,6 @@ onMounted(async () => {
   isContentVisible.value = false;
 });
 
-function setHandleBars(el: HTMLElement | null) {
-  if (!el) return;
-  if (!handleBarElements.value?.includes(el)) {
-    handleBarElements.value.push(el);
-  }
-}
-
 /**
  * WATCHERS
  */
@@ -180,7 +173,7 @@ watch(
       <div
         v-for="(section, i) in sections"
         :key="section.id"
-        :ref="setHandleBars"
+        :ref="'handleBarElements'"
         class="flex flex-col"
       >
         <div

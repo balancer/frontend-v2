@@ -22,13 +22,15 @@ export type ProtocolRewardRow = {
 type Props = {
   rewardsData: ProtocolRewardRow[];
   isLoading: boolean;
-  deprecated: false;
+  deprecated?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  deprecated: false,
+});
 
 /**
  * COMPOSABLES

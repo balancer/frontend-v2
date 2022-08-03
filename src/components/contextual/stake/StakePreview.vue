@@ -13,16 +13,15 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
-import { PoolWithShares } from '@/services/pool/types';
+import { AnyPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
-  pool: PoolWithShares;
+  pool: AnyPool;
   action: StakeAction;
 };
-
 const props = defineProps<Props>();
 const emit = defineEmits(['close', 'success']);
 
@@ -170,7 +169,7 @@ function handleClose() {
           </span>
         </BalStack>
         <BalAssetSet
-          :addresses="pool.tokenAddresses"
+          :addresses="pool.tokensList"
           :width="assetRowWidth"
           :size="32"
         />
@@ -226,7 +225,7 @@ function handleClose() {
       :isLoading="isLoadingApprovalsForGauge"
       @success="handleSuccess"
     />
-    <BalStack v-if="isActionConfirmed" vertical>
+    <BalStack v-if="isActionConfirmed && confirmationReceipt" vertical>
       <ConfirmationIndicator :txReceipt="confirmationReceipt" />
       <AnimatePresence :isVisible="isActionConfirmed">
         <BalBtn color="gray" outline block @click="handleClose">

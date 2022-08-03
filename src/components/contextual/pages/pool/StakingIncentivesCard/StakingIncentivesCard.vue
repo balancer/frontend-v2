@@ -11,6 +11,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
+import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
 
 type Props = {
   pool: Pool;
@@ -22,7 +23,7 @@ const props = defineProps<Props>();
  */
 
 const isStakePreviewVisible = ref(false);
-const stakeAction = ref('');
+const stakeAction = ref<StakeAction>('stake');
 
 /**
  * COMPOSABLES
