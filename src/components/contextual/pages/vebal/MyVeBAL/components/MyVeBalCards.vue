@@ -20,7 +20,7 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
-  veBalLockInfo?: VeBalLockInfo;
+  veBalLockInfo: VeBalLockInfo;
   lockedFiatTotal: string;
 };
 
