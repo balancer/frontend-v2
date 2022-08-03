@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-
 import useWeb3 from '@/services/web3/useWeb3';
+import DesktopLinkItem from './DesktopLinkItem.vue';
 
 const { isGoerli } = useWeb3();
-
-import DesktopLinkItem from './DesktopLinkItem.vue';
 
 /**
  * COMPOSABLES
