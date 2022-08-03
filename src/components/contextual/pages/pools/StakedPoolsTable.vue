@@ -55,6 +55,8 @@ const hiddenColumns = computed(() => {
   if (isL2.value) _hiddenColumns.push('myBoost');
   return _hiddenColumns;
 });
+
+const poolsToRenderKey = computed(() => JSON.stringify(poolsWithBoost.value));
 </script>
 
 <template>
@@ -64,7 +66,7 @@ const hiddenColumns = computed(() => {
         {{ $t('staking.stakedPools') }}
       </h5>
       <PoolsTable
-        :key="poolsWithBoost"
+        :key="poolsToRenderKey"
         :data="poolsWithBoost"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
