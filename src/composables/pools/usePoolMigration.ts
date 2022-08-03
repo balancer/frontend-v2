@@ -1,8 +1,7 @@
 import { RelayerAuthorization } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { parseFixed } from '@ethersproject/bignumber';
-import { parseUnits } from 'ethers/lib/utils';
-import { computed, Ref, ref } from 'vue';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -21,7 +20,8 @@ const HALF_HOUR = 30 * 60 * 1000;
 const MAX_GAS_LIMIT = 8e6;
 
 export function usePoolMigration(
-  unstakedAmount: string,
+  bptBalanceScaled: string,
+  unstakedAmount = '0',
   isUnstakedMigrationEnabled: boolean,
   stakedAmount = '0',
   isStakedMigrationEnabled: boolean,
@@ -46,42 +46,34 @@ export function usePoolMigration(
    */
   const signature = ref('');
 
-  /**
-   * COMPUTED
-   */
-  const poolDecimals = computed(() => fromPool?.onchain?.decimals || 18);
-
-  // const
   const actions = computed(() => {
     const arr: TransactionActionInfo[] = [];
-    const stakedSum = Number(stakedAmount);
-    const unstakedSum = Number(unstakedAmount);
 
     if (isStakedMigrationEnabled) {
       arr.push({
         label: t('migratePool.previewModal.actions.staked.title'),
         loadingLabel: t('migratePool.previewModal.actions.loading'),
         confirmingLabel: t('migratePool.confirming'),
-        action: approveMigration.bind(null, true, stakedAmount),
+        action: approveMigration.bind(null, true, bptBalanceScaled),
         stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
-        isSignAction: false
+        isSignAction: false,
       });
     }
 
     if (isUnstakedMigrationEnabled) {
-      const scaledUnstakedSum = scaleAmount(unstakedAmount, poolDecimals.value);
-
       const data = {
         label: t('migratePool.previewModal.actions.unstaked.title'),
         loadingLabel: t('migratePool.previewModal.actions.loading'),
         confirmingLabel: t('migratePool.confirming'),
-        action: approveMigration.bind(null, false, scaledUnstakedSum),
+        action: approveMigration.bind(null, false, bptBalanceScaled),
         stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
-        isSignAction: false
+        isSignAction: false,
       };
-      console.log('ACTIONS', unstakedSum, stakedSum);
+
       // the biggest one is migrated first
-      unstakedSum > stakedSum ? arr.unshift(data) : arr.push(data);
+      Number(unstakedAmount) > Number(stakedAmount)
+        ? arr.unshift(data)
+        : arr.push(data);
     }
 
     if (!relayerApproval.value) {
@@ -91,7 +83,7 @@ export function usePoolMigration(
         confirmingLabel: t('migratePool.approving'),
         stepTooltip: t('approveBatchRelayerTooltip'),
         action: getUserSignature as () => Promise<any>,
-        isSignAction: true
+        isSignAction: true,
       });
     }
     return arr;
@@ -117,14 +109,15 @@ export function usePoolMigration(
         [account.value, relayerAddress, true]
       );
 
-      const _signature = await RelayerAuthorization.signSetRelayerApprovalAuthorization(
-        vaultInstance,
-        getSigner(),
-        relayerAddress,
-        calldata,
-        deadline,
-        nonce
-      );
+      const _signature =
+        await RelayerAuthorization.signSetRelayerApprovalAuthorization(
+          vaultInstance,
+          getSigner(),
+          relayerAddress,
+          calldata,
+          deadline,
+          nonce
+        );
 
       const encodedSign = RelayerAuthorization.encodeCalldataAuthorization(
         '0x',
@@ -144,7 +137,6 @@ export function usePoolMigration(
     staked = true,
     amount: string
   ): Promise<TransactionResponse> {
-    console.log('_staked', amount);
     const signer = getSigner();
     const signerAddress = account.value;
     const gasLimit = MAX_GAS_LIMIT;
@@ -153,8 +145,6 @@ export function usePoolMigration(
       .filter(token => token.symbol !== 'bb-a-USD')
       .map(token => parseFixed(token.balance, 18).toString());
 
-    console.log('_tije', _tokens);
-    console.log('signature,', signature.value);
     let query;
     if (migrationType.value?.type === PoolMigrationType.BBAUSD_POOL) {
       query = balancer.zaps.migrations.bbaUsd(
@@ -175,13 +165,11 @@ export function usePoolMigration(
       );
     }
 
-    console.log('query', query);
     const staticResult = await signer.call({
       to: query.to,
       data: query.data,
-      gasLimit
+      gasLimit,
     });
-    console.log('staticResult', staticResult);
 
     if (migrationType.value?.type === PoolMigrationType.BBAUSD_POOL) {
       const expectedBpts = query.decode(staticResult, staked);
@@ -206,14 +194,11 @@ export function usePoolMigration(
       );
     }
 
-    console.log('approve', query);
-
     const tx = await signer.sendTransaction({
       to: query.to,
       data: query.data,
-      gasLimit
+      gasLimit,
     });
-    console.log('tx', tx);
     handleTransaction(tx);
 
     return tx;
@@ -226,8 +211,8 @@ export function usePoolMigration(
       action: 'approve',
       summary: t('transactionSummary.approveMigration'),
       details: {
-        contractAddress: vaultAddress
-      }
+        contractAddress: vaultAddress,
+      },
     });
 
     approved.value = await txListener(tx, {
@@ -236,14 +221,8 @@ export function usePoolMigration(
       },
       onTxFailed: () => {
         approving.value = false;
-      }
+      },
     });
-  }
-
-  function scaleAmount(amount: string, decimals = 18) {
-    console.log('scaleAmount', amount);
-    return parseUnits(amount, decimals).toString();
-    // return amount;
   }
 
   return { getUserSignature, approveMigration, actions };

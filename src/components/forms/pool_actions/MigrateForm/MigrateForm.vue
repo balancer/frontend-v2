@@ -81,7 +81,7 @@ const toPoolTokenInfo = computed(() =>
       "
       class="h-96"
     />
-    <StakingProvider v-else>
+    <StakingProvider v-else :poolAddress="fromPool!.address">
       <PoolsInfo
         :fromPool="fromPool"
         :toPool="toPool"

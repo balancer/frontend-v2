@@ -23,6 +23,7 @@ type Props = {
   toPoolTokenInfo: TokenInfo;
   math: MigrateMathResponse;
   stakedPoolValue?: string;
+  unstakedPoolValue?: string;
   isStakedMigrationEnabled: boolean;
   isUnstakedMigrationEnabled: boolean;
 };
@@ -131,6 +132,7 @@ function handleClose() {
       :isStakedMigrationEnabled="isStakedMigrationEnabled"
       :isUnstakedMigrationEnabled="isUnstakedMigrationEnabled"
       :stakedPoolValue="stakedPoolValue"
+      :unstakedPoolValue="unstakedPoolValue"
       :fromPool="fromPool"
       :toPool="toPool"
       :fromPoolTokenInfo="fromPoolTokenInfo"

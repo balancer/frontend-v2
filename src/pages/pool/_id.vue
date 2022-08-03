@@ -18,7 +18,7 @@
       <div class="hidden lg:block" />
       <div class="order-2 lg:order-1 col-span-2">
         <div class="grid grid-cols-1 gap-y-8">
-          <!-- <div class="px-4 lg:px-0">
+          <div class="px-4 lg:px-0">
             <PoolChart
               :pool="pool"
               :historicalPrices="historicalPrices"
@@ -28,7 +28,7 @@
               :tokensList="pool?.tokensList"
               :poolType="pool?.poolType"
             />
-          </div> -->
+          </div>
           <div class="px-4 lg:px-0 mb-4">
             <PoolStatCards
               :pool="pool"

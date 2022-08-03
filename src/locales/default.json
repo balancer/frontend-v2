@@ -211,6 +211,10 @@
         "title": "Boosted pool stats"
       }
     },
+    "migrateReason": {
+      "title": "Migrate to avoid vulnerability",
+      "description": "A security vulnerability was recently disclosed. Although, no funds are a risk, insofar as the exploit could only be executed by pool owners or Balancer Governance itself which is composed of known participants in the Balancer ecosystem, it is recommended to migrate your funds asap."
+    },
     "stabal3Pool": {
       "whyMigrate": {
         "title": "Why migrate?",
