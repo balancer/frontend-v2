@@ -1,3 +1,4 @@
+
 <template>
   <div class="xl:container lg:px-4 pt-8 xl:mx-auto">
     <div
@@ -20,7 +21,6 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-4 lg:px-0">
             <PoolChart
-              :pool="pool"
               :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
@@ -37,8 +37,8 @@
               :loadingApr="loadingApr"
             />
             <ApyVisionPoolLink
-              v-if="!loadingPool"
-              :poolId="pool?.id"
+              v-if="!loadingPool && pool"
+              :poolId="pool.id"
               :titleTokens="titleTokens"
             />
           </div>
@@ -78,7 +78,7 @@
               class="h-40 pool-actions-card"
             />
             <StakingIncentivesCard
-              v-if="isStakablePool && !loadingPool"
+              v-if="isStakablePool && !loadingPool && pool"
               :pool="pool"
               class="staking-incentives"
             />

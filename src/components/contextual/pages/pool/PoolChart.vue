@@ -12,12 +12,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
-import {
-  Pool,
-  PoolSnapshot,
-  PoolSnapshots,
-  PoolType,
-} from '@/services/pool/types';
+import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 
 /**
  * TYPES
@@ -28,10 +23,10 @@ export type PoolChartPeriod = {
 };
 
 type Props = {
-  historicalPrices: HistoricalPrices;
-  snapshots: PoolSnapshots;
+  historicalPrices?: HistoricalPrices | null;
+  snapshots?: PoolSnapshots;
   loading: boolean;
-  pool: Pool;
+
   // these props are added to prevent line chart rerender on each pool update
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
@@ -67,6 +62,8 @@ interface PoolChartData {
  */
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
+  historicalPrices: null,
+  snapshots: null,
 });
 
 /**
@@ -150,7 +147,8 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
         return;
       }
 
-      const prices = props.historicalPrices[snapshot.timestamp];
+      const prices =
+        props.historicalPrices && props.historicalPrices[snapshot.timestamp];
 
       // timestamp is removed if there are no prices from coingecko
       if (!prices || prices.length < (props.tokensList?.length || 0)) {
