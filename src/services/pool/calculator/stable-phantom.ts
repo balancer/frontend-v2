@@ -44,9 +44,7 @@ export default class StablePhantom {
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       }
 
-      return bnum(bptAmount)
-        .div(bptZeroPriceImpact)
-        .minus(1);
+      return bnum(bptAmount).div(bptZeroPriceImpact).minus(1);
     }
   }
 

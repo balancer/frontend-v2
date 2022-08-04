@@ -4,7 +4,7 @@
     :class="['bal-btn', btnClasses]"
     :disabled="disabled || loading"
   >
-    <div v-if="loading" class="flex items-center justify-center">
+    <div v-if="loading" class="flex justify-center items-center">
       <BalLoadingIcon :size="size" :color="iconColor" />
       <span v-if="loadingLabel" class="ml-2">
         {{ loadingLabel }}
@@ -28,7 +28,7 @@ export default defineComponent({
   name: 'BalBtn',
 
   components: {
-    BalLoadingIcon
+    BalLoadingIcon,
   },
 
   props: {
@@ -36,13 +36,13 @@ export default defineComponent({
       type: String,
       default: 'button',
       validator: (val: string): boolean =>
-        ['button', 'a', 'div', 'router-link'].includes(val)
+        ['button', 'a', 'div', 'router-link'].includes(val),
     },
     size: {
       type: String,
       default: 'md',
       validator: (val: string): boolean =>
-        ['xs', 'sm', 'md', 'lg'].includes(val)
+        ['xs', 'sm', 'md', 'lg'].includes(val),
     },
     color: {
       type: String,
@@ -56,8 +56,8 @@ export default defineComponent({
           'gray',
           'red',
           'white',
-          'blue'
-        ].includes(val)
+          'blue',
+        ].includes(val),
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
@@ -67,7 +67,7 @@ export default defineComponent({
     rounded: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
   },
 
   setup(props) {
@@ -117,11 +117,11 @@ export default defineComponent({
         return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
       }
       if (props.loading) {
-        return `bg-gradient-to-tr from-${fromColor}-50 to-${toColor}-50`;
+        return `bg-gradient-to-tr from-${fromColor}-400 to-${toColor}-400`;
       }
       return `
-        bg-gradient-to-tr from-${fromColor}-500 to-${toColor}-500
-        hover:from-${fromColor}-600 hover:to-${toColor}-600
+        bg-gradient-to-tr from-${fromColor}-600 to-${toColor}-600
+        hover:from-${fromColor}-700 hover:to-${toColor}-700 transition-colors
       `;
     });
 
@@ -137,7 +137,7 @@ export default defineComponent({
       else if (props.outline) return 'bg-transparent';
       else if (props.flat) return bgFlatClasses.value;
       else if (props.color === 'white') {
-        return 'bg-gray-50 dark:bg-gray-800';
+        return 'bg-gray-50 hover:bg-white dark:bg-gray-800';
       } else {
         if (props.disabled) {
           return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
@@ -147,8 +147,8 @@ export default defineComponent({
         }
 
         return `
-          bg-${props.color}-500 hover:bg-${props.color}-600
-          dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
+          bg-${props.color}-600 hover:bg-${props.color}-700
+          dark:bg-${props.color}-gray-400 dark:hover:bg-${props.color}-gray-600
         `;
       }
     });
@@ -167,8 +167,9 @@ export default defineComponent({
         return 'text-gray-400 dark:text-gray-700';
       if (props.outline && props.color === 'gradient') return 'text-purple-700';
       if (props.color === 'white') {
-        if (props.outline) return 'text-white hover:border-gray-400';
-        else return 'text-gray-800 dark:text-gray-100';
+        if (props.outline)
+          return 'text-white hover:text-yellow-500 dark:hover:text-yellow-500';
+        else return 'text-gray-800 hover:text-blue-600 dark:text-gray-100';
       }
       if (props.outline || props.flat)
         return `text-${props.color}-500 dark:text-${props.color}-400`;
@@ -207,7 +208,7 @@ export default defineComponent({
         [displayClasses.value]: true,
         [shapeClasses.value]: true,
         [shadowClasses.value]: true,
-        [cursorClasses.value]: true
+        [cursorClasses.value]: true,
       };
     });
 
@@ -219,15 +220,16 @@ export default defineComponent({
 
     return {
       btnClasses,
-      iconColor
+      iconColor,
     };
-  }
+  },
 });
 </script>
 
 <style scoped>
 .bal-btn {
   @apply overflow-hidden tracking-tight;
+
   font-variation-settings: 'wght' 500;
   transition: all 0.2s ease;
   text-decoration: none !important;

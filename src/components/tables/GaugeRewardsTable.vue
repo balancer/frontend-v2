@@ -49,7 +49,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     accessor: 'token',
     Cell: 'tokenColumnCell',
     width: 475,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('amount'),
@@ -57,7 +57,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     accessor: ({ amount, token }) =>
-      `${fNum2(amount, FNumFormats.token)} ${token.symbol}`
+      `${fNum2(amount, FNumFormats.token)} ${token.symbol}`,
   },
   {
     name: t('value'),
@@ -65,7 +65,7 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -73,8 +73,8 @@ const columns = ref<ColumnDefinition<Reward>[]>([
     accessor: 'claim',
     Cell: 'claimColumnCell',
     totalsCell: 'totalClaimCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 /**
@@ -91,7 +91,7 @@ const rewardsData = computed((): Reward[] => {
     return {
       token,
       amount,
-      value: toFiat(amount, token.address)
+      value: toFiat(amount, token.address),
     };
   });
 });
@@ -114,11 +114,11 @@ const totalRewardValue = computed((): string => {
       :columns="columns"
       :data="rewardsData"
       :isLoading="isLoading"
-      skeleton-class="h-64"
+      skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #tokenColumnCell="{ token }">
-        <div class="px-6 py-4 flex items-center">
+        <div class="flex items-center py-4 px-6">
           <BalAsset :iconURI="token?.logoURI" />
           <span class="ml-2">{{ token.name }}</span>
         </div>

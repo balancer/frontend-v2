@@ -50,11 +50,7 @@ const fiatTotal = computed(() => {
 
       return toFiat(tokenBalance, address);
     })
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    );
+    .reduce((total, value) => bnum(total).plus(value).toString());
 
   return fNum2(fiatValue, FNumFormats.fiat);
 });
@@ -64,7 +60,7 @@ const fiatTotal = computed(() => {
   <div
     class="p-4 w-full bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-900"
   >
-    <div class="text-gray-500 text-sm">
+    <div class="text-sm text-secondary">
       {{ $t('basedOnTokensInWallet') }}
     </div>
     <div class="flex justify-between items-center mb-4">
@@ -83,7 +79,7 @@ const fiatTotal = computed(() => {
       block
       @click="startConnectWithInjectedProvider"
     />
-    <div v-else class="grid gap-2 grid-cols-2">
+    <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         tag="router-link"
         :to="{ name: 'invest' }"
@@ -96,6 +92,8 @@ const fiatTotal = computed(() => {
         :to="{ name: 'withdraw' }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
+        color="blue"
+        outline
         block
       />
     </div>

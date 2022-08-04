@@ -7,8 +7,8 @@ describe.only('BalStack', () => {
     it('should render items', () => {
       const { getByText } = render(BalStack, {
         slots: {
-          default: '<div>First</div><div>Second</div><div>Third</div>'
-        }
+          default: '<div>First</div><div>Second</div><div>Third</div>',
+        },
       });
 
       // check that elements are actually rendered as children
@@ -20,11 +20,11 @@ describe.only('BalStack', () => {
     it('should render items horizontally when the horizontal prop is supplied', () => {
       const { getByText } = render(BalStack, {
         slots: {
-          default: '<div>First</div><div>Second</div><div>Third</div>'
+          default: '<div>First</div><div>Second</div><div>Third</div>',
         },
         props: {
-          horizontal: true
-        }
+          horizontal: true,
+        },
       });
 
       // its fine to make this assumption here as we render the children without any wrappers
@@ -35,11 +35,11 @@ describe.only('BalStack', () => {
     it('should render items verticlly if vertical prop is supplied', () => {
       const { getByText } = render(BalStack, {
         slots: {
-          default: '<div>First</div><div>Second</div><div>Third</div>'
+          default: '<div>First</div><div>Second</div><div>Third</div>',
         },
         props: {
-          vertical: true
-        }
+          vertical: true,
+        },
       });
 
       // its fine to make this assumption here as we render the children without any wrappers
@@ -50,11 +50,11 @@ describe.only('BalStack', () => {
     it('should render items with space between them', () => {
       const { getByText } = render(BalStack, {
         slots: {
-          default: '<div>First</div><div>Second</div><div>Third</div>'
+          default: '<div>First</div><div>Second</div><div>Third</div>',
         },
         props: {
-          vertical: true
-        }
+          vertical: true,
+        },
       });
 
       // the default spacing unit (tailwind) is 4. So can be either mb-4 or mr-4
@@ -66,12 +66,12 @@ describe.only('BalStack', () => {
     it('should render items with a border between them if withBorder prop is supplied', () => {
       const { getByText } = render(BalStack, {
         slots: {
-          default: '<div>First</div><div>Second</div><div>Third</div>'
+          default: '<div>First</div><div>Second</div><div>Third</div>',
         },
         props: {
           vertical: true,
-          withBorder: true
-        }
+          withBorder: true,
+        },
       });
 
       // the default spacing unit (tailwind) is 4. So can be either mb-4 or mr-4

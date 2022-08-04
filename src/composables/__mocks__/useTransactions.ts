@@ -1,5 +1,5 @@
 export default function useTransactions() {
   return {
-    addTransaction: jest.fn().mockImplementation()
+    addTransaction: jest.fn().mockImplementation(),
   };
 }

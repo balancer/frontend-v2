@@ -27,7 +27,7 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
 </script>
 
 <template>
-  <div class="px-2 py-4 flex justify-center">
+  <div class="flex justify-center py-4 px-2">
     <BalBtn
       v-if="stakablePoolIds.includes(pool.id)"
       color="gradient"
@@ -45,6 +45,8 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
     >
       {{ $t('transactionAction.createLock') }}
     </BalBtn>
-    <div v-else>{{ $t('notAvailable') }}</div>
+    <div v-else>
+      {{ $t('notAvailable') }}
+    </div>
   </div>
 </template>

@@ -5,7 +5,7 @@ import useInvestState from '@/components/forms/pool_actions/InvestForm/composabl
 // Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
-  TradeSettingsContext
+  TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
 // Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
@@ -45,10 +45,10 @@ onBeforeMount(async () => {
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">
-          <div class="text-xs text-gray-500  leading-none">
+          <div class="text-xs leading-none text-secondary">
             {{ network.chainName }}
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex justify-between items-center">
             <h4>{{ $t('investInPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>

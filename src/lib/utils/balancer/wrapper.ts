@@ -10,7 +10,7 @@ import { getStETHByWstETH, getWstETHByStETH } from './lido';
 export enum WrapType {
   NonWrap = 0,
   Wrap,
-  Unwrap
+  Unwrap,
 }
 
 export const isNativeAssetWrap = (

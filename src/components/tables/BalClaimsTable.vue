@@ -11,7 +11,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   isStableLike,
   orderedPoolTokens,
-  orderedTokenAddresses
+  orderedTokenAddresses,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/pages/claim.vue';
@@ -55,14 +55,14 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     accessor: 'icons',
     Cell: 'iconsColumnCell',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: '',
     id: 'pills',
     accessor: 'pills',
     Cell: 'pillsColumnCell',
-    width: 350
+    width: 350,
   },
   {
     name: t('amount'),
@@ -70,7 +70,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalAmountCell',
-    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`
+    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)} BAL`,
   },
   {
     name: t('value'),
@@ -78,7 +78,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -86,8 +86,8 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     accessor: 'claim',
     Cell: 'claimColumnCell',
     totalsCell: 'claimTotalCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 /**
@@ -128,17 +128,17 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       :columns="columns"
       :data="rewardsData"
       :isLoading="isLoading"
-      :on-row-click="redirectToPool"
-      skeleton-class="h-64"
+      :onRowClick="redirectToPool"
+      skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #iconsColumnCell="{ pool }">
-        <div class="px-6 py-4">
+        <div class="py-4 px-6">
           <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
         </div>
       </template>
       <template #pillsColumnCell="{ pool }">
-        <div class="px-6 py-4">
+        <div class="py-4 px-6">
           <TokenPills
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
@@ -148,7 +148,7 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
         </div>
       </template>
       <template #claimColumnCell="{ gauge, amount }">
-        <div class="px-6 py-4">
+        <div class="py-4 px-6">
           <ClaimBalBtn
             :label="$t('claim')"
             :gauges="[gauge]"

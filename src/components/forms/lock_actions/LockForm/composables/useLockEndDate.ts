@@ -3,13 +3,13 @@ import {
   isThursday,
   nextThursday,
   previousThursday,
-  startOfDay
+  startOfDay,
 } from 'date-fns';
 import { computed } from 'vue';
 
 import {
   MAX_LOCK_PERIOD_IN_DAYS,
-  MIN_LOCK_PERIOD_IN_DAYS
+  MIN_LOCK_PERIOD_IN_DAYS,
 } from '@/components/forms/lock_actions/constants';
 import { toUtcTime } from '@/composables/useTime';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
@@ -77,6 +77,6 @@ export default function useLockEndDate(veBalLockInfo?: VeBalLockInfo) {
     minLockEndDateTimestamp,
     maxLockEndDateTimestamp,
     isValidLockEndDate,
-    isExtendedLockEndDate
+    isExtendedLockEndDate,
   };
 }

@@ -6,7 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { VotingGauge } from '@/constants/voting-gauges';
 import {
   gaugeControllerDecorator,
-  VotingGaugeWithVotes
+  VotingGaugeWithVotes,
 } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -52,7 +52,7 @@ export default function useGaugeVotesQuery(
    */
   const queryOptions = reactive({
     enabled: true,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

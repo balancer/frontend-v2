@@ -28,7 +28,7 @@ type ClaimableToken = {
 
 enum Tabs {
   CLAIMABLE = 'claimable',
-  CURRENT_ESTIMATE = 'currentEstimate'
+  CURRENT_ESTIMATE = 'currentEstimate',
 }
 
 const { t } = useI18n();
@@ -37,8 +37,8 @@ const tabs = [
   { value: Tabs.CLAIMABLE, label: t('liquidityMiningPopover.tabs.claimable') },
   {
     value: Tabs.CURRENT_ESTIMATE,
-    label: t('liquidityMiningPopover.tabs.currentEstimate')
-  }
+    label: t('liquidityMiningPopover.tabs.currentEstimate'),
+  },
 ];
 
 const activeTab = ref(tabs[0].value);
@@ -56,7 +56,7 @@ const {
   isMainnet,
   isKovan,
   isPolygon,
-  isMismatchedNetwork
+  isMismatchedNetwork,
 } = useWeb3();
 const { txListener } = useEthers();
 const { addTransaction } = useTransactions();
@@ -70,7 +70,7 @@ const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
   token: BALTokenAddress,
   symbol: getToken(BALTokenAddress)?.symbol,
   amount: '0',
-  fiatValue: '0'
+  fiatValue: '0',
 }));
 
 // Polygon used to be an airdrop, now its claimable - leaving it here in case new networks will need to be airdropped first.
@@ -81,13 +81,13 @@ const legacyClaimUI = computed(() => {
     return [
       { token: '$BAL', subdomain: 'claim' },
       { token: '$VITA', subdomain: 'claim-vita' },
-      { token: '$LDO', subdomain: 'claim-lido' }
+      { token: '$LDO', subdomain: 'claim-lido' },
     ];
   } else if (isArbitrum.value) {
     return [
       { token: '$BAL', subdomain: 'claim-arbitrum' },
       { token: '$MCDEX', subdomain: 'claim-mcdex' },
-      { token: '$PICKLE', subdomain: 'claim-pickle' }
+      { token: '$PICKLE', subdomain: 'claim-pickle' },
     ];
   }
 
@@ -110,7 +110,7 @@ const claimableTokens = computed<ClaimableToken[]>(() => {
         amount: availableToClaim,
         fiatValue: bnum(availableToClaim)
           .times(priceFor(tokenClaimInfo.token))
-          .toString()
+          .toString(),
       })
     );
   }
@@ -133,7 +133,7 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
           token,
           symbol: getToken(token)?.symbol,
           amount: totalRewards.toString(),
-          fiatValue: totalRewards.times(priceFor(token)).toString()
+          fiatValue: totalRewards.times(priceFor(token)).toString(),
         };
       }
     );
@@ -185,7 +185,7 @@ async function claimAvailableRewards() {
           claimableToken =>
             `${fNum2(claimableToken.amount, {
               minimumFractionDigits: 4,
-              maximumFractionDigits: 4
+              maximumFractionDigits: 4,
             })} ${claimableToken.symbol}`
         )
         .join(', ');
@@ -194,7 +194,7 @@ async function claimAvailableRewards() {
         id: tx.hash,
         type: 'tx',
         action: 'claim',
-        summary
+        summary,
       });
 
       txListener(tx, {
@@ -204,7 +204,7 @@ async function claimAvailableRewards() {
         },
         onTxFailed: () => {
           isClaiming.value = false;
-        }
+        },
       });
     } catch (e) {
       console.log(e);
@@ -216,21 +216,21 @@ async function claimAvailableRewards() {
 </script>
 
 <template>
-  <div class="w-full sm:w-3/4 md:w-1/2 mt-4" v-if="userClaims != null">
-    <div class="text-sm text-gray-600 mb-1" v-if="isAirdrop">
+  <div v-if="userClaims != null" class="mt-4 w-full sm:w-3/4 md:w-1/2">
+    <div v-if="isAirdrop" class="mb-1 text-sm text-gray-600">
       {{ $t('liquidityMiningPopover.airdropExplainer', ['Polygon']) }}
     </div>
     <div v-if="!isAirdrop" class="">
-      <BalCard no-pad class="mb-4">
-        <template v-slot:header>
+      <BalCard noPad class="mb-4">
+        <template #header>
           <div
-            class="w-full px-3 border-b dark:border-gray-900 bg-gray-50 dark:bg-gray-800"
+            class="px-3 w-full bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-900"
           >
             <BalTabs
               v-model="activeTab"
               :tabs="tabs"
-              class="whitespace-nowrap p-0 m-0 -mb-px"
-              no-pad
+              class="p-0 m-0 -mb-px whitespace-nowrap"
+              noPad
             />
           </div>
         </template>
@@ -240,7 +240,7 @@ async function claimAvailableRewards() {
             :key="`token-${claimableToken.token}`"
           >
             <div
-              class="px-3 py-2 flex items-center mb-2 border-b dark:border-gray-900 last:border-0"
+              class="flex items-center py-2 px-3 mb-2 last:border-0 border-b dark:border-gray-900"
             >
               <BalAsset
                 :address="claimableToken.token"
@@ -252,7 +252,7 @@ async function claimAvailableRewards() {
                   {{ fNum2(claimableToken.amount, FNumFormats.token) }}
                   {{ claimableToken.symbol }}
                 </div>
-                <div class="font-sm text-gray-400">
+                <div class="text-gray-400 font-sm">
                   {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
                 </div>
               </div>
@@ -265,7 +265,7 @@ async function claimAvailableRewards() {
             :key="`token-${claimableToken.token}`"
           >
             <div
-              class="px-3 py-2 flex items-center mb-2 border-b dark:border-gray-900 last:border-0"
+              class="flex items-center py-2 px-3 mb-2 last:border-0 border-b dark:border-gray-900"
             >
               <BalAsset
                 :address="claimableToken.token"
@@ -277,7 +277,7 @@ async function claimAvailableRewards() {
                   {{ fNum2(claimableToken.amount, FNumFormats.token) }}
                   {{ claimableToken.symbol }}
                 </div>
-                <div class="font-sm text-gray-400">
+                <div class="text-gray-400 font-sm">
                   {{ fNum2(claimableToken.fiatValue, FNumFormats.fiat) }}
                 </div>
               </div>
@@ -292,43 +292,40 @@ async function claimAvailableRewards() {
         block
         class="mb-6"
         :loading="isClaiming"
-        :loading-label="$t('claiming')"
-        @click="claimAvailableRewards"
+        :loadingLabel="$t('claiming')"
         :disabled="!hasClaimableTokens"
-        >{{ $t('claimAll') }}
-        <template v-if="hasClaimableTokens"
-          >~{{
-            fNum2(totalClaimableTokensFiatValue, FNumFormats.fiat)
-          }}</template
-        ></BalBtn
+        @click="claimAvailableRewards"
       >
+        {{ $t('claimAll') }}
+        <template v-if="hasClaimableTokens">
+          ~{{ fNum2(totalClaimableTokensFiatValue, FNumFormats.fiat) }}
+        </template>
+      </BalBtn>
       <BalAlert
         v-if="claimError != null"
-        class="mb-6 -mt-4"
+        class="-mt-4 mb-6"
         type="error"
         size="md"
         :title="claimError.title"
         :description="claimError.description"
         block
-        action-label="Dismiss"
-        @actionClick="claimError = null"
+        actionLabel="Dismiss"
+        @action-click="claimError = null"
       />
     </div>
     <div v-if="!isAirdrop">
       <div class="mb-4">
-        <div class="font-semibold mb-2">
+        <div class="mb-2 font-semibold">
           Looking for other claimable tokens?
         </div>
         <ul class="pl-8 list-disc">
-          <li class="mt-2" v-if="legacyClaimUI.length > 0">
+          <li v-if="legacyClaimUI.length > 0" class="mt-2">
             Claim
             <span class="inline-grid grid-flow-col gap-1">
               <BalLink
                 v-for="legacyClaim in legacyClaimUI"
                 :key="`token-${legacyClaim.token}`"
-                :href="
-                  `https://${legacyClaim.subdomain}.balancer.fi/#/${account}`
-                "
+                :href="`https://${legacyClaim.subdomain}.balancer.fi/#/${account}`"
                 external
                 >{{ legacyClaim.token }}</BalLink
               >
@@ -343,8 +340,8 @@ async function claimAvailableRewards() {
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://polygon.balancer.fi" external
-                >Polygon</BalLink
+              <BalLink href="https://polygon.balancer.fi" external>
+                Polygon </BalLink
               >.
             </template>
             <template v-else-if="isPolygon">
@@ -352,8 +349,8 @@ async function claimAvailableRewards() {
                 Ethereum
               </BalLink>
               and
-              <BalLink href="https://arbitrum.balancer.fi" external
-                >Arbitrum</BalLink
+              <BalLink href="https://arbitrum.balancer.fi" external>
+                Arbitrum </BalLink
               >.
             </template>
             <template v-else-if="isMainnet || isKovan">
@@ -361,15 +358,15 @@ async function claimAvailableRewards() {
                 Polygon
               </BalLink>
               and
-              <BalLink href="https://arbitrum.balancer.fi" external
-                >Arbitrum</BalLink
+              <BalLink href="https://arbitrum.balancer.fi" external>
+                Arbitrum </BalLink
               >.
             </template>
           </li>
         </ul>
       </div>
     </div>
-    <div v-else class="mt-4 text-sm px-3 pb-3">
+    <div v-else class="px-3 pb-3 mt-4 text-sm">
       <div>{{ $t('liquidityMiningPopover.airdropEligibility') }}</div>
     </div>
   </div>

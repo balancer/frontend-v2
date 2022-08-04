@@ -42,7 +42,7 @@ export default class BatchRelayer {
       sender: account,
       recipient: this.address, // Note relayer is recipient of swaps
       fromInternalBalance: false,
-      toInternalBalance: false
+      toInternalBalance: false,
     };
 
     const tokensIn = tokensOut.map(() => tokenIn);
@@ -60,7 +60,7 @@ export default class BatchRelayer {
       slippage,
       {
         fetchPools,
-        fetchOnChain: false
+        fetchOnChain: false,
       }
     );
   }

@@ -39,16 +39,20 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
         name: 'trade',
         params: {
           assetIn: stETH.address,
-          assetOut: wstETH.address
-        }
+          assetOut: wstETH.address,
+        },
       }"
-      class="text-xs text-gray-500 underline"
+      class="text-xs underline text-secondary"
     >
       {{ $t('wrapInstruction', [stETH.symbol, wstETH.symbol]) }}
     </router-link>
     <BalTooltip>
-      <template v-slot:activator>
-        <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
+      <template #activator>
+        <BalIcon
+          name="info"
+          size="xs"
+          class="ml-2 text-gray-400 dark:text-gray-500"
+        />
       </template>
       <div v-html="$t('wrapStEthTooltip')" />
     </BalTooltip>

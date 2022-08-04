@@ -32,6 +32,7 @@ type Props = {
   poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
@@ -43,7 +44,8 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
-  isPaginated: false
+  isPaginated: false,
+  noResultsLabel: '',
 });
 
 const emit = defineEmits(['loadMore']);
@@ -67,7 +69,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     accessor: 'tx',
     Cell: 'actionCell',
     width: 190,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('value'),
@@ -77,7 +79,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     align: 'right',
     className: 'align-center w-40',
     sortKey: pool => pool.value,
-    width: 125
+    width: 125,
   },
   {
     name: t('tradeDetails'),
@@ -85,7 +87,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     accessor: '',
     Cell: 'detailsCell',
     width: 310,
-    sortable: false
+    sortable: false,
   },
 
   {
@@ -95,8 +97,8 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200
-  }
+    width: 200,
+  },
 ]);
 
 const swapRows = computed<SwapRow[]>(() =>
@@ -112,7 +114,7 @@ const swapRows = computed<SwapRow[]>(() =>
           tx,
           userAddress,
           ensName,
-          ensAvatar
+          ensAvatar,
         }) => {
           const value = bnum(priceFor(tokenOut))
             .times(tokenAmountOut)
@@ -133,7 +135,7 @@ const swapRows = computed<SwapRow[]>(() =>
             ensName,
             ensAvatar,
             formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
-            tx
+            tx,
           };
         }
       )
@@ -150,23 +152,23 @@ const swapRows = computed<SwapRow[]>(() =>
     <BalTable
       :columns="columns"
       :data="swapRows"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      :is-paginated="isPaginated"
-      @load-more="emit('loadMore')"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      skeletonClass="h-64"
       sticky="both"
-      :no-results-label="noResultsLabel"
-      :initial-state="{
+      :noResultsLabel="noResultsLabel"
+      :initialState="{
         sortColumn: 'timeAgo',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
+      @load-more="emit('loadMore')"
     >
-      <template v-slot:actionCell="action">
-        <div class="px-6 py-2">
+      <template #actionCell="action">
+        <div class="py-2 px-6">
           <div class="flex items-center">
             <BalAsset
-              class="mr-2 flex-shrink-0"
+              class="flex-shrink-0 mr-2"
               :address="action.userAddress"
               :iconURI="action.ensAvatar"
               :size="30"
@@ -178,23 +180,23 @@ const swapRows = computed<SwapRow[]>(() =>
         </div>
       </template>
 
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end font-numeric">
+      <template #valueCell="action">
+        <div class="flex justify-end py-4 px-6 font-numeric">
           {{ action.formattedValue }}
         </div>
       </template>
 
-      <template v-slot:detailsCell="action">
-        <div class="px-6 py-4 flex -mt-1 items-center flex-wrap">
+      <template #detailsCell="action">
+        <div class="flex flex-wrap items-center py-4 px-6 -mt-1">
           <div class="token-item">
-            <BalAsset :address="action.tokenIn" class="mr-2 flex-shrink-0" />
+            <BalAsset :address="action.tokenIn" class="flex-shrink-0 mr-2" />
             <span class="font-numeric">{{
               fNum2(action.tokenAmountIn, FNumFormats.token)
             }}</span>
           </div>
           <BalIcon name="arrow-right" class="mx-1" />
           <div class="token-item">
-            <BalAsset :address="action.tokenOut" class="mr-2 flex-shrink-0" />
+            <BalAsset :address="action.tokenOut" class="flex-shrink-0 mr-2" />
             <span class="font-numeric">{{
               fNum2(action.tokenAmountOut, FNumFormats.token)
             }}</span>
@@ -202,16 +204,16 @@ const swapRows = computed<SwapRow[]>(() =>
         </div>
       </template>
 
-      <template v-slot:timeCell="action">
-        <div class="px-6 py-4">
+      <template #timeCell="action">
+        <div class="py-4 px-6">
           <div
-            class="flex items-center justify-end wrap whitespace-nowrap text-right"
+            class="flex justify-end items-center text-right whitespace-nowrap wrap"
           >
             {{ action.formattedDate }}
             <BalLink
               :href="explorerLinks.txLink(action.tx)"
               external
-              class="ml-2 flex items-center"
+              class="flex items-center ml-2"
             >
               <BalIcon
                 name="arrow-up-right"

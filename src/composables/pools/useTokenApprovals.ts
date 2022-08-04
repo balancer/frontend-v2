@@ -38,12 +38,8 @@ export default function useTokenApprovals(
    * COMPOSABLES
    */
   const { getProvider, appNetworkConfig, account } = useWeb3();
-  const {
-    getToken,
-    refetchAllowances,
-    approvalsRequired,
-    getTokens
-  } = useTokens();
+  const { getToken, refetchAllowances, approvalsRequired, getTokens } =
+    useTokens();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
@@ -59,7 +55,7 @@ export default function useTokenApprovals(
         appNetworkConfig.addresses.vault
       ).map(address => [
         address,
-        { init: false, confirming: false, approved: false }
+        { init: false, confirming: false, approved: false },
       ])
     )
   );
@@ -87,7 +83,7 @@ export default function useTokenApprovals(
     const defaultOptions: ApprovalOptions = {
       spender: appNetworkConfig.addresses.vault,
       amount: MaxUint256.toString(),
-      state: vaultApprovalStateMap.value[address]
+      state: vaultApprovalStateMap.value[address],
     };
     const { spender, amount, state } = Object.assign(defaultOptions, options);
 
@@ -117,8 +113,8 @@ export default function useTokenApprovals(
         ),
         details: {
           contractAddress: address,
-          spender: spender
-        }
+          spender: spender,
+        },
       });
 
       txListener(tx, {
@@ -129,7 +125,7 @@ export default function useTokenApprovals(
         },
         onTxFailed: () => {
           state.confirming = false;
-        }
+        },
       });
 
       return tx;
@@ -161,7 +157,7 @@ export default function useTokenApprovals(
       })
       .map(tokenAddress => [
         tokenAddress,
-        { init: false, confirming: false, approved: false }
+        { init: false, confirming: false, approved: false },
       ]);
 
     const approvalMap = Object.fromEntries(requiredApprovals);
@@ -176,6 +172,6 @@ export default function useTokenApprovals(
     requiredApprovals,
     // methods
     approveToken,
-    getApprovalStateMapFor
+    getApprovalStateMapFor,
   };
 }

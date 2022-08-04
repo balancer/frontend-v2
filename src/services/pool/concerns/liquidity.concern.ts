@@ -4,7 +4,7 @@ import { formatUnits } from '@ethersproject/units';
 import {
   isStableLike,
   isStablePhantom,
-  isWeightedLike
+  isWeightedLike,
 } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
@@ -57,7 +57,7 @@ export default class LiquidityConcern {
       return tokens.map<OnchainTokenInfo>(
         (token: OnchainTokenData, i: number) => ({
           ...token,
-          address: addresses[i]
+          address: addresses[i],
         })
       );
     }
@@ -171,12 +171,12 @@ export default class LiquidityConcern {
 
         const mainTokenBalance = formatUnits(
           token.mainToken.balance,
-          tokenMeta[getAddress(token.mainToken.address)].decimals
+          tokenMeta[getAddress(token.mainToken.address)]?.decimals
         );
 
         const wrappedTokenBalance = formatUnits(
           token.wrappedToken.balance,
-          tokenMeta[getAddress(token.wrappedToken.address)].decimals
+          tokenMeta[getAddress(token.wrappedToken.address)]?.decimals
         );
 
         const mainTokenPrice =

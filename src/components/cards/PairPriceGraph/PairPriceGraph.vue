@@ -7,9 +7,10 @@ import {
   maxBy,
   minBy,
   pickBy,
-  toPairs
+  toPairs,
 } from 'lodash';
 import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
 import { useStore } from 'vuex';
 
@@ -63,7 +64,7 @@ async function getPairPriceData(
 
   const [inputAssetData, outputAssetData] = await Promise.all([
     getInputAssetData,
-    getOutputAssetData
+    getOutputAssetData,
   ]);
 
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
@@ -71,9 +72,9 @@ async function getPairPriceData(
     return (1 / value[0]) * outputAssetData[timestamp][0];
   });
 
-  const calculatedPricingNoNulls = pickBy(calculatedPricing) as Dictionary<
-    number
-  >;
+  const calculatedPricingNoNulls = pickBy(
+    calculatedPricing
+  ) as Dictionary<number>;
 
   const formatTimestamps = mapKeys(
     calculatedPricingNoNulls,
@@ -87,24 +88,24 @@ async function getPairPriceData(
 const chartTimespans = [
   {
     option: '1d',
-    value: 1
+    value: 1,
   },
   {
     option: '1w',
-    value: 7
+    value: 7,
   },
   {
     option: '1m',
-    value: 30
+    value: 30,
   },
   {
     option: '1y',
-    value: 365
+    value: 365,
   },
   {
     option: 'All',
-    value: 4000
-  }
+    value: 4000,
+  },
 ];
 
 type Props = {
@@ -115,11 +116,12 @@ type Props = {
 
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { t } = useI18n();
 const store = useStore();
 const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress, initialized } = useTradeState();
 const tailwind = useTailwind();
-const { chainId: userNetworkId } = useWeb3();
+const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 
 const chartHeight = ref(
   upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
@@ -147,7 +149,7 @@ const dataMax = computed(() => {
 const {
   isLoading: isLoadingPriceData,
   data: priceData,
-  error: failedToLoadPriceData
+  error: failedToLoadPriceData,
 } = useQuery(
   QUERY_KEYS.Tokens.PairPriceData(
     tokenInAddress,
@@ -171,7 +173,7 @@ const {
     retry: false,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   })
 );
 
@@ -179,12 +181,34 @@ const toggle = () => {
   props.toggleModal();
 };
 
-const chartData = computed(() => [
-  {
-    name: `${outputSym.value}/${inputSym.value}`,
-    values: priceData.value || []
+const equivalentTokenPairs = [
+  [appNetworkConfig.addresses.weth, appNetworkConfig.nativeAsset.address],
+];
+
+const allChartValuesEqual = computed(() =>
+  equivalentTokenPairs.some(
+    pair =>
+      pair.includes(tokenInAddress.value) &&
+      pair.includes(tokenOutAddress.value)
+  )
+);
+
+const chartData = computed(() => {
+  if (allChartValuesEqual.value) return [];
+  return [
+    {
+      name: `${outputSym.value}/${inputSym.value}`,
+      values: priceData.value || [],
+    },
+  ];
+});
+
+const chartBlankText = computed(() => {
+  if (allChartValuesEqual.value) {
+    return `${inputSym.value} -> ${outputSym.value} is 1:1`;
   }
-]);
+  return t('noData');
+});
 
 const isNegativeTrend = computed(() => {
   const _priceData = priceData.value || [];
@@ -211,7 +235,7 @@ const chartGrid = computed(() => {
     right: '0',
     top: '10%',
     bottom: '15%',
-    containLabel: false
+    containLabel: false,
   };
 });
 </script>
@@ -222,34 +246,34 @@ const chartGrid = computed(() => {
       '',
       {
         'h-40 lg:h-56': !isModal,
-        'h-full lg:h-full': isModal
-      }
+        'h-full lg:h-full': isModal,
+      },
     ]"
   >
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
         'h-64': !isModal,
-        'h-112': isModal
+        'h-112': isModal,
       }"
     />
     <BalCard
+      v-else
       :square="upToLargeBreakpoint"
       shadow="none"
       hFull
       growContent
       noPad
       :noBorder="upToLargeBreakpoint || isModal"
-      v-else
     >
-      <div class="relative h-full bg-transparent p-4">
+      <div class="relative p-4 h-full bg-transparent">
         <button
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
+          class="flex justify-center items-center p-2 m-4 rounded-full shadow-lg maximise"
           @click="toggle"
-          class="maximise m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
-          <BalIcon v-if="!isModal" name="maximize-2" class="text-gray-500" />
-          <BalIcon v-if="isModal" name="x" class="text-gray-500" />
+          <BalIcon v-if="!isModal" name="maximize-2" class="text-secondary" />
+          <BalIcon v-if="isModal" name="x" class="text-secondary" />
         </button>
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
@@ -257,14 +281,14 @@ const chartGrid = computed(() => {
         >
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
           <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
-            <template v-slot:activator>
+            <template #activator>
               <img class="h-5" src="@/assets/images/icons/coingecko.svg" />
             </template>
           </BalTooltip>
         </div>
         <div
           v-if="failedToLoadPriceData && tokenOutAddress"
-          class="h-full w-full flex justify-center items-center"
+          class="flex justify-center items-center w-full h-full"
         >
           <span class="text-sm text-gray-400">{{
             $t('insufficientData')
@@ -272,9 +296,9 @@ const chartGrid = computed(() => {
         </div>
         <div
           v-if="failedToLoadPriceData && !tokenOutAddress"
-          class="h-full w-full flex justify-center items-center"
+          class="flex justify-center items-center w-full h-full"
         >
-          <span class="text-sm text-gray-400 text-center">{{
+          <span class="text-sm text-center text-gray-400">{{
             $t('chooseAPair')
           }}</span>
         </div>
@@ -282,74 +306,83 @@ const chartGrid = computed(() => {
           v-if="!failedToLoadPriceData && !isLoadingPriceData"
           class="flex-col"
         >
-          <BalChart
-            :data="chartData"
-            :height="chartHeight"
-            :show-legend="false"
-            :color="chartColors"
-            :custom-grid="chartGrid"
-            :axis-label-formatter="{ yAxis: '0.000000' }"
-            :wrapper-class="[
-              'flex flex-row lg:flex-col',
-              {
-                'flex-row': !isModal,
-                'flex-col': isModal
-              }
-            ]"
-            :show-tooltip="!upToLargeBreakpoint || isModal"
-            chart-type="line"
-            hide-y-axis
-            hide-x-axis
-            show-header
-            use-min-max
-          />
-          <div
-            :class="[
-              'w-full flex justify-between mt-6',
-              {
-                'flex-col': isModal
-              }
-            ]"
-            v-if="isModal"
+          <BalBlankSlate
+            v-if="chartData.length === 0"
+            :class="['mt-4', isModal ? 'h-96' : 'h-40']"
           >
-            <div>
-              <button
-                v-for="timespan in chartTimespans"
-                @click="activeTimespan = timespan"
-                :key="timespan.value"
-                :class="[
-                  'py-1 px-2 text-sm rounded-lg mr-2',
-                  {
-                    'text-white': activeTimespan.value === timespan.value,
-                    'text-gray-500': activeTimespan.value !== timespan.value,
-                    'bg-green-400':
-                      !isNegativeTrend &&
-                      activeTimespan.value === timespan.value,
-                    'bg-red-400':
-                      isNegativeTrend &&
-                      activeTimespan.value === timespan.value,
-                    'hover:bg-red-200': isNegativeTrend,
-                    'hover:bg-green-200': !isNegativeTrend
-                  }
-                ]"
-              >
-                {{ timespan.option }}
-              </button>
+            <BalIcon name="bar-chart" />
+            {{ chartBlankText }}
+          </BalBlankSlate>
+          <template v-else>
+            <BalChart
+              :data="chartData"
+              :height="chartHeight"
+              :showLegend="false"
+              :color="chartColors"
+              :customGrid="chartGrid"
+              :axisLabelFormatter="{ yAxis: '0.000000' }"
+              :wrapperClass="[
+                'flex flex-row lg:flex-col',
+                {
+                  'flex-row': !isModal,
+                  'flex-col': isModal,
+                },
+              ]"
+              :showTooltip="!upToLargeBreakpoint || isModal"
+              chartType="line"
+              hideYAxis
+              hideXAxis
+              showHeader
+              useMinMax
+            />
+            <div
+              v-if="isModal"
+              :class="[
+                'w-full flex justify-between mt-6',
+                {
+                  'flex-col': isModal,
+                },
+              ]"
+            >
+              <div>
+                <button
+                  v-for="timespan in chartTimespans"
+                  :key="timespan.value"
+                  :class="[
+                    'py-1 px-2 text-sm rounded-lg mr-2',
+                    {
+                      'text-white': activeTimespan.value === timespan.value,
+                      'text-secondary': activeTimespan.value !== timespan.value,
+                      'bg-green-400':
+                        !isNegativeTrend &&
+                        activeTimespan.value === timespan.value,
+                      'bg-red-400':
+                        isNegativeTrend &&
+                        activeTimespan.value === timespan.value,
+                      'hover:bg-red-200': isNegativeTrend,
+                      'hover:bg-green-200': !isNegativeTrend,
+                    },
+                  ]"
+                  @click="activeTimespan = timespan"
+                >
+                  {{ timespan.option }}
+                </button>
+              </div>
+              <div :class="{ 'mt-4': isModal }">
+                <span class="mr-4 text-sm text-gray-500"
+                  >Low: {{ dataMin.toPrecision(6) }}</span
+                >
+                <span class="text-sm text-gray-500"
+                  >High: {{ dataMax.toPrecision(6) }}</span
+                >
+              </div>
             </div>
-            <div :class="{ 'mt-4': isModal }">
-              <span class="text-sm text-gray-500 mr-4"
-                >Low: {{ dataMin.toPrecision(6) }}</span
-              >
-              <span class="text-sm text-gray-500"
-                >High: {{ dataMax.toPrecision(6) }}</span
-              >
+            <div v-else class="-mt-2 lg:mt-2">
+              <span class="flex justify-end w-full text-sm text-gray-500">{{
+                activeTimespan.option
+              }}</span>
             </div>
-          </div>
-          <div class="-mt-2 lg:mt-2" v-else>
-            <span class="text-sm text-gray-500 w-full flex justify-end">{{
-              activeTimespan.option
-            }}</span>
-          </div>
+          </template>
         </div>
       </div>
     </BalCard>
@@ -359,6 +392,7 @@ const chartGrid = computed(() => {
 <style scoped>
 .maximise {
   @apply absolute;
+
   right: 0;
   top: 0;
 }

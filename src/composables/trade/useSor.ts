@@ -4,7 +4,7 @@ import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import {
   AddressZero,
   WeiPerEther as ONE,
-  Zero
+  Zero,
 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
@@ -16,7 +16,7 @@ import {
   reactive,
   Ref,
   ref,
-  toRefs
+  toRefs,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -25,7 +25,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
 import {
   SorManager,
-  SorReturn
+  SorReturn,
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { getStETHByWstETH, isStEthAddress } from '@/lib/utils/balancer/lido';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
@@ -33,7 +33,7 @@ import {
   getWrapOutput,
   unwrap,
   wrap,
-  WrapType
+  WrapType,
 } from '@/lib/utils/balancer/wrapper';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -60,9 +60,9 @@ const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive<SorState>({
   validationErrors: {
-    highPriceImpact: false
+    highPriceImpact: false,
   },
-  submissionError: null
+  submissionError: null,
 });
 
 type Props = {
@@ -94,11 +94,11 @@ export default function useSor({
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
-    handleAmountsOnFetchPools: true
+    handleAmountsOnFetchPools: true,
   },
   tokenIn,
   tokenOut,
-  slippageBufferRate
+  slippageBufferRate,
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
@@ -119,8 +119,8 @@ export default function useSor({
       tokenOut: '',
       marketSp: '0',
       swapAmountForSwaps: Zero,
-      returnAmountFromSwaps: Zero
-    }
+      returnAmountFromSwaps: Zero,
+    },
   });
   const trading = ref(false);
   const confirming = ref(false);
@@ -198,7 +198,7 @@ export default function useSor({
       const deltas = await balancer.swaps.queryBatchSwap({
         kind: swapType,
         swaps: result.swaps,
-        assets: result.tokenAddresses
+        assets: result.tokenAddresses,
       });
 
       if (result !== sorReturn.value.result) {
@@ -237,18 +237,14 @@ export default function useSor({
 
         const tokenInAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[tokenInPosition])
-              .abs()
-              .toString(),
+            bnum(deltas[tokenInPosition]).abs().toString(),
             tokenInDecimals
           )
         );
 
         const tokenOutAmountNormalised = bnum(
           formatFixed(
-            bnum(deltas[tokenOutPosition])
-              .abs()
-              .toString(),
+            bnum(deltas[tokenOutPosition]).abs().toString(),
             tokenOutDecimals
           )
         );
@@ -454,11 +450,11 @@ export default function useSor({
     let summary = '';
     const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
       ...FNumFormats.token,
-      maximumSignificantDigits: 6
+      maximumSignificantDigits: 6,
     });
     const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
       ...FNumFormats.token,
-      maximumSignificantDigits: 6
+      maximumSignificantDigits: 6,
     });
 
     const tokenInSymbol = tokenIn.value.symbol;
@@ -468,7 +464,7 @@ export default function useSor({
       summary = t('transactionSummary.wrapUnwrap', [
         tokenInAmountFormatted,
         tokenInSymbol,
-        tokenOutSymbol
+        tokenOutSymbol,
       ]);
     } else {
       summary = `${tokenInAmountFormatted} ${tokenInSymbol} -> ${tokenOutAmountFormatted} ${tokenOutSymbol}`;
@@ -489,8 +485,8 @@ export default function useSor({
         exactIn: exactIn.value,
         quote: getQuote(),
         priceImpact: priceImpact.value,
-        slippageBufferRate: slippageBufferRate.value
-      }
+        slippageBufferRate: slippageBufferRate.value,
+      },
     });
 
     txListener(tx, {
@@ -501,7 +497,7 @@ export default function useSor({
       },
       onTxFailed: () => {
         trading.value = false;
-      }
+      },
     });
   }
 
@@ -662,7 +658,7 @@ export default function useSor({
       feeAmountInToken: '0',
       feeAmountOutToken: '0',
       maximumInAmount,
-      minimumOutAmount
+      minimumOutAmount,
     };
   }
 
@@ -670,7 +666,7 @@ export default function useSor({
     return fNum2(amount, {
       maximumSignificantDigits: 6,
       useGrouping: false,
-      fixedFormat: true
+      fixedFormat: true,
     });
   }
 
@@ -716,6 +712,6 @@ export default function useSor({
     updateTradeAmounts,
     resetInputAmounts,
     // For Tests
-    setSwapCost
+    setSwapCost,
   };
 }

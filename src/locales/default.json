@@ -101,13 +101,13 @@
     "description": "Balancer Protocol liquidity incentives are directed to pools by veBAL voters. Stake in these pools to earn incentives. Boost with veBAL for up to 2.5x extra on Mainnet pools.",
     "tipLabel": {
       "addLiquidity": "Add liquidity",
-      "stake": "Stake to earn",
+      "stake": "Stake your LP",
       "boost": "Get a boost",
       "claim": "Claim anytime"
     },
     "tips": {
       "addLiquidity": "To earn liquidity mining incentives, add liquidity to eligible pools across Ethereum Mainnet and supported Layer 2's like Polygon and Arbitrum (see the table onthe veBAL page). Note: You'll earn swap fees with or without staking but you don't need to claim these as they are automatically added to your position.",
-      "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your LP tokens from that pool. Stake it to receive liquidity mining incentives in addition to any swap fees.",
+      "stake": "If you've provided liquidity in an eligible pool, you'll have an option to stake your Liquidity Provider (LP) tokens from that pool. Stake them to receive liquidity mining incentives in addition to any swap fees.",
       "boost": "Get veBAL to boost your liquidity mining incentives by up to 2.5x (on Ethereum Mainnet only). The more veBAL you hold, the larger your boost. veBAL holders also earn protocol fees and can vote to direct future pool emissions. Note, there is no additional boost from holding veBAL on Layer 2 pools like Polygon and Arbitrum.",
       "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
     }
@@ -473,8 +473,8 @@
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
   "noInvestments": "No investments",
-  "noUnstakedInvestments": "You have no unstaked investments",
-  "noStakedInvestments": "You have no staked investments",
+  "noUnstakedInvestments": "You have no unstaked investments on {0}",
+  "noStakedInvestments": "You have no staked investments on {0}",
   "noInvestmentsPool": "No investments in this pool",
   "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
   "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
@@ -483,7 +483,7 @@
   "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
   "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
   "noRecentActivity": "Your recent activity will appear here…",
-  "noResults": "No results.",
+  "noResults": "No results",
   "noSwapsPool": "No swaps in this pool.",
   "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
   "numberOfPools": "Number of pools",
@@ -513,6 +513,10 @@
       }
     }
   },
+  "pastEarnings": {
+    "title": "Past earnings",
+    "description": "This contract was deprecated on 25 July 2022. Any earnings after this date will be distributed by the upgraded contract."
+  },
   "pendingClaims": "Pending claims",
   "pendingEstimate": "Pending: (estimate)",
   "perWeek": "per week",
@@ -541,7 +545,7 @@
     "tabs": {
       "allTransactions": "Transactions",
       "myTransactions": "My transactions",
-      "allInvestments": "Investments",
+      "allInvestments": "All investments",
       "myInvestments": "My investments",
       "swaps": "Swaps",
       "trades": "Trades"
@@ -586,7 +590,8 @@
       "title": "This pool contains double-entrypoint tokens, which have been found to be incompatible with Balancer. It is currently not possible to withdraw all assets from the pool proportionally. While it is possible to withdraw in a single asset, liquidity providers are advised to wait. A mechanism is being implemented to allow for proportional withdrawals. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Learn more </a>"
     },
     "poolOwnerVulnWarningGovernance": {
-      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to."
+      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to.",
+      "description": ""
     },
     "poolOwnerVulnWarningEcosystem": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem."

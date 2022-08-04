@@ -1,8 +1,8 @@
 <template>
-  <BalModal show @close="onClose" :title="$t('previewTradeTransactions')">
+  <BalModal show :title="$t('previewTradeTransactions')" @close="onClose">
     <div>
       <div
-        class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-800"
+        class="flex items-center p-4 -mx-4 border-t border-b dark:border-gray-800"
       >
         <BalAssetSet
           :addresses="[addressIn, addressOut]"
@@ -10,12 +10,12 @@
           :width="55"
         />
         <div class="flex flex-col">
-          <div class="font-bold">
+          <div class="font-semibold">
             {{ fNum2(amountIn, FNumFormats.token) }}
             {{ symbolIn }} -> {{ fNum2(amountOut, FNumFormats.token) }}
             {{ symbolOut }}
           </div>
-          <div class="text-gray-500 text-sm">
+          <div class="text-sm text-secondary">
             {{ fNum2(valueIn, FNumFormats.fiat) }}
           </div>
         </div>
@@ -27,13 +27,13 @@
         </div>
         <div>
           <div v-if="requiresLidoRelayerApproval" class="mb-3 card-container">
-            <div class="card-step text-green-500">
+            <div class="text-green-500 card-step">
               <BalIcon
                 v-if="isLidoRelayerApproved"
                 name="check"
                 class="text-green-500"
               />
-              <span v-else class="text-gray-500 dark:text-gray-400">1</span>
+              <span v-else class="text-secondary">1</span>
             </div>
             <div class="ml-3">
               <span v-if="isLidoRelayerApproved">{{
@@ -43,13 +43,13 @@
             </div>
           </div>
           <div v-if="requiresTokenApproval" class="card-container">
-            <div class="card-step text-green-500">
+            <div class="text-green-500 card-step">
               <BalIcon
                 v-if="isTokenApproved"
                 name="check"
                 class="text-green-500"
               />
-              <span v-else class="text-gray-500 dark:text-gray-400">{{
+              <span v-else class="text-secondary">{{
                 requiresLidoRelayerApproval ? 2 : 1
               }}</span>
             </div>
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="mt-3 card-container">
-            <div class="card-step text-gray-500 dark:text-gray-400">
+            <div class="card-step text-secondary">
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
@@ -77,7 +77,7 @@
         class="mt-5"
         :label="$t('approveLidoRelayer')"
         :loading="approvingLidoRelayer"
-        :loading-label="`${$t('approvingLidoRelayer')}…`"
+        :loadingLabel="`${$t('approvingLidoRelayer')}…`"
         color="gradient"
         block
         @click.prevent="approveLidoRelayer"
@@ -87,7 +87,7 @@
         class="mt-5"
         :label="`${$t('approve')} ${symbolIn}`"
         :loading="approvingToken"
-        :loading-label="`${$t('approving')} ${symbolIn}…`"
+        :loadingLabel="`${$t('approving')} ${symbolIn}…`"
         color="gradient"
         block
         @click.prevent="approveToken"
@@ -97,7 +97,7 @@
         class="mt-5"
         :label="$t('confirmTrade')"
         :loading="trading"
-        :loading-label="$t('confirming')"
+        :loadingLabel="$t('confirming')"
         color="gradient"
         block
         @click.prevent="trade"
@@ -110,7 +110,7 @@
 import { computed, defineComponent, toRefs } from 'vue';
 
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -120,33 +120,33 @@ import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 export default defineComponent({
-  emits: ['trade', 'close'],
   props: {
     open: {
       type: Boolean,
-      default: false
+      default: false,
     },
     addressIn: {
       type: String,
-      required: true
+      required: true,
     },
     amountIn: {
       type: String,
-      required: true
+      required: true,
     },
     addressOut: {
       type: String,
-      required: true
+      required: true,
     },
     amountOut: {
       type: String,
-      required: true
+      required: true,
     },
     trading: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
+  emits: ['trade', 'close'],
   setup(props, { emit }) {
     const { fNum2, toFiat } = useNumbers();
 
@@ -287,15 +287,16 @@ export default defineComponent({
       approvingLidoRelayer,
       approvingToken,
       lidoRelayerApproval,
-      totalRequiredTransactions
+      totalRequiredTransactions,
     };
-  }
+  },
 });
 </script>
 <style scoped>
 .card-container {
   @apply p-3 flex items-center border rounded-lg dark:border-gray-800;
 }
+
 .card-step {
   @apply w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700;
 }

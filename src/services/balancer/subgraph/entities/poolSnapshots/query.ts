@@ -4,13 +4,13 @@ import { isPolygon } from '@/composables/useNetwork';
 
 const defaultAttrs = {
   pool: {
-    id: true
+    id: true,
   },
   timestamp: true,
   amounts: true,
   totalShares: true,
   swapVolume: true,
-  swapFees: true
+  swapFees: true,
 };
 
 if (!isPolygon.value) {
@@ -20,6 +20,6 @@ if (!isPolygon.value) {
 export default (args = {}, attrs = {}) => ({
   poolSnapshot: {
     __args: args,
-    ...merge({}, defaultAttrs, attrs)
-  }
+    ...merge({}, defaultAttrs, attrs),
+  },
 });

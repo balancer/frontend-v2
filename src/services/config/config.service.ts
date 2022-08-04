@@ -41,7 +41,7 @@ export default class ConfigService {
         this.getNetworkConfig(networkId.value).keys.infura ||
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
-      PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY'
+      PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY',
     };
   }
 
@@ -58,13 +58,13 @@ export default class ConfigService {
   public get rpc(): string {
     return template(this.network.rpc, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
-      ALCHEMY_KEY: this.env.ALCHEMY_KEY
+      ALCHEMY_KEY: this.env.ALCHEMY_KEY,
     });
   }
 
   public get subgraph(): string {
     return template(this.network.subgraph, {
-      GRAPH_KEY: this.env.GRAPH_KEY
+      GRAPH_KEY: this.env.GRAPH_KEY,
     });
   }
 
@@ -72,7 +72,7 @@ export default class ConfigService {
     return this.network.subgraphs.main?.map(url => {
       if (url.includes('GRAPH_KEY')) {
         return template(url, {
-          GRAPH_KEY: this.env.GRAPH_KEY
+          GRAPH_KEY: this.env.GRAPH_KEY,
         });
       }
       return url;
@@ -82,14 +82,14 @@ export default class ConfigService {
   public get ws(): string {
     return template(this.network.ws, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
-      ALCHEMY_KEY: this.env.ALCHEMY_KEY
+      ALCHEMY_KEY: this.env.ALCHEMY_KEY,
     });
   }
 
   public get loggingRpc(): string {
     return template(this.network.loggingRpc, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
-      ALCHEMY_KEY: this.env.ALCHEMY_KEY
+      ALCHEMY_KEY: this.env.ALCHEMY_KEY,
     });
   }
 }

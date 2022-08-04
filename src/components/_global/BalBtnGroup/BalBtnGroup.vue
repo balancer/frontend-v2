@@ -3,12 +3,12 @@
     <BalBtn
       v-for="option in options"
       :key="option.value"
-      @click="onSelect(option)"
       outline
       size="sm"
-      class="capitalize mr-2 w-18"
+      class="mr-2 capitalize w-18"
       v-bind="attrs_"
       :color="modelValue === option.value ? 'blue' : 'gray'"
+      @click="onSelect(option)"
     >
       {{ 'best' === option.label ? $t(option.label) : option.label }}
     </BalBtn>
@@ -29,12 +29,12 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  emits: ['update:modelValue'],
-
   props: {
     modelValue: { type: [String, Number], required: true },
-    options: { type: Array as PropType<Option[]>, required: true }
+    options: { type: Array as PropType<Option[]>, required: true },
   },
+
+  emits: ['update:modelValue'],
 
   setup(props, { emit, attrs }) {
     // COMPUTED
@@ -50,8 +50,8 @@ export default defineComponent({
       attrs_,
 
       // methods
-      onSelect
+      onSelect,
     };
-  }
+  },
 });
 </script>

@@ -173,9 +173,7 @@ export default class Stable {
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       }
 
-      return bnum(bptAmount)
-        .div(bptZeroPriceImpact)
-        .minus(1);
+      return bnum(bptAmount).div(bptZeroPriceImpact).minus(1);
     }
   }
 
@@ -263,9 +261,7 @@ export default class Stable {
   ): OldBigNumber {
     if (priceRate === null) priceRate = '1';
 
-    const amountAfterPriceRate = bnum(amount)
-      .div(priceRate)
-      .toString();
+    const amountAfterPriceRate = bnum(amount).div(priceRate).toString();
 
     const normalizedAmount = bnum(amountAfterPriceRate)
       .div(parseUnits('1', 18).toString())

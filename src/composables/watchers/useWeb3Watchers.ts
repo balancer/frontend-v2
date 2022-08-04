@@ -24,7 +24,7 @@ export default function useWeb3Watchers() {
     blockNumber,
     connectToAppNetwork,
     isWalletReady,
-    disconnectWallet
+    disconnectWallet,
   } = useWeb3();
   const { addAlert, removeAlert } = useAlerts();
   const { refetchBalances, refetchAllowances } = useTokens();
@@ -40,8 +40,24 @@ export default function useWeb3Watchers() {
       updateTransaction(originalHash, 'tx', {
         // new id
         id: tx.hash,
-        replacementReason
+        replacementReason,
       });
+    }
+  }
+
+  function checkIsUnsupportedNetwork() {
+    if (isUnsupportedNetwork.value || isMismatchedNetwork.value) {
+      addAlert({
+        id: 'network-mismatch',
+        label: t('networkMismatch', [appNetworkConfig.name]),
+        type: AlertType.ERROR,
+        persistent: true,
+        action: connectToAppNetwork,
+        actionLabel: t('switchNetwork'),
+        priority: AlertPriority.HIGH,
+      });
+    } else {
+      removeAlert('network-mismatch');
     }
   }
 
@@ -81,19 +97,11 @@ export default function useWeb3Watchers() {
   // Watch for user network switch
   // -> Display alert message if unsupported or not the same as app network.
   watch(chainId, () => {
-    if (isUnsupportedNetwork.value || isMismatchedNetwork.value) {
-      addAlert({
-        id: 'network-mismatch',
-        label: t('networkMismatch', [appNetworkConfig.name]),
-        type: AlertType.ERROR,
-        persistent: true,
-        action: connectToAppNetwork,
-        actionLabel: t('switchNetwork'),
-        priority: AlertPriority.HIGH
-      });
-    } else {
-      removeAlert('network-mismatch');
-    }
+    checkIsUnsupportedNetwork();
+  });
+
+  watch(isWalletReady, () => {
+    checkIsUnsupportedNetwork();
   });
 
   watch(blockNumber, async () => {

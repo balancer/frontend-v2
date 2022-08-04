@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-2 left-2 px-4 z-50">
+  <div class="fixed bottom-2 left-2 z-50 px-4">
     <transition-group name="slide">
       <Notification
         v-for="notification in notifications"
@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'Notifications',
 
   components: {
-    Notification
+    Notification,
   },
 
   setup() {
@@ -31,9 +31,9 @@ export default defineComponent({
 
     return {
       // computed
-      notifications
+      notifications,
     };
-  }
+  },
 });
 </script>
 <style scoped>
@@ -42,10 +42,12 @@ export default defineComponent({
   opacity: 0;
   transform: translateX(-300px);
 }
+
 .slide-enter-active,
 .slide-leave-active {
   transition: all 1s cubic-bezier(0.5, 0, 0.54, 1.42);
 }
+
 .slide-move {
   transition: all 0.3s ease;
 }

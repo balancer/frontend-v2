@@ -44,19 +44,19 @@ const poolWeightsLabel = computed(() =>
 function formatWeightLabel(weight: string) {
   return fNum2(weight, {
     style: 'percent',
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   });
 }
 </script>
 
 <template>
   <div class="container">
-    <div class="p-3 flex justify-between items-center">
+    <div class="flex justify-between items-center p-3">
       <div>
         <div class="font-semibold">
           {{
             $t('getVeBAL.previewModal.lpTokens', [
-              fNum2(totalLpTokens, FNumFormats.token)
+              fNum2(totalLpTokens, FNumFormats.token),
             ])
           }}
         </div>
@@ -64,7 +64,7 @@ function formatWeightLabel(weight: string) {
           {{ poolWeightsLabel }}
         </div>
       </div>
-      <div class="grid gap-1 grid-cols-2">
+      <div class="grid grid-cols-2 gap-1">
         <BalAsset
           v-for="tokenAddress in lockablePool.tokensList"
           :key="tokenAddress"

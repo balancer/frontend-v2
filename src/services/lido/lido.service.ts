@@ -27,11 +27,9 @@ export default class LidoService {
   async getStEthAPR(): Promise<string> {
     try {
       const {
-        data: { data: aprs }
+        data: { data: aprs },
       } = await axios.get<ApiResponse>('https://stake.lido.fi/api/apr');
-      return bnum(aprs.steth)
-        .div(100)
-        .toString();
+      return bnum(aprs.steth).div(100).toString();
     } catch (error) {
       console.error('Failed to fetch stETH APR:', error);
       return '0';

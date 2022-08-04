@@ -23,7 +23,7 @@
           </p>
         </div>
         <div v-if="actionLabel" :class="[actionClasses]">
-          <BalBtn :color="btnColor" size="xs" @click="$emit('actionClick')">
+          <BalBtn :color="btnColor" size="xs" @click="$emit('action-click')">
             {{ actionLabel }}
           </BalBtn>
         </div>
@@ -45,24 +45,24 @@ export default defineComponent({
 
   components: {
     BalIcon,
-    BalBtn
+    BalBtn,
   },
-
-  emits: ['actionClick'],
 
   props: {
     type: { type: String as PropType<AlertType>, default: 'info' },
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val),
     },
     title: { type: String, default: 'A title message' },
-    description: { type: String },
-    actionLabel: { type: String },
+    description: { type: String, default: '' },
+    actionLabel: { type: String, default: '' },
     raised: { type: Boolean, default: false },
-    block: { type: Boolean, default: false }
+    block: { type: Boolean, default: false },
   },
+
+  emits: ['action-click'],
 
   setup(props, { slots }) {
     const bgColorClass = computed(() => {
@@ -101,17 +101,17 @@ export default defineComponent({
         [bgColorClass.value]: true,
         [paddingClasses.value]: true,
         'shadow-sm': props.raised,
-        'w-full': props.block
+        'w-full': props.block,
       };
     });
 
     const containerClasses = computed(() => ({
-      'items-center': !props.description && !slots.default
+      'items-center': !props.description && !slots.default,
     }));
 
     const contentClasses = computed(() => ({
       'items-center': !props.description && !slots.default,
-      'flex-col': !!props.description || slots.default
+      'flex-col': !!props.description || slots.default,
     }));
 
     const iconSizeClasses = computed(() => {
@@ -132,19 +132,19 @@ export default defineComponent({
         case 'error':
           return 'text-red-500 dark:text-white bg-red-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         default:
-          return 'text-gray-500 dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
+          return 'text-secondary dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
       }
     });
 
     const iconClasses = computed(() => {
       return {
         [iconSizeClasses.value]: true,
-        [iconColorClasses.value]: true
+        [iconColorClasses.value]: true,
       };
     });
 
     const titleClasses = computed(() => ({
-      'font-bold': !!props.description || slots.default
+      'font-semibold': !!props.description || slots.default,
     }));
 
     const descriptionColor = computed(() => {
@@ -175,7 +175,7 @@ export default defineComponent({
 
     const actionClasses = computed(() => ({
       'pl-4': !props.description && !slots.default,
-      'mt-1': !!props.description || slots.default
+      'mt-1': !!props.description || slots.default,
     }));
 
     return {
@@ -188,9 +188,9 @@ export default defineComponent({
       textSizeClass,
       descriptionColor,
       btnColor,
-      actionClasses
+      actionClasses,
     };
-  }
+  },
 });
 </script>
 
@@ -205,6 +205,7 @@ export default defineComponent({
 
 .bal-alert-content {
   @apply flex;
+
   min-width: 0;
 }
 

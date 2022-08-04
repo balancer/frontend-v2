@@ -92,8 +92,8 @@ const cards = computed(() => {
       plusIconTo: {
         name: 'invest',
         params: { id: lockablePoolId.value },
-        query: { returnRoute: 'vebal' }
-      }
+        query: { returnRoute: 'vebal' },
+      },
     },
     {
       id: 'myLockedLpToken',
@@ -106,7 +106,7 @@ const cards = computed(() => {
         : '—',
       showPlusIcon: isWalletReady.value && !isExpired ? true : false,
       plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
-      showUnlockIcon: isExpired ? true : false
+      showUnlockIcon: isExpired ? true : false,
     },
     {
       id: 'lockedEndDate',
@@ -115,11 +115,11 @@ const cards = computed(() => {
       secondaryText:
         hasExistingLock && !isExpired
           ? t('veBAL.myVeBAL.cards.lockedEndDate.secondaryText', [
-              differenceInDays(new Date(lockedUntil.value), new Date())
+              differenceInDays(new Date(lockedUntil.value), new Date()),
             ])
           : '-',
       showPlusIcon: hasExistingLock && !isExpired ? true : false,
-      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } }
+      plusIconTo: { name: 'get-vebal', query: { returnRoute: 'vebal' } },
     },
     {
       id: 'myVeBAL',
@@ -133,69 +133,69 @@ const cards = computed(() => {
                   .toString(),
                 {
                   style: 'percent',
-                  maximumFractionDigits: 4
+                  maximumFractionDigits: 4,
                 }
-              )
+              ),
             ])
           : '-',
       showPlusIcon: false,
       value: hasExistingLock
         ? fNum2(veBalBalance.value, FNumFormats.token)
-        : '—'
-    }
+        : '—',
+    },
   ];
 });
 </script>
 
 <template>
   <BalCard v-for="card in cards" :key="card.id">
-    <div class="label font-medium">
+    <div class="font-medium label">
       {{ card.label }}
     </div>
     <div class="value" :class="card.id">
       <div v-if="card.id === 'myLockedLpToken'">
         <span
           :class="{ 'text-red-500': bnum(totalExpiredLpTokens).gt(0) }"
-          class="font-bold truncate mr-1"
+          class="mr-1 font-semibold truncate"
           >{{ card.value }}</span
         >
         <BalTooltip
           v-if="bnum(totalExpiredLpTokens).gt(0)"
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
-          icon-size="sm"
-          :icon-name="'alert-triangle'"
-          :icon-class="
-            'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'
-          "
+          iconSize="sm"
+          :iconName="'alert-triangle'"
+          :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />
       </div>
       <div v-else>
-        <span class="font-bold truncate">{{ card.value }}</span>
+        <span class="font-semibold truncate">{{ card.value }}</span>
       </div>
       <div class="flex items-center">
         <BalIcon
           v-if="card.showUnlockIcon"
           name="minus-circle"
-          class="minus-circle mr-2 transition-all cursor-pointer"
+          class="mr-2 transition-all cursor-pointer minus-circle"
           @click="showUnlockPreviewModal = true"
         />
         <div>
           <router-link
             v-if="card.showPlusIcon"
             :to="card.plusIconTo"
-            class="text-blue-500 flex items-center"
+            class="flex items-center text-blue-600 dark:text-blue-400"
           >
             <BalIcon
               name="plus-circle"
-              class="plus-circle transition-all cursor-pointer"
+              class="transition-all cursor-pointer plus-circle"
             />
           </router-link>
         </div>
       </div>
     </div>
-    <div class="secondary-value font-medium">{{ card.secondaryText }}</div>
+    <div class="font-medium secondary-value text-secondary">
+      {{ card.secondaryText }}
+    </div>
   </BalCard>
   <teleport to="#modal">
     <UnlockPreviewModal
@@ -214,40 +214,43 @@ const cards = computed(() => {
 .label {
   @apply text-sm mb-2;
 }
+
 .value {
   @apply text-xl font-medium flex flex-wrap items-center justify-between mb-0.5;
 }
 
 .secondary-value {
-  @apply text-sm text-gray-500 dark:text-gray-400;
+  @apply text-sm;
 }
 
 .plus-circle:hover,
 .plus-circle:focus,
+.plus-circle:hover :deep(svg.feather-plus-circle),
+.plus-circle:focus :deep(svg.feather-plus-circle) {
+  @apply transition-all text-white;
+
+  fill: theme('colors.blue.600');
+}
+
+.plus-circle:hover :deep(svg.feather-plus-circle circle),
+.plus-circle:focus :deep(svg.feather-plus-circle circle) {
+  fill: theme('colors.blue.600');
+}
+
+.minus-circle,
+.minus-circle:hover :deep(svg.feather-minus-circle circle) {
+  fill: theme('colors.red.500');
+}
+
 .minus-circle:hover,
 .minus-circle:focus {
   transform: scale(1.25);
 }
 
-.plus-circle:hover :deep(svg.feather-plus-circle),
-.plus-circle:focus :deep(svg.feather-plus-circle) {
-  @apply transition-all text-white;
-  fill: #384aff; /* blue-500 */
-}
-
-.plus-circle:hover :deep(svg.feather-plus-circle circle),
-.plus-circle:focus :deep(svg.feather-plus-circle circle) {
-  color: #384aff; /* blue-500 */
-}
-
 .minus-circle:hover :deep(svg.feather-minus-circle),
 .minus-circle:focus :deep(svg.feather-minus-circle) {
   @apply transition-all text-white;
-  fill: rgba(239, 68, 68); /* red-500 */
-}
 
-.minus-circle:hover :deep(svg.feather-minus-circle circle),
-.minus-circle {
-  color: rgba(239, 68, 68); /* red-500 */
+  fill: theme('colors.red.500');
 }
 </style>

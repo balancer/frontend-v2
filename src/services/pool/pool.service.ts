@@ -10,7 +10,7 @@ import {
   Pool,
   PoolAPRs,
   PoolToken,
-  RawOnchainPoolData
+  RawOnchainPoolData,
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -40,9 +40,7 @@ export default class PoolService {
   }
 
   public get bptPrice(): string {
-    return bnum(this.pool.totalLiquidity)
-      .div(this.pool.totalShares)
-      .toString();
+    return bnum(this.pool.totalLiquidity).div(this.pool.totalShares).toString();
   }
 
   /**
@@ -59,7 +57,12 @@ export default class PoolService {
       currency,
       tokenMeta
     );
-    return (this.pool.totalLiquidity = totalLiquidity);
+    // if totalLiquidity can be computed from coingecko prices, use that
+    // else, use the value retrieved from the subgraph
+    if (bnum(totalLiquidity).gt(0)) {
+      this.pool.totalLiquidity = totalLiquidity;
+    }
+    return this.pool.totalLiquidity;
   }
 
   /**
@@ -98,8 +101,8 @@ export default class PoolService {
       {
         where: {
           address_in: this.pool.tokensList,
-          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-        }
+          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
+        },
       },
       { mainIndex: true, wrappedIndex: true }
     )) as LinearPool[];

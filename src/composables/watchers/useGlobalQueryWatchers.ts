@@ -11,7 +11,7 @@ export default function useGlobalQueryWatchers() {
     balancesQueryError,
     refetchBalances,
     allowancesQueryError,
-    refetchAllowances
+    refetchAllowances,
   } = useTokens();
   const { addAlert, removeAlert } = useAlerts();
   const { t } = useI18n();
@@ -25,7 +25,7 @@ export default function useGlobalQueryWatchers() {
         persistent: true,
         action: refetchPrices.value,
         actionLabel: t('alerts.retry-label'),
-        priority: AlertPriority.MEDIUM
+        priority: AlertPriority.MEDIUM,
       });
     } else {
       removeAlert('price-fetch-error');
@@ -41,7 +41,7 @@ export default function useGlobalQueryWatchers() {
         persistent: true,
         action: refetchBalances.value,
         actionLabel: t('alerts.retry-label'),
-        priority: AlertPriority.MEDIUM
+        priority: AlertPriority.MEDIUM,
       });
     } else {
       removeAlert('balances-fetch-error');
@@ -57,7 +57,7 @@ export default function useGlobalQueryWatchers() {
         persistent: true,
         action: refetchAllowances.value,
         actionLabel: t('alerts.retry-label'),
-        priority: AlertPriority.MEDIUM
+        priority: AlertPriority.MEDIUM,
       });
     } else {
       removeAlert('allowances-fetch-error');

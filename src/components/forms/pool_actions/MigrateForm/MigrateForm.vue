@@ -4,7 +4,7 @@ import { computed, toRefs } from 'vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useRelayerApproval, {
-  Relayer
+  Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/services/pool/types';
@@ -74,9 +74,9 @@ const toPoolTokenInfo = computed(() =>
     <BalLoadingBlock
       v-if="
         isLoadingPools ||
-          fromPoolTokenInfo == null ||
-          toPoolTokenInfo == null ||
-          batchRelayerApprovalLoading
+        fromPoolTokenInfo == null ||
+        toPoolTokenInfo == null ||
+        batchRelayerApprovalLoading
       "
       class="h-96"
     />

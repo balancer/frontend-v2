@@ -21,6 +21,7 @@ export const isKovan = computed(() => networkId.value === Network.KOVAN);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
 export const isL2 = computed(() => isPolygon.value || isArbitrum.value);
+export const isTestnet = computed(() => isKovan.value || isGoerli.value);
 
 /**
  * METHODS
@@ -76,6 +77,6 @@ export function urlFor(network: Network): string {
 export default function useNetwork() {
   return {
     setNetworkId,
-    networkId
+    networkId,
   };
 }

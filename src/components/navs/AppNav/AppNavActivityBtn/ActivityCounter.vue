@@ -1,11 +1,11 @@
 <template>
-  <span class="text-orange-500 relative">
+  <span class="relative text-orange-500">
     <span
-      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm"
+      class="absolute top-1/2 left-1/2 text-sm transform -translate-x-1/2 -translate-y-1/2"
     >
       {{ count }}
     </span>
-    <SpinnerIcon class="h-6 w-6 animate-spin" />
+    <SpinnerIcon class="w-6 h-6 animate-spin" />
   </span>
 </template>
 
@@ -18,8 +18,8 @@ export default defineComponent({
   props: {
     count: {
       type: Number,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 </script>

@@ -39,23 +39,17 @@ const props = defineProps<Props>();
 const showPreviewModal = ref(false);
 
 const { lockEndDate, lockAmount } = useLockState();
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
-const {
-  isValidLockAmount,
-  isIncreasedLockAmount,
-  totalLpTokens
-} = useLockAmount(toRef(props, 'veBalLockInfo'));
+const { isValidLockAmount, isIncreasedLockAmount, totalLpTokens } =
+  useLockAmount(toRef(props, 'veBalLockInfo'));
 
 const {
   minLockEndDateTimestamp,
   maxLockEndDateTimestamp,
   isValidLockEndDate,
-  isExtendedLockEndDate
+  isExtendedLockEndDate,
 } = useLockEndDate(props.veBalLockInfo);
 
 /**
@@ -126,10 +120,10 @@ function handleShowPreviewModal() {
   <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-gray-500 leading-none pb-1.5">
+        <div class="pb-1.5 text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ $t('getVeBAL.lockForm.title') }}
           </h4>

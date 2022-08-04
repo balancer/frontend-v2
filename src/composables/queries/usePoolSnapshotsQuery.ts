@@ -7,6 +7,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
@@ -29,16 +30,23 @@ export default function usePoolSnapshotsQuery(
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   /**
+   * @description
+   * If pool is already downloaded, we can use it instantly
+   * it may be if user came to pool page from home page
+   */
+  const storedPool = poolsStoreService.findPool(id);
+
+  /**
    * QUERY DEPENDENCIES
    */
-  const poolQuery = usePoolQuery(id);
   const { networkId } = useNetwork();
+  const poolQuery = usePoolQuery(id);
 
   /**
    * COMPUTED
    */
   const pool = computed(() => poolQuery.data.value);
-  const enabled = computed(() => !!pool.value?.id);
+  const enabled = computed(() => !!pool.value?.id || !!storedPool);
 
   /**
    * QUERY INPUTS
@@ -46,14 +54,15 @@ export default function usePoolSnapshotsQuery(
   const queryKey = QUERY_KEYS.Pools.Snapshot(networkId, id);
 
   const queryFn = async () => {
-    if (!pool.value) throw new Error('No pool');
+    if (!pool.value && !storedPool) throw new Error('No pool');
 
     let snapshots: PoolSnapshots = {};
     let prices: HistoricalPrices = {};
 
+    const createTime = storedPool?.createTime || pool.value?.createTime || 0;
+    const tokensList = storedPool?.tokensList || pool.value?.tokensList || [];
     const shapshotDaysNum =
-      days ||
-      differenceInDays(new Date(), new Date(pool.value.createTime * 1000));
+      days || differenceInDays(new Date(), new Date(createTime * 1000));
 
     /**
      * @description
@@ -62,15 +71,14 @@ export default function usePoolSnapshotsQuery(
      */
     const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
 
-    const tokens = pool.value.tokensList;
     [prices, snapshots] = await Promise.all([
       coingeckoService.prices.getTokensHistorical(
-        tokens,
+        tokensList,
         shapshotDaysNum,
         1,
         aggregateBy
       ),
-      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum)
+      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum),
     ]);
 
     return { prices, snapshots };
@@ -78,7 +86,7 @@ export default function usePoolSnapshotsQuery(
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

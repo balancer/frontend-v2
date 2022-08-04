@@ -10,7 +10,7 @@ export const defaultOptions: InitializationOptions = {
   networkId: networkId.value,
   onerror: error => {
     console.log(`[Blocknative] encountered an error`, error);
-  }
+  },
 };
 
 export default {
@@ -21,7 +21,7 @@ export default {
     blocknative
       .configuration({
         scope: 'global',
-        filters: [{ status: 'pending-simulation', _not: true }]
+        filters: [{ status: 'pending-simulation', _not: true }],
       })
       .catch(() => {
         // swallow server timeout response error as we are not waiting on it
@@ -32,5 +32,5 @@ export default {
 
     // Make plugin available in composition API
     app.provide(bnSdkSymbol, blocknative);
-  }
+  },
 };

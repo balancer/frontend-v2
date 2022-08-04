@@ -45,7 +45,7 @@ const {
   tokensOut,
   error,
   parseError,
-  setError
+  setError,
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
@@ -62,14 +62,11 @@ const {
   tokenOutAmount,
   tokenOutPoolBalance,
   initMath,
-  loadingAmountsOut
+  loadingAmountsOut,
 } = withdrawMath;
 
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 /**
  * COMPUTED
@@ -83,7 +80,7 @@ const hasValidInputs = computed(
 );
 
 const singleAssetRules = computed(() => [
-  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance'))
+  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance')),
 ]);
 
 /**
@@ -118,10 +115,10 @@ onBeforeMount(() => {
     />
     <TokenInput
       v-else
-      :name="tokenOut"
-      :address="tokenOut"
       v-model:amount="tokenOutAmount"
       v-model:isValid="validInput"
+      :name="tokenOut"
+      :address="tokenOut"
       :disableBalance="singleAssetMaxes[tokenOutIndex] === '-'"
       :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
@@ -139,7 +136,7 @@ onBeforeMount(() => {
 
     <div
       v-if="highPriceImpact"
-      class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4"
+      class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -158,7 +155,7 @@ onBeforeMount(() => {
       class="mt-4"
       block
       actionLabel="Dismiss"
-      @actionClick="setError(null)"
+      @action-click="setError(null)"
     />
 
     <div class="mt-4">
@@ -175,9 +172,9 @@ onBeforeMount(() => {
         color="gradient"
         :disabled="
           !hasAmounts ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            loadingAmountsOut
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          loadingAmountsOut
         "
         block
         @click="showPreview = true"

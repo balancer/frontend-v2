@@ -1,4 +1,4 @@
-@import "../animations/fireworks.css";
+@import '../animations/fireworks.css';
 
 .icon-spin-anim .feather-settings {
   @apply transition-all duration-200 ease-out;
@@ -9,15 +9,16 @@
 }
 
 .icon-spin-anim:hover .bal-icon {
-  @apply text-blue-500;
+  @apply text-blue-600 dark:text-blue-400;
 }
 
 @keyframes fadeIn {
   0% {
-      opacity: 0;
+    opacity: 0;
   }
+
   100% {
-      opacity: 1;
+    opacity: 1;
   }
 }
 
@@ -35,23 +36,25 @@
 
 @keyframes fadeInMoveUp {
   0% {
-      opacity: 0;
-      transform: translateY(5px);
+    opacity: 0;
+    transform: translateY(5px);
   }
+
   100% {
-      opacity: 1;
-      transform: translateY(0px);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @keyframes fadeInMoveDown {
   0% {
-      opacity: 0;
-      transform: translateY(-5px);
+    opacity: 0;
+    transform: translateY(-5px);
   }
+
   100% {
-      opacity: 1;
-      transform: translateY(0px);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -60,6 +63,7 @@
     transform: rotate(0deg);
     opacity: 0;
   }
+
   to {
     transform: rotate(-90deg);
     opacity: 1;
@@ -68,12 +72,13 @@
 
 @keyframes fadeInMoveUpScaleUp {
   0% {
-      opacity: 0;
-      transform: scale(0.96) translateY(-10px);
+    opacity: 0;
+    transform: scale(0.96) translateY(-10px);
   }
+
   100% {
-      opacity: 1;
-      transform: scale(1) translateY(0px);
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 

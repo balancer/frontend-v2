@@ -9,9 +9,9 @@ const mockTokens = {
     address: '0xEee',
     price: {
       usd: 3000,
-      eur: 2500
-    }
-  }
+      eur: 2500,
+    },
+  },
 };
 
 const mockDefaultCurrency = FiatCurrency.usd;
@@ -27,7 +27,7 @@ jest.mock('@/composables/useTokens', () => {
             token => address === token.address
           );
           return token?.price[currency];
-        })
+        }),
     };
   });
 });
@@ -67,7 +67,7 @@ describe('useNumbers', () => {
       '112124.3791743',
       '1883234',
       '121237821371',
-      'NaN'
+      'NaN',
     ];
 
     it('Should return 0 for an empty string', () => {
@@ -83,7 +83,7 @@ describe('useNumbers', () => {
           style: 'decimal',
           maximumFractionDigits: 20,
           useGrouping: false,
-          fixedFormat: true
+          fixedFormat: true,
         });
         expect(formattedNumber).toEqual(testNumber);
       });
@@ -98,7 +98,7 @@ describe('useNumbers', () => {
           style: 'decimal',
           maximumFractionDigits: 20,
           useGrouping: false,
-          fixedFormat: true
+          fixedFormat: true,
         });
         expect(formattedNumber).toEqual(testNumber);
       });
@@ -110,7 +110,7 @@ describe('useNumbers', () => {
         const format2 = fNum2(testNumber, {
           style: 'decimal',
           maximumFractionDigits: 1,
-          abbreviate: true
+          abbreviate: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -125,7 +125,7 @@ describe('useNumbers', () => {
           style: 'percent',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-          fixedFormat: true
+          fixedFormat: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -138,7 +138,7 @@ describe('useNumbers', () => {
           style: 'currency',
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-          fixedFormat: true
+          fixedFormat: true,
         });
         if (format1 === '0$.00') return; // This is a bug with numeral in fNum
         if (format1 === 'N$aN') return; // This is a bug with numeral in fNum
@@ -159,7 +159,7 @@ describe('useNumbers', () => {
         const format1 = fNum(testNumber, 'usd', { forcePreset: true });
         const format2 = fNum2(testNumber, {
           style: 'currency',
-          dontAdjustLarge: true
+          dontAdjustLarge: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -170,7 +170,7 @@ describe('useNumbers', () => {
         const format1 = fNum(testNumber, 'usd_m');
         const format2 = fNum2(testNumber, {
           style: 'currency',
-          abbreviate: true
+          abbreviate: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -181,7 +181,7 @@ describe('useNumbers', () => {
         const format1 = fNum(fNum(testNumber, 'usd'), 'usd_m');
         const format2 = fNum2(testNumber, {
           style: 'currency',
-          abbreviate: true
+          abbreviate: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -195,7 +195,7 @@ describe('useNumbers', () => {
         const format2 = fNum2(testNumber, {
           style: 'percent',
           minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          maximumFractionDigits: 2,
         });
         expect(format2).toEqual(format1);
       });
@@ -208,7 +208,7 @@ describe('useNumbers', () => {
         const format1 = fNum(testNumber, 'percent_lg');
         const format2 = fNum2(testNumber, {
           style: 'percent',
-          maximumFractionDigits: 0
+          maximumFractionDigits: 0,
         });
         expect(format2).toEqual(format1);
       });
@@ -222,7 +222,7 @@ describe('useNumbers', () => {
         const format2 = fNum2(testNumber, {
           style: 'percent',
           maximumFractionDigits: 4,
-          dontAdjustLarge: true
+          dontAdjustLarge: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -237,7 +237,7 @@ describe('useNumbers', () => {
           style: 'percent',
           minimumFractionDigits: 1,
           maximumFractionDigits: 1,
-          fixedFormat: true
+          fixedFormat: true,
         });
         expect(format2).toEqual(format1);
       });
@@ -256,7 +256,7 @@ describe('useNumbers', () => {
         const format1 = fNum(testNumber, 'token_fixed');
         const format2 = fNum2(testNumber, {
           minimumFractionDigits: 4,
-          maximumFractionDigits: 4
+          maximumFractionDigits: 4,
         });
         expect(format2).toEqual(format1);
       });
@@ -267,7 +267,7 @@ describe('useNumbers', () => {
         const format1 = fNum(testNumber, 'token_lg');
         const format2 = fNum2(testNumber, {
           style: 'decimal',
-          maximumFractionDigits: 0
+          maximumFractionDigits: 0,
         });
         expect(format2).toEqual(format1);
       });
@@ -277,7 +277,7 @@ describe('useNumbers', () => {
       const testNumber = '0.00000123';
       const formattedNumber = fNum2(testNumber, {
         maximumSignificantDigits: 6,
-        fixedFormat: true
+        fixedFormat: true,
       });
       expect(formattedNumber).toEqual(testNumber);
     });

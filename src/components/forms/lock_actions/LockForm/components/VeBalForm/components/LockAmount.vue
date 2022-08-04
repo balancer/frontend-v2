@@ -39,14 +39,14 @@ const lockAmountFiatValue = computed(() =>
 <template>
   <div class="mb-6">
     <div>
-      <p class="font-semibold pb-2">
+      <p class="pb-2 font-semibold">
         {{ $t('getVeBAL.lockForm.lockAmount.title') }}
       </p>
     </div>
     <TokenInput
+      v-model:amount="lockAmount"
       :address="lockablePoolTokenInfo.address"
       :tokenValue="lockAmountFiatValue"
-      v-model:amount="lockAmount"
       fixedToken
       name="lockAmount"
     />

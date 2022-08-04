@@ -2,8 +2,8 @@ module.exports = {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
-      isolatedModules: true
-    }
+      isolatedModules: true,
+    },
   },
   projects: [
     {
@@ -13,7 +13,7 @@ module.exports = {
       displayName: 'dom',
       testEnvironment: 'jsdom',
       testMatch: null,
-      testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$'
+      testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$',
     },
     {
       preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
@@ -22,7 +22,7 @@ module.exports = {
       displayName: 'node',
       testEnvironment: 'node',
       testMatch: null,
-      testRegex: '(\\.|/)(test|spec.node)\\.[jt]sx?$'
-    }
-  ]
+      testRegex: '(\\.|/)(test|spec.node)\\.[jt]sx?$',
+    },
+  ],
 };

@@ -3,7 +3,7 @@ import {
   FundManagement,
   SingleSwap,
   SwapType,
-  SwapV2
+  SwapV2,
 } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -22,7 +22,7 @@ export type Address = string;
 export enum SwapTokenType {
   fixed,
   min,
-  max
+  max,
 }
 
 export interface SwapToken {
@@ -68,7 +68,7 @@ export default class SwapService {
           assetIn: tokenAddresses[swaps[0].assetInIndex],
           assetOut: tokenAddresses[swaps[0].assetOutIndex],
           amount: swaps[0].amount,
-          userData: swaps[0].userData
+          userData: swaps[0].userData,
         };
 
         /*
@@ -125,13 +125,13 @@ export default class SwapService {
       tokenIn = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenIn.amount),
-        type: tokenIn.type
+        type: tokenIn.type,
       };
     } else if (tokenOut.address.toLowerCase() === stETH.toLowerCase()) {
       tokenOut = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenOut.amount),
-        type: tokenOut.type
+        type: tokenOut.type,
       };
     }
 
@@ -150,7 +150,7 @@ export default class SwapService {
           assetIn: tokenAddresses[swaps[0].assetInIndex],
           assetOut: tokenAddresses[swaps[0].assetOutIndex],
           amount: swaps[0].amount,
-          userData: swaps[0].userData
+          userData: swaps[0].userData,
         };
 
         return lidoRelayerService.swap(
@@ -256,7 +256,7 @@ export default class SwapService {
       sender: userAddress,
       recipient: userAddress,
       fromInternalBalance: false,
-      toInternalBalance: false
+      toInternalBalance: false,
     };
     return funds;
   }

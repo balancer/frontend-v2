@@ -10,7 +10,7 @@ import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-f
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,
-  balancer: configService.subgraph
+  balancer: configService.subgraph,
 };
 
 export default function useGraphQuery<T>(
@@ -28,8 +28,8 @@ export default function useGraphQuery<T>(
     {
       // extend the dependencies from the query key and add
       // the current query key as a dependency
-      ...(last(key) as any)
-    }
+      ...(last(key) as any),
+    },
   ]);
 
   const queryFn = async () => {
@@ -38,7 +38,7 @@ export default function useGraphQuery<T>(
     }
 
     const payload = {
-      query: jsonToGraphQLQuery({ query: query() })
+      query: jsonToGraphQLQuery({ query: query() }),
     };
 
     try {
@@ -47,8 +47,10 @@ export default function useGraphQuery<T>(
         return response?.data.data;
       }
       const {
-        data: { data }
-      } = await axios.post(subgraphUrl, payload);
+        data: { data },
+      } = await axios.post(subgraphUrl, {
+        query: jsonToGraphQLQuery({ query: query() }),
+      });
 
       return data;
     } catch (error) {

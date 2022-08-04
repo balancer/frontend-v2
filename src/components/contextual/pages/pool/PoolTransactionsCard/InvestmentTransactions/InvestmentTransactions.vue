@@ -21,7 +21,7 @@ type Props = {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -32,22 +32,22 @@ const tabs = computed(() =>
     ? [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
-          label: t('poolTransactions.tabs.allTransactions')
+          label: t('poolTransactions.tabs.allTransactions'),
         },
         {
           value: PoolTransactionsTab.USER_ACTIVITY,
-          label: t('poolTransactions.tabs.myTransactions')
-        }
+          label: t('poolTransactions.tabs.myTransactions'),
+        },
       ]
     : [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
-          label: t('poolTransactions.tabs.allInvestments')
+          label: t('poolTransactions.tabs.allInvestments'),
         },
         {
           value: PoolTransactionsTab.USER_ACTIVITY,
-          label: t('poolTransactions.tabs.myInvestments')
-        }
+          label: t('poolTransactions.tabs.myInvestments'),
+        },
       ]
 );
 
@@ -65,45 +65,47 @@ const activeTab = ref(tabs.value[0].value);
 
 <template>
   <div>
-    <h4
-      v-text="$t('poolTransactions.tabs.allInvestments')"
-      class="px-4 lg:px-0 mb-5"
-    />
-    <div
-      class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
-    >
-      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+    <div>
+      <h4
+        class="px-4 lg:px-0 mb-5"
+        v-text="$t('poolTransactions.tabs.allInvestments')"
+      />
+      <div
+        class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
+      >
+        <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
+      </div>
     </div>
-  </div>
 
-  <template v-if="isStablePhantomPool">
-    <BoostedActivities
-      v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-      :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
-      :pool="pool"
-      :loading="loading"
-    />
-    <BoostedActivities
-      v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-      :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
-      :pool="pool"
-      :loading="loading"
-    />
-  </template>
-  <template v-else>
-    <div class="mb-20">
-      <Activities
+    <template v-if="isStablePhantomPool">
+      <BoostedActivities
         v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-        :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
+        :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
-      <Activities
+      <BoostedActivities
         v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-        :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
+        :poolActivityType="PoolTransactionsTab.USER_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
-    </div>
-  </template>
+    </template>
+    <template v-else>
+      <div class="mb-20">
+        <Activities
+          v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
+          :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
+          :pool="pool"
+          :loading="loading"
+        />
+        <Activities
+          v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
+          :poolActivityType="PoolTransactionsTab.USER_ACTIVITY"
+          :pool="pool"
+          :loading="loading"
+        />
+      </div>
+    </template>
+  </div>
 </template>

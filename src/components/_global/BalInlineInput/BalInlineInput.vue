@@ -1,7 +1,7 @@
 <script lang="ts">
 // https://v3.vuejs.org/api/sfc-script-setup.html#usage-alongside-normal-script
 export default {
-  inheritAttrs: false
+  inheritAttrs: false,
 };
 </script>
 
@@ -52,7 +52,9 @@ const props = withDefaults(defineProps<Props>(), {
   inputAlignRight: false,
   decimalLimit: 18,
   validateOn: 'blur',
-  rules: () => []
+  rules: () => [],
+  label: '',
+  format: val => val,
 });
 
 const emit = defineEmits<{
@@ -85,7 +87,7 @@ const {
   inputClasses,
   prependClasses,
   appendClasses,
-  borderRadiusClasses
+  borderRadiusClasses,
 } = useInputStyles(props, isInvalid, attrs);
 const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 
@@ -125,7 +127,7 @@ function handleBlur(e: HtmlInputEvent) {
     >
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
-          <span class="label">
+          <span class="label text-secondary">
             {{ label }}
           </span>
         </slot>
@@ -136,16 +138,16 @@ function handleBlur(e: HtmlInputEvent) {
             <slot name="prepend" />
           </div>
           <input
+            v-bind="inputAttrs"
+            ref="inputElement"
             :type="type"
             :name="name"
-            :value="format ? format(modelValue) : modelValue"
-            v-bind="inputAttrs"
+            :value="format(modelValue)"
             :disabled="!isEditable || disabled"
+            :class="['input', inputClasses]"
             @blur="handleBlur"
             @input="onInput"
             @keydown="onKeydown"
-            :class="['input', inputClasses]"
-            ref="inputElement"
           />
           <BalStack horizontal spacing="none" align="center">
             <div v-if="$slots.append" :class="['append', appendClasses]">
@@ -153,12 +155,16 @@ function handleBlur(e: HtmlInputEvent) {
             </div>
             <button
               v-if="!isEditable"
-              class="hover:text-blue-500"
+              class="hover:text-blue-600 dark:hover:text-blue-400"
               @click="toggleEditable"
             >
               <BalIcon name="edit" size="xs" />
             </button>
-            <button v-else class="hover:text-blue-500" @click="toggleEditable">
+            <button
+              v-else
+              class="hover:text-blue-500 dark:hover:text-blue-400"
+              @click="toggleEditable"
+            >
               <BalIcon name="save" size="xs" />
             </button>
           </BalStack>
@@ -188,7 +194,7 @@ function handleBlur(e: HtmlInputEvent) {
 }
 
 .label {
-  @apply text-sm text-gray-500;
+  @apply text-sm;
 }
 
 .error {

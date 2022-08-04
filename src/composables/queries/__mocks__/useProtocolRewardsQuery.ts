@@ -3,7 +3,7 @@ export default function useProtocolRewardsQuery() {
     data: [],
     isLoading: false,
     refetch: {
-      value: jest.fn()
-    }
+      value: jest.fn(),
+    },
   };
 }

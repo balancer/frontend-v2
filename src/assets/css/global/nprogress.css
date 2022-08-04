@@ -1,0 +1,16 @@
+@import '~nprogress/nprogress.css';
+
+/* nprogress overrides */
+#nprogress .bar {
+  @apply bg-blue-800 dark:bg-blue-500;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px theme('colors.blue.500'),
+    0 0 5px theme('colors.blue.500');
+}
+
+#nprogress .spinner-icon {
+  border-top-color: theme('colors.blue.500');
+  border-left-color: theme('colors.blue.500');
+}

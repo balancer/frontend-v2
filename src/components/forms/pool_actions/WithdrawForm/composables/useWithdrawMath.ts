@@ -10,7 +10,7 @@ import {
   BalancerError,
   BalancerErrorCode,
   SwapType,
-  TransactionData
+  TransactionData,
 } from '@balancer-labs/sdk';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
@@ -74,19 +74,16 @@ export default function useWithdrawMath(
     balances,
     balanceFor,
     getToken,
-    dynamicDataLoading
+    dynamicDataLoading,
   } = useTokens();
-  const {
-    minusSlippage,
-    addSlippageScaled,
-    minusSlippageScaled
-  } = useSlippage();
+  const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
+    useSlippage();
   const { isStablePhantomPool, isWeightedPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
     processing: processingSwaps,
-    processAll: processSwaps
+    processAll: processSwaps,
   } = usePromiseSequence();
 
   /**
@@ -186,16 +183,12 @@ export default function useWithdrawMath(
   const proportionalMainTokenAmounts = computed((): string[] => {
     if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
       return batchRelayerSwap.value.outputs.amountsOut.map((amount, i) => {
-        const _amount = bnum(amount.toString())
-          .abs()
-          .toString();
+        const _amount = bnum(amount.toString()).abs().toString();
         return formatUnits(_amount, withdrawalTokens.value[i].decimals);
       });
     } else if (batchSwap.value) {
       return batchSwap.value.returnAmounts.map((amount, i) => {
-        const _amount = bnum(amount.toString())
-          .abs()
-          .toString();
+        const _amount = bnum(amount.toString()).abs().toString();
         return formatUnits(_amount, withdrawalTokens.value[i].decimals);
       });
     }
@@ -336,7 +329,7 @@ export default function useWithdrawMath(
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
         tokenIndex: tokenOutIndex.value,
-        queryBPT: fullBPTIn.value
+        queryBPT: fullBPTIn.value,
       })
 
       .toNumber();
@@ -354,10 +347,7 @@ export default function useWithdrawMath(
 
   const fiatTotal = computed((): string =>
     fiatAmounts.value.reduce(
-      (total, amount) =>
-        bnum(total)
-          .plus(amount)
-          .toString(),
+      (total, amount) => bnum(total).plus(amount).toString(),
       '0'
     )
   );
@@ -387,23 +377,21 @@ export default function useWithdrawMath(
   });
 
   // Token amounts out to pass in to batch swap transaction and used as limits.
-  const batchSwapAmountsOutMap = computed(
-    (): Record<string, string> => {
-      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        tokenAddresses.value[i].toLowerCase(),
-        amount
-      ]);
-      const onlyTokensWithAmounts = allTokensWithAmounts
-        .filter(([, amount]) => bnum(amount).gt(0))
-        .map(([token, amount]) => {
-          return [
-            token,
-            exactOut.value ? amount : minusSlippageScaled(amount.toString())
-          ];
-        });
-      return Object.fromEntries(onlyTokensWithAmounts);
-    }
-  );
+  const batchSwapAmountsOutMap = computed((): Record<string, string> => {
+    const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+      tokenAddresses.value[i].toLowerCase(),
+      amount,
+    ]);
+    const onlyTokensWithAmounts = allTokensWithAmounts
+      .filter(([, amount]) => bnum(amount).gt(0))
+      .map(([token, amount]) => {
+        return [
+          token,
+          exactOut.value ? amount : minusSlippageScaled(amount.toString()),
+        ];
+      });
+    return Object.fromEntries(onlyTokensWithAmounts);
+  });
 
   // An array of BPT values to be passed into the batch swap tx
   const batchSwapBPTIn = computed((): string[] => {
@@ -506,8 +494,8 @@ export default function useWithdrawMath(
         amounts,
         fetchPools: {
           fetchPools,
-          fetchOnChain: false
-        }
+          fetchOnChain: false,
+        },
       });
       batchSwapLoading.value = false;
       return result;
@@ -523,7 +511,7 @@ export default function useWithdrawMath(
         return {
           returnAmounts: Array(amounts.length).fill('0'),
           swaps: [],
-          assets: []
+          assets: [],
         };
       } else {
         throw error;
@@ -712,6 +700,6 @@ export default function useWithdrawMath(
     // methods
     initMath,
     resetMath,
-    getSwap
+    getSwap,
   };
 }

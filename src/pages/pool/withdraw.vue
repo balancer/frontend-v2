@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import TradeSettingsPopover, {
-  TradeSettingsContext
+  TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
 // Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
@@ -20,10 +20,10 @@ const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">
-          <div class="text-xs text-gray-500 leading-none">
+          <div class="text-xs leading-none text-secondary">
             {{ network.chainName }}
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex justify-between items-center">
             <h4>{{ $t('withdrawFromPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>

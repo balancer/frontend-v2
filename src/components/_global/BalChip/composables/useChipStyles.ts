@@ -39,7 +39,7 @@ export function useChipClasses(props) {
       [sizeClasses()]: true,
       [bgColorClasses()]: true,
       [outlineClasses()]: true,
-      [shapeClasses()]: true
+      [shapeClasses()]: true,
     };
   });
 }
@@ -50,7 +50,7 @@ export function useCloseIconClasses(props) {
 
   const classes = computed(() => {
     return {
-      [colorClass]: true
+      [colorClass]: true,
     };
   });
 

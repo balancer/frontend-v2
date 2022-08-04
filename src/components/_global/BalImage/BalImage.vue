@@ -12,7 +12,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  noFade: false
+  noFade: false,
 });
 
 /**
@@ -30,7 +30,7 @@ const attrs = useAttrs();
  */
 const wrapperStyles = computed(() => ({
   width: attrs?.width || 'auto',
-  height: attrs?.height || 'auto'
+  height: attrs?.height || 'auto',
 }));
 
 /**
@@ -44,7 +44,7 @@ function onLoaded() {
 <template>
   <div class="bal-image-wrapper" :style="wrapperStyles">
     <Transition name="bal-image-fade">
-      <img v-bind="$attrs" @load="onLoaded" v-show="loaded" />
+      <img v-show="loaded" v-bind="$attrs" @load="onLoaded" />
     </Transition>
   </div>
 </template>
@@ -54,8 +54,9 @@ function onLoaded() {
 .bal-image-fade-enter-active,
 .bal-image-fade-leave-active {
   transition: all 0.5s ease-in-out 0.1s;
-  transform: scale(1) translateY(0px);
+  transform: scale(1) translateY(0);
 }
+
 .bal-image-fade-enter-from,
 .bal-image-fade-leave-to {
   opacity: 0;

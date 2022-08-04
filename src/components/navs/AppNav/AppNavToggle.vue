@@ -4,7 +4,7 @@
       :to="{ name: 'home' }"
       :class="[
         'toggle-link px-6 rounded-l-lg',
-        { [activeClasses]: !isTradePage }
+        { [activeClasses]: !isTradePage },
       ]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
@@ -14,7 +14,7 @@
       :to="{ name: 'trade' }"
       :class="[
         'toggle-link px-6 rounded-r-lg',
-        { [activeClasses]: isTradePage }
+        { [activeClasses]: isTradePage },
       ]"
       @click="trackGoal(Goals.ClickNavTrade)"
     >
@@ -33,7 +33,7 @@ export default defineComponent({
   name: 'AppNavToggle',
 
   props: {
-    darkModeBg: { type: String, default: '800' }
+    darkModeBg: { type: String, default: '800' },
   },
 
   setup() {
@@ -46,15 +46,16 @@ export default defineComponent({
       isTradePage,
       activeClasses,
       trackGoal,
-      Goals
+      Goals,
     };
-  }
+  },
 });
 </script>
 
 <style scoped>
 .app-nav-toggle {
   @apply h-10 flex items-center rounded-lg shadow;
+
   font-variation-settings: 'wght' 600;
 }
 

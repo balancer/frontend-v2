@@ -38,7 +38,7 @@ const {
   maximized,
   optimized,
   batchSwapLoading,
-  supportsPropotionalOptimization
+  supportsPropotionalOptimization,
 } = toRefs(props.math);
 
 /**
@@ -46,19 +46,21 @@ const {
  */
 const priceImpactClasses = computed(() => ({
   'dark:bg-gray-800': !highPriceImpact.value,
-  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value,
 }));
 
 const optimizeBtnClasses = computed(() => ({
   'text-gradient': !highPriceImpact.value,
-  'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value
+  'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value,
 }));
 </script>
 
 <template>
   <div class="data-table">
     <div class="data-table-row total-row">
-      <div class="p-2">{{ $t('total') }}</div>
+      <div class="p-2">
+        {{ $t('total') }}
+      </div>
       <div class="data-table-number-col">
         {{ fNum2(fiatTotal, FNumFormats.fiat) }}
         <div v-if="isWalletReady && !hasNoBalances" class="text-sm">
@@ -76,7 +78,9 @@ const optimizeBtnClasses = computed(() => ({
       </div>
     </div>
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
-      <div class="p-2">{{ $t('priceImpact') }}</div>
+      <div class="p-2">
+        {{ $t('priceImpact') }}
+      </div>
       <div class="data-table-number-col">
         <div class="flex">
           <span v-if="!batchSwapLoading">
@@ -85,7 +89,7 @@ const optimizeBtnClasses = computed(() => ({
           <BalLoadingBlock v-else class="w-10" />
 
           <BalTooltip :text="$t('customAmountsTip')">
-            <template v-slot:activator>
+            <template #activator>
               <BalIcon
                 v-if="highPriceImpact"
                 name="alert-triangle"
@@ -96,7 +100,7 @@ const optimizeBtnClasses = computed(() => ({
                 v-else
                 name="info"
                 size="xs"
-                class="text-gray-400 -mb-px ml-1"
+                class="-mb-px ml-1 text-gray-400"
               />
             </template>
           </BalTooltip>
@@ -139,7 +143,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .total-row {
-  @apply text-lg font-bold rounded-t-lg dark:bg-gray-800;
+  @apply text-lg font-semibold rounded-t-lg dark:bg-gray-800;
 }
 
 .price-impact-row {
