@@ -355,8 +355,6 @@ export default defineComponent({
 
     // WATCHERS
     watch(trading.isLoading, newVal => {
-      console.log(trading.isLoading);
-      console.log(newVal);
       if (!newVal) {
         trading.handleAmountChange();
       }

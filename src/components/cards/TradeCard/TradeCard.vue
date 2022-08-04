@@ -263,6 +263,11 @@ export default defineComponent({
       await handleAmountChange();
     });
 
+    watch(tokenOutAddress, () => {
+      store.commit('trade/setOutputAsset', tokenOutAddress.value);
+      handleAmountChange();
+    });
+
     watch(tokenInAddress, () => {
       store.commit('trade/setInputAsset', tokenInAddress.value);
       handleAmountChange();
