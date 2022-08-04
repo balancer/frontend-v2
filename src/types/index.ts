@@ -29,7 +29,7 @@ export interface Claim {
   amount: string;
 }
 
-// TODO: Can be removed?
+// TODO: Can be removed, and use native event types instead?
 export interface HtmlInputEvent {
   target: HTMLInputElement;
   key: string;
