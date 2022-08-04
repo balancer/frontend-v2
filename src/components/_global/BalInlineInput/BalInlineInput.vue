@@ -114,7 +114,7 @@ function toggleEditable() {
   }, 200);
 }
 
-function handleBlur(e: HtmlInputEvent) {
+function handleBlur(e: FocusEvent) {
   toggleEditable();
   onBlur(e);
 }
