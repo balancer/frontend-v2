@@ -49,7 +49,7 @@
 
           <div ref="intersectionSentinel" />
           <PoolTransactionsCard
-            v-if="isSentinelIntersected"
+            v-if="isSentinelIntersected && pool"
             :pool="pool"
             :loading="loadingPool"
           />
@@ -63,7 +63,7 @@
         <StakingProvider :poolAddress="getAddressFromPoolId(id)">
           <BalStack vertical>
             <BalLoadingBlock
-              v-if="loadingPool"
+              v-if="loadingPool || !pool"
               class="mb-4 h-60 pool-actions-card"
             />
             <MyPoolBalancesCard

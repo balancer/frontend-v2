@@ -24,7 +24,7 @@ export type PoolChartPeriod = {
 
 type Props = {
   historicalPrices?: HistoricalPrices | null;
-  snapshots?: PoolSnapshots;
+  snapshots?: PoolSnapshots | null;
   loading: boolean;
 
   // these props are added to prevent line chart rerender on each pool update
