@@ -280,10 +280,20 @@ function distributeWeights() {
   });
 }
 
+function addTokenListElementRef(el: any | null) {
+  if (!el) return;
+  // const filteredElements = seedTokenElements.value.filter(e => e !== null);
+  if (!seedTokenElements.value.includes(el) && el) {
+    seedTokenElements.value.push(el);
+  }
+}
+
 async function handleRemoveToken(index: number) {
   updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
   await nextTick();
-
+  seedTokenElements.value = seedTokenElements.value.filter(
+    (_, i) => i !== index
+  );
   distributeWeights();
   animateHeight(-1);
 }
@@ -326,7 +336,7 @@ function onAlertMountChange() {
                 <div
                   v-for="(token, i) of seedTokens"
                   :key="`tokenweight-${token.id}`"
-                  :ref="'seedTokenElements'"
+                  :ref="addTokenListElementRef"
                   class="absolute w-full"
                 >
                   <AnimatePresence isVisible>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
+import anime from 'animejs';
 
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useTokens from '@/composables/useTokens';
@@ -57,7 +58,6 @@ const isLocked = ref(false);
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
-import anime from 'animejs';
 
 /**
  * COMPUTED
