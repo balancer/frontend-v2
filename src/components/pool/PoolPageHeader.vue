@@ -245,6 +245,7 @@ const poolTypeLabel = computed(() => {
 <style scoped>
 .pool-title {
   @apply mr-4 capitalize mt-2;
+
   font-variation-settings: 'wght' 700;
 }
 </style>
