@@ -404,7 +404,7 @@
       :amountIn="trading.tokenInAmountInput.value"
       :addressOut="trading.tokenOut.value.address"
       :amountOut="trading.tokenOutAmountInput.value"
-      :pools="trading.sor.pools.value"
+      :pools="pools"
       :sorReturn="trading.sor.sorReturn.value"
       class="mt-3"
     />
@@ -412,6 +412,8 @@
 </template>
 
 <script lang="ts">
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sor/dist/types';
 import { formatUnits } from '@ethersproject/units';
 import { mapValues } from 'lodash';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
@@ -653,6 +655,13 @@ export default defineComponent({
       props.trading.isGnosisTrade
     );
 
+    const pools = computed<(Pool | SubgraphPoolBase)[]>(
+      // @ts-ignore - Fix types incompatibility error
+      () => {
+        return props.trading.sor.pools.value;
+      }
+    );
+
     const wrapType = computed(() =>
       getWrapAction(
         props.trading.tokenIn.value.address,
@@ -847,6 +856,7 @@ export default defineComponent({
       cofirmPriceUpdate,
 
       // computed
+      pools,
       tokenInFiatValue,
       tokenOutFiatValue,
       summary,
@@ -878,6 +888,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 .arrow-down {
   @apply absolute right-0 rounded-full border border-gray-100 flex items-center h-8 w-8 justify-center bg-white mr-3
