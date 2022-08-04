@@ -59,7 +59,9 @@ export default function useWeb3() {
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isWalletConnecting = computed(() => walletState.value === 'connecting');
-  const isWalletDisconnected = computed(() => walletState.value === 'disconnected');
+  const isWalletDisconnected = computed(
+    () => walletState.value === 'disconnected'
+  );
   const isMainnet = computed(
     () => appNetworkConfig.chainId === Network.MAINNET
   );
@@ -109,15 +111,14 @@ export default function useWeb3() {
       // wallet is connected
       delayedToggleWalletSelectModal();
       // Immediately try to connect with injected provider
-      connectWallet('metamask')
-        .then(() => {
-          // If wallet is not ready, keep the modal open
-          if (isWalletDisconnected.value) return;
-          // When wallet is connected, close modal
-          // and clear the delayed toggle timeout so the modal doesn't open
-          delayedToggleWalletSelectModal.flush();
-          toggleWalletSelectModal(false);
-        });
+      connectWallet('metamask').then(() => {
+        // If wallet is not ready, keep the modal open
+        if (isWalletDisconnected.value) return;
+        // When wallet is connected, close modal
+        // and clear the delayed toggle timeout so the modal doesn't open
+        delayedToggleWalletSelectModal.flush();
+        toggleWalletSelectModal(false);
+      });
     } else {
       // If there's no injected provider, open the modal immediately
       toggleWalletSelectModal();
