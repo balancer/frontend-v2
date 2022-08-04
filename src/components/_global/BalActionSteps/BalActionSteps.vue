@@ -188,8 +188,6 @@ async function handleTransaction(
   tx: TransactionResponse,
   state: TransactionActionState
 ): Promise<void> {
-  console.log('handleTransactionED');
-
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       state.receipt = receipt;

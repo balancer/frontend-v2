@@ -9,7 +9,7 @@
     "serve": "NODE_ENV=development npm run generate:tokenlists && vue-cli-service serve",
     "build": "npm run generate:tokenlists && vue-cli-service build",
     "test:unit": "NODE_ENV=test vue-cli-service test:unit --cache --detectOpenHandles",
-    "lint": "eslint . --ext .js,.ts,.vue --max-warnings 100",
+    "lint": "eslint . --ext .js,.ts,.vue --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "lint:fix": "npm run lint -- --fix",
@@ -124,7 +124,7 @@
     "worker-loader": "^3.0.8"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 100",
+    "*.{js,ts,vue}": "eslint --cache --fix --max-warnings 0",
     "*.{md,json,yaml,html}": "prettier --write"
   },
   "license": "MIT",

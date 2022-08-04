@@ -41,15 +41,8 @@ const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
 
 const {
-  userData: { stakedPools, stakedSharesForProvidedPool, poolBoosts },
+  userData: { stakedSharesForProvidedPool },
 } = useStaking();
-
-const poolsWithBoost = computed(() => {
-  return stakedPools.value.map(pool => ({
-    ...pool,
-    boost: (poolBoosts.value || {})[pool.id],
-  }));
-});
 
 const fiatValueOfStakedShares = computed(() => {
   return bnum(props.fromPool.totalLiquidity)
@@ -69,12 +62,7 @@ const unstakedBptBalance = computed(() => {
   return balanceFor(getAddress(props.fromPool.address));
 });
 
-const stakedPool = computed(() => {
-  return poolsWithBoost.value.find(pool => pool.id === fromPool.value.id);
-});
-
 const migrateMath = useMigrateMath(fromPool, toPool);
-const { fiatTotal, bptBalance } = migrateMath;
 
 const hasValue = computed(
   () =>
@@ -84,13 +72,14 @@ const hasValue = computed(
 
 const balanceLabel = computed(() => {
   let balance = 0;
+  const stakedAmount = Number(fiatValueOfStakedShares.value);
+  const unstakedAmount = Number(fiatValueOfUnstakedShares.value);
 
-  if (stakedPool.value) {
-    balance += Number(stakedPool.value?.shares);
+  if (stakedAmount > 0) {
+    balance += stakedAmount;
   }
-
-  if (Number(fiatTotal.value) > 0) {
-    balance += Number(fiatTotal.value);
+  if (unstakedAmount > 0) {
+    balance += unstakedAmount;
   }
 
   return balance > 0
@@ -110,20 +99,24 @@ const migrateStakeChooseArr = ref({
   staked: {
     title: t('migratePool.poolInfo.stakedLabel'),
     value: true,
-    amount: fNum2(fiatValueOfStakedShares.value, {
-      style: 'currency',
-      maximumFractionDigits: 0,
-      fixedFormat: true,
-    }),
+    amount: computed(() =>
+      fNum2(fiatValueOfStakedShares.value, {
+        style: 'currency',
+        maximumFractionDigits: 0,
+        fixedFormat: true,
+      })
+    ),
   },
   unstaked: {
     title: t('migratePool.poolInfo.unstakedLabel'),
     value: true,
-    amount: fNum2(fiatValueOfUnstakedShares.value, {
-      style: 'currency',
-      maximumFractionDigits: 0,
-      fixedFormat: true,
-    }),
+    amount: computed(() =>
+      fNum2(fiatValueOfUnstakedShares.value, {
+        style: 'currency',
+        maximumFractionDigits: 0,
+        fixedFormat: true,
+      })
+    ),
   },
 });
 
@@ -139,7 +132,10 @@ const isPreviewModalBtnDisabled = computed(() => {
 });
 
 const hasStakedUnstakedLiquidity = computed(() => {
-  return Number(stakedPool.value?.shares) > 0 && Number(fiatTotal.value) > 0;
+  return (
+    Number(fiatValueOfUnstakedShares.value) > 0 &&
+    Number(fiatValueOfStakedShares.value) > 0
+  );
 });
 
 const isStakedMigrationEnabled = computed(() => {

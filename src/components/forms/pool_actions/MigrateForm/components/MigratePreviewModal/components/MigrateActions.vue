@@ -18,7 +18,6 @@ type Props = {
   fromPool: Pool;
   toPool: Pool;
   math: MigrateMathResponse;
-  fiatTotal: string;
   disabled?: boolean;
   stakedPoolValue?: string;
   unstakedPoolValue?: string;
