@@ -20,6 +20,7 @@
     "stylelint:fix": "npm run stylelint -- --fix",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
+    "generate:global-types": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/global-component-types.generator.ts",
     "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts",
     "typecheck": "vue-tsc --noEmit"
@@ -103,6 +104,7 @@
     "postcss": "^8.2.13",
     "prettier": "^2.7.1",
     "promise-worker": "^2.0.1",
+    "require-context": "^1.1.0",
     "stylelint": "^14.9.1",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-recommended-vue": "^1.4.0",
