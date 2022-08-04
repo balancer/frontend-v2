@@ -11,7 +11,7 @@ import { Pool, PoolWithShares } from '@/services/pool/types';
  */
 type Props = {
   lockPool: Pool;
-  lock: VeBalLockInfo;
+  lock?: VeBalLockInfo;
 };
 const props = defineProps<Props>();
 
