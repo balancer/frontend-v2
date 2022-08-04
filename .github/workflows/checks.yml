@@ -78,5 +78,7 @@ jobs:
           node-version: '14.x'
       - name: Install deps
         run: npm install -g npm@7 && npm ci
+      - name: Run typecheck
+        run: npm run typecheck
       - name: Run tests
         run: npm run test:unit
