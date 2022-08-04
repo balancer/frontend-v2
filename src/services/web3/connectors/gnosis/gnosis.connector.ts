@@ -25,7 +25,7 @@ export class GnosisSafeConnector extends Connector {
       // TODO type this
       provider: provider as any,
       account: this.account,
-      chainId: this.chainId
+      chainId: this.chainId,
     };
   }
 }

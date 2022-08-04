@@ -24,9 +24,9 @@ const getTrendingTradePairs = async () => {
     orderBy: 'totalSwapVolume',
     orderDirection: 'desc',
     where: {
-      timestamp_gte: getUnixTime(new Date().setUTCHours(0, 0, 0, 0))
+      timestamp_gte: getUnixTime(new Date().setUTCHours(0, 0, 0, 0)),
     },
-    first: 6
+    first: 6,
   });
 };
 
@@ -41,20 +41,20 @@ function formatToken({ address, symbol }: { address: string; symbol: string }) {
   if (formatted === appNetworkConfig.addresses.weth) {
     return {
       address: appNetworkConfig.nativeAsset.address,
-      symbol: appNetworkConfig.nativeAsset.symbol
+      symbol: appNetworkConfig.nativeAsset.symbol,
     };
   }
 
   return {
     address: formatted,
-    symbol
+    symbol,
   };
 }
 
 const trendingPairs = computed(() => {
   return (tradePairSnapshots.value || []).map(pairSnapshot => [
     formatToken(pairSnapshot.pair.token0),
-    formatToken(pairSnapshot.pair.token1)
+    formatToken(pairSnapshot.pair.token1),
   ]);
 });
 
@@ -79,14 +79,14 @@ const setTradePair = (pair: TrendingPair[]) => {
       >
         <h6>{{ $t('trendingPairs') }}</h6>
       </div>
-      <div class="px-1 lg:p-3 flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-3 lg:p-3 px-1">
         <button
-          class="py-1 px-2 bg-transparent hover:bg-blue-500 dark:hover:bg-blue-400 hover:text-white text-sm rounded-lg border dark:border-gray-800 font-medium lg:font-normal shadow-sm transition-colors"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
+          class="py-1 px-2 text-sm font-medium lg:font-normal hover:text-white bg-transparent hover:bg-blue-500 dark:hover:bg-blue-400 rounded-lg border dark:border-gray-800 shadow-sm transition-colors"
           @click="setTradePair(pair)"
         >
-          {{ pair[0].symbol }} <span class="text-xs relative -top-px">-></span>
+          {{ pair[0].symbol }} <span class="relative -top-px text-xs">-></span>
           {{ pair[1].symbol }}
         </button>
       </div>
@@ -97,6 +97,7 @@ const setTradePair = (pair: TrendingPair[]) => {
 <style scoped>
 .trending-pairs {
   @apply flex flex-col bg-transparent;
+
   min-height: 200px;
 }
 </style>

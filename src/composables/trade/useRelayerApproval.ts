@@ -18,13 +18,13 @@ const vaultAddress = configService.network.addresses.vault;
 export enum Relayer {
   GNOSIS = 'Gnosis',
   LIDO = 'Lido',
-  BATCH = 'Batch'
+  BATCH = 'Batch',
 }
 
 const relayerAddressMap = {
   [Relayer.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
   [Relayer.LIDO]: configService.network.addresses.lidoRelayer,
-  [Relayer.BATCH]: configService.network.addresses.batchRelayer
+  [Relayer.BATCH]: configService.network.addresses.batchRelayer,
 };
 
 export default function useRelayerApproval(
@@ -69,7 +69,7 @@ export default function useRelayerApproval(
       loadingLabel: t('checkWallet'),
       confirmingLabel: t('approvingBatchRelayer'),
       stepTooltip: t('approveBatchRelayerTooltip'),
-      action: approve
+      action: approve,
     })
   );
 
@@ -109,8 +109,8 @@ export default function useRelayerApproval(
       summary: t('transactionSummary.approveRelayer', [relayer]),
       details: {
         contractAddress: vaultAddress,
-        spender: relayerAddress.value
-      }
+        spender: relayerAddress.value,
+      },
     });
 
     approved.value = await txListener(tx, {
@@ -120,7 +120,7 @@ export default function useRelayerApproval(
       },
       onTxFailed: () => {
         approving.value = false;
-      }
+      },
     });
   }
 
@@ -131,6 +131,6 @@ export default function useRelayerApproval(
     approving,
     approved,
     isUnlocked,
-    loading
+    loading,
   };
 }

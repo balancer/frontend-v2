@@ -38,7 +38,7 @@ const { currency } = useUserSettings();
           {{ fNum2(fiatTotal, FNumFormats.fiat) }}
           <BalTooltip
             :text="$t('tooltips.withdraw.total', [currency.toUpperCase()])"
-            icon-size="sm"
+            iconSize="sm"
             class="ml-2"
           />
         </div>
@@ -51,7 +51,7 @@ const { currency } = useUserSettings();
           {{ fNum2(priceImpact, FNumFormats.percent) }}
           <BalTooltip
             :text="$t('tooltips.withdraw.priceImpact')"
-            icon-size="sm"
+            iconSize="sm"
             width="72"
             class="ml-2"
           />

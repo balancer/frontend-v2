@@ -11,5 +11,5 @@ export default {
 
     // Make plugin available in composition API
     app.provide(VUE_QUERY_CLIENT, queryClient);
-  }
+  },
 };

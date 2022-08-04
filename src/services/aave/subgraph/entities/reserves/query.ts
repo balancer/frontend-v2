@@ -18,17 +18,17 @@ const defaultAttrs = {
   totalCurrentVariableDebt: true,
 
   price: {
-    priceInEth: true
+    priceInEth: true,
   },
 
   aToken: {
-    underlyingAssetAddress: true
-  }
+    underlyingAssetAddress: true,
+  },
 };
 
 export default (args = {}, attrs = {}) => ({
   reserves: {
     __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs)
-  }
+    ...merge({}, defaultAttrs, attrs),
+  },
 });

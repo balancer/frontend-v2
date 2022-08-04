@@ -29,7 +29,7 @@ const { t } = useI18n();
 const steps = computed(() => [
   t('getVeBAL.howToLock.steps.lock', [props.lockablePoolTokenInfo.symbol]),
   t('getVeBAL.howToLock.earn.boost'),
-  t('getVeBAL.howToLock.earn.voting')
+  t('getVeBAL.howToLock.earn.voting'),
 ]);
 </script>
 
@@ -41,13 +41,13 @@ const steps = computed(() => [
       {
         title: $t('getVeBAL.howToLock.title'),
         id: 'how-to-lock',
-        handle: 'how-to-lock-handle'
-      }
+        handle: 'how-to-lock-handle',
+      },
     ]"
   >
-    <template v-slot:how-to-lock-handle>
+    <template #how-to-lock-handle>
       <button
-        class="p-4 rounded-xl w-full flex justify-between items-center group"
+        class="group flex justify-between items-center p-4 w-full rounded-xl"
       >
         <h6 class="group-hover:text-blue-500 transition-colors">
           {{ $t('getVeBAL.howToLock.title') }}
@@ -58,10 +58,10 @@ const steps = computed(() => [
         />
       </button>
     </template>
-    <template v-slot:how-to-lock>
+    <template #how-to-lock>
       <div class="p-4 border-t dark:border-gray-900">
         <div class="text-secondary">
-          <ol class="steps text-sm">
+          <ol class="text-sm steps">
             <li>
               {{ $t('getVeBAL.howToLock.steps.investPart1') }}
               <BalLink

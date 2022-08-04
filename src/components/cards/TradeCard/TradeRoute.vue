@@ -1,7 +1,7 @@
 <template>
-  <BalCard shadow="none" v-if="routes.length > 0">
+  <BalCard v-if="routes.length > 0" shadow="none">
     <div
-      class="flex text-secondary items-center cursor-pointer"
+      class="flex items-center cursor-pointer text-secondary"
       @click="toggleVisibility"
     >
       <div class="mr-2">
@@ -13,8 +13,8 @@
     <div v-if="visible" class="mt-5">
       <div
         v-if="routes.length === 0"
-        v-text="$t('noData')"
         class="mt-5 text-sm text-secondary"
+        v-text="$t('noData')"
       />
       <div v-else>
         <div>
@@ -38,9 +38,9 @@
           </div>
           <div class="relative mt-2">
             <div
-              class="pair-line absolute h-1/2 mx-9 border-b border-dashed border-gray-500"
+              class="absolute mx-9 h-1/2 border-b border-gray-500 border-dashed pair-line"
             />
-            <div class="relative z-10 flex justify-between">
+            <div class="flex relative z-10 justify-between">
               <BalAsset :address="input.address" :size="36" />
               <BalAsset :address="output.address" :size="36" />
             </div>
@@ -70,17 +70,17 @@
             :style="{
               height: `${18 + 70 * index}px`,
               width: `calc(100% - ${4 * (routes.length - index - 1)}px + 1px)`,
-              margin: `0 ${2 * (routes.length - index - 1) - 1}px`
+              margin: `0 ${2 * (routes.length - index - 1) - 1}px`,
             }"
-            class="absolute border-l border-r border-b border-gray-500 rounded-b-md"
+            class="absolute rounded-b-md border-r border-b border-l border-gray-500"
           />
           <div class="relative z-10">
             <div
               v-for="route in routes"
               :key="route.hops[0]?.pool?.address"
-              class="mt-9 first:mt-0 flex justify-between"
+              class="flex justify-between mt-9 first:mt-0"
             >
-              <div class="w-4 ml-4 flex items-center">
+              <div class="flex items-center ml-4 w-4">
                 <BalIcon
                   name="triangle"
                   size="xxs"
@@ -92,7 +92,7 @@
                 <div
                   v-for="hop in route.hops"
                   :key="hop?.pool?.address"
-                  class="ml-4 first:ml-0 flex bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 border border-gray-100 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-400 rounded-xl shadow transition-colors"
+                  class="flex ml-4 first:ml-0 bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-xl border border-gray-100 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-400 shadow transition-colors"
                 >
                   <a
                     class="flex p-1.5"
@@ -100,16 +100,16 @@
                     target="_blank"
                   >
                     <BalAsset
-                      class="ml-1.5 first:ml-0"
                       v-for="token in hop.pool.tokens"
                       :key="token.address"
+                      class="ml-1.5 first:ml-0"
                       :address="token.address"
                       :size="20"
                     />
                   </a>
                 </div>
               </div>
-              <div class="w-10 mr-4 text-xs text-right text-secondary">
+              <div class="mr-4 w-10 text-xs text-right text-secondary">
                 {{ formatShare(route.share) }}
               </div>
             </div>
@@ -160,28 +160,28 @@ export default defineComponent({
   props: {
     addressIn: {
       type: String,
-      required: true
+      required: true,
     },
     amountIn: {
       type: String,
-      required: true
+      required: true,
     },
     addressOut: {
       type: String,
-      required: true
+      required: true,
     },
     amountOut: {
       type: String,
-      required: true
+      required: true,
     },
     pools: {
       type: Array as PropType<(Pool | SubgraphPoolBase)[]>,
-      required: true
+      required: true,
     },
     sorReturn: {
       type: Object as PropType<SorReturn>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { fNum2 } = useNumbers();
@@ -200,7 +200,7 @@ export default defineComponent({
       return {
         amount: props.amountIn,
         address: props.addressIn,
-        symbol
+        symbol,
       };
     });
 
@@ -209,7 +209,7 @@ export default defineComponent({
       return {
         amount: props.amountOut,
         address: props.addressOut,
-        symbol
+        symbol,
       };
     });
 
@@ -292,7 +292,7 @@ export default defineComponent({
               return {
                 address: getAddress(token.address),
                 share:
-                  parseFloat(token.weight || '') || 1 / rawPool.tokens.length
+                  parseFloat(token.weight || '') || 1 / rawPool.tokens.length,
               };
             })
             .sort((a, b) => {
@@ -313,14 +313,14 @@ export default defineComponent({
             .filter((_token, index, tokens) => {
               // Show first 2 and last 2 tokens
               return index < 2 || index > tokens.length - 3;
-            })
+            }),
         };
 
         const hop = {
           pool,
           tokenIn,
           tokenOut,
-          amount: new BigNumber(swap.amount || '0')
+          amount: new BigNumber(swap.amount || '0'),
         };
 
         allHops.push(hop);
@@ -330,7 +330,7 @@ export default defineComponent({
           const share = hop.amount.div(totalSwapAmount).toNumber();
           const route = {
             share,
-            hops: [hop]
+            hops: [hop],
           } as Route;
           routes.push(route);
         } else {
@@ -341,7 +341,7 @@ export default defineComponent({
             const share = swapAmount.div(totalSwapAmount).toNumber();
             const route = {
               share,
-              hops: [allHops[i - 1], hop]
+              hops: [allHops[i - 1], hop],
             } as Route;
             routes.push(route);
           } else if (tokenIn === addressIn && swap.amount === '0') {
@@ -350,7 +350,7 @@ export default defineComponent({
             const share = swapAmount.div(totalSwapAmount).toNumber();
             const route = {
               share,
-              hops: [hop, allHops[i - 1]]
+              hops: [hop, allHops[i - 1]],
             } as Route;
             routes.push(route);
           }
@@ -371,7 +371,7 @@ export default defineComponent({
         [Network.KOVAN]: 'kovan.',
         [Network.GOERLI]: 'goerli.',
         [Network.POLYGON]: 'polygon.',
-        [Network.ARBITRUM]: 'arbitrum.'
+        [Network.ARBITRUM]: 'arbitrum.',
       };
       const prefix = prefixMap[chainId] || '';
 
@@ -387,9 +387,9 @@ export default defineComponent({
       routes,
 
       formatShare,
-      getPoolLink
+      getPoolLink,
     };
-  }
+  },
 });
 </script>
 

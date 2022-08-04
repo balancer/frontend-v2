@@ -2,7 +2,7 @@ import { toNormalizedWeights } from '@balancer-labs/sdk';
 import {
   Vault__factory,
   WeightedPool__factory,
-  WeightedPoolFactory__factory
+  WeightedPoolFactory__factory,
 } from '@balancer-labs/typechain';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
@@ -11,7 +11,7 @@ import { Contract } from '@ethersproject/contracts';
 import {
   JsonRpcProvider,
   TransactionResponse,
-  Web3Provider
+  Web3Provider,
 } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from 'ethers/lib/utils';
@@ -65,7 +65,7 @@ export default class WeightedPoolService {
       tokenAddresses,
       seedTokens,
       swapFeeScaled.toString(),
-      owner
+      owner,
     ];
 
     return sendTransaction(
@@ -102,7 +102,7 @@ export default class WeightedPoolService {
 
     const poolDetails: CreatePoolReturn = {
       id: poolId,
-      address: poolAddress
+      address: poolAddress,
     };
 
     return poolDetails;
@@ -115,7 +115,8 @@ export default class WeightedPoolService {
     if (!hash) return;
     const transaction = await provider.getTransaction(hash);
 
-    const weightedPoolInterface = WeightedPoolFactory__factory.createInterface();
+    const weightedPoolInterface =
+      WeightedPoolFactory__factory.createInterface();
     const decodedInputData = weightedPoolInterface.decodeFunctionData(
       'create',
       transaction.data
@@ -126,7 +127,7 @@ export default class WeightedPoolService {
       name: decodedInputData.name,
       owner: decodedInputData.owner,
       symbol: decodedInputData.symbol,
-      tokens: decodedInputData.tokens
+      tokens: decodedInputData.tokens,
     };
     return details;
   }
@@ -152,7 +153,7 @@ export default class WeightedPoolService {
       assets: tokenAddresses,
       maxAmountsIn: initialBalancesString,
       userData: initUserData,
-      fromInternalBalance: false
+      fromInternalBalance: false,
     };
 
     const vaultAddress = configService.network.addresses.vault;

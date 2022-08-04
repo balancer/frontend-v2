@@ -3,7 +3,7 @@ import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useTokenApprovals, {
-  ApprovalStateMap
+  ApprovalStateMap,
 } from '@/composables/pools/useTokenApprovals';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -27,11 +27,8 @@ export default function useTokenApprovalActions(
    */
   const { t } = useI18n();
   const { getToken } = useTokens();
-  const {
-    vaultApprovalStateMap,
-    approveToken,
-    getApprovalStateMapFor
-  } = useTokenApprovals(tokenAddresses, amounts);
+  const { vaultApprovalStateMap, approveToken, getApprovalStateMapFor } =
+    useTokenApprovals(tokenAddresses, amounts);
   const { appNetworkConfig } = useWeb3();
   const vaultAddress = appNetworkConfig.addresses.vault;
 
@@ -39,7 +36,8 @@ export default function useTokenApprovalActions(
    * STATE
    */
   // Approval actions based on Vault approvals for tokenAddresses
-  const tokenApprovalActions: TransactionActionInfo[] = getTokenApprovalActions();
+  const tokenApprovalActions: TransactionActionInfo[] =
+    getTokenApprovalActions();
 
   /**
    * METHODS
@@ -58,7 +56,7 @@ export default function useTokenApprovalActions(
     const defaultOptions: ApprovalActionOptions = {
       spender: vaultAddress,
       amount: MaxUint256.toString(),
-      stateMap: vaultApprovalStateMap.value
+      stateMap: vaultApprovalStateMap.value,
     };
     const { spender, amount, stateMap } = Object.assign(
       defaultOptions,
@@ -80,13 +78,13 @@ export default function useTokenApprovalActions(
         stepTooltip: t('investment.preview.tooltips.approval', [token.symbol]),
         action: () => {
           return approveToken(token.address, { spender, state, amount });
-        }
+        },
       };
     });
   }
 
   return {
     tokenApprovalActions,
-    getTokenApprovalActionsForSpender
+    getTokenApprovalActionsForSpender,
   };
 }

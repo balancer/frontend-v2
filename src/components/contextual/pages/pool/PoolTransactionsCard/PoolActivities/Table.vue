@@ -37,6 +37,7 @@ type Props = {
   poolActivities: PoolActivity[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
@@ -48,7 +49,8 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMore: false,
-  isPaginated: false
+  isPaginated: false,
+  noResultsLabel: '',
 });
 
 const emit = defineEmits(['loadMore']);
@@ -71,7 +73,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     accessor: 'tx',
     Cell: 'actionCell',
     width: 150,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('value'),
@@ -81,7 +83,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     align: 'right',
     className: 'align-center w-40',
     sortKey: pool => pool.value,
-    width: 125
+    width: 125,
   },
   {
     name: t('tokens'),
@@ -89,7 +91,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     accessor: '',
     Cell: 'detailsCell',
     width: 325,
-    sortable: false
+    sortable: false,
   },
   {
     name: t('time'),
@@ -98,8 +100,8 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200
-  }
+    width: 200,
+  },
 ]);
 
 const activityRows = computed<ActivityRow[]>(() =>
@@ -120,7 +122,7 @@ const activityRows = computed<ActivityRow[]>(() =>
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
           type,
-          tokenAmounts: getJoinExitDetails(amounts)
+          tokenAmounts: getJoinExitDetails(amounts),
         };
       })
 );
@@ -135,7 +137,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
     const amount = amounts[i];
     const address = getAddress(props.tokens[i]);
     const token = getToken(address);
-    const price = priceFor(token.address);
+    const price = priceFor(token?.address);
     const amountNumber = Math.abs(parseFloat(amount));
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
     if (amountNumber > 0 && price === 0) {
@@ -155,7 +157,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     return {
       address,
       symbol,
-      amount: fNum2(amountNumber, FNumFormats.token)
+      amount: fNum2(amountNumber, FNumFormats.token),
     };
   });
 }
@@ -171,22 +173,22 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     <BalTable
       :columns="columns"
       :data="activityRows"
-      :is-loading="isLoading"
-      :is-loading-more="isLoadingMore"
-      :is-paginated="isPaginated"
-      @load-more="emit('loadMore')"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      skeletonClass="h-64"
       sticky="both"
-      :no-results-label="noResultsLabel"
-      :initial-state="{
+      :noResultsLabel="noResultsLabel"
+      :initialState="{
         sortColumn: 'timeAgo',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
+      @load-more="emit('loadMore')"
     >
-      <template v-slot:actionCell="action">
-        <div class="px-6 py-2">
+      <template #actionCell="action">
+        <div class="py-2 px-6">
           <div class="flex items-center">
-            <div class="flex center mr-3">
+            <div class="flex mr-3 center">
               <BalIcon
                 v-if="action.type === 'Join'"
                 name="plus"
@@ -200,16 +202,16 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
         </div>
       </template>
 
-      <template v-slot:detailsCell="action">
-        <div class="px-6 py-4 flex -mt-1 flex-wrap">
+      <template #detailsCell="action">
+        <div class="flex flex-wrap py-4 px-6 -mt-1">
           <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
             <div
-              class="m-1 flex items-center p-1 px-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
               v-if="tokenAmount.amount !== '0'"
+              class="flex items-center p-1 px-2 m-1 bg-gray-50 dark:bg-gray-700 rounded-lg"
             >
               <BalAsset
                 :address="tokenAmount.address"
-                class="mr-2 flex-shrink-0"
+                class="flex-shrink-0 mr-2"
               />
               <span class="font-numeric">{{ tokenAmount.amount }}</span>
             </div>
@@ -217,22 +219,22 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
         </div>
       </template>
 
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end font-numeric">
+      <template #valueCell="action">
+        <div class="flex justify-end py-4 px-6 font-numeric">
           {{ action.formattedValue }}
         </div>
       </template>
 
-      <template v-slot:timeCell="action">
-        <div class="px-6 py-4">
+      <template #timeCell="action">
+        <div class="py-4 px-6">
           <div
-            class="flex items-center justify-end wrap whitespace-nowrap text-right"
+            class="flex justify-end items-center text-right whitespace-nowrap wrap"
           >
             {{ action.formattedDate }}
             <BalLink
               :href="explorerLinks.txLink(action.tx)"
               external
-              class="ml-2 flex items-center"
+              class="flex items-center ml-2"
             >
               <BalIcon
                 name="arrow-up-right"

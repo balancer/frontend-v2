@@ -39,10 +39,7 @@ export function expectedVeBal(bpt: string, lockDateStr: string): string {
   const previousThursdayBeforeLockDate = getPreviousThursday(lockDate);
   const lockTime = differenceInSeconds(previousThursdayBeforeLockDate, now);
 
-  return bnum(bpt)
-    .times(lockTime)
-    .div(oneYearInSecs)
-    .toString();
+  return bnum(bpt).times(lockTime).div(oneYearInSecs).toString();
 }
 
 /**
@@ -64,7 +61,7 @@ export function getPreviousEpoch(weeksToGoBack = 0): Date {
   daysSinceThursday = daysSinceThursday + weeksToGoBack * 7;
 
   return sub(todayAtMidnightUTC, {
-    days: daysSinceThursday
+    days: daysSinceThursday,
   });
 }
 
@@ -96,6 +93,6 @@ export default function useVeBal() {
     lockablePoolId,
     showRedirectModal,
     // methods
-    setShowRedirectModal
+    setShowRedirectModal,
   };
 }

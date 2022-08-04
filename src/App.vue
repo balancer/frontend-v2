@@ -37,7 +37,7 @@ export default defineComponent({
     ThirdPartyServicesModal,
     Notifications,
     AppSidebar,
-    GlobalModalContainer
+    GlobalModalContainer,
   },
 
   setup() {
@@ -57,7 +57,7 @@ export default defineComponent({
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal,
-      isSanctioned
+      isSanctioned,
       // isMainnet
     } = useWeb3();
     const route = useRoute();
@@ -109,9 +109,9 @@ export default defineComponent({
       sidebarOpen,
       // methods
       toggleWalletSelectModal,
-      handleThirdPartyModalToggle
+      handleThirdPartyModalToggle,
     };
-  }
+  },
 });
 </script>
 

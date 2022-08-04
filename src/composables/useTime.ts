@@ -23,7 +23,7 @@ export function dateTimeLabelFor(date: Date): string {
     timeZoneName: 'short',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
   });
 }
 
@@ -54,7 +54,7 @@ export function getPreviousThursday(date: Date = new Date()): Date {
     days: daysSinceThursday,
     hours: date.getHours(),
     minutes: date.getMinutes(),
-    seconds: date.getSeconds()
+    seconds: date.getSeconds(),
   });
 }
 
@@ -66,6 +66,6 @@ export default function useTime() {
     twentyFourHoursInMs,
     twentyFourHoursInSecs,
     // methods
-    dateTimeLabelFor
+    dateTimeLabelFor,
   };
 }

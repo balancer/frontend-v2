@@ -1,6 +1,6 @@
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 
 import { Step } from './index';

@@ -2,7 +2,7 @@ import {
   FundManagement,
   SingleSwap,
   SwapType,
-  SwapV2
+  SwapV2,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
@@ -36,38 +36,38 @@ describe('swap.service', () => {
     tokens.USDC = {
       address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
       amount: BigNumber.from('1000000'),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
     tokens.USDT = {
       address: '0xcC08220af469192C53295fDd34CFb8DF29aa17AB',
       amount: BigNumber.from('1000000'),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
     tokens.DAI = {
       address: '0x04df6e4121c27713ed22341e7c7df330f56f289b',
       amount: BigNumber.from('1000000'),
-      type: SwapTokenType.min
+      type: SwapTokenType.min,
     };
     tokens.ETH = {
       address: configService.network.nativeAsset.address,
       amount: BigNumber.from(1e15),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
     tokens.ETHv2 = {
       // With v2 swaps the ETH address is set to 0x0
       address: AddressZero,
       amount: BigNumber.from(1.2e15),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
     tokens.stETH = {
       address: configService.network.addresses.stETH,
       amount: BigNumber.from(2e15),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
     tokens.wstETH = {
       address: configService.network.addresses.wstETH,
       amount: BigNumber.from(3e15),
-      type: SwapTokenType.fixed
+      type: SwapTokenType.fixed,
     };
 
     service = new SwapService();
@@ -91,8 +91,8 @@ describe('swap.service', () => {
           amount: amount,
           assetInIndex: 0,
           assetOutIndex: 1,
-          userData: ''
-        }
+          userData: '',
+        },
       ];
       require('@/services/web3/web3.service').setUserAddress(userAddress);
     });
@@ -167,15 +167,16 @@ describe('swap.service', () => {
             amount: amount,
             assetInIndex: 0,
             assetOutIndex: 1,
-            userData: ''
-          }
+            userData: '',
+          },
         ];
         await service.batchSwapV2(tokens.ETHv2, tokens.stETH, swaps, [
           tokens.ETHv2.address,
-          tokens.wstETH.address // tokenAddresses currently contain wstETH even though tokenIn is stETH
+          tokens.wstETH.address, // tokenAddresses currently contain wstETH even though tokenIn is stETH
         ]);
-        const lidoRelayerSwapArgs = require('@/services/contracts/lido-relayer.service')
-          .lidoRelayerService.swap.mock.calls[0];
+        const lidoRelayerSwapArgs =
+          require('@/services/contracts/lido-relayer.service')
+            .lidoRelayerService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = lidoRelayerSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdETHstETH);
         expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
@@ -200,7 +201,7 @@ describe('swap.service', () => {
         tokenAddresses = [
           tokens.ETHv2.address,
           tokens.USDC.address,
-          tokens.DAI.address
+          tokens.DAI.address,
         ];
         swaps = [
           {
@@ -208,15 +209,15 @@ describe('swap.service', () => {
             amount: amount,
             assetInIndex: 0,
             assetOutIndex: 1,
-            userData: ''
+            userData: '',
           },
           {
             poolId: PoolIdUSDCDAI,
             amount: amount,
             assetInIndex: 1,
             assetOutIndex: 2,
-            userData: ''
-          }
+            userData: '',
+          },
         ];
       });
 
@@ -253,11 +254,10 @@ describe('swap.service', () => {
         const tokenAddresses = [
           tokens.ETH.address,
           tokens.USDC.address,
-          tokens.DAI.address
+          tokens.DAI.address,
         ];
-        require('@/services/contracts/vault.service').vaultService.batchSwap = jest
-          .fn()
-          .mockImplementation(() => {
+        require('@/services/contracts/vault.service').vaultService.batchSwap =
+          jest.fn().mockImplementation(() => {
             throw new Error('Failed to swap');
           });
         await expect(
@@ -271,7 +271,7 @@ describe('swap.service', () => {
         tokenAddresses = [
           tokens.USDC.address,
           tokens.ETHv2.address,
-          tokens.wstETH.address
+          tokens.wstETH.address,
         ];
         swaps = [
           {
@@ -279,15 +279,15 @@ describe('swap.service', () => {
             amount: amount,
             assetInIndex: 0,
             assetOutIndex: 1,
-            userData: ''
+            userData: '',
           },
           {
             poolId: PoolIdETHstETH,
             amount: amount,
             assetInIndex: 1,
             assetOutIndex: 2,
-            userData: ''
-          }
+            userData: '',
+          },
         ];
       });
 
@@ -300,8 +300,9 @@ describe('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const lidoBatchSwapArgs = require('@/services/contracts/lido-relayer.service')
-          .lidoRelayerService.batchSwap.mock.calls[0];
+        const lidoBatchSwapArgs =
+          require('@/services/contracts/lido-relayer.service')
+            .lidoRelayerService.batchSwap.mock.calls[0];
         expect(lidoBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(lidoBatchSwapArgs[1]).toEqual(swaps);
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
@@ -324,7 +325,7 @@ describe('swap.service', () => {
         tokenAddresses = [
           tokens.ETHv2.address,
           tokens.USDC.address,
-          tokens.wstETH.address
+          tokens.wstETH.address,
         ];
         await service.batchSwapV2(
           tokens.ETHv2,
@@ -332,8 +333,9 @@ describe('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const lidoBatchSwapArgs = require('@/services/contracts/lido-relayer.service')
-          .lidoRelayerService.batchSwap.mock.calls[0];
+        const lidoBatchSwapArgs =
+          require('@/services/contracts/lido-relayer.service')
+            .lidoRelayerService.batchSwap.mock.calls[0];
         expect(lidoBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(lidoBatchSwapArgs[1]).toEqual(swaps);
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
@@ -353,9 +355,8 @@ describe('swap.service', () => {
       });
 
       it('Should return a rejected promise if lido-relayer throws an error', async () => {
-        require('@/services/contracts/lido-relayer.service').lidoRelayerService.batchSwap = jest
-          .fn()
-          .mockImplementation(() => {
+        require('@/services/contracts/lido-relayer.service').lidoRelayerService.batchSwap =
+          jest.fn().mockImplementation(() => {
             throw new Error('Failed to swap');
           });
         await expect(
@@ -383,37 +384,37 @@ describe('swap.service', () => {
       tokens.bbaUSD = {
         address: '0x8fd162f338b770f7e879030830cde9173367f301',
         amount: BigNumber.from('0'),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
       tokens.USDC = {
         address: '0xe22da380ee6b445bb8273c81944adeb6e8450422',
         amount: BigNumber.from('300000000'),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
       tokens.bbaUSDC = {
         address: '0x0bbd32b14a6503ee20f87df38cf2d5d3b59ea2f5',
         amount: BigNumber.from('0'),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
       tokens.USDT = {
         address: '0x13512979ade267ab5100878e2e0f485b568328a4',
         amount: BigNumber.from('400000000'),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
       tokens.bbaUSDT = {
         address: '0xe667d48618e71c2a02e4a1b66ed9def1426938b6',
         amount: BigNumber.from('0'),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
       tokens.DAI = {
         address: '0xff795577d9ac8bd7d90ee22b6c1703490b6512fd',
         amount: BigNumber.from('500000000000000000000'),
-        type: SwapTokenType.min
+        type: SwapTokenType.min,
       };
       tokens.bbaDAI = {
         address: '0xfcccb77a946b6a3bd59d149f083b5bfbb8004d6d',
         amount: BigNumber.from('0'),
-        type: SwapTokenType.fixed
+        type: SwapTokenType.fixed,
       };
 
       require('@/services/web3/web3.service').setUserAddress(userAddress);
@@ -428,7 +429,7 @@ describe('swap.service', () => {
           tokens.USDT.address,
           tokens.bbaUSDT.address,
           tokens.DAI.address,
-          tokens.bbaDAI.address
+          tokens.bbaDAI.address,
         ];
         swaps = [
           {
@@ -436,43 +437,43 @@ describe('swap.service', () => {
             assetInIndex: 0,
             assetOutIndex: 1,
             amount: tokens.USDC.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSD,
             assetInIndex: 1,
             assetOutIndex: 2,
             amount: tokens.bbaUSD.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSDT,
             assetInIndex: 3,
             assetOutIndex: 4,
             amount: tokens.USDT.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSD,
             assetInIndex: 4,
             assetOutIndex: 2,
             amount: '0',
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBADAI,
             assetInIndex: 5,
             assetOutIndex: 6,
             amount: tokens.DAI.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSD,
             assetInIndex: 6,
             assetOutIndex: 2,
             amount: '0',
-            userData: '0x'
-          }
+            userData: '0x',
+          },
         ];
       });
 
@@ -517,7 +518,7 @@ describe('swap.service', () => {
           tokens.bbaUSDT.address,
           tokens.USDT.address,
           tokens.bbaDAI.address,
-          tokens.DAI.address
+          tokens.DAI.address,
         ];
         swaps = [
           {
@@ -525,43 +526,43 @@ describe('swap.service', () => {
             assetInIndex: 0,
             assetOutIndex: 1,
             amount: tokens.USDC.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSDC,
             assetInIndex: 1,
             assetOutIndex: 2,
             amount: '0',
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSD,
             assetInIndex: 0,
             assetOutIndex: 3,
             amount: tokens.USDT.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSDT,
             assetInIndex: 3,
             assetOutIndex: 4,
             amount: '0',
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBAUSD,
             assetInIndex: 0,
             assetOutIndex: 5,
             amount: tokens.DAI.amount.toString(),
-            userData: '0x'
+            userData: '0x',
           },
           {
             poolId: PoolIdBBADAI,
             assetInIndex: 5,
             assetOutIndex: 6,
             amount: '0',
-            userData: '0x'
-          }
+            userData: '0x',
+          },
         ];
       });
 

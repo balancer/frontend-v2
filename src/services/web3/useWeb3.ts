@@ -41,7 +41,7 @@ export default function useWeb3() {
     signer,
     disconnectWallet,
     connectWallet,
-    isSanctioned
+    isSanctioned,
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appNetworkConfig = configService.network;
 
@@ -59,6 +59,7 @@ export default function useWeb3() {
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isWalletConnecting = computed(() => walletState.value === 'connecting');
+  const isWalletDisconnected = computed(() => walletState.value === 'disconnected');
   const isMainnet = computed(
     () => appNetworkConfig.chainId === Network.MAINNET
   );
@@ -92,7 +93,7 @@ export default function useWeb3() {
     addressLink: (address: string) =>
       `${configService.network.explorer}/address/${address}`,
     tokenLink: (address: string) =>
-      `${configService.network.explorer}/token/${address}`
+      `${configService.network.explorer}/token/${address}`,
   };
 
   // METHODS
@@ -108,12 +109,15 @@ export default function useWeb3() {
       // wallet is connected
       delayedToggleWalletSelectModal();
       // Immediately try to connect with injected provider
-      connectWallet('metamask').then(() => {
-        // When wallet is connected, close modal
-        // and clear the delayed toggle timeout so the modal doesn't open
-        delayedToggleWalletSelectModal.flush();
-        toggleWalletSelectModal(false);
-      });
+      connectWallet('metamask')
+        .then(() => {
+          // If wallet is not ready, keep the modal open
+          if (isWalletDisconnected.value) return;
+          // When wallet is connected, close modal
+          // and clear the delayed toggle timeout so the modal doesn't open
+          delayedToggleWalletSelectModal.flush();
+          toggleWalletSelectModal(false);
+        });
     } else {
       // If there's no injected provider, open the modal immediately
       toggleWalletSelectModal();
@@ -124,7 +128,7 @@ export default function useWeb3() {
     QUERY_KEYS.Account.Profile(networkId, account, chainId),
     () => web3Service.getProfile(account.value),
     reactive({
-      enabled: canLoadProfile
+      enabled: canLoadProfile,
     })
   );
 
@@ -163,6 +167,6 @@ export default function useWeb3() {
     disconnectWallet,
     toggleWalletSelectModal,
     startConnectWithInjectedProvider,
-    setBlockNumber
+    setBlockNumber,
   };
 }

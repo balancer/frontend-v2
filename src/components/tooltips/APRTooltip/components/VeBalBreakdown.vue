@@ -29,18 +29,18 @@ const aprLabel = computed((): string => fNum2(props.apr, FNumFormats.percent));
 
 const items = computed((): string[] => [
   t('tooltips.veBalApr.breakdown1'),
-  t('tooltips.veBalApr.breakdown2')
+  t('tooltips.veBalApr.breakdown2'),
 ]);
 </script>
 
 <template>
   <BalBreakdown :items="items">
     {{ aprLabel }}
-    <span class="ml-1 text-secondary text-xs">
+    <span class="ml-1 text-xs text-secondary">
       {{ $t('tooltips.veBalApr.title') }}
     </span>
     <template #item="{ item }">
-      <div class="text-secondary text-xs">
+      <div class="text-xs text-secondary">
         {{ item }}
       </div>
     </template>

@@ -58,13 +58,13 @@ const yieldBreakdownItems = computed((): [string, string][] =>
   <BalBreakdown :items="yieldBreakdownItems" :hideItems="!hasMultiRewardTokens">
     <div class="flex items-center">
       {{ fNum2(yieldAPR.total, FNumFormats.percent) }}
-      <span class="ml-1 text-secondary text-xs">
+      <span class="ml-1 text-xs text-secondary">
         {{ yieldAPRLabel }}
       </span>
     </div>
     <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
       {{ fNum2(amount, FNumFormats.percent) }}
-      <span class="text-secondary text-xs ml-1">
+      <span class="ml-1 text-xs text-secondary">
         {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
       </span>
     </template>

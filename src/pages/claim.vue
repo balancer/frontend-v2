@@ -6,11 +6,11 @@ import { computed, onBeforeMount, watch } from 'vue';
 import HeroClaim from '@/components/contextual/pages/claim/HeroClaim.vue';
 import LegacyClaims from '@/components/contextual/pages/claim/LegacyClaims.vue';
 import BalClaimsTable, {
-  RewardRow
+  RewardRow,
 } from '@/components/tables/BalClaimsTable.vue';
 import GaugeRewardsTable from '@/components/tables/GaugeRewardsTable.vue';
 import ProtocolRewardsTable, {
-  ProtocolRewardRow
+  ProtocolRewardRow,
 } from '@/components/tables/ProtocolRewardsTable.vue';
 import useApp from '@/composables/useApp';
 import { GaugePool, useClaimsData } from '@/composables/useClaimsData';
@@ -47,7 +47,7 @@ const {
   gauges,
   gaugePools,
   protocolRewards,
-  isLoading: isClaimsLoading
+  isLoading: isClaimsLoading,
 } = useClaimsData();
 
 /**
@@ -58,20 +58,20 @@ const networks = [
     id: 'ethereum',
     name: 'Ethereum',
     subdomain: 'app',
-    key: '1'
+    key: '1',
   },
   {
     id: 'polygon',
     name: 'Polygon',
     subdomain: 'polygon',
-    key: '137'
+    key: '137',
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
     subdomain: 'arbitrum',
-    key: '42161'
-  }
+    key: '42161',
+  },
 ];
 
 /**
@@ -98,7 +98,7 @@ const balRewardsData = computed((): RewardRow[] => {
         gauge,
         pool,
         amount,
-        value: toFiat(amount, balToken.value.address)
+        value: toFiat(amount, balToken.value.address),
       });
 
     return arr;
@@ -134,7 +134,7 @@ const gaugeTables = computed((): GaugeTable[] => {
     if (pool && totalRewardValue.gt(0))
       arr.push({
         gauge,
-        pool
+        pool,
       });
 
     return arr;
@@ -157,7 +157,7 @@ async function injectPoolTokens(pools: GaugePool[]): Promise<void> {
 function gaugeTitle(pool: GaugePool): string {
   const _tokens = pool.tokens.map(token => ({
     ...token,
-    ...getToken(getAddress(token.address))
+    ...getToken(getAddress(token.address)),
   }));
 
   if (isStableLike(pool.poolType)) {
@@ -171,7 +171,7 @@ function gaugeTitle(pool: GaugePool): string {
       token =>
         `${fNum2(token.weight, {
           style: 'percent',
-          maximumFractionDigits: 0
+          maximumFractionDigits: 0,
         })} ${token.symbol}`
     )
     .join(' / ');
@@ -187,7 +187,7 @@ function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
     return {
       token,
       amount,
-      value: toFiat(amount, tokenAddress)
+      value: toFiat(amount, tokenAddress),
     };
   });
 }
@@ -200,8 +200,8 @@ async function getBBaUSDPrice() {
     const appoxPrice = await bbAUSDToken.getRate();
     injectPrices({
       [FiatCurrency.usd]: {
-        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber()
-      }
+        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber(),
+      },
     });
   }
 }
@@ -228,18 +228,18 @@ onBeforeMount(async () => {
 <template>
   <HeroClaim />
   <div>
-    <div class="xl:container xl:mx-auto xl:px-4 py-12">
-      <h2 class="font-body font-semibold text-2xl px-4 xl:px-0">
+    <div class="xl:container py-12 xl:px-4 xl:mx-auto">
+      <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
       <template v-if="!isL2">
         <div class="mb-16">
           <div class="px-4 xl:px-0">
-            <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 h-8 w-64" />
+            <BalLoadingBlock v-if="appLoading" class="mt-6 mb-2 w-64 h-8" />
             <div v-else class="flex items-center mt-6 mb-2">
               <BalAsset :address="balToken?.address" />
-              <h3 class="text-xl ml-2">
+              <h3 class="ml-2 text-xl">
                 Balancer (BAL) {{ $t('earnings').toLowerCase() }}
               </h3>
             </div>
@@ -247,7 +247,7 @@ onBeforeMount(async () => {
           <BalClaimsTable :rewardsData="balRewardsData" :isLoading="loading" />
         </div>
         <div class="mb-16">
-          <h3 class="text-xl mt-8 mb-3 px-4 xl:px-0">
+          <h3 class="px-4 xl:px-0 mt-8 mb-3 text-xl">
             {{ $t('protocolEarnings') }}
           </h3>
           <ProtocolRewardsTable
@@ -263,7 +263,7 @@ onBeforeMount(async () => {
         </div>
       </template>
 
-      <h3 v-if="!isL2" class="text-xl mt-8 px-4 xl:px-0">
+      <h3 v-if="!isL2" class="px-4 xl:px-0 mt-8 text-xl">
         {{ $t('otherTokenEarnings') }}
       </h3>
       <BalLoadingBlock v-if="loading" class="mt-6 mb-2 h-56" />
@@ -272,8 +272,8 @@ onBeforeMount(async () => {
       >
         <div v-for="{ gauge, pool } in gaugeTables" :key="gauge.id">
           <div class="mb-16">
-            <div class="flex mt-4 px-4 xl:px-0">
-              <h4 class="text-base mb-2">
+            <div class="flex px-4 xl:px-0 mt-4">
+              <h4 class="mb-2 text-base">
                 {{ gaugeTitle(pool) }}
               </h4>
             </div>
@@ -288,28 +288,28 @@ onBeforeMount(async () => {
       <BalBlankSlate
         v-else-if="
           (!isClaimsLoading && !appLoading && gaugeTables.length === 0) ||
-            !isWalletReady
+          !isWalletReady
         "
-        class="mt-4 px-4 xl:px-0 mb-16"
+        class="px-4 xl:px-0 mt-4 mb-16"
       >
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
       <div class="px-4 xl:px-0 mb-16">
-        <h2 class="font-body font-semibold text-2xl mt-8">
+        <h2 class="mt-8 font-body text-2xl font-semibold">
           {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
         </h2>
         <BalFlexGrid class="mt-4" flexWrap>
           <BalBtn
-            tag="a"
             v-for="network in networkBtns"
             :key="network.id"
+            tag="a"
             :href="`https://${network.subdomain}.balancer.fi/#/claim`"
             color="white"
           >
             <img
               :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
               :alt="network.id"
-              class="w-6 h-6 rounded-full shadow-sm mr-2"
+              class="mr-2 w-6 h-6 rounded-full shadow-sm"
             />
             {{ $t('pages.claim.btns.claimOn') }} {{ network.name }}
           </BalBtn>

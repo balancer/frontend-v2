@@ -29,8 +29,8 @@ describe.only('ClaimBalBtn', () => {
         props: {
           gauges: [gauge],
           label: 'Claim',
-          amount: '1000'
-        }
+          amount: '1000',
+        },
       });
 
       expect(getByText('Claim')).toBeVisible();
@@ -42,8 +42,8 @@ describe.only('ClaimBalBtn', () => {
           props: {
             gauges: [gauge],
             label: 'Claim',
-            amount: '1000'
-          }
+            amount: '1000',
+          },
         });
 
         const btn = getByText('Claim');
@@ -60,8 +60,8 @@ describe.only('ClaimBalBtn', () => {
           props: {
             gauges: [gauge, gauge, gauge],
             label: 'Claim',
-            amount: '1000'
-          }
+            amount: '1000',
+          },
         });
 
         const btn = getByText('Claim');
@@ -71,7 +71,7 @@ describe.only('ClaimBalBtn', () => {
         expect(balancerMinter.mintMany).toBeCalledWith([
           mockGaugeAddress,
           mockGaugeAddress,
-          mockGaugeAddress
+          mockGaugeAddress,
         ]);
       });
     });

@@ -24,7 +24,7 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
 </script>
 
 <template>
-  <div class="grid gap-2 grid-rows-1 grid-flow-col">
+  <div class="grid grid-rows-1 grid-flow-col gap-2">
     <DarkModeToggle v-if="isDesktop" />
     <AppNavActivityBtn v-if="account" />
     <AppNavAccountBtn v-if="account" />
@@ -42,9 +42,9 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
     <BalBtn
       v-if="isMobile"
       color="white"
-      @click="setSidebarOpen(true)"
       flat
       circle
+      @click="setSidebarOpen(true)"
     >
       <BalIcon name="menu" size="lg" />
     </BalBtn>

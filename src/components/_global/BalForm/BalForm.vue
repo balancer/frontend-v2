@@ -55,23 +55,23 @@ function useFormValidations() {
   return {
     errors,
     validate,
-    validateInput
+    validateInput,
   };
 }
 
 export default defineComponent({
   name: 'BalForm',
 
-  emits: ['onSubmit'],
-
   props: {
     action: { type: String, default: '' },
-    method: { type: String, default: 'post' }
+    method: { type: String, default: 'post' },
   },
+
+  emits: ['onSubmit'],
 
   setup() {
     const { errors, validate, validateInput } = useFormValidations();
     return { errors, validate, validateInput };
-  }
+  },
 });
 </script>

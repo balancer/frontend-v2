@@ -1,10 +1,10 @@
 <template>
   <div
-    class="w-9 h-9 flex justify-center items-center cursor-pointer rounded-full shadow-sm"
+    class="flex justify-center items-center w-9 h-9 rounded-full shadow-sm cursor-pointer"
     @click="toggle"
   >
     <div
-      class="ease-in-out duration-300"
+      class="duration-300 ease-in-out"
       :class="{ 'transform rotate-180': isRotated }"
     >
       <svg
@@ -39,8 +39,8 @@ export default defineComponent({
 
     return {
       isRotated,
-      toggle
+      toggle,
     };
-  }
+  },
 });
 </script>

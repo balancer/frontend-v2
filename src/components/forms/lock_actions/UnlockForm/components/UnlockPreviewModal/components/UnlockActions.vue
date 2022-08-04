@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -49,7 +49,7 @@ const unlockActionState = reactive<UnlockActionState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -68,7 +68,7 @@ const unlockAction: TransactionActionInfo = {
   loadingLabel: t(`unlockVeBAL.previewModal.actions.unlock.loadingLabel`),
   confirmingLabel: t(`unlockVeBAL.previewModal.actions.unlock.confirming`),
   action: submit,
-  stepTooltip: t(`unlockVeBAL.previewModal.actions.unlock.tooltip`)
+  stepTooltip: t(`unlockVeBAL.previewModal.actions.unlock.tooltip`),
 };
 
 const actions = ref<TransactionActionInfo[]>([unlockAction]);
@@ -85,8 +85,8 @@ async function handleTransaction(tx: TransactionResponse): Promise<void> {
       props.lockablePoolTokenInfo.symbol
     }`,
     details: {
-      totalLpTokens: props.totalLpTokens
-    }
+      totalLpTokens: props.totalLpTokens,
+    },
   });
 
   unlockActionState.confirmed = await txListener(tx, {
@@ -101,7 +101,7 @@ async function handleTransaction(tx: TransactionResponse): Promise<void> {
     },
     onTxFailed: () => {
       unlockActionState.confirming = false;
-    }
+    },
   });
 }
 
@@ -135,7 +135,7 @@ async function submit() {
     />
     <template v-else>
       <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
+        class="flex justify-between items-center mt-4 text-sm text-gray-400 dark:text-gray-600"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />

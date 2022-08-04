@@ -36,8 +36,9 @@ export default class PoolShares {
         return [`_${timestamp}`, timestampFragment];
       })
     );
-    const data = await this.service.client.get(query);
-    return this.serialize(data);
+
+    const snapshots = await this.service.client.get(query);
+    return this.serialize(snapshots);
   }
 
   private serialize(snapshotData: Record<string, PoolSnapshot>): PoolSnapshots {
@@ -49,13 +50,8 @@ export default class PoolShares {
           if (!data) {
             return [timestamp, null];
           }
-          const {
-            amounts,
-            totalShares,
-            swapVolume,
-            swapFees,
-            liquidity
-          } = data;
+          const { amounts, totalShares, swapVolume, swapFees, liquidity } =
+            data;
 
           return [
             timestamp,
@@ -65,8 +61,8 @@ export default class PoolShares {
               totalShares,
               swapVolume,
               swapFees,
-              liquidity
-            }
+              liquidity,
+            },
           ];
         })
         .filter(entry => !!entry[1])

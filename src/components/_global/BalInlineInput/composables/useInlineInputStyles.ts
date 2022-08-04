@@ -56,38 +56,38 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const parentClasses = computed(() => attrs.class);
 
   const inputContainerClasses = computed(() => ({
-    [extPaddingClass()]: true
+    [extPaddingClass()]: true,
   }));
 
   const inputGroupClasses = computed(() => ({
-    [intPaddingClass()]: true
+    [intPaddingClass()]: true,
   }));
 
   const headerClasses = computed(() => ({
-    [intPaddingClass()]: true
+    [intPaddingClass()]: true,
   }));
 
   const footerClasses = computed(() => ({
-    [intPaddingClass()]: true
+    [intPaddingClass()]: true,
   }));
 
   const inputClasses = computed(() => ({
     [inputHeightClass()]: true,
     [inputTextSize()]: true,
     'text-right': props.inputAlignRight,
-    'font-numeric': props.type === 'number'
+    'font-numeric': props.type === 'number',
   }));
 
   const prependClasses = computed(() => ({
-    [inputHeightClass()]: true
+    [inputHeightClass()]: true,
   }));
 
   const appendClasses = computed(() => ({
-    [inputHeightClass()]: true
+    [inputHeightClass()]: true,
   }));
 
   const borderRadiusClasses = computed(() => ({
-    'rounded-lg': !props.noRadius
+    'rounded-lg': !props.noRadius,
   }));
 
   return {
@@ -99,6 +99,6 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
     inputClasses,
     prependClasses,
     appendClasses,
-    borderRadiusClasses
+    borderRadiusClasses,
   };
 }

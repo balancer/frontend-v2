@@ -1,11 +1,11 @@
 <template>
   <BalModal
     :show="isVisible"
-    @close="$emit('close')"
     title="Use of 3rd party services"
     class="third-parties"
+    @close="emit('close')"
   >
-    <p class="text-sm pb-3">{{ $t('policies.balancerThirdPartyInfo') }}.</p>
+    <p class="pb-3 text-sm">{{ $t('policies.balancerThirdPartyInfo') }}.</p>
     <BalStack vertical class="pb-2">
       <span class="text-sm font-medium">
         {{ $t('policies.usesFollowing') }}
@@ -13,10 +13,10 @@
       </span>
       <BalStack vertical class="pl-2">
         <BalStack
-          spacing="base"
-          horizontal
           v-for="service in services"
           :key="service"
+          spacing="base"
+          horizontal
           align="start"
         >
           <img
@@ -27,7 +27,9 @@
             class="mt-1"
           />
           <BalStack vertical spacing="none">
-            <h6 class="capitalize">{{ service.replaceAll('-', ' ') }}</h6>
+            <h6 class="capitalize">
+              {{ service.replaceAll('-', ' ') }}
+            </h6>
             <span class="text-sm">{{ $t(`services.${service}`) }}</span>
           </BalStack>
         </BalStack>
@@ -43,6 +45,10 @@ type Props = {
 
 defineProps<Props>();
 
+const emit = defineEmits<{
+  (e: 'close'): void;
+}>();
+
 const services = [
   'infura',
   'alchemy',
@@ -50,7 +56,7 @@ const services = [
   'google-analytics',
   'fathom-analytics',
   'TRM-labs',
-  'sentry'
+  'sentry',
 ];
 </script>
 <style scoped>

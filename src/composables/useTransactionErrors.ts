@@ -13,17 +13,17 @@ export default function useTranasactionErrors() {
    */
   const gasTooLowError: TransactionError = {
     title: t('transactionErrors.gasTooLow.title'),
-    description: t('transactionErrors.gasTooLow.description')
+    description: t('transactionErrors.gasTooLow.description'),
   };
 
   const cannotEstimateGasError: TransactionError = {
     title: t('transactionErrors.cannotEstGas.title'),
-    description: t('transactionErrors.cannotEstGas.description')
+    description: t('transactionErrors.cannotEstGas.description'),
   };
 
   const slippageError: TransactionError = {
     title: t('transactionErrors.slippage.title'),
-    description: t('transactionErrors.slippage.description')
+    description: t('transactionErrors.slippage.description'),
   };
 
   function defaultError(message = ''): TransactionError {
@@ -31,7 +31,7 @@ export default function useTranasactionErrors() {
       title: t('transactionErrors.default.title'),
       description: `${message} ${t(
         'transactionErrors.default.description'
-      )}`.trim()
+      )}`.trim(),
     };
   }
 
@@ -54,6 +54,6 @@ export default function useTranasactionErrors() {
   }
 
   return {
-    parseError
+    parseError,
   };
 }

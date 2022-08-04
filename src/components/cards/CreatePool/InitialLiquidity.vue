@@ -28,7 +28,7 @@ const {
   priceFor,
   nativeAsset,
   wrappedNativeAsset,
-  dynamicDataLoading
+  dynamicDataLoading,
 } = useTokens();
 const { fNum2 } = useNumbers();
 const {
@@ -49,7 +49,7 @@ const {
   proceed,
   clearAmounts,
   setAmountsToMaxBalances,
-  saveState
+  saveState,
 } = usePoolCreation();
 const { t } = useI18n();
 
@@ -86,7 +86,7 @@ const arbitrageDelta = computed(() => {
   }
   return {
     delta: totalPctDelta,
-    value: totalPctDelta.times(poolLiquidity.value)
+    value: totalPctDelta.times(poolLiquidity.value),
   };
 });
 
@@ -210,7 +210,7 @@ function handleClearAll() {
 
 function onAlertMountChange() {
   emit('update:height', {
-    height: cardWrapper.value?.offsetHeight || 0
+    height: cardWrapper.value?.offsetHeight || 0,
   });
 }
 
@@ -231,8 +231,8 @@ function saveAndProceed() {
           <BalStack horizontal spacing="xs" align="center">
             <button
               v-if="!createPoolTxHash"
+              class="flex text-blue-500 hover:text-blue-700"
               @click="goBack"
-              class="text-blue-500 hover:text-blue-700 flex"
             >
               <BalIcon class="flex" name="chevron-left" />
             </button>
@@ -246,15 +246,15 @@ function saveAndProceed() {
               horizontal
               align="center"
               spacing="sm"
-              class="border rounded-lg p-2 mt-2"
+              class="p-2 mt-2 rounded-lg border"
             >
               <BalIcon name="zap" size="sm" class="mt-1 text-secondary" />
-              <span class="dark:text-gray-400 font-medium">
+              <span class="font-medium dark:text-gray-400">
                 {{ t('optimizedPrefilled') }}
               </span>
               <button
-                @click="handleClearAll"
                 class="text-sm font-medium text-gray-400 hover:text-blue-500"
+                @click="handleClearAll"
               >
                 Clear all
               </button>
@@ -264,31 +264,32 @@ function saveAndProceed() {
         <BalStack vertical>
           <TokenInput
             v-for="(address, i) in tokenAddresses"
+            :key="i"
             v-model:amount="seedTokens[i].amount"
             v-model:address="tokenAddresses[i]"
             fixedToken
-            :key="i"
             :weight="seedTokens[i].weight / 100"
             :name="`initial-token-${seedTokens[i].tokenAddress}`"
             :options="tokenOptions(i)"
+            :rules="[isGreaterThan(0)]"
             @update:amount="handleAmountChange(address)"
             @update:address="handleAddressChange($event)"
-            :rules="[isGreaterThan(0)]"
           />
         </BalStack>
         <BalStack horizontal spacing="sm" align="center">
           <div>
-            <span class="text-sm pl-2">{{
+            <span class="pl-2 text-sm">{{
               t('autoOptimiseLiquidityToggle.label')
             }}</span>
             <BalTooltip width="64">
-              <template v-slot:activator>
+              <template #activator>
                 <BalIcon
                   name="info"
                   size="xs"
-                  class="text-gray-400 ml-1 flex"
+                  class="flex ml-1 text-gray-400"
                 />
               </template>
+              <!-- eslint-disable-next-line vue/no-v-html -->
               <div v-html="t('autoOptimiseLiquidityToggle.tooltip')" />
             </BalTooltip>
           </div>
@@ -300,7 +301,7 @@ function saveAndProceed() {
             />
           </div>
         </BalStack>
-        <div class="p-3 border rounded-lg">
+        <div class="p-3 rounded-lg border">
           <BalStack horizontal justify="between">
             <BalStack vertical spacing="none">
               <h6>{{ t('total') }}</h6>
@@ -315,8 +316,8 @@ function saveAndProceed() {
                     'text-sm font-semibold3',
                     {
                       'text-gray-400 dark:text-gray-600': areAmountsMaxed,
-                      'text-blue-500 hover:text-blue-50': !areAmountsMaxed
-                    }
+                      'text-blue-500 hover:text-blue-50': !areAmountsMaxed,
+                    },
                   ]"
                   @click="handleMax"
                 >
@@ -330,13 +331,13 @@ function saveAndProceed() {
               </h6>
               <AnimatePresence
                 :isVisible="!isOptimised"
+                unmountInstantly
                 @on-presence="onAlertMountChange"
                 @on-exit="onAlertMountChange"
-                unmountInstantly
               >
                 <button
+                  class="text-sm font-medium text-transparent bg-clip-text bg-gradient-to-tr from-blue-500 hover:from-blue-800 to-pink-500 hover:to-pink-800"
                   @click="optimiseLiquidity(true)"
-                  class="bg-clip-text text-sm text-transparent font-medium bg-gradient-to-tr from-blue-500 to-pink-500  hover:from-blue-800 hover:to-pink-800"
                 >
                   {{ t('optimize') }}
                 </button>
@@ -346,16 +347,16 @@ function saveAndProceed() {
         </div>
         <AnimatePresence
           :isVisible="arbitrageDelta.delta > 0.05"
+          unmountInstantly
           @on-presence="onAlertMountChange"
           @on-exit="onAlertMountChange"
-          unmountInstantly
         >
           <BalAlert
             type="warning"
             :title="
               t('createAPool.arbTitle', [
                 fNum2(arbitrageDelta.value.toString(), FNumFormats.fiat),
-                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent)
+                fNum2(arbitrageDelta.delta.toString(), FNumFormats.percent),
               ])
             "
           >
@@ -364,11 +365,12 @@ function saveAndProceed() {
         </AnimatePresence>
         <BalBtn
           :disabled="isExceedingWalletBalance || hasZeroAmount"
-          @click="saveAndProceed"
           block
           color="gradient"
-          >{{ t('preview') }}</BalBtn
+          @click="saveAndProceed"
         >
+          {{ t('preview') }}
+        </BalBtn>
       </BalStack>
     </BalCard>
   </div>

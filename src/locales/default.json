@@ -473,8 +473,8 @@
   "noInitLiquidity": "This pool has no initial liquidity",
   "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
   "noInvestments": "No investments",
-  "noUnstakedInvestments": "You have no unstaked investments",
-  "noStakedInvestments": "You have no staked investments",
+  "noUnstakedInvestments": "You have no unstaked investments on {0}",
+  "noStakedInvestments": "You have no staked investments on {0}",
   "noInvestmentsPool": "No investments in this pool",
   "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
   "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
@@ -483,7 +483,7 @@
   "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
   "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
   "noRecentActivity": "Your recent activity will appear here…",
-  "noResults": "No results.",
+  "noResults": "No results",
   "noSwapsPool": "No swaps in this pool.",
   "noTokensInWallet": "You don't have any tokens in your connected wallet on {0}",
   "numberOfPools": "Number of pools",
@@ -590,7 +590,8 @@
       "title": "This pool contains double-entrypoint tokens, which have been found to be incompatible with Balancer. It is currently not possible to withdraw all assets from the pool proportionally. While it is possible to withdraw in a single asset, liquidity providers are advised to wait. A mechanism is being implemented to allow for proportional withdrawals. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Learn more </a>"
     },
     "poolOwnerVulnWarningGovernance": {
-      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to."
+      "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by Balancer Governance itself. A new version of the pool will be deployed in the next few weeks that can be migrated to.",
+      "description": ""
     },
     "poolOwnerVulnWarningEcosystem": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Funds are safe insofar as the exploit would have to be initiated by a multisig composed of known participants in the Balancer ecosystem."

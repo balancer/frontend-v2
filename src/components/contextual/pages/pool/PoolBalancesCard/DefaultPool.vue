@@ -8,25 +8,27 @@
     <BalTable
       :columns="columns"
       :data="tableData"
-      :is-loading="loading"
-      skeleton-class="h-64"
+      :isLoading="loading"
+      skeletonClass="h-64"
       sticky="both"
-      :initial-state="{
+      :initialState="{
         sortColumn: 'weight',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
     >
-      <template v-slot:tokenColumnCell="token">
-        <div class="px-6 py-4 flex flex-row">
+      <template #tokenColumnCell="token">
+        <div class="flex flex-row py-4 px-6">
           <BalLink
             :href="explorer.addressLink(token.address)"
             external
             noStyle
             class="flex items-center w-full"
           >
-            <div><BalAsset :address="token.address" :size="36" /></div>
+            <div>
+              <BalAsset :address="token.address" :size="36" />
+            </div>
             <div
-              class="pl-4 font-medium eth-address truncate text-ellipsis overflow-hidden"
+              class="overflow-hidden pl-4 font-medium truncate eth-address text-ellipsis"
             >
               {{ symbolFor(token.address) }}
             </div>
@@ -38,18 +40,18 @@
           </BalLink>
         </div>
       </template>
-      <template v-slot:tokenWeightCell="token">
-        <div class="px-6 py-4 text-right font-numeric">
+      <template #tokenWeightCell="token">
+        <div class="py-4 px-6 text-right font-numeric">
           {{ weightFor(token.address) }}
         </div>
       </template>
-      <template v-slot:tokenBalanceCell="token">
-        <div class="px-6 py-4 text-right font-numeric">
+      <template #tokenBalanceCell="token">
+        <div class="py-4 px-6 text-right font-numeric">
           {{ balanceFor(token.address) }}
         </div>
       </template>
-      <template v-slot:tokenValueCell="token">
-        <div class="px-6 py-4 text-right font-numeric">
+      <template #tokenValueCell="token">
+        <div class="py-4 px-6 text-right font-numeric">
           {{ fiatValueFor(token.address) }}
         </div>
       </template>
@@ -74,9 +76,9 @@ export default defineComponent({
   props: {
     pool: {
       type: Object as PropType<Pool>,
-      required: true
+      required: true,
     },
-    loading: { type: Boolean, default: false }
+    loading: { type: Boolean, default: false },
   },
   setup(props) {
     /**
@@ -102,7 +104,7 @@ export default defineComponent({
       const onchainTokens = pool.value?.onchain?.tokens || [];
       return Object.keys(onchainTokens).map((address, index) => ({
         address,
-        index
+        index,
       }));
     });
 
@@ -112,7 +114,7 @@ export default defineComponent({
         id: 'token',
         accessor: 'address',
         Cell: 'tokenColumnCell',
-        width: 175
+        width: 175,
       },
       {
         name: t('weight'),
@@ -122,7 +124,7 @@ export default defineComponent({
         align: 'right',
         sortKey: pool => weightFor(pool.address),
         width: 125,
-        hidden: !props.loading && isStableLikePool.value
+        hidden: !props.loading && isStableLikePool.value,
       },
       {
         name: t('balance'),
@@ -131,7 +133,7 @@ export default defineComponent({
         Cell: 'tokenBalanceCell',
         align: 'right',
         sortKey: pool => balanceFor(pool.address),
-        width: 125
+        width: 125,
       },
       {
         name: t('value'),
@@ -140,8 +142,8 @@ export default defineComponent({
         Cell: 'tokenValueCell',
         align: 'right',
         sortKey: pool => numeral(fiatValueFor(pool.address)).value(),
-        width: 125
-      }
+        width: 125,
+      },
     ]);
 
     /**
@@ -182,8 +184,8 @@ export default defineComponent({
       explorer: explorerLinks,
       columns,
       tableData,
-      upToLargeBreakpoint
+      upToLargeBreakpoint,
     };
-  }
+  },
 });
 </script>

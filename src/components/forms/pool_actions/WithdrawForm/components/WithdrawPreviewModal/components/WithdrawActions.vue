@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   TransactionReceipt,
-  TransactionResponse
+  TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
 import {
@@ -11,7 +11,7 @@ import {
   ref,
   toRef,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -67,7 +67,7 @@ const withdrawalState = reactive<WithdrawalState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -94,7 +94,7 @@ const {
   batchSwapKind,
   shouldUseBatchRelayer,
   batchRelayerSwap,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
 } = toRefs(props.math);
 
 const withdrawalAction: TransactionActionInfo = {
@@ -102,7 +102,7 @@ const withdrawalAction: TransactionActionInfo = {
   loadingLabel: t('withdraw.preview.loadingLabel.withdraw'),
   confirmingLabel: t('confirming'),
   action: submit,
-  stepTooltip: t('withdraw.preview.tooltips.withdrawStep')
+  stepTooltip: t('withdraw.preview.tooltips.withdrawStep'),
 };
 
 const actions = ref<TransactionActionInfo[]>([withdrawalAction]);
@@ -132,12 +132,12 @@ async function handleTransaction(tx): Promise<void> {
     action: 'withdraw',
     summary: t('transactionSummary.withdrawFromPool', [
       fiatTotalLabel.value,
-      poolWeightsLabel(props.pool)
+      poolWeightsLabel(props.pool),
     ]),
     details: {
       total: fiatTotalLabel.value,
-      pool: props.pool
-    }
+      pool: props.pool,
+    },
   });
 
   withdrawalState.confirmed = await txListener(tx, {
@@ -151,7 +151,7 @@ async function handleTransaction(tx): Promise<void> {
     },
     onTxFailed: () => {
       withdrawalState.confirming = false;
-    }
+    },
   });
 }
 

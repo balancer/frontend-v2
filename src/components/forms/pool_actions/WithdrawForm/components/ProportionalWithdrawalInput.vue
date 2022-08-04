@@ -43,7 +43,7 @@ const {
   fiatAmounts,
   proportionalAmounts,
   shouldFetchBatchSwap,
-  loadingAmountsOut
+  loadingAmountsOut,
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -57,14 +57,12 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const tokens = computed(
-  (): TokenInfoMap => {
-    if (isStablePhantom(props.pool.poolType)) {
-      return getTokens(props.pool.mainTokens || []);
-    }
-    return getTokens(props.pool.tokensList);
+const tokens = computed((): TokenInfoMap => {
+  if (isStablePhantom(props.pool.poolType)) {
+    return getTokens(props.pool.mainTokens || []);
   }
-);
+  return getTokens(props.pool.tokensList);
+});
 
 const percentageLabel = computed(() => {
   try {
@@ -123,10 +121,10 @@ onBeforeMount(() => {
       <div class="proportional-input-container">
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
-          <div class="flex-grow text-right text-xl font-numeric">
+          <div class="flex-grow text-xl text-right font-numeric">
             <BalLoadingBlock
               v-if="loadingAmountsOut"
-              class="w-20 h-8 float-right"
+              class="float-right w-20 h-8"
             />
             <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
           </div>
@@ -144,8 +142,8 @@ onBeforeMount(() => {
           :min="slider.min"
           tooltip="none"
           :disabled="!hasBpt"
-          @update:modelValue="handleSliderChange"
-          @dragEnd="handleSliderEnd"
+          @update:model-value="handleSliderChange"
+          @drag-end="handleSliderEnd"
         />
       </div>
     </div>
@@ -156,7 +154,7 @@ onBeforeMount(() => {
         :key="address"
         class="p-4 last:mb-0"
       >
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <div class="flex items-center">
             <BalAsset :address="address" class="mr-2" />
             <div class="flex flex-col leading-none">
@@ -166,7 +164,7 @@ onBeforeMount(() => {
                   {{
                     fNum2(seedTokens[i], {
                       style: 'percent',
-                      maximumFractionDigits: 0
+                      maximumFractionDigits: 0,
                     })
                   }}
                 </span>
@@ -174,11 +172,11 @@ onBeforeMount(() => {
             </div>
           </div>
           <div
-            class="flex flex-col flex-grow items-end text-right pl-2 font-numeric"
+            class="flex flex-col flex-grow items-end pl-2 text-right font-numeric"
           >
             <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-12" />
             <template v-else>
-              <span class="break-words text-xl">
+              <span class="text-xl break-words">
                 {{ fNum2(proportionalAmounts[i], FNumFormats.token) }}
               </span>
               <span class="text-sm text-gray-400">

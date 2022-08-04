@@ -6,9 +6,9 @@ export async function subgraphRequest(url: string, query, options: any = {}) {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      ...options?.headers
+      ...options?.headers,
     },
-    body: JSON.stringify({ query: jsonToGraphQLQuery({ query }) })
+    body: JSON.stringify({ query: jsonToGraphQLQuery({ query }) }),
   });
   const { data } = await res.json();
   return data || {};

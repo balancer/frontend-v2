@@ -37,13 +37,13 @@ const defaultAttrs = {
     balance: true,
     weight: true,
     priceRate: true,
-    symbol: true
-  }
+    symbol: true,
+  },
 };
 
 export default (args = {}, attrs = {}) => ({
   pools: {
     __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs)
-  }
+    ...merge({}, defaultAttrs, attrs),
+  },
 });

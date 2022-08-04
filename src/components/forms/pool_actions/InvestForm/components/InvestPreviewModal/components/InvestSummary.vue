@@ -17,7 +17,7 @@ type Props = {
  */
 withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
-  highPriceImpact: false
+  highPriceImpact: false,
 });
 /**
  * COMPOSABLES
@@ -40,7 +40,7 @@ const { currency } = useUserSettings();
           {{ fNum2(fiatTotal, FNumFormats.fiat) }}
           <BalTooltip
             :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
-            icon-size="sm"
+            iconSize="sm"
             class="ml-2"
           />
         </div>
@@ -49,22 +49,23 @@ const { currency } = useUserSettings();
         :class="[
           'summary-table-row',
           {
-            'bg-red-50 dark:bg-red-500 text-red-500 dark:text-white': highPriceImpact
-          }
+            'bg-red-50 dark:bg-red-500 text-red-500 dark:text-white':
+              highPriceImpact,
+          },
         ]"
       >
         <div class="summary-table-label">
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          <BalLoadingBlock v-if="isLoadingPriceImpact" class="h-6 w-10" />
+          <BalLoadingBlock v-if="isLoadingPriceImpact" class="w-10 h-6" />
           <template v-else>
             {{ fNum2(priceImpact, FNumFormats.percent) }}
             <BalTooltip
               :text="$t('tooltips.invest.priceImpact')"
-              icon-size="sm"
-              :icon-name="highPriceImpact ? 'alert-triangle' : 'info'"
-              :icon-class="
+              iconSize="sm"
+              :iconName="highPriceImpact ? 'alert-triangle' : 'info'"
+              :iconClass="
                 highPriceImpact
                   ? 'text-red-500 dark:text-white'
                   : 'text-gray-300'
@@ -83,12 +84,15 @@ const { currency } = useUserSettings();
 .summary-table {
   @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg mt-4;
 }
+
 .summary-table-row {
   @apply grid grid-cols-2 px-2 py-1;
 }
+
 .summary-table-label {
   @apply flex items-center;
 }
+
 .summary-table-number {
   @apply flex items-center justify-end;
 }

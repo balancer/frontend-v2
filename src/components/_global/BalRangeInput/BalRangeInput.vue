@@ -12,14 +12,14 @@
         </slot>
       </div>
     </div>
-    <vue-slider
+    <VueSlider
       v-model="range"
       v-bind="$attrs"
+      :dotStyle="dotStyle"
+      :railStyle="railSyle"
+      :processStyle="proccessStyle"
       @change="onChange"
       @drag-end="onDragEnd"
-      :dot-style="dotStyle"
-      :rail-style="railSyle"
-      :process-style="proccessStyle"
     />
   </div>
 </template>
@@ -37,16 +37,16 @@ export default defineComponent({
   name: 'BalRangeInput',
 
   components: {
-    VueSlider
+    VueSlider,
   },
-
-  emits: ['change', 'update:modelValue', 'dragEnd'],
 
   props: {
     modelValue: { type: [String, Number], default: '0' },
     leftLabel: { type: String, default: '' },
-    rightLabel: { type: String, default: '' }
+    rightLabel: { type: String, default: '' },
   },
+
+  emits: ['change', 'update:modelValue', 'dragEnd'],
 
   setup(props, { emit }) {
     const range = ref(0);
@@ -68,19 +68,19 @@ export default defineComponent({
         backgroundColor: colors.blue['500'],
         borderColor: colors.blue['500'],
         borderWidth: 0,
-        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`
+        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`,
       };
     });
 
     const railSyle = computed(() => {
       return {
-        background: darkMode.value ? colors.gray['900'] : colors.gray['100']
+        background: darkMode.value ? colors.gray['900'] : colors.gray['100'],
       };
     });
 
     const proccessStyle = computed(() => {
       return {
-        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`
+        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`,
       };
     });
 
@@ -98,14 +98,14 @@ export default defineComponent({
       onDragEnd,
       dotStyle,
       railSyle,
-      proccessStyle
+      proccessStyle,
     };
-  }
+  },
 });
 </script>
 
 <style>
 .vue-slider-dot-handle-focus {
-  box-shadow: 0 0 0 5px rgb(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 5px rgb(0 0 0 / 20%);
 }
 </style>

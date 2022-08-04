@@ -1,7 +1,7 @@
 <template>
-  <BalModal show @close="$emit('close')" no-content-pad>
-    <template v-slot:header>
-      <div class="w-full flex justify-between items-center">
+  <BalModal show noContentPad @close="$emit('close')">
+    <template #header>
+      <div class="flex justify-between items-center w-full">
         <div class="flex items-center">
           <BalBtn
             v-if="selectTokenList"
@@ -18,23 +18,23 @@
         </div>
         <div
           v-if="!selectTokenList"
+          class="group flex items-center cursor-pointer"
           @click="toggleSelectTokenList"
-          class="flex items-center group cursor-pointer"
         >
           <span class="text-xs text-secondary">{{ $t('tokenLists') }}</span>
           <div class="flex items-center ml-2">
-            <span class="mr-1 ">
+            <span class="mr-1">
               <img
                 v-for="(tokenlist, i) in activeTokenLists"
                 :key="i"
                 :src="resolve(tokenlist.logoURI)"
-                class="rounded-full inline-block bg-white shadow w-6 h-6"
+                class="inline-block w-6 h-6 bg-white rounded-full shadow"
               />
             </span>
             <BalIcon
               name="chevron-down"
               size="sm"
-              class="ml-1 text-blue-500 dark:text-blue-400 group-hover:text-pink-500 group-focus:text-pink-500 transition-all duration-200 ease-out "
+              class="ml-1 text-blue-500 group-hover:text-pink-500 group-focus:text-pink-500 dark:text-blue-400 transition-all duration-200 ease-out"
             />
           </div>
         </div>
@@ -44,12 +44,12 @@
       <Search
         v-model="query"
         :placeholder="$t('searchByName')"
-        class="px-4 py-3 flex-auto border-b dark:border-gray-700"
+        class="flex-auto py-3 px-4 border-b dark:border-gray-700"
       />
       <div>
         <div
           v-if="Object.keys(tokenLists).length > 0"
-          class="h-96 overflow-y-scroll"
+          class="overflow-y-scroll h-96"
         >
           <TokenListsListItem
             v-for="(tokenList, uri) in tokenLists"
@@ -62,27 +62,27 @@
         </div>
         <div
           v-else
+          class="flex justify-center items-center h-96"
           v-text="$t('errorNoLists')"
-          class="h-96 flex items-center justify-center"
         />
       </div>
     </template>
     <template v-else>
-      <div class="border-b dark:border-gray-700 flex">
+      <div class="flex border-b dark:border-gray-700">
         <Search
           v-model="query"
           :placeholder="$t('searchBy')"
-          class="px-4 py-3 flex-auto"
+          class="flex-auto py-3 px-4"
         />
       </div>
       <div class="overflow-hidden rounded-lg">
         <RecycleScroller
-          class="h-96 overflow-y-scroll"
           v-if="tokens.length > 0"
-          :items="tokens"
-          :item-size="64"
-          key-field="address"
           v-slot="{ item: token }"
+          class="overflow-y-scroll h-96"
+          :items="tokens"
+          :itemSize="64"
+          keyField="address"
           :buffer="100"
         >
           <a @click="onSelectToken(token.address)">
@@ -92,13 +92,13 @@
             />
           </a>
         </RecycleScroller>
-        <div v-else-if="loading" class="h-96 flex items-center justify-center">
+        <div v-else-if="loading" class="flex justify-center items-center h-96">
           <BalLoadingIcon />
         </div>
         <div
           v-else
+          class="p-12 h-96 text-center text-secondary"
           v-text="$t('errorNoTokens')"
-          class="h-96 p-12 text-center text-secondary"
         />
       </div>
     </template>
@@ -114,7 +114,7 @@ import {
   reactive,
   toRef,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -138,17 +138,17 @@ export default defineComponent({
   components: {
     TokenListItem,
     TokenListsListItem,
-    Search
+    Search,
   },
-
-  emits: ['close', 'selectTokenlist', 'select'],
 
   props: {
     open: { type: Boolean, default: false },
     excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
     includeEther: { type: Boolean, default: false },
-    disableInjection: { type: Boolean, default: false }
+    disableInjection: { type: Boolean, default: false },
   },
+
+  emits: ['close', 'selectTokenlist', 'select'],
 
   setup(props, { emit }) {
     /**
@@ -158,7 +158,7 @@ export default defineComponent({
       loading: false,
       selectTokenList: false,
       query: '',
-      results: {}
+      results: {},
     });
 
     /**
@@ -168,7 +168,7 @@ export default defineComponent({
       activeTokenLists,
       approvedTokenLists,
       toggleTokenList,
-      isActiveList
+      isActiveList,
     } = useTokenLists();
     const {
       getToken,
@@ -177,7 +177,7 @@ export default defineComponent({
       balanceFor,
       dynamicDataLoading,
       nativeAsset,
-      injectTokens
+      injectTokens,
     } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
@@ -208,7 +208,7 @@ export default defineComponent({
           ...token,
           price,
           balance,
-          value
+          value,
         };
       });
 
@@ -217,7 +217,7 @@ export default defineComponent({
 
     const excludedTokens = computed(() => [
       ...props.excludedTokens,
-      ...(props.includeEther ? [] : [nativeAsset.address])
+      ...(props.includeEther ? [] : [nativeAsset.address]),
     ]);
 
     /**
@@ -281,8 +281,8 @@ export default defineComponent({
       onListExit,
       toggleSelectTokenList,
       isActiveList,
-      resolve
+      resolve,
     };
-  }
+  },
 });
 </script>

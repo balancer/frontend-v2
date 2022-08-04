@@ -8,12 +8,12 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   size: '16',
-  color: 'gray'
+  color: 'gray',
 });
 
 const classes = computed(() => ({
   [`w-${props.size} h-${props.size}`]: true,
-  [`bg-${props.color}-500`]: true
+  [`bg-${props.color}-500`]: true,
 }));
 </script>
 

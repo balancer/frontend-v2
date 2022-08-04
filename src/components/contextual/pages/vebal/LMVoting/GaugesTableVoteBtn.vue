@@ -30,10 +30,8 @@ const disabled = computed(() => {
   <BalBtn
     :color="showRemoveVotes ? 'red' : 'blue'"
     :disabled="disabled"
-    :class="
-      `vote-btn
-      ${showRemoveVotes ? 'vote-btn--red' : 'vote-btn--blue'}`
-    "
+    :class="`vote-btn
+      ${showRemoveVotes ? 'vote-btn--red' : 'vote-btn--blue'}`"
     outline
     size="sm"
     flat
@@ -51,9 +49,11 @@ const disabled = computed(() => {
 .vote-btn:not(:disabled) {
   @apply hover:text-white focus:text-white;
 }
+
 .vote-btn--blue:not(:disabled) {
   @apply hover:bg-blue-500 focus:bg-blue-500 dark:hover:bg-blue-500 dark:focus:bg-blue-500;
 }
+
 .vote-btn--red:not(:disabled) {
   @apply hover:bg-red-500  focus:bg-red-500;
 }

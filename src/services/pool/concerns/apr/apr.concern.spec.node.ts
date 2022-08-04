@@ -17,7 +17,7 @@ const calcParams = {
   currency: FiatCurrency.usd,
   protocolFeePercentage: 0.5,
   stakingBalApr: { max: '0', min: '0' },
-  stakingRewardApr: '0'
+  stakingRewardApr: '0',
 };
 
 describe('AprConcern', () => {

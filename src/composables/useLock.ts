@@ -79,6 +79,6 @@ export function useLock() {
     lockPool,
     lock,
     lockFiatValue,
-    lockedFiatTotal
+    lockedFiatTotal,
   };
 }

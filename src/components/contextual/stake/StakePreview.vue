@@ -39,10 +39,10 @@ const {
   userData: {
     stakedSharesForProvidedPool,
     refetchStakedShares,
-    refetchUserStakingData
+    refetchUserStakingData,
   },
   stakeBPT,
-  unstakeBPT
+  unstakeBPT,
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
@@ -54,7 +54,7 @@ const stakeAction = {
   loadingLabel: t('staking.staking'),
   confirmingLabel: t('confirming'),
   action: stakeBPT,
-  stepTooltip: t('staking.stakeTooltip')
+  stepTooltip: t('staking.stakeTooltip'),
 };
 
 const unstakeAction = {
@@ -62,7 +62,7 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: unstakeBPT,
-  stepTooltip: t('staking.unstakeTooltip')
+  stepTooltip: t('staking.unstakeTooltip'),
 };
 
 /**
@@ -161,7 +161,7 @@ function handleClose() {
       </BalCircle>
       <h4>{{ $t(`${action}`) }} {{ $t('lpTokens') }}</h4>
     </BalStack>
-    <BalCard shadow="none" noPad class="px-4 py-2">
+    <BalCard shadow="none" noPad class="py-2 px-4">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
           <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
@@ -177,8 +177,10 @@ function handleClose() {
       </BalStack>
     </BalCard>
     <BalCard shadow="none" noPad>
-      <div class="border-b p-2">
-        <h6 class="text-sm">{{ $t('summary') }}</h6>
+      <div class="p-2 border-b">
+        <h6 class="text-sm">
+          {{ $t('summary') }}
+        </h6>
       </div>
       <BalStack vertical spacing="xs" class="p-3">
         <BalStack horizontal justify="between">
@@ -224,10 +226,10 @@ function handleClose() {
       :isLoading="isLoadingApprovalsForGauge"
       @success="handleSuccess"
     />
-    <BalStack vertical v-if="isActionConfirmed">
+    <BalStack v-if="isActionConfirmed" vertical>
       <ConfirmationIndicator :txReceipt="confirmationReceipt" />
       <AnimatePresence :isVisible="isActionConfirmed">
-        <BalBtn @click="handleClose" color="gray" outline block>
+        <BalBtn color="gray" outline block @click="handleClose">
           {{ $t('close') }}
         </BalBtn>
       </AnimatePresence>

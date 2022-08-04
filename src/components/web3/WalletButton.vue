@@ -3,9 +3,9 @@
     <div class="flex items-center" style="width: 70%">
       <img
         :src="require(`@/assets/images/connectors/${wallet}.svg`)"
-        class="h-10 w-10 mr-4"
+        class="mr-4 w-10 h-10"
       />
-      <h5 class="text-gray-700 dark:text-white text-base">
+      <h5 class="text-base text-gray-700 dark:text-white">
         <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
       </h5>
     </div>
@@ -21,8 +21,8 @@ export default defineComponent({
   props: {
     wallet: {
       type: String as PropType<Wallet>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { connectWallet, toggleWalletSelectModal } = useWeb3();
@@ -32,9 +32,9 @@ export default defineComponent({
     }
     return {
       WalletNameMap,
-      handleClick
+      handleClick,
     };
-  }
+  },
 });
 </script>
 

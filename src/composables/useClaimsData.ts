@@ -8,7 +8,7 @@ import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
 import useProtocolRewardsQuery, {
-  ProtocolRewardsQueryResponse
+  ProtocolRewardsQueryResponse,
 } from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
 import { isKovan, isL2 } from './useNetwork';
@@ -54,7 +54,7 @@ export function useClaimsData() {
     () => ({
       pools: {
         __args: {
-          where: { id_in: gaugePoolIds.value }
+          where: { id_in: gaugePoolIds.value },
         },
         id: true,
         address: true,
@@ -62,9 +62,9 @@ export function useClaimsData() {
         tokensList: true,
         tokens: {
           address: true,
-          weight: true
-        }
-      }
+          weight: true,
+        },
+      },
     }),
     reactive({ enabled: gaugePoolQueryEnabled })
   );
@@ -86,6 +86,6 @@ export function useClaimsData() {
     gauges,
     gaugePools,
     protocolRewards,
-    isLoading
+    isLoading,
   };
 }

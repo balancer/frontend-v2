@@ -26,7 +26,7 @@ export async function multicall<T>(
   const multi = new Contract(
     configs[network].addresses.multicall,
     [
-      'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)'
+      'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)',
     ],
     provider
   );
@@ -37,7 +37,7 @@ export async function multicall<T>(
       requireSuccess,
       calls.map(call => [
         call[0].toLowerCase(),
-        itf.encodeFunctionData(call[1], call[2])
+        itf.encodeFunctionData(call[1], call[2]),
       ]),
       options
     );

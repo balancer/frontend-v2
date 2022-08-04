@@ -65,7 +65,7 @@ export default class VeBAL {
       totalSupply: formatUnits(lockInfo.totalSupply, 18),
       epoch: lockInfo.epoch.toString(),
       hasExistingLock,
-      isExpired
+      isExpired,
     };
   }
 

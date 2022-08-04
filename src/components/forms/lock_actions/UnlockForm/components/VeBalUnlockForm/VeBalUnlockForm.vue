@@ -33,11 +33,8 @@ const showPreviewModal = ref(false);
 /**
  * COMPOSABLES
  */
-const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 /**
  * COMPUTED
@@ -65,10 +62,10 @@ const submissionDisabled = computed(() => {
   <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-secondary leading-none">
+        <div class="text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ $t('unlockVeBAL.unlockForm.title') }}
           </h4>

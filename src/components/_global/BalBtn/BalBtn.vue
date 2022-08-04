@@ -4,7 +4,7 @@
     :class="['bal-btn', btnClasses]"
     :disabled="disabled || loading"
   >
-    <div v-if="loading" class="flex items-center justify-center">
+    <div v-if="loading" class="flex justify-center items-center">
       <BalLoadingIcon :size="size" :color="iconColor" />
       <span v-if="loadingLabel" class="ml-2">
         {{ loadingLabel }}
@@ -28,7 +28,7 @@ export default defineComponent({
   name: 'BalBtn',
 
   components: {
-    BalLoadingIcon
+    BalLoadingIcon,
   },
 
   props: {
@@ -36,13 +36,13 @@ export default defineComponent({
       type: String,
       default: 'button',
       validator: (val: string): boolean =>
-        ['button', 'a', 'div', 'router-link'].includes(val)
+        ['button', 'a', 'div', 'router-link'].includes(val),
     },
     size: {
       type: String,
       default: 'md',
       validator: (val: string): boolean =>
-        ['xs', 'sm', 'md', 'lg'].includes(val)
+        ['xs', 'sm', 'md', 'lg'].includes(val),
     },
     color: {
       type: String,
@@ -56,8 +56,8 @@ export default defineComponent({
           'gray',
           'red',
           'white',
-          'blue'
-        ].includes(val)
+          'blue',
+        ].includes(val),
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
@@ -67,7 +67,7 @@ export default defineComponent({
     rounded: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
   },
 
   setup(props) {
@@ -208,7 +208,7 @@ export default defineComponent({
         [displayClasses.value]: true,
         [shapeClasses.value]: true,
         [shadowClasses.value]: true,
-        [cursorClasses.value]: true
+        [cursorClasses.value]: true,
       };
     });
 
@@ -220,15 +220,16 @@ export default defineComponent({
 
     return {
       btnClasses,
-      iconColor
+      iconColor,
     };
-  }
+  },
 });
 </script>
 
 <style scoped>
 .bal-btn {
   @apply overflow-hidden tracking-tight;
+
   font-variation-settings: 'wght' 500;
   transition: all 0.2s ease;
   text-decoration: none !important;

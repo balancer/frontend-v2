@@ -1,7 +1,7 @@
 <script lang="ts">
 // https://v3.vuejs.org/api/sfc-script-setup.html#usage-alongside-normal-script
 export default {
-  inheritAttrs: false
+  inheritAttrs: false,
 };
 </script>
 
@@ -32,6 +32,7 @@ type Props = {
   type?: InputType;
   size?: InputSize;
   disabled?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   label?: string;
   inputAlignRight?: boolean;
   decimalLimit?: number;
@@ -41,6 +42,7 @@ type Props = {
   noShadow?: boolean;
   noBorder?: boolean;
   autoFocus?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   format?: (input: string | number) => string | number;
 };
 
@@ -60,7 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
   noRadius: false,
   noShadow: false,
   noBorder: false,
-  autoFocus: false
+  autoFocus: false,
 });
 
 const emit = defineEmits<{
@@ -92,7 +94,7 @@ const {
   onClick,
   onFocus,
   onMouseOver,
-  onMouseLeave
+  onMouseLeave,
 } = useInputEvents(props, emit, validate);
 const {
   parentClasses,
@@ -103,7 +105,7 @@ const {
   inputClasses,
   prependClasses,
   appendClasses,
-  borderRadiusClasses
+  borderRadiusClasses,
 } = useInputStyles(props, isInvalid, isActive, isHover, attrs);
 
 /**
@@ -146,12 +148,12 @@ onMounted(() => {
           :value="modelValue"
           v-bind="inputAttrs"
           :disabled="disabled"
+          :class="['input', inputClasses]"
           @blur="onBlur"
           @input="onInput"
           @keydown="onKeydown"
           @click="onClick"
           @focus="onFocus"
-          :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
           <slot name="append" />

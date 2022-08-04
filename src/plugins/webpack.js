@@ -15,7 +15,7 @@ if (process.env.VUE_APP_SENTRY_AUTH_TOKEN) {
     release: release,
     // webpack specific configuration
     include: './dist',
-    ignore: ['node_modules', 'webpack.config.js']
+    ignore: ['node_modules', 'webpack.config.js'],
   });
 
   if (['production', 'staging'].includes(ENV)) {

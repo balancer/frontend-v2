@@ -48,21 +48,21 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     Cell: 'tokenColumnCell',
     align: 'left',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: '',
     id: 'symbol',
     accessor: 'symbol',
     Cell: 'symbolColumnCell',
-    width: 350
+    width: 350,
   },
   {
     name: t('amount'),
     id: 'amount',
     align: 'right',
     width: 150,
-    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)}`
+    accessor: ({ amount }) => `${fNum2(amount, FNumFormats.token)}`,
   },
   {
     name: t('value'),
@@ -70,7 +70,7 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     align: 'right',
     width: 150,
     totalsCell: 'totalValueCell',
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: '',
@@ -78,8 +78,8 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     accessor: 'claim',
     Cell: 'claimColumnCell',
     totalsCell: 'claimTotalCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 
 /**
@@ -121,16 +121,16 @@ const hasClaimableBalance = computed((): boolean => {
         :columns="columns"
         :data="rewardsData"
         :isLoading="isLoading"
-        skeleton-class="h-64"
+        skeletonClass="h-64"
         :square="upToLargeBreakpoint"
       >
         <template #tokenColumnCell="{ token }">
-          <div class="flex px-6 py-4">
+          <div class="flex py-4 px-6">
             <BalAsset :address="token.address" />
           </div>
         </template>
         <template #symbolColumnCell="{ token }">
-          <div class="flex px-6 py-4">
+          <div class="flex py-4 px-6">
             {{ token.symbol }}
           </div>
         </template>
@@ -141,7 +141,7 @@ const hasClaimableBalance = computed((): boolean => {
           </div>
         </template>
         <template #claimColumnCell="{ token, amount, value }">
-          <div class="px-6 py-4">
+          <div class="py-4 px-6">
             <ClaimProtocolRewardsBtn
               :tokenAddress="token.address"
               :fiatValue="value"

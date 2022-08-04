@@ -38,9 +38,7 @@ const token = computed(() => getToken(props.address));
 const balance = computed(() => {
   const formattedBalance = formatUnits(props.balance, token.value.decimals);
   return props.share != null
-    ? bnum(formattedBalance)
-        .times(props.share)
-        .toString()
+    ? bnum(formattedBalance).times(props.share).toString()
     : formattedBalance;
 });
 
@@ -85,7 +83,7 @@ const fiatLabel = computed(() => {
         <BalIcon
           name="arrow-up-right"
           size="sm"
-          class="ml-2 text-secondary hover:text-blue-500 transition-colors"
+          class="ml-2 hover:text-blue-500 transition-colors text-secondary"
         />
       </BalLink>
     </div>

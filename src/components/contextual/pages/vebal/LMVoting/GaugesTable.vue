@@ -14,7 +14,7 @@ import {
   isStableLike,
   isUnknownType,
   orderedPoolTokens,
-  poolURLFor
+  poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { scale } from '@/lib/utils';
@@ -42,7 +42,8 @@ const props = withDefaults(defineProps<Props>(), {
   expiredGauges: () => [],
   showPoolShares: false,
   noPoolsLabel: 'No pools',
-  isPaginated: false
+  isPaginated: false,
+  data: () => [],
 });
 
 const emit = defineEmits<{
@@ -68,7 +69,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     Header: 'chainColumnHeader',
     Cell: 'networkColumnCell',
     width: 80,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('veBAL.liquidityMining.table.assets'),
@@ -77,14 +78,14 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     Header: 'iconColumnHeader',
     Cell: 'iconColumnCell',
     width: 125,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('veBAL.liquidityMining.table.composition'),
     id: 'poolComposition',
     accessor: 'id',
     Cell: 'poolCompositionCell',
-    width: 350
+    width: 350,
   },
   {
     name: t('veBAL.liquidityMining.table.nextPeriodVotes'),
@@ -94,7 +95,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     Cell: 'nextPeriodVotesCell',
     sortKey: gauge => Number(gauge.votesNextPeriod),
     width: 150,
-    cellClassName: 'font-numeric'
+    cellClassName: 'font-numeric',
   },
   {
     name: t('veBAL.liquidityMining.table.myVotes'),
@@ -102,7 +103,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
       const normalizedVotes = scale(new BigNumber(gauge.userVotes), -4);
       return fNum2(normalizedVotes.toString(), {
         style: 'percent',
-        maximumFractionDigits: 2
+        maximumFractionDigits: 2,
       });
     },
     align: 'right',
@@ -110,7 +111,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     sortKey: gauge => Number(gauge.userVotes),
     width: 150,
     cellClassName: 'font-numeric',
-    hidden: !isWalletReady.value
+    hidden: !isWalletReady.value,
   },
   {
     name: t('veBAL.liquidityMining.table.vote'),
@@ -119,8 +120,8 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     align: 'right',
     Cell: 'voteColumnCell',
     width: 100,
-    hidden: !isWalletReady.value
-  }
+    hidden: !isWalletReady.value,
+  },
 ]);
 
 /**
@@ -178,48 +179,48 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       :key="data"
       :columns="columns"
       :data="data"
-      :is-loading="isLoading"
-      skeleton-class="h-64"
+      :isLoading="isLoading"
+      skeletonClass="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :is-paginated="isPaginated"
-      :on-row-click="redirectToPool"
+      :isPaginated="isPaginated"
+      :onRowClick="redirectToPool"
       :getTableRowClass="getTableRowClass"
-      :initial-state="{
+      :initialState="{
         sortColumn: 'nextPeriodVotes',
-        sortDirection: 'desc'
+        sortDirection: 'desc',
       }"
       :pin="{
         pinOn: 'address',
-        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b']
+        pinnedData: ['0xE867AD0a48e8f815DC0cda2CDb275e0F163A480b'],
       }"
     >
-      <template v-slot:chainColumnHeader>
+      <template #chainColumnHeader>
         <div class="flex items-center">
           <NetworkIcon />
         </div>
       </template>
-      <template v-slot:networkColumnCell="{ network }">
-        <div v-if="!isLoading" class="px-6 py-4">
+      <template #networkColumnCell="{ network }">
+        <div v-if="!isLoading" class="py-4 px-6">
           <div
-            class="w-8 h-8 rounded shadow-sm bg-gray-50 dark:bg-gray-800 flex items-center justify-center"
+            class="flex justify-center items-center w-8 h-8 bg-gray-50 dark:bg-gray-800 rounded shadow-sm"
           >
             <img :src="networkSrc(network)" :alt="network" class="w-6 h-6" />
           </div>
         </div>
       </template>
-      <template v-slot:iconColumnHeader>
+      <template #iconColumnHeader>
         <div class="flex items-center">
           <CompositionIcon />
         </div>
       </template>
-      <template v-slot:iconColumnCell="gauge">
-        <div v-if="!isLoading" class="px-6 py-4">
+      <template #iconColumnCell="gauge">
+        <div v-if="!isLoading" class="py-4 px-6">
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template v-slot:poolCompositionCell="{ pool, address }">
-        <div v-if="!isLoading" class="px-6 py-4 flex items-center">
+      <template #poolCompositionCell="{ pool, address }">
+        <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
             :tokens="
               orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
@@ -231,18 +232,18 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
-      <template v-slot:nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="px-6 py-4 text-right">
+      <template #nextPeriodVotesCell="gauge">
+        <div v-if="!isLoading" class="py-4 px-6 text-right">
           <GaugeVoteInfo :gauge="gauge" />
         </div>
       </template>
-      <template v-slot:voteColumnCell="gauge">
+      <template #voteColumnCell="gauge">
         <div v-if="isWalletReady" class="px-4">
           <GaugesTableVoteBtn
-            @click.stop="emit('clickedVote', gauge)"
             :hasUserVotes="getHasUserVotes(gauge.userVotes)"
             :isGaugeExpired="getIsGaugeExpired(gauge.address)"
-          ></GaugesTableVoteBtn>
+            @click.stop="emit('clickedVote', gauge)"
+          />
         </div>
       </template>
     </BalTable>

@@ -17,7 +17,7 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   iconURI: '',
-  size: 24
+  size: 24,
 });
 
 /**
@@ -56,17 +56,17 @@ onMounted(() => (isMounted.value = true));
     :style="{
       width: `${size}px`,
       height: `${size}px`,
-      background: 'white'
+      background: 'white',
     }"
+    class="inline-block leading-none rounded-full shadow-sm"
     @error="error = true"
-    class="rounded-full inline-block leading-none shadow-sm"
   />
   <div
     v-else
-    class="leading-none rounded-full overflow-hidden"
+    class="overflow-hidden leading-none rounded-full"
     :style="{
       width: `${size}px`,
-      height: `${size}px`
+      height: `${size}px`,
     }"
   >
     <Jazzicon v-if="isMounted" :address="address" :diameter="size" />

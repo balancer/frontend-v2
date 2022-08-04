@@ -14,7 +14,7 @@ const SpacingMap: Record<Spacing, number> = {
   lg: 8,
   xl: 12,
   '2xl': 16,
-  none: 0
+  none: 0,
 };
 
 export default defineComponent({
@@ -29,26 +29,28 @@ export default defineComponent({
     horizontal: { type: Boolean, default: () => false },
     spacing: {
       type: String as PropType<Spacing>,
-      default: () => 'base'
+      default: () => 'base',
     },
     /**
      * Show a hairline border after each stack element
      */
     withBorder: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     /**
      * Flex align prop
      */
     align: {
-      type: String as PropType<Alignment>
+      type: String as PropType<Alignment>,
+      default: null,
     },
     /**
      * Flex justify prop
      */
     justify: {
-      type: String as PropType<Alignment>
+      type: String as PropType<Alignment>,
+      default: null,
     },
     /**
      * Will cause children of the stack to occupy
@@ -56,14 +58,14 @@ export default defineComponent({
      */
     expandChildren: {
       type: Boolean,
-      default: () => false
-    }
+      default: () => false,
+    },
   },
   setup(props, { slots, attrs }) {
     return {
       slotsWithContent: [],
       slots,
-      attrs
+      attrs,
     };
   },
   render() {
@@ -97,20 +99,20 @@ export default defineComponent({
               class:
                 nestedChildIndex !== nonNullishChildren.length - 1
                   ? stackNodeClass
-                  : null
+                  : null,
             });
           }
         );
         return h(
           child,
           {
-            class: childIndex !== children.length - 1 ? stackNodeClass : null
+            class: childIndex !== children.length - 1 ? stackNodeClass : null,
           },
           [styledNestedChildren]
         );
       }
       return h(child, {
-        class: childIndex !== children.length - 1 ? stackNodeClass : null
+        class: childIndex !== children.length - 1 ? stackNodeClass : null,
       });
     });
     return h(
@@ -129,12 +131,12 @@ export default defineComponent({
             'justify-center': this.justify === 'center',
             'justify-start': this.justify === 'start',
             'justify-end': this.justify === 'end',
-            'justify-between': this.justify === 'between'
-          }
-        ]
+            'justify-between': this.justify === 'between',
+          },
+        ],
       },
       [styledChildren]
     );
-  }
+  },
 });
 </script>
