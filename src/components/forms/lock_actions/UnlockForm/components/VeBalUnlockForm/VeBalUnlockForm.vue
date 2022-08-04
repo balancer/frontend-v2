@@ -17,7 +17,7 @@ import LockedAmount from './components/LockedAmount.vue';
 type Props = {
   lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
-  veBalLockInfo?: VeBalLockInfo;
+  veBalLockInfo: VeBalLockInfo;
 };
 
 /**
@@ -47,6 +47,7 @@ const fiatTotalLpTokens = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
     .times(totalLpTokens.value)
+    .toString()
 );
 
 const submissionDisabled = computed(() => {
