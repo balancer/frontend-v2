@@ -149,8 +149,8 @@ watchEffect(() => {
       :amount="_tokenInAmount"
       :address="_tokenInAddress"
       name="tokenIn"
-      :disabled="tradeLoading"
       :excludedTokens="[veBalTokenInfo?.address]"
+      :ignoreWalletBalance="tradeLoading"
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
     />
@@ -173,7 +173,6 @@ watchEffect(() => {
       :priceImpact="priceImpact"
       noRules
       noMax
-      :disabled="tradeLoading"
       disableNativeAssetBuffer
       :excludedTokens="[veBalTokenInfo?.address]"
       @update:amount="handleOutAmountChange"

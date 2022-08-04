@@ -161,7 +161,7 @@
 <script lang="ts">
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { computed, defineComponent, onBeforeMount, ref } from 'vue';
+import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -278,7 +278,7 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (trading.isBalancerTrade.value) {
+      if (trading.isBalancerTrade.value && !trading.isLoading.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
             header: t('insufficientLiquidity'),
@@ -351,6 +351,15 @@ export default defineComponent({
       }
 
       return undefined;
+    });
+
+    // WATCHERS
+    watch(trading.isLoading, newVal => {
+      console.log(trading.isLoading);
+      console.log(newVal);
+      if (!newVal) {
+        trading.handleAmountChange();
+      }
     });
 
     // METHODS

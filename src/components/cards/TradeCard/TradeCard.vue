@@ -268,11 +268,6 @@ export default defineComponent({
       handleAmountChange();
     });
 
-    watch(tokenOutAddress, () => {
-      store.commit('trade/setOutputAsset', tokenOutAddress.value);
-      handleAmountChange();
-    });
-
     watch(latestTxHash, () => {
       // Refresh SOR pools
       fetchPools();
