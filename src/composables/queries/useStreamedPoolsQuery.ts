@@ -4,6 +4,7 @@ import { computed, Ref, ref, watch } from 'vue';
 import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import queryBuilder from '@/services/balancer/subgraph/entities/pools/query';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
@@ -14,6 +15,8 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
+import { Op, PoolQuery, PoolsBalancerAPIRepository, PoolsSubgraphRepository } from '@balancer-labs/sdk';
+import { configService } from '@/services/config/config.service';
 
 type FilterOptions = {
   poolIds?: Ref<string[]>;
@@ -21,6 +24,14 @@ type FilterOptions = {
   isExactTokensList?: boolean;
   pageSize?: number;
 };
+
+function initializePoolsRepository() {
+  const balancerApiRepository = new PoolsBalancerAPIRepository(configService.network.balancerApi || '', configService.network.keys.balancerApi || '');
+  const subgraphRepository = new PoolsSubgraphRepository(configService.network.subgraph);
+  // const fallbackRepository = new PoolsFallback
+
+  return balancerApiRepository;
+}
 
 async function fetchBasicPoolMetadata(
   tokenList: Ref<string[]> = ref([]),
@@ -32,19 +43,19 @@ async function fetchBasicPoolMetadata(
   const tokensListFilterKey = filterOptions?.isExactTokensList
     ? 'is'
     : 'contains';
-  const queryArgs: any = {
+  const queryArgs: PoolQuery = new PoolQuery({
     first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
     skip: skip,
-    where: {
-      tokensList: {
-        [tokensListFilterKey]: tokenList.value
-      },
-      poolType: {
-        not_in: POOLS.ExcludedPoolTypes
-      }
-    }
-  };
-  const pools = await balancerSubgraphService.pools.get(queryArgs);
+    where: [
+      new Op.Contains('tokensList', tokenList.value),
+      new Op.NotIn('poolType', POOLS.ExcludedPoolTypes)
+    ]
+  });
+
+  const query = queryBuilder(queryArgs);
+  const poolsRepository = initializePoolsRepository();
+  const pools = await poolsRepository.fetch(query);
+
   return pools;
 }
 

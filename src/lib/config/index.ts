@@ -69,6 +69,7 @@ export interface Config {
   keys: {
     infura: string;
     alchemy: string;
+    balancerApi?: string;
   };
   strategies: Record<
     string,

@@ -1,23 +1,33 @@
 import { merge } from 'lodash';
 
 import { POOLS } from '@/constants/pools';
+import { Op, Pool, PoolQuery } from '@balancer-labs/sdk';
 
-const defaultArgs = {
+// const defaultArgs = {
+//   first: 1000,
+//   chainId: 1,
+//   orderBy: 'totalLiquidity',
+//   orderDirection: 'desc',
+//   where: {
+//     totalShares: {
+//       gt: 0.01
+//     },
+//     id: {
+//       not_in: POOLS.BlockList
+//     }
+//   }
+// };
+
+const defaultQuery = new PoolQuery({
   first: 1000,
   chainId: 1,
   orderBy: 'totalLiquidity',
   orderDirection: 'desc',
-  where: {
-    totalShares: {
-      gt: 0.01
-    },
-    id: {
-      not_in: POOLS.BlockList
-    }
-  }
-};
-
-const defaultAttrs = {
+  where: [
+    new Op.GreaterThan('totalShares', 0.01),
+    new Op.NotIn('id', POOLS.BlockList)
+  ]
+}, {
   id: true,
   address: true,
   poolType: true,
@@ -39,11 +49,8 @@ const defaultAttrs = {
     priceRate: true,
     symbol: true,
   },
-};
-
-export default (args = {}, attrs = {}) => ({
-  pools: {
-    __args: merge({}, defaultArgs, args),
-    ...merge({}, defaultAttrs, attrs),
-  },
 });
+
+export default (query: PoolQuery): PoolQuery => {
+  return defaultQuery.merge(query);
+};
