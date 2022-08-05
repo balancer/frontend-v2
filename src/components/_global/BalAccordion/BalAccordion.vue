@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import anime from 'animejs';
 import { takeRight } from 'lodash';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from 'vue';
 
 type Section = {
   title: string;
@@ -34,7 +34,7 @@ const accordionHeightSetterElement = ref<HTMLElement>();
 const wrapperElement = ref<HTMLElement>();
 const handleBarElement = ref<HTMLElement>();
 const arrowElement = ref<HTMLElement>();
-const handleBarElements = ref<HTMLElement[]>([]);
+const handleBarElements = ref<(Element | ComponentPublicInstance)[]>([]);
 
 const minimisedWrapperHeight = ref(0);
 const isContentVisible = ref(false);
@@ -156,6 +156,13 @@ onMounted(async () => {
   isContentVisible.value = false;
 });
 
+function setHandleBars(el: Element | ComponentPublicInstance | null) {
+  if (!el) return;
+  if (!handleBarElements.value?.includes(el)) {
+    handleBarElements.value.push(el);
+  }
+}
+
 /**
  * WATCHERS
  */
@@ -173,7 +180,7 @@ watch(
       <div
         v-for="(section, i) in sections"
         :key="section.id"
-        :ref="'handleBarElements'"
+        :ref="setHandleBars"
         class="flex flex-col"
       >
         <div

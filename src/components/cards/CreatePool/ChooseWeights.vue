@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import anime from 'animejs';
 import { sum, sumBy, uniqueId } from 'lodash';
-import { computed, nextTick, onBeforeUpdate, onMounted, ref, watch } from 'vue';
+import {
+  computed,
+  nextTick,
+  onBeforeUpdate,
+  onMounted,
+  ref,
+  watch,
+  ComponentPublicInstance,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -56,7 +64,7 @@ const networkName = configService.network.name;
 const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();
 const totalsRowElement = ref<HTMLElement>();
-const seedTokenElements = ref<HTMLElement[]>([]);
+const seedTokenElements = ref<(Element | ComponentPublicInstance)[]>([]);
 const cardWrapper = ref<HTMLElement>();
 const wrapperHeight = ref(0);
 const cardWrapperHeight = ref(0);
@@ -280,7 +288,7 @@ function distributeWeights() {
   });
 }
 
-function addTokenListElementRef(el: any | null) {
+function addTokenListElementRef(el: Element | ComponentPublicInstance | null) {
   if (!el) return;
   // const filteredElements = seedTokenElements.value.filter(e => e !== null);
   if (!seedTokenElements.value.includes(el) && el) {
