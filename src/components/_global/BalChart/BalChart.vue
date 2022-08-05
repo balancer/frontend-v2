@@ -18,7 +18,7 @@ type AxisMoveEvent = {
 
 type ChartData = {
   name: string;
-  values: [string, number];
+  values: (readonly [string, number])[];
 };
 
 type AxisLabelFormat = {
