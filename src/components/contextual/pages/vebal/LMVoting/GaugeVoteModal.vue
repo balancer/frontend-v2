@@ -35,7 +35,7 @@ type Props = {
   unallocatedVoteWeight: number;
   logoURIs: string[];
   poolURL: string;
-  veBalLockInfo?: VeBalLockInfo;
+  veBalLockInfo?: VeBalLockInfo | null;
 };
 
 const MINIMUM_LOCK_TIME = 86_400_000 * 7;
@@ -44,8 +44,7 @@ const MINIMUM_LOCK_TIME = 86_400_000 * 7;
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  // TODO: Not optimal fix
-  veBalLockInfo: undefined,
+  veBalLockInfo: null,
 });
 
 const emit = defineEmits<{
