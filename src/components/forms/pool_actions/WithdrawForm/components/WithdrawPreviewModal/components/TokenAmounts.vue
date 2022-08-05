@@ -41,7 +41,7 @@ function amountShare(address: string | number): string {
   <div class="token-amount-table">
     <div v-for="(amount, address) in amountMap" :key="address" class="relative">
       <div class="token-amount-table-content">
-        <BalAsset :address="address" :size="36" />
+        <BalAsset :address="address.toString()" :size="36" />
         <div class="flex flex-col ml-3">
           <div class="text-lg font-medium">
             <span class="font-numeric">
