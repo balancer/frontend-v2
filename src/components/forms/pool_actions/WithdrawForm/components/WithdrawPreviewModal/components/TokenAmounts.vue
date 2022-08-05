@@ -32,7 +32,7 @@ const { fNum2 } = useNumbers();
  */
 // The investment amount's relative percentage of the total fiat investment value.
 // This has nothing to do with the pool weights.
-function amountShare(address: string | number): string {
+function amountShare(address: string): string {
   return bnum(props.fiatAmountMap[address]).div(props.fiatTotal).toString();
 }
 </script>
@@ -51,7 +51,7 @@ function amountShare(address: string | number): string {
           </div>
           <div class="text-sm text-secondary font-numeric">
             {{ fNum2(fiatAmountMap[address], FNumFormats.fiat) }}
-            ({{ fNum2(amountShare(address), FNumFormats.percent) }})
+            ({{ fNum2(amountShare(address.toString()), FNumFormats.percent) }})
           </div>
         </div>
       </div>

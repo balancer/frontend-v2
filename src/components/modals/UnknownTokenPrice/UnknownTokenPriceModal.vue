@@ -54,7 +54,7 @@ const unknownTokenPrices = computed((): TokenPrices => {
  */
 const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
-    tokenAddress => getToken(tokenAddress).symbol
+    tokenAddress => getToken(tokenAddress)?.symbol
   );
   return formatWordListAsSentence(tokenSymbols, t);
 });
