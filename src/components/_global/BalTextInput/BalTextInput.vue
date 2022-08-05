@@ -10,18 +10,13 @@ import { omit } from 'lodash';
 import { computed, onMounted, ref, useAttrs } from 'vue';
 
 import { HtmlInputEvent } from '@/types';
+import { Rules } from '@/types';
 
 import useInputEvents from './composables/useInputEvents';
 import useInputStyles from './composables/useInputStyles';
 import useInputValidation from './composables/useInputValidation';
 
-import {
-  InputValue,
-  InputType,
-  InputSize,
-  ValidationTrigger,
-  Rules,
-} from './types';
+import { InputValue, InputType, InputSize, ValidationTrigger } from './types';
 
 type Props = {
   name?: string;

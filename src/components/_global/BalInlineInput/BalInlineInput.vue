@@ -11,10 +11,9 @@ import { computed, ref, useAttrs } from 'vue';
 
 import useInputEvents from '@/components/_global/BalTextInput/composables/useInputEvents';
 import useInputValidation from '@/components/_global/BalTextInput/composables/useInputValidation';
-import { RuleFunction } from '../BalTextInput/types';
-import useInputStyles from './composables/useInlineInputStyles';
+import { Rules } from '@/types';
 
-export type Rules = RuleFunction[];
+import useInputStyles from './composables/useInlineInputStyles';
 
 /**
  * TYPES
