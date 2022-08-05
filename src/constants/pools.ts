@@ -124,10 +124,6 @@ const POOLS_KOVAN: Pools = {
       name: 'Balancer Stable USD',
       hasIcon: false,
     },
-    '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701': {
-      name: 'Balancer Protocol Liquidity',
-      hasIcon: false,
-    },
   },
 };
 
@@ -180,10 +176,6 @@ const POOLS_GOERLI: Pools = {
   Metadata: {
     '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f': {
       name: 'Balancer Boosted Aave USD',
-      hasIcon: false,
-    },
-    '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060': {
-      name: 'Balancer Protocol Liquidity',
       hasIcon: false,
     },
   },
@@ -304,10 +296,6 @@ const POOLS_MAINNET: Pools = {
     },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
-      hasIcon: true,
-    },
-    '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014': {
-      name: 'Balancer Protocol Liquidity',
       hasIcon: true,
     },
     '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249': {
