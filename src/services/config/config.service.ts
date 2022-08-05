@@ -62,12 +62,6 @@ export default class ConfigService {
     });
   }
 
-  public get subgraph(): string {
-    return template(this.network.subgraph, {
-      GRAPH_KEY: this.env.GRAPH_KEY,
-    });
-  }
-
   public get subgraphUrls(): string[] | void {
     return this.network.subgraphs.main?.map(url => {
       if (url.includes('GRAPH_KEY')) {

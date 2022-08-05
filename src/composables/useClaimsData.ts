@@ -6,12 +6,13 @@ import { PoolType } from '@/services/pool/types';
 
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
-import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
+import useGraphQuery from './queries/useGraphQuery';
 import useProtocolRewardsQuery, {
   ProtocolRewardsQueryResponse,
 } from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
 import { isKovan, isL2 } from './useNetwork';
+import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 
 export type GaugePool = {
   id: string;
@@ -49,7 +50,7 @@ export function useClaimsData() {
     (): boolean => gaugePoolIds?.value && gaugePoolIds.value?.length > 0
   );
   const gaugePoolQuery = useGraphQuery<GaugePoolQueryResponse>(
-    subgraphs.balancer,
+    subgraphFallbackService.url.value,
     ['claim', 'gauge', 'pools'],
     () => ({
       pools: {
@@ -66,8 +67,7 @@ export function useClaimsData() {
         },
       },
     }),
-    reactive({ enabled: gaugePoolQueryEnabled }),
-    true
+    reactive({ enabled: gaugePoolQueryEnabled })
   );
 
   /**

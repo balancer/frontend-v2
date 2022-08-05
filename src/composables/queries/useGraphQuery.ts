@@ -10,7 +10,6 @@ import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-f
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,
-  balancer: configService.subgraph,
 };
 
 export default function useGraphQuery<T>(
