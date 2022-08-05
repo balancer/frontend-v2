@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
@@ -125,6 +125,8 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
   },
 ]);
 
+const dataKey = computed(() => JSON.stringify(props.data));
+
 /**
  * METHODS
  */
@@ -177,7 +179,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
     noPad
   >
     <BalTable
-      :key="data"
+      :key="dataKey"
       :columns="columns"
       :data="data"
       :isLoading="isLoading"
