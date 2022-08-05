@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import anime from 'animejs';
 import { takeRight } from 'lodash';
-import { nextTick, onMounted, Ref, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
 type Section = {
   title: string;
@@ -20,7 +20,7 @@ type Props = {
   // of an accordion section
 
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
-  dependencies?: Ref<unknown>;
+  dependencies?: unknown;
   showSectionBorder?: boolean;
 };
 
