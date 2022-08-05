@@ -433,9 +433,9 @@ onMounted(() => {
         >
           <template #append>
             <div
-              class="flex flex-row justify-center h-full px-2 items-center border-gray-100 dark:border-gray-800 rounded-r-lg"
+              class="flex flex-row justify-center items-center px-2 h-full rounded-r-lg border-gray-100 dark:border-gray-800"
             >
-              <span class="text-black text-xl dark:text-white">%</span>
+              <span class="text-xl text-black dark:text-white">%</span>
             </div>
           </template>
         </BalTextInput>

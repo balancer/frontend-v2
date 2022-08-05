@@ -74,7 +74,7 @@ export default function useInputStyles(
     'border-blue-300 dark:border-blue-400': isActive.value && !isInvalid.value,
     'hover:border-gray-300 dark:hover:border-gray-700':
       isHover.value && !isActive.value && !props.disabled,
-    'shadow-inner': !props.noShadow
+    'shadow-inner': !props.noShadow,
   }));
 
   const inputGroupClasses = computed(() => ({
@@ -95,7 +95,7 @@ export default function useInputStyles(
     'text-right': props.inputAlignRight,
     'font-numeric': props.type === 'number',
     'text-red-500': isInvalid.value,
-    'cursor-not-allowed': props.disabled
+    'cursor-not-allowed': props.disabled,
   }));
 
   const prependClasses = computed(() => ({
