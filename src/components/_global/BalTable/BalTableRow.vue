@@ -2,7 +2,11 @@
 import { compact } from 'lodash';
 import { Ref } from 'vue';
 
-import { ColumnDefinition, Data, Sticky } from './BalTable.vue';
+import {
+  ColumnDefinition,
+  Data,
+  Sticky,
+} from '@/components/_global/BalTable/types';
 
 type Props = {
   columns: ColumnDefinition<any>[];

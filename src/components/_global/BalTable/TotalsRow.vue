@@ -2,7 +2,7 @@
 import { tail } from 'lodash';
 import { computed } from 'vue';
 
-import { ColumnDefinition, Sticky } from './BalTable.vue';
+import { ColumnDefinition, Sticky } from '@/components/_global/BalTable/types';
 
 type Props = {
   isColumnStuck?: boolean;
