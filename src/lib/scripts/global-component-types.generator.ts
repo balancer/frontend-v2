@@ -1,8 +1,10 @@
 const parsePath = require('parse-filepath');
 const requireContext = require('require-context');
-// const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 // import Jazzicon from 'vue3-jazzicon/src/components';
+
+const typesPath = path.resolve(__dirname, `../../types/global-components.d.ts`);
 
 function generateGlobalComponentTypes(): void {
   const req = requireContext(
@@ -11,8 +13,12 @@ function generateGlobalComponentTypes(): void {
     /^((?!(stories|spec)).)*\.vue$/i
   );
 
-  const importStatements: string[] = [];
-  const globalComponentsMapStatements: string[] = [];
+  const importStatements: string[] = [
+    "import Jazzicon from 'vue3-jazzicon/src/components';",
+  ];
+  const globalComponentsMapStatements: string[] = [
+    'Jazzicon: typeof Jazzicon;',
+  ];
   for (const filePath of req.keys()) {
     const pathObj = parsePath(filePath);
     const name = pathObj.name;
@@ -34,7 +40,13 @@ ${globalComponentsMapStatements.map(s => `    ${s}`).join('\n')}
   }
 }
 `;
-  console.log(fileContent);
-  // fs.writeFileSync(`./src/types/global-components.d.ts`, )
+
+  fs.writeFileSync(typesPath, fileContent);
 }
-generateGlobalComponentTypes();
+try {
+  console.log('🔧 Generating global component types...');
+  generateGlobalComponentTypes();
+  console.log(`✅ Generated global component types at ${typesPath}`);
+} catch (error) {
+  console.error('Failed to generate global component types:', error);
+}
