@@ -66,7 +66,10 @@ type Props = {
   square?: boolean;
   isPaginated?: boolean;
   noResultsLabel?: string;
-  link?: { to?: string } | null;
+  link?: {
+    to: string;
+    getParams: (data: any) => Record<string, string>;
+  } | null;
   initialState?: InitialState;
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   pin?: DataPinState | null;

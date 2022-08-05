@@ -8,7 +8,10 @@ type Props = {
   columns: ColumnDefinition<any>[];
   onRowClick?: (data: any) => void;
   data: Ref<any>;
-  link?: any;
+  link?: {
+    to: string;
+    getParams: (data: any) => Record<string, string>;
+  };
   sticky?: Sticky;
   isColumnStuck?: boolean;
   pinned?: boolean;
