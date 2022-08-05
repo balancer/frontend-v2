@@ -139,7 +139,7 @@
         :amountIn="trading.tokenInAmountInput.value"
         :addressOut="trading.tokenOut.value.address"
         :amountOut="trading.tokenOutAmountInput.value"
-        :pools="trading.sor.pools.value"
+        :pools="pools"
         :sorReturn="trading.sor.sorReturn.value"
         class="mt-4"
       />
@@ -156,6 +156,8 @@
 </template>
 
 <script lang="ts">
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { computed, defineComponent, onBeforeMount, ref } from 'vue';
@@ -260,6 +262,12 @@ export default defineComponent({
       }
       return t('trade');
     });
+    const pools = computed<(Pool | SubgraphPoolBase)[]>(
+      // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
+      () => {
+        return trading.sor.pools.value;
+      }
+    );
     const error = computed(() => {
       if (trading.isBalancerTrade.value && !trading.isLoading.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
@@ -390,6 +398,7 @@ export default defineComponent({
       exactIn,
       trading,
       // computed
+      pools,
       title,
       error,
       warning,
