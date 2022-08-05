@@ -15,6 +15,7 @@
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
+    "main": ["http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2"],
     "aave": "",
     "gauge": ""
   },

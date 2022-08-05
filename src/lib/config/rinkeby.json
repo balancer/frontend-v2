@@ -14,6 +14,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby-v2",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "subgraphs": {
+    "main": [
+      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby-v2"
+    ],
     "aave": "",
     "gauge": ""
   },

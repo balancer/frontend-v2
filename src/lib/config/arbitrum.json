@@ -16,6 +16,9 @@
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
+    "main": [
+      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2"
+    ],
     "aave": "",
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum"
   },
