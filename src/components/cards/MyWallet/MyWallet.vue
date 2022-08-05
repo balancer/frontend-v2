@@ -16,14 +16,11 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  excludedTokens: () => []
+  excludedTokens: () => [],
 });
 
-const {
-  appNetworkConfig,
-  isWalletReady,
-  startConnectWithInjectedProvider
-} = useWeb3();
+const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
+  useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 const {
   hasBalance,
@@ -125,13 +122,13 @@ const emit = defineEmits<{
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <BalAssetSet
-            @click="tokenAddress => emit('click:asset', tokenAddress)"
             :balAssetProps="{ button: true }"
             :width="275"
             wrap
             :size="30"
             :addresses="tokensWithBalance"
             :maxAssetsPerLine="28"
+            @click="tokenAddress => emit('click:asset', tokenAddress)"
           />
           <p
             v-if="tokensWithBalance.length === 0"

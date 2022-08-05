@@ -27,7 +27,7 @@ type AmountMap = {
  */
 const props = withDefaults(defineProps<Props>(), {
   title: '',
-  hideAmountShare: false
+  hideAmountShare: false,
 });
 
 /**
@@ -69,7 +69,7 @@ function amountShare(address: string): string {
 
 <template>
   <div class="token-amount-table">
-    <div class="title" v-if="props.title">
+    <div v-if="props.title" class="title">
       {{ props.title }}
     </div>
     <div v-for="token in amountsToShow" :key="token.address" class="relative">
@@ -103,6 +103,7 @@ function amountShare(address: string): string {
   @apply dark:bg-gray-800 bg-gray-50 px-3 py-2;
   @apply font-medium text-sm text-gray-600 dark:text-gray-400;
 }
+
 .token-amount-table-content {
   @apply p-3 flex justify-between;
 }

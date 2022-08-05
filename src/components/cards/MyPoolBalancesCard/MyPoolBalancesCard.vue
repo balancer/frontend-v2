@@ -109,7 +109,7 @@ const fiatTotal = computed(() => {
     </template>
 
     <div v-if="isStablePhantomPool" class="-mt-2">
-      <div class="p-4 font-medium w-full border-b dark:border-gray-900">
+      <div class="p-4 w-full font-medium border-b dark:border-gray-900">
         <div class="flex justify-between align-baseline">
           <span>{{ bpt.symbol }}</span>
           <span>
@@ -124,18 +124,18 @@ const fiatTotal = computed(() => {
         <div class="mb-2 text-sm text-gray-600 dark:text-gray-400">
           {{ $t('poolTransfer.myPoolBalancesCard.underlyingTokens') }}
         </div>
-        <div class="flex gap-2 flex-wrap flex-row">
+        <div class="flex flex-row flex-wrap gap-2">
           <div
-            class="p-2 flex items-center gap-2 border-0 bg-gray-100 dark:bg-gray-700 rounded-lg"
             v-for="(address, i) in tokenAddresses"
             :key="address"
+            class="flex gap-2 items-center p-2 bg-gray-100 dark:bg-gray-700 rounded-lg border-0"
           >
             <BalAsset :key="address" :address="address" />{{ poolTokens[i] }}
           </div>
         </div>
       </div>
     </div>
-    <div v-else class="-mt-2 p-4">
+    <div v-else class="p-4 -mt-2">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />
       </div>

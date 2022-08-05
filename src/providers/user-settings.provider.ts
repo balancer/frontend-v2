@@ -84,7 +84,7 @@ export default {
       setCurrency,
       setSlippage,
       slippageScaled,
-      slippageBsp
+      slippageBsp,
     });
 
     return () => slots.default();

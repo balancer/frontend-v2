@@ -27,12 +27,8 @@ const id = ref<string>(route.params.id as string);
  */
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  pool,
-  loadingPool,
-  useNativeAsset,
-  transfersAllowed
-} = usePoolTransfers();
+const { pool, loadingPool, useNativeAsset, transfersAllowed } =
+  usePoolTransfers();
 const { tokenAddresses } = useInvestState();
 usePoolTransfersGuard();
 

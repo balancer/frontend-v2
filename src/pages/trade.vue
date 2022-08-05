@@ -10,7 +10,6 @@ import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 

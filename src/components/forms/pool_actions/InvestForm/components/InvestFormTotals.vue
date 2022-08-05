@@ -18,7 +18,7 @@ type Props = {
  * Props
  */
 const props = withDefaults(defineProps<Props>(), {
-  showTotalRow: false
+  showTotalRow: false,
 });
 
 const emit = defineEmits<{
@@ -41,7 +41,7 @@ const {
   maximized,
   optimized,
   swapRouteLoading,
-  supportsPropotionalOptimization
+  supportsPropotionalOptimization,
 } = toRefs(reactive(props.math));
 
 /**
@@ -60,7 +60,7 @@ const optimizeBtnClasses = computed(() => ({
 
 <template>
   <div class="data-table">
-    <div class="data-table-row total-row" v-if="showTotalRow">
+    <div v-if="showTotalRow" class="data-table-row total-row">
       <div class="p-2">{{ $t('total') }}</div>
       <div class="data-table-number-col">
         {{ fNum2(fiatTotal, FNumFormats.fiat) }}

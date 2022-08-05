@@ -244,8 +244,8 @@ const setMax = () => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:modelValue="handleAmountChange($event)"
-    @update:isValid="emit('update:isValid', $event)"
+    @update:model-value="handleAmountChange($event)"
+    @update:is-valid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template #prepend>

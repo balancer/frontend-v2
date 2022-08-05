@@ -55,7 +55,7 @@ const {
   priceImpact,
   highPriceImpact,
   rektPriceImpact,
-  swapRoute
+  swapRoute,
 } = toRefs(reactive(props.math));
 const { resetAmounts } = useInvestState();
 
@@ -74,80 +74,65 @@ const showTokensOut = computed<boolean>(
 
 const isSingleAssetInvestment = computed<boolean>(() => !!swapRoute.value);
 
-const amountInMap = computed(
-  (): AmountMap => {
-    const amountMap = {};
-    fullAmounts.value.forEach((amount, i) => {
-      amountMap[props.tokenAddresses[i]] = amount;
-    });
-    return amountMap;
-  }
-);
+const amountInMap = computed((): AmountMap => {
+  const amountMap = {};
+  fullAmounts.value.forEach((amount, i) => {
+    amountMap[props.tokenAddresses[i]] = amount;
+  });
+  return amountMap;
+});
 
-const amountOutMap = computed(
-  (): AmountMap => {
-    if (!swapRoute.value) return {};
-    const amountMap = {
-      [swapRoute.value.tokenOut]: formatFixed(
-        swapRoute.value.returnAmountFromSwaps,
-        props.pool.onchain?.decimals || 18
-      )
-    };
+const amountOutMap = computed((): AmountMap => {
+  if (!swapRoute.value) return {};
+  const amountMap = {
+    [swapRoute.value.tokenOut]: formatFixed(
+      swapRoute.value.returnAmountFromSwaps,
+      props.pool.onchain?.decimals || 18
+    ),
+  };
 
-    return amountMap;
-  }
-);
+  return amountMap;
+});
 
-const tokenInMap = computed(
-  (): TokenInfoMap => {
-    const tokenMap = {};
-    Object.keys(amountInMap.value).forEach(address => {
-      tokenMap[address] = getToken(address);
-    });
-    return tokenMap;
-  }
-);
+const tokenInMap = computed((): TokenInfoMap => {
+  const tokenMap = {};
+  Object.keys(amountInMap.value).forEach(address => {
+    tokenMap[address] = getToken(address);
+  });
+  return tokenMap;
+});
 
-const tokenOutMap = computed(
-  (): TokenInfoMap => {
-    if (!swapRoute.value) return {};
-    const tokenMap = {
-      [swapRoute.value.tokenOut]: getToken(swapRoute.value.tokenOut)
-    };
-    return tokenMap;
-  }
-);
+const tokenOutMap = computed((): TokenInfoMap => {
+  if (!swapRoute.value) return {};
+  const tokenMap = {
+    [swapRoute.value.tokenOut]: getToken(swapRoute.value.tokenOut),
+  };
+  return tokenMap;
+});
 
-const fiatAmountInMap = computed(
-  (): AmountMap => {
-    const fiatAmountMap = {};
-    Object.keys(amountInMap.value).forEach(address => {
-      fiatAmountMap[address] = toFiat(amountInMap.value[address], address);
-    });
-    return fiatAmountMap;
-  }
-);
+const fiatAmountInMap = computed((): AmountMap => {
+  const fiatAmountMap = {};
+  Object.keys(amountInMap.value).forEach(address => {
+    fiatAmountMap[address] = toFiat(amountInMap.value[address], address);
+  });
+  return fiatAmountMap;
+});
 
-const fiatAmountOutMap = computed(
-  (): AmountMap => {
-    if (!swapRoute.value) return {};
-    const fiatAmountMap = {
-      [swapRoute.value.tokenOut]: toFiat(
-        amountOutMap.value[swapRoute.value.tokenOut],
-        swapRoute.value.tokenOut
-      )
-    };
+const fiatAmountOutMap = computed((): AmountMap => {
+  if (!swapRoute.value) return {};
+  const fiatAmountMap = {
+    [swapRoute.value.tokenOut]: toFiat(
+      amountOutMap.value[swapRoute.value.tokenOut],
+      swapRoute.value.tokenOut
+    ),
+  };
 
-    return fiatAmountMap;
-  }
-);
+  return fiatAmountMap;
+});
 
 const fiatTotalOut = computed((): string =>
   Object.values(fiatAmountOutMap.value).reduce(
-    (total, amount) =>
-      bnum(total)
-        .plus(amount)
-        .toString(),
+    (total, amount) => bnum(total).plus(amount).toString(),
     '0'
   )
 );
