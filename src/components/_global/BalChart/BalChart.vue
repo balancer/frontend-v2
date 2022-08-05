@@ -34,7 +34,7 @@ type Props = {
   data: ChartData[];
   chartType: string;
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
-  onAxisMoved?: undefined | ((value: string | number) => void);
+  onAxisMoved?: undefined | ((value: readonly [string, number]) => void);
   isLoading?: boolean;
   hideYAxis?: boolean;
   hideXAxis?: boolean;
