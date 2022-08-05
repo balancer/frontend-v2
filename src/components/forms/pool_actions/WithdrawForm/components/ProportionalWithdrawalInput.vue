@@ -156,7 +156,7 @@ onBeforeMount(() => {
       >
         <div class="flex justify-between items-center">
           <div class="flex items-center">
-            <BalAsset :address="address" class="mr-2" />
+            <BalAsset :address="address.toString()" class="mr-2" />
             <div class="flex flex-col leading-none">
               <span class="text-lg font-medium">
                 {{ token.symbol }}
