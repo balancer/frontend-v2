@@ -88,7 +88,6 @@ export function numF(
   options: FNumOptions | undefined = {},
   currency: FiatCurrency = FiatCurrency.usd
 ): string {
-  console.log({ options });
   if (typeof number === 'string') {
     if (number === 'NaN') number = 0;
     number = Number(number || 0);
