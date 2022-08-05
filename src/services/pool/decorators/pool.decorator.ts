@@ -12,6 +12,7 @@ import {
   stakingRewardsService,
 } from '@/services/staking/staking-rewards.service';
 import { TokenInfoMap } from '@/types/TokenList';
+import { Op } from '@balancer-labs/sdk';
 
 import PoolService from '../pool.service';
 import { PoolMulticaller } from './pool.multicaller';
@@ -97,7 +98,7 @@ export class PoolDecorator {
     const currentBlock = await this.providerService.getBlockNumber();
     const blockNumber = getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
-    const isInPoolIds = { id_in: this.pools.map(pool => pool.id) };
+    const isInPoolIds = { id: Op.In(this.pools.map(pool => pool.id)) };
     try {
       return await this.poolSubgraph.pools.get({
         where: isInPoolIds,

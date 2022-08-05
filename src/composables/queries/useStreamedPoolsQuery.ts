@@ -44,6 +44,7 @@ async function fetchBasicPoolMetadata(
     ? 'is'
     : 'contains';
   const queryArgs: GraphQLArgs = {
+    chainId: configService.network.chainId,
     first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
     skip: skip,
     where: {

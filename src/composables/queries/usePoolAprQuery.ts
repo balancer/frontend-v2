@@ -17,6 +17,7 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import usePoolQuery from './usePoolQuery';
+import { Op } from '@balancer-labs/sdk';
 
 export default function usePoolAprQuery(
   id: string,
@@ -58,7 +59,7 @@ export default function usePoolAprQuery(
     const currentBlock = await rpcProviderService.getBlockNumber();
     const blockNumber = getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
-    const isInPoolIds = { id_in: [id] };
+    const isInPoolIds = { id: Op.In([id]) };
     try {
       const data = await balancerSubgraphService.pools.get({
         where: isInPoolIds,
