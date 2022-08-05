@@ -15,7 +15,7 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
-import { Op, PoolQuery, PoolsBalancerAPIRepository, PoolsSubgraphRepository } from '@balancer-labs/sdk';
+import { GraphQLArgs, Op, PoolsBalancerAPIRepository, PoolsSubgraphRepository } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 
 type FilterOptions = {
@@ -43,18 +43,44 @@ async function fetchBasicPoolMetadata(
   const tokensListFilterKey = filterOptions?.isExactTokensList
     ? 'is'
     : 'contains';
-  const queryArgs: PoolQuery = new PoolQuery({
+  const queryArgs: GraphQLArgs = {
     first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
     skip: skip,
-    where: [
-      new Op.Contains('tokensList', tokenList.value),
-      new Op.NotIn('poolType', POOLS.ExcludedPoolTypes)
-    ]
-  });
+    where: {
+      tokensList: Op.Contains(tokenList.value),
+      poolType: Op.NotIn(POOLS.ExcludedPoolTypes)
+    }
+  };
 
-  const query = queryBuilder(queryArgs);
+  const queryAttrs = {
+    id: true,
+    address: true,
+    poolType: true,
+    swapFee: true,
+    tokensList: true,
+    totalLiquidity: true,
+    totalSwapVolume: true,
+    totalSwapFee: true,
+    totalShares: true,
+    owner: true,
+    factory: true,
+    amp: true,
+    createTime: true,
+    swapEnabled: true,
+    tokens: {
+      address: true,
+      balance: true,
+      weight: true,
+      priceRate: true,
+      symbol: true,
+    },
+  };
+
   const poolsRepository = initializePoolsRepository();
-  const pools = await poolsRepository.fetch(query);
+  const pools = await poolsRepository.fetch({
+    args: queryArgs,
+    attrs: queryAttrs
+  });
 
   return pools;
 }
