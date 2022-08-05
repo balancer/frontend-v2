@@ -12,7 +12,7 @@ import { CoingeckoClient } from '../coingecko.client';
 import {
   CoingeckoService,
   getNativeAssetId,
-  getPlatformId
+  getPlatformId,
 } from '../coingecko.service';
 
 /**

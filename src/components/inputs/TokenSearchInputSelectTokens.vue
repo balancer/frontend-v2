@@ -12,29 +12,18 @@ const emit = defineEmits<{
 </script>
 <template>
   <div
-    class="
-       border border-gray-100 dark:border-gray-900 rounded-lg 
-       bg-white dark:bg-gray-850 
-       flex flex-wrap items-center gap-3 
-       text-gray-900 dark:text-gray-400 
-       overflow-x-auto 
-       px-3
-    "
+    class="flex overflow-x-auto flex-wrap gap-3 items-center px-3 text-gray-900 dark:text-gray-400 bg-white dark:bg-gray-850 rounded-lg border border-gray-100 dark:border-gray-900"
   >
     <span
-      class="
-         border-r border-gray-100 dark:border-gray-900
-         self-stretch flex items-center
-         pr-3 py-1
-      "
+      class="flex items-center self-stretch py-1 pr-3 border-r border-gray-100 dark:border-gray-900"
     >
       {{ props.label }}
     </span>
     <BalAsset
       v-for="address in addresses"
+      :key="address"
       :address="address"
       button
-      :key="address"
       @click="emit('click', address)"
     />
   </div>

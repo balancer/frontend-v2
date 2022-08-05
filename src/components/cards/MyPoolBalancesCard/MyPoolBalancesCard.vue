@@ -23,7 +23,7 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  hideHeader: false
+  hideHeader: false,
 });
 
 /**
@@ -64,9 +64,7 @@ const propTokenAmounts = computed((): string[] => {
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
 
-      return bnum(receive[i])
-        .times(priceRate)
-        .toString();
+      return bnum(receive[i]).times(priceRate).toString();
     });
   }
 
@@ -85,11 +83,7 @@ const tokenAddresses = computed((): string[] => {
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
-    .reduce((total, value) =>
-      bnum(total)
-        .plus(value)
-        .toString()
-    );
+    .reduce((total, value) => bnum(total).plus(value).toString());
   return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
@@ -104,11 +98,11 @@ const fiatTotal = computed(() => {
       </div>
     </template>
 
-    <div class="-mt-2 p-4">
+    <div class="p-4 -mt-2">
       <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />
       </div>
-      <div class="pt-4 flex justify-between font-medium">
+      <div class="flex justify-between pt-4 font-medium">
         <span>
           {{ $t('total') }}
         </span>

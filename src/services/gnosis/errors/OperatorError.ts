@@ -30,7 +30,7 @@ export enum ApiErrorCodes {
   NoLiquidity = 'NoLiquidity',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
-  UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'
+  UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
 }
 
 function _mapActionToErrorDetail(action?: ApiActionType) {
@@ -114,7 +114,7 @@ export default class OperatorError extends Error {
         return i18n.global.t('apiErrorCodeDetails.Error500', [
           action === 'create'
             ? i18n.global.t('creating').toLocaleLowerCase()
-            : i18n.global.t('cancelling').toLocaleLowerCase()
+            : i18n.global.t('cancelling').toLocaleLowerCase(),
         ]);
     }
   }

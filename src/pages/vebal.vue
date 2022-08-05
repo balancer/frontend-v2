@@ -23,14 +23,14 @@ import { isVeBalSupported } from '@/composables/useVeBAL';
   </div>
   <div
     v-if="isVeBalSupported"
-    class="pt-16 xl:pt-20 xl:container xl:mx-auto xl:px-4"
+    class="xl:container xl:px-4 pt-16 xl:pt-20 xl:mx-auto"
   >
-    <div class="mb-16 xl:px-0">
+    <div class="xl:px-0 mb-16">
       <LMVoting />
     </div>
   </div>
   <div v-else class="text-center">
-    <div class="font-semibold text-lg">
+    <div class="text-lg font-semibold">
       {{ $t('veBAL.notSupported.title') }}
     </div>
     <div>{{ $t('veBAL.notSupported.description') }}</div>

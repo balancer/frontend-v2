@@ -2,7 +2,7 @@ import { inject } from 'vue';
 
 import {
   TokenListsProviderResponse,
-  TokenListsProviderSymbol
+  TokenListsProviderSymbol,
 } from '@/providers/token-lists.provider';
 
 const defaultProviderResponse = {} as TokenListsProviderResponse;

@@ -18,12 +18,14 @@ type Props = {
   // changing variables which can be used to
   // determine whether to re-render the height
   // of an accordion section
+
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   dependencies?: Ref<unknown>;
   showSectionBorder?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  showSectionBorder: true
+  showSectionBorder: true,
 });
 
 const activeSection = ref('');
@@ -66,7 +68,7 @@ async function toggleSection(section: string, collapse = true) {
     anime({
       targets: handleBar,
       translateY: `0px`,
-      easing
+      easing,
     });
   });
 
@@ -88,7 +90,7 @@ async function toggleSection(section: string, collapse = true) {
   anime({
     targets: wrapperElement.value,
     height: `${heightToAnimate}px`,
-    easing
+    easing,
   });
 
   handleBarsToTransform.forEach(handleBar => {
@@ -96,14 +98,14 @@ async function toggleSection(section: string, collapse = true) {
     anime({
       targets: handleBar,
       translateY: `${y}px`,
-      easing
+      easing,
     });
   });
 
   // animate the arrow
   anime({
     targets: arrowElement.value,
-    rotate: '90deg'
+    rotate: '90deg',
   });
 
   setTimeout(async () => {
@@ -115,11 +117,11 @@ async function toggleSection(section: string, collapse = true) {
         top: '0',
         left: '0',
         right: '0',
-        opacity: 0
+        opacity: 0,
       });
       anime({
         targets: activeSectionElement.value,
-        opacity: 1
+        opacity: 1,
       });
     }
   }, 300);
@@ -154,7 +156,8 @@ onMounted(async () => {
   isContentVisible.value = false;
 });
 
-function setHandleBars(el: HTMLElement) {
+function setHandleBars(el: HTMLElement | null) {
+  if (!el) return;
   if (!handleBarElements.value?.includes(el)) {
     handleBarElements.value.push(el);
   }
@@ -173,44 +176,46 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard hFull no-pad shadow="none" class="rounded-xl">
+    <BalCard hFull noPad shadow="none" class="rounded-xl">
       <div
-        class="flex flex-col"
         v-for="(section, i) in sections"
         :key="section.id"
         :ref="setHandleBars"
+        class="flex flex-col"
       >
         <div
+          v-if="section.handle"
           ref="handleBarElement"
           @click="toggleSection(section.id)"
-          v-if="section.handle"
         >
           <slot :name="section.handle" />
         </div>
         <button
           v-else
           ref="handleBarElement"
-          @click="toggleSection(section.id)"
           :class="[
             'w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800',
             {
-              'border-b dark:border-gray-900': i !== sections.length - 1
-            }
+              'border-b dark:border-gray-900': i !== sections.length - 1,
+            },
           ]"
+          @click="toggleSection(section.id)"
         >
           <h6>{{ section.title }}</h6>
           <BalIcon class="text-blue-400" name="chevron-down" />
         </button>
         <div
-          class="relative"
-          ref="accordionHeightSetterElement"
           v-if="activeSection === section.id"
+          ref="accordionHeightSetterElement"
+          class="relative"
         >
           <!-- content -->
           <div
-            ref="activeSectionElement"
-            :class="{ 'border-b': isContentVisible && showSectionBorder }"
             v-if="isContentVisible"
+            ref="activeSectionElement"
+            :class="{
+              'border-b active-section': isContentVisible && showSectionBorder,
+            }"
           >
             <slot :name="section.id" />
           </div>

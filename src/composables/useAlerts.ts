@@ -6,13 +6,13 @@ import { lsGet, lsSet } from '@/lib/utils';
 export enum AlertType {
   ERROR = 'error',
   INFO = 'info',
-  FEATURE = 'feature'
+  FEATURE = 'feature',
 }
 
 export enum AlertPriority {
   LOW,
   MEDIUM,
-  HIGH
+  HIGH,
 }
 
 export type Alert = {
@@ -48,7 +48,7 @@ function addAlert(alert: Alert) {
 
   alertsState.value[alert.id] = {
     ...alert,
-    priority: alert.priority ?? AlertPriority.LOW
+    priority: alert.priority ?? AlertPriority.LOW,
   };
 }
 
@@ -72,6 +72,6 @@ export default function useAlerts() {
     // methods
     addAlert,
     removeAlert,
-    removeAllAlerts
+    removeAllAlerts,
   };
 }

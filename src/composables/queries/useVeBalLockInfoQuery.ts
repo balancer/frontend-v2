@@ -33,7 +33,7 @@ export default function useVeBalQuery(
 
   const queryOptions = reactive({
     enabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(

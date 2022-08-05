@@ -54,7 +54,7 @@ export default function useGaugesDecorationQuery(
    */
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

@@ -1,7 +1,7 @@
 export default function LidoService() {
   return {
     getStEthAPR: jest.fn().mockImplementation(),
-    calcStEthAPRFor: jest.fn().mockImplementation()
+    calcStEthAPRFor: jest.fn().mockImplementation(),
   };
 }
 

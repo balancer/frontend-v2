@@ -17,17 +17,17 @@ export function toErc20Address(tokenAddress: string) {
 export function getCanonicalMarket<T>({
   sellToken,
   buyToken,
-  kind
+  kind,
 }: CanonicalMarketParams<T>): Market<T> {
   if (kind === OrderKind.SELL) {
     return {
       baseToken: sellToken,
-      quoteToken: buyToken
+      quoteToken: buyToken,
     };
   } else {
     return {
       baseToken: buyToken,
-      quoteToken: sellToken
+      quoteToken: sellToken,
     };
   }
 }

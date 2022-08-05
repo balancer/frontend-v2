@@ -6,7 +6,7 @@ import {
   provide,
   reactive,
   Ref,
-  toRefs
+  toRefs,
 } from 'vue';
 
 import localStorageKeys from '@/constants/local-storage.keys';
@@ -34,9 +34,8 @@ export interface TokenListsProviderResponse {
 
 /** SETUP */
 const { uris } = tokenListService;
-export const TokenListsProviderSymbol: InjectionKey<TokenListsProviderResponse> = Symbol(
-  symbolKeys.Providers.TokenLists
-);
+export const TokenListsProviderSymbol: InjectionKey<TokenListsProviderResponse> =
+  Symbol(symbolKeys.Providers.TokenLists);
 
 export default {
   name: 'TokenListsProvider',
@@ -46,7 +45,7 @@ export default {
      * STATE
      */
     const state: TokenListsState = reactive({
-      activeListKeys: [uris.Balancer.Default]
+      activeListKeys: [uris.Balancer.Default],
     });
 
     let allTokenLists = {};
@@ -132,9 +131,9 @@ export default {
       vettedTokenList,
       // methods
       toggleTokenList,
-      isActiveList
+      isActiveList,
     });
 
     return () => slots.default();
-  }
+  },
 };

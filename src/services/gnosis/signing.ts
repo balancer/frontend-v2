@@ -10,7 +10,7 @@ import {
   SigningScheme,
   signOrder as signOrderGp,
   signOrderCancellation as signOrderCancellationGp,
-  TypedDataV3Signer
+  TypedDataV3Signer,
 } from '@gnosis.pm/gp-v2-contracts';
 
 import { networkId } from '@/composables/useNetwork';
@@ -26,7 +26,8 @@ const METHOD_NOT_FOUND_ERROR_CODE = -32601;
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i;
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i;
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i;
-const METAMASK_STRING_CHAINID_REGEX = /provided chainid .* must match the active chainid/i;
+const METAMASK_STRING_CHAINID_REGEX =
+  /provided chainid .* must match the active chainid/i;
 
 export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string };
 
@@ -58,7 +59,7 @@ interface SchemaInfo {
 }
 const mapSigningSchema: Map<SigningScheme, SchemaInfo> = new Map([
   [SigningScheme.EIP712, { libraryValue: 0, apiValue: 'eip712' }],
-  [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }]
+  [SigningScheme.ETHSIGN, { libraryValue: 1, apiValue: 'ethsign' }],
 ]);
 
 function _getSigningSchemeInfo(
@@ -92,7 +93,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   console.log('[Gnosis Signing] signOrder', {
     domain,
     order,
-    signer
+    signer,
   });
 
   return signOrderGp(
@@ -113,7 +114,7 @@ async function _signOrderCancellation(
   console.log('[Gnosis Signing] signOrderCancellation', {
     domain,
     orderId,
-    signer
+    signer,
   });
 
   return signOrderCancellationGp(
@@ -157,7 +158,7 @@ async function _signPayload(
     signature = (await signFn({
       ...payload,
       signer: _signer,
-      signingScheme
+      signingScheme,
     })) as EcdsaSignature; // Only ECDSA signing supported for now
   } catch (e) {
     const error = e as WalletError;

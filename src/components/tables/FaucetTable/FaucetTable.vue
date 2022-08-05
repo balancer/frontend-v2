@@ -29,7 +29,7 @@ const tokens = computed(() => {
         ...token,
         price,
         balance,
-        value
+        value,
       };
     })
     .filter(t => t.address != '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE');
@@ -47,21 +47,21 @@ const columns = ref<ColumnDefinition<any>[]>([
     accessor: 'token',
     Cell: 'tokenColumnCell',
     width: 475,
-    noGrow: true
+    noGrow: true,
   },
   {
     name: t('balance'),
     id: 'Balance',
     align: 'right',
     width: 150,
-    accessor: ({ balance }) => `${fNum2(balance, FNumFormats.token)}`
+    accessor: ({ balance }) => `${fNum2(balance, FNumFormats.token)}`,
   },
   {
     name: t('value'),
     id: 'value',
     align: 'right',
     width: 150,
-    accessor: ({ value }) => fNum2(value, FNumFormats.fiat)
+    accessor: ({ value }) => fNum2(value, FNumFormats.fiat),
   },
   {
     name: 'Drip',
@@ -69,8 +69,8 @@ const columns = ref<ColumnDefinition<any>[]>([
     align: 'center',
     accessor: 'drip',
     Cell: 'dripColumnCell',
-    width: 150
-  }
+    width: 150,
+  },
 ]);
 </script>
 
@@ -85,17 +85,17 @@ const columns = ref<ColumnDefinition<any>[]>([
       :columns="columns"
       :data="tokens"
       :isLoading="isLoading"
-      skeleton-class="h-64"
+      skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #tokenColumnCell="{ name, logoURI }">
-        <div class="px-6 py-4 flex items-center">
+        <div class="flex items-center py-4 px-6">
           <BalAsset :iconURI="logoURI" />
           <span class="ml-2">{{ name }}</span>
         </div>
       </template>
       <template #dripColumnCell="{ address }">
-        <div class="px-2 py-4 flex justify-center">
+        <div class="flex justify-center py-4 px-2">
           <DripBtn :token="address" />
         </div>
       </template>

@@ -3,12 +3,13 @@ import { computed, reactive } from 'vue';
 import { Gauge } from '@/services/balancer/gauges/types';
 import { PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
 
 import useGaugesDecorationQuery from './queries/useGaugesDecorationQuery';
 import useGaugesQuery from './queries/useGaugesQuery';
 import useGraphQuery, { subgraphs } from './queries/useGraphQuery';
-import useProtocolRewardsQuery from './queries/useProtocolRewardsQuery';
+import useProtocolRewardsQuery, {
+  ProtocolRewardsQueryResponse,
+} from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
 import { isKovan, isL2 } from './useNetwork';
 
@@ -30,7 +31,7 @@ type GaugePoolQueryResponse = {
 export function useClaimsData() {
   const protocolRewardsQuery = useProtocolRewardsQuery();
   const protocolRewards = computed(
-    (): BalanceMap => protocolRewardsQuery.data.value || {}
+    (): ProtocolRewardsQueryResponse => protocolRewardsQuery.data.value || {}
   );
 
   // Fetch subgraph liquidity gauges
@@ -53,7 +54,7 @@ export function useClaimsData() {
     () => ({
       pools: {
         __args: {
-          where: { id_in: gaugePoolIds.value }
+          where: { id_in: gaugePoolIds.value },
         },
         id: true,
         address: true,
@@ -61,9 +62,9 @@ export function useClaimsData() {
         tokensList: true,
         tokens: {
           address: true,
-          weight: true
-        }
-      }
+          weight: true,
+        },
+      },
     }),
     reactive({ enabled: gaugePoolQueryEnabled })
   );
@@ -85,6 +86,6 @@ export function useClaimsData() {
     gauges,
     gaugePools,
     protocolRewards,
-    isLoading
+    isLoading,
   };
 }

@@ -5,7 +5,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 
 <template>
   <AppNav />
-  <section class="dark:bg-gray-900 lg:py-8">
+  <section class="lg:py-8 dark:bg-gray-900">
     <div class="content-container">
       <router-view />
     </div>
@@ -16,6 +16,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 <style scoped>
 .content-container {
   @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white dark:bg-gray-900;
+
   min-height: calc(100vh - 140px);
 }
 
@@ -40,11 +41,13 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 .content-container :deep(h2),
 .content-container :deep(h3) {
   @apply font-body tracking-tight;
+
   font-variation-settings: 'wght' 700;
 }
 
 .content-container :deep(h3) {
   @apply font-body tracking-tight;
+
   font-variation-settings: 'wght' 600;
 }
 

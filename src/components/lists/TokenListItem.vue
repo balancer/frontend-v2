@@ -1,7 +1,7 @@
 <template>
   <div
     ref="animateRef"
-    class="flex py-3 px-4 highlight items-center leading-5 text-base opacity-0"
+    class="flex items-center py-3 px-4 text-base leading-5 opacity-0 highlight"
   >
     <BalAsset
       :address="token.address"
@@ -11,20 +11,18 @@
     />
     <div class="flex-auto">
       {{ token.symbol }}
-      <div class="text-gray text-sm w-40 md:w-60 truncate">
+      <div class="w-40 md:w-60 text-sm truncate text-gray">
         {{ token.name }}
       </div>
     </div>
-    <span class="flex flex-col items-end text-right font-medium">
+    <span class="flex flex-col items-end font-medium text-right">
       <BalLoadingNumber v-if="balanceLoading" type="token" />
       <template v-else>
         <template v-if="balance > 0">
           <template v-if="balance >= 0.0001">
             {{ fNum2(balance, FNumFormats.token) }}
           </template>
-          <template v-else>
-            &#60; 0.0001
-          </template>
+          <template v-else> &#60; 0.0001 </template>
         </template>
         <template v-else>-</template>
       </template>
@@ -36,7 +34,7 @@
         numberHeight="4"
         class="text-sm font-normal"
       />
-      <div v-else class="text-secondary text-sm font-normal">
+      <div v-else class="text-sm font-normal text-secondary">
         <template v-if="value > 0">
           {{ fNum2(value, FNumFormats.fiat) }}
         </template>
@@ -60,7 +58,7 @@ export default {
 
   props: {
     token: { type: Object as PropType<TokenInfo>, required: true },
-    balanceLoading: { type: Boolean, default: true }
+    balanceLoading: { type: Boolean, default: true },
   },
 
   setup(props) {
@@ -90,14 +88,14 @@ export default {
       anime({
         opacity: 1,
         targets: animateRef.value,
-        delay: anime.stagger(100)
+        delay: anime.stagger(100),
       });
     });
 
     onUnmounted(() => {
       anime({
         opacity: 0,
-        targets: animateRef.value
+        targets: animateRef.value,
       });
     });
 
@@ -106,8 +104,8 @@ export default {
       FNumFormats,
       animateRef,
       balance,
-      value
+      value,
     };
-  }
+  },
 };
 </script>

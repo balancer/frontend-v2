@@ -13,7 +13,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   dateTimeLabelFor,
   toJsTimestamp,
-  toUtcTime
+  toUtcTime,
 } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
@@ -67,7 +67,7 @@ const voteState = reactive<TransactionActionState>({
   init: false,
   confirming: false,
   confirmed: false,
-  confirmedAt: ''
+  confirmedAt: '',
 });
 
 /**
@@ -124,7 +124,7 @@ const votedToRecentlyWarning = computed(() => {
       description: t(
         'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
         [remainingTime]
-      )
+      ),
     };
   }
   return null;
@@ -141,7 +141,9 @@ const noVeBalWarning = computed(() => {
   }
   return {
     title: t('veBAL.liquidityMining.popover.warnings.noVeBal.title'),
-    description: t('veBAL.liquidityMining.popover.warnings.noVeBal.description')
+    description: t(
+      'veBAL.liquidityMining.popover.warnings.noVeBal.description'
+    ),
   };
 });
 
@@ -155,7 +157,7 @@ const veBalLockTooShortWarning = computed(() => {
         ),
         description: t(
           'veBAL.liquidityMining.popover.warnings.veBalLockTooShort.description'
-        )
+        ),
       };
     }
   }
@@ -171,31 +173,35 @@ const veBalVoteOverLimitWarning = computed(() => {
       ),
       description: t(
         'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
-      )
+      ),
     };
   }
 
   return null;
 });
 
-const voteWarning = computed((): {
-  title: string;
-  description: string;
-} | null => {
-  if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
-  return null;
-});
+const voteWarning = computed(
+  (): {
+    title: string;
+    description: string;
+  } | null => {
+    if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
+    return null;
+  }
+);
 
-const voteError = computed((): {
-  title: string;
-  description: string;
-} | null => {
-  if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
-  if (noVeBalWarning.value) return noVeBalWarning.value;
-  if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-  if (voteState.error) return voteState.error;
-  return null;
-});
+const voteError = computed(
+  (): {
+    title: string;
+    description: string;
+  } | null => {
+    if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
+    if (noVeBalWarning.value) return noVeBalWarning.value;
+    if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
+    if (voteState.error) return voteState.error;
+    return null;
+  }
+);
 
 const transactionInProgress = computed(
   (): boolean => voteState.init || voteState.confirming
@@ -241,7 +247,7 @@ const remainingVotes = computed(() => {
   return t(remainingVotesText, [
     remainingVotesFormatted,
     currentVotesFormatted,
-    unallocatedVotesFormatted.value
+    unallocatedVotesFormatted.value,
   ]);
 });
 
@@ -277,7 +283,7 @@ async function submitVote() {
     voteState.confirming = false;
     voteState.error = {
       title: 'Vote failed',
-      description: error.message
+      description: error.message,
     };
   }
 }
@@ -289,11 +295,11 @@ async function handleTransaction(tx) {
     action: 'voteForGauge',
     summary: t('veBAL.liquidityMining.popover.voteForGauge', [
       fNum2(scale(voteWeight.value, -2).toString(), FNumFormats.percent),
-      props.gauge.pool.symbol
+      props.gauge.pool.symbol,
     ]),
     details: {
-      voteWeight: voteWeight.value
-    }
+      voteWeight: voteWeight.value,
+    },
   });
 
   txListener(tx, {
@@ -310,10 +316,10 @@ async function handleTransaction(tx) {
       console.error('Vote failed');
       voteState.error = {
         title: 'Vote Failed',
-        description: 'Vote failed for an unknown reason'
+        description: 'Vote failed for an unknown reason',
       };
       voteState.confirming = false;
-    }
+    },
   });
 }
 
@@ -327,13 +333,13 @@ onMounted(() => {
 
 <template>
   <BalModal show :fireworks="voteState.confirmed" @close="emit('close')">
-    <template v-slot:header>
+    <template #header>
       <div class="flex items-center">
         <BalCircle
           v-if="voteState.confirmed"
           size="8"
           color="green"
-          class="text-white mr-2"
+          class="mr-2 text-white"
         >
           <BalIcon name="check" />
         </BalCircle>
@@ -343,8 +349,8 @@ onMounted(() => {
       </div>
     </template>
     <div>
-      <div class="mb-4 text-sm" v-if="!voteWarning">
-        <ul class="list-disc ml-4 text-gray-600 dark:text-gray-400">
+      <div v-if="!voteWarning" class="mb-4 text-sm">
+        <ul class="ml-4 list-disc text-gray-600 dark:text-gray-400">
           <li class="mb-1">
             {{ t('veBAL.liquidityMining.popover.emissionsInfo') }}
           </li>
@@ -354,7 +360,7 @@ onMounted(() => {
           <li>
             {{
               t('veBAL.liquidityMining.popover.voteLockInfo', [
-                voteLockedUntilText
+                voteLockedUntilText,
               ])
             }}
           </li>
@@ -365,7 +371,7 @@ onMounted(() => {
         type="warning"
         :title="voteWarning.title"
         :description="voteWarning.description"
-        class="w-full rounded mb-4"
+        class="mb-4 w-full rounded"
       />
       <BalAlert
         v-if="voteError"
@@ -377,12 +383,12 @@ onMounted(() => {
       />
 
       <div
-        class="border dark:border-gray-800 p-2 rounded-lg mb-4 flex items-center justify-between"
+        class="flex justify-between items-center p-2 mb-4 rounded-lg border dark:border-gray-800"
       >
         <div class="flex gap-4 items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
           <div v-if="gauge.pool.name">
-            <p class="text-black dark:text-white font-medium">
+            <p class="font-medium text-black dark:text-white">
               {{ gauge.pool.name }}
             </p>
             <p class="text-sm text-secondary">
@@ -390,7 +396,7 @@ onMounted(() => {
             </p>
           </div>
           <div v-else>
-            <p class="text-black dark:text-white font-medium">
+            <p class="font-medium text-black dark:text-white">
               {{ gauge.pool.symbol }}
             </p>
           </div>
@@ -399,7 +405,7 @@ onMounted(() => {
           :href="poolURL"
           external
           noStyle
-          class="flex items-center group"
+          class="group flex items-center"
         >
           <BalIcon
             name="arrow-up-right"
@@ -409,13 +415,13 @@ onMounted(() => {
       </div>
       <BalForm class="vote-form">
         <BalTextInput
+          v-model="voteWeight"
           name="voteWeight"
           type="number"
           autocomplete="off"
           autocorrect="off"
           spellcheck="false"
           step="any"
-          v-model="voteWeight"
           placeholder="0"
           validateOn="input"
           :rules="inputRules"
@@ -425,7 +431,7 @@ onMounted(() => {
           size="md"
           autoFocus
         >
-          <template v-slot:append>
+          <template #append>
             <div
               class="flex flex-row justify-center h-full px-2 items-center border-gray-100 dark:border-gray-800 rounded-r-lg"
             >
@@ -464,7 +470,7 @@ onMounted(() => {
             block
             :disabled="voteButtonDisabled"
             :loading="transactionInProgress"
-            :loading-label="
+            :loadingLabel="
               voteState.init
                 ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
                 : $t('veBAL.liquidityMining.popover.actions.vote.confirming')

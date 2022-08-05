@@ -1,15 +1,15 @@
 @font-face {
-  font-family: 'Inter-Variable';
+  font-family: Inter-Variable;
   src: url('../../fonts/Inter-Variable.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Tiempos Headline Medium";
-  src: url("../../fonts/tiemposDispMed.woff2") format("woff2"),
-    url("../../fonts/tiemposDispMed.woff") format("woff"), format("opentype"),
-    url("../../fonts/tiemposDispMed.ttf") format("truetype");
+  font-family: 'Tiempos Headline Medium';
+  src: url('../../fonts/tiemposDispMed.woff2') format('woff2'),
+    url('../../fonts/tiemposDispMed.woff') format('woff'), format('opentype'),
+    url('../../fonts/tiemposDispMed.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
 }

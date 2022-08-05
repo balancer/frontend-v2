@@ -13,7 +13,6 @@ import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from './constants';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
 
@@ -78,22 +77,18 @@ export default function useTrading(
     if (tokenInAmount > 0 && tokenOutAmount > 0) {
       return {
         tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum2(
-          bnum(tokenOutAmount)
-            .div(tokenInAmount)
-            .toString(),
+          bnum(tokenOutAmount).div(tokenInAmount).toString(),
           FNumFormats.token
         )} ${tokenOut.value?.symbol}`,
         tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum2(
-          bnum(tokenInAmount)
-            .div(tokenOutAmount)
-            .toString(),
+          bnum(tokenInAmount).div(tokenOutAmount).toString(),
           FNumFormats.token
-        )} ${tokenIn.value?.symbol}`
+        )} ${tokenIn.value?.symbol}`,
       };
     }
     return {
       tokenIn: '',
-      tokenOut: ''
+      tokenOut: '',
     };
   });
 
@@ -106,10 +101,6 @@ export default function useTrading(
       return 'wrapUnwrap';
     } else if (isEthTrade.value) {
       return 'balancer';
-    }
-
-    if (ENABLE_LEGACY_TRADE_INTERFACE) {
-      return isEthTrade.value ? 'balancer' : 'gnosis';
     }
 
     return tradeGasless.value && isGnosisSupportedOnNetwork.value
@@ -143,11 +134,11 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     sorConfig: {
-      handleAmountsOnFetchPools: false
+      handleAmountsOnFetchPools: false,
     },
     tokenIn,
     tokenOut,
-    slippageBufferRate
+    slippageBufferRate,
   });
 
   const gnosis = useGnosis({
@@ -160,7 +151,7 @@ export default function useTrading(
     tokenOutAmountScaled,
     tokenIn,
     tokenOut,
-    slippageBufferRate
+    slippageBufferRate,
   });
 
   const isLoading = computed(() => {
@@ -320,6 +311,6 @@ export default function useTrading(
     // methods
     getQuote,
     trade,
-    handleAmountChange
+    handleAmountChange,
   };
 }

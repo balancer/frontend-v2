@@ -1,22 +1,29 @@
-.social-icon:hover .logo {
-    fill: #fff; /* gray-900 */
-    transform-origin: center;
-    transform: scale(1.05);
-}
-.social-icon .bg {
-    fill: #0f172a; /* gray-900 */
-    @apply transition-all;
-} 
 .social-icon .logo {
-    fill: #fff;
-    @apply transition-all;
+  fill: #fff;
+
+  @apply transition-all;
 }
-.dark .social-icon:hover .logo {
-    fill: #fff;
-}
-.dark .social-icon .bg {
-    fill: #fff;
-} 
+
 .dark .social-icon .logo {
-    fill: #0f172a; /* gray-900 */
+  fill: #0f172a; /* gray-900 */
+}
+
+.social-icon:hover .logo {
+  fill: #fff; /* gray-900 */
+  transform-origin: center;
+  transform: scale(1.05);
+}
+
+.social-icon .bg {
+  fill: #0f172a; /* gray-900 */
+
+  @apply transition-all;
+}
+
+.dark .social-icon:hover .logo {
+  fill: #fff;
+}
+
+.dark .social-icon .bg {
+  fill: #fff;
 }

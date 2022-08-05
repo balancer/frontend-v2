@@ -7,7 +7,7 @@
       :class="['addresses-row', assetRowClasses]"
       :style="{
         width: `${width}px`,
-        height: `${size}px`
+        height: `${size}px`,
       }"
     >
       <BalAsset
@@ -15,14 +15,14 @@
         :key="i"
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
-        @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
           zIndex: `${20 - i}`,
           width: `${size}px`,
-          height: `${size}px`
+          height: `${size}px`,
         }"
+        @click="$emit('click', addressOrURI)"
       />
     </div>
   </template>
@@ -44,36 +44,38 @@ type BalAssetProps = {
 
 export default defineComponent({
   components: {
-    BalAsset
+    BalAsset,
   },
-  emits: ['click'],
   props: {
     addresses: {
-      type: Array as PropType<string[]>
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     logoURIs: {
-      type: Array as PropType<string[]>
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     balAssetProps: {
       type: Object as PropType<BalAssetProps>,
-      default: () => ({})
+      default: () => ({}),
     },
     width: {
       type: Number,
-      default: 200
+      default: 200,
     },
     size: {
       type: Number,
-      default: 26
+      default: 26,
     },
     maxAssetsPerLine: {
       type: Number,
-      default: 8
+      default: 8,
     },
     wrap: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
+  emits: ['click'],
 
   setup(props) {
     /**
@@ -107,7 +109,7 @@ export default defineComponent({
     });
 
     const assetRowClasses = computed(() => ({
-      'mb-3': assetChunks.value.length > 1
+      'mb-3': assetChunks.value.length > 1,
     }));
 
     const radius = computed(() => props.size / 2);
@@ -142,9 +144,9 @@ export default defineComponent({
 
       // methods
       leftOffsetFor,
-      assetAttrsFor
+      assetAttrsFor,
     };
-  }
+  },
 });
 </script>
 
@@ -153,8 +155,21 @@ export default defineComponent({
   @apply relative flex;
 }
 
+.token-icon {
+  margin-left: -2px;
+
+  @apply rounded-full overflow-hidden shadow-none;
+  @apply bg-white dark:bg-gray-850;
+  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+}
+
+.my-wallet .token-icon {
+  @apply ml-0;
+}
+
 .my-wallet .addresses-row {
   @apply flex-wrap gap-2;
+
   width: auto !important;
   height: auto !important;
 }
@@ -173,16 +188,5 @@ export default defineComponent({
 .my-wallet .addresses-row:nth-child(n + 2) .token-icon {
   width: 24px !important;
   height: 24px !important;
-}
-
-.token-icon {
-  margin-left: -2px;
-  @apply rounded-full overflow-hidden shadow-none;
-  @apply bg-white dark:bg-gray-850;
-  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
-}
-
-.my-wallet .token-icon {
-  @apply ml-0;
 }
 </style>

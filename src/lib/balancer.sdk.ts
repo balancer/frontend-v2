@@ -21,5 +21,5 @@ const network = ((): Network => {
 
 export const balancer = new BalancerSDK({
   network,
-  rpcUrl: configService.rpc
+  rpcUrl: configService.rpc,
 });

@@ -21,11 +21,11 @@ defineProps<Props>();
     block
     class="mb-4"
   >
-    <ul class="list-disc pl-6">
+    <ul class="pl-6 list-disc">
       <li
         v-for="i18nLabel in poolMigrationInfo.riskI18nLabels"
-        class="pt-2"
         :key="i18nLabel"
+        class="pt-2"
       >
         {{ $t(i18nLabel) }}
       </li>

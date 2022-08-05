@@ -38,8 +38,8 @@ export default class BlocknativeProvider {
         'https://api.blocknative.com/gasprices/blockprices',
         {
           headers: {
-            Authorization: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID
-          }
+            Authorization: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID,
+          },
         }
       );
       const estimatedPrices = response.data.blockPrices[0].estimatedPrices;
@@ -74,7 +74,7 @@ export default class BlocknativeProvider {
           maxFeePerGas: Math.round(gasPrice.maxFeePerGas * GWEI_UNIT),
           maxPriorityFeePerGas: Math.round(
             gasPrice.maxPriorityFeePerGas * GWEI_UNIT
-          )
+          ),
         };
       }
     } catch (e) {

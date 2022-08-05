@@ -45,7 +45,7 @@ const createState = reactive<CreateState>({
   confirmed: false,
   confirmedAt: '',
   isRestoredTxConfirmed: false,
-  isLoadingRestoredTx: false
+  isLoadingRestoredTx: false,
 });
 
 /*
@@ -67,7 +67,7 @@ const {
   poolTypeString,
   hasRestoredFromSavedState,
   needsSeeding,
-  createPoolTxHash
+  createPoolTxHash,
 } = usePoolCreation();
 
 /**
@@ -80,15 +80,15 @@ const actions = computed((): TransactionActionInfo[] => [
     loadingLabel: t('investment.preview.loadingLabel.create'),
     confirmingLabel: t('confirming'),
     action: createPool,
-    stepTooltip: t('createPoolTooltip', [poolTypeString.value])
+    stepTooltip: t('createPoolTooltip', [poolTypeString.value]),
   },
   {
     label: t('fundPool'),
     loadingLabel: t('investment.preview.loadingLabel.fund'),
     confirmingLabel: t('confirming'),
     action: joinPool,
-    stepTooltip: t('fundPoolTooltip')
-  }
+    stepTooltip: t('fundPoolTooltip'),
+  },
 ]);
 
 const requiredActions = computed(() => {
@@ -133,13 +133,13 @@ function handleSuccess(details: any): void {
       :actions="requiredActions"
       :disabled="props.createDisabled"
       :errorMessage="props.errorMessage"
-      @success="handleSuccess"
       :isLoading="createState.isLoadingRestoredTx"
       :loadingLabel="$t('restoring')"
+      @success="handleSuccess"
     />
     <template v-if="createState.confirmed">
       <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
+        class="flex justify-between items-center mt-4 text-sm text-gray-400 dark:text-gray-600"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />

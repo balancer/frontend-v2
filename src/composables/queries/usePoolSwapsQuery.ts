@@ -39,21 +39,21 @@ export default function usePoolSwapsQuery(
       skip: pageParam,
       where: Object.assign(
         {
-          poolId: id
+          poolId: id,
         },
         subgraphQuery
-      )
+      ),
     });
 
     return {
       poolSwaps,
-      skip: poolSwaps.length >= pagination ? pageParam + pagination : undefined
+      skip: poolSwaps.length >= pagination ? pageParam + pagination : undefined,
     };
   };
 
   const queryOptions = reactive({
     getNextPageParam: (lastPage: PoolSwapsQueryResponse) => lastPage.skip,
-    ...options
+    ...options,
   });
 
   return useInfiniteQuery<PoolSwapsQueryResponse>(

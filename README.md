@@ -1,19 +1,25 @@
 # Balancer Frontend App (v2)
+
 Frontend Vue app for Balancer exchange and pool management.
 
 ## Development
+
 To setup the development environment first clone the repo:
+
 ```bash
 git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
 ```
 
 ### Local env
+
 Install dependencies:
+
 ```bash
 npm install
 ```
 
 Start the app:
+
 ```bash
 npm run serve
 ```
@@ -21,6 +27,7 @@ npm run serve
 The app should be live at [http://localhost:8080](http://localhost:8080)
 
 ### Docker
+
 If you'd rather spin up the app in a docker container, first install dependencies to you local folder:
 
 ```bash
@@ -39,14 +46,16 @@ The app should be live at [http://localhost:8080](http://localhost:8080)
 If you are on Apple Silicon, try this:
 
 ```bash
-export DOCKER_DEFAULT_PLATFORM=linux/amd64  
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
 ```
 
 source: https://stackoverflow.com/questions/65612411/forcing-docker-to-use-linux-amd64-platform-by-default-on-macos
 
 ### Change app network
+
 To change your local development app network, update the network key for
 `VUE_APP_NETWORK` in `.env.development`. Available networks:
+
 ```
 1 - Mainnet
 5 - Goerli
@@ -69,7 +78,7 @@ You can also specify your Portis Dapp ID if you wish to use that service, otherw
 Here's an example of how to run the container. This can also be found in [scripts/run-docker.sh](./scripts/run-docker.sh).
 
 ```bash
-docker run \ 
+docker run \
   -e INFURA_PROJECT_ID=   \ # Required
   -e ALCHEMY_KEY=         \ # Required
   -e BLOCKNATIVE_DAPP_ID= \ # Required
@@ -84,9 +93,11 @@ Click the button below to deploy the frontend Docker image to a new instance in 
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer-labs/frontend-v2/tree/UI-769-one-click-deploy-to-digital-ocean)
 
 ## Design System
+
 The app is using [Tailwind](https://tailwindcss.com/) to configure base styles. In development these styles can be viewed by running:
 
 ```bash
 npm run tailwind-viewer
 ```
+
 Your browser should load the app at [http://localhost:3000](http://localhost:3000).

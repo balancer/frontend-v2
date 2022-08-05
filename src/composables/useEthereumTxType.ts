@@ -5,7 +5,7 @@ import { lsGet, lsSet } from '@/lib/utils';
 
 export enum EthereumTxType {
   LEGACY = 'Legacy',
-  EIP1559 = 'EIP1559'
+  EIP1559 = 'EIP1559',
 }
 
 const lsEthereumTxType = lsGet(
@@ -28,6 +28,6 @@ setEthereumTxType(ethereumTxType.value);
 export default function useEthereumTxType() {
   return {
     ethereumTxType,
-    setEthereumTxType
+    setEthereumTxType,
   };
 }

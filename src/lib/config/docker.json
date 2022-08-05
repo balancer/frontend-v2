@@ -49,6 +49,7 @@
     "veDelegationProxy": "",
     "veBALHelpers": "",
     "feeDistributor": "",
+    "feeDistributorDeprecated": "",
     "faucet": ""
   },
   "keys": {},

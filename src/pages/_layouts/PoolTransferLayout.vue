@@ -24,31 +24,27 @@ const id = ref<string>(route.params.id as string);
  */
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  pool,
-  loadingPool,
-  useNativeAsset,
-  transfersAllowed
-} = usePoolTransfers();
+const { pool, loadingPool, useNativeAsset, transfersAllowed } =
+  usePoolTransfers();
 usePoolTransfersGuard();
 </script>
 
 <template>
   <div class="pb-16">
-    <div class="layout-header mb-12">
-      <div></div>
+    <div class="mb-12 layout-header">
+      <div />
       <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
         <BalIcon name="x" size="lg" />
       </router-link>
     </div>
 
     <Col3Layout offsetGutters mobileHideGutters>
-      <template #gutterLeft v-if="!upToLargeBreakpoint">
+      <template v-if="!upToLargeBreakpoint" #gutterLeft>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
         <MyWalletTokensCard
           v-else
-          :pool="pool"
           v-model:useNativeAsset="useNativeAsset"
+          :pool="pool"
         />
       </template>
 
@@ -60,12 +56,12 @@ usePoolTransfersGuard();
         :sections="[
           {
             title: $t('poolTransfer.myWalletTokensCard.title'),
-            id: 'myWalletTokens'
+            id: 'myWalletTokens',
           },
           {
             title: $t('poolTransfer.myPoolBalancesCard.title'),
-            id: 'myPoolBalances'
-          }
+            id: 'myPoolBalances',
+          },
         ]"
       >
         <template #myWalletTokens>
@@ -75,8 +71,8 @@ usePoolTransfersGuard();
           />
           <MyWalletTokensCard
             v-else
-            :pool="pool"
             v-model:useNativeAsset="useNativeAsset"
+            :pool="pool"
             hideHeader
             noBorder
             square
@@ -91,7 +87,7 @@ usePoolTransfersGuard();
         </template>
       </BalAccordion>
 
-      <template #gutterRight v-if="!upToLargeBreakpoint">
+      <template v-if="!upToLargeBreakpoint" #gutterRight>
         <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
         <MyPoolBalancesCard v-else :pool="pool" />
       </template>

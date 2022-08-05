@@ -32,6 +32,6 @@ export function useTokenHelpers() {
     balAddress,
     balToken,
     // methods
-    isBalAddress
+    isBalAddress,
   };
 }

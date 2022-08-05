@@ -9,33 +9,28 @@
   >
     <defs>
       <filter
+        id="plus-square-filter-1"
         x="-8.3%"
         y="-3.1%"
         width="116.6%"
         height="108.3%"
         filterUnits="objectBoundingBox"
-        id="plus-square-filter-1"
       >
-        <feOffset
-          dx="0"
-          dy="2"
-          in="SourceAlpha"
-          result="shadowOffsetOuter1"
-        ></feOffset>
+        <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1" />
         <feGaussianBlur
           stdDeviation="2"
           in="shadowOffsetOuter1"
           result="shadowBlurOuter1"
-        ></feGaussianBlur>
+        />
         <feColorMatrix
           values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0"
           type="matrix"
           in="shadowBlurOuter1"
           result="shadowMatrixOuter1"
-        ></feColorMatrix>
+        />
         <feMerge>
-          <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-          <feMergeNode in="SourceGraphic"></feMergeNode>
+          <feMergeNode in="shadowMatrixOuter1" />
+          <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
     </defs>
@@ -62,9 +57,9 @@
                   width="19"
                   height="19"
                   rx="1.66666667"
-                ></rect>
-                <line x1="9" y1="5" x2="9" y2="13" id="Path"></line>
-                <line x1="5" y1="9" x2="13" y2="9" id="Path"></line>
+                />
+                <line id="Path" x1="9" y1="5" x2="9" y2="13" />
+                <line id="Path" x1="5" y1="9" x2="13" y2="9" />
               </g>
             </g>
           </g>

@@ -1,9 +1,12 @@
 <template>
-  <BalCard class="relative" :shadow="tradeCardShadow" :no-border="!darkMode">
-    <template v-slot:header>
-      <div class="w-full flex items-center justify-between">
-        <h4 class="font-semibold">{{ title }}</h4>
-        <TradeSettingsPopover :context="TradeSettingsContext.trade" />
+  <BalCard class="relative card-container" :shadow="tradeCardShadow" noBorder>
+    <template #header>
+      <div class="flex justify-between items-center w-full">
+        <h4>{{ title }}</h4>
+        <TradeSettingsPopover
+          :context="TradeSettingsContext.trade"
+          :isGasless="trading.tradeGasless.value"
+        />
       </div>
     </template>
     <div>
@@ -13,138 +16,209 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
-        :priceImpact="priceImpact"
-        @amountChange="handleAmountChange"
+        :tradeLoading="
+          trading.isBalancerTrade.value ? trading.isLoading.value : false
+        "
+        :effectivePriceMessage="trading.effectivePriceMessage"
         class="mb-4"
+        @amount-change="trading.handleAmountChange"
       />
       <BalAlert
         v-if="error"
-        class="mb-4"
+        class="p-3 mb-4"
         type="error"
         size="sm"
         :title="error.header"
         :description="error.body"
-        :action-label="error.label"
+        :actionLabel="error.label"
         block
-        @actionClick="handleErrorButtonClick"
+        @action-click="handleErrorButtonClick"
+      />
+      <BalAlert
+        v-else-if="warning"
+        class="p-3 mb-4"
+        type="warning"
+        size="sm"
+        :title="warning.header"
+        :description="warning.body"
+        block
       />
       <BalBtn
-        v-if="poolsLoading || isLoadingApprovals"
-        :loading="true"
-        :loading-label="$t('loading')"
+        v-if="trading.isLoading.value"
+        loading
+        disabled
+        :loadingLabel="
+          trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
+        "
         block
       />
       <BalBtn
         v-else
-        :label="'Preview trade'"
+        :label="$t('preview')"
         :disabled="tradeDisabled"
-        :loading-label="$t('confirming')"
         color="gradient"
         block
-        @click.prevent="showTradePreviewModal"
+        @click.prevent="handlePreviewButton"
       />
+      <div
+        v-if="trading.isGnosisSupportedOnNetwork.value"
+        class="flex items-center mt-5 h-8 text-sm"
+      >
+        <Transition name="fade" mode="out-in">
+          <div
+            v-if="trading.isGaslessTradingDisabled.value"
+            class="text-secondary"
+          >
+            <div class="flex gap-2 items-center">
+              <span class="text-lg">⛽</span>
+              <Transition name="fade" mode="out-in">
+                <p v-if="trading.isWrap.value">
+                  {{ $t('tradeToggle.wrapEth') }}
+                </p>
+                <p v-else-if="trading.isUnwrap.value">
+                  {{ $t('tradeToggle.unwrapEth') }}
+                </p>
+                <p v-else>
+                  {{ $t('tradeToggle.fromEth') }}
+                </p>
+              </Transition>
+            </div>
+          </div>
+
+          <div v-else>
+            <div class="flex items-center trade-gasless">
+              <BalTooltip
+                width="64"
+                :disabled="!trading.isGaslessTradingDisabled.value"
+              >
+                <template #activator>
+                  <BalToggle
+                    name="tradeGasless"
+                    :checked="trading.tradeGasless.value"
+                    :disabled="trading.isGaslessTradingDisabled.value"
+                    @toggle="trading.toggleTradeGasless"
+                  />
+                </template>
+                <div
+                  v-text="
+                    trading.isWrapUnwrapTrade.value
+                      ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
+                      : $t('tradeGaslessToggle.disabledTooltip.eth')
+                  "
+                />
+              </BalTooltip>
+              <Transition name="fade" mode="out-in">
+                <span
+                  v-if="trading.tradeGasless.value"
+                  class="pl-2 text-sm text-gray-600 dark:text-gray-400"
+                  >{{ $t('tradeToggle.tradeGasless') }}</span
+                >
+                <span
+                  v-else
+                  class="pl-2 text-sm text-gray-600 dark:text-gray-400"
+                  >{{ $t('tradeToggle.tradeWithGas') }}</span
+                >
+              </Transition>
+              <BalTooltip width="64">
+                <template #activator>
+                  <BalIcon
+                    name="info"
+                    size="xs"
+                    class="flex ml-1 text-gray-400"
+                  />
+                </template>
+                <div v-html="$t('tradeGaslessToggle.tooltip')" />
+              </BalTooltip>
+            </div>
+          </div>
+        </Transition>
+      </div>
       <TradeRoute
-        class="mt-5"
-        :address-in="tokenInAddress"
-        :amount-in="tokenInAmount"
-        :address-out="tokenOutAddress"
-        :amount-out="tokenOutAmount"
-        :pools="pools"
-        :sor-return="sorReturn"
+        v-if="alwaysShowRoutes"
+        :addressIn="trading.tokenIn.value.address"
+        :amountIn="trading.tokenInAmountInput.value"
+        :addressOut="trading.tokenOut.value.address"
+        :amountOut="trading.tokenOutAmountInput.value"
+        :pools="trading.sor.pools.value"
+        :sorReturn="trading.sor.sorReturn.value"
+        class="mt-4"
       />
     </div>
-    <SuccessOverlay
-      v-if="tradeSuccess"
-      :title="$t('tradeSettled')"
-      :description="$t('tradeSuccess')"
-      :closeLabel="$t('close')"
-      :explorer-link="explorer.txLink(txHash)"
-      @close="tradeSuccess = false"
-    />
   </BalCard>
   <teleport to="#modal">
-    <TradePreviewModal
+    <TradePreviewModalGP
       v-if="modalTradePreviewIsOpen"
-      :address-in="tokenInAddress"
-      :amount-in="tokenInAmount"
-      :address-out="tokenOutAddress"
-      :amount-out="tokenOutAmount"
       :trading="trading"
       @trade="trade"
-      @close="modalTradePreviewIsOpen = false"
+      @close="handlePreviewModalClose"
     />
   </teleport>
 </template>
 
 <script lang="ts">
 import { getAddress, isAddress } from '@ethersproject/address';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { formatUnits } from '@ethersproject/units';
+import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import TradePair from '@/components/cards/TradeCard/TradePair.vue';
-import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
-import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
+import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
-  TradeSettingsContext
+  TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
-import useSor from '@/composables/trade/useSor';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
 import { useTradeState } from '@/composables/trade/useTradeState';
+import useTrading from '@/composables/trade/useTrading';
 import useValidation, {
-  TradeValidation
+  TradeValidation,
 } from '@/composables/trade/useValidation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { TOKENS } from '@/constants/tokens';
+import { lsGet } from '@/lib/utils';
+import { WrapType } from '@/lib/utils/balancer/wrapper';
 import { isRequired } from '@/lib/utils/validations';
+import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
+
+import TradePair from './TradePair.vue';
+import TradeRoute from './TradeRoute.vue';
 
 export default defineComponent({
   components: {
-    SuccessOverlay,
     TradePair,
-    TradePreviewModal,
+    TradePreviewModalGP,
     TradeRoute,
-    TradeSettingsPopover
+    TradeSettingsPopover,
   },
 
   setup() {
-    const highPiAccepted = ref(false);
+    // COMPOSABLES
     const store = useStore();
     const router = useRouter();
-    const { explorerLinks, isMismatchedNetwork } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
-
-    const { tokens, getToken, nativeAsset } = useTokens();
-    const { userNetworkConfig } = useWeb3();
-    const { darkMode } = useDarkMode();
+    const { fNum2 } = useNumbers();
+    const { appNetworkConfig } = useWeb3();
+    const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
       tokenOutAddress,
       tokenInAmount,
       tokenOutAmount,
       setTokenInAddress,
-      setTokenOutAddress
+      setTokenOutAddress,
+      setInitialized,
     } = useTradeState();
-    const { slippage } = useUserSettings();
 
+    // DATA
     const exactIn = ref(true);
-
-    const tradeSuccess = ref(false);
-    const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
-
-    const slippageBufferRate = computed(() => parseFloat(slippage.value));
-
-    const tokenIn = computed(() => getToken(tokenInAddress.value));
-
-    const tokenOut = computed(() => getToken(tokenOutAddress.value));
+    const dismissedErrors = ref({
+      highPriceImpact: false,
+    });
+    const alwaysShowRoutes = lsGet('alwaysShowRoutes', false);
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -157,51 +231,15 @@ export default defineComponent({
       }
     });
 
-    const wrapType = computed(() =>
-      getWrapAction(tokenInAddress.value, tokenOutAddress.value)
-    );
-    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
-    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
-
-    const isHighPriceImpact = computed(() => {
-      return priceImpact.value >= 0.05 && !highPiAccepted.value;
-    });
-
-    const tradeDisabled = computed(() => {
-      if (isMismatchedNetwork.value) return true;
-      if (errorMessage.value !== TradeValidation.VALID) return true;
-      if (isHighPriceImpact.value) return true;
-      return false;
-    });
-
-    // COMPOSABLES
-    const { isLoading: isLoadingApprovals } = useTokenApproval(
+    const trading = useTrading(
+      exactIn,
       tokenInAddress,
       tokenInAmount,
-      tokens
+      tokenOutAddress,
+      tokenOutAmount
     );
-    const {
-      trading,
-      trade,
-      initSor,
-      handleAmountChange,
-      priceImpact,
-      sorReturn,
-      latestTxHash,
-      pools,
-      fetchPools,
-      poolsLoading
-    } = useSor({
-      exactIn,
-      tokenInAddressInput: tokenInAddress,
-      tokenInAmountInput: tokenInAmount,
-      tokenOutAddressInput: tokenOutAddress,
-      tokenOutAmountInput: tokenOutAmount,
-      wrapType,
-      tokenIn,
-      tokenOut,
-      slippageBufferRate
-    });
+
+    // COMPUTED
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
@@ -209,109 +247,225 @@ export default defineComponent({
       tokenOutAmount
     );
 
+    const isHighPriceImpact = computed(
+      () =>
+        trading.sor.validationErrors.value.highPriceImpact &&
+        !dismissedErrors.value.highPriceImpact
+    );
+
+    const tradeDisabled = computed(() => {
+      const hasValidationError = errorMessage.value !== TradeValidation.VALID;
+      const hasGnosisErrors =
+        trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
+      const hasBalancerErrors =
+        trading.isBalancerTrade.value && isHighPriceImpact.value;
+
+      return hasValidationError || hasGnosisErrors || hasBalancerErrors;
+    });
+
     const title = computed(() => {
-      if (isWrap.value) return t('wrap');
-      if (isUnwrap.value) return t('unwrap');
+      if (trading.wrapType.value === WrapType.Wrap) {
+        return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
+      }
+      if (trading.wrapType.value === WrapType.Unwrap) {
+        return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
+      }
       return t('trade');
     });
 
     const error = computed(() => {
-      if (isHighPriceImpact.value) {
-        return {
-          header: t('highPriceImpact'),
-          body: t('highPriceImpactDetailed'),
-          label: t('accept')
-        };
-      }
-      switch (errorMessage.value) {
-        case TradeValidation.NO_LIQUIDITY:
+      if (trading.isBalancerTrade.value && !trading.isLoading.value) {
+        if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
             header: t('insufficientLiquidity'),
-            body: t('insufficientLiquidityDetailed')
+            body: t('insufficientLiquidityDetailed'),
           };
-        default:
-          return undefined;
+        }
+      }
+
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.validationError.value != null) {
+          const validationError = trading.gnosis.validationError.value;
+
+          if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
+            return {
+              header: t('gnosisErrors.lowAmount.header'),
+              body: t('gnosisErrors.lowAmount.body'),
+            };
+          } else if (validationError === ApiErrorCodes.PriceExceedsBalance) {
+            return {
+              header: t('gnosisErrors.lowBalance.header', [
+                trading.tokenIn.value.symbol,
+              ]),
+              body: t('gnosisErrors.lowBalance.body', [
+                trading.tokenIn.value.symbol,
+                fNum2(
+                  formatUnits(
+                    trading.getQuote().maximumInAmount,
+                    trading.tokenIn.value.decimals
+                  ),
+                  FNumFormats.token
+                ),
+                fNum2(trading.slippageBufferRate.value, FNumFormats.percent),
+              ]),
+            };
+          } else if (validationError === ApiErrorCodes.NoLiquidity) {
+            return {
+              header: t('gnosisErrors.noLiquidity.header', [
+                trading.tokenIn.value.symbol,
+              ]),
+              body: t('gnosisErrors.noLiquidity.body'),
+            };
+          } else {
+            return {
+              header: t('gnosisErrors.genericError.header'),
+              body: trading.gnosis.validationError.value,
+            };
+          }
+        }
+      } else if (trading.isBalancerTrade.value) {
+        if (isHighPriceImpact.value) {
+          return {
+            header: t('highPriceImpact'),
+            body: t('highPriceImpactDetailed'),
+            label: t('accept'),
+          };
+        }
+      }
+
+      return undefined;
+    });
+
+    const warning = computed(() => {
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.warnings.value.highFees) {
+          return {
+            header: t('gnosisWarnings.highFees.header'),
+            body: t('gnosisWarnings.highFees.body'),
+          };
+        }
+      }
+
+      return undefined;
+    });
+
+    // WATCHERS
+    watch(trading.isLoading, newVal => {
+      if (!newVal) {
+        trading.handleAmountChange();
       }
     });
 
+    // METHODS
+    function trade() {
+      trading.trade(() => {
+        trading.resetAmounts();
+        modalTradePreviewIsOpen.value = false;
+      });
+    }
+
     function handleErrorButtonClick() {
-      if (isHighPriceImpact.value) {
-        highPiAccepted.value = true;
+      if (trading.sor.validationErrors.value.highPriceImpact) {
+        dismissedErrors.value.highPriceImpact = true;
       }
     }
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === nativeAsset.deeplinkId) assetIn = nativeAsset.address;
-      else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
-      let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === nativeAsset.deeplinkId) assetOut = nativeAsset.address;
-      else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
+      if (assetIn === nativeAsset.deeplinkId) {
+        assetIn = nativeAsset.address;
+      } else if (isAddress(assetIn)) {
+        assetIn = getAddress(assetIn);
+      }
+
+      let assetOut = router.currentRoute.value.params.assetOut as string;
+
+      if (assetOut === nativeAsset.deeplinkId) {
+        assetOut = nativeAsset.address;
+      } else if (isAddress(assetOut)) {
+        assetOut = getAddress(assetOut);
+      }
       setTokenInAddress(assetIn || store.state.trade.inputAsset);
-      setTokenOutAddress(assetOut || '');
+      setTokenOutAddress(assetOut || store.state.trade.outputAsset);
     }
 
-    function showTradePreviewModal() {
+    function switchToWETH() {
+      tokenInAddress.value = appNetworkConfig.addresses.weth;
+    }
+
+    function handlePreviewButton() {
+      trading.resetSubmissionError();
+
       modalTradePreviewIsOpen.value = true;
     }
 
-    watch(userNetworkConfig, async () => {
-      await initSor();
-      await handleAmountChange();
-    });
+    function handlePreviewModalClose() {
+      trading.resetSubmissionError();
 
-    watch(tokenInAddress, () => {
-      store.commit('trade/setInputAsset', tokenInAddress.value);
-      handleAmountChange();
-    });
-
-    watch(tokenOutAddress, () => {
-      store.commit('trade/setOutputAsset', tokenOutAddress.value);
-      handleAmountChange();
-    });
-
-    watch(latestTxHash, () => {
-      // Refresh SOR pools
-      fetchPools();
-      txHash.value = latestTxHash.value;
-      tradeSuccess.value = true;
       modalTradePreviewIsOpen.value = false;
-    });
+    }
 
-    populateInitialTokens();
+    // INIT
+    onBeforeMount(() => {
+      populateInitialTokens();
+      setInitialized(true);
+    });
 
     return {
-      highPiAccepted,
-      title,
-      error,
-      handleErrorButtonClick,
+      // constants
+      TOKENS,
+      // context
+      TradeSettingsContext,
+
+      // data
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      exactIn,
-      handleAmountChange,
-      errorMessage,
-      sorReturn,
-      pools,
-      trading,
-      trade,
-      txHash,
       modalTradePreviewIsOpen,
-      tradeSuccess,
-      priceImpact,
+      alwaysShowRoutes,
+      exactIn,
+      trading,
+
+      // computed
+      title,
+      error,
+      warning,
+      errorMessage,
       isRequired,
       tradeDisabled,
-      TradeSettingsContext,
-      poolsLoading,
-      showTradePreviewModal,
-      isLoadingApprovals,
-      bp,
-      darkMode,
       tradeCardShadow,
-      explorer: explorerLinks
+      handlePreviewButton,
+      handlePreviewModalClose,
+
+      // methods
+      trade,
+      switchToWETH,
+      handleErrorButtonClick,
     };
-  }
+  },
 });
 </script>
+<style scoped>
+/* This is needed because the trade settings popover overflows */
+.card-container {
+  overflow: unset;
+}
+
+.trade-gasless :deep(.bal-toggle) {
+  width: 3rem;
+}
+
+.gas-symbol {
+  @apply h-8 w-8 rounded-full flex items-center justify-center text-lg bg-gray-50 dark:bg-gray-800;
+}
+
+.gas-symbol::before {
+  content: '⛽';
+}
+
+.signature-symbol::before {
+  content: '✍️';
+}
+</style>

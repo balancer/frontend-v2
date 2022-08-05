@@ -16,7 +16,7 @@ import {
   Pool,
   PoolSnapshot,
   PoolSnapshots,
-  PoolType
+  PoolType,
 } from '@/services/pool/types';
 
 /**
@@ -33,15 +33,18 @@ type Props = {
   loading: boolean;
   pool: Pool;
   // these props are added to prevent line chart rerender on each pool update
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokensList?: string[];
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   poolType?: PoolType;
 };
 
 enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
-  FEES = 'fees'
+  FEES = 'fees',
 }
 
 interface PoolChartData {
@@ -63,7 +66,7 @@ interface PoolChartData {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
-  loading: false
+  loading: false,
 });
 
 /**
@@ -84,16 +87,16 @@ const MIN_CHART_VALUES = 2;
 const tabs = [
   {
     value: PoolChartTab.VOLUME,
-    label: t('poolChart.tabs.volume')
+    label: t('poolChart.tabs.volume'),
   },
   {
     value: PoolChartTab.TVL,
-    label: t('poolChart.tabs.tvl')
+    label: t('poolChart.tabs.tvl'),
   },
   {
     value: PoolChartTab.FEES,
-    label: t('poolChart.tabs.fees')
-  }
+    label: t('poolChart.tabs.fees'),
+  },
 ];
 const activeTab = ref(tabs[0].value);
 
@@ -112,7 +115,7 @@ const periodOptions = computed(() => [
   { text: t('poolChart.period.days', [90]), days: 90 },
   { text: t('poolChart.period.days', [180]), days: 180 },
   { text: t('poolChart.period.days', [365]), days: 365 },
-  { text: t('poolChart.period.all'), days: snapshotValues.value.length }
+  { text: t('poolChart.period.all'), days: snapshotValues.value.length },
 ]);
 
 const currentPeriod = ref<PoolChartPeriod>(periodOptions.value[0]);
@@ -194,24 +197,24 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
           offset: 0,
-          color: 'rgba(14, 165, 233, 0.08)'
+          color: 'rgba(14, 165, 233, 0.08)',
         },
         {
           offset: 1,
-          color: 'rgba(68, 9, 236, 0)'
-        }
-      ])
+          color: 'rgba(68, 9, 236, 0)',
+        },
+      ]),
     },
     chartType: 'line',
     data: [
       {
         name: 'TVL',
-        values: tvlValues
-      }
+        values: tvlValues,
+      },
     ],
     defaultHeaderStateValue: fNum2(tvlValues[0][1], {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
@@ -250,12 +253,12 @@ function getFeesData(
     data: [
       {
         name: 'Fees',
-        values: feesValues
-      }
+        values: feesValues,
+      },
     ],
     defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
@@ -292,44 +295,42 @@ function getVolumeData(
     data: [
       {
         name: 'Volume',
-        values: volumeData
-      }
+        values: volumeData,
+      },
     ],
     defaultHeaderStateValue: fNum2(defaultHeaderStateValue, {
-      style: 'currency'
-    })
+      style: 'currency',
+    }),
   };
 }
 
-const chartData = computed(
-  (): PoolChartData => {
-    const periodSnapshots =
-      currentPeriod.value.days === snapshotValues.value.length
-        ? snapshotValues.value
-        : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
-    const isAllTimeSelected =
-      periodSnapshots.length === snapshotValues.value.length;
-    const pariodLastSnapshotIdx = periodSnapshots.length - 1;
+const chartData = computed((): PoolChartData => {
+  const periodSnapshots =
+    currentPeriod.value.days === snapshotValues.value.length
+      ? snapshotValues.value
+      : snapshotValues.value.slice(0, currentPeriod.value.days - 1);
+  const isAllTimeSelected =
+    periodSnapshots.length === snapshotValues.value.length;
+  const pariodLastSnapshotIdx = periodSnapshots.length - 1;
 
-    if (activeTab.value === PoolChartTab.TVL) {
-      return getTVLData(periodSnapshots);
-    }
+  if (activeTab.value === PoolChartTab.TVL) {
+    return getTVLData(periodSnapshots);
+  }
 
-    if (activeTab.value === PoolChartTab.FEES) {
-      return getFeesData(
-        periodSnapshots,
-        isAllTimeSelected,
-        pariodLastSnapshotIdx
-      );
-    }
-
-    return getVolumeData(
+  if (activeTab.value === PoolChartTab.FEES) {
+    return getFeesData(
       periodSnapshots,
       isAllTimeSelected,
       pariodLastSnapshotIdx
     );
   }
-);
+
+  return getVolumeData(
+    periodSnapshots,
+    isAllTimeSelected,
+    pariodLastSnapshotIdx
+  );
+});
 
 const defaultChartData = computed(() => {
   const currentPeriodOption = periodOptions.value.find(
@@ -356,7 +357,7 @@ function setCurrentChartValue(payload: {
   chartValue: number;
 }) {
   currentChartValue.value = fNum2(payload.chartValue, {
-    style: 'currency'
+    style: 'currency',
   });
   currentChartDate.value = format(
     new Date(payload.chartDate),
@@ -368,16 +369,16 @@ function setCurrentChartValue(payload: {
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
 
-  <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
+  <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
-      class="flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
+      class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >
       <div class="flex mb-4">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
+        <BalTabs v-model="activeTab" :tabs="tabs" noPad class="mr-6 -mb-px" />
         <div class="flex items-center">
           <PoolChartPeriodSelect
             :options="periodOptions"
-            :active-option="currentPeriod"
+            :activeOption="currentPeriod"
             @change-option="setCurrentPeriod"
           />
         </div>
@@ -409,22 +410,26 @@ function setCurrentChartValue(payload: {
       v-else
       height="96"
       :data="chartData.data"
-      :axis-label-formatter="{
-        yAxis: { style: 'currency', abbreviate: true, maximumFractionDigits: 0 }
+      :axisLabelFormatter="{
+        yAxis: {
+          style: 'currency',
+          abbreviate: true,
+          maximumFractionDigits: 0,
+        },
       }"
-      :area-style="chartData.areaStyle"
+      :areaStyle="chartData.areaStyle"
       :color="chartData.color"
-      :hover-color="chartData.hoverColor"
-      :hover-border-color="chartData.hoverBorderColor"
-      :x-axis-min-interval="3600 * 1000 * 24 * 30"
-      :show-legend="false"
-      need-chart-value
-      :chart-type="chartData.chartType"
-      :show-tooltip-layer="false"
-      @setCurrentChartValue="setCurrentChartValue"
-      :hide-y-axis="isMobile"
-      @mouseLeaveEvent="isFocusedOnChart = false"
-      @mouseEnterEvent="isFocusedOnChart = true"
+      :hoverColor="chartData.hoverColor"
+      :hoverBorderColor="chartData.hoverBorderColor"
+      :xAxisMinInterval="3600 * 1000 * 24 * 30"
+      :showLegend="false"
+      needChartValue
+      :chartType="chartData.chartType"
+      :showTooltipLayer="false"
+      :hideYAxis="isMobile"
+      @set-current-chart-value="setCurrentChartValue"
+      @mouse-leave-event="isFocusedOnChart = false"
+      @mouse-enter-event="isFocusedOnChart = true"
     />
   </div>
   <BalBlankSlate v-else class="h-96">

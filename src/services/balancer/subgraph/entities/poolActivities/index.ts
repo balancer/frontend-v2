@@ -22,7 +22,7 @@ export default class PoolActivities {
   serializeActivity(poolActivities: PoolActivity[]) {
     return poolActivities.map(poolActivity => ({
       ...poolActivity,
-      timestamp: poolActivity.timestamp * 1000
+      timestamp: poolActivity.timestamp * 1000,
     }));
   }
 }

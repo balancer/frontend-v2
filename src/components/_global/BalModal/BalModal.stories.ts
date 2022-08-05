@@ -6,8 +6,8 @@ export default {
   title: 'Components/BalModal',
   args: {
     title: '',
-    darkMode: false
-  }
+    darkMode: false,
+  },
 };
 
 type Props = {
@@ -24,7 +24,7 @@ const Template = (args: Props) => ({
   template: generateTemplate(`
 <BalModal v-bind="args" @close="args.show = false">
   content
-</BalModal>`)
+</BalModal>`),
 });
 
 export const Primary = Template.bind({});
@@ -42,6 +42,6 @@ export const WithFooter = (args: Props) => ({
   <template v-slot:footer>
     Action
   </template>
-</BalModal>`)
+</BalModal>`),
 });
 WithFooter.args = { title: 'A title', show: true };

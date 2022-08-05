@@ -7,14 +7,10 @@ import { useStore } from 'vuex';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
-import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
 import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useBreakpoints from '@/composables/useBreakpoints';
-// Types
-import { TradeInterface } from '@/store/modules/app';
 
 /**
  * STATE
@@ -32,7 +28,6 @@ const { upToLargeBreakpoint } = useBreakpoints();
  * COMPUTED
  */
 const appLoading = computed(() => store.state.app.loading);
-const tradeInterface = computed(() => store.state.app.tradeInterface);
 
 /**
  * METHODS
@@ -63,31 +58,25 @@ onMounted(() => {
 
     <BalLoadingBlock v-if="appLoading" class="h-96" />
     <template v-else>
-      <template v-if="ENABLE_LEGACY_TRADE_INTERFACE">
-        <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
-        <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
-      </template>
-      <template v-else>
-        <TradeCardGP />
-      </template>
+      <TradeCard />
     </template>
-    <div class="mt-8 p-4 sm:p-0 lg:p-0">
+    <div class="p-4 sm:p-0 lg:p-0 mt-8">
       <BalAccordion
-        class="w-full"
         v-if="upToLargeBreakpoint"
+        class="w-full"
         :sections="[
           { title: 'My wallet', id: 'my-wallet' },
           { title: 'Trending pairs', id: 'trending-pairs' },
-          { title: 'Price chart', id: 'price-chart' }
+          { title: 'Price chart', id: 'price-chart' },
         ]"
       >
-        <template v-slot:my-wallet>
+        <template #my-wallet>
           <MyWallet />
         </template>
-        <template v-slot:trending-pairs>
+        <template #trending-pairs>
           <TrendingPairs />
         </template>
-        <template v-slot:price-chart>
+        <template #price-chart>
           <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
         </template>
       </BalAccordion>

@@ -24,13 +24,13 @@ interface Tab {
 export default defineComponent({
   name: 'BalTabs',
 
-  emits: ['selected', 'update:modelValue'],
-
   props: {
     tabs: { type: Array as PropType<Tab[]>, required: true },
     modelValue: { type: String, default: '' },
-    noPad: { type: Boolean, default: false }
+    noPad: { type: Boolean, default: false },
   },
+
+  emits: ['selected', 'update:modelValue'],
 
   setup(props, { emit }) {
     const activeTab = ref(props.modelValue);
@@ -47,18 +47,16 @@ export default defineComponent({
 
     const containerClasses = computed(() => {
       return {
-        'px-4': !props.noPad
+        'px-4': !props.noPad,
       };
     });
 
     function stateClasses(tab: Tab): Record<string, boolean> {
       return {
-        'border-b-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:border-blue-500 font-semibold': isActiveTab(
-          tab
-        ),
-        'hover:text-purple-600 dark:hover:text-yellow-500 dark:border-gray-700 transition-colors': !isActiveTab(
-          tab
-        )
+        'border-b-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:border-blue-500 font-semibold':
+          isActiveTab(tab),
+        'hover:text-purple-600 dark:hover:text-yellow-500 dark:border-gray-700 transition-colors':
+          !isActiveTab(tab),
       };
     }
 
@@ -66,9 +64,9 @@ export default defineComponent({
       activeTab,
       onClick,
       containerClasses,
-      stateClasses
+      stateClasses,
     };
-  }
+  },
 });
 </script>
 

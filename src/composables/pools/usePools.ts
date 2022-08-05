@@ -19,6 +19,6 @@ export default function usePools() {
   return {
     userPools,
     totalInvestedAmount,
-    isLoadingUserPools
+    isLoadingUserPools,
   };
 }

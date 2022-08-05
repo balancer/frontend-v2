@@ -68,6 +68,6 @@ export default function usePoolTransfers() {
     loadingPool,
     useNativeAsset,
     missingPrices,
-    transfersAllowed
+    transfersAllowed,
   };
 }

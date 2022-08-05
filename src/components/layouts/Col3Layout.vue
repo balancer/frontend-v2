@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
   mobileGuttersFirst: false,
   mobileGuttersLast: false,
   mobileHideGutters: false,
-  offsetGutters: false
+  offsetGutters: false,
 });
 
 /**
@@ -28,12 +28,12 @@ const gutterClasses = computed(() => ({
   'order-1 lg:order-2': props.mobileGuttersFirst,
   'order-3 lg:order-2': props.mobileGuttersLast,
   'hidden lg:block': props.mobileHideGutters,
-  'mt-6': props.offsetGutters
+  'mt-6': props.offsetGutters,
 }));
 
 const centerClasses = computed(() => ({
   'order-2': props.mobileGuttersFirst,
-  'order-1 lg:order-2': props.mobileGuttersLast
+  'order-1 lg:order-2': props.mobileGuttersLast,
 }));
 </script>
 

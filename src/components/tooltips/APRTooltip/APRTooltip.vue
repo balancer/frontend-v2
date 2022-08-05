@@ -5,7 +5,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolAPRs } from '@/services/pool/types';
 import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
@@ -17,6 +17,7 @@ import YieldBreakdown from './components/YieldBreakdown.vue';
  */
 type Props = {
   pool: Pool;
+  poolApr?: PoolAPRs;
 };
 
 /**
@@ -32,32 +33,28 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
+const apr = computed(() => props.pool?.apr || props.poolApr);
 const validAPR = computed(
-  () => Number(props?.pool?.apr?.total.unstaked || '0') * 100 <= APR_THRESHOLD
+  () => Number(apr.value?.total?.unstaked || '0') * 100 <= APR_THRESHOLD
 );
 
-const hasYieldAPR = computed(() =>
-  bnum(props?.pool?.apr?.yield.total || '0').gt(0)
-);
+const hasYieldAPR = computed(() => bnum(apr.value?.yield.total || '0').gt(0));
 
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 
-const totalLabel = computed((): string => {
-  const poolAPRs = props.pool?.apr;
-  if (!poolAPRs) return '0';
-
-  return totalAprLabel(poolAPRs, props.pool.boost);
-});
+const totalLabel = computed((): string =>
+  apr.value ? totalAprLabel(apr.value, props.pool.boost) : '0'
+);
 </script>
 
 <template v-slot:aprCell="pool">
-  <BalTooltip width="auto" noPad v-if="validAPR">
-    <template v-slot:activator>
+  <BalTooltip v-if="validAPR" width="auto" noPad>
+    <template #activator>
       <div class="ml-1">
         <StarsIcon
-          v-if="hasYieldAPR || hasStakingRewards(pool.apr) || hasVebalAPR"
+          v-if="hasYieldAPR || hasStakingRewards(apr) || hasVebalAPR"
           :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
-          class="h-4 -mr-1"
+          class="-mr-1 h-4"
           v-bind="$attrs"
         />
         <BalIcon
@@ -71,31 +68,33 @@ const totalLabel = computed((): string => {
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
-        <div class="text-secondary">{{ $t('totalAPR') }}</div>
+        <div class="text-secondary">
+          {{ $t('totalAPR') }}
+        </div>
         <div>{{ totalLabel }}</div>
       </div>
       <div class="p-3">
         <!-- SWAP FEE APR -->
-        <div class="whitespace-nowrap flex items-center mb-1">
-          {{ fNum2(pool?.apr?.swap || '0', FNumFormats.percent) }}
-          <span class="ml-1 text-secondary text-xs">{{
-            $t('swapFeeAPR')
-          }}</span>
+        <div class="flex items-center mb-1 whitespace-nowrap">
+          {{ fNum2(apr?.swap || '0', FNumFormats.percent) }}
+          <span class="ml-1 text-xs text-secondary">
+            {{ $t('swapFeeAPR') }}
+          </span>
         </div>
 
         <!-- VeBal APR -->
-        <VeBalBreakdown v-if="hasVebalAPR" :apr="pool?.apr?.veBal || '0'" />
+        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.veBal || '0'" />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
           v-if="hasYieldAPR"
-          :yieldAPR="pool?.apr?.yield"
+          :yieldAPR="apr?.yield"
           :poolTokens="pool.tokensList"
           :poolType="pool.poolType"
         />
 
         <!-- STAKING APR BREAKDOWN -->
-        <StakingBreakdown :pool="pool" />
+        <StakingBreakdown :pool="pool" :poolApr="apr" />
       </div>
     </div>
   </BalTooltip>

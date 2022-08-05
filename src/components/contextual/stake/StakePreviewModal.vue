@@ -32,7 +32,7 @@ function handleSuccess() {
 
 <template>
   <teleport to="#modal">
-    <BalModal :show="isVisible" @close="handleClose" :fireworks="showFireworks">
+    <BalModal :show="isVisible" :fireworks="showFireworks" @close="handleClose">
       <StakePreview
         :pool="pool"
         :action="action"

@@ -39,7 +39,7 @@ export default function useGaugesQuery(
    */
   const queryOptions = reactive({
     enabled: true,
-    ...options
+    ...options,
   });
 
   return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);

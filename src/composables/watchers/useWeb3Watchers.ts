@@ -24,7 +24,7 @@ export default function useWeb3Watchers() {
     blockNumber,
     connectToAppNetwork,
     isWalletReady,
-    disconnectWallet
+    disconnectWallet,
   } = useWeb3();
   const { addAlert, removeAlert } = useAlerts();
   const { refetchBalances, refetchAllowances } = useTokens();
@@ -40,7 +40,7 @@ export default function useWeb3Watchers() {
       updateTransaction(originalHash, 'tx', {
         // new id
         id: tx.hash,
-        replacementReason
+        replacementReason,
       });
     }
   }
@@ -54,7 +54,7 @@ export default function useWeb3Watchers() {
         persistent: true,
         action: connectToAppNetwork,
         actionLabel: t('switchNetwork'),
-        priority: AlertPriority.HIGH
+        priority: AlertPriority.HIGH,
       });
     } else {
       removeAlert('network-mismatch');

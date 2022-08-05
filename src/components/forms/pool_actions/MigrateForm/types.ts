@@ -1,5 +1,5 @@
 export enum PoolMigrationType {
-  AAVE_BOOSTED_POOL = 'aaveBoostedPool'
+  AAVE_BOOSTED_POOL = 'aaveBoostedPool',
 }
 
 export type PoolMigrationInfo = {

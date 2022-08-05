@@ -4,18 +4,17 @@ export default {
     Locale: 'app.locale',
     TradeSlippage: 'app.tradeSlippage',
     TradeLiquidity: 'app.tradeLiquidity',
-    TradeInterface: 'app.tradeInterface',
     TradeDeadline: 'app.tradeDeadline',
-    EthereumTxType: 'app.ethereumTxType'
+    EthereumTxType: 'app.ethereumTxType',
   },
   Trade: {
-    Gasless: 'trade.gasless'
+    Gasless: 'trade.gasless',
   },
   UserSettings: {
-    Currency: 'userSettings.currency'
+    Currency: 'userSettings.currency',
   },
   TokenLists: {
-    Toggled: 'tokenLists.toggled'
+    Toggled: 'tokenLists.toggled',
   },
-  Transactions: 'transactions'
+  Transactions: 'transactions',
 };

@@ -18,7 +18,7 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import UnknownTokenPriceModal from '@/components/modals/UnknownTokenPrice/UnknownTokenPriceModal.vue';
 import usePoolCreation, {
   POOL_CREATION_STATE_KEY,
-  POOL_CREATION_STATE_VERSION
+  POOL_CREATION_STATE_VERSION,
 } from '@/composables/pools/usePoolCreation';
 import useAlerts from '@/composables/useAlerts';
 import useApp from '@/composables/useApp';
@@ -54,7 +54,7 @@ const {
   totalLiquidity,
   resetPoolCreationState,
   retrievePoolAddress,
-  retrievePoolDetails
+  retrievePoolDetails,
 } = usePoolCreation();
 const { removeAlert } = useAlerts();
 const { t } = useI18n();
@@ -65,7 +65,7 @@ const {
   getToken,
   injectTokens,
   injectedPrices,
-  loading: isLoadingTokens
+  loading: isLoadingTokens,
 } = useTokens();
 const route = useRoute();
 const { isWalletReady } = useWeb3();
@@ -77,7 +77,7 @@ onBeforeMount(async () => {
   removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
     anime.set(accordionWrapper.value, {
-      opacity: 0
+      opacity: 0,
     });
   }
   let previouslySavedState = lsGet(
@@ -130,28 +130,28 @@ const steps = computed(() => [
   {
     tooltip: 'Choose tokens & weights',
     state: getStepState(0),
-    label: 1
+    label: 1,
   },
   {
     tooltip: 'Set pool fees',
     state: getStepState(1),
-    label: 2
+    label: 2,
   },
   {
     tooltip: 'Similar pools',
     state: StepState.Warning,
-    isVisible: doSimilarPoolsExist.value && activeStep.value === 2
+    isVisible: doSimilarPoolsExist.value && activeStep.value === 2,
   },
   {
     tooltip: 'Set initial liquidity',
     state: getStepState(3),
-    label: 3
+    label: 3,
   },
   {
     tooltip: 'Confirm pool creation',
     state: getStepState(4),
-    label: 4
-  }
+    label: 4,
+  },
 ]);
 
 const initialAnimateProps = computed(() => ({
@@ -160,13 +160,13 @@ const initialAnimateProps = computed(() => ({
   position: 'absolute',
   top: 0,
   left: 0,
-  right: 0
+  right: 0,
 }));
 
 const entryAnimateProps = computed(() => ({
   opacity: 1,
   translateY: hasRestoredFromSavedState.value ? '116px' : '0px',
-  position: 'relative'
+  position: 'relative',
 }));
 
 const exitAnimateProps = computed(() => ({
@@ -175,7 +175,7 @@ const exitAnimateProps = computed(() => ({
   position: 'absolute',
   top: 0,
   left: 0,
-  right: 0
+  right: 0,
 }));
 
 const isLoading = computed(
@@ -214,10 +214,10 @@ function setWrapperHeight(dimensions?: { width: number; height: number }) {
           opacity: 1,
           complete: () => {
             hasCompletedMountAnimation.value = true;
-          }
+          },
         });
       }
-    }
+    },
   });
 }
 
@@ -284,7 +284,7 @@ watch(
     }
   },
   {
-    immediate: true
+    immediate: true,
   }
 );
 </script>
@@ -292,8 +292,8 @@ watch(
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
-      <div class="col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical v-if="!appLoading">
+      <div v-if="!upToLargeBreakpoint" class="col-span-3">
+        <BalStack v-if="!appLoading" vertical>
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
@@ -320,7 +320,7 @@ watch(
           :title="$t('createAPool.recoveredState')"
         >
           {{ $t('createAPool.recoveredStateInfo') }}
-          <button @click="handleReset" class="font-semibold text-blue-500">
+          <button class="font-semibold text-blue-500" @click="handleReset">
             {{ $t('clickHere') }}
           </button>
         </BalAlert>
@@ -379,21 +379,21 @@ watch(
           :dependencies="validTokens"
           :sections="[
             { title: t('createAPool.poolSummary'), id: 'pool-summary' },
-            { title: t('tokenPrices'), id: 'token-prices' }
+            { title: t('tokenPrices'), id: 'token-prices' },
           ]"
         >
-          <template v-slot:pool-summary>
+          <template #pool-summary>
             <PoolSummary />
           </template>
-          <template v-slot:token-prices>
+          <template #token-prices>
             <TokenPrices />
           </template>
         </BalAccordion>
       </div>
     </div>
     <template #gutterRight>
-      <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical spacing="base" v-if="!appLoading">
+      <div v-if="!upToLargeBreakpoint" class="col-span-11 lg:col-span-3">
+        <BalStack v-if="!appLoading" vertical spacing="base">
           <PoolSummary />
           <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>
@@ -401,9 +401,9 @@ watch(
     </template>
   </Col3Layout>
   <UnknownTokenPriceModal
-    @close="handleUnknownModalClose"
     :isVisible="isUnknownTokenModalVisible"
     :unknownTokens="unknownTokens"
+    @close="handleUnknownModalClose"
   />
 </template>
 

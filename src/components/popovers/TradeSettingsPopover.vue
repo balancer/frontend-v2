@@ -1,6 +1,6 @@
 <template>
   <BalPopover>
-    <template v-slot:activator>
+    <template #activator>
       <BalBtn
         circle
         color="white"
@@ -14,10 +14,10 @@
 
     <div>
       <div class="flex items-baseline">
-        <span v-text="$t('slippageTolerance')" class="font-medium mb-2" />
+        <span class="mb-2 font-medium" v-text="$t('slippageTolerance')" />
         <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
           </template>
           <div v-html="$t('marketConditionsWarning')" />
         </BalTooltip>
@@ -26,42 +26,42 @@
     </div>
     <div v-if="isEIP1559SupportedNetwork" class="mt-6">
       <div class="flex items-baseline">
-        <span v-text="$t('transactionType')" class="font-medium mb-2" />
+        <span class="mb-2 font-medium" v-text="$t('transactionType')" />
         <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
           </template>
           <div v-text="$t('ethereumTxTypeTooltip')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
         <BalBtnGroup
-          :options="ethereumTxTypeOptions"
           v-model="ethereumTxType"
-          @update:modelValue="setEthereumTxType"
+          :options="ethereumTxTypeOptions"
+          @update:model-value="setEthereumTxType"
         />
       </div>
     </div>
     <div
-      class="mt-6"
       v-if="isGassless && context === TradeSettingsContext.trade"
+      class="mt-6"
     >
       <div class="flex items-baseline">
-        <span v-text="$t('transactionDeadline')" class="font-medium mb-2" />
+        <span class="mb-2 font-medium" v-text="$t('transactionDeadline')" />
         <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
           </template>
           <div v-html="$t('transactionDeadlineTooltip')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
         <div
-          class="flex items-center px-1 border rounded-lg shadow-inner dark:border-gray-700"
+          class="flex items-center px-1 rounded-lg border dark:border-gray-700 shadow-inner"
         >
           <input
-            class="w-8 text-right bg-transparent"
             v-model="appTransactionDeadline"
+            class="w-8 text-right bg-transparent"
             placeholder="20"
             type="number"
             step="1"
@@ -69,9 +69,7 @@
             @update:modelValue="setTransactionDeadline"
           />
         </div>
-        <div class="px-2">
-          minutes
-        </div>
+        <div class="px-2">minutes</div>
       </div>
     </div>
   </BalPopover>
@@ -90,22 +88,22 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 export enum TradeSettingsContext {
   trade,
-  invest
+  invest,
 }
 
 export default defineComponent({
   name: 'TradeSettingsPopover',
 
   components: {
-    AppSlippageForm
+    AppSlippageForm,
   },
 
   props: {
     context: {
       type: [String, Number] as PropType<TradeSettingsContext>,
-      required: true
+      required: true,
     },
-    isGassless: { type: Boolean, default: false }
+    isGassless: { type: Boolean, default: false },
   },
 
   setup(props) {
@@ -150,9 +148,9 @@ export default defineComponent({
       onActivatorClick,
       ethereumTxType,
       setEthereumTxType,
-      ethereumTxTypeOptions
+      ethereumTxTypeOptions,
     };
-  }
+  },
 });
 </script>
 

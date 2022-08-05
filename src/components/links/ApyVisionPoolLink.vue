@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   TitleTokens,
-  useApyVisionHelpers
+  useApyVisionHelpers,
 } from '@/composables/external/useApyVisionHelpers';
 import { getAddressFromPoolId } from '@/lib/utils';
 
@@ -25,15 +25,15 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
 </script>
 
 <template>
-  <div class="mt-6 w-fit h-fit flex items-center group">
+  <div class="group flex items-center mt-6 w-fit h-fit">
     <BalLink
       :href="
         'https://app.apy.vision/pools/balancerv2_' +
-          apyVisionNetworkName +
-          '-' +
-          poolPathSymbolSegment(titleTokens) +
-          '-' +
-          getAddressFromPoolId(poolId)
+        apyVisionNetworkName +
+        '-' +
+        poolPathSymbolSegment(titleTokens) +
+        '-' +
+        getAddressFromPoolId(poolId)
       "
       external
       noStyle
@@ -50,7 +50,7 @@ const { poolPathSymbolSegment, apyVisionNetworkName } = useApyVisionHelpers();
       <BalIcon
         name="arrow-up-right"
         size="sm"
-        class="ml-0.5 text-gray-500 hover:text-blue-400 transition-colors group-hover:text-blue-500"
+        class="ml-0.5 text-gray-500 group-hover:text-blue-500 hover:text-blue-400 transition-colors"
       />
     </BalLink>
   </div>

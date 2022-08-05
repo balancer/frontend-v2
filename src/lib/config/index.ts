@@ -62,6 +62,7 @@ export interface Config {
     veDelegationProxy: string;
     veBALHelpers: string;
     feeDistributor: string;
+    feeDistributorDeprecated: string;
     faucet: string;
   };
   keys: {
@@ -90,7 +91,7 @@ const config: Record<Network | number, Config> = {
   [Network.ARBITRUM]: arbitrum,
   12345: test,
   // @ts-ignore
-  17: docker
+  17: docker,
 };
 
 export default config;

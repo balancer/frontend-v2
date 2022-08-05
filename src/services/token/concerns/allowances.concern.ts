@@ -17,7 +17,8 @@ export default class AllowancesConcern {
   nativeAssetAddress: string;
 
   constructor(private readonly service: TokenService) {
-    this.nativeAssetAddress = this.service.configService.network.nativeAsset.address;
+    this.nativeAssetAddress =
+      this.service.configService.network.nativeAsset.address;
   }
 
   async get(
@@ -40,7 +41,7 @@ export default class AllowancesConcern {
       const result = Object.fromEntries(
         contractAddresses.map((contract, i) => [
           getAddress(contract),
-          allContractAllowances[i]
+          allContractAllowances[i],
         ])
       );
       return result;
@@ -66,7 +67,7 @@ export default class AllowancesConcern {
         tokenAddresses.map(token => [
           token,
           'allowance',
-          [account, contractAddress]
+          [account, contractAddress],
         ])
       )
     ).map(balance => BigNumber.from(balance ?? '0')); // If we fail to read a token's allowance, treat it as zero;
@@ -74,7 +75,7 @@ export default class AllowancesConcern {
     return Object.fromEntries(
       tokenAddresses.map((token, i) => [
         getAddress(token),
-        formatUnits(allowances[i], tokens[token].decimals)
+        formatUnits(allowances[i], tokens[token].decimals),
       ])
     );
   }

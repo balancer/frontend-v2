@@ -7,24 +7,24 @@ export default {
   args: {
     darkMode: false,
     inputAlignRight: false,
-    decimalLimit: 18
+    decimalLimit: 18,
   },
   argTypes: {
     size: {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg']
-      }
+        options: ['sm', 'md', 'lg'],
+      },
     },
     type: {
       type: { name: 'string', default: 'text' },
       control: {
         type: 'select',
-        options: ['text', 'number', 'password', 'email', 'date']
-      }
-    }
-  }
+        options: ['text', 'number', 'password', 'email', 'date'],
+      },
+    },
+  },
 };
 
 const Template = args => ({
@@ -37,7 +37,7 @@ const Template = args => ({
   <BalTextInput v-model="args.modelValue" v-bind="args">
   </BalTextInput>
 </div>
-`)
+`),
 });
 
 export function isRequired() {
@@ -52,5 +52,5 @@ Default.args = {
   name: 'input-1',
   label: 'A label',
   type: 'number',
-  rules: [isRequired()]
+  rules: [isRequired()],
 };
