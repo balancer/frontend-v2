@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { tail } from 'lodash';
-import { computed } from 'vue';
 
 import { ColumnDefinition, Sticky } from '@/components/_global/BalTable/types';
 
@@ -23,8 +22,6 @@ function getHorizontalStickyClass(index: number) {
   }
   return '';
 }
-
-const hasOnRowClick = computed<boolean>(() => props.onRowClick !== undefined);
 </script>
 
 <template>
@@ -32,7 +29,7 @@ const hasOnRowClick = computed<boolean>(() => props.onRowClick !== undefined);
     <tr
       :class="[
         'bg-white z-10 row-bg group',
-        { 'cursor-pointer': hasOnRowClick },
+        { 'cursor-pointer': !!props.onRowClick },
       ]"
     >
       <td
