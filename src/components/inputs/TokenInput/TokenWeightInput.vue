@@ -4,7 +4,6 @@ import anime from 'animejs';
 
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useTokens from '@/composables/useTokens';
-import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -41,7 +40,7 @@ const emit = defineEmits<{
   (e: 'update:address', value: string): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'update:isLocked', value: boolean): void;
-  (e: 'keydown', value: HtmlInputEvent);
+  (e: 'keydown', value: KeyboardEvent);
   (e: 'delete'): void;
 }>();
 

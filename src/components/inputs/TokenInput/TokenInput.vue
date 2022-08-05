@@ -9,7 +9,6 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
-import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -78,7 +77,7 @@ const emit = defineEmits<{
   (e: 'update:amount', value: string): void;
   (e: 'update:address', value: string): void;
   (e: 'update:isValid', value: boolean): void;
-  (e: 'keydown', value: HtmlInputEvent);
+  (e: 'keydown', value: KeyboardEvent);
 }>();
 
 /**
