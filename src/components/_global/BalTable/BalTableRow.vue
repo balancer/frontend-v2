@@ -11,7 +11,7 @@ type Props = {
   link?: {
     to: string;
     getParams: (data: any) => Record<string, string>;
-  };
+  } | null;
   sticky?: Sticky;
   isColumnStuck?: boolean;
   pinned?: boolean;
