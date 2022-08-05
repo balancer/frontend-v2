@@ -51,7 +51,7 @@ export default function useInvestMath(
   const {
     promises: batchSwapPromises,
     processing: processingSwapRoute,
-    processAll: processSwapRoute
+    processAll: processSwapRoute,
   } = usePromiseSequence();
   const { getProvider } = useWeb3();
 
@@ -257,7 +257,7 @@ export default function useInvestMath(
       tokenOut: pool.value.address,
       amount: bnumAmount,
       gasPrice,
-      maxPools: 4
+      maxPools: 4,
     };
 
     const route = await balancer.swaps.findRouteGivenIn(findRouteParams);
@@ -326,6 +326,6 @@ export default function useInvestMath(
     maximizeAmounts,
     optimizeAmounts,
     getSwapRoute,
-    getGasPrice
+    getGasPrice,
   };
 }

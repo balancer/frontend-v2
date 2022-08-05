@@ -83,13 +83,8 @@ const { isPoolEligibleForStaking } = useStaking();
 const { slippage } = useUserSettings();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const {
-  fullAmounts,
-  bptOut,
-  fiatTotalLabel,
-  swapRoute,
-  shouldFetchSwapRoute
-} = toRefs(reactive(props.math));
+const { fullAmounts, bptOut, fiatTotalLabel, swapRoute, shouldFetchSwapRoute } =
+  toRefs(reactive(props.math));
 
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
@@ -184,7 +179,7 @@ async function submit(): Promise<TransactionResponse> {
         swapInfo: swapRoute.value,
         kind: 0,
         deadline,
-        maxSlippage
+        maxSlippage,
       });
 
       console.log({ buildSwapResult });
@@ -208,7 +203,7 @@ async function submit(): Promise<TransactionResponse> {
             assetIn: swapAttributes.request.assetIn,
             assetOut: swapAttributes.request.assetOut,
             amount: swapAttributes.request.amount,
-            userData: swapAttributes.request.userData
+            userData: swapAttributes.request.userData,
           },
           swapAttributes.funds,
           swapAttributes.limit as string

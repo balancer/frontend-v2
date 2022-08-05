@@ -59,7 +59,7 @@ const {
   amounts,
   validInputs,
   highPriceImpactAccepted,
-  resetAmounts
+  resetAmounts,
 } = useInvestState();
 
 const investMath = useInvestMath(pool, tokenAddresses, amounts, useNativeAsset);
@@ -71,7 +71,7 @@ const {
   optimizeAmounts,
   proportionalAmounts,
   swapRouteLoading,
-  swapRoute
+  swapRoute,
 } = investMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -81,7 +81,7 @@ const {
   managedPoolWithTradingHalted,
   isWethPool,
   isStableLikePool,
-  isStablePhantomPool
+  isStablePhantomPool,
 } = usePool(pool);
 const { veBalTokenInfo } = useVeBal();
 
@@ -92,7 +92,7 @@ const error = computed(() => {
   if (hasAmounts.value && swapRoute.value?.returnAmountFromSwaps.eq(0)) {
     return {
       header: t('insufficientLiquidity'),
-      body: t('insufficientLiquidityDetailed')
+      body: t('insufficientLiquidityDetailed'),
     };
   }
   return null;
@@ -253,18 +253,18 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       v-model:isValid="validInputs[0]"
       :name="tokenAddresses[0]"
       class="mb-4"
+      :excludedTokens="[veBalTokenInfo?.address, props.pool.address]"
       @update:amount="amount => (amounts[0] = amount)"
       @update:address="address => (tokenAddresses[0] = address)"
-      :excludedTokens="[veBalTokenInfo?.address, props.pool.address]"
     />
     <template v-else>
       <TokenInput
         v-for="(n, i) in tokenAddresses"
         :key="n"
-        :name="tokenAddresses[i]"
         v-model:address="tokenAddresses[i]"
         v-model:amount="amounts[i]"
         v-model:isValid="validInputs[i]"
+        :name="tokenAddresses[i]"
         :weight="tokenWeight(tokenAddresses[i])"
         :hintAmount="propAmountFor(i)"
         :hint="hint(i)"
@@ -320,13 +320,13 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         :label="$t('preview')"
         color="gradient"
         :loading="swapRouteLoading"
-        :loading-label="$t('loadingBestPrice')"
+        :loadingLabel="$t('loadingBestPrice')"
         :disabled="
           !!error ||
-            !hasAmounts ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            swapRouteLoading
+          !hasAmounts ||
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          swapRouteLoading
         "
         block
         @click="showInvestPreview = true"

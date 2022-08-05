@@ -20,7 +20,7 @@ const state = reactive<InvestState>({
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
-  submitting: false
+  submitting: false,
 });
 
 /**
@@ -33,6 +33,6 @@ function resetAmounts(): void {
 export default function useInvestState() {
   return {
     ...toRefs(state),
-    resetAmounts
+    resetAmounts,
   };
 }

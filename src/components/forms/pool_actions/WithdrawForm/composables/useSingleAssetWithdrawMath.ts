@@ -54,7 +54,7 @@ export default function useWithdrawMath(
     tokenInAddress,
     tokenOut,
     amountOut,
-    swapType
+    swapType,
   }: {
     tokenInAddress: string;
     tokenOut: TokenInfo;
@@ -78,7 +78,7 @@ export default function useWithdrawMath(
       tokenOut: tokenOut.address,
       amount: bnumAmount,
       gasPrice,
-      maxPools: 4
+      maxPools: 4,
     };
     const findRouteFunc =
       swapType === SwapType.SwapExactIn
@@ -91,7 +91,7 @@ export default function useWithdrawMath(
       decimals,
       safeAmount,
       bnumAmount,
-      findRouteParams
+      findRouteParams,
     });
 
     const route = await findRouteFunc(findRouteParams);
@@ -104,7 +104,7 @@ export default function useWithdrawMath(
       tokenInAddress: pool.value.address,
       tokenOut: tokenOut.value,
       amountOut: balanceFor(pool.value.address),
-      swapType: SwapType.SwapExactIn
+      swapType: SwapType.SwapExactIn,
     });
     if (res) {
       console.log({
@@ -115,7 +115,7 @@ export default function useWithdrawMath(
         ),
         returnAmountFromSwaps: formatUnits(res.returnAmountFromSwaps),
         swapAmount: formatUnits(res.swapAmount),
-        swapAmountForSwaps: formatUnits(res.swapAmountForSwaps)
+        swapAmountForSwaps: formatUnits(res.swapAmountForSwaps),
       });
       const { returnAmount } = res;
       singleAssetMax.value = formatUnits(returnAmount);
@@ -128,7 +128,7 @@ export default function useWithdrawMath(
       tokenInAddress: pool.value.address,
       tokenOut: tokenOut.value,
       amountOut: amountOut.value,
-      swapType
+      swapType,
     });
     if (route) {
       console.log({
@@ -139,7 +139,7 @@ export default function useWithdrawMath(
         ),
         returnAmountFromSwaps: formatUnits(route.returnAmountFromSwaps),
         swapAmount: formatUnits(route.swapAmount),
-        swapAmountForSwaps: formatUnits(route.swapAmountForSwaps)
+        swapAmountForSwaps: formatUnits(route.swapAmountForSwaps),
       });
     }
     swapRoute.value = route;
@@ -156,7 +156,7 @@ export default function useWithdrawMath(
         swapInfo: swapRoute.value,
         kind: swapType,
         deadline,
-        maxSlippage
+        maxSlippage,
       });
       const attributes: BatchSwap = buildSwapResult.attributes as BatchSwap;
 
@@ -169,6 +169,7 @@ export default function useWithdrawMath(
         // TODO: Fix type
         attributes.limits as string[]
       );
+      console.log({ tx });
     }
   }
   // WATCHERS
@@ -179,7 +180,7 @@ export default function useWithdrawMath(
         newAddress,
         newAmount,
         oldAddress,
-        oldAmount
+        oldAmount,
       });
       if (newAddress !== oldAddress) {
         updateSwapRoute();
@@ -194,6 +195,6 @@ export default function useWithdrawMath(
   return {
     swapRoute,
     swapRouteLoading,
-    singleAssetMax
+    singleAssetMax,
   };
 }

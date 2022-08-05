@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+// import { useI18n } from 'vue-i18n';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
+// import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
-import WithdrawTotals from './components/WithdrawTotals.vue';
+// import WithdrawPreviewModal from './components/WithdrawPreviewModal/WithdrawPreviewModal.vue';
+// import WithdrawTotals from './components/WithdrawTotals.vue';
 import useSingleAssetWithdrawalState from './composables/useSingleAssetWithdrawalState';
 import useSingleAssetWithdrawMath from './composables/useSingleAssetWithdrawMath';
 
@@ -31,32 +31,33 @@ const pool = computed(() => props.pool);
 /**
  * COMPOSABLES
  */
-const { t } = useI18n();
+// const { t } = useI18n();
 
 const withdrawState = useSingleAssetWithdrawalState(pool);
 
 const {
   tokenOut,
-  tokenOutIndex,
-  highPriceImpactAccepted,
+  // tokenOutIndex,
+  // highPriceImpactAccepted,
   validInput,
-  tokensOut,
+  // tokensOut,
   error,
   parseError,
-  setError
+  setError,
 } = withdrawState;
 
 const tokenOutAmount = ref<string>('');
 
 const withdrawMath = useSingleAssetWithdrawMath(pool, tokenOut, tokenOutAmount);
 
-const { swapRoute, singleAssetMax, swapRouteLoading } = withdrawMath;
-
 const {
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork
-} = useWeb3();
+  // swapRoute,
+  singleAssetMax,
+  swapRouteLoading,
+} = withdrawMath;
+
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 /**
  * COMPUTED
@@ -85,10 +86,10 @@ onBeforeMount(() => {
 <template>
   <div>
     <TokenInput
-      :name="tokenOut"
       v-model:address="tokenOut"
       v-model:amount="tokenOutAmount"
       v-model:isValid="validInput"
+      :name="tokenOut"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
       :balanceLoading="swapRouteLoading"
@@ -118,7 +119,7 @@ onBeforeMount(() => {
       class="mt-4"
       block
       actionLabel="Dismiss"
-      @actionClick="setError(null)"
+      @action-click="setError(null)"
     />
 
     <div class="mt-4">
@@ -135,9 +136,9 @@ onBeforeMount(() => {
         color="gradient"
         :disabled="
           !tokenOutAmount ||
-            !hasValidInputs ||
-            isMismatchedNetwork ||
-            swapRouteLoading
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          swapRouteLoading
         "
         block
         @click="showPreview = true"
