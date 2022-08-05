@@ -433,9 +433,9 @@ onMounted(() => {
         >
           <template #append>
             <div
-              class="flex flex-row justify-center items-center px-2 w-16 h-12 bg-gray-200 dark:bg-gray-700 rounded-r-lg border-gray-100 dark:border-gray-800"
+              class="flex flex-row justify-center items-center px-2 h-full rounded-r-lg border-gray-100 dark:border-gray-800"
             >
-              <span class="text-black dark:text-white">%</span>
+              <span class="text-xl text-black dark:text-white">%</span>
             </div>
           </template>
         </BalTextInput>
@@ -484,17 +484,3 @@ onMounted(() => {
     </div>
   </BalModal>
 </template>
-<style scoped>
-.vote-form :deep(.input-container),
-.vote-form :deep(.input-group) {
-  @apply p-0;
-}
-
-.vote-form :deep(.input) {
-  @apply px-3 h-12;
-}
-
-.vote-form :deep(.input[disabled]) {
-  @apply cursor-not-allowed bg-gray-100 dark:bg-gray-800 rounded-l-lg;
-}
-</style>
