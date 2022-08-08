@@ -15,7 +15,7 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
-import { GraphQLArgs, Op, PoolsBalancerAPIRepository, PoolsSubgraphRepository } from '@balancer-labs/sdk';
+import { GraphQLArgs, Op, PoolsBalancerAPIRepository, PoolsFallbackRepository, PoolsSubgraphRepository } from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 
 type FilterOptions = {
@@ -28,9 +28,12 @@ type FilterOptions = {
 function initializePoolsRepository() {
   const balancerApiRepository = new PoolsBalancerAPIRepository(configService.network.balancerApi || '', configService.network.keys.balancerApi || '');
   const subgraphRepository = new PoolsSubgraphRepository(configService.network.subgraph);
-  // const fallbackRepository = new PoolsFallback
+  const fallbackRepository = new PoolsFallbackRepository([
+    balancerApiRepository,
+    subgraphRepository
+  ]);
 
-  return balancerApiRepository;
+  return fallbackRepository;
 }
 
 async function fetchBasicPoolMetadata(
