@@ -514,10 +514,10 @@ export default defineComponent({
       const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
 
       if (props.trading.isWrapUnwrapTrade.value) {
-        summaryItems.amountBeforeFees = tokenInAmountInput;
+        summaryItems.amountBeforeFees = tokenOutAmountInput;
         summaryItems.tradeFees = '0';
-        summaryItems.totalWithoutSlippage = tokenInAmountInput;
-        summaryItems.totalWithSlippage = tokenInAmountInput;
+        summaryItems.totalWithoutSlippage = tokenOutAmountInput;
+        summaryItems.totalWithSlippage = tokenOutAmountInput;
       } else {
         const quote = props.trading.getQuote();
 
