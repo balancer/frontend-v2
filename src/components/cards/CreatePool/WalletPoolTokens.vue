@@ -55,12 +55,12 @@ const totalFiat = computed(() => {
     </div>
     <BalStack vertical class="p-4" spacing="sm">
       <div>
-        <h6 class="branch relative">Native tokens</h6>
+        <h6 class="relative branch">Native tokens</h6>
         <BalStack vertical spacing="xs">
           <BalStack
-            class="ml-6 twig relative"
             v-for="token in nativeTokens"
             :key="`wallet-pool-token-${token}`"
+            class="relative ml-6 twig"
             horizontal
             justify="between"
           >
@@ -132,6 +132,7 @@ const totalFiat = computed(() => {
   width: 1px;
   bottom: -5.25rem;
   left: 0.5rem;
+
   @apply bg-gray-300;
 }
 
@@ -142,6 +143,7 @@ const totalFiat = computed(() => {
   height: 0.5px;
   top: 50%;
   left: -1rem;
+
   @apply bg-gray-300;
 }
 </style>

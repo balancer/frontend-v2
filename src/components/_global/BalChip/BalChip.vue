@@ -50,9 +50,11 @@ const { classes: iconClasses, iconSize } = useCloseIconClasses(props);
 .bal-chip {
   @apply inline-block whitespace-nowrap;
 }
+
 .content-container {
   @apply flex items-center leading-none h-full;
 }
+
 .close {
   @apply cursor-pointer ml-1 -mb-px text-gray-400;
 }

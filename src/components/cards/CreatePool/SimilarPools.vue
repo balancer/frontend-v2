@@ -59,16 +59,20 @@ function cancel() {
         >
         <BalStack align="center" horizontal spacing="xs">
           <button
+            class="flex text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
             @click="goBack"
-            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex transition-colors"
           >
             <BalIcon class="flex" name="chevron-left" />
           </button>
-          <h5 class="font-semibold dark:text-gray-300">{{ title }}</h5>
+          <h5 class="font-semibold dark:text-gray-300">
+            {{ title }}
+          </h5>
         </BalStack>
       </BalStack>
-      <p v-if="existingPool">{{ $t('createAPool.existingPoolInfo') }}</p>
-      <div v-if="isLoadingSimilarPools"></div>
+      <p v-if="existingPool">
+        {{ $t('createAPool.existingPoolInfo') }}
+      </p>
+      <div v-if="isLoadingSimilarPools" />
       <BalCard v-else-if="existingPool" shadow="none">
         <BalStack vertical>
           <BalStack spacing="sm" horizontal align="center">
@@ -107,9 +111,9 @@ function cancel() {
       </BalCard>
       <BalStack v-else vertical>
         <BalCard
-          shadow="none"
           v-for="pool in relevantSimilarPools"
           :key="pool.id"
+          shadow="none"
         >
           <BalStack vertical>
             <BalStack spacing="sm" horizontal align="center">
@@ -158,12 +162,12 @@ function cancel() {
         result in your new pool being less profitable.
       </BalAlert>
       <BalStack horizontal expandChildren>
-        <BalBtn @click="cancel" block outline color="black">
+        <BalBtn block outline color="black" @click="cancel">
           {{ $t('cancel') }}
         </BalBtn>
-        <BalBtn @click="proceed" v-if="!existingPool" block color="gradient"
-          >Continue anyway</BalBtn
-        >
+        <BalBtn v-if="!existingPool" block color="gradient" @click="proceed">
+          Continue anyway
+        </BalBtn>
       </BalStack>
     </BalStack>
   </BalCard>

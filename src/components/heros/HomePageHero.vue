@@ -25,7 +25,7 @@ const classes = computed(() => ({
 
 <template>
   <AppHero :class="classes">
-    <h1 v-text="$t('ammPlatform')" class="headline" />
+    <h1 class="headline" v-text="$t('ammPlatform')" />
     <template v-if="!isWalletReady && !isWalletConnecting">
       <div class="flex justify-center mt-4">
         <HeroConnectWalletButton class="mr-4" />
@@ -50,6 +50,7 @@ const classes = computed(() => ({
 <style>
 .headline {
   @apply text-white text-center text-4xl md:text-5xl pb-2 font-display font-black;
+
   font-weight: 600;
   font-variation-settings: 'wght' 700;
 }

@@ -153,7 +153,7 @@ function navigateToPoolMigration(pool: Pool) {
         </h5>
       </div>
     </template>
-    <div class="px-4 py-2">
+    <div class="py-2 px-4">
       <div
         v-for="(address, index) in tokenAddresses"
         :key="address"
@@ -172,7 +172,7 @@ function navigateToPoolMigration(pool: Pool) {
               </span>
               {{ poolTokens[index].symbol }}
             </span>
-            <span class="text-secondary text-sm">
+            <span class="text-sm text-secondary">
               {{ poolTokens[index].name }}
             </span>
           </div>
@@ -184,7 +184,7 @@ function navigateToPoolMigration(pool: Pool) {
               ? fNum2(propTokenAmounts[index], FNumFormats.token)
               : '-'
           }}
-          <span class="text-secondary text-sm">
+          <span class="text-sm text-secondary">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>
         </span>

@@ -33,8 +33,11 @@ type Props = {
   loading: boolean;
   pool: Pool;
   // these props are added to prevent line chart rerender on each pool update
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokensList?: string[];
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   poolType?: PoolType;
 };
 
@@ -366,16 +369,16 @@ function setCurrentChartValue(payload: {
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
 
-  <div class="chart" v-else-if="snapshotValues.length >= MIN_CHART_VALUES">
+  <div v-else-if="snapshotValues.length >= MIN_CHART_VALUES" class="chart">
     <div
-      class="flex flex-col xs:flex-row xs:flex-wrap justify-between dark:border-gray-900 mb-6"
+      class="flex flex-col xs:flex-row xs:flex-wrap justify-between mb-6 dark:border-gray-900"
     >
       <div class="flex mb-4">
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-6" />
+        <BalTabs v-model="activeTab" :tabs="tabs" noPad class="mr-6 -mb-px" />
         <div class="flex items-center">
           <PoolChartPeriodSelect
             :options="periodOptions"
-            :active-option="currentPeriod"
+            :activeOption="currentPeriod"
             @change-option="setCurrentPeriod"
           />
         </div>
@@ -407,26 +410,26 @@ function setCurrentChartValue(payload: {
       v-else
       height="96"
       :data="chartData.data"
-      :axis-label-formatter="{
+      :axisLabelFormatter="{
         yAxis: {
           style: 'currency',
           abbreviate: true,
           maximumFractionDigits: 0,
         },
       }"
-      :area-style="chartData.areaStyle"
+      :areaStyle="chartData.areaStyle"
       :color="chartData.color"
-      :hover-color="chartData.hoverColor"
-      :hover-border-color="chartData.hoverBorderColor"
-      :x-axis-min-interval="3600 * 1000 * 24 * 30"
-      :show-legend="false"
-      need-chart-value
-      :chart-type="chartData.chartType"
-      :show-tooltip-layer="false"
-      @setCurrentChartValue="setCurrentChartValue"
-      :hide-y-axis="isMobile"
-      @mouseLeaveEvent="isFocusedOnChart = false"
-      @mouseEnterEvent="isFocusedOnChart = true"
+      :hoverColor="chartData.hoverColor"
+      :hoverBorderColor="chartData.hoverBorderColor"
+      :xAxisMinInterval="3600 * 1000 * 24 * 30"
+      :showLegend="false"
+      needChartValue
+      :chartType="chartData.chartType"
+      :showTooltipLayer="false"
+      :hideYAxis="isMobile"
+      @set-current-chart-value="setCurrentChartValue"
+      @mouse-leave-event="isFocusedOnChart = false"
+      @mouse-enter-event="isFocusedOnChart = true"
     />
   </div>
   <BalBlankSlate v-else class="h-96">

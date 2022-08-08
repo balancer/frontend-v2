@@ -106,12 +106,12 @@ function onClick() {
 </script>
 <template>
   <div>
-    <div class="flex items-stretch gap-x-6 gap-y-3 flex-wrap">
+    <div class="flex flex-wrap gap-x-6 gap-y-3 items-stretch">
       <BalBtn color="white" size="sm" @click="onClick">
         <BalIcon name="search" size="sm" class="mr-2" />
         {{ $t('filterByToken') }}
       </BalBtn>
-      <div class="flex items-center flex-wrap gap-2" v-if="modelValue.length">
+      <div v-if="modelValue.length" class="flex flex-wrap gap-2 items-center">
         <BalChip
           v-for="token in modelValue"
           :key="token"
@@ -129,12 +129,12 @@ function onClick() {
         :label="selectTokensLabel"
         :addresses="selectableTokensAddresses"
         @click="address => addToken(address)"
-      ></TokenSearchInputSelectTokens>
+      />
     </div>
     <teleport to="#modal">
       <SelectTokenModal
         v-if="selectTokenModal"
-        :excluded-tokens="compact([...modelValue, veBalTokenInfo?.address])"
+        :excludedTokens="compact([...modelValue, veBalTokenInfo?.address])"
         @close="selectTokenModal = false"
         @select="addToken"
       />

@@ -63,10 +63,10 @@ onBeforeMount(() => {
   <BalCard shadow="xl" exposeOverflow noBorder>
     <template #header>
       <div class="w-full">
-        <div class="text-xs text-secondary leading-none">
+        <div class="text-xs leading-none text-secondary">
           {{ configService.network.chainName }}
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
           <h4>
             {{ t(`migratePool.${poolMigrationInfo.type}.migrateToPool.title`) }}
           </h4>
@@ -75,14 +75,16 @@ onBeforeMount(() => {
       </div>
     </template>
     <div class="mb-6">
-      <div class="text-secondary">{{ $t('yourBalanceInPool') }}</div>
-      <div class="font-semibold text-lg">
+      <div class="text-secondary">
+        {{ $t('yourBalanceInPool') }}
+      </div>
+      <div class="text-lg font-semibold">
         {{ hasBpt ? fiatTotalLabel : '-' }}
       </div>
     </div>
     <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
-    <div class="block flex justify-center dark:text-gray-50 my-4">
-      <ArrowDownIcon class="dark:text-secondary h-5 w-5" />
+    <div class="flex justify-center my-4 dark:text-gray-50">
+      <ArrowDownIcon class="w-5 h-5 dark:text-secondary" />
     </div>
     <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
     <BalBtn

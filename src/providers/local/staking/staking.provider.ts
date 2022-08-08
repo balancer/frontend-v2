@@ -69,6 +69,7 @@ export default defineComponent({
   props: {
     poolAddress: {
       type: String,
+      default: '',
     },
   },
   setup(props) {

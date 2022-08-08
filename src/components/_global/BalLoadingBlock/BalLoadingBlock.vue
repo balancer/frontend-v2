@@ -62,82 +62,83 @@ const classes = computed(() => {
   0% {
     background-position: -5000px 0;
   }
+
   100% {
     background-position: 5000px 0;
   }
 }
 
 .shimmer-white {
-  --startColor: rgba(255, 255, 255, 0.1);
-  --midColor: rgba(255, 255, 255, 0.2);
-  --endColor: rgba(255, 255, 255, 0.1);
+  --start-color: rgb(255 255 255 / 10%);
+  --mid-color: rgb(255 255 255 / 20%);
+  --end-color: rgb(255 255 255 / 10%);
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
     to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
   );
   background-size: 1000px 100%;
 }
 
 .shimmer-light-mode {
-  --startColor: theme('colors.gray.50');
-  --midColor: theme('colors.gray.100');
-  --endColor: theme('colors.gray.50');
+  --start-color: theme('colors.gray.50');
+  --mid-color: theme('colors.gray.100');
+  --end-color: theme('colors.gray.50');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
     to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
   );
   background-size: 1000px 100%;
 }
 
 .shimmer-light-mode-darker {
-  --startColor: theme('colors.gray.100');
-  --midColor: theme('colors.gray.200');
-  --endColor: theme('colors.gray.100');
+  --start-color: theme('colors.gray.100');
+  --mid-color: theme('colors.gray.200');
+  --end-color: theme('colors.gray.100');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
     to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
   );
   background-size: 1000px 100%;
 }
 
 .shimmer-dark-mode {
-  --startColor: theme('colors.gray.850');
-  --midColor: theme('colors.gray.800');
-  --endColor: theme('colors.gray.850');
+  --start-color: theme('colors.gray.850');
+  --mid-color: theme('colors.gray.800');
+  --end-color: theme('colors.gray.850');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
     to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
   );
   background-size: 1000px 100%;
 }
 
 .shimmer-dark-mode-darker {
-  --startColor: theme('colors.gray.700');
-  --midColor: theme('colors.gray.600');
-  --endColor: theme('colors.gray.700');
+  --start-color: theme('colors.gray.700');
+  --mid-color: theme('colors.gray.600');
+  --end-color: theme('colors.gray.700');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
     to right,
-    var(--startColor) 4%,
-    var(--midColor) 25%,
-    var(--endColor) 36%
+    var(--start-color) 4%,
+    var(--mid-color) 25%,
+    var(--end-color) 36%
   );
   background-size: 1000px 100%;
 }

@@ -81,7 +81,7 @@ const stats = computed(() => {
     <template v-for="stat in stats" :key="stat.id">
       <BalLoadingBlock v-if="stat.loading" class="h-24" />
       <BalCard v-else>
-        <div class="text-sm text-secondary font-medium mb-2 flex">
+        <div class="flex mb-2 text-sm font-medium text-secondary">
           <span>{{ stat.label }}</span>
           <APRTooltip
             v-if="stat.id === 'apr'"
@@ -89,7 +89,7 @@ const stats = computed(() => {
             :poolApr="poolApr"
           />
         </div>
-        <div class="text-xl font-medium truncate flex items-center">
+        <div class="flex items-center text-xl font-medium truncate">
           {{ stat.value }}
         </div>
       </BalCard>

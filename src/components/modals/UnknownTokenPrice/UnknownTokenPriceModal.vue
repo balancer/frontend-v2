@@ -106,9 +106,9 @@ function injectUnknownPrices() {
         <TokenInput
           v-for="(address, i) in unknownTokens"
           :key="i"
+          v-model:amount="unknownTokenPrices[address][FiatCurrency.usd]"
           fixedToken
           placeholder="$0.00"
-          v-model:amount="unknownTokenPrices[address][FiatCurrency.usd]"
           :address="address"
           :name="`initial-token-${
             seedTokens[getIndexOfUnknownToken(address)].tokenAddress
@@ -119,9 +119,9 @@ function injectUnknownPrices() {
           ignoreWalletBalance
         />
       </BalStack>
-      <BalBtn @click="injectUnknownPrices" :disabled="isSubmitDisabled">{{
-        $t('submit')
-      }}</BalBtn>
+      <BalBtn :disabled="isSubmitDisabled" @click="injectUnknownPrices">
+        {{ $t('submit') }}
+      </BalBtn>
     </BalStack>
   </BalModal>
 </template>

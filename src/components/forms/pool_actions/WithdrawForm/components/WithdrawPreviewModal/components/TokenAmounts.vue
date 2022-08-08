@@ -43,7 +43,7 @@ function amountShare(address: string): string {
       <div class="token-amount-table-content">
         <BalAsset :address="address" :size="36" />
         <div class="flex flex-col ml-3">
-          <div class="font-medium text-lg">
+          <div class="text-lg font-medium">
             <span class="font-numeric">
               {{ fNum2(amount, FNumFormats.token) }}
             </span>

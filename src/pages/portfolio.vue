@@ -28,7 +28,7 @@ const migratableUserPools = computed(() => {
 <template>
   <StakingProvider>
     <PortfolioPageHero />
-    <div class="xl:container xl:mx-auto xl:px-4 pt-10 md:pt-12">
+    <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <BalStack horizontal justify="between" align="center">
@@ -46,11 +46,13 @@ const migratableUserPools = computed(() => {
 
           <div>
             <BalStack
+              v-if="migratableUserPools.length > 0"
               vertical
               spacing="sm"
-              v-if="migratableUserPools.length > 0"
             >
-              <h5 class="px-4 xl:px-0">{{ $t('poolsToMigrate') }}</h5>
+              <h5 class="px-4 xl:px-0">
+                {{ $t('poolsToMigrate') }}
+              </h5>
               <PoolsTable
                 :key="migratableUserPools"
                 :isLoading="isLoadingUserPools"
@@ -64,8 +66,7 @@ const migratableUserPools = computed(() => {
                   'actions',
                   'lockEndDate',
                 ]"
-              >
-              </PoolsTable>
+              />
             </BalStack>
           </div>
         </BalStack>

@@ -1,10 +1,10 @@
 <template>
-  <BalModal show @close="onClose" :title="labels.modalTitle">
+  <BalModal show :title="labels.modalTitle" @close="onClose">
     <div>
-      <BalCard noPad class="relative mb-6 overflow-auto">
-        <template v-slot:header>
+      <BalCard noPad class="overflow-auto relative mb-6">
+        <template #header>
           <div
-            class="w-full p-3 border-b bg-gray-50 rounded-t-lg text-sm dark:border-gray-800 dark:bg-gray-800"
+            class="p-3 w-full text-sm bg-gray-50 dark:bg-gray-800 rounded-t-lg border-b dark:border-gray-800"
           >
             <span>
               {{ $t('effectivePrice') }}
@@ -18,7 +18,7 @@
         </template>
         <div>
           <div
-            class="p-3 border-gray-100 border-b relative dark:border-gray-900"
+            class="relative p-3 border-b border-gray-100 dark:border-gray-900"
           >
             <div class="flex items-center">
               <div class="mr-3">
@@ -31,7 +31,7 @@
                   }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
-                <div class="text-secondary text-sm">
+                <div class="text-sm text-secondary">
                   {{ tokenInFiatValue }}
                 </div>
               </div>
@@ -55,7 +55,7 @@
                   }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
-                <div class="text-secondary text-sm">
+                <div class="text-sm text-secondary">
                   {{ tokenOutFiatValue }}
                   <span
                     v-if="
@@ -75,14 +75,14 @@
         </div>
       </BalCard>
       <BalCard noPad shadow="none" class="mb-3">
-        <template v-slot:header>
+        <template #header>
           <div
-            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
+            class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
           >
             <div class="font-semibold">
               {{ labels.tradeSummary.title }}
             </div>
-            <div class="flex divide-x dark:divide-gray-500 text-xs uppercase">
+            <div class="flex text-xs uppercase divide-x dark:divide-gray-500">
               <div
                 :class="[
                   'pr-2 cursor-pointer font-medium',
@@ -111,7 +111,7 @@
             </div>
             <div v-html="summary.amountBeforeFees" />
           </div>
-          <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
+          <div v-if="trading.isGnosisTrade.value" class="summary-item-row">
             <div>{{ $t('tradeSummary.gasCosts') }}</div>
             <div class="text-green-400">-{{ zeroFee }}</div>
           </div>
@@ -130,11 +130,11 @@
             />
           </div>
         </div>
-        <template v-slot:footer>
+        <template #footer>
           <div
-            class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
+            class="p-3 w-full text-sm bg-white dark:bg-gray-800 rounded-b-lg"
           >
-            <div class="summary-item-row font-medium">
+            <div class="font-medium summary-item-row">
               <div class="w-64">
                 {{ labels.tradeSummary.totalAfterFees }}
               </div>
@@ -166,17 +166,17 @@
             fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent),
           ])
         "
-        :action-label="$t('priceUpdatedAlert.actionLabel')"
+        :actionLabel="$t('priceUpdatedAlert.actionLabel')"
         block
-        @actionClick="cofirmPriceUpdate"
+        @action-click="cofirmPriceUpdate"
       />
       <div
         v-if="totalRequiredTransactions > 1"
-        class="flex my-5 justify-center items-center"
+        class="flex justify-center items-center my-5"
       >
         <template v-if="showGnosisRelayerApprovalStep">
           <BalTooltip :disabled="!requiresGnosisRelayerApproval" width="64">
-            <template v-slot:activator>
+            <template #activator>
               <div
                 :class="[
                   'step',
@@ -192,7 +192,7 @@
                   name="check"
                   class="text-green-500"
                 />
-                <template v-else>1</template>
+                <template v-else> 1 </template>
               </div>
             </template>
             <div>
@@ -218,7 +218,7 @@
         </template>
         <template v-else-if="showLidoRelayerApprovalStep">
           <BalTooltip :disabled="!requiresLidoRelayerApproval" width="64">
-            <template v-slot:activator>
+            <template #activator>
               <div
                 :class="[
                   'step',
@@ -234,7 +234,7 @@
                   name="check"
                   class="text-green-500"
                 />
-                <template v-else>1</template>
+                <template v-else> 1 </template>
               </div>
             </template>
             <div>
@@ -264,7 +264,7 @@
             :disabled="!requiresTokenApproval"
             width="64"
           >
-            <template v-slot:activator>
+            <template #activator>
               <div
                 :class="[
                   'step',
@@ -279,11 +279,13 @@
                   name="check"
                   class="text-green-500"
                 />
-                <template v-else>{{
-                  showGnosisRelayerApprovalStep || showLidoRelayerApprovalStep
-                    ? 2
-                    : 1
-                }}</template>
+                <template v-else>
+                  {{
+                    showGnosisRelayerApprovalStep || showLidoRelayerApprovalStep
+                      ? 2
+                      : 1
+                  }}
+                </template>
               </div>
             </template>
             <div>
@@ -307,7 +309,7 @@
           <div class="step-seperator" />
         </template>
         <BalTooltip width="64">
-          <template v-slot:activator>
+          <template #activator>
             <div
               :class="[
                 'step',
@@ -341,12 +343,12 @@
         v-if="requiresGnosisRelayerApproval"
         color="gradient"
         block
-        @click.prevent="gnosisRelayerApproval.approve"
         :loading="
           gnosisRelayerApproval.init.value ||
           gnosisRelayerApproval.approving.value
         "
-        :loading-label="`${$t('approvingGnosisRelayer')}...`"
+        :loadingLabel="`${$t('approvingGnosisRelayer')}...`"
+        @click.prevent="gnosisRelayerApproval.approve"
       >
         {{ $t('approveGnosisRelayer') }}
       </BalBtn>
@@ -354,18 +356,18 @@
         v-else-if="requiresLidoRelayerApproval"
         color="gradient"
         block
-        @click.prevent="lidoRelayerApproval.approve"
         :loading="
           lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
         "
-        :loading-label="`${$t('approvingLidoRelayer')}...`"
+        :loadingLabel="`${$t('approvingLidoRelayer')}...`"
+        @click.prevent="lidoRelayerApproval.approve"
       >
         {{ $t('approveLidoRelayer') }}
       </BalBtn>
       <BalBtn
         v-else-if="requiresTokenApproval"
         :loading="tokenApproval.approving.value"
-        :loading-label="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
+        :loadingLabel="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
         color="gradient"
         block
         @click.prevent="approveToken"
@@ -376,11 +378,11 @@
         v-else
         color="gradient"
         block
-        @click.prevent="trade"
         :loading="trading.isConfirming.value"
-        :loading-label="$t('confirming')"
+        :loadingLabel="$t('confirming')"
         :disabled="tradeDisabled"
         class="relative"
+        @click.prevent="trade"
       >
         {{ labels.confirmTrade }}
       </BalBtn>
@@ -392,18 +394,18 @@
         :title="$t('tradeSubmissionError.title')"
         :description="trading.submissionError.value"
         block
-        :action-label="$t('tradeSubmissionError.actionLabel')"
-        @actionClick="trading.resetSubmissionError"
+        :actionLabel="$t('tradeSubmissionError.actionLabel')"
+        @action-click="trading.resetSubmissionError"
       />
     </div>
     <TradeRoute
       v-if="showTradeRoute"
-      :address-in="trading.tokenIn.value.address"
-      :amount-in="trading.tokenInAmountInput.value"
-      :address-out="trading.tokenOut.value.address"
-      :amount-out="trading.tokenOutAmountInput.value"
+      :addressIn="trading.tokenIn.value.address"
+      :amountIn="trading.tokenInAmountInput.value"
+      :addressOut="trading.tokenOut.value.address"
+      :amountOut="trading.tokenOutAmountInput.value"
       :pools="trading.sor.pools.value"
-      :sor-return="trading.sor.sorReturn.value"
+      :sorReturn="trading.sor.sorReturn.value"
       class="mt-3"
     />
   </BalModal>
@@ -437,13 +439,13 @@ export default defineComponent({
   components: {
     TradeRoute,
   },
-  emits: ['trade', 'close'],
   props: {
     trading: {
       type: Object as PropType<UseTrading>,
       required: true,
     },
   },
+  emits: ['trade', 'close'],
   setup(props, { emit }) {
     // COMPOSABLES
     const { t } = useI18n();
@@ -878,7 +880,9 @@ export default defineComponent({
 </script>
 <style scoped>
 .arrow-down {
-  @apply absolute right-0 rounded-full border border-gray-100 flex items-center h-8 w-8 justify-center bg-white mr-3 dark:border-gray-800 dark:bg-gray-800;
+  @apply absolute right-0 rounded-full border border-gray-100 flex items-center h-8 w-8 justify-center bg-white mr-3
+    dark:border-gray-800 dark:bg-gray-800;
+
   transform: translateY(-50%);
 }
 
@@ -887,8 +891,10 @@ export default defineComponent({
 }
 
 .step {
-  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-purple-500 relative;
+  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center
+    justify-center text-purple-500 relative;
 }
+
 .step-seperator {
   @apply bg-gray-200 dark:bg-gray-700 h-px w-6;
 }
@@ -896,6 +902,7 @@ export default defineComponent({
 .step-active {
   @apply border-purple-500 dark:border-purple-500;
 }
+
 .step-approved {
   @apply border-green-500 dark:border-green-500;
 }

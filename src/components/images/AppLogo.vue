@@ -37,7 +37,7 @@ const fillColor = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center app-logo sm:mr-4">
+  <div class="flex items-center sm:mr-4 app-logo">
     <svg
       id="logo"
       class="logo-svg"
@@ -61,6 +61,7 @@ const fillColor = computed(() => {
 <style scoped>
 .app-logo :deep(.logotype) {
   @apply origin-top-left relative;
+
   transform: scale(1.1);
 }
 

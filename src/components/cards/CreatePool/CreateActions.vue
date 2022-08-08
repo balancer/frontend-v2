@@ -133,13 +133,13 @@ function handleSuccess(details: any): void {
       :actions="requiredActions"
       :disabled="props.createDisabled"
       :errorMessage="props.errorMessage"
-      @success="handleSuccess"
       :isLoading="createState.isLoadingRestoredTx"
       :loadingLabel="$t('restoring')"
+      @success="handleSuccess"
     />
     <template v-if="createState.confirmed">
       <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
+        class="flex justify-between items-center mt-4 text-sm text-gray-400 dark:text-gray-600"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />

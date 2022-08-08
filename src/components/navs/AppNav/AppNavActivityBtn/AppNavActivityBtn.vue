@@ -1,10 +1,10 @@
 <template>
-  <BalPopover no-pad :align="isMobile ? 'left' : undefined">
-    <template v-slot:activator>
+  <BalPopover noPad :align="isMobile ? 'left' : undefined">
+    <template #activator>
       <BalBtn
         color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        class="p-1 relative"
+        class="relative p-1"
         :circle="upToLargeBreakpoint"
       >
         <ActivityIcon v-if="pendingTransactions.length === 0" />
@@ -12,9 +12,9 @@
       </BalBtn>
     </template>
     <BalCard class="w-72" noPad noBorder>
-      <template v-slot:header>
+      <template #header>
         <div
-          class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
+          class="flex justify-between items-center p-3 w-full border-b dark:border-gray-900"
         >
           <h5>{{ $t('recentActivityTitle') }}</h5>
         </div>
@@ -23,30 +23,32 @@
         <template v-if="transactions.length > 0">
           <ActivityRows
             :transactions="pendingTransactions"
-            :get-explorer-link="getExplorerLink"
-            :is-successful-transaction="isSuccessfulTransaction"
-            :is-pending-transaction-status="isPendingTransactionStatus"
-            :cancel-order="cancelOrder"
+            :getExplorerLink="getExplorerLink"
+            :isSuccessfulTransaction="isSuccessfulTransaction"
+            :isPendingTransactionStatus="isPendingTransactionStatus"
+            :cancelOrder="cancelOrder"
           />
           <div
             v-if="
               pendingTransactions.length > 0 && finalizedTransactions.length > 0
             "
-            class="bg-gray-100 dark:bg-gray-700 my-3 h-px"
+            class="my-3 h-px bg-gray-100 dark:bg-gray-700"
           />
           <ActivityRows
             :transactions="finalizedTransactions"
-            :get-explorer-link="getExplorerLink"
-            :is-successful-transaction="isSuccessfulTransaction"
-            :is-pending-transaction-status="isPendingTransactionStatus"
-            :cancel-order="cancelOrder"
+            :getExplorerLink="getExplorerLink"
+            :isSuccessfulTransaction="isSuccessfulTransaction"
+            :isPendingTransactionStatus="isPendingTransactionStatus"
+            :cancelOrder="cancelOrder"
           />
         </template>
-        <template v-else>{{ $t('noRecentActivity') }}</template>
+        <template v-else>
+          {{ $t('noRecentActivity') }}
+        </template>
       </div>
-      <template v-if="transactions.length > 0" v-slot:footer>
-        <div class="w-full p-3 rounded-b-lg bg-white dark:bg-gray-800 text-sm">
-          <a @click="clearAllTransactions()" class="text-blue-500">
+      <template v-if="transactions.length > 0" #footer>
+        <div class="p-3 w-full text-sm bg-white dark:bg-gray-800 rounded-b-lg">
+          <a class="text-blue-500" @click="clearAllTransactions()">
             {{ $t('clearTransactions') }}
           </a>
         </div>

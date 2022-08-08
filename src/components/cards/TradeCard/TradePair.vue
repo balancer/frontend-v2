@@ -149,15 +149,15 @@ watchEffect(() => {
       :amount="_tokenInAmount"
       :address="_tokenInAddress"
       name="tokenIn"
+      :excludedTokens="[veBalTokenInfo?.address]"
+      :ignoreWalletBalance="tradeLoading"
       @update:amount="handleInAmountChange"
       @update:address="handleInputTokenChange"
-      :disabled="tradeLoading"
-      :excludedTokens="[veBalTokenInfo?.address]"
     />
 
     <div class="flex items-center my-2">
       <TradePairToggle @toggle="handleTokenSwitch" />
-      <div class="h-px mx-2 bg-gray-100 dark:bg-gray-700 flex-grow" />
+      <div class="flex-grow mx-2 h-px bg-gray-100 dark:bg-gray-700" />
       <div
         v-if="rateLabel"
         class="flex items-center text-xs text-gray-600 dark:text-gray-400 cursor-pointer"
@@ -171,13 +171,12 @@ watchEffect(() => {
       :address="_tokenOutAddress"
       name="tokenOut"
       :priceImpact="priceImpact"
-      @update:amount="handleOutAmountChange"
-      @update:address="handleOutputTokenChange"
       noRules
       noMax
-      :disabled="tradeLoading"
       disableNativeAssetBuffer
       :excludedTokens="[veBalTokenInfo?.address]"
+      @update:amount="handleOutAmountChange"
+      @update:address="handleOutputTokenChange"
     />
   </div>
 </template>

@@ -39,7 +39,7 @@ const tokenBalance = computed(() => balanceFor(props.token.address));
     <div class="flex">
       <BalAsset :address="token.address" :size="36" class="mr-2" />
       <div>
-        <div class="font-semibold text-sm">
+        <div class="text-sm font-semibold">
           {{ fNum2(tokenBalance, FNumFormats.token) }}
           {{ symbol }}
         </div>

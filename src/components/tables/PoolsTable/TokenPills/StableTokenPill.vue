@@ -19,11 +19,11 @@ withDefaults(defineProps<Props>(), {
 <template>
   <BalTooltip
     :disabled="!hasBalance"
-    class="mr-1 last:mr-0 cursor-pointer leading-normal"
+    class="mr-1 last:mr-0 leading-normal cursor-pointer"
     textAlign="left"
     :delayMs="50"
   >
-    <template v-slot:activator>
+    <template #activator>
       <div
         :class="[
           'pill',
@@ -62,24 +62,26 @@ withDefaults(defineProps<Props>(), {
   @apply w-full h-full;
   @apply absolute;
   @apply bg-gray-100 dark:bg-gray-700;
+
   content: '';
   transform: skew(-12deg);
 }
 
 .pill:first-child::before {
-  border-radius: 4px 0px 0px 4px;
+  border-radius: 4px 0 0 4px;
 }
 
 .pill:last-child::before {
-  border-radius: 0px 4px 4px 0px;
+  border-radius: 0 4px 4px 0;
 }
 
 .pill:only-child::before {
-  border-radius: 4px 4px 4px 4px;
+  border-radius: 4px;
 }
 
 .pill-text {
   @apply px-2 py-1;
+
   z-index: 1;
 }
 
@@ -89,7 +91,8 @@ withDefaults(defineProps<Props>(), {
 
 .balance-indicator {
   @apply w-3 h-3;
-  @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+  @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50
+    dark:group-hover:border-gray-800;
   @apply bg-green-200 dark:bg-green-500;
   @apply absolute top-0 right-0 -mt-1 -mr-2;
 }

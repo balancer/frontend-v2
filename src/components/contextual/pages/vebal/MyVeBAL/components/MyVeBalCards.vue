@@ -149,22 +149,22 @@ const cards = computed(() => {
 
 <template>
   <BalCard v-for="card in cards" :key="card.id">
-    <div class="label font-medium">
+    <div class="font-medium label">
       {{ card.label }}
     </div>
     <div class="value" :class="card.id">
       <div v-if="card.id === 'myLockedLpToken'">
         <span
           :class="{ 'text-red-500': bnum(totalExpiredLpTokens).gt(0) }"
-          class="font-semibold truncate mr-1"
+          class="mr-1 font-semibold truncate"
           >{{ card.value }}</span
         >
         <BalTooltip
           v-if="bnum(totalExpiredLpTokens).gt(0)"
           :text="$t('veBAL.myVeBAL.cards.myExpiredLockTooltip')"
-          icon-size="sm"
-          :icon-name="'alert-triangle'"
-          :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
+          iconSize="sm"
+          :iconName="'alert-triangle'"
+          :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
           width="72"
           class="relative top-0.5"
         />
@@ -176,24 +176,24 @@ const cards = computed(() => {
         <BalIcon
           v-if="card.showUnlockIcon"
           name="minus-circle"
-          class="minus-circle mr-2 transition-all cursor-pointer"
+          class="mr-2 transition-all cursor-pointer minus-circle"
           @click="showUnlockPreviewModal = true"
         />
         <div>
           <router-link
             v-if="card.showPlusIcon"
             :to="card.plusIconTo"
-            class="text-blue-600 dark:text-blue-400 flex items-center"
+            class="flex items-center text-blue-600 dark:text-blue-400"
           >
             <BalIcon
               name="plus-circle"
-              class="plus-circle transition-all cursor-pointer"
+              class="transition-all cursor-pointer plus-circle"
             />
           </router-link>
         </div>
       </div>
     </div>
-    <div class="secondary-value font-medium text-secondary">
+    <div class="font-medium secondary-value text-secondary">
       {{ card.secondaryText }}
     </div>
   </BalCard>
@@ -214,6 +214,7 @@ const cards = computed(() => {
 .label {
   @apply text-sm mb-2;
 }
+
 .value {
   @apply text-xl font-medium flex flex-wrap items-center justify-between mb-0.5;
 }
@@ -224,14 +225,10 @@ const cards = computed(() => {
 
 .plus-circle:hover,
 .plus-circle:focus,
-.minus-circle:hover,
-.minus-circle:focus {
-  transform: scale(1.25);
-}
-
 .plus-circle:hover :deep(svg.feather-plus-circle),
 .plus-circle:focus :deep(svg.feather-plus-circle) {
   @apply transition-all text-white;
+
   fill: theme('colors.blue.600');
 }
 
@@ -240,14 +237,20 @@ const cards = computed(() => {
   fill: theme('colors.blue.600');
 }
 
-.minus-circle:hover :deep(svg.feather-minus-circle),
-.minus-circle:focus :deep(svg.feather-minus-circle) {
-  @apply transition-all text-white;
+.minus-circle,
+.minus-circle:hover :deep(svg.feather-minus-circle circle) {
   fill: theme('colors.red.500');
 }
 
-.minus-circle:hover :deep(svg.feather-minus-circle circle),
-.minus-circle {
+.minus-circle:hover,
+.minus-circle:focus {
+  transform: scale(1.25);
+}
+
+.minus-circle:hover :deep(svg.feather-minus-circle),
+.minus-circle:focus :deep(svg.feather-minus-circle) {
+  @apply transition-all text-white;
+
   fill: theme('colors.red.500');
 }
 </style>

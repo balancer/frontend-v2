@@ -83,14 +83,14 @@ watch(
 <template>
   <div class="flex">
     <BalBtnGroup
-      :options="options"
       v-model="state.fixedSlippage"
-      @update:modelValue="onFixedInput"
+      :options="options"
+      @update:model-value="onFixedInput"
     />
     <div :class="['custom-input', customInputClasses]">
       <input
-        class="w-12 text-right bg-transparent"
         v-model="state.customSlippage"
+        class="w-12 text-right bg-transparent"
         placeholder="0.1"
         type="number"
         step="any"

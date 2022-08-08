@@ -2,8 +2,8 @@
   <div>
     <div class="p-4 border-b dark:border-gray-900">
       <div class="flex justify-between items-center mb-6">
-        <h5 v-text="$t('account')" class="leading-none tracking-tight" />
-        <div class="flex items-center gap-2">
+        <h5 class="tracking-tight leading-none" v-text="$t('account')" />
+        <div class="flex gap-2 items-center">
           <BalBtn color="gray" size="xs" @click="toggleWalletSelectModal">
             {{ $t('change') }}
           </BalBtn>
@@ -12,8 +12,8 @@
               outline
               color="gray"
               size="xs"
-              @click="disconnectWallet"
               class="capitalize"
+              @click="disconnectWallet"
             >
               {{ $t('disconnect') }}
             </BalBtn>
@@ -27,19 +27,19 @@
             <div class="connector-icon-wrapper">
               <img
                 :src="connectorLogo"
-                class="p-0.5 w-5 h-5 absolute bottom-0 right-0 flex items-center justify-center bg-white rounded-full"
+                class="flex absolute right-0 bottom-0 justify-center items-center p-0.5 w-5 h-5 bg-white rounded-full"
               />
             </div>
           </div>
           <div class="ml-2">
-            <div class="address flex items-baseline">
+            <div class="flex items-baseline address">
               <div
                 class="font-bold text-black dark:text-white"
                 v-text="_shorten(account)"
               />
-              <div class="ml-3 flex">
+              <div class="flex ml-3">
                 <BalTooltip width="auto">
-                  <template v-slot:activator>
+                  <template #activator>
                     <BalBtn
                       circle
                       color="gray"
@@ -52,8 +52,8 @@
                     </BalBtn>
                   </template>
                   <div
-                    v-text="copiedAddress ? $t('copied') : $t('copyAddress')"
                     class="text-center"
+                    v-text="copiedAddress ? $t('copied') : $t('copyAddress')"
                   />
                 </BalTooltip>
                 <BalBtn
@@ -71,23 +71,25 @@
                 </BalBtn>
               </div>
             </div>
-            <div class="text-sm">{{ connectorName }}</div>
+            <div class="text-sm">
+              {{ connectorName }}
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="hidden px-4 mt-4">
-      <span v-text="$t('theme')" class="font-medium mb-2" />
+      <span class="mb-2 font-medium" v-text="$t('theme')" />
       <div class="flex mt-1">
         <div
-          class="option w-16 mr-2 py-1.5 flex items-center justify-center border rounded-xl cursor-pointer"
+          class="flex justify-center items-center py-1.5 mr-2 w-16 rounded-xl border cursor-pointer option"
           :class="{ active: !appDarkMode }"
           @click="setDarkMode(false)"
         >
           <BalIcon name="sun" size="sm" />
         </div>
         <div
-          class="option w-16 mr-2 py-1.5 flex items-center justify-center border rounded-xl cursor-pointer"
+          class="flex justify-center items-center py-1.5 mr-2 w-16 rounded-xl border cursor-pointer option"
           :class="{ active: appDarkMode }"
           @click="setDarkMode(true)"
         >
@@ -97,10 +99,10 @@
     </div>
     <div class="px-4 mt-4">
       <div class="flex items-baseline">
-        <span v-text="$t('slippageTolerance')" class="font-medium mb-2" />
+        <span class="mb-2 font-medium" v-text="$t('slippageTolerance')" />
         <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
           </template>
           <div v-html="$t('marketConditionsWarning')" />
         </BalTooltip>
@@ -109,46 +111,26 @@
     </div>
     <div v-if="isEIP1559SupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span v-text="$t('transactionType')" class="font-medium mb-2" />
+        <span class="mb-2 font-medium" v-text="$t('transactionType')" />
         <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          <template #activator>
+            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
           </template>
           <div v-text="$t('ethereumTxTypeTooltip')" />
         </BalTooltip>
       </div>
       <BalBtnGroup
-        :options="ethereumTxTypeOptions"
         v-model="ethereumTxType"
-        @update:modelValue="setEthereumTxType"
+        :options="ethereumTxTypeOptions"
+        @update:model-value="setEthereumTxType"
       />
     </div>
     <div
-      v-if="ENABLE_LEGACY_TRADE_INTERFACE && isGnosisSupportedNetwork"
-      class="px-4 mt-6"
-    >
-      <div class="flex items-baseline">
-        <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
-        <BalTooltip>
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
-          </template>
-          <div v-text="$t('tradeInterfaceTooltip')" class="w-52" />
-        </BalTooltip>
-      </div>
-      <BalBtnGroup
-        :options="tradeInterfaceOptions"
-        v-model="appTradeInterface"
-        @update:modelValue="setTradeInterface"
-      />
-      <div class="flex mt-1"></div>
-    </div>
-    <div
-      class="network p-4 mt-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
+      class="p-4 mt-4 text-sm rounded-b-xl border-t dark:border-gray-900 network"
     >
       <div v-text="$t('network')" />
       <div class="flex items-baseline">
-        <div :class="['w-2 h-2 mr-1 rounded-full', networkColorClass]"></div>
+        <div :class="['w-2 h-2 mr-1 rounded-full', networkColorClass]" />
         {{ isUnsupportedNetwork ? $t('unsupportedNetwork') : networkName }}
       </div>
     </div>
@@ -162,19 +144,14 @@ import { useStore } from 'vuex';
 
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useEthereumTxType from '@/composables/useEthereumTxType';
-import {
-  ethereumTxTypeOptions,
-  tradeInterfaceOptions,
-} from '@/constants/options';
+import { ethereumTxTypeOptions } from '@/constants/options';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   getConnectorLogo,
   getConnectorName,
 } from '@/services/web3/web3.plugin';
-import { TradeInterface } from '@/store/modules/app';
 
 export default defineComponent({
   components: {
@@ -202,7 +179,6 @@ export default defineComponent({
 
     // DATA
     const data = reactive({
-      tradeInterfaceOptions,
       copiedAddress: false,
     });
 
@@ -234,7 +210,6 @@ export default defineComponent({
     const networkName = computed(() => userNetworkConfig.value?.name);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
-    const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const connectorName = computed(() =>
       getConnectorName(connector.value?.id, provider.value)
     );
@@ -250,9 +225,6 @@ export default defineComponent({
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
 
-    const setTradeInterface = tradeInterface =>
-      store.commit('app/setTradeInterface', tradeInterface);
-
     function copyAddress() {
       navigator.clipboard.writeText(account.value);
       data.copiedAddress = true;
@@ -265,12 +237,9 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
-      TradeInterface,
-      ENABLE_LEGACY_TRADE_INTERFACE,
       // computed
       account,
       profile,
-      appTradeInterface,
       networkName,
       networkColorClass,
       appLocale,
@@ -286,7 +255,6 @@ export default defineComponent({
       toggleWalletSelectModal,
       setDarkMode,
       setLocale,
-      setTradeInterface,
       copyAddress,
       explorer: explorerLinks,
       ethereumTxType,
@@ -300,6 +268,7 @@ export default defineComponent({
 <style scoped>
 .address {
   @apply text-blue-500;
+
   font-variant-ligatures: no-contextual;
 }
 

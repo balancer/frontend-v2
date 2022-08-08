@@ -77,7 +77,7 @@ function toggleModal(): void {
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="Number(weight) > 0" class="text-secondary ml-2">
+      <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
         {{
           fNum2(weight, {
             style: 'percent',
@@ -89,7 +89,7 @@ function toggleModal(): void {
         v-if="!fixed"
         name="chevron-down"
         size="sm"
-        class="text-blue-600 dark:text-blue-400 group-hover:text-purple-500 dark:group-hover:text-yellow-500 ml-2 transition-colors"
+        class="ml-2 text-blue-600 group-hover:text-purple-500 dark:text-blue-400 dark:group-hover:text-yellow-500 transition-colors"
       />
     </div>
     <BalDropdown
@@ -99,14 +99,14 @@ function toggleModal(): void {
       @selected="emit('update:modelValue', $event)"
     >
       <template #activator>
-        <div class="token-select-input selected group selectable">
+        <div class="group token-select-input selected selectable">
           <div class="w-8">
             <BalAsset :address="token?.address" class="shadow" />
           </div>
           <span class="text-base font-medium">
             {{ token?.symbol }}
           </span>
-          <span v-if="Number(weight) > 0" class="text-secondary ml-2">
+          <span v-if="Number(weight) > 0" class="ml-2 text-secondary">
             {{
               fNum2(weight, {
                 style: 'percent',
@@ -117,14 +117,14 @@ function toggleModal(): void {
           <BalIcon
             name="chevron-down"
             size="sm"
-            class="text-blue-500 dark:text-blue-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 ml-2 transition-colors"
+            class="ml-2 text-blue-500 group-hover:text-purple-500 dark:text-blue-400 dark:group-hover:text-purple-400 transition-colors"
           />
         </div>
       </template>
       <template #option="{ option: address }">
         <div
           :set="(optionToken = getToken(address) || {})"
-          class="flex items-center justify-between"
+          class="flex justify-between items-center"
         >
           <div class="flex items-center">
             <BalAsset :address="optionToken?.address" class="shadow" />
@@ -135,7 +135,7 @@ function toggleModal(): void {
           <BalIcon
             v-if="isSameAddress(optionToken.address, modelValue)"
             name="check"
-            class="text-blue-500 dark:text-blue-400 ml-4"
+            class="ml-4 text-blue-500 dark:text-blue-400"
           />
         </div>
       </template>
@@ -167,6 +167,7 @@ function toggleModal(): void {
 .token-select-input {
   @apply shadow rounded-lg flex items-center h-10 px-2 whitespace-nowrap;
   @apply text-sm;
+
   font-variation-settings: 'wght' 700;
 }
 

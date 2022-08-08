@@ -59,14 +59,17 @@ type Props = {
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onRowClick?: (data: Data) => void;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   sticky?: Sticky;
   square?: boolean;
   isPaginated?: boolean;
   noResultsLabel?: string;
   link?: { to?: string } | null;
   initialState?: InitialState;
-  pin?: DataPinState;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
+  pin?: DataPinState | null;
   getTableRowClass?: (rowData: Data, rowIndex: number) => string | undefined;
 };
 
@@ -226,8 +229,8 @@ watch(
       { 'rounded-lg': !square },
     ]"
   >
-    <div class="overflow-hidden" ref="headerRef">
-      <table class="w-full table-fixed whitespace-normal">
+    <div ref="headerRef" class="overflow-hidden">
+      <table class="w-full whitespace-normal table-fixed">
         <!-- header width handled by colgroup  -->
         <colgroup>
           <col
@@ -237,10 +240,11 @@ watch(
           />
         </colgroup>
         <!-- header is rendered as a row - seperated by columns -->
-        <thead class="bg-white dark:bg-gray-900 z-10">
+        <thead class="z-10 bg-white dark:bg-gray-900">
           <th
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
+            :ref="setHeaderRef(columnIndex)"
             :class="[
               'p-6 bg-white dark:bg-gray-850 headingShadow border-b dark:border-gray-900',
               column.className,
@@ -251,7 +255,6 @@ watch(
                 ? 'text-blue-600 hover:text-blue-500 focus:text-purple-600 dark:text-blue-400 dark:hover:text-blue-600 dark:focus:text-blue-600 transition-colors'
                 : 'text-gray-800 hover:text-purple-600 focus:text-blue-500 dark:text-gray-100 dark:hover:text-yellow-500 dark:focus:text-yellow-500 transition-colors',
             ]"
-            :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
           >
             <div :class="['flex', getAlignProperty(column.align)]">
@@ -259,36 +262,36 @@ watch(
                 v-if="column.Header"
                 v-bind="column"
                 :name="column.Header"
-              ></slot>
+              />
               <div v-else>
                 <h5 class="text-base">
                   {{ column.name }}
                 </h5>
               </div>
               <BalIcon
-                name="arrow-up"
-                size="sm"
                 v-if="
                   currentSortColumn === column.id &&
                   currentSortDirection === 'asc'
                 "
-                class="ml-1 flex items-center"
+                name="arrow-up"
+                size="sm"
+                class="flex items-center ml-1"
               />
               <BalIcon
-                name="arrow-down"
-                size="sm"
                 v-if="
                   currentSortColumn === column.id &&
                   currentSortDirection === 'desc'
                 "
-                class="ml-1 flex items-center"
+                name="arrow-down"
+                size="sm"
+                class="flex items-center ml-1"
               />
             </div>
           </th>
         </thead>
       </table>
     </div>
-    <div class="overflow-auto" ref="bodyRef">
+    <div ref="bodyRef" class="overflow-auto">
       <BalLoadingBlock
         v-if="isLoading"
         :class="[skeletonClass, 'min-w-full']"
@@ -297,11 +300,11 @@ watch(
       />
       <div
         v-else-if="!isLoading && !tableData.length"
-        class="max-w-full bg-white dark:bg-gray-850 row-bg h-40 flex items-center justify-center text-secondary"
+        class="flex justify-center items-center max-w-full h-40 bg-white dark:bg-gray-850 row-bg text-secondary"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
-      <table v-else class="w-full table-fixed whitespace-normal">
+      <table v-else class="w-full whitespace-normal table-fixed">
         <colgroup>
           <col
             v-for="column in filteredColumns"
@@ -320,7 +323,7 @@ watch(
               isColumnStuck ? 'isSticky' : '',
               'bg-white dark:bg-gray-850 p-0 m-0 h-0',
             ]"
-          ></td>
+          />
         </tr>
         <!-- end measurement row -->
 
@@ -328,17 +331,17 @@ watch(
         <PinHeader v-if="pinnedData.length" />
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
+          :key="`tableRow-${index}`"
           :class="props.getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
-          :key="`tableRow-${index}`"
           :link="link"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
           pinned
         >
-          <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+          <template v-for="(_, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData" />
           </template>
         </BalTableRow>
@@ -347,28 +350,28 @@ watch(
         <!-- begin data rows -->
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
+          :key="`tableRow-${index}`"
           :class="props.getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
-          :key="`tableRow-${index}`"
           :link="link"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
         >
-          <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+          <template v-for="(_, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData" />
           </template>
         </BalTableRow>
         <!-- end end data rows -->
         <TotalsRow
+          v-if="!isLoading && tableData.length && shouldRenderTotals"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
-          v-if="!isLoading && tableData.length && shouldRenderTotals"
         >
-          <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+          <template v-for="(_, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData" />
           </template>
         </TotalsRow>
@@ -380,16 +383,20 @@ watch(
     class="bal-table-pagination-btn text-secondary"
     @click="!isLoadingMore && $emit('loadMore')"
   >
-    <template v-if="isLoadingMore">{{ $t('loading') }}</template>
-    <template v-else
-      >{{ $t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
-    /></template>
+    <template v-if="isLoadingMore">
+      {{ $t('loading') }}
+    </template>
+    <template v-else>
+      {{ $t('loadMore') }}
+      <BalIcon name="chevron-down" size="sm" class="ml-2" />
+    </template>
   </div>
 </template>
 
 <style>
 .horizontalSticky {
   @apply z-10 opacity-95 xs:opacity-90;
+
   /* Set the sticky cell to inherit table row's background-color in order for the opacity property to have an effect */
   background-color: inherit;
   position: sticky;

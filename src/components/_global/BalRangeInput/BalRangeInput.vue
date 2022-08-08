@@ -12,14 +12,14 @@
         </slot>
       </div>
     </div>
-    <vue-slider
+    <VueSlider
       v-model="range"
       v-bind="$attrs"
+      :dotStyle="dotStyle"
+      :railStyle="railSyle"
+      :processStyle="proccessStyle"
       @change="onChange"
       @drag-end="onDragEnd"
-      :dot-style="dotStyle"
-      :rail-style="railSyle"
-      :process-style="proccessStyle"
     />
   </div>
 </template>
@@ -40,13 +40,13 @@ export default defineComponent({
     VueSlider,
   },
 
-  emits: ['change', 'update:modelValue', 'dragEnd'],
-
   props: {
     modelValue: { type: [String, Number], default: '0' },
     leftLabel: { type: String, default: '' },
     rightLabel: { type: String, default: '' },
   },
+
+  emits: ['change', 'update:modelValue', 'dragEnd'],
 
   setup(props, { emit }) {
     const range = ref(0);
@@ -106,6 +106,6 @@ export default defineComponent({
 
 <style>
 .vue-slider-dot-handle-focus {
-  box-shadow: 0 0 0 5px rgb(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 5px rgb(0 0 0 / 20%);
 }
 </style>

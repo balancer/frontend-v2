@@ -4,7 +4,7 @@
     :class="['bal-btn', btnClasses]"
     :disabled="disabled || loading"
   >
-    <div v-if="loading" class="flex items-center justify-center">
+    <div v-if="loading" class="flex justify-center items-center">
       <BalLoadingIcon :size="size" :color="iconColor" />
       <span v-if="loadingLabel" class="ml-2">
         {{ loadingLabel }}
@@ -229,6 +229,7 @@ export default defineComponent({
 <style scoped>
 .bal-btn {
   @apply overflow-hidden tracking-tight;
+
   font-variation-settings: 'wght' 500;
   transition: all 0.2s ease;
   text-decoration: none !important;

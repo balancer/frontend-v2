@@ -59,31 +59,31 @@ defineExpose({ hide });
 
 <template>
   <div v-if="show" class="bal-modal" @keyup.esc="hide">
-    <transition name="overlay" @afterEnter="showContent = true" appear>
+    <transition name="overlay" appear @after-enter="showContent = true">
       <div class="modal-bg" @click="hide">
         <div v-if="fireworks" class="fireworks">
-          <div class="before"></div>
-          <div class="after"></div>
+          <div class="before" />
+          <div class="after" />
         </div>
       </div>
     </transition>
     <div class="content-container">
-      <Transition name="modal" @afterLeave="$emit('close')">
+      <Transition name="modal" @after-leave="$emit('close')">
         <div v-if="showContent" class="content">
           <BalCard
             :title="title"
             shadow="lg"
-            :no-pad="noPad"
-            :no-content-pad="noContentPad"
+            :noPad="noPad"
+            :noContentPad="noContentPad"
             class="modal-card"
             noBorder
             overflowYScroll
           >
-            <template v-if="$slots.header" v-slot:header>
+            <template v-if="$slots.header" #header>
               <slot name="header" />
             </template>
             <slot />
-            <template v-if="$slots.footer" v-slot:footer>
+            <template v-if="$slots.footer" #footer>
               <slot name="footer" />
             </template>
           </BalCard>
@@ -104,6 +104,7 @@ defineExpose({ hide });
 
 .content {
   @apply relative w-full h-3/4 sm:h-auto max-h-screen;
+
   max-width: 450px;
   transform-style: preserve-3d;
 }
@@ -116,7 +117,7 @@ defineExpose({ hide });
   @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border-0;
 }
 
-.dark .bal-modal .content:before {
+.dark .bal-modal .content::before {
   background-blend-mode: soft-light, soft-light, normal;
   background: radial-gradient(circle at left, yellow, transparent),
     radial-gradient(circle at bottom right, blue, transparent),
@@ -152,6 +153,7 @@ defineExpose({ hide });
 .modal-leave-active {
   transition: all 0.2s ease-out;
 }
+
 .modal-enter-from,
 .modal-leave-to {
   transform: translateY(10px);

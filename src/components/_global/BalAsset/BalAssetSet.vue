@@ -15,7 +15,6 @@
         :key="i"
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
-        @click="$emit('click', addressOrURI)"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
@@ -23,6 +22,7 @@
           width: `${size}px`,
           height: `${size}px`,
         }"
+        @click="$emit('click', addressOrURI)"
       />
     </div>
   </template>
@@ -46,13 +46,14 @@ export default defineComponent({
   components: {
     BalAsset,
   },
-  emits: ['click'],
   props: {
     addresses: {
       type: Array as PropType<string[]>,
+      default: () => [],
     },
     logoURIs: {
       type: Array as PropType<string[]>,
+      default: () => [],
     },
     balAssetProps: {
       type: Object as PropType<BalAssetProps>,
@@ -74,6 +75,7 @@ export default defineComponent({
       type: Boolean,
     },
   },
+  emits: ['click'],
 
   setup(props) {
     /**
@@ -153,8 +155,21 @@ export default defineComponent({
   @apply relative flex;
 }
 
+.token-icon {
+  margin-left: -2px;
+
+  @apply rounded-full overflow-hidden shadow-none;
+  @apply bg-white dark:bg-gray-850;
+  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+}
+
+.my-wallet .token-icon {
+  @apply ml-0;
+}
+
 .my-wallet .addresses-row {
   @apply flex-wrap gap-2;
+
   width: auto !important;
   height: auto !important;
 }
@@ -173,16 +188,5 @@ export default defineComponent({
 .my-wallet .addresses-row:nth-child(n + 2) .token-icon {
   width: 24px !important;
   height: 24px !important;
-}
-
-.token-icon {
-  margin-left: -2px;
-  @apply rounded-full overflow-hidden shadow-none;
-  @apply bg-white dark:bg-gray-850;
-  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
-}
-
-.my-wallet .token-icon {
-  @apply ml-0;
 }
 </style>
