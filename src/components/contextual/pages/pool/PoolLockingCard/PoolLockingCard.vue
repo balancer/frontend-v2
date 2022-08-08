@@ -157,7 +157,12 @@ const fiatTotal = computed(() =>
                     </BalBtn>
                   </BalLink>
                   <BalLink href="/#/vebal">
-                    <BalBtn v-if="lock?.isExpired" outline color="red" size="sm">
+                    <BalBtn
+                      v-if="lock?.isExpired"
+                      outline
+                      color="red"
+                      size="sm"
+                    >
                       {{ $t('redeem') }}
                     </BalBtn>
                   </BalLink>

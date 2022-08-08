@@ -214,7 +214,8 @@ watch(
             v-if="isContentVisible"
             ref="activeSectionElement"
             :class="{
-              'border-b active-section rounded-b': isContentVisible && showSectionBorder,
+              'border-b active-section rounded-b':
+                isContentVisible && showSectionBorder,
             }"
           >
             <slot :name="section.id" />

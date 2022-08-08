@@ -1,7 +1,14 @@
 <template>
   <div class="xl:container lg:px-4 pt-8 xl:mx-auto">
     <div
-      class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
+      class="
+        grid grid-cols-1
+        lg:grid-cols-3
+        gap-x-0
+        lg:gap-x-4
+        xl:gap-x-8
+        gap-y-8
+      "
     >
       <PoolPageHeader
         :loadingPool="loadingPool"
@@ -137,7 +144,7 @@ export default defineComponent({
     StakingProvider,
     ApyVisionPoolLink,
     PoolPageHeader,
-    PoolLockingCard
+    PoolLockingCard,
   },
 
   setup() {
