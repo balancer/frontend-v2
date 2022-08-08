@@ -13,9 +13,7 @@ type Props = {
   fiatTotal: string;
 };
 
-type AmountMap = {
-  [address: string]: string;
-};
+type AmountMap = Record<string, string>;
 
 /**
  * PROPS & EMITS
@@ -41,7 +39,7 @@ function amountShare(address: string): string {
   <div class="token-amount-table">
     <div v-for="(amount, address) in amountMap" :key="address" class="relative">
       <div class="token-amount-table-content">
-        <BalAsset :address="address.toString()" :size="36" />
+        <BalAsset :address="address" :size="36" />
         <div class="flex flex-col ml-3">
           <div class="text-lg font-medium">
             <span class="font-numeric">
@@ -51,7 +49,7 @@ function amountShare(address: string): string {
           </div>
           <div class="text-sm text-secondary font-numeric">
             {{ fNum2(fiatAmountMap[address], FNumFormats.fiat) }}
-            ({{ fNum2(amountShare(address.toString()), FNumFormats.percent) }})
+            ({{ fNum2(amountShare(address), FNumFormats.percent) }})
           </div>
         </div>
       </div>
