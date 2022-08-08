@@ -166,6 +166,7 @@ const fiatTotal = computed(() =>
 
 .pool-handle::before {
   @apply absolute left-0 w-full opacity-100;
+
   content: '';
   top: -2px;
   height: calc(100% + 4px);
@@ -176,12 +177,13 @@ const fiatTotal = computed(() =>
   z-index: -1;
 }
 
-.pool-handle:hover:before {
+.pool-handle:hover::before {
   animation: anim 12s linear infinite;
 }
 
 .pool-handle .bal-card {
   @apply mx-auto;
+
   width: calc(100% - 4px);
 }
 
@@ -189,6 +191,7 @@ const fiatTotal = computed(() =>
   from {
     background-position: 0;
   }
+
   to {
     background-position: 125%;
   }
@@ -198,6 +201,7 @@ const fiatTotal = computed(() =>
   from {
     background-position: 125%;
   }
+
   to {
     background-position: 600%;
   }
