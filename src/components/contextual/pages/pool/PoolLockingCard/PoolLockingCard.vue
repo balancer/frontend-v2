@@ -51,28 +51,14 @@ const fiatTotal = computed(() =>
             },
           ]"
         >
-          <template v-slot:locking-handle>
+          <template #locking-handle>
             <button
-              class="
-                p-4
-                rounded-xl
-                w-full
-                hover:bg-gray-50
-                dark:hover:bg-gray-800
-                transition-colors
-              "
+              class="p-4 w-full hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
             >
               <BalStack horizontal justify="between" align="center">
                 <BalStack spacing="sm" horizontal>
                   <div
-                    class="
-                      flex
-                      items-center
-                      p-1
-                      text-white
-                      rounded-full
-                      bg-green-500
-                    "
+                    class="flex items-center p-1 text-white bg-green-500 rounded-full"
                   >
                     <BalIcon size="sm" name="check" />
                   </div>
@@ -86,26 +72,20 @@ const fiatTotal = computed(() =>
               </BalStack>
             </button>
           </template>
-          <template v-slot:locking-module>
+          <template #locking-module>
             <div
-              class="
-                bg-white
-                dark:bg-gray-850
-                relative
-                overflow-visible
-                rounded-b-lg
-              "
+              class="overflow-visible relative bg-white dark:bg-gray-850 rounded-b-lg"
             >
               <BalStack
                 vertical
                 spacing="sm"
-                class="px-4 py-4 border-t dark:border-gray-900"
+                class="py-4 px-4 border-t dark:border-gray-900"
               >
                 <BalStack horizontal justify="between">
                   <span v-if="!lock?.isExpired"
                     >{{ $t('locked') }} {{ $t('lpTokens') }}</span
                   >
-                  <span class="text-red-500" v-else>{{
+                  <span v-else class="text-red-500">{{
                     $t('locking.expiredLockLpTokens')
                   }}</span>
                   <BalStack horizontal spacing="sm" align="center">
@@ -122,7 +102,7 @@ const fiatTotal = computed(() =>
                       :text="$t('locking.lockedLpTokensTooltip')"
                     />
                     <BalTooltip v-else :text="$t('locking.expiredLockTooltip')">
-                      <template v-slot:activator>
+                      <template #activator>
                         <BalIcon
                           class="text-red-500"
                           size="sm"

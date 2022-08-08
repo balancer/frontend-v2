@@ -141,11 +141,11 @@ async function handleActionSuccess() {
             </button>
           </template>
           <template #staking-incentives>
-            <div class="bg-white dark:bg-gray-850 relative rounded-b-lg">
+            <div class="relative bg-white dark:bg-gray-850 rounded-b-lg">
               <BalStack
                 vertical
                 spacing="sm"
-                class="p-4 border-t dark:border-gray-900 rounded-b-lg"
+                class="p-4 rounded-b-lg border-t dark:border-gray-900"
               >
                 <BalStack horizontal justify="between" class="rounded-b-lg">
                   <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
