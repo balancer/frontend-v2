@@ -18,7 +18,6 @@ jest.mock('@/composables/queries/useGaugesQuery');
 jest.mock('@/composables/queries/useGaugesDecorationQuery');
 jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/balancer/contracts/contracts/balancer-minter');
-jest.mock('vue-i18n');
 
 const mockGaugeAddress = getAddress(gauge.id);
 
