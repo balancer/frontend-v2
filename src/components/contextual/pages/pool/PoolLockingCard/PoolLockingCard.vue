@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { useLock } from '@/composables/useLock';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -101,7 +102,7 @@ const fiatTotal = computed(() =>
                 class="px-4 py-4 border-t dark:border-gray-900"
               >
                 <BalStack horizontal justify="between">
-                  <span v-if="!lock.isExpired"
+                  <span v-if="!lock?.isExpired"
                     >{{ $t('locked') }} {{ $t('lpTokens') }}</span
                   >
                   <span class="text-red-500" v-else>{{
@@ -112,12 +113,12 @@ const fiatTotal = computed(() =>
                       <BalLoadingBlock class="h-5" />
                     </AnimatePresence>
                     <AnimatePresence :isVisible="true">
-                      <span :class="{ 'text-red-500': lock.isExpired }">
+                      <span :class="{ 'text-red-500': lock?.isExpired }">
                         {{ fNum2(lockedFiatTotal, FNumFormats.fiat) }}
                       </span>
                     </AnimatePresence>
                     <BalTooltip
-                      v-if="!lock.isExpired"
+                      v-if="!lock?.isExpired"
                       :text="$t('locking.lockedLpTokensTooltip')"
                     />
                     <BalTooltip v-else :text="$t('locking.expiredLockTooltip')">
@@ -156,7 +157,7 @@ const fiatTotal = computed(() =>
                     </BalBtn>
                   </BalLink>
                   <BalLink href="/#/vebal">
-                    <BalBtn v-if="lock.isExpired" outline color="red" size="sm">
+                    <BalBtn v-if="lock?.isExpired" outline color="red" size="sm">
                       {{ $t('redeem') }}
                     </BalBtn>
                   </BalLink>

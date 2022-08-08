@@ -141,13 +141,13 @@ async function handleActionSuccess() {
             </button>
           </template>
           <template v-slot:staking-incentives>
-            <div class="bg-white dark:bg-gray-850 relative">
+            <div class="bg-white dark:bg-gray-850 relative rounded-b-lg">
               <BalStack
                 vertical
                 spacing="sm"
-                class="px-4 py-4 border-t dark:border-gray-900"
+                class="p-4 border-t dark:border-gray-900 rounded-b-lg"
               >
-                <BalStack horizontal justify="between">
+                <BalStack horizontal justify="between" class="rounded-b-lg">
                   <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                   <BalStack horizontal spacing="sm" align="center">
                     <AnimatePresence :isVisible="isRefetchingStakedShares">
