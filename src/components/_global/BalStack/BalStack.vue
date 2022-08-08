@@ -43,12 +43,14 @@ export default defineComponent({
      */
     align: {
       type: String as PropType<Alignment>,
+      default: null,
     },
     /**
      * Flex justify prop
      */
     justify: {
       type: String as PropType<Alignment>,
+      default: null,
     },
     /**
      * Will cause children of the stack to occupy

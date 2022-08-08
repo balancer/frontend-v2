@@ -1066,8 +1066,6 @@
     "label": "Trade gasless",
     "tooltip": "‘Trade gasless’ on the Balancer CoW Protocol for free signature trades, MEV protection, and the best prices with intelligent trade routing across DeFi exchanges. Turn it off to trade only through Balancer liquidity pools using gas."
   },
-  "tradeInterface": "Trade interface",
-  "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while enjoying MEV protection.",
   "tradeLiquidity": "Trade liquidity",
   "tradeSettled": "Your trade has settled",
   "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",

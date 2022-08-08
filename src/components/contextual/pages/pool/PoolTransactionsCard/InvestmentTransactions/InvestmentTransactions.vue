@@ -67,26 +67,26 @@ const activeTab = ref(tabs.value[0].value);
   <div>
     <div>
       <h4
-        v-text="$t('poolTransactions.tabs.allInvestments')"
         class="px-4 lg:px-0 mb-5"
+        v-text="$t('poolTransactions.tabs.allInvestments')"
       />
       <div
-        class="mx-4 lg:mx-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
+        class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
       >
-        <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+        <BalTabs v-model="activeTab" :tabs="tabs" noPad class="-mb-px" />
       </div>
     </div>
 
     <template v-if="isStablePhantomPool">
       <BoostedActivities
         v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-        :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
+        :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
       <BoostedActivities
         v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-        :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
+        :poolActivityType="PoolTransactionsTab.USER_ACTIVITY"
         :pool="pool"
         :loading="loading"
       />
@@ -95,13 +95,13 @@ const activeTab = ref(tabs.value[0].value);
       <div class="mb-20">
         <Activities
           v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-          :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
+          :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
           :pool="pool"
           :loading="loading"
         />
         <Activities
           v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-          :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
+          :poolActivityType="PoolTransactionsTab.USER_ACTIVITY"
           :pool="pool"
           :loading="loading"
         />

@@ -48,7 +48,7 @@ const fiatTotal = computed((): string =>
         {{ $t('getVeBAL.lockableTokens.title') }}
       </h6>
     </div>
-    <div class="-mt-2 p-4">
+    <div class="p-4 -mt-2">
       <div class="flex justify-between">
         <div>{{ lockablePoolTokenInfo.symbol }}</div>
         <div>{{ fNum2(bptBalance, FNumFormats.token) }}</div>
@@ -61,7 +61,7 @@ const fiatTotal = computed((): string =>
         tag="router-link"
         :to="{ name: 'invest', params: { id: lockablePool.id } }"
         external
-        class="mt-2 block text-sm"
+        class="block mt-2 text-sm"
       >
         {{
           $t('getVeBAL.lockableTokens.getMoreVeBAL', [

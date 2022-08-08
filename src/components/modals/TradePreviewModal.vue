@@ -1,8 +1,8 @@
 <template>
-  <BalModal show @close="onClose" :title="$t('previewTradeTransactions')">
+  <BalModal show :title="$t('previewTradeTransactions')" @close="onClose">
     <div>
       <div
-        class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-800"
+        class="flex items-center p-4 -mx-4 border-t border-b dark:border-gray-800"
       >
         <BalAssetSet
           :addresses="[addressIn, addressOut]"
@@ -15,7 +15,7 @@
             {{ symbolIn }} -> {{ fNum2(amountOut, FNumFormats.token) }}
             {{ symbolOut }}
           </div>
-          <div class="text-secondary text-sm">
+          <div class="text-sm text-secondary">
             {{ fNum2(valueIn, FNumFormats.fiat) }}
           </div>
         </div>
@@ -27,7 +27,7 @@
         </div>
         <div>
           <div v-if="requiresLidoRelayerApproval" class="mb-3 card-container">
-            <div class="card-step text-green-500">
+            <div class="text-green-500 card-step">
               <BalIcon
                 v-if="isLidoRelayerApproved"
                 name="check"
@@ -43,7 +43,7 @@
             </div>
           </div>
           <div v-if="requiresTokenApproval" class="card-container">
-            <div class="card-step text-green-500">
+            <div class="text-green-500 card-step">
               <BalIcon
                 v-if="isTokenApproved"
                 name="check"
@@ -77,7 +77,7 @@
         class="mt-5"
         :label="$t('approveLidoRelayer')"
         :loading="approvingLidoRelayer"
-        :loading-label="`${$t('approvingLidoRelayer')}…`"
+        :loadingLabel="`${$t('approvingLidoRelayer')}…`"
         color="gradient"
         block
         @click.prevent="approveLidoRelayer"
@@ -87,7 +87,7 @@
         class="mt-5"
         :label="`${$t('approve')} ${symbolIn}`"
         :loading="approvingToken"
-        :loading-label="`${$t('approving')} ${symbolIn}…`"
+        :loadingLabel="`${$t('approving')} ${symbolIn}…`"
         color="gradient"
         block
         @click.prevent="approveToken"
@@ -97,7 +97,7 @@
         class="mt-5"
         :label="$t('confirmTrade')"
         :loading="trading"
-        :loading-label="$t('confirming')"
+        :loadingLabel="$t('confirming')"
         color="gradient"
         block
         @click.prevent="trade"
@@ -120,7 +120,6 @@ import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 export default defineComponent({
-  emits: ['trade', 'close'],
   props: {
     open: {
       type: Boolean,
@@ -147,6 +146,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['trade', 'close'],
   setup(props, { emit }) {
     const { fNum2, toFiat } = useNumbers();
 
@@ -296,6 +296,7 @@ export default defineComponent({
 .card-container {
   @apply p-3 flex items-center border rounded-lg dark:border-gray-800;
 }
+
 .card-step {
   @apply w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700;
 }

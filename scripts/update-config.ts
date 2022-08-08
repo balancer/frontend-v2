@@ -26,11 +26,11 @@ const jsonConfigFilePath = path.resolve(
   __dirname,
   '../src/lib/utils/balancer/configs/' + network + '.json'
 );
-let doc = JSON.parse(fs.readFileSync(jsonConfigFilePath, 'utf8'));
+const doc = JSON.parse(fs.readFileSync(jsonConfigFilePath, 'utf8'));
 
-Object.entries(doc).forEach(([contractName, address]) => {
+Object.entries(doc).forEach(([contractName]) => {
   try {
-    let address = contractAddress(capitalizeFirstLetter(contractName));
+    const address = contractAddress(capitalizeFirstLetter(contractName));
     doc[contractName] = address;
   } catch (err) {
     const msg =

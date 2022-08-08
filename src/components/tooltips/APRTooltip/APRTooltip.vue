@@ -48,13 +48,13 @@ const totalLabel = computed((): string =>
 </script>
 
 <template v-slot:aprCell="pool">
-  <BalTooltip width="auto" noPad v-if="validAPR">
-    <template v-slot:activator>
+  <BalTooltip v-if="validAPR" width="auto" noPad>
+    <template #activator>
       <div class="ml-1">
         <StarsIcon
           v-if="hasYieldAPR || hasStakingRewards(apr) || hasVebalAPR"
           :gradFrom="hasVebalAPR ? 'purple' : 'yellow'"
-          class="h-4 -mr-1"
+          class="-mr-1 h-4"
           v-bind="$attrs"
         />
         <BalIcon
@@ -68,14 +68,16 @@ const totalLabel = computed((): string =>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
-        <div class="text-secondary">{{ $t('totalAPR') }}</div>
+        <div class="text-secondary">
+          {{ $t('totalAPR') }}
+        </div>
         <div>{{ totalLabel }}</div>
       </div>
       <div class="p-3">
         <!-- SWAP FEE APR -->
-        <div class="whitespace-nowrap flex items-center mb-1">
+        <div class="flex items-center mb-1 whitespace-nowrap">
           {{ fNum2(apr?.swap || '0', FNumFormats.percent) }}
-          <span class="ml-1 text-secondary text-xs">
+          <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
           </span>
         </div>

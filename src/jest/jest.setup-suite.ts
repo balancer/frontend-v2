@@ -1,9 +1,8 @@
-import '@testing-library/jest-dom';
+// Setup test suite for all test environments.
+// This file runs immediately after the test framework has been installed in the environment
+// but before the test code itself.
 
-import { config } from '@vue/test-utils';
 import nock from 'nock';
-
-import translations from '@/locales/default.json';
 
 /**
  * HTTP Requests
@@ -15,10 +14,3 @@ import translations from '@/locales/default.json';
 nock.disableNetConnect();
 // Enable for mocked websockets
 nock.enableNetConnect('balancer.fi');
-
-/**
- * Global template mocks
- */
-config.global.mocks = {
-  $t: msg => translations[msg],
-};

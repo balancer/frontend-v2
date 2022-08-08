@@ -18,11 +18,11 @@ import useInputValidation from './composables/useInputValidation';
 /**
  * TYPES
  */
-type InputValue = string | number;
-type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
-type InputSize = 'xs' | 'sm' | 'md' | 'lg';
-type ValidationTrigger = 'input' | 'blur';
-type RuleFunction = (val: InputValue) => string;
+export type InputValue = string | number;
+export type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
+export type InputSize = 'xs' | 'sm' | 'md' | 'lg';
+export type ValidationTrigger = 'input' | 'blur';
+export type RuleFunction = (val: InputValue) => string;
 export type Rules = RuleFunction[];
 
 type Props = {
@@ -32,6 +32,7 @@ type Props = {
   type?: InputType;
   size?: InputSize;
   disabled?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   label?: string;
   inputAlignRight?: boolean;
   decimalLimit?: number;
@@ -41,6 +42,7 @@ type Props = {
   noShadow?: boolean;
   noBorder?: boolean;
   autoFocus?: boolean;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   format?: (input: string | number) => string | number;
 };
 
@@ -146,12 +148,12 @@ onMounted(() => {
           :value="modelValue"
           v-bind="inputAttrs"
           :disabled="disabled"
+          :class="['input', inputClasses]"
           @blur="onBlur"
           @input="onInput"
           @keydown="onKeydown"
           @click="onClick"
           @focus="onFocus"
-          :class="['input', inputClasses]"
         />
         <div v-if="$slots.append" :class="['append', appendClasses]">
           <slot name="append" />
@@ -169,7 +171,7 @@ onMounted(() => {
 
 <style scoped>
 .input-container {
-  @apply bg-white dark:bg-gray-800 border transition-colors;
+  @apply transition-colors;
 }
 
 .input-group {

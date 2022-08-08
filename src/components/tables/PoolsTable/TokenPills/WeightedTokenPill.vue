@@ -20,11 +20,11 @@ withDefaults(defineProps<Props>(), {
 <template>
   <BalTooltip
     :disabled="!hasBalance"
-    class="mr-2 last:mr-0 cursor-pointer leading-normal"
+    class="mr-2 last:mr-0 leading-normal cursor-pointer"
     textAlign="left"
     :delayMs="50"
   >
-    <template v-slot:activator>
+    <template #activator>
       <div
         :class="[
           'pill',
@@ -69,7 +69,8 @@ withDefaults(defineProps<Props>(), {
 
 .balance-indicator {
   @apply w-3 h-3;
-  @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+  @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50
+    dark:group-hover:border-gray-800;
   @apply bg-green-400 dark:bg-green-500;
   @apply absolute top-0 right-0 -mt-1 -mr-1;
 }

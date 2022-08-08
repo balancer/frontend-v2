@@ -1,9 +1,11 @@
 <template>
   <div :class="['bal-select-input', containerClasses]">
     <div class="flex items-center h-full">
-      <div class="flex flex-col justify-center h-full flex-1">
+      <div class="flex flex-col flex-1 justify-center h-full">
         <div v-if="label || $slots.label" :class="['label', labelClasses]">
-          <slot name="label">{{ label }}</slot>
+          <slot name="label">
+            {{ label }}
+          </slot>
         </div>
         <select
           ref="balSelectInput"
@@ -41,8 +43,6 @@ import BalIcon from '../BalIcon/BalIcon.vue';
 export default defineComponent({
   name: 'BalSelectInput',
 
-  emits: ['change', 'update:modelValue'],
-
   components: {
     BalIcon,
   },
@@ -65,6 +65,8 @@ export default defineComponent({
       default: () => [],
     },
   },
+
+  emits: ['change', 'update:modelValue'],
 
   setup(props, { emit }) {
     const balSelectInput = ref({} as HTMLSelectElement);
@@ -163,7 +165,8 @@ export default defineComponent({
 
 <style scoped>
 .bal-select-input {
-  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2 bg-gray-50 dark:bg-gray-800 transition-all;
+  @apply relative w-full rounded-lg shadow hover:shadow-none focus:shadow-none overflow-hidden px-2
+    bg-gray-50 dark:bg-gray-800 transition-all;
 }
 
 .label {
@@ -172,14 +175,15 @@ export default defineComponent({
 
 select {
   @apply absolute w-full h-full leading-loose bg-transparent leading-none -ml-px text-xs;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+
+  appearance: none;
   text-indent: 1px;
   text-overflow: '';
 }
 
 .bal-select-input .bal-icon :deep(svg) {
   @apply transition-all;
+
   /* blue-500 */
   stroke: #384aff;
 }

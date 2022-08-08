@@ -8,6 +8,7 @@
     >
       <div v-if="imgSrc" class="feature" :style="featureStyles" />
       <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
+        <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -- Not sure if this is fine -->
         <component :is="titleTag" v-if="!!title" v-text="title" />
         <div
           v-if="$slots.header"
@@ -131,6 +132,7 @@ export default defineComponent({
 .card-container {
   @apply flex flex-col;
 }
+
 .card-container::-webkit-scrollbar {
   width: 0;
 }

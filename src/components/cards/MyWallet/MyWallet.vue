@@ -68,14 +68,16 @@ const tokensWithBalance = computed(() => {
       <div
         class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:border-b dark:border-gray-700"
       >
-        <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet2') }}</h6>
+        <h6 v-if="!upToLargeBreakpoint">
+          {{ $t('myWallet2') }}
+        </h6>
         <div
-          class="font-semibold lg:font-normal ml-1 lg:ml-0"
           v-if="!isLoadingBalances"
+          class="ml-1 lg:ml-0 font-semibold lg:font-normal"
         >
           <div
-            class="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors mr-0.5"
             v-if="!hasBalance(nativeAsset.address)"
+            class="mr-0.5 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
           >
             {{ etherBalance }} {{ nativeCurrency }}
             <BalTooltip
@@ -85,41 +87,40 @@ const tokensWithBalance = computed(() => {
                   ? noNativeCurrencyMessageEthereum
                   : noNativeCurrencyMessage
               "
-              icon-size="sm"
-              :icon-name="'alert-triangle'"
-              :icon-class="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
+              iconSize="sm"
+              :iconName="'alert-triangle'"
+              :iconClass="'text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors'"
               width="72"
               class="relative top-0.5"
             />
           </div>
           <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
         </div>
-        <BalLoadingBlock v-else class="h-8 w-12" />
+        <BalLoadingBlock v-else class="w-12 h-8" />
       </div>
-      <div class="my-wallet h-full p-3 z-0">
+      <div class="z-0 p-3 h-full my-wallet">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <BalAssetSet
-            @click="setTokenInAddress"
             :balAssetProps="{ button: true }"
             :width="275"
             wrap
             :size="30"
             :addresses="tokensWithBalance"
             :maxAssetsPerLine="28"
-          >
-          </BalAssetSet>
+            @click="setTokenInAddress"
+          />
           <p
-            class="text-sm text-secondary opacity-0 fade-in"
             v-if="tokensWithBalance.length === 0"
+            class="text-sm opacity-0 text-secondary fade-in"
           >
             {{ noTokensMessage }}.
           </p>
         </div>
-        <div v-else class="w-full mt-4 lg:mt-0 flex font-medium">
-          <BalLink @click="startConnectWithInjectedProvider"
-            >Connect your wallet</BalLink
-          >
+        <div v-else class="flex mt-4 lg:mt-0 w-full font-medium">
+          <BalLink @click="startConnectWithInjectedProvider">
+            Connect your wallet
+          </BalLink>
         </div>
       </div>
     </div>

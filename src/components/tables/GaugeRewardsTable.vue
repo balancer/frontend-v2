@@ -114,11 +114,11 @@ const totalRewardValue = computed((): string => {
       :columns="columns"
       :data="rewardsData"
       :isLoading="isLoading"
-      skeleton-class="h-64"
+      skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >
       <template #tokenColumnCell="{ token }">
-        <div class="px-6 py-4 flex items-center">
+        <div class="flex items-center py-4 px-6">
           <BalAsset :iconURI="token?.logoURI" />
           <span class="ml-2">{{ token.name }}</span>
         </div>

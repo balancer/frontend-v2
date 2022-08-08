@@ -65,6 +65,8 @@ jobs:
         run: npm run lint
       - name: Run prettier
         run: npm run prettier
+      - name: Run stylelint
+        run: npm run stylelint
 
   Test:
     runs-on: ubuntu-latest

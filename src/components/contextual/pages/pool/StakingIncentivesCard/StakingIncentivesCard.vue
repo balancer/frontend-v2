@@ -105,9 +105,9 @@ async function handleActionSuccess() {
             },
           ]"
         >
-          <template v-slot:staking-handle>
+          <template #staking-handle>
             <button
-              class="p-4 rounded-xl w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              class="p-4 w-full hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
             >
               <BalStack horizontal justify="between" align="center">
                 <BalStack spacing="sm" align="center">
@@ -121,11 +121,11 @@ async function handleActionSuccess() {
                     ]"
                   >
                     <BalIcon
+                      v-if="isPoolEligibleForStaking"
                       size="sm"
                       name="check"
-                      v-if="isPoolEligibleForStaking"
                     />
-                    <BalIcon size="sm" name="x" v-else />
+                    <BalIcon v-else size="sm" name="x" />
                   </div>
                   <h6>{{ $t('staking.stakingIncentives') }}</h6>
                 </BalStack>
@@ -140,7 +140,7 @@ async function handleActionSuccess() {
               </BalStack>
             </button>
           </template>
-          <template v-slot:staking-incentives>
+          <template #staking-incentives>
             <div class="bg-white dark:bg-gray-850 relative rounded-b-lg">
               <BalStack
                 vertical
@@ -179,8 +179,8 @@ async function handleActionSuccess() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    @click="showStakePreview"
                     :disabled="fiatValueOfUnstakedShares === '0'"
+                    @click="showStakePreview"
                   >
                     {{ $t('stake') }}
                   </BalBtn>
@@ -188,8 +188,8 @@ async function handleActionSuccess() {
                     outline
                     color="blue"
                     size="sm"
-                    @click="showUnstakePreview"
                     :disabled="fiatValueOfStakedShares === '0'"
+                    @click="showUnstakePreview"
                   >
                     {{ $t('unstake') }}
                   </BalBtn>
@@ -225,6 +225,7 @@ async function handleActionSuccess() {
 
 .handle::before {
   @apply absolute left-0 w-full opacity-100;
+
   content: '';
   top: -2px;
   height: calc(100% + 4px);
@@ -235,12 +236,13 @@ async function handleActionSuccess() {
   z-index: -1;
 }
 
-.handle:hover:before {
+.handle:hover::before {
   animation: anim 12s linear infinite;
 }
 
 .handle .bal-card {
   @apply mx-auto;
+
   width: calc(100% - 4px);
 }
 
@@ -248,6 +250,7 @@ async function handleActionSuccess() {
   from {
     background-position: 0;
   }
+
   to {
     background-position: 125%;
   }
@@ -257,6 +260,7 @@ async function handleActionSuccess() {
   from {
     background-position: 125%;
   }
+
   to {
     background-position: 600%;
   }
