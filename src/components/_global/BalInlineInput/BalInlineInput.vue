@@ -24,7 +24,7 @@ type InputSize = 'xs' | 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
 
 type Props = {
-  name?: string;
+  name: string;
   modelValue: InputValue;
   isValid?: boolean;
   type?: InputType;
@@ -43,7 +43,6 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
-  name: '',
   modelValue: '',
   isValid: true,
   size: 'md',

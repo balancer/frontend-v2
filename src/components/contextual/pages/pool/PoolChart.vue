@@ -253,7 +253,7 @@ function getFeesData(
       return result;
     }
   );
-  console.log({ feesValues });
+
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapFees) -
     (isAllTimeSelected

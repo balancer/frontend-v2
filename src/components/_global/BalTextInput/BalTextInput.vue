@@ -18,7 +18,7 @@ import useInputValidation from './composables/useInputValidation';
 import { InputValue, InputType, InputSize, ValidationTrigger } from './types';
 
 type Props = {
-  name?: string;
+  name: string;
   modelValue: InputValue;
   isValid?: boolean;
   type?: InputType;
@@ -42,7 +42,6 @@ type Props = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  name: '',
   type: 'text',
   modelValue: '',
   isValid: true,

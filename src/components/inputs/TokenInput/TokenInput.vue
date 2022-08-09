@@ -17,6 +17,7 @@ import { TokenInfo } from '@/types/TokenList';
 type InputValue = string | number;
 
 type Props = {
+  name: string;
   amount: InputValue;
   address?: string;
   weight?: number | string;
@@ -219,6 +220,7 @@ watchEffect(() => {
 <template>
   <BalTextInput
     v-model="_amount"
+    :name="name"
     :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"
