@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network, PoolType, PoolToken } from '@balancer-labs/sdk';
 import { isAddress } from '@ethersproject/address';
 import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
@@ -8,8 +8,7 @@ import { POOLS } from '@/constants/pools';
 import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
-import { PoolType } from '@/services/pool/types';
+import { AnyPool, Pool, PoolAPRs } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, urlFor } from './useNetwork';
@@ -126,7 +125,7 @@ export function orderedPoolTokens(
 
   return tokens
     .slice()
-    .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+    .sort((a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0'));
 }
 
 /**
@@ -200,7 +199,7 @@ export function isBlocked(pool: Pool, account: string): boolean {
   const requiresAllowlisting =
     isStableLike(pool.poolType) || isManaged(pool.poolType);
   const isOwnedByUser =
-    isAddress(account) && isSameAddress(pool.owner, account);
+    pool.owner && isAddress(account) && isSameAddress(pool.owner, account);
   const isAllowlisted =
     POOLS.Stable.AllowList.includes(pool.id) ||
     POOLS.Investment.AllowList.includes(pool.id);

@@ -15,6 +15,14 @@ import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
+import { configService } from '@/services/config/config.service';
+import {
+  GraphQLArgs,
+  Op,
+  PoolsBalancerAPIRepository,
+  PoolsFallbackRepository,
+  PoolsSubgraphRepository,
+} from '@balancer-labs/sdk';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -55,24 +63,40 @@ export default function usePoolsQuery(
   /**
    * METHODS
    */
-  function getQueryArgs(pageParam = 0) {
-    const tokensListFilterKey = filterOptions?.isExactTokensList
-      ? 'tokensList'
-      : 'tokensList_contains';
+
+  function initializePoolsRepository() {
+    const balancerApiRepository = new PoolsBalancerAPIRepository(
+      configService.network.balancerApi || '',
+      configService.network.keys.balancerApi || ''
+    );
+    const subgraphRepository = new PoolsSubgraphRepository(
+      configService.network.subgraph
+    );
+    const fallbackRepository = new PoolsFallbackRepository([
+      balancerApiRepository,
+      subgraphRepository,
+    ]);
+    return fallbackRepository;
+  }
+
+  function getQueryArgs(pageParam = 0): GraphQLArgs {
+    const tokensListFilterOperation = filterOptions?.isExactTokensList
+      ? Op.Equals
+      : Op.Contains;
 
     const queryArgs: any = {
-      first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
+      first: 100,
       skip: pageParam,
       where: {
-        [tokensListFilterKey]: tokenList.value,
-        poolType_not_in: POOLS.ExcludedPoolTypes,
+        tokensList: tokensListFilterOperation(tokenList.value),
+        poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
       },
     };
     if (filterOptions?.poolIds?.value.length) {
-      queryArgs.where.id_in = filterOptions.poolIds.value;
+      queryArgs.where.id = Op.In(filterOptions.poolIds.value);
     }
     if (filterOptions?.poolAddresses?.value.length) {
-      queryArgs.where.address_in = filterOptions.poolAddresses.value;
+      queryArgs.where.address = Op.In(filterOptions.poolAddresses.value);
     }
     return queryArgs;
   }
@@ -88,12 +112,40 @@ export default function usePoolsQuery(
     gaugeAddresses
   );
 
+  const queryAttrs = {
+    id: true,
+    address: true,
+    poolType: true,
+    swapFee: true,
+    tokensList: true,
+    totalLiquidity: true,
+    totalSwapVolume: true,
+    totalSwapFee: true,
+    totalShares: true,
+    owner: true,
+    factory: true,
+    amp: true,
+    createTime: true,
+    swapEnabled: true,
+    tokens: {
+      address: true,
+      balance: true,
+      weight: true,
+      priceRate: true,
+      symbol: true,
+    },
+  };
+
   /**
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
     const queryArgs = getQueryArgs(pageParam);
-    const pools = await balancerSubgraphService.pools.get(queryArgs);
+    const poolsRepository = initializePoolsRepository();
+    const pools = await poolsRepository.fetch({
+      args: queryArgs,
+      attrs: queryAttrs,
+    });
 
     const poolDecorator = new PoolDecorator(pools);
     const decoratedPools = await poolDecorator.decorate(

@@ -9,8 +9,9 @@ import {
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { AnyPool, OnchainTokenData, PoolToken } from '@/services/pool/types';
+import { AnyPool, OnchainTokenData } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
+import { PoolToken } from '@balancer-labs/sdk';
 
 interface OnchainTokenInfo extends OnchainTokenData {
   address: string;

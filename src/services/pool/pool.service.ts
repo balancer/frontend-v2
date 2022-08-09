@@ -9,7 +9,6 @@ import {
   OnchainPoolData,
   Pool,
   PoolAPRs,
-  PoolToken,
   RawOnchainPoolData,
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -20,7 +19,7 @@ import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
-import { Op } from '@balancer-labs/sdk';
+import { Op, PoolType, PoolToken } from '@balancer-labs/sdk';
 
 export default class PoolService {
   constructor(
@@ -41,6 +40,7 @@ export default class PoolService {
   }
 
   public get bptPrice(): string {
+    if (!this.pool.totalLiquidity || !this.pool.totalShares) return '0';
     return bnum(this.pool.totalLiquidity).div(this.pool.totalShares).toString();
   }
 
@@ -63,7 +63,7 @@ export default class PoolService {
     if (bnum(totalLiquidity).gt(0)) {
       this.pool.totalLiquidity = totalLiquidity;
     }
-    return this.pool.totalLiquidity;
+    return this.pool.totalLiquidity || '0';
   }
 
   /**
@@ -143,15 +143,15 @@ export default class PoolService {
     if (isStable(this.pool.poolType)) return this.pool.tokens;
 
     return (this.pool.tokens = this.pool.tokens.sort(
-      (a, b) => parseFloat(b.weight) - parseFloat(a.weight)
+      (a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0')
     ));
   }
 
   public setFeesSnapshot(poolSnapshot: Pool | undefined): string {
     if (!poolSnapshot) return '0';
 
-    const feesSnapshot = bnum(this.pool.totalSwapFee)
-      .minus(poolSnapshot.totalSwapFee)
+    const feesSnapshot = bnum(this.pool.totalSwapFee || 0)
+      .minus(poolSnapshot.totalSwapFee || 0)
       .toString();
 
     return (this.pool.feesSnapshot = feesSnapshot);
@@ -160,8 +160,8 @@ export default class PoolService {
   public setVolumeSnapshot(poolSnapshot: Pool | undefined): string {
     if (!poolSnapshot) return '0';
 
-    const volumeSnapshot = bnum(this.pool.totalSwapVolume)
-      .minus(poolSnapshot.totalSwapVolume)
+    const volumeSnapshot = bnum(this.pool.totalSwapVolume || 0)
+      .minus(poolSnapshot.totalSwapVolume || 0)
       .toString();
 
     return (this.pool.volumeSnapshot = volumeSnapshot);
@@ -187,6 +187,8 @@ export default class PoolService {
   }
 
   public get isNew(): boolean {
+    if (!this.pool.createTime) return false;
+
     return (
       differenceInWeeks(Date.now(), this.pool.createTime * oneSecondInMs) < 1
     );

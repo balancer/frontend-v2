@@ -11,6 +11,7 @@ import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
+import usePools from '@/composables/pools/usePools';
 
 // COMPOSABLES
 const router = useRouter();
@@ -19,18 +20,15 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-const {
-  dataStates,
-  result: investmentPools,
-  loadMore,
-  isLoadingMore,
-} = useStreamedPoolsQuery(selectedTokens);
+// const {
+//   dataStates,
+//   result: investmentPools,
+//   loadMore,
+//   isLoadingMore,
+// } = useStreamedPoolsQuery(selectedTokens);
+const { pools, isLoading } = usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
-
-const isInvestmentPoolsTableLoading = computed(
-  () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
-);
 
 /**
  * METHODS
@@ -69,16 +67,13 @@ function navigateToCreatePool() {
         </div>
       </div>
       <PoolsTable
-        :data="investmentPools"
+        :data="pools"
         :noPoolsLabel="$t('noPoolsFound')"
-        :isLoadingMore="isLoadingMore"
+        :isLoadingMore="isLoading"
         :selectedTokens="selectedTokens"
         class="mb-8"
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
-        :columnStates="dataStates"
         :isPaginated="true"
-        :isLoading="isInvestmentPoolsTableLoading"
-        @load-more="loadMore"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
         <FeaturedProtocols />

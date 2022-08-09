@@ -47,18 +47,14 @@ function initializePoolsRepository() {
 
 async function fetchBasicPoolMetadata(
   tokenList: Ref<string[]> = ref([]),
-  filterOptions?: FilterOptions,
-  currentPage = 0
+  filterOptions?: FilterOptions
 ) {
-  const skip =
-    POOLS.Pagination.PerPage * (currentPage - 1 < 0 ? 0 : currentPage - 1);
   const tokensListFilterOperation = filterOptions?.isExactTokensList
     ? Op.Equals
     : Op.Contains;
   const queryArgs: GraphQLArgs = {
     chainId: configService.network.chainId,
-    first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
-    skip: skip,
+    first: 500,
     where: {
       tokensList: tokensListFilterOperation(tokenList.value),
       poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
@@ -127,12 +123,8 @@ export default function useStreamedPoolsQuery(
     basic: {
       init: true,
       dependencies: { tokenList },
-      queryFn: async (_, __, currentPage: Ref<number>) => {
-        return await fetchBasicPoolMetadata(
-          tokenList,
-          filterOptions,
-          currentPage.value
-        );
+      queryFn: async () => {
+        return await fetchBasicPoolMetadata(tokenList, filterOptions);
       },
     },
     injectTokens: {

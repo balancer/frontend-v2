@@ -115,7 +115,9 @@ export default class AaveService {
           );
           const actualBalance = bnum(balance).times(linearPoolShare);
           const value = bnum(actualBalance).times(mainTokenPrice);
-          const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
+          const weightedAPR = pool.totalLiquidity
+            ? value.times(supplyAPR).div(pool.totalLiquidity)
+            : bnum(0);
 
           breakdown[wrappedToken] = weightedAPR.toString();
 

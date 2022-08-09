@@ -1,24 +1,19 @@
-import { computed } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
-import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 
-export default function usePools() {
+export default function usePools(tokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
-  const userPoolsQuery = useUserPoolsQuery();
+  const poolsQuery = usePoolsQuery(tokenList);
 
-  const userPools = computed(() => userPoolsQuery.data.value?.pools || []);
+  const pools = computed(() => poolsQuery.data.value || []);
 
-  const totalInvestedAmount = computed(
-    () => userPoolsQuery.data.value?.totalInvestedAmount
-  );
-
-  const isLoadingUserPools = computed(
-    () => userPoolsQuery.isLoading.value || userPoolsQuery.isIdle.value
+  const isLoading = computed(
+    () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
   );
 
   return {
-    userPools,
-    totalInvestedAmount,
-    isLoadingUserPools,
+    pools,
+    isLoading,
   };
 }

@@ -19,7 +19,7 @@ import {
 } from '@/lib/utils';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
-import { PoolType } from '@/services/pool/types';
+import { PoolType } from '@balancer-labs/sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useTokens from '../useTokens';

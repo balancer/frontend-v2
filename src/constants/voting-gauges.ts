@@ -1,7 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
-
-import { PoolToken } from '@/services/pool/types';
-import { PoolType } from '@/services/pool/types';
+import { Network, PoolToken, PoolType } from '@balancer-labs/sdk';
 
 import ALL_VOTING_GAUGES from '../../public/data/voting-gauges.json';
 

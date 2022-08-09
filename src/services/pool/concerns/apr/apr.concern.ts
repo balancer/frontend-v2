@@ -77,19 +77,19 @@ export class AprConcern {
     protocolFeePercentage: number
   ): string {
     if (!poolSnapshot)
-      return bnum(this.pool.totalSwapFee)
+      return bnum(this.pool.totalSwapFee || 0)
         .times(1 - protocolFeePercentage)
-        .dividedBy(this.pool.totalLiquidity)
+        .dividedBy(this.pool.totalLiquidity || 0)
         .multipliedBy(365)
         .toString();
 
-    const swapFees = bnum(this.pool.totalSwapFee).minus(
-      poolSnapshot.totalSwapFee
+    const swapFees = bnum(this.pool.totalSwapFee || 0).minus(
+      poolSnapshot.totalSwapFee || 0
     );
 
     return swapFees
       .times(1 - protocolFeePercentage)
-      .dividedBy(this.pool.totalLiquidity)
+      .dividedBy(this.pool.totalLiquidity || 0)
       .multipliedBy(365)
       .toString();
   }
@@ -191,7 +191,7 @@ export class AprConcern {
 
     const veBalApr = new this.VeBalAprCalcClass();
     return await veBalApr.calc(
-      this.pool.totalLiquidity,
+      this.pool.totalLiquidity || '0',
       this.pool.totalShares,
       prices
     );
