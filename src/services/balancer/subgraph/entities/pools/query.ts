@@ -10,7 +10,7 @@ const defaultArgs: GraphQLArgs = {
   where: {
     totalShares: Op.GreaterThan(0.01),
     id: Op.NotIn(POOLS.BlockList),
-  }
+  },
 };
 
 const defaultAttrs = {
@@ -33,11 +33,11 @@ const defaultAttrs = {
     balance: true,
     weight: true,
     priceRate: true,
-    symbol: true
-  }
+    symbol: true,
+  },
 };
 
 export default (args = {}, attrs = {}) => ({
-    args: merge({}, defaultArgs, args),
-    attrs: merge({}, defaultAttrs, attrs),
+  args: merge({}, defaultArgs, args),
+  attrs: merge({}, defaultAttrs, attrs),
 });

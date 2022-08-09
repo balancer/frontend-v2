@@ -3,8 +3,6 @@ import { computed, Ref, ref, watch } from 'vue';
 
 import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import queryBuilder from '@/services/balancer/subgraph/entities/pools/query';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
@@ -15,7 +13,13 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
-import { GraphQLArgs, Op, PoolsBalancerAPIRepository, PoolsFallbackRepository, PoolsSubgraphRepository } from '@balancer-labs/sdk';
+import {
+  GraphQLArgs,
+  Op,
+  PoolsBalancerAPIRepository,
+  PoolsFallbackRepository,
+  PoolsSubgraphRepository,
+} from '@balancer-labs/sdk';
 import { configService } from '@/services/config/config.service';
 
 type FilterOptions = {
@@ -26,11 +30,16 @@ type FilterOptions = {
 };
 
 function initializePoolsRepository() {
-  const balancerApiRepository = new PoolsBalancerAPIRepository(configService.network.balancerApi || '', configService.network.keys.balancerApi || '');
-  const subgraphRepository = new PoolsSubgraphRepository(configService.network.subgraph);
+  const balancerApiRepository = new PoolsBalancerAPIRepository(
+    configService.network.balancerApi || '',
+    configService.network.keys.balancerApi || ''
+  );
+  const subgraphRepository = new PoolsSubgraphRepository(
+    configService.network.subgraph
+  );
   const fallbackRepository = new PoolsFallbackRepository([
     balancerApiRepository,
-    subgraphRepository
+    subgraphRepository,
   ]);
 
   return fallbackRepository;
@@ -43,17 +52,17 @@ async function fetchBasicPoolMetadata(
 ) {
   const skip =
     POOLS.Pagination.PerPage * (currentPage - 1 < 0 ? 0 : currentPage - 1);
-  const tokensListFilterKey = filterOptions?.isExactTokensList
-    ? 'is'
-    : 'contains';
+  const tokensListFilterOperation = filterOptions?.isExactTokensList
+    ? Op.Equals
+    : Op.Contains;
   const queryArgs: GraphQLArgs = {
     chainId: configService.network.chainId,
     first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
     skip: skip,
     where: {
-      tokensList: Op.Contains(tokenList.value),
-      poolType: Op.NotIn(POOLS.ExcludedPoolTypes)
-    }
+      tokensList: tokensListFilterOperation(tokenList.value),
+      poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
+    },
   };
 
   const queryAttrs = {
@@ -83,7 +92,7 @@ async function fetchBasicPoolMetadata(
   const poolsRepository = initializePoolsRepository();
   const pools = await poolsRepository.fetch({
     args: queryArgs,
-    attrs: queryAttrs
+    attrs: queryAttrs,
   });
 
   return pools;

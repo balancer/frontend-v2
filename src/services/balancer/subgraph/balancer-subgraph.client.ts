@@ -19,7 +19,7 @@ export default class BalancerSubgraphClient {
     try {
       const payload = this.toPayload(query);
       const {
-        data: { data }
+        data: { data },
       } = await axios.post(url, payload);
       return data;
     } catch (error) {
