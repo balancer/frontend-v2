@@ -8,7 +8,6 @@ import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -213,7 +212,7 @@ function navigateToPoolMigration(pool: PoolWithShares) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.BBAUSD_POOL].toPoolId,
+      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
     },
     query: { returnRoute: 'home' },
   });

@@ -14,6 +14,7 @@ import MigrateExplainer from './components/MigrateExplainer.vue';
 import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
 import PoolStats from './components/PoolStats.vue';
 import { PoolMigrationInfo } from './types';
+import useApp from '@/composables/useApp';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -27,8 +28,9 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { getToken } = useTokens();
+const { getToken, dynamicDataLoading } = useTokens();
 
+const { appLoading } = useApp();
 /**
  * QUERIES
  */
@@ -77,7 +79,9 @@ const toPoolTokenInfo = computed(() =>
         isLoadingPools ||
         fromPoolTokenInfo == null ||
         toPoolTokenInfo == null ||
-        batchRelayerApprovalLoading
+        batchRelayerApprovalLoading ||
+        dynamicDataLoading ||
+        appLoading
       "
       class="h-96"
     />

@@ -17,7 +17,6 @@ import { PoolMigrationInfo } from '../../types';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 import useTokens from '@/composables/useTokens';
-import { getAddress } from '@ethersproject/address';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -54,12 +53,12 @@ const fiatValueOfStakedShares = computed(() => {
 const fiatValueOfUnstakedShares = computed(() => {
   return bnum(props.fromPool.totalLiquidity)
     .div(props.fromPool.totalShares)
-    .times(balanceFor(getAddress(props.fromPool.address)))
+    .times(balanceFor(props.fromPool.address))
     .toString();
 });
 
 const unstakedBptBalance = computed(() => {
-  return balanceFor(getAddress(props.fromPool.address));
+  return balanceFor(props.fromPool.address);
 });
 
 const migrateMath = useMigrateMath(fromPool, toPool);
@@ -75,12 +74,7 @@ const balanceLabel = computed(() => {
   const stakedAmount = Number(fiatValueOfStakedShares.value);
   const unstakedAmount = Number(fiatValueOfUnstakedShares.value);
 
-  if (stakedAmount > 0) {
-    balance += stakedAmount;
-  }
-  if (unstakedAmount > 0) {
-    balance += unstakedAmount;
-  }
+  balance = stakedAmount + unstakedAmount;
 
   return balance > 0
     ? fNum2(balance, {

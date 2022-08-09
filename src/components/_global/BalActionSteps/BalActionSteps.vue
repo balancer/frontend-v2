@@ -248,7 +248,12 @@ async function handleTransaction(
           block
           @click="currentAction.promise()"
         >
-          <div class="flex flex-grow justify-between items-center">
+          <div
+            :class="{
+              'flex flex-grow justify-between items-center':
+                currentAction.isSignAction,
+            }"
+          >
             <img
               v-if="currentAction.isSignAction"
               :src="require('@/assets/images/icons/signature.svg')"

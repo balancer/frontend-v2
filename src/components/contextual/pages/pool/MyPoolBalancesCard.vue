@@ -3,7 +3,6 @@ import { computed, ref, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
@@ -129,7 +128,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.BBAUSD_POOL].toPoolId,
+      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
     },
     query: {
       returnRoute: 'pool',

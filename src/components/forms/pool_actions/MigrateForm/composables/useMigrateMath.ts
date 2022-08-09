@@ -49,7 +49,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
    */
   const batchSwap = ref<BatchSwap | null>(null);
   const batchSwapLoading = ref(false);
-  const bptBalance = computed(() => balanceFor(fromPool.value.address));
+  const bptBalance = ref(balanceFor(fromPool.value.address));
 
   /**
    * COMPUTED

@@ -11,7 +11,7 @@ const GOERLY_stabal3_address =
 
 export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
-    type: PoolMigrationType.BBAUSD_POOL,
+    type: PoolMigrationType.AAVE_BOOSTED_POOL,
     fromPoolId: GOERLY_bbaUSD1_address,
     toPoolId: GOERLY_bbaUSD1_address,
     riskI18nLabels: [
@@ -30,4 +30,4 @@ export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
   },
 ];
 
-export const POOL_MIGRATIONS_MAP = keyBy(POOL_MIGRATIONS, 'type');
+export const POOL_MIGRATIONS_MAP = keyBy(POOL_MIGRATIONS, 'fromPoolId');
