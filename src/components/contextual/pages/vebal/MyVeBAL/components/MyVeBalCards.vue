@@ -20,14 +20,16 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   lockablePool: Pool;
   lockablePoolTokenInfo: TokenInfo;
-  veBalLockInfo: VeBalLockInfo;
+  veBalLockInfo?: VeBalLockInfo | null;
   lockedFiatTotal: string;
 };
 
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  veBalLockInfo: null,
+});
 
 /**
  * STATE
@@ -126,7 +128,7 @@ const cards = computed(() => {
       id: 'myVeBAL',
       label: t('veBAL.myVeBAL.cards.myVeBAL.label'),
       secondaryText:
-        hasExistingLock && !isExpired
+        props.veBalLockInfo && hasExistingLock && !isExpired
           ? t('veBAL.myVeBAL.cards.myVeBAL.secondaryText', [
               fNum2(
                 bnum(veBalBalance.value)
@@ -200,7 +202,7 @@ const cards = computed(() => {
   </BalCard>
   <teleport to="#modal">
     <UnlockPreviewModal
-      v-if="showUnlockPreviewModal"
+      v-if="showUnlockPreviewModal && veBalLockInfo"
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :veBalLockInfo="veBalLockInfo"

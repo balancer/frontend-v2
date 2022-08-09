@@ -39,7 +39,7 @@ const isLoading = computed(() =>
       <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
     </template>
     <MyVeBalCards
-      v-else-if="lock && lockPool && lockPoolToken"
+      v-else-if="lockPool && lockPoolToken"
       :veBalLockInfo="lock"
       :lockablePool="lockPool"
       :lockablePoolTokenInfo="lockPoolToken"
