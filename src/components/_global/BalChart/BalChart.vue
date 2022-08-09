@@ -61,7 +61,7 @@ type Props = {
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   chartClass?: string; // sets the class for the chart container
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
-  wrapperClass?: any; // sets the class for the element which wraps the chart and the header
+  wrapperClass?: unknown; // sets the class for the element which wraps the chart and the header
   showTooltip?: boolean; // shows the tooltip
   showTooltipLayer?: boolean; // hides tooltip floating layer
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
