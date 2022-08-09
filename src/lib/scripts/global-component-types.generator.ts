@@ -2,14 +2,21 @@ const parsePath = require('parse-filepath');
 const requireContext = require('require-context');
 const fs = require('fs');
 const path = require('path');
-
 const writeFilePath = path.resolve(
   __dirname,
   `../../types/global-components.d.ts`
 );
 
+/**
+ * This script generates a global-components.d.ts file that contains
+ * type definitions for all Global Components.
+ * This is necessary or else all Global Components would have type 'any'.
+ * 'typecheck' script in package.json executes this gerenerate script before it
+ * starts the actual type check. Manually this script needs to be executed only when
+ * new Global Components are added, or when existing Global Components are renamed or moved.
+ */
 function generateGlobalComponentTypes(): void {
-  // Get all the .vue files in the global components directory
+  // Get all the .vue files in the Global Components directory
   const filePaths = requireContext(
     path.resolve(__dirname, '../../components/_global'),
     true,
