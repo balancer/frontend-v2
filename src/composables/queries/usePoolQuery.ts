@@ -72,7 +72,7 @@ export default function usePoolQuery(
     // Decorate subgraph data with additional data
     const poolDecorator = new PoolDecorator([pool]);
     const [decoratedPool] = await poolDecorator.decorate(
-      undefined,
+      subgraphGauges.value || [],
       prices.value,
       currency.value,
       tokens.value
