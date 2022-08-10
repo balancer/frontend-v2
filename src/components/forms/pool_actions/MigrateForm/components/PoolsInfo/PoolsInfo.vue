@@ -12,7 +12,6 @@ import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
-import useMigrateMath from '../../composables/useMigrateMath';
 import { PoolMigrationInfo } from '../../types';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
@@ -60,8 +59,6 @@ const fiatValueOfUnstakedShares = computed(() => {
 const unstakedBptBalance = computed(() => {
   return balanceFor(props.fromPool.address);
 });
-
-const migrateMath = useMigrateMath(fromPool, toPool);
 
 const hasValue = computed(
   () =>
@@ -224,7 +221,6 @@ const isUnstakedMigrationEnabled = computed(() => {
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
       :poolMigrationInfo="poolMigrationInfo"
-      :math="migrateMath"
       @close="showPreviewModal = false"
     />
   </teleport>

@@ -6,7 +6,7 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
-import { MigrateMathResponse } from '../../composables/useMigrateMath';
+import useMigrateMath from '../../composables/useMigrateMath';
 import { PoolMigrationInfo } from '../../types';
 import MigrateActions from './components/MigrateActions.vue';
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
@@ -21,7 +21,6 @@ type Props = {
   toPool: Pool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  math: MigrateMathResponse;
   stakedPoolValue?: string;
   unstakedPoolValue?: string;
   stakedBptBalance: string;
@@ -38,17 +37,20 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: 'close'): void;
 }>();
+const { fromPool, toPool } = toRefs(props);
 
 /**
  * STATE
  */
+const migrateMath = useMigrateMath(fromPool, toPool);
+
 const {
   batchSwapLoaded,
   highPriceImpact,
   fiatTotal,
   fiatTotalLabel,
   priceImpact,
-} = toRefs(props.math);
+} = migrateMath;
 
 const migrateConfirmed = ref(false);
 const highPriceImpactAccepted = ref(false);
@@ -143,7 +145,7 @@ function handleClose() {
       :toPool="toPool"
       :fiatTotalLabel="fiatTotalLabel"
       :fiatTotal="fiatTotal"
-      :math="math"
+      :math="migrateMath"
       :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
       class="mt-4"
       @success="migrateConfirmed = true"

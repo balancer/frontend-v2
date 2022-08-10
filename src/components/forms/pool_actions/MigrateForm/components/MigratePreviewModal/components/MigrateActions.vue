@@ -85,11 +85,15 @@ const transactionInProgress = computed(
 /**
  * WATCHERS
  */
-watch(blockNumber, async () => {
-  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
-    await props.math.getBatchSwap();
-  }
-});
+watch(
+  blockNumber,
+  async () => {
+    if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+      await props.math.getBatchSwap();
+    }
+  },
+  { immediate: true }
+);
 
 watch(
   () => migratePoolState.value.confirmed,

@@ -54,10 +54,7 @@ export function usePoolMigration(
   const { getSigner } = useWeb3();
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
-  // const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
-  //   [fromPool.address],
-  //   ref([balanceFor(props.pool.address).toString()])
-  // );
+
   /**
    * STATE
    */

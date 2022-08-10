@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
@@ -15,6 +14,7 @@ import PoolsInfo from './components/PoolsInfo/PoolsInfo.vue';
 import PoolStats from './components/PoolStats.vue';
 import { PoolMigrationInfo } from './types';
 import useApp from '@/composables/useApp';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -29,13 +29,24 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken, dynamicDataLoading } = useTokens();
-
 const { appLoading } = useApp();
+
 /**
  * QUERIES
  */
-const fromPoolQuery = usePoolQuery(props.poolMigrationInfo.fromPoolId);
-const toPoolQuery = usePoolQuery(props.poolMigrationInfo.toPoolId);
+const { data: poolsResponse, isLoading: isLoadingPools } = usePoolsQuery(
+  ref([]),
+  {},
+  {
+    poolIds: ref([
+      props.poolMigrationInfo.fromPoolId,
+      props.poolMigrationInfo.toPoolId,
+    ]),
+  }
+);
+
+const poolsData = computed(() => poolsResponse.value?.pages?.[0].pools);
+
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
 const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
@@ -43,21 +54,9 @@ const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
 /**
  * COMPUTED
  */
-const fromPoolLoading = computed(
-  () => fromPoolQuery.isLoading.value || fromPoolQuery.isIdle.value
-);
+const fromPool = computed<Pool | undefined>(() => poolsData.value?.[0]);
 
-const toPoolLoading = computed(
-  () => toPoolQuery.isLoading.value || toPoolQuery.isIdle.value
-);
-
-const isLoadingPools = computed(
-  () => toPoolLoading.value || fromPoolLoading.value
-);
-
-const fromPool = computed<Pool | undefined>(() => fromPoolQuery.data.value);
-
-const toPool = computed<Pool | undefined>(() => toPoolQuery.data.value);
+const toPool = computed<Pool | undefined>(() => poolsData.value?.[1]);
 
 const fromPoolTokenInfo = computed(() =>
   fromPool.value != null ? getToken(fromPool.value.address) : null
@@ -73,7 +72,6 @@ const toPoolTokenInfo = computed(() =>
     <template #gutterLeft>
       <MigrateExplainer :poolMigrationInfo="poolMigrationInfo" />
     </template>
-
     <BalLoadingBlock
       v-if="
         isLoadingPools ||
@@ -96,7 +94,7 @@ const toPoolTokenInfo = computed(() =>
     </StakingProvider>
 
     <template #gutterRight>
-      <BalLoadingBlock v-if="toPoolLoading" class="h-64" />
+      <BalLoadingBlock v-if="isLoadingPools || !toPool" class="h-64" />
       <PoolStats v-else :pool="toPool" :poolMigrationInfo="poolMigrationInfo" />
     </template>
   </Col3Layout>
