@@ -9,6 +9,7 @@ import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { MigrateMathResponse } from '../../../composables/useMigrateMath';
+import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
@@ -24,6 +25,8 @@ type Props = {
   unstakedBptBalance: string;
   isStakedMigrationEnabled: boolean;
   isUnstakedMigrationEnabled: boolean;
+  fromPoolTokenInfo: TokenInfo;
+  toPoolTokenInfo: TokenInfo;
 };
 
 /**
@@ -56,6 +59,10 @@ const { actions, migratePoolState } = usePoolMigration(
   props.stakedPoolValue,
   props.isStakedMigrationEnabled,
   props.fromPool,
+  props.toPool,
+  props.fromPoolTokenInfo,
+  props.toPoolTokenInfo,
+  props.math.fiatTotalLabel.value,
   relayerApproval.data
 );
 

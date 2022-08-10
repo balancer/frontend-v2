@@ -19,6 +19,7 @@ import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
 import { parseUnits } from 'ethers/lib/utils';
 import useTime, { dateTimeLabelFor } from '../useTime';
+import { TokenInfo } from '@/types/TokenList';
 
 export type MigratePoolState = {
   init: boolean;
@@ -36,6 +37,10 @@ export function usePoolMigration(
   stakedAmount = '0',
   isStakedMigrationEnabled: boolean,
   fromPool: Pool,
+  toPool: Pool,
+  fromPoolTokenInfo: TokenInfo,
+  toPoolTokenInfo: TokenInfo,
+  fiatTotalLabel: string,
   relayerApproval: Ref<boolean | undefined>
 ) {
   /**
@@ -43,9 +48,8 @@ export function usePoolMigration(
    */
   const { txListener, getTxConfirmedAt } = useEthers();
   const { addTransaction } = useTransactions();
-  const { appNetworkConfig, account } = useWeb3();
+  const { account } = useWeb3();
   const { getSigner } = useWeb3();
-  const vaultAddress = appNetworkConfig.addresses.vault;
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
 
@@ -189,11 +193,20 @@ export function usePoolMigration(
       query = migrateStabal3(amount, staked);
     }
 
-    const gasLimit = await signer.estimateGas({
-      to: query.to,
-      data: query.data,
-    });
-
+    // const gasLimit = await signer.estimateGas({
+    //   to: query.to,
+    //   data: query.data,
+    // });
+    const gasLimit = 8e6;
+    console.log('gasLimit', gasLimit);
+    console.log(
+      'handleTransaction',
+      fiatTotalLabel,
+      fromPoolTokenInfo.symbol,
+      toPoolTokenInfo.symbol,
+      toPool
+    );
+    // console.log('big', BigNumber.from(gasLimit).toString());
     const staticResult = await signer.call({
       to: query.to,
       data: query.data,
@@ -226,10 +239,16 @@ export function usePoolMigration(
     addTransaction({
       id: tx.hash,
       type: 'tx',
-      action: 'approve',
-      summary: t('transactionSummary.approveMigration'),
+      action: 'migratePool',
+      summary: t('transactionSummary.migratePool', [
+        fiatTotalLabel,
+        fromPoolTokenInfo.symbol,
+        toPoolTokenInfo.symbol,
+      ]),
       details: {
-        contractAddress: vaultAddress,
+        fromPool: fromPool,
+        toPool: toPool,
+        totalFiatPoolInvestment: fiatTotalLabel,
       },
     });
 

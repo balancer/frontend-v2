@@ -137,6 +137,8 @@ function handleClose() {
       :unstakedPoolValue="unstakedPoolValue"
       :stakedBptBalance="stakedBptBalance"
       :unstakedBptBalance="unstakedBptBalance"
+      :fromPoolTokenInfo="fromPoolTokenInfo"
+      :toPoolTokenInfo="toPoolTokenInfo"
       :fromPool="fromPool"
       :toPool="toPool"
       :fiatTotalLabel="fiatTotalLabel"
