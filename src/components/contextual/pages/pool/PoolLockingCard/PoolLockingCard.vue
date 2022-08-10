@@ -7,6 +7,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
   pool: Pool;
@@ -19,6 +20,7 @@ const props = defineProps<Props>();
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
 const { lockedFiatTotal, lock, isLoadingLockInfo } = useLock();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -34,7 +36,7 @@ const fiatTotal = computed(() =>
 </script>
 
 <template>
-  <div>
+  <div v-if="isWalletReady">
     <AnimatePresence :isVisible="!isLoadingLockInfo">
       <div class="relative">
         <BalAccordion
