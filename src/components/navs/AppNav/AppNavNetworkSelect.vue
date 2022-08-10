@@ -19,11 +19,11 @@
       >
         {{ $t('networkSelection') }}:
       </div>
-      <a
+      <div
         v-for="network in networks"
         :key="network.id"
-        :href="appUrl(network)"
         class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
+        @click="setActiveNetwork(network.key)"
       >
         <div class="flex items-center">
           <img
@@ -40,16 +40,17 @@
           name="check"
           class="text-blue-500 dark:text-blue-400"
         />
-      </a>
+      </div>
     </div>
   </BalPopover>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 import useBreakpoints from '@/composables/useBreakpoints';
-import ConfigService from '@/services/config/config.service';
+import useNetwork from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 export interface NetworkOption {
   id: string;
@@ -62,11 +63,9 @@ export default defineComponent({
   name: 'AppNavNetworkSelect',
 
   setup() {
-    // SERVICES
-    const configService = new ConfigService();
-
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
+    const { setNetworkId, networkId: activeNetworkId } = useNetwork();
 
     // DATA
     const networks = [
@@ -90,13 +89,19 @@ export default defineComponent({
       },
     ];
 
-    const appNetworkSupported = networks
-      .map(network => network.key)
-      .includes(configService.network.key);
+    // COMPUTED
+    const appNetworkSupported = computed((): boolean => {
+      return networks
+        .map(network => network.key)
+        .includes(activeNetworkId.value.toString());
+    });
 
-    const activeNetwork = networks.find(network => {
-      if (!appNetworkSupported && network.id === 'ethereum') return true;
-      return isActive(network);
+    const activeNetwork = computed((): NetworkOption | undefined => {
+      return networks.find(network => {
+        if (!appNetworkSupported.value && network.id === 'ethereum')
+          return true;
+        return isActive(network);
+      });
     });
 
     // METHODS
@@ -109,17 +114,25 @@ export default defineComponent({
     }
 
     function isActive(network: NetworkOption): boolean {
-      if (!appNetworkSupported && network.id === 'ethereum') return true;
-      return configService.network.key === network.key;
+      if (!appNetworkSupported.value && network.id === 'ethereum') return true;
+      return activeNetworkId.value.toString() === network.key;
+    }
+
+    function setActiveNetwork(network: Network) {
+      setNetworkId(network);
+      location.reload();
     }
 
     return {
+      // composables
+      activeNetworkId,
       // computed
       upToLargeBreakpoint,
       // data
       networks,
       activeNetwork,
       // methods
+      setActiveNetwork,
       isActive,
       appUrl,
       iconSrc,

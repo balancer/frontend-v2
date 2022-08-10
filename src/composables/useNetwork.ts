@@ -1,16 +1,17 @@
-import { Network } from '@balancer-labs/sdk';
 import { computed, ref } from 'vue';
 
 import config from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 
+import { Network } from '@balancer-labs/sdk';
+
 /**
  * STATE
  */
-const DEFAULT_NETWORK_ID =
-  process.env.VUE_APP_NETWORK != null
-    ? (Number(process.env.VUE_APP_NETWORK) as Network)
-    : Network.MAINNET;
+// console.log(chainId)
+const DEFAULT_NETWORK_ID = localStorage.getItem('networkId')
+  ? (Number(localStorage.getItem('networkId')) as Network)
+  : Network.MAINNET;
 
 export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
@@ -28,6 +29,7 @@ export const isTestnet = computed(() => isKovan.value || isGoerli.value);
  */
 export function setNetworkId(id: Network) {
   networkId.value = id;
+  localStorage.setItem('networkId', id.toString());
 }
 
 export function networkFor(key: string | number): Network {
