@@ -102,4 +102,5 @@ jobs:
           repository: balancer-labs/frontend-e2e
           path: e2e
       - name: Cypress run
+        run: cd e2e
         run: ls -la
