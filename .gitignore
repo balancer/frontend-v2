@@ -11,6 +11,10 @@ node_modules
 # cache files
 .eslintcache
 
+# test reports
+tests/e2e/screenshots
+tests/e2e/videos
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
