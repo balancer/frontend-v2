@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { computed, reactive, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { usePoolMigration } from '@/composables/pools/usePoolMigration';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 import useConfig from '@/composables/useConfig';
@@ -27,29 +26,16 @@ type Props = {
   isUnstakedMigrationEnabled: boolean;
 };
 
-type MigratePoolState = {
-  init: boolean;
-  confirming: boolean;
-  confirmed: boolean;
-  confirmedAt: string;
-  receipt?: TransactionReceipt;
-};
-
 /**
- * PROPS
+ * PROPS & EMITS
  */
 const props = defineProps<Props>();
-
+const emit = defineEmits<{
+  (e: 'success'): void;
+}>();
 /**
  * STATE
  */
-const migratePoolState = reactive<MigratePoolState>({
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: '',
-});
-
 const { shouldFetchBatchSwap } = toRefs(props.math);
 
 /**
@@ -62,7 +48,7 @@ const { explorerLinks, blockNumber } = useWeb3();
 const relayerAddress = ref(configService.network.addresses.batchRelayer);
 const relayerApproval = useRelayerApprovalQuery(relayerAddress);
 
-const { actions } = usePoolMigration(
+const { actions, migratePoolState } = usePoolMigration(
   props.stakedBptBalance,
   props.unstakedBptBalance,
   props.unstakedPoolValue,
@@ -77,16 +63,16 @@ const { actions } = usePoolMigration(
  * COMPUTED
  */
 const explorerLink = computed(() =>
-  migratePoolState.receipt
-    ? explorerLinks.txLink(migratePoolState.receipt.transactionHash)
+  migratePoolState.value.receipt
+    ? explorerLinks.txLink(migratePoolState.value.receipt.transactionHash)
     : ''
 );
 
 const transactionInProgress = computed(
   () =>
-    migratePoolState.init ||
-    migratePoolState.confirming ||
-    migratePoolState.confirmed
+    migratePoolState.value.init ||
+    migratePoolState.value.confirming ||
+    migratePoolState.value.confirmed
 );
 
 /**
@@ -97,6 +83,15 @@ watch(blockNumber, async () => {
     await props.math.getBatchSwap();
   }
 });
+
+watch(
+  () => migratePoolState.value.confirmed,
+  confirmed => {
+    if (confirmed) {
+      emit('success');
+    }
+  }
+);
 </script>
 
 <template>

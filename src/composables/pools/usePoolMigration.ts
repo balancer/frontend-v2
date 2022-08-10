@@ -1,5 +1,8 @@
 import { RelayerAuthorization } from '@balancer-labs/sdk';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -15,7 +18,15 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
 import { parseUnits } from 'ethers/lib/utils';
-import useTime from '../useTime';
+import useTime, { dateTimeLabelFor } from '../useTime';
+
+export type MigratePoolState = {
+  init: boolean;
+  confirming: boolean;
+  confirmed: boolean;
+  confirmedAt: string;
+  receipt?: TransactionReceipt;
+};
 
 export function usePoolMigration(
   stakedBptBalance: string,
@@ -30,7 +41,7 @@ export function usePoolMigration(
   /**
    * COMPOSABLES
    */
-  const { txListener } = useEthers();
+  const { txListener, getTxConfirmedAt } = useEthers();
   const { addTransaction } = useTransactions();
   const { appNetworkConfig, account } = useWeb3();
   const { getSigner } = useWeb3();
@@ -38,12 +49,15 @@ export function usePoolMigration(
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
 
-  const approved = ref(false);
-  const approving = ref(false);
-
   /**
    * STATE
    */
+  const migratePoolState = ref<MigratePoolState>({
+    init: false,
+    confirming: false,
+    confirmed: false,
+    confirmedAt: '',
+  });
   const signature = ref('');
   const stakedAction = {
     label: t('migratePool.previewModal.actions.staked.title'),
@@ -219,12 +233,15 @@ export function usePoolMigration(
       },
     });
 
-    approved.value = await txListener(tx, {
-      onTxConfirmed: () => {
-        approving.value = false;
+    migratePoolState.value.confirmed = await txListener(tx, {
+      onTxConfirmed: async (receipt: TransactionReceipt) => {
+        migratePoolState.value.confirming = false;
+        migratePoolState.value.receipt = receipt;
+        const confirmedAt = await getTxConfirmedAt(receipt);
+        migratePoolState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
       },
       onTxFailed: () => {
-        approving.value = false;
+        migratePoolState.value.confirming = false;
       },
     });
   }
@@ -258,5 +275,5 @@ export function usePoolMigration(
     return parseUnits(balance, decimals).toString();
   }
 
-  return { getUserSignature, approveMigration, actions };
+  return { getUserSignature, approveMigration, actions, migratePoolState };
 }
