@@ -106,7 +106,9 @@
 <style scoped>
 .bg {
   @apply bg-gradient-to-r from-pink-500 to-yellow-500 relative;
+
   background-image: url('/images/backgrounds/claims-header.svg');
+
   @apply bg-no-repeat bg-cover bg-center;
 }
 
@@ -128,14 +130,18 @@
 
 .body-text {
   @apply text-white pb-0 font-medium;
-  text-shadow: 0px 1px 0px rgb(0 0 0 / 15%), 4px 4px 8px rgb(0 0 0 / 15%);
+
+  text-shadow: 0 1px 0 rgb(0 0 0 / 15%), 4px 4px 8px rgb(0 0 0 / 15%);
 }
+
 .tip {
   @apply flex flex-col items-center text-center group;
 }
+
 .tip-icon {
   @apply pb-4 transition-transform duration-300 w-20 md:w-24 lg:w-full;
 }
+
 .tip-label {
   @apply text-white leading-5 transition-colors;
 }

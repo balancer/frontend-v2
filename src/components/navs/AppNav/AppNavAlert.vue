@@ -87,8 +87,10 @@ export default defineComponent({
 <style>
 .app-nav-alert {
   @apply flex content-start justify-between py-2 xs:py-4 px-4;
+
   min-height: 54px;
 }
+
 .alert-label {
   @apply font-medium pb-1 block md:inline pr-4;
 }

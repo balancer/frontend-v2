@@ -106,6 +106,6 @@ export default defineComponent({
 
 <style>
 .vue-slider-dot-handle-focus {
-  box-shadow: 0 0 0 5px rgb(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 5px rgb(0 0 0 / 20%);
 }
 </style>

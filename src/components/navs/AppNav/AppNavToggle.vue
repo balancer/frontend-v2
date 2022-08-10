@@ -55,6 +55,7 @@ export default defineComponent({
 <style scoped>
 .app-nav-toggle {
   @apply h-10 flex items-center rounded-lg shadow;
+
   font-variation-settings: 'wght' 600;
 }
 

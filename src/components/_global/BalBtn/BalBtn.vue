@@ -229,6 +229,7 @@ export default defineComponent({
 <style scoped>
 .bal-btn {
   @apply overflow-hidden tracking-tight;
+
   font-variation-settings: 'wght' 500;
   transition: all 0.2s ease;
   text-decoration: none !important;

@@ -108,6 +108,7 @@ const isLoadingTotalValue = computed(
 <style>
 .vebal-banner::before {
   @apply border border-yellow-500;
+
   content: '';
   width: 16px;
   height: 6px;
@@ -116,8 +117,10 @@ const isLoadingTotalValue = computed(
   position: absolute;
   border-top-left-radius: 8px;
 }
+
 .vebal-banner::after {
   @apply border border-yellow-500;
+
   content: '';
   width: 16px;
   height: 6px;

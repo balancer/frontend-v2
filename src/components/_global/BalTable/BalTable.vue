@@ -396,6 +396,7 @@ watch(
 <style>
 .horizontalSticky {
   @apply z-10 opacity-95 xs:opacity-90;
+
   /* Set the sticky cell to inherit table row's background-color in order for the opacity property to have an effect */
   background-color: inherit;
   position: sticky;

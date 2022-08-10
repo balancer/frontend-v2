@@ -54,8 +54,9 @@ function onLoaded() {
 .bal-image-fade-enter-active,
 .bal-image-fade-leave-active {
   transition: all 0.5s ease-in-out 0.1s;
-  transform: scale(1) translateY(0px);
+  transform: scale(1) translateY(0);
 }
+
 .bal-image-fade-enter-from,
 .bal-image-fade-leave-to {
   opacity: 0;

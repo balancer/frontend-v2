@@ -201,6 +201,6 @@ watchEffect(() => {
 
 <style scoped>
 .ease-color {
-  transition: color border-color easeOut 0.1s;
+  transition: color border-color easeout 0.1s;
 }
 </style>

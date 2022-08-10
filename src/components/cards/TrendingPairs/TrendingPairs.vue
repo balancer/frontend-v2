@@ -97,6 +97,7 @@ const setTradePair = (pair: TrendingPair[]) => {
 <style scoped>
 .trending-pairs {
   @apply flex flex-col bg-transparent;
+
   min-height: 200px;
 }
 </style>

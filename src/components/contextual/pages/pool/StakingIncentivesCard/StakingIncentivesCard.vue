@@ -225,6 +225,7 @@ async function handleActionSuccess() {
 
 .handle::before {
   @apply absolute left-0 w-full opacity-100;
+
   content: '';
   top: -2px;
   height: calc(100% + 4px);
@@ -235,12 +236,13 @@ async function handleActionSuccess() {
   z-index: -1;
 }
 
-.handle:hover:before {
+.handle:hover::before {
   animation: anim 12s linear infinite;
 }
 
 .handle .bal-card {
   @apply mx-auto;
+
   width: calc(100% - 4px);
 }
 
@@ -248,6 +250,7 @@ async function handleActionSuccess() {
   from {
     background-position: 0;
   }
+
   to {
     background-position: 125%;
   }
@@ -257,6 +260,7 @@ async function handleActionSuccess() {
   from {
     background-position: 125%;
   }
+
   to {
     background-position: 600%;
   }

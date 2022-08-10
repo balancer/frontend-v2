@@ -126,26 +126,6 @@
       />
     </div>
     <div
-      v-if="ENABLE_LEGACY_TRADE_INTERFACE && isGnosisSupportedNetwork"
-      class="px-4 mt-6"
-    >
-      <div class="flex items-baseline">
-        <span class="mb-2 font-medium" v-text="$t('tradeInterface')" />
-        <BalTooltip>
-          <template #activator>
-            <BalIcon name="info" size="xs" class="-mb-px ml-1 text-gray-400" />
-          </template>
-          <div class="w-52" v-text="$t('tradeInterfaceTooltip')" />
-        </BalTooltip>
-      </div>
-      <BalBtnGroup
-        v-model="appTradeInterface"
-        :options="tradeInterfaceOptions"
-        @update:model-value="setTradeInterface"
-      />
-      <div class="flex mt-1" />
-    </div>
-    <div
       class="p-4 mt-4 text-sm rounded-b-xl border-t dark:border-gray-900 network"
     >
       <div v-text="$t('network')" />
@@ -164,19 +144,14 @@ import { useStore } from 'vuex';
 
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useEthereumTxType from '@/composables/useEthereumTxType';
-import {
-  ethereumTxTypeOptions,
-  tradeInterfaceOptions,
-} from '@/constants/options';
+import { ethereumTxTypeOptions } from '@/constants/options';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   getConnectorLogo,
   getConnectorName,
 } from '@/services/web3/web3.plugin';
-import { TradeInterface } from '@/store/modules/app';
 
 export default defineComponent({
   components: {
@@ -204,7 +179,6 @@ export default defineComponent({
 
     // DATA
     const data = reactive({
-      tradeInterfaceOptions,
       copiedAddress: false,
     });
 
@@ -236,7 +210,6 @@ export default defineComponent({
     const networkName = computed(() => userNetworkConfig.value?.name);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
-    const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const connectorName = computed(() =>
       getConnectorName(connector.value?.id, provider.value)
     );
@@ -252,9 +225,6 @@ export default defineComponent({
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
 
-    const setTradeInterface = tradeInterface =>
-      store.commit('app/setTradeInterface', tradeInterface);
-
     function copyAddress() {
       navigator.clipboard.writeText(account.value);
       data.copiedAddress = true;
@@ -267,12 +237,9 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
-      TradeInterface,
-      ENABLE_LEGACY_TRADE_INTERFACE,
       // computed
       account,
       profile,
-      appTradeInterface,
       networkName,
       networkColorClass,
       appLocale,
@@ -288,7 +255,6 @@ export default defineComponent({
       toggleWalletSelectModal,
       setDarkMode,
       setLocale,
-      setTradeInterface,
       copyAddress,
       explorer: explorerLinks,
       ethereumTxType,
@@ -302,6 +268,7 @@ export default defineComponent({
 <style scoped>
 .address {
   @apply text-blue-500;
+
   font-variant-ligatures: no-contextual;
 }
 

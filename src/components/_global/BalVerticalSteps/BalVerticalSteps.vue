@@ -123,6 +123,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
 <style scoped>
 .circle-line::after {
   @apply absolute left-0 right-0 my-0 mx-auto bg-gray-300 dark:bg-gray-600 w-px;
+
   content: '';
   bottom: -1.125rem;
   height: 1rem;

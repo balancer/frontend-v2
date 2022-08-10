@@ -205,6 +205,7 @@ export default defineComponent({
 
 .bal-alert-content {
   @apply flex;
+
   min-width: 0;
 }
 
