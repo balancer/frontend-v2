@@ -9,9 +9,21 @@ import { Network } from '@balancer-labs/sdk';
  * STATE
  */
 // console.log(chainId)
-const DEFAULT_NETWORK_ID = localStorage.getItem('networkId')
+const localStorageNetworkId: Network | undefined = localStorage.getItem(
+  'networkId'
+)
   ? (Number(localStorage.getItem('networkId')) as Network)
-  : Network.MAINNET;
+  : undefined;
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+const paramsNetworkId: Network | undefined = params.networkId
+  ? (Number(params.networkId) as Network)
+  : undefined;
+
+console.log(paramsNetworkId);
+console.log(localStorageNetworkId);
+const DEFAULT_NETWORK_ID =
+  paramsNetworkId ?? localStorageNetworkId ?? Network.MAINNET;
 
 export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
