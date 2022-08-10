@@ -11,9 +11,8 @@ node_modules
 # cache files
 .eslintcache
 
-# test reports
-tests/e2e/screenshots
-tests/e2e/videos
+# e2e folder is reserved for Cypress tests
+e2e/
 
 # Log files
 npm-debug.log*
