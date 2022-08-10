@@ -20,6 +20,8 @@ import useTransactions from '../useTransactions';
 import { parseUnits } from 'ethers/lib/utils';
 import useTime, { dateTimeLabelFor } from '../useTime';
 import { TokenInfo } from '@/types/TokenList';
+import { BigNumber } from '@ethersproject/bignumber';
+import { GAS_LIMIT_BUFFER } from '@/services/gas-price/gas-price.service';
 
 export type MigratePoolState = {
   init: boolean;
@@ -52,7 +54,10 @@ export function usePoolMigration(
   const { getSigner } = useWeb3();
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
-
+  // const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
+  //   [fromPool.address],
+  //   ref([balanceFor(props.pool.address).toString()])
+  // );
   /**
    * STATE
    */
@@ -193,20 +198,15 @@ export function usePoolMigration(
       query = migrateStabal3(amount, staked);
     }
 
-    // const gasLimit = await signer.estimateGas({
-    //   to: query.to,
-    //   data: query.data,
-    // });
-    const gasLimit = 8e6;
-    console.log('gasLimit', gasLimit);
-    console.log(
-      'handleTransaction',
-      fiatTotalLabel,
-      fromPoolTokenInfo.symbol,
-      toPoolTokenInfo.symbol,
-      toPool
+    const estimatedGas = await signer.estimateGas({
+      to: query.to,
+      data: query.data,
+    });
+
+    const gasLimit = Math.floor(
+      BigNumber.from(estimatedGas).toNumber() * (1 + GAS_LIMIT_BUFFER)
     );
-    // console.log('big', BigNumber.from(gasLimit).toString());
+
     const staticResult = await signer.call({
       to: query.to,
       data: query.data,
@@ -220,7 +220,6 @@ export function usePoolMigration(
 
     if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
       const bbausd2AmountOut = query.decode(staticResult, staked);
-
       query = migrateStabal3(amount, staked, bbausd2AmountOut);
     }
 
