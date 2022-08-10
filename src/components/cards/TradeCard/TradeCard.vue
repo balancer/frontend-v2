@@ -158,7 +158,7 @@
 <script lang="ts">
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue';
+import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -347,13 +347,6 @@ export default defineComponent({
       }
 
       return undefined;
-    });
-
-    // WATCHERS
-    watch(trading.isLoading, newVal => {
-      if (!newVal) {
-        trading.handleAmountChange();
-      }
     });
 
     // METHODS
