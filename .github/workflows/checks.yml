@@ -85,3 +85,21 @@ jobs:
         run: npm run typecheck
       - name: Run tests
         run: npm run test:unit
+
+  E2E:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install deps
+        run: npm install -g npm@7 && npm ci
+      - name: Checkout cypress app
+        uses: actions/checkout@v2
+        with:
+          repository: balancer-labs/frontend-e2e
+          path: e2e
+      - name: Cypress run
+        run: ls -la
