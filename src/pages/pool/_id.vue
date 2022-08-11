@@ -152,7 +152,12 @@ export default defineComponent({
     });
 
     //#region pool query
-    const poolQuery = usePoolQuery(route.params.id as string);
+    const poolQuery = usePoolQuery(
+      route.params.id as string,
+      undefined,
+      undefined,
+      false
+    );
     const pool = computed(() => poolQuery.data.value);
     const poolQueryLoading = computed(
       () =>
