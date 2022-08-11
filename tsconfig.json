@@ -31,7 +31,10 @@
     "resolveJsonModule": true,
     "types": ["node", "webpack-env", "jest"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      // Stubbing react types
+      // https://github.com/johnsoncodehk/volar/discussions/592#discussioncomment-2163786
+      "react": ["src/types/empty-stub.d.ts"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
@@ -42,5 +45,5 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

@@ -40,4 +40,4 @@ export interface TokenList {
 }
 
 export type TokenListMap = { [address: string]: TokenList };
-export type TokenInfoMap = { [address: string]: TokenInfo };
+export type TokenInfoMap = Record<string, TokenInfo>;

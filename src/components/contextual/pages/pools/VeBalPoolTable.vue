@@ -11,7 +11,7 @@ import { Pool, PoolWithShares } from '@/services/pool/types';
  */
 type Props = {
   lockPool: Pool;
-  lock: VeBalLockInfo;
+  lock?: VeBalLockInfo;
 };
 const props = defineProps<Props>();
 
@@ -36,6 +36,8 @@ const lockPools = computed<PoolWithShares[]>(() => {
   return [];
 });
 
+const poolsToRenderKey = computed(() => JSON.stringify(lockPools.value));
+
 const hiddenColumns = [
   'poolVolume',
   'poolValue',
@@ -52,7 +54,7 @@ const hiddenColumns = [
         {{ $t('veBalProtocolLiquidity') }}
       </h5>
       <PoolsTable
-        :key="lockPools"
+        :key="poolsToRenderKey"
         :data="lockPools"
         :hiddenColumns="hiddenColumns"
         showPoolShares

@@ -112,18 +112,19 @@ export function orderedTokenAddresses(pool: AnyPool): string[] {
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
+type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
+
 /**
  * @summary Orders pool tokens by weight if weighted pool
  */
-export function orderedPoolTokens(
+export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
   poolType: PoolType,
   poolAddress: string,
-  tokens: Pick<PoolToken, 'address' | 'weight'>[]
-): Partial<PoolToken>[] {
+  tokens: TPoolTokens[]
+): TPoolTokens[] {
   if (isStablePhantom(poolType))
     return tokens.filter(token => !isSameAddress(token.address, poolAddress));
   if (isStableLike(poolType)) return tokens;
-
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));

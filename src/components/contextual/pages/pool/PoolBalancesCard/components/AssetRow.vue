@@ -15,7 +15,7 @@ type Props = {
   priceRate?: string;
   address: string;
   balance: string;
-  share: string;
+  share: string | null;
 };
 
 /**
