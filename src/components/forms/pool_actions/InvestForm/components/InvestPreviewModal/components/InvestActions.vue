@@ -244,7 +244,7 @@ watch(blockNumber, async () => {
 <template>
   <transition>
     <BalActionSteps
-      v-if="!investmentState.confirmed"
+      v-if="!investmentState.confirmed || !investmentState.receipt"
       :actions="actions"
       :disabled="disabled"
     />

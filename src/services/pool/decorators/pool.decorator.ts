@@ -30,7 +30,7 @@ export class PoolDecorator {
   ) {}
 
   public async decorate(
-    gauges: SubgraphGauge[] | undefined,
+    gauges: SubgraphGauge[],
     prices: TokenPrices,
     currency: FiatCurrency,
     tokens: TokenInfoMap,
@@ -114,14 +114,14 @@ export class PoolDecorator {
    */
   public async getData(
     prices: TokenPrices,
-    gauges: SubgraphGauge[] | undefined,
+    gauges: SubgraphGauge[],
     tokens: TokenInfoMap,
     pools: Pool[],
     includeAprs = true
   ): Promise<
     [number, GaugeBalAprs, GaugeRewardTokenAprs] | [null, null, null]
   > {
-    if (!includeAprs || !gauges) {
+    if (!includeAprs) {
       return [null, null, null];
     }
     return await Promise.all([

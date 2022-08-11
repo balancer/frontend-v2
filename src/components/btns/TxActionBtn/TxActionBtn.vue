@@ -20,13 +20,17 @@ type Props = {
   action: TransactionAction;
   summary: string;
   confirmingLabel: string;
+  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onConfirmFn?: () => unknown;
+  disabled?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+});
 
 const emit = defineEmits<{
   (e: 'init'): void;
@@ -112,7 +116,7 @@ async function initTx() {
   <BalBtn
     :loadingLabel="loadingLabel"
     :loading="isWaitingOnWallet || isConfirming"
-    :disabled="$attrs.disabled || isMismatchedNetwork"
+    :disabled="props.disabled || isMismatchedNetwork"
     @click.stop="initTx"
   />
 </template>

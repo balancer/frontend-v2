@@ -1,12 +1,11 @@
 import { ref } from 'vue';
 
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { HtmlInputEvent } from '@/types';
 
 /**
  * HELPERS
  */
-function blockInvalidChar(event: HtmlInputEvent): void {
+function blockInvalidChar(event: KeyboardEvent): void {
   ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
 }
 
@@ -20,45 +19,50 @@ export default function useInputEvents(props, emit, validate) {
    * EVENTS
    */
 
-  function onBlur(event: HtmlInputEvent) {
-    emit('blur', event.target.value);
-    isActive.value = false;
-    if (props.validateOn === 'blur') validate(event.target.value);
-  }
-
-  function onInput(event: HtmlInputEvent): void {
-    if (props.type === 'number') {
-      const overflowProtectedVal = overflowProtected(
-        event.target.value,
-        props.decimalLimit
-      );
-      if (overflowProtectedVal !== event.target.value)
-        event.target.value = overflowProtectedVal;
+  function onBlur(event: FocusEvent) {
+    if (event.target) {
+      const value = (event.target as HTMLInputElement).value;
+      emit('blur', value);
+      isActive.value = false;
+      if (props.validateOn === 'blur') validate(value);
     }
-    isActive.value = true;
-    emit('input', event.target.value);
-    emit('update:modelValue', event.target.value);
   }
 
-  function onClick(event: HtmlInputEvent) {
+  function onInput(event: Event): void {
+    if (event.target) {
+      let value = (event.target as HTMLInputElement).value;
+      if (props.type === 'number') {
+        const overflowProtectedVal = overflowProtected(
+          value,
+          props.decimalLimit
+        );
+        if (overflowProtectedVal !== value) value = overflowProtectedVal;
+      }
+      isActive.value = true;
+      emit('input', value);
+      emit('update:modelValue', value);
+    }
+  }
+
+  function onClick(event: MouseEvent) {
     isActive.value = true;
     emit('click', event);
   }
 
-  function onFocus(event: HtmlInputEvent) {
+  function onFocus(event: FocusEvent) {
     isActive.value = true;
     emit('focus', event);
   }
-  function onMouseOver(event: HtmlInputEvent) {
+  function onMouseOver(event: MouseEvent) {
     isHover.value = true;
     emit('mouseOver', event);
   }
-  function onMouseLeave(event: HtmlInputEvent) {
+  function onMouseLeave(event: MouseEvent) {
     isHover.value = false;
     emit('mouseLeave', event);
   }
 
-  function onKeydown(event: HtmlInputEvent): void {
+  function onKeydown(event: KeyboardEvent): void {
     if (props.type === 'number') {
       blockInvalidChar(event);
     }

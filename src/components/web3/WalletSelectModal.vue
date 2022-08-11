@@ -1,8 +1,29 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+import WalletButton from '@/components/web3/WalletButton.vue';
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { SupportedWallets } from '@/services/web3/web3.plugin';
+
+interface Props {
+  isVisible?: boolean;
+  onShowThirdParty: () => void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isVisible: false,
+});
+
+const emit = defineEmits(['close']);
+
+const wallets = ref(SupportedWallets.filter(id => id !== 'gnosis'));
+</script>
+
 <template>
   <BalModal
-    :show="isVisible"
+    :show="props.isVisible"
     title="Connect to a wallet"
-    @close="$emit('close')"
+    @close="emit('close')"
   >
     <p class="pb-3 text-sm">
       {{ $t('byConnectingWallet') }}
@@ -44,33 +65,3 @@
     </div>
   </BalModal>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-import WalletButton from '@/components/web3/WalletButton.vue';
-import { EXTERNAL_LINKS } from '@/constants/links';
-import { SupportedWallets } from '@/services/web3/web3.plugin';
-export default defineComponent({
-  components: {
-    WalletButton,
-  },
-  props: {
-    isVisible: {
-      type: Boolean,
-      default: false,
-    },
-    onShowThirdParty: {
-      type: Function,
-      required: true,
-    },
-  },
-  emits: ['close'],
-  setup() {
-    return {
-      wallets: SupportedWallets.filter(id => id !== 'gnosis'),
-      EXTERNAL_LINKS,
-    };
-  },
-});
-</script>

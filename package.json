@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.65.2",
+  "version": "1.66.2",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -21,7 +21,9 @@
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
-    "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts"
+    "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts",
+    "generate:global-types": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/global-component-types.generator.ts",
+    "typecheck": "npm run generate:global-types && vue-tsc --noEmit"
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
@@ -66,7 +68,6 @@
     "@vue/cli-plugin-unit-jest": "^5.0.0-rc.2",
     "@vue/cli-plugin-vuex": "^4.4.0",
     "@vue/cli-service": "^4.4.0",
-    "@vue/compiler-sfc": "3.2.6",
     "@vue/test-utils": "^2.0.0-alpha.1",
     "@vue/vue3-jest": "^27.0.0-alpha.4",
     "@vueuse/core": "^4.3.4",
@@ -103,6 +104,7 @@
     "postcss": "^8.2.13",
     "prettier": "^2.7.1",
     "promise-worker": "^2.0.1",
+    "require-context": "^1.1.0",
     "stylelint": "^14.9.1",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-recommended-vue": "^1.4.0",
@@ -114,16 +116,17 @@
     "ts-jest": "^27.1.3",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^3.14.1",
-    "typescript": "^4.3.5",
-    "vue": "3.2.6",
+    "typescript": "^4.7.4",
+    "vue": "3.2.24",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
     "vue-composable-tester": "^0.1.3",
     "vue-echarts": "^6.0.0",
     "vue-i18n": "^9.0.0-rc.1",
-    "vue-loader": "^16.8.1",
+    "vue-loader": "^17.0.0",
     "vue-query": "^1.6.0",
     "vue-router": "^4.0.10",
-    "vue-slider-component": "^4.0.0-beta.3",
+    "vue-slider-component": "^4.1.0-beta.2",
+    "vue-tsc": "^0.39.4",
     "vue3-jazzicon": "^0.1.2",
     "vue3-virtual-scroller": "^0.2.1",
     "vuex": "^4.0.2",

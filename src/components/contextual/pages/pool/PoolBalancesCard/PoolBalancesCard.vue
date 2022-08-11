@@ -8,7 +8,7 @@ import DefaultPool from './DefaultPool.vue';
  * TYPES
  */
 type Props = {
-  pool: Pool;
+  pool?: Pool | null;
   loading: boolean;
 };
 
@@ -17,11 +17,12 @@ type Props = {
  */
 withDefaults(defineProps<Props>(), {
   loading: false,
+  pool: null,
 });
 </script>
 
 <template>
-  <BalLoadingBlock v-if="loading" class="h-64" />
+  <BalLoadingBlock v-if="loading || !pool" class="h-64" />
   <template v-else>
     <BoostedPool
       v-if="pool?.onchain?.linearPools"

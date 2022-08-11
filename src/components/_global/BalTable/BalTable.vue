@@ -2,40 +2,9 @@
 import BalIcon from '../BalIcon/BalIcon.vue';
 import BalTableRow from './BalTableRow.vue';
 import TotalsRow from './TotalsRow.vue';
-export type Sticky = 'horizontal' | 'vertical' | 'both';
-export type Data = any;
-export type ColumnDefinition<T = Data> = {
-  // Column Header Label
-  name: string;
-  // Unique ID
-  id: string;
-  // Key or function to access data from the row
-  accessor: string | ((row: T) => string);
-  // Slot ID for custom rendering the cell
-  Cell?: string;
-  // Slot ID for custom rendering a header
-  Header?: string;
-  // Is the column sortable
-  isSortable?: boolean;
-  // Extra classes to supply to the column. E.g. min width
-  className?: string;
-  // Left or right aligned content. E.g. Numbers should be right aligned
-  align?: 'left' | 'right' | 'center';
-  // Should the column width grow to fit available space?
-  noGrow?: boolean;
-  // Set to true to hide the column
-  hidden?: boolean;
-  // Accessor for sorting purposes
-  sortKey?: string | ((row: T) => unknown);
-
-  width?: number;
-
-  totalsCell?: string;
-
-  cellClassName?: string;
-};
+import { Sticky, Data, ColumnDefinition } from './types';
 import { sortBy, sumBy } from 'lodash';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, toRef } from 'vue';
 
 import PinHeader from './PinHeader.vue';
 
@@ -66,18 +35,21 @@ type Props = {
   square?: boolean;
   isPaginated?: boolean;
   noResultsLabel?: string;
-  link?: { to?: string } | null;
+  link?: {
+    to: string;
+    getParams: (data: any) => Record<string, string>;
+  } | null;
   initialState?: InitialState;
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   pin?: DataPinState | null;
-  getTableRowClass?: (rowData: Data, rowIndex: number) => string | undefined;
+  getTableRowClass?: (rowData: Data, rowIndex: number) => string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   square: false,
   isPaginated: false,
   noResultsLabel: '',
-  link: () => null,
+  link: null,
   initialState: () => ({
     sortColumn: null,
     sortDirection: null,
@@ -85,7 +57,7 @@ const props = withDefaults(defineProps<Props>(), {
   skeletonClass: '',
   isLoading: false,
   isLoadingMore: false,
-  getTableRowClass: () => undefined,
+  getTableRowClass: () => '',
 });
 
 const stickyHeaderRef = ref();
@@ -100,14 +72,10 @@ const currentSortColumn = ref<InitialState['sortColumn']>(
 const headerRef = ref<HTMLElement>();
 const bodyRef = ref<HTMLElement>();
 
+const getTableRowClass = toRef(props, 'getTableRowClass');
+
 // for loading and no results
 const placeholderBlockWidth = computed(() => sumBy(props.columns, 'width'));
-
-const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
-  if (el && columnIndex === 0) {
-    stickyHeaderRef.value = el;
-  }
-};
 
 // Need a method for horizontal stickiness as we need to
 // check whether the table item belongs in the first column
@@ -244,7 +212,7 @@ watch(
           <th
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
-            :ref="setHeaderRef(columnIndex)"
+            :ref="columnIndex == 0 ? 'stickyHeaderRef' : undefined"
             :class="[
               'p-6 bg-white dark:bg-gray-850 headingShadow border-b dark:border-gray-900',
               column.className,
@@ -332,7 +300,7 @@ watch(
         <BalTableRow
           v-for="(dataItem, index) in pinnedData"
           :key="`tableRow-${index}`"
-          :class="props.getTableRowClass(dataItem, index)"
+          :class="getTableRowClass(dataItem, index)"
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
@@ -351,7 +319,11 @@ watch(
         <BalTableRow
           v-for="(dataItem, index) in unpinnedData"
           :key="`tableRow-${index}`"
-          :class="props.getTableRowClass(dataItem, index)"
+          :class="
+            props.getTableRowClass
+              ? props.getTableRowClass(dataItem, index)
+              : undefined
+          "
           :data="dataItem"
           :columns="filteredColumns"
           :onRowClick="onRowClick"
