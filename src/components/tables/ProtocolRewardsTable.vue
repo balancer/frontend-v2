@@ -2,7 +2,8 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 import ClaimProtocolRewardsBtn from '@/components/btns/ClaimProtocolRewardsBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -22,13 +23,15 @@ export type ProtocolRewardRow = {
 type Props = {
   rewardsData: ProtocolRewardRow[];
   isLoading: boolean;
-  deprecated: false;
+  deprecated?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  deprecated: false,
+});
 
 /**
  * COMPOSABLES

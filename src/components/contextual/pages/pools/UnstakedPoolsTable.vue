@@ -51,6 +51,8 @@ const noPoolsLabel = computed(() => {
     : t('connectYourWallet');
 });
 
+const poolsToRenderKey = computed(() => JSON.stringify(poolsToRender.value));
+
 // first retrieve all the pools the user has liquidity for
 const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
 
@@ -74,7 +76,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        boost: poolBoosts.value[pool.id],
+        boost: poolBoosts.value && poolBoosts.value[pool.id],
       };
     });
 });
@@ -136,7 +138,7 @@ function handleModalClose() {
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable
-        :key="poolsToRender"
+        :key="poolsToRenderKey"
         :isLoading="isLoadingUserStakingData || isLoadingUserPools"
         :data="poolsToRender"
         :noPoolsLabel="noPoolsLabel"
@@ -146,6 +148,7 @@ function handleModalClose() {
       />
     </BalStack>
     <StakePreviewModal
+      v-if="stakePool"
       :pool="stakePool"
       :isVisible="showStakeModal"
       action="stake"

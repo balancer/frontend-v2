@@ -1,24 +1,21 @@
 <script setup lang="ts">
 import { computed, nextTick, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
+import { Rules } from '@/types';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
-import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
-
 /**
  * TYPES
  */
 type InputValue = string | number;
-
 type Props = {
+  name: string;
   amount: InputValue;
   address?: string;
   weight?: number | string;
@@ -44,7 +41,6 @@ type Props = {
   tokenValue?: string;
   placeholder?: string;
 };
-
 /**
  * PROPS & EMITS
  */
@@ -72,16 +68,14 @@ const props = withDefaults(defineProps<Props>(), {
   excludedTokens: () => [],
   placeholder: '',
 });
-
 const emit = defineEmits<{
   (e: 'blur', value: string): void;
   (e: 'input', value: string): void;
   (e: 'update:amount', value: string): void;
   (e: 'update:address', value: string): void;
   (e: 'update:isValid', value: boolean): void;
-  (e: 'keydown', value: HtmlInputEvent);
+  (e: 'keydown', value: KeyboardEvent);
 }>();
-
 /**
  * COMPOSABLEs
  */
@@ -89,7 +83,6 @@ const { getToken, balanceFor, nativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
-
 /**
  * COMPUTED
  */
@@ -113,12 +106,10 @@ const shouldShowTxBufferMessage = computed(() => {
   ) {
     return false;
   }
-
   return amountBN.value.gte(
     tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer)
   );
 });
-
 const isMaxed = computed(() => {
   if (shouldUseTxBuffer.value) {
     return (
@@ -129,70 +120,53 @@ const isMaxed = computed(() => {
     return props.amount === tokenBalance.value;
   }
 });
-
 const tokenBalance = computed(() => {
   if (props.customBalance) return props.customBalance;
   return balanceFor(props.address);
 });
-
 const token = computed((): TokenInfo | undefined => {
   if (!hasToken.value) return undefined;
   return getToken(props.address);
 });
-
 const tokenValue = computed(() => {
   return props.tokenValue ?? toFiat(props.amount, props.address);
 });
-
 const inputRules = computed(() => {
   if (!hasToken.value || !isWalletReady.value || props.noRules) {
     return [isPositive()];
   }
-
   const rules = [...props.rules, isPositive()];
   if (!props.ignoreWalletBalance) {
     rules.push(isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance')));
   }
   return rules;
 });
-
 const maxPercentage = computed(() => {
   if (!hasBalance.value || !hasAmount.value) return '0';
-
   return amountBN.value.div(tokenBalance.value).times(100).toFixed(2);
 });
-
 const bufferPercentage = computed(() => {
   if (!shouldShowTxBufferMessage.value) return '0';
-
   return bnum(nativeAsset.minTransactionBuffer)
     .div(tokenBalance.value)
     .times(100)
     .toFixed(2);
 });
-
 const barColor = computed(() =>
   amountExceedsTokenBalance.value ? 'red' : 'green'
 );
-
 const priceImpactSign = computed(() => (props.priceImpact >= 0 ? '-' : '+'));
-
 const priceImpactClass = computed(() =>
   props.priceImpact >= 0.01 ? 'text-red-500' : ''
 );
-
 const decimalLimit = computed<number>(() => token.value?.decimals || 18);
-
 function getSafeAmount(amount: InputValue, decimalLimit: number) {
   return overflowProtected(amount, decimalLimit);
 }
-
 function handleAmountChange(amount: InputValue) {
   const safeAmount = getSafeAmount(amount, decimalLimit.value);
-
   emit('update:amount', safeAmount);
 }
-
 watch(
   () => props.address,
   async (newVal, oldVal) => {
@@ -204,7 +178,6 @@ watch(
     }
   }
 );
-
 /**
  * METHODS
  */
@@ -222,7 +195,6 @@ const setMax = () => {
   } else {
     _amount = tokenBalance.value;
   }
-
   handleAmountChange(_amount);
 };
 </script>
@@ -230,6 +202,7 @@ const setMax = () => {
 <template>
   <BalTextInput
     :modelValue="amount"
+    :name="name"
     :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"

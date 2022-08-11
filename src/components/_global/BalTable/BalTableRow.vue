@@ -2,13 +2,20 @@
 import { compact } from 'lodash';
 import { Ref } from 'vue';
 
-import { ColumnDefinition, Data, Sticky } from './BalTable.vue';
+import {
+  ColumnDefinition,
+  Data,
+  Sticky,
+} from '@/components/_global/BalTable/types';
 
 type Props = {
   columns: ColumnDefinition<any>[];
   onRowClick?: (data: any) => void;
   data: Ref<any>;
-  link?: any;
+  link?: {
+    to: string;
+    getParams: (data: any) => Record<string, string>;
+  } | null;
   sticky?: Sticky;
   isColumnStuck?: boolean;
   pinned?: boolean;

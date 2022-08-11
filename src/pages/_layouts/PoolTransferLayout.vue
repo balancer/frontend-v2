@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
@@ -15,13 +14,11 @@ import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePo
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isStablePhantom } from '@/composables/usePool';
 import { useReturnRoute } from '@/composables/useReturnRoute';
-
 /**
  * STATE
  */
 const route = useRoute();
 const id = ref<string>(route.params.id as string);
-
 /**
  * COMPOSABLES
  */
@@ -31,18 +28,13 @@ const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 const { tokenAddresses } = useInvestState();
 usePoolTransfersGuard();
-
 function setTokenInAddress(tokenAddress) {
   tokenAddresses.value[0] = tokenAddress;
 }
-
 const isInvestPage = computed(() => route.name === 'invest');
-
 const poolSupportsSingleAssetSwaps = computed(() => {
   return pool.value && isStablePhantom(pool.value.poolType);
 });
-
-// Exclude BPT from the list of tokens that can be used to invest in the pool.
 const excludedTokens = computed<string[]>(() => {
   return pool.value?.address ? [pool.value.address] : [];
 });
@@ -59,7 +51,10 @@ const excludedTokens = computed<string[]>(() => {
 
     <Col3Layout offsetGutters mobileHideGutters>
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
-        <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
+        <BalLoadingBlock
+          v-if="loadingPool || !transfersAllowed || !pool"
+          class="h-64"
+        />
         <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
           <MyWallet
             :excludedTokens="excludedTokens"
@@ -89,9 +84,10 @@ const excludedTokens = computed<string[]>(() => {
           },
         ]"
       >
+        <!-- TODO: Show some 404 message if Pool not found -->
         <template #myWalletTokens>
           <BalLoadingBlock
-            v-if="loadingPool || !transfersAllowed"
+            v-if="loadingPool || !pool || !transfersAllowed"
             class="h-64"
           />
           <MyWalletTokensCard
@@ -105,7 +101,7 @@ const excludedTokens = computed<string[]>(() => {
         </template>
         <template #myPoolBalances>
           <BalLoadingBlock
-            v-if="loadingPool || !transfersAllowed"
+            v-if="loadingPool || !pool || !transfersAllowed"
             class="h-64"
           />
           <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
@@ -113,7 +109,10 @@ const excludedTokens = computed<string[]>(() => {
       </BalAccordion>
 
       <template v-if="!upToLargeBreakpoint" #gutterRight>
-        <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
+        <BalLoadingBlock
+          v-if="loadingPool || !pool || !transfersAllowed"
+          class="h-64"
+        />
         <MyPoolBalancesCard v-else :pool="pool" />
       </template>
     </Col3Layout>
