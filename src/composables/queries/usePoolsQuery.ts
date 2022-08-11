@@ -5,8 +5,6 @@ import { useInfiniteQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
@@ -47,7 +45,6 @@ export default function usePoolsQuery(
    * COMPOSABLES
    */
   const { injectTokens, prices, tokens: tokenMeta } = useTokens();
-  const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
@@ -85,7 +82,8 @@ export default function usePoolsQuery(
       : Op.Contains;
 
     const queryArgs: any = {
-      first: 100,
+      chainId: configService.network.chainId,
+      first: 10,
       skip: pageParam,
       where: {
         tokensList: tokensListFilterOperation(tokenList.value),
@@ -147,14 +145,6 @@ export default function usePoolsQuery(
       attrs: queryAttrs,
     });
 
-    const poolDecorator = new PoolDecorator(pools);
-    const decoratedPools = await poolDecorator.decorate(
-      subgraphGauges.value || [],
-      prices.value,
-      currency.value,
-      tokenMeta.value
-    );
-
     const tokens = flatten(
       pools.map(pool => [
         ...pool.tokensList,
@@ -164,13 +154,12 @@ export default function usePoolsQuery(
     );
     await injectTokens(tokens);
 
+    console.log('RETRIEVED POOLS: ', pools);
+
     return {
-      pools: decoratedPools,
+      pools,
       tokens,
-      skip:
-        pools.length >= POOLS.Pagination.PerPage
-          ? pageParam + POOLS.Pagination.PerPage
-          : undefined,
+      skip: 0,
     };
   };
 

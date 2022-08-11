@@ -23,7 +23,7 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { PoolWithShares } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -32,7 +32,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: PoolWithShares[];
+  data?: Pool[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -41,7 +41,6 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
-  columnStates?: Record<string, string>;
 };
 
 /**
@@ -79,7 +78,7 @@ const wideCompositionWidth = computed(() =>
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
+const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -96,25 +95,25 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
     Cell: 'poolNameCell',
     width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350,
   },
-  {
-    name: t('myBalance'),
-    accessor: pool =>
-      fNum2(pool.shares, {
-        style: 'currency',
-        maximumFractionDigits: 0,
-        fixedFormat: true,
-      }),
-    align: 'right',
-    id: 'myBalance',
-    hidden: !props.showPoolShares,
-    sortKey: pool => Number(pool.shares),
-    width: 160,
-    cellClassName: 'font-numeric',
-  },
+  // {
+  //   name: t('myBalance'),
+  //   accessor: pool =>
+  //     fNum2(pool.shares, {
+  //       style: 'currency',
+  //       maximumFractionDigits: 0,
+  //       fixedFormat: true,
+  //     }),
+  //   align: 'right',
+  //   id: 'myBalance',
+  //   hidden: !props.showPoolShares,
+  //   sortKey: pool => Number(pool.shares),
+  //   width: 160,
+  //   cellClassName: 'font-numeric',
+  // },
   {
     name: t('poolValue'),
     accessor: pool =>
-      fNum2(pool.totalLiquidity, {
+      fNum2(pool.totalLiquidity || 0, {
         style: 'currency',
         maximumFractionDigits: 0,
       }),
@@ -203,12 +202,12 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares) {
+function handleRowClick(pool: Pool) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 
-function navigateToPoolMigration(pool: PoolWithShares) {
+function navigateToPoolMigration(pool: Pool) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -219,7 +218,7 @@ function navigateToPoolMigration(pool: PoolWithShares) {
   });
 }
 
-function aprLabelFor(pool: PoolWithShares): string {
+function aprLabelFor(pool: Pool): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
@@ -289,10 +288,7 @@ function lockedUntil(lockEndDate?: number) {
         </div>
       </template>
       <template #volumeCell="pool">
-        <div
-          :key="columnStates.volume"
-          class="flex justify-end py-4 px-6 -mt-1 font-numeric"
-        >
+        <div class="flex justify-end py-4 px-6 -mt-1 font-numeric">
           <BalLoadingBlock v-if="!pool?.volumeSnapshot" class="w-12 h-4" />
           <span v-else class="text-right">
             {{
@@ -305,10 +301,7 @@ function lockedUntil(lockEndDate?: number) {
         </div>
       </template>
       <template #aprCell="pool">
-        <div
-          :key="columnStates.aprs"
-          class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
-        >
+        <div class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric">
           <BalLoadingBlock
             v-if="!pool?.apr?.total?.unstaked"
             class="w-12 h-4"

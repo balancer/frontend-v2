@@ -69,7 +69,7 @@ function navigateToCreatePool() {
       <PoolsTable
         :data="pools"
         :noPoolsLabel="$t('noPoolsFound')"
-        :isLoadingMore="isLoading"
+        :isLoading="isLoading"
         :selectedTokens="selectedTokens"
         class="mb-8"
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
