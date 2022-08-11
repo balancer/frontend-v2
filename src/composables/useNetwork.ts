@@ -8,11 +8,14 @@ import { Network } from '@balancer-labs/sdk';
 /**
  * STATE
  */
+const windowAvailable = typeof window !== 'undefined';
 const localStorageNetworkId: Network | undefined =
-  typeof window !== 'undefined' && localStorage.getItem('networkId')
+  windowAvailable && localStorage.getItem('networkId')
     ? (Number(localStorage.getItem('networkId')) as Network)
     : undefined;
-const urlSearchParams = new URLSearchParams(window.location.search);
+const urlSearchParams = new URLSearchParams(
+  windowAvailable ? window.location.search : ''
+);
 const params = Object.fromEntries(urlSearchParams.entries());
 const paramsNetworkId: Network | undefined = params.networkId
   ? (Number(params.networkId) as Network)
