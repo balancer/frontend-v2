@@ -1,4 +1,4 @@
-import { Contract } from '@ethersproject/contracts';
+import { Contract, ContractFunction } from '@ethersproject/contracts';
 
 import {
   EthereumTxType,
@@ -9,11 +9,12 @@ import ConfigService from '../config/config.service';
 import BlocknativeProvider from './providers/blocknative.provider';
 import PolygonProvider from './providers/polygon.provider';
 import { GasPrice, GasSettings } from './providers/types';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { BytesLike } from 'ethers';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 const GAS_LIMIT_BUFFER = 0.1;
-
 export default class GasPriceService {
   constructor(
     private readonly configService = new ConfigService(),
@@ -32,6 +33,29 @@ export default class GasPriceService {
     }
   }
 
+  public async gasSettingsForDataCall(
+    signer: JsonRpcSigner,
+    to: string,
+    data: BytesLike,
+    options: Record<string, any>,
+    forceEthereumLegacyTxType = false
+  ): Promise<GasSettings> {
+    let gasSettings: GasSettings = {};
+
+    gasSettings.gasLimit = await this.getGasLimit(signer.estimateGas, [
+      { to, data },
+    ]);
+
+    if (this.shouldSetGasPriceSettings(options)) {
+      gasSettings = await this.setGasPriceSettings(
+        gasSettings,
+        forceEthereumLegacyTxType
+      );
+    }
+
+    return gasSettings;
+  }
+
   public async getGasSettingsForContractCall(
     contractWithSigner: Contract,
     action: string,
@@ -39,35 +63,57 @@ export default class GasPriceService {
     options: Record<string, any>,
     forceEthereumLegacyTxType = false
   ): Promise<GasSettings> {
-    const gasLimitNumber = await contractWithSigner.estimateGas[action](
-      ...params,
-      options
+    let gasSettings: GasSettings = {};
+
+    gasSettings.gasLimit = await this.getGasLimit(
+      contractWithSigner.estimateGas[action],
+      [...params, options]
     );
 
-    const gasSettings: GasSettings = {};
+    if (this.shouldSetGasPriceSettings(options)) {
+      gasSettings = await this.setGasPriceSettings(
+        gasSettings,
+        forceEthereumLegacyTxType
+      );
+    }
 
-    const gasLimit = gasLimitNumber.toNumber();
-    gasSettings.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
+    return gasSettings;
+  }
 
-    if (
+  private async getGasLimit(
+    estimateFn: ContractFunction,
+    params: any[]
+  ): Promise<number> {
+    const gasLimit = (await estimateFn(...params)).toNumber();
+
+    return Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
+  }
+
+  private shouldSetGasPriceSettings(options: Record<string, any>): boolean {
+    return (
       USE_BLOCKNATIVE_GAS_PLATFORM &&
       options.gasPrice == null &&
       options.maxFeePerGas == null &&
       options.maxPriorityFeePerGas == null
-    ) {
-      const gasPrice = await this.getLatest();
-      if (gasPrice != null) {
-        if (
-          ethereumTxType.value === EthereumTxType.EIP1559 &&
-          gasPrice.maxFeePerGas != null &&
-          gasPrice.maxPriorityFeePerGas != null &&
-          !forceEthereumLegacyTxType
-        ) {
-          gasSettings.maxFeePerGas = gasPrice.maxFeePerGas;
-          gasSettings.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;
-        } else {
-          gasSettings.gasPrice = gasPrice.price;
-        }
+    );
+  }
+
+  private async setGasPriceSettings(
+    gasSettings: GasSettings,
+    forceEthereumLegacyTxType: boolean
+  ): Promise<GasSettings> {
+    const gasPrice = await this.getLatest();
+    if (gasPrice != null) {
+      if (
+        ethereumTxType.value === EthereumTxType.EIP1559 &&
+        gasPrice.maxFeePerGas != null &&
+        gasPrice.maxPriorityFeePerGas != null &&
+        !forceEthereumLegacyTxType
+      ) {
+        gasSettings.maxFeePerGas = gasPrice.maxFeePerGas;
+        gasSettings.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;
+      } else {
+        gasSettings.gasPrice = gasPrice.price;
       }
     }
     return gasSettings;
