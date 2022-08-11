@@ -2,7 +2,7 @@ import { WalletError } from '@/types';
 
 import { Connector, ConnectorId } from '../connector';
 
-function getInjectedProvider() {
+export function getInjectedProvider() {
   const ethereum: any = window.ethereum;
   let provider = ethereum || (window as any).web3?.currentProvider;
 
