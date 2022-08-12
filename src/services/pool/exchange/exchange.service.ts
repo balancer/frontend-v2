@@ -6,12 +6,12 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Ref } from 'vue';
 
-import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 
 import ExitParams from './serializers/ExitParams';
 import JoinParams from './serializers/JoinParams';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export default class ExchangeService {
   pool: Ref<Pool>;
@@ -57,7 +57,7 @@ export default class ExchangeService {
     tokensIn: string[],
     bptOut = '0'
   ): Promise<TransactionResponse> {
-    const txParams = this.joinParams.serialize(
+    const params = this.joinParams.serialize(
       account,
       amountsIn,
       tokensIn,
@@ -65,14 +65,14 @@ export default class ExchangeService {
     );
     const value = this.joinParams.value(amountsIn, tokensIn);
 
-    return await sendTransaction(
-      provider,
-      this.vaultAddress,
-      Vault__factory.abi,
-      'joinPool',
-      txParams,
-      { value }
-    );
+    const txBuilder = new TransactionBuilder(provider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.vaultAddress,
+      abi: Vault__factory.abi,
+      action: 'joinPool',
+      params,
+      options: { value },
+    });
   }
 
   public async queryExit(
@@ -111,7 +111,7 @@ export default class ExchangeService {
     exitTokenIndex: number | null,
     exactOut: boolean
   ): Promise<TransactionResponse> {
-    const txParams = this.exitParams.serialize(
+    const params = this.exitParams.serialize(
       account,
       amountsOut,
       tokensOut,
@@ -120,13 +120,13 @@ export default class ExchangeService {
       exactOut
     );
 
-    return await sendTransaction(
-      provider,
-      this.vaultAddress,
-      Vault__factory.abi,
-      'exitPool',
-      txParams
-    );
+    const txBuilder = new TransactionBuilder(provider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.vaultAddress,
+      abi: Vault__factory.abi,
+      action: 'exitPool',
+      params,
+    });
   }
 
   private get joinParams() {

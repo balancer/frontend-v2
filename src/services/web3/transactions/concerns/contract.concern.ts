@@ -4,19 +4,28 @@ import { captureException } from '@sentry/minimal';
 import { Contract, ContractInterface, Wallet } from 'ethers';
 import { TransactionConcern } from './transaction.concern';
 
+type SendTransactionOpts = {
+  contractAddress: string;
+  abi: ContractInterface;
+  action: string;
+  params?: any[];
+  options?: Record<string, any>;
+  forceEthereumLegacyTxType?: boolean;
+};
+
 export class ContractConcern extends TransactionConcern {
   constructor(private readonly signer: JsonRpcSigner) {
     super();
   }
 
-  public async sendTransaction(
-    contractAddress: string,
-    abi: ContractInterface,
-    action: string,
-    params: any[] = [],
-    options: Record<string, any> = {},
-    forceEthereumLegacyTxType = false
-  ): Promise<TransactionResponse> {
+  public async sendTransaction({
+    contractAddress,
+    abi,
+    action,
+    params = [],
+    options = {},
+    forceEthereumLegacyTxType = false,
+  }: SendTransactionOpts): Promise<TransactionResponse> {
     const contractWithSigner = new Contract(contractAddress, abi, this.signer);
 
     console.log('Contract: ', contractAddress);
@@ -38,14 +47,14 @@ export class ContractConcern extends TransactionConcern {
       const error = err as WalletError;
 
       if (this.shouldRetryAsLegacy(error)) {
-        return await this.sendTransaction(
+        return await this.sendTransaction({
           contractAddress,
           abi,
           action,
           params,
           options,
-          true
-        );
+          forceEthereumLegacyTxType: true,
+        });
       } else if (this.shouldLogFailure(error)) {
         await this.logFailedTx(contractWithSigner, action, params, options);
       }

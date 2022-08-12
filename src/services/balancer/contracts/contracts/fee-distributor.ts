@@ -64,12 +64,12 @@ export class FeeDistributor {
   public async claimBalances(
     userAddress: string
   ): Promise<TransactionResponse> {
-    return await this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'claimTokens',
-      [userAddress, this.claimableTokens]
-    );
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'claimTokens',
+      params: [userAddress, this.claimableTokens],
+    });
   }
 
   /**
@@ -79,12 +79,12 @@ export class FeeDistributor {
     userAddress: string,
     tokenAddress: string
   ): Promise<TransactionResponse> {
-    return await this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'claimToken',
-      [userAddress, tokenAddress]
-    );
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'claimToken',
+      params: [userAddress, tokenAddress],
+    });
   }
 
   /**
