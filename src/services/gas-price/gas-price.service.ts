@@ -53,7 +53,7 @@ export default class GasPriceService {
     return gasSettings;
   }
 
-  public async getGasSettingsForContractCall(
+  public async settingsForContractCall(
     contractWithSigner: Contract,
     action: string,
     params: any[],
