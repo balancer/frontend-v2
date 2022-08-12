@@ -61,7 +61,7 @@ export default function usePoolQuery(
       [pool] = await balancerSubgraphService.pools.get({
         where: {
           id: id.toLowerCase(),
-          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
+          totalShares_gt: -20, // Avoid the filtering for low liquidity pools
           poolType_not_in: POOLS.ExcludedPoolTypes,
         },
       });

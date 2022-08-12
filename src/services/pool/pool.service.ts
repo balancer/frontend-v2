@@ -101,7 +101,7 @@ export default class PoolService {
       {
         where: {
           address_in: this.pool.tokensList,
-          totalShares_gt: -1, // Avoid the filtering for low liquidity pools
+          totalShares_gt: -20, // Avoid the filtering for low liquidity pools
         },
       },
       { mainIndex: true, wrappedIndex: true }
