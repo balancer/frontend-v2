@@ -111,6 +111,12 @@ export default function useStreamedPoolsQuery(
     },
   });
 
+  watch(tokenList.value, () => {
+    // Resets the query's "skip" variable and starts
+    // searching pools always from the beginning when token filter changes
+    currentPage.value = 1;
+  });
+
   watch(
     () => result.value,
     val => {
