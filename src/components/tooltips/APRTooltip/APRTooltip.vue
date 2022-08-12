@@ -87,8 +87,8 @@ const totalLabel = computed((): string =>
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
-          v-if="hasYieldAPR"
-          :yieldAPR="apr?.yield"
+          v-if="hasYieldAPR && apr"
+          :yieldAPR="apr.yield"
           :poolTokens="pool.tokensList"
           :poolType="pool.poolType"
         />

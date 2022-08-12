@@ -71,7 +71,7 @@ import useTokens from '@/composables/useTokens';
 import { shortenLabel } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
 export default defineComponent({
   props: {
     pool: {
@@ -108,7 +108,7 @@ export default defineComponent({
       }));
     });
 
-    const columns = computed(() => [
+    const columns = computed<ColumnDefinition[]>(() => [
       {
         name: t('token'),
         id: 'token',

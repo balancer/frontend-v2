@@ -276,6 +276,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
               <span class="text-sm">{{ $t('poolName') }}:</span>
               <BalInlineInput
                 v-model="poolName"
+                name="poolName"
                 size="xs"
                 inputAlignRight
                 @save="saveState"
@@ -285,6 +286,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
               <span class="text-sm">{{ $t('poolSymbol') }}:</span>
               <BalInlineInput
                 v-model="poolSymbol"
+                name="poolSymbol"
                 size="xs"
                 inputAlignRight
                 @save="saveState"
