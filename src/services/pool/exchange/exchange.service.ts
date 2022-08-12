@@ -34,20 +34,20 @@ export default class ExchangeService {
     tokensIn: string[],
     bptOut = '0'
   ) {
-    const txParams = this.joinParams.serialize(
+    const params = this.joinParams.serialize(
       account,
       amountsIn,
       tokensIn,
       bptOut
     );
 
-    return await callStatic(
-      provider,
-      this.helpersAddress,
-      BalancerHelpers__factory.abi,
-      'queryJoin',
-      txParams
-    );
+    const txBuilder = new TransactionBuilder(provider.getSigner());
+    return await txBuilder.contract.callStatic({
+      contractAddress: this.helpersAddress,
+      abi: BalancerHelpers__factory.abi,
+      action: 'queryJoin',
+      params,
+    });
   }
 
   public async join(
@@ -84,7 +84,7 @@ export default class ExchangeService {
     exitTokenIndex: number | null,
     exactOut: boolean
   ) {
-    const txParams = this.exitParams.serialize(
+    const params = this.exitParams.serialize(
       account,
       amountsOut,
       tokensOut,
@@ -93,13 +93,13 @@ export default class ExchangeService {
       exactOut
     );
 
-    return await callStatic(
-      provider,
-      this.helpersAddress,
-      BalancerHelpers__factory.abi,
-      'queryExit',
-      txParams
-    );
+    const txBuilder = new TransactionBuilder(provider.getSigner());
+    return await txBuilder.contract.callStatic({
+      contractAddress: this.helpersAddress,
+      abi: BalancerHelpers__factory.abi,
+      action: 'queryExit',
+      params,
+    });
   }
 
   public async exit(

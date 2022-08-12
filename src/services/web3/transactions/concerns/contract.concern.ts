@@ -62,13 +62,13 @@ export class ContractConcern extends TransactionConcern {
     }
   }
 
-  public async callStatic<T>(
-    contractAddress: string,
-    abi: any[],
-    action: string,
-    params: any[] = [],
-    options: Record<string, any> = {}
-  ): Promise<T> {
+  public async callStatic<T>({
+    contractAddress,
+    abi,
+    action,
+    params = [],
+    options = {},
+  }: SendTransactionOpts): Promise<T> {
     console.log('Sending transaction');
     console.log('Contract', contractAddress);
     console.log('Action', `"${action}"`);

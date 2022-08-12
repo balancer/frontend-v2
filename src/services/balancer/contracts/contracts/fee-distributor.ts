@@ -47,11 +47,13 @@ export class FeeDistributor {
    * the claimTokens method by modifing the ABI to make it a view function.
    */
   public async getClaimableBalances(userAddress: string): Promise<BalanceMap> {
-    const balances = await this.web3.callStatic<BigNumber[]>(
-      this.address,
-      this.staticAbi,
-      'claimTokens',
-      [userAddress, this.claimableTokens]
+    const balances = await this.web3.txBuilder.contract.callStatic<BigNumber[]>(
+      {
+        contractAddress: this.address,
+        abi: this.staticAbi,
+        action: 'claimTokens',
+        params: [userAddress, this.claimableTokens],
+      }
     );
     const stringBalances = balances.map(balance => balance.toString());
 
