@@ -11,6 +11,9 @@ import { PoolMigrationInfo } from '../../types';
 import MigrateActions from './components/MigrateActions.vue';
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
 import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
+import { configService } from '@/services/config/config.service';
+import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
+import { usePoolMigration } from '@/composables/pools/usePoolMigration';
 
 /**
  * TYPES
@@ -42,38 +45,74 @@ const { fromPool, toPool } = toRefs(props);
 /**
  * STATE
  */
-const migrateMath = useMigrateMath(fromPool, toPool);
+const currentActionIndex = ref(0);
 
-const {
-  batchSwapLoaded,
-  highPriceImpact,
-  fiatTotal,
-  fiatTotalLabel,
-  priceImpact,
-} = migrateMath;
-
-const migrateConfirmed = ref(false);
 const highPriceImpactAccepted = ref(false);
+const bptBalance = computed(() => {
+  if (actions.value[currentActionIndex.value].isStakeAction) {
+    return props.stakedBptBalance;
+  }
 
+  return props.unstakedBptBalance;
+});
 const hasAcceptedHighPriceImpact = computed((): boolean =>
   highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
-
 const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
+const relayerAddress = ref(configService.network.addresses.batchRelayer);
+const relayerApproval = useRelayerApprovalQuery(relayerAddress);
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
 
+let migrateMath = useMigrateMath(fromPool, toPool, bptBalance);
+let { batchSwapLoaded, highPriceImpact, fiatTotal, priceImpact } = migrateMath;
+
+const { actions, migratePoolState } = usePoolMigration(
+  props.stakedBptBalance,
+  props.unstakedBptBalance,
+  props.unstakedPoolValue,
+  props.isUnstakedMigrationEnabled,
+  props.stakedPoolValue,
+  props.isStakedMigrationEnabled,
+  props.fromPool,
+  props.toPool,
+  props.fromPoolTokenInfo,
+  props.toPoolTokenInfo,
+  migrateMath.fiatTotalLabel,
+  relayerApproval.data,
+  currentActionIndex
+);
+
 /**
  * COMPUTED
  */
+
 const title = computed((): string =>
-  migrateConfirmed.value
+  migratePoolState.value.confirmed
     ? t('migratePool.previewModal.titles.confirmed')
     : t('migratePool.previewModal.titles.default')
 );
+const isInvestSummaryShown = computed(
+  () =>
+    !actions.value[currentActionIndex.value].isSignAction &&
+    !migratePoolState.value.confirmed
+);
+
+const isaActionBtnDisabled = computed(() => {
+  if (actions.value[currentActionIndex.value].isSignAction) {
+    return false;
+  }
+  return !batchSwapLoaded.value || !hasAcceptedHighPriceImpact.value;
+});
+const summaryTitle = computed(() => {
+  if (actions.value[currentActionIndex.value].isStakeAction) {
+    return t('migratePool.previewModal.summary.stakeTitle');
+  }
+  return t('migratePool.previewModal.summary.unstakeTitle');
+});
 
 /**
  * METHODS
@@ -81,14 +120,18 @@ const title = computed((): string =>
 function handleClose() {
   emit('close');
 }
+
+function setCurrentActionIndex(index: number) {
+  currentActionIndex.value = index;
+}
 </script>
 
 <template>
-  <BalModal show :fireworks="migrateConfirmed" @close="handleClose">
+  <BalModal show :fireworks="migratePoolState.confirmed" @close="handleClose">
     <template #header>
       <div class="flex items-center">
         <BalCircle
-          v-if="migrateConfirmed"
+          v-if="migratePoolState.confirmed"
           size="8"
           color="green"
           class="mr-2 text-white"
@@ -112,11 +155,13 @@ function handleClose() {
     />
 
     <InvestSummary
+      v-if="isInvestSummaryShown"
       :pool="toPool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
       :isLoadingPriceImpact="isLoadingPriceImpact"
       :highPriceImpact="highPriceImpact"
+      :summaryTitle="summaryTitle"
     />
 
     <div
@@ -133,22 +178,14 @@ function handleClose() {
     </div>
 
     <MigrateActions
-      :isStakedMigrationEnabled="isStakedMigrationEnabled"
-      :isUnstakedMigrationEnabled="isUnstakedMigrationEnabled"
-      :stakedPoolValue="stakedPoolValue"
-      :unstakedPoolValue="unstakedPoolValue"
-      :stakedBptBalance="stakedBptBalance"
-      :unstakedBptBalance="unstakedBptBalance"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
+      class="mt-4"
       :fromPool="fromPool"
       :toPool="toPool"
-      :fiatTotalLabel="fiatTotalLabel"
-      :fiatTotal="fiatTotal"
       :math="migrateMath"
-      :disabled="!batchSwapLoaded || !hasAcceptedHighPriceImpact"
-      class="mt-4"
-      @success="migrateConfirmed = true"
+      :disabled="isaActionBtnDisabled"
+      :actions="actions"
+      :migratePoolState="migratePoolState"
+      @set-current-action-index="setCurrentActionIndex"
     />
   </BalModal>
 </template>

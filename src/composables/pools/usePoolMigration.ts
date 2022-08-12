@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, Ref, ref } from 'vue';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -42,8 +42,9 @@ export function usePoolMigration(
   toPool: Pool,
   fromPoolTokenInfo: TokenInfo,
   toPoolTokenInfo: TokenInfo,
-  fiatTotalLabel: string,
-  relayerApproval: Ref<boolean | undefined>
+  fiatTotalLabel: ComputedRef<string>,
+  relayerApproval: Ref<boolean | undefined>,
+  currentActionIndex: Ref<number>
 ) {
   /**
    * COMPOSABLES
@@ -76,6 +77,7 @@ export function usePoolMigration(
     ),
     stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
     isSignAction: false,
+    isStakeAction: true,
   };
 
   const unstakedAction = {
@@ -89,6 +91,7 @@ export function usePoolMigration(
     ),
     stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
     isSignAction: false,
+    isUnstakeAction: true,
   };
 
   const signAction = {
@@ -237,18 +240,18 @@ export function usePoolMigration(
       type: 'tx',
       action: 'migratePool',
       summary: t('transactionSummary.migratePool', [
-        fiatTotalLabel,
+        fiatTotalLabel.value,
         fromPoolTokenInfo.symbol,
         toPoolTokenInfo.symbol,
       ]),
       details: {
         fromPool: fromPool,
         toPool: toPool,
-        totalFiatPoolInvestment: fiatTotalLabel,
+        totalFiatPoolInvestment: fiatTotalLabel.value,
       },
     });
 
-    migratePoolState.value.confirmed = await txListener(tx, {
+    const txResult = await txListener(tx, {
       onTxConfirmed: async (receipt: TransactionReceipt) => {
         migratePoolState.value.confirming = false;
         migratePoolState.value.receipt = receipt;
@@ -259,6 +262,10 @@ export function usePoolMigration(
         migratePoolState.value.confirming = false;
       },
     });
+
+    if (currentActionIndex.value + 1 === actions.value.length) {
+      migratePoolState.value.confirmed = txResult;
+    }
   }
 
   function migrateBoostedPool(amount: string, staked: boolean, limit = '0') {

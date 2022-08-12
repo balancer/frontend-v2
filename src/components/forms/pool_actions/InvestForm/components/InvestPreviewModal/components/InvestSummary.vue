@@ -11,6 +11,7 @@ type Props = {
   priceImpact: number;
   isLoadingPriceImpact?: boolean;
   highPriceImpact?: boolean;
+  summaryTitle: string;
 };
 /**
  * PROPS & EMITS
@@ -28,9 +29,7 @@ const { currency } = useUserSettings();
 
 <template>
   <div class="summary-table">
-    <h6 class="p-2">
-      {{ $t('summary') }}
-    </h6>
+    <h6 class="p-2">{{ summaryTitle }}</h6>
     <div class="flex flex-col py-2">
       <div class="summary-table-row">
         <div class="summary-table-label">

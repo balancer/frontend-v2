@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
-import { usePoolMigration } from '@/composables/pools/usePoolMigration';
-import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
+import { computed, toRefs, watch } from 'vue';
+import { MigratePoolState } from '@/composables/pools/usePoolMigration';
+
 import useConfig from '@/composables/useConfig';
-import { configService } from '@/services/config/config.service';
 // Types
 import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { MigrateMathResponse } from '../../../composables/useMigrateMath';
-import { TokenInfo } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 
 /**
  * TYPES
@@ -19,23 +18,15 @@ type Props = {
   toPool: Pool;
   math: MigrateMathResponse;
   disabled?: boolean;
-  stakedPoolValue?: string;
-  unstakedPoolValue?: string;
-  stakedBptBalance: string;
-  unstakedBptBalance: string;
-  isStakedMigrationEnabled: boolean;
-  isUnstakedMigrationEnabled: boolean;
-  fromPoolTokenInfo: TokenInfo;
-  toPoolTokenInfo: TokenInfo;
+  actions: TransactionActionInfo[];
+  migratePoolState: MigratePoolState;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
-const emit = defineEmits<{
-  (e: 'success'): void;
-}>();
+defineEmits(['setCurrentActionIndex']);
 /**
  * STATE
  */
@@ -48,38 +39,20 @@ const { shouldFetchBatchSwap } = toRefs(props.math);
 const { networkConfig } = useConfig();
 const { explorerLinks, blockNumber } = useWeb3();
 
-const relayerAddress = ref(configService.network.addresses.batchRelayer);
-const relayerApproval = useRelayerApprovalQuery(relayerAddress);
-
-const { actions, migratePoolState } = usePoolMigration(
-  props.stakedBptBalance,
-  props.unstakedBptBalance,
-  props.unstakedPoolValue,
-  props.isUnstakedMigrationEnabled,
-  props.stakedPoolValue,
-  props.isStakedMigrationEnabled,
-  props.fromPool,
-  props.toPool,
-  props.fromPoolTokenInfo,
-  props.toPoolTokenInfo,
-  props.math.fiatTotalLabel.value,
-  relayerApproval.data
-);
-
 /**
  * COMPUTED
  */
 const explorerLink = computed(() =>
-  migratePoolState.value.receipt
-    ? explorerLinks.txLink(migratePoolState.value.receipt.transactionHash)
+  props.migratePoolState.receipt
+    ? explorerLinks.txLink(props.migratePoolState.receipt.transactionHash)
     : ''
 );
 
 const transactionInProgress = computed(
   () =>
-    migratePoolState.value.init ||
-    migratePoolState.value.confirming ||
-    migratePoolState.value.confirmed
+    props.migratePoolState.init ||
+    props.migratePoolState.confirming ||
+    props.migratePoolState.confirmed
 );
 
 /**
@@ -94,15 +67,6 @@ watch(
   },
   { immediate: true }
 );
-
-watch(
-  () => migratePoolState.value.confirmed,
-  confirmed => {
-    if (confirmed) {
-      emit('success');
-    }
-  }
-);
 </script>
 
 <template>
@@ -111,6 +75,7 @@ watch(
       v-if="!migratePoolState.confirmed"
       :actions="actions"
       :disabled="disabled"
+      @set-current-action-index="$emit('setCurrentActionIndex', $event)"
     />
     <template v-else>
       <div

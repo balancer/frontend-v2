@@ -51,6 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'success', value: any): void;
+  (e: 'setCurrentActionIndex', value: number): void;
 }>();
 
 const defaultActionState: TransactionActionState = {
@@ -88,6 +89,13 @@ watch(
   }
 );
 
+watch(
+  () => currentActionIndex.value,
+  (val: number) => {
+    emit('setCurrentActionIndex', val);
+  },
+  { immediate: true }
+);
 /**
  * COMPOSABLES
  */

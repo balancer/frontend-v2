@@ -35,4 +35,6 @@ export type TransactionActionInfo = {
   stepTooltip: string;
   action: () => Promise<TransactionResponse>;
   isSignAction?: boolean;
+  isStakeAction?: boolean;
+  isUnstakeAction?: boolean;
 };

@@ -248,7 +248,9 @@
         }
       },
       "summary": {
-        "title": "Migrate summary"
+        "title": "Migrate summary",
+        "stakeTitle": "Upgrade summary: Staked liquidity",
+        "unstakeTitle": "Upgrade summary: Unstaked liquidity"
       },
       "actions": {
         "title": "Migrate pool",
