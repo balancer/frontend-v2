@@ -9,8 +9,7 @@ import ConfigService from '../config/config.service';
 import BlocknativeProvider from './providers/blocknative.provider';
 import PolygonProvider from './providers/polygon.provider';
 import { GasPrice, GasSettings } from './providers/types';
-import { JsonRpcSigner } from '@ethersproject/providers';
-import { BytesLike } from 'ethers';
+import { JsonRpcSigner, TransactionRequest } from '@ethersproject/providers';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
@@ -33,17 +32,15 @@ export default class GasPriceService {
     }
   }
 
-  public async gasSettingsForDataCall(
+  public async settings(
     signer: JsonRpcSigner,
-    to: string,
-    data: BytesLike,
-    options: Record<string, any>,
+    options: TransactionRequest,
     forceEthereumLegacyTxType = false
   ): Promise<GasSettings> {
     let gasSettings: GasSettings = {};
 
     gasSettings.gasLimit = await this.getGasLimit(signer.estimateGas, [
-      { to, data },
+      options,
     ]);
 
     if (this.shouldSetGasPriceSettings(options)) {
