@@ -59,7 +59,10 @@ const fiatTotal = computed((): string =>
       </div>
       <BalLink
         tag="router-link"
-        :to="{ name: 'invest', params: { id: lockablePool.id } }"
+        :to="{
+          name: 'invest',
+          params: { networkName: 'ethereum', id: lockablePool.id },
+        }"
         external
         class="block mt-2 text-sm"
       >

@@ -82,14 +82,14 @@ const fiatTotal = computed(() => {
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         tag="router-link"
-        :to="{ name: 'invest' }"
+        :to="{ name: 'invest', params: { networkName: 'ethereum' } }"
         :label="$t('invest')"
         color="gradient"
         block
       />
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
-        :to="{ name: 'withdraw' }"
+        :to="{ name: 'withdraw', params: { networkName: 'ethereum' } }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
         color="blue"

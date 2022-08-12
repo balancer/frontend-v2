@@ -15,7 +15,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'home' }"
+                :to="{ name: 'home', params: { networkName: 'ethereum' } }"
               >
                 {{ $t('invest') }}
               </router-link>
@@ -23,7 +23,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'trade' }"
+                :to="{ name: 'trade', params: { networkName: 'ethereum' } }"
               >
                 {{ $t('trade') }}
               </router-link>

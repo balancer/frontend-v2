@@ -1,6 +1,12 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
-import { isGoerli } from '@/composables/useNetwork';
+import {
+  isGoerli,
+  networkFor,
+  networkFromName,
+} from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
+// import { Network } from '@balancer-labs/sdk';
 
 const ClaimPage = () =>
   import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
@@ -59,41 +65,41 @@ const routes: RouteRecordRaw[] = [
     component: HomePage,
   },
   {
-    path: '/trade/:assetIn?/:assetOut?',
+    path: '/:networkName/trade/:assetIn?/:assetOut?',
     name: 'trade',
     component: TradePage,
   },
   {
-    path: '/swap/:assetIn?/:assetOut?',
+    path: '/:networkName/swap/:assetIn?/:assetOut?',
     redirect: to => {
       return `/trade${to.path.split('/swap')[1]}`;
     },
   },
   {
-    path: '/pool/create/:tx?',
+    path: '/:networkName/pool/create/:tx?',
     name: 'create-pool',
     component: CreatePoolPage,
     meta: { layout: 'FocusedLayout' },
   },
   {
-    path: '/pool/:id',
+    path: '/:networkName/pool/:id',
     name: 'pool',
     component: PoolPage,
   },
   {
-    path: '/pool/:id/invest',
+    path: '/:networkName/pool/:id/invest',
     name: 'invest',
     component: PoolInvestPage,
     meta: { layout: 'PoolTransferLayout' },
   },
   {
-    path: '/pool/:id/withdraw',
+    path: '/:networkName/pool/:id/withdraw',
     name: 'withdraw',
     component: PoolWithdrawPage,
     meta: { layout: 'PoolTransferLayout' },
   },
   {
-    path: '/pool/migrate/:from/:to',
+    path: '/:networkName/pool/migrate/:from/:to',
     name: 'migrate-pool',
     component: MigratePoolPage,
     meta: { layout: 'FocusedLayout' },
@@ -115,11 +121,6 @@ const routes: RouteRecordRaw[] = [
     name: 'cookies-policy',
     component: CookiesPolicyPage,
     meta: { layout: 'ContentLayout' },
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'not-found',
-    redirect: '/',
   },
   {
     path: '/vebal',
@@ -147,6 +148,16 @@ const routes: RouteRecordRaw[] = [
     path: '/portfolio',
     name: 'portfolio',
     component: PortfolioPage,
+  },
+  {
+    path: '/:networkName?',
+    name: 'home',
+    component: HomePage,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    redirect: '/',
   },
 ];
 
@@ -176,6 +187,34 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   },
+});
+
+router.beforeEach((to, from, next) => {
+  const networkName = to.params.networkName.toString();
+  if (networkName) {
+    const networkFromUrl: Network = networkFromName(networkName);
+    console.log(networkFromUrl);
+    const localStorageNetwork: Network = networkFor(
+      localStorage.getItem('networkId') ?? '1'
+    );
+    console.log(localStorageNetwork);
+    console.log(localStorageNetwork === networkFromUrl);
+    if (!networkFromUrl) {
+      // missing or incorrect network name -> next() withtout network change
+      next();
+    } else if (localStorageNetwork === networkFromUrl) {
+      // if on the correct network -> next()
+      next();
+    } else {
+      // if on different network -> update localstorage and reload
+      console.log('Reloading');
+      localStorage.setItem('networkId', networkFromUrl.toString());
+      window.location.href = `/#${to.fullPath}`;
+      router.go(0);
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

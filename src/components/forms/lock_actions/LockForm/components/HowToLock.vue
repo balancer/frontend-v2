@@ -66,7 +66,10 @@ const steps = computed(() => [
               {{ $t('getVeBAL.howToLock.steps.investPart1') }}
               <BalLink
                 tag="router-link"
-                :to="{ name: 'invest', params: { id: lockablePool.id } }"
+                :to="{
+                  name: 'invest',
+                  params: { networkName: 'ethereum', id: lockablePool.id },
+                }"
                 external
               >
                 {{ lockablePoolTokenInfo.symbol }}

@@ -2,7 +2,6 @@ import { computed, ref } from 'vue';
 
 import config from '@/lib/config';
 import { configService } from '@/services/config/config.service';
-
 import { Network } from '@balancer-labs/sdk';
 
 /**
@@ -13,16 +12,12 @@ const localStorageNetworkId: Network | undefined =
   windowAvailable && localStorage.getItem('networkId')
     ? (Number(localStorage.getItem('networkId')) as Network)
     : undefined;
-const urlSearchParams = new URLSearchParams(
-  windowAvailable ? window.location.search : ''
-);
-const params = Object.fromEntries(urlSearchParams.entries());
-const paramsNetworkId: Network | undefined = params.networkId
-  ? (Number(params.networkId) as Network)
-  : undefined;
 
-const DEFAULT_NETWORK_ID =
-  paramsNetworkId ?? localStorageNetworkId ?? Network.MAINNET;
+const DEFAULT_NETWORK_ID = localStorageNetworkId ?? Network.MAINNET;
+
+/**
+ * COMPUTED
+ */
 
 export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
@@ -62,6 +57,14 @@ export function networkFor(key: string | number): Network {
 
 export function networkNameFor(network: Network): string {
   return config[network].network;
+}
+
+export function networkFromName(networkName: string): Network {
+  return Number(
+    Object.keys(config).find(
+      network => config[network].network === networkName
+    ) ?? '1'
+  ) as Network;
 }
 
 export function subdomainFor(network: Network): string {

@@ -241,7 +241,10 @@ watch(blockNumber, async () => {
 
       <BalBtn
         tag="router-link"
-        :to="{ name: 'pool', params: { id: route.params.id } }"
+        :to="{
+          name: 'pool',
+          params: { networkName: 'ethereum', id: route.params.id },
+        }"
         color="gray"
         outline
         block
