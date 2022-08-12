@@ -15,7 +15,7 @@ export class RawConcern extends TransactionConcern {
 
   public async sendTransaction(
     options: TransactionRequest,
-    forceEthereumLegacyTxType = false
+    forceLegacyTxType = false
   ): Promise<TransactionResponse> {
     console.log('sendTransaction', options);
 
@@ -23,7 +23,7 @@ export class RawConcern extends TransactionConcern {
       const gasSettings = this.gasPrice.settings(
         this.signer,
         options,
-        forceEthereumLegacyTxType
+        forceLegacyTxType
       );
       options = { ...options, ...gasSettings };
 

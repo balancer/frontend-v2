@@ -36,7 +36,7 @@ export default class GasPriceService {
   public async settings(
     signer: JsonRpcSigner,
     options: TransactionRequest,
-    forceEthereumLegacyTxType = false
+    forceLegacyTxType = false
   ): Promise<GasSettings> {
     let gasSettings: GasSettings = {};
 
@@ -47,7 +47,7 @@ export default class GasPriceService {
     if (this.shouldSetGasPriceSettings(options)) {
       gasSettings = await this.setGasPriceSettings(
         gasSettings,
-        forceEthereumLegacyTxType
+        forceLegacyTxType
       );
     }
 
@@ -59,7 +59,7 @@ export default class GasPriceService {
     action: string,
     params: any[],
     options: Record<string, any>,
-    forceEthereumLegacyTxType = false
+    forceLegacyTxType = false
   ): Promise<GasSettings> {
     let gasSettings: GasSettings = {};
 
@@ -71,7 +71,7 @@ export default class GasPriceService {
     if (this.shouldSetGasPriceSettings(options)) {
       gasSettings = await this.setGasPriceSettings(
         gasSettings,
-        forceEthereumLegacyTxType
+        forceLegacyTxType
       );
     }
 
@@ -98,7 +98,7 @@ export default class GasPriceService {
 
   private async setGasPriceSettings(
     gasSettings: GasSettings,
-    forceEthereumLegacyTxType: boolean
+    forceLegacyTxType: boolean
   ): Promise<GasSettings> {
     const gasPrice = await this.getLatest();
     if (gasPrice != null) {
@@ -106,7 +106,7 @@ export default class GasPriceService {
         ethereumTxType.value === EthereumTxType.EIP1559 &&
         gasPrice.maxFeePerGas != null &&
         gasPrice.maxPriorityFeePerGas != null &&
-        !forceEthereumLegacyTxType
+        !forceLegacyTxType
       ) {
         gasSettings.maxFeePerGas = gasPrice.maxFeePerGas;
         gasSettings.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;

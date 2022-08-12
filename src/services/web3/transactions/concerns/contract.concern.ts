@@ -10,7 +10,7 @@ type SendTransactionOpts = {
   action: string;
   params?: any[];
   options?: Record<string, any>;
-  forceEthereumLegacyTxType?: boolean;
+  forceLegacyTxType?: boolean;
 };
 
 export class ContractConcern extends TransactionConcern {
@@ -24,7 +24,7 @@ export class ContractConcern extends TransactionConcern {
     action,
     params = [],
     options = {},
-    forceEthereumLegacyTxType = false,
+    forceLegacyTxType = false,
   }: SendTransactionOpts): Promise<TransactionResponse> {
     const contractWithSigner = new Contract(contractAddress, abi, this.signer);
 
@@ -38,7 +38,7 @@ export class ContractConcern extends TransactionConcern {
         action,
         params,
         options,
-        forceEthereumLegacyTxType
+        forceLegacyTxType
       );
       options = { ...options, ...gasSettings };
 
@@ -53,7 +53,7 @@ export class ContractConcern extends TransactionConcern {
           action,
           params,
           options,
-          forceEthereumLegacyTxType: true,
+          forceLegacyTxType: true,
         });
       } else if (this.shouldLogFailure(error)) {
         await this.logFailedTx(contractWithSigner, action, params, options);
