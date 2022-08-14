@@ -19,11 +19,11 @@
       >
         {{ $t('networkSelection') }}:
       </div>
-      <div
+      <a
         v-for="network in networks"
         :key="network.id"
         class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
-        @click="setActiveNetwork(network.key)"
+        :href="`/#/${network.networkName}`"
       >
         <div class="flex items-center">
           <img
@@ -40,7 +40,7 @@
           name="check"
           class="text-blue-500 dark:text-blue-400"
         />
-      </div>
+      </a>
     </div>
   </BalPopover>
 </template>
@@ -50,7 +50,6 @@ import { computed, defineComponent } from 'vue';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
 
 export interface NetworkOption {
   id: string;
@@ -65,7 +64,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { setNetworkId, networkId: activeNetworkId } = useNetwork();
+    const { networkId: activeNetworkId } = useNetwork();
 
     // DATA
     const networks = [
@@ -73,18 +72,21 @@ export default defineComponent({
         id: 'ethereum',
         name: 'Ethereum',
         subdomain: 'app',
+        networkName: 'ethereum',
         key: '1',
       },
       {
         id: 'polygon',
         name: 'Polygon',
         subdomain: 'polygon',
+        networkName: 'polygon',
         key: '137',
       },
       {
         id: 'arbitrum',
         name: 'Arbitrum',
         subdomain: 'arbitrum',
+        networkName: 'arbitrum-one',
         key: '42161',
       },
     ];
@@ -118,11 +120,6 @@ export default defineComponent({
       return activeNetworkId.value.toString() === network.key;
     }
 
-    function setActiveNetwork(network: Network) {
-      setNetworkId(network);
-      location.reload();
-    }
-
     return {
       // composables
       activeNetworkId,
@@ -132,7 +129,6 @@ export default defineComponent({
       networks,
       activeNetwork,
       // methods
-      setActiveNetwork,
       isActive,
       appUrl,
       iconSrc,

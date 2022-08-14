@@ -193,12 +193,9 @@ router.beforeEach((to, from, next) => {
   const networkName = to.params.networkName.toString();
   if (networkName) {
     const networkFromUrl: Network = networkFromName(networkName);
-    console.log(networkFromUrl);
     const localStorageNetwork: Network = networkFor(
       localStorage.getItem('networkId') ?? '1'
     );
-    console.log(localStorageNetwork);
-    console.log(localStorageNetwork === networkFromUrl);
     if (!networkFromUrl) {
       // missing or incorrect network name -> next() withtout network change
       next();
@@ -207,7 +204,6 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       // if on different network -> update localstorage and reload
-      console.log('Reloading');
       localStorage.setItem('networkId', networkFromUrl.toString());
       window.location.href = `/#${to.fullPath}`;
       router.go(0);
