@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+import { Transaction } from '@/composables/useTransactions';
+import useWeb3 from '@/services/web3/useWeb3';
+
+interface Props {
+  transactions: Transaction[];
+  getExplorerLink: (id: string, type: Transaction['type']) => void;
+  cancelOrder: (orderId: string) => void;
+  isSuccessfulTransaction: (transaction: Transaction) => boolean;
+  isPendingTransactionStatus: (transaction: Transaction['status']) => boolean;
+}
+
+defineProps<Props>();
+
+/**
+ * COMPOSABLES
+ */
+const { connector } = useWeb3();
+
+/**
+ * COMPUTED
+ */
+const disablePending = computed(() => connector.value?.id === 'gnosis');
+</script>
+
 <template>
   <div>
     <div v-for="transaction in transactions" :key="transaction.id" class="mb-3">
@@ -73,58 +100,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
 
-import { Transaction } from '@/composables/useTransactions';
-import useWeb3 from '@/services/web3/useWeb3';
-
-export default defineComponent({
-  name: 'ActivityRows',
-
-  props: {
-    transactions: {
-      type: Array as PropType<Transaction[]>,
-      required: true,
-    },
-    getExplorerLink: {
-      type: Function as PropType<
-        (id: string, type: Transaction['type']) => void
-      >,
-      required: true,
-    },
-    cancelOrder: {
-      type: Function as PropType<(orderId: string) => void>,
-      required: true,
-    },
-    isSuccessfulTransaction: {
-      type: Function as PropType<(transaction: Transaction) => boolean>,
-      required: true,
-    },
-    isPendingTransactionStatus: {
-      type: Function as PropType<(transaction: Transaction) => boolean>,
-      required: true,
-    },
-  },
-
-  setup() {
-    /**
-     * COMPOSABLES
-     */
-    const { connector } = useWeb3();
-
-    /**
-     * COMPUTED
-     */
-    const disablePending = computed(() => connector.value?.id === 'gnosis');
-
-    return {
-      // computed
-      disablePending,
-    };
-  },
-});
-</script>
 <style scoped>
 .row {
   @apply flex justify-between items-center;

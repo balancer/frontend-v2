@@ -139,7 +139,7 @@
         :amountIn="trading.tokenInAmountInput.value"
         :addressOut="trading.tokenOut.value.address"
         :amountOut="trading.tokenOutAmountInput.value"
-        :pools="trading.sor.pools.value"
+        :pools="pools"
         :sorReturn="trading.sor.sorReturn.value"
         class="mt-4"
       />
@@ -156,13 +156,14 @@
 </template>
 
 <script lang="ts">
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
@@ -181,10 +182,8 @@ import { WrapType } from '@/lib/utils/balancer/wrapper';
 import { isRequired } from '@/lib/utils/validations';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
-
 import TradePair from './TradePair.vue';
 import TradeRoute from './TradeRoute.vue';
-
 export default defineComponent({
   components: {
     TradePair,
@@ -192,7 +191,6 @@ export default defineComponent({
     TradeRoute,
     TradeSettingsPopover,
   },
-
   setup() {
     // COMPOSABLES
     const store = useStore();
@@ -211,7 +209,6 @@ export default defineComponent({
       setTokenOutAddress,
       setInitialized,
     } = useTradeState();
-
     // DATA
     const exactIn = ref(true);
     const modalTradePreviewIsOpen = ref(false);
@@ -219,7 +216,6 @@ export default defineComponent({
       highPriceImpact: false,
     });
     const alwaysShowRoutes = lsGet('alwaysShowRoutes', false);
-
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
         case 'xs':
@@ -230,7 +226,6 @@ export default defineComponent({
           return 'xl';
       }
     });
-
     const trading = useTrading(
       exactIn,
       tokenInAddress,
@@ -238,7 +233,6 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount
     );
-
     // COMPUTED
     const { errorMessage } = useValidation(
       tokenInAddress,
@@ -246,23 +240,19 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount
     );
-
     const isHighPriceImpact = computed(
       () =>
         trading.sor.validationErrors.value.highPriceImpact &&
         !dismissedErrors.value.highPriceImpact
     );
-
     const tradeDisabled = computed(() => {
       const hasValidationError = errorMessage.value !== TradeValidation.VALID;
       const hasGnosisErrors =
         trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
-
       return hasValidationError || hasGnosisErrors || hasBalancerErrors;
     });
-
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
         return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
@@ -272,7 +262,12 @@ export default defineComponent({
       }
       return t('trade');
     });
-
+    const pools = computed<(Pool | SubgraphPoolBase)[]>(
+      // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
+      () => {
+        return trading.sor.pools.value;
+      }
+    );
     const error = computed(() => {
       if (trading.isBalancerTrade.value && !trading.isLoading.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
@@ -282,11 +277,9 @@ export default defineComponent({
           };
         }
       }
-
       if (trading.isGnosisTrade.value) {
         if (trading.gnosis.validationError.value != null) {
           const validationError = trading.gnosis.validationError.value;
-
           if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
             return {
               header: t('gnosisErrors.lowAmount.header'),
@@ -332,10 +325,8 @@ export default defineComponent({
           };
         }
       }
-
       return undefined;
     });
-
     const warning = computed(() => {
       if (trading.isGnosisTrade.value) {
         if (trading.gnosis.warnings.value.highFees) {
@@ -345,7 +336,6 @@ export default defineComponent({
           };
         }
       }
-
       return undefined;
     });
 
@@ -356,24 +346,19 @@ export default defineComponent({
         modalTradePreviewIsOpen.value = false;
       });
     }
-
     function handleErrorButtonClick() {
       if (trading.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;
       }
     }
-
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-
       if (assetIn === nativeAsset.deeplinkId) {
         assetIn = nativeAsset.address;
       } else if (isAddress(assetIn)) {
         assetIn = getAddress(assetIn);
       }
-
       let assetOut = router.currentRoute.value.params.assetOut as string;
-
       if (assetOut === nativeAsset.deeplinkId) {
         assetOut = nativeAsset.address;
       } else if (isAddress(assetOut)) {
@@ -382,35 +367,27 @@ export default defineComponent({
       setTokenInAddress(assetIn || store.state.trade.inputAsset);
       setTokenOutAddress(assetOut || store.state.trade.outputAsset);
     }
-
     function switchToWETH() {
       tokenInAddress.value = appNetworkConfig.addresses.weth;
     }
-
     function handlePreviewButton() {
       trading.resetSubmissionError();
-
       modalTradePreviewIsOpen.value = true;
     }
-
     function handlePreviewModalClose() {
       trading.resetSubmissionError();
-
       modalTradePreviewIsOpen.value = false;
     }
-
     // INIT
     onBeforeMount(() => {
       populateInitialTokens();
       setInitialized(true);
     });
-
     return {
       // constants
       TOKENS,
       // context
       TradeSettingsContext,
-
       // data
       tokenInAddress,
       tokenInAmount,
@@ -420,8 +397,8 @@ export default defineComponent({
       alwaysShowRoutes,
       exactIn,
       trading,
-
       // computed
+      pools,
       title,
       error,
       warning,
@@ -431,7 +408,6 @@ export default defineComponent({
       tradeCardShadow,
       handlePreviewButton,
       handlePreviewModalClose,
-
       // methods
       trade,
       switchToWETH,

@@ -33,6 +33,7 @@ const lockAmountFiatValue = computed(() =>
   bnum(props.lockablePool.totalLiquidity)
     .div(props.lockablePool.totalShares)
     .times(lockAmount.value)
+    .toString()
 );
 </script>
 

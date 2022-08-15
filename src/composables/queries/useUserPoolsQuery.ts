@@ -59,7 +59,7 @@ export default function useUserPoolsQuery(
     QUERY_KEYS.Pools.User(networkId, account, gaugeAddresses)
   );
 
-  const queryFn = async () => {
+  async function queryFn(): Promise<UserPoolsQueryResponse> {
     const poolShares = await balancerSubgraphService.poolShares.get({
       where: {
         userAddress: account.value.toLowerCase(),
@@ -191,7 +191,7 @@ export default function useUserPoolsQuery(
       tokens,
       totalInvestedAmount,
     };
-  };
+  }
 
   const queryOptions = reactive({
     enabled,

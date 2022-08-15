@@ -24,8 +24,8 @@ type Props = {
   loadingApr: boolean;
   noInitLiquidity: boolean;
   isStableLikePool: boolean;
-  pool: Pool;
-  poolApr: PoolAPRs;
+  pool?: Pool;
+  poolApr?: PoolAPRs;
   titleTokens: [string, OnchainTokenData][];
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
@@ -36,6 +36,8 @@ const props = withDefaults(defineProps<Props>(), {
   loadingPool: true,
   loadingApr: true,
   noInitLiquidity: false,
+  pool: undefined,
+  poolApr: undefined,
 });
 
 /**
@@ -122,7 +124,7 @@ const poolTypeLabel = computed(() => {
 
 <template>
   <div class="col-span-2 px-4 lg:px-0">
-    <BalLoadingBlock v-if="loadingPool" class="h-16" />
+    <BalLoadingBlock v-if="loadingPool || !pool" class="h-16" />
     <div v-else class="flex flex-col">
       <div class="flex flex-wrap items-center -mt-2">
         <div v-if="POOLS.Metadata[pool?.id]">

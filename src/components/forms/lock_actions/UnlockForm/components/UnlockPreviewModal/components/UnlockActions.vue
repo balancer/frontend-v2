@@ -128,11 +128,7 @@ async function submit() {
 
 <template>
   <div>
-    <BalActionSteps
-      v-if="!unlockActionState.confirmed"
-      :actions="actions"
-      :disabled="disabled"
-    />
+    <BalActionSteps v-if="!unlockActionState.confirmed" :actions="actions" />
     <template v-else>
       <div
         class="flex justify-between items-center mt-4 text-sm text-gray-400 dark:text-gray-600"
