@@ -35,6 +35,13 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [],
   },
+  '10': {
+    Balancer: {
+      Default: '',
+      Vetted: '',
+    },
+    External: [],
+  },
   '42': {
     Balancer: {
       Default:
