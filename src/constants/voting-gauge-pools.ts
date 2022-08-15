@@ -388,10 +388,13 @@ export const POLYGON_POOLS: Pool[] = [
   },
 ];
 
+export const OPTIMISM_POOLS = [];
+
 export const POOLS = [
   ...MAINNET_POOLS,
   ...ARBITRUM_POOLS,
   ...POLYGON_POOLS,
   ...KOVAN_POOLS,
   ...GOERLI_POOLS,
+  ...OPTIMISM_POOLS,
 ];
