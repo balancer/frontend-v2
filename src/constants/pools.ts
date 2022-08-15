@@ -21,8 +21,14 @@ type PoolMetadata = {
   hasIcon: boolean;
 };
 
+export type NamedPool =
+  | 'staBAL'
+  | 'bbAaveUSDDeprecated'
+  | 'bbAaveUSD'
+  | 'B-80BAL-20WETH';
+
 export type Pools = {
-  IdsMap: Partial<Record<'staBAL' | 'bbAaveUSD' | 'B-80BAL-20WETH', string>>;
+  IdsMap: Partial<Record<NamedPool, string>>;
   Pagination: {
     PerPage: number;
     PerPool: number;
@@ -130,6 +136,8 @@ const POOLS_KOVAN: Pools = {
 const POOLS_GOERLI: Pools = {
   IdsMap: {
     bbAaveUSD:
+      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
+    bbAaveUSDDeprecated:
       '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
     'B-80BAL-20WETH':
       '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
@@ -154,6 +162,7 @@ const POOLS_GOERLI: Pools = {
       '0xb60e46d90f2de35f7062a27d3a98749414036d5d000200000000000000000061',
       '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062',
       '0xc957b1acceb21707b782eb8eee2ed8e20088463d000200000000000000000076',
+      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
     ],
   },
   Investment: {
