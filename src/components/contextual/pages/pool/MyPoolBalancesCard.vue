@@ -8,6 +8,7 @@ import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -41,6 +42,7 @@ const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
 const {
   userData: { stakedSharesForProvidedPool },
 } = useStaking();
+const { networkSlug } = useNetwork();
 const router = useRouter();
 
 /**
@@ -135,7 +137,7 @@ function navigateToPoolMigration(pool: Pool) {
     },
     query: {
       returnRoute: 'pool',
-      returnParams: JSON.stringify({ id: pool.id }),
+      returnParams: JSON.stringify({ id: pool.id, networkSlug }),
     },
   });
 }

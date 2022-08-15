@@ -3,6 +3,7 @@ import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { Pool } from '@/services/pool/types';
@@ -27,6 +28,7 @@ const props = defineProps<Props>();
  */
 const { balanceFor } = useTokens();
 const { fNum2 } = useNumbers();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -61,7 +63,7 @@ const fiatTotal = computed((): string =>
         tag="router-link"
         :to="{
           name: 'invest',
-          params: { networkName: 'ethereum', id: lockablePool.id },
+          params: { networkSlug, id: lockablePool.id },
         }"
         external
         class="block mt-2 text-sm"

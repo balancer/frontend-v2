@@ -13,6 +13,7 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import useMigrateMath from '../../composables/useMigrateMath';
+import useNetwork from '@/composables/useNetwork';
 import { PoolMigrationInfo } from '../../types';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
@@ -45,6 +46,7 @@ const { fromPool, toPool } = toRefs(props);
 const router = useRouter();
 
 const migrateMath = useMigrateMath(fromPool, toPool);
+const { networkSlug } = useNetwork();
 const { hasBpt, fiatTotalLabel, fiatTotal } = migrateMath;
 
 /**
@@ -54,7 +56,10 @@ onBeforeMount(() => {
   migrateMath.getBatchSwap();
 
   if (bnum(fiatTotal.value).lt(MIN_FIAT_VALUE_POOL_MIGRATION)) {
-    router.push({ name: 'pool', params: { id: fromPool.value.id } });
+    router.push({
+      name: 'pool',
+      params: { id: fromPool.value.id, networkSlug },
+    });
   }
 });
 </script>

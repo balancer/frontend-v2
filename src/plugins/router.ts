@@ -190,7 +190,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const networkSlug = to.params.networkSlug.toString();
+  const networkSlug = to.params.networkSlug?.toString();
   if (networkSlug) {
     const networkFromUrl: Network = networkFromSlug(networkSlug);
     const localStorageNetwork: Network = networkFor(

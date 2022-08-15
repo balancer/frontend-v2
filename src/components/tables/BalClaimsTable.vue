@@ -18,6 +18,7 @@ import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -46,6 +47,7 @@ const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
 const router = useRouter();
+const { networkSlug } = useNetwork();
 
 /**
  * STATE
@@ -115,7 +117,7 @@ const totalClaimValue = computed((): string =>
  * METHODS
  */
 function redirectToPool({ pool }: { pool: GaugePool }) {
-  router.push({ name: 'pool', params: { id: pool.id } });
+  router.push({ name: 'pool', params: { id: pool.id, networkSlug } });
 }
 </script>
 
