@@ -6,6 +6,7 @@ import AppLogo from '@/components/images/AppLogo.vue';
 import useAlerts from '@/composables/useAlerts';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useFathom from '@/composables/useFathom';
+import useNetwork from '@/composables/useNetwork';
 
 import AppNavActions from './AppNavActions.vue';
 import AppNavAlert from './AppNavAlert.vue';
@@ -22,6 +23,7 @@ const appNav = ref<HTMLDivElement>();
 const { bp, isDesktop } = useBreakpoints();
 const { trackGoal, Goals } = useFathom();
 const { currentAlert } = useAlerts();
+const { networkSlug } = useNetwork();
 
 /**
  * METHODS
@@ -54,7 +56,7 @@ onUnmounted(() => {
     <div class="flex justify-between items-center h-full">
       <div class="flex items-center h-full">
         <router-link
-          :to="{ name: 'home', params: { networkSlug: 'ethereum' } }"
+          :to="{ name: 'home', params: { networkSlug } }"
           @click="trackGoal(Goals.ClickNavLogo)"
         >
           <AppIcon v-if="['xs', 'sm'].includes(bp)" />

@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router';
 import useWeb3 from '@/services/web3/useWeb3';
 import DesktopLinkItem from './DesktopLinkItem.vue';
+import useNetwork from '@/composables/useNetwork';
 
 const { isGoerli } = useWeb3();
 
@@ -9,6 +10,7 @@ const { isGoerli } = useWeb3();
  * COMPOSABLES
  */
 const route = useRoute();
+const { networkSlug } = useNetwork();
 
 /**
  * METHODS
@@ -22,38 +24,38 @@ function isActive(page: string): boolean {
 <template>
   <div class="desktop-links">
     <DesktopLinkItem
-      :to="{ name: 'home', params: { networkSlug: 'ethereum' } }"
+      :to="{ name: 'home', params: { networkSlug } }"
       :active="isActive('home')"
     >
       {{ $t('invest') }}
     </DesktopLinkItem>
     <DesktopLinkItem
-      :to="{ name: 'trade', params: { networkSlug: 'ethereum' } }"
+      :to="{ name: 'trade', params: { networkSlug } }"
       :active="isActive('trade')"
     >
       {{ $t('trade') }}
     </DesktopLinkItem>
     <DesktopLinkItem
       v-if="isGoerli"
-      :to="{ name: 'faucet', params: { networkSlug: 'goerli' } }"
+      :to="{ name: 'faucet', params: { networkSlug } }"
       :active="isActive('faucet')"
     >
       Faucet
     </DesktopLinkItem>
     <DesktopLinkItem
-      :to="{ name: 'portfolio', params: { networkSlug: 'ethereum' } }"
+      :to="{ name: 'portfolio', params: { networkSlug } }"
       :active="isActive('portfolio')"
     >
       {{ $t('portfolio') }}
     </DesktopLinkItem>
     <DesktopLinkItem
-      :to="{ name: 'vebal', params: { networkSlug: 'ethereum' } }"
+      :to="{ name: 'vebal', params: { networkSlug } }"
       :active="isActive('vebal')"
     >
       veBAL
     </DesktopLinkItem>
     <DesktopLinkItem
-      :to="{ name: 'claim', params: { networkSlug: 'ethereum' } }"
+      :to="{ name: 'claim', params: { networkSlug } }"
       :active="isActive('claim')"
     >
       <div class="flex items-center">

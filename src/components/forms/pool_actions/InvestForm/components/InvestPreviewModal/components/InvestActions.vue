@@ -18,6 +18,7 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
+import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
@@ -77,6 +78,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
+const { networkSlug } = useNetwork();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
@@ -220,7 +222,7 @@ watch(blockNumber, async () => {
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"
-        :to="{ name: 'get-vebal', params: { networkSlug: 'ethereum' } }"
+        :to="{ name: 'get-vebal', params: { networkSlug } }"
         color="gradient"
         block
         class="flex mt-2"
@@ -243,7 +245,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkSlug: 'ethereum', id: route.params.id },
+          params: { networkSlug, id: route.params.id },
         }"
         color="gray"
         outline

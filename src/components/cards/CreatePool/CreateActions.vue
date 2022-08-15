@@ -8,6 +8,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useConfig from '@/composables/useConfig';
 import useEthers from '@/composables/useEthers';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
+import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
@@ -68,6 +69,7 @@ const {
   needsSeeding,
   createPoolTxHash,
 } = usePoolCreation();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -161,7 +163,7 @@ function handleSuccess(details: any): void {
       </div>
       <BalBtn
         tag="router-link"
-        :to="{ name: 'pool', params: { networkSlug: 'ethereum', id: poolId } }"
+        :to="{ name: 'pool', params: { networkSlug, id: poolId } }"
         color="gray"
         outline
         block

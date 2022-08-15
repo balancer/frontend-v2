@@ -17,6 +17,7 @@ import { isStableLike } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useUserSettings from '@/composables/useUserSettings';
+import useNetwork from '@/composables/useNetwork';
 // Libs
 import { balancer } from '@/lib/balancer.sdk';
 // Services
@@ -87,6 +88,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { slippageScaled } = useUserSettings();
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
+const { networkSlug } = useNetwork();
 
 const migrateAction: TransactionActionInfo = {
   label: t('migratePool.previewModal.actions.title'),
@@ -263,7 +265,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkSlug: 'ethereum', id: toPool.id },
+          params: { networkSlug, id: toPool.id },
         }"
         color="gray"
         outline

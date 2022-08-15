@@ -5,6 +5,7 @@ import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/compos
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { lpTokensFor } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -29,6 +30,7 @@ const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -82,14 +84,14 @@ const fiatTotal = computed(() => {
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         tag="router-link"
-        :to="{ name: 'invest', params: { networkSlug: 'ethereum' } }"
+        :to="{ name: 'invest', params: { networkSlug } }"
         :label="$t('invest')"
         color="gradient"
         block
       />
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
-        :to="{ name: 'withdraw', params: { networkSlug: 'ethereum' } }"
+        :to="{ name: 'withdraw', params: { networkSlug } }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
         color="blue"

@@ -16,6 +16,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
+import useNetwork from '@/composables/useNetwork';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -74,6 +75,7 @@ const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   ref([props.lockAmount])
 );
 const { fNum2 } = useNumbers();
+const { networkSlug } = useNetwork();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -232,7 +234,7 @@ onBeforeMount(async () => {
       </div>
       <BalBtn
         tag="router-link"
-        :to="{ name: 'vebal', params: { networkSlug: 'ethereum' } }"
+        :to="{ name: 'vebal', params: { networkSlug } }"
         color="gray"
         outline
         block

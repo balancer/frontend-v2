@@ -11,7 +11,7 @@
       {{ $t('invest') }}
     </router-link>
     <router-link
-      :to="{ name: 'trade', params: { networkSlug: 'ethereum' } }"
+      :to="{ name: 'trade', params: { networkSlug } }"
       :class="[
         'toggle-link px-6 rounded-r-lg',
         { [activeClasses]: isTradePage },
@@ -28,6 +28,7 @@ import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 
 import useFathom from '@/composables/useFathom';
+import useNetwork from '@/composables/useNetwork';
 
 export default defineComponent({
   name: 'AppNavToggle',
@@ -38,6 +39,7 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
+    const { networkSlug } = useNetwork();
     const activeClasses = 'gradient-blue-l-to-r text-white rounded-lg';
     const isTradePage = computed(() => route.name === 'trade');
     const { trackGoal, Goals } = useFathom();
@@ -45,6 +47,7 @@ export default defineComponent({
     return {
       isTradePage,
       activeClasses,
+      networkSlug,
       trackGoal,
       Goals,
     };

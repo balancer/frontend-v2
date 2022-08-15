@@ -20,6 +20,7 @@ import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
+import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -82,6 +83,7 @@ const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
   toRef(props, 'pool')
 );
+const { networkSlug } = useNetwork();
 
 const {
   bptIn,
@@ -239,7 +241,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkSlug: 'ethereum', id: route.params.id },
+          params: { networkSlug, id: route.params.id },
         }"
         color="gray"
         outline

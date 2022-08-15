@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 
 import { isVeBalPool } from '@/composables/usePool';
+import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { PoolWithShares } from '@/services/pool/types';
 
@@ -20,6 +21,9 @@ const props = withDefaults(defineProps<Props>(), {});
 const emit = defineEmits<{
   (e: 'click:stake', value: PoolWithShares): void;
 }>();
+
+/** COMPOSABLES */
+const { networkSlug } = useNetwork();
 
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
@@ -41,7 +45,7 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       tag="router-link"
       :to="{
         name: 'get-vebal',
-        query: { networkSlug: 'ethereum', returnRoute: $route.name },
+        query: { networkSlug, returnRoute: $route.name },
       }"
       color="gradient-pink-yellow"
       size="sm"
