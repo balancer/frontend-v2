@@ -115,8 +115,8 @@ jobs:
         uses: actions/upload-artifact@v3
         # Upload artifacts only if tests failed
         if: failure()
-        run: ls -la
         with:
+          command: ls -la
           name: screenshots
           path: |
             tests/e2e/screenshots
