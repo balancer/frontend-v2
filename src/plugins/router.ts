@@ -194,7 +194,7 @@ router.beforeEach((to, from, next) => {
   if (networkSlug) {
     const networkFromUrl: Network = networkFromSlug(networkSlug);
     const localStorageNetwork: Network = networkFor(
-      localStorage.getItem('networkId') ?? '1'
+      localStorage.getItem('networkId') ?? process.env.VUE_APP_NETWORK ?? '1'
     );
     if (!networkFromUrl) {
       // missing or incorrect network name -> next() withtout network change

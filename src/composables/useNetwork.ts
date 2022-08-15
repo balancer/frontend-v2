@@ -13,7 +13,10 @@ const localStorageNetworkId: Network | undefined =
     ? (Number(localStorage.getItem('networkId')) as Network)
     : undefined;
 
-const DEFAULT_NETWORK_ID = localStorageNetworkId ?? Network.MAINNET;
+const DEFAULT_NETWORK_ID =
+  localStorageNetworkId ||
+  Number(process.env.VUE_APP_NETWORK) ||
+  Network.MAINNET;
 export const networkSlug = config[DEFAULT_NETWORK_ID].slug;
 
 /**
