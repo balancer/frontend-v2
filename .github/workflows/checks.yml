@@ -102,6 +102,12 @@ jobs:
           repository: balancer-labs/frontend-e2e
           path: e2e
       - name: Cypress run
-        run: | 
-          cd e2e
-          ls -la
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: e2e
+          # start the server in the background
+          start: npm run serve
+          # wait for the server to start
+          wait-on: 'http://localhost:8080'
+          # Use custom test command for synpress
+          command: npm run synpress:ci
