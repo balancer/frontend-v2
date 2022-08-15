@@ -115,7 +115,10 @@ jobs:
         uses: actions/upload-artifact@v3
         # Upload artifacts only if tests failed
         if: failure()
+        run: ls -la
         with:
           name: screenshots
-          path: e2e/tests/e2e/screenshots
+          path: |
+            tests/e2e/screenshots
+            tests/e2e/videos
           retention-days: 2
