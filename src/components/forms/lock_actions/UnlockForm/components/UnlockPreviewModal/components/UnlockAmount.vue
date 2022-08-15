@@ -66,7 +66,7 @@ function formatWeightLabel(weight: string) {
       </div>
       <div class="grid grid-cols-2 gap-1">
         <BalAsset
-          v-for="tokenAddress in lockablePool.tokenAddresses"
+          v-for="tokenAddress in lockablePool.tokensList"
           :key="tokenAddress"
           :address="tokenAddress"
           :size="30"

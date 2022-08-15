@@ -21,8 +21,14 @@ type PoolMetadata = {
   hasIcon: boolean;
 };
 
+export type NamedPool =
+  | 'staBAL'
+  | 'bbAaveUSDDeprecated'
+  | 'bbAaveUSD'
+  | 'B-80BAL-20WETH';
+
 export type Pools = {
-  IdsMap: Partial<Record<'staBAL' | 'bbAaveUSD' | 'B-80BAL-20WETH', string>>;
+  IdsMap: Partial<Record<NamedPool, string>>;
   Pagination: {
     PerPage: number;
     PerPool: number;
@@ -130,6 +136,8 @@ const POOLS_KOVAN: Pools = {
 const POOLS_GOERLI: Pools = {
   IdsMap: {
     bbAaveUSD:
+      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
+    bbAaveUSDDeprecated:
       '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
     'B-80BAL-20WETH':
       '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
@@ -398,9 +406,10 @@ const POOLS_ARBITRUM: Pools = {
     AllowList: [
       '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
       '0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016', // arbitrum
-      '0x386b5d43ba8b97c43d4afb4cdae7877a1b295e8a000000000000000000000020', // tusd arbitrum,
-      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d', // mai,
+      '0x386b5d43ba8b97c43d4afb4cdae7877a1b295e8a000000000000000000000020', // tusd arbitrum
+      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d', // mai
       '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f', // VST
+      '0xd89746affa5483627a87e55713ec1905114394950002000000000000000000bf', // fluid stable
     ],
   },
   Investment: {

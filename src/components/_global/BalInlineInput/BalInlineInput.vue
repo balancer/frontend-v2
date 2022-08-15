@@ -11,7 +11,7 @@ import { computed, ref, useAttrs } from 'vue';
 
 import useInputEvents from '@/components/_global/BalTextInput/composables/useInputEvents';
 import useInputValidation from '@/components/_global/BalTextInput/composables/useInputValidation';
-import { HtmlInputEvent } from '@/types';
+import { Rules } from '@/types';
 
 import useInputStyles from './composables/useInlineInputStyles';
 
@@ -22,8 +22,6 @@ type InputValue = string | number;
 type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
 type InputSize = 'xs' | 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
-type RuleFunction = (val: InputValue) => string;
-export type Rules = RuleFunction[];
 
 type Props = {
   name: string;
@@ -62,7 +60,7 @@ const emit = defineEmits<{
   (e: 'input', value: string): void;
   (e: 'update:modelValue', value: string): void;
   (e: 'update:isValid', value: boolean): void;
-  (e: 'keydown', value: HtmlInputEvent);
+  (e: 'keydown', value: KeyboardEvent);
   (e: 'editToggled', value: boolean): void;
   (e: 'save'): void;
 }>();
@@ -114,7 +112,7 @@ function toggleEditable() {
   }, 200);
 }
 
-function handleBlur(e: HtmlInputEvent) {
+function handleBlur(e: FocusEvent) {
   toggleEditable();
   onBlur(e);
 }

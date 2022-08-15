@@ -3,7 +3,8 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 import ClaimBalBtn from '@/components/btns/ClaimBalBtn/ClaimBalBtn.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -14,7 +15,8 @@ import {
   orderedTokenAddresses,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { GaugePool } from '@/pages/claim.vue';
+import { GaugePool } from '@/composables/useClaimsData';
+
 import { Gauge } from '@/services/balancer/gauges/types';
 
 /**

@@ -165,7 +165,7 @@ function handleShowPreviewModal() {
   </BalCard>
   <teleport to="#modal">
     <LockPreviewModal
-      v-if="showPreviewModal"
+      v-if="showPreviewModal && veBalLockInfo"
       :lockablePool="lockablePool"
       :lockablePoolTokenInfo="lockablePoolTokenInfo"
       :lockAmount="lockAmount"

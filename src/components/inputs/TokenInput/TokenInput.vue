@@ -2,14 +2,13 @@
 import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
+import { Rules } from '@/types';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
-import { HtmlInputEvent } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -18,6 +17,7 @@ import { TokenInfo } from '@/types/TokenList';
 type InputValue = string | number;
 
 type Props = {
+  name: string;
   amount: InputValue;
   address?: string;
   weight?: number | string;
@@ -78,7 +78,7 @@ const emit = defineEmits<{
   (e: 'update:amount', value: string): void;
   (e: 'update:address', value: string): void;
   (e: 'update:isValid', value: boolean): void;
-  (e: 'keydown', value: HtmlInputEvent);
+  (e: 'keydown', value: KeyboardEvent);
 }>();
 
 /**
@@ -220,6 +220,7 @@ watchEffect(() => {
 <template>
   <BalTextInput
     v-model="_amount"
+    :name="name"
     :placeholder="placeholder || '0.0'"
     type="number"
     :label="label"

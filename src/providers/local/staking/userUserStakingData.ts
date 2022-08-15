@@ -83,7 +83,7 @@ export type UserStakingDataResponse = {
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
   stakedSharesMap: Ref<Record<string, string>>;
-  poolBoosts: Ref<Record<string, string>>;
+  poolBoosts: Ref<Record<string, string> | undefined>;
   isLoadingBoosts: Ref<boolean>;
   getBoostFor: (poolAddress: string) => string;
 };
@@ -225,7 +225,9 @@ export default function useUserStakingData(
     () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
   );
 
-  const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery(
+  const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery<
+    Record<string, string>
+  >(
     ['gauges', 'boosts', { account, userGaugeShares }],
     async () => {
       const boosts = stakingRewardsService.getUserBoosts({

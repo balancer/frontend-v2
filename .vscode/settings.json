@@ -5,6 +5,7 @@
     "source.fixAll.stylelint": true
   },
   "eslint.validate": ["javascript", "javascriptreact", "vue"],
+  "eslint.format.enable": true,
   "stylelint.validate": ["css", "less", "postcss", "vue"],
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",

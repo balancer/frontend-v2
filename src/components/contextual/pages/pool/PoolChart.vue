@@ -12,12 +12,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
-import {
-  Pool,
-  PoolSnapshot,
-  PoolSnapshots,
-  PoolType,
-} from '@/services/pool/types';
+import { PoolSnapshot, PoolSnapshots, PoolType } from '@/services/pool/types';
 
 /**
  * TYPES
@@ -28,10 +23,10 @@ export type PoolChartPeriod = {
 };
 
 type Props = {
-  historicalPrices: HistoricalPrices;
-  snapshots: PoolSnapshots;
+  historicalPrices?: HistoricalPrices | null;
+  snapshots?: PoolSnapshots | null;
   loading: boolean;
-  pool: Pool;
+
   // these props are added to prevent line chart rerender on each pool update
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
@@ -57,7 +52,7 @@ interface PoolChartData {
   chartType: string;
   data: {
     name: string;
-    values: (readonly (string | number)[])[];
+    values: (readonly [string, number])[];
   }[];
   defaultHeaderStateValue: string;
 }
@@ -67,6 +62,8 @@ interface PoolChartData {
  */
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
+  historicalPrices: null,
+  snapshots: null,
 });
 
 /**
@@ -125,7 +122,7 @@ const timestamps = computed(() =>
 );
 
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
-  const tvlValues: (readonly (string | number)[])[] = [];
+  const tvlValues: (readonly [string, number])[] = [];
 
   // temporary statement until we start get prices from coingecko for
   if (props.poolType === PoolType.StablePhantom) {
@@ -133,11 +130,16 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       const timestamp = timestamps.value[idx];
       if (idx === 0) {
         tvlValues.push(
-          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+          Object.freeze<[string, number]>([
+            timestamp,
+            Number(props.totalLiquidity || 0),
+          ])
         );
         return;
       }
-      tvlValues.push(Object.freeze([timestamp, Number(snapshot.liquidity)]));
+      tvlValues.push(
+        Object.freeze<[string, number]>([timestamp, Number(snapshot.liquidity)])
+      );
     });
   } else {
     periodSnapshots.forEach((snapshot, idx) => {
@@ -145,12 +147,16 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       // get today's TVL value from pool.totalLiquidity due to differences in prices during the day
       if (idx === 0) {
         tvlValues.push(
-          Object.freeze([timestamp, Number(props.totalLiquidity || 0)])
+          Object.freeze<[string, number]>([
+            timestamp,
+            Number(props.totalLiquidity || 0),
+          ])
         );
         return;
       }
 
-      const prices = props.historicalPrices[snapshot.timestamp];
+      const prices =
+        props.historicalPrices && props.historicalPrices[snapshot.timestamp];
 
       // timestamp is removed if there are no prices from coingecko
       if (!prices || prices.length < (props.tokensList?.length || 0)) {
@@ -183,7 +189,9 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
         0
       );
 
-      tvlValues.push(Object.freeze([timestamp, snapshotPoolValue]));
+      tvlValues.push(
+        Object.freeze<[string, number]>([timestamp, snapshotPoolValue])
+      );
     });
   }
 
@@ -223,22 +231,28 @@ function getFeesData(
   isAllTimeSelected: boolean,
   pariodLastSnapshotIdx: number
 ) {
-  const feesValues = periodSnapshots.map((snapshot, idx) => {
-    const value = parseFloat(snapshot.swapFees);
-    let prevValue: number;
+  const feesValues = periodSnapshots.map(
+    (snapshot, idx): readonly [string, number] => {
+      const value = parseFloat(snapshot.swapFees);
+      let prevValue: number;
 
-    // get value of prev snapshot
-    // if it is last value among all snapshots, then prev value is 0
-    if (idx === snapshotValues.value.length - 1) {
-      prevValue = 0;
-    } // if it is last value among certain period snapshots, then we get prev value from all snapshots
-    else if (idx === pariodLastSnapshotIdx) {
-      prevValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
-    } else {
-      prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
+      // get value of prev snapshot
+      // if it is last value among all snapshots, then prev value is 0
+      if (idx === snapshotValues.value.length - 1) {
+        prevValue = 0;
+      } // if it is last value among certain period snapshots, then we get prev value from all snapshots
+      else if (idx === pariodLastSnapshotIdx) {
+        prevValue = parseFloat(snapshotValues.value[idx + 1].swapFees);
+      } else {
+        prevValue = parseFloat(periodSnapshots[idx + 1].swapFees);
+      }
+      const result = Object.freeze<[string, number]>([
+        timestamps.value[idx],
+        value - prevValue,
+      ]);
+      return result;
     }
-    return Object.freeze([timestamps.value[idx], value - prevValue]);
-  });
+  );
 
   const defaultHeaderStateValue =
     Number(periodSnapshots[0].swapFees) -
@@ -279,7 +293,10 @@ function getVolumeData(
     } else {
       prevValue = parseFloat(periodSnapshots[idx + 1].swapVolume);
     }
-    return Object.freeze([timestamps.value[idx], value - prevValue]);
+    return Object.freeze<[string, number]>([
+      timestamps.value[idx],
+      value - prevValue,
+    ]);
   });
 
   const defaultHeaderStateValue =

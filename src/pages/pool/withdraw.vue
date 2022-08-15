@@ -16,7 +16,10 @@ const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 
 <template>
   <div>
-    <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-96" />
+    <BalLoadingBlock
+      v-if="loadingPool || !pool || !transfersAllowed"
+      class="h-96"
+    />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">
