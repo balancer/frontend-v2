@@ -65,6 +65,6 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       Vetted:
         'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/arbitrum.vetted.tokenlist.json',
     },
-    External: ['https://tracer.finance/tokens'],
+    External: [],
   },
 };

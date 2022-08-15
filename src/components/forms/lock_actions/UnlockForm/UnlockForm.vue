@@ -55,7 +55,12 @@ const isLoading = computed(() =>
 
 <template>
   <Col3Layout offsetGutters>
-    <BalLoadingBlock v-if="isLoading" class="h-96" />
+    <BalLoadingBlock
+      v-if="
+        isLoading || !veBalLockInfo || !lockablePool || !lockablePoolTokenInfo
+      "
+      class="h-96"
+    />
     <VeBalUnlockForm
       v-else
       :key="

@@ -39,6 +39,7 @@ const emit = defineEmits<{
  * STATE
  */
 const openTokenModal = ref(false);
+const optionTokens = ref<Record<string, TokenInfo>>({});
 
 /**
  * COMPOSABLEs
@@ -123,17 +124,20 @@ function toggleModal(): void {
       </template>
       <template #option="{ option: address }">
         <div
-          :set="(optionToken = getToken(address) || {})"
+          :set="(optionTokens[address] = getToken(address) || {})"
           class="flex justify-between items-center"
         >
           <div class="flex items-center">
-            <BalAsset :address="optionToken?.address" class="shadow" />
+            <BalAsset
+              :address="optionTokens[address]?.address"
+              class="shadow"
+            />
             <span class="ml-1 font-medium">
-              {{ optionToken?.symbol }}
+              {{ optionTokens[address]?.symbol }}
             </span>
           </div>
           <BalIcon
-            v-if="isSameAddress(optionToken.address, modelValue)"
+            v-if="isSameAddress(optionTokens[address].address, modelValue)"
             name="check"
             class="ml-4 text-blue-500 dark:text-blue-400"
           />

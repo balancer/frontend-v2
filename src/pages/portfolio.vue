@@ -23,6 +23,8 @@ const { lockPool, lock } = useLock();
 const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
+
+const migratableUserPoolsKey = computed(() => JSON.stringify(userPools.value));
 </script>
 
 <template>
@@ -54,7 +56,7 @@ const migratableUserPools = computed(() => {
                 {{ $t('poolsToMigrate') }}
               </h5>
               <PoolsTable
-                :key="migratableUserPools"
+                :key="migratableUserPoolsKey"
                 :isLoading="isLoadingUserPools"
                 :data="migratableUserPools"
                 :noPoolsLabel="$t('noInvestments')"

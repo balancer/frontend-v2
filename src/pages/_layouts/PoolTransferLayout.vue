@@ -47,7 +47,10 @@ usePoolTransfersGuard();
 
     <Col3Layout offsetGutters mobileHideGutters>
       <template v-if="!upToLargeBreakpoint" #gutterLeft>
-        <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
+        <BalLoadingBlock
+          v-if="loadingPool || !transfersAllowed || !pool"
+          class="h-64"
+        />
         <MyWalletTokensCard
           v-else
           v-model:useNativeAsset="useNativeAsset"
@@ -71,9 +74,10 @@ usePoolTransfersGuard();
           },
         ]"
       >
+        <!-- TODO: Show some 404 message if Pool not found -->
         <template #myWalletTokens>
           <BalLoadingBlock
-            v-if="loadingPool || !transfersAllowed"
+            v-if="loadingPool || !pool || !transfersAllowed"
             class="h-64"
           />
           <MyWalletTokensCard
@@ -87,7 +91,7 @@ usePoolTransfersGuard();
         </template>
         <template #myPoolBalances>
           <BalLoadingBlock
-            v-if="loadingPool || !transfersAllowed"
+            v-if="loadingPool || !pool || !transfersAllowed"
             class="h-64"
           />
           <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
@@ -95,7 +99,10 @@ usePoolTransfersGuard();
       </BalAccordion>
 
       <template v-if="!upToLargeBreakpoint" #gutterRight>
-        <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-64" />
+        <BalLoadingBlock
+          v-if="loadingPool || !pool || !transfersAllowed"
+          class="h-64"
+        />
         <MyPoolBalancesCard v-else :pool="pool" />
       </template>
     </Col3Layout>

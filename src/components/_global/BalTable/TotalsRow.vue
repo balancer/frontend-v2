@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { tail } from 'lodash';
 
-import { ColumnDefinition, Sticky } from './BalTable.vue';
+import { ColumnDefinition, Sticky } from '@/components/_global/BalTable/types';
 
 type Props = {
   isColumnStuck?: boolean;
-  onRowClick: (data: any) => void;
+  onRowClick?: (data: any) => void;
   sticky?: Sticky;
   columns: ColumnDefinition<any>[];
 };
@@ -27,7 +27,10 @@ function getHorizontalStickyClass(index: number) {
 <template>
   <tbody>
     <tr
-      :class="['bg-white z-10 row-bg group', { 'cursor-pointer': onRowClick }]"
+      :class="[
+        'bg-white z-10 row-bg group',
+        { 'cursor-pointer': !!props.onRowClick },
+      ]"
     >
       <td
         :class="[
