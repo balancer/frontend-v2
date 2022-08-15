@@ -2631,6 +2631,7 @@
   },
   {
     "address": "0xfb0265841C49A6b19D70055E596b212B0dA3f606",
+    "network": 10,
     "pool": {
       "id": "0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b",
       "address": "0x4Fd63966879300caFafBB35D157dC5229278Ed23",
