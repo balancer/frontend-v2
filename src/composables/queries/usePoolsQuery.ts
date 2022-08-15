@@ -16,11 +16,13 @@ import useGaugesQuery from './useGaugesQuery';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
+  GraphQLQuery,
   Op,
   PoolsBalancerAPIRepository,
   PoolsFallbackRepository,
   PoolsSubgraphRepository,
 } from '@balancer-labs/sdk';
+import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -45,6 +47,7 @@ export default function usePoolsQuery(
    * COMPOSABLES
    */
   const { injectTokens, prices, tokens: tokenMeta } = useTokens();
+  const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
   const { data: subgraphGauges } = useGaugesQuery();
@@ -62,18 +65,50 @@ export default function usePoolsQuery(
    */
 
   function initializePoolsRepository() {
+    const balancerApiRepository = initializeDecoratedAPIRepository();
+    const subgraphRepository = initializeDecoratedSubgraphRepository();
+    const fallbackRepository = new PoolsFallbackRepository(
+      [balancerApiRepository, subgraphRepository],
+      30 * 1000
+    );
+    return fallbackRepository;
+  }
+
+  function initializeDecoratedAPIRepository() {
     const balancerApiRepository = new PoolsBalancerAPIRepository(
       configService.network.balancerApi || '',
       configService.network.keys.balancerApi || ''
     );
+
+    return {
+      fetch: async (query: GraphQLQuery) => {
+        const pools = await balancerApiRepository.fetch(query);
+
+        return pools;
+      },
+    };
+  }
+
+  function initializeDecoratedSubgraphRepository() {
     const subgraphRepository = new PoolsSubgraphRepository(
       configService.network.subgraph
     );
-    const fallbackRepository = new PoolsFallbackRepository([
-      balancerApiRepository,
-      subgraphRepository,
-    ]);
-    return fallbackRepository;
+
+    return {
+      fetch: async (query: GraphQLQuery) => {
+        const pools = await subgraphRepository.fetch(query);
+
+        const poolDecorator = new PoolDecorator(pools);
+        const decoratedPools = await poolDecorator.decorate(
+          subgraphGauges.value || [],
+          prices.value,
+          currency.value,
+          tokenMeta.value
+        );
+
+        return decoratedPools;
+      },
+    };
   }
 
   function getQueryArgs(pageParam = 0): GraphQLArgs {
@@ -84,10 +119,14 @@ export default function usePoolsQuery(
     const queryArgs: any = {
       chainId: configService.network.chainId,
       first: 10,
+      orderBy: 'totalLiquidity',
+      orderDirection: 'desc',
       skip: pageParam,
       where: {
         tokensList: tokensListFilterOperation(tokenList.value),
         poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
+        totalShares: Op.GreaterThan(0.01),
+        id: Op.NotIn(POOLS.BlockList),
       },
     };
     if (filterOptions?.poolIds?.value.length) {
@@ -140,6 +179,13 @@ export default function usePoolsQuery(
   const queryFn = async ({ pageParam = 0 }) => {
     const queryArgs = getQueryArgs(pageParam);
     const poolsRepository = initializePoolsRepository();
+
+    console.log(
+      'Fetching with Query Args: ',
+      queryArgs,
+      ' attrs: ',
+      queryAttrs
+    );
     const pools = await poolsRepository.fetch({
       args: queryArgs,
       attrs: queryAttrs,
