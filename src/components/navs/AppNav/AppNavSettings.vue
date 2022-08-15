@@ -35,7 +35,7 @@
             <div class="flex items-baseline address">
               <div
                 class="font-bold text-black dark:text-white"
-                v-text="_shorten(account)"
+                v-text="shorten(account)"
               />
               <div class="flex ml-3">
                 <BalTooltip width="auto">
@@ -152,6 +152,7 @@ import {
   getConnectorLogo,
   getConnectorName,
 } from '@/services/web3/web3.plugin';
+import { shorten } from '@/lib/utils';
 
 export default defineComponent({
   components: {
@@ -251,6 +252,7 @@ export default defineComponent({
       isGnosisSupportedNetwork,
       isUnsupportedNetwork,
       // methods
+      shorten,
       disconnectWallet,
       toggleWalletSelectModal,
       setDarkMode,

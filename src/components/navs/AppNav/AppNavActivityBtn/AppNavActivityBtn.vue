@@ -1,3 +1,69 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+import useBreakpoints from '@/composables/useBreakpoints';
+import useNotifications from '@/composables/useNotifications';
+import useTransactions from '@/composables/useTransactions';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
+import { signOrderCancellation } from '@/services/gnosis/signing';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import ActivityCounter from './ActivityCounter.vue';
+import ActivityRows from './ActivityRows.vue';
+
+/**
+ * COMPOSABLES
+ */
+const { upToLargeBreakpoint, isMobile } = useBreakpoints();
+const { account, getSigner } = useWeb3();
+const { t } = useI18n();
+
+const {
+  transactions,
+  pendingTransactions,
+  finalizedTransactions,
+  getExplorerLink,
+  clearAllTransactions,
+  isSuccessfulTransaction,
+  updateTransaction,
+  isPendingTransactionStatus,
+} = useTransactions();
+
+const { addNotification } = useNotifications();
+
+/**
+ * METHODS
+ */
+async function cancelOrder(orderId: string) {
+  try {
+    const { signature, signingScheme } = await signOrderCancellation(
+      orderId,
+      getSigner()
+    );
+
+    await gnosisProtocolService.sendSignedOrderCancellation({
+      cancellation: {
+        orderUid: orderId,
+        signature,
+        signingScheme,
+      },
+      owner: account.value,
+    });
+
+    updateTransaction(orderId, 'order', {
+      status: 'cancelling',
+    });
+  } catch (e) {
+    console.log(e);
+    addNotification({
+      type: 'error',
+      title: t('errorCancellingOrder'),
+      message: (e as Error).message,
+    });
+  }
+}
+</script>
+
 <template>
   <BalPopover noPad :align="isMobile ? 'left' : undefined">
     <template #activator>
@@ -57,99 +123,4 @@
   </BalPopover>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-import useBreakpoints from '@/composables/useBreakpoints';
-import useNotifications from '@/composables/useNotifications';
-import useTransactions from '@/composables/useTransactions';
-import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import { signOrderCancellation } from '@/services/gnosis/signing';
-import useWeb3 from '@/services/web3/useWeb3';
-
-import ActivityCounter from './ActivityCounter.vue';
-import ActivityRows from './ActivityRows.vue';
-
-export default defineComponent({
-  name: 'AppNavActivityBtn',
-
-  components: {
-    ActivityCounter,
-    ActivityRows,
-  },
-
-  setup() {
-    /**
-     * COMPOSABLES
-     */
-    const { upToLargeBreakpoint, isMobile } = useBreakpoints();
-    const { isLoadingProfile, profile, account, getSigner } = useWeb3();
-    const { t } = useI18n();
-
-    const {
-      transactions,
-      pendingTransactions,
-      finalizedTransactions,
-      getExplorerLink,
-      clearAllTransactions,
-      isSuccessfulTransaction,
-      updateTransaction,
-      isPendingTransactionStatus,
-    } = useTransactions();
-
-    const { addNotification } = useNotifications();
-
-    /**
-     * METHODS
-     */
-    async function cancelOrder(orderId: string) {
-      try {
-        const { signature, signingScheme } = await signOrderCancellation(
-          orderId,
-          getSigner()
-        );
-
-        await gnosisProtocolService.sendSignedOrderCancellation({
-          cancellation: {
-            orderUid: orderId,
-            signature,
-            signingScheme,
-          },
-          owner: account.value,
-        });
-
-        updateTransaction(orderId, 'order', {
-          status: 'cancelling',
-        });
-      } catch (e) {
-        console.log(e);
-        addNotification({
-          type: 'error',
-          title: t('errorCancellingOrder'),
-          message: (e as Error).message,
-        });
-      }
-    }
-
-    return {
-      // methods
-      clearAllTransactions,
-      getExplorerLink,
-      isSuccessfulTransaction,
-      isPendingTransactionStatus,
-      cancelOrder,
-
-      // computed
-      account,
-      profile,
-      upToLargeBreakpoint,
-      isLoadingProfile,
-      transactions,
-      pendingTransactions,
-      finalizedTransactions,
-      isMobile,
-    };
-  },
-});
-</script>

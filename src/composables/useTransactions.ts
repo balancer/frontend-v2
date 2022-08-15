@@ -30,6 +30,7 @@ export type TransactionStatus =
   | 'failed';
 
 export type TransactionAction =
+  | 'drip'
   | 'claim'
   | 'approve'
   | 'trade'
@@ -45,6 +46,7 @@ export type TransactionAction =
   | 'increaseLock'
   | 'unlock'
   | 'voteForGauge'
+  | 'unstake'
   | 'stake';
 
 export type TransactionType = 'order' | 'tx';
