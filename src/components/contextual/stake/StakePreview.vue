@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import { getAddress } from 'ethers/lib/utils';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQueryClient } from 'vue-query';
 
@@ -16,6 +19,8 @@ import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { AnyPool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
+import useTransactions from '@/composables/useTransactions';
+import { usePool } from '@/composables/usePool';
 
 export type StakeAction = 'stake' | 'unstake';
 type Props = {
@@ -33,6 +38,8 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
 const { getProvider } = useWeb3();
+const { addTransaction } = useTransactions();
+const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
 const {
   userData: {
@@ -52,7 +59,7 @@ const stakeAction = {
   label: t('stake'),
   loadingLabel: t('staking.staking'),
   confirmingLabel: t('confirming'),
-  action: stakeBPT,
+  action: () => txWithNotification(stakeBPT),
   stepTooltip: t('staking.stakeTooltip'),
 };
 
@@ -60,7 +67,7 @@ const unstakeAction = {
   label: t('unstake'),
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
-  action: unstakeBPT,
+  action: () => txWithNotification(unstakeBPT),
   stepTooltip: t('staking.unstakeTooltip'),
 };
 
@@ -130,6 +137,24 @@ async function handleSuccess({ receipt }) {
   await refetchUserStakingData.value();
   await queryClient.refetchQueries(['staking']);
   emit('success');
+}
+
+async function txWithNotification(action: () => Promise<TransactionResponse>) {
+  const tx = await action();
+  addTransaction({
+    id: tx.hash,
+    type: 'tx',
+    action: props.action,
+    summary: t(`transactionSummary.${props.action}`, {
+      pool: poolWeightsLabel(props.pool),
+      amount: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+    }),
+    details: {
+      total: fNum2(fiatValueOfModifiedShares.value, FNumFormats.fiat),
+      pool: props.pool,
+    },
+  });
+  return tx;
 }
 
 async function loadApprovalsForGauge() {
