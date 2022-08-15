@@ -14,7 +14,7 @@ export interface NetworkOption {
 
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
-const { networkId: activeNetworkId } = useNetwork();
+const { networkId } = useNetwork();
 
 const networks = ref([
   {
@@ -44,7 +44,7 @@ const networks = ref([
 const appNetworkSupported = computed((): boolean => {
   return networks.value
     .map(network => network.key)
-    .includes(activeNetworkId.value.toString());
+    .includes(networkId.value.toString());
 });
 
 const activeNetwork = computed((): NetworkOption | undefined =>
@@ -65,7 +65,7 @@ function appUrl(network: NetworkOption): string {
 
 function isActive(network: NetworkOption): boolean {
   if (!appNetworkSupported.value && network.id === 'ethereum') return true;
-  return activeNetworkId.value.toString() === network.key;
+  return networkId.value.toString() === network.key;
 }
 </script>
 
