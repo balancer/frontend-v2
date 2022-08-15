@@ -117,5 +117,5 @@ jobs:
         if: failure()
         with:
           name: screenshots
-          path: tests/e2e/screenshots
+          path: e2e/tests/e2e/screenshots
           retention-days: 2
