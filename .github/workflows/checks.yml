@@ -116,9 +116,8 @@ jobs:
         # Upload artifacts only if tests failed
         if: failure()
         with:
-          command: ls -la
           name: screenshots
           path: |
-            tests/e2e/screenshots
-            tests/e2e/videos
+            e2e/tests/e2e/screenshots
+            e2e/tests/e2e/videos
           retention-days: 2
