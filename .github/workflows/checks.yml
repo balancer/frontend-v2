@@ -116,7 +116,7 @@ jobs:
         # Upload artifacts only if tests failed
         if: failure()
         with:
-          name: screenshots
+          name: e2e_test_reports
           path: |
             e2e/tests/e2e/screenshots
             e2e/tests/e2e/videos
