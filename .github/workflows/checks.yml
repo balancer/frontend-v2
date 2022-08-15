@@ -111,3 +111,11 @@ jobs:
           wait-on: 'http://localhost:8080'
           # Use custom test command for synpress
           command: npm run synpress:ci
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        # Upload artifacts only if tests failed
+        if: failure()
+        with:
+          name: screenshots
+          path: tests/e2e/screenshots
+          retention-days: 2
