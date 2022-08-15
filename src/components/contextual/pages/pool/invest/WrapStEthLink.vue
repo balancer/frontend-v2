@@ -38,7 +38,7 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
       :to="{
         name: 'trade',
         params: {
-          networkName: 'ethereum',
+          networkSlug: 'ethereum',
           assetIn: stETH.address,
           assetOut: wstETH.address,
         },

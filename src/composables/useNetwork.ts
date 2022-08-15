@@ -14,6 +14,7 @@ const localStorageNetworkId: Network | undefined =
     : undefined;
 
 const DEFAULT_NETWORK_ID = localStorageNetworkId ?? Network.MAINNET;
+export const networkSlug = config[DEFAULT_NETWORK_ID].slug;
 
 /**
  * COMPUTED
@@ -51,15 +52,14 @@ export function networkFor(key: string | number): Network {
   }
 }
 
-export function networkNameFor(network: Network): string {
-  return config[network].network;
+export function getNetworkSlug(network: Network): string {
+  return config[network].slug;
 }
 
-export function networkFromName(networkName: string): Network {
+export function networkFromSlug(networkSlug: string): Network {
   return Number(
-    Object.keys(config).find(
-      network => config[network].network === networkName
-    ) ?? '1'
+    Object.keys(config).find(network => config[network].slug === networkSlug) ??
+      '1'
   ) as Network;
 }
 
@@ -88,6 +88,7 @@ export function urlFor(network: Network): string {
 
 export default function useNetwork() {
   return {
+    networkSlug,
     networkId,
   };
 }

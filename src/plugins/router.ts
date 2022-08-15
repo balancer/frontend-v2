@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import {
   isGoerli,
   networkFor,
-  networkFromName,
+  networkFromSlug,
 } from '@/composables/useNetwork';
 import { Network } from '@balancer-labs/sdk';
 // import { Network } from '@balancer-labs/sdk';
@@ -65,46 +65,6 @@ const routes: RouteRecordRaw[] = [
     component: HomePage,
   },
   {
-    path: '/:networkName/trade/:assetIn?/:assetOut?',
-    name: 'trade',
-    component: TradePage,
-  },
-  {
-    path: '/:networkName/swap/:assetIn?/:assetOut?',
-    redirect: to => {
-      return `/trade${to.path.split('/swap')[1]}`;
-    },
-  },
-  {
-    path: '/:networkName/pool/create/:tx?',
-    name: 'create-pool',
-    component: CreatePoolPage,
-    meta: { layout: 'FocusedLayout' },
-  },
-  {
-    path: '/:networkName/pool/:id',
-    name: 'pool',
-    component: PoolPage,
-  },
-  {
-    path: '/:networkName/pool/:id/invest',
-    name: 'invest',
-    component: PoolInvestPage,
-    meta: { layout: 'PoolTransferLayout' },
-  },
-  {
-    path: '/:networkName/pool/:id/withdraw',
-    name: 'withdraw',
-    component: PoolWithdrawPage,
-    meta: { layout: 'PoolTransferLayout' },
-  },
-  {
-    path: '/:networkName/pool/migrate/:from/:to',
-    name: 'migrate-pool',
-    component: MigratePoolPage,
-    meta: { layout: 'FocusedLayout' },
-  },
-  {
     path: '/terms-of-use',
     name: 'terms-of-use',
     component: TermsOfUsePage,
@@ -123,34 +83,74 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'ContentLayout' },
   },
   {
-    path: '/vebal',
+    path: '/:networkSlug/trade/:assetIn?/:assetOut?',
+    name: 'trade',
+    component: TradePage,
+  },
+  {
+    path: '/:networkSlug/swap/:assetIn?/:assetOut?',
+    redirect: to => {
+      return `/trade${to.path.split('/swap')[1]}`;
+    },
+  },
+  {
+    path: '/:networkSlug/pool/create/:tx?',
+    name: 'create-pool',
+    component: CreatePoolPage,
+    meta: { layout: 'FocusedLayout' },
+  },
+  {
+    path: '/:networkSlug/pool/:id',
+    name: 'pool',
+    component: PoolPage,
+  },
+  {
+    path: '/:networkSlug/pool/:id/invest',
+    name: 'invest',
+    component: PoolInvestPage,
+    meta: { layout: 'PoolTransferLayout' },
+  },
+  {
+    path: '/:networkSlug/pool/:id/withdraw',
+    name: 'withdraw',
+    component: PoolWithdrawPage,
+    meta: { layout: 'PoolTransferLayout' },
+  },
+  {
+    path: '/:networkSlug/pool/migrate/:from/:to',
+    name: 'migrate-pool',
+    component: MigratePoolPage,
+    meta: { layout: 'FocusedLayout' },
+  },
+  {
+    path: '/:networkSlug/vebal',
     name: 'vebal',
     component: VeBalPage,
   },
   {
-    path: '/get-vebal',
+    path: '/:networkSlug/get-vebal',
     name: 'get-vebal',
     component: GetVeBalPage,
     meta: { layout: 'FocusedLayout' },
   },
   {
-    path: '/unlock',
+    path: '/:networkSlug/unlock',
     name: 'unlock',
     component: UnlockVeBalPage,
     meta: { layout: 'FocusedLayout' },
   },
   {
-    path: '/claim',
+    path: '/:networkSlug/claim',
     name: 'claim',
     component: ClaimPage,
   },
   {
-    path: '/portfolio',
+    path: '/:networkSlug/portfolio',
     name: 'portfolio',
     component: PortfolioPage,
   },
   {
-    path: '/:networkName?',
+    path: '/:networkSlug?',
     name: 'home',
     component: HomePage,
   },
@@ -166,7 +166,7 @@ const routes: RouteRecordRaw[] = [
  */
 if (isGoerli.value) {
   routes.push({
-    path: '/faucet',
+    path: '/:networkSlug/faucet',
     name: 'faucet',
     component: FaucetPage,
   });
@@ -190,9 +190,9 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const networkName = to.params.networkName.toString();
-  if (networkName) {
-    const networkFromUrl: Network = networkFromName(networkName);
+  const networkSlug = to.params.networkSlug.toString();
+  if (networkSlug) {
+    const networkFromUrl: Network = networkFromSlug(networkSlug);
     const localStorageNetwork: Network = networkFor(
       localStorage.getItem('networkId') ?? '1'
     );

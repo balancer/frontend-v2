@@ -23,7 +23,7 @@
         v-for="network in networks"
         :key="network.id"
         class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
-        :href="`/#/${network.networkName}`"
+        :href="`/#/${network.networkSlug}`"
       >
         <div class="flex items-center">
           <img
@@ -72,21 +72,21 @@ export default defineComponent({
         id: 'ethereum',
         name: 'Ethereum',
         subdomain: 'app',
-        networkName: 'ethereum',
+        networkSlug: 'ethereum',
         key: '1',
       },
       {
         id: 'polygon',
         name: 'Polygon',
         subdomain: 'polygon',
-        networkName: 'polygon',
+        networkSlug: 'polygon',
         key: '137',
       },
       {
         id: 'arbitrum',
         name: 'Arbitrum',
         subdomain: 'arbitrum',
-        networkName: 'arbitrum-one',
+        networkSlug: 'arbitrum',
         key: '42161',
       },
     ];

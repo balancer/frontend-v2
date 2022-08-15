@@ -11,7 +11,7 @@
       {{ $t('invest') }}
     </router-link>
     <router-link
-      :to="{ name: 'trade', params: { networkName: 'ethereum' } }"
+      :to="{ name: 'trade', params: { networkSlug: 'ethereum' } }"
       :class="[
         'toggle-link px-6 rounded-r-lg',
         { [activeClasses]: isTradePage },

@@ -4,6 +4,7 @@
   "chainName": "Polygon",
   "name": "Polygon Mainnet",
   "shortName": "Polygon",
+  "slug": "polygon",
   "network": "polygon",
   "portisNetwork": "matic",
   "unknown": false,

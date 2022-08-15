@@ -263,7 +263,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkName: 'ethereum', id: toPool.id },
+          params: { networkSlug: 'ethereum', id: toPool.id },
         }"
         color="gray"
         outline

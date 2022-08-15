@@ -23,22 +23,41 @@ function isActive(page: string): boolean {
 
 <template>
   <div class="desktop-links">
-    <DesktopLinkItem to="/" :active="isActive('home')">
+    <DesktopLinkItem
+      :to="{ name: 'home', params: { networkSlug: 'ethereum' } }"
+      :active="isActive('home')"
+    >
       {{ $t('invest') }}
     </DesktopLinkItem>
-    <DesktopLinkItem to="/trade" :active="isActive('trade')">
+    <DesktopLinkItem
+      :to="{ name: 'trade', params: { networkSlug: 'ethereum' } }"
+      :active="isActive('trade')"
+    >
       {{ $t('trade') }}
     </DesktopLinkItem>
-    <DesktopLinkItem v-if="isGoerli" to="/faucet" :active="isActive('faucet')">
+    <DesktopLinkItem
+      v-if="isGoerli"
+      :to="{ name: 'faucet', params: { networkSlug: 'goerli' } }"
+      :active="isActive('faucet')"
+    >
       Faucet
     </DesktopLinkItem>
-    <DesktopLinkItem to="/portfolio" :active="isActive('portfolio')">
+    <DesktopLinkItem
+      :to="{ name: 'portfolio', params: { networkSlug: 'ethereum' } }"
+      :active="isActive('portfolio')"
+    >
       {{ $t('portfolio') }}
     </DesktopLinkItem>
-    <DesktopLinkItem to="/vebal" :active="isActive('vebal')">
+    <DesktopLinkItem
+      :to="{ name: 'vebal', params: { networkSlug: 'ethereum' } }"
+      :active="isActive('vebal')"
+    >
       veBAL
     </DesktopLinkItem>
-    <DesktopLinkItem to="/claim" :active="isActive('claim')">
+    <DesktopLinkItem
+      :to="{ name: 'claim', params: { networkSlug: 'ethereum' } }"
+      :active="isActive('claim')"
+    >
       <div class="flex items-center">
         {{ $t('claim') }}
         <StarsIcon class="ml-0.5 w-3.5 h-5" />

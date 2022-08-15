@@ -68,7 +68,7 @@ const steps = computed(() => [
                 tag="router-link"
                 :to="{
                   name: 'invest',
-                  params: { networkName: 'ethereum', id: lockablePool.id },
+                  params: { networkSlug: 'ethereum', id: lockablePool.id },
                 }"
                 external
               >

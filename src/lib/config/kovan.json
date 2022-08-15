@@ -4,6 +4,7 @@
   "chainName": "Ethereum",
   "name": "Ethereum Testnet Kovan",
   "shortName": "Kovan",
+  "slug": "kovan",
   "network": "kovan",
   "unknown": false,
   "rpc": "https://kovan.infura.io/v3/{{INFURA_KEY}}",

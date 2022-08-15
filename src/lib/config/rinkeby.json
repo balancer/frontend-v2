@@ -4,6 +4,7 @@
   "chainName": "Ethereum",
   "name": "Ethereum Testnet Rinkeby",
   "shortName": "Rinkeby",
+  "slug": "rinkeby",
   "network": "rinkeby",
   "unknown": false,
   "rpc": "https://eth-rinkeby.alchemyapi.io/v2/{{ALCHEMY_KEY}}",

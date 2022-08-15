@@ -163,7 +163,7 @@ function handleSuccess(details: any): void {
       </div>
       <BalBtn
         tag="router-link"
-        :to="{ name: 'pool', params: { networkName: 'ethereum', id: poolId } }"
+        :to="{ name: 'pool', params: { networkSlug: 'ethereum', id: poolId } }"
         color="gray"
         outline
         block

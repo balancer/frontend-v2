@@ -7,7 +7,10 @@
         class="flex flex-col md:flex-row gap-8 md:justify-between py-12 px-4 lg:px-0 text-primary"
       >
         <div class="flex flex-col gap-8">
-          <router-link class="font-medium link" :to="{ name: 'home' }">
+          <router-link
+            class="font-medium link"
+            :to="{ name: 'home', params: { networkSlug: 'ethereum' } }"
+          >
             <AppLogo class="mb-4" />
           </router-link>
 
@@ -15,7 +18,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'home', params: { networkName: 'ethereum' } }"
+                :to="{ name: 'home', params: { networkSlug: 'ethereum' } }"
               >
                 {{ $t('invest') }}
               </router-link>
@@ -23,7 +26,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'trade', params: { networkName: 'ethereum' } }"
+                :to="{ name: 'trade', params: { networkSlug: 'ethereum' } }"
               >
                 {{ $t('trade') }}
               </router-link>
@@ -31,7 +34,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'portfolio' }"
+                :to="{ name: 'portfolio', params: { networkSlug: 'ethereum' } }"
               >
                 {{ $t('portfolio') }}
               </router-link>
@@ -39,7 +42,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'vebal' }"
+                :to="{ name: 'vebal', params: { networkSlug: 'ethereum' } }"
               >
                 {{ $t('vebal') }}
               </router-link>
@@ -47,7 +50,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'claim' }"
+                :to="{ name: 'claim', params: { networkSlug: 'ethereum' } }"
               >
                 {{ $t('claim') }}
               </router-link>

@@ -39,7 +39,10 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
     <BalBtn
       v-else-if="showVeBalLock"
       tag="router-link"
-      :to="{ name: 'get-vebal', query: { returnRoute: $route.name } }"
+      :to="{
+        name: 'get-vebal',
+        query: { networkSlug: 'ethereum', returnRoute: $route.name },
+      }"
       color="gradient-pink-yellow"
       size="sm"
     >

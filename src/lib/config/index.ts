@@ -15,6 +15,7 @@ export interface Config {
   chainName: string;
   name: string;
   shortName: string;
+  slug: string;
   network: string;
   portisNetwork?: string;
   unknown: boolean;

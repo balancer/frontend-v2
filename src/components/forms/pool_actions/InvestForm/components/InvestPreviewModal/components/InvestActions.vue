@@ -220,7 +220,7 @@ watch(blockNumber, async () => {
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"
-        :to="{ name: 'get-vebal' }"
+        :to="{ name: 'get-vebal', params: { networkSlug: 'ethereum' } }"
         color="gradient"
         block
         class="flex mt-2"
@@ -243,7 +243,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkName: 'ethereum', id: route.params.id },
+          params: { networkSlug: 'ethereum', id: route.params.id },
         }"
         color="gray"
         outline

@@ -232,7 +232,7 @@ onBeforeMount(async () => {
       </div>
       <BalBtn
         tag="router-link"
-        :to="{ name: 'vebal' }"
+        :to="{ name: 'vebal', params: { networkSlug: 'ethereum' } }"
         color="gray"
         outline
         block

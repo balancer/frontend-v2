@@ -4,6 +4,7 @@
   "chainName": "Ethereum",
   "name": "Ethereum Mainnet",
   "shortName": "Mainnet",
+  "slug": "ethereum",
   "network": "homestead",
   "portisNetwork": "mainnet",
   "unknown": false,

@@ -33,7 +33,14 @@ usePoolTransfersGuard();
   <div class="pb-16">
     <div class="mb-12 layout-header">
       <div />
-      <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
+      <router-link
+        :to="
+          getReturnRoute({
+            name: 'pool',
+            params: { id, networkSlug: 'ethereum' },
+          })
+        "
+      >
         <BalIcon name="x" size="lg" />
       </router-link>
     </div>
