@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { Pool } from '@/services/pool/types';
@@ -46,30 +46,16 @@ const { fromPool, toPool } = toRefs(props);
  * STATE
  */
 const currentActionIndex = ref(0);
-
 const highPriceImpactAccepted = ref(false);
-const bptBalance = computed(() => {
-  if (actions.value[currentActionIndex.value].isStakeAction) {
-    return props.stakedBptBalance;
-  }
-
-  return props.unstakedBptBalance;
-});
-const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? highPriceImpactAccepted.value : true
-);
-const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
 const relayerAddress = ref(configService.network.addresses.batchRelayer);
-const relayerApproval = useRelayerApprovalQuery(relayerAddress);
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-
-let migrateMath = useMigrateMath(fromPool, toPool, bptBalance);
+const relayerApproval = useRelayerApprovalQuery(relayerAddress);
+let migrateMath = useMigrateMath(fromPool, toPool);
 let { batchSwapLoaded, highPriceImpact, fiatTotal, priceImpact } = migrateMath;
-
 const { actions, migratePoolState } = usePoolMigration(
   props.stakedBptBalance,
   props.unstakedBptBalance,
@@ -89,12 +75,18 @@ const { actions, migratePoolState } = usePoolMigration(
 /**
  * COMPUTED
  */
-
 const title = computed((): string =>
   migratePoolState.value.confirmed
     ? t('migratePool.previewModal.titles.confirmed')
     : t('migratePool.previewModal.titles.default')
 );
+
+const hasAcceptedHighPriceImpact = computed((): boolean =>
+  highPriceImpact.value ? highPriceImpactAccepted.value : true
+);
+
+const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
+
 const isInvestSummaryShown = computed(
   () =>
     !actions.value[currentActionIndex.value].isSignAction &&
@@ -107,6 +99,7 @@ const isaActionBtnDisabled = computed(() => {
   }
   return !batchSwapLoaded.value || !hasAcceptedHighPriceImpact.value;
 });
+
 const summaryTitle = computed(() => {
   if (actions.value[currentActionIndex.value].isStakeAction) {
     return t('migratePool.previewModal.summary.stakeTitle');
@@ -124,6 +117,21 @@ function handleClose() {
 function setCurrentActionIndex(index: number) {
   currentActionIndex.value = index;
 }
+
+/**
+ * WATCHERS
+ */
+watch(
+  currentActionIndex,
+  newIndex => {
+    const bptBalance = actions.value[newIndex].isStakeAction
+      ? props.stakedBptBalance
+      : props.unstakedBptBalance;
+
+    migrateMath.setBptBalance(bptBalance);
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

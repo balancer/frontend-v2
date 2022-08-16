@@ -1,7 +1,7 @@
 import { queryBatchSwapTokensIn } from '@balancer-labs/sdk';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { computed, ComputedRef, Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
@@ -16,11 +16,7 @@ import { BatchSwap } from '@/types';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 
-export default function useMigrateMath(
-  fromPool: Ref<Pool>,
-  toPool: Ref<Pool>,
-  bptBalance: ComputedRef<string>
-) {
+export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   /**
    * COMPOSABLES
    */
@@ -53,6 +49,7 @@ export default function useMigrateMath(
    */
   const batchSwap = ref<BatchSwap | null>(null);
   const batchSwapLoading = ref(false);
+  const bptBalance = ref('0');
 
   /**
    * COMPUTED
@@ -182,6 +179,10 @@ export default function useMigrateMath(
     batchSwapLoading.value = false;
   }
 
+  function setBptBalance(amount: string): void {
+    bptBalance.value = amount;
+  }
+
   return {
     // computed
     bptBalance,
@@ -199,5 +200,6 @@ export default function useMigrateMath(
     highPriceImpact,
     // methods
     getBatchSwap,
+    setBptBalance,
   };
 }
