@@ -1,7 +1,7 @@
 import { queryBatchSwapTokensIn } from '@balancer-labs/sdk';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
@@ -182,6 +182,13 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   function setBptBalance(amount: string): void {
     bptBalance.value = amount;
   }
+
+  /**
+   * WATCHERS
+   */
+  watch(bptBalance, async () => {
+    await getBatchSwap();
+  });
 
   return {
     // computed
