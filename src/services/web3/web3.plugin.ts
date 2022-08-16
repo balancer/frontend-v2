@@ -23,6 +23,7 @@ import { lsGet, lsSet } from '@/lib/utils';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
+import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
 
 export type Wallet =
@@ -67,20 +68,19 @@ type PluginState = {
 };
 
 async function isSanctionedAddress(address: string): Promise<boolean | null> {
-  if (
-    !process.env.VUE_APP_WALLET_SCREENING ||
-    process.env.VUE_APP_WALLET_SCREENING !== 'true'
-  )
-    return null;
-  try {
-    const response = await axios.post(SANCTIONS_ENDPOINT, [
-      {
-        address: address.toLowerCase(),
-      },
-    ]);
-    const isSanctioned = response.data[0].isSanctioned;
-    return isSanctioned;
-  } catch {
+  if (configService.env.WALLET_SCREENING) {
+    try {
+      const response = await axios.post(SANCTIONS_ENDPOINT, [
+        {
+          address: address.toLowerCase(),
+        },
+      ]);
+      const isSanctioned = response.data[0].isSanctioned;
+      return isSanctioned;
+    } catch {
+      return null;
+    }
+  } else {
     return null;
   }
 }
