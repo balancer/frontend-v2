@@ -67,7 +67,7 @@ type PluginState = {
   walletState: WalletState;
 };
 
-async function isSanctionedAddress(address: string): Promise<boolean | null> {
+async function isSanctionedAddress(address: string): Promise<boolean> {
   if (configService.env.WALLET_SCREENING) {
     try {
       const response = await axios.post(SANCTIONS_ENDPOINT, [
@@ -75,13 +75,13 @@ async function isSanctionedAddress(address: string): Promise<boolean | null> {
           address: address.toLowerCase(),
         },
       ]);
-      const isSanctioned = response.data[0].isSanctioned;
+      const isSanctioned = response.data[0].isSanctioned ?? false;
       return isSanctioned;
     } catch {
-      return null;
+      return false;
     }
   } else {
-    return null;
+    return false;
   }
 }
 
