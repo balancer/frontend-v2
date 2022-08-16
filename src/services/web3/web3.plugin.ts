@@ -67,7 +67,13 @@ type PluginState = {
 };
 
 async function isSanctionedAddress(address: string): Promise<boolean | null> {
-  if (!process.env.VUE_APP_WALLET_SCREENING) return null;
+  console.log(process.env.VUE_APP_WALLET_SCREENING);
+  console.log(process.env.VUE_APP_WALLET_SCREENING !== 'true');
+  if (
+    !process.env.VUE_APP_WALLET_SCREENING ||
+    process.env.VUE_APP_WALLET_SCREENING !== 'true'
+  )
+    return null;
   try {
     const response = await axios.post(SANCTIONS_ENDPOINT, [
       {
