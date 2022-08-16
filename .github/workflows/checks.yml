@@ -114,7 +114,7 @@ jobs:
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         # Upload artifacts only if tests failed
-        if: failure()
+        # if: failure()
         with:
           name: e2e_test_reports
           path: |
