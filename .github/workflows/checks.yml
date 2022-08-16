@@ -87,6 +87,8 @@ jobs:
         run: npm run test:unit
 
   E2E:
+    # Only run e2e tests, if other tests are successful
+    # needs: [Build, Lint, Test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -111,10 +113,10 @@ jobs:
           wait-on: 'http://localhost:8080'
           # Use custom test command for synpress
           command: npm run synpress:ci
-      - name: 'Upload Artifact'
+      - name: 'Upload test artifacts'
         uses: actions/upload-artifact@v3
         # Upload artifacts only if tests failed
-        # if: failure()
+        if: failure()
         with:
           name: e2e_test_reports
           path: |
