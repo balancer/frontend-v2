@@ -67,8 +67,6 @@ type PluginState = {
 };
 
 async function isSanctionedAddress(address: string): Promise<boolean | null> {
-  console.log(process.env.VUE_APP_WALLET_SCREENING);
-  console.log(process.env.VUE_APP_WALLET_SCREENING !== 'true');
   if (
     !process.env.VUE_APP_WALLET_SCREENING ||
     process.env.VUE_APP_WALLET_SCREENING !== 'true'
