@@ -75,8 +75,7 @@ async function isSanctionedAddress(address: string): Promise<boolean> {
           address: address.toLowerCase(),
         },
       ]);
-      const isSanctioned = response.data[0].isSanctioned ?? false;
-      return isSanctioned;
+      return response.data[0].isSanctioned ?? false;
     } catch {
       return false;
     }
