@@ -2,6 +2,7 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { Pool } from '@/services/pool/types';
+import { useI18n } from 'vue-i18n';
 /**
  * TYPES
  */
@@ -11,15 +12,20 @@ type Props = {
   priceImpact: number;
   isLoadingPriceImpact?: boolean;
   highPriceImpact?: boolean;
-  summaryTitle: string;
+  summaryTitle?: string;
 };
+
 /**
  * PROPS & EMITS
  */
+const { t } = useI18n();
+
 withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
   highPriceImpact: false,
+  summaryTitle: t('summary'),
 });
+
 /**
  * COMPOSABLES
  */

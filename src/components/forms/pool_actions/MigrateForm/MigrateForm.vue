@@ -81,6 +81,8 @@ const toPoolTokenInfo = computed(() =>
     <BalLoadingBlock
       v-if="
         isLoadingPools ||
+        !fromPool ||
+        !toPool ||
         fromPoolTokenInfo == null ||
         toPoolTokenInfo == null ||
         batchRelayerApprovalLoading ||
