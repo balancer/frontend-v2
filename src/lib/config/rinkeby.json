@@ -20,6 +20,7 @@
   },
   "supportsEIP1559": true,
   "supportsElementPools": false,
+  "blockTime": 12,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

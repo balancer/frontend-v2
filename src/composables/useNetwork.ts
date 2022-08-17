@@ -78,6 +78,8 @@ export function subdomainFor(network: Network): string {
       return 'polygon';
     case Network.ARBITRUM:
       return 'arbitrum';
+    case Network.OPTIMISM:
+      return 'optimism';
     default:
       throw new Error('Network not supported');
   }

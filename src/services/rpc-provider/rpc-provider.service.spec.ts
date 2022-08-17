@@ -16,7 +16,7 @@ jest.mock('@ethersproject/providers', () => {
     }),
     WebSocketProvider: jest.fn().mockImplementation(() => {
       return {
-        on: jest.fn().mockImplementation(),
+        once: jest.fn().mockImplementation(),
       };
     }),
   };

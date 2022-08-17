@@ -94,6 +94,7 @@ function getTrustWalletAssetsURI(
     [Network.POLYGON]: 'polygon',
     [Network.KOVAN]: 'kovan',
     [Network.GOERLI]: 'goerli',
+    [Network.OPTIMISM]: 'optimism',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
@@ -125,7 +126,11 @@ async function getTokenLogoURI(
   if (logoUri) response = await fetch(logoUri);
   if (logoUri && response.status === 200) return logoUri;
 
-  if (network === Network.ARBITRUM || network === Network.POLYGON) {
+  if (
+    network === Network.ARBITRUM ||
+    network === Network.OPTIMISM ||
+    network === Network.POLYGON
+  ) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
     response = await fetch(logoUri);
