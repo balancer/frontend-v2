@@ -2,7 +2,7 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { Pool } from '@/services/pool/types';
-import { useI18n } from 'vue-i18n';
+
 /**
  * TYPES
  */
@@ -12,18 +12,16 @@ type Props = {
   priceImpact: number;
   isLoadingPriceImpact?: boolean;
   highPriceImpact?: boolean;
-  summaryTitle?: string;
+  summaryTitle?: string | undefined;
 };
 
 /**
  * PROPS & EMITS
  */
-const { t } = useI18n();
-
 withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
   highPriceImpact: false,
-  summaryTitle: t('summary'),
+  summaryTitle: undefined,
 });
 
 /**
@@ -35,7 +33,7 @@ const { currency } = useUserSettings();
 
 <template>
   <div class="summary-table">
-    <h6 class="p-2">{{ summaryTitle }}</h6>
+    <h6 class="p-2">{{ summaryTitle || $t('summary') }}</h6>
     <div class="flex flex-col py-2">
       <div class="summary-table-row">
         <div class="summary-table-label">
