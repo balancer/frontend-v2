@@ -40,8 +40,8 @@ const { getToken } = useTokens();
       <div class="flex items-center">
         <BalAsset :address="pool.address" class="mr-2" :size="36" />
         <div>
-          <div>{{ poolTokenInfo.symbol }}</div>
-          <div class="text-secondary">
+          <div class="font-semibold">{{ poolTokenInfo.symbol }}</div>
+          <div class="text-sm text-secondary">
             {{ poolTokenInfo.name }}
           </div>
         </div>

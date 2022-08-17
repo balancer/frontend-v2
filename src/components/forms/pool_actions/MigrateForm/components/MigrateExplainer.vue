@@ -30,7 +30,7 @@ const isStabal3Migration = computed(
       </h6>
     </div>
     <div class="p-4 -mt-2">
-      <div class="text-secondary">
+      <div class="text-sm text-secondary">
         {{ $t(`migratePool.migrateReason.description`) }}
       </div>
     </div>
@@ -43,7 +43,7 @@ const isStabal3Migration = computed(
       </h6>
     </div>
     <div class="p-4 -mt-2">
-      <div class="text-secondary">
+      <div class="text-sm text-secondary">
         {{ $t(`migratePool.${poolMigrationInfo.type}.whyMigrate.description`) }}
       </div>
     </div>

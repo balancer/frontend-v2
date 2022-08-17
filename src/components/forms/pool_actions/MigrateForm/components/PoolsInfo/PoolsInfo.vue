@@ -161,12 +161,12 @@ const isUnstakedMigrationEnabled = computed(() => {
         </div>
       </div>
     </template>
-    <div v-if="hasStakedUnstakedLiquidity" class="pb-3">
+    <div v-if="hasStakedUnstakedLiquidity" class="pb-4">
       {{ t('migratePool.poolInfo.stakedUnstaked') }}
       <BalCheckbox
         v-for="(item, index) in Object.values(migrateStakeChooseArr)"
         :key="index"
-        class="pt-2"
+        class="pt-3"
         :modelValue="item.value"
         name="areFeesGovernanceManaged"
         size="lg"
@@ -178,7 +178,7 @@ const isUnstakedMigrationEnabled = computed(() => {
             <div class="font-semibold">
               {{ item.title }}
             </div>
-            <div class="font-normal text-gray-600">
+            <div class="text-sm font-normal text-secondary">
               {{ item.amount }}
             </div>
           </div>
