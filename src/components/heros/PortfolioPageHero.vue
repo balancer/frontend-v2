@@ -93,7 +93,7 @@ const isLoadingTotalValue = computed(
         <div
           v-else
           class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
-          @click="router.push({ name: 'vebal', networkSlug })"
+          @click="router.push({ name: 'vebal', params: { networkSlug } })"
         >
           <span v-if="lockFiatValue === '0'"
             >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span
