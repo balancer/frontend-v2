@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
@@ -15,6 +16,7 @@ export interface NetworkOption {
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
 const { networkId } = useNetwork();
+const router = useRouter();
 
 const networks = ref([
   {
@@ -60,7 +62,21 @@ function iconSrc(network: NetworkOption): string {
 }
 
 function appUrl(network: NetworkOption): string {
-  return `/#/${network.networkSlug}`;
+  if (
+    router.currentRoute.value.name === 'pool' ||
+    router.currentRoute.value.name === 'create-pool' ||
+    router.currentRoute.value.name === 'invest' ||
+    router.currentRoute.value.name === 'withdraw' ||
+    router.currentRoute.value.name === 'migrate-pool'
+  )
+    return `/#/${network.networkSlug}`;
+
+  const currentRoute = router.currentRoute.value;
+  return router.resolve({
+    name: currentRoute.name ?? 'home',
+    params: { ...currentRoute.params, networkSlug: network.networkSlug },
+    query: currentRoute.query,
+  }).href;
 }
 
 function isActive(network: NetworkOption): boolean {
