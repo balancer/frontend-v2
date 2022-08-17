@@ -46,6 +46,7 @@ export type TransactionAction =
   | 'increaseLock'
   | 'unlock'
   | 'voteForGauge'
+  | 'unstake'
   | 'stake';
 
 export type TransactionType = 'order' | 'tx';
