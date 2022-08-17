@@ -38,10 +38,7 @@ export default class ConfigService {
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY',
-      WALLET_SCREENING:
-        (process.env.VUE_APP_WALLET_SCREENING &&
-          process.env.VUE_APP_WALLET_SCREENING === 'true') ||
-        false,
+      WALLET_SCREENING: process.env.VUE_APP_WALLET_SCREENING === 'true',
     };
   }
 
