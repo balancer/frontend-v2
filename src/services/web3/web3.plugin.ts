@@ -23,6 +23,7 @@ import { lsGet, lsSet } from '@/lib/utils';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
+import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
 
 export type Wallet =
@@ -66,17 +67,17 @@ type PluginState = {
   walletState: WalletState;
 };
 
-async function isSanctionedAddress(address: string): Promise<boolean | null> {
+async function isSanctionedAddress(address: string): Promise<boolean> {
+  if (!configService.env.WALLET_SCREENING) return false;
   try {
     const response = await axios.post(SANCTIONS_ENDPOINT, [
       {
         address: address.toLowerCase(),
       },
     ]);
-    const isSanctioned = response.data[0].isSanctioned;
-    return isSanctioned;
+    return response.data[0].isSanctioned ?? false;
   } catch {
-    return null;
+    return false;
   }
 }
 
