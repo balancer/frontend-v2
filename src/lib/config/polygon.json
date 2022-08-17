@@ -21,6 +21,7 @@
   },
   "supportsEIP1559": true,
   "supportsElementPools": false,
+  "blockTime": 4,
   "nativeAsset": {
     "name": "Matic",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
