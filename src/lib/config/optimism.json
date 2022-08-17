@@ -4,6 +4,7 @@
   "chainName": "Optimism",
   "name": "Optimism Mainnet",
   "shortName": "Optimism",
+  "slug": "optimism",
   "network": "optimism",
   "unknown": false,
   "rpc": "https://mainnet.optimism.io",
