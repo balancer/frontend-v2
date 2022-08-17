@@ -9,6 +9,7 @@
   "rpc": "https://mainnet.optimism.io",
   "ws": "wss://ws-mainnet.optimism.io",
   "loggingRpc": "",
+  "blockTime": 13,
   "explorer": "https://optimistic.etherscan.io/",
   "explorerName": "The Optimism Explorer",
   "subgraph": "https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-optimism",
