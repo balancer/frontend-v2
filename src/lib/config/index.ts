@@ -32,6 +32,7 @@ export interface Config {
   };
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
+  blockTime: number;
   nativeAsset: {
     name: string;
     address: string;
