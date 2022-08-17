@@ -22,6 +22,7 @@ export default class RpcProviderService {
     const wsProvider = new WebSocketProvider(this.config.ws);
     wsProvider.once('block', newBlockNumber => {
       let currentBlockNumber = newBlockNumber;
+      newBlockHandler(currentBlockNumber);
       setInterval(() => {
         currentBlockNumber++;
         newBlockHandler(currentBlockNumber);
