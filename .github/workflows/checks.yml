@@ -120,6 +120,7 @@ jobs:
         with:
           name: e2e_test_reports
           path: |
-            e2e/tests/e2e/screenshots
-            e2e/tests/e2e/videos
+            e2e/synpress/screenshots
+            e2e/synpress/videos
+            e2e/synpress/results
           retention-days: 2
