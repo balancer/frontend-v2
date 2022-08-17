@@ -20,7 +20,14 @@ export default class RpcProviderService {
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
     const wsProvider = new WebSocketProvider(this.config.ws);
-    wsProvider.on('block', newBlockNumber => newBlockHandler(newBlockNumber));
+    wsProvider.once('block', newBlockNumber => {
+      let currentBlockNumber = newBlockNumber;
+      newBlockHandler(currentBlockNumber);
+      setInterval(() => {
+        currentBlockNumber++;
+        newBlockHandler(currentBlockNumber);
+      }, configService.network.blockTime * 1000);
+    });
   }
 
   public async getBlockNumber(): Promise<number> {
