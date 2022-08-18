@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { divApr } from '@/services/staking/utils';
 
 /**
  * TYPES
@@ -25,7 +26,9 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const aprLabel = computed((): string => fNum2(props.apr, FNumFormats.percent));
+const aprLabel = computed((): string =>
+  fNum2(divApr(props.apr), FNumFormats.percent)
+);
 
 const items = computed((): string[] => [
   t('tooltips.veBalApr.breakdown1'),

@@ -5,7 +5,6 @@ import { Address } from '@/types';
 export interface Pool extends SDKPool {
   onchain?: OnchainPoolData;
   linearPoolTokensMap?: Record<string, PoolToken>;
-  apr?: PoolAPRs;
 }
 
 // PoolToken data from onchain call

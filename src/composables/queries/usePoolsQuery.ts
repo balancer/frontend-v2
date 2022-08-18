@@ -84,7 +84,25 @@ export default function usePoolsQuery(
       fetch: async (query: GraphQLQuery) => {
         const pools = await balancerApiRepository.fetch(query);
 
-        return pools;
+        const formattedPools: Pool[] = pools.map((pool: Pool) => {
+          if (pool.apr?.rewardsApr.breakdown) {
+            // GraphQL can't store this as a map so it's JSON that we must parse
+            const rewardsBreakdown = JSON.parse(
+              pool.apr?.rewardsApr.breakdown as unknown as string
+            );
+            pool.apr.rewardsApr.breakdown = rewardsBreakdown;
+          }
+          if (pool.apr?.tokenAprs.breakdown) {
+            // GraphQL can't store this as a map so it's JSON that we must parse
+            const tokenAprsBreakdown = JSON.parse(
+              pool.apr?.tokenAprs.breakdown as unknown as string
+            );
+            pool.apr.tokenAprs.breakdown = tokenAprsBreakdown;
+          }
+          return pool;
+        });
+
+        return formattedPools;
       },
     };
   }
@@ -170,6 +188,24 @@ export default function usePoolsQuery(
       weight: true,
       priceRate: true,
       symbol: true,
+    },
+    apr: {
+      stakingApr: {
+        min: true,
+        max: true,
+      },
+      swapFees: true,
+      tokenAprs: {
+        total: true,
+        breakdown: true,
+      },
+      rewardsApr: {
+        total: true,
+        breakdown: true,
+      },
+      protocolApr: true,
+      min: true,
+      max: true,
     },
   };
 
