@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Pool } from '@/services/pool/types';
+import { AprBreakdown } from '@balancer-labs/sdk';
 import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -8,13 +9,12 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
-import { PoolAPRs } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  yieldAPR: PoolAPRs['yield'];
+  yieldAPR: AprBreakdown['tokenAprs'];
   pool: Pool;
 };
 
@@ -49,7 +49,7 @@ const yieldAPRLabel = computed(() => {
   return '';
 });
 
-const yieldBreakdownItems = computed((): [string, string][] =>
+const yieldBreakdownItems = computed((): [string, number][] =>
   Object.entries(props.yieldAPR.breakdown)
 );
 </script>

@@ -7,7 +7,8 @@ import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
-import { AprRange, Pool, PoolAPRs } from '@/services/pool/types';
+import { AprRange, Pool } from '@/services/pool/types';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 import { VeBalAprCalc } from './calcs/vebal-apr.calc';
 
@@ -26,7 +27,7 @@ export class AprConcern {
     protocolFeePercentage: number,
     stakingBalApr: AprRange,
     stakingRewardApr = '0'
-  ): Promise<PoolAPRs> {
+  ): Promise<AprBreakdown> {
     const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
 
     const yieldAPR = await this.calcYieldAPR(
@@ -37,15 +38,18 @@ export class AprConcern {
 
     const veBalAPR = await this.calcVeBalAPR(prices);
 
-    const unstakedTotalAPR = bnSum([swapFeeAPR, yieldAPR.total]).toString();
+    const unstakedTotalAPR = bnSum([
+      swapFeeAPR,
+      yieldAPR.total.toString(),
+    ]).toString();
 
-    const aprGivenBoost = (boost = '1') =>
-      this.calcAprGivenBoost(
-        unstakedTotalAPR,
-        stakingBalApr,
-        stakingRewardApr,
-        boost
-      );
+    // const aprGivenBoost = (boost = '1') =>
+    //   this.calcAprGivenBoost(
+    //     unstakedTotalAPR,
+    //     stakingBalApr,
+    //     stakingRewardApr,
+    //     boost
+    //   );
 
     const stakedAprRange = this.calcStakedAprRange(
       unstakedTotalAPR,
@@ -54,21 +58,19 @@ export class AprConcern {
     );
 
     return {
-      swap: swapFeeAPR,
-      yield: yieldAPR,
-      staking: {
-        bal: stakingBalApr,
-        rewards: stakingRewardApr,
+      swapFees: Number(swapFeeAPR),
+      tokenAprs: yieldAPR,
+      stakingApr: {
+        min: Number(stakingBalApr.min),
+        max: Number(stakingBalApr.max),
       },
-      total: {
-        unstaked: unstakedTotalAPR,
-        staked: {
-          calc: aprGivenBoost,
-          ...stakedAprRange,
-        },
+      rewardsApr: {
+        total: Number(stakingRewardApr),
+        breakdown: {},
       },
-      // Conditionally add the veBAL APR attribute if this is the BAL 80/20 pool.
-      ...(isVeBalPool(this.pool.id) && { veBal: veBalAPR }),
+      protocolApr: isVeBalPool(this.pool.id) ? Number(veBalAPR) : 0,
+      min: bnum(unstakedTotalAPR).plus(stakedAprRange.min).toNumber(),
+      max: bnum(unstakedTotalAPR).plus(stakedAprRange.max).toNumber(),
     };
   }
 
@@ -138,7 +140,7 @@ export class AprConcern {
     prices: TokenPrices,
     currency: FiatCurrency,
     protocolFeePercentage: number
-  ): Promise<{ total: string; breakdown: Record<string, string> }> {
+  ): Promise<{ total: number; breakdown: { [address: string]: number } }> {
     let total = '0';
     let breakdown = {};
 
@@ -173,7 +175,7 @@ export class AprConcern {
             currency
           );
 
-          breakdown[wrappedToken] = weightedAPR.toString();
+          breakdown[wrappedToken] = Number(weightedAPR);
 
           total = bnSum(Object.values(breakdown)).toString();
         }
@@ -181,7 +183,7 @@ export class AprConcern {
     }
 
     return {
-      total,
+      total: Number(total),
       breakdown,
     };
   }

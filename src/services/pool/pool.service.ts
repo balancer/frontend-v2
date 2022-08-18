@@ -8,8 +8,6 @@ import {
   LinearPool,
   OnchainPoolData,
   Pool,
-  PoolAPRs,
-  PoolToken,
   RawOnchainPoolData,
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -20,6 +18,7 @@ import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
+import { PoolToken, AprBreakdown } from '@balancer-labs/sdk';
 
 export default class PoolService {
   constructor(
@@ -75,7 +74,7 @@ export default class PoolService {
     protocolFeePercentage: number,
     stakingBalApr: GaugeBalApr,
     stakingRewardApr = '0'
-  ): Promise<PoolAPRs> {
+  ): Promise<AprBreakdown> {
     const aprConcern = new this.apr(this.pool);
     const apr = await aprConcern.calc(
       poolSnapshot,

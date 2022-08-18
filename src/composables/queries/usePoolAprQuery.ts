@@ -8,7 +8,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { AprConcern } from '@/services/pool/concerns/apr/apr.concern';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
-import { Pool, PoolAPRs } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 
 import useNetwork from '../useNetwork';
@@ -16,10 +16,11 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import usePoolQuery from './usePoolQuery';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 export default function usePoolAprQuery(
   id: string,
-  options: QueryObserverOptions<PoolAPRs> = {}
+  options: QueryObserverOptions<AprBreakdown> = {}
 ) {
   /**
    * @description
@@ -69,7 +70,7 @@ export default function usePoolAprQuery(
     }
   }
 
-  const queryFn = async () => {
+  const queryFn = async (): Promise<AprBreakdown> => {
     let _pool: Pool;
     if (storedPool) {
       _pool = storedPool;
@@ -116,5 +117,5 @@ export default function usePoolAprQuery(
     enabled,
     ...options,
   });
-  return useQuery<PoolAPRs>(queryKey, queryFn, queryOptions);
+  return useQuery<AprBreakdown>(queryKey, queryFn, queryOptions);
 }

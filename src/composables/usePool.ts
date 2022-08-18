@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network, AprBreakdown } from '@balancer-labs/sdk';
 import { isAddress } from '@ethersproject/address';
 import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
@@ -14,9 +14,9 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
+import { AnyPool, Pool, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
+import { divApr, hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
@@ -196,30 +196,39 @@ export function poolURLFor(
  * If not given boost returns pool absolute max assuming 2.5x boost.
  * Used primarily for sorting tables by the APR column.
  */
-export function absMaxApr(aprs: PoolAPRs, boost?: string): string {
-  if (boost) return aprs.total.staked.calc(boost);
+export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
+  if (boost) {
+    const nonStakingApr = bnum(aprs.swapFees)
+      .plus(aprs.tokenAprs.total)
+      .plus(aprs.rewardAprs.total);
+    const stakingApr = bnum(aprs.stakingApr.min).times(boost).toString();
+    return nonStakingApr.plus(stakingApr).toString();
+  }
 
-  return aprs.total.staked.max;
+  return aprs.max.toString();
 }
 
 /**
  * @summary Returns total APR label, whether range or single value.
  */
-export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
+export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
+  // TODO - Can this all be replaced by aprs.min / aprs.max ? Is there a reason it excludes token/rewards Aprs?
   if (boost) {
-    return numF(aprs.total.staked.calc(boost), FNumFormats.percent);
+    return numF(absMaxApr(aprs, boost), FNumFormats.percent);
   } else if (hasBalEmissions(aprs)) {
-    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxAPR = numF(aprs.total.staked.max, FNumFormats.percent);
+    const minAPR = numF(divApr(aprs.stakingApr.min), FNumFormats.percent);
+    const maxAPR = numF(divApr(aprs.stakingApr.max), FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
-  } else if (aprs.veBal) {
-    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxValue = bnum(aprs.total.staked.min).plus(aprs.veBal).toString();
-    const maxAPR = numF(maxValue, FNumFormats.percent);
+  } else if (aprs.protocolApr) {
+    const minAPR = numF(divApr(aprs.stakingApr.min), FNumFormats.percent);
+    const maxValue = bnum(aprs.stakingApr.min)
+      .plus(aprs.protocolApr)
+      .toString();
+    const maxAPR = numF(divApr(maxValue), FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(aprs.total.staked.min, FNumFormats.percent);
+  return numF(aprs.stakingApr.min, FNumFormats.percent);
 }
 
 /**

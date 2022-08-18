@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 export interface Pool {
   id: string;
@@ -25,7 +26,7 @@ export interface Pool {
   isNew?: boolean;
   volumeSnapshot?: string;
   feesSnapshot?: string;
-  apr?: PoolAPRs;
+  apr?: AprBreakdown;
   boost?: string;
   priceRateProviders?: PriceRateProvider[];
 }
@@ -71,31 +72,6 @@ export interface RawPoolTokens {
 export interface LinearPool extends Pool {
   mainIndex: number;
   wrappedIndex: number;
-}
-
-export type AprRange = { min: string; max: string };
-export interface PoolAPRs {
-  total: {
-    unstaked: string;
-    staked: {
-      calc: (boost?: string) => string;
-      max: string;
-      min: string;
-    };
-  };
-  swap: string;
-  yield: {
-    total: string;
-    breakdown: { [address: string]: string };
-  };
-  staking?: {
-    bal: {
-      min: string;
-      max: string;
-    };
-    rewards: string;
-  };
-  veBal?: string;
 }
 
 export interface OnchainTokenData {
