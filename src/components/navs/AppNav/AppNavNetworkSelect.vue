@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
+import useAlerts, { AlertType } from '@/composables/useAlerts';
 
 export interface NetworkOption {
   id: string;
@@ -15,8 +16,9 @@ export interface NetworkOption {
 
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
-const { networkId } = useNetwork();
+const { networkId, networkConfig } = useNetwork();
 const router = useRouter();
+const { addAlert } = useAlerts();
 
 const networks = ref([
   {
@@ -56,6 +58,19 @@ const activeNetwork = computed((): NetworkOption | undefined =>
   })
 );
 
+// LIFECYCLE
+onMounted(async () => {
+  await router.isReady();
+  if (router.currentRoute.value.query?.poolNetworkAlert) {
+    addAlert({
+      id: 'poolNetworkAlert',
+      type: AlertType.INFO,
+      label: `Pool doesn't exist on ${router.currentRoute.value.query.poolNetworkAlert}`,
+    });
+    router.replace({ query: {} });
+  }
+});
+
 // METHODS
 function iconSrc(network: NetworkOption): string {
   return require(`@/assets/images/icons/networks/${network.id}.svg`);
@@ -69,7 +84,7 @@ function appUrl(network: NetworkOption): string {
     router.currentRoute.value.name === 'withdraw' ||
     router.currentRoute.value.name === 'migrate-pool'
   )
-    return `/#/${network.networkSlug}`;
+    return `/#/${network.networkSlug}?poolNetworkAlert=${networkConfig.name}`;
 
   const currentRoute = router.currentRoute.value;
   return router.resolve({

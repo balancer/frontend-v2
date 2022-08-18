@@ -18,6 +18,7 @@ const DEFAULT_NETWORK_ID =
   Number(process.env.VUE_APP_NETWORK) ||
   Network.MAINNET;
 export const networkSlug = config[DEFAULT_NETWORK_ID].slug;
+export const networkConfig = config[DEFAULT_NETWORK_ID];
 
 /**
  * COMPUTED
@@ -93,6 +94,7 @@ export function urlFor(network: Network): string {
 
 export default function useNetwork() {
   return {
+    networkConfig,
     networkSlug,
     networkId,
   };
