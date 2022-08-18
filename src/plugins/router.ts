@@ -59,7 +59,7 @@ const routes: RouteRecordRaw[] = [
     component: HomePage,
   },
   {
-    path: '/trade/:assetIn?/:assetOut?',
+    path: '/trade/:assetIn?/:assetOut?/:assetInAmount?',
     name: 'trade',
     component: TradePage,
   },
