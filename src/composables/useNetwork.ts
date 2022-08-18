@@ -13,18 +13,18 @@ const localStorageNetworkId: Network | undefined =
     ? (Number(localStorage.getItem('networkId')) as Network)
     : undefined;
 
-const DEFAULT_NETWORK_ID =
+const NETWORK_ID =
   localStorageNetworkId ||
   Number(process.env.VUE_APP_NETWORK) ||
   Network.MAINNET;
-export const networkSlug = config[DEFAULT_NETWORK_ID].slug;
-export const networkConfig = config[DEFAULT_NETWORK_ID];
+export const networkSlug = config[NETWORK_ID].slug;
+export const networkConfig = config[NETWORK_ID];
 
 /**
  * COMPUTED
  */
 
-export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
+export const networkId = ref<Network>(NETWORK_ID);
 
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
@@ -94,6 +94,7 @@ export function urlFor(network: Network): string {
 
 export default function useNetwork() {
   return {
+    NETWORK_ID,
     networkConfig,
     networkSlug,
     networkId,

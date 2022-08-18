@@ -14,6 +14,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { lsSet } from '@/lib/utils';
 import { tokenListService } from '@/services/token-list/token-list.service';
 import { TokenList, TokenListMap } from '@/types/TokenList';
+import useNetwork from '@/composables/useNetwork';
 
 /** TYPES */
 export interface TokenListsState {
@@ -34,6 +35,7 @@ export interface TokenListsProviderResponse {
 
 /** SETUP */
 const { uris } = tokenListService;
+const { NETWORK_ID } = useNetwork();
 export const TokenListsProviderSymbol: InjectionKey<TokenListsProviderResponse> =
   Symbol(symbolKeys.Providers.TokenLists);
 
@@ -50,7 +52,7 @@ export default {
 
     let allTokenLists = {};
     try {
-      allTokenLists = require<TokenListMap>('/public/data/tokenlists.json');
+      allTokenLists = require<TokenListMap>(`/public/data/tokenlists/tokens-${NETWORK_ID}.json`);
     } catch (error) {
       console.error('Failed to fetch tokenlists', error);
       throw error;
