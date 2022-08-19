@@ -1,10 +1,10 @@
 import { configService } from '@/services/config/config.service';
 import { twentyFourHoursInSecs } from './useTime';
+import { BlockNumberResponse } from '@/types';
 
 export type TimeTravelPeriod = '24h';
 
 export async function getTimeTravelBlock(
-  currentBlock: number,
   period: TimeTravelPeriod = '24h'
 ): Promise<number> {
   const dayAgo = `${Math.floor(Date.now() / 1000) - twentyFourHoursInSecs}`;
@@ -22,16 +22,6 @@ const query = (timestamp: string) => `{
     number
   }
 }`;
-
-interface BlockNumberResponse {
-  data: {
-    blocks: [
-      {
-        number: string;
-      }
-    ];
-  };
-}
 
 const fetchBlockByTime = async (timestamp: string): Promise<number> => {
   const endpoint = configService.network.subgraphs.blocks;

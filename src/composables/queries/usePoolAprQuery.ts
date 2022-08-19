@@ -9,7 +9,6 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { AprConcern } from '@/services/pool/concerns/apr/apr.concern';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 
 import useNetwork from '../useNetwork';
@@ -56,8 +55,7 @@ export default function usePoolAprQuery(
   const queryKey = QUERY_KEYS.Pools.APR(networkId, id);
 
   async function getSnapshot(id: string): Promise<Pool[]> {
-    const currentBlock = await rpcProviderService.getBlockNumber();
-    const blockNumber = await getTimeTravelBlock(currentBlock);
+    const blockNumber = await getTimeTravelBlock();
     const block = { number: blockNumber };
     const isInPoolIds = { id: Op.In([id]) };
     try {
