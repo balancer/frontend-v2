@@ -36,6 +36,8 @@ export function networkFor(key: string | number): Network {
       return Network.MAINNET;
     case '5':
       return Network.GOERLI;
+    case '10':
+      return Network.OPTIMISM;
     case '42':
       return Network.KOVAN;
     case '137':
