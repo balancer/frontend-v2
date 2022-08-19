@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import HomePageHero from '@/components/heros/HomePageHero.vue';
@@ -7,9 +6,7 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePools from '@/composables/pools/usePools';
 
@@ -28,7 +25,6 @@ const { selectedTokens, addSelectedToken, removeSelectedToken } =
 // } = useStreamedPoolsQuery(selectedTokens);
 const { pools, isLoading } = usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
-const { priceQueryLoading } = useTokens();
 
 /**
  * METHODS
