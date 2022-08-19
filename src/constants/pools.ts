@@ -201,7 +201,7 @@ const POOLS_MAINNET: Pools = {
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
     bbAaveUSD: {
       v1: '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
-      v2: '0x9B532AB955417AFD0D012EB9F7389457CD0EA712000000000000000000000338',
+      v2: '0x9b532ab955417afd0d012eb9f7389457cd0ea712000000000000000000000338',
     },
     veBAL: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
   },
@@ -230,6 +230,7 @@ const POOLS_MAINNET: Pools = {
       '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d', // sdBAL Stable Pool (sdBAL / 8020 BALETH)
       '0x178e029173417b1f9c8bc16dcec6f697bc32374600000000000000000000025d', // Fiat DAO Stable Pool
       '0xf93579002dbe8046c43fefe86ec78b1112247bb80000000000000000000002bc', // USDD 3 pool
+      '0x9b532ab955417afd0d012eb9f7389457cd0ea712000000000000000000000338', // bb-a-USD V2
     ],
   },
   Investment: {
@@ -249,6 +250,7 @@ const POOLS_MAINNET: Pools = {
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
+    '0xdc6d62ae091ea77331542042a72e5e38b188837c': 'boostedPool', // ComposableStable
   },
   Stakable: {
     AllowList: [

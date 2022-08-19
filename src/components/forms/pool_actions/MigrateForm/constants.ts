@@ -1,4 +1,5 @@
 import { networkId } from '@/composables/useNetwork';
+import { POOLS } from '@/constants/pools';
 import { Network } from '@balancer-labs/sdk';
 import { keyBy } from 'lodash';
 
@@ -46,8 +47,8 @@ const GOERLI_POOL_MIGRATIONS: PoolMigrationInfo[] = [
 const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
     type: PoolMigrationType.AAVE_BOOSTED_POOL,
-    fromPoolId: goerlyMigrationPoolAdresses.bbaUSD1,
-    toPoolId: goerlyMigrationPoolAdresses.bbaUSD1,
+    fromPoolId: POOLS.IdsMap.bbAaveUSD?.v1 as string,
+    toPoolId: POOLS.IdsMap.bbAaveUSD?.v2 as string,
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,

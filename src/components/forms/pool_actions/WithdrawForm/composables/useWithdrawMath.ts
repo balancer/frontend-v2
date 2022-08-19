@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isStablePhantom, usePool } from '@/composables/usePool';
+import { isComposableStableLike, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
@@ -78,7 +78,7 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isStablePhantomPool, isWeightedPool } = usePool(pool);
+  const { isComposableStableLikePool, isWeightedPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -95,7 +95,7 @@ export default function useWithdrawMath(
    * COMPUTED
    */
   const tokenAddresses = computed((): string[] => {
-    if (isStablePhantom(pool.value.poolType)) {
+    if (isComposableStableLike(pool.value.poolType)) {
       return pool.value.mainTokens || [];
     }
     return pool.value.tokensList;
@@ -196,7 +196,7 @@ export default function useWithdrawMath(
   });
 
   const proportionalAmounts = computed((): string[] => {
-    if (isStablePhantomPool.value) {
+    if (isComposableStableLikePool.value) {
       return proportionalMainTokenAmounts.value;
     }
     return proportionalPoolTokenAmounts.value;
@@ -237,7 +237,7 @@ export default function useWithdrawMath(
 
     // Else single asset exact out amount case
 
-    if (isStablePhantomPool.value) {
+    if (isComposableStableLikePool.value) {
       if (shouldUseBatchRelayer.value) {
         return batchRelayerSwap.value?.outputs?.amountsIn || '0';
       }
@@ -267,7 +267,8 @@ export default function useWithdrawMath(
   );
 
   const singleAssetMaxes = computed((): string[] => {
-    if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;
+    if (isComposableStableLikePool.value)
+      return batchSwapSingleAssetMaxes.value;
 
     try {
       return poolTokens.value.map((token, tokenIndex) => {
@@ -359,12 +360,12 @@ export default function useWithdrawMath(
   const shouldFetchBatchSwap = computed(
     (): boolean =>
       pool.value &&
-      isStablePhantomPool.value &&
+      isComposableStableLikePool.value &&
       bnum(normalizedBPTIn.value).gt(0)
   );
 
   const shouldUseBatchRelayer = computed((): boolean => {
-    if (!isStablePhantomPool.value || !pool.value?.onchain?.linearPools)
+    if (!isComposableStableLikePool.value || !pool.value?.onchain?.linearPools)
       return false;
 
     // If batchSwap has any 0 return amounts, we should use batch relayer
@@ -604,7 +605,7 @@ export default function useWithdrawMath(
    * decide what swap should be fetched and sets it.
    */
   async function getSwap(): Promise<void> {
-    if (!isStablePhantomPool.value) return;
+    if (!isComposableStableLikePool.value) return;
 
     if (isProportional.value) {
       batchSwap.value = await getBatchSwap();
@@ -649,7 +650,7 @@ export default function useWithdrawMath(
    */
   watch(tokenOut, () => {
     tokenOutAmount.value = '';
-    if (isStablePhantomPool.value) getSingleAssetMaxOut();
+    if (isComposableStableLikePool.value) getSingleAssetMaxOut();
   });
 
   watch(isWalletReady, async () => {

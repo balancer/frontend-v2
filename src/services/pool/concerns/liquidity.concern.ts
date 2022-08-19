@@ -3,7 +3,7 @@ import { formatUnits } from '@ethersproject/units';
 
 import {
   isStableLike,
-  isStablePhantom,
+  isComposableStableLike,
   isWeightedLike,
 } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
@@ -36,7 +36,7 @@ export default class LiquidityConcern {
     if (isWeightedLike(this.poolType)) {
       return this.calcWeightedTotal(prices, currency);
     } else if (isStableLike(this.poolType)) {
-      if (isStablePhantom(this.poolType)) {
+      if (isComposableStableLike(this.poolType)) {
         return this.calcStablePhantom(prices, currency, tokenMeta);
       }
       return this.calcStableTotal(prices, currency);
@@ -104,7 +104,7 @@ export default class LiquidityConcern {
     let tokens = this.poolTokens;
 
     if (
-      isStablePhantom(this.poolType) &&
+      isComposableStableLike(this.poolType) &&
       this.pool.linearPoolTokensMap != null
     ) {
       tokens = Object.values(this.pool.linearPoolTokensMap);

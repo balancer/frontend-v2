@@ -4,7 +4,11 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { Ref, ref } from 'vue';
 
-import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
+import {
+  isComposableStableLike,
+  isStable,
+  isStableLike,
+} from '@/composables/usePool';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
@@ -56,7 +60,7 @@ export default class CalculatorService {
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): OldBigNumber {
     if (this.isStableLikePool) {
-      if (this.isStablePhantomPool) {
+      if (this.isComposableStableLikePool) {
         return this.stablePhantom.priceImpact(tokenAmounts, opts);
       } else {
         return this.stable.priceImpact(tokenAmounts, opts);
@@ -244,8 +248,8 @@ export default class CalculatorService {
     return isStableLike(this.pool.value.poolType);
   }
 
-  public get isStablePhantomPool(): boolean {
-    return isStablePhantom(this.pool.value.poolType);
+  public get isComposableStableLikePool(): boolean {
+    return isComposableStableLike(this.pool.value.poolType);
   }
 
   public get sendTokens(): string[] {

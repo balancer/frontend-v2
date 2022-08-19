@@ -1,6 +1,6 @@
 import { differenceInWeeks } from 'date-fns';
 
-import { isStable, isStablePhantom } from '@/composables/usePool';
+import { isStable, isComposableStableLike } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
@@ -94,7 +94,7 @@ export default class PoolService {
    * required attributes.
    */
   public async setLinearPools(): Promise<Record<string, PoolToken> | null> {
-    if (!isStablePhantom(this.pool.poolType)) return null;
+    if (!isComposableStableLike(this.pool.poolType)) return null;
 
     // Fetch linear pools from subgraph
     const linearPools = (await balancerSubgraphService.pools.get(

@@ -34,9 +34,20 @@ export function isStablePhantom(poolType: PoolType): boolean {
   return poolType === PoolType.StablePhantom;
 }
 
+export function isComposableStable(poolType: PoolType): boolean {
+  return poolType === PoolType.ComposableStable;
+}
+
+export function isComposableStableLike(poolType: PoolType): boolean {
+  return isStablePhantom(poolType) || isComposableStable(poolType);
+}
+
 export function isStableLike(poolType: PoolType): boolean {
   return (
-    isStable(poolType) || isMetaStable(poolType) || isStablePhantom(poolType)
+    isStable(poolType) ||
+    isMetaStable(poolType) ||
+    isStablePhantom(poolType) ||
+    isComposableStable(poolType)
   );
 }
 
@@ -88,7 +99,7 @@ export function noInitLiquidity(pool: AnyPool): boolean {
  * @returns tokens that can be used to invest or withdraw from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
-  if (isStablePhantom(pool.poolType)) {
+  if (isComposableStableLike(pool.poolType)) {
     const mainTokens = pool.mainTokens || [];
     const wrappedTokens = pool.wrappedTokens || [];
     return [...mainTokens, ...wrappedTokens];
@@ -120,7 +131,7 @@ export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
   poolAddress: string,
   tokens: TPoolTokens[]
 ): TPoolTokens[] {
-  if (isStablePhantom(poolType))
+  if (isComposableStableLike(poolType))
     return tokens.filter(token => !isSameAddress(token.address, poolAddress));
   if (isStableLike(poolType)) return tokens;
   return tokens
@@ -250,8 +261,14 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isStablePhantomPool = computed(
     (): boolean => !!pool.value && isStablePhantom(pool.value.poolType)
   );
+  const isComposableStablePool = computed(
+    (): boolean => !!pool.value && isComposableStable(pool.value.poolType)
+  );
   const isStableLikePool = computed(
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
+  );
+  const isComposableStableLikePool = computed(
+    (): boolean => !!pool.value && isComposableStableLike(pool.value.poolType)
   );
   const isWeightedPool = computed(
     (): boolean => !!pool.value && isWeighted(pool.value.poolType)
@@ -290,7 +307,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStablePool,
     isMetaStablePool,
     isStablePhantomPool,
+    isComposableStablePool,
     isStableLikePool,
+    isComposableStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
     isManagedPool,

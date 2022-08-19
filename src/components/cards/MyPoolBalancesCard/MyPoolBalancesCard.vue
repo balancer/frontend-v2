@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { tokens, balances, balanceFor } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { isComposableStableLikePool } = usePool(toRef(props, 'pool'));
 
 /**
  * SERVICES
@@ -56,7 +56,7 @@ const propTokenAmounts = computed((): string[] => {
     'send'
   );
 
-  if (isStablePhantomPool.value) {
+  if (isComposableStableLikePool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
     return props.pool.tokensList.map((address, i) => {
@@ -72,7 +72,7 @@ const propTokenAmounts = computed((): string[] => {
 });
 
 const tokenAddresses = computed((): string[] => {
-  if (isStablePhantomPool.value) {
+  if (isComposableStableLikePool.value) {
     // We're using mainToken balances for StablePhantom pools
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];

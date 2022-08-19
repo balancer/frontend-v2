@@ -8,7 +8,11 @@ import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.v
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
+import {
+  isStableLike,
+  isComposableStableLike,
+  usePool,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
@@ -112,7 +116,7 @@ const poolHasLowLiquidity = computed((): boolean =>
 );
 
 const investmentTokens = computed((): string[] => {
-  if (isStablePhantom(props.pool.poolType)) {
+  if (isComposableStableLike(props.pool.poolType)) {
     return props.pool.mainTokens || [];
   }
   return props.pool.tokensList;

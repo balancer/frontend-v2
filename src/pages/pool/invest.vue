@@ -18,7 +18,7 @@ import { configService } from '@/services/config/config.service';
  */
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isStablePhantomPool } = usePool(pool);
+const { isComposableStableLikePool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
 
 /**
@@ -27,7 +27,7 @@ const { sor, sorReady } = useInvestState();
 onBeforeMount(async () => {
   await forChange(loadingPool, false);
 
-  if (pool.value && isStablePhantomPool.value) {
+  if (pool.value && isComposableStableLikePool.value) {
     // Initialise SOR for batch swap queries
     sorReady.value = await sor.fetchPools();
   } else {

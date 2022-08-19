@@ -34,6 +34,7 @@ export enum PoolType {
   Stable = 'Stable',
   MetaStable = 'MetaStable',
   StablePhantom = 'StablePhantom',
+  ComposableStable = 'ComposableStable',
   LiquidityBootstrapping = 'LiquidityBootstrapping',
 }
 

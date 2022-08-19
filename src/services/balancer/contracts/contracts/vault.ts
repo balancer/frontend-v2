@@ -8,7 +8,7 @@ import { pick } from 'lodash';
 
 import {
   isStableLike,
-  isStablePhantom,
+  isComposableStableLike,
   isTradingHaltable,
   isWeightedLike,
 } from '@/composables/usePool';
@@ -80,7 +80,7 @@ export default class Vault {
     } else if (isStableLike(type)) {
       poolMulticaller.call('amp', poolAddress, 'getAmplificationParameter');
 
-      if (isStablePhantom(type)) {
+      if (isComposableStableLike(type)) {
         // Overwrite totalSupply with virtualSupply for StablePhantom pools
         poolMulticaller.call('totalSupply', poolAddress, 'getVirtualSupply');
 
@@ -128,7 +128,7 @@ export default class Vault {
 
     result = await poolMulticaller.execute(result);
 
-    if (isStablePhantom(type) && result.linearPools) {
+    if (isComposableStableLike(type) && result.linearPools) {
       const wrappedTokensMap: Record<string, string> = {};
 
       Object.keys(result.linearPools).forEach(address => {

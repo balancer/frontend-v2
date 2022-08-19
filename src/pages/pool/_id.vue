@@ -66,8 +66,11 @@ const poolQueryLoading = computed(
 );
 const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
-const { isStableLikePool, isLiquidityBootstrappingPool, isStablePhantomPool } =
-  usePool(poolQuery.data);
+const {
+  isStableLikePool,
+  isLiquidityBootstrappingPool,
+  isComposableStableLikePool,
+} = usePool(poolQuery.data);
 //#endregion
 
 //#region pool snapshot query
@@ -145,7 +148,7 @@ const missingPrices = computed(() => {
     const tokensWithPrice = Object.keys(prices.value);
 
     const tokens =
-      isStablePhantomPool.value && pool.value.mainTokens
+      isComposableStableLikePool.value && pool.value.mainTokens
         ? pool.value.mainTokens
         : pool.value.tokensList;
 
@@ -201,7 +204,7 @@ watch(poolQuery.error, () => {
         :titleTokens="titleTokens"
         :missingPrices="missingPrices"
         :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
-        :isStablePhantomPool="isLiquidityBootstrappingPool"
+        :isComposableStableLikePool="isComposableStableLikePool"
       />
       <div class="hidden lg:block" />
       <div class="order-2 lg:order-1 col-span-2">

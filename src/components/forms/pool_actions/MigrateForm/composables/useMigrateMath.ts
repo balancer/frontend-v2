@@ -67,7 +67,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   );
 
   const shouldFetchBatchSwap = computed(
-    () => toPoolTypes.isStablePhantomPool.value
+    () => toPoolTypes.isComposableStableLikePool.value
   );
 
   const poolTokens = computed(() =>
@@ -92,7 +92,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   const fullBPTOut = computed((): string => {
     let _bptOut: string;
 
-    if (toPoolTypes.isStablePhantomPool.value) {
+    if (toPoolTypes.isComposableStableLikePool.value) {
       _bptOut = batchSwap.value
         ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
@@ -140,7 +140,7 @@ export default function useMigrateMath(fromPool: Ref<Pool>, toPool: Ref<Pool>) {
   });
 
   const tokenAddresses = computed((): string[] => {
-    if (fromPoolTypes.isStablePhantomPool.value) {
+    if (fromPoolTypes.isComposableStableLikePool.value) {
       return fromPool.value.mainTokens || [];
     }
     return fromPool.value.tokensList;

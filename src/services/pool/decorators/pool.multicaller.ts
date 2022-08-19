@@ -7,7 +7,7 @@ import {
 
 import {
   isStableLike,
-  isStablePhantom,
+  isComposableStableLike,
   isTradingHaltable,
   isWeightedLike,
   removePreMintedBPT,
@@ -95,7 +95,7 @@ export class PoolMulticaller {
           abi: PoolTypeABIs,
         });
 
-        if (isStablePhantom(pool.poolType)) {
+        if (isComposableStableLike(pool.poolType)) {
           // Overwrite totalSupply with virtualSupply for StablePhantom pools
           multicaller.call({
             key: `${pool.id}.totalSupply`,
@@ -163,7 +163,10 @@ export class PoolMulticaller {
     result = await multicaller.execute();
 
     this.pools.forEach(pool => {
-      if (isStablePhantom(pool.poolType) && result[pool.id].linearPools) {
+      if (
+        isComposableStableLike(pool.poolType) &&
+        result[pool.id].linearPools
+      ) {
         const wrappedTokensMap: Record<string, string> = {};
         const linearPools = result[pool.id].linearPools || {};
 

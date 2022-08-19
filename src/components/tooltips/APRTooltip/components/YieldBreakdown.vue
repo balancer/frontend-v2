@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isStablePhantom } from '@/composables/usePool';
+import { isComposableStableLike } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { PoolAPRs } from '@/services/pool/types';
@@ -44,7 +44,8 @@ const hasMultiRewardTokens = computed(
 
 const yieldAPRLabel = computed(() => {
   if (includesWstEth(props.poolTokens)) return t('yieldAprRewards.apr.steth');
-  if (isStablePhantom(props.poolType)) return t('yieldAprRewards.apr.boosted');
+  if (isComposableStableLike(props.poolType))
+    return t('yieldAprRewards.apr.boosted');
 
   return '';
 });
