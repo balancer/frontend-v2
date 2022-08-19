@@ -57,7 +57,7 @@ export default function usePoolAprQuery(
 
   async function getSnapshot(id: string): Promise<Pool[]> {
     const currentBlock = await rpcProviderService.getBlockNumber();
-    const blockNumber = getTimeTravelBlock(currentBlock);
+    const blockNumber = await getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
     const isInPoolIds = { id: Op.In([id]) };
     try {

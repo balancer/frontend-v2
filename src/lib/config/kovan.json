@@ -15,7 +15,8 @@
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2-kovan",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-kovan"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-kovan",
+    "blocks": "https://api.thegraph.com/subgraphs/name/blocklytics/kovan-blocks"
   },
   "supportsEIP1559": true,
   "supportsElementPools": true,

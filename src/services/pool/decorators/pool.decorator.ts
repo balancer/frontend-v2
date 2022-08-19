@@ -96,7 +96,7 @@ export class PoolDecorator {
    */
   private async getSnapshots(): Promise<Pool[]> {
     const currentBlock = await this.providerService.getBlockNumber();
-    const blockNumber = getTimeTravelBlock(currentBlock);
+    const blockNumber = await getTimeTravelBlock(currentBlock);
     const block = { number: blockNumber };
     const isInPoolIds = { id: Op.In(this.pools.map(pool => pool.id)) };
     try {
