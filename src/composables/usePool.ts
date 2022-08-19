@@ -77,9 +77,7 @@ export function isWeth(pool: AnyPool): boolean {
 }
 
 export function isMigratablePool(pool: AnyPool) {
-  return POOL_MIGRATIONS.some(
-    poolMigrationInfo => poolMigrationInfo.fromPoolId === pool.id
-  );
+  return POOL_MIGRATIONS.some(migration => migration.fromPoolId === pool.id);
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
@@ -181,7 +179,7 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
  * @summary Checks if given pool is BAL 80/20 pool (veBAL)
  */
 export function isVeBalPool(poolId: string): boolean {
-  return POOLS.IdsMap['B-80BAL-20WETH'] === poolId;
+  return POOLS.IdsMap?.veBAL === poolId;
 }
 
 /**

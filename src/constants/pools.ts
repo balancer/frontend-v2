@@ -21,14 +21,17 @@ type PoolMetadata = {
   hasIcon: boolean;
 };
 
-export type NamedPool =
-  | 'staBAL'
-  | 'bbAaveUSDDeprecated'
-  | 'bbAaveUSD'
-  | 'B-80BAL-20WETH';
+export type NamedPools = {
+  staBAL: string;
+  bbAaveUSD: {
+    v1: string;
+    v2: string;
+  };
+  veBAL: string;
+};
 
 export type Pools = {
-  IdsMap: Partial<Record<NamedPool, string>>;
+  IdsMap: Partial<NamedPools>;
   Pagination: {
     PerPage: number;
     PerPool: number;
@@ -58,10 +61,11 @@ const POOLS_KOVAN: Pools = {
   IdsMap: {
     staBAL:
       '0xd387dfd3a786e7caa06e6cf0c675352c7ffff30400000000000000000000063e',
-    bbAaveUSD:
-      '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8',
-    'B-80BAL-20WETH':
-      '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701',
+    bbAaveUSD: {
+      v1: '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8',
+      v2: '',
+    },
+    veBAL: '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701',
   },
   Pagination: {
     PerPage: 10,
@@ -135,12 +139,11 @@ const POOLS_KOVAN: Pools = {
 
 const POOLS_GOERLI: Pools = {
   IdsMap: {
-    bbAaveUSD:
-      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
-    bbAaveUSDDeprecated:
-      '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
-    'B-80BAL-20WETH':
-      '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
+    bbAaveUSD: {
+      v1: '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
+      v2: '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
+    },
+    veBAL: '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
   },
   Pagination: {
     PerPage: 10,
@@ -196,10 +199,11 @@ const POOLS_MAINNET: Pools = {
   IdsMap: {
     staBAL:
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
-    bbAaveUSD:
-      '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
-    'B-80BAL-20WETH':
-      '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
+    bbAaveUSD: {
+      v1: '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe',
+      v2: '0x9B532AB955417AFD0D012EB9F7389457CD0EA712000000000000000000000338',
+    },
+    veBAL: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
   },
   Pagination: {
     PerPage: 10,
