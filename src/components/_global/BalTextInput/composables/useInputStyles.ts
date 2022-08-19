@@ -61,18 +61,21 @@ export default function useInputStyles(
 
   const parentClasses = computed(() => ({
     [attrs.class]: true,
-    'shadow-lg rounded-lg': !props.noShadow,
+    'rounded-lg': !props.noShadow,
+    'shadow-lg': !props.noShadow && !props.disabled,
   }));
 
   const inputContainerClasses = computed(() => ({
-    border: !props.noBorder,
+    'bg-white dark:bg-gray-800': !props.disabled,
+    'bg-gray-100 dark:bg-gray-800': props.disabled,
     [extPaddingClass()]: true,
+    border: !props.noBorder,
     'border-gray-100 dark:border-gray-800': !isInvalid.value && !isActive.value,
     'border-red-500 dark:border-red-500': isInvalid.value,
     'border-blue-300 dark:border-blue-400': isActive.value && !isInvalid.value,
     'hover:border-gray-300 dark:hover:border-gray-700':
-      isHover.value && !isActive.value,
-    'shadow-inner': !props.noShadow,
+      isHover.value && !isActive.value && !props.disabled,
+    'shadow-inner': !props.noShadow && !props.disabled,
   }));
 
   const inputGroupClasses = computed(() => ({
@@ -93,6 +96,7 @@ export default function useInputStyles(
     'text-right': props.inputAlignRight,
     'font-numeric': props.type === 'number',
     'text-red-500': isInvalid.value,
+    'cursor-not-allowed': props.disabled,
   }));
 
   const prependClasses = computed(() => ({

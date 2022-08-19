@@ -49,7 +49,7 @@ const yieldAPRLabel = computed(() => {
   return '';
 });
 
-const yieldBreakdownItems = computed((): [string, string][] =>
+const yieldBreakdownItems = computed((): [string, number][] =>
   Object.entries(props.yieldAPR.breakdown)
 );
 </script>

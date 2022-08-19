@@ -4,7 +4,8 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -23,7 +24,8 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
-import { Pool } from '@/services/pool/types';
+import { PoolWithShares } from '@/services/pool/types';
+import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
@@ -32,7 +34,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
  * TYPES
  */
 type Props = {
-  data?: Pool[];
+  data?: PoolWithShares[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -78,7 +80,7 @@ const wideCompositionWidth = computed(() =>
 /**
  * DATA
  */
-const columns = computed<ColumnDefinition<Pool>[]>(() => [
+const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: 'Icons',
     id: 'icons',
@@ -95,21 +97,21 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
     Cell: 'poolNameCell',
     width: props.hiddenColumns.length >= 2 ? wideCompositionWidth.value : 350,
   },
-  // {
-  //   name: t('myBalance'),
-  //   accessor: pool =>
-  //     fNum2(pool.shares, {
-  //       style: 'currency',
-  //       maximumFractionDigits: 0,
-  //       fixedFormat: true,
-  //     }),
-  //   align: 'right',
-  //   id: 'myBalance',
-  //   hidden: !props.showPoolShares,
-  //   sortKey: pool => Number(pool.shares),
-  //   width: 160,
-  //   cellClassName: 'font-numeric',
-  // },
+  {
+    name: t('myBalance'),
+    accessor: pool =>
+      fNum2(pool.shares, {
+        style: 'currency',
+        maximumFractionDigits: 0,
+        fixedFormat: true,
+      }),
+    align: 'right',
+    id: 'myBalance',
+    hidden: !props.showPoolShares,
+    sortKey: pool => Number(pool.shares),
+    width: 160,
+    cellClassName: 'font-numeric',
+  },
   {
     name: t('poolValue'),
     accessor: pool =>
@@ -155,7 +157,7 @@ const columns = computed<ColumnDefinition<Pool>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.apr?.min || '0',
+    accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {
@@ -202,12 +204,12 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: Pool) {
+function handleRowClick(pool: PoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
   router.push({ name: 'pool', params: { id: pool.id } });
 }
 
-function navigateToPoolMigration(pool: Pool) {
+function navigateToPoolMigration(pool: PoolWithShares) {
   router.push({
     name: 'migrate-pool',
     params: {
@@ -218,7 +220,7 @@ function navigateToPoolMigration(pool: Pool) {
   });
 }
 
-function aprLabelFor(pool: Pool): string {
+function aprLabelFor(pool: PoolWithShares): string {
   const poolAPRs = pool?.apr;
   if (!poolAPRs) return '0';
 
@@ -227,6 +229,12 @@ function aprLabelFor(pool: Pool): string {
 
 function lockedUntil(lockEndDate?: number) {
   return lockEndDate ? format(lockEndDate, PRETTY_DATE_FORMAT) : '—';
+}
+
+function iconAddresses(pool: PoolWithShares) {
+  return POOLS.Metadata[pool.id]?.hasIcon
+    ? [pool.address]
+    : orderedTokenAddresses(pool);
 }
 </script>
 
@@ -272,19 +280,24 @@ function lockedUntil(lockEndDate?: number) {
       </template>
       <template #iconColumnCell="pool">
         <div v-if="!isLoading" class="py-4 px-6">
-          <BalAssetSet :addresses="orderedTokenAddresses(pool)" :width="100" />
+          <BalAssetSet :addresses="iconAddresses(pool)" :width="100" />
         </div>
       </template>
       <template #poolNameCell="pool">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
-          <TokenPills
-            :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-            "
-            :isStablePool="isStableLike(pool.poolType)"
-            :selectedTokens="selectedTokens"
-          />
-          <BalChipNew v-if="pool?.isNew" class="ml-2" />
+          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
+            {{ POOLS.Metadata[pool.id].name }}
+          </div>
+          <div v-else>
+            <TokenPills
+              :tokens="
+                orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+              "
+              :isStablePool="isStableLike(pool.poolType)"
+              :selectedTokens="selectedTokens"
+            />
+            <BalChipNew v-if="pool?.isNew" class="ml-2" />
+          </div>
         </div>
       </template>
       <template #volumeCell="pool">

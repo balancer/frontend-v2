@@ -60,14 +60,20 @@ const isLoading = computed(() =>
 <template>
   <Col3Layout offsetGutters>
     <template #gutterLeft>
-      <BalLoadingBlock v-if="isLoading" class="h-36" />
+      <BalLoadingBlock
+        v-if="isLoading || !lockablePool || !lockablePoolTokenInfo"
+        class="h-36"
+      />
       <LockableTokens
         v-else
         :lockablePool="lockablePool"
         :lockablePoolTokenInfo="lockablePoolTokenInfo"
       />
       <template v-if="isDesktop">
-        <BalLoadingBlock v-if="isLoading" class="mt-4 h-12" />
+        <BalLoadingBlock
+          v-if="isLoading || !lockablePool || !lockablePoolTokenInfo"
+          class="mt-4 h-12"
+        />
         <HowToLock
           v-else
           :lockablePool="lockablePool"
@@ -76,7 +82,10 @@ const isLoading = computed(() =>
       </template>
     </template>
 
-    <BalLoadingBlock v-if="isLoading" class="h-96" />
+    <BalLoadingBlock
+      v-if="isLoading || !lockablePool || !lockablePoolTokenInfo"
+      class="h-96"
+    />
     <VeBalForm
       v-else
       :lockablePool="lockablePool"
@@ -88,7 +97,10 @@ const isLoading = computed(() =>
       <BalLoadingBlock v-if="isLoading" class="h-64" />
       <MyVeBAL v-else :veBalLockInfo="veBalLockInfo" />
       <template v-if="isMobile">
-        <BalLoadingBlock v-if="isLoading" class="mt-4 h-12" />
+        <BalLoadingBlock
+          v-if="isLoading || !lockablePool || !lockablePoolTokenInfo"
+          class="mt-4 h-12"
+        />
         <HowToLock
           v-else
           :lockablePool="lockablePool"

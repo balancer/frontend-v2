@@ -111,18 +111,19 @@ export function orderedTokenAddresses(pool: AnyPool): string[] {
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
+type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
+
 /**
  * @summary Orders pool tokens by weight if weighted pool
  */
-export function orderedPoolTokens(
+export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
   poolType: PoolType,
   poolAddress: string,
-  tokens: Pick<PoolToken, 'address' | 'weight'>[]
-): Partial<PoolToken>[] {
+  tokens: TPoolTokens[]
+): TPoolTokens[] {
   if (isStablePhantom(poolType))
     return tokens.filter(token => !isSameAddress(token.address, poolAddress));
   if (isStableLike(poolType)) return tokens;
-
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight || '0') - parseFloat(a.weight || '0'));
@@ -136,6 +137,10 @@ export function poolURLFor(
   network: Network,
   poolType?: string | PoolType
 ): string {
+  console.log({ poolType, poolId, network });
+  if (network === Network.OPTIMISM) {
+    return `https://op.beets.fi/#/pool/${poolId}`;
+  }
   if (poolType && poolType.toString() === 'Element') {
     return `https://app.element.fi/pools/${addressFor(poolId)}`;
   }

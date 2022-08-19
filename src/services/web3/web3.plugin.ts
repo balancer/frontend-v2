@@ -6,6 +6,7 @@ import {
 } from '@ethersproject/providers';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
@@ -19,10 +20,10 @@ import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom from '@/composables/useFathom';
 import { SANCTIONS_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
-import i18n from '@/plugins/i18n';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
+import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
 
 export type Wallet =
@@ -66,17 +67,17 @@ type PluginState = {
   walletState: WalletState;
 };
 
-async function isSanctionedAddress(address: string): Promise<boolean | null> {
+async function isSanctionedAddress(address: string): Promise<boolean> {
+  if (!configService.env.WALLET_SCREENING) return false;
   try {
     const response = await axios.post(SANCTIONS_ENDPOINT, [
       {
         address: address.toLowerCase(),
       },
     ]);
-    const isSanctioned = response.data[0].isSanctioned;
-    return isSanctioned;
+    return response.data[0].isSanctioned ?? false;
   } catch {
-    return null;
+    return false;
   }
 }
 
@@ -259,12 +260,14 @@ export function getConnectorName(
   connectorId: ConnectorId,
   provider: any
 ): string {
+  const { t } = useI18n();
+
   if (!provider) {
-    return i18n.global.t('unknown');
+    return t('unknown');
   }
   if (connectorId === ConnectorId.InjectedMetaMask) {
     if (provider.isCoinbaseWallet) {
-      return `Coinbase ${i18n.global.t('wallet')}`;
+      return `Coinbase ${t('wallet')}`;
     }
     if (provider.isMetaMask) {
       return 'MetaMask';
@@ -281,7 +284,7 @@ export function getConnectorName(
     if (provider.isFrame) {
       return 'Frame';
     }
-    return i18n.global.t('browserWallet');
+    return t('browserWallet');
   }
   if (connectorId === ConnectorId.InjectedTally) {
     return 'Tally';
@@ -290,12 +293,12 @@ export function getConnectorName(
     return 'WalletConnect';
   }
   if (connectorId === ConnectorId.WalletLink) {
-    return `Coinbase ${i18n.global.t('wallet')}`;
+    return `Coinbase ${t('wallet')}`;
   }
   if (connectorId === ConnectorId.Gnosis) {
     return 'Gnosis Safe';
   }
-  return i18n.global.t('unknown');
+  return t('unknown');
 }
 
 export function getConnectorLogo(

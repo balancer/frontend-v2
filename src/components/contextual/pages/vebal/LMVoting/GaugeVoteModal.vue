@@ -35,7 +35,7 @@ type Props = {
   unallocatedVoteWeight: number;
   logoURIs: string[];
   poolURL: string;
-  veBalLockInfo?: VeBalLockInfo;
+  veBalLockInfo?: VeBalLockInfo | null;
 };
 
 const MINIMUM_LOCK_TIME = 86_400_000 * 7;
@@ -43,7 +43,9 @@ const MINIMUM_LOCK_TIME = 86_400_000 * 7;
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  veBalLockInfo: null,
+});
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -387,15 +389,7 @@ onMounted(() => {
       >
         <div class="flex gap-4 items-center h-full">
           <BalAssetSet :logoURIs="logoURIs" :width="100" :size="32" />
-          <div v-if="gauge.pool.name">
-            <p class="font-medium text-black dark:text-white">
-              {{ gauge.pool.name }}
-            </p>
-            <p class="text-sm text-secondary">
-              {{ gauge.pool.symbol }}
-            </p>
-          </div>
-          <div v-else>
+          <div>
             <p class="font-medium text-black dark:text-white">
               {{ gauge.pool.symbol }}
             </p>
@@ -426,16 +420,16 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="
-            voteInputDisabled || transactionInProgress || voteState.receipt
+            voteInputDisabled || transactionInProgress || !!voteState.receipt
           "
           size="md"
           autoFocus
         >
           <template #append>
             <div
-              class="flex flex-row justify-center items-center px-2 w-16 h-12 bg-gray-200 dark:bg-gray-700 rounded-r-lg border-gray-100 dark:border-gray-800"
+              class="flex flex-row justify-center items-center px-2 h-full rounded-r-lg border-gray-100 dark:border-gray-800"
             >
-              <span class="text-black dark:text-white">%</span>
+              <span class="text-xl text-black dark:text-white">%</span>
             </div>
           </template>
         </BalTextInput>
@@ -484,17 +478,3 @@ onMounted(() => {
     </div>
   </BalModal>
 </template>
-<style scoped>
-.vote-form :deep(.input-container),
-.vote-form :deep(.input-group) {
-  @apply p-0;
-}
-
-.vote-form :deep(.input) {
-  @apply px-3 h-12;
-}
-
-.vote-form :deep(.input[disabled]) {
-  @apply cursor-not-allowed bg-gray-100 dark:bg-gray-800 rounded-l-lg;
-}
-</style>

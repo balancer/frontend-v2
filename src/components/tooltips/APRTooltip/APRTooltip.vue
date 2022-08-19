@@ -34,7 +34,9 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const apr = computed<AprBreakdown>(() => props.pool?.apr || props.poolApr);
+const apr = computed<AprBreakdown | undefined>(
+  () => props.pool?.apr || props.poolApr
+);
 const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
 
 const hasYieldAPR = computed(() =>
@@ -84,11 +86,14 @@ const totalLabel = computed((): string =>
         </div>
 
         <!-- VeBal APR -->
-        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.protocolApr || '0'" />
+        <VeBalBreakdown
+          v-if="hasVebalAPR"
+          :apr="apr?.protocolApr.toString() || '0'"
+        />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
-          v-if="hasYieldAPR"
+          v-if="hasYieldAPR && apr"
           :yieldAPR="apr?.tokenAprs"
           :poolTokens="pool.tokensList"
           :poolType="pool.poolType"

@@ -20,7 +20,8 @@ import { Op } from '@balancer-labs/sdk';
 export default function usePoolQuery(
   id: string,
   isEnabled: Ref<boolean> = ref(true),
-  options: QueryObserverOptions<Pool> = {}
+  options: QueryObserverOptions<Pool> = {},
+  includeAprs = true
 ) {
   /**
    * @description
@@ -73,10 +74,11 @@ export default function usePoolQuery(
     // Decorate subgraph data with additional data
     const poolDecorator = new PoolDecorator([pool]);
     const [decoratedPool] = await poolDecorator.decorate(
-      undefined,
+      subgraphGauges.value || [],
       prices.value,
       currency.value,
-      tokens.value
+      tokens.value,
+      includeAprs
     );
 
     // Inject pool tokens into token registry

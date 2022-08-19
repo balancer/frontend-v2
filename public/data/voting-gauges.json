@@ -1351,7 +1351,7 @@
       ]
     },
     "tokenLogoURIs": {
-      "0x470EBf5f030Ed85Fc1ed4C2d36B9DD02e77CF1b7": "",
+      "0x470EBf5f030Ed85Fc1ed4C2d36B9DD02e77CF1b7": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x470ebf5f030ed85fc1ed4c2d36b9dd02e77cf1b7.png",
       "0x6B175474E89094C44Da98b954EedeAC495271d0F": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
     }
   },
@@ -2627,6 +2627,32 @@
     "tokenLogoURIs": {
       "0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9": "",
       "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1": ""
+    }
+  },
+  {
+    "address": "0xfb0265841C49A6b19D70055E596b212B0dA3f606",
+    "network": 10,
+    "pool": {
+      "id": "0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b",
+      "address": "0x4Fd63966879300caFafBB35D157dC5229278Ed23",
+      "poolType": "MetaStable",
+      "symbol": "BPT-rETH-ETH",
+      "tokens": [
+        {
+          "address": "0x4200000000000000000000000000000000000006",
+          "weight": "null",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D",
+          "weight": "null",
+          "symbol": "rETH"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x4200000000000000000000000000000000000006": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x4200000000000000000000000000000000000006/logo.png",
+      "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x9Bcef72be871e61ED4fBbc7630889beE758eb81D/logo.png"
     }
   }
 ]

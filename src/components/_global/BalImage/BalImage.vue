@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 
 /**
  * TYPES
  */
 type Props = {
   noFade?: boolean;
+  width?: string;
+  height?: string;
 };
 
 /**
@@ -13,6 +15,8 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   noFade: false,
+  width: 'auto',
+  height: 'auto',
 });
 
 /**
@@ -21,16 +25,11 @@ const props = withDefaults(defineProps<Props>(), {
 const loaded = ref(props.noFade);
 
 /**
- * COMPOSABLES
- */
-const attrs = useAttrs();
-
-/**
  * COMPUTED
  */
 const wrapperStyles = computed(() => ({
-  width: attrs?.width || 'auto',
-  height: attrs?.height || 'auto',
+  width: props.width,
+  height: props.height,
 }));
 
 /**
@@ -44,7 +43,13 @@ function onLoaded() {
 <template>
   <div class="bal-image-wrapper" :style="wrapperStyles">
     <Transition name="bal-image-fade">
-      <img v-show="loaded" v-bind="$attrs" @load="onLoaded" />
+      <img
+        v-show="loaded"
+        :width="props.width"
+        :height="props.height"
+        v-bind="$attrs"
+        @load="onLoaded"
+      />
     </Transition>
   </div>
 </template>

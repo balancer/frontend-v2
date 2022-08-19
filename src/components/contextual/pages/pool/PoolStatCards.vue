@@ -13,8 +13,8 @@ import { AprBreakdown } from '@balancer-labs/sdk';
  * TYPES
  */
 type Props = {
-  pool: Pool;
-  poolApr: AprBreakdown;
+  pool?: Pool | null;
+  poolApr?: AprBreakdown | null;
   loading?: boolean;
   loadingApr?: boolean;
 };
@@ -24,6 +24,8 @@ type Props = {
  */
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
+  pool: null,
+  poolApr: null,
 });
 
 /**
@@ -39,7 +41,7 @@ const aprLabel = computed((): string => {
   const poolAPRs = props.poolApr;
   if (!poolAPRs) return '0';
 
-  return totalAprLabel(poolAPRs, props.pool.boost);
+  return totalAprLabel(poolAPRs, props.pool?.boost);
 });
 
 const stats = computed(() => {
@@ -80,12 +82,12 @@ const stats = computed(() => {
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
     <template v-for="stat in stats" :key="stat.id">
-      <BalLoadingBlock v-if="stat.loading" class="h-24" />
+      <BalLoadingBlock v-if="stat.loading || !pool" class="h-24" />
       <BalCard v-else>
         <div class="flex mb-2 text-sm font-medium text-secondary">
           <span>{{ stat.label }}</span>
           <APRTooltip
-            v-if="stat.id === 'apr'"
+            v-if="stat.id === 'apr' && poolApr"
             :pool="pool"
             :poolApr="poolApr"
           />

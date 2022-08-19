@@ -9,21 +9,13 @@ export default {
 import { omit } from 'lodash';
 import { computed, onMounted, ref, useAttrs } from 'vue';
 
-import { HtmlInputEvent } from '@/types';
+import { Rules } from '@/types';
 
 import useInputEvents from './composables/useInputEvents';
 import useInputStyles from './composables/useInputStyles';
 import useInputValidation from './composables/useInputValidation';
 
-/**
- * TYPES
- */
-type InputValue = string | number;
-type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
-type InputSize = 'xs' | 'sm' | 'md' | 'lg';
-type ValidationTrigger = 'input' | 'blur';
-type RuleFunction = (val: InputValue) => string;
-export type Rules = RuleFunction[];
+import { InputValue, InputType, InputSize, ValidationTrigger } from './types';
 
 type Props = {
   name: string;
@@ -70,7 +62,7 @@ const emit = defineEmits<{
   (e: 'input', value: string): void;
   (e: 'update:modelValue', value: string): void;
   (e: 'update:isValid', value: boolean): void;
-  (e: 'keydown', value: HtmlInputEvent);
+  (e: 'keydown', value: KeyboardEvent);
   (e: 'mouseOver', value: Event);
   (e: 'mouseLeave', value: Event);
 }>();
@@ -171,7 +163,7 @@ onMounted(() => {
 
 <style scoped>
 .input-container {
-  @apply bg-white dark:bg-gray-800 border transition-colors;
+  @apply transition-colors;
 }
 
 .input-group {

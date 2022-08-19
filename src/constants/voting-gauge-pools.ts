@@ -388,10 +388,18 @@ export const POLYGON_POOLS: Pool[] = [
   },
 ];
 
+export const OPTIMISM_POOLS: Pool[] = [
+  {
+    id: '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
+    network: Network.OPTIMISM,
+  },
+];
+
 export const POOLS = [
   ...MAINNET_POOLS,
   ...ARBITRUM_POOLS,
   ...POLYGON_POOLS,
   ...KOVAN_POOLS,
   ...GOERLI_POOLS,
+  ...OPTIMISM_POOLS,
 ];
