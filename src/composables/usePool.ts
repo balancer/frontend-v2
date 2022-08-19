@@ -158,7 +158,7 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
     const nonStakingApr = bnum(aprs.swapFees)
       .plus(aprs.tokenAprs.total)
-      .plus(aprs.rewardsApr.total);
+      .plus(aprs.rewardAprs.total);
     const stakingApr = bnum(aprs.stakingApr.min).times(boost).toString();
     return nonStakingApr.plus(stakingApr).toString();
   }

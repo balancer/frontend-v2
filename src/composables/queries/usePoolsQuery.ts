@@ -182,7 +182,7 @@ export default function usePoolsQuery(
         total: true,
         breakdown: true,
       },
-      rewardsApr: {
+      rewardAprs: {
         total: true,
         breakdown: true,
       },

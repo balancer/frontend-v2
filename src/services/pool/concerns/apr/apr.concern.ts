@@ -64,7 +64,7 @@ export class AprConcern {
         min: Number(stakingBalApr.min),
         max: Number(stakingBalApr.max),
       },
-      rewardsApr: {
+      rewardAprs: {
         total: Number(stakingRewardApr),
         breakdown: {},
       },

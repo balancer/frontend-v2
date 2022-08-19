@@ -129,7 +129,7 @@ export function hasStakingRewards(aprs?: AprBreakdown) {
 
   return (
     bnum(aprs.stakingApr?.min || 0).gt(0) ||
-    bnum(aprs.rewardsApr.total || 0).gt(0)
+    bnum(aprs.rewardAprs.total || 0).gt(0)
   );
 }
 
