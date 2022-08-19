@@ -16,7 +16,8 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "",
-    "gauge": "https://api.thegraph.com/subgraphs/name/mendesfabio/balancer-gauges"
+    "gauge": "https://api.thegraph.com/subgraphs/name/mendesfabio/balancer-gauges",
+    "blocks": ""
   },
   "supportsEIP1559": false,
   "supportsElementPools": false,

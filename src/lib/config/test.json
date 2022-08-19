@@ -15,7 +15,8 @@
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
     "aave": "",
-    "gauge": ""
+    "gauge": "",
+    "blocks": ""
   },
   "supportsEIP1559": true,
   "supportsElementPools": true,

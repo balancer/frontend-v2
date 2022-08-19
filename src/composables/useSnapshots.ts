@@ -1,38 +1,45 @@
-import { Network } from '@balancer-labs/sdk';
-
-import { networkId } from './useNetwork';
+import { configService } from '@/services/config/config.service';
 import { twentyFourHoursInSecs } from './useTime';
+import { BlockNumberResponse } from '@/types';
 
 export type TimeTravelPeriod = '24h';
 
-export function blockTime(): number {
-  switch (networkId.value) {
-    case Network.MAINNET:
-      return 13;
-    case Network.POLYGON:
-      return 2;
-    case Network.ARBITRUM:
-      return 3;
-    case Network.KOVAN:
-      // Should be ~4s but this causes subgraph to return with unindexed block error.
-      return 1;
-    case Network.GOERLI:
-      return 1;
-    default:
-      return 13;
-  }
-}
-
-export function getTimeTravelBlock(
-  currentBlock: number,
+export async function getTimeTravelBlock(
   period: TimeTravelPeriod = '24h'
-): number {
-  const blocksInDay = Math.round(twentyFourHoursInSecs / blockTime());
+): Promise<number> {
+  const dayAgo = `${Math.floor(Date.now() / 1000) - twentyFourHoursInSecs}`;
 
   switch (period) {
     case '24h':
-      return currentBlock - blocksInDay;
+      return fetchBlockByTime(dayAgo);
     default:
-      return currentBlock - blocksInDay;
+      return fetchBlockByTime(dayAgo);
   }
 }
+
+const query = (timestamp: string) => `{
+  blocks(first: 1, orderBy: number, orderDirection: asc, where: { timestamp_gt: ${timestamp} }) {
+    number
+  }
+}`;
+
+const fetchBlockByTime = async (timestamp: string): Promise<number> => {
+  const endpoint = configService.network.subgraphs.blocks;
+  const payload = {
+    query: query(timestamp),
+  };
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const {
+    data: { blocks },
+  } = (await response.json()) as BlockNumberResponse;
+
+  return parseInt(blocks[0].number);
+};
