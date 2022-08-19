@@ -1,4 +1,3 @@
-import { flatten } from 'lodash';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 import { computed, reactive, Ref, ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
@@ -9,7 +8,6 @@ import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
-import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
@@ -26,7 +24,6 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type PoolsQueryResponse = {
   pools: Pool[];
-  tokens: string[];
   skip?: number;
   enabled?: boolean;
 };
@@ -46,7 +43,7 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, prices, tokens: tokenMeta } = useTokens();
+  const { prices, tokens: tokenMeta } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
@@ -196,8 +193,12 @@ export default function usePoolsQuery(
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
+    console.time('usePoolsQuery-overall');
+    console.time('usePoolsQuery-init');
     const queryArgs = getQueryArgs(pageParam);
     const poolsRepository = initializePoolsRepository();
+    console.timeEnd('usePoolsQuery-init');
+    console.time('usePoolsQuery-fetchpools');
 
     console.log(
       'Fetching with Query Args: ',
@@ -210,20 +211,12 @@ export default function usePoolsQuery(
       attrs: queryAttrs,
     });
 
-    const tokens = flatten(
-      pools.map(pool => [
-        ...pool.tokensList,
-        ...lpTokensFor(pool),
-        pool.address,
-      ])
-    );
-    await injectTokens(tokens);
-
+    console.timeEnd('usePoolsQuery-fetchpools');
+    console.timeEnd('usePoolsQuery-overall');
     console.log('RETRIEVED POOLS: ', pools);
 
     return {
       pools,
-      tokens,
       skip: 0,
     };
   };
