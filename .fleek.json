@@ -1,0 +1,14 @@
+{
+  "site": {
+    "id": "902a6254-8b0c-451d-b26d-368bca801e6b",
+    "team": "24ec4efc-9725-4bf4-9b89-d1181c7761b6",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "sparkling-block-5145"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "dist",
+    "rootDir": ""
+  }
+}

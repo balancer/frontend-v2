@@ -6,7 +6,7 @@
   "shortName": "Optimism",
   "network": "optimism",
   "unknown": false,
-  "rpc": "https://mainnet.optimism.io",
+  "rpc": "https://optimism-mainnet.gateway.pokt.network/v1/lb/{{POKT_KEY}}",
   "ws": "wss://ws-mainnet.optimism.io",
   "loggingRpc": "",
   "blockTime": 13,
@@ -56,7 +56,8 @@
   },
   "keys": {
     "infura": "",
-    "alchemy": ""
+    "alchemy": "",
+    "pokt": "62f89f9b09459a003923366b"
   },
   "strategies": {
     "0": {

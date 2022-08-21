@@ -13,6 +13,7 @@ interface Env {
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
+  POKT_KEY: string;
   INFURA_PROJECT_ID: string;
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
@@ -31,6 +32,10 @@ export default class ConfigService {
       ALCHEMY_KEY:
         process.env.VUE_APP_ALCHEMY_KEY ||
         this.getNetworkConfig(networkId.value).keys.alchemy ||
+        'MISSING_KEY',
+      POKT_KEY:
+        process.env.VUE_APP_POKT_KEY ||
+        this.getNetworkConfig(networkId.value).keys.pokt ||
         'MISSING_KEY',
       INFURA_PROJECT_ID:
         process.env.VUE_APP_INFURA_PROJECT_ID ||
@@ -56,6 +61,7 @@ export default class ConfigService {
     return template(this.network.rpc, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
       ALCHEMY_KEY: this.env.ALCHEMY_KEY,
+      POKT_KEY: this.env.POKT_KEY,
     });
   }
 
@@ -70,6 +76,7 @@ export default class ConfigService {
     return template(this.network.loggingRpc, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
       ALCHEMY_KEY: this.env.ALCHEMY_KEY,
+      POKT_KEY: this.env.POKT_KEY,
     });
   }
 }

@@ -20,7 +20,7 @@
     "stylelint:fix": "npm run stylelint -- --fix",
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o",
-    "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
+    "generate:tokenlists": "ts-node -O {\\\"module\\\":\\\"commonjs\\\"} ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts",
     "generate:global-types": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/global-component-types.generator.ts",
     "typecheck": "npm run generate:global-types && vue-tsc --noEmit"

@@ -7,7 +7,7 @@
   "network": "polygon",
   "portisNetwork": "matic",
   "unknown": false,
-  "rpc": "https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}",
+  "rpc": "https://poly-mainnet.gateway.pokt.network/v1/lb/{{POKT_KEY}",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://polygon-rpc.com",
@@ -58,7 +58,8 @@
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2"
+    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+    "pokt": "62f89f9b09459a003923366b"
   },
   "strategies": {
     "0": {

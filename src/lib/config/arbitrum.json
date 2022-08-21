@@ -58,7 +58,8 @@
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh"
+    "alchemy": "VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh",
+    "pokt": "62f89f9b09459a003923366b"
   },
   "strategies": {
     "0": {

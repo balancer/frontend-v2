@@ -70,6 +70,7 @@ export interface Config {
   keys: {
     infura: string;
     alchemy: string;
+    pokt: string;
   };
   strategies: Record<
     string,
