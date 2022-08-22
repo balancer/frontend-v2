@@ -87,7 +87,7 @@ jobs:
         run: npm run test:unit
 
   E2E:
-    # Only run e2e tests, if other tests are successful
+    # Only run e2e tests, if other jobs are successful
     # needs: [Build, Lint, Test]
     runs-on: ubuntu-latest
     steps:
