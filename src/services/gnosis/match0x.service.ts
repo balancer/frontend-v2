@@ -1,5 +1,5 @@
 import { Network } from '@balancer-labs/sdk';
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderKind } from '@cowprotocol/contracts';
 import axios from 'axios';
 
 import { networkId } from '@/composables/useNetwork';
