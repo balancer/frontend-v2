@@ -321,7 +321,7 @@ const chartGrid = computed(() => {
               :color="chartColors"
               :customGrid="chartGrid"
               :axisLabelFormatter="{
-                yAxis: { maximumFractionDigits: 6, fixedFormat: true },
+                yAxis: { maximumSignificantDigits: 6, fixedFormat: true },
               }"
               :wrapperClass="[
                 'flex flex-row lg:flex-col',
