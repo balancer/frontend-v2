@@ -104,6 +104,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: balancer-labs/frontend-e2e
+          # Try with reporter
+          ref: add-reporter
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
