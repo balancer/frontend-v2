@@ -18,7 +18,7 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom from '@/composables/useFathom';
-import { SANCTIONS_ENDPOINT } from '@/constants/exploits';
+import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -70,26 +70,13 @@ type PluginState = {
 async function isBlockedAddress(address: string): Promise<boolean | null> {
   try {
     if (!configService.env.WALLET_SCREENING) return false;
-    const response = await axios.post(SANCTIONS_ENDPOINT, [
+    const response: { is_blocked: boolean } = await axios.post(
+      WALLET_SCREEN_ENDPOINT,
       {
         address: address.toLowerCase(),
-        chain: 'ethereum',
-      },
-    ]);
-
-    const riskIndicators: any[] = response.data[0]?.addressRiskIndicators || [];
-    const entities: any[] = response.data[0]?.entities || [];
-
-    const hasSevereRisk = riskIndicators.some(
-      indicator => indicator.categoryRiskScoreLevelLabel === 'Severe'
+      }
     );
-    const hasSevereEntity = entities.some(
-      entity => entity.riskScoreLevelLabel === 'Severe'
-    );
-
-    const isBlocked = hasSevereEntity || hasSevereRisk;
-
-    return isBlocked;
+    return response.is_blocked;
   } catch {
     return false;
   }
