@@ -58,7 +58,7 @@ export type Web3Plugin = {
   connector: Ref<Connector>;
   walletState: Ref<WalletState>;
   signer: Ref<JsonRpcSigner>;
-  isSanctioned: Ref<boolean>;
+  isBlocked: Ref<boolean>;
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -87,7 +87,7 @@ export default {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
-    const isSanctioned = ref(false);
+    const isBlocked = ref(false);
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -196,16 +196,16 @@ export default {
         // need to store address to pre-load that connection
         if (account.value) {
           // fetch sanctioned status
-          let _isSanctioned = await isBlockedAddress(account.value);
-          if (_isSanctioned === null) {
+          let _isBlocked = await isBlockedAddress(account.value);
+          if (_isBlocked === null) {
             // await disconnectWallet();
             // throw new Error(
             //   `Could not receive an appropriate response from the Sanctions API. Aborting.`
             // );
-            _isSanctioned = false;
+            _isBlocked = false;
           }
-          isSanctioned.value = _isSanctioned;
-          if (_isSanctioned) {
+          isBlocked.value = _isBlocked;
+          if (_isBlocked) {
             disconnectWallet();
           }
           lsSet('connectedWallet', account.value);
@@ -250,7 +250,7 @@ export default {
       chainId,
       provider,
       signer,
-      isSanctioned,
+      isBlocked,
     };
 
     app.provide(Web3ProviderSymbol, payload);
