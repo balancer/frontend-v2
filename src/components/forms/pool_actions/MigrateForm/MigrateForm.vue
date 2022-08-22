@@ -28,7 +28,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { getToken, dynamicDataLoading } = useTokens();
+const { getToken } = useTokens();
 const { appLoading } = useApp();
 
 /**
@@ -86,7 +86,6 @@ const toPoolTokenInfo = computed(() =>
         fromPoolTokenInfo == null ||
         toPoolTokenInfo == null ||
         batchRelayerApprovalLoading ||
-        dynamicDataLoading ||
         appLoading
       "
       class="h-96"

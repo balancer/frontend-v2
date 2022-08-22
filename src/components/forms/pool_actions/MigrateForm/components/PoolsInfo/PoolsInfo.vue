@@ -7,7 +7,6 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
@@ -16,6 +15,7 @@ import { PoolMigrationInfo } from '../../types';
 import MigratePreviewModal from '../MigratePreviewModal/MigratePreviewModal.vue';
 import PoolInfoBreakdown from './components/PoolInfoBreakdown.vue';
 import useTokens from '@/composables/useTokens';
+import { fiatValueOf } from '@/composables/usePool';
 
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
@@ -43,17 +43,12 @@ const {
 } = useStaking();
 
 const fiatValueOfStakedShares = computed(() => {
-  return bnum(props.fromPool.totalLiquidity)
-    .div(props.fromPool.totalShares)
-    .times((stakedSharesForProvidedPool.value || 0).toString())
-    .toString();
+  const stakedShares = (stakedSharesForProvidedPool.value || 0).toString();
+  return fiatValueOf(props.fromPool, stakedShares);
 });
 
 const fiatValueOfUnstakedShares = computed(() => {
-  return bnum(props.fromPool.totalLiquidity)
-    .div(props.fromPool.totalShares)
-    .times(balanceFor(props.fromPool.address))
-    .toString();
+  return fiatValueOf(props.fromPool, balanceFor(props.fromPool.address));
 });
 
 const unstakedBptBalance = computed(() => {

@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, ComputedRef, Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -22,6 +22,8 @@ import useTime, { dateTimeLabelFor } from '../useTime';
 import { TokenInfo } from '@/types/TokenList';
 import { BigNumber } from '@ethersproject/bignumber';
 import { GAS_LIMIT_BUFFER } from '@/services/gas-price/gas-price.service';
+import { fiatValueOf } from '../usePool';
+import useNumbers, { FNumFormats } from '../useNumbers';
 
 export type MigratePoolState = {
   init: boolean;
@@ -42,7 +44,6 @@ export function usePoolMigration(
   toPool: Pool,
   fromPoolTokenInfo: TokenInfo,
   toPoolTokenInfo: TokenInfo,
-  fiatTotalLabel: ComputedRef<string>,
   relayerApproval: Ref<boolean | undefined>,
   currentActionIndex: Ref<number>
 ) {
@@ -55,6 +56,7 @@ export function usePoolMigration(
   const { getSigner } = useWeb3();
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
+  const { fNum2 } = useNumbers();
 
   /**
    * STATE
@@ -70,10 +72,10 @@ export function usePoolMigration(
     label: t('migratePool.previewModal.actions.staked.title'),
     loadingLabel: t('migratePool.previewModal.actions.loading'),
     confirmingLabel: t('migratePool.confirming'),
-    action: approveMigration.bind(
+    action: migrate.bind(
       null,
-      true,
-      scaleNum(stakedBptBalance, fromPool.onchain?.decimals)
+      parseUnits(stakedBptBalance, fromPool.onchain?.decimals).toString(),
+      true
     ),
     stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
     isSignAction: false,
@@ -84,10 +86,10 @@ export function usePoolMigration(
     label: t('migratePool.previewModal.actions.unstaked.title'),
     loadingLabel: t('migratePool.previewModal.actions.loading'),
     confirmingLabel: t('migratePool.confirming'),
-    action: approveMigration.bind(
+    action: migrate.bind(
       null,
-      false,
-      scaleNum(unstakedBptBalance, fromPool.onchain?.decimals)
+      parseUnits(unstakedBptBalance, fromPool.onchain?.decimals).toString(),
+      false
     ),
     stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
     isSignAction: false,
@@ -103,6 +105,9 @@ export function usePoolMigration(
     isSignAction: true,
   };
 
+  /**
+   * COMPUTED
+   */
   const actions = computed(() => {
     const arr: TransactionActionInfo[] = [];
 
@@ -126,6 +131,16 @@ export function usePoolMigration(
     );
   });
 
+  const migrationFn = computed(() => {
+    if (migrationType.value?.type === PoolMigrationType.AAVE_BOOSTED_POOL) {
+      return migrateBoostedPool;
+    } else if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
+      return migrateStabal3;
+    } else {
+      return migrateBoostedPool;
+    }
+  });
+
   const migrationData = computed(() => {
     const signer = getSigner();
     const signerAddress = account.value;
@@ -144,6 +159,20 @@ export function usePoolMigration(
       _signature,
       _tokens,
     };
+  });
+
+  const fiatTotal = computed((): string => {
+    if (actions.value[currentActionIndex.value].isStakeAction) {
+      return fiatValueOf(fromPool, stakedBptBalance);
+    } else if (actions.value[currentActionIndex.value].isUnstakeAction) {
+      return fiatValueOf(fromPool, unstakedBptBalance);
+    } else {
+      return '0';
+    }
+  });
+
+  const fiatTotalLabel = computed((): string => {
+    return fNum2(fiatTotal.value, FNumFormats.fiat);
   });
 
   /**
@@ -184,21 +213,13 @@ export function usePoolMigration(
     }
   }
 
-  async function approveMigration(
-    staked = true,
-    amount: string
+  async function migrate(
+    amount: string,
+    isStaked: boolean
   ): Promise<TransactionResponse> {
-    const { signer } = migrationData.value;
+    let query = migrationFn.value(amount, isStaked, '0');
 
-    let query;
-    if (migrationType.value?.type === PoolMigrationType.AAVE_BOOSTED_POOL) {
-      query = migrateBoostedPool(amount, staked, '0');
-    }
-    if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
-      query = migrateStabal3(amount, staked);
-    }
-
-    const estimatedGas = await signer.estimateGas({
+    const estimatedGas = await getSigner().estimateGas({
       to: query.to,
       data: query.data,
     });
@@ -207,23 +228,10 @@ export function usePoolMigration(
       BigNumber.from(estimatedGas).toNumber() * (1 + GAS_LIMIT_BUFFER)
     );
 
-    const staticResult = await signer.call({
-      to: query.to,
-      data: query.data,
-      gasLimit,
-    });
+    const expectedBptOut = await getExpectedBptOut(amount, isStaked);
+    query = migrationFn.value(amount, isStaked, expectedBptOut); // TODO apply slippage here.
 
-    if (migrationType.value?.type === PoolMigrationType.AAVE_BOOSTED_POOL) {
-      const expectedBpts = query.decode(staticResult, staked);
-      query = migrateBoostedPool(amount, staked, expectedBpts.bbausd2AmountOut);
-    }
-
-    if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
-      const bbausd2AmountOut = query.decode(staticResult, staked);
-      query = migrateStabal3(amount, staked, bbausd2AmountOut);
-    }
-
-    const tx = await signer.sendTransaction({
+    const tx = await getSigner().sendTransaction({
       to: query.to,
       data: query.data,
       gasLimit,
@@ -268,6 +276,30 @@ export function usePoolMigration(
     }
   }
 
+  async function getExpectedBptOut(
+    bptIn: string,
+    isStaked: boolean
+  ): Promise<string> {
+    const query = migrationFn.value(bptIn, isStaked, '0');
+
+    const estimatedGas = await getSigner().estimateGas({
+      to: query.to,
+      data: query.data,
+    });
+
+    const gasLimit = Math.floor(
+      BigNumber.from(estimatedGas).toNumber() * (1 + GAS_LIMIT_BUFFER)
+    );
+
+    const staticResult = await getSigner().call({
+      to: query.to,
+      data: query.data,
+      gasLimit,
+    });
+
+    return query.decode(staticResult, isStaked);
+  }
+
   function migrateBoostedPool(amount: string, staked: boolean, limit = '0') {
     const { signerAddress, _signature, _tokens } = migrationData.value;
 
@@ -293,9 +325,12 @@ export function usePoolMigration(
     );
   }
 
-  function scaleNum(balance: string, decimals = 18): string {
-    return parseUnits(balance, decimals).toString();
-  }
-
-  return { getUserSignature, approveMigration, actions, migratePoolState };
+  return {
+    getUserSignature,
+    migrate,
+    actions,
+    migratePoolState,
+    getExpectedBptOut,
+    fiatTotal,
+  };
 }

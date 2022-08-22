@@ -6,7 +6,6 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
-import useMigrateMath from '../../composables/useMigrateMath';
 import { PoolMigrationInfo } from '../../types';
 import MigrateActions from './components/MigrateActions.vue';
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
@@ -14,6 +13,10 @@ import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
 import { configService } from '@/services/config/config.service';
 import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQuery';
 import { usePoolMigration } from '@/composables/pools/usePoolMigration';
+import { bnum } from '@/lib/utils';
+import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
+import { bptPriceFor } from '@/composables/usePool';
+import { parseUnits } from '@ethersproject/units';
 
 /**
  * TYPES
@@ -46,6 +49,8 @@ const { fromPool, toPool } = toRefs(props);
  * STATE
  */
 const currentActionIndex = ref(0);
+const priceImpact = ref(1);
+const priceImpactLoading = ref(true);
 const highPriceImpactAccepted = ref(false);
 const relayerAddress = ref(configService.network.addresses.batchRelayer);
 
@@ -54,23 +59,21 @@ const relayerAddress = ref(configService.network.addresses.batchRelayer);
  */
 const { t } = useI18n();
 const relayerApproval = useRelayerApprovalQuery(relayerAddress);
-let migrateMath = useMigrateMath(fromPool, toPool);
-let { batchSwapLoaded, highPriceImpact, fiatTotal, priceImpact } = migrateMath;
-const { actions, migratePoolState } = usePoolMigration(
-  props.stakedBptBalance,
-  props.unstakedBptBalance,
-  props.unstakedPoolValue,
-  props.isUnstakedMigrationEnabled,
-  props.stakedPoolValue,
-  props.isStakedMigrationEnabled,
-  props.fromPool,
-  props.toPool,
-  props.fromPoolTokenInfo,
-  props.toPoolTokenInfo,
-  migrateMath.fiatTotalLabel,
-  relayerApproval.data,
-  currentActionIndex
-);
+const { actions, migratePoolState, getExpectedBptOut, fiatTotal } =
+  usePoolMigration(
+    props.stakedBptBalance,
+    props.unstakedBptBalance,
+    props.unstakedPoolValue,
+    props.isUnstakedMigrationEnabled,
+    props.stakedPoolValue,
+    props.isStakedMigrationEnabled,
+    props.fromPool,
+    props.toPool,
+    props.fromPoolTokenInfo,
+    props.toPoolTokenInfo,
+    relayerApproval.data,
+    currentActionIndex
+  );
 
 /**
  * COMPUTED
@@ -85,7 +88,10 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
   highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
 
-const isLoadingPriceImpact = computed(() => !batchSwapLoaded.value);
+const highPriceImpact = computed((): boolean => {
+  if (priceImpactLoading.value) return false;
+  return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
+});
 
 const isInvestSummaryShown = computed(
   () =>
@@ -97,7 +103,7 @@ const isaActionBtnDisabled = computed(() => {
   if (actions.value[currentActionIndex.value].isSignAction) {
     return false;
   }
-  return !batchSwapLoaded.value || !hasAcceptedHighPriceImpact.value;
+  return !priceImpactLoading.value || !hasAcceptedHighPriceImpact.value;
 });
 
 const summaryTitle = computed(() => {
@@ -105,6 +111,26 @@ const summaryTitle = computed(() => {
     return t('migratePool.previewModal.summary.stakeTitle');
   }
   return t('migratePool.previewModal.summary.unstakeTitle');
+});
+
+/**
+ * Converts stakedBptBalance to EVM scale.
+ */
+const evmStakedBptBalance = computed((): string => {
+  return parseUnits(
+    props.stakedBptBalance,
+    props.fromPool.onchain?.decimals
+  ).toString();
+});
+
+/**
+ * Converts unstakedBptBalance to EVM scale.
+ */
+const evmUnstakedBptBalance = computed((): string => {
+  return parseUnits(
+    props.unstakedBptBalance,
+    props.fromPool.onchain?.decimals
+  ).toString();
 });
 
 /**
@@ -119,16 +145,38 @@ function setCurrentActionIndex(index: number) {
 }
 
 /**
+ * Calculates price impact given BPT of fromPool (EVM scaled).
+ *
+ * @param bptIn fromPool BPT in EVM scale, could be a staked or unstaked balance.
+ * @param isStaked defines if the bptIn is a staked or unstaked balance.
+ * @returns Approximate price impact as a fractional number.
+ */
+async function calcPriceImpact(
+  bptIn: string,
+  isStaked: boolean
+): Promise<number> {
+  priceImpactLoading.value = true;
+  const bptOut = await getExpectedBptOut(bptIn, isStaked);
+
+  const fromBptPrice = bptPriceFor(fromPool.value);
+  const toBptPrice = bptPriceFor(toPool.value);
+
+  const fromBptValue = bnum(fromBptPrice).times(bptIn);
+  const toBptValue = bnum(toBptPrice).times(bptOut);
+
+  priceImpactLoading.value = false;
+  return bnum(1).minus(toBptValue.div(fromBptValue)).toNumber();
+}
+
+/**
  * WATCHERS
  */
 watch(
   currentActionIndex,
-  newIndex => {
-    const bptBalance = actions.value[newIndex].isStakeAction
-      ? props.stakedBptBalance
-      : props.unstakedBptBalance;
-
-    migrateMath.setBptBalance(bptBalance);
+  async newIndex => {
+    priceImpact.value = actions.value[newIndex].isStakeAction
+      ? await calcPriceImpact(evmStakedBptBalance.value, true)
+      : await calcPriceImpact(evmUnstakedBptBalance.value, false);
   },
   { immediate: true }
 );
@@ -167,7 +215,7 @@ watch(
       :pool="toPool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
-      :isLoadingPriceImpact="isLoadingPriceImpact"
+      :isLoadingPriceImpact="priceImpactLoading"
       :highPriceImpact="highPriceImpact"
       :summaryTitle="summaryTitle"
     />
@@ -189,7 +237,6 @@ watch(
       class="mt-4"
       :fromPool="fromPool"
       :toPool="toPool"
-      :math="migrateMath"
       :disabled="isaActionBtnDisabled"
       :actions="actions"
       :migratePoolState="migratePoolState"

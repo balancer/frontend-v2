@@ -221,6 +221,25 @@ export function isBlocked(pool: Pool, account: string): boolean {
 }
 
 /**
+ * Approximate BPT price using total liquidity calculated via Coingecko prices
+ * and subgraph total shares. Cannot be relied on to be 100% accurate.
+ *
+ * @returns USD value of 1 BPT
+ */
+export function bptPriceFor(pool: Pool): string {
+  return bnum(pool.totalLiquidity).div(pool.totalShares).toString();
+}
+
+/**
+ * Calculate USD value of shares using approx. BPT price function.
+ *
+ * @returns USD value of shares.
+ */
+export function fiatValueOf(pool: Pool, shares: string): string {
+  return bnum(shares).times(bptPriceFor(pool)).toString();
+}
+
+/**
  * COMPOSABLE
  */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {

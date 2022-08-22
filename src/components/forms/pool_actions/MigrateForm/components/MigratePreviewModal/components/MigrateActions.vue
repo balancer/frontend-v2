@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRefs, watch } from 'vue';
+import { computed } from 'vue';
 import { MigratePoolState } from '@/composables/pools/usePoolMigration';
 
 import useConfig from '@/composables/useConfig';
@@ -7,7 +7,6 @@ import useConfig from '@/composables/useConfig';
 import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
-import { MigrateMathResponse } from '../../../composables/useMigrateMath';
 import { TransactionActionInfo } from '@/types/transactions';
 
 /**
@@ -16,7 +15,6 @@ import { TransactionActionInfo } from '@/types/transactions';
 type Props = {
   fromPool: Pool;
   toPool: Pool;
-  math: MigrateMathResponse;
   disabled?: boolean;
   actions: TransactionActionInfo[];
   migratePoolState: MigratePoolState;
@@ -27,17 +25,12 @@ type Props = {
  */
 const props = defineProps<Props>();
 defineEmits(['setCurrentActionIndex']);
-/**
- * STATE
- */
-const { shouldFetchBatchSwap } = toRefs(props.math);
 
 /**
  * COMPOSABLES
  */
-
 const { networkConfig } = useConfig();
-const { explorerLinks, blockNumber } = useWeb3();
+const { explorerLinks } = useWeb3();
 
 /**
  * COMPUTED
@@ -46,26 +39,6 @@ const explorerLink = computed(() =>
   props.migratePoolState.receipt
     ? explorerLinks.txLink(props.migratePoolState.receipt.transactionHash)
     : ''
-);
-
-const transactionInProgress = computed(
-  () =>
-    props.migratePoolState.init ||
-    props.migratePoolState.confirming ||
-    props.migratePoolState.confirmed
-);
-
-/**
- * WATCHERS
- */
-watch(
-  blockNumber,
-  async () => {
-    if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
-      await props.math.getBatchSwap();
-    }
-  },
-  { immediate: true }
 );
 </script>
 

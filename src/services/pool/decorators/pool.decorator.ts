@@ -88,6 +88,21 @@ export class PoolDecorator {
   }
 
   /**
+   * Re-sets totalLiquidty on all pools, typically after prices have been updated.
+   */
+  public reCalculateTotalLiquidities(
+    prices: TokenPrices,
+    currency: FiatCurrency,
+    tokens: TokenInfoMap
+  ): Pool[] {
+    return this.pools.map(pool => {
+      const poolService = new this.poolServiceClass(pool);
+      poolService.setTotalLiquidity(prices, currency, tokens);
+      return poolService.pool;
+    });
+  }
+
+  /**
    * @summary Get snapshot data of pools
    * @description Getting the past state of pools allows us to calculate
    * snapshot values like volume and fees, currently fixed at past 24h

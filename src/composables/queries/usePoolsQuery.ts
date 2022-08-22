@@ -15,6 +15,7 @@ import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
+import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -38,7 +39,12 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, prices, tokens: tokenMeta } = useTokens();
+  const {
+    injectTokens,
+    prices,
+    tokens: tokenMeta,
+    dynamicDataLoading,
+  } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
@@ -96,7 +102,7 @@ export default function usePoolsQuery(
     const pools = await balancerSubgraphService.pools.get(queryArgs);
 
     const poolDecorator = new PoolDecorator(pools);
-    const decoratedPools = await poolDecorator.decorate(
+    let decoratedPools = await poolDecorator.decorate(
       subgraphGauges.value || [],
       prices.value,
       currency.value,
@@ -111,6 +117,13 @@ export default function usePoolsQuery(
       ])
     );
     await injectTokens(tokens);
+    await forChange(dynamicDataLoading, false);
+
+    decoratedPools = poolDecorator.reCalculateTotalLiquidities(
+      prices.value,
+      currency.value,
+      tokenMeta.value
+    );
 
     return {
       pools: decoratedPools,
