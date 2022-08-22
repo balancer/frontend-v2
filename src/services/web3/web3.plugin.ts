@@ -67,15 +67,29 @@ type PluginState = {
   walletState: WalletState;
 };
 
-async function isSanctionedAddress(address: string): Promise<boolean> {
-  if (!configService.env.WALLET_SCREENING) return false;
+async function isBlockedAddress(address: string): Promise<boolean | null> {
   try {
+    if (!configService.env.WALLET_SCREENING) return false;
     const response = await axios.post(SANCTIONS_ENDPOINT, [
       {
         address: address.toLowerCase(),
+        chain: 'ethereum',
       },
     ]);
-    return response.data[0].isSanctioned ?? false;
+
+    const riskIndicators: any[] = response.data[0]?.addressRiskIndicators || [];
+    const entities: any[] = response.data[0]?.entities || [];
+
+    const hasSevereRisk = riskIndicators.some(
+      indicator => indicator.categoryRiskScoreLevelLabel === 'Severe'
+    );
+    const hasSevereEntity = entities.some(
+      entity => entity.riskScoreLevelLabel === 'Severe'
+    );
+
+    const isBlocked = hasSevereEntity || hasSevereRisk;
+
+    return isBlocked;
   } catch {
     return false;
   }
@@ -195,7 +209,7 @@ export default {
         // need to store address to pre-load that connection
         if (account.value) {
           // fetch sanctioned status
-          let _isSanctioned = await isSanctionedAddress(account.value);
+          let _isSanctioned = await isBlockedAddress(account.value);
           if (_isSanctioned === null) {
             // await disconnectWallet();
             // throw new Error(
