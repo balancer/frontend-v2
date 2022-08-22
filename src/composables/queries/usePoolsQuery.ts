@@ -24,7 +24,7 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type PoolsQueryResponse = {
   pools: Pool[];
-  skip?: number;
+  skip?: string;
   enabled?: boolean;
 };
 
@@ -61,7 +61,7 @@ export default function usePoolsQuery(
    * METHODS
    */
 
-  function initializePoolsRepository() {
+  function initializePoolsRepository(): PoolsFallbackRepository {
     const balancerApiRepository = initializeDecoratedAPIRepository();
     const subgraphRepository = initializeDecoratedSubgraphRepository();
     const fallbackRepository = new PoolsFallbackRepository(
@@ -78,10 +78,11 @@ export default function usePoolsQuery(
     );
 
     return {
-      fetch: async (query: GraphQLQuery) => {
-        const pools = await balancerApiRepository.fetch(query);
-
-        return pools;
+      fetch: async (query: GraphQLQuery): Promise<Pool[]> => {
+        return balancerApiRepository.fetch(query);
+      },
+      get skip(): string | undefined {
+        return balancerApiRepository.skip;
       },
     };
   }
@@ -92,7 +93,7 @@ export default function usePoolsQuery(
     );
 
     return {
-      fetch: async (query: GraphQLQuery) => {
+      fetch: async (query: GraphQLQuery): Promise<Pool[]> => {
         const pools = await subgraphRepository.fetch(query);
 
         const poolDecorator = new PoolDecorator(pools);
@@ -105,10 +106,13 @@ export default function usePoolsQuery(
 
         return decoratedPools;
       },
+      get skip(): string | undefined {
+        return subgraphRepository.skip;
+      },
     };
   }
 
-  function getQueryArgs(pageParam = 0): GraphQLArgs {
+  function getQueryArgs(pageParam = ''): GraphQLArgs {
     const tokensListFilterOperation = filterOptions?.isExactTokensList
       ? Op.Equals
       : Op.Contains;
@@ -118,7 +122,6 @@ export default function usePoolsQuery(
       first: 10,
       orderBy: 'totalLiquidity',
       orderDirection: 'desc',
-      skip: pageParam,
       where: {
         tokensList: tokensListFilterOperation(tokenList.value),
         poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
@@ -126,6 +129,9 @@ export default function usePoolsQuery(
         id: Op.NotIn(POOLS.BlockList),
       },
     };
+    if (pageParam && pageParam.length > 0) {
+      queryArgs.skip = pageParam;
+    }
     if (filterOptions?.poolIds?.value.length) {
       queryArgs.where.id = Op.In(filterOptions.poolIds.value);
     }
@@ -147,52 +153,55 @@ export default function usePoolsQuery(
   );
 
   const queryAttrs = {
-    id: true,
-    address: true,
-    poolType: true,
-    swapFee: true,
-    tokensList: true,
-    totalLiquidity: true,
-    totalSwapVolume: true,
-    totalSwapFee: true,
-    totalShares: true,
-    volumeSnapshot: true,
-    owner: true,
-    factory: true,
-    amp: true,
-    createTime: true,
-    swapEnabled: true,
-    tokens: {
+    pools: {
+      id: true,
       address: true,
-      balance: true,
-      weight: true,
-      priceRate: true,
-      symbol: true,
-    },
-    apr: {
-      stakingApr: {
+      poolType: true,
+      swapFee: true,
+      tokensList: true,
+      totalLiquidity: true,
+      totalSwapVolume: true,
+      totalSwapFee: true,
+      totalShares: true,
+      volumeSnapshot: true,
+      owner: true,
+      factory: true,
+      amp: true,
+      createTime: true,
+      swapEnabled: true,
+      tokens: {
+        address: true,
+        balance: true,
+        weight: true,
+        priceRate: true,
+        symbol: true,
+      },
+      apr: {
+        stakingApr: {
+          min: true,
+          max: true,
+        },
+        swapFees: true,
+        tokenAprs: {
+          total: true,
+          breakdown: true,
+        },
+        rewardAprs: {
+          total: true,
+          breakdown: true,
+        },
+        protocolApr: true,
         min: true,
         max: true,
       },
-      swapFees: true,
-      tokenAprs: {
-        total: true,
-        breakdown: true,
-      },
-      rewardAprs: {
-        total: true,
-        breakdown: true,
-      },
-      protocolApr: true,
-      min: true,
-      max: true,
     },
+    skip: true,
   };
 
   /**
    * QUERY FUNCTION
    */
-  const queryFn = async ({ pageParam = 0 }) => {
+  const queryFn = async ({ pageParam = '' }) => {
     console.time('usePoolsQuery-overall');
     console.time('usePoolsQuery-init');
     const queryArgs = getQueryArgs(pageParam);
@@ -206,7 +215,7 @@ export default function usePoolsQuery(
       ' attrs: ',
       queryAttrs
     );
-    const pools = await poolsRepository.fetch({
+    const pools: Pool[] = await poolsRepository.fetch({
       args: queryArgs,
       attrs: queryAttrs,
     });
@@ -215,9 +224,14 @@ export default function usePoolsQuery(
     console.timeEnd('usePoolsQuery-overall');
     console.log('RETRIEVED POOLS: ', pools);
 
+    const skip = poolsRepository.currentProvider?.skip
+      ? poolsRepository.currentProvider.skip.toString()
+      : undefined;
+
     return {
       pools,
-      skip: 0,
+      skip,
+      enabled: true,
     };
   };
 

@@ -23,11 +23,12 @@ const { selectedTokens, addSelectedToken, removeSelectedToken } =
 //   loadMore,
 //   isLoadingMore,
 // } = useStreamedPoolsQuery(selectedTokens);
-const { pools, isLoading } = usePools(selectedTokens);
+const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
+  usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
 
 /**
- * METHODS
+ * METHODS3
  */
 function navigateToCreatePool() {
   router.push({ name: 'create-pool' });
@@ -70,6 +71,8 @@ function navigateToCreatePool() {
         class="mb-8"
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
         :isPaginated="true"
+        :isLoadingMore="poolsIsFetchingNextPage"
+        @load-more="loadMorePools"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
         <FeaturedProtocols />
