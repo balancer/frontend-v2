@@ -4,13 +4,14 @@ import { computed, Ref, ref } from 'vue';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
+import { Pool } from '@/services/pool/types';
 
 export default function usePools(tokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
   const poolsQuery = usePoolsQuery(tokenList);
   const { injectTokens } = useTokens();
 
-  const pools = computed(() =>
+  const pools = computed<Pool[]>(() =>
     poolsQuery.data.value
       ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
       : []
