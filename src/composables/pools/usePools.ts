@@ -5,16 +5,19 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import { Pool } from '@/services/pool/types';
+import POOLS_CACHE from '@/constants/initialPools.json';
 
 export default function usePools(tokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
   const poolsQuery = usePoolsQuery(tokenList);
   const { injectTokens } = useTokens();
 
+  console.log('Pools Cache: ', POOLS_CACHE);
+
   const pools = computed<Pool[]>(() =>
     poolsQuery.data.value
       ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
-      : []
+      : (POOLS_CACHE as Pool[])
   );
 
   const tokens = computed(async () => {
@@ -30,7 +33,7 @@ export default function usePools(tokenList: Ref<string[]> = ref([])) {
   });
 
   const isLoading = computed(
-    () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
+    () => false //poolsQuery.isLoading.value || poolsQuery.isIdle.value
   );
 
   const poolsHasNextPage = computed(() => poolsQuery.hasNextPage?.value);
