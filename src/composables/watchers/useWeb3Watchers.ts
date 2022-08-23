@@ -46,7 +46,10 @@ export default function useWeb3Watchers() {
   }
 
   function checkIsUnsupportedNetwork() {
-    if (isUnsupportedNetwork.value || isMismatchedNetwork.value) {
+    if (
+      chainId.value &&
+      (isUnsupportedNetwork.value || isMismatchedNetwork.value)
+    ) {
       addAlert({
         id: 'network-mismatch',
         label: t('networkMismatch', [appNetworkConfig.name]),
