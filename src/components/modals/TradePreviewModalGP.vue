@@ -39,7 +39,7 @@ const emit = defineEmits(['trade', 'close']);
 const { t } = useI18n();
 const { fNum2, toFiat } = useNumbers();
 const { tokens, approvalRequired } = useTokens();
-const { blockNumber } = useWeb3();
+const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
 
 // state
@@ -590,7 +590,7 @@ watch(blockNumber, () => {
         @action-click="cofirmPriceUpdate"
       />
       <div
-        v-if="totalRequiredTransactions > 1"
+        v-if="account && totalRequiredTransactions > 1"
         class="flex justify-center items-center my-5"
       >
         <template v-if="showGnosisRelayerApprovalStep">
@@ -759,7 +759,15 @@ watch(blockNumber, () => {
         </BalTooltip>
       </div>
       <BalBtn
-        v-if="requiresGnosisRelayerApproval"
+        v-if="!account"
+        color="gradient"
+        block
+        @click.prevent="startConnectWithInjectedProvider"
+      >
+        {{ $t('connectWallet') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="requiresGnosisRelayerApproval"
         color="gradient"
         block
         :loading="
