@@ -23,6 +23,10 @@
         class="mb-4"
         @amount-change="trading.handleAmountChange"
       />
+      <div v-if="tradeFees" class="flex justify-between mb-3">
+        <div>{{ feeLabel }}</div>
+        <div>{{ tradeFees }}</div>
+      </div>
       <BalAlert
         v-if="error"
         class="p-3 mb-4"
@@ -338,6 +342,51 @@ export default defineComponent({
       }
       return undefined;
     });
+    const feeLabel = computed(() => {
+      if (trading.isWrap.value) {
+        return t('tradeSummary.wrap.tradeFees');
+      } else if (trading.isUnwrap.value) {
+        return t('tradeSummary.unwrap.tradeFees');
+      } else if (trading.exactIn.value) {
+        return t('tradeSummary.exactIn.tradeFees');
+      }
+      return t('tradeSummary.exactOut.tradeFees');
+    });
+    const tradeFees = computed(() => {
+      if (
+        trading.isLoading.value ||
+        !tokenInAmount.value ||
+        !tokenOutAmount.value
+      ) {
+        return '';
+      }
+
+      if (trading.isWrapUnwrapTrade.value) {
+        return '0.0 ETH';
+      } else {
+        const quote = trading.getQuote();
+
+        if (exactIn.value) {
+          const feeAmount = formatUnits(
+            quote.feeAmountOutToken,
+            trading.tokenOut.value.decimals
+          );
+          return `${trading.isGnosisTrade.value ? '-' : ''}${fNum2(
+            feeAmount,
+            FNumFormats.token
+          )} ${trading.tokenOut.value.symbol}`;
+        } else {
+          const feeAmount = formatUnits(
+            quote.feeAmountInToken,
+            trading.tokenIn.value.decimals
+          );
+          return `${trading.isGnosisTrade.value ? '+' : ''}${fNum2(
+            feeAmount,
+            FNumFormats.token
+          )} ${trading.tokenIn.value.symbol}`;
+        }
+      }
+    });
 
     // METHODS
     function trade() {
@@ -400,6 +449,8 @@ export default defineComponent({
       // computed
       pools,
       title,
+      feeLabel,
+      tradeFees,
       error,
       warning,
       errorMessage,
