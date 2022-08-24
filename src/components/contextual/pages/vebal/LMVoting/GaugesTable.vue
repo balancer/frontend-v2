@@ -243,7 +243,9 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
             v-if="gauge.pool.symbol === 'veBAL'"
             size="sm"
             amount="10"
-            :tooltip="$t('distributionsCappedAt10%')"
+            :tooltip="`${t(
+              'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt'
+            )} 10%`"
             class="ml-1"
           />
           <div v-else class="ml-1 w-5 h-5" />
