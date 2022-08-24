@@ -229,7 +229,7 @@ watch(
     />
 
     <div
-      v-if="highPriceImpact"
+      v-if="highPriceImpact && isInvestSummaryShown"
       class="p-3 mt-4 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
