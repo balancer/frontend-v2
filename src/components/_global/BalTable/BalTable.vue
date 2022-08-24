@@ -351,12 +351,7 @@ watch(
     </div>
   </div>
   <div
-    v-if="
-      isPaginated &&
-      !isLoading &&
-      tableData.length !== 0 &&
-      !(tableData.length < 10)
-    "
+    v-if="isPaginated && !isLoading"
     class="bal-table-pagination-btn text-secondary"
     @click="!isLoadingMore && $emit('loadMore')"
   >
