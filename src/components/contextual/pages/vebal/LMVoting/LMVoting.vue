@@ -6,7 +6,7 @@ import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
 import useVotingGauges from '@/composables/useVotingGauges';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, scale, isSameAddress } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 
 import GaugesTable from './GaugesTable.vue';
@@ -67,6 +67,14 @@ const hasExpiredLock = computed(
 );
 
 const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
+
+const filteredVotingGauges = computed(() =>
+  votingGauges.value.filter(
+    gauge =>
+      (gauge.votes && Number(gauge.votes) > 0) ||
+      !expiredGauges.value?.some(item => isSameAddress(gauge.address, item))
+  )
+);
 
 /**
  * METHODS
@@ -172,7 +180,7 @@ function handleVoteSuccess() {
     :key="gaugesTableKey"
     :expiredGauges="expiredGauges"
     :isLoading="isLoading"
-    :data="votingGauges"
+    :data="filteredVotingGauges"
     :noPoolsLabel="$t('noInvestments')"
     showPoolShares
     class="mb-8"

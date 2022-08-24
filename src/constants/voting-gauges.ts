@@ -14,6 +14,7 @@ export type VotingGauge = {
     poolType: PoolType;
     symbol: string | undefined;
     tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
+    createTime?: number;
   };
   tokenLogoURIs: Record<string, string | undefined>;
 };

@@ -13,6 +13,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
   <BalChip v-bind="props" color="red" class="uppercase" :outline="false">
-    {{ $t('expired') }}
+    {{ $t('deactivated') }}
   </BalChip>
 </template>

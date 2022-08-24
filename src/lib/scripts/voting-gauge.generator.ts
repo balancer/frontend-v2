@@ -156,6 +156,7 @@ async function getPoolInfo(
         address
         poolType
         symbol
+        createTime
         tokens {
           address
           weight
@@ -176,7 +177,7 @@ async function getPoolInfo(
     });
 
     const { data } = await response.json();
-    const { id, address, poolType, symbol, tokens } = data.pool;
+    const { id, address, poolType, symbol, createTime, tokens } = data.pool;
 
     const tokensList = tokens
       .filter(token => token.address != address)
@@ -193,6 +194,7 @@ async function getPoolInfo(
       address: getAddress(address),
       poolType,
       symbol,
+      createTime,
       tokens: tokensList,
     };
   } catch {

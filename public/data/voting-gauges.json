@@ -47,6 +47,7 @@
       "address": "0x06Df3b2bbB68adc8B0e302443692037ED9f91b42",
       "poolType": "Stable",
       "symbol": "staBAL3",
+      "createTime": 1625518360,
       "tokens": [
         {
           "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
@@ -79,6 +80,7 @@
       "address": "0x072f14B85ADd63488DDaD88f855Fda4A99d6aC9B",
       "poolType": "Weighted",
       "symbol": "B-50SNX-50WETH",
+      "createTime": 1620161839,
       "tokens": [
         {
           "address": "0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F",
@@ -105,6 +107,7 @@
       "address": "0x0b09deA16768f0799065C475bE02919503cB2a35",
       "poolType": "Weighted",
       "symbol": "B-60WETH-40DAI",
+      "createTime": 1620156813,
       "tokens": [
         {
           "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
@@ -131,6 +134,7 @@
       "address": "0x186084fF790C65088BA694Df11758faE4943EE9E",
       "poolType": "Weighted",
       "symbol": "B-50WETH-50YFI",
+      "createTime": 1620152748,
       "tokens": [
         {
           "address": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
@@ -157,6 +161,7 @@
       "address": "0x1E19CF2D73a72Ef1332C882F20534B6519Be0276",
       "poolType": "MetaStable",
       "symbol": "B-rETH-STABLE",
+      "createTime": 1640057323,
       "tokens": [
         {
           "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
@@ -183,6 +188,7 @@
       "address": "0x27C9f71cC31464B906E0006d4FcBC8900F48f15f",
       "poolType": "Weighted",
       "symbol": "80D2D-20USDC",
+      "createTime": 1639761033,
       "tokens": [
         {
           "address": "0x43D4A3cd90ddD2F8f4f693170C9c8098163502ad",
@@ -209,6 +215,7 @@
       "address": "0x32296969Ef14EB0c6d29669C550D4a0449130230",
       "poolType": "MetaStable",
       "symbol": "B-stETH-STABLE",
+      "createTime": 1628875520,
       "tokens": [
         {
           "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
@@ -235,6 +242,7 @@
       "address": "0x350196326AEAA9b98f1903fb5e8fc2686f85318C",
       "poolType": "Weighted",
       "symbol": "VBPT",
+      "createTime": 1629982123,
       "tokens": [
         {
           "address": "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321",
@@ -261,6 +269,7 @@
       "address": "0x3e5FA9518eA95c3E533EB377C001702A9AaCAA32",
       "poolType": "Weighted",
       "symbol": "B-50WETH-50USDT",
+      "createTime": 1624393188,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -287,6 +296,7 @@
       "address": "0x51735bdFBFE3fC13dEa8DC6502E2E95898942961",
       "poolType": "Weighted",
       "symbol": "B-80UNN-20WETH",
+      "createTime": 1633697910,
       "tokens": [
         {
           "address": "0x226f7b842E0F0120b7E194D05432b3fd14773a9D",
@@ -313,6 +323,7 @@
       "address": "0x5d66FfF62c17D841935b60df5F07f6CF79Bd0F47",
       "poolType": "Weighted",
       "symbol": "50Silo-50WETH",
+      "createTime": 1644890420,
       "tokens": [
         {
           "address": "0x6f80310CA7F2C654691D1383149Fa1A57d8AB1f8",
@@ -339,6 +350,7 @@
       "address": "0x5f7FA48d765053F8dD85E052843e12D23e3D7BC5",
       "poolType": "Weighted",
       "symbol": "NWWP",
+      "createTime": 1636686679,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -365,6 +377,7 @@
       "address": "0x702605F43471183158938C1a3e5f5A359d7b31ba",
       "poolType": "Weighted",
       "symbol": "B-80BAL-20WETH",
+      "createTime": 1633385013,
       "tokens": [
         {
           "address": "0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7",
@@ -391,6 +404,7 @@
       "address": "0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2",
       "poolType": "StablePhantom",
       "symbol": "bb-a-USD",
+      "createTime": 1639435704,
       "tokens": [
         {
           "address": "0x2BBf681cC4eb09218BEe85EA2a5d3D13Fa40fC0C",
@@ -423,6 +437,7 @@
       "address": "0x7Edde0CB05ED19e03A9a47CD5E53fC57FDe1c80c",
       "poolType": "Element",
       "symbol": "LPePyvUSDC-29APR22",
+      "createTime": 1637084616,
       "tokens": [
         {
           "address": "0x52C9886d5D87B0f06EbACBEff750B5Ffad5d17d9",
@@ -449,6 +464,7 @@
       "address": "0x8f4205e1604133d1875a3E771AE7e4F2b0865639",
       "poolType": "Weighted",
       "symbol": "50N/A-50N/A",
+      "createTime": 1639760602,
       "tokens": [
         {
           "address": "0x43D4A3cd90ddD2F8f4f693170C9c8098163502ad",
@@ -475,6 +491,7 @@
       "address": "0x90291319F1D4eA3ad4dB0Dd8fe9E12BAF749E845",
       "poolType": "Weighted",
       "symbol": "B-30FEI-70WETH",
+      "createTime": 1643150418,
       "tokens": [
         {
           "address": "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
@@ -501,6 +518,7 @@
       "address": "0x96646936b91d6B9D7D0c47C496AfBF3D6ec7B6f8",
       "poolType": "Weighted",
       "symbol": "B-50USDC-50WETH",
+      "createTime": 1620156607,
       "tokens": [
         {
           "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -527,6 +545,7 @@
       "address": "0x96bA9025311e2f47B840A1f68ED57A3DF1EA8747",
       "poolType": "Weighted",
       "symbol": "20DAI-80TCR",
+      "createTime": 1646958758,
       "tokens": [
         {
           "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
@@ -553,6 +572,7 @@
       "address": "0xa02E4b3d18D4E6B8d18Ac421fBc3dfFF8933c40a",
       "poolType": "Weighted",
       "symbol": "B-50MATIC-50WETH",
+      "createTime": 1623957298,
       "tokens": [
         {
           "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
@@ -579,6 +599,7 @@
       "address": "0xA6F548DF93de924d73be7D25dC02554c6bD66dB5",
       "poolType": "Weighted",
       "symbol": "B-50WBTC-50WETH",
+      "createTime": 1620134851,
       "tokens": [
         {
           "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -605,6 +626,7 @@
       "address": "0xBaeEC99c90E3420Ec6c1e7A769d2A856d2898e4D",
       "poolType": "Weighted",
       "symbol": "B-50VITA-50WETH",
+      "createTime": 1631291082,
       "tokens": [
         {
           "address": "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321",
@@ -631,6 +653,7 @@
       "address": "0xBF96189Eee9357a95C7719f4F5047F76bdE804E5",
       "poolType": "Weighted",
       "symbol": "B-80LDO-20WETH",
+      "createTime": 1630613506,
       "tokens": [
         {
           "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
@@ -657,6 +680,7 @@
       "address": "0xe2469f47aB58cf9CF59F9822e3C5De4950a41C49",
       "poolType": "Weighted",
       "symbol": "mBPT",
+      "createTime": 1631266727,
       "tokens": [
         {
           "address": "0xa3BeD4E1c75D00fa6f4E5E6922DB7261B5E9AcD2",
@@ -683,6 +707,7 @@
       "address": "0xE99481DC77691d8E2456E5f3F61C1810adFC1503",
       "poolType": "Weighted",
       "symbol": "B-50LINK-50WETH",
+      "createTime": 1620156455,
       "tokens": [
         {
           "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
@@ -709,6 +734,7 @@
       "address": "0xeC60a5FeF79a92c741Cb74FdD6bfC340C0279B01",
       "poolType": "Weighted",
       "symbol": "B-50REN-50WETH",
+      "createTime": 1620154724,
       "tokens": [
         {
           "address": "0x408e41876cCCDC0F92210600ef50372656052a38",
@@ -735,6 +761,7 @@
       "address": "0xEdf085f65b4F6c155e13155502Ef925c9a756003",
       "poolType": "Element",
       "symbol": "LPePyvDAI-29APR22",
+      "createTime": 1641340147,
       "tokens": [
         {
           "address": "0x2c72692E94E757679289aC85d3556b2c0f717E0E",
@@ -761,6 +788,7 @@
       "address": "0xEFAa1604e82e1B3AF8430b90192c1B9e8197e377",
       "poolType": "Weighted",
       "symbol": "B-50COMP-50WETH",
+      "createTime": 1620159740,
       "tokens": [
         {
           "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
@@ -787,6 +815,7 @@
       "address": "0xF4C0DD9B82DA36C07605df83c8a416F11724d88b",
       "poolType": "Weighted",
       "symbol": "B-80GNO-20WETH",
+      "createTime": 1620161592,
       "tokens": [
         {
           "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96",
@@ -813,6 +842,7 @@
       "address": "0xf5aAf7Ee8C39B651CEBF5f1F50C10631E78e0ef9",
       "poolType": "Weighted",
       "symbol": "BPTUMAUSDC",
+      "createTime": 1625874568,
       "tokens": [
         {
           "address": "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828",
@@ -839,6 +869,7 @@
       "address": "0xFeadd389a5c427952D8fdb8057D6C8ba1156cC56",
       "poolType": "Stable",
       "symbol": "staBAL3-BTC",
+      "createTime": 1625662646,
       "tokens": [
         {
           "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -871,6 +902,7 @@
       "address": "0x17dDd9646a69C9445CD8A9f921d4cD93BF50D108",
       "poolType": "Weighted",
       "symbol": "20WETH-80HAUS",
+      "createTime": 1646775701,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -897,6 +929,7 @@
       "address": "0x92762B42A06dCDDDc5B7362Cfb01E631c4D44B40",
       "poolType": "Weighted",
       "symbol": "50COW-50GNO",
+      "createTime": 1648477203,
       "tokens": [
         {
           "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96",
@@ -923,6 +956,7 @@
       "address": "0xde8C195Aa41C11a0c4787372deFBbDdAa31306D2",
       "poolType": "Weighted",
       "symbol": "50COW-50WETH",
+      "createTime": 1648476917,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -949,6 +983,7 @@
       "address": "0xc45D42f801105e861e86658648e3678aD7aa70f9",
       "poolType": "Weighted",
       "symbol": "50OHM-25DAI-25WETH",
+      "createTime": 1641174593,
       "tokens": [
         {
           "address": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5",
@@ -981,6 +1016,7 @@
       "address": "0x2D344A84BaC123660b021EEbE4eB6F12ba25fe86",
       "poolType": "Weighted",
       "symbol": "20WETH-80FDT",
+      "createTime": 1649198464,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -1007,6 +1043,7 @@
       "address": "0xb460DAa847c45f1C4a41cb05BFB3b51c92e41B36",
       "poolType": "Weighted",
       "symbol": "20WBTC-80BADGER",
+      "createTime": 1649360431,
       "tokens": [
         {
           "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -1033,6 +1070,7 @@
       "address": "0x5122E01D819E58BB2E22528c0D68D310f0AA6FD7",
       "poolType": "Weighted",
       "symbol": "sNOTE-BPT",
+      "createTime": 1647289895,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -1059,6 +1097,7 @@
       "address": "0xe8cc7E765647625B95F59C15848379D10B9AB4af",
       "poolType": "Weighted",
       "symbol": "20WETH-80WNCG",
+      "createTime": 1651547459,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -1085,6 +1124,7 @@
       "address": "0x85370D9e3bb111391cc89F6DE344E80176046183",
       "poolType": "Weighted",
       "symbol": "CREAM_ETH",
+      "createTime": 1652482836,
       "tokens": [
         {
           "address": "0x2ba592F78dB6436527729929AAf6c908497cB200",
@@ -1111,6 +1151,7 @@
       "address": "0xA7Ff759DBeF9F3EFDD1d59Beee44b966AcAfe214",
       "poolType": "Weighted",
       "symbol": "USDC-PAL",
+      "createTime": 1648309923,
       "tokens": [
         {
           "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -1137,6 +1178,7 @@
       "address": "0x3F7C10701b14197E2695dEC6428a2Ca4Cf7FC3B8",
       "poolType": "Weighted",
       "symbol": "50DFX-50WETH",
+      "createTime": 1654880110,
       "tokens": [
         {
           "address": "0x888888435FDe8e7d4c54cAb67f206e4199454c60",
@@ -1163,6 +1205,7 @@
       "address": "0x2d011aDf89f0576C9B722c28269FcB5D50C2d179",
       "poolType": "Stable",
       "symbol": "B-sdBAL-STABLE",
+      "createTime": 1655279564,
       "tokens": [
         {
           "address": "0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56",
@@ -1189,6 +1232,7 @@
       "address": "0x178E029173417b1F9C8bC16DCeC6f697bC323746",
       "poolType": "Stable",
       "symbol": "FUD",
+      "createTime": 1655452646,
       "tokens": [
         {
           "address": "0x586Aa273F262909EEF8fA02d90Ab65F5015e0516",
@@ -1221,6 +1265,7 @@
       "address": "0xCfCA23cA9CA720B6E98E3Eb9B6aa0fFC4a5C08B9",
       "poolType": "Weighted",
       "symbol": "50WETH-50AURA",
+      "createTime": 1656324819,
       "tokens": [
         {
           "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -1247,6 +1292,7 @@
       "address": "0x3dd0843A028C86e0b760b1A76929d1C5Ef93a2dd",
       "poolType": "Stable",
       "symbol": "B-auraBAL-STABLE",
+      "createTime": 1655199962,
       "tokens": [
         {
           "address": "0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56",
@@ -1273,6 +1319,7 @@
       "address": "0x0578292CB20a443bA1CdE459c985CE14Ca2bDEe5",
       "poolType": "Weighted",
       "symbol": "33auraBAL-33graviAURA-33WETH",
+      "createTime": 1655903969,
       "tokens": [
         {
           "address": "0x616e8BfA43F920657B3497DBf40D6b1A02D4608d",
@@ -1305,6 +1352,7 @@
       "address": "0x8eB6c82C3081bBBd45DcAC5afA631aaC53478b7C",
       "poolType": "Weighted",
       "symbol": "40WBTC-40DIGG-20graviAURA",
+      "createTime": 1656113097,
       "tokens": [
         {
           "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -1337,6 +1385,7 @@
       "address": "0x1b65fe4881800B91d4277ba738b567CbB200A60d",
       "poolType": "Weighted",
       "symbol": "80TEMPLE-20DAI",
+      "createTime": 1658427733,
       "tokens": [
         {
           "address": "0x470EBf5f030Ed85Fc1ed4C2d36B9DD02e77CF1b7",
@@ -1363,6 +1412,7 @@
       "address": "0xB340B6b1a34019853Cb05B2De6eE8ffD0B89a008",
       "poolType": "Weighted",
       "symbol": "33DPX-33RDPX-33WETH",
+      "createTime": 1642704735,
       "tokens": [
         {
           "address": "0x32Eb7902D4134bf98A28b963D26de779AF92A212",
@@ -1395,6 +1445,7 @@
       "address": "0x64541216bAFFFEec8ea535BB71Fbc927831d0595",
       "poolType": "Weighted",
       "symbol": "B-33WETH-33WBTC-33USDC",
+      "createTime": 1630354547,
       "tokens": [
         {
           "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
@@ -1427,6 +1478,7 @@
       "address": "0x5A5884FC31948D59DF2aEcCCa143dE900d49e1a3",
       "poolType": "Stable",
       "symbol": "VST-USDC-USDT-DAI-BSP",
+      "createTime": 1649342597,
       "tokens": [
         {
           "address": "0x64343594Ab9b56e99087BfA6F2335Db24c2d1F17",
@@ -1465,6 +1517,7 @@
       "address": "0x1779900c7707885720d39aA741F4086886307e9E",
       "poolType": "Weighted",
       "symbol": "80MAGIC-20WETH",
+      "createTime": 1644032955,
       "tokens": [
         {
           "address": "0x539bdE0d7Dbd336b79148AA742883198BBF60342",
@@ -1491,6 +1544,7 @@
       "address": "0xc2F082d33b5B8eF3A7E3de30da54EFd3114512aC",
       "poolType": "Weighted",
       "symbol": "B-80PICKLE-20WETH",
+      "createTime": 1632413358,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1517,6 +1571,7 @@
       "address": "0x651e00FfD5eCfA7F3d4F33d62eDe0a97Cf62EdE2",
       "poolType": "Weighted",
       "symbol": "B-80LINK-20WETH",
+      "createTime": 1630414571,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1543,6 +1598,7 @@
       "address": "0x0adeb25cb5920d4f7447af4a0428072EdC2cEE22",
       "poolType": "Weighted",
       "symbol": "80GMX-20WETH",
+      "createTime": 1644032654,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1569,6 +1625,7 @@
       "address": "0x0510cCF9eB3AB03C1508d3b9769E8Ee2CFd6FDcF",
       "poolType": "Stable",
       "symbol": "MAI-BSP",
+      "createTime": 1646951217,
       "tokens": [
         {
           "address": "0x3F56e0c36d275367b8C502090EDF38289b3dEa0d",
@@ -1601,6 +1658,7 @@
       "address": "0xC61ff48f94D801c1ceFaCE0289085197B5ec44F0",
       "poolType": "Weighted",
       "symbol": "50VSTA-50WETH",
+      "createTime": 1644359393,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1627,6 +1685,7 @@
       "address": "0xb28670b3E7Ad27bd41Fb5938136BF9E9cBa90d65",
       "poolType": "Weighted",
       "symbol": "B-80TCR-20WETH",
+      "createTime": 1633452926,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1653,6 +1712,7 @@
       "address": "0x1533A3278f3F9141d5F820A184EA4B017fce2382",
       "poolType": "Stable",
       "symbol": "B-staBAL-3",
+      "createTime": 1632409978,
       "tokens": [
         {
           "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
@@ -1685,6 +1745,7 @@
       "address": "0x4a3a22A3e7fee0FfBB66f1C28BfAC50f75546Fc7",
       "poolType": "Weighted",
       "symbol": "B-80GNO-20WETH",
+      "createTime": 1630414710,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1711,6 +1772,7 @@
       "address": "0xB5B77F1AD2B520df01612399258E7787aF63025D",
       "poolType": "Weighted",
       "symbol": "MWP",
+      "createTime": 1631188530,
       "tokens": [
         {
           "address": "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42",
@@ -1737,6 +1799,7 @@
       "address": "0xcC65A812ce382aB909a11E434dbf75B34f1cc59D",
       "poolType": "Weighted",
       "symbol": "B-60BAL-40WETH",
+      "createTime": 1630353781,
       "tokens": [
         {
           "address": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
@@ -1763,6 +1826,7 @@
       "address": "0xE1B40094F1446722c424C598aC412D590e0b3ffb",
       "poolType": "Weighted",
       "symbol": "20WETH-80CRE8R",
+      "createTime": 1651303333,
       "tokens": [
         {
           "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -1789,6 +1853,7 @@
       "address": "0xb3028Ca124B80CFE6E9CA57B70eF2F0CCC41eBd4",
       "poolType": "Weighted",
       "symbol": "50MAGIC-50USDC",
+      "createTime": 1657137806,
       "tokens": [
         {
           "address": "0x539bdE0d7Dbd336b79148AA742883198BBF60342",
@@ -1815,6 +1880,7 @@
       "address": "0x0297e37f1873D2DAb4487Aa67cD56B58E2F27875",
       "poolType": "Weighted",
       "symbol": "B-POLYBASE",
+      "createTime": 1624480165,
       "tokens": [
         {
           "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
@@ -1853,6 +1919,7 @@
       "address": "0x03cD191F589d12b0582a99808cf19851E468E6B5",
       "poolType": "Weighted",
       "symbol": "BPTC",
+      "createTime": 1625175772,
       "tokens": [
         {
           "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
@@ -1885,6 +1952,7 @@
       "address": "0x186084fF790C65088BA694Df11758faE4943EE9E",
       "poolType": "Weighted",
       "symbol": "TELX-50TEL-50BAL",
+      "createTime": 1627530378,
       "tokens": [
         {
           "address": "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3",
@@ -1911,6 +1979,7 @@
       "address": "0x614b5038611729ed49e0dED154d8A5d3AF9D1D9E",
       "poolType": "Weighted",
       "symbol": "BP-MTA",
+      "createTime": 1625852750,
       "tokens": [
         {
           "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
@@ -1943,6 +2012,7 @@
       "address": "0x7C9cF12d783821d5C63d8E9427aF5C44bAd92445",
       "poolType": "Weighted",
       "symbol": "B-33AVAX-33WETH-33SOL",
+      "createTime": 1631563951,
       "tokens": [
         {
           "address": "0x2C89bbc92BD86F8075d1DEcc58C7F4E0107f286b",
@@ -1975,6 +2045,7 @@
       "address": "0xc31A37105B94aB4eFCA1954A14f059Af11FCD9BB",
       "poolType": "Stable",
       "symbol": "FRAX-UST-USDC-USDT-BSP",
+      "createTime": 1649281079,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2013,6 +2084,7 @@
       "address": "0x0d34e5dD4D8f043557145598E4e2dC286B35FD4f",
       "poolType": "Stable",
       "symbol": "BPSP-TUSD",
+      "createTime": 1634659358,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2051,6 +2123,7 @@
       "address": "0x06Df3b2bbB68adc8B0e302443692037ED9f91b42",
       "poolType": "Stable",
       "symbol": "BPSP",
+      "createTime": 1625240232,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2089,6 +2162,7 @@
       "address": "0xaF5E0B5425dE1F5a630A8cB5AA9D97B8141C908D",
       "poolType": "MetaStable",
       "symbol": "B-stMATIC-STABLE",
+      "createTime": 1646261040,
       "tokens": [
         {
           "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
@@ -2115,6 +2189,7 @@
       "address": "0xFeadd389a5c427952D8fdb8057D6C8ba1156cC56",
       "poolType": "Stable",
       "symbol": "BP-BTC-SP",
+      "createTime": 1626300479,
       "tokens": [
         {
           "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
@@ -2141,6 +2216,7 @@
       "address": "0xCF354603A9AEbD2Ff9f33E1B04246d8Ea204ae95",
       "poolType": "Weighted",
       "symbol": "B-50WBTC-50WETH",
+      "createTime": 1632845173,
       "tokens": [
         {
           "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
@@ -2167,6 +2243,7 @@
       "address": "0x5A6aE1fd70d04bA4a279FC219dfAbC53825cb01D",
       "poolType": "Weighted",
       "symbol": "20WETH-80BANK",
+      "createTime": 1641489771,
       "tokens": [
         {
           "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
@@ -2193,6 +2270,7 @@
       "address": "0xEa4e073c8AC859f2994C07E627178719c8002dc0",
       "poolType": "Weighted",
       "symbol": "20WMATIC-80SAND",
+      "createTime": 1647651526,
       "tokens": [
         {
           "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
@@ -2219,6 +2297,7 @@
       "address": "0x10f21C9bD8128a29Aa785Ab2dE0d044DCdd79436",
       "poolType": "Weighted",
       "symbol": "B-50WETH-50USDC",
+      "createTime": 1632845033,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2245,6 +2324,7 @@
       "address": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0",
       "poolType": "Weighted",
       "symbol": "B-POLYDEFI",
+      "createTime": 1624551483,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2289,6 +2369,7 @@
       "address": "0x805cA3cCC61cc231851DEE2Da6aABFF0a7714aa7",
       "poolType": "Weighted",
       "symbol": "BAL-VISION-LP",
+      "createTime": 1646249777,
       "tokens": [
         {
           "address": "0x034b2090b579228482520c589dbD397c53Fc51cC",
@@ -2315,6 +2396,7 @@
       "address": "0xb204BF10bc3a5435017D3db247f56dA601dFe08A",
       "poolType": "Weighted",
       "symbol": "20USDC-80THX",
+      "createTime": 1638798765,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2341,6 +2423,7 @@
       "address": "0xdB1db6E248d7Bb4175f6E5A382d0A03fe3DCc813",
       "poolType": "Weighted",
       "symbol": "TELX-60TEL-20BAL-20USDC",
+      "createTime": 1627537692,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2373,6 +2456,7 @@
       "address": "0xce66904B68f1f070332Cbc631DE7ee98B650b499",
       "poolType": "Weighted",
       "symbol": "B-POLYDEFI",
+      "createTime": 1624551793,
       "tokens": [
         {
           "address": "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
@@ -2411,6 +2495,7 @@
       "address": "0xC17636e36398602dd37Bb5d1B3a9008c7629005f",
       "poolType": "MetaStable",
       "symbol": "B-MaticX-STABLE",
+      "createTime": 1651051393,
       "tokens": [
         {
           "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
@@ -2437,6 +2522,7 @@
       "address": "0x2dbC9Ab0160087AE59474FB7bed95B9E808fA6bc",
       "poolType": "Weighted",
       "symbol": "20USDC-40TEL-40DFX",
+      "createTime": 1647629491,
       "tokens": [
         {
           "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -2469,6 +2555,7 @@
       "address": "0xB797AdfB7b268faeaA90CAdBfEd464C76ee599Cd",
       "poolType": "Stable",
       "symbol": "tetuBAL-BALWETH",
+      "createTime": 1655487934,
       "tokens": [
         {
           "address": "0x3d468AB2329F296e1b9d8476Bb54Dd77D8c2320f",
@@ -2495,6 +2582,7 @@
       "address": "0x8f9Dd2064eb38E8E40F2aB67bDE27c0e16ea9B08",
       "poolType": "Weighted",
       "symbol": "50RBW-50WETH",
+      "createTime": 1651065950,
       "tokens": [
         {
           "address": "0x431CD3C9AC9Fc73644BF68bF5691f4B83F9E104f",
@@ -2521,6 +2609,7 @@
       "address": "0x647c1FD457b95b75D0972fF08FE01d7D7bda05dF",
       "poolType": "Weighted",
       "symbol": "B-50WBTC-50WETH",
+      "createTime": 1619037448,
       "tokens": [
         {
           "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
@@ -2547,6 +2636,7 @@
       "address": "0xF767F0a3FCf1EAfEc2180b7dE79D0c559D7E7e37",
       "poolType": "Weighted",
       "symbol": "17WBTC-50BAL-33USDC",
+      "createTime": 1637272240,
       "tokens": [
         {
           "address": "0x1C8E3Bcb3378a443CC591f154c5CE0EBb4dA9648",
@@ -2579,6 +2669,7 @@
       "address": "0x8fd162f338B770F7E879030830cDe9173367f301",
       "poolType": "StablePhantom",
       "symbol": "bb-a-USD",
+      "createTime": 1639061964,
       "tokens": [
         {
           "address": "0x0Bbd32B14A6503EE20F87df38Cf2d5d3b59eA2F5",
@@ -2611,6 +2702,7 @@
       "address": "0x16faF9f73748013155B7bC116a3008b57332D1e6",
       "poolType": "Weighted",
       "symbol": "B-50WBTC-50WETH",
+      "createTime": 1654263801,
       "tokens": [
         {
           "address": "0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9",
@@ -2637,6 +2729,7 @@
       "address": "0x4Fd63966879300caFafBB35D157dC5229278Ed23",
       "poolType": "MetaStable",
       "symbol": "BPT-rETH-ETH",
+      "createTime": 1660303682,
       "tokens": [
         {
           "address": "0x4200000000000000000000000000000000000006",

@@ -262,6 +262,7 @@
   "exceedsBalance": "Exceeds wallet balance",
   "exceedsPoolBalance": "Exceeds pool balance for this token",
   "expired": "Expired",
+  "deactivated": "Deactivated",
   "expiryDate": "Expiry date",
   "explore": "Explore",
   "exploreBalancerV1Pools": "Explore V1 pools ->",

@@ -3,6 +3,7 @@ import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { differenceInWeeks } from 'date-fns';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
@@ -11,6 +12,7 @@ import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue
 import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
+import { oneSecondInMs } from '@/composables/useTime';
 import {
   isStableLike,
   isUnknownType,
@@ -169,6 +171,10 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
     ? 'expired-gauge-row'
     : '';
 }
+
+function checkIfIsNew(createTime: number): boolean {
+  return differenceInWeeks(Date.now(), createTime * oneSecondInMs) < 1;
+}
 </script>
 
 <template>
@@ -246,6 +252,15 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
             :tooltip="`${t(
               'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt'
             )} 10%`"
+            class="ml-1"
+          />
+          <IconLimit
+            v-else-if="checkIfIsNew(gauge.pool.createTime)"
+            size="sm"
+            amount="1"
+            :tooltip="`${t(
+              'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt'
+            )} 1%`"
             class="ml-1"
           />
           <div v-else class="ml-1 w-5 h-5" />
