@@ -461,6 +461,7 @@
   "network": "Network",
   "networkMismatch": "Please switch to {0}",
   "networkSelection": "Network selection",
+  "poolDoesntExist": "Pool doesn't exist on",
   "new": "New",
   "newInvestment": "New investment",
   "newTrade": "New Trade",

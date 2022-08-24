@@ -2,9 +2,11 @@
 import { computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+import i18n from '@/plugins/i18n';
+
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
-import useAlerts, { AlertType } from '@/composables/useAlerts';
+import useNotifications from '@/composables/useNotifications';
 
 export interface NetworkOption {
   id: string;
@@ -18,7 +20,7 @@ export interface NetworkOption {
 const { upToLargeBreakpoint } = useBreakpoints();
 const { networkId, networkConfig } = useNetwork();
 const router = useRouter();
-const { addAlert } = useAlerts();
+const { addNotification } = useNotifications();
 
 const networks = ref([
   {
@@ -62,10 +64,12 @@ const activeNetwork = computed((): NetworkOption | undefined =>
 onMounted(async () => {
   await router.isReady();
   if (router.currentRoute.value.query?.poolNetworkAlert) {
-    addAlert({
-      id: 'poolNetworkAlert',
-      type: AlertType.INFO,
-      label: `Pool doesn't exist on ${router.currentRoute.value.query.poolNetworkAlert}`,
+    addNotification({
+      type: 'error',
+      title: '',
+      message: `${i18n.global.t('poolDoesntExist')} ${
+        router.currentRoute.value.query.poolNetworkAlert
+      }`,
     });
     router.replace({ query: {} });
   }
