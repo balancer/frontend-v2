@@ -88,8 +88,11 @@ jobs:
 
   E2E:
     # Only run e2e tests, if other jobs are successful
-    # needs: [Build, Lint, Test]
+    needs: [Build, Lint, Test]
     runs-on: ubuntu-latest
+    env:
+      SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
+      NETWORK_NAME: goerli
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -99,22 +102,18 @@ jobs:
       - name: Install deps
         run: npm install -g npm@7 && npm ci
       - name: Start app in background
+        # Goerli testnet is used
         run: VUE_APP_NETWORK=5 npm run serve &
       - name: Checkout cypress app
         uses: actions/checkout@v2
         with:
           repository: balancer-labs/frontend-e2e
-          # Checkout feature branch
-          ref: test-env
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
-        env:
-          SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
-          NETWORK_NAME: goerli
         with:
           working-directory: e2e
-          # wait for the server to start
+          # wait for the app to start
           wait-on: 'http://localhost:8080'
           # Use custom test command for synpress
           command: npm run synpress:ci
@@ -123,6 +122,6 @@ jobs:
         # Upload artifacts only if tests failed
         if: failure()
         with:
-          name: e2e_test_reports
+          name: e2e_test_report
           path: e2e/synpress/report
-          retention-days: 2
+          retention-days: 5
