@@ -24,6 +24,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { GAS_LIMIT_BUFFER } from '@/services/gas-price/gas-price.service';
 import { fiatValueOf } from '../usePool';
 import useNumbers, { FNumFormats } from '../useNumbers';
+import useSlippage from '../useSlippage';
 
 export type MigratePoolState = {
   init: boolean;
@@ -57,6 +58,7 @@ export function usePoolMigration(
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
   const { fNum2 } = useNumbers();
+  const { minusSlippageScaled } = useSlippage();
 
   /**
    * STATE
@@ -229,7 +231,8 @@ export function usePoolMigration(
     );
 
     const expectedBptOut = await getExpectedBptOut(amount, isStaked);
-    query = migrationFn.value(amount, isStaked, expectedBptOut); // TODO apply slippage here.
+    const minBptOut = minusSlippageScaled(expectedBptOut);
+    query = migrationFn.value(amount, isStaked, minBptOut);
 
     const tx = await getSigner().sendTransaction({
       to: query.to,
@@ -300,26 +303,26 @@ export function usePoolMigration(
     return query.decode(staticResult, isStaked);
   }
 
-  function migrateBoostedPool(amount: string, staked: boolean, limit = '0') {
+  function migrateBoostedPool(bptIn: string, staked: boolean, minBptOut = '0') {
     const { signerAddress, _signature, _tokens } = migrationData.value;
 
     return balancer.zaps.migrations.bbaUsd(
       signerAddress,
-      amount,
-      limit,
+      bptIn,
+      minBptOut,
       staked,
       _tokens,
       _signature
     );
   }
 
-  function migrateStabal3(amount: string, staked: boolean, limit = '0') {
+  function migrateStabal3(bptIn: string, staked: boolean, minBptOut = '0') {
     const { signerAddress, _signature } = migrationData.value;
 
     return balancer.zaps.migrations.stabal3(
       signerAddress,
-      amount,
-      limit,
+      bptIn,
+      minBptOut,
       staked,
       _signature
     );
