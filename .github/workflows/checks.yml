@@ -111,6 +111,7 @@ jobs:
         uses: cypress-io/github-action@v4
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
+          NETWORK_NAME: goerli
         with:
           working-directory: e2e
           # wait for the server to start
