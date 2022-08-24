@@ -99,7 +99,7 @@ jobs:
       - name: Install deps
         run: npm install -g npm@7 && npm ci
       - name: Start app in background
-        run: npm run serve &
+        run: VUE_APP_NETWORK=5 npm run serve &
       - name: Checkout cypress app
         uses: actions/checkout@v2
         with:
@@ -118,7 +118,7 @@ jobs:
           wait-on: 'http://localhost:8080'
           # Use custom test command for synpress
           command: npm run synpress:ci
-      - name: 'Upload test artifacts'
+      - name: Upload test artifacts
         uses: actions/upload-artifact@v3
         # Upload artifacts only if tests failed
         if: failure()
