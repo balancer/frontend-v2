@@ -32,6 +32,8 @@ const isInvestmentPoolsTableLoading = computed(
   () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
 );
 
+const isPaginated = computed(() => investmentPools.value.length >= 10);
+
 /**
  * METHODS
  */
@@ -76,7 +78,7 @@ function navigateToCreatePool() {
         class="mb-8"
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
         :columnStates="dataStates"
-        :isPaginated="true"
+        :isPaginated="isPaginated"
         :isLoading="isInvestmentPoolsTableLoading"
         @load-more="loadMore"
       />
