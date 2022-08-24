@@ -103,7 +103,7 @@ const isaActionBtnDisabled = computed(() => {
   if (actions.value[currentActionIndex.value].isSignAction) {
     return false;
   }
-  return !priceImpactLoading.value || !hasAcceptedHighPriceImpact.value;
+  return !priceImpactLoading.value && !hasAcceptedHighPriceImpact.value;
 });
 
 const summaryTitle = computed(() => {
