@@ -218,7 +218,14 @@ const POOLS_MAINNET: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'Gyro2',
+    'Gyro3',
+  ],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063', // staBAL3 (DAI-USD-USDC)
@@ -306,6 +313,7 @@ const POOLS_MAINNET: Pools = {
       '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
       '0x8eb6c82c3081bbbd45dcac5afa631aac53478b7c000100000000000000000270',
       '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc',
+      '0x99a14324cfd525a34bbc93ac7e348929909d57fd00020000000000000000030e',
     ],
   },
   Metadata: {
@@ -337,7 +345,14 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'Gyro2',
+    'Gyro3',
+  ],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon MAI/DAI/USDC/USDT

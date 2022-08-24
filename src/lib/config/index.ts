@@ -5,6 +5,7 @@ import docker from './docker.json';
 import goerli from './goerli.json';
 import homestead from './homestead.json';
 import kovan from './kovan.json';
+import optimism from './optimism.json';
 import polygon from './polygon.json';
 import rinkeby from './rinkeby.json';
 import test from './test.json';
@@ -32,6 +33,7 @@ export interface Config {
   };
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
+  blockTime: number;
   nativeAsset: {
     name: string;
     address: string;
@@ -89,6 +91,7 @@ const config: Record<Network | number, Config> = {
   [Network.RINKEBY]: rinkeby,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
+  [Network.OPTIMISM]: optimism,
   12345: test,
   // @ts-ignore
   17: docker,
