@@ -174,9 +174,17 @@ async function calcPriceImpact(
 watch(
   currentActionIndex,
   async newIndex => {
-    priceImpact.value = actions.value[newIndex].isStakeAction
-      ? await calcPriceImpact(evmStakedBptBalance.value, true)
-      : await calcPriceImpact(evmUnstakedBptBalance.value, false);
+    if (actions.value[newIndex].isStakeAction)
+      priceImpact.value = await calcPriceImpact(
+        evmStakedBptBalance.value,
+        true
+      );
+
+    if (actions.value[newIndex].isUnstakeAction)
+      priceImpact.value = await calcPriceImpact(
+        evmUnstakedBptBalance.value,
+        false
+      );
   },
   { immediate: true }
 );
