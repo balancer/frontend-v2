@@ -90,9 +90,6 @@ jobs:
     # Only run e2e tests, if other jobs are successful
     needs: [Build, Lint, Test]
     runs-on: ubuntu-latest
-    env:
-      SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
-      NETWORK_NAME: goerli
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -111,6 +108,9 @@ jobs:
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
+        env:
+          SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
+          NETWORK_NAME: goerli
         with:
           working-directory: e2e
           # wait for the app to start
