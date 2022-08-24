@@ -24,6 +24,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
+import IconLimit from '@/components/icons/IconLimit.vue';
 
 /**
  * TYPES
@@ -236,8 +237,16 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
         </div>
       </template>
       <template #nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="py-4 px-6 text-right">
+        <div v-if="!isLoading" class="flex justify-end py-4 px-6">
           <GaugeVoteInfo :gauge="gauge" />
+          <IconLimit
+            v-if="gauge.pool.symbol === 'veBAL'"
+            size="sm"
+            amount="10"
+            :tooltip="$t('distributionsCappedAt10%')"
+            class="ml-1"
+          />
+          <div v-else class="ml-1 w-5 h-5" />
         </div>
       </template>
       <template #voteColumnCell="gauge">
