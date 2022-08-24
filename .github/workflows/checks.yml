@@ -1,7 +1,7 @@
-# name: Checks
+name: Checks
 
-# on:
-#   - pull_request
+on:
+  - pull_request
 
 env:
   VITE_FATHOM_SITE_ID: xxx
