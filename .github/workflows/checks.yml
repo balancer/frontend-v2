@@ -106,7 +106,7 @@ jobs:
         with:
           repository: balancer-labs/frontend-e2e
           # Checkout feature branch
-          ref: test-env
+          ref: testing-test-setup
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
