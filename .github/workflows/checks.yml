@@ -105,6 +105,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: balancer-labs/frontend-e2e
+          # Checkout feature branch
+          ref: test-env
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
@@ -112,7 +114,6 @@ jobs:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
           NETWORK_NAME: goerli
         with:
-          ref: testing-test-setup
           working-directory: e2e
           # wait for the app to start
           wait-on: 'http://localhost:8080'
