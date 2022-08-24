@@ -11,7 +11,8 @@ node_modules
 # cache files
 .eslintcache
 
-# e2e folder is reserved for Cypress tests
+# e2e folder is reserved for running Sypress tests in CI
+# Referenced at: .github/workflows/checks.yml
 e2e/
 
 # Log files
