@@ -108,11 +108,11 @@ jobs:
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
-        ref: testing-test-setup
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
           NETWORK_NAME: goerli
         with:
+          ref: testing-test-setup
           working-directory: e2e
           # wait for the app to start
           wait-on: 'http://localhost:8080'
