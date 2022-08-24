@@ -109,6 +109,8 @@ jobs:
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
+        env:
+          SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
         with:
           working-directory: e2e
           # wait for the server to start
