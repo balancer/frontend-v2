@@ -246,7 +246,7 @@ export default defineComponent({
         !dismissedErrors.value.highPriceImpact
     );
     const tradeDisabled = computed(() => {
-      const hasAmountsError = !tokenInAmount.value && !tokenOutAmount.value;
+      const hasAmountsError = !tokenInAmount.value || !tokenOutAmount.value;
       const hasGnosisErrors =
         trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
