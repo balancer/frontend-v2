@@ -18,6 +18,7 @@ import {
   PoolBalancesCard,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
 import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
