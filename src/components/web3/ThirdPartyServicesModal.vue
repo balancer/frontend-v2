@@ -53,7 +53,6 @@ const services = [
   'infura',
   'alchemy',
   'the-graph',
-  'google-analytics',
   'fathom-analytics',
   'TRM-labs',
   'sentry',

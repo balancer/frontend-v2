@@ -649,7 +649,6 @@
     "infura": "Used to fetch on-chain data and constructs contract calls with an Infura API.",
     "alchemy": "Used to fetch on-chain data and constructs contract calls with an Alchemy API.",
     "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
-    "google-analytics": "Used to understand user behavior on the site and marketing performance.",
     "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
     "TRM-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
     "sentry": "Used for error tracking and performance monitoring."
