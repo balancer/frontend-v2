@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { useLock } from '@/composables/useLock';
@@ -8,18 +8,22 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/components/UnlockPreviewModal/UnlockPreviewModal.vue';
 
 type Props = {
   pool: Pool;
 };
 const props = defineProps<Props>();
 
+const showUnlockPreviewModal = ref(false);
+
 /**
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
 const { balanceFor } = useTokens();
-const { lockedFiatTotal, lock, isLoadingLockInfo } = useLock();
+const { lockedFiatTotal, lock, isLoadingLockInfo, lockPool, lockPoolToken } =
+  useLock();
 const { isWalletReady } = useWeb3();
 
 /**
@@ -32,6 +36,17 @@ const bptBalance = computed(() => balanceFor(props.pool.address));
 
 const fiatTotal = computed(() =>
   poolShares.value.times(bptBalance.value).toString()
+);
+
+const totalExpiredLpTokens = computed(() =>
+  lock.value?.isExpired ? lock.value.lockedAmount : '0'
+);
+
+const fiatTotalExpiredLpTokens = computed(() =>
+  bnum(lockPool.value?.totalLiquidity || '0')
+    .div(lockPool.value?.totalShares || '0')
+    .times(totalExpiredLpTokens.value)
+    .toString()
 );
 </script>
 
@@ -129,7 +144,7 @@ const fiatTotal = computed(() =>
                   </BalStack>
                 </BalStack>
                 <BalStack horizontal spacing="sm" class="mt-2">
-                  <BalLink href="/#/vebal">
+                  <BalLink href="/#/get-vebal?returnRoute=vebal">
                     <BalBtn
                       :disabled="Number(bptBalance) === 0"
                       color="gradient"
@@ -138,16 +153,15 @@ const fiatTotal = computed(() =>
                       {{ $t('lock') }}
                     </BalBtn>
                   </BalLink>
-                  <BalLink href="/#/vebal">
-                    <BalBtn
-                      v-if="lock?.isExpired"
-                      outline
-                      color="red"
-                      size="sm"
-                    >
-                      {{ $t('redeem') }}
-                    </BalBtn>
-                  </BalLink>
+                  <BalBtn
+                    v-if="lock?.isExpired"
+                    outline
+                    color="red"
+                    size="sm"
+                    @click="showUnlockPreviewModal = true"
+                  >
+                    {{ $t('redeem') }}
+                  </BalBtn>
                 </BalStack>
               </BalStack>
             </div>
@@ -158,6 +172,17 @@ const fiatTotal = computed(() =>
     <AnimatePresence :isVisible="isLoadingLockInfo" unmountInstantly>
       <BalLoadingBlock class="h-12" />
     </AnimatePresence>
+    <teleport to="#modal">
+      <UnlockPreviewModal
+        v-if="showUnlockPreviewModal && lock"
+        :lockablePool="lockPool"
+        :lockablePoolTokenInfo="lockPoolToken"
+        :veBalLockInfo="lock"
+        :totalLpTokens="totalExpiredLpTokens"
+        :fiatTotalLpTokens="fiatTotalExpiredLpTokens"
+        @close="showUnlockPreviewModal = false"
+      />
+    </teleport>
   </div>
 </template>
 

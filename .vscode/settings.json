@@ -24,7 +24,7 @@
     "editor.formatOnSave": true
   },
   "[vue]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
     "editor.formatOnSave": true
   },
   "[typescript]": {
