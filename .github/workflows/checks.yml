@@ -118,7 +118,7 @@ jobs:
           # wait for the app to start
           wait-on: 'http://localhost:8080'
           # Use custom test command for synpress
-          command: echo $SECRET_WORDS && echo $NETWORK_NAME && npm run synpress:ci
+          command: npm run synpress:ci
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
         # Upload artifacts only if tests failed
