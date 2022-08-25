@@ -3,7 +3,8 @@ import { orderBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 import DripBtn from '@/components/btns/DripBtn/DripBtn.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
@@ -84,7 +85,6 @@ const columns = ref<ColumnDefinition<any>[]>([
     <BalTable
       :columns="columns"
       :data="tokens"
-      :isLoading="isLoading"
       skeletonClass="h-64"
       :square="upToLargeBreakpoint"
     >

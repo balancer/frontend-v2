@@ -4,7 +4,8 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -296,8 +297,8 @@ function iconAddresses(pool: PoolWithShares) {
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
             />
-            <BalChipNew v-if="pool?.isNew" class="ml-2" />
           </div>
+          <BalChipNew v-if="pool?.isNew" class="mt-1" />
         </div>
       </template>
       <template #volumeCell="pool">

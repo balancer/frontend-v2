@@ -24,6 +24,14 @@ function getBalancerAssetsMultichainURI(tokenAdress: string): string {
 
 const log = debug('balancer:voting-gauge-generator');
 
+function isValidResponse(response: Response) {
+  if (response.status === 200) {
+    return true;
+  } else {
+    console.error('Asset URI not found from token list:', response.url);
+  }
+}
+
 async function getAssetURIFromTokenlists(
   tokenAddress: string,
   network: Network
@@ -39,8 +47,9 @@ async function getAssetURIFromTokenlists(
 
   log('getAssetURIFromTokenlists fetching Tokens');
   const responses = await Promise.all(allURIs.map(uri => fetch(uri)));
+  const validResponses = await Promise.all(responses.filter(isValidResponse));
   const tokenLists = await Promise.all(
-    responses.map(response => response.json())
+    validResponses.map(response => response.json())
   );
   const allTokens = tokenLists.map(tokenList => tokenList.tokens).flat();
 
@@ -85,6 +94,7 @@ function getTrustWalletAssetsURI(
     [Network.POLYGON]: 'polygon',
     [Network.KOVAN]: 'kovan',
     [Network.GOERLI]: 'goerli',
+    [Network.OPTIMISM]: 'optimism',
   };
 
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${networksMap[network]}/assets/${tokenAddress}/logo.png`;
@@ -116,7 +126,11 @@ async function getTokenLogoURI(
   if (logoUri) response = await fetch(logoUri);
   if (logoUri && response.status === 200) return logoUri;
 
-  if (network === Network.ARBITRUM || network === Network.POLYGON) {
+  if (
+    network === Network.ARBITRUM ||
+    network === Network.OPTIMISM ||
+    network === Network.POLYGON
+  ) {
     const mainnetAddress = await getMainnetTokenAddresss(tokenAddress, network);
     logoUri = getTrustWalletAssetsURI(mainnetAddress, Network.MAINNET);
     response = await fetch(logoUri);

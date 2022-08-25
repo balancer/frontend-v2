@@ -11,7 +11,12 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, findByAddress, isSameAddress } from '@/lib/utils';
+import {
+  bnum,
+  findByAddress,
+  indexOfAddress,
+  isSameAddress,
+} from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 // Types
@@ -188,7 +193,7 @@ function setNativeAsset(to: NativeAsset): void {
       ? wrappedNativeAsset.value.address
       : nativeAsset.address;
 
-  const indexOfAsset = tokenAddresses.value.indexOf(fromAddress);
+  const indexOfAsset = indexOfAddress(tokenAddresses.value, fromAddress);
 
   if (indexOfAsset >= 0) {
     tokenAddresses.value[indexOfAsset] = toAddress;

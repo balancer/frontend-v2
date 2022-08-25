@@ -66,6 +66,8 @@ const hasExpiredLock = computed(
     veBalLockInfoQuery.data.value?.isExpired
 );
 
+const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
+
 /**
  * METHODS
  */
@@ -167,7 +169,7 @@ function handleVoteSuccess() {
     </div>
   </div>
   <GaugesTable
-    :key="votingGauges && isLoading"
+    :key="gaugesTableKey"
     :expiredGauges="expiredGauges"
     :isLoading="isLoading"
     :data="votingGauges"
@@ -185,7 +187,7 @@ function handleVoteSuccess() {
         poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
       "
       :unallocatedVoteWeight="unallocatedVoteWeight"
-      :veBalLockInfo="veBalLockInfoQuery.data"
+      :veBalLockInfo="veBalLockInfoQuery.data.value"
       @success="handleVoteSuccess"
       @close="handleModalClose"
     />

@@ -12,7 +12,7 @@ type Props = {
 type Step = {
   tooltip: string;
   state: StepState;
-  label: number;
+  label?: number;
   isVisible?: boolean;
 };
 

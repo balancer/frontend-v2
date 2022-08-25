@@ -1,7 +1,7 @@
 import { BatchSwapStep, SwapV2 } from '@balancer-labs/sdk';
 import { BigNumberish } from '@ethersproject/bignumber';
 
-export type RuleFunction = (val: string | number) => string;
+export type RuleFunction = (val: string | number) => string | boolean;
 export type Rules = Array<RuleFunction>;
 export interface FormRef {
   validate(): boolean;
@@ -27,12 +27,6 @@ export type TokenMap = Record<string, Token>;
 export interface Claim {
   id: string;
   amount: string;
-}
-
-export interface HtmlInputEvent {
-  target: HTMLInputElement;
-  key: string;
-  preventDefault();
 }
 
 export interface WalletError extends Error {

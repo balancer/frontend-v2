@@ -1,16 +1,84 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+
+import useBreakpoints from '@/composables/useBreakpoints';
+import ConfigService from '@/services/config/config.service';
+
+export interface NetworkOption {
+  id: string;
+  name: string;
+  subdomain?: string;
+  key?: string;
+}
+
+// SERVICES
+const configService = new ConfigService();
+
+// COMPOSABLES
+const { upToLargeBreakpoint } = useBreakpoints();
+
+const networks = ref([
+  {
+    id: 'ethereum',
+    name: 'Ethereum',
+    subdomain: 'app',
+    key: '1',
+  },
+  {
+    id: 'polygon',
+    name: 'Polygon',
+    subdomain: 'polygon',
+    key: '137',
+  },
+  {
+    id: 'arbitrum',
+    name: 'Arbitrum',
+    subdomain: 'arbitrum',
+    key: '42161',
+  },
+]);
+
+const appNetworkSupported = networks.value
+  .map(network => network.key)
+  .includes(configService.network.key);
+
+const activeNetwork = computed(() =>
+  networks.value.find(network => {
+    if (!appNetworkSupported && network.id === 'ethereum') return true;
+    return isActive(network);
+  })
+);
+
+// METHODS
+function iconSrc(network: NetworkOption): string {
+  return require(`@/assets/images/icons/networks/${network.id}.svg`);
+}
+
+function appUrl(network: NetworkOption): string {
+  return `https://${network.subdomain}.balancer.fi`;
+}
+
+function isActive(network: NetworkOption): boolean {
+  if (!appNetworkSupported && network.id === 'ethereum') return true;
+  return configService.network.key === network.key;
+}
+</script>
+
 <template>
   <BalPopover noPad>
     <template #activator>
       <BalBtn color="white" :size="upToLargeBreakpoint ? 'md' : 'sm'">
-        <img
-          :src="iconSrc(activeNetwork)"
-          :alt="activeNetwork.name"
-          class="w-6 h-6 rounded-full"
-        />
-        <span class="ml-2">
-          {{ activeNetwork.name }}
-        </span>
-        <BalIcon name="chevron-down" size="sm" class="ml-2" />
+        <template v-if="activeNetwork">
+          <img
+            :src="iconSrc(activeNetwork)"
+            :alt="activeNetwork.name"
+            class="w-6 h-6 rounded-full"
+          />
+          <span class="ml-2">
+            {{ activeNetwork.name }}
+          </span>
+          <BalIcon name="chevron-down" size="sm" class="ml-2" />
+        </template>
       </BalBtn>
     </template>
     <div class="flex overflow-hidden flex-col w-44 rounded-lg">
@@ -45,85 +113,4 @@
   </BalPopover>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
 
-import useBreakpoints from '@/composables/useBreakpoints';
-import ConfigService from '@/services/config/config.service';
-
-export interface NetworkOption {
-  id: string;
-  name: string;
-  subdomain?: string;
-  key?: string;
-}
-
-export default defineComponent({
-  name: 'AppNavNetworkSelect',
-
-  setup() {
-    // SERVICES
-    const configService = new ConfigService();
-
-    // COMPOSABLES
-    const { upToLargeBreakpoint } = useBreakpoints();
-
-    // DATA
-    const networks = [
-      {
-        id: 'ethereum',
-        name: 'Ethereum',
-        subdomain: 'app',
-        key: '1',
-      },
-      {
-        id: 'polygon',
-        name: 'Polygon',
-        subdomain: 'polygon',
-        key: '137',
-      },
-      {
-        id: 'arbitrum',
-        name: 'Arbitrum',
-        subdomain: 'arbitrum',
-        key: '42161',
-      },
-    ];
-
-    const appNetworkSupported = networks
-      .map(network => network.key)
-      .includes(configService.network.key);
-
-    const activeNetwork = networks.find(network => {
-      if (!appNetworkSupported && network.id === 'ethereum') return true;
-      return isActive(network);
-    });
-
-    // METHODS
-    function iconSrc(network: NetworkOption): string {
-      return require(`@/assets/images/icons/networks/${network.id}.svg`);
-    }
-
-    function appUrl(network: NetworkOption): string {
-      return `https://${network.subdomain}.balancer.fi`;
-    }
-
-    function isActive(network: NetworkOption): boolean {
-      if (!appNetworkSupported && network.id === 'ethereum') return true;
-      return configService.network.key === network.key;
-    }
-
-    return {
-      // computed
-      upToLargeBreakpoint,
-      // data
-      networks,
-      activeNetwork,
-      // methods
-      isActive,
-      appUrl,
-      iconSrc,
-    };
-  },
-});
-</script>
