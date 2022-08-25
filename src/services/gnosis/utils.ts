@@ -1,4 +1,4 @@
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderKind } from '@cowprotocol/contracts';
 
 import { configService } from '../config/config.service';
 import { MAX_VALID_TO_EPOCH } from './constants';
