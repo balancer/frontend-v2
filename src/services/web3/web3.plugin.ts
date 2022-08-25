@@ -196,15 +196,8 @@ export default {
         // need to store address to pre-load that connection
         if (account.value) {
           // fetch sanctioned status
-          let _isBlocked = await isBlockedAddress(account.value);
-          if (_isBlocked === null) {
-            // await disconnectWallet();
-            // throw new Error(
-            //   `Could not receive an appropriate response from the Sanctions API. Aborting.`
-            // );
-            _isBlocked = false;
-          }
-          isBlocked.value = _isBlocked;
+          const _isBlocked = await isBlockedAddress(account.value);
+          isBlocked.value = _isBlocked || false;
           if (_isBlocked) {
             disconnectWallet();
           }
