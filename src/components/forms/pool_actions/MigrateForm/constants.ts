@@ -49,6 +49,15 @@ const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
       `${riskI18nLabelPrefix}.aaveStableExploit`,
     ],
   },
+  {
+    type: PoolMigrationType.STABAL3_POOL,
+    fromPoolId: POOLS.IdsMap.staBAL as string,
+    toPoolId: POOLS.IdsMap.bbAaveUSD?.v2 as string,
+    riskI18nLabels: [
+      `${riskI18nLabelPrefix}.loseUSDPeg`,
+      `${riskI18nLabelPrefix}.aaveStableExploit`,
+    ],
+  },
 ];
 
 const MIGRATIONS_BY_NETWORK = {
