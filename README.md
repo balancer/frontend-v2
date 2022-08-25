@@ -125,6 +125,10 @@ The frontend can easily be deployed to any static host. Use the buttons below to
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/balancer-labs/frontend-v2)
 
+## E2e Testing
+
+E2e tests are pulled from another repo to run them in the pipeline: [frontend-e2e](https://github.com/balancer-labs/frontend-e2e)
+
 ## Vite setup
 
 This app is powered by [vite](https://vitejs.dev/), which:
