@@ -88,7 +88,7 @@ jobs:
 
   E2E:
     # Only run e2e tests, if other jobs are successful
-    # needs: [Build, Lint, Test]
+    needs: [Build, Lint, Test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -99,14 +99,12 @@ jobs:
       - name: Install deps
         run: npm install -g npm@7 && npm ci
       - name: Start app in background
-        # Goerli testnet is used
+        # Start app using Goerli testnet
         run: VUE_APP_NETWORK=5 npm run serve &
       - name: Checkout cypress app
         uses: actions/checkout@v2
         with:
           repository: balancer-labs/frontend-e2e
-          # Checkout feature branch
-          ref: testing-test-setup
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
@@ -126,4 +124,5 @@ jobs:
         with:
           name: e2e_test_report
           path: e2e/synpress/report
+          # Keep the test report artifact for 5 days
           retention-days: 5
