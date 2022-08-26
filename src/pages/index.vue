@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import HomePageHero from '@/components/heros/HomePageHero.vue';
@@ -26,6 +27,8 @@ const { selectedTokens, addSelectedToken, removeSelectedToken } =
 const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
   usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
+
+const isPaginated = computed(() => pools.value.length >= 10);
 
 /**
  * METHODS3
@@ -70,8 +73,8 @@ function navigateToCreatePool() {
         :selectedTokens="selectedTokens"
         class="mb-8"
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
-        :isPaginated="true"
         :isLoadingMore="poolsIsFetchingNextPage"
+        :isPaginated="isPaginated"
         @load-more="loadMorePools"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">

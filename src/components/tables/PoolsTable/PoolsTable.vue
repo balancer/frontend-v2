@@ -296,8 +296,8 @@ function iconAddresses(pool: PoolWithShares) {
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
             />
-            <BalChipNew v-if="pool?.isNew" class="ml-2" />
           </div>
+          <BalChipNew v-if="pool?.isNew" class="mt-1" />
         </div>
       </template>
       <template #volumeCell="pool">

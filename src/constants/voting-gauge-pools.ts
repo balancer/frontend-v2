@@ -202,6 +202,10 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc',
     network: Network.MAINNET,
   },
+  {
+    id: '0x99a14324cfd525a34bbc93ac7e348929909d57fd00020000000000000000030e',
+    network: Network.MAINNET,
+  },
 ];
 
 export const KOVAN_POOLS: Pool[] = [
