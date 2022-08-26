@@ -22,4 +22,6 @@ const network = ((): Network => {
 export const balancer = new BalancerSDK({
   network,
   rpcUrl: configService.rpc,
+  customSubgraphUrl:
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2-beta',
 });
