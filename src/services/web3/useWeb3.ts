@@ -44,7 +44,7 @@ export default function useWeb3() {
     signer,
     disconnectWallet,
     connectWallet,
-    isSanctioned,
+    isBlocked,
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appNetworkConfig = configService.network;
 
@@ -161,7 +161,7 @@ export default function useWeb3() {
     isArbitrum,
     isEIP1559SupportedNetwork,
     isWalletConnecting,
-    isSanctioned,
+    isBlocked,
 
     // methods
     connectWallet,
