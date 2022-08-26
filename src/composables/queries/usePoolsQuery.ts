@@ -117,13 +117,17 @@ export default function usePoolsQuery(
       ? Op.Equals
       : Op.Contains;
 
+    const tokenListFormatted = tokenList.value.map(address =>
+      address.toLowerCase()
+    );
+
     const queryArgs: any = {
       chainId: configService.network.chainId,
       first: 10,
       orderBy: 'totalLiquidity',
       orderDirection: 'desc',
       where: {
-        tokensList: tokensListFilterOperation(tokenList.value),
+        tokensList: tokensListFilterOperation(tokenListFormatted),
         poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
         totalShares: Op.GreaterThan(0.01),
         id: Op.NotIn(POOLS.BlockList),
@@ -137,6 +141,9 @@ export default function usePoolsQuery(
     }
     if (filterOptions?.poolAddresses?.value.length) {
       queryArgs.where.address = Op.In(filterOptions.poolAddresses.value);
+    }
+    if (tokenList.value.length > 0) {
+      delete queryArgs.first;
     }
     return queryArgs;
   }
