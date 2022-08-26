@@ -81,7 +81,7 @@ const isLoadingTotalValue = computed(
         white
       />
       <div v-else class="mb-1 text-3xl font-semibold text-white">
-        {{ totalInvestedLabel || fNum2('0', FNumFormats.fiat) }}
+        {{ totalInvestedLabel }}
       </div>
       <div v-if="!isL2" class="inline-block relative mt-2">
         <BalLoadingBlock
