@@ -823,6 +823,13 @@
           "veBalVoteOverLimitWarning": {
             "title": "You may be wasting your vote: veBAL cap hit",
             "description": "Distributions to veBAL holders of weekly emissions are capped at 10%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted."
+          },
+          "voteCapLimit": {
+            "title": "You might be wasting your vote.",
+            "description": "Distributions to LPs of this pool gauge are capped at {0}%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted.",
+            "currentVotes": "Current pool gauge votes: {0}",
+            "listVeBAL": "veBAL vote cap: {0}",
+            "listNewPool": "veBAL vote cap: {New pool vote cap: {0}"
           }
         },
         "errors": {

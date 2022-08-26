@@ -4,11 +4,13 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { format, formatDistanceToNow } from 'date-fns';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { differenceInWeeks } from 'date-fns';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
+import { oneSecondInMs } from '@/composables/useTime';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import {
   dateTimeLabelFor,
@@ -36,6 +38,11 @@ type Props = {
   logoURIs: string[];
   poolURL: string;
   veBalLockInfo?: VeBalLockInfo | null;
+};
+
+type VoteCapWarning = {
+  description: string;
+  list: string[];
 };
 
 const MINIMUM_LOCK_TIME = 86_400_000 * 7;
@@ -226,6 +233,54 @@ const unallocatedVotesClass = computed(() => {
     : ['text-red-600'];
 });
 
+const voteCapWarning = computed(() => {
+  const isNew =
+    differenceInWeeks(
+      Date.now(),
+      (props.gauge.pool.createTime ?? 0) * oneSecondInMs
+    ) < 1;
+  const limit = props.gauge.pool.symbol === 'veBAL' ? 10 : isNew ? 1 : null;
+  if (limit) {
+    const normalizedVotes = Number(scale(bnum(props.gauge.votes), -18));
+    if (normalizedVotes >= limit) {
+      return {
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.voteCapLimit.description',
+          [limit]
+        ),
+        list: [
+          t(
+            'veBAL.liquidityMining.popover.warnings.voteCapLimit.currentVotes',
+            [
+              fNum2(normalizedVotes.toString(), {
+                style: 'percent',
+                maximumFractionDigits: 2,
+                fixedFormat: true,
+              }),
+            ]
+          ),
+          t(
+            limit === 10
+              ? 'veBAL.liquidityMining.popover.warnings.voteCapLimit.listVeBAL'
+              : 'veBAL.liquidityMining.popover.warnings.voteCapLimit.listNewPool',
+            [
+              fNum2((limit / 100).toString(), {
+                style: 'percent',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+                fixedFormat: true,
+              }),
+            ]
+          ),
+        ],
+      } as VoteCapWarning;
+    } else {
+      return null;
+    }
+  }
+  return null;
+});
+
 const remainingVotes = computed(() => {
   let remainingVotesText;
   if (!hasEnoughVotes.value) {
@@ -351,6 +406,25 @@ onMounted(() => {
       </div>
     </template>
     <div>
+      <BalAlert
+        v-if="voteCapWarning"
+        type="warning"
+        :title="t('veBAL.liquidityMining.popover.warnings.voteCapLimit.title')"
+        class="mb-4 w-full rounded"
+      >
+        <div class="text-sm">
+          <p class="my-2">{{ voteCapWarning.description }}</p>
+          <ul class="ml-4 list-disc">
+            <li
+              v-for="(listItem, lid) in voteCapWarning.list"
+              :key="lid"
+              class="mb-1"
+            >
+              {{ listItem }}
+            </li>
+          </ul>
+        </div>
+      </BalAlert>
       <div v-if="!voteWarning" class="mb-4 text-sm">
         <ul class="ml-4 list-disc text-gray-600 dark:text-gray-400">
           <li class="mb-1">
