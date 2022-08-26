@@ -62,7 +62,7 @@ const gauge = {
 const expiredGauges = [gaugeId];
 const gauges = [gauge];
 
-const queryExpiredLabel = () => screen.queryByText(/Expired/i);
+const queryExpiredLabel = () => screen.queryByText(/Deactivated/i);
 const queryVoteBtn = () => screen.queryByRole('button', { name: /Vote/i });
 const queryRemoveVotesBtn = () =>
   screen.queryByRole('button', { name: /Remove/i });
