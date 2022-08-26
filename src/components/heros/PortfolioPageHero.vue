@@ -81,7 +81,7 @@ const isLoadingTotalValue = computed(
         white
       />
       <div v-else class="mb-1 text-3xl font-semibold text-white">
-        {{ totalInvestedLabel }}
+        {{ totalInvestedLabel || fNum2('0', FNumFormats.fiat) }}
       </div>
       <div v-if="!isL2" class="inline-block relative mt-2">
         <BalLoadingBlock
@@ -101,7 +101,12 @@ const isLoadingTotalValue = computed(
         </div>
       </div>
     </template>
-    <HeroConnectWalletButton v-else class="mt-4" />
+    <template v-else>
+      <div class="text-3xl font-semibold text-white">
+        {{ fNum2('0', FNumFormats.fiat) }}
+      </div>
+      <HeroConnectWalletButton class="mt-4" />
+    </template>
   </AppHero>
 </template>
 
