@@ -6,7 +6,6 @@ import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import useStaking from '@/composables/staking/useStaking';
-import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -134,7 +133,7 @@ function handleModalClose() {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 v-if="!isL2" class="px-4 xl:px-0">
+      <h5 class="px-4 xl:px-0">
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable
