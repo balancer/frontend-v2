@@ -412,12 +412,14 @@ export default function useGnosis({
               amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
             );
 
-            const priceExceedsBalance = bnum(
-              formatUnits(maximumInAmount, tokenIn.value.decimals)
-            ).gt(balanceFor(tokenIn.value.address));
+            if (account.value) {
+              const priceExceedsBalance = bnum(
+                formatUnits(maximumInAmount, tokenIn.value.decimals)
+              ).gt(balanceFor(tokenIn.value.address));
 
-            if (priceExceedsBalance) {
-              state.validationError = ApiErrorCodes.PriceExceedsBalance;
+              if (priceExceedsBalance) {
+                state.validationError = ApiErrorCodes.PriceExceedsBalance;
+              }
             }
           }
         }
