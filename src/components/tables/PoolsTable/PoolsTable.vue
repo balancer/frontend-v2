@@ -352,6 +352,7 @@ function iconAddresses(pool: PoolWithShares) {
         <PoolsTableActionsCell
           :pool="pool"
           @click:stake="pool => emit('triggerStake', pool)"
+          @click:migrate="pool => navigateToPoolMigration(pool)"
         />
       </template>
     </BalTable>
