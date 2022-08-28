@@ -11,9 +11,13 @@ const CookiesPolicyPage = () =>
 const GetVeBalPage = () =>
   import(/* webpackChunkName: "GetVeBalPage" */ '@/pages/get-vebal.vue');
 const HomePage = () =>
-  import(/* webpackChunkName: "HomePage" */ '@/pages/index.vue');
+  import(
+    /* webpackChunkName: "HomePage" */ /* webpackPrefetch: true */ '@/pages/index.vue'
+  );
 const PoolPage = () =>
-  import(/* webpackChunkName: "PoolPage" */ '@/pages/pool/_id.vue');
+  import(
+    /* webpackChunkName: "PoolPage" */ /* webpackPrefetch: true */ '@/pages/pool/_id.vue'
+  );
 const CreatePoolPage = () =>
   import(/* webpackChunkName: "CreatePoolPage" */ '@/pages/pool/create.vue');
 const PoolInvestPage = () =>
@@ -40,7 +44,9 @@ const FaucetPage = () =>
   import(/* webpackChunkName: "FaucetPage" */ '@/pages/faucet.vue');
 
 const PortfolioPage = () =>
-  import(/* webpackChunkName: "PortfolioPage" */ '@/pages/portfolio.vue');
+  import(
+    /* webpackChunkName: "PortfolioPage" */ /* webpackPrefetch: true */ '@/pages/portfolio.vue'
+  );
 
 declare module 'vue-router' {
   interface RouteMeta {
