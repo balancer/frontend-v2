@@ -111,26 +111,29 @@ export default class WeightedPoolService {
     };
   }
 
-  public async retrievePoolDetailsFromCall(
+  public async retrievePoolDetails(
     provider: Web3Provider | JsonRpcProvider,
     hash: string
   ) {
     if (!hash) return;
-    const transaction = await provider.getTransaction(hash);
+    const poolDetails = await this.retrievePoolIdAndAddress(provider, hash);
+    if (poolDetails === null) return;
 
-    const weightedPoolInterface =
-      WeightedPoolFactory__factory.createInterface();
-    const decodedInputData = weightedPoolInterface.decodeFunctionData(
-      'create',
-      transaction.data
-    );
+    const pool = WeightedPool__factory.connect(poolDetails?.address, provider);
+
+    const vaultAddress = configService.network.addresses.vault;
+    const vault = Vault__factory.connect(vaultAddress, provider);
+
+    const { tokens } = await vault.getPoolTokens(poolDetails.id);
 
     const details = {
-      weights: decodedInputData.weights.map(weight => formatUnits(weight, 18)),
-      name: decodedInputData.name,
-      owner: decodedInputData.owner,
-      symbol: decodedInputData.symbol,
-      tokens: decodedInputData.tokens,
+      weights: (await pool.getNormalizedWeights()).map(weight =>
+        formatUnits(weight, 18)
+      ),
+      name: await pool.name(),
+      owner: await pool.getOwner(),
+      symbol: await pool.symbol(),
+      tokens: tokens,
     };
     return details;
   }

@@ -551,11 +551,10 @@ export default function usePoolCreation() {
 
   // when restoring from a pool creation transaction (not from localstorage)
   async function retrievePoolDetails(hash: string) {
-    const details =
-      await balancerService.pools.weighted.retrievePoolDetailsFromCall(
-        getProvider(),
-        hash
-      );
+    const details = await balancerService.pools.weighted.retrievePoolDetails(
+      getProvider(),
+      hash
+    );
     if (!details) return;
     poolCreationState.seedTokens = details.tokens.map((token, i) => {
       return {
