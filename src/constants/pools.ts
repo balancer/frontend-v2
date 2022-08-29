@@ -27,6 +27,14 @@ export type NamedPools = {
     v1: string;
     v2: string;
   };
+  xMatic: {
+    v1: string;
+    v2: string;
+  };
+  stMatic: {
+    v1: string;
+    v2: string;
+  };
   veBAL: string;
 };
 
@@ -334,7 +342,16 @@ const POOLS_MAINNET: Pools = {
 };
 
 const POOLS_POLYGON: Pools = {
-  IdsMap: {},
+  IdsMap: {
+    xMatic: {
+      v1: '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4',
+      v2: '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366',
+    },
+    stMatic: {
+      v1: '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366',
+      v2: '0xaf5e0b5425de1f5a630a8cb5aa9d97b8141c908d000200000000000000000366',
+    },
+  },
   Pagination: {
     PerPage: 10,
     PerPool: 10,
@@ -367,6 +384,7 @@ const POOLS_POLYGON: Pools = {
       '0xc17636e36398602dd37bb5d1b3a9008c7629005f0002000000000000000004c4', // maticx metastable
       '0xb4b22bd6cdad0ab828be6f8a4086dfa54e9b373600020000000000000000058f', // Polygon tetuBAL-80BAL-20WETH
       '0xb797adfb7b268faeaa90cadbfed464c76ee599cd0002000000000000000005ba', // tetuBAL-80BAL-20WETH V2 (with short name)
+      '0x7947df380f4ef1da1e7083c174d6a7ed8edeed95000000000000000000000708',
     ],
   },
   Investment: {
