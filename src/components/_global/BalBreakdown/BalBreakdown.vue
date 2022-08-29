@@ -59,7 +59,7 @@ const spacingClass = computed(() => {
 });
 
 const offsetClass = computed(() => {
-  if (props.offsetClassOverrides != null) {
+  if (props.offsetClassOverrides) {
     return props.offsetClassOverrides;
   }
 

@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Composables
@@ -7,6 +7,7 @@ import { isStablePhantom } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * STATE
@@ -22,6 +23,7 @@ export default function usePoolTransfers() {
    * COMPOSABLES
    */
   const { prices } = useTokens();
+  const { blockNumber } = useWeb3();
 
   /**
    * QUERIES
@@ -61,6 +63,13 @@ export default function usePoolTransfers() {
     return !tokenAddresses.value.every(token =>
       includesAddress(tokensWithPrice, token)
     );
+  });
+
+  /**
+   * WATCHERS
+   */
+  watch(blockNumber, async () => {
+    poolQuery.refetch.value();
   });
 
   return {

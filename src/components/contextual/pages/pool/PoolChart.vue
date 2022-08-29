@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format } from 'date-fns';
+import { format, addMinutes } from 'date-fns';
 import * as echarts from 'echarts/core';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -118,7 +118,15 @@ const periodOptions = computed(() => [
 const currentPeriod = ref<PoolChartPeriod>(periodOptions.value[0]);
 
 const timestamps = computed(() =>
-  snapshotValues.value.map(snapshot => format(snapshot.timestamp, 'yyyy/MM/dd'))
+  snapshotValues.value.map(snapshot =>
+    format(
+      addMinutes(
+        snapshot.timestamp,
+        new Date(snapshot.timestamp).getTimezoneOffset()
+      ),
+      'yyyy/MM/dd'
+    )
+  )
 );
 
 function getTVLData(periodSnapshots: PoolSnapshot[]) {
