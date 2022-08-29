@@ -127,7 +127,7 @@ The frontend can easily be deployed to any static host. Use the buttons below to
 
 ## E2e Testing
 
-E2e tests are pulled from another repo to run them in the pipeline: [frontend-e2e](https://github.com/balancer-labs/frontend-e2e)
+E2e tests are pulled from [frontend-e2e](https://github.com/balancer-labs/frontend-e2e) repository.
 
 ## Vite setup
 
