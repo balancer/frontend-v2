@@ -35,7 +35,9 @@ const PrivacyPolicyPage = () =>
 const TermsOfUsePage = () =>
   import(/* webpackChunkName: "TermsOfUsePage" */ '@/pages/terms-of-use.vue');
 const TradePage = () =>
-  import(/* webpackChunkName: "TradePage" */ '@/pages/trade.vue');
+  import(
+    /* webpackChunkName: "TradePage" */ /* webpackPrefetch: true */ '@/pages/trade.vue'
+  );
 const UnlockVeBalPage = () =>
   import(/* webpackChunkName: "UnlockVeBalPage" */ '@/pages/unlock-vebal.vue');
 const VeBalPage = () =>
