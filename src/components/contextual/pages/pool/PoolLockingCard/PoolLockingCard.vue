@@ -144,7 +144,10 @@ const fiatTotalExpiredLpTokens = computed(() =>
                   </BalStack>
                 </BalStack>
                 <BalStack horizontal spacing="sm" class="mt-2">
-                  <BalLink href="/#/get-vebal?returnRoute=vebal">
+                  <BalLink
+                    v-if="Number(bptBalance) > 0"
+                    href="/#/get-vebal?returnRoute=vebal"
+                  >
                     <BalBtn
                       :disabled="Number(bptBalance) === 0"
                       color="gradient"
@@ -153,6 +156,14 @@ const fiatTotalExpiredLpTokens = computed(() =>
                       {{ $t('lock') }}
                     </BalBtn>
                   </BalLink>
+                  <BalBtn
+                    v-else
+                    :disabled="Number(bptBalance) === 0"
+                    color="gradient"
+                    size="sm"
+                  >
+                    {{ $t('lock') }}
+                  </BalBtn>
                   <BalBtn
                     v-if="lock?.isExpired"
                     outline
