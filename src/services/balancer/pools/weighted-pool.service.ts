@@ -7,7 +7,6 @@ import {
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import { Contract } from '@ethersproject/contracts';
 import {
   JsonRpcProvider,
   TransactionResponse,
@@ -20,6 +19,7 @@ import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { isSameAddress, scale } from '@/lib/utils';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { configService } from '@/services/config/config.service';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 
 type Address = string;
 
@@ -119,21 +119,30 @@ export default class WeightedPoolService {
     const poolDetails = await this.retrievePoolIdAndAddress(provider, hash);
     if (poolDetails === null) return;
 
-    const pool = WeightedPool__factory.connect(poolDetails?.address, provider);
-
+    const poolAddress = poolDetails.address;
     const vaultAddress = configService.network.addresses.vault;
-    const vault = Vault__factory.connect(vaultAddress, provider);
 
-    const { tokens } = await vault.getPoolTokens(poolDetails.id);
+    const multicaller = new Multicaller(configService.network.key, provider, [
+      ...WeightedPool__factory.abi,
+      ...Vault__factory.abi,
+    ]);
+
+    multicaller.call('name', poolAddress, 'name');
+    multicaller.call('symbol', poolAddress, 'symbol');
+    multicaller.call('owner', poolAddress, 'getOwner');
+    multicaller.call('weights', poolAddress, 'getNormalizedWeights');
+    multicaller.call('tokenInfo', vaultAddress, 'getPoolTokens', [
+      poolDetails.id,
+    ]);
+
+    const multicall = await multicaller.execute();
 
     const details = {
-      weights: (await pool.getNormalizedWeights()).map(weight =>
-        formatUnits(weight, 18)
-      ),
-      name: await pool.name(),
-      owner: await pool.getOwner(),
-      symbol: await pool.symbol(),
-      tokens: tokens,
+      weights: multicall.weights.map(weight => formatUnits(weight, 18)),
+      name: multicall.name,
+      owner: multicall.owner,
+      symbol: multicall.symbol,
+      tokens: multicall.tokenInfo.tokens,
     };
     return details;
   }
