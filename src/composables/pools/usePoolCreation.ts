@@ -541,10 +541,12 @@ export default function usePoolCreation() {
         getProvider(),
         hash
       );
-    poolCreationState.poolId = response.id;
-    poolCreationState.poolAddress = response.address;
-    poolCreationState.needsSeeding = true;
-    saveState();
+    if (response !== null) {
+      poolCreationState.poolId = response.id;
+      poolCreationState.poolAddress = response.address;
+      poolCreationState.needsSeeding = true;
+      saveState();
+    }
   }
 
   // when restoring from a pool creation transaction (not from localstorage)

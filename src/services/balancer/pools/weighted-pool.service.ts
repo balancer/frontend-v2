@@ -17,7 +17,6 @@ import BigNumber from 'bignumber.js';
 import { formatUnits } from 'ethers/lib/utils';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
-import TOPICS from '@/constants/topics';
 import { isSameAddress, scale } from '@/lib/utils';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { configService } from '@/services/config/config.service';
@@ -80,32 +79,36 @@ export default class WeightedPoolService {
   public async retrievePoolIdAndAddress(
     provider: Web3Provider | JsonRpcProvider,
     createHash: string
-  ): Promise<CreatePoolReturn> {
-    const receipt: any = await provider.getTransactionReceipt(createHash);
-    let poolAddress;
-    if (receipt.events) {
-      const events = receipt.events.filter(e => e.event === 'PoolCreated');
-      if (events.length > 0 && events[0].args.length > 0) {
-        poolAddress = events[0].args[0];
-      }
-    }
+  ): Promise<CreatePoolReturn | null> {
+    const receipt = await provider.getTransactionReceipt(createHash);
+    if (!receipt) return null;
 
-    if (!poolAddress) {
-      const logs = receipt.logs.filter(
-        l => l.topics?.length > 0 && l.topics[0] === TOPICS.PoolCreated
-      );
-      poolAddress = logs[0].address;
-    }
+    const weightedPoolFactoryAddress =
+      configService.network.addresses.weightedPoolFactory;
+    const weightedPoolFactoryInterface =
+      WeightedPoolFactory__factory.createInterface();
 
-    const pool = new Contract(poolAddress, WeightedPool__factory.abi, provider);
+    const poolCreationEvent = receipt.logs
+      .filter(log => log.address === weightedPoolFactoryAddress)
+      .map(log => {
+        try {
+          return weightedPoolFactoryInterface.parseLog(log);
+        } catch {
+          return null;
+        }
+      })
+      .find(parsedLog => parsedLog?.name === 'PoolCreated');
+
+    if (!poolCreationEvent) return null;
+    const poolAddress = poolCreationEvent.args.pool;
+
+    const pool = WeightedPool__factory.connect(poolAddress, provider);
     const poolId = await pool.getPoolId();
 
-    const poolDetails: CreatePoolReturn = {
+    return {
       id: poolId,
       address: poolAddress,
     };
-
-    return poolDetails;
   }
 
   public async retrievePoolDetailsFromCall(
