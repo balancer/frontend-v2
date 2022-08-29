@@ -32,7 +32,7 @@ export type PoolSeedToken = {
   weight: number;
   isLocked: boolean;
   amount: string;
-  id: string;
+  id: number;
 };
 
 export type OptimisedLiquidity = {
