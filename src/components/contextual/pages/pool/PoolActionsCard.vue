@@ -8,6 +8,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 
 /**
  * TYPES
@@ -54,6 +55,11 @@ const fiatTotal = computed(() => {
 
   return fNum2(fiatValue, FNumFormats.fiat);
 });
+
+const isInvestmentBlocked = computed(() => {
+  const { id } = props.pool;
+  return POOL_MIGRATIONS_MAP[id].fromPoolId === id;
+});
 </script>
 
 <template>
@@ -81,10 +87,11 @@ const fiatTotal = computed(() => {
     />
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
-        tag="router-link"
+        :tag="isInvestmentBlocked ? 'div' : 'router-link'"
         :to="{ name: 'invest' }"
         :label="$t('invest')"
         color="gradient"
+        :disabled="isInvestmentBlocked"
         block
       />
       <BalBtn

@@ -12,6 +12,7 @@ import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
+import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 
 type Props = {
   pool: Pool;
@@ -58,6 +59,15 @@ const fiatValueOfUnstakedShares = computed(() => {
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
     .toString();
+});
+
+const isStakingBlocked = computed(() => {
+  const { id } = props.pool;
+
+  return (
+    POOL_MIGRATIONS_MAP[id].fromPoolId === id ||
+    fiatValueOfUnstakedShares.value === '0'
+  );
 });
 
 /**
@@ -180,7 +190,7 @@ async function handleActionSuccess() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    :disabled="fiatValueOfUnstakedShares === '0'"
+                    :disabled="isStakingBlocked"
                     @click="showStakePreview"
                   >
                     {{ $t('stake') }}
