@@ -98,7 +98,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200,
+    width: 190,
   },
 ]);
 

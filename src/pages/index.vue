@@ -80,6 +80,7 @@ function navigateToCreatePool() {
         :columnStates="dataStates"
         :isPaginated="isPaginated"
         :isLoading="isInvestmentPoolsTableLoading"
+        skeletonClass="pools-table-loading-height"
         @load-more="loadMore"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
@@ -88,3 +89,9 @@ function navigateToCreatePool() {
     </BalStack>
   </div>
 </template>
+
+<style>
+.pools-table-loading-height {
+  height: 40rem;
+}
+</style>

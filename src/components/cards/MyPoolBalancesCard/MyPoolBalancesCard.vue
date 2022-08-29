@@ -11,6 +11,7 @@ import { Pool } from '@/services/pool/types';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
+import useStaking from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -31,7 +32,10 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const { tokens, balances, balanceFor } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { isComposableStableLikePool } = usePool(toRef(props, 'pool'));
+const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const {
+  userData: { stakedSharesForProvidedPool },
+} = useStaking();
 
 /**
  * SERVICES
@@ -51,12 +55,12 @@ const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bptBalance.value,
+    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
     0,
     'send'
   );
 
-  if (isComposableStableLikePool.value) {
+  if (isStablePhantomPool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
     return props.pool.tokensList.map((address, i) => {
@@ -72,7 +76,7 @@ const propTokenAmounts = computed((): string[] => {
 });
 
 const tokenAddresses = computed((): string[] => {
-  if (isComposableStableLikePool.value) {
+  if (isStablePhantomPool.value) {
     // We're using mainToken balances for StablePhantom pools
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];
@@ -87,8 +91,8 @@ const fiatTotal = computed(() => {
   return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
-
-<template>
+  
+  <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-900">
@@ -113,3 +117,4 @@ const fiatTotal = computed(() => {
     </div>
   </BalCard>
 </template>
+  

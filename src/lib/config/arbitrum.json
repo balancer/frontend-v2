@@ -17,7 +17,8 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum",
+    "blocks": "https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks"
   },
   "supportsEIP1559": false,
   "supportsElementPools": false,

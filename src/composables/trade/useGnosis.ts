@@ -2,7 +2,7 @@ import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE } from '@ethersproject/constants';
 import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
-import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 import OldBigNumber from 'bignumber.js';
 import { computed, ComputedRef, reactive, Ref, ref, toRefs } from 'vue';

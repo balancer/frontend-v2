@@ -16,7 +16,8 @@
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges",
+    "blocks": "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks"
   },
   "supportsEIP1559": true,
   "supportsElementPools": true,

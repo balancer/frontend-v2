@@ -43,6 +43,7 @@ type Props = {
   hiddenColumns?: string[];
   showBoost?: boolean;
   columnStates?: Record<string, string>;
+  skeletonClass?: string;
 };
 
 /**
@@ -59,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
   columnStates: () => ({}),
   data: () => [],
   selectedTokens: () => [],
+  skeletonClass: 'h-64',
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -251,7 +253,7 @@ function iconAddresses(pool: PoolWithShares) {
       :noResultsLabel="noPoolsLabel"
       :isLoading="isLoading"
       :isLoadingMore="isLoadingMore"
-      skeletonClass="h-64"
+      :skeletonClass="skeletonClass"
       sticky="both"
       :square="upToLargeBreakpoint"
       :link="{
@@ -296,8 +298,8 @@ function iconAddresses(pool: PoolWithShares) {
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
             />
-            <BalChipNew v-if="pool?.isNew" class="ml-2" />
           </div>
+          <BalChipNew v-if="pool?.isNew" class="mt-1" />
         </div>
       </template>
       <template #volumeCell="pool">
