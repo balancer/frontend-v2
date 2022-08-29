@@ -272,7 +272,7 @@ watch(poolQuery.error, () => {
               class="staking-incentives"
             />
             <PoolLockingCard
-              v-if="_isVeBalPool && !loadingPool"
+              v-if="_isVeBalPool && !loadingPool && pool"
               :pool="pool"
               class="pool-locking"
             />

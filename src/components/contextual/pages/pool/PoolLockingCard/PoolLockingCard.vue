@@ -185,7 +185,7 @@ const fiatTotalExpiredLpTokens = computed(() =>
     </AnimatePresence>
     <teleport to="#modal">
       <UnlockPreviewModal
-        v-if="showUnlockPreviewModal && lock"
+        v-if="showUnlockPreviewModal && lock && lockPool && lockPoolToken"
         :lockablePool="lockPool"
         :lockablePoolTokenInfo="lockPoolToken"
         :veBalLockInfo="lock"
