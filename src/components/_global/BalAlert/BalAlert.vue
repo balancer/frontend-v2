@@ -60,6 +60,7 @@ export default defineComponent({
     actionLabel: { type: String, default: '' },
     raised: { type: Boolean, default: false },
     block: { type: Boolean, default: false },
+    contentClass: { type: String, default: '' },
   },
 
   emits: ['action-click'],
@@ -109,10 +110,13 @@ export default defineComponent({
       'items-center': !props.description && !slots.default,
     }));
 
-    const contentClasses = computed(() => ({
-      'items-center': !props.description && !slots.default,
-      'flex-col': !!props.description || slots.default,
-    }));
+    const contentClasses = computed(() => [
+      props.contentClass,
+      {
+        'items-center': !props.description && !slots.default,
+        'flex-col': !!props.description || slots.default,
+      },
+    ]);
 
     const iconSizeClasses = computed(() => {
       switch (props.size) {
