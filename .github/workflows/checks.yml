@@ -121,6 +121,7 @@ jobs:
           command: npm run synpress:ci
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: e2e_test_report
           path: e2e/synpress/report
