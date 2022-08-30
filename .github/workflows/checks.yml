@@ -111,7 +111,7 @@ jobs:
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
           NETWORK_NAME: goerli
-          CYPRESS_WALLET_ACCOUNT_NUMBER: 3
+          CYPRESS_WALLET_ACCOUNT_NUMBER: 1
         with:
           working-directory: e2e
           # wait for the app to start
