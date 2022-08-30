@@ -57,7 +57,7 @@ export default defineComponent({
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal,
-      isSanctioned,
+      isBlocked,
       // isMainnet
     } = useWeb3();
     const route = useRoute();
@@ -102,7 +102,7 @@ export default defineComponent({
     return {
       // state
       layout,
-      isSanctioned,
+      isBlocked,
       isThirdPartyServicesModalVisible,
       // computed
       isWalletSelectVisible,
@@ -125,7 +125,7 @@ export default defineComponent({
       :onShowThirdParty="() => handleThirdPartyModalToggle(true)"
       @close="toggleWalletSelectModal"
     />
-    <SanctionedWalletModal v-if="isSanctioned" />
+    <SanctionedWalletModal v-if="isBlocked" />
     <ThirdPartyServicesModal
       :isVisible="isThirdPartyServicesModalVisible"
       @close="handleThirdPartyModalToggle(false)"

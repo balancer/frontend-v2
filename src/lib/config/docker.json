@@ -16,9 +16,11 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "",
-    "gauge": ""
+    "gauge": "",
+    "blocks": ""
   },
   "supportsEIP1559": false,
+  "blockTime": 12,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

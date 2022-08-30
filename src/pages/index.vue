@@ -32,6 +32,8 @@ const isInvestmentPoolsTableLoading = computed(
   () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
 );
 
+const isPaginated = computed(() => investmentPools.value.length >= 10);
+
 /**
  * METHODS
  */
@@ -76,8 +78,9 @@ function navigateToCreatePool() {
         class="mb-8"
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
         :columnStates="dataStates"
-        :isPaginated="true"
+        :isPaginated="isPaginated"
         :isLoading="isInvestmentPoolsTableLoading"
+        skeletonClass="pools-table-loading-height"
         @load-more="loadMore"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
@@ -86,3 +89,9 @@ function navigateToCreatePool() {
     </BalStack>
   </div>
 </template>
+
+<style>
+.pools-table-loading-height {
+  height: 40rem;
+}
+</style>

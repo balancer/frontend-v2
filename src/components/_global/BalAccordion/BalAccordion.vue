@@ -176,7 +176,7 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard hFull noPad shadow="none" class="rounded-xl">
+    <BalCard hFull noPad shadow="none" class="overflow-visible rounded-xl">
       <div
         v-for="(section, i) in sections"
         :key="section.id"
@@ -214,7 +214,8 @@ watch(
             v-if="isContentVisible"
             ref="activeSectionElement"
             :class="{
-              'border-b active-section': isContentVisible && showSectionBorder,
+              'border-b active-section rounded-b':
+                isContentVisible && showSectionBorder,
             }"
           >
             <slot :name="section.id" />

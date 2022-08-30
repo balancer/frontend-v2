@@ -151,6 +151,12 @@ export function includesAddress(addresses: string[], address: string): boolean {
   return addresses.includes(getAddress(address));
 }
 
+export function indexOfAddress(addresses: string[], address: string): number {
+  if (!address) return -1;
+  addresses = addresses.map(a => (a ? getAddress(a) : ''));
+  return addresses.indexOf(getAddress(address));
+}
+
 export function findByAddress<T>(
   items: Record<string, T>,
   address: string
