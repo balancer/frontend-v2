@@ -16,7 +16,7 @@ const state: MarketState = {
 
 const actions = {
   async getGasPrice({ commit }) {
-    const gasPrice = await gasPriceService.getLatest();
+    const gasPrice = await gasPriceService.getGasPrice();
     commit('setGasPrice', gasPrice?.price);
   },
 };

@@ -22,12 +22,12 @@ export class GasPriceService {
     private readonly polygonProvider = new PolygonProvider()
   ) {}
 
-  public async getLatest(): Promise<GasPrice | null> {
+  public async getGasPrice(): Promise<GasPrice | null> {
     switch (this.configService.network.key) {
       case '1':
-        return await this.blocknativeProvider.getLatest();
+        return await this.blocknativeProvider.getGasPrice();
       case '137':
-        return await this.polygonProvider.getLatest();
+        return await this.polygonProvider.getGasPrice();
       default:
         return null;
     }
@@ -100,7 +100,7 @@ export class GasPriceService {
     gasSettings: GasSettings,
     forceLegacyTxType: boolean
   ): Promise<GasSettings> {
-    const gasPrice = await this.getLatest();
+    const gasPrice = await this.getGasPrice();
     if (gasPrice != null) {
       if (
         ethereumTxType.value === EthereumTxType.EIP1559 &&
