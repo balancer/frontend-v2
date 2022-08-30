@@ -138,6 +138,11 @@ export function usePoolMigration(
       return migrateBoostedPool;
     } else if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
       return migrateStabal3;
+    } else if (
+      migrationType.value?.type === PoolMigrationType.STMATIC_POOL ||
+      migrationType.value?.type === PoolMigrationType.XMATIC_POOL
+    ) {
+      return migrateStables;
     } else {
       return migrateBoostedPool;
     }
@@ -324,6 +329,24 @@ export function usePoolMigration(
       bptIn,
       minBptOut,
       staked,
+      _signature
+    );
+  }
+
+  function migrateStables(bptIn: string, staked: boolean, minBptOut = '0') {
+    const { signerAddress, _signature } = migrationData.value;
+    console.log([...fromPool.tokensList]);
+    return balancer.zaps.migrations.stables(
+      signerAddress,
+      {
+        id: fromPool.id,
+        address: fromPool.address,
+      },
+      { id: toPool.id, address: toPool.address },
+      bptIn,
+      minBptOut,
+      staked,
+      [...fromPool.tokensList],
       _signature
     );
   }
