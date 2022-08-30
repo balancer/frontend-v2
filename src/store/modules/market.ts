@@ -1,11 +1,13 @@
-import GasPriceService from '@/services/gas-price/gas-price.service';
+import { gasPriceService } from '@/services/gas-price/gas-price.service';
+
+/**
+ * TODO - Remoev this, I don't think we need it anymore.
+ */
 
 interface MarketState {
   gasPrice: number;
   loading: boolean;
 }
-
-const gasPriceService = new GasPriceService();
 
 const state: MarketState = {
   gasPrice: 0,

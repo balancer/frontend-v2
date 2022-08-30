@@ -15,7 +15,7 @@ const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 const GAS_LIMIT_BUFFER = 0.1;
 
-export default class GasPriceService {
+export class GasPriceService {
   constructor(
     private readonly configService = new ConfigService(),
     private readonly blocknativeProvider = new BlocknativeProvider(),
