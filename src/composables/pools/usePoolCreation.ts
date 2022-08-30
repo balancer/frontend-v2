@@ -562,7 +562,7 @@ export default function usePoolCreation() {
         weight: Number(details.weights[i]) * 100,
         isLocked: true,
         amount: '0',
-        id: i,
+        id: i.toString(),
       };
     });
     poolCreationState.tokensList = details.tokens;
