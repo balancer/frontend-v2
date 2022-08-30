@@ -1,5 +1,9 @@
 import { WalletError } from '@/types';
-import { JsonRpcSigner, TransactionResponse } from '@ethersproject/providers';
+import {
+  JsonRpcSigner,
+  TransactionResponse,
+  TransactionRequest,
+} from '@ethersproject/providers';
 import { captureException } from '@sentry/minimal';
 import { Contract, ContractInterface, Wallet } from 'ethers';
 import { TransactionConcern } from './transaction.concern';
@@ -9,7 +13,7 @@ type SendTransactionOpts = {
   abi: ContractInterface;
   action: string;
   params?: any[];
-  options?: Record<string, any>;
+  options?: TransactionRequest;
   forceLegacyTxType?: boolean;
 };
 
