@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAddress } from 'ethers/lib/utils';
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -12,7 +12,7 @@ import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { usePool } from '@/composables/usePool';
 
 type Props = {
   pool: Pool;
@@ -43,6 +43,7 @@ const {
   isPoolEligibleForStaking,
   isLoadingPoolEligibility,
 } = useStaking();
+const { isMigratablePool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -59,15 +60,6 @@ const fiatValueOfUnstakedShares = computed(() => {
     .div(props.pool.totalShares)
     .times(balanceFor(getAddress(props.pool.address)))
     .toString();
-});
-
-const isStakingBlocked = computed(() => {
-  const { id } = props.pool;
-
-  return (
-    POOL_MIGRATIONS_MAP[id].fromPoolId === id ||
-    fiatValueOfUnstakedShares.value === '0'
-  );
 });
 
 /**
@@ -190,7 +182,10 @@ async function handleActionSuccess() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    :disabled="isStakingBlocked"
+                    :disabled="
+                      isMigratablePool(pool) ||
+                      fiatValueOfUnstakedShares === '0'
+                    "
                     @click="showStakePreview"
                   >
                     {{ $t('stake') }}

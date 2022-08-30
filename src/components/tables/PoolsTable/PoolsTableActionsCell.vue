@@ -4,7 +4,6 @@ import { computed, toRef } from 'vue';
 import { isVeBalPool, usePool } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { PoolWithShares } from '@/services/pool/types';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 
 /**
  * TYPES
@@ -30,11 +29,6 @@ const { isMigratablePool } = usePool(toRef(props, 'pool'));
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
 const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
-const isStakingBlocked = computed(() => {
-  const { id } = props.pool;
-
-  return POOL_MIGRATIONS_MAP[id].fromPoolId === id;
-});
 </script>
 
 <template>
@@ -51,7 +45,7 @@ const isStakingBlocked = computed(() => {
       v-else-if="stakablePoolIds.includes(pool.id)"
       color="gradient"
       size="sm"
-      :disabled="isStakingBlocked"
+      :disabled="isMigratablePool(pool)"
       @click.prevent="emit('click:stake', pool)"
     >
       {{ $t('stake') }}
