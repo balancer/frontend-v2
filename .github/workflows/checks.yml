@@ -105,12 +105,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: balancer-labs/frontend-e2e
+          ref: select-metamask-account
           path: e2e
       - name: Run Synpress
         uses: cypress-io/github-action@v4
         env:
           SECRET_WORDS: ${{secrets.TEST_WALLET_SECRET_WORDS}}
           NETWORK_NAME: goerli
+          CYPRESS_WALLET_ACCOUNT_NUMBER: 3
         with:
           working-directory: e2e
           # wait for the app to start
