@@ -102,7 +102,12 @@ const isLoadingTotalValue = computed(
         </div>
       </div>
     </template>
-    <HeroConnectWalletButton v-else class="mt-4" />
+    <template v-else>
+      <div class="text-3xl font-semibold text-white">
+        {{ fNum2('0', FNumFormats.fiat) }}
+      </div>
+      <HeroConnectWalletButton class="mt-4" />
+    </template>
   </AppHero>
 </template>
 

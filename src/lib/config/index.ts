@@ -31,6 +31,7 @@ export interface Config {
   subgraphs: {
     aave: string;
     gauge: string;
+    blocks: string;
   };
   supportsEIP1559: boolean;
   supportsElementPools: boolean;
