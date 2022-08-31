@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { mapValues } from 'lodash';
 
@@ -34,24 +34,22 @@ export class LiquidityGauge {
     this.instance = new Contract(this.address, this.abi, this.provider);
   }
 
-  async stake(amount: BigNumber) {
-    const tx = this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'deposit(uint256)',
-      [amount]
-    );
-    return tx;
+  async stake(amount: BigNumber): Promise<TransactionResponse> {
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'deposit(uint256)',
+      params: [amount],
+    });
   }
 
-  async unstake(amount: BigNumber) {
-    const tx = this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'withdraw(uint256)',
-      [amount]
-    );
-    return tx;
+  async unstake(amount: BigNumber): Promise<TransactionResponse> {
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'withdraw(uint256)',
+      params: [amount],
+    });
   }
 
   async balance(account: string): Promise<string> {
@@ -63,15 +61,15 @@ export class LiquidityGauge {
     return formatUnits(supply, 18);
   }
 
-  /*
+  /**
    * @summary Claim all user's reward tokens, e.g. everything that's not BAL
    */
-  async claimRewards() {
-    return await this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'claim_rewards()'
-    );
+  async claimRewards(): Promise<TransactionResponse> {
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'claim_rewards()',
+    });
   }
 
   async workingSupplies(gaugeAddresses: string[]) {

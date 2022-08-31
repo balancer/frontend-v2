@@ -9,7 +9,6 @@ import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
 import configs from '@/lib/config';
 import { bnum } from '@/lib/utils';
 import { multicall } from '@/lib/utils/balancer/contract';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { ipfsService } from '@/services/ipfs/ipfs.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
@@ -29,6 +28,7 @@ import {
   Snapshot,
   TokenClaimInfo,
 } from './types';
+import { TransactionBuilder } from '../web3/transactions/transaction.builder';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
@@ -173,13 +173,13 @@ export class ClaimService {
         )
       );
 
-      return sendTransaction(
-        provider,
-        configs[networkId.value].addresses.merkleOrchard,
-        merkleOrchardAbi,
-        'claimDistributions',
-        [account, flatten(multiTokenClaims), tokens]
-      );
+      const txBuilder = new TransactionBuilder(provider.getSigner());
+      return await txBuilder.contract.sendTransaction({
+        contractAddress: configs[networkId.value].addresses.merkleOrchard,
+        abi: merkleOrchardAbi,
+        action: 'claimDistributions',
+        params: [account, flatten(multiTokenClaims), tokens],
+      });
     } catch (e) {
       console.log('[Claim] Claim Rewards Error:', e);
       return Promise.reject(e);

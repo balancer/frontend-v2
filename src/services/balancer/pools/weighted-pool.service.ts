@@ -17,8 +17,8 @@ import { formatUnits } from 'ethers/lib/utils';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { isSameAddress, scale } from '@/lib/utils';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { configService } from '@/services/config/config.service';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 
 type Address = string;
@@ -67,13 +67,13 @@ export default class WeightedPoolService {
       owner,
     ];
 
-    return sendTransaction(
-      provider,
-      weightedPoolFactoryAddress,
-      WeightedPoolFactory__factory.abi,
-      'create',
-      params
-    );
+    const txBuilder = new TransactionBuilder(provider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: weightedPoolFactoryAddress,
+      abi: WeightedPoolFactory__factory.abi,
+      action: 'create',
+      params,
+    });
   }
 
   public async retrievePoolIdAndAddress(
@@ -172,14 +172,15 @@ export default class WeightedPoolService {
     };
 
     const vaultAddress = configService.network.addresses.vault;
-    return sendTransaction(
-      provider,
-      vaultAddress,
-      Vault__factory.abi,
-      'joinPool',
-      [poolId, sender, receiver, joinPoolRequest],
-      { value }
-    );
+
+    const txBuilder = new TransactionBuilder(provider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: vaultAddress,
+      abi: Vault__factory.abi,
+      action: 'joinPool',
+      params: [poolId, sender, receiver, joinPoolRequest],
+      options: { value },
+    });
   }
 
   public calculateTokenWeights(tokens: PoolSeedToken[]): string[] {
