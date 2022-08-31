@@ -151,8 +151,8 @@ describe('PoolCreator', () => {
         mockProvider,
         'hash'
       );
-      expect(poolDetails.id).toEqual(mockPoolId);
-      expect(poolDetails.address).toEqual(mockPoolAddress);
+      expect(poolDetails?.id).toEqual(mockPoolId);
+      expect(poolDetails?.address).toEqual(mockPoolAddress);
     });
 
     it('should work with a polygon create pool transaction receipt', async () => {
@@ -163,7 +163,7 @@ describe('PoolCreator', () => {
         mockProvider,
         'hash'
       );
-      expect(poolDetails.address.toLowerCase()).toEqual(
+      expect(poolDetails?.address.toLowerCase()).toEqual(
         '0x3bb9d50a0743103f896d823b332ee15e231848d1'
       );
     });
@@ -176,7 +176,7 @@ describe('PoolCreator', () => {
         mockProvider,
         'hash'
       );
-      expect(poolDetails.address.toLowerCase()).toEqual(
+      expect(poolDetails?.address.toLowerCase()).toEqual(
         '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
       );
     });

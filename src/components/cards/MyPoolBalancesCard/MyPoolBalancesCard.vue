@@ -12,6 +12,7 @@ import { TokenInfo } from '@/types/TokenList';
 
 // Components
 import AssetRow from './components/AssetRow.vue';
+import useStaking from '@/composables/staking/useStaking';
 
 /**
  * TYPES
@@ -33,6 +34,9 @@ const props = withDefaults(defineProps<Props>(), {
 const { tokens, balances, balanceFor, getToken } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const {
+  userData: { stakedSharesForProvidedPool },
+} = useStaking();
 
 /**
  * SERVICES
@@ -52,7 +56,7 @@ const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const propTokenAmounts = computed((): string[] => {
   const { receive } = poolCalculator.propAmountsGiven(
-    bptBalance.value,
+    bnum(bptBalance.value).plus(stakedSharesForProvidedPool.value).toString(),
     0,
     'send'
   );

@@ -11,7 +11,7 @@ import {
   signOrder as signOrderGp,
   signOrderCancellation as signOrderCancellationGp,
   TypedDataV3Signer,
-} from '@gnosis.pm/gp-v2-contracts';
+} from '@cowprotocol/contracts';
 
 import { networkId } from '@/composables/useNetwork';
 import { WalletError } from '@/types';
