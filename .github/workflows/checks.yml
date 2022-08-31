@@ -87,8 +87,8 @@ jobs:
         run: npm run test:unit
 
   E2E:
-    # Only run e2e tests, if other jobs are successful
-    needs: [Build, Lint, Test]
+    # Only run e2e tests, if Build job is successful
+    needs: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
