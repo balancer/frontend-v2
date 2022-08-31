@@ -7,7 +7,6 @@ import {
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
-import { Contract } from '@ethersproject/contracts';
 import {
   JsonRpcProvider,
   TransactionResponse,
@@ -17,10 +16,10 @@ import BigNumber from 'bignumber.js';
 import { formatUnits } from 'ethers/lib/utils';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
-import TOPICS from '@/constants/topics';
 import { isSameAddress, scale } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 
 type Address = string;
 
@@ -80,54 +79,70 @@ export default class WeightedPoolService {
   public async retrievePoolIdAndAddress(
     provider: Web3Provider | JsonRpcProvider,
     createHash: string
-  ): Promise<CreatePoolReturn> {
-    const receipt: any = await provider.getTransactionReceipt(createHash);
-    let poolAddress;
-    if (receipt.events) {
-      const events = receipt.events.filter(e => e.event === 'PoolCreated');
-      if (events.length > 0 && events[0].args.length > 0) {
-        poolAddress = events[0].args[0];
-      }
-    }
+  ): Promise<CreatePoolReturn | null> {
+    const receipt = await provider.getTransactionReceipt(createHash);
+    if (!receipt) return null;
 
-    if (!poolAddress) {
-      const logs = receipt.logs.filter(
-        l => l.topics?.length > 0 && l.topics[0] === TOPICS.PoolCreated
-      );
-      poolAddress = logs[0].address;
-    }
+    const weightedPoolFactoryAddress =
+      configService.network.addresses.weightedPoolFactory;
+    const weightedPoolFactoryInterface =
+      WeightedPoolFactory__factory.createInterface();
 
-    const pool = new Contract(poolAddress, WeightedPool__factory.abi, provider);
+    const poolCreationEvent = receipt.logs
+      .filter(log => log.address === weightedPoolFactoryAddress)
+      .map(log => {
+        try {
+          return weightedPoolFactoryInterface.parseLog(log);
+        } catch {
+          return null;
+        }
+      })
+      .find(parsedLog => parsedLog?.name === 'PoolCreated');
+
+    if (!poolCreationEvent) return null;
+    const poolAddress = poolCreationEvent.args.pool;
+
+    const pool = WeightedPool__factory.connect(poolAddress, provider);
     const poolId = await pool.getPoolId();
 
-    const poolDetails: CreatePoolReturn = {
+    return {
       id: poolId,
       address: poolAddress,
     };
-
-    return poolDetails;
   }
 
-  public async retrievePoolDetailsFromCall(
+  public async retrievePoolDetails(
     provider: Web3Provider | JsonRpcProvider,
     hash: string
   ) {
     if (!hash) return;
-    const transaction = await provider.getTransaction(hash);
+    const poolDetails = await this.retrievePoolIdAndAddress(provider, hash);
+    if (poolDetails === null) return;
 
-    const weightedPoolInterface =
-      WeightedPoolFactory__factory.createInterface();
-    const decodedInputData = weightedPoolInterface.decodeFunctionData(
-      'create',
-      transaction.data
-    );
+    const poolAddress = poolDetails.address;
+    const vaultAddress = configService.network.addresses.vault;
+
+    const multicaller = new Multicaller(configService.network.key, provider, [
+      ...WeightedPool__factory.abi,
+      ...Vault__factory.abi,
+    ]);
+
+    multicaller.call('name', poolAddress, 'name');
+    multicaller.call('symbol', poolAddress, 'symbol');
+    multicaller.call('owner', poolAddress, 'getOwner');
+    multicaller.call('weights', poolAddress, 'getNormalizedWeights');
+    multicaller.call('tokenInfo', vaultAddress, 'getPoolTokens', [
+      poolDetails.id,
+    ]);
+
+    const multicall = await multicaller.execute();
 
     const details = {
-      weights: decodedInputData.weights.map(weight => formatUnits(weight, 18)),
-      name: decodedInputData.name,
-      owner: decodedInputData.owner,
-      symbol: decodedInputData.symbol,
-      tokens: decodedInputData.tokens,
+      weights: multicall.weights.map(weight => formatUnits(weight, 18)),
+      name: multicall.name,
+      owner: multicall.owner,
+      symbol: multicall.symbol,
+      tokens: multicall.tokenInfo.tokens,
     };
     return details;
   }
