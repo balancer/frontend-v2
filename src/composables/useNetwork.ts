@@ -12,13 +12,18 @@ const localStorageNetworkId: Network | undefined =
   windowAvailable && localStorage.getItem('networkId')
     ? (Number(localStorage.getItem('networkId')) as Network)
     : undefined;
-const routeSlug = window.location.hash.split(/[/?]/)[1] ?? '';
+const routeSlug =
+  (windowAvailable && window.location.hash.split(/[/?]/)[1]) ?? '';
 const urlNetworkId: Network | undefined = routeSlug
   ? networkFromSlug(routeSlug)
   : undefined;
 
-const NETWORK_ID = urlNetworkId || localStorageNetworkId || Network.MAINNET;
-localStorage.setItem('networkId', NETWORK_ID.toString());
+const NETWORK_ID =
+  urlNetworkId ||
+  localStorageNetworkId ||
+  (Number(process.env.VUE_APP_NETWORK) as Network) ||
+  Network.MAINNET;
+if (windowAvailable) localStorage.setItem('networkId', NETWORK_ID.toString());
 export const networkSlug = config[NETWORK_ID].slug;
 export const networkConfig = config[NETWORK_ID];
 
@@ -40,6 +45,10 @@ export const isTestnet = computed(() => isKovan.value || isGoerli.value);
 /**
  * METHODS
  */
+
+export function setNetworkId(id: Network) {
+  networkId.value = id;
+}
 
 export function networkFor(key: string | number): Network {
   switch (key.toString()) {
@@ -100,5 +109,6 @@ export default function useNetwork() {
     networkConfig,
     networkSlug,
     networkId,
+    setNetworkId,
   };
 }
