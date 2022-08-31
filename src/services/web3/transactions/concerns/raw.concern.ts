@@ -20,7 +20,7 @@ export class RawConcern extends TransactionConcern {
     console.log('sendTransaction', options);
 
     try {
-      const gasSettings = this.gasPrice.settings(
+      const gasSettings = await this.gasPrice.settings(
         this.signer,
         options,
         forceLegacyTxType

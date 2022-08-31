@@ -37,7 +37,7 @@ export class ContractConcern extends TransactionConcern {
     console.log('Params: ', params);
 
     try {
-      const gasSettings = this.gasPrice.settingsForContractCall(
+      const gasSettings = await this.gasPrice.settingsForContractCall(
         contractWithSigner,
         action,
         params,
