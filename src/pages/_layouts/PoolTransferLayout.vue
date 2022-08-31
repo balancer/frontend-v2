@@ -14,6 +14,8 @@ import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePo
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isStablePhantom } from '@/composables/usePool';
 import { useReturnRoute } from '@/composables/useReturnRoute';
+import StakingProvider from '@/providers/local/staking/staking.provider';
+
 /**
  * STATE
  */
@@ -41,82 +43,90 @@ const excludedTokens = computed<string[]>(() => {
 </script>
 
 <template>
-  <div class="pb-16">
-    <div class="mb-12 layout-header">
-      <div />
-      <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
-        <BalIcon name="x" size="lg" />
-      </router-link>
-    </div>
+  <StakingProvider :poolAddress="pool?.address">
+    <div class="pb-16">
+      <div class="mb-12 layout-header">
+        <div />
+        <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
+          <BalIcon name="x" size="lg" />
+        </router-link>
+      </div>
 
-    <Col3Layout offsetGutters mobileHideGutters>
-      <template v-if="!upToLargeBreakpoint" #gutterLeft>
-        <BalLoadingBlock
-          v-if="loadingPool || !transfersAllowed || !pool"
-          class="h-64"
-        />
-        <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
-          <MyWallet
-            :excludedTokens="excludedTokens"
-            @click:asset="setTokenInAddress"
-          />
-        </div>
-        <MyWalletTokensCard
-          v-else
-          v-model:useNativeAsset="useNativeAsset"
-          :pool="pool"
-        />
-      </template>
-
-      <router-view :key="$route.path" />
-
-      <BalAccordion
-        v-if="upToLargeBreakpoint"
-        class="mt-4"
-        :sections="[
-          {
-            title: $t('poolTransfer.myWalletTokensCard.title'),
-            id: 'myWalletTokens',
-          },
-          {
-            title: $t('poolTransfer.myPoolBalancesCard.title'),
-            id: 'myPoolBalances',
-          },
-        ]"
-      >
-        <!-- TODO: Show some 404 message if Pool not found -->
-        <template #myWalletTokens>
+      <Col3Layout offsetGutters mobileHideGutters>
+        <template v-if="!upToLargeBreakpoint" #gutterLeft>
           <BalLoadingBlock
-            v-if="loadingPool || !pool || !transfersAllowed"
+            v-if="loadingPool || !transfersAllowed || !pool"
             class="h-64"
           />
+          <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+            <MyWallet
+              :excludedTokens="excludedTokens"
+              @click:asset="setTokenInAddress"
+            />
+          </div>
           <MyWalletTokensCard
             v-else
             v-model:useNativeAsset="useNativeAsset"
             :pool="pool"
-            hideHeader
-            noBorder
-            square
           />
         </template>
-        <template #myPoolBalances>
+
+        <router-view :key="$route.path" />
+
+        <BalAccordion
+          v-if="upToLargeBreakpoint"
+          class="mt-4"
+          :sections="[
+            {
+              title: $t('poolTransfer.myWalletTokensCard.title'),
+              id: 'myWalletTokens',
+            },
+            {
+              title: $t('poolTransfer.myPoolBalancesCard.title'),
+              id: 'myPoolBalances',
+            },
+          ]"
+        >
+          <!-- TODO: Show some 404 message if Pool not found -->
+          <template #myWalletTokens>
+            <BalLoadingBlock
+              v-if="loadingPool || !pool || !transfersAllowed"
+              class="h-64"
+            />
+            <MyWalletTokensCard
+              v-else
+              v-model:useNativeAsset="useNativeAsset"
+              :pool="pool"
+              hideHeader
+              noBorder
+              square
+            />
+          </template>
+          <template #myPoolBalances>
+            <BalLoadingBlock
+              v-if="loadingPool || !pool || !transfersAllowed"
+              class="h-64"
+            />
+            <MyPoolBalancesCard
+              v-else
+              :pool="pool"
+              hideHeader
+              noBorder
+              square
+            />
+          </template>
+        </BalAccordion>
+
+        <template v-if="!upToLargeBreakpoint" #gutterRight>
           <BalLoadingBlock
             v-if="loadingPool || !pool || !transfersAllowed"
             class="h-64"
           />
-          <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
+          <MyPoolBalancesCard v-else :pool="pool" />
         </template>
-      </BalAccordion>
-
-      <template v-if="!upToLargeBreakpoint" #gutterRight>
-        <BalLoadingBlock
-          v-if="loadingPool || !pool || !transfersAllowed"
-          class="h-64"
-        />
-        <MyPoolBalancesCard v-else :pool="pool" />
-      </template>
-    </Col3Layout>
-  </div>
+      </Col3Layout>
+    </div>
+  </StakingProvider>
 </template>
 
 <style scoped>

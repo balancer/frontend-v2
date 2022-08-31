@@ -7,7 +7,7 @@
   "network": "polygon",
   "portisNetwork": "matic",
   "unknown": false,
-  "rpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
+  "rpc": "https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://polygon-rpc.com",
@@ -17,7 +17,8 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-polygon",
+    "blocks": "https://api.thegraph.com/subgraphs/name/ianlapham/polygon-blocks"
   },
   "supportsEIP1559": true,
   "supportsElementPools": false,

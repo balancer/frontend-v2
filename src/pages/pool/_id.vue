@@ -18,13 +18,14 @@ import {
   PoolBalancesCard,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
+import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
 import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { usePool } from '@/composables/usePool';
+import { isVeBalPool, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
@@ -42,6 +43,7 @@ const route = useRoute();
 
 const { prices } = useTokens();
 const { addAlert, removeAlert } = useAlerts();
+const _isVeBalPool = isVeBalPool(route.params.id as string);
 
 /**
  * STATE
@@ -268,6 +270,11 @@ watch(poolQuery.error, () => {
               v-if="isStakablePool && !loadingPool && pool"
               :pool="pool"
               class="staking-incentives"
+            />
+            <PoolLockingCard
+              v-if="_isVeBalPool && !loadingPool && pool"
+              :pool="pool"
+              class="pool-locking"
             />
           </BalStack>
         </StakingProvider>
