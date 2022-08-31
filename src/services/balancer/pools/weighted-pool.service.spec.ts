@@ -1,4 +1,3 @@
-import { WeightedPoolEncoder } from '@balancer-labs/sdk';
 import { AddressZero } from '@ethersproject/constants';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
@@ -7,7 +6,9 @@ import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
-import WeightedPoolsService, { JoinPoolRequest } from './weighted-pool.service';
+import WeightedPoolsService from './weighted-pool.service';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { JoinPoolRequest, WeightedPoolEncoder } from '@balancer-labs/sdk';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
@@ -16,7 +17,7 @@ const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
 
 jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/lib/utils/balancer/web3');
+jest.mock('@/services/web3/transactions/transaction.builder');
 jest.mock('@ethersproject/contracts', () => {
   const Contract = jest.fn().mockImplementation(() => {
     return {
@@ -60,14 +61,11 @@ describe('PoolCreator', () => {
   });
 
   describe('create', () => {
-    const mockPoolAddress = '0xEEE8292cb20a443ba1caaa59c985ce14ca2bdee5';
-
     describe('happy case', () => {
       beforeEach(async () => {
-        require('@/lib/utils/balancer/web3').__setMockPoolAddress(
-          mockPoolAddress
-        );
-        const mockProvider = {} as Web3Provider;
+        const mockProvider = {
+          getSigner: jest.fn().mockImplementation(),
+        } as any;
         tokens.WETH.weight = 50;
         tokens.USDT.weight = 50;
         await weightedPoolsService.create(
@@ -81,10 +79,12 @@ describe('PoolCreator', () => {
       });
 
       it('Should call sendTransaction with the correct information', () => {
-        const sendTransactionArgs = require('@/lib/utils/balancer/web3')
-          .sendTransaction.mock.calls[0];
-        expect(sendTransactionArgs[3]).toEqual('create');
-        const sendTransactionParams = sendTransactionArgs[4];
+        // @ts-ignore
+        const txBuilderInstance = TransactionBuilder.mock.results[0].value;
+        const sendTransactionArgs =
+          txBuilderInstance.contract.sendTransaction.mock.calls[0];
+        expect(sendTransactionArgs[0].action).toEqual('create');
+        const sendTransactionParams = sendTransactionArgs[0].params;
         expect(sendTransactionParams[0]).toEqual(mockPoolName);
         expect(sendTransactionParams[1]).toEqual(mockPoolSymbol);
         expect(sendTransactionParams[2]).toEqual([
@@ -125,13 +125,11 @@ describe('PoolCreator', () => {
     const mockPoolAddress = '0x3bB9d50A0743103F896D823B332EE15E231848D1';
 
     beforeEach(async () => {
-      require('@/lib/utils/balancer/web3').__setMockPoolAddress(
-        mockPoolAddress
-      );
       tokens.WETH.weight = 50;
       tokens.USDT.weight = 50;
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceipt,
+        getSigner: jest.fn().mockImplementation(),
       } as any;
       await weightedPoolsService.create(
         mockProvider,
@@ -146,6 +144,7 @@ describe('PoolCreator', () => {
     it('should take a pool create transaction response and return details about the pool', async () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceipt,
+        getSigner: jest.fn().mockImplementation(),
       } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
@@ -158,6 +157,7 @@ describe('PoolCreator', () => {
     it('should work with a polygon create pool transaction receipt', async () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceipt,
+        getSigner: jest.fn().mockImplementation(),
       } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
@@ -171,6 +171,7 @@ describe('PoolCreator', () => {
     it('should work with a polygon create pool transaction receipt with no events', async () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceiptNoEvents,
+        getSigner: jest.fn().mockImplementation(),
       } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
@@ -194,7 +195,9 @@ describe('PoolCreator', () => {
     ];
 
     beforeEach(async () => {
-      const mockProvider = {} as Web3Provider;
+      const mockProvider = {
+        getSigner: jest.fn().mockImplementation(),
+      } as any;
       joinTx = await weightedPoolsService.initJoin(
         mockProvider,
         mockPoolId,
@@ -206,10 +209,12 @@ describe('PoolCreator', () => {
     });
 
     it('Should call sendTransaction with the correct information', () => {
-      const sendTransactionArgs = require('@/lib/utils/balancer/web3')
-        .sendTransaction.mock.calls[0];
-      expect(sendTransactionArgs[3]).toEqual('joinPool');
-      const sendTransactionParams = sendTransactionArgs[4];
+      // @ts-ignore
+      const txBuilderInstance = TransactionBuilder.mock.results[0].value;
+      const sendTransactionArgs =
+        txBuilderInstance.contract.sendTransaction.mock.calls[0];
+      expect(sendTransactionArgs[0].action).toEqual('joinPool');
+      const sendTransactionParams = sendTransactionArgs[0].params;
       expect(sendTransactionParams[0]).toEqual(mockPoolId);
       expect(sendTransactionParams[1]).toEqual(mockSender);
       expect(sendTransactionParams[2]).toEqual(mockReceiver);
