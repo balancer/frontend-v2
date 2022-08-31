@@ -51,19 +51,6 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 source: https://stackoverflow.com/questions/65612411/forcing-docker-to-use-linux-amd64-platform-by-default-on-macos
 
-### Change app network
-
-To change your local development app network, update the network key for
-`VUE_APP_NETWORK` in `.env.development`. Available networks:
-
-```
-1 - Mainnet
-5 - Goerli
-42 - Kovan
-137 - Polygon
-42161 - Arbitrum
-```
-
 ## Self-Hosting
 
 As we believe in decentralization at all layers, we've made it easy to host your own Balancer Frontend.

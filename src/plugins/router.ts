@@ -1,12 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
-import {
-  isGoerli,
-  networkFor,
-  networkFromSlug,
-} from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
-// import { Network } from '@balancer-labs/sdk';
+import { isGoerli } from '@/composables/useNetwork';
 
 const ClaimPage = () =>
   import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
@@ -187,30 +181,6 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   },
-});
-
-router.beforeEach((to, from, next) => {
-  const networkSlug = to.params.networkSlug?.toString();
-  if (networkSlug) {
-    const networkFromUrl: Network = networkFromSlug(networkSlug);
-    const localStorageNetwork: Network = networkFor(
-      localStorage.getItem('networkId') ?? process.env.VUE_APP_NETWORK ?? '1'
-    );
-    if (!networkFromUrl) {
-      // missing or incorrect network name -> next() withtout network change
-      next();
-    } else if (localStorageNetwork === networkFromUrl) {
-      // if on the correct network -> next()
-      next();
-    } else {
-      // if on different network -> update localstorage and reload
-      localStorage.setItem('networkId', networkFromUrl.toString());
-      window.location.href = `/#${to.fullPath}`;
-      router.go(0);
-    }
-  } else {
-    next();
-  }
 });
 
 export default router;
