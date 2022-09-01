@@ -1,4 +1,4 @@
-import { Contract, ContractFunction } from '@ethersproject/contracts';
+import { Contract } from '@ethersproject/contracts';
 
 import {
   EthereumTxType,
@@ -40,9 +40,8 @@ export class GasPriceService {
   ): Promise<GasSettings> {
     let gasSettings: GasSettings = {};
 
-    gasSettings.gasLimit = await this.getGasLimit(signer.estimateGas, [
-      options,
-    ]);
+    const gasLimit = await signer.estimateGas(options);
+    gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
 
     if (this.shouldSetGasPriceSettings(options)) {
       gasSettings = await this.setGasPriceSettings(
@@ -63,10 +62,11 @@ export class GasPriceService {
   ): Promise<GasSettings> {
     let gasSettings: GasSettings = {};
 
-    gasSettings.gasLimit = await this.getGasLimit(
-      contractWithSigner.estimateGas[action],
-      [...params, options]
+    const gasLimit = await contractWithSigner.estimateGas[action](
+      ...params,
+      options
     );
+    gasSettings.gasLimit = this.formatGasLimit(gasLimit.toNumber());
 
     if (this.shouldSetGasPriceSettings(options)) {
       gasSettings = await this.setGasPriceSettings(
@@ -78,13 +78,8 @@ export class GasPriceService {
     return gasSettings;
   }
 
-  private async getGasLimit(
-    estimateFn: ContractFunction,
-    params: any[]
-  ): Promise<number> {
-    const gasLimit = (await estimateFn(...params)).toNumber();
-
-    return Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
+  private formatGasLimit(limit: number): number {
+    return Math.floor(limit * (1 + GAS_LIMIT_BUFFER));
   }
 
   private shouldSetGasPriceSettings(options: Record<string, any>): boolean {
