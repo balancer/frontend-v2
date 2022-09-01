@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
+import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
 import useVotingGauges from '@/composables/useVotingGauges';
@@ -31,6 +32,8 @@ const {
 } = useVotingGauges();
 const { fNum2 } = useNumbers();
 const veBalLockInfoQuery = useVeBalLockInfoQuery();
+
+const { shouldResubmitVotes } = useVotingEscrowLocks();
 
 const votingGaugeAddresses = computed<string[]>(
   () => votingGauges.value?.map(gauge => gauge.address) || []
@@ -175,7 +178,10 @@ function handleVoteSuccess() {
         </BalCard>
       </div>
     </div>
-    <ResubmitVotesAlert class="mx-4 xl:mx-0 mb-7"></ResubmitVotesAlert>
+    <ResubmitVotesAlert
+      v-if="shouldResubmitVotes"
+      class="mx-4 xl:mx-0 mb-7"
+    ></ResubmitVotesAlert>
     <GaugesTable
       :key="gaugesTableKey"
       :expiredGauges="expiredGauges"

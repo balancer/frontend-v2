@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Network } from '@balancer-labs/sdk';
-import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -10,7 +9,6 @@ import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { networkNameFor } from '@/composables/useNetwork';
-import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
   isUnknownType,
@@ -18,12 +16,12 @@ import {
   poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
-import { scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
+import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 
 /**
  * TYPES
@@ -54,7 +52,6 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
@@ -100,13 +97,8 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
   },
   {
     name: t('veBAL.liquidityMining.table.myVotes'),
-    accessor(gauge) {
-      const normalizedVotes = scale(new BigNumber(gauge.userVotes), -4);
-      return fNum2(normalizedVotes.toString(), {
-        style: 'percent',
-        maximumFractionDigits: 2,
-      });
-    },
+    accessor: 'id',
+    Cell: 'myVotesCell',
     align: 'right',
     id: 'myVotes',
     sortKey: gauge => Number(gauge.userVotes),
@@ -238,6 +230,11 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       <template #nextPeriodVotesCell="gauge">
         <div v-if="!isLoading" class="py-4 px-6 text-right">
           <GaugeVoteInfo :gauge="gauge" />
+        </div>
+      </template>
+      <template #myVotesCell="gauge">
+        <div v-if="!isLoading" class="py-4 px-6 text-right">
+          <GaugesTableMyVotes :gauge="gauge"></GaugesTableMyVotes>
         </div>
       </template>
       <template #voteColumnCell="gauge">
