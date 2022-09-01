@@ -17,6 +17,7 @@ import { Multicaller } from '../utils/balancer/contract';
 import { formatUnits } from 'ethers/lib/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import template from '../utils/template';
+import { mapValues } from 'lodash';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -27,9 +28,11 @@ const log = debug('balancer:voting-gauge-generator');
 type GaugeInfo = {
   address: string;
   isKilled: boolean;
+  network: Network;
+  poolId: string;
 };
 
-async function getGaugeRelativeWeight(gaugeAddress: string): Promise<string> {
+async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
   const INFURA_KEY = process.env.VUE_APP_INFURA_PROJECT_ID;
   if (!INFURA_KEY) throw Error('VUE_APP_INFURA_PROJECT_ID not found!');
 
@@ -42,17 +45,19 @@ async function getGaugeRelativeWeight(gaugeAddress: string): Promise<string> {
     VEBalHelpersABI
   );
 
-  multicaller.call(
-    getAddress(gaugeAddress),
-    config[Network.MAINNET].addresses.veBALHelpers,
-    'gauge_relative_weight',
-    [getAddress(gaugeAddress)]
-  );
+  for (const gaugeAddress of gaugeAddresses) {
+    multicaller.call(
+      getAddress(gaugeAddress),
+      config[Network.MAINNET].addresses.veBALHelpers,
+      'gauge_relative_weight',
+      [getAddress(gaugeAddress)]
+    );
+  }
 
   const result = await multicaller.execute();
-  const weight = formatUnits(result[gaugeAddress], 18);
+  const weights = mapValues(result, weight => formatUnits(weight, 18));
 
-  return weight;
+  return weights;
 }
 
 function getBalancerAssetsURI(tokenAdress: string): string {
@@ -278,6 +283,8 @@ async function getLiquidityGaugeInfo(
     const gaugeInfo = {
       address: getAddress(data.liquidityGauges[0].id),
       isKilled: Boolean(data.liquidityGauges[0].isKilled),
+      network,
+      poolId,
     };
 
     return gaugeInfo;
@@ -344,6 +351,7 @@ async function getStreamerAddress(
 
 async function getRootGaugeAddress(
   streamer: string,
+  poolId: string,
   network: Network,
   retries = 5
 ): Promise<GaugeInfo | null> {
@@ -379,6 +387,8 @@ async function getRootGaugeAddress(
     const gaugeInfo = {
       address: getAddress(data.rootGauges[0].id),
       isKilled: Boolean(data.rootGauges[0].isKilled),
+      network,
+      poolId,
     };
 
     return gaugeInfo;
@@ -391,7 +401,7 @@ async function getRootGaugeAddress(
     );
 
     return retries > 0
-      ? getRootGaugeAddress(streamer, network, retries - 1)
+      ? getRootGaugeAddress(streamer, poolId, network, retries - 1)
       : null;
   }
 }
@@ -406,7 +416,7 @@ async function getGaugeInfo(
     return gauge;
   } else {
     const streamer = await getStreamerAddress(poolId, network);
-    const gauge = await getRootGaugeAddress(streamer, network);
+    const gauge = await getRootGaugeAddress(streamer, poolId, network);
     return gauge;
   }
 }
@@ -414,34 +424,43 @@ async function getGaugeInfo(
 (async () => {
   console.log('Generating voting-gauges.json...');
 
-  let votingGauges: VotingGauge[] = [];
+  const gaugesInfo = await Promise.all(
+    POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
+  );
 
-  for (const { id, network } of POOLS) {
-    const gauge = await getGaugeInfo(id, network);
-    if (!gauge) continue;
+  const filteredGauges = gaugesInfo.filter(gauge => gauge) as GaugeInfo[];
 
-    if (gauge.isKilled) {
-      const weight = await getGaugeRelativeWeight(gauge.address);
-      if (weight === '0') continue;
-    }
+  const killedGaugesList = filteredGauges
+    .filter(({ isKilled }) => isKilled)
+    .map(({ address }) => address);
 
-    const pool = await getPoolInfo(id, network);
+  const killedGaugesWeight = await getGaugeRelativeWeight(killedGaugesList);
 
-    const tokenLogoURIs = {};
-    for (const poolToken of pool.tokens) {
-      tokenLogoURIs[poolToken.address] = await getTokenLogoURI(
-        poolToken.address,
-        network
-      );
-    }
+  const validGauges = filteredGauges.filter(
+    ({ address, isKilled }) =>
+      !isKilled && killedGaugesWeight[address] !== '0.0'
+  );
 
-    votingGauges.concat({
-      address: gauge.address,
-      network,
-      pool,
-      tokenLogoURIs,
-    });
-  }
+  let votingGauges = await Promise.all(
+    validGauges.map(async ({ address, poolId, network }) => {
+      const pool = await getPoolInfo(poolId, network);
+
+      const tokenLogoURIs = {};
+      for (let i = 0; i < pool.tokens.length; i++) {
+        tokenLogoURIs[pool.tokens[i].address] = await getTokenLogoURI(
+          pool.tokens[i].address,
+          network
+        );
+      }
+
+      return {
+        address,
+        network,
+        pool,
+        tokenLogoURIs,
+      };
+    })
+  );
 
   votingGauges = [...(vebalGauge as VotingGauge[]), ...votingGauges];
 
