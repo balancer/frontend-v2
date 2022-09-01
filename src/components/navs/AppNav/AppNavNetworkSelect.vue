@@ -80,7 +80,7 @@ function iconSrc(network: NetworkOption): string {
   return require(`@/assets/images/icons/networks/${network.id}.svg`);
 }
 
-function appUrl(network: NetworkOption): string {
+function getNetworkChangeUrl(network: NetworkOption): string {
   if (
     router.currentRoute.value.name === 'pool' ||
     router.currentRoute.value.name === 'create-pool' ||
@@ -130,7 +130,7 @@ function isActive(network: NetworkOption): boolean {
       <a
         v-for="network in networks"
         :key="network.id"
-        :href="appUrl(network)"
+        :href="getNetworkChangeUrl(network)"
         class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
       >
         <div class="flex items-center">
