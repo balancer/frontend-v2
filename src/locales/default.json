@@ -221,6 +221,22 @@
         "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."
       },
       "migrateToPool": {
+        "title": "Migrate to a new pool"
+      },
+      "poolStats": {
+        "title": "New pool stats"
+      }
+    },
+    "xmaticPool": {
+      "migrateToPool": {
+        "title": "Migrate to a new pool"
+      },
+      "poolStats": {
+        "title": "New pool stats"
+      }
+    },
+    "stmaticPool": {
+      "migrateToPool": {
         "title": "Migrate to a boosted pool"
       },
       "poolStats": {

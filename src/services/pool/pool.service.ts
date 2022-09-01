@@ -94,7 +94,6 @@ export default class PoolService {
    * required attributes.
    */
   public async setLinearPools(): Promise<Record<string, PoolToken> | null> {
-    console.log('this', this.pool);
     if (!isDeep(this.pool)) return null;
 
     // Fetch linear pools from subgraph

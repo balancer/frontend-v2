@@ -50,9 +50,8 @@ export function isDeep(pool: Pool): boolean {
       // check if any of the pool tokens are actually pools
       .every(({ token }) => {
         const poolType = token.pool?.poolType;
-        // return poolType === 'string';
         if (!poolType) return false;
-        return isStablePhantom(poolType) || isComposableStable(poolType);
+        return typeof poolType === 'string';
       })
   );
 }
