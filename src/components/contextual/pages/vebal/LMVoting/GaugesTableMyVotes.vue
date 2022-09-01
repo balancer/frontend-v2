@@ -54,13 +54,15 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
         <template #activator>
           <BalIcon class="ml-1" name="alert-triangle" size="sm" />
         </template>
-        <div>
-          <h4>Resubmit your vote to utilize your full voting power</h4>
-          <p>
+        <div class="flex flex-col gap-1">
+          <span class="font-semibold"
+            >Resubmit your vote to utilize your full voting power
+          </span>
+          <span>
             Votes on pools are set at the time of your last vote. Since you’ve
             added new veBAL after your original vote, the additional voting
             power is not being used.
-          </p>
+          </span>
         </div>
       </BalTooltip>
     </template>
