@@ -35,7 +35,7 @@ export interface TokenListsProviderResponse {
 
 /** SETUP */
 const { uris } = tokenListService;
-const { NETWORK_ID } = useNetwork();
+const { networkId } = useNetwork();
 export const TokenListsProviderSymbol: InjectionKey<TokenListsProviderResponse> =
   Symbol(symbolKeys.Providers.TokenLists);
 
@@ -52,7 +52,7 @@ export default {
 
     let allTokenLists = {};
     try {
-      allTokenLists = require<TokenListMap>(`/public/data/tokenlists/tokens-${NETWORK_ID}.json`);
+      allTokenLists = require<TokenListMap>(`/public/data/tokenlists/tokens-${networkId.value}.json`);
     } catch (error) {
       console.error('Failed to fetch tokenlists', error);
       throw error;

@@ -28,12 +28,12 @@ const actions = {
 const mutations = {
   setInputAsset(state: TradeState, asset: string): void {
     state.inputAsset = asset;
-    lsSet('trade.inputAsset', asset);
+    lsSet(`trade.inputAsset.${networkId.value}`, asset);
   },
 
   setOutputAsset(state: TradeState, asset: string): void {
     state.outputAsset = asset;
-    lsSet('trade.outputAsset', asset);
+    lsSet(`trade.outputAsset.${networkId.value}`, asset);
   },
 };
 
