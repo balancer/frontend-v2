@@ -42,9 +42,28 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
 </script>
 
 <template>
-  <div>
+  <div
+    :class="{
+      'flex justify-end items-center': true,
+      'text-red-600': poolHasUnderUtilizedVotingPoewer,
+    }"
+  >
     {{ myVotes }}
-    <span v-if="poolHasUnderUtilizedVotingPoewer">RESUBMIT VOTES</span>
+    <template v-if="poolHasUnderUtilizedVotingPoewer">
+      <BalTooltip textAlign="left" width="60">
+        <template #activator>
+          <BalIcon class="ml-1" name="alert-triangle" size="sm" />
+        </template>
+        <div>
+          <h4>Resubmit your vote to utilize your full voting power</h4>
+          <p>
+            Votes on pools are set at the time of your last vote. Since you’ve
+            added new veBAL after your original vote, the additional voting
+            power is not being used.
+          </p>
+        </div>
+      </BalTooltip>
+    </template>
   </div>
 </template>
 
