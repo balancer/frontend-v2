@@ -3,9 +3,9 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { Contract } from 'ethers';
 
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 import ContractService from '../balancer-contracts.service';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export default class BatchRelayer {
   service: ContractService;
@@ -69,12 +69,12 @@ export default class BatchRelayer {
     txInfo: TransactionData,
     userProvider: Web3Provider
   ): Promise<TransactionResponse> {
-    return await sendTransaction(
-      userProvider,
-      this.address,
-      this.abi,
-      txInfo.function,
-      [txInfo.params]
-    );
+    const txBuilder = new TransactionBuilder(userProvider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: txInfo.function,
+      params: [txInfo.params],
+    });
   }
 }
