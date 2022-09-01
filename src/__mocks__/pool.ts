@@ -41,12 +41,14 @@ export const PoolMock: Pool = {
       balance: '408784.606604112667634055',
       priceRate: '1',
       weight: '0.8',
+      token: { pool: null },
     },
     {
       address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       balance: '95.094102533755196937',
       priceRate: '1',
       weight: '0.2',
+      token: { pool: { poolType: null } },
     },
   ],
   tokensList: [
