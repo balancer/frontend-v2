@@ -229,18 +229,18 @@
     },
     "xmaticPool": {
       "migrateToPool": {
-        "title": "Migrate to a new pool"
+        "title": "Migrate youy liquidity"
       },
       "poolStats": {
-        "title": "New pool stats"
+        "title": "Stats for the upgraded pool"
       }
     },
     "stmaticPool": {
       "migrateToPool": {
-        "title": "Migrate to a boosted pool"
+        "title": "Migrate youy liquidity"
       },
       "poolStats": {
-        "title": "Boosted pool stats"
+        "title": "Stats for the upgraded pool"
       }
     },
     "poolInfo": {
