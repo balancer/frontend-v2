@@ -61,32 +61,32 @@ const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
 ];
 
 // TO-DO turn on POLYGON migrations after adding generalised ComposableStable support
-// const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
-//   {
-//     type: PoolMigrationType.XMATIC_POOL,
-//     fromPoolId: POOLS.IdsMap.xMatic?.v1 as string,
-//     toPoolId: POOLS.IdsMap.xMatic?.v2 as string,
-//     riskI18nLabels: [
-//       `${riskI18nLabelPrefix}.loseUSDPeg`,
-//       `${riskI18nLabelPrefix}.aaveStableExploit`,
-//     ],
-//   },
-//   {
-//     type: PoolMigrationType.STMATIC_POOL,
-//     fromPoolId: POOLS.IdsMap.stMatic?.v1 as string,
-//     toPoolId: POOLS.IdsMap.stMatic?.v2 as string,
-//     riskI18nLabels: [
-//       `${riskI18nLabelPrefix}.loseUSDPeg`,
-//       `${riskI18nLabelPrefix}.aaveStableExploit`,
-//     ],
-//   },
-// ];
+const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
+  {
+    type: PoolMigrationType.XMATIC_POOL,
+    fromPoolId: POOLS.IdsMap.xMatic?.v1 as string,
+    toPoolId: POOLS.IdsMap.xMatic?.v2 as string,
+    riskI18nLabels: [
+      `${riskI18nLabelPrefix}.loseUSDPeg`,
+      `${riskI18nLabelPrefix}.aaveStableExploit`,
+    ],
+  },
+  {
+    type: PoolMigrationType.STMATIC_POOL,
+    fromPoolId: POOLS.IdsMap.stMatic?.v1 as string,
+    toPoolId: POOLS.IdsMap.stMatic?.v2 as string,
+    riskI18nLabels: [
+      `${riskI18nLabelPrefix}.loseUSDPeg`,
+      `${riskI18nLabelPrefix}.aaveStableExploit`,
+    ],
+  },
+];
 
 const MIGRATIONS_BY_NETWORK = {
   [Network.GOERLI]: GOERLI_POOL_MIGRATIONS,
   [Network.MAINNET]: MAINNET_POOL_MIGRATIONS,
   // TO-DO turn on POLYGON migrations after adding generalised ComposableStable support
-  // [Network.POLYGON]: POLYGON_POOL_MIGRATIONS,
+  [Network.POLYGON]: POLYGON_POOL_MIGRATIONS,
 };
 
 export const POOL_MIGRATIONS: PoolMigrationInfo[] = MIGRATIONS_BY_NETWORK[

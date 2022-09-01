@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isComposableStableLike, usePool } from '@/composables/usePool';
+import { isDeep, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
@@ -95,7 +95,7 @@ export default function useWithdrawMath(
    * COMPUTED
    */
   const tokenAddresses = computed((): string[] => {
-    if (isComposableStableLike(pool.value.poolType)) {
+    if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
     return pool.value.tokensList;

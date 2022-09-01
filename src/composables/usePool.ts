@@ -42,6 +42,21 @@ export function isComposableStableLike(poolType: PoolType): boolean {
   return isStablePhantom(poolType) || isComposableStable(poolType);
 }
 
+export function isDeep(pool: Pool): boolean {
+  return (
+    pool.tokens
+      // ignore the token with the same address as the pool itself
+      .filter(({ address }) => address !== pool.address)
+      // check if any of the pool tokens are actually pools
+      .every(({ token }) => {
+        const poolType = token.pool?.poolType;
+        // return poolType === 'string';
+        if (!poolType) return false;
+        return isStablePhantom(poolType) || isComposableStable(poolType);
+      })
+  );
+}
+
 export function isStableLike(poolType: PoolType): boolean {
   return (
     isStable(poolType) ||
@@ -99,7 +114,7 @@ export function noInitLiquidity(pool: AnyPool): boolean {
  * @returns tokens that can be used to invest or withdraw from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
-  if (isComposableStableLike(pool.poolType)) {
+  if (isDeep(pool)) {
     const mainTokens = pool.mainTokens || [];
     const wrappedTokens = pool.wrappedTokens || [];
     return [...mainTokens, ...wrappedTokens];
@@ -114,6 +129,7 @@ export function lpTokensFor(pool: AnyPool): string[] {
  */
 export function orderedTokenAddresses(pool: AnyPool): string[] {
   const sortedTokens = orderedPoolTokens(
+    pool,
     pool.poolType,
     pool.address,
     pool.tokens
@@ -127,11 +143,12 @@ type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
  * @summary Orders pool tokens by weight if weighted pool
  */
 export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
+  pool: Pool,
   poolType: PoolType,
   poolAddress: string,
   tokens: TPoolTokens[]
 ): TPoolTokens[] {
-  if (isComposableStableLike(poolType))
+  if (isDeep(pool))
     return tokens.filter(token => !isSameAddress(token.address, poolAddress));
   if (isStableLike(poolType)) return tokens;
   return tokens
@@ -291,7 +308,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
   );
   const isComposableStableLikePool = computed(
-    (): boolean => !!pool.value && isComposableStableLike(pool.value.poolType)
+    (): boolean => !!pool.value && isDeep(pool.value)
   );
   const isWeightedPool = computed(
     (): boolean => !!pool.value && isWeighted(pool.value.poolType)

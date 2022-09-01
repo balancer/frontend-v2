@@ -11,6 +11,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
+import { Pool } from '@/services/pool/types';
 
 /**
  * DATA
@@ -77,6 +78,7 @@ function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
 
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
+    gauge.pool as unknown as Pool,
     gauge.pool.poolType,
     gauge.pool.address,
     gauge.pool.tokens

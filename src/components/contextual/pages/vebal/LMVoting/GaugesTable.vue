@@ -24,6 +24,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
+import { Pool } from '@/services/pool/types';
 
 /**
  * TYPES
@@ -132,6 +133,7 @@ const dataKey = computed(() => JSON.stringify(props.data));
  */
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
+    gauge.pool as unknown as Pool,
     gauge.pool.poolType,
     gauge.pool.address,
     gauge.pool.tokens
@@ -226,7 +228,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
             :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+              orderedPoolTokens(pool, pool.poolType, pool.address, pool.tokens)
             "
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)

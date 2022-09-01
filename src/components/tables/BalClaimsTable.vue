@@ -143,7 +143,7 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
         <div class="py-4 px-6">
           <TokenPills
             :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
+              orderedPoolTokens(pool, pool.poolType, pool.address, pool.tokens)
             "
             :isStablePool="isStableLike(pool.poolType)"
           />
