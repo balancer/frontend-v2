@@ -438,7 +438,7 @@ async function getGaugeInfo(
 
   const validGauges = filteredGauges.filter(
     ({ address, isKilled }) =>
-      !isKilled && killedGaugesWeight[address] !== '0.0'
+      !isKilled || killedGaugesWeight[address] !== '0.0'
   );
 
   let votingGauges = await Promise.all(
