@@ -134,8 +134,6 @@ const dataKey = computed(() => JSON.stringify(props.data));
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
     gauge.pool as unknown as Pool,
-    gauge.pool.poolType,
-    gauge.pool.address,
     gauge.pool.tokens
   );
   return sortedTokens.map(
@@ -227,9 +225,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       <template #poolCompositionCell="{ pool, address }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
-            :tokens="
-              orderedPoolTokens(pool, pool.poolType, pool.address, pool.tokens)
-            "
+            :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "

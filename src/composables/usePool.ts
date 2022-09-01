@@ -127,12 +127,7 @@ export function lpTokensFor(pool: AnyPool): string[] {
  * @returns Array of checksum addresses
  */
 export function orderedTokenAddresses(pool: AnyPool): string[] {
-  const sortedTokens = orderedPoolTokens(
-    pool,
-    pool.poolType,
-    pool.address,
-    pool.tokens
-  );
+  const sortedTokens = orderedPoolTokens(pool, pool.tokens);
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
@@ -143,13 +138,11 @@ type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
  */
 export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
   pool: Pool,
-  poolType: PoolType,
-  poolAddress: string,
   tokens: TPoolTokens[]
 ): TPoolTokens[] {
   if (isDeep(pool))
-    return tokens.filter(token => !isSameAddress(token.address, poolAddress));
-  if (isStableLike(poolType)) return tokens;
+    return tokens.filter(token => !isSameAddress(token.address, pool.address));
+  if (isStableLike(pool.poolType)) return tokens;
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));

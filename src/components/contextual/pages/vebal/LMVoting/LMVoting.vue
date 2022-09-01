@@ -79,8 +79,6 @@ function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
     gauge.pool as unknown as Pool,
-    gauge.pool.poolType,
-    gauge.pool.address,
     gauge.pool.tokens
   );
   return sortedTokens.map(
