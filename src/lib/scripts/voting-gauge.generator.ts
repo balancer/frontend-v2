@@ -248,11 +248,11 @@ async function getPoolInfo(
   }
 }
 
-async function getLiquidityGaugeInfo(
+async function getLiquidityGaugesInfo(
   poolId: string,
   network: Network,
   retries = 5
-): Promise<GaugeInfo | null> {
+): Promise<GaugeInfo[] | null> {
   log(`getLiquidityGaugeInfo. network: ${network} poolId: ${poolId}`);
   const subgraphEndpoint = config[network].subgraphs.gauge;
   const query = `
@@ -280,14 +280,16 @@ async function getLiquidityGaugeInfo(
 
     const { data } = await response.json();
 
-    const gaugeInfo = {
-      address: getAddress(data.liquidityGauges[0].id),
-      isKilled: Boolean(data.liquidityGauges[0].isKilled),
-      network,
-      poolId,
-    };
+    const gaugesInfo = data.liquidityGauges.map((gauge: any) => {
+      return {
+        address: getAddress(gauge.id),
+        isKilled: Boolean(gauge.isKilled),
+        network,
+        poolId,
+      };
+    });
 
-    return gaugeInfo;
+    return gaugesInfo;
   } catch {
     console.error(
       'LiquidityGauge not found for poolId:',
@@ -297,7 +299,7 @@ async function getLiquidityGaugeInfo(
     );
 
     return retries > 0
-      ? getLiquidityGaugeInfo(poolId, network, retries - 1)
+      ? getLiquidityGaugesInfo(poolId, network, retries - 1)
       : null;
   }
 }
@@ -409,15 +411,15 @@ async function getRootGaugeAddress(
 async function getGaugeInfo(
   poolId: string,
   network: Network
-): Promise<GaugeInfo | null> {
+): Promise<GaugeInfo[] | null> {
   log(`getGaugeAddress. network: ${network} poolId: ${poolId}`);
-  if ([Network.MAINNET, Network.KOVAN, Network.GOERLI].includes(network)) {
-    const gauge = await getLiquidityGaugeInfo(poolId, network);
-    return gauge;
+  if ([Network.MAINNET, Network.GOERLI].includes(network)) {
+    const gauges = await getLiquidityGaugesInfo(poolId, network);
+    return gauges;
   } else {
     const streamer = await getStreamerAddress(poolId, network);
     const gauge = await getRootGaugeAddress(streamer, poolId, network);
-    return gauge;
+    return gauge ? [gauge] : null;
   }
 }
 
@@ -428,7 +430,9 @@ async function getGaugeInfo(
     POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
   );
 
-  const filteredGauges = gaugesInfo.filter(gauge => gauge) as GaugeInfo[];
+  const filteredGauges = gaugesInfo
+    .flat()
+    .filter(gauge => gauge) as GaugeInfo[];
 
   const killedGaugesList = filteredGauges
     .filter(({ isKilled }) => isKilled)
