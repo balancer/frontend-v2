@@ -22,14 +22,14 @@ export default class BlockService {
         const startTimestamp = bnum(timestamp).minus(oneHourInSecs);
         query = {
           where: {
-            timestamp_gt: startTimestamp.toString(),
-            timestamp_lt: timestamp,
+            timestamp_gt: timestamp,
+            timestamp_lt: startTimestamp.toString(),
           },
         };
       } else {
         query = {
           where: {
-            timestamp: timestamp,
+            timestamp_gt: timestamp,
           },
         };
       }
@@ -37,7 +37,6 @@ export default class BlockService {
       const response: BlockNumberResponse =
         await this.subgraphService.blockNumber.get(query);
 
-      console.log(response.blocks);
       return parseInt(response.blocks[0].number);
     } catch (error) {
       if (useRange) return this.fetchBlockByTime(timestamp, false);
