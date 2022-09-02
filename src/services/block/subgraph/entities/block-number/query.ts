@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 
 const defaultArgs = {
   first: 1,
-  orderBy: 'number',
+  orderBy: 'timestamp',
   orderDirection: 'asc',
 };
 
