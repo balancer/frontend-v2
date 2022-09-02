@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 import { AprBreakdown } from '@balancer-labs/sdk';
-import { divApr } from '@/services/staking/utils';
 
 /**
  * TYPES
@@ -67,7 +66,7 @@ const boostedTotalAPR = computed((): string => {
  */
 const unboostedTotalAPR = computed((): string =>
   fNum2(
-    divApr(bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString()),
+    bpToDec(bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString()),
     FNumFormats.percent
   )
 );
@@ -102,7 +101,7 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
-          {{ fNum2(divApr(amount), FNumFormats.percent) }}
+          {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
           <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>

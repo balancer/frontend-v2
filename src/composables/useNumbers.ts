@@ -3,6 +3,7 @@ import numeral from 'numeral';
 
 import useUserSettings from '@/composables/useUserSettings';
 import { FiatCurrency } from '@/constants/currency';
+import { bnum } from '@/lib/utils';
 
 import useTokens from './useTokens';
 
@@ -164,6 +165,14 @@ export function numF(
   }
 
   return formattedNumber + postfixSymbol;
+}
+
+/**
+ * @summary APR's are in basis points (100 = 1%), while percent formatting takes a decimal (0.01 = 1%)
+ *          this helper should be run on each APR value before formatting as a percent
+ */
+export function bpToDec(value: number | string): string {
+  return bnum(value).div(10000).toString();
 }
 
 export default function useNumbers() {

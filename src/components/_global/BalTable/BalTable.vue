@@ -181,7 +181,6 @@ const shouldRenderTotals = computed(() =>
 watch(
   () => props.data,
   newData => {
-    console.log('Data is: ', newData);
     if (currentSortColumn.value && currentSortDirection.value !== null) {
       handleSort(currentSortColumn.value, false);
       return;

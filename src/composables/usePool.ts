@@ -9,10 +9,9 @@ import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool } from '@/services/pool/types';
-import { divApr } from '@/services/staking/utils';
 
 import { isTestnet, urlFor } from './useNetwork';
-import useNumbers, { FNumFormats, numF } from './useNumbers';
+import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
 
 /**
  * METHODS
@@ -174,8 +173,8 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
     return numF(absMaxApr(aprs, boost), FNumFormats.percent);
   }
 
-  const minAPR = numF(divApr(aprs.min), FNumFormats.percent);
-  const maxAPR = numF(divApr(aprs.max), FNumFormats.percent);
+  const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
+  const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
   return `${minAPR} - ${maxAPR}`;
 }
 
