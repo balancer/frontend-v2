@@ -180,7 +180,7 @@ async function submit(): Promise<TransactionResponse> {
         getProvider(),
         account.value,
         fullAmounts.value,
-        props.tokenAddresses,
+        [props.pool.address, ...props.tokenAddresses],
         formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
       );
     }

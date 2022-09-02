@@ -3,7 +3,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
-import { isManaged, isStableLike } from '@/composables/usePool';
+import { isDeep, isManaged, isStableLike } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
@@ -76,7 +76,7 @@ export default class JoinParams {
   private parseAmounts(amounts: string[], tokensIn: string[]): BigNumberish[] {
     const nativeAsset = this.config.network.nativeAsset;
 
-    return amounts.map((amount, i) => {
+    const parsedAmounts = amounts.map((amount, i) => {
       const token = tokensIn[i];
       // In WETH pools, tokenIn can include ETH so we need to check for this
       // and return the correct decimals.
@@ -86,6 +86,13 @@ export default class JoinParams {
 
       return parseUnits(amount, decimals);
     });
+
+    return isDeep(this.pool.value)
+      ? [
+          parseUnits('0', this.pool.value.onchain?.decimals || 18),
+          ...parsedAmounts,
+        ]
+      : parsedAmounts;
   }
 
   private parseTokensIn(tokensIn: string[]): string[] {
