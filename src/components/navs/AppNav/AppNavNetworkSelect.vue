@@ -7,6 +7,7 @@ import i18n from '@/plugins/i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
+import { configService } from '@/services/config/config.service';
 
 export interface NetworkOption {
   id: string;
@@ -26,35 +27,50 @@ const networks = ref([
   {
     id: 'ethereum',
     name: 'Ethereum',
-    subdomain: 'app',
     networkSlug: 'ethereum',
     key: '1',
   },
   {
     id: 'polygon',
     name: 'Polygon',
-    subdomain: 'polygon',
     networkSlug: 'polygon',
     key: '137',
   },
   {
     id: 'arbitrum',
     name: 'Arbitrum',
-    subdomain: 'arbitrum',
     networkSlug: 'arbitrum',
     key: '42161',
   },
 ]);
 
+const networksDev = ref([
+  {
+    id: 'goerli',
+    name: 'Goerli',
+    networkSlug: 'goerli',
+    key: '5',
+  },
+]);
+
 // COMPUTED
+const allNetworks = computed(() => {
+  return networks.value.concat(
+    configService.env.APP_ENV === 'development' ||
+      configService.env.APP_ENV === 'staging'
+      ? networksDev.value
+      : []
+  );
+});
+
 const appNetworkSupported = computed((): boolean => {
-  return networks.value
+  return allNetworks.value
     .map(network => network.key)
     .includes(networkId.value.toString());
 });
 
 const activeNetwork = computed((): NetworkOption | undefined =>
-  networks.value.find(network => {
+  allNetworks.value.find(network => {
     if (!appNetworkSupported.value && network.id === 'ethereum') return true;
     return isActive(network);
   })
@@ -128,7 +144,7 @@ function isActive(network: NetworkOption): boolean {
         {{ $t('networkSelection') }}:
       </div>
       <a
-        v-for="network in networks"
+        v-for="network in allNetworks"
         :key="network.id"
         :href="getNetworkChangeUrl(network)"
         class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"

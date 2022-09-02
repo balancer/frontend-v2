@@ -74,29 +74,8 @@ export function networkFromSlug(networkSlug: string): Network {
   ) as Network;
 }
 
-export function subdomainFor(network: Network): string {
-  switch (network) {
-    case Network.MAINNET:
-      return 'app';
-    case Network.KOVAN:
-      return 'kovan';
-    case Network.GOERLI:
-      return 'goerli';
-    case Network.POLYGON:
-      return 'polygon';
-    case Network.ARBITRUM:
-      return 'arbitrum';
-    case Network.OPTIMISM:
-      return 'optimism';
-    default:
-      throw new Error('Network not supported');
-  }
-}
-
-export function urlFor(network: Network): string {
-  const subdomain = subdomainFor(network);
-  const host = configService.env.APP_HOST;
-  return `https://${subdomain}.${host}/#`;
+export function urlFor(): string {
+  return `https://app.${configService.env.APP_HOST}/#`;
 }
 
 export default function useNetwork() {
