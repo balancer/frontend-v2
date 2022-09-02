@@ -18,7 +18,7 @@ interface PolygonGasStationResponse {
 }
 
 export default class PolygonProvider {
-  public async getLatest(
+  public async getGasPrice(
     txSpeed: TxSpeedOptions = 'standard'
   ): Promise<GasPrice | null> {
     try {

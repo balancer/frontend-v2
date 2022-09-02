@@ -20,18 +20,18 @@ export default class GaugeControllerService {
     return this.config.network.addresses.gaugeController;
   }
 
-  public voteForManyGaugeWeights(
+  public async voteForManyGaugeWeights(
     gaugeAddresses: string[],
     weights: BigNumber[],
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'vote_for_many_gauge_weights',
-      [gaugeAddresses, weights],
-      options
-    );
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'vote_for_many_gauge_weights',
+      params: [gaugeAddresses, weights],
+      options,
+    });
   }
 
   public voteForGaugeWeights(
@@ -39,13 +39,13 @@ export default class GaugeControllerService {
     weight: BigNumber,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'vote_for_gauge_weights',
-      [gaugeAddress, weight],
-      options
-    );
+    return this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'vote_for_gauge_weights',
+      params: [gaugeAddress, weight],
+      options,
+    });
   }
 }
 
