@@ -16,7 +16,8 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism",
+    "blocks": ""
   },
   "supportsEIP1559": false,
   "supportsElementPools": false,
