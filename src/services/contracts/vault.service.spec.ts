@@ -5,6 +5,7 @@ import {
   SwapV2,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { MaxUint256 } from '@ethersproject/constants';
 
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { vaultService } from './vault.service';
@@ -63,14 +64,14 @@ describe('vault.service', () => {
 
       await vaultService.swap(single, funds, tokenOutAmount);
       const sendTransactionArgs = require('@/services/web3/web3.service')
-        .web3Service.sendTransaction.mock.calls[0];
-      expect(sendTransactionArgs[0]).toEqual(vaultService.address);
-      expect(sendTransactionArgs[1]).toEqual(vaultService.abi);
-      expect(sendTransactionArgs[2]).toEqual('swap');
-      const transactionParams = sendTransactionArgs[3];
-      expect(transactionParams[0]).toEqual(single);
-      expect(transactionParams[1]).toEqual(funds);
-      expect(transactionParams[2]).toEqual(tokenOutAmount);
+        .web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
+      expect(sendTransactionArgs[0]).toEqual({
+        contractAddress: vaultService.address,
+        abi: vaultService.abi,
+        action: 'swap',
+        params: [single, funds, tokenOutAmount, MaxUint256],
+        options: {},
+      });
     });
   });
 
@@ -87,16 +88,14 @@ describe('vault.service', () => {
         limits
       );
       const sendTransactionArgs = require('@/services/web3/web3.service')
-        .web3Service.sendTransaction.mock.calls[0];
-      expect(sendTransactionArgs[0]).toEqual(vaultService.address);
-      expect(sendTransactionArgs[1]).toEqual(vaultService.abi);
-      expect(sendTransactionArgs[2]).toEqual('batchSwap');
-      const transactionParams = sendTransactionArgs[3];
-      expect(transactionParams[0]).toEqual(swapKind);
-      expect(transactionParams[1]).toEqual(swaps);
-      expect(transactionParams[2]).toEqual(tokenAddresses);
-      expect(transactionParams[3]).toEqual(funds);
-      expect(transactionParams[4]).toEqual(limits);
+        .web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
+      expect(sendTransactionArgs[0]).toEqual({
+        contractAddress: vaultService.address,
+        abi: vaultService.abi,
+        action: 'batchSwap',
+        params: [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
+        options: {},
+      });
     });
   });
 });

@@ -47,11 +47,13 @@ export class FeeDistributor {
    * the claimTokens method by modifing the ABI to make it a view function.
    */
   public async getClaimableBalances(userAddress: string): Promise<BalanceMap> {
-    const balances = await this.web3.callStatic<BigNumber[]>(
-      this.address,
-      this.staticAbi,
-      'claimTokens',
-      [userAddress, this.claimableTokens]
+    const balances = await this.web3.txBuilder.contract.callStatic<BigNumber[]>(
+      {
+        contractAddress: this.address,
+        abi: this.staticAbi,
+        action: 'claimTokens',
+        params: [userAddress, this.claimableTokens],
+      }
     );
     const stringBalances = balances.map(balance => balance.toString());
 
@@ -64,12 +66,12 @@ export class FeeDistributor {
   public async claimBalances(
     userAddress: string
   ): Promise<TransactionResponse> {
-    return await this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'claimTokens',
-      [userAddress, this.claimableTokens]
-    );
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'claimTokens',
+      params: [userAddress, this.claimableTokens],
+    });
   }
 
   /**
@@ -79,12 +81,12 @@ export class FeeDistributor {
     userAddress: string,
     tokenAddress: string
   ): Promise<TransactionResponse> {
-    return await this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'claimToken',
-      [userAddress, tokenAddress]
-    );
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'claimToken',
+      params: [userAddress, tokenAddress],
+    });
   }
 
   /**

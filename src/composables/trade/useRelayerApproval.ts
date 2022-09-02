@@ -3,7 +3,6 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { configService } from '@/services/config/config.service';
 import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -12,6 +11,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 const vaultAddress = configService.network.addresses.vault;
 
@@ -41,7 +41,7 @@ export default function useRelayerApproval(
   /**
    * COMPOSABLES
    */
-  const { getProvider, account } = useWeb3();
+  const { getSigner, account } = useWeb3();
   const relayerAddress = ref(relayerAddressMap[relayer]);
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
@@ -80,13 +80,13 @@ export default function useRelayerApproval(
     try {
       init.value = true;
 
-      const tx = await sendTransaction(
-        getProvider(),
-        configService.network.addresses.vault,
-        Vault__factory.abi,
-        'setRelayerApproval',
-        [account.value, relayerAddress.value, true]
-      );
+      const txBuilder = new TransactionBuilder(getSigner());
+      const tx = await txBuilder.contract.sendTransaction({
+        contractAddress: configService.network.addresses.vault,
+        abi: Vault__factory.abi,
+        action: 'setRelayerApproval',
+        params: [account.value, relayerAddress.value, true],
+      });
 
       init.value = false;
       approving.value = true;

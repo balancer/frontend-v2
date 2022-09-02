@@ -1,14 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { parseUnits } from '@ethersproject/units';
 
 import { toJsTimestamp, toUtcTime } from '@/composables/useTime';
 import veBalAbi from '@/lib/abi/veBalAbi.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 import Service from '../balancer-contracts.service';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { ContractInterface } from 'ethers';
 
 export type VeBalLockInfo = {
   lockedEndDate: number;
@@ -69,48 +70,55 @@ export default class VeBAL {
     };
   }
 
-  public createLock(
+  public async createLock(
     userProvider: Web3Provider,
     lockAmount: string,
     lockEndDate: string
-  ) {
-    return sendTransaction(
-      userProvider,
-      this.address,
-      veBalAbi,
-      'create_lock',
-      [parseUnits(lockAmount, 18), this.parseDate(lockEndDate)]
-    );
+  ): Promise<TransactionResponse> {
+    const txBuilder = new TransactionBuilder(userProvider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: veBalAbi as ContractInterface,
+      action: 'create_lock',
+      params: [parseUnits(lockAmount, 18), this.parseDate(lockEndDate)],
+    });
   }
 
-  public increaseLock(userProvider: Web3Provider, lockAmount: string) {
-    return sendTransaction(
-      userProvider,
-      this.address,
-      veBalAbi,
-      'increase_amount',
-      [parseUnits(lockAmount, 18)]
-    );
+  public async increaseLock(
+    userProvider: Web3Provider,
+    lockAmount: string
+  ): Promise<TransactionResponse> {
+    const txBuilder = new TransactionBuilder(userProvider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: veBalAbi as ContractInterface,
+      action: 'increase_amount',
+      params: [parseUnits(lockAmount, 18)],
+    });
   }
 
-  public extendLock(userProvider: Web3Provider, lockEndDate: string) {
-    return sendTransaction(
-      userProvider,
-      this.address,
-      veBalAbi,
-      'increase_unlock_time',
-      [this.parseDate(lockEndDate)]
-    );
+  public async extendLock(
+    userProvider: Web3Provider,
+    lockEndDate: string
+  ): Promise<TransactionResponse> {
+    const txBuilder = new TransactionBuilder(userProvider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: veBalAbi as ContractInterface,
+      action: 'increase_unlock_time',
+      params: [this.parseDate(lockEndDate)],
+    });
   }
 
-  public unlock(userProvider: Web3Provider) {
-    return sendTransaction(
-      userProvider,
-      this.address,
-      veBalAbi,
-      'withdraw',
-      []
-    );
+  public async unlock(
+    userProvider: Web3Provider
+  ): Promise<TransactionResponse> {
+    const txBuilder = new TransactionBuilder(userProvider.getSigner());
+    return await txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: veBalAbi as ContractInterface,
+      action: 'withdraw',
+    });
   }
 
   public get address(): string {
