@@ -10,12 +10,11 @@ export function getPoolAddress(poolId: string) {
 }
 
 export function getBptPrice(pool?: Pool): BigNumber {
-  if (!pool || !pool.totalLiquidity) return bnum('0');
+  if (!pool) return bnum('0');
   return bnum(pool.totalLiquidity).div(pool.totalShares);
 }
 
 export function getBptBalanceFiatValue(pool: AnyPool, balance: string): string {
-  if (!pool.totalLiquidity) return '0';
   return bnum(pool.totalLiquidity)
     .div(pool.totalShares)
     .times(balance)

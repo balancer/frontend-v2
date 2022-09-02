@@ -175,12 +175,10 @@ export default function useUserPoolsQuery(
 
     const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,
-      shares: pool.totalLiquidity
-        ? bnum(pool.totalLiquidity)
-            .div(pool.totalShares)
-            .times(poolSharesMap[pool.id].balance)
-            .toString()
-        : '0',
+      shares: bnum(pool.totalLiquidity)
+        .div(pool.totalShares)
+        .times(poolSharesMap[pool.id].balance)
+        .toString(),
       bpt: poolSharesMap[pool.id].balance,
     }));
 

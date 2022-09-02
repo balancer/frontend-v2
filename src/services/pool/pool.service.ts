@@ -39,7 +39,6 @@ export default class PoolService {
   }
 
   public get bptPrice(): string {
-    if (!this.pool.totalLiquidity || !this.pool.totalShares) return '0';
     return bnum(this.pool.totalLiquidity).div(this.pool.totalShares).toString();
   }
 
@@ -62,7 +61,7 @@ export default class PoolService {
     if (bnum(totalLiquidity).gt(0)) {
       this.pool.totalLiquidity = totalLiquidity;
     }
-    return this.pool.totalLiquidity || '0';
+    return this.pool.totalLiquidity;
   }
 
   /**
