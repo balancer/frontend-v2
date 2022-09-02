@@ -25,7 +25,7 @@ export default function usePools(tokenList: Ref<string[]> = ref([])) {
   const pools = computed<Pool[]>(() =>
     poolsQuery.data.value
       ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
-      : (POOLS_CACHE.value as Pool[])
+      : []
   );
 
   const tokens = computed(async () => {

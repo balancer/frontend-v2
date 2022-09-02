@@ -13,6 +13,7 @@
   "explorer": "https://arbiscan.io",
   "explorerName": "Arbiscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
+  "balancerApi": "https://xpbjj5txdbhs5iiw4dnatjwttu.appsync-api.ap-southeast-2.amazonaws.com/graphql",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
@@ -59,7 +60,8 @@
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
-    "alchemy": "VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh"
+    "alchemy": "VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh",
+    "balancerApi": "da2-cnbvmperrjcktoayuy43cvqkda"
   },
   "strategies": {
     "0": {

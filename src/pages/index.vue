@@ -18,12 +18,6 @@ const isElementSupported = appNetworkConfig.supportsElementPools;
 const { selectedTokens, addSelectedToken, removeSelectedToken } =
   usePoolFilters();
 
-// const {
-//   dataStates,
-//   result: investmentPools,
-//   loadMore,
-//   isLoadingMore,
-// } = useStreamedPoolsQuery(selectedTokens);
 const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
   usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
