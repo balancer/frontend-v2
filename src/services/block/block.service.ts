@@ -19,11 +19,11 @@ export default class BlockService {
     try {
       let query = {};
       if (useRange) {
-        const startTimestamp = bnum(timestamp).minus(oneHourInSecs);
+        const oneHourLater = bnum(timestamp).plus(oneHourInSecs);
         query = {
           where: {
             timestamp_gt: timestamp,
-            timestamp_lt: startTimestamp.toString(),
+            timestamp_lt: oneHourLater.toString(),
           },
         };
       } else {
