@@ -74,7 +74,7 @@ export function networkFromSlug(networkSlug: string): Network {
   ) as Network;
 }
 
-export function urlFor(): string {
+export function appUrl(): string {
   return `https://app.${configService.env.APP_HOST}/#`;
 }
 

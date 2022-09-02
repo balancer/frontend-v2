@@ -12,7 +12,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, urlFor } from './useNetwork';
+import { isTestnet, appUrl } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 
 /**
@@ -146,7 +146,7 @@ export function poolURLFor(
     return `https://app.element.fi/pools/${addressFor(poolId)}`;
   }
 
-  return `${urlFor(network)}/pool/${poolId}`;
+  return `${appUrl()}/pool/${poolId}`;
 }
 
 /**
