@@ -46,10 +46,6 @@ export const isTestnet = computed(() => isKovan.value || isGoerli.value);
  * METHODS
  */
 
-export function setNetworkId(id: Network) {
-  networkId.value = id;
-}
-
 export function networkFor(key: string | number): Network {
   switch (key.toString()) {
     case '1':
@@ -108,6 +104,5 @@ export default function useNetwork() {
     networkId,
     networkConfig,
     networkSlug,
-    setNetworkId,
   };
 }
