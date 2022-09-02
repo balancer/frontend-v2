@@ -16,11 +16,17 @@ const actions = {
   init({ commit }) {
     commit(
       'setInputAsset',
-      lsGet('trade.inputAsset', initialTokens[networkId.value].input)
+      lsGet(
+        `trade.inputAsset.${networkId.value}`,
+        initialTokens[networkId.value].input
+      )
     );
     commit(
       'setOutputAsset',
-      lsGet('trade.outputAsset', initialTokens[networkId.value].output)
+      lsGet(
+        `trade.outputAsset.${networkId.value}`,
+        initialTokens[networkId.value].output
+      )
     );
   },
 };
