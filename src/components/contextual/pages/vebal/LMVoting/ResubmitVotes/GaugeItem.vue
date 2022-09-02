@@ -2,7 +2,7 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { format, formatDistanceToNow } from 'date-fns';
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
@@ -29,52 +29,51 @@ import { TransactionActionState } from '@/types/transactions';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingGauges from '@/composables/useVotingGauges';
 import { orderedPoolTokens } from '@/composables/usePool';
-import GaugeItem from './GaugeItem.vue';
 
 /**
  * TYPES
  */
-
+type Props = {
+  gauge: VotingGaugeWithVotes;
+  modelValue?: string;
+};
 /**
  * PROPS & EMITS
  */
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: '',
+});
 
 const emit = defineEmits<{
-  (e: 'close'): void;
-  (e: 'success'): void;
+  (e: 'update:modelValue', value: string): void;
 }>();
 
 /**
  * COMPOSABLES
  */
-const { poolsUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
-const { votingGauges: allVotingGauges } = useVotingGauges();
 
 /**
  * STATE
  */
-const votes = ref({});
 
 /**
  * COMPUTED
  */
-const votingGauges = computed(() =>
-  allVotingGauges.value.filter(gauge => {
-    return poolsUsingUnderUtilizedVotingPower.value.includes(gauge.address);
-  })
-);
 
 /**
  * METHODS
  */
-
-watchEffect(() => {
-  votingGauges.value.forEach(gauge => {
-    votes.value[gauge.address] = gauge.userVotes
-      ? scale(bnum(gauge.userVotes), -2).toString()
-      : '';
-  });
-});
+// TODO: Refactor
+function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
+  const sortedTokens = orderedPoolTokens(
+    gauge.pool.poolType,
+    gauge.pool.address,
+    gauge.pool.tokens
+  );
+  return sortedTokens.map(
+    token => gauge.tokenLogoURIs[token?.address || ''] || ''
+  );
+}
 
 /**
  * LIFECYCLE
@@ -82,23 +81,21 @@ watchEffect(() => {
 </script>
 
 <template>
-  <BalModal show @close="emit('close')">
-    <template #header>
-      <div class="flex items-center">
-        <h4>Preview vote resubmission</h4>
-      </div>
-    </template>
-    <div>
-      <GaugeItem
-        v-for="gauge in votingGauges"
-        :key="gauge.address"
-        v-model="votes[gauge.address]"
-        :gauge="gauge"
-      ></GaugeItem>
-
-      <div class="mt-4">
-        <BalBtn color="gradient" block> Confirm votes </BalBtn>
-      </div>
+  <div>
+    <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" :size="32" />
+    <div v-for="token in gauge.pool.tokens" :key="token.address">
+      {{ !!Number(token.weight) ? `${Number(token.weight) * 100}%` : '100%' }}
+      {{ token.symbol }}
     </div>
-  </BalModal>
+    <div>
+      {{ gauge.pool.symbol }}
+    </div>
+    <BalTextInput
+      v-model="modelValue"
+      type="number"
+      name="poolName"
+      inputAlignRight
+      @input="val => emit('update:modelValue', val)"
+    />
+  </div>
 </template>
