@@ -1,4 +1,5 @@
 node_modules/
 dist/
+public/data/tokenlists.json
 public/data/tokenlists/*.json
 package-lock.json
