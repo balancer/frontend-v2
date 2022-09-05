@@ -1,5 +1,5 @@
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { computed, reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 
 import { POOLS } from '@/constants/pools';
@@ -14,17 +14,17 @@ import useGaugesQuery from './useGaugesQuery';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
-  GraphQLQuery,
   Op,
   PoolsBalancerAPIRepository,
   PoolsFallbackRepository,
+  PoolsRepositoryFetchOptions,
   PoolsSubgraphRepository,
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 
 type PoolsQueryResponse = {
   pools: Pool[];
-  skip?: string;
+  skip?: number;
   enabled?: boolean;
 };
 
@@ -33,6 +33,52 @@ type FilterOptions = {
   poolAddresses?: Ref<string[]>;
   isExactTokensList?: boolean;
   pageSize?: number;
+};
+
+const queryAttrs = {
+  pools: {
+    id: true,
+    address: true,
+    poolType: true,
+    swapFee: true,
+    tokensList: true,
+    totalLiquidity: true,
+    totalSwapVolume: true,
+    totalSwapFee: true,
+    totalShares: true,
+    volumeSnapshot: true,
+    owner: true,
+    factory: true,
+    amp: true,
+    createTime: true,
+    swapEnabled: true,
+    tokens: {
+      address: true,
+      balance: true,
+      weight: true,
+      priceRate: true,
+      symbol: true,
+    },
+    apr: {
+      stakingApr: {
+        min: true,
+        max: true,
+      },
+      swapFees: true,
+      tokenAprs: {
+        total: true,
+        breakdown: true,
+      },
+      rewardAprs: {
+        total: true,
+        breakdown: true,
+      },
+      protocolApr: true,
+      min: true,
+      max: true,
+    },
+  },
+  skip: true,
 };
 
 export default function usePoolsQuery(
@@ -52,6 +98,9 @@ export default function usePoolsQuery(
     (subgraphGauges.value || []).map(gauge => gauge.id)
   );
 
+  let balancerApiRepository = initializeDecoratedAPIRepository();
+  let subgraphRepository = initializeDecoratedSubgraphRepository();
+
   /**
    * COMPUTED
    */
@@ -62,8 +111,7 @@ export default function usePoolsQuery(
    */
 
   function initializePoolsRepository(): PoolsFallbackRepository {
-    const balancerApiRepository = initializeDecoratedAPIRepository();
-    const subgraphRepository = initializeDecoratedSubgraphRepository();
+    console.log('Initializing the fallback. Token list is: ', tokenList);
     const fallbackRepository = new PoolsFallbackRepository(
       [balancerApiRepository, subgraphRepository],
       30 * 1000
@@ -72,16 +120,20 @@ export default function usePoolsQuery(
   }
 
   function initializeDecoratedAPIRepository() {
-    const balancerApiRepository = new PoolsBalancerAPIRepository(
-      configService.network.balancerApi || '',
-      configService.network.keys.balancerApi || ''
-    );
+    const balancerApiRepository = new PoolsBalancerAPIRepository({
+      url: configService.network.balancerApi || '',
+      apiKey: configService.network.keys.balancerApi || '',
+      query: {
+        args: getQueryArgs(),
+        attrs: queryAttrs,
+      },
+    });
 
     return {
-      fetch: async (query: GraphQLQuery): Promise<Pool[]> => {
-        return balancerApiRepository.fetch(query);
+      fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
+        return balancerApiRepository.fetch(options);
       },
-      get skip(): string | undefined {
+      get skip(): number {
         return balancerApiRepository.skip;
       },
     };
@@ -93,8 +145,8 @@ export default function usePoolsQuery(
     );
 
     return {
-      fetch: async (query: GraphQLQuery): Promise<Pool[]> => {
-        const pools = await subgraphRepository.fetch(query);
+      fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
+        const pools = await subgraphRepository.fetch(options);
 
         const poolDecorator = new PoolDecorator(pools);
         const decoratedPools = await poolDecorator.decorate(
@@ -106,13 +158,13 @@ export default function usePoolsQuery(
 
         return decoratedPools;
       },
-      get skip(): string | undefined {
+      get skip(): number {
         return subgraphRepository.skip;
       },
     };
   }
 
-  function getQueryArgs(pageParam = ''): GraphQLArgs {
+  function getQueryArgs(): GraphQLArgs {
     const tokensListFilterOperation = filterOptions?.isExactTokensList
       ? Op.Equals
       : Op.Contains;
@@ -123,7 +175,6 @@ export default function usePoolsQuery(
 
     const queryArgs: any = {
       chainId: configService.network.chainId,
-      first: 10,
       orderBy: 'totalLiquidity',
       orderDirection: 'desc',
       where: {
@@ -133,20 +184,42 @@ export default function usePoolsQuery(
         id: Op.NotIn(POOLS.BlockList),
       },
     };
-    if (pageParam && pageParam.length > 0) {
-      queryArgs.skip = pageParam;
-    }
     if (filterOptions?.poolIds?.value.length) {
       queryArgs.where.id = Op.In(filterOptions.poolIds.value);
     }
     if (filterOptions?.poolAddresses?.value.length) {
       queryArgs.where.address = Op.In(filterOptions.poolAddresses.value);
     }
-    if (tokenList.value.length > 0) {
-      delete queryArgs.first;
-    }
     return queryArgs;
   }
+
+  function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
+    const fetchArgs: PoolsRepositoryFetchOptions = {};
+
+    if (pageParam && pageParam > 0) {
+      fetchArgs.skip = pageParam;
+    }
+
+    return fetchArgs;
+  }
+
+  /**
+   *  When tokenList changes, re-initialize the repositories as their queries
+   *  need to change to filter for those tokens
+   */
+  watch(
+    tokenList,
+    () => {
+      console.log(
+        'Token list changed to: ',
+        tokenList,
+        ' re-building repositories'
+      );
+      balancerApiRepository = initializeDecoratedAPIRepository();
+      subgraphRepository = initializeDecoratedSubgraphRepository();
+    },
+    { deep: true }
+  );
 
   /**
    * QUERY KEY
@@ -159,81 +232,32 @@ export default function usePoolsQuery(
     gaugeAddresses
   );
 
-  const queryAttrs = {
-    pools: {
-      id: true,
-      address: true,
-      poolType: true,
-      swapFee: true,
-      tokensList: true,
-      totalLiquidity: true,
-      totalSwapVolume: true,
-      totalSwapFee: true,
-      totalShares: true,
-      volumeSnapshot: true,
-      owner: true,
-      factory: true,
-      amp: true,
-      createTime: true,
-      swapEnabled: true,
-      tokens: {
-        address: true,
-        balance: true,
-        weight: true,
-        priceRate: true,
-        symbol: true,
-      },
-      apr: {
-        stakingApr: {
-          min: true,
-          max: true,
-        },
-        swapFees: true,
-        tokenAprs: {
-          total: true,
-          breakdown: true,
-        },
-        rewardAprs: {
-          total: true,
-          breakdown: true,
-        },
-        protocolApr: true,
-        min: true,
-        max: true,
-      },
-    },
-    skip: true,
-  };
-
   /**
    * QUERY FUNCTION
    */
-  const queryFn = async ({ pageParam = '' }) => {
+  const queryFn = async ({ pageParam = 0 }) => {
     console.time('usePoolsQuery-overall');
     console.time('usePoolsQuery-init');
-    const queryArgs = getQueryArgs(pageParam);
+    const fetchOptions = getFetchOptions(pageParam);
     const poolsRepository = initializePoolsRepository();
     console.timeEnd('usePoolsQuery-init');
     console.time('usePoolsQuery-fetchpools');
 
     console.log(
       'Fetching with Query Args: ',
-      queryArgs,
+      fetchOptions,
       ' attrs: ',
       queryAttrs
     );
-    const pools: Pool[] = await poolsRepository.fetch({
-      args: queryArgs,
-      attrs: queryAttrs,
-    });
+    const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
     console.timeEnd('usePoolsQuery-fetchpools');
     console.timeEnd('usePoolsQuery-overall');
     console.log('RETRIEVED POOLS: ', pools);
 
     const skip = poolsRepository.currentProvider?.skip
-      ? poolsRepository.currentProvider.skip.toString()
-      : undefined;
+      ? poolsRepository.currentProvider.skip
+      : 0;
 
     return {
       pools,

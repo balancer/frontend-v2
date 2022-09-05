@@ -20,7 +20,10 @@ export default class Pools {
     const repository = new PoolsSubgraphRepository(
       configService.network.subgraph
     );
-    const pools = await repository.fetch(query);
+    const pools = await repository.fetch({
+      first: query.args.first,
+      skip: query.args.skip,
+    });
     return pools as Pool[];
   }
 }
