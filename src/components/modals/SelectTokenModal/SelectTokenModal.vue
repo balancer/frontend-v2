@@ -230,7 +230,7 @@ watch(
         <RecycleScroller
           v-if="tokens.length > 0"
           v-slot="{ item: token }"
-          class="overflow-y-scroll h-96"
+          class="overflow-y-scroll list-height"
           :items="tokens"
           :itemSize="64"
           keyField="address"
@@ -258,5 +258,11 @@ watch(
     </template>
   </BalModal>
 </template>
+
+<style scoped>
+.list-height {
+  height: 70vh;
+}
+</style>
 
 

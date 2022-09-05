@@ -35,9 +35,14 @@ usePoolTransfersGuard();
     <div class="pb-16">
       <div class="mb-12 layout-header">
         <div />
-        <router-link :to="getReturnRoute({ name: 'pool', params: { id } })">
+        <BalBtn
+          tag="router-link"
+          :to="getReturnRoute({ name: 'pool', params: { id } })"
+          color="white"
+          circle
+        >
           <BalIcon name="x" size="lg" />
-        </router-link>
+        </BalBtn>
       </div>
 
       <Col3Layout offsetGutters mobileHideGutters>
