@@ -30,7 +30,7 @@ type BlocknativeGasPlatformResponse = {
 };
 
 export default class BlocknativeProvider {
-  public async getLatest(
+  public async getGasPrice(
     confidence: BlocknativeGasPriceConfidence | 'best' = 'best'
   ): Promise<GasPrice | null> {
     try {

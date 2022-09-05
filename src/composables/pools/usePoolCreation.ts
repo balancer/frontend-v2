@@ -541,19 +541,20 @@ export default function usePoolCreation() {
         getProvider(),
         hash
       );
-    poolCreationState.poolId = response.id;
-    poolCreationState.poolAddress = response.address;
-    poolCreationState.needsSeeding = true;
-    saveState();
+    if (response !== null) {
+      poolCreationState.poolId = response.id;
+      poolCreationState.poolAddress = response.address;
+      poolCreationState.needsSeeding = true;
+      saveState();
+    }
   }
 
   // when restoring from a pool creation transaction (not from localstorage)
   async function retrievePoolDetails(hash: string) {
-    const details =
-      await balancerService.pools.weighted.retrievePoolDetailsFromCall(
-        getProvider(),
-        hash
-      );
+    const details = await balancerService.pools.weighted.retrievePoolDetails(
+      getProvider(),
+      hash
+    );
     if (!details) return;
     poolCreationState.seedTokens = details.tokens.map((token, i) => {
       return {
@@ -561,7 +562,7 @@ export default function usePoolCreation() {
         weight: Number(details.weights[i]) * 100,
         isLocked: true,
         amount: '0',
-        id: i,
+        id: i.toString(),
       };
     });
     poolCreationState.tokensList = details.tokens;

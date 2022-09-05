@@ -37,9 +37,22 @@ function navigateToCreatePool() {
   <div class="xl:container xl:px-4 pt-10 md:pt-12 xl:mx-auto">
     <BalStack vertical>
       <div class="px-4 xl:px-0">
-        <h3 class="mb-3">
-          {{ $t('investmentPools') }}
-        </h3>
+        <div class="flex justify-between items-end mb-8">
+          <h3>
+            {{ $t('investmentPools') }}
+          </h3>
+          <BalBtn
+            v-if="upToMediumBreakpoint"
+            color="blue"
+            size="sm"
+            outline
+            :class="{ 'mt-4': upToMediumBreakpoint }"
+            @click="navigateToCreatePool"
+          >
+            {{ $t('createAPool.title') }}
+          </BalBtn>
+        </div>
+
         <div
           class="flex flex-col md:flex-row justify-between items-end lg:items-center w-full"
         >
@@ -50,8 +63,10 @@ function navigateToCreatePool() {
             @remove="removeSelectedToken"
           />
           <BalBtn
+            v-if="!upToMediumBreakpoint"
             color="blue"
             size="sm"
+            outline
             :class="{ 'mt-4': upToMediumBreakpoint }"
             :block="upToMediumBreakpoint"
             @click="navigateToCreatePool"
@@ -69,6 +84,7 @@ function navigateToCreatePool() {
         :hiddenColumns="['migrate', 'actions', 'lockEndDate']"
         :isLoadingMore="poolsIsFetchingNextPage"
         :isPaginated="isPaginated"
+        skeletonClass="pools-table-loading-height"
         @load-more="loadMorePools"
       />
       <div v-if="isElementSupported" class="p-4 xl:p-0 mt-16">
@@ -77,3 +93,9 @@ function navigateToCreatePool() {
     </BalStack>
   </div>
 </template>
+
+<style>
+.pools-table-loading-height {
+  height: 40rem;
+}
+</style>

@@ -76,7 +76,7 @@ const totalLabel = computed((): string =>
         </div>
         <div>{{ totalLabel }}</div>
       </div>
-      <div class="p-3">
+      <div class="p-3 text-left">
         <!-- SWAP FEE APR -->
         <div class="flex items-center mb-1 whitespace-nowrap">
           {{ fNum2(bpToDec(apr?.swapFees || '0'), FNumFormats.percent) }}

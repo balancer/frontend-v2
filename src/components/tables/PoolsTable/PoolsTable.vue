@@ -43,6 +43,7 @@ type Props = {
   selectedTokens?: string[];
   hiddenColumns?: string[];
   showBoost?: boolean;
+  skeletonClass?: string;
 };
 
 /**
@@ -56,9 +57,9 @@ const props = withDefaults(defineProps<Props>(), {
   isPaginated: false,
   hiddenColumns: () => [],
   showBoost: false,
-  columnStates: () => ({}),
   data: () => [],
   selectedTokens: () => [],
+  skeletonClass: 'h-64',
 });
 
 const emit = defineEmits(['loadMore', 'triggerStake']);
@@ -251,7 +252,7 @@ function iconAddresses(pool: PoolWithShares) {
       :noResultsLabel="noPoolsLabel"
       :isLoading="isLoading"
       :isLoadingMore="isLoadingMore"
-      skeletonClass="h-64"
+      :skeletonClass="skeletonClass"
       sticky="both"
       :square="upToLargeBreakpoint"
       :link="{
