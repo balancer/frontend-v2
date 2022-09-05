@@ -134,7 +134,7 @@ function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
 onMounted(() => {
   if (bodyRef.value) {
     bodyRef.value.onscroll = () => {
-      if (bodyRef.value) {
+      if (bodyRef.value && stickyHeaderRef.value) {
         const offsetRatio =
           bodyRef.value.offsetWidth / stickyHeaderRef.value.offsetWidth / 10;
         isColumnStuck.value = !!(

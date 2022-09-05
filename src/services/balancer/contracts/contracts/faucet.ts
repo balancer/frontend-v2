@@ -16,9 +16,12 @@ export class Faucet {
    * @summary Drip token from faucet
    */
   async drip(tokenAddress: string) {
-    return await this.web3.sendTransaction(this.address, this.abi, 'drip', [
-      tokenAddress,
-    ]);
+    return await this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'drip',
+      params: [tokenAddress],
+    });
   }
 }
 

@@ -37,7 +37,7 @@ describe('Blocknative Provider', () => {
   });
 
   it('Should not return gas values with rounding errors', async () => {
-    const response = await blocknativeProvider.getLatest();
+    const response = await blocknativeProvider.getGasPrice();
     expect(response?.price).toEqual(32120000000);
     expect(response?.maxFeePerGas).toEqual(32120000000);
     expect(response?.maxPriorityFeePerGas).toEqual(1500000000);

@@ -8,11 +8,11 @@ import useEthers from '@/composables/useEthers';
 import useTokens from '@/composables/useTokens';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 import { bnum } from '@/lib/utils';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { tokenService } from '@/services/token/token.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useTransactions from '../useTransactions';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export type ApprovalState = {
   init: boolean;
@@ -37,7 +37,7 @@ export default function useTokenApprovals(
   /**
    * COMPOSABLES
    */
-  const { getProvider, appNetworkConfig, account } = useWeb3();
+  const { getSigner, appNetworkConfig, account } = useWeb3();
   const { getToken, refetchAllowances, approvalsRequired, getTokens } =
     useTokens();
   const { txListener } = useEthers();
@@ -90,13 +90,13 @@ export default function useTokenApprovals(
     try {
       state.init = true;
 
-      const tx = await sendTransaction(
-        getProvider(),
-        address,
-        ERC20ABI,
-        'approve',
-        [spender, amount]
-      );
+      const txBuilder = new TransactionBuilder(getSigner());
+      const tx = await txBuilder.contract.sendTransaction({
+        contractAddress: address,
+        abi: ERC20ABI,
+        action: 'approve',
+        params: [spender, amount],
+      });
 
       state.init = false;
       state.confirming = true;
