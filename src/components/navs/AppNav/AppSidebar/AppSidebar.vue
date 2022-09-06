@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import { useSidebar } from '@/composables/useSidebar';
 
@@ -14,6 +14,14 @@ const showSidebar = ref(false);
  * COMPOSABLES
  */
 const { setSidebarOpen } = useSidebar();
+
+watch(showSidebar, () => {
+  if (showSidebar.value) {
+    document.body.classList.add('overflow-hidden');
+  } else {
+    document.body.classList.remove('overflow-hidden');
+  }
+});
 </script>
 
 <template>
