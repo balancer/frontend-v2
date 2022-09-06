@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import OldBigNumber from 'bignumber.js';
 
 import { format, formatDistanceToNow } from 'date-fns';
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue';
+import { computed, onMounted, reactive, ref, toRef, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
@@ -49,8 +49,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { poolsUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
-const { votingGauges: allVotingGauges } = useVotingGauges();
+const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 
 /**
  * STATE
@@ -60,17 +59,13 @@ const votes = ref<Record<Address, string>>({});
 /**
  * COMPUTED
  */
-const votingGauges = computed(() =>
-  allVotingGauges.value.filter(gauge => {
-    return (
-      Number(gauge.userVotes) &&
-      poolsUsingUnderUtilizedVotingPower.value.includes(gauge.address)
-    );
-  })
-);
 
-const visibleVotingGauges = computed(() => votingGauges.value.slice(0, 8));
-const hiddenVotingGauges = computed(() => votingGauges.value.slice(7));
+const visibleVotingGauges = computed(() =>
+  gaugesUsingUnderUtilizedVotingPower.value.slice(0, 8)
+);
+const hiddenVotingGauges = computed(() =>
+  gaugesUsingUnderUtilizedVotingPower.value.slice(7)
+);
 
 const visibleVotesTotalAllocation = computed<number>(() =>
   Object.values(votes.value).reduce<number>(

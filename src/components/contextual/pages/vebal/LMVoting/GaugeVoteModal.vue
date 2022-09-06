@@ -26,6 +26,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
 import { TransactionActionState } from '@/types/transactions';
+import { getNextAllowedTimeToVote } from './utils';
 
 /**
  * TYPES
@@ -116,11 +117,8 @@ const voteButtonText = computed(() =>
 );
 
 const votedToRecentlyWarning = computed(() => {
-  const lastUserVoteTime = toJsTimestamp(props.gauge.lastUserVoteTime);
-  if (Date.now() < lastUserVoteTime + WEIGHT_VOTE_DELAY) {
-    const remainingTime = formatDistanceToNow(
-      lastUserVoteTime + WEIGHT_VOTE_DELAY
-    );
+  const remainingTime = getNextAllowedTimeToVote(props.gauge.lastUserVoteTime);
+  if (remainingTime) {
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
       description: t(

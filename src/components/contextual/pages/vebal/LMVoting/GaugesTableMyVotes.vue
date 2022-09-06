@@ -23,7 +23,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const { poolsUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
+const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 
 const myVotes = computed(() => {
   const normalizedVotes = scale(new BigNumber(props.gauge.userVotes), -4);
@@ -35,8 +35,8 @@ const myVotes = computed(() => {
 
 const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
   () =>
-    !!poolsUsingUnderUtilizedVotingPower.value.find(address =>
-      isSameAddress(address, props.gauge.address)
+    !!gaugesUsingUnderUtilizedVotingPower.value.find(gauge =>
+      isSameAddress(gauge.address, props.gauge.address)
     )
 );
 </script>

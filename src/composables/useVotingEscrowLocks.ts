@@ -7,6 +7,9 @@ import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingGauges from '@/composables/useVotingGauges';
 import configs from '@/lib/config';
 import { networkId } from '@/composables/useNetwork';
+import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
+import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
+import { getNextAllowedTimeToVote } from '@/components/contextual/pages/vebal/LMVoting/utils';
 
 /**
  * TYPES
@@ -31,7 +34,7 @@ export default function useVotingEscrowLocks() {
   const { account } = useWeb3();
   const { networkConfig } = useConfig();
   const veBalLockInfoQuery = useVeBalLockInfoQuery();
-  const { votingGauges } = useVotingGauges();
+  const { votingGauges: allVotingGauges } = useVotingGauges();
 
   const votingEscrowLocksQueryEnabled = computed(() => !!account.value);
   const votingEscrowLocksQuery = useGraphQuery<VotingEscrowLockQueryResponse>(
@@ -62,17 +65,38 @@ export default function useVotingEscrowLocks() {
     () => votingEscrowLocksQuery.data.value?.votingEscrowLocks
   );
 
+  const votingGaugeAddresses = computed<string[]>(
+    () => allVotingGauges.value?.map(gauge => gauge.address) || []
+  );
+
+  const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
+
   // TODO: Explain
-  const poolsUsingUnderUtilizedVotingPower = computed<string[]>(() => {
-    return votingGauges.value.reduce<string[]>((acc, gauge) => {
-      return gauge.lastUserVoteTime < lastReceivedVebal.value
-        ? [...acc, gauge.address]
-        : acc;
-    }, []);
-  });
+  const gaugesUsingUnderUtilizedVotingPower = computed<VotingGaugeWithVotes[]>(
+    () => {
+      return allVotingGauges.value.reduce<VotingGaugeWithVotes[]>(
+        (acc, gauge) => {
+          if (
+            // Does the gauge have user votes
+            Number(gauge.userVotes) &&
+            // Is gauge not expired
+            !expiredGauges.value?.includes(gauge.address) &&
+            // Is voting currently locked
+            !getNextAllowedTimeToVote(gauge.lastUserVoteTime) &&
+            // Has user received veBAL since they last voted
+            gauge.lastUserVoteTime < lastReceivedVebal.value
+          ) {
+            return [...acc, gauge];
+          }
+          return acc;
+        },
+        []
+      );
+    }
+  );
 
   const shouldResubmitVotes = computed<boolean>(
-    () => !!poolsUsingUnderUtilizedVotingPower.value.length
+    () => !!gaugesUsingUnderUtilizedVotingPower.value.length
   );
 
   const lastReceivedVebal = computed(() => {
@@ -85,7 +109,7 @@ export default function useVotingEscrowLocks() {
   return {
     votingEscrowLocks,
     lastReceivedVebal,
-    poolsUsingUnderUtilizedVotingPower,
+    gaugesUsingUnderUtilizedVotingPower,
     shouldResubmitVotes,
   };
 }
