@@ -3,7 +3,12 @@ import { AddressZero } from '@ethersproject/constants';
 import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
-import { isDeep, isManaged, isStableLike } from '@/composables/usePool';
+import {
+  isComposableStable,
+  isDeep,
+  isManaged,
+  isStableLike,
+} from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
@@ -44,8 +49,17 @@ export default class JoinParams {
       bptOut,
       this.pool.value?.onchain?.decimals || 18
     );
+
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
+
+    const maxAmountsIn =
+      isComposableStable(this.pool.value.poolType) && !isDeep(this.pool.value)
+        ? [
+            parseUnits('0', this.pool.value.onchain?.decimals || 18),
+            ...parsedAmountsIn,
+          ]
+        : parsedAmountsIn;
 
     return [
       this.pool.value.id,
@@ -53,7 +67,7 @@ export default class JoinParams {
       account,
       {
         assets,
-        maxAmountsIn: parsedAmountsIn,
+        maxAmountsIn,
         userData: txData,
         fromInternalBalance: this.fromInternalBalance,
       },
@@ -87,20 +101,19 @@ export default class JoinParams {
       return parseUnits(amount, decimals);
     });
 
-    return isDeep(this.pool.value)
-      ? [
-          parseUnits('0', this.pool.value.onchain?.decimals || 18),
-          ...parsedAmounts,
-        ]
-      : parsedAmounts;
+    return parsedAmounts;
   }
 
   private parseTokensIn(tokensIn: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
-
-    return tokensIn.map(address =>
+    const tokensInProcessed = tokensIn.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
+
+    return isComposableStable(this.pool.value.poolType) &&
+      !isDeep(this.pool.value)
+      ? [this.pool.value.address, ...tokensInProcessed]
+      : tokensInProcessed;
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {

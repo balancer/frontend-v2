@@ -47,7 +47,7 @@ export function isDeep(pool: Pool): boolean {
     pool.tokens
       // ignore the token with the same address as the pool itself
       .filter(({ address }) => address !== pool.address)
-      // check if any of the pool tokens are actually pools
+      // check if every of the pool tokens are actually pools
       .every(({ token }) => {
         const poolType = token.pool?.poolType;
         if (!poolType) return false;
