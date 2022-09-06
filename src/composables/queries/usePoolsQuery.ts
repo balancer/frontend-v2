@@ -114,7 +114,9 @@ export default function usePoolsQuery(
     console.log('Initializing the fallback. Token list is: ', tokenList);
     const fallbackRepository = new PoolsFallbackRepository(
       [balancerApiRepository, subgraphRepository],
-      30 * 1000
+      {
+        timeout: 30 * 1000,
+      }
     );
     return fallbackRepository;
   }

@@ -319,7 +319,7 @@ function iconAddresses(pool: PoolWithShares) {
           <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip v-if="pool?.apr" :pool="pool" />
+            <APRTooltip :pool="pool" />
           </template>
         </div>
       </template>

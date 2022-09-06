@@ -25,7 +25,7 @@ const { upToMediumBreakpoint } = useBreakpoints();
 const isPaginated = computed(() => pools.value.length >= 10);
 
 /**
- * METHODS3
+ * METHODS
  */
 function navigateToCreatePool() {
   router.push({ name: 'create-pool' });

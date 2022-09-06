@@ -51,7 +51,7 @@ const stats = computed(() => {
     {
       id: 'poolValue',
       label: t('poolValue'),
-      value: fNum2(props.pool.totalLiquidity || '0', FNumFormats.fiat),
+      value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat),
       loading: props.loading,
     },
     {

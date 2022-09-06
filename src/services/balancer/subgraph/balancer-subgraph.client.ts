@@ -15,7 +15,7 @@ export default class BalancerSubgraphClient {
   }
 
   public async get(query, options: SubgraphQueryOptions = {}) {
-    const url = options.url ? options.url : this.url;
+    const url = options.url || this.url;
     try {
       const payload = this.toPayload(query);
       const {

@@ -9,6 +9,7 @@ import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool } from '@/services/pool/types';
+import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, urlFor } from './useNetwork';
 import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
@@ -171,11 +172,13 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
     return numF(absMaxApr(aprs, boost), FNumFormats.percent);
+  } else if (hasBalEmissions(aprs) || aprs.protocolApr > 0) {
+    const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
+    const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
+    return `${minAPR} - ${maxAPR}`;
   }
 
-  const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
-  const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
-  return `${minAPR} - ${maxAPR}`;
+  return numF(bpToDec(aprs.min), FNumFormats.percent);
 }
 
 /**
