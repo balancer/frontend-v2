@@ -17,9 +17,9 @@ export default class Pools {
 
   public async get(args: GraphQLArgs = {}, attrs: any = {}): Promise<Pool[]> {
     const query = this.query(args, attrs);
-    const repository = new PoolsSubgraphRepository(
-      configService.network.subgraph
-    );
+    const repository = new PoolsSubgraphRepository({
+      url: configService.network.subgraph,
+    });
     const pools = await repository.fetch({
       first: query.args.first,
       skip: query.args.skip,

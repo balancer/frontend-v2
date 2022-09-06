@@ -142,9 +142,9 @@ export default function usePoolsQuery(
   }
 
   function initializeDecoratedSubgraphRepository() {
-    const subgraphRepository = new PoolsSubgraphRepository(
-      configService.network.subgraph
-    );
+    const subgraphRepository = new PoolsSubgraphRepository({
+      url: configService.network.subgraph,
+    });
 
     return {
       fetch: async (options: PoolsRepositoryFetchOptions): Promise<Pool[]> => {
