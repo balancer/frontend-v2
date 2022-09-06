@@ -118,8 +118,21 @@ function handleSuccess() {
       :lockType="lockType"
       :veBalLockInfo="veBalLockInfo"
     />
+    <BalAlert
+      v-if="lockConfirmed && !veBalLockInfo.hasExistingLock"
+      class="mt-4"
+      type="info"
+      title="Holding veBAL allows you to vote on pools to receive liquidity
+        mining incentives"
+      description="Holding veBAL allows you to vote on pools to receive liquidity
+        mining incentives. Note: Your voting power for a pool is set at the time
+        of your vote.
+        If you vote on a pool and then acquire new veBAL,
+        resubmit your vote to utilize your new veBAL voting power.
+        Finally, votes on each pool are timelocked for 10 days."
+    >
+    </BalAlert>
     <LockActions
-      :lockablePool="lockablePool"
       :lockAmount="lockAmount"
       :lockEndDate="lockEndDate"
       :lockType="lockType"
