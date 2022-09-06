@@ -91,7 +91,7 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
       {{ gauge.pool.symbol }}
     </div>
     <BalTextInput
-      v-model="modelValue"
+      :modelValue="modelValue"
       type="number"
       name="poolName"
       inputAlignRight

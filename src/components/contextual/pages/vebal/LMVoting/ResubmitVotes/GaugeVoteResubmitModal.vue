@@ -74,6 +74,10 @@ const visibleVotesTotalAllocation = computed<number>(() =>
   )
 );
 
+const hasMoreThan8VotingGauges = computed(
+  () => gaugesUsingUnderUtilizedVotingPower.value.length > 8
+);
+
 const hiddenVotesTotalAllocation = computed<number>(() => {
   const totalUnscaled = hiddenVotingGauges.value.reduce<number>(
     (total, gauge) => total + Number(gauge.userVotes),
@@ -154,6 +158,15 @@ watchEffect(() => {
       </div>
     </template>
     <div>
+      <BalAlert
+        v-if="hasMoreThan8VotingGauges"
+        class="mb-4"
+        type="warning"
+        title="You can only resubmit up to 8 votes"
+        description="It’s only possible to update 8 pool gauge votes at a time.
+        You’ll need to update your votes for the remaining ones manually."
+      >
+      </BalAlert>
       <GaugeItem
         v-for="gauge in visibleVotingGauges"
         :key="gauge.address"
