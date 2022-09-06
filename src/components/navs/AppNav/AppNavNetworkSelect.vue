@@ -83,9 +83,7 @@ onMounted(async () => {
     addNotification({
       type: 'error',
       title: '',
-      message: `${i18n.global.t('poolDoesntExist')} ${
-        router.currentRoute.value.query.poolNetworkAlert
-      }`,
+      message: `${i18n.global.t('poolDoesntExist')} ${networkConfig.chainName}`,
     });
     router.replace({ query: {} });
   }
@@ -104,7 +102,7 @@ function getNetworkChangeUrl(network: NetworkOption): string {
     router.currentRoute.value.name === 'withdraw' ||
     router.currentRoute.value.name === 'migrate-pool'
   )
-    return `/#/${network.networkSlug}?poolNetworkAlert=${networkConfig.name}`;
+    return `/#/${network.networkSlug}?poolNetworkAlert=true`;
 
   const currentRoute = router.currentRoute.value;
   return router.resolve({
