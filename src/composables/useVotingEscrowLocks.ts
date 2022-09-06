@@ -5,6 +5,8 @@ import useConfig from '@/composables/useConfig';
 import { isSameAddress } from '@/lib/utils';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingGauges from '@/composables/useVotingGauges';
+import configs from '@/lib/config';
+import { networkId } from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -38,7 +40,11 @@ export default function useVotingEscrowLocks() {
     () => ({
       votingEscrowLocks: {
         __args: {
-          where: { user: account.value.toLowerCase() },
+          where: {
+            user: account.value.toLowerCase(),
+            votingEscrowID:
+              configs[networkId.value].addresses.veBAL.toLocaleLowerCase(),
+          },
         },
         votingEscrowID: {
           id: true,

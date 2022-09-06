@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
+import OldBigNumber from 'bignumber.js';
+
 import { format, formatDistanceToNow } from 'date-fns';
 import { computed, onMounted, reactive, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -60,26 +62,53 @@ const votes = ref<Record<Address, string>>({});
  */
 const votingGauges = computed(() =>
   allVotingGauges.value.filter(gauge => {
-    return poolsUsingUnderUtilizedVotingPower.value.includes(gauge.address);
+    return (
+      Number(gauge.userVotes) &&
+      poolsUsingUnderUtilizedVotingPower.value.includes(gauge.address)
+    );
   })
 );
 
-const totalVotes = computed<number>(() =>
+const visibleVotingGauges = computed(() => votingGauges.value.slice(0, 8));
+const hiddenVotingGauges = computed(() => votingGauges.value.slice(7));
+
+const visibleVotesTotalAllocation = computed<number>(() =>
   Object.values(votes.value).reduce<number>(
     (total, value) => total + Number(value),
     0
   )
 );
-const disabled = computed<boolean>(() => totalVotes.value > 100);
+
+const hiddenVotesTotalAllocation = computed<number>(() => {
+  const totalUnscaled = hiddenVotingGauges.value.reduce<number>(
+    (total, gauge) => total + Number(gauge.userVotes),
+    0
+  );
+  return Number(scale(bnum(totalUnscaled), -2).toString());
+});
+const disabled = computed<boolean>(
+  () => visibleVotesTotalAllocation.value > 100
+);
 
 /**
  * METHODS
  */
 async function submitVote() {
-  const gaugeAddresses = Object.keys(votes.value);
-  const weights = Object.values(votes.value).map(weight =>
-    scale(weight, 2).toString()
+  // Gauge Controller takes a fixed 8 Gauge Addresses
+  // We take the first 8 Voting Gauges
+  // If there's less than 8, fill the remaining with null address
+  const gaugeAddresses: string[] = Object.keys(votes.value);
+  const weights: BigNumber[] = Object.values(votes.value).map(weight =>
+    BigNumber.from(scale(weight, 2).toString())
   );
+  console.log({ gaugeAddresses });
+  const zeroAddresses: string[] = new Array(8 - gaugeAddresses.length).fill(
+    '0x0000000000000000000000000000000000000000'
+  );
+  const zeroWeights: BigNumber[] = new Array(8 - gaugeAddresses.length).fill(
+    BigNumber.from(0)
+  );
+
   console.log({
     gaugeAddresses,
     weights,
@@ -88,8 +117,8 @@ async function submitVote() {
     // voteState.init = true;
     // voteState.error = null;
     const tx = await gaugeControllerService.voteForManyGaugeWeights(
-      gaugeAddresses,
-      weights.map(weight => BigNumber.from(weight))
+      [...gaugeAddresses, ...zeroAddresses],
+      [...weights, ...zeroWeights]
     );
     console.log({ tx });
     // voteState.init = false;
@@ -109,7 +138,8 @@ async function submitVote() {
 }
 
 watchEffect(() => {
-  votingGauges.value.forEach(gauge => {
+  console.log(visibleVotingGauges.value.length);
+  visibleVotingGauges.value.forEach(gauge => {
     votes.value[gauge.address] = gauge.userVotes
       ? scale(bnum(gauge.userVotes), -2).toString()
       : '';
@@ -130,7 +160,7 @@ watchEffect(() => {
     </template>
     <div>
       <GaugeItem
-        v-for="gauge in votingGauges"
+        v-for="gauge in visibleVotingGauges"
         :key="gauge.address"
         v-model="votes[gauge.address]"
         :gauge="gauge"
@@ -143,7 +173,8 @@ watchEffect(() => {
             'text-white': disabled,
           }"
         >
-          Total vote allocation {{ totalVotes }}%
+          <div>Total vote allocation {{ visibleVotesTotalAllocation }}%</div>
+          <div>others {{ hiddenVotesTotalAllocation }}%</div>
         </div>
         <div v-if="disabled" class="text-red-500">
           Your votes can’t exceed 100%

@@ -12,6 +12,8 @@ import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
 import { isGoerli, isKovan } from './useNetwork';
 
 export default function useVotingGauges() {
+  const totalVotes = 1e4;
+
   // Hard coded list of voting gauges
   const _votingGauges = computed((): VotingGauge[] => {
     if (isKovan.value) {
@@ -36,7 +38,6 @@ export default function useVotingGauges() {
   const votingGauges = computed(() => gaugeVotesQuery.data.value || []);
 
   const unallocatedVotes = computed(() => {
-    const totalVotes = 1e4;
     if (isLoading.value || !votingGauges.value) return totalVotes;
     const votesRemaining = votingGauges.value.reduce(
       (remainingVotes, gauge) => {
@@ -91,6 +92,7 @@ export default function useVotingGauges() {
   }
 
   return {
+    totalVotes,
     isLoading,
     votingGauges,
     unallocatedVotes,

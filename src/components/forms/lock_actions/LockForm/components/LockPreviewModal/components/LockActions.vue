@@ -21,6 +21,7 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
+import useVotingGauges from '@/composables/useVotingGauges';
 
 /**
  * TYPES
@@ -74,6 +75,7 @@ const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   ref([props.lockAmount])
 );
 const { fNum2 } = useNumbers();
+const { totalVotes, unallocatedVotes } = useVotingGauges();
 
 const lockActions = props.lockType.map((lockType, actionIndex) => ({
   label: t(`getVeBAL.previewModal.actions.${lockType}.label`, [
@@ -92,6 +94,10 @@ const actions = ref<TransactionActionInfo[]>([...lockActions]);
  */
 const lockActionStatesConfirmed = computed(() =>
   lockActionStates.every(lockActionState => lockActionState.confirmed)
+);
+
+const shouldResubmitVotes = computed<boolean>(
+  () => totalVotes !== unallocatedVotes.value
 );
 
 /**
@@ -230,13 +236,25 @@ onBeforeMount(async () => {
           />
         </BalLink>
       </div>
+      <BalAlert
+        v-if="shouldResubmitVotes"
+        class="mt-4"
+        type="warning"
+        title="Resubmit your votes to use your full voting power"
+        description="Votes on pools are set at the time of your last vote. 
+      Since you’ve added new veBAL after your original vote, your additional 
+      voting power is not being used. 
+      Note: votes on each individual pool are timelocked for 10 days and 
+      cannot be edited."
+      >
+      </BalAlert>
       <BalBtn
         tag="router-link"
         :to="{ name: 'vebal' }"
         color="gray"
         outline
         block
-        class="mt-2"
+        class="mt-4"
       >
         {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
       </BalBtn>

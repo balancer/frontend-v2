@@ -118,7 +118,6 @@ function handleSuccess() {
       :lockType="lockType"
       :veBalLockInfo="veBalLockInfo"
     />
-
     <LockActions
       :lockablePool="lockablePool"
       :lockAmount="lockAmount"
