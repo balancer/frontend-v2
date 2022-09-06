@@ -16,6 +16,7 @@ export interface Pool {
   totalSwapFee: string;
   totalSwapVolume: string;
   createTime: number;
+  symbol: string;
   onchain?: OnchainPoolData;
   mainTokens?: string[];
   wrappedTokens?: string[];
