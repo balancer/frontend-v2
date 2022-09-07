@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { POOLS } from '@/constants/pools';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
@@ -28,6 +29,17 @@ const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { fNum2 } = useNumbers();
 
+function formSwapFeesHint(owner: string): string {
+  if (owner === POOLS.ZeroAddress) {
+    return t('poolAttrs.feesFixes');
+  }
+
+  if (owner === POOLS.DelegateOwner) {
+    return t('poolAttrs.feesEditableGovernance');
+  }
+
+  return t('poolAttrs.feesEditableOwner');
+}
 /**
  * COMPUTED
  */
@@ -47,7 +59,6 @@ const data = computed(() => {
     {
       title: t('poolSymbol'),
       value: symbol,
-      link: explorer.addressLink(address || ''),
     },
     {
       title: t('poolType'),
@@ -65,6 +76,7 @@ const data = computed(() => {
     {
       title: t('owner'),
       value: owner,
+      link: explorer.addressLink(owner || ''),
     },
     {
       title: t('createDate'),
@@ -72,15 +84,23 @@ const data = computed(() => {
     },
     {
       title: t('swapFees'),
-      value: fNum2(swapFee, FNumFormats.percent),
+      value: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
+        owner
+      )})`,
     },
   ];
 });
 
 const poolManagementText = computed(() => {
-  return props.pool.poolType === PoolType.Managed
-    ? t('poolAttrs.immutable')
-    : t('poolAttrs.immutableFeesEditable');
+  if (props.pool.poolType === PoolType.Managed) {
+    return t('');
+  }
+
+  if (props.pool.owner === POOLS.DelegateOwner) {
+    return t('poolAttrs.immutableFeesEditable');
+  }
+
+  return t('poolAttrs.immutable');
 });
 </script>
 
@@ -90,8 +110,10 @@ const poolManagementText = computed(() => {
     <h4 class="px-4 lg:px-0 mb-5" v-text="$t('poolAttrs.contractDetails')" />
 
     <BalDetailsTable class="mb-20" :tableData="data" />
-    <h4 class="px-4 lg:px-0 mb-2" v-text="$t('poolManagement')" />
-    {{ poolManagementText }}
+    <template v-if="poolManagementText">
+      <h4 class="px-4 lg:px-0 mb-2" v-text="$t('poolManagement')" />
+      {{ poolManagementText }}
+    </template>
   </div>
 </template>
 
