@@ -170,12 +170,16 @@ export default class PoolService {
     rawOnchainData: RawOnchainPoolData,
     tokenMeta: TokenInfoMap
   ): OnchainPoolData | undefined {
-    const onchainData = new OnchainDataFormater(
-      this.pool,
-      rawOnchainData,
-      tokenMeta
-    );
-    return (this.pool.onchain = onchainData.format());
+    try {
+      const onchainData = new OnchainDataFormater(
+        this.pool,
+        rawOnchainData,
+        tokenMeta
+      );
+      return (this.pool.onchain = onchainData.format());
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   public setUnwrappedTokens(): string[] {

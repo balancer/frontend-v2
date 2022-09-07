@@ -14,7 +14,8 @@ export type FactoryType =
   | 'stablePool'
   | 'managedPool'
   | 'liquidityBootstrappingPool'
-  | 'boostedPool';
+  | 'boostedPool'
+  | 'composableStablePool';
 
 type PoolMetadata = {
   name: string;
@@ -178,6 +179,7 @@ const POOLS_GOERLI: Pools = {
       '0xde03232eaceda2256da5dbd7972746efc882d1f10000000000000000000000f0',
       '0x14f93df8a4e37bfdb49d2cec4789df7a010603d700000000000000000000011d',
       '0x00a62d31b6c776b6813543bc99ff265f7222dbe100000000000000000000011e',
+      '0x0c925fce89a22e36ebd9b3c6e0262234e853d2f600000000000000000000019c',
     ],
   },
   Investment: {
@@ -191,6 +193,7 @@ const POOLS_GOERLI: Pools = {
     '0xb48cc42c45d262534e46d5965a9ac496f1b7a830': 'liquidityBootstrappingPool',
     '0xb0c726778c3ae4b3454d85557a48e8fa502bdd6a': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
     '0x41e9036ae350baedcc7107760a020dca3c0731ec': 'boostedPool',
+    '0xB848f50141F3D4255b37aC288C25C109104F2158': 'composableStablePool',
   },
   Stakable: {
     AllowList: [
