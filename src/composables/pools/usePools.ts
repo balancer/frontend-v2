@@ -1,5 +1,5 @@
 import { flatten } from 'lodash';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { lpTokensFor } from '../usePool';
@@ -17,18 +17,6 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
       : []
   );
 
-  const tokens = computed(async () => {
-    const tokenInfo = flatten(
-      pools.value.map(pool => [
-        ...pool.tokensList,
-        ...lpTokensFor(pool),
-        pool.address,
-      ])
-    );
-    await injectTokens(tokenInfo);
-    return tokenInfo;
-  });
-
   const isLoading = computed(
     () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
   );
@@ -43,9 +31,19 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
     poolsQuery.fetchNextPage.value();
   }
 
+  watch(pools, async newPools => {
+    const tokenAddresses = flatten(
+      newPools.map(pool => [
+        ...pool.tokensList,
+        ...lpTokensFor(pool),
+        pool.address,
+      ])
+    );
+    await injectTokens(tokenAddresses);
+  });
+
   return {
     pools,
-    tokens,
     isLoading,
     poolsHasNextPage,
     poolsIsFetchingNextPage,
