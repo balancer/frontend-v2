@@ -1301,5 +1301,14 @@
       "tvl": "TVL",
       "volume": "Volume"
     }
+  },
+  "yes": "Yes",
+  "none": "None",
+  "poolAttrs": {
+    "contractDetails": "Pool contract details",
+    "feesFixed": "fixed forever",
+    "feesEditable": "dynamically set by Governance",
+    "immutable": "This pool is immutable",
+    "immutableFeesEditable": "This pool is immutable with no Pool Manager. However, swap fees can be updated by Governance"
   }
 }

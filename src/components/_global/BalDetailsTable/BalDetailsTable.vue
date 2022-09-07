@@ -63,7 +63,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 }
 
 .table-row-title {
-  @apply py-3 px-4 flex-1;
+  @apply flex items-center py-3 px-4 flex-1;
 
   border-right-width: 1px;
 }
