@@ -7,6 +7,15 @@ export interface Pool extends SDKPool {
   linearPoolTokensMap?: Record<string, PoolToken>;
 }
 
+export enum PoolType {
+  Weighted = 'Weighted',
+  Investment = 'Investment',
+  Stable = 'Stable',
+  MetaStable = 'MetaStable',
+  StablePhantom = 'StablePhantom',
+  LiquidityBootstrapping = 'LiquidityBootstrapping',
+}
+
 // PoolToken data from onchain call
 export interface RawPoolTokens {
   balances: BigNumber[];
