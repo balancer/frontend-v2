@@ -33,7 +33,7 @@ type Props = {
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokensList?: string[];
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
-  poolType?: PoolType;
+  poolType?: string;
 };
 
 enum PoolChartTab {

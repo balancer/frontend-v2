@@ -45,25 +45,28 @@ describe('AprConcern', () => {
       calcParams.stakingRewardApr
     );
 
-    expect(bnum(aprs.swap).toFixed(2)).toEqual('0.01');
+    expect(bnum(aprs.swapFees).toFixed(2)).toEqual('0.01');
   });
 
-  it('Returns correct % if boost provided', async () => {
-    calcParams.stakingBalApr = { min: '0.01', max: '0.03' };
+  // No longer a relevant test since the new APR type returns basis points
+  // Once we fully transistion to the API the APR calculation is handled in
+  // The SDK so testing should be done there.
+  // it('Returns correct % if boost provided', async () => {
+  //   calcParams.stakingBalApr = { min: '0.01', max: '0.03' };
 
-    const aprConcern = new AprConcern(PoolMock);
+  //   const aprConcern = new AprConcern(PoolMock);
 
-    const aprs = await aprConcern.calc(
-      calcParams.poolSnapshot,
-      calcParams.prices,
-      calcParams.currency,
-      calcParams.protocolFeePercentage,
-      calcParams.stakingBalApr,
-      calcParams.stakingRewardApr
-    );
+  //   const aprs = await aprConcern.calc(
+  //     calcParams.poolSnapshot,
+  //     calcParams.prices,
+  //     calcParams.currency,
+  //     calcParams.protocolFeePercentage,
+  //     calcParams.stakingBalApr,
+  //     calcParams.stakingRewardApr
+  //   );
 
-    expect(bnum(aprs.total.staked.calc('2.5')).toFixed(3)).toEqual('0.035');
-    expect(bnum(aprs.total.staked.calc('1.5')).toFixed(3)).toEqual('0.025');
-    expect(bnum(aprs.total.staked.calc('1')).toFixed(3)).toEqual('0.020');
-  });
+  //   expect(bnum(aprs.total.staked.calc('2.5')).toFixed(3)).toEqual('0.035');
+  //   expect(bnum(aprs.total.staked.calc('1.5')).toFixed(3)).toEqual('0.025');
+  //   expect(bnum(aprs.total.staked.calc('1')).toFixed(3)).toEqual('0.020');
+  // });
 });
