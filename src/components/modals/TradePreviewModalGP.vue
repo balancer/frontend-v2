@@ -478,9 +478,10 @@ watch(blockNumber, () => {
         <div>
           <BalAlert
             v-if="validationErrors.exceedsBalance"
-            class="p-3 rounded-none"
+            class="p-3"
             type="error"
             size="sm"
+            style="border-radius: 0"
             :title="`${t('exceedsBalance')} ${balanceFor(
               props.trading.tokenInAddressInput.value
             )} ${props.trading.tokenIn.value.symbol}`"
