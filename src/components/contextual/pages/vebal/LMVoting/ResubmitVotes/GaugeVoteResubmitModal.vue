@@ -50,6 +50,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
+const { votingGauges } = useVotingGauges();
 
 /**
  * STATE
@@ -60,12 +61,17 @@ const votes = ref<Record<Address, string>>({});
  * COMPUTED
  */
 
+//  Can vote max 8 gauges in one time
 const visibleVotingGauges = computed(() =>
   gaugesUsingUnderUtilizedVotingPower.value.slice(0, 8)
 );
-const hiddenVotingGauges = computed(() =>
-  gaugesUsingUnderUtilizedVotingPower.value.slice(7)
-);
+
+const hiddenVotingGauges = computed(() => {
+  const underUtilizedAddresses = Object.keys(votes.value);
+  return votingGauges.value.filter(
+    gauge => !underUtilizedAddresses.includes(gauge.address)
+  );
+});
 
 const votesTotalAllocation = computed<number>(() =>
   Object.values(votes.value).reduce<number>(
@@ -167,7 +173,7 @@ watchEffect(() => {
         type="warning"
         title="You can only resubmit up to 8 votes"
         description="It’s only possible to update 8 pool gauge votes at a time.
-        You’ll need to update your votes for the remaining ones manually."
+          You’ll need to update your votes for the remaining ones manually."
       >
       </BalAlert>
       <GaugeItem
@@ -181,7 +187,7 @@ watchEffect(() => {
         v-if="hiddenVotesTotalAllocation"
         class="flex justify-between p-4 mt-3 total-allocation"
       >
-        <div>{{ hiddenVotingGauges.length }} other remaining pools</div>
+        <div>{{ hiddenVotingGauges.length }} other pools</div>
         <div>{{ hiddenVotesTotalAllocation }}%</div>
       </div>
 
@@ -207,8 +213,8 @@ watchEffect(() => {
     </div>
   </BalModal>
 </template>
-
-<style lang="css" scoped>
+  
+  <style lang="css" scoped>
 .total-allocation {
   @apply bg-gray-50 dark:bg-gray-800  border border-gray-200 dark:border-0 rounded-lg;
 }
@@ -217,3 +223,4 @@ watchEffect(() => {
   @apply bg-red-600 dark:bg-red-600 text-white;
 }
 </style>
+  
