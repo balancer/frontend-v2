@@ -67,10 +67,10 @@ const hiddenVotingGauges = computed(() =>
   gaugesUsingUnderUtilizedVotingPower.value.slice(7)
 );
 
-const visibleVotesTotalAllocation = computed<number>(() =>
+const votesTotalAllocation = computed<number>(() =>
   Object.values(votes.value).reduce<number>(
     (total, value) => total + Number(value),
-    0
+    hiddenVotesTotalAllocation.value
   )
 );
 
@@ -85,9 +85,12 @@ const hiddenVotesTotalAllocation = computed<number>(() => {
   );
   return Number(scale(bnum(totalUnscaled), -2).toString());
 });
-const disabled = computed<boolean>(
-  () => visibleVotesTotalAllocation.value > 100
-);
+const disabled = computed<boolean>(() => votesTotalAllocation.value > 100);
+
+const totalAllocationClass = computed(() => ({
+  'total-allocation-disabled': disabled.value,
+  'total-allocation mt-3 flex justify-between': true,
+}));
 
 /**
  * METHODS
@@ -174,29 +177,43 @@ watchEffect(() => {
         :gauge="gauge"
       ></GaugeItem>
 
-      <div class="mt-4">
-        <div
-          :class="{
-            'bg-red-600': disabled,
-            'text-white': disabled,
-          }"
-        >
-          <div>Total vote allocation {{ visibleVotesTotalAllocation }}%</div>
-          <div>others {{ hiddenVotesTotalAllocation }}%</div>
-        </div>
-        <div v-if="disabled" class="text-red-500">
-          Your votes can’t exceed 100%
-        </div>
-        <BalBtn
-          class="mt-4"
-          :disabled="disabled"
-          color="gradient"
-          block
-          @click="submitVote"
-        >
-          Confirm votes
-        </BalBtn>
+      <div
+        v-if="!hiddenVotesTotalAllocation"
+        class="flex justify-between p-4 mt-3 total-allocation"
+      >
+        <div>{{ hiddenVotingGauges.length }} other remaining pools</div>
+        <div>{{ hiddenVotesTotalAllocation }}%</div>
       </div>
+
+      <div :class="totalAllocationClass">
+        <div class="p-4">Total vote allocation</div>
+        <div class="p-4 border-l border-gray-200 dark:border-gray-900">
+          {{ votesTotalAllocation }}%
+        </div>
+      </div>
+
+      <div v-if="disabled" class="mt-3 text-sm text-red-500">
+        Your votes can’t exceed 100%
+      </div>
+      <BalBtn
+        class="mt-4"
+        :disabled="disabled"
+        color="gradient"
+        block
+        @click="submitVote"
+      >
+        Confirm votes
+      </BalBtn>
     </div>
   </BalModal>
 </template>
+
+<style lang="css" scoped>
+.total-allocation {
+  @apply bg-gray-50 dark:bg-gray-800  border border-gray-200 dark:border-0 rounded-lg;
+}
+
+.total-allocation-disabled {
+  @apply bg-red-600 dark:bg-red-600 text-white;
+}
+</style>
