@@ -296,6 +296,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isComposableStablePool = computed(
     (): boolean => !!pool.value && isComposableStable(pool.value.poolType)
   );
+  const isDeepPool = computed(
+    (): boolean => !!pool.value && isDeep(pool.value)
+  );
   const isStableLikePool = computed(
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
   );
@@ -342,6 +345,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isComposableStablePool,
     isStableLikePool,
     isComposableStableLikePool,
+    isDeepPool,
     isWeightedPool,
     isWeightedLikePool,
     isManagedPool,

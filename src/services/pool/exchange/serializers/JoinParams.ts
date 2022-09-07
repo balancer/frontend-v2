@@ -45,8 +45,9 @@ export default class JoinParams {
     bptOut: string
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn, tokensIn);
+    console.log('We should be using this', bptOut);
     const parsedBptOut = parseUnits(
-      bptOut,
+      '0', // TODO - DO NOT PUSH THIS TO MASTER, FIX bptOut for ComposableStable pools,
       this.pool.value?.onchain?.decimals || 18
     );
 
