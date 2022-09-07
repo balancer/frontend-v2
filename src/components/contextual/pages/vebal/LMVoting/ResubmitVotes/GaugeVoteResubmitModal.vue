@@ -101,7 +101,7 @@ async function submitVote() {
   // If there's less than 8, fill the remaining with null address
   const gaugeAddresses: string[] = Object.keys(votes.value);
   const weights: BigNumber[] = Object.values(votes.value).map(weight =>
-    BigNumber.from(scale(weight, 2).toString())
+    BigNumber.from(scale(weight || '0', 2).toString())
   );
   console.log({ gaugeAddresses });
   const zeroAddresses: string[] = new Array(8 - gaugeAddresses.length).fill(
@@ -144,7 +144,7 @@ watchEffect(() => {
   visibleVotingGauges.value.forEach(gauge => {
     votes.value[gauge.address] = gauge.userVotes
       ? scale(bnum(gauge.userVotes), -2).toString()
-      : '';
+      : '0';
   });
 });
 
@@ -178,7 +178,7 @@ watchEffect(() => {
       ></GaugeItem>
 
       <div
-        v-if="!hiddenVotesTotalAllocation"
+        v-if="hiddenVotesTotalAllocation"
         class="flex justify-between p-4 mt-3 total-allocation"
       >
         <div>{{ hiddenVotingGauges.length }} other remaining pools</div>

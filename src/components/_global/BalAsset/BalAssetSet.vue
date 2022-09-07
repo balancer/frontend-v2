@@ -5,6 +5,7 @@
   >
     <div
       :class="['addresses-row', assetRowClasses]"
+      v-bind="$attrs"
       :style="{
         width: `${width}px`,
         height: `${size}px`,
