@@ -4,11 +4,11 @@ import { computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { includesAddress } from '@/lib/utils';
-import { PoolToken } from '@/services/pool/types';
 
 import HiddenTokensPills from './HiddenTokensPills.vue';
 import StableTokenPill from './StableTokenPill.vue';
 import WeightedTokenPill from './WeightedTokenPill.vue';
+import { PoolToken } from '@balancer-labs/sdk';
 
 type Props = {
   tokens: PoolToken[];
@@ -49,7 +49,7 @@ function symbolFor(token: PoolToken): string {
 }
 
 function weightFor(token: PoolToken): string {
-  return fNum2(token.weight, {
+  return fNum2(token.weight || '0', {
     style: 'percent',
     maximumFractionDigits: 0,
   });

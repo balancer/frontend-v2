@@ -5,8 +5,8 @@ import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { shortenLabel } from '@/lib/utils';
-import { PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { PoolToken } from '@balancer-labs/sdk';
 
 /**
  * TYPES

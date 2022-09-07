@@ -7,7 +7,7 @@ import VeBalPoolTable from '@/components/contextual/pages/pools/VeBalPoolTable.v
 import PortfolioPageHero from '@/components/heros/PortfolioPageHero.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import useUserPools from '@/composables/pools/usePools';
+import useUserPools from '@/composables/pools/useUserPools';
 import { useLock } from '@/composables/useLock';
 import { isMigratablePool } from '@/composables/usePool';
 import StakingProvider from '@/providers/local/staking/staking.provider';
