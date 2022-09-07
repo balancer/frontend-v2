@@ -790,7 +790,8 @@
         "nextPeriod": "Next period: {0}"
       },
       "limitsTooltip": {
-        "distributionsCappedAt10%": "Distributions to the veBAL gauge is capped at 10%"
+        "distributionsCappedAt10%": "Distributions to the veBAL gauge are capped at 10%",
+        "distributionsCappedAt2%": "Distributions to this gauge are capped at 2%"
       },
       "popover": {
         "title": {
