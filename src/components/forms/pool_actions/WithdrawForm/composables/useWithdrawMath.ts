@@ -78,7 +78,8 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isComposableStableLikePool, isWeightedPool } = usePool(pool);
+  const { isComposableStableLikePool, isWeightedPool, isDeepPool } =
+    usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -237,7 +238,7 @@ export default function useWithdrawMath(
 
     // Else single asset exact out amount case
 
-    if (isComposableStableLikePool.value) {
+    if (isDeepPool.value) {
       if (shouldUseBatchRelayer.value) {
         return batchRelayerSwap.value?.outputs?.amountsIn || '0';
       }

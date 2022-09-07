@@ -3,7 +3,11 @@ import { AddressZero } from '@ethersproject/constants';
 import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
-import { isStableLike } from '@/composables/usePool';
+import {
+  isComposableStable,
+  isDeep,
+  isStableLike,
+} from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
@@ -38,9 +42,11 @@ export default class ExitParams {
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
-      bptIn,
+      // bptIn
+      '0', // TODO - DO NOT PUSH THIS TO MASTER, FIX bptIn for ComposableStable pools,
       this.pool.value?.onchain?.decimals || 18
     );
+
     const assets = this.parseTokensOut(tokensOut);
     const txData = this.txData(
       parsedAmountsOut,
@@ -49,13 +55,20 @@ export default class ExitParams {
       exactOut
     );
 
+    const processedParsedAmountsOut =
+      isComposableStable(this.pool.value.poolType) && !isDeep(this.pool.value)
+        ? [
+            parseUnits('0', this.pool.value.onchain?.decimals || 18),
+            ...parsedAmountsOut,
+          ]
+        : parsedAmountsOut;
     return [
       this.pool.value.id,
       account,
       account,
       {
         assets,
-        minAmountsOut: parsedAmountsOut.map(amount =>
+        minAmountsOut: processedParsedAmountsOut.map(amount =>
           // This is a hack to get around rounding issues for MetaStable pools
           // TODO: do this more elegantly
           amount.gt(0) ? amount.sub(1) : amount
@@ -79,9 +92,14 @@ export default class ExitParams {
   private parseTokensOut(tokensOut: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
 
-    return tokensOut.map(address =>
+    const tokensOutProcessed = tokensOut.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
+
+    return isComposableStable(this.pool.value.poolType) &&
+      !isDeep(this.pool.value)
+      ? [this.pool.value.address, ...tokensOutProcessed]
+      : tokensOutProcessed;
   }
 
   private txData(
