@@ -6,9 +6,9 @@ import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import { Pool } from '@/services/pool/types';
 
-export default function usePools(tokenList: Ref<string[]> = ref([])) {
+export default function usePools(filterTokens: Ref<string[]> = ref([])) {
   // COMPOSABLES
-  const poolsQuery = usePoolsQuery(tokenList);
+  const poolsQuery = usePoolsQuery(filterTokens);
   const { injectTokens } = useTokens();
 
   const pools = computed<Pool[]>(() =>

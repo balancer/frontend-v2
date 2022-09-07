@@ -82,7 +82,7 @@ const queryAttrs = {
 };
 
 export default function usePoolsQuery(
-  tokenList: Ref<string[]> = ref([]),
+  filterTokens: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
   filterOptions?: FilterOptions
 ) {
@@ -111,7 +111,7 @@ export default function usePoolsQuery(
    */
 
   function initializePoolsRepository(): PoolsFallbackRepository {
-    console.log('Initializing the fallback. Token list is: ', tokenList);
+    console.log('Initializing the fallback. Token list is: ', filterTokens);
     const fallbackRepository = new PoolsFallbackRepository(
       [balancerApiRepository, subgraphRepository],
       {
@@ -171,7 +171,7 @@ export default function usePoolsQuery(
       ? Op.Equals
       : Op.Contains;
 
-    const tokenListFormatted = tokenList.value.map(address =>
+    const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
     );
 
@@ -210,11 +210,11 @@ export default function usePoolsQuery(
    *  need to change to filter for those tokens
    */
   watch(
-    tokenList,
+    filterTokens,
     () => {
       console.log(
         'Token list changed to: ',
-        tokenList,
+        filterTokens,
         ' re-building repositories'
       );
       balancerApiRepository = initializeDecoratedAPIRepository();
@@ -228,7 +228,7 @@ export default function usePoolsQuery(
    */
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
-    tokenList,
+    filterTokens,
     filterOptions?.poolIds,
     filterOptions?.poolAddresses,
     gaugeAddresses
