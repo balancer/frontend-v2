@@ -2,12 +2,11 @@
   <div class="pb-4">
     <div class="subsection">
       <h1>Balancer Privacy&nbsp;Policy</h1>
-      <p><em>Last Updated: June 2022</em></p>
+      <p><em>Last Updated: August 2022</em></p>
       <p>
         <em class="font-medium">
           This Privacy Policy explains how the Balancer Foundation, its
-          subsidiary, Balancer OpCo Limited, and material service providers
-          operating under a legal agreement (“Balancer Foundation,” “Balancer,”
+          subsidiary, Balancer OpCo Limited (“Balancer Foundation,” “Balancer,”
           “we,” “our,” or “us”) collects, uses, and discloses information about
           you. This Privacy Policy applies when you use our website, Balancer
           Protocol user-interface or application and other online products
@@ -27,6 +26,27 @@
           about our information practices and the choices available to you.</em
         >
       </p>
+    </div>
+    <div class="subsection">
+      <h2>Summary</h2>
+      <ul>
+        <li>
+          Balancer does not typically request, collect or use personal
+          information. With the exception of your wallet address, there is no
+          reason for you to provide personal information when you use the UI.
+        </li>
+        <li>
+          Balancer does not and has not stored personal information from users
+          of the UI. However, Balancer uses third party services including,
+          without limitation, Cloudflare and Fathom Analytics who may collect
+          and store certain user information only for use in the provision of
+          their services.
+        </li>
+        <li>
+          Balancer does not set any cookies. However, it’s possible we may use
+          third party service providers in the future that set cookies.
+        </li>
+      </ul>
     </div>
     <div class="subsection">
       <h2>Collection of Information</h2>
@@ -102,18 +122,18 @@
         We may derive limited information or draw inferences about you based on
         the information we have access to or receive, most importantly, from our
         service providers. Your wallet and IP address is accessible to Balancer
-        and its vendor(s). We may make inferences about your location based on
-        your wallet or IP address.
+        and its vendor(s). We may make inferences about you based on your wallet
+        or IP address.
       </p>
     </div>
     <div class="subsection">
       <h2>Use of Information</h2>
 
       <p>
-        We do not collect your personal information in order to customize the UI
-        for your use. However, we reserve the ability to use information we
-        collect to provide, maintain, administer and/or improve the UI. We may
-        also use the information we collect to:
+        We do not collect your personal information, other than wallet address,
+        to customize the UI for your use. However, we reserve the ability to use
+        information we collect to provide, maintain, administer and/or improve
+        the UI. We may also use the information we collect to:
       </p>
       <ul>
         <li>Ensure proper functioning of Balancer and the UI;</li>
@@ -139,7 +159,7 @@
           rights and property of Balancer and others;
         </li>
         <li>Debug to identify and repair errors in the UI;</li>
-        <li>Comply with our legal, regulatory and financial obligations;</li>
+        <li>Comply with legal, regulatory and financial obligations;</li>
         <li>
           Carry out any other purpose described to you at the time the
           information was collected; and
@@ -155,11 +175,12 @@
       <h2>Sharing of Information</h2>
 
       <p>
-        We do not have access to or share personally identifiable information in
-        the normal course of Balancer business. However, when Balancer has
-        access to personal information, such as your wallet and certain IP
-        addresses, it may share that information in the following circumstances
-        or as otherwise described in this policy:
+        We do not have access to or share personally identifiable information,
+        other than as described herein, in the normal course of Balancer
+        business. However, when Balancer has access to personal information,
+        such as your wallet and certain IP addresses, it may share that
+        information in the following circumstances or as otherwise described in
+        this policy:
       </p>
       <ul>
         <li>
@@ -228,13 +249,7 @@
 
       <p>
         We do not work with third parties to serve ads to you as part of
-        customized campaigns on the UI or third-party UIs. Balancer may allow
-        others to provide analytics services on our behalf across the web and in
-        mobile apps. These entities may use web beacons, device identifiers, and
-        other technologies to collect information about your use of the UI and
-        other websites and applications, including your wallet address, web
-        browser, mobile network information, pages viewed, time spent on pages
-        or in mobile apps, links clicked, and conversion information.
+        customized campaigns on the UI or third-party UIs.
       </p>
     </div>
     <div class="subsection">
@@ -290,9 +305,19 @@
         <tr>
           <td>Identifiers</td>
           <td>
-            We share with vendors such as TRM Labs and CloudFlare: wallet
-            address, certain IP addresses, device identifiers or other similar
-            identifiers
+            <p>
+              We share with vendors, such CloudFlare and Fathom Analytics:
+              certain IP addresses, device identifiers or other similar
+              identifiers.
+            </p>
+
+            <p>
+              With our compliance partner, TRM Labs, we only share wallet
+              addresses used to connect a wallet to our UI (all other user
+              information like IP addresses, device identifiers and location are
+              not shared). The code for the UI is open source, and can be
+              reviewed by anyone at any time.
+            </p>
           </td>
         </tr>
         <tr>
@@ -379,7 +404,7 @@
 
       <p>
         We do not maintain customer accounts or store personal data. Our vendor
-        may store your IP address.
+        will store your wallet address in order to provide requested services.
       </p>
       <h3>Data Subject Requests</h3>
       <p>

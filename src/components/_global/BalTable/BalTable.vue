@@ -134,7 +134,7 @@ function getAlignProperty(align: 'left' | 'right' | 'center' | undefined) {
 onMounted(() => {
   if (bodyRef.value) {
     bodyRef.value.onscroll = () => {
-      if (bodyRef.value) {
+      if (bodyRef.value && stickyHeaderRef.value) {
         const offsetRatio =
           bodyRef.value.offsetWidth / stickyHeaderRef.value.offsetWidth / 10;
         isColumnStuck.value = !!(
@@ -351,12 +351,7 @@ watch(
     </div>
   </div>
   <div
-    v-if="
-      isPaginated &&
-      !isLoading &&
-      tableData.length !== 0 &&
-      !(tableData.length < 10)
-    "
+    v-if="isPaginated && !isLoading"
     class="bal-table-pagination-btn text-secondary"
     @click="!isLoadingMore && $emit('loadMore')"
   >

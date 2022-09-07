@@ -19,9 +19,6 @@ const state: AppState = {
 const actions = {
   init: async ({ commit, dispatch }) => {
     try {
-      // Fetch init data
-      await dispatch('market/getGasPrice', [], { root: true });
-
       // Fetch initial trade tokens
       dispatch('trade/init', null, { root: true });
 
