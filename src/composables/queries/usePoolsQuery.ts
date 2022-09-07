@@ -198,7 +198,7 @@ export default function usePoolsQuery(
     const fetchArgs: PoolsRepositoryFetchOptions = {};
 
     // Don't use a limit if there is a token list because the limit is applied pre-filter
-    if (!tokenList.value.length) {
+    if (!filterTokens.value.length) {
       fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
     }
 
