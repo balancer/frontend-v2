@@ -206,7 +206,7 @@ export default function usePoolsQuery(
   }
 
   /**
-   *  When tokenList changes, re-initialize the repositories as their queries
+   *  When filterTokens changes, re-initialize the repositories as their queries
    *  need to change to filter for those tokens
    */
   watch(
