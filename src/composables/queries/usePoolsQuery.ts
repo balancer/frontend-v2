@@ -78,7 +78,6 @@ const queryAttrs = {
       max: true,
     },
   },
-  skip: true,
 };
 
 export default function usePoolsQuery(
@@ -197,6 +196,8 @@ export default function usePoolsQuery(
 
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
+
+    fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
 
     if (pageParam && pageParam > 0) {
       fetchArgs.skip = pageParam;
