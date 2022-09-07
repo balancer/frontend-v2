@@ -30,6 +30,7 @@ type GaugeInfo = {
   isKilled: boolean;
   network: Network;
   poolId: string;
+  relativeWeightCap: string;
 };
 
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
@@ -264,6 +265,7 @@ async function getLiquidityGaugesInfo(
       ) {
         id
         isKilled
+        relativeWeightCap
       }
     }
   `;
@@ -284,6 +286,7 @@ async function getLiquidityGaugesInfo(
       return {
         address: getAddress(gauge.id),
         isKilled: Boolean(gauge.isKilled),
+        relativeWeightCap: gauge.relativeWeightCap || 'null',
         network,
         poolId,
       };
@@ -370,6 +373,7 @@ async function getRootGaugeAddress(
       ) {
         id
         isKilled
+        relativeWeightCap
       }
     }
   `;
@@ -389,6 +393,7 @@ async function getRootGaugeAddress(
     const gaugeInfo = {
       address: getAddress(data.rootGauges[0].id),
       isKilled: Boolean(data.rootGauges[0].isKilled),
+      relativeWeightCap: data.rootGauges[0].relativeWeightCap || 'null',
       network,
       poolId,
     };
@@ -446,7 +451,7 @@ async function getGaugeInfo(
   );
 
   let votingGauges = await Promise.all(
-    validGauges.map(async ({ address, poolId, network }) => {
+    validGauges.map(async ({ address, poolId, network, relativeWeightCap }) => {
       const pool = await getPoolInfo(poolId, network);
 
       const tokenLogoURIs = {};
@@ -460,6 +465,7 @@ async function getGaugeInfo(
       return {
         address,
         network,
+        relativeWeightCap,
         pool,
         tokenLogoURIs,
       };
