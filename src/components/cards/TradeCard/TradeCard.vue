@@ -149,6 +149,8 @@
     <TradePreviewModalGP
       v-if="modalTradePreviewIsOpen"
       :trading="trading"
+      :error="error"
+      :warning="warning"
       @trade="trade"
       @close="handlePreviewModalClose"
     />
