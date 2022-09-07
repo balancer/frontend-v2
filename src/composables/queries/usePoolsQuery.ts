@@ -197,7 +197,10 @@ export default function usePoolsQuery(
   function getFetchOptions(pageParam = 0): PoolsRepositoryFetchOptions {
     const fetchArgs: PoolsRepositoryFetchOptions = {};
 
-    fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
+    // Don't use a limit if there is a token list because the limit is applied pre-filter
+    if (!tokenList.value.length) {
+      fetchArgs.first = filterOptions?.pageSize || POOLS.Pagination.PerPage;
+    }
 
     if (pageParam && pageParam > 0) {
       fetchArgs.skip = pageParam;
