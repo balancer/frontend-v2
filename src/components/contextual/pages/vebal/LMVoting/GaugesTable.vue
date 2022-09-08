@@ -244,16 +244,18 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
             size="sm"
             amount="10"
             :tooltip="
-              $t('veBAL.liquidityMining.limitsTooltip.distributionsCappedAt10%')
+              $t('veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL')
             "
             class="ml-1"
           />
           <IconLimit
-            v-if="gauge.relativeWeightCap > 0"
+            v-else-if="gauge.relativeWeightCap !== 'null'"
             size="sm"
-            amount="2"
+            :amount="(Number(gauge.relativeWeightCap) * 100).toString()"
             :tooltip="
-              $t('veBAL.liquidityMining.limitsTooltip.distributionsCappedAt2%')
+              $t('veBAL.liquidityMining.limitsTooltip.distributionsCappedAt', [
+                Number(gauge.relativeWeightCap) * 100,
+              ])
             "
             class="ml-1"
           />
