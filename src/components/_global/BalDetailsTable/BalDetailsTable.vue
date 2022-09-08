@@ -20,12 +20,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 </script>
     
 <template>
-  <BalCard
-    class="overflow-x-auto"
-    :square="upToLargeBreakpoint"
-    :noBorder="upToLargeBreakpoint"
-    noPad
-  >
+  <BalCard class="overflow-x-auto" :square="upToLargeBreakpoint" noPad>
     <div
       v-for="{ title, value, link } in tableData"
       :key="title"
@@ -51,11 +46,11 @@ const { upToLargeBreakpoint } = useBreakpoints();
     
 <style scoped>
 .table-row {
-  @apply flex border-b-2;
+  @apply flex border-b-2 dark:border-gray-700;
 }
 
 .table-row:first-child {
-  @apply font-semibold;
+  @apply font-semibold bg-gray-50 dark:bg-gray-800;
 }
 
 .table-row:last-child {
@@ -63,7 +58,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 }
 
 .table-row-title {
-  @apply flex items-center py-3 px-4 flex-1;
+  @apply flex items-center py-3 px-4 flex-1 dark:border-gray-700;
 
   border-right-width: 1px;
 }
