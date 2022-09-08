@@ -123,6 +123,11 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
           </div>
         </div>
       </template>
+      <template #append>
+        <div class="flex items-center px-2 h-full">
+          <span class="text-xl text-black dark:text-white">%</span>
+        </div>
+      </template>
     </BalTextInput>
   </div>
 </template>
