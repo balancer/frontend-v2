@@ -32,6 +32,7 @@ import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingGauges from '@/composables/useVotingGauges';
 import { orderedPoolTokens } from '@/composables/usePool';
 import GaugeItem from './GaugeItem.vue';
+import useVoteState from '../useVoteState';
 
 /**
  * TYPES
@@ -43,14 +44,18 @@ import GaugeItem from './GaugeItem.vue';
 
 const emit = defineEmits<{
   (e: 'close'): void;
-  (e: 'success'): void;
 }>();
 
 /**
  * COMPOSABLES
  */
 const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
-const { votingGauges } = useVotingGauges();
+const { votingGauges, refetch: refetchVotingGauges } = useVotingGauges();
+const voteState = useVoteState();
+const { t } = useI18n();
+const { addTransaction } = useTransactions();
+const { txListener, getTxConfirmedAt } = useEthers();
+const { fNum2 } = useNumbers();
 
 /**
  * STATE
@@ -95,16 +100,24 @@ const hiddenVotesTotalAllocation = computed<number>(() => {
   return Number(scale(bnum(totalUnscaled), -2).toString());
 });
 
-const disabled = computed<boolean>(() => allGaugesTotalAllocation.value > 100);
-
+const voteButtonDisabled = computed<boolean>(
+  () => allGaugesTotalAllocation.value > 100
+);
+const transactionInProgress = computed(
+  (): boolean => voteState.state.init || voteState.state.confirming
+);
 const totalAllocationClass = computed(() => ({
-  'total-allocation-disabled': disabled.value,
+  'total-allocation-disabled': voteButtonDisabled.value,
   'total-allocation mt-3 flex justify-between': true,
 }));
 
 /**
  * METHODS
  */
+function scaleWeight(weight: string) {
+  return scale(bnum(weight || '0'), -2).toString();
+}
+
 async function submitVote() {
   // Gauge Controller takes a fixed 8 Gauge Addresses
   // We take the first 8 Voting Gauges
@@ -126,34 +139,70 @@ async function submitVote() {
     weights,
   });
   try {
-    // voteState.init = true;
-    // voteState.error = null;
+    voteState.init();
     const tx = await gaugeControllerService.voteForManyGaugeWeights(
       [...gaugeAddresses, ...zeroAddresses],
       [...weights, ...zeroWeights]
     );
     console.log({ tx });
-    // voteState.init = false;
-    // voteState.confirming = true;
-    // handleTransaction(tx);
+    voteState.confirm();
+    handleTransaction(tx);
   } catch (e) {
     console.error(e);
     const error = e as WalletError;
     console.error({ error });
-    // voteState.init = false;
-    // voteState.confirming = false;
-    // voteState.error = {
-    //   title: 'Vote failed',
-    //   description: error.message,
-    // };
+    voteState.error({
+      title: 'Vote failed',
+      description: error.message,
+    });
   }
+}
+
+function getTransactionSummary(): string {
+  const gauges = visibleVotingGauges.value;
+  const message = gauges.reduce<string>((acc, gauge, i) => {
+    return (
+      acc +
+      t('veBAL.liquidityMining.popover.voteForGauge', [
+        fNum2(scaleWeight(votes.value[gauge.address]), FNumFormats.percent),
+        gauge.pool.symbol,
+      ]) +
+      (i < gauges.length - 1 ? ', ' : '')
+    );
+  }, '');
+  return message;
+}
+
+async function handleTransaction(tx) {
+  addTransaction({
+    id: tx.hash,
+    type: 'tx',
+    action: 'voteForGauge',
+    summary: getTransactionSummary(),
+  });
+
+  txListener(tx, {
+    onTxConfirmed: async (receipt: TransactionReceipt) => {
+      const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
+
+      voteState.success({ receipt, confirmedAt });
+      refetchVotingGauges.value();
+    },
+    onTxFailed: () => {
+      console.error('Vote failed');
+      voteState.error({
+        title: 'Vote Failed',
+        description: 'Vote failed for an unknown reason',
+      });
+    },
+  });
 }
 
 watchEffect(() => {
   console.log(visibleVotingGauges.value.length);
   visibleVotingGauges.value.forEach(gauge => {
     votes.value[gauge.address] = gauge.userVotes
-      ? scale(bnum(gauge.userVotes), -2).toString()
+      ? scaleWeight(gauge.userVotes)
       : '0';
   });
 });
@@ -180,11 +229,20 @@ watchEffect(() => {
           You’ll need to update your votes for the remaining ones manually."
       >
       </BalAlert>
+      <BalAlert
+        v-if="voteState.state.error"
+        type="error"
+        :title="voteState.state.error.title"
+        :description="voteState.state.error.description"
+        block
+        class="mt-2 mb-4"
+      />
       <GaugeItem
         v-for="gauge in visibleVotingGauges"
         :key="gauge.address"
         v-model="votes[gauge.address]"
         :gauge="gauge"
+        :disabled="transactionInProgress"
       ></GaugeItem>
 
       <div
@@ -202,18 +260,41 @@ watchEffect(() => {
         </div>
       </div>
 
-      <div v-if="disabled" class="mt-3 text-sm text-red-500">
+      <div v-if="voteButtonDisabled" class="mt-3 text-sm text-red-500">
         Your votes can’t exceed 100%
       </div>
-      <BalBtn
-        class="mt-4"
-        :disabled="disabled"
-        color="gradient"
-        block
-        @click="submitVote"
-      >
-        Confirm votes
-      </BalBtn>
+      <div class="mt-4">
+        <template v-if="voteState.state.receipt">
+          <ConfirmationIndicator
+            :txReceipt="voteState.state.receipt"
+            class="mb-2"
+          />
+          <BalBtn
+            v-if="voteState.state.receipt"
+            color="gray"
+            outline
+            block
+            @click="emit('close')"
+          >
+            {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
+          </BalBtn>
+        </template>
+        <BalBtn
+          v-else
+          color="gradient"
+          block
+          :disabled="voteButtonDisabled"
+          :loading="transactionInProgress"
+          :loadingLabel="
+            voteState.state.init
+              ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
+              : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
+          "
+          @click.prevent="submitVote"
+        >
+          Confirm Votes
+        </BalBtn>
+      </div>
     </div>
   </BalModal>
 </template>

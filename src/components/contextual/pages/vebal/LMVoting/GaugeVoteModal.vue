@@ -57,12 +57,12 @@ const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { veBalBalance } = useVeBal();
+const voteState = useVoteState();
 
 /**
  * STATE
  */
 const voteWeight = ref<string>('');
-const voteState = useVoteState();
 
 /**
  * COMPUTED

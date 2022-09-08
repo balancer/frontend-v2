@@ -84,6 +84,7 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   <div class="special-input">
     <BalTextInput
       :modelValue="modelValue"
+      v-bind="$attrs"
       class="mb-3"
       size="auto"
       type="number"
