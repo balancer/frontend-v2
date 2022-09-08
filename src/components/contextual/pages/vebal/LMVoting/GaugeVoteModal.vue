@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-import { format, formatDistanceToNow } from 'date-fns';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { format } from 'date-fns';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalForm from '@/components/_global/BalForm/BalForm.vue';
@@ -10,11 +10,7 @@ import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import {
-  dateTimeLabelFor,
-  toJsTimestamp,
-  toUtcTime,
-} from '@/composables/useTime';
+import { dateTimeLabelFor, toUtcTime } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
@@ -25,8 +21,8 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
-import { TransactionActionState } from '@/types/transactions';
 import { getNextAllowedTimeToVote } from './utils';
+import useVoteState from './useVoteState';
 
 /**
  * TYPES
@@ -66,12 +62,7 @@ const { veBalBalance } = useVeBal();
  * STATE
  */
 const voteWeight = ref<string>('');
-const voteState = reactive<TransactionActionState>({
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: '',
-});
+const voteState = useVoteState();
 
 /**
  * COMPUTED
@@ -198,13 +189,13 @@ const voteError = computed(
     if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
     if (noVeBalWarning.value) return noVeBalWarning.value;
     if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-    if (voteState.error) return voteState.error;
+    if (voteState.state.error) return voteState.state.error;
     return null;
   }
 );
 
 const transactionInProgress = computed(
-  (): boolean => voteState.init || voteState.confirming
+  (): boolean => voteState.state.init || voteState.state.confirming
 );
 
 const hasEnoughVotes = computed((): boolean => {
@@ -267,24 +258,21 @@ function isVoteWeightValid(voteWeight) {
 async function submitVote() {
   const totalVoteShares = scale(voteWeight.value, 2).toString();
   try {
-    voteState.init = true;
-    voteState.error = null;
+    voteState.init();
     const tx = await gaugeControllerService.voteForGaugeWeights(
       props.gauge.address,
       BigNumber.from(totalVoteShares)
     );
-    voteState.init = false;
-    voteState.confirming = true;
+    voteState.confirm();
     handleTransaction(tx);
   } catch (e) {
     console.error(e);
     const error = e as WalletError;
-    voteState.init = false;
-    voteState.confirming = false;
-    voteState.error = {
+
+    voteState.error({
       title: 'Vote failed',
       description: error.message,
-    };
+    });
   }
 }
 
@@ -304,21 +292,17 @@ async function handleTransaction(tx) {
 
   txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
-      voteState.receipt = receipt;
+      const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
-      const confirmedAt = await getTxConfirmedAt(receipt);
-      voteState.confirmedAt = dateTimeLabelFor(confirmedAt);
-      voteState.confirmed = true;
-      voteState.confirming = false;
+      voteState.success({ receipt, confirmedAt });
       emit('success');
     },
     onTxFailed: () => {
       console.error('Vote failed');
-      voteState.error = {
+      voteState.error({
         title: 'Vote Failed',
         description: 'Vote failed for an unknown reason',
-      };
-      voteState.confirming = false;
+      });
     },
   });
 }
@@ -332,11 +316,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <BalModal show :fireworks="voteState.confirmed" @close="emit('close')">
+  <BalModal show :fireworks="voteState.state.confirmed" @close="emit('close')">
     <template #header>
       <div class="flex items-center">
         <BalCircle
-          v-if="voteState.confirmed"
+          v-if="voteState.state.confirmed"
           size="8"
           color="green"
           class="mr-2 text-white"
@@ -418,7 +402,9 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="
-            voteInputDisabled || transactionInProgress || !!voteState.receipt
+            voteInputDisabled ||
+            transactionInProgress ||
+            !!voteState.state.receipt
           "
           size="md"
           autoFocus
@@ -441,13 +427,13 @@ onMounted(() => {
         </div>
 
         <div class="mt-4">
-          <template v-if="voteState.receipt">
+          <template v-if="voteState.state.receipt">
             <ConfirmationIndicator
-              :txReceipt="voteState.receipt"
+              :txReceipt="voteState.state.receipt"
               class="mb-2"
             />
             <BalBtn
-              v-if="voteState.receipt"
+              v-if="voteState.state.receipt"
               color="gray"
               outline
               block
@@ -463,7 +449,7 @@ onMounted(() => {
             :disabled="voteButtonDisabled"
             :loading="transactionInProgress"
             :loadingLabel="
-              voteState.init
+              voteState.state.init
                 ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
                 : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
             "
