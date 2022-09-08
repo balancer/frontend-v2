@@ -87,19 +87,17 @@ const zeroFee = computed(() =>
   showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
 );
 
-const validationErrors = computed(() => {
-  return {
-    exceedsBalance:
-      account.value &&
-      bnum(props.trading.tokenInAmountInput.value).isGreaterThan(
-        balanceFor(props.trading.tokenInAddressInput.value)
-      ),
-  };
+const exceedsBalance = computed(() => {
+  return (
+    account.value &&
+    bnum(props.trading.tokenInAmountInput.value).isGreaterThan(
+      balanceFor(props.trading.tokenInAddressInput.value)
+    )
+  );
 });
 
 const disableSubmitButton = computed(() => {
-  console.log(props.error?.value);
-  return !!validationErrors.value.exceedsBalance || !!props.error.value;
+  return !!exceedsBalance.value || !!props.error.value;
 });
 
 const summary = computed(() => {
@@ -477,7 +475,7 @@ watch(blockNumber, () => {
         </template>
         <div>
           <BalAlert
-            v-if="validationErrors.exceedsBalance"
+            v-if="exceedsBalance"
             class="p-3"
             type="error"
             size="sm"
