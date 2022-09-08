@@ -1,3 +1,10 @@
+  <script setup lang="ts">
+import { ref } from 'vue';
+import GaugeVoteResubmitModal from './GaugeVoteResubmitModal.vue';
+
+const isModalOpen = ref<boolean>(false);
+</script>
+
 <template>
   <BalAlert
     v-bind="$attrs"
@@ -24,11 +31,5 @@
   </teleport>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-import GaugeVoteResubmitModal from './GaugeVoteResubmitModal.vue';
-
-const isModalOpen = ref<boolean>(false);
-</script>
 
 
