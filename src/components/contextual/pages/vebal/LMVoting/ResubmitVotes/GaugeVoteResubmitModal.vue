@@ -66,19 +66,22 @@ const visibleVotingGauges = computed(() =>
   gaugesUsingUnderUtilizedVotingPower.value.slice(0, 8)
 );
 
-const hiddenVotingGauges = computed(() => {
-  const underUtilizedAddresses = Object.keys(votes.value);
-  return votingGauges.value.filter(
-    gauge => !underUtilizedAddresses.includes(gauge.address)
-  );
-});
-
-const votesTotalAllocation = computed<number>(() =>
-  Object.values(votes.value).reduce<number>(
-    (total, value) => total + Number(value),
-    hiddenVotesTotalAllocation.value
-  )
+// All other gauges using under utilized voting power are grouped separately
+const hiddenVotingGauges = computed(() =>
+  gaugesUsingUnderUtilizedVotingPower.value.slice(7)
 );
+
+const allGaugesTotalAllocation = computed<number>(() => {
+  const underUtilizedAddresses = gaugesUsingUnderUtilizedVotingPower.value.map(
+    gauge => gauge.address
+  );
+
+  return votingGauges.value.reduce<number>((total, gauge) => {
+    return !underUtilizedAddresses.includes(gauge.address)
+      ? total + Number(scale(bnum(gauge.userVotes), -2).toString())
+      : total + Number(votes.value[gauge.address]);
+  }, 0);
+});
 
 const hasMoreThan8VotingGauges = computed(
   () => gaugesUsingUnderUtilizedVotingPower.value.length > 8
@@ -91,7 +94,8 @@ const hiddenVotesTotalAllocation = computed<number>(() => {
   );
   return Number(scale(bnum(totalUnscaled), -2).toString());
 });
-const disabled = computed<boolean>(() => votesTotalAllocation.value > 100);
+
+const disabled = computed<boolean>(() => allGaugesTotalAllocation.value > 100);
 
 const totalAllocationClass = computed(() => ({
   'total-allocation-disabled': disabled.value,
@@ -194,7 +198,7 @@ watchEffect(() => {
       <div :class="totalAllocationClass">
         <div class="p-4">Total vote allocation</div>
         <div class="p-4 border-l border-gray-200 dark:border-gray-900">
-          {{ votesTotalAllocation }}%
+          {{ allGaugesTotalAllocation }}%
         </div>
       </div>
 
