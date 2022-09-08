@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watchEffect, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import i18n from '@/plugins/i18n';
@@ -7,6 +7,7 @@ import i18n from '@/plugins/i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
+import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
 
 export interface NetworkOption {
@@ -20,6 +21,7 @@ export interface NetworkOption {
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
 const { networkId, networkConfig } = useNetwork();
+const { chainId } = useWeb3();
 const router = useRouter();
 const { addNotification } = useNotifications();
 
@@ -52,6 +54,7 @@ const networksDev = ref([
     key: '5',
   },
 ]);
+const previousNetwork: Ref<number | null> = ref(null);
 
 // COMPUTED
 const allNetworks = computed(() => {
@@ -87,6 +90,26 @@ onMounted(async () => {
     });
     router.replace({ query: {} });
   }
+});
+
+// WATCHERS
+watchEffect(() => {
+  if (
+    chainId.value &&
+    previousNetwork.value &&
+    previousNetwork.value !== chainId.value
+  ) {
+    const newNetwork = allNetworks.value.find(
+      n => Number(n.key) === chainId.value
+    );
+    if (newNetwork) {
+      document.write('');
+      localStorage.setItem('networkId', chainId.value.toString());
+      window.location.href = getNetworkChangeUrl(newNetwork);
+      router.go(0);
+    }
+  }
+  previousNetwork.value = chainId.value;
 });
 
 // METHODS
