@@ -33,6 +33,7 @@ import useVotingGauges from '@/composables/useVotingGauges';
 import { orderedPoolTokens } from '@/composables/usePool';
 import GaugeItem from './GaugeItem.vue';
 import useVoteState from '../useVoteState';
+import SubmitVoteBtn from '../SubmitVoteBtn.vue';
 
 /**
  * TYPES
@@ -139,19 +140,19 @@ async function submitVote() {
     weights,
   });
   try {
-    voteState.init();
+    voteState.actions.init();
     const tx = await gaugeControllerService.voteForManyGaugeWeights(
       [...gaugeAddresses, ...zeroAddresses],
       [...weights, ...zeroWeights]
     );
     console.log({ tx });
-    voteState.confirm();
+    voteState.actions.confirm();
     handleTransaction(tx);
   } catch (e) {
     console.error(e);
     const error = e as WalletError;
     console.error({ error });
-    voteState.error({
+    voteState.actions.error({
       title: 'Vote failed',
       description: error.message,
     });
@@ -185,12 +186,12 @@ async function handleTransaction(tx) {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
-      voteState.success({ receipt, confirmedAt });
+      voteState.actions.success({ receipt, confirmedAt });
       refetchVotingGauges.value();
     },
     onTxFailed: () => {
       console.error('Vote failed');
-      voteState.error({
+      voteState.actions.error({
         title: 'Vote Failed',
         description: 'Vote failed for an unknown reason',
       });
@@ -263,38 +264,17 @@ watchEffect(() => {
       <div v-if="voteButtonDisabled" class="mt-3 text-sm text-red-500">
         Your votes can’t exceed 100%
       </div>
-      <div class="mt-4">
-        <template v-if="voteState.state.receipt">
-          <ConfirmationIndicator
-            :txReceipt="voteState.state.receipt"
-            class="mb-2"
-          />
-          <BalBtn
-            v-if="voteState.state.receipt"
-            color="gray"
-            outline
-            block
-            @click="emit('close')"
-          >
-            {{ $t('getVeBAL.previewModal.returnToVeBalPage') }}
-          </BalBtn>
-        </template>
-        <BalBtn
-          v-else
-          color="gradient"
-          block
-          :disabled="voteButtonDisabled"
-          :loading="transactionInProgress"
-          :loadingLabel="
-            voteState.state.init
-              ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
-              : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
-          "
-          @click.prevent="submitVote"
-        >
-          Confirm Votes
-        </BalBtn>
-      </div>
+
+      <SubmitVoteBtn
+        :voteState="voteState.state"
+        :disabled="voteButtonDisabled"
+        :loading="transactionInProgress"
+        class="mt-4"
+        @click:close="emit('close')"
+        @click:submit="submitVote"
+      >
+        Confirm Votes
+      </SubmitVoteBtn>
     </div>
   </BalModal>
 </template>

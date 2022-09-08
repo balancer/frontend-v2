@@ -1,6 +1,6 @@
 import { TransactionActionState } from '@/types/transactions';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { reactive } from 'vue';
+import { reactive, toRefs } from 'vue';
 
 export default function useVoteState() {
   const state = reactive<TransactionActionState>({
@@ -51,10 +51,12 @@ export default function useVoteState() {
   }
 
   return {
-    init,
-    confirm,
-    error,
-    success,
     state,
+    actions: {
+      init,
+      confirm,
+      error,
+      success,
+    },
   };
 }
