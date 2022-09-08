@@ -251,10 +251,10 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <IconLimit
             v-else-if="gauge.relativeWeightCap !== 'null'"
             size="sm"
-            :amount="(Number(gauge.relativeWeightCap) * 100).toString()"
+            :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
             :tooltip="
               $t('veBAL.liquidityMining.limitsTooltip.distributionsCappedAt', [
-                Number(gauge.relativeWeightCap) * 100,
+                (Number(gauge.relativeWeightCap) * 100).toFixed(),
               ])
             "
             class="ml-1"
