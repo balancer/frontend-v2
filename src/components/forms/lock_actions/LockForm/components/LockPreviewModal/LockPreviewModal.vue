@@ -118,15 +118,9 @@ function handleSuccess() {
       :lockType="lockType"
       :veBalLockInfo="veBalLockInfo"
     />
-    <BalAlert
-      v-if="lockConfirmed && !veBalLockInfo.hasExistingLock"
-      class="mt-4"
-      type="info"
-      :title="t('getVeBAL.previewModal.firstVeBALReceived.title')"
-      :description="t('getVeBAL.previewModal.firstVeBALReceived.description')"
-    >
-    </BalAlert>
     <LockActions
+      :veBalLockInfo="veBalLockInfo"
+      :lockConfirmed="lockConfirmed"
       :lockAmount="lockAmount"
       :lockEndDate="lockEndDate"
       :lockType="lockType"

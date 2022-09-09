@@ -22,6 +22,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import useVotingGauges from '@/composables/useVotingGauges';
+import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 
 /**
  * TYPES
@@ -31,6 +32,8 @@ type Props = {
   lockAmount: string;
   lockEndDate: string;
   lockType: LockType[];
+  lockConfirmed: boolean;
+  veBalLockInfo: VeBalLockInfo;
 };
 
 type LockActionState = {
@@ -242,6 +245,14 @@ onBeforeMount(async () => {
         type="warning"
         :title="t('veBAL.liquidityMining.resubmit.hint.title')"
         :description="t('veBAL.liquidityMining.resubmit.hint.description')"
+      >
+      </BalAlert>
+      <BalAlert
+        v-if="lockConfirmed && !veBalLockInfo.hasExistingLock"
+        class="mt-4"
+        type="info"
+        :title="t('getVeBAL.previewModal.firstVeBALReceived.title')"
+        :description="t('getVeBAL.previewModal.firstVeBALReceived.description')"
       >
       </BalAlert>
       <BalBtn
