@@ -20,10 +20,6 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
-
-/**
- * LIFECYCLE
- */
 </script>
 
 <template>
