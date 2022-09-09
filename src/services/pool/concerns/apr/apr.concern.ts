@@ -1,4 +1,5 @@
 import { isKovan } from '@/composables/useNetwork';
+import { decToBP } from '@/composables/useNumbers';
 import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
@@ -56,8 +57,7 @@ export class AprConcern {
       stakingBalApr,
       stakingRewardApr
     );
-
-    return {
+    return this.convertAPRFromDecToBP({
       swapFees: Number(swapFeeAPR),
       tokenAprs: yieldAPR,
       stakingApr: {
@@ -71,6 +71,36 @@ export class AprConcern {
       protocolApr: isVeBalPool(this.pool.id) ? Number(veBalAPR) : 0,
       min: bnum(unstakedTotalAPR).plus(stakedAprRange.min).toNumber(),
       max: bnum(unstakedTotalAPR).plus(stakedAprRange.max).toNumber(),
+    });
+  }
+
+  /** Converts all APR values from Decimal numbers (0.01 = 1%) to Basis points (100 = 1%)*/
+  private convertAPRFromDecToBP(apr: AprBreakdown): AprBreakdown {
+    const convertedTokenAprs = {};
+    Object.entries(apr.tokenAprs.breakdown).forEach(
+      ([address, apr]) => (convertedTokenAprs[address] = decToBP(apr))
+    );
+    const convertedRewardAprs = {};
+    Object.entries(apr.rewardAprs.breakdown).forEach(
+      ([address, apr]) => (convertedRewardAprs[address] = decToBP(apr))
+    );
+    return {
+      swapFees: decToBP(apr.swapFees),
+      tokenAprs: {
+        total: decToBP(apr.tokenAprs.total),
+        breakdown: convertedTokenAprs,
+      },
+      stakingApr: {
+        min: decToBP(apr.stakingApr.min),
+        max: decToBP(apr.stakingApr.max),
+      },
+      rewardAprs: {
+        total: decToBP(apr.rewardAprs.total),
+        breakdown: convertedRewardAprs,
+      },
+      protocolApr: decToBP(apr.protocolApr),
+      min: decToBP(apr.min),
+      max: decToBP(apr.max),
     };
   }
 
