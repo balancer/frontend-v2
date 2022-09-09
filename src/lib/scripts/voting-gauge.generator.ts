@@ -366,7 +366,6 @@ async function getStreamerAddress(
 async function getRootGaugeInfo(
   streamer: string,
   poolId: string,
-  poolId: string,
   network: Network,
   retries = 5
 ): Promise<GaugeInfo[] | null> {
@@ -442,25 +441,6 @@ async function getGaugeInfo(
 
 (async () => {
   console.log('Generating voting-gauges.json...');
-
-  const gaugesInfo = await Promise.all(
-    POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
-  );
-
-  const filteredGauges = gaugesInfo
-    .flat()
-    .filter(gauge => gauge) as GaugeInfo[];
-
-  const killedGaugesList = filteredGauges
-    .filter(({ isKilled }) => isKilled)
-    .map(({ address }) => address);
-
-  const killedGaugesWeight = await getGaugeRelativeWeight(killedGaugesList);
-
-  const validGauges = filteredGauges.filter(
-    ({ address, isKilled }) =>
-      !isKilled || killedGaugesWeight[address] !== '0.0'
-  );
 
   const gaugesInfo = await Promise.all(
     POOLS.map(async ({ id, network }) => await getGaugeInfo(id, network))
