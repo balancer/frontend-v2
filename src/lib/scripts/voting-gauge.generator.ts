@@ -30,6 +30,7 @@ type GaugeInfo = {
   isKilled: boolean;
   network: Network;
   poolId: string;
+  relativeWeightCap: string;
 };
 
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
@@ -240,7 +241,14 @@ async function getPoolInfo(
       tokens: tokensList,
     };
   } catch {
-    console.error('Pool not found:', poolId, 'chainId:', network);
+    console.error(
+      'Pool not found:',
+      poolId,
+      'chainId:',
+      network,
+      'retries:',
+      retries
+    );
 
     return retries > 0
       ? getPoolInfo(poolId, network, retries - 1)
@@ -264,6 +272,7 @@ async function getLiquidityGaugesInfo(
       ) {
         id
         isKilled
+        relativeWeightCap
       }
     }
   `;
@@ -284,6 +293,7 @@ async function getLiquidityGaugesInfo(
       return {
         address: getAddress(gauge.id),
         isKilled: Boolean(gauge.isKilled),
+        relativeWeightCap: gauge.relativeWeightCap || 'null',
         network,
         poolId,
       };
@@ -295,7 +305,9 @@ async function getLiquidityGaugesInfo(
       'LiquidityGauge not found for poolId:',
       poolId,
       'chainId:',
-      network
+      network,
+      'retries:',
+      retries
     );
 
     return retries > 0
@@ -351,12 +363,12 @@ async function getStreamerAddress(
   }
 }
 
-async function getRootGaugeAddress(
+async function getRootGaugeInfo(
   streamer: string,
   poolId: string,
   network: Network,
   retries = 5
-): Promise<GaugeInfo | null> {
+): Promise<GaugeInfo[] | null> {
   log(`getRootGaugeAddress. network: ${network} streamer: ${streamer}`);
   const subgraphEndpoint = config[Network.MAINNET].subgraphs.gauge;
 
@@ -370,6 +382,7 @@ async function getRootGaugeAddress(
       ) {
         id
         isKilled
+        relativeWeightCap
       }
     }
   `;
@@ -386,14 +399,17 @@ async function getRootGaugeAddress(
 
     const { data } = await response.json();
 
-    const gaugeInfo = {
-      address: getAddress(data.rootGauges[0].id),
-      isKilled: Boolean(data.rootGauges[0].isKilled),
-      network,
-      poolId,
-    };
+    const gaugesInfo = data.rootGauges.map((gauge: any) => {
+      return {
+        address: getAddress(gauge.id),
+        isKilled: Boolean(gauge.isKilled),
+        relativeWeightCap: gauge.relativeWeightCap || 'null',
+        network,
+        poolId,
+      };
+    });
 
-    return gaugeInfo;
+    return gaugesInfo;
   } catch {
     console.error(
       'RootGauge not found for Streamer:',
@@ -403,7 +419,7 @@ async function getRootGaugeAddress(
     );
 
     return retries > 0
-      ? getRootGaugeAddress(streamer, poolId, network, retries - 1)
+      ? getRootGaugeInfo(streamer, poolId, network, retries - 1)
       : null;
   }
 }
@@ -418,8 +434,8 @@ async function getGaugeInfo(
     return gauges;
   } else {
     const streamer = await getStreamerAddress(poolId, network);
-    const gauge = await getRootGaugeAddress(streamer, poolId, network);
-    return gauge ? [gauge] : null;
+    const gauges = await getRootGaugeInfo(streamer, poolId, network);
+    return gauges;
   }
 }
 
@@ -446,7 +462,7 @@ async function getGaugeInfo(
   );
 
   let votingGauges = await Promise.all(
-    validGauges.map(async ({ address, poolId, network }) => {
+    validGauges.map(async ({ address, poolId, network, relativeWeightCap }) => {
       const pool = await getPoolInfo(poolId, network);
 
       const tokenLogoURIs = {};
@@ -460,6 +476,7 @@ async function getGaugeInfo(
       return {
         address,
         network,
+        relativeWeightCap,
         pool,
         tokenLogoURIs,
       };
