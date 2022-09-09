@@ -12,7 +12,7 @@ import { gaugeControllerService } from '@/services/contracts/gauge-controller.se
 import { Address, WalletError } from '@/types';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingGauges from '@/composables/useVotingGauges';
-import GaugeItem from './GaugeItem.vue';
+import VoteInput from './VoteInput.vue';
 import useVoteState from '../useVoteState';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
 import { POOLS } from '@/constants/pools';
@@ -213,13 +213,13 @@ watchEffect(() => {
         block
         class="mt-2 mb-4"
       />
-      <GaugeItem
+      <VoteInput
         v-for="gauge in visibleVotingGauges"
         :key="gauge.address"
         v-model="votes[gauge.address]"
         :gauge="gauge"
         :disabled="transactionInProgress"
-      ></GaugeItem>
+      ></VoteInput>
 
       <div
         v-if="hiddenVotesTotalAllocation"
