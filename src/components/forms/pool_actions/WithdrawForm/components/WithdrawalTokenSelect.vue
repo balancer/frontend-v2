@@ -62,8 +62,8 @@ const assetSetWidth = computed(
   () => 40 + (tokenAddresses.value.length - 2) * 10
 );
 
-const isAllOptionAvailable = computed(() =>
-  isComposableStableLike(props.pool.poolType)
+const isAllOptionAvailable = computed(
+  () => !isComposableStableLike(props.pool.poolType)
 );
 
 function isOptionSelected(option: string): boolean {
