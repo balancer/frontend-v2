@@ -3,7 +3,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
-import { isStableLike } from '@/composables/usePool';
+import { isComposableStableLike, isStableLike } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
@@ -11,6 +11,7 @@ import ConfigService from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
+import { encodeExitComposableStablePool } from '@/lib/utils/balancer/composableStablePoolEncoding';
 
 export default class ExitParams {
   private pool: Ref<Pool>;
@@ -25,6 +26,8 @@ export default class ExitParams {
     this.isStableLike = isStableLike(exchange.pool.value.poolType);
     this.dataEncodeFn = this.isStableLike
       ? encodeExitStablePool
+      : isComposableStableLike(exchange.pool.value.poolType)
+      ? encodeExitComposableStablePool
       : encodeExitWeightedPool;
   }
 

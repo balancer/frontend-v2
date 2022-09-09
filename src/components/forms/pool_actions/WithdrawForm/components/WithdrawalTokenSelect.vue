@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, onMounted, ref, toRef } from 'vue';
 
-import { usePool } from '@/composables/usePool';
+import { isComposableStableLike, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -47,12 +47,23 @@ const tokenAddresses = computed(() => {
   return props.pool.tokensList;
 });
 
-const options = computed(() => ['all', ...tokenAddresses.value]);
+const options = computed(() => {
+  const options = tokenAddresses.value;
+
+  if (isAllOptionAvailable.value) {
+    options.unshift('all');
+  }
+  return options;
+});
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
 const assetSetWidth = computed(
   () => 40 + (tokenAddresses.value.length - 2) * 10
+);
+
+const isAllOptionAvailable = computed(() =>
+  isComposableStableLike(props.pool.poolType)
 );
 
 function isOptionSelected(option: string): boolean {
@@ -75,6 +86,13 @@ function handleSelected(newToken: string): void {
     tokenOut.value = newToken;
   }
 }
+
+onMounted(() => {
+  // if all option is not available, select the first token
+  if (!isAllOptionAvailable.value) {
+    handleSelected(options.value[0]);
+  }
+});
 </script>
 
 <template>
