@@ -1307,11 +1307,11 @@
   "yes": "Yes",
   "none": "None",
   "poolAttrs": {
-    "contractDetails": "Pool contract details",
+    "contractDetails": "Pool attributes",
     "feesFixed": "fixed forever",
     "feesEditableGovernance": "this may be edited via Governance",
     "feesEditableOwner": "this may be edited by the Pool Owner",
-    "immutable": "This pool is immutable.",
+    "immutable": "This pool is immutable. No attributes can ever be changed.",
     "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
     "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees which can be edited by the Pool Owner."
   }
