@@ -32,7 +32,7 @@ const { fNum2 } = useNumbers();
 
 function formSwapFeesHint(owner: string): string {
   if (owner === POOLS.ZeroAddress) {
-    return t('poolAttrs.feesFixes');
+    return t('poolAttrs.feesFixed');
   }
 
   if (owner === POOLS.DelegateOwner) {
@@ -97,11 +97,15 @@ const poolManagementText = computed(() => {
     return t('');
   }
 
-  if (props.pool.owner === POOLS.DelegateOwner) {
-    return t('poolAttrs.immutableFeesEditable');
+  if (props.pool.owner === POOLS.ZeroAddress) {
+    return t('poolAttrs.immutable');
   }
 
-  return t('poolAttrs.immutable');
+  if (props.pool.owner === POOLS.DelegateOwner) {
+    return t('poolAttrs.immutableFeesEditableByGovernance');
+  }
+
+  return t('poolAttrs.immutableFeesEditableByOwner');
 });
 </script>
 

@@ -1312,7 +1312,7 @@
     "feesEditableGovernance": "this may be edited via Governance",
     "feesEditableOwner": "this may be edited by the Pool Owner",
     "immutable": "This pool is immutable.",
-    "immutableFeesEditable": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
+    "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
     "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees which can be edited by the Pool Owner."
   }
 }
