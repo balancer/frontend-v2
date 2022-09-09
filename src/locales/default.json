@@ -1307,7 +1307,6 @@
   "yes": "Yes",
   "none": "None",
   "poolAttrs": {
-    "contractDetails": "Pool attributes",
     "feesFixed": "fixed forever",
     "feesEditableGovernance": "this may be edited via Governance",
     "feesEditableOwner": "this may be edited by the Pool Owner",

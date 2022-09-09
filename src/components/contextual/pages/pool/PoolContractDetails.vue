@@ -112,9 +112,8 @@ const poolManagementText = computed(() => {
 <template>
   <div>
     <h3 class="px-4 lg:px-0 mb-5" v-text="$t('poolDetails')" />
-    <h4 class="px-4 lg:px-0 mb-5" v-text="$t('poolAttrs.contractDetails')" />
 
-    <BalDetailsTable class="mb-20" :tableData="data" />
+    <BalDetailsTable class="mb-12" :tableData="data" />
     <template v-if="poolManagementText">
       <h4 class="px-4 lg:px-0 mb-2" v-text="$t('poolManagement')" />
       <div class="px-4 lg:px-0">
