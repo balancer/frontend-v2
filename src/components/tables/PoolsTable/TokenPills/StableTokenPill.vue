@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { PoolToken } from '@/services/pool/types';
-
+import { PoolToken } from '@balancer-labs/sdk';
 import BalanceTooltip from './BalanceTooltip.vue';
 
 type Props = {

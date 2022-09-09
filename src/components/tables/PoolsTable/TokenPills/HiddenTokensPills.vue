@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PoolToken } from '@/services/pool/types';
+import { PoolToken } from '@balancer-labs/sdk';
 
 type Props = {
   tokens: PoolToken[];
