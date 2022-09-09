@@ -789,6 +789,10 @@
         "thisPeriod": "This period: {0}",
         "nextPeriod": "Next period: {0}"
       },
+      "limitsTooltip": {
+        "distributionsCappedVeBAL": "Distributions to the veBAL gauge are capped at 10%",
+        "distributionsCappedAt": "Distributions to this gauge are capped at {0}%"
+      },
       "popover": {
         "title": {
           "vote": "Gauge vote",
