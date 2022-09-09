@@ -365,6 +365,8 @@ async function getStreamerAddress(
 
 async function getRootGaugeInfo(
   streamer: string,
+  poolId: string,
+  poolId: string,
   network: Network,
   retries = 5
 ): Promise<GaugeInfo[] | null> {
