@@ -179,10 +179,6 @@ watchEffect(() => {
       : '0';
   });
 });
-
-/**
- * LIFECYCLE
- */
 </script>
 
 <template>

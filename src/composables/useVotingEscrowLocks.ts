@@ -26,8 +26,6 @@ type VotingEscrowLockQueryResponse = {
 };
 
 export default function useVotingEscrowLocks() {
-  // const enabled = computed(() => isWalletReady.value && isVeBalSupported.value);
-
   /**
    * COMPOSABLES
    */
@@ -71,41 +69,37 @@ export default function useVotingEscrowLocks() {
 
   const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
 
-  // TODO: Explain
+  //  If user has received more veBAL since they last voted, their voting power is under-utilized
   const gaugesUsingUnderUtilizedVotingPower = computed<VotingGaugeWithVotes[]>(
-    () => {
-      return allVotingGauges.value.reduce<VotingGaugeWithVotes[]>(
-        (acc, gauge) => {
-          if (
-            // Does the gauge have user votes
-            Number(gauge.userVotes) &&
-            // Has user received veBAL since they last voted
-            gauge.lastUserVoteTime < lastReceivedVebal.value &&
-            // Is voting currently locked
-            !getNextAllowedTimeToVote(gauge.lastUserVoteTime) &&
-            // Is gauge not expired
-            !expiredGauges.value?.includes(gauge.address)
-          ) {
-            return [...acc, gauge];
-          }
-          return acc;
-        },
-        []
-      );
-    }
+    () =>
+      allVotingGauges.value.reduce<VotingGaugeWithVotes[]>((acc, gauge) => {
+        if (
+          // Does the gauge have user votes
+          Number(gauge.userVotes) &&
+          // Has user received veBAL since they last voted
+          gauge.lastUserVoteTime < lastReceivedVebal.value &&
+          // Is voting currently locked
+          !getNextAllowedTimeToVote(gauge.lastUserVoteTime) &&
+          // Is gauge not expired
+          !expiredGauges.value?.includes(gauge.address)
+        ) {
+          return [...acc, gauge];
+        }
+        return acc;
+      }, [])
   );
 
   const shouldResubmitVotes = computed<boolean>(
     () => !!gaugesUsingUnderUtilizedVotingPower.value.length
   );
 
-  const lastReceivedVebal = computed(() => {
-    return (
+  const lastReceivedVebal = computed(
+    () =>
       votingEscrowLocks.value?.find(item =>
         isSameAddress(item.votingEscrowID.id, networkConfig.addresses.veBAL)
       )?.updatedAt || 0
-    );
-  });
+  );
+
   return {
     votingEscrowLocks,
     lastReceivedVebal,
