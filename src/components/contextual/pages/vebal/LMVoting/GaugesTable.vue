@@ -23,6 +23,7 @@ import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
+import { orderedTokenURIs } from './utils';
 
 /**
  * TYPES
@@ -123,17 +124,6 @@ const dataKey = computed(() => JSON.stringify(props.data));
 /**
  * METHODS
  */
-function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(
-    gauge.pool.poolType,
-    gauge.pool.address,
-    gauge.pool.tokens
-  );
-  return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || ''
-  );
-}
-
 function networkSrc(network: Network) {
   return require(`@/assets/images/icons/networks/${networkNameFor(
     network

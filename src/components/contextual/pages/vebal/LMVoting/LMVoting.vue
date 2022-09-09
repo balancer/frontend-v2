@@ -5,7 +5,7 @@ import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { orderedPoolTokens, poolURLFor } from '@/composables/usePool';
+import { poolURLFor } from '@/composables/usePool';
 import useVotingGauges from '@/composables/useVotingGauges';
 import { bnum, scale } from '@/lib/utils';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
@@ -13,6 +13,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
 import ResubmitVotesAlert from './ResubmitVotes/ResubmitVotesAlert.vue';
+import { orderedTokenURIs } from './utils';
 
 /**
  * DATA
@@ -38,7 +39,6 @@ const { shouldResubmitVotes } = useVotingEscrowLocks();
 const votingGaugeAddresses = computed<string[]>(
   () => votingGauges.value?.map(gauge => gauge.address) || []
 );
-
 const { data: expiredGauges } = useExpiredGaugesQuery(votingGaugeAddresses);
 
 /**
@@ -77,17 +77,6 @@ const gaugesTableKey = computed(() => JSON.stringify(isLoading.value));
  */
 function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
   activeVotingGauge.value = votingGauge;
-}
-
-function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(
-    gauge.pool.poolType,
-    gauge.pool.address,
-    gauge.pool.tokens
-  );
-  return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || ''
-  );
 }
 
 function handleModalClose() {

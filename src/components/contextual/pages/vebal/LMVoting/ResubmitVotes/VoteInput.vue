@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { orderedPoolTokens } from '@/composables/usePool';
+import { orderedTokenURIs } from '../utils';
 
 /**
  * TYPES
@@ -20,21 +20,6 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
-
-/**
- * METHODS
- */
-// TODO: Refactor
-function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(
-    gauge.pool.poolType,
-    gauge.pool.address,
-    gauge.pool.tokens
-  );
-  return sortedTokens.map(
-    token => gauge.tokenLogoURIs[token?.address || ''] || ''
-  );
-}
 
 /**
  * LIFECYCLE
