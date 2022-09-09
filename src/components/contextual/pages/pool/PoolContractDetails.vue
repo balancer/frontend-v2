@@ -66,8 +66,19 @@ const data = computed(() => {
       value: poolType,
     },
     {
-      title: t('poolManagement'),
+      title: t('swapFees'),
+      value: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
+        owner
+      )})`,
+    },
+    {
+      title: t('poolManager'),
       value: poolType === PoolType.Managed ? t('yes') : t('none'),
+    },
+    {
+      title: t('poolOwner'),
+      value: shortenLabel(owner),
+      link: explorer.addressLink(owner || ''),
     },
     {
       title: t('contractAddress'),
@@ -75,19 +86,8 @@ const data = computed(() => {
       link: explorer.addressLink(address || ''),
     },
     {
-      title: t('owner'),
-      value: shortenLabel(owner),
-      link: explorer.addressLink(owner || ''),
-    },
-    {
       title: t('createDate'),
       value: format(createTime * 1000, 'dd MMMM yyyy'),
-    },
-    {
-      title: t('swapFees'),
-      value: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
-        owner
-      )})`,
     },
   ];
 });
@@ -113,7 +113,7 @@ const poolManagementText = computed(() => {
     <BalDetailsTable class="mb-20" :tableData="data" />
     <template v-if="poolManagementText">
       <h4 class="px-4 lg:px-0 mb-2" v-text="$t('poolManagement')" />
-      <div class="px-4">
+      <div class="px-4 lg:px-0">
         {{ poolManagementText }}
       </div>
     </template>

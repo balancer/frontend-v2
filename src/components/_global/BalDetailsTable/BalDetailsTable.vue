@@ -46,7 +46,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
     
 <style scoped>
 .table-row {
-  @apply flex border-b-2 dark:border-gray-700;
+  @apply flex border-b dark:border-gray-700;
 }
 
 .table-row:first-child {
