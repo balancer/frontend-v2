@@ -6,6 +6,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import BigNumber from 'bignumber.js';
 import useNumbers from '@/composables/useNumbers';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -22,6 +23,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
 const { fNum2 } = useNumbers();
 const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 
@@ -56,12 +58,10 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
         </template>
         <div class="flex flex-col gap-1">
           <span class="font-semibold"
-            >Resubmit your vote to utilize your full voting power
+            >{{ t('veBAL.liquidityMining.resubmit.hint.title') }}
           </span>
           <span>
-            Votes on pools are set at the time of your last vote. Since you’ve
-            added new veBAL after your original vote, the additional voting
-            power is not being used.
+            {{ t('veBAL.liquidityMining.resubmit.hint.description') }}
           </span>
         </div>
       </BalTooltip>

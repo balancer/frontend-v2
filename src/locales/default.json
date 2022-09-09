@@ -845,7 +845,13 @@
           "total": "Total vote allocation",
           "exceeding": "Your votes can’t exceed 100%",
           "confirm": "Confirm Votes"
-        }
+        },
+        "hint": {
+          "title": "Resubmit your vote to utilize your full voting power",
+          "description": "Votes on pools are set at the time of your last vote. Since you’ve added new veBAL after your original vote, the additional voting power is not being used."
+        },
+        "resubmitWarning": "Votes on pools are set at the time of the vote. Since you’ve added new veBAL since your original vote, you have additional voting power which is not being used. To use your full voting power, resubmit your votes.",
+        "btn": "Resubmit my votes"
       }
     },
     "notSupported": {

@@ -1,7 +1,9 @@
   <script setup lang="ts">
 import { ref } from 'vue';
 import GaugeVoteResubmitModal from './GaugeVoteResubmitModal.vue';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const isModalOpen = ref<boolean>(false);
 </script>
 
@@ -9,20 +11,21 @@ const isModalOpen = ref<boolean>(false);
   <BalAlert
     v-bind="$attrs"
     type="warning"
-    title="Resubmit your votes to use your full voting power"
+    :title="t('veBAL.liquidityMining.resubmit.hint.title')"
     contentClass="w-full"
   >
     <div
       class="flex flex-col lg:flex-row gap-4 justify-between items-baseline lg:items-start"
     >
       <div class="mr-auto max-w-3xl">
-        Votes on pools are set at the time of the vote. Since you’ve added new
-        veBAL since your original vote, you have additional voting power which
-        is not being used. To use your full voting power, resubmit your votes.
+        {{ t('veBAL.liquidityMining.resubmit.resubmitWarning') }}
       </div>
 
-      <BalBtn color="gradient" class="flex-shrink-0" @click="isModalOpen = true"
-        >Resubmit my votes</BalBtn
+      <BalBtn
+        color="gradient"
+        class="flex-shrink-0"
+        @click="isModalOpen = true"
+        >{{ t('veBAL.liquidityMining.resubmit.btn') }}</BalBtn
       >
     </div>
   </BalAlert>

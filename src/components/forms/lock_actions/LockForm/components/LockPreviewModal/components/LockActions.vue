@@ -240,12 +240,8 @@ onBeforeMount(async () => {
         v-if="shouldResubmitVotes"
         class="mt-4"
         type="warning"
-        title="Resubmit your votes to use your full voting power"
-        description="Votes on pools are set at the time of your last vote. 
-      Since you’ve added new veBAL after your original vote, your additional 
-      voting power is not being used. 
-      Note: votes on each individual pool are timelocked for 10 days and 
-      cannot be edited."
+        :title="t('veBAL.liquidityMining.resubmit.hint.title')"
+        :description="t('veBAL.liquidityMining.resubmit.hint.description')"
       >
       </BalAlert>
       <BalBtn
