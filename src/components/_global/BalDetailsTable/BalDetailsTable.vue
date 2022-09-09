@@ -66,6 +66,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 .table-row-value {
   @apply flex py-3 px-4 items-center;
 
+  word-break: break-all;
   flex: 2;
 }
 </style>

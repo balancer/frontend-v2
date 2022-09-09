@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { POOLS } from '@/constants/pools';
+import { shortenLabel } from '@/lib/utils';
 import { Pool, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
@@ -70,12 +71,12 @@ const data = computed(() => {
     },
     {
       title: t('contractAddress'),
-      value: address,
+      value: shortenLabel(address),
       link: explorer.addressLink(address || ''),
     },
     {
       title: t('owner'),
-      value: owner,
+      value: shortenLabel(owner),
       link: explorer.addressLink(owner || ''),
     },
     {
@@ -112,7 +113,9 @@ const poolManagementText = computed(() => {
     <BalDetailsTable class="mb-20" :tableData="data" />
     <template v-if="poolManagementText">
       <h4 class="px-4 lg:px-0 mb-2" v-text="$t('poolManagement')" />
-      {{ poolManagementText }}
+      <div class="px-4">
+        {{ poolManagementText }}
+      </div>
     </template>
   </div>
 </template>
