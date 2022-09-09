@@ -15,6 +15,7 @@ import useVotingGauges from '@/composables/useVotingGauges';
 import GaugeItem from './GaugeItem.vue';
 import useVoteState from '../useVoteState';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
+import { POOLS } from '@/constants/pools';
 
 /**
  * PROPS & EMITS
@@ -48,7 +49,7 @@ const visibleVotingGauges = computed(() =>
   gaugesUsingUnderUtilizedVotingPower.value.slice(0, 8)
 );
 
-// All other gauges using under utilized voting power are grouped separately
+// All other gauges using under-utilized voting power are grouped separately
 const hiddenVotingGauges = computed(() =>
   gaugesUsingUnderUtilizedVotingPower.value.slice(7)
 );
@@ -60,7 +61,7 @@ const allGaugesTotalAllocation = computed<number>(() => {
 
   return votingGauges.value.reduce<number>((total, gauge) => {
     return !underUtilizedAddresses.includes(gauge.address)
-      ? total + Number(scale(bnum(gauge.userVotes), -2).toString())
+      ? total + Number(bpsToPct(gauge.userVotes))
       : total + Number(votes.value[gauge.address]);
   }, 0);
 });
@@ -74,7 +75,7 @@ const hiddenVotesTotalAllocation = computed<number>(() => {
     (total, gauge) => total + Number(gauge.userVotes),
     0
   );
-  return Number(scale(bnum(totalUnscaled), -2).toString());
+  return Number(bpsToPct(totalUnscaled));
 });
 
 const voteButtonDisabled = computed<boolean>(
@@ -91,37 +92,33 @@ const totalAllocationClass = computed(() => ({
 /**
  * METHODS
  */
-function scaleWeight(weight: string) {
+function bpsToPct(weight: string | number): string {
   return scale(bnum(weight || '0'), -2).toString();
 }
 
 async function submitVote() {
   // Gauge Controller takes a fixed 8 Gauge Addresses
   // We take the first 8 Voting Gauges
-  // If there's less than 8, fill the remaining with null address
+  // If there's less than 8, fill the remaining with Zero Addresses
   const gaugeAddresses: string[] = Object.keys(votes.value);
   const weights: BigNumber[] = Object.values(votes.value).map(weight =>
     BigNumber.from(scale(weight || '0', 2).toString())
   );
-  console.log({ gaugeAddresses });
+
   const zeroAddresses: string[] = new Array(8 - gaugeAddresses.length).fill(
-    '0x0000000000000000000000000000000000000000'
+    POOLS.ZeroAddress
   );
   const zeroWeights: BigNumber[] = new Array(8 - gaugeAddresses.length).fill(
     BigNumber.from(0)
   );
 
-  console.log({
-    gaugeAddresses,
-    weights,
-  });
   try {
     voteState.actions.init();
     const tx = await gaugeControllerService.voteForManyGaugeWeights(
       [...gaugeAddresses, ...zeroAddresses],
       [...weights, ...zeroWeights]
     );
-    console.log({ tx });
+
     voteState.actions.confirm();
     handleTransaction(tx);
   } catch (e) {
@@ -135,13 +132,13 @@ async function submitVote() {
   }
 }
 
-function getTransactionSummary(): string {
+function getTransactionSummaryMsg(): string {
   const gauges = visibleVotingGauges.value;
   const message = gauges.reduce<string>((acc, gauge, i) => {
     return (
       acc +
       t('veBAL.liquidityMining.popover.voteForGauge', [
-        fNum2(scaleWeight(votes.value[gauge.address]), FNumFormats.percent),
+        fNum2(bpsToPct(votes.value[gauge.address]), FNumFormats.percent),
         gauge.pool.symbol,
       ]) +
       (i < gauges.length - 1 ? ', ' : '')
@@ -155,7 +152,7 @@ async function handleTransaction(tx) {
     id: tx.hash,
     type: 'tx',
     action: 'voteForGauge',
-    summary: getTransactionSummary(),
+    summary: getTransactionSummaryMsg(),
   });
 
   txListener(tx, {
@@ -176,10 +173,9 @@ async function handleTransaction(tx) {
 }
 
 watchEffect(() => {
-  console.log(visibleVotingGauges.value.length);
   visibleVotingGauges.value.forEach(gauge => {
     votes.value[gauge.address] = gauge.userVotes
-      ? scaleWeight(gauge.userVotes)
+      ? bpsToPct(gauge.userVotes)
       : '0';
   });
 });
@@ -193,7 +189,9 @@ watchEffect(() => {
   <BalModal show @close="emit('close')">
     <template #header>
       <div class="flex items-center">
-        <h4>Preview vote resubmission</h4>
+        <h4>
+          {{ t('veBAL.liquidityMining.resubmit.modal.title') }}
+        </h4>
       </div>
     </template>
     <div>
@@ -201,9 +199,10 @@ watchEffect(() => {
         v-if="hasMoreThan8VotingGauges"
         class="mb-4"
         type="warning"
-        title="You can only resubmit up to 8 votes"
-        description="It’s only possible to update 8 pool gauge votes at a time.
-          You’ll need to update your votes for the remaining ones manually."
+        :title="t('veBAL.liquidityMining.resubmit.modal.warning.title')"
+        :description="
+          t('veBAL.liquidityMining.resubmit.modal.warning.description')
+        "
       >
       </BalAlert>
       <BalAlert
@@ -226,19 +225,28 @@ watchEffect(() => {
         v-if="hiddenVotesTotalAllocation"
         class="flex justify-between p-4 mt-3 total-allocation"
       >
-        <div>{{ hiddenVotingGauges.length }} other pools</div>
+        <div>
+          {{
+            t(
+              'veBAL.liquidityMining.resubmit.modal.otherPools',
+              hiddenVotingGauges.length
+            )
+          }}
+        </div>
         <div>{{ hiddenVotesTotalAllocation }}%</div>
       </div>
 
       <div :class="totalAllocationClass">
-        <div class="p-4">Total vote allocation</div>
+        <div class="p-4">
+          {{ t('veBAL.liquidityMining.resubmit.modal.total') }}
+        </div>
         <div class="p-4 border-l border-gray-200 dark:border-gray-900">
           {{ allGaugesTotalAllocation }}%
         </div>
       </div>
 
       <div v-if="voteButtonDisabled" class="mt-3 text-sm text-red-500">
-        Your votes can’t exceed 100%
+        {{ t('veBAL.liquidityMining.resubmit.modal.exceeding') }}
       </div>
 
       <SubmitVoteBtn
@@ -249,7 +257,7 @@ watchEffect(() => {
         @click:close="emit('close')"
         @click:submit="submitVote"
       >
-        Confirm Votes
+        {{ t('veBAL.liquidityMining.resubmit.modal.confirm') }}
       </SubmitVoteBtn>
     </div>
   </BalModal>

@@ -833,6 +833,19 @@
         "errors": {
           "notEnoughVotes": "Not enough unallocated votes"
         }
+      },
+      "resubmit": {
+        "modal": {
+          "title": "Preview vote resubmission",
+          "warning": {
+            "title": "You can only resubmit up to 8 votes",
+            "description": "It’s only possible to update 8 pool gauge votes at a time. You’ll need to update your votes for the remaining ones manually."
+          },
+          "otherPools": "0 other pools | 1 other pool | {n} other pools",
+          "total": "Total vote allocation",
+          "exceeding": "Your votes can’t exceed 100%",
+          "confirm": "Confirm Votes"
+        }
       }
     },
     "notSupported": {
