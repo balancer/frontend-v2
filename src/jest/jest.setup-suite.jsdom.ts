@@ -6,6 +6,8 @@ import { config, RouterLinkStub } from '@vue/test-utils';
 import { createI18n } from 'vue-i18n';
 
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
+import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
+import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalChip from '@/components/_global/BalChip/BalChip.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
@@ -47,4 +49,6 @@ config.global.components = {
   BalTable,
   CompositionIcon,
   BalCard,
+  BalIcon,
+  BalAlert,
 };

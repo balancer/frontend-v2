@@ -22,6 +22,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
+import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 
 /**
  * TYPES
