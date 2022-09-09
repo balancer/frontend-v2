@@ -3,7 +3,8 @@
     <div :class="['bal-alert-container', containerClasses]">
       <div>
         <div :class="['bal-alert-icon', iconClasses]">
-          <BalIcon name="alert-circle" :size="iconSize" />
+          <LightBulbIcon v-if="type === 'tip'"></LightBulbIcon>
+          <BalIcon v-else name="alert-circle" :size="iconSize" />
         </div>
       </div>
       <div :class="['bal-alert-content', contentClasses]">
@@ -38,7 +39,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import BalBtn from '../BalBtn/BalBtn.vue';
 import BalIcon from '../BalIcon/BalIcon.vue';
 
-type AlertType = 'warning' | 'error' | 'info';
+type AlertType = 'warning' | 'error' | 'info' | 'tip';
 
 export default defineComponent({
   name: 'BalAlert',
@@ -68,6 +69,8 @@ export default defineComponent({
   setup(props, { slots }) {
     const bgColorClass = computed(() => {
       switch (props.type) {
+        case 'tip':
+          return 'bg-yellow-600 border-0 text-black';
         case 'warning':
           return 'bg-orange-50 dark:bg-orange-500 border border-orange-200 dark:border-0 text-black dark:text-white';
         case 'error':
@@ -131,6 +134,8 @@ export default defineComponent({
 
     const iconColorClasses = computed(() => {
       switch (props.type) {
+        case 'tip':
+          return 'text-black';
         case 'warning':
           return 'text-orange-500 dark:text-white bg-orange-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         case 'error':
@@ -152,6 +157,7 @@ export default defineComponent({
     }));
 
     const descriptionColor = computed(() => {
+      if (props.type === 'tip') return 'text-black';
       if (props.type === 'info')
         return 'text-black dark:text-white text-opacity-70';
       return 'text-black dark:text-white text-opacity-70';
