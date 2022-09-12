@@ -4,3 +4,4 @@ export { default as PoolBalancesCard } from './PoolBalancesCard/PoolBalancesCard
 export { default as PoolChart } from './PoolChart.vue';
 export { default as PoolStatCards } from './PoolStatCards.vue';
 export { default as PoolTransactionsCard } from './PoolTransactionsCard/PoolTransactionsCard.vue';
+export { default as PoolContractDetails } from './PoolContractDetails.vue';

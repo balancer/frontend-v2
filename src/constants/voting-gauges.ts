@@ -5,6 +5,7 @@ import ALL_VOTING_GAUGES from '../../public/data/voting-gauges.json';
 export type VotingGauge = {
   address: string;
   network: Network;
+  relativeWeightCap: string;
   pool: {
     id: string;
     address: string;

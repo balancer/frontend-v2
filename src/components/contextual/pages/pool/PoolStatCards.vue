@@ -92,7 +92,7 @@ const stats = computed(() => {
             :poolApr="poolApr"
           />
         </div>
-        <div class="flex items-center text-xl font-medium truncate">
+        <div class="flex items-center text-xl font-medium">
           {{ stat.value }}
         </div>
       </BalCard>

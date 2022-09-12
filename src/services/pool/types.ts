@@ -14,6 +14,7 @@ export enum PoolType {
   MetaStable = 'MetaStable',
   StablePhantom = 'StablePhantom',
   LiquidityBootstrapping = 'LiquidityBootstrapping',
+  Managed = 'Managed',
 }
 
 // PoolToken data from onchain call

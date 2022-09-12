@@ -11,6 +11,7 @@ export interface SubgraphGauge {
   symbol: string;
   poolId: string;
   totalSupply: string;
+  isKilled: boolean;
   factory: {
     id: string;
   };

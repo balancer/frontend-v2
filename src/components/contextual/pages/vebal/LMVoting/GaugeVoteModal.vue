@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -10,13 +10,12 @@ import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import {
-  dateTimeLabelFor,
-  toJsTimestamp,
-  toUtcTime,
-} from '@/composables/useTime';
+import { dateTimeLabelFor, toUtcTime } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
-import useVeBal from '@/composables/useVeBAL';
+import useVeBal, {
+  isVotingTimeLocked,
+  remainingVoteLockTime,
+} from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { VEBAL_VOTING_GAUGE } from '@/constants/voting-gauges';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
@@ -116,11 +115,8 @@ const voteButtonText = computed(() =>
 );
 
 const votedToRecentlyWarning = computed(() => {
-  const lastUserVoteTime = toJsTimestamp(props.gauge.lastUserVoteTime);
-  if (Date.now() < lastUserVoteTime + WEIGHT_VOTE_DELAY) {
-    const remainingTime = formatDistanceToNow(
-      lastUserVoteTime + WEIGHT_VOTE_DELAY
-    );
+  if (isVotingTimeLocked(props.gauge.lastUserVoteTime)) {
+    const remainingTime = remainingVoteLockTime(props.gauge.lastUserVoteTime);
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
       description: t(
