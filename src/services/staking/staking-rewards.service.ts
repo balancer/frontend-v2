@@ -127,6 +127,7 @@ export class StakingRewardsService {
 
       if (!pool) return nilApr;
       if (isNil(inflationRate)) return nilApr;
+      if (gauge.isKilled) return nilApr;
 
       const poolService = new PoolService(pool);
       if (!balAddress) return nilApr;
