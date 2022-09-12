@@ -817,7 +817,7 @@
         "voteLockInfo": "Votes are timelocked for 10 days. If you vote now, no edits can be made until {0}.",
         "warnings": {
           "votedTooRecently": {
-            "title": "Votes are locked for 10 days.",
+            "title": "Votes are locked for 10 days",
             "description": "You won't be able to make any edits to this vote allocation for {0}"
           },
           "noVeBal": {
@@ -826,7 +826,7 @@
             "inputHintText": "You can't vote since you have no veBAL"
           },
           "veBalLockTooShort": {
-            "title": "veBAL not locked for 7 days.",
+            "title": "veBAL not locked for 7 days",
             "description": "You must have veBAL locked for more than 7 days to vote on gagues."
           },
           "veBalVoteOverLimitWarning": {
