@@ -61,8 +61,8 @@ export class AprConcern {
       swapFees: Number(swapFeeAPR),
       tokenAprs: yieldAPR,
       stakingApr: {
-        min: Number(stakingBalApr.min),
-        max: Number(stakingBalApr.max),
+        min: Number(stakingBalApr?.min || '0'),
+        max: Number(stakingBalApr?.max || '0'),
       },
       rewardAprs: {
         total: Number(stakingRewardApr),
