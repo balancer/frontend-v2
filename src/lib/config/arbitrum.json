@@ -20,10 +20,12 @@
       "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2"
     ],
     "aave": "",
-    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum"
+    "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-arbitrum",
+    "blocks": "https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-one-blocks"
   },
   "supportsEIP1559": false,
   "supportsElementPools": false,
+  "blockTime": 2,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

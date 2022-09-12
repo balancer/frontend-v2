@@ -13,7 +13,6 @@ import { networkId } from '../useNetwork';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
-import { ENABLE_LEGACY_TRADE_INTERFACE } from './constants';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
 
@@ -104,10 +103,6 @@ export default function useTrading(
       return 'balancer';
     }
 
-    if (ENABLE_LEGACY_TRADE_INTERFACE) {
-      return isEthTrade.value ? 'balancer' : 'gnosis';
-    }
-
     return tradeGasless.value && isGnosisSupportedOnNetwork.value
       ? 'gnosis'
       : 'balancer';
@@ -139,7 +134,7 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     sorConfig: {
-      handleAmountsOnFetchPools: false,
+      handleAmountsOnFetchPools: true,
     },
     tokenIn,
     tokenOut,

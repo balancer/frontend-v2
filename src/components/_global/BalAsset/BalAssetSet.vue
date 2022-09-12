@@ -113,10 +113,14 @@ export default defineComponent({
     }));
 
     const radius = computed(() => props.size / 2);
+    const smallSetSpacer = computed(() =>
+      props.addresses.length < 4 ? 30 : 0
+    );
 
     const spacer = computed(
       () =>
-        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2)
+        (props.maxAssetsPerLine / assetLength.value - 1) * (radius.value * 2) +
+        smallSetSpacer.value
     );
 
     /**

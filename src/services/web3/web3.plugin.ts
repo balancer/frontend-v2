@@ -6,6 +6,7 @@ import {
 } from '@ethersproject/providers';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
@@ -17,12 +18,12 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import useFathom from '@/composables/useFathom';
-import { SANCTIONS_ENDPOINT } from '@/constants/exploits';
+import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
-import i18n from '@/plugins/i18n';
 
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { Connector, ConnectorId } from './connectors/connector';
+import { configService } from '@/services/config/config.service';
 import { web3Service } from './web3.service';
 
 export type Wallet =
@@ -57,7 +58,7 @@ export type Web3Plugin = {
   connector: Ref<Connector>;
   walletState: Ref<WalletState>;
   signer: Ref<JsonRpcSigner>;
-  isSanctioned: Ref<boolean>;
+  isBlocked: Ref<boolean>;
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -65,18 +66,20 @@ type PluginState = {
   connector: any;
   walletState: WalletState;
 };
+type WalletScreenResponse = { is_blocked: boolean };
 
-async function isSanctionedAddress(address: string): Promise<boolean | null> {
+async function isBlockedAddress(address: string): Promise<boolean | null> {
   try {
-    const response = await axios.post(SANCTIONS_ENDPOINT, [
+    if (!configService.env.WALLET_SCREENING) return false;
+    const response = await axios.post<WalletScreenResponse>(
+      WALLET_SCREEN_ENDPOINT,
       {
         address: address.toLowerCase(),
-      },
-    ]);
-    const isSanctioned = response.data[0].isSanctioned;
-    return isSanctioned;
+      }
+    );
+    return response.data.is_blocked;
   } catch {
-    return null;
+    return false;
   }
 }
 
@@ -85,7 +88,7 @@ export default {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
-    const isSanctioned = ref(false);
+    const isBlocked = ref(false);
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -194,16 +197,9 @@ export default {
         // need to store address to pre-load that connection
         if (account.value) {
           // fetch sanctioned status
-          let _isSanctioned = await isSanctionedAddress(account.value);
-          if (_isSanctioned === null) {
-            // await disconnectWallet();
-            // throw new Error(
-            //   `Could not receive an appropriate response from the Sanctions API. Aborting.`
-            // );
-            _isSanctioned = false;
-          }
-          isSanctioned.value = _isSanctioned;
-          if (_isSanctioned) {
+          const _isBlocked = await isBlockedAddress(account.value);
+          isBlocked.value = _isBlocked || false;
+          if (_isBlocked) {
             disconnectWallet();
           }
           lsSet('connectedWallet', account.value);
@@ -248,7 +244,7 @@ export default {
       chainId,
       provider,
       signer,
-      isSanctioned,
+      isBlocked,
     };
 
     app.provide(Web3ProviderSymbol, payload);
@@ -259,12 +255,14 @@ export function getConnectorName(
   connectorId: ConnectorId,
   provider: any
 ): string {
+  const { t } = useI18n();
+
   if (!provider) {
-    return i18n.global.t('unknown');
+    return t('unknown');
   }
   if (connectorId === ConnectorId.InjectedMetaMask) {
     if (provider.isCoinbaseWallet) {
-      return `Coinbase ${i18n.global.t('wallet')}`;
+      return `Coinbase ${t('wallet')}`;
     }
     if (provider.isMetaMask) {
       return 'MetaMask';
@@ -281,7 +279,7 @@ export function getConnectorName(
     if (provider.isFrame) {
       return 'Frame';
     }
-    return i18n.global.t('browserWallet');
+    return t('browserWallet');
   }
   if (connectorId === ConnectorId.InjectedTally) {
     return 'Tally';
@@ -290,12 +288,12 @@ export function getConnectorName(
     return 'WalletConnect';
   }
   if (connectorId === ConnectorId.WalletLink) {
-    return `Coinbase ${i18n.global.t('wallet')}`;
+    return `Coinbase ${t('wallet')}`;
   }
   if (connectorId === ConnectorId.Gnosis) {
     return 'Gnosis Safe';
   }
-  return i18n.global.t('unknown');
+  return t('unknown');
 }
 
 export function getConnectorLogo(

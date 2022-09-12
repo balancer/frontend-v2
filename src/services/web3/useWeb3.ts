@@ -6,7 +6,10 @@ import { useQuery } from 'vue-query';
 
 import useNetwork from '@/composables/useNetwork';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { hasInjectedProvider } from '@/services/web3/connectors/metamask/metamask.connector';
+import {
+  getInjectedProvider,
+  hasInjectedProvider,
+} from '@/services/web3/connectors/metamask/metamask.connector';
 
 import { configService } from '../config/config.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -41,7 +44,7 @@ export default function useWeb3() {
     signer,
     disconnectWallet,
     connectWallet,
-    isSanctioned,
+    isBlocked,
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appNetworkConfig = configService.network;
 
@@ -104,7 +107,7 @@ export default function useWeb3() {
   const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
 
   function startConnectWithInjectedProvider(): void {
-    if (hasInjectedProvider()) {
+    if (hasInjectedProvider() && getInjectedProvider().isCoinbaseWallet) {
       // Open wallet select modal because even if there's injected provider,
       // user might want to reject it and use another wallet.
       // If user has already accepted the injected provider, modal will be closed after
@@ -158,7 +161,7 @@ export default function useWeb3() {
     isArbitrum,
     isEIP1559SupportedNetwork,
     isWalletConnecting,
-    isSanctioned,
+    isBlocked,
 
     // methods
     connectWallet,

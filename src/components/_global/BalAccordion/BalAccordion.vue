@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import anime from 'animejs';
 import { takeRight } from 'lodash';
-import { nextTick, onMounted, Ref, ref, watch } from 'vue';
+import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from 'vue';
 
 type Section = {
   title: string;
@@ -20,7 +20,7 @@ type Props = {
   // of an accordion section
 
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
-  dependencies?: Ref<unknown>;
+  dependencies?: unknown;
   showSectionBorder?: boolean;
 };
 
@@ -34,7 +34,7 @@ const accordionHeightSetterElement = ref<HTMLElement>();
 const wrapperElement = ref<HTMLElement>();
 const handleBarElement = ref<HTMLElement>();
 const arrowElement = ref<HTMLElement>();
-const handleBarElements = ref<HTMLElement[]>([]);
+const handleBarElements = ref<(Element | ComponentPublicInstance)[]>([]);
 
 const minimisedWrapperHeight = ref(0);
 const isContentVisible = ref(false);
@@ -156,7 +156,7 @@ onMounted(async () => {
   isContentVisible.value = false;
 });
 
-function setHandleBars(el: HTMLElement | null) {
+function setHandleBars(el: Element | ComponentPublicInstance | null) {
   if (!el) return;
   if (!handleBarElements.value?.includes(el)) {
     handleBarElements.value.push(el);
@@ -176,7 +176,7 @@ watch(
 
 <template>
   <div ref="wrapperElement">
-    <BalCard hFull noPad shadow="none" class="rounded-xl">
+    <BalCard hFull noPad shadow="none" class="overflow-visible rounded-xl">
       <div
         v-for="(section, i) in sections"
         :key="section.id"
@@ -214,7 +214,8 @@ watch(
             v-if="isContentVisible"
             ref="activeSectionElement"
             :class="{
-              'border-b active-section': isContentVisible && showSectionBorder,
+              'border-b active-section rounded-b':
+                isContentVisible && showSectionBorder,
             }"
           >
             <slot :name="section.id" />

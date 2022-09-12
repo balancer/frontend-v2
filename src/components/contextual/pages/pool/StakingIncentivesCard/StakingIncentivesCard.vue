@@ -11,6 +11,7 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
+import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
 
 type Props = {
   pool: Pool;
@@ -22,7 +23,7 @@ const props = defineProps<Props>();
  */
 
 const isStakePreviewVisible = ref(false);
-const stakeAction = ref('');
+const stakeAction = ref<StakeAction>('stake');
 
 /**
  * COMPOSABLES
@@ -141,13 +142,13 @@ async function handleActionSuccess() {
             </button>
           </template>
           <template #staking-incentives>
-            <div class="relative bg-white dark:bg-gray-850">
+            <div class="relative bg-white dark:bg-gray-850 rounded-b-lg">
               <BalStack
                 vertical
                 spacing="sm"
-                class="py-4 px-4 border-t dark:border-gray-900"
+                class="p-4 rounded-b-lg border-t dark:border-gray-900"
               >
-                <BalStack horizontal justify="between">
+                <BalStack horizontal justify="between" class="rounded-b-lg">
                   <span>{{ $t('staked') }} {{ $t('lpTokens') }}</span>
                   <BalStack horizontal spacing="sm" align="center">
                     <AnimatePresence :isVisible="isRefetchingStakedShares">

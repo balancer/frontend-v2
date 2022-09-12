@@ -13,9 +13,7 @@ type Props = {
   fiatTotal: string;
 };
 
-type AmountMap = {
-  [address: string]: string;
-};
+type AmountMap = Record<string, string>;
 
 /**
  * PROPS & EMITS

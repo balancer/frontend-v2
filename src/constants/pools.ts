@@ -21,8 +21,14 @@ type PoolMetadata = {
   hasIcon: boolean;
 };
 
+export type NamedPool =
+  | 'staBAL'
+  | 'bbAaveUSDDeprecated'
+  | 'bbAaveUSD'
+  | 'B-80BAL-20WETH';
+
 export type Pools = {
-  IdsMap: Partial<Record<'staBAL' | 'bbAaveUSD' | 'B-80BAL-20WETH', string>>;
+  IdsMap: Partial<Record<NamedPool, string>>;
   Pagination: {
     PerPage: number;
     PerPool: number;
@@ -124,16 +130,14 @@ const POOLS_KOVAN: Pools = {
       name: 'Balancer Stable USD',
       hasIcon: false,
     },
-    '0xdc2ecfdf2688f92c85064be0b929693acc6dbca6000200000000000000000701': {
-      name: 'Balancer Protocol Liquidity',
-      hasIcon: false,
-    },
   },
 };
 
 const POOLS_GOERLI: Pools = {
   IdsMap: {
     bbAaveUSD:
+      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
+    bbAaveUSDDeprecated:
       '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
     'B-80BAL-20WETH':
       '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060',
@@ -158,6 +162,7 @@ const POOLS_GOERLI: Pools = {
       '0xb60e46d90f2de35f7062a27d3a98749414036d5d000200000000000000000061',
       '0xdcdd4a3d36dec8d57594e89763d069a7e9b223e2000000000000000000000062',
       '0xc957b1acceb21707b782eb8eee2ed8e20088463d000200000000000000000076',
+      '0x8a819a4cabd6efcb4e5504fe8679a1abd831dd8f0000000000000000000000d6',
     ],
   },
   Investment: {
@@ -180,10 +185,6 @@ const POOLS_GOERLI: Pools = {
   Metadata: {
     '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f': {
       name: 'Balancer Boosted Aave USD',
-      hasIcon: false,
-    },
-    '0xf8a0623ab66f985effc1c69d05f1af4badb01b00000200000000000000000060': {
-      name: 'Balancer Protocol Liquidity',
       hasIcon: false,
     },
   },
@@ -209,7 +210,14 @@ const POOLS_MAINNET: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'Gyro2',
+    'Gyro3',
+  ],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063', // staBAL3 (DAI-USD-USDC)
@@ -223,6 +231,7 @@ const POOLS_MAINNET: Pools = {
       '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d', // sdBAL Stable Pool (sdBAL / 8020 BALETH)
       '0x178e029173417b1f9c8bc16dcec6f697bc32374600000000000000000000025d', // Fiat DAO Stable Pool
       '0xf93579002dbe8046c43fefe86ec78b1112247bb80000000000000000000002bc', // USDD 3 pool
+      '0xf3aeb3abba741f0eece8a1b1d2f11b85899951cb000200000000000000000351', //MAI stable pool
     ],
   },
   Investment: {
@@ -295,6 +304,7 @@ const POOLS_MAINNET: Pools = {
       '0x0578292cb20a443ba1cde459c985ce14ca2bdee5000100000000000000000269',
       '0x8eb6c82c3081bbbd45dcac5afa631aac53478b7c000100000000000000000270',
       '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc',
+      '0x99a14324cfd525a34bbc93ac7e348929909d57fd00020000000000000000030e',
     ],
   },
   Metadata: {
@@ -304,10 +314,6 @@ const POOLS_MAINNET: Pools = {
     },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
-      hasIcon: true,
-    },
-    '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014': {
-      name: 'Balancer Protocol Liquidity',
       hasIcon: true,
     },
     '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249': {
@@ -330,7 +336,14 @@ const POOLS_POLYGON: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'Gyro2',
+    'Gyro3',
+  ],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon MAI/DAI/USDC/USDT
@@ -408,9 +421,11 @@ const POOLS_ARBITRUM: Pools = {
     AllowList: [
       '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
       '0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016', // arbitrum
-      '0x386b5d43ba8b97c43d4afb4cdae7877a1b295e8a000000000000000000000020', // tusd arbitrum,
-      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d', // mai,
+      '0x386b5d43ba8b97c43d4afb4cdae7877a1b295e8a000000000000000000000020', // tusd arbitrum
+      '0x0510ccf9eb3ab03c1508d3b9769e8ee2cfd6fdcf00000000000000000000005d', // mai
       '0x5a5884fc31948d59df2aeccca143de900d49e1a300000000000000000000006f', // VST
+      '0xd89746affa5483627a87e55713ec1905114394950002000000000000000000bf', // fluid stable
+      '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102', // vesta new stable
     ],
   },
   Investment: {

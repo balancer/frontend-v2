@@ -301,7 +301,7 @@ watch(
           />
           <AnimatePresence
             :isVisible="
-              doSimilarPoolsExist && activeStep === 0 && validTokens.length
+              doSimilarPoolsExist && activeStep === 0 && !!validTokens.length
             "
           >
             <SimilarPoolsCompact />
@@ -311,7 +311,7 @@ watch(
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="hasRestoredFromSavedState && !appLoading"
+        :isVisible="!!hasRestoredFromSavedState && !appLoading"
         unmountInstantly
       >
         <BalAlert

@@ -1,4 +1,4 @@
-import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderBalance, OrderKind } from '@cowprotocol/contracts';
 
 export type OrderID = string;
 

@@ -17,9 +17,11 @@
   "subgraphs": {
     "main": ["http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2"],
     "aave": "",
-    "gauge": ""
+    "gauge": "",
+    "blocks": ""
   },
   "supportsEIP1559": false,
+  "blockTime": 12,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

@@ -118,8 +118,16 @@ export class StakingRewardsService {
       const pool = pools.find(pool => pool.id === poolId);
       const nilApr = [poolId, { min: '0', max: '0' }];
 
+      // Temp fix to handle case of multiple gauges
+      const poolGauges = gauges.filter(gauge => gauge.poolId === poolId);
+      const bestGauge = poolGauges.reduce((prev, current) =>
+        bnum(prev.totalSupply).gt(current.totalSupply) ? prev : current
+      );
+      if (bestGauge.id !== gauge.id) return [null];
+
       if (!pool) return nilApr;
       if (isNil(inflationRate)) return nilApr;
+      if (gauge.isKilled) return nilApr;
 
       const poolService = new PoolService(pool);
       if (!balAddress) return nilApr;
@@ -142,7 +150,8 @@ export class StakingRewardsService {
       const range = getAprRange(gaugeBALApr || '0'.toString());
       return [poolId, { ...range }];
     });
-    return Object.fromEntries(aprs);
+
+    return Object.fromEntries(aprs.filter(apr => apr));
   }
 
   async getRewardTokenAprs({

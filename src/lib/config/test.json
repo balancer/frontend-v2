@@ -18,10 +18,12 @@
       "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2"
     ],
     "aave": "",
-    "gauge": ""
+    "gauge": "",
+    "blocks": ""
   },
   "supportsEIP1559": true,
   "supportsElementPools": true,
+  "blockTime": 12,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

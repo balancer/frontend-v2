@@ -6,7 +6,6 @@ import { useI18n } from 'vue-i18n';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 import useStaking from '@/composables/staking/useStaking';
-import { isL2 } from '@/composables/useNetwork';
 import { isMigratablePool } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -51,6 +50,8 @@ const noPoolsLabel = computed(() => {
     : t('connectYourWallet');
 });
 
+const poolsToRenderKey = computed(() => JSON.stringify(poolsToRender.value));
+
 // first retrieve all the pools the user has liquidity for
 const { data: userPools, isLoading: isLoadingUserPools } = useUserPoolsQuery();
 
@@ -74,7 +75,7 @@ const partiallyStakedPools = computed(() => {
         ...pool,
         stakedPct: stakedPct.toString(),
         stakedShares: calculateFiatValueOfShares(pool, stakedBalance),
-        boost: poolBoosts.value[pool.id],
+        boost: poolBoosts.value && poolBoosts.value[pool.id],
       };
     });
 });
@@ -132,11 +133,11 @@ function handleModalClose() {
 <template>
   <div>
     <BalStack vertical spacing="sm">
-      <h5 v-if="!isL2" class="px-4 xl:px-0">
+      <h5 class="px-4 xl:px-0">
         {{ $t('staking.unstakedPools') }}
       </h5>
       <PoolsTable
-        :key="poolsToRender"
+        :key="poolsToRenderKey"
         :isLoading="isLoadingUserStakingData || isLoadingUserPools"
         :data="poolsToRender"
         :noPoolsLabel="noPoolsLabel"
@@ -146,6 +147,7 @@ function handleModalClose() {
       />
     </BalStack>
     <StakePreviewModal
+      v-if="stakePool"
       :pool="stakePool"
       :isVisible="showStakeModal"
       action="stake"

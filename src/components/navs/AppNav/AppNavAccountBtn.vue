@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+import Avatar from '@/components/images/Avatar.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+import useWeb3 from '@/services/web3/useWeb3';
+import { shorten } from '@/lib/utils';
+
+import AppNavSettings from './AppNavSettings.vue';
+
+const { bp, upToLargeBreakpoint, isMobile } = useBreakpoints();
+const { isLoadingProfile, profile, account } = useWeb3();
+
+const avatarSize = computed(() => {
+  if (bp.value === 'sm') {
+    return 35;
+  } else if (['md', 'lg'].includes(bp.value)) {
+    return 40;
+  } else {
+    return 20;
+  }
+});
+</script>
+
 <template>
   <BalPopover
     noPad
@@ -15,7 +39,7 @@
         :circle="upToLargeBreakpoint"
       >
         <Avatar
-          :iconURI="profile?.avatar"
+          :iconURI="profile?.avatar || ''"
           :address="account"
           :size="avatarSize"
         />
@@ -27,7 +51,7 @@
         <span
           v-else
           class="hidden lg:inline-block pl-2 eth-address"
-          v-text="_shorten(account)"
+          v-text="shorten(account)"
         />
       </BalBtn>
     </template>
@@ -35,47 +59,4 @@
   </BalPopover>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
 
-import Avatar from '@/components/images/Avatar.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useWeb3 from '@/services/web3/useWeb3';
-
-import AppNavSettings from './AppNavSettings.vue';
-
-export default defineComponent({
-  name: 'AppNavAccountBtn',
-
-  components: {
-    AppNavSettings,
-    Avatar,
-  },
-
-  setup() {
-    const { bp, upToLargeBreakpoint, isMobile } = useBreakpoints();
-    const { isLoadingProfile, profile, account } = useWeb3();
-
-    const avatarSize = computed(() => {
-      if (bp.value === 'sm') {
-        return 35;
-      } else if (['md', 'lg'].includes(bp.value)) {
-        return 40;
-      } else {
-        return 20;
-      }
-    });
-
-    return {
-      // computed
-      bp,
-      account,
-      profile,
-      avatarSize,
-      upToLargeBreakpoint,
-      isLoadingProfile,
-      isMobile,
-    };
-  },
-});
-</script>

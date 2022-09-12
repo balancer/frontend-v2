@@ -6,6 +6,10 @@ export const oneHourInMs = 60 * oneMinInMs;
 export const oneDayInMs = 24 * oneHourInMs;
 export const oneWeekInMs = 7 * oneDayInMs;
 
+export const oneSecond = 1;
+export const oneMinInSecs = 60 * oneSecond;
+export const oneHourInSecs = 60 * oneMinInSecs;
+
 export const twentyFourHoursInMs = 24 * oneHourInMs;
 export const twentyFourHoursInSecs = twentyFourHoursInMs / oneSecondInMs;
 

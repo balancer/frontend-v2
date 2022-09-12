@@ -17,6 +17,7 @@ interface Env {
   INFURA_PROJECT_ID: string;
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
+  WALLET_SCREENING: boolean;
 }
 export default class ConfigService {
   public get env(): Env {
@@ -42,6 +43,7 @@ export default class ConfigService {
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY',
+      WALLET_SCREENING: process.env.VUE_APP_WALLET_SCREENING === 'true',
     };
   }
 

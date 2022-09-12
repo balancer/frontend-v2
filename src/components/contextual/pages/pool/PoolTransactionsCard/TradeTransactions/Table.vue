@@ -3,7 +3,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -97,7 +98,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     Cell: 'timeCell',
     align: 'right',
     sortKey: pool => pool.timestamp,
-    width: 200,
+    width: 190,
   },
 ]);
 

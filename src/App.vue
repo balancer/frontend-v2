@@ -57,7 +57,7 @@ export default defineComponent({
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal,
-      isSanctioned,
+      isBlocked,
       // isMainnet
     } = useWeb3();
     const route = useRoute();
@@ -102,7 +102,7 @@ export default defineComponent({
     return {
       // state
       layout,
-      isSanctioned,
+      isBlocked,
       isThirdPartyServicesModalVisible,
       // computed
       isWalletSelectVisible,
@@ -122,13 +122,13 @@ export default defineComponent({
     <VueQueryDevTools />
     <WalletSelectModal
       :isVisible="isWalletSelectVisible"
-      :onShowThirdParty="() => handleThirdPartyModalToggle(true, 'wallet')"
+      :onShowThirdParty="() => handleThirdPartyModalToggle(true)"
       @close="toggleWalletSelectModal"
     />
-    <SanctionedWalletModal v-if="isSanctioned" />
+    <SanctionedWalletModal v-if="isBlocked" />
     <ThirdPartyServicesModal
       :isVisible="isThirdPartyServicesModalVisible"
-      @close="handleThirdPartyModalToggle(false, 'third')"
+      @close="handleThirdPartyModalToggle(false)"
     />
     <AppSidebar v-if="sidebarOpen" />
     <Notifications />
