@@ -44,14 +44,6 @@ export class AprConcern {
       yieldAPR.total.toString(),
     ]).toString();
 
-    // const aprGivenBoost = (boost = '1') =>
-    //   this.calcAprGivenBoost(
-    //     unstakedTotalAPR,
-    //     stakingBalApr,
-    //     stakingRewardApr,
-    //     boost
-    //   );
-
     const stakedAprRange = this.calcStakedAprRange(
       unstakedTotalAPR,
       stakingBalApr,

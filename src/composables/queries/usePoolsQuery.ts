@@ -110,7 +110,6 @@ export default function usePoolsQuery(
    */
 
   function initializePoolsRepository(): PoolsFallbackRepository {
-    console.log('Initializing the fallback. Token list is: ', filterTokens);
     const fallbackRepository = new PoolsFallbackRepository(
       [balancerApiRepository, subgraphRepository],
       {
@@ -220,11 +219,6 @@ export default function usePoolsQuery(
   watch(
     filterTokens,
     () => {
-      console.log(
-        'Token list changed to: ',
-        filterTokens,
-        ' re-building repositories'
-      );
       balancerApiRepository = initializeDecoratedAPIRepository();
       subgraphRepository = initializeDecoratedSubgraphRepository();
     },
@@ -246,24 +240,10 @@ export default function usePoolsQuery(
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
-    console.time('usePoolsQuery-overall');
-    console.time('usePoolsQuery-init');
     const fetchOptions = getFetchOptions(pageParam);
     const poolsRepository = initializePoolsRepository();
-    console.timeEnd('usePoolsQuery-init');
-    console.time('usePoolsQuery-fetchpools');
 
-    console.log(
-      'Fetching with Query Args: ',
-      fetchOptions,
-      ' attrs: ',
-      queryAttrs
-    );
     const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
-
-    console.timeEnd('usePoolsQuery-fetchpools');
-    console.timeEnd('usePoolsQuery-overall');
-    console.log('RETRIEVED POOLS: ', pools);
 
     const skip = poolsRepository.currentProvider?.skip
       ? poolsRepository.currentProvider.skip
