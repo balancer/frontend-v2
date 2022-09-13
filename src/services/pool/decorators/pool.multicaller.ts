@@ -12,6 +12,7 @@ import {
   removePreMintedBPT,
   isDeep,
   isComposableStableLike,
+  isComposableStable,
 } from '@/composables/usePool';
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
@@ -104,14 +105,14 @@ export class PoolMulticaller {
             function: 'getVirtualSupply',
             abi: PoolTypeABIs,
           });
-          // TODO once new contracts deployed
-          //   console.log('FETCH actual supply???');
-          //   multicaller.call({
-          //     key: `${pool.id}.totalSupply`,
-          //     address: pool.address,
-          //     function: 'getActualSupply',
-          //     abi: PoolTypeABIs,
-          //   });
+          if (isComposableStable(pool.poolType)) {
+            multicaller.call({
+              key: `${pool.id}.totalSupply`,
+              address: pool.address,
+              function: 'getActualSupply',
+              abi: PoolTypeABIs,
+            });
+          }
         }
 
         if (isDeep(pool)) {
