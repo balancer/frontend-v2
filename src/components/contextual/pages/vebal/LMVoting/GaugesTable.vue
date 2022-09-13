@@ -24,6 +24,11 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import GaugesTableVoteBtn from './GaugesTableVoteBtn.vue';
 import GaugeVoteInfo from './GaugeVoteInfo.vue';
+import IconLimit from '@/components/icons/IconLimit.vue';
+import {
+  isVotingTimeLocked,
+  remainingVoteLockTime,
+} from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -69,7 +74,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: '',
     Header: 'chainColumnHeader',
     Cell: 'networkColumnCell',
-    width: 80,
+    width: 50,
     noGrow: true,
   },
   {
@@ -78,7 +83,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'uri',
     Header: 'iconColumnHeader',
     Cell: 'iconColumnCell',
-    width: 125,
+    width: 100,
     noGrow: true,
   },
   {
@@ -95,22 +100,17 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     id: 'nextPeriodVotes',
     Cell: 'nextPeriodVotesCell',
     sortKey: gauge => Number(gauge.votesNextPeriod),
-    width: 150,
+    width: 160,
     cellClassName: 'font-numeric',
   },
   {
     name: t('veBAL.liquidityMining.table.myVotes'),
-    accessor(gauge) {
-      const normalizedVotes = scale(new BigNumber(gauge.userVotes), -4);
-      return fNum2(normalizedVotes.toString(), {
-        style: 'percent',
-        maximumFractionDigits: 2,
-      });
-    },
+    accessor: 'myVotes',
     align: 'right',
     id: 'myVotes',
     sortKey: gauge => Number(gauge.userVotes),
-    width: 150,
+    width: 100,
+    Cell: 'myVotesCell',
     cellClassName: 'font-numeric',
     hidden: !isWalletReady.value,
   },
@@ -236,8 +236,65 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
         </div>
       </template>
       <template #nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="py-4 px-6 text-right">
+        <div v-if="!isLoading" class="flex justify-end py-4 px-6">
           <GaugeVoteInfo :gauge="gauge" />
+          <div class="flex justify-end w-6">
+            <IconLimit
+              v-if="gauge.pool.symbol === 'veBAL'"
+              size="sm"
+              amount="10"
+              :tooltip="
+                $t(
+                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL'
+                )
+              "
+            />
+            <IconLimit
+              v-else-if="gauge.relativeWeightCap !== 'null'"
+              size="sm"
+              :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
+              :tooltip="
+                $t(
+                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
+                  [(Number(gauge.relativeWeightCap) * 100).toFixed()]
+                )
+              "
+            />
+          </div>
+        </div>
+      </template>
+      <template #myVotesCell="gauge">
+        <div class="flex justify-end px-4">
+          {{
+            fNum2(scale(new BigNumber(gauge.userVotes), -4).toString(), {
+              style: 'percent',
+              maximumFractionDigits: 2,
+            })
+          }}
+          <div class="flex justify-end w-6">
+            <BalTooltip v-if="isVotingTimeLocked(gauge.lastUserVoteTime)">
+              <template #activator>
+                <TimelockIcon />
+              </template>
+              <div>
+                <span class="font-semibold">
+                  {{
+                    $t(
+                      'veBAL.liquidityMining.popover.warnings.votedTooRecently.title'
+                    )
+                  }}
+                </span>
+                <p class="text-gray-500">
+                  {{
+                    $t(
+                      'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
+                      [remainingVoteLockTime(gauge.lastUserVoteTime)]
+                    )
+                  }}
+                </p>
+              </div>
+            </BalTooltip>
+          </div>
         </div>
       </template>
       <template #voteColumnCell="gauge">

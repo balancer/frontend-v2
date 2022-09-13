@@ -7,9 +7,9 @@ const { getReturnRoute } = useReturnRoute();
   <div class="pb-16">
     <div class="mb-12 layout-header">
       <div />
-      <router-link :to="getReturnRoute()">
+      <BalBtn tag="router-link" :to="getReturnRoute()" color="white" circle>
         <BalIcon name="x" size="lg" />
-      </router-link>
+      </BalBtn>
     </div>
 
     <router-view :key="$route.path" />

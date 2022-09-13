@@ -54,6 +54,7 @@
     "Error429Cancel": "The order cannot be cancelled. Too many order cancellations. Please retry in a minute.",
     "Error500": "Error {0} the order."
   },
+  "attribute": "Attribute",
   "approve": "Approve",
   "approved": "Approved",
   "approvedGnosisRelayer": "Approved Gnosis relayer",
@@ -227,6 +228,10 @@
       "description": "An error occurred while trying to show pool migration."
     }
   },
+  "contractAddress": "Contract address",
+  "creator": "Creator",
+  "owner": "Owner",
+  "createDate": "Creation date",
   "creating": "Creating",
   "createPool": "Create pool",
   "createPoolTooltip": "Create {0} pool",
@@ -412,6 +417,15 @@
   "loading": "Loading...",
   "loadingBestPrice": "Looking for the best price...",
   "loadMore": "Load more",
+  "lock": "Lock",
+  "locked": "Locked",
+  "locking": {
+    "expiredLockLpTokens": "Expired lock LP tokens",
+    "expiredLockTooltip": "Your previous locking period has expired, so you no longer have any veBAL or voting power. You will no longer earn protocol fees, boosted yields on staked Ethereum Mainnet pools or veBAL incentives. However, you'll still get the minimum 1.0x rate. Redeem your expired locked B-80BAL-20WETH LP tokens and then create a new lock to get veBAL.",
+    "lockBptForVeBal": "Lock LP for veBAL",
+    "lockedLpTokensTooltip": "The USD value of your veBAL. These are your locked LP tokens in the BAL 80% / WETH 20% pool.",
+    "unlockedLpTokensTooltip": "The USD value of your liquidity provided to the BAL 80% / WETH 20% pool that has not been locked."
+  },
   "logOut": "Log out",
   "lost": "Lost",
   "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
@@ -585,6 +599,10 @@
   },
   "poolType": "Pool type",
   "poolValue": "Pool value",
+  "poolManager": "Pool Manager",
+  "poolManagement": "Pool management",
+  "poolDetails": "Pool details",
+  "poolOwner": "Pool Owner",
   "poolWarnings": {
     "bugWarning20220513": {
       "title": "This pool contains double-entrypoint tokens, which have been found to be incompatible with Balancer. It is currently not possible to withdraw all assets from the pool proportionally. While it is possible to withdraw in a single asset, liquidity providers are advised to wait. A mechanism is being implemented to allow for proportional withdrawals. <a href=\"https://forum.balancer.fi/t/medium-severity-bug-found/3161\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">Learn more </a>"
@@ -630,6 +648,7 @@
   "receipt": "Receipt",
   "receive": "Receive",
   "recentActivityTitle": "Recent activity",
+  "redeem": "Redeem",
   "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
   "restoring": "Restoring...",
   "returnToPool": "Return to pool page",
@@ -649,7 +668,6 @@
     "infura": "Used to fetch on-chain data and constructs contract calls with an Infura API.",
     "alchemy": "Used to fetch on-chain data and constructs contract calls with an Alchemy API.",
     "the-graph": "Used to fetch blockchain data from The Graph’s hosted service.",
-    "google-analytics": "Used to understand user behavior on the site and marketing performance.",
     "fathom-analytics": "Used to understand user behavior on the site and marketing performance.",
     "TRM-labs": "Used to securely collect wallet addresses and shares it with TRM Labs Inc. for risk and compliance reasons.",
     "sentry": "Used for error tracking and performance monitoring."
@@ -690,6 +708,7 @@
   "summary": "Summary",
   "swap": "Swap",
   "swapFee": "Swap fee",
+  "swapFees": "Swap fees",
   "swapFeeAPR": "Swap fees APR",
   "swapFeeManager": "Swap fee manager",
   "switchNetwork": "Switch network",
@@ -780,6 +799,10 @@
         "thisPeriod": "This period: {0}",
         "nextPeriod": "Next period: {0}"
       },
+      "limitsTooltip": {
+        "distributionsCappedVeBAL": "Distributions to the veBAL gauge are capped at 10%",
+        "distributionsCappedAt": "Distributions to this gauge are capped at {0}%"
+      },
       "popover": {
         "title": {
           "vote": "Gauge vote",
@@ -804,7 +827,7 @@
         "voteLockInfo": "Votes are timelocked for 10 days. If you vote now, no edits can be made until {0}.",
         "warnings": {
           "votedTooRecently": {
-            "title": "Votes are locked for 10 days.",
+            "title": "Votes are locked for 10 days",
             "description": "You won't be able to make any edits to this vote allocation for {0}"
           },
           "noVeBal": {
@@ -813,7 +836,7 @@
             "inputHintText": "You can't vote since you have no veBAL"
           },
           "veBalLockTooShort": {
-            "title": "veBAL not locked for 7 days.",
+            "title": "veBAL not locked for 7 days",
             "description": "You must have veBAL locked for more than 7 days to vote on gagues."
           },
           "veBalVoteOverLimitWarning": {
@@ -1198,6 +1221,7 @@
   "unknownPoolType": "Unknown pool type",
   "unknownTokenPrice": "Unknown token price",
   "unlock": "Unlock",
+  "unlocked": "Unlocked",
   "unlocking": "Unlocking",
   "unstake": "Unstake",
   "unstaked": "Unstaked",
@@ -1283,5 +1307,15 @@
       "tvl": "TVL",
       "volume": "Volume"
     }
+  },
+  "yes": "Yes",
+  "none": "None",
+  "poolAttrs": {
+    "feesFixed": "fixed forever",
+    "feesEditableGovernance": "this may be edited via Governance",
+    "feesEditableOwner": "this may be edited by the Pool Owner",
+    "immutable": "This pool is immutable. No attributes can ever be changed.",
+    "immutableFeesEditableByGovernance": "The attributes of this pool are immutable, except for swap fees which can be edited via Governance.",
+    "immutableFeesEditableByOwner": "The attributes of this pool are immutable, except for swap fees which can be edited by the Pool Owner."
   }
 }

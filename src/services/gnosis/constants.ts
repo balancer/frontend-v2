@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import {
   GPv2Settlement,
   GPv2VaultRelayer,
-} from '@gnosis.pm/gp-v2-contracts/networks.json';
+} from '@cowprotocol/contracts/networks.json';
 
 import { networkId } from '@/composables/useNetwork';
 

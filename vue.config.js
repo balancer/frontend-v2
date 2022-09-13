@@ -17,6 +17,7 @@ module.exports = {
       'bn.js',
       path.resolve(path.join(__dirname, 'node_modules', 'bn.js'))
     );
+    config.plugins.delete('prefetch');
   },
   devServer: {
     headers: {

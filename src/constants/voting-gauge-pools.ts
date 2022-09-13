@@ -202,20 +202,13 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc',
     network: Network.MAINNET,
   },
-];
-
-export const KOVAN_POOLS: Pool[] = [
   {
-    id: '0x647c1fd457b95b75d0972ff08fe01d7d7bda05df000200000000000000000001',
-    network: Network.KOVAN,
+    id: '0x99a14324cfd525a34bbc93ac7e348929909d57fd00020000000000000000030e',
+    network: Network.MAINNET,
   },
   {
-    id: '0xf767f0a3fcf1eafec2180b7de79d0c559d7e7e370001000000000000000003e3',
-    network: Network.KOVAN,
-  },
-  {
-    id: '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8',
-    network: Network.KOVAN,
+    id: '0x48607651416a943bf5ac71c41be1420538e78f87000200000000000000000327',
+    network: Network.MAINNET,
   },
 ];
 
@@ -388,10 +381,17 @@ export const POLYGON_POOLS: Pool[] = [
   },
 ];
 
+export const OPTIMISM_POOLS: Pool[] = [
+  {
+    id: '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
+    network: Network.OPTIMISM,
+  },
+];
+
 export const POOLS = [
   ...MAINNET_POOLS,
   ...ARBITRUM_POOLS,
   ...POLYGON_POOLS,
-  ...KOVAN_POOLS,
   ...GOERLI_POOLS,
+  ...OPTIMISM_POOLS,
 ];

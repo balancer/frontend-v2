@@ -12,6 +12,7 @@ import { includesAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import TokenSearchInputSelectTokens from './TokenSearchInputSelectTokens.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 type Props = {
   modelValue: string[];
@@ -38,6 +39,7 @@ const { getToken, tokens, balances } = useTokens();
 const { account, appNetworkConfig } = useWeb3();
 const { veBalTokenInfo } = useVeBal();
 const { t } = useI18n();
+const { upToMediumBreakpoint } = useBreakpoints();
 
 /**
  * COMPUTED
@@ -107,7 +109,12 @@ function onClick() {
 <template>
   <div>
     <div class="flex flex-wrap gap-x-6 gap-y-3 items-stretch">
-      <BalBtn color="white" size="sm" @click="onClick">
+      <BalBtn
+        color="white"
+        size="sm"
+        :block="upToMediumBreakpoint"
+        @click="onClick"
+      >
         <BalIcon name="search" size="sm" class="mr-2" />
         {{ $t('filterByToken') }}
       </BalBtn>
