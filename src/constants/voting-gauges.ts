@@ -5,6 +5,18 @@ import { PoolType } from '@/services/pool/types';
 
 import ALL_VOTING_GAUGES from '../../public/data/voting-gauges.json';
 
+export type RootGauge = {
+  id: string;
+  recipient?: string;
+  isKilled?: boolean;
+  relativeWeightCap?: string;
+};
+
+export type VotingGauges = {
+  preferentialGauge: RootGauge;
+  gauges: RootGauge[];
+};
+
 export type VotingGauge = {
   address: string;
   network: Network;
@@ -16,6 +28,7 @@ export type VotingGauge = {
     tokens: Pick<PoolToken, 'address' | 'weight' | 'symbol'>[];
   };
   tokenLogoURIs: Record<string, string | undefined>;
+  gauges: VotingGauges | null;
 };
 
 export const KOVAN_VOTING_GAUGES: VotingGauge[] = (

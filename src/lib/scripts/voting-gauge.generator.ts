@@ -7,7 +7,7 @@ import path from 'path';
 
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { POOLS } from '@/constants/voting-gauge-pools';
-import { VotingGauge } from '@/constants/voting-gauges';
+import { VotingGauge, VotingGauges } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 
 import vebalGauge from '../../../public/data/vebal-gauge.json';
@@ -138,6 +138,55 @@ async function getTokenLogoURI(
   }
 
   return '';
+}
+
+async function getPoolGaugesInfo(
+  poolId: string,
+  network: Network,
+  retries = 5
+): Promise<VotingGauges | null> {
+  log(`getPoolGaugesInfo. poolId: network: ${network} poolId: ${poolId}`);
+  const subgraphEndpoint = config[network].subgraphs.gauge;
+  const query = `
+    {
+      pools(
+        where: {
+          poolId: "${poolId}"
+        }
+      ) {
+        preferentialGauge {
+          id
+        }
+        gauges {
+          id
+          relativeWeightCap
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch(subgraphEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    const { data } = await response.json();
+    const { preferentialGauge, gauges } = data.pools[0];
+
+    return {
+      preferentialGauge,
+      gauges,
+    };
+  } catch {
+    console.error('Pool gauge list not found:', poolId, 'chainId:', network);
+
+    return retries > 0 ? getPoolGaugesInfo(poolId, network, retries - 1) : null;
+  }
 }
 
 async function getPoolInfo(
@@ -369,8 +418,10 @@ async function getGaugeAddress(
 
   let votingGauges = await Promise.all(
     POOLS.map(async ({ id, network }) => {
+      // [{id: '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc', network: 1}].map(async ({ id, network }) => {
       const address = await getGaugeAddress(id, network);
       const pool = await getPoolInfo(id, network);
+      const gauges = await getPoolGaugesInfo(id, network);
 
       const tokenLogoURIs = {};
       for (let i = 0; i < pool.tokens.length; i++) {
@@ -384,6 +435,7 @@ async function getGaugeAddress(
         address,
         network,
         pool,
+        gauges,
         tokenLogoURIs,
       };
     })
