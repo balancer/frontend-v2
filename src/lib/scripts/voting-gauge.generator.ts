@@ -418,7 +418,6 @@ async function getGaugeAddress(
 
   let votingGauges = await Promise.all(
     POOLS.map(async ({ id, network }) => {
-      // [{id: '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc', network: 1}].map(async ({ id, network }) => {
       const address = await getGaugeAddress(id, network);
       const pool = await getPoolInfo(id, network);
       const gauges = await getPoolGaugesInfo(id, network);
