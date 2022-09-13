@@ -433,8 +433,16 @@ watch(blockNumber, () => {
 </script>
 
 <template>
-  <BalModal show :title="labels.modalTitle" @close="onClose">
+  <BalModal show @close="onClose">
     <div>
+      <BalStack horizontal align="center" spacing="xs" class="mb-4">
+        <button class="flex text-blue-500 hover:text-blue-700" @click="onClose">
+          <BalIcon class="flex" name="chevron-left" />
+        </button>
+        <h4>
+          {{ labels.modalTitle }}
+        </h4>
+      </BalStack>
       <BalCard noPad class="overflow-auto relative mb-6">
         <template #header>
           <div>
