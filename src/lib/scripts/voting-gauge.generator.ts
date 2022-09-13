@@ -268,6 +268,7 @@ async function getLiquidityGaugesInfo(
       liquidityGauges(
         where: {
           poolId: "${poolId}"
+          gauge_not: null
         }
       ) {
         id
@@ -378,6 +379,7 @@ async function getRootGaugeInfo(
         where: {
           recipient: "${streamer}"
           chain: ${config[network].shortName}
+          gauge_not: null
         }
       ) {
         id
