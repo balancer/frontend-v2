@@ -73,7 +73,7 @@ export function isVotingTimeLocked(lastVoteTime: number): boolean {
 
 export function remainingVoteLockTime(lastVoteTime: number): string {
   const lastUserVoteTime = toJsTimestamp(lastVoteTime);
-  return formatDistanceToNow(lastUserVoteTime - WEIGHT_VOTE_DELAY);
+  return formatDistanceToNow(lastUserVoteTime + WEIGHT_VOTE_DELAY);
 }
 
 export default function useVeBal() {
