@@ -208,6 +208,7 @@ export default defineComponent({
       setTokenInAddress,
       setTokenOutAddress,
       setTokenInAmount,
+      setTokenOutAmount,
       setInitialized,
     } = useTradeState();
     // DATA
@@ -367,10 +368,14 @@ export default defineComponent({
       }
       setTokenInAddress(assetIn || store.state.trade.inputAsset);
       setTokenOutAddress(assetOut || store.state.trade.outputAsset);
-      
-      let assetInAmount = router.currentRoute.value.params.assetInAmount as string;
+
+      let assetInAmount = router.currentRoute.value.query?.inAmount as string;
+      let assetOutAmount = router.currentRoute.value.query?.outAmount as string;
       if (assetInAmount) {
         setTokenInAmount(assetInAmount);
+      }
+      if (!assetInAmount && assetOutAmount) {
+        setTokenOutAmount(assetOutAmount);
       }
     }
     function switchToWETH() {
