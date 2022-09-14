@@ -201,7 +201,7 @@ function handleClose() {
       </BalStack>
     </BalCard>
     <BalCard shadow="none" noPad>
-      <div class="p-2 border-b border-gray-900">
+      <div class="p-2 border-b dark:border-gray-900">
         <h6 class="text-sm">
           {{ $t('summary') }}
         </h6>

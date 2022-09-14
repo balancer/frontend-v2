@@ -17,7 +17,7 @@ const transfersAllowed = ref(true);
 
 export default function usePoolTransfers() {
   const route = useRoute();
-  const id = ref<string>(route.params.id as string);
+  const id = (route.params.id as string).toLowerCase();
 
   /**
    * COMPOSABLES
@@ -28,7 +28,7 @@ export default function usePoolTransfers() {
   /**
    * QUERIES
    */
-  const poolQuery = usePoolQuery(id.value);
+  const poolQuery = usePoolQuery(id);
 
   /**
    * COMPUTED
