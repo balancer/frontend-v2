@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
@@ -18,7 +17,7 @@ import StakingProvider from '@/providers/local/staking/staking.provider';
  * STATE
  */
 const route = useRoute();
-const id = ref<string>(route.params.id as string);
+const id = (route.params.id as string).toLowerCase();
 
 /**
  * COMPOSABLES
