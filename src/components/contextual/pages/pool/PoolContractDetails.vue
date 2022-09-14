@@ -2,7 +2,7 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { POOLS } from '@/constants/pools';
 import { shortenLabel } from '@/lib/utils';
-import { Pool, PoolType } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -59,7 +59,7 @@ const data = computed(() => {
     },
     {
       title: t('poolSymbol'),
-      value: symbol,
+      value: symbol || '',
     },
     {
       title: t('poolType'),
@@ -68,12 +68,14 @@ const data = computed(() => {
     {
       title: t('swapFees'),
       value: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
-        owner
+        owner || ''
       )})`,
     },
     {
       title: t('poolManager'),
-      value: poolType === PoolType.Managed ? t('yes') : t('none'),
+      // TODO - Fix when Managed pool type supported in SDK
+      // value: poolType === PoolType.Managed ? t('yes') : t('none'),
+      value: t('none'),
     },
     {
       title: t('poolOwner'),
@@ -87,15 +89,16 @@ const data = computed(() => {
     },
     {
       title: t('createDate'),
-      value: format(createTime * 1000, 'dd MMMM yyyy'),
+      value: format((createTime || 0) * 1000, 'dd MMMM yyyy'),
     },
   ];
 });
 
 const poolManagementText = computed(() => {
-  if (props.pool.poolType === PoolType.Managed) {
-    return t('');
-  }
+  // TODO - Add when Managed pool type supported in SDK
+  // if (props.pool.poolType === PoolType.Managed) {
+  //   return t('');
+  // }
 
   if (props.pool.owner === POOLS.ZeroAddress) {
     return t('poolAttrs.immutable');
