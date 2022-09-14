@@ -24,7 +24,6 @@
   "ammPlatform": "Automated portfolio manager and trading platform",
   "amount": "Amount",
   "amountBeforeFees": "Amount before fees",
-  "amountToInvest": "Amount to invest",
   "amountToWithdraw": "Amount to withdraw",
   "amplification": "Amplification",
   "analytics": "Analytics",
@@ -209,7 +208,7 @@
         "title": "Some risks - you may lose funds in the pool if:",
         "risks": {
           "loseUSDPeg": "Any of the tokens in this pool permanently loses it's target peg of 1 USD.",
-          "aaveStableExploit": "Problems arise on Aave. This is because, most of the stablecoins will be invested into Aave aTokens to earn you additional yield."
+          "aaveStableExploit": "Problems arise on Aave. This is because, most of the stablecoins will be converted into Aave aTokens to earn you additional yield."
         }
       },
       "summary": {
@@ -253,15 +252,12 @@
   "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
   "editoTitle": "Put your money to work",
   "effectivePrice": "Effective price:",
-  "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
-  "emptyInvestmentPoolsLink": "View investment pools ->",
   "enterAmount": "Enter amount",
   "enterAPrice": "Enter a price",
   "errorCancellingOrder": "Error cancelling order",
   "errorNoLists": "Sorry, we can't find any lists",
   "errorNoMatch": "Sorry, we can't find any matches",
   "errorNoTokens": "Sorry, we can't find any tokens",
-  "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
   "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
   "etherscan": "Etherscan",
   "exceedsBalance": "Exceeds wallet balance",
