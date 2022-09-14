@@ -180,6 +180,7 @@ export default defineComponent({
       totalStakedFiatValue,
       poolBoosts,
       isLoadingBoosts,
+      hasNonPreferentialGaugeBalance,
       getStakedShares,
       getBoostFor,
     } = useUserStakingData(poolAddress);
@@ -293,6 +294,7 @@ export default defineComponent({
         totalStakedFiatValue,
         isLoadingBoosts,
         poolBoosts,
+        hasNonPreferentialGaugeBalance,
         getStakedShares,
         getBoostFor,
       },
