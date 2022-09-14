@@ -16,6 +16,7 @@ import {
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import useTokens from '@/composables/useTokens';
+import useWeb3 from '@/services/web3/useWeb3';
 import symbolKeys from '@/constants/symbol.keys';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { configService } from '@/services/config/config.service';
@@ -158,6 +159,7 @@ export default defineComponent({
      * COMPOSABLES
      */
     const { balanceFor } = useTokens();
+    const { account } = useWeb3();
     const {
       userGaugeShares,
       userLiquidityGauges,
@@ -225,8 +227,11 @@ export default defineComponent({
           `Attempted to call stake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(poolAddress.value);
-      const gauge = new LiquidityGauge(gaugeAddress);
+      const gaugeAddress = await getGaugeAddresses(poolAddress.value);
+      if (!gaugeAddress?.preferentialGauge?.id) {
+        throw new Error(`No preferential gauge found for this pool.`);
+      }
+      const gauge = new LiquidityGauge(gaugeAddress.preferentialGauge.id);
       const tx = await gauge.stake(
         parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
       );
@@ -239,12 +244,25 @@ export default defineComponent({
           `Attempted to call unstake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(getAddress(poolAddress.value));
-      const gauge = new LiquidityGauge(gaugeAddress);
-      const tx = await gauge.unstake(
-        parseUnits(stakedSharesForProvidedPool.value || '0', 18)
+      const gaugeAddresses = await getGaugeAddresses(
+        getAddress(poolAddress.value)
       );
-      return tx;
+
+      const multicaller = LiquidityGauge.getMulticaller();
+
+      for (const gauge of gaugeAddresses.gauges) {
+        const gaugeInstance = new LiquidityGauge(gauge.id);
+        const balance = await gaugeInstance.balance(account.value);
+        if (balance?.toString() !== '0') {
+          multicaller.call(
+            gauge.id,
+            account.value,
+            'unstake',
+            parseUnits(balance.toString(), 18)
+          );
+        }
+      }
+      return multicaller.execute();
     }
 
     function setPoolAddress(address: string) {

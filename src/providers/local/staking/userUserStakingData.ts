@@ -85,6 +85,7 @@ export type UserStakingDataResponse = {
   stakedSharesMap: Ref<Record<string, string>>;
   poolBoosts: Ref<Record<string, string> | undefined>;
   isLoadingBoosts: Ref<boolean>;
+  hasNonPreferentialGaugeBalance: Ref<Promise<boolean>>;
   getBoostFor: (poolAddress: string) => string;
 };
 
@@ -258,6 +259,20 @@ export default function useUserStakingData(
       .toString()
   );
 
+  const hasNonPreferentialGaugeBalance = computed(async () => {
+    const gaugeAddresses = await getGaugeAddresses(
+      getAddress(poolAddress.value)
+    );
+
+    return !!gaugeAddresses.gauges
+      .filter(gauge => gauge.id !== gaugeAddresses.preferentialGauge.id)
+      .find(async nonPrefGauge => {
+        const gauge = new LiquidityGauge(nonPrefGauge.id);
+        const balance = await gauge.balance(account.value);
+        return balance?.toString() !== '0';
+      });
+  });
+
   /** METHODS */
   async function getStakedShares() {
     if (!poolAddress.value) {
@@ -308,6 +323,7 @@ export default function useUserStakingData(
     totalStakedFiatValue,
     poolBoosts,
     isLoadingBoosts,
+    hasNonPreferentialGaugeBalance,
     getStakedShares,
     getBoostFor,
   };
