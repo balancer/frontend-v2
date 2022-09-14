@@ -253,7 +253,13 @@ function handleClose() {
     <BalStack v-if="isActionConfirmed && confirmationReceipt" vertical>
       <ConfirmationIndicator :txReceipt="confirmationReceipt" />
       <AnimatePresence :isVisible="isActionConfirmed">
-        <BalBtn color="gradient" block @click="$router.push({ name: 'claim' })">
+        <BalBtn
+          v-if="action === 'stake'"
+          color="gradient"
+          block
+          class="mb-2"
+          @click="$router.push({ name: 'claim' })"
+        >
           {{ $t('viewClaims') }}
         </BalBtn>
         <BalBtn color="gray" outline block @click="handleClose">
