@@ -1,5 +1,4 @@
 import { getAddress } from '@ethersproject/address';
-import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from 'ethers/lib/utils';
 import { intersection } from 'lodash';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
@@ -19,7 +18,8 @@ import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { getGaugeAddress } from './staking.provider';
+import { getGaugeAddresses } from './staking.provider';
+import BigNumber from 'bignumber.js';
 
 export type UserGaugeShare = {
   id: string;
@@ -92,7 +92,7 @@ export default function useUserStakingData(
   poolAddress: Ref<string>
 ): UserStakingDataResponse {
   /** COMPOSABLES */
-  const { account, getProvider, isWalletReady } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   /**
    * QUERIES
@@ -265,16 +265,23 @@ export default function useUserStakingData(
         `Attempted to get staked shares, however useStaking was initialised without a pool address.`
       );
     }
-    const gaugeAddress = await getGaugeAddress(
-      getAddress(poolAddress.value),
-      getProvider()
+    const gaugeAddresses = await getGaugeAddresses(
+      getAddress(poolAddress.value)
     );
 
-    if (gaugeAddress === AddressZero) return '0';
+    if (!gaugeAddresses?.preferentialGauge?.id) return '0';
 
-    const gauge = new LiquidityGauge(gaugeAddress);
-    const balance = await gauge.balance(account.value);
-    return formatUnits(balance.toString(), 18);
+    // sum balances from all gauges in the pool
+    const totalBalance = await gaugeAddresses.gauges.reduce(
+      async (totalPromise, value) => {
+        const gauge = new LiquidityGauge(value.id);
+        const balance = await gauge.balance(account.value);
+        const total = await totalPromise;
+        return total.plus(balance?.toString() || '0');
+      },
+      Promise.resolve(new BigNumber(0))
+    );
+    return formatUnits(totalBalance.toString(), 18);
   }
 
   function getBoostFor(poolId: string) {

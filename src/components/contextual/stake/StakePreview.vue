@@ -17,7 +17,6 @@ import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { AnyPool } from '@/services/pool/types';
-import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
@@ -37,7 +36,6 @@ const { balanceFor, getToken } = useTokens();
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const queryClient = useQueryClient();
-const { getProvider } = useWeb3();
 const { addTransaction } = useTransactions();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 
@@ -159,7 +157,7 @@ async function txWithNotification(action: () => Promise<TransactionResponse>) {
 
 async function loadApprovalsForGauge() {
   isLoadingApprovalsForGauge.value = true;
-  const gaugeAddress = await getGaugeAddress(props.pool.address, getProvider());
+  const gaugeAddress = await getGaugeAddress(props.pool.address);
   const approvalActions = await getTokenApprovalActionsForSpender(gaugeAddress);
   stakeActions.value.unshift(...approvalActions);
   isLoadingApprovalsForGauge.value = false;
