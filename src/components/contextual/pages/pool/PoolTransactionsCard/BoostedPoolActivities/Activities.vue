@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { flatten } from 'lodash';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
 import useUserPoolSwapsQuery from '@/composables/queries/useUserPoolSwapsQuery';
@@ -28,23 +27,13 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 /**
- * COMPOSABLES
- */
-const route = useRoute();
-
-/**
- * STATE
- */
-
-const id = route.params.id as string;
-/**
  * QUERIES
  */
 
 const poolSwapsQuery =
   props.poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
-    ? usePoolSwapsQuery(id)
-    : useUserPoolSwapsQuery(id);
+    ? usePoolSwapsQuery(props.pool.id)
+    : useUserPoolSwapsQuery(props.pool.id);
 
 /**
  * COMPUTED
