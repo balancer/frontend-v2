@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
@@ -39,11 +39,13 @@ const props = withDefaults(defineProps<Props>(), {
   poolApr: undefined,
 });
 
+const poolId = computed(() => toRef(props, 'pool').value.id);
+
 /**
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { isAffected, warnings } = usePoolWarning(props.pool.id);
+const { isAffected, warnings } = usePoolWarning(poolId);
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
