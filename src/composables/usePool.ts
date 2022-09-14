@@ -145,6 +145,9 @@ export function poolURLFor(
   if (poolType && poolType.toString() === 'Element') {
     return `https://app.element.fi/pools/${addressFor(poolId)}`;
   }
+  if (poolType && poolType.toString() === 'FX') {
+    return `https://app.xave.finance/#/pool`;
+  }
 
   return `${urlFor(network)}/pool/${poolId}`;
 }
