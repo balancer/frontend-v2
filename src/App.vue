@@ -125,7 +125,7 @@ export default defineComponent({
       :onShowThirdParty="() => handleThirdPartyModalToggle(true)"
       @close="toggleWalletSelectModal"
     />
-    <SanctionedWalletModal v-if="isBlocked" />
+    <SanctionedWalletModal :isVisible="isBlocked" />
     <ThirdPartyServicesModal
       :isVisible="isThirdPartyServicesModalVisible"
       @close="handleThirdPartyModalToggle(false)"
