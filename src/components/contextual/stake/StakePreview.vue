@@ -44,6 +44,7 @@ const {
     stakedSharesForProvidedPool,
     refetchStakedShares,
     refetchUserStakingData,
+    refetchHasNonPrefGauge,
   },
   stakeBPT,
   unstakeBPT,
@@ -133,6 +134,7 @@ async function handleSuccess({ receipt }) {
   confirmationReceipt.value = receipt;
   await refetchStakedShares.value();
   await refetchUserStakingData.value();
+  await refetchHasNonPrefGauge.value();
   await queryClient.refetchQueries(['staking']);
   emit('success');
 }

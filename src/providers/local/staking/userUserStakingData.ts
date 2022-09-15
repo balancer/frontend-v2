@@ -92,6 +92,7 @@ export type UserStakingDataResponse = {
   refetchStakedShares: Ref<() => void>;
   getStakedShares: () => Promise<string>;
   hasNonPrefGaugeBalances: Ref<boolean | undefined>;
+  refetchHasNonPrefGauge: Ref<() => void>;
   refetchUserStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
@@ -295,29 +296,31 @@ export default function useUserStakingData(
     })
   );
 
-  const { data: hasNonPrefGaugeBalances } = useQuery<boolean>(
-    ['gauges', 'hasNonPrefGaugeBalances', { account }, poolAddress.value],
-    async () => {
-      if (poolGaugeAddresses.value?.gauges?.length === 0) return false;
+  const { data: hasNonPrefGaugeBalances, refetch: refetchHasNonPrefGauge } =
+    useQuery<boolean>(
+      ['gauges', 'hasNonPrefGaugeBalances', { account }, poolAddress.value],
+      async () => {
+        if (poolGaugeAddresses.value?.gauges?.length === 0) return false;
 
-      const gaugeNonPrefBalances = await Promise.all(
-        poolGaugeAddresses.value.gauges
-          .filter(
-            gauge => gauge.id !== poolGaugeAddresses.value.preferentialGauge.id
-          )
-          .map(async nonPrefGauge => {
-            const gauge = new LiquidityGauge(nonPrefGauge.id);
-            const balance = await gauge.balance(account.value);
-            return balance?.toString();
-          })
-      );
+        const gaugeNonPrefBalances = await Promise.all(
+          poolGaugeAddresses.value.gauges
+            .filter(
+              gauge =>
+                gauge.id !== poolGaugeAddresses.value.preferentialGauge.id
+            )
+            .map(async nonPrefGauge => {
+              const gauge = new LiquidityGauge(nonPrefGauge.id);
+              const balance = await gauge.balance(account.value);
+              return balance?.toString();
+            })
+        );
 
-      return gaugeNonPrefBalances.some(balance => balance !== '0');
-    },
-    reactive({
-      enabled: !!poolGaugeAddresses.value?.preferentialGauge?.id,
-    })
-  );
+        return gaugeNonPrefBalances.some(balance => balance !== '0');
+      },
+      reactive({
+        enabled: !!poolGaugeAddresses.value?.preferentialGauge?.id,
+      })
+    );
 
   const stakedPools = computed<PoolWithShares[]>(() => {
     return (stakedPoolsResponse.value?.pages[0].pools || []).map(pool => {
@@ -385,6 +388,7 @@ export default function useUserStakingData(
     isLoadingBoosts,
     poolGaugeAddresses,
     hasNonPrefGaugeBalances,
+    refetchHasNonPrefGauge,
     getStakedShares,
     getBoostFor,
   };
