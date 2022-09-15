@@ -56,6 +56,10 @@ export function isDeep(pool: Pool): boolean {
   );
 }
 
+export function isShallowComposableStable(pool: Pool): boolean {
+  return isComposableStable(pool.poolType) && !isDeep(pool);
+}
+
 export function isStableLike(poolType: PoolType): boolean {
   return (
     isStable(poolType) ||
@@ -107,6 +111,16 @@ export function isMigratablePool(pool: AnyPool) {
 
 export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
+}
+
+export function checkPoolItselfTokenIndex(pool: Pool): number | void {
+  const index = pool.tokens.findIndex(token => token.address === pool.address);
+  if (index === -1) {
+    console.warn(`Pool itself token is not found in pool tokens list`);
+    return;
+  }
+
+  return index;
 }
 
 /**

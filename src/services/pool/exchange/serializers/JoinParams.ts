@@ -4,9 +4,9 @@ import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
 import {
-  isComposableStable,
-  isDeep,
+  checkPoolItselfTokenIndex,
   isManaged,
+  isShallowComposableStable,
   isStableLike,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
@@ -54,13 +54,19 @@ export default class JoinParams {
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
 
-    const maxAmountsIn =
-      isComposableStable(this.pool.value.poolType) && !isDeep(this.pool.value)
-        ? [
-            parseUnits('0', this.pool.value.onchain?.decimals || 18),
-            ...parsedAmountsIn,
-          ]
-        : parsedAmountsIn;
+    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+    const maxAmountsIn = [...parsedAmountsIn];
+
+    if (
+      isShallowComposableStable(this.pool.value) &&
+      poolTokenItselfIndex !== undefined
+    ) {
+      maxAmountsIn.splice(
+        poolTokenItselfIndex,
+        0,
+        parseUnits('0', this.pool.value.onchain?.decimals || 18)
+      );
+    }
 
     return [
       this.pool.value.id,
@@ -110,11 +116,19 @@ export default class JoinParams {
     const tokensInProcessed = tokensIn.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
+    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
 
-    return isComposableStable(this.pool.value.poolType) &&
-      !isDeep(this.pool.value)
-      ? [this.pool.value.address, ...tokensInProcessed]
-      : tokensInProcessed;
+    if (
+      isShallowComposableStable(this.pool.value) &&
+      poolTokenItselfIndex !== undefined
+    ) {
+      tokensInProcessed.splice(
+        poolTokenItselfIndex,
+        0,
+        this.pool.value.address
+      );
+    }
+    return tokensInProcessed;
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
