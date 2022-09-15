@@ -3,7 +3,12 @@ import { AddressZero } from '@ethersproject/constants';
 import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
-import { isComposableStableLike, isStableLike } from '@/composables/usePool';
+import {
+  checkPoolItselfTokenIndex,
+  isComposableStable,
+  isComposableStableLike,
+  isStableLike,
+} from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
@@ -53,17 +58,31 @@ export default class ExitParams {
       exactOut
     );
 
+    const minAmountsOut = parsedAmountsOut.map(amount =>
+      // This is a hack to get around rounding issues for MetaStable pools
+      // TODO: do this more elegantly
+      amount.gt(0) ? amount.sub(1) : amount
+    );
+    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+
+    if (
+      isComposableStable(this.pool.value.poolType) &&
+      poolTokenItselfIndex !== undefined
+    ) {
+      minAmountsOut.splice(
+        poolTokenItselfIndex,
+        0,
+        parseUnits('0', this.pool.value.onchain?.decimals || 18)
+      );
+    }
+
     return [
       this.pool.value.id,
       account,
       account,
       {
         assets,
-        minAmountsOut: parsedAmountsOut.map(amount =>
-          // This is a hack to get around rounding issues for MetaStable pools
-          // TODO: do this more elegantly
-          amount.gt(0) ? amount.sub(1) : amount
-        ),
+        minAmountsOut,
         userData: txData,
         toInternalBalance: this.toInternalBalance,
       },
@@ -82,10 +101,22 @@ export default class ExitParams {
 
   private parseTokensOut(tokensOut: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
-
-    return tokensOut.map(address =>
+    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+    const tokensOutProcessed = tokensOut.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
+
+    if (
+      isComposableStable(this.pool.value.poolType) &&
+      poolTokenItselfIndex !== undefined
+    ) {
+      tokensOutProcessed.splice(
+        poolTokenItselfIndex,
+        0,
+        this.pool.value.address
+      );
+    }
+    return tokensOutProcessed;
   }
 
   private txData(

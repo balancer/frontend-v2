@@ -117,10 +117,10 @@ export default class JoinParams {
 
   private parseTokensIn(tokensIn: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
+    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
     const tokensInProcessed = tokensIn.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
-    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
 
     if (
       isComposableStable(this.pool.value.poolType) &&
