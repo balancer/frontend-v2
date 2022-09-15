@@ -210,7 +210,7 @@ export default defineComponent({
       );
       if (!gaugeWithBalance) {
         throw new Error(
-          `Attempted to call unstake, however user doesn't have any balance on any gauges.`
+          `Attempted to call unstake, however user doesn't have any balance for any gauges.`
         );
       }
 

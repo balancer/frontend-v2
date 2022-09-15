@@ -66,7 +66,6 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: () => txWithNotification(unstakeBPT),
-  // action: () => checkBalancesAndUnstake(),
   stepTooltip: t('staking.unstakeTooltip'),
 };
 
