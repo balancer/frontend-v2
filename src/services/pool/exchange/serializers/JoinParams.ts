@@ -5,8 +5,8 @@ import { Ref } from 'vue';
 
 import {
   checkPoolItselfTokenIndex,
+  isComposableStable,
   isManaged,
-  isShallowComposableStable,
   isStableLike,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
@@ -58,7 +58,7 @@ export default class JoinParams {
     const maxAmountsIn = [...parsedAmountsIn];
 
     if (
-      isShallowComposableStable(this.pool.value) &&
+      isComposableStable(this.pool.value.poolType) &&
       poolTokenItselfIndex !== undefined
     ) {
       maxAmountsIn.splice(
@@ -119,7 +119,7 @@ export default class JoinParams {
     const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
 
     if (
-      isShallowComposableStable(this.pool.value) &&
+      isComposableStable(this.pool.value.poolType) &&
       poolTokenItselfIndex !== undefined
     ) {
       tokensInProcessed.splice(
