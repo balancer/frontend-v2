@@ -58,9 +58,9 @@ export default class Stable {
     const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
 
-    const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
-      this.scaleInput(tokenAmounts[i], priceRate)
-    );
+    const amounts = this.calc.pool.value.tokens
+      .filter(token => token.address !== this.calc.pool.value.address)
+      .map(({ priceRate }, i) => this.scaleInput(tokenAmounts[i], priceRate));
 
     const bptIn = SDK.StableMath._calcBptInGivenExactTokensOut(
       ampAdjusted,

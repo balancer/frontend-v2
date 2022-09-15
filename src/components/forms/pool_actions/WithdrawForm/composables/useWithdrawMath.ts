@@ -333,7 +333,6 @@ export default function useWithdrawMath(
         tokenIndex: tokenOutIndex.value,
         queryBPT: fullBPTIn.value,
       })
-
       .toNumber();
   });
 

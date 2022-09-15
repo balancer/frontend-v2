@@ -6,6 +6,7 @@ import { Ref } from 'vue';
 import {
   checkPoolItselfTokenIndex,
   isComposableStable,
+  isComposableStableLike,
   isManaged,
   isStableLike,
 } from '@/composables/usePool';
@@ -16,6 +17,7 @@ import ConfigService from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
+import { encodeJoinComposableStablePool } from '@/lib/utils/balancer/composableStablePoolEncoding';
 
 export default class JoinParams {
   private pool: Ref<Pool>;
@@ -35,6 +37,8 @@ export default class JoinParams {
       this.isManagedPool && !!this.pool.value?.onchain?.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? encodeJoinStablePool
+      : isComposableStableLike(exchange.pool.value.poolType)
+      ? encodeJoinComposableStablePool
       : encodeJoinWeightedPool;
   }
 

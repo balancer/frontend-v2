@@ -1,4 +1,4 @@
-import { StablePoolEncoder } from '@balancer-labs/sdk';
+import { ComposableStablePoolEncoder } from '@balancer-labs/sdk';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export type JoinStablePoolInit = {
@@ -25,14 +25,14 @@ export function encodeJoinComposableStablePool(
     | JoinStablePoolTokenInForExactBPTOut
 ): string {
   if (joinData.kind == 'Init') {
-    return StablePoolEncoder.joinInit(joinData.amountsIn);
+    return ComposableStablePoolEncoder.joinInit(joinData.amountsIn);
   } else if (joinData.kind == 'ExactTokensInForBPTOut') {
-    return StablePoolEncoder.joinExactTokensInForBPTOut(
+    return ComposableStablePoolEncoder.joinExactTokensInForBPTOut(
       joinData.amountsIn,
       joinData.minimumBPT
     );
   } else {
-    return StablePoolEncoder.joinTokenInForExactBPTOut(
+    return ComposableStablePoolEncoder.joinTokenInForExactBPTOut(
       joinData.bptAmountOut,
       joinData.enterTokenIndex
     );
@@ -45,11 +45,6 @@ export type ExitStablePoolExactBPTInForOneTokenOut = {
   exitTokenIndex: number;
 };
 
-export type ExitStablePoolExactBPTInForTokensOut = {
-  kind: 'ExactBPTInForTokensOut';
-  bptAmountIn: BigNumberish;
-};
-
 export type ExitStablePoolBPTInForExactTokensOut = {
   kind: 'BPTInForExactTokensOut';
   amountsOut: BigNumberish[];
@@ -59,20 +54,17 @@ export type ExitStablePoolBPTInForExactTokensOut = {
 export function encodeExitComposableStablePool(
   exitData:
     | ExitStablePoolExactBPTInForOneTokenOut
-    | ExitStablePoolExactBPTInForTokensOut
     | ExitStablePoolBPTInForExactTokensOut
 ): string {
   if (exitData.kind == 'ExactBPTInForOneTokenOut') {
-    return StablePoolEncoder.exitExactBPTInForOneTokenOut(
+    return ComposableStablePoolEncoder.exitExactBPTInForOneTokenOut(
       exitData.bptAmountIn,
       exitData.exitTokenIndex
     );
-  } else if (exitData.kind == 'ExactBPTInForTokensOut') {
-    return StablePoolEncoder.exitExactBPTInForTokensOut(exitData.bptAmountIn);
-  } else {
-    return StablePoolEncoder.exitBPTInForExactTokensOut(
-      exitData.amountsOut,
-      exitData.maxBPTAmountIn
-    );
   }
+
+  return ComposableStablePoolEncoder.exitBPTInForExactTokensOut(
+    exitData.amountsOut,
+    exitData.maxBPTAmountIn
+  );
 }
