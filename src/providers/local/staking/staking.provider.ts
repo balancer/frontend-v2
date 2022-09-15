@@ -132,6 +132,7 @@ export default defineComponent({
       isLoadingBoosts,
       poolGaugeAddresses,
       hasNonPrefGaugeBalances,
+      refetchHasNonPrefGauge,
       getStakedShares,
       getBoostFor,
     } = useUserStakingData(poolAddress);
@@ -249,6 +250,7 @@ export default defineComponent({
         isLoadingBoosts,
         poolBoosts,
         poolGaugeAddresses,
+        refetchHasNonPrefGauge,
         hasNonPrefGaugeBalances,
         getStakedShares,
         getBoostFor,
