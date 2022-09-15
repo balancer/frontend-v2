@@ -37,6 +37,7 @@ const {
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
+    hasNonPrefGaugeBalances,
     isLoadingBoosts,
   },
   isPoolEligibleForStaking,
@@ -180,7 +181,10 @@ async function handleActionSuccess() {
                   <BalBtn
                     color="gradient"
                     size="sm"
-                    :disabled="fiatValueOfUnstakedShares === '0'"
+                    :disabled="
+                      fiatValueOfUnstakedShares === '0' ||
+                      hasNonPrefGaugeBalances
+                    "
                     @click="showStakePreview"
                   >
                     {{ $t('stake') }}
@@ -195,6 +199,13 @@ async function handleActionSuccess() {
                     {{ $t('unstake') }}
                   </BalBtn>
                 </BalStack>
+                <BalAlert
+                  v-if="hasNonPrefGaugeBalances"
+                  :title="$t('staking.restakeGauge')"
+                  class="mt-2"
+                >
+                  {{ $t('staking.restakeGaugeDescription') }}
+                </BalAlert>
               </BalStack>
             </div>
           </template>

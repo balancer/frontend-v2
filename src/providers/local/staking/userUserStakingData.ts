@@ -1,4 +1,3 @@
-import { getAddress } from '@ethersproject/address';
 import { formatUnits } from 'ethers/lib/utils';
 import { intersection } from 'lodash';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
@@ -18,7 +17,6 @@ import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { getGaugeAddresses } from './staking.provider';
 import BigNumber from 'bignumber.js';
 
 export type UserGaugeShare = {
@@ -46,6 +44,20 @@ export type UserGaugeSharesResponse = {
 
 export type PoolStakingDataResponse = {
   liquidityGauge: UserLiquidityGauge;
+};
+
+export type PoolGaugesInfo = {
+  preferentialGauge: {
+    id: string | null;
+  };
+  gauges: {
+    id: string;
+    relativeWeightCap: string;
+  }[];
+};
+
+export type PoolGaugesResponse = {
+  pools: PoolGaugesInfo[];
 };
 
 export type UserStakingDataResponse = {
@@ -79,13 +91,14 @@ export type UserStakingDataResponse = {
   isUserPoolsIdle: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
   getStakedShares: () => Promise<string>;
+  hasNonPrefGaugeBalances: Ref<boolean | undefined>;
   refetchUserStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
+  poolGaugeAddresses: Ref<PoolGaugesInfo>;
   stakedSharesMap: Ref<Record<string, string>>;
   poolBoosts: Ref<Record<string, string> | undefined>;
   isLoadingBoosts: Ref<boolean>;
-  hasNonPreferentialGaugeBalance: Ref<Promise<boolean>>;
   getBoostFor: (poolAddress: string) => string;
 };
 
@@ -151,6 +164,44 @@ export default function useUserStakingData(
     })
   );
 
+  const isPoolAddressRegistered = computed(
+    () => !!poolAddress.value && poolAddress.value != ''
+  );
+
+  // this query is responsible for checking gauge addresses for the pool
+  const { data: poolGaugeAddressesResponse } =
+    useGraphQuery<PoolGaugesResponse>(
+      subgraphs.gauge,
+      ['pool', 'gaugeAddresses', { poolAddress: poolAddress.value }],
+      () => ({
+        pools: {
+          __args: {
+            where: {
+              address: poolAddress.value,
+            },
+          },
+          preferentialGauge: {
+            id: true,
+          },
+          gauges: {
+            id: true,
+            relativeWeightCap: true,
+          },
+        },
+      }),
+      reactive({
+        enabled: isPoolAddressRegistered,
+        refetchOnWindowFocus: false,
+      })
+    );
+
+  const poolGaugeAddresses = computed(() => {
+    return (
+      poolGaugeAddressesResponse?.value?.pools[0] ||
+      ({ preferentialGauge: { id: null }, gauges: [] } as PoolGaugesInfo)
+    );
+  });
+
   // we pull staked shares for a specific pool manually do to the
   // fact that the subgraph is too slow, so we gotta rely on the
   // contract. We want users to receive instant feedback that their
@@ -165,7 +216,9 @@ export default function useUserStakingData(
     ['staking', 'pool', 'shares', { poolAddress }],
     () => getStakedShares(),
     reactive({
-      enabled: isStakedSharesQueryEnabled,
+      enabled:
+        isStakedSharesQueryEnabled.value &&
+        !!poolGaugeAddresses.value?.preferentialGauge?.id,
       refetchOnWindowFocus: false,
     })
   );
@@ -242,6 +295,30 @@ export default function useUserStakingData(
     })
   );
 
+  const { data: hasNonPrefGaugeBalances } = useQuery<boolean>(
+    ['gauges', 'hasNonPrefGaugeBalances', { account }, poolAddress.value],
+    async () => {
+      if (poolGaugeAddresses.value?.gauges?.length === 0) return false;
+
+      const gaugeNonPrefBalances = await Promise.all(
+        poolGaugeAddresses.value.gauges
+          .filter(
+            gauge => gauge.id !== poolGaugeAddresses.value.preferentialGauge.id
+          )
+          .map(async nonPrefGauge => {
+            const gauge = new LiquidityGauge(nonPrefGauge.id);
+            const balance = await gauge.balance(account.value);
+            return balance?.toString();
+          })
+      );
+
+      return gaugeNonPrefBalances.some(balance => balance !== '0');
+    },
+    reactive({
+      enabled: !!poolGaugeAddresses.value?.preferentialGauge?.id,
+    })
+  );
+
   const stakedPools = computed<PoolWithShares[]>(() => {
     return (stakedPoolsResponse.value?.pages[0].pools || []).map(pool => {
       const stakedBpt = stakedSharesMap.value[pool.id];
@@ -259,20 +336,6 @@ export default function useUserStakingData(
       .toString()
   );
 
-  const hasNonPreferentialGaugeBalance = computed(async () => {
-    const gaugeAddresses = await getGaugeAddresses(
-      getAddress(poolAddress.value)
-    );
-
-    return !!gaugeAddresses.gauges
-      .filter(gauge => gauge.id !== gaugeAddresses.preferentialGauge.id)
-      .find(async nonPrefGauge => {
-        const gauge = new LiquidityGauge(nonPrefGauge.id);
-        const balance = await gauge.balance(account.value);
-        return balance?.toString() !== '0';
-      });
-  });
-
   /** METHODS */
   async function getStakedShares() {
     if (!poolAddress.value) {
@@ -280,14 +343,11 @@ export default function useUserStakingData(
         `Attempted to get staked shares, however useStaking was initialised without a pool address.`
       );
     }
-    const gaugeAddresses = await getGaugeAddresses(
-      getAddress(poolAddress.value)
-    );
 
-    if (!gaugeAddresses?.preferentialGauge?.id) return '0';
+    if (!poolGaugeAddresses.value?.preferentialGauge?.id) return '0';
 
     // sum balances from all gauges in the pool
-    const totalBalance = await gaugeAddresses.gauges.reduce(
+    const totalBalance = await poolGaugeAddresses.value.gauges.reduce(
       async (totalPromise, value) => {
         const gauge = new LiquidityGauge(value.id);
         const balance = await gauge.balance(account.value);
@@ -323,7 +383,8 @@ export default function useUserStakingData(
     totalStakedFiatValue,
     poolBoosts,
     isLoadingBoosts,
-    hasNonPreferentialGaugeBalance,
+    poolGaugeAddresses,
+    hasNonPrefGaugeBalances,
     getStakedShares,
     getBoostFor,
   };
