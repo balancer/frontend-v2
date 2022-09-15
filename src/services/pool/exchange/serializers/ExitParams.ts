@@ -6,7 +6,6 @@ import { Ref } from 'vue';
 import {
   checkPoolItselfTokenIndex,
   isComposableStable,
-  isComposableStableLike,
   isStableLike,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
@@ -30,9 +29,9 @@ export default class ExitParams {
     this.config = exchange.config;
     this.isStableLike = isStableLike(exchange.pool.value.poolType);
     this.dataEncodeFn = this.isStableLike
-      ? encodeExitStablePool
-      : isComposableStableLike(exchange.pool.value.poolType)
-      ? encodeExitComposableStablePool
+      ? isComposableStable(exchange.pool.value.poolType)
+        ? encodeExitComposableStablePool
+        : encodeExitStablePool
       : encodeExitWeightedPool;
   }
 
@@ -46,7 +45,7 @@ export default class ExitParams {
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
-      bptIn,
+      '190', // TODO - DO NOT PUSH THIS TO MASTER, FIX bptIn for ComposableStable pools
       this.pool.value?.onchain?.decimals || 18
     );
 

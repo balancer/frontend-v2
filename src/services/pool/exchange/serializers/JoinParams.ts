@@ -6,7 +6,6 @@ import { Ref } from 'vue';
 import {
   checkPoolItselfTokenIndex,
   isComposableStable,
-  isComposableStableLike,
   isManaged,
   isStableLike,
 } from '@/composables/usePool';
@@ -36,9 +35,9 @@ export default class JoinParams {
     this.isSwapEnabled =
       this.isManagedPool && !!this.pool.value?.onchain?.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
-      ? encodeJoinStablePool
-      : isComposableStableLike(exchange.pool.value.poolType)
-      ? encodeJoinComposableStablePool
+      ? isComposableStable(exchange.pool.value.poolType)
+        ? encodeJoinComposableStablePool
+        : encodeJoinStablePool
       : encodeJoinWeightedPool;
   }
 
@@ -51,7 +50,7 @@ export default class JoinParams {
     const parsedAmountsIn = this.parseAmounts(amountsIn, tokensIn);
     console.log('We should be using this', bptOut);
     const parsedBptOut = parseUnits(
-      '0', // TODO - DO NOT PUSH THIS TO MASTER, FIX bptOut for ComposableStable pools,
+      '0', // TODO - DO NOT PUSH THIS TO MASTER, FIX bptOut for ComposableStable pools
       this.pool.value?.onchain?.decimals || 18
     );
 
