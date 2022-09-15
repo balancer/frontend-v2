@@ -115,7 +115,7 @@ export default {
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
     const userProvider = computed(() => {
-      return new Web3Provider(pluginState.connector.provider as any);
+      return new Web3Provider(pluginState.connector.provider as any, 'any'); // https://github.com/ethers-io/ethers.js/issues/866
     });
 
     async function getWalletConnector(
