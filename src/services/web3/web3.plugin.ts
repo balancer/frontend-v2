@@ -83,12 +83,24 @@ async function isBlockedAddress(address: string): Promise<boolean | null> {
   }
 }
 
+export async function verifyTransactionSender(signer: JsonRpcSigner) {
+  const signerAddress = await signer.getAddress();
+  const _isBlockedAddress = await isBlockedAddress(signerAddress);
+  if (_isBlockedAddress) {
+    isBlocked.value = true;
+    throw new Error(
+      `Rejecting transaction. [${_isBlockedAddress}] is a sanctioned wallet.`
+    );
+  }
+}
+
+export const isBlocked = ref(false);
+
 export default {
   install: async app => {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
-    const isBlocked = ref(false);
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -196,12 +208,6 @@ export default {
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
         if (account.value) {
-          // fetch sanctioned status
-          const _isBlocked = await isBlockedAddress(account.value);
-          isBlocked.value = _isBlocked || false;
-          if (_isBlocked) {
-            disconnectWallet();
-          }
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
