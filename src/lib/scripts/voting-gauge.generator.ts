@@ -11,6 +11,7 @@ import { VotingGauge } from '@/constants/voting-gauges';
 import { getPlatformId } from '@/services/coingecko/coingecko.service';
 import VEBalHelpersABI from '@/lib/abi/VEBalHelpers.json';
 import vebalGauge from '../../../public/data/vebal-gauge.json';
+import hardcodedGauges from '../../../public/data/hardcoded-gauges.json';
 import config from '../config';
 import { isSameAddress } from '../utils';
 import { Multicaller } from '../utils/balancer/contract';
@@ -485,7 +486,11 @@ async function getGaugeInfo(
     })
   );
 
-  votingGauges = [...(vebalGauge as VotingGauge[]), ...votingGauges];
+  votingGauges = [
+    ...(vebalGauge as VotingGauge[]),
+    ...(hardcodedGauges as VotingGauge[]),
+    ...votingGauges,
+  ];
 
   const jsonFilePath = path.resolve(
     __dirname,

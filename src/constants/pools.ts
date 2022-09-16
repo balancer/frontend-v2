@@ -86,7 +86,13 @@ const POOLS_KOVAN: Pools = {
     '0x28efa7f86341aa0ad534bdfb033edb4f4ac6adf700020000000000000000067e',
     '0x10ee90b9ff4b9a44a773107280c0ce083619286800020000000000000000067b',
   ],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'ComposableStable',
+  ],
   Stable: {
     AllowList: [
       '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
@@ -155,7 +161,13 @@ const POOLS_GOERLI: Pools = {
   BlockList: [
     '0x22d398c68030ef6b1c55321cca6e0cecc5c93b2f000200000000000000000678',
   ],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'ComposableStable',
+  ],
   Stable: {
     AllowList: [
       '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f',
@@ -177,6 +189,7 @@ const POOLS_GOERLI: Pools = {
     '0xb48cc42c45d262534e46d5965a9ac496f1b7a830': 'liquidityBootstrappingPool',
     '0xb0c726778c3ae4b3454d85557a48e8fa502bdd6a': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
     '0x41e9036ae350baedcc7107760a020dca3c0731ec': 'boostedPool',
+    '0x94f68b54191f62f781fe8298a8a5fa3ed772d227': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -219,6 +232,7 @@ const POOLS_MAINNET: Pools = {
     'ERC4626Linear',
     'Gyro2',
     'Gyro3',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -253,6 +267,7 @@ const POOLS_MAINNET: Pools = {
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
+    '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -308,6 +323,11 @@ const POOLS_MAINNET: Pools = {
       '0x1b65fe4881800b91d4277ba738b567cbb200a60d0002000000000000000002cc',
       '0x99a14324cfd525a34bbc93ac7e348929909d57fd00020000000000000000030e',
       '0x48607651416a943bf5ac71c41be1420538e78f87000200000000000000000327',
+      '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366',
+      '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367',
+      '0x441b8a1980f2f2e43a9397099d15cc2fe6d3625000020000000000000000035f',
+      '0xf3aeb3abba741f0eece8a1b1d2f11b85899951cb000200000000000000000351',
+      '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
     ],
   },
   Metadata: {
@@ -346,6 +366,7 @@ const POOLS_POLYGON: Pools = {
     'ERC4626Linear',
     'Gyro2',
     'Gyro3',
+    'ComposableStable',
   ],
   Stable: {
     AllowList: [
@@ -375,6 +396,7 @@ const POOLS_POLYGON: Pools = {
     '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool', // polygon stablephantom
     '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool', // stable pool v2
+    '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -401,6 +423,10 @@ const POOLS_POLYGON: Pools = {
       '0x2dbc9ab0160087ae59474fb7bed95b9e808fa6bc0001000000000000000003db',
       '0xb797adfb7b268faeaa90cadbfed464c76ee599cd0002000000000000000005ba',
       '0x8f9dd2064eb38e8e40f2ab67bde27c0e16ea9b080002000000000000000004ca',
+      '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b',
+      '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
+      '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d',
+      '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c',
     ],
   },
   Metadata: {},
@@ -419,7 +445,13 @@ const POOLS_ARBITRUM: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'ComposableStable',
+  ],
   Stable: {
     AllowList: [
       '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
@@ -444,6 +476,7 @@ const POOLS_ARBITRUM: Pools = {
     '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // arbitrum managed
     '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool', // arbitrum stablephantom
     '0xef44d6786b2b4d544b7850fe67ce6381626bf2d6': 'stablePool', // stable pool v2
+    '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -463,6 +496,7 @@ const POOLS_ARBITRUM: Pools = {
       '0xcc65a812ce382ab909a11e434dbf75b34f1cc59d000200000000000000000001',
       '0xe1b40094f1446722c424c598ac412d590e0b3ffb000200000000000000000076',
       '0xb3028ca124b80cfe6e9ca57b70ef2f0ccc41ebd40002000000000000000000ba',
+      '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102',
     ],
   },
   Metadata: {},
@@ -481,7 +515,13 @@ const POOLS_GENERIC: Pools = {
     Gauntlet: [],
   },
   BlockList: [''],
-  ExcludedPoolTypes: ['Element', 'AaveLinear', 'Linear', 'ERC4626Linear'],
+  ExcludedPoolTypes: [
+    'Element',
+    'AaveLinear',
+    'Linear',
+    'ERC4626Linear',
+    'ComposableStable',
+  ],
   Stable: {
     AllowList: [
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
