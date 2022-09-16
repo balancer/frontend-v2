@@ -193,6 +193,7 @@ const POOLS_GOERLI: Pools = {
   Stakable: {
     AllowList: [
       '0x16faf9f73748013155b7bc116a3008b57332d1e600020000000000000000005b',
+      '0x67f8fcb9d3c463da05de1392efdbb2a87f8599ea000200000000000000000059',
     ],
   },
   Metadata: {
