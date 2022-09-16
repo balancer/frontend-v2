@@ -188,6 +188,7 @@ const POOLS_GOERLI: Pools = {
     '0xb48cc42c45d262534e46d5965a9ac496f1b7a830': 'liquidityBootstrappingPool',
     '0xb0c726778c3ae4b3454d85557a48e8fa502bdd6a': 'liquidityBootstrappingPool', // LBP (zero protocol fee)
     '0x41e9036ae350baedcc7107760a020dca3c0731ec': 'boostedPool',
+    '0x94f68b54191f62f781fe8298a8a5fa3ed772d227': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -264,6 +265,7 @@ const POOLS_MAINNET: Pools = {
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
     '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'stablePool', // stable pool v2
+    '0xcc508a455f5b0073973107db6a878ddbdab957bc': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -392,6 +394,7 @@ const POOLS_POLYGON: Pools = {
     '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
     '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool', // polygon stablephantom
     '0xca96c4f198d343e251b1a01f3eba061ef3da73c1': 'stablePool', // stable pool v2
+    '0x0e39c3d9b2ec765efd9c5c70bb290b1fcd8536e3': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
@@ -471,6 +474,7 @@ const POOLS_ARBITRUM: Pools = {
     '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // arbitrum managed
     '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool', // arbitrum stablephantom
     '0xef44d6786b2b4d544b7850fe67ce6381626bf2d6': 'stablePool', // stable pool v2
+    '0x8df6efec5547e31b0eb7d1291b511ff8a2bf987c': 'weightedPool', // weighted pool v2
   },
   Stakable: {
     AllowList: [
