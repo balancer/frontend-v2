@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
@@ -40,23 +39,17 @@ const props = withDefaults(defineProps<Props>(), {
   poolApr: undefined,
 });
 
+const poolId = computed(() => toRef(props, 'pool').value.id);
+
 /**
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const route = useRoute();
-const { isAffected, warnings } = usePoolWarning(route.params.id as string);
+const { isAffected, warnings } = usePoolWarning(poolId);
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens } = useTokens();
-
-/**
- * STATE
- */
-const data = reactive({
-  id: route.params.id as string,
-});
 
 /**
  * COMPUTED
@@ -68,7 +61,8 @@ const communityManagedFees = computed(
 );
 const feesManagedByGauntlet = computed(
   () =>
-    communityManagedFees.value && POOLS.DynamicFees.Gauntlet.includes(data.id)
+    communityManagedFees.value &&
+    POOLS.DynamicFees.Gauntlet.includes(props.pool.id)
 );
 const swapFeeToolTip = computed(() => {
   if (feesManagedByGauntlet.value) {

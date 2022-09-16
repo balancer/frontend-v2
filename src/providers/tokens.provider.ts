@@ -20,7 +20,12 @@ import useTokenLists from '@/composables/useTokenLists';
 import useUserSettings from '@/composables/useUserSettings';
 import symbolKeys from '@/constants/symbol.keys';
 import { TOKENS } from '@/constants/tokens';
-import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
+import {
+  bnum,
+  getAddressFromPoolId,
+  includesAddress,
+  isSameAddress,
+} from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -268,7 +273,7 @@ export default {
      * tokens into state tokens map.
      */
     async function injectTokens(addresses: string[]): Promise<void> {
-      addresses = addresses.map(address => getAddress(address));
+      addresses = addresses.map(getAddressFromPoolId).map(getAddress);
 
       // Remove any duplicates
       addresses = [...new Set(addresses)];
@@ -300,8 +305,10 @@ export default {
     ): Promise<TokenInfoMap> {
       if (!query) return removeExcluded(tokens.value, excluded);
 
-      if (isAddress(query)) {
-        const address = getAddress(query);
+      const potentialAddress = getAddressFromPoolId(query);
+
+      if (isAddress(potentialAddress)) {
+        const address = getAddress(potentialAddress);
         const token = allTokenListTokens.value[address];
         if (token) {
           return { [address]: token };
@@ -416,6 +423,7 @@ export default {
      * Get single token from state
      */
     function getToken(address: string): TokenInfo {
+      address = getAddressFromPoolId(address); // In case pool ID has been passed
       if (address) address = getAddress(address);
       return tokens.value[address];
     }
