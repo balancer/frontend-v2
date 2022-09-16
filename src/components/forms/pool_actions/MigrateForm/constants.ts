@@ -80,6 +80,15 @@ const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
       `${riskI18nLabelPrefix}.aaveStableExploit`,
     ],
   },
+  {
+    type: PoolMigrationType.MAI_POOL,
+    fromPoolId: POOLS.IdsMap.mai4?.mai4 as string, // mai4
+    toPoolId: POOLS.IdsMap.mai4?.maiBbaUsd as string, // bbaMai
+    riskI18nLabels: [
+      `${riskI18nLabelPrefix}.loseUSDPeg`,
+      `${riskI18nLabelPrefix}.aaveStableExploit`,
+    ],
+  },
 ];
 
 const MIGRATIONS_BY_NETWORK = {

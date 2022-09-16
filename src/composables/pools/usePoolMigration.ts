@@ -133,17 +133,22 @@ export function usePoolMigration(
   });
 
   const migrationFn = computed(() => {
-    if (migrationType.value?.type === PoolMigrationType.AAVE_BOOSTED_POOL) {
-      return migrateBoostedPool;
-    } else if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
-      return migrateStabal3;
-    } else if (
-      migrationType.value?.type === PoolMigrationType.STMATIC_POOL ||
-      migrationType.value?.type === PoolMigrationType.XMATIC_POOL
-    ) {
-      return migrateStables;
-    } else {
-      return migrateBoostedPool;
+    switch (migrationType.value?.type) {
+      case PoolMigrationType.AAVE_BOOSTED_POOL:
+        return migrateBoostedPool;
+
+      case PoolMigrationType.STABAL3_POOL:
+        return migrateStabal3;
+
+      case PoolMigrationType.STMATIC_POOL:
+      case PoolMigrationType.XMATIC_POOL:
+        return migrateStables;
+
+      case PoolMigrationType.MAI_POOL:
+        return migrateMaiUsd;
+
+      default:
+        return migrateBoostedPool;
     }
   });
 
@@ -315,7 +320,7 @@ export function usePoolMigration(
 
   function migrateStables(bptIn: string, staked: boolean, minBptOut = '0') {
     const { signerAddress, _signature } = migrationData.value;
-    console.log([...fromPool.tokensList]);
+    console.log(_signature);
     return balancer.zaps.migrations.stables(
       signerAddress,
       {
@@ -327,6 +332,18 @@ export function usePoolMigration(
       minBptOut,
       staked,
       [...fromPool.tokensList],
+      _signature
+    );
+  }
+
+  function migrateMaiUsd(bptIn: string, staked: boolean, minBptOut = '0') {
+    const { signerAddress, _signature } = migrationData.value;
+
+    return balancer.zaps.migrations.maiusd(
+      signerAddress,
+      bptIn,
+      minBptOut,
+      staked,
       _signature
     );
   }
