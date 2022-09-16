@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
+import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
+
 import useApp from '@/composables/useApp';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
+import useStaking from '@/composables/staking/useStaking';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
@@ -50,6 +53,9 @@ const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
 const { balancerTokenListTokens } = useTokens();
+const {
+  userData: { hasNonPrefGaugeBalances },
+} = useStaking();
 
 /**
  * STATE
@@ -57,6 +63,7 @@ const { balancerTokenListTokens } = useTokens();
 const data = reactive({
   id: route.params.id as string,
 });
+const isRestakePreviewVisible = ref(false);
 
 /**
  * COMPUTED
@@ -218,6 +225,20 @@ const poolTypeLabel = computed(() => {
       class="mt-2"
       block
     />
+    <BalAlert
+      v-if="hasNonPrefGaugeBalances"
+      :title="$t('staking.restakeGauge')"
+      class="mt-2"
+    >
+      <BalStack spacing="sm">
+        <span>{{ $t('staking.restakeGaugeDescription') }}</span>
+        <div>
+          <BalBtn @click="isRestakePreviewVisible = true">
+            {{ $t('restake') }}
+          </BalBtn>
+        </div>
+      </BalStack>
+    </BalAlert>
     <template v-if="!appLoading && !loadingPool && isAffected">
       <BalAlert
         v-for="(warning, i) in warnings"
@@ -241,6 +262,14 @@ const poolTypeLabel = computed(() => {
       :description="$t('noInitLiquidityDetail')"
       class="mt-2"
       block
+    />
+    <StakePreviewModal
+      v-if="!!pool"
+      :isVisible="isRestakePreviewVisible"
+      :pool="pool"
+      :action="'stake'"
+      @close="isRestakePreviewVisible = false"
+      @success="isRestakePreviewVisible = false"
     />
   </div>
 </template>

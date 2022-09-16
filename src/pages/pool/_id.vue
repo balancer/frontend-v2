@@ -194,18 +194,20 @@ watch(poolQuery.error, () => {
     <div
       class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
     >
-      <PoolPageHeader
-        :loadingPool="loadingPool"
-        :loadingApr="loadingApr"
-        :pool="pool"
-        :poolApr="poolApr"
-        :isStableLikePool="isStableLikePool"
-        :noInitLiquidity="noInitLiquidity"
-        :titleTokens="titleTokens"
-        :missingPrices="missingPrices"
-        :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
-        :isStablePhantomPool="isLiquidityBootstrappingPool"
-      />
+      <StakingProvider :poolAddress="pool?.address">
+        <PoolPageHeader
+          :loadingPool="loadingPool"
+          :loadingApr="loadingApr"
+          :pool="pool"
+          :poolApr="poolApr"
+          :isStableLikePool="isStableLikePool"
+          :noInitLiquidity="noInitLiquidity"
+          :titleTokens="titleTokens"
+          :missingPrices="missingPrices"
+          :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
+          :isStablePhantomPool="isLiquidityBootstrappingPool"
+        />
+      </StakingProvider>
       <div class="hidden lg:block" />
       <div class="order-2 lg:order-1 col-span-2">
         <div class="grid grid-cols-1 gap-y-8">
