@@ -45,7 +45,7 @@ export default class ExitParams {
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
-      '190', // TODO - DO NOT PUSH THIS TO MASTER, FIX bptIn for ComposableStable pools
+      bptIn,
       this.pool.value?.onchain?.decimals || 18
     );
 
