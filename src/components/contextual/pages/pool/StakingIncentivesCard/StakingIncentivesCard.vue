@@ -106,6 +106,7 @@ async function handleActionSuccess() {
               isDisabled: !isPoolEligibleForStaking,
             },
           ]"
+          :reCalcKey="hasNonPrefGaugeBalances ? 0 : 1"
         >
           <template #staking-handle>
             <button
