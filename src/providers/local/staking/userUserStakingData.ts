@@ -16,7 +16,6 @@ import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidit
 import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
-
 import BigNumber from 'bignumber.js';
 
 export type UserGaugeShare = {
@@ -91,16 +90,16 @@ export type UserStakingDataResponse = {
   isUserPoolsIdle: Ref<boolean>;
   refetchStakedShares: Ref<() => void>;
   getStakedShares: () => Promise<string>;
-  hasNonPrefGaugeBalances: Ref<boolean | undefined>;
-  refetchHasNonPrefGauge: Ref<() => void>;
   refetchUserStakingData: Ref<
     (options?: RefetchOptions) => Promise<QueryObserverResult>
   >;
-  poolGaugeAddresses: Ref<PoolGaugesInfo>;
   stakedSharesMap: Ref<Record<string, string>>;
   poolBoosts: Ref<Record<string, string> | undefined>;
   isLoadingBoosts: Ref<boolean>;
   getBoostFor: (poolAddress: string) => string;
+  hasNonPrefGaugeBalances: Ref<boolean | undefined>;
+  refetchHasNonPrefGauge: Ref<() => void>;
+  poolGaugeAddresses: Ref<PoolGaugesInfo>;
 };
 
 export default function useUserStakingData(
@@ -120,9 +119,6 @@ export default function useUserStakingData(
 
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
-  const isStakedSharesQueryEnabled = computed(
-    () => !!poolAddress.value && poolAddress.value != '' && isWalletReady.value
-  );
   const stakeableUserPoolIds = computed(() =>
     intersection(userPoolIds.value, POOLS.Stakable.AllowList)
   );
@@ -165,36 +161,34 @@ export default function useUserStakingData(
     })
   );
 
-  const isPoolAddressRegistered = computed(
-    () => !!poolAddress.value && poolAddress.value != ''
-  );
-
   // this query is responsible for checking gauge addresses for the pool
-  const { data: poolGaugeAddressesResponse } =
-    useGraphQuery<PoolGaugesResponse>(
-      subgraphs.gauge,
-      ['pool', 'gaugeAddresses', { poolAddress: poolAddress.value }],
-      () => ({
-        pools: {
-          __args: {
-            where: {
-              address: poolAddress.value,
-            },
-          },
-          preferentialGauge: {
-            id: true,
-          },
-          gauges: {
-            id: true,
-            relativeWeightCap: true,
+  const {
+    data: poolGaugeAddressesResponse,
+    isLoading: isLoadingGaugeAddresses,
+  } = useGraphQuery<PoolGaugesResponse>(
+    subgraphs.gauge,
+    ['pool', 'gaugeAddresses', { poolAddress: poolAddress.value }],
+    () => ({
+      pools: {
+        __args: {
+          where: {
+            address: poolAddress.value,
           },
         },
-      }),
-      reactive({
-        enabled: isPoolAddressRegistered,
-        refetchOnWindowFocus: false,
-      })
-    );
+        preferentialGauge: {
+          id: true,
+        },
+        gauges: {
+          id: true,
+          relativeWeightCap: true,
+        },
+      },
+    }),
+    reactive({
+      enabled: !!poolAddress.value,
+      refetchOnWindowFocus: false,
+    })
+  );
 
   const poolGaugeAddresses = computed(() => {
     return (
@@ -202,6 +196,14 @@ export default function useUserStakingData(
       ({ preferentialGauge: { id: null }, gauges: [] } as PoolGaugesInfo)
     );
   });
+
+  const isStakedSharesQueryEnabled = computed(
+    () =>
+      !!poolAddress.value &&
+      poolAddress.value != '' &&
+      isWalletReady.value &&
+      !isLoadingGaugeAddresses.value
+  );
 
   // we pull staked shares for a specific pool manually do to the
   // fact that the subgraph is too slow, so we gotta rely on the
@@ -214,12 +216,10 @@ export default function useUserStakingData(
     isRefetching: isRefetchingStakedShares,
     refetch: refetchStakedShares,
   } = useQuery<string>(
-    ['staking', 'pool', 'shares', { poolAddress }],
+    ['staking', 'pool', 'shares', { account, poolAddress }],
     () => getStakedShares(),
     reactive({
-      enabled:
-        isStakedSharesQueryEnabled.value &&
-        !!poolGaugeAddresses.value?.preferentialGauge?.id,
+      enabled: isStakedSharesQueryEnabled,
       refetchOnWindowFocus: false,
     })
   );
@@ -276,29 +276,10 @@ export default function useUserStakingData(
       }
     );
 
-  const isBoostQueryEnabled = computed(
-    () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
-  );
-
-  const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery<
-    Record<string, string>
-  >(
-    ['gauges', 'boosts', { account, userGaugeShares }],
-    async () => {
-      const boosts = stakingRewardsService.getUserBoosts({
-        userAddress: account.value,
-        gaugeShares: userGaugeShares.value,
-      });
-      return boosts;
-    },
-    reactive({
-      enabled: isBoostQueryEnabled,
-    })
-  );
-
+  const fetchedBalances = computed(() => !isLoadingStakedShares.value);
   const { data: hasNonPrefGaugeBalances, refetch: refetchHasNonPrefGauge } =
     useQuery<boolean>(
-      ['gauges', 'hasNonPrefGaugeBalances', { account }, poolAddress.value],
+      ['gauges', 'hasNonPrefGaugeBalances', poolAddress, account],
       async () => {
         if (poolGaugeAddresses.value?.gauges?.length === 0) return false;
 
@@ -318,9 +299,29 @@ export default function useUserStakingData(
         return gaugeNonPrefBalances.some(balance => balance !== '0');
       },
       reactive({
-        enabled: !!poolGaugeAddresses.value?.preferentialGauge?.id,
+        enabled: fetchedBalances,
       })
     );
+
+  const isBoostQueryEnabled = computed(
+    () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
+  );
+
+  const { data: poolBoosts, isLoading: isLoadingBoosts } = useQuery<
+    Record<string, string>
+  >(
+    ['gauges', 'boosts', { account, userGaugeShares }],
+    async () => {
+      const boosts = stakingRewardsService.getUserBoosts({
+        userAddress: account.value,
+        gaugeShares: userGaugeShares.value,
+      });
+      return boosts;
+    },
+    reactive({
+      enabled: isBoostQueryEnabled,
+    })
+  );
 
   const stakedPools = computed<PoolWithShares[]>(() => {
     return (stakedPoolsResponse.value?.pages[0].pools || []).map(pool => {
