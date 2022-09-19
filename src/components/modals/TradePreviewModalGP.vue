@@ -97,7 +97,7 @@ const exceedsBalance = computed(() => {
 });
 
 const disableSubmitButton = computed(() => {
-  return !!exceedsBalance.value || !!props.error.value;
+  return !!exceedsBalance.value || !!props.error;
 });
 
 const summary = computed(() => {
@@ -445,7 +445,7 @@ watch(blockNumber, () => {
       </BalStack>
       <BalCard noPad class="overflow-auto relative mb-6">
         <template #header>
-          <div>
+          <div class="w-full">
             <div>
               <BalAlert
                 v-if="error"
@@ -487,11 +487,12 @@ watch(blockNumber, () => {
             class="p-3"
             type="error"
             size="sm"
-            style="border-radius: 0"
-            :title="`${t('exceedsBalance')} ${balanceFor(
-              props.trading.tokenInAddressInput.value
+            :title="`${t('exceedsBalance')} ${fNum2(
+              balanceFor(props.trading.tokenInAddressInput.value),
+              FNumFormats.token
             )} ${props.trading.tokenIn.value.symbol}`"
             block
+            square
           />
           <div
             class="relative p-3 border-b border-gray-100 dark:border-gray-900"
