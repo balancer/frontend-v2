@@ -4,7 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
 import {
-  checkPoolItselfTokenIndex,
+  preMintedBptIndex,
   isComposableStable,
   isStableLike,
 } from '@/composables/usePool';
@@ -62,7 +62,7 @@ export default class ExitParams {
       // TODO: do this more elegantly
       amount.gt(0) ? amount.sub(1) : amount
     );
-    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
 
     if (
       isComposableStable(this.pool.value.poolType) &&
@@ -100,7 +100,7 @@ export default class ExitParams {
 
   private parseTokensOut(tokensOut: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
-    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
     const tokensOutProcessed = tokensOut.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );

@@ -77,9 +77,7 @@ export default function useUserPoolsQuery(
     });
 
     for (let i = 0; i < pools.length; i++) {
-      const isComposableStableLikePool = isDeep(pools[i]);
-
-      if (isComposableStableLikePool) {
+      if (isDeep(pools[i])) {
         const poolService = new PoolService(pools[i]);
         poolService.removePreMintedBPT();
         await poolService.setLinearPools();
@@ -105,9 +103,7 @@ export default function useUserPoolsQuery(
 
     // TODO - cleanup and extract elsewhere in refactor
     for (let i = 0; i < decoratedPools.length; i++) {
-      const isComposableStableLikePool = isDeep(decoratedPools[i]);
-
-      if (isComposableStableLikePool) {
+      if (isDeep(decoratedPools[i])) {
         const decoratedPool = decoratedPools[i];
 
         const poolTokenMeta = getTokens(decoratedPool.tokensList);

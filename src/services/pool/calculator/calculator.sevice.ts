@@ -4,7 +4,11 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { Ref, ref } from 'vue';
 
-import { isDeep, isStable, isStableLike } from '@/composables/usePool';
+import {
+  isComposableStableLike,
+  isStable,
+  isStableLike,
+} from '@/composables/usePool';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
@@ -245,7 +249,7 @@ export default class CalculatorService {
   }
 
   public get isComposableStableLikePool(): boolean {
-    return isDeep(this.pool.value);
+    return isComposableStableLike(this.pool.value.poolType);
   }
 
   public get sendTokens(): string[] {

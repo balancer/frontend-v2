@@ -132,10 +132,7 @@ const dataKey = computed(() => JSON.stringify(props.data));
  * METHODS
  */
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(
-    gauge.pool as unknown as Pool,
-    gauge.pool.tokens
-  );
+  const sortedTokens = orderedPoolTokens(gauge.pool as Pool, gauge.pool.tokens);
   return sortedTokens.map(
     token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );

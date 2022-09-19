@@ -4,7 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
 import {
-  checkPoolItselfTokenIndex,
+  preMintedBptIndex,
   isComposableStable,
   isManaged,
   isStableLike,
@@ -57,7 +57,7 @@ export default class JoinParams {
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
 
-    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
     const maxAmountsIn = [...parsedAmountsIn];
 
     if (
@@ -116,7 +116,7 @@ export default class JoinParams {
 
   private parseTokensIn(tokensIn: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
-    const poolTokenItselfIndex = checkPoolItselfTokenIndex(this.pool.value);
+    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
     const tokensInProcessed = tokensIn.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );

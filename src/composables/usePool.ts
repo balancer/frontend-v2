@@ -113,14 +113,8 @@ export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
 }
 
-export function checkPoolItselfTokenIndex(pool: Pool): number | void {
-  const index = pool.tokens.findIndex(token => token.address === pool.address);
-  if (index === -1) {
-    console.warn(`Pool itself token is not found in pool tokens list`);
-    return;
-  }
-
-  return index;
+export function preMintedBptIndex(pool: Pool): number | void {
+  return pool.tokens.findIndex(token => token.address === pool.address);
 }
 
 /**
@@ -324,7 +318,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
   );
   const isComposableStableLikePool = computed(
-    (): boolean => !!pool.value && isDeep(pool.value)
+    (): boolean => !!pool.value && isComposableStableLike(pool.value.poolType)
   );
   const isWeightedPool = computed(
     (): boolean => !!pool.value && isWeighted(pool.value.poolType)
