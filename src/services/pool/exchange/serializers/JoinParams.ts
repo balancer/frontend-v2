@@ -52,7 +52,6 @@ export default class JoinParams {
       bptOut,
       this.pool.value?.onchain?.decimals || 18
     );
-    console.log('parsedBptOut', parsedBptOut.toString());
 
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);

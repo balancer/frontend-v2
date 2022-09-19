@@ -100,20 +100,16 @@ export default class ExitParams {
 
   private parseTokensOut(tokensOut: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
-    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
+    const preMintedBptIdx = preMintedBptIndex(this.pool.value);
     const tokensOutProcessed = tokensOut.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
 
     if (
       isComposableStable(this.pool.value.poolType) &&
-      poolTokenItselfIndex !== undefined
+      preMintedBptIdx !== undefined
     ) {
-      tokensOutProcessed.splice(
-        poolTokenItselfIndex,
-        0,
-        this.pool.value.address
-      );
+      tokensOutProcessed.splice(preMintedBptIdx, 0, this.pool.value.address);
     }
     return tokensOutProcessed;
   }
