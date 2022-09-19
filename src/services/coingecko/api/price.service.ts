@@ -4,7 +4,7 @@ import { groupBy, invert, last } from 'lodash';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { TOKENS } from '@/constants/tokens';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
-import { includesAddress } from '@/lib/utils';
+import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
 import { configService as _configService } from '@/services/config/config.service';
 
@@ -73,7 +73,9 @@ export class PriceService {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
 
-      addresses = addresses.map(address => this.addressMapIn(address));
+      addresses = addresses
+        .map(getAddressFromPoolId)
+        .map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
       const requests: Promise<PriceResponse>[] = [];
@@ -122,7 +124,9 @@ export class PriceService {
         aggregateBy === 'hour' ? now : now - (now % twentyFourHoursInSecs);
       const start = end - days * twentyFourHoursInSecs;
 
-      addresses = addresses.map(address => this.addressMapIn(address));
+      addresses = addresses
+        .map(getAddressFromPoolId)
+        .map(address => this.addressMapIn(address));
       const requests: Promise<HistoricalPriceResponse>[] = [];
 
       addresses.forEach(address => {

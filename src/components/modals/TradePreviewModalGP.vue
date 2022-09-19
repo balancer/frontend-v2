@@ -26,6 +26,8 @@ const PRICE_UPDATE_THRESHOLD = 0.02;
 
 type Props = {
   trading: UseTrading;
+  error?: any;
+  warning?: any;
 };
 
 /**
@@ -38,8 +40,8 @@ const emit = defineEmits(['trade', 'close']);
 // COMPOSABLES
 const { t } = useI18n();
 const { fNum2, toFiat } = useNumbers();
-const { tokens, approvalRequired } = useTokens();
-const { blockNumber } = useWeb3();
+const { tokens, balanceFor, approvalRequired } = useTokens();
+const { blockNumber, account, startConnectWithInjectedProvider } = useWeb3();
 const { slippage } = useUserSettings();
 
 // state
@@ -84,6 +86,19 @@ const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 const zeroFee = computed(() =>
   showSummaryInFiat.value ? fNum2('0', FNumFormats.fiat) : '0.0 ETH'
 );
+
+const exceedsBalance = computed(() => {
+  return (
+    account.value &&
+    bnum(props.trading.tokenInAmountInput.value).isGreaterThan(
+      balanceFor(props.trading.tokenInAddressInput.value)
+    )
+  );
+});
+
+const disableSubmitButton = computed(() => {
+  return !!exceedsBalance.value || !!props.error;
+});
 
 const summary = computed(() => {
   const summaryItems = {
@@ -418,24 +433,67 @@ watch(blockNumber, () => {
 </script>
 
 <template>
-  <BalModal show :title="labels.modalTitle" @close="onClose">
+  <BalModal show @close="onClose">
     <div>
+      <BalStack horizontal align="center" spacing="xs" class="mb-4">
+        <button class="flex text-blue-500 hover:text-blue-700" @click="onClose">
+          <BalIcon class="flex" name="chevron-left" />
+        </button>
+        <h4>
+          {{ labels.modalTitle }}
+        </h4>
+      </BalStack>
       <BalCard noPad class="overflow-auto relative mb-6">
         <template #header>
-          <div
-            class="p-3 w-full text-sm bg-gray-50 dark:bg-gray-800 rounded-t-lg border-b dark:border-gray-800"
-          >
-            <span>
-              {{ $t('effectivePrice') }}
-              {{
-                trading.exactIn.value
-                  ? trading.effectivePriceMessage.value.tokenIn
-                  : trading.effectivePriceMessage.value.tokenOut
-              }}
-            </span>
+          <div class="w-full">
+            <div>
+              <BalAlert
+                v-if="error"
+                class="p-3 mb-2"
+                type="error"
+                size="sm"
+                :title="error.header"
+                :description="error.body"
+                :actionLabel="error.label"
+                block
+              />
+              <BalAlert
+                v-else-if="warning"
+                class="p-3 mb-2"
+                type="warning"
+                size="sm"
+                :title="warning.header"
+                :description="warning.body"
+                block
+              />
+            </div>
+            <div
+              class="p-3 w-full text-sm bg-gray-50 dark:bg-gray-800 rounded-t-lg border-b dark:border-gray-800"
+            >
+              <span>
+                {{ $t('effectivePrice') }}
+                {{
+                  trading.exactIn.value
+                    ? trading.effectivePriceMessage.value.tokenIn
+                    : trading.effectivePriceMessage.value.tokenOut
+                }}
+              </span>
+            </div>
           </div>
         </template>
         <div>
+          <BalAlert
+            v-if="exceedsBalance"
+            class="p-3"
+            type="error"
+            size="sm"
+            :title="`${t('exceedsBalance')} ${fNum2(
+              balanceFor(props.trading.tokenInAddressInput.value),
+              FNumFormats.token
+            )} ${props.trading.tokenIn.value.symbol}`"
+            block
+            square
+          />
           <div
             class="relative p-3 border-b border-gray-100 dark:border-gray-900"
           >
@@ -590,7 +648,7 @@ watch(blockNumber, () => {
         @action-click="cofirmPriceUpdate"
       />
       <div
-        v-if="totalRequiredTransactions > 1"
+        v-if="account && totalRequiredTransactions > 1"
         class="flex justify-center items-center my-5"
       >
         <template v-if="showGnosisRelayerApprovalStep">
@@ -759,13 +817,22 @@ watch(blockNumber, () => {
         </BalTooltip>
       </div>
       <BalBtn
-        v-if="requiresGnosisRelayerApproval"
+        v-if="!account"
+        color="gradient"
+        block
+        @click.prevent="startConnectWithInjectedProvider"
+      >
+        {{ $t('connectWallet') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="requiresGnosisRelayerApproval"
         color="gradient"
         block
         :loading="
           gnosisRelayerApproval.init.value ||
           gnosisRelayerApproval.approving.value
         "
+        :disabled="disableSubmitButton"
         :loadingLabel="`${$t('approvingGnosisRelayer')}...`"
         @click.prevent="gnosisRelayerApproval.approve"
       >
@@ -778,6 +845,7 @@ watch(blockNumber, () => {
         :loading="
           lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
         "
+        :disabled="disableSubmitButton"
         :loadingLabel="`${$t('approvingLidoRelayer')}...`"
         @click.prevent="lidoRelayerApproval.approve"
       >
@@ -789,6 +857,7 @@ watch(blockNumber, () => {
         :loadingLabel="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
         color="gradient"
         block
+        :disabled="disableSubmitButton"
         @click.prevent="approveToken"
       >
         {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
@@ -799,7 +868,7 @@ watch(blockNumber, () => {
         block
         :loading="trading.isConfirming.value"
         :loadingLabel="$t('confirming')"
-        :disabled="tradeDisabled"
+        :disabled="tradeDisabled || disableSubmitButton"
         class="relative"
         @click.prevent="trade"
       >
