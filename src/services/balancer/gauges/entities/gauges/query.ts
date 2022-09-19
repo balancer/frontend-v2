@@ -9,6 +9,7 @@ const defaultAttrs = {
   symbol: true,
   poolId: true,
   totalSupply: true,
+  isKilled: true,
   factory: {
     id: true,
   },

@@ -20,11 +20,10 @@ import useTransactions from '../useTransactions';
 import { parseUnits } from 'ethers/lib/utils';
 import useTime, { dateTimeLabelFor } from '../useTime';
 import { TokenInfo } from '@/types/TokenList';
-import { BigNumber } from '@ethersproject/bignumber';
-import { GAS_LIMIT_BUFFER } from '@/services/gas-price/gas-price.service';
 import { fiatValueOf } from '../usePool';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useSlippage from '../useSlippage';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export type MigratePoolState = {
   init: boolean;
@@ -138,6 +137,11 @@ export function usePoolMigration(
       return migrateBoostedPool;
     } else if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
       return migrateStabal3;
+    } else if (
+      migrationType.value?.type === PoolMigrationType.STMATIC_POOL ||
+      migrationType.value?.type === PoolMigrationType.XMATIC_POOL
+    ) {
+      return migrateStables;
     } else {
       return migrateBoostedPool;
     }
@@ -221,27 +225,17 @@ export function usePoolMigration(
   ): Promise<TransactionResponse> {
     let query = migrationFn.value(amount, isStaked, '0');
 
-    const estimatedGas = await getSigner().estimateGas({
-      to: query.to,
-      data: query.data,
-    });
-
-    const gasLimit = Math.floor(
-      BigNumber.from(estimatedGas).toNumber() * (1 + GAS_LIMIT_BUFFER)
-    );
-
     const expectedBptOut = await getExpectedBptOut(amount, isStaked);
     const minBptOut = minusSlippageScaled(expectedBptOut);
     query = migrationFn.value(amount, isStaked, minBptOut);
 
-    const tx = await getSigner().sendTransaction({
+    const txBuilder = new TransactionBuilder(getSigner());
+    const tx = await txBuilder.raw.sendTransaction({
       to: query.to,
       data: query.data,
-      gasLimit,
     });
 
     handleTransaction(tx);
-
     return tx;
   }
 
@@ -285,19 +279,10 @@ export function usePoolMigration(
   ): Promise<string> {
     const query = migrationFn.value(bptIn, isStaked, '0');
 
-    const estimatedGas = await getSigner().estimateGas({
+    const txBuilder = new TransactionBuilder(getSigner());
+    const staticResult = await txBuilder.raw.call({
       to: query.to,
       data: query.data,
-    });
-
-    const gasLimit = Math.floor(
-      BigNumber.from(estimatedGas).toNumber() * (1 + GAS_LIMIT_BUFFER)
-    );
-
-    const staticResult = await getSigner().call({
-      to: query.to,
-      data: query.data,
-      gasLimit,
     });
 
     return query.decode(staticResult, isStaked);
@@ -324,6 +309,24 @@ export function usePoolMigration(
       bptIn,
       minBptOut,
       staked,
+      _signature
+    );
+  }
+
+  function migrateStables(bptIn: string, staked: boolean, minBptOut = '0') {
+    const { signerAddress, _signature } = migrationData.value;
+    console.log([...fromPool.tokensList]);
+    return balancer.zaps.migrations.stables(
+      signerAddress,
+      {
+        id: fromPool.id,
+        address: fromPool.address,
+      },
+      { id: toPool.id, address: toPool.address },
+      bptIn,
+      minBptOut,
+      staked,
+      [...fromPool.tokensList],
       _signature
     );
   }

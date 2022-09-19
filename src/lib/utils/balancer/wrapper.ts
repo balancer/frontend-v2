@@ -2,10 +2,10 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { BigNumber, BigNumberish } from 'ethers';
 
 import configs from '@/lib/config';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { configService } from '@/services/config/config.service';
 
 import { getStETHByWstETH, getWstETHByStETH } from './lido';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 export enum WrapType {
   NonWrap = 0,
@@ -94,51 +94,54 @@ const wrapNative = async (
   network: string,
   web3: Web3Provider,
   amount: BigNumber
-): Promise<TransactionResponse> =>
-  sendTransaction(
-    web3,
-    configs[network].addresses.weth,
-    ['function deposit() payable'],
-    'deposit',
-    [],
-    { value: amount }
-  );
+): Promise<TransactionResponse> => {
+  const txBuilder = new TransactionBuilder(web3.getSigner());
+  return await txBuilder.contract.sendTransaction({
+    contractAddress: configs[network].addresses.weth,
+    abi: ['function deposit() payable'],
+    action: 'deposit',
+    options: { value: amount },
+  });
+};
 
-const unwrapNative = (
+const unwrapNative = async (
   network: string,
   web3: Web3Provider,
   amount: BigNumber
-): Promise<TransactionResponse> =>
-  sendTransaction(
-    web3,
-    configs[network].addresses.weth,
-    ['function withdraw(uint256 wad)'],
-    'withdraw',
-    [amount]
-  );
+): Promise<TransactionResponse> => {
+  const txBuilder = new TransactionBuilder(web3.getSigner());
+  return await txBuilder.contract.sendTransaction({
+    contractAddress: configs[network].addresses.weth,
+    abi: ['function withdraw(uint256 wad)'],
+    action: 'withdraw',
+    params: [amount],
+  });
+};
 
 const wrapLido = async (
   network: string,
   web3: Web3Provider,
   amount: BigNumber
-): Promise<TransactionResponse> =>
-  sendTransaction(
-    web3,
-    configs[network].addresses.wstETH,
-    ['function wrap(uint256 _stETHAmount) returns (uint256)'],
-    'wrap',
-    [amount]
-  );
+): Promise<TransactionResponse> => {
+  const txBuilder = new TransactionBuilder(web3.getSigner());
+  return await txBuilder.contract.sendTransaction({
+    contractAddress: configs[network].addresses.wstETH,
+    abi: ['function wrap(uint256 _stETHAmount) returns (uint256)'],
+    action: 'wrap',
+    params: [amount],
+  });
+};
 
 const unwrapLido = async (
   network: string,
   web3: Web3Provider,
   amount: BigNumber
-): Promise<TransactionResponse> =>
-  sendTransaction(
-    web3,
-    configs[network].addresses.wstETH,
-    ['function unwrap(uint256 _wstETHAmount) returns (uint256)'],
-    'unwrap',
-    [amount]
-  );
+): Promise<TransactionResponse> => {
+  const txBuilder = new TransactionBuilder(web3.getSigner());
+  return await txBuilder.contract.sendTransaction({
+    contractAddress: configs[network].addresses.wstETH,
+    abi: ['function unwrap(uint256 _wstETHAmount) returns (uint256)'],
+    action: 'unwrap',
+    params: [amount],
+  });
+};

@@ -33,13 +33,13 @@ export default class VaultService {
     tokenOutAmount: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'swap',
-      [single, funds, tokenOutAmount, MaxUint256],
-      options
-    );
+    return this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'swap',
+      params: [single, funds, tokenOutAmount, MaxUint256],
+      options,
+    });
   }
 
   public batchSwap(
@@ -50,13 +50,13 @@ export default class VaultService {
     limits: string[],
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return this.web3.sendTransaction(
-      this.address,
-      this.abi,
-      'batchSwap',
-      [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
-      options
-    );
+    return this.web3.txBuilder.contract.sendTransaction({
+      contractAddress: this.address,
+      abi: this.abi,
+      action: 'batchSwap',
+      params: [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
+      options,
+    });
   }
 }
 
