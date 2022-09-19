@@ -268,8 +268,7 @@ export default function useWithdrawMath(
   );
 
   const singleAssetMaxes = computed((): string[] => {
-    if (isComposableStableLikePool.value)
-      return batchSwapSingleAssetMaxes.value;
+    if (isDeepPool.value) return batchSwapSingleAssetMaxes.value;
 
     try {
       return poolTokens.value.map((token, tokenIndex) => {
@@ -359,14 +358,11 @@ export default function useWithdrawMath(
 
   const shouldFetchBatchSwap = computed(
     (): boolean =>
-      pool.value &&
-      isComposableStableLikePool.value &&
-      bnum(normalizedBPTIn.value).gt(0)
+      pool.value && isDeepPool.value && bnum(normalizedBPTIn.value).gt(0)
   );
 
   const shouldUseBatchRelayer = computed((): boolean => {
-    if (!isComposableStableLikePool.value || !pool.value?.onchain?.linearPools)
-      return false;
+    if (!isDeepPool.value || !pool.value?.onchain?.linearPools) return false;
 
     // If batchSwap has any 0 return amounts, we should use batch relayer
     if (batchSwap.value) {
@@ -605,7 +601,7 @@ export default function useWithdrawMath(
    * decide what swap should be fetched and sets it.
    */
   async function getSwap(): Promise<void> {
-    if (!isComposableStableLikePool.value) return;
+    if (!isDeepPool.value) return;
 
     if (isProportional.value) {
       batchSwap.value = await getBatchSwap();
@@ -650,7 +646,7 @@ export default function useWithdrawMath(
    */
   watch(tokenOut, () => {
     tokenOutAmount.value = '';
-    if (isComposableStableLikePool.value) getSingleAssetMaxOut();
+    if (isDeepPool.value) getSingleAssetMaxOut();
   });
 
   watch(isWalletReady, async () => {
