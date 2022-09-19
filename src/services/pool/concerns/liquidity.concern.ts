@@ -1,7 +1,12 @@
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
-import { isStableLike, isWeightedLike, isDeep } from '@/composables/usePool';
+import {
+  isStableLike,
+  isWeightedLike,
+  isDeep,
+  isComposableStable,
+} from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -32,8 +37,8 @@ export default class LiquidityConcern {
     if (isWeightedLike(this.poolType)) {
       return this.calcWeightedTotal(prices, currency);
     } else if (isStableLike(this.poolType)) {
-      if (isDeep(this.pool)) {
-        return this.calcStablePhantom(prices, currency, tokenMeta);
+      if (isComposableStable(this.pool.poolType)) {
+        return this.calcComposableStable(prices, currency, tokenMeta);
       }
       return this.calcStableTotal(prices, currency);
     }
@@ -149,7 +154,7 @@ export default class LiquidityConcern {
     return '0';
   }
 
-  private calcStablePhantom(
+  private calcComposableStable(
     prices: TokenPrices,
     currency: FiatCurrency,
     tokenMeta: TokenInfoMap

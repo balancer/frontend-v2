@@ -34,15 +34,13 @@ const selectedOption = ref(props.initToken);
  */
 const { getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
-const { isWethPool, isComposableStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
 const tokenAddresses = computed(() => {
-  if (isComposableStableLikePool.value) return props.pool?.mainTokens || [];
+  if (isDeepPool.value) return props.pool?.mainTokens || [];
   if (isWethPool.value) return [nativeAsset.address, ...props.pool.tokensList];
   return props.pool.tokensList;
 });
