@@ -16,6 +16,8 @@ export interface Pool {
   totalSwapFee: string;
   totalSwapVolume: string;
   createTime: number;
+  name: string;
+  symbol: string;
   onchain?: OnchainPoolData;
   mainTokens?: string[];
   wrappedTokens?: string[];
@@ -36,6 +38,7 @@ export enum PoolType {
   StablePhantom = 'StablePhantom',
   ComposableStable = 'ComposableStable',
   LiquidityBootstrapping = 'LiquidityBootstrapping',
+  Managed = 'Managed',
 }
 
 export interface PoolToken {

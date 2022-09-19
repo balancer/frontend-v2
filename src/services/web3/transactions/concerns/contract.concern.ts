@@ -6,6 +6,7 @@ import {
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/minimal';
 import { Contract, ContractInterface, Wallet } from 'ethers';
+import { verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 type SendTransactionOpts = {
@@ -31,6 +32,8 @@ export class ContractConcern extends TransactionConcern {
     forceLegacyTxType = false,
   }: SendTransactionOpts): Promise<TransactionResponse> {
     const contractWithSigner = new Contract(contractAddress, abi, this.signer);
+    // will throw an error if signer is a sanctioned address
+    await verifyTransactionSender(this.signer);
 
     console.log('Contract: ', contractAddress);
     console.log('Action: ', action);
