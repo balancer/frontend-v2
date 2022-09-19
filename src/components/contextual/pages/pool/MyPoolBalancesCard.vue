@@ -33,12 +33,9 @@ const props = defineProps<Props>();
 const { tokens, balances, balanceFor, getTokens } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady } = useWeb3();
-const {
-  isStableLikePool,
-  isComposableStableLikePool,
-  isMigratablePool,
-  isDeepPool,
-} = usePool(toRef(props, 'pool'));
+const { isStableLikePool, isMigratablePool, isDeepPool } = usePool(
+  toRef(props, 'pool')
+);
 const {
   userData: { stakedSharesForProvidedPool },
 } = useStaking();
@@ -71,7 +68,7 @@ const propTokenAmounts = computed((): string[] => {
     'send'
   );
 
-  if (isComposableStableLikePool.value) {
+  if (isDeepPool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
     return props.pool.tokensList.map((address, i) => {
