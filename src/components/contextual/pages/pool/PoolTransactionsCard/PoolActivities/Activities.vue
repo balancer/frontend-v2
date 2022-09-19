@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { flatten } from 'lodash';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
 import usePoolUserActivitiesQuery from '@/composables/queries/usePoolUserActivitiesQuery';
@@ -28,23 +27,13 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 /**
- * COMPOSABLES
- */
-const route = useRoute();
-
-/**
- * STATE
- */
-
-const id = route.params.id as string;
-/**
  * QUERIES
  */
 
 const poolActivitiesQuery =
   props.poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
-    ? usePoolActivitiesQuery(id)
-    : usePoolUserActivitiesQuery(id);
+    ? usePoolActivitiesQuery(props.pool.id)
+    : usePoolUserActivitiesQuery(props.pool.id);
 
 /**
  * COMPUTED

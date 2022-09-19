@@ -127,13 +127,15 @@ function isSelectedNativeAsset(address: string): boolean {
               class="w-full"
               size="lg"
             >
-              <div class="flex justify-between">
+              <div class="flex">
                 <span>
                   {{ nativeAsset.name }}
                   <span class="lowercase">{{ $t('tokens') }}</span>
                 </span>
                 <BalTooltip
                   v-if="pageContext === 'invest'"
+                  class="mt-1 ml-2"
+                  iconSize="sm"
                   :text="
                     $t(
                       'poolTransfer.myWalletTokensCard.tooltips.nativeAssetSelection',

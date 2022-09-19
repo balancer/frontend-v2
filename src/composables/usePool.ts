@@ -168,7 +168,7 @@ export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
 export function poolURLFor(
   poolId: string,
   network: Network,
-  poolType?: string | PoolType
+  poolType: string | PoolType
 ): string {
   console.log({ poolType, poolId, network });
   if (network === Network.OPTIMISM) {
@@ -176,6 +176,13 @@ export function poolURLFor(
   }
   if (poolType && poolType.toString() === 'Element') {
     return `https://app.element.fi/pools/${addressFor(poolId)}`;
+  }
+  if (poolType && poolType.toString() === 'FX') {
+    return `https://app.xave.finance/#/pool`;
+  }
+  // temporarily remove links to ComposableStablePools until the frontend fully supports them
+  if (poolType && poolType.toString() === 'ComposableStable') {
+    return urlFor(network);
   }
 
   return `${urlFor(network)}/pool/${poolId}`;
