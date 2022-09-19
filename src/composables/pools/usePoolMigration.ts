@@ -24,6 +24,7 @@ import { fiatValueOf } from '../usePool';
 import useNumbers, { FNumFormats } from '../useNumbers';
 import useSlippage from '../useSlippage';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 
 export type MigratePoolState = {
   init: boolean;
@@ -52,8 +53,7 @@ export function usePoolMigration(
    */
   const { txListener, getTxConfirmedAt } = useEthers();
   const { addTransaction } = useTransactions();
-  const { account } = useWeb3();
-  const { getSigner } = useWeb3();
+  const { account, getSigner, getProvider } = useWeb3();
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
   const { fNum2 } = useNumbers();
@@ -133,17 +133,22 @@ export function usePoolMigration(
   });
 
   const migrationFn = computed(() => {
-    if (migrationType.value?.type === PoolMigrationType.AAVE_BOOSTED_POOL) {
-      return migrateBoostedPool;
-    } else if (migrationType.value?.type === PoolMigrationType.STABAL3_POOL) {
-      return migrateStabal3;
-    } else if (
-      migrationType.value?.type === PoolMigrationType.STMATIC_POOL ||
-      migrationType.value?.type === PoolMigrationType.XMATIC_POOL
-    ) {
-      return migrateStables;
-    } else {
-      return migrateBoostedPool;
+    switch (migrationType.value?.type) {
+      case PoolMigrationType.AAVE_BOOSTED_POOL:
+        return migrateBoostedPool;
+
+      case PoolMigrationType.STABAL3_POOL:
+        return migrateStabal3;
+
+      case PoolMigrationType.STMATIC_POOL:
+      case PoolMigrationType.XMATIC_POOL:
+        return migrateStables;
+
+      case PoolMigrationType.MAI_POOL:
+        return migrateMaiUsd;
+
+      default:
+        return migrateBoostedPool;
     }
   });
 
@@ -223,11 +228,11 @@ export function usePoolMigration(
     amount: string,
     isStaked: boolean
   ): Promise<TransactionResponse> {
-    let query = migrationFn.value(amount, isStaked, '0');
+    let query = await migrationFn.value(amount, isStaked, '0');
 
     const expectedBptOut = await getExpectedBptOut(amount, isStaked);
     const minBptOut = minusSlippageScaled(expectedBptOut);
-    query = migrationFn.value(amount, isStaked, minBptOut);
+    query = await migrationFn.value(amount, isStaked, minBptOut);
 
     const txBuilder = new TransactionBuilder(getSigner());
     const tx = await txBuilder.raw.sendTransaction({
@@ -277,7 +282,7 @@ export function usePoolMigration(
     bptIn: string,
     isStaked: boolean
   ): Promise<string> {
-    const query = migrationFn.value(bptIn, isStaked, '0');
+    const query = await migrationFn.value(bptIn, isStaked, '0');
 
     const txBuilder = new TransactionBuilder(getSigner());
     const staticResult = await txBuilder.raw.call({
@@ -313,20 +318,56 @@ export function usePoolMigration(
     );
   }
 
-  function migrateStables(bptIn: string, staked: boolean, minBptOut = '0') {
+  async function migrateStables(
+    bptIn: string,
+    staked: boolean,
+    minBptOut = '0'
+  ) {
     const { signerAddress, _signature } = migrationData.value;
-    console.log([...fromPool.tokensList]);
+
+    const fromData = {
+      id: fromPool.id,
+      address: fromPool.address,
+    };
+
+    const toData = {
+      id: toPool.id,
+      address: toPool.address,
+    };
+
+    if (staked) {
+      const fromGaugeAddress = await getGaugeAddress(
+        fromPool.address,
+        getProvider()
+      );
+      const toGaugeAddress = await getGaugeAddress(
+        toPool.address,
+        getProvider()
+      );
+      fromData['gauge'] = fromGaugeAddress;
+      toData['gauge'] = toGaugeAddress;
+    }
+
     return balancer.zaps.migrations.stables(
       signerAddress,
-      {
-        id: fromPool.id,
-        address: fromPool.address,
-      },
-      { id: toPool.id, address: toPool.address },
+      fromData,
+      toData,
       bptIn,
       minBptOut,
       staked,
       [...fromPool.tokensList],
+      _signature
+    );
+  }
+
+  function migrateMaiUsd(bptIn: string, staked: boolean, minBptOut = '0') {
+    const { signerAddress, _signature } = migrationData.value;
+
+    return balancer.zaps.migrations.maiusd(
+      signerAddress,
+      bptIn,
+      minBptOut,
+      staked,
       _signature
     );
   }

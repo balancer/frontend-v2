@@ -292,9 +292,7 @@ function iconAddresses(pool: PoolWithShares) {
           </div>
           <div v-else>
             <TokenPills
-              :tokens="
-                orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-              "
+              :tokens="orderedPoolTokens(pool, pool.tokens)"
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
             />

@@ -8,14 +8,16 @@ import { pick } from 'lodash';
 
 import {
   isStableLike,
-  isComposableStableLike,
   isTradingHaltable,
   isWeightedLike,
+  isDeep,
+  isComposableStableLike,
+  isComposableStable,
 } from '@/composables/usePool';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { isSameAddress } from '@/lib/utils';
 import { Multicaller } from '@/lib/utils/balancer/contract';
-import { PoolType } from '@/services/pool/types';
+import { Pool, PoolType } from '@/services/pool/types';
 import {
   LinearPoolDataMap,
   OnchainPoolData,
@@ -48,6 +50,7 @@ export default class Vault {
   }
 
   public async getPoolData(
+    pool: Pool,
     id: string,
     type: PoolType,
     tokens: TokenInfoMap
@@ -83,7 +86,13 @@ export default class Vault {
       if (isComposableStableLike(type)) {
         // Overwrite totalSupply with virtualSupply for StablePhantom pools
         poolMulticaller.call('totalSupply', poolAddress, 'getVirtualSupply');
+        if (isComposableStable(type)) {
+          // Overwrite totalSupply with actualSupply for ComposableStable pools
+          poolMulticaller.call('totalSupply', poolAddress, 'getActualSupply');
+        }
+      }
 
+      if (isDeep(pool)) {
         Object.keys(tokens).forEach((token, i) => {
           poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
           poolMulticaller.call(
@@ -128,7 +137,7 @@ export default class Vault {
 
     result = await poolMulticaller.execute(result);
 
-    if (isComposableStableLike(type) && result.linearPools) {
+    if (isDeep(pool) && result.linearPools) {
       const wrappedTokensMap: Record<string, string> = {};
 
       Object.keys(result.linearPools).forEach(address => {

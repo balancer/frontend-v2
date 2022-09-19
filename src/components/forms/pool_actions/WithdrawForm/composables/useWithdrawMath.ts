@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isComposableStableLike, usePool } from '@/composables/usePool';
+import { isDeep, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
@@ -78,7 +78,8 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isComposableStableLikePool, isWeightedPool } = usePool(pool);
+  const { isComposableStableLikePool, isWeightedPool, isDeepPool } =
+    usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -95,7 +96,7 @@ export default function useWithdrawMath(
    * COMPUTED
    */
   const tokenAddresses = computed((): string[] => {
-    if (isComposableStableLike(pool.value.poolType)) {
+    if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
     return pool.value.tokensList;
@@ -237,7 +238,7 @@ export default function useWithdrawMath(
 
     // Else single asset exact out amount case
 
-    if (isComposableStableLikePool.value) {
+    if (isDeepPool.value) {
       if (shouldUseBatchRelayer.value) {
         return batchRelayerSwap.value?.outputs?.amountsIn || '0';
       }
@@ -332,7 +333,6 @@ export default function useWithdrawMath(
         tokenIndex: tokenOutIndex.value,
         queryBPT: fullBPTIn.value,
       })
-
       .toNumber();
   });
 

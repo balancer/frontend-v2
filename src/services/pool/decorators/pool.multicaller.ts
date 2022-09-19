@@ -7,10 +7,12 @@ import {
 
 import {
   isStableLike,
-  isComposableStableLike,
   isTradingHaltable,
   isWeightedLike,
   removePreMintedBPT,
+  isDeep,
+  isComposableStableLike,
+  isComposableStable,
 } from '@/composables/usePool';
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
@@ -103,7 +105,17 @@ export class PoolMulticaller {
             function: 'getVirtualSupply',
             abi: PoolTypeABIs,
           });
+          if (isComposableStable(pool.poolType)) {
+            multicaller.call({
+              key: `${pool.id}.totalSupply`,
+              address: pool.address,
+              function: 'getActualSupply',
+              abi: PoolTypeABIs,
+            });
+          }
+        }
 
+        if (isDeep(pool)) {
           pool.tokensList.forEach((poolToken, i) => {
             multicaller
               .call({
@@ -163,10 +175,7 @@ export class PoolMulticaller {
     result = await multicaller.execute();
 
     this.pools.forEach(pool => {
-      if (
-        isComposableStableLike(pool.poolType) &&
-        result[pool.id].linearPools
-      ) {
+      if (isDeep(pool) && result[pool.id].linearPools) {
         const wrappedTokensMap: Record<string, string> = {};
         const linearPools = result[pool.id].linearPools || {};
 

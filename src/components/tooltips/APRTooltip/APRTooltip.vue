@@ -89,8 +89,7 @@ const totalLabel = computed((): string =>
         <YieldBreakdown
           v-if="hasYieldAPR && apr"
           :yieldAPR="apr.yield"
-          :poolTokens="pool.tokensList"
-          :poolType="pool.poolType"
+          :pool="pool"
         />
 
         <!-- STAKING APR BREAKDOWN -->
