@@ -1,10 +1,12 @@
 import NProgress from 'nprogress';
 import { useRouter } from 'vue-router';
 
+import { Network } from '@balancer-labs/sdk';
+import config from '@/lib/config';
+
 import { useSidebar } from './useSidebar';
 import useVeBal from './useVeBAL';
-import { networkFor, networkFromSlug } from '@/composables/useNetwork';
-import { Network } from '@balancer-labs/sdk';
+import { networkFor, networkFromSlug, appUrl } from '@/composables/useNetwork';
 
 // Progress bar config
 NProgress.configure({ showSpinner: false });
@@ -18,7 +20,22 @@ export default function useNavigationGuards() {
   router.beforeEach((to, from, next) => {
     const networkSlug = to.params.networkSlug?.toString();
     if (networkSlug) {
-      const networkFromUrl: Network = networkFromSlug(networkSlug);
+      const networkFromSubdomain = networkFromSlug(
+        window.location.host.split('.')[0]
+      );
+      const networkFromUrl = networkFromSlug(networkSlug);
+      if (networkFromSubdomain) {
+        // old format subdomain redirect
+        document.write('');
+        localStorage.setItem(
+          'networkId',
+          (networkFromUrl || networkFromSubdomain).toString()
+        );
+        window.location.href = `${appUrl()}/#$${
+          config[networkFromUrl || networkFromSubdomain].slug
+        }/{to.fullPath}`;
+        router.go(0);
+      }
       const localStorageNetwork: Network = networkFor(
         localStorage.getItem('networkId') ?? '1'
       );

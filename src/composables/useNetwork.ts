@@ -8,15 +8,15 @@ import { Network } from '@balancer-labs/sdk';
  * STATE
  */
 const windowAvailable = typeof window !== 'undefined';
-const localStorageNetworkId: Network | undefined =
+const localStorageNetworkId: Network | null =
   windowAvailable && localStorage.getItem('networkId')
     ? (Number(localStorage.getItem('networkId')) as Network)
-    : undefined;
+    : null;
 const routeSlug =
   (windowAvailable && window.location.hash.split(/[/?]/)[1]) ?? '';
-const urlNetworkId: Network | undefined = routeSlug
+const urlNetworkId: Network | null = routeSlug
   ? networkFromSlug(routeSlug)
-  : undefined;
+  : null;
 
 const NETWORK_ID =
   urlNetworkId ||
@@ -67,11 +67,11 @@ export function getNetworkSlug(network: Network): string {
   return config[network].slug;
 }
 
-export function networkFromSlug(networkSlug: string): Network {
-  return Number(
-    Object.keys(config).find(network => config[network].slug === networkSlug) ??
-      '1'
-  ) as Network;
+export function networkFromSlug(networkSlug: string): Network | null {
+  const networkConf = Object.keys(config).find(
+    network => config[network].slug === networkSlug
+  );
+  return networkConf ? (Number(networkConf) as Network) : null;
 }
 
 export function appUrl(): string {
