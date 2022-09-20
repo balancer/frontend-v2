@@ -33,7 +33,7 @@ export default function useNavigationGuards() {
         );
         window.location.href = `${appUrl()}/#$${
           config[networkFromUrl || networkFromSubdomain].slug
-        }/{to.fullPath}`;
+        }/${to.fullPath}`;
         router.go(0);
       }
       const localStorageNetwork: Network = networkFor(
