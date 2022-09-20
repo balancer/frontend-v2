@@ -148,7 +148,7 @@ export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
   pool: Pool,
   tokens: TPoolTokens[]
 ): TPoolTokens[] {
-  if (isDeep(pool))
+  if (isComposableStable(pool.poolType))
     return tokens.filter(token => !isSameAddress(token.address, pool.address));
   if (isStableLike(pool.poolType)) return tokens;
   return tokens

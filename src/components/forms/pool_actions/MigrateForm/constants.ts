@@ -66,19 +66,11 @@ const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
     type: PoolMigrationType.XMATIC_POOL,
     fromPoolId: POOLS.IdsMap.xMatic?.v1 as string,
     toPoolId: POOLS.IdsMap.xMatic?.v2 as string,
-    riskI18nLabels: [
-      `${riskI18nLabelPrefix}.loseUSDPeg`,
-      `${riskI18nLabelPrefix}.aaveStableExploit`,
-    ],
   },
   {
     type: PoolMigrationType.STMATIC_POOL,
     fromPoolId: POOLS.IdsMap.stMatic?.v1 as string,
     toPoolId: POOLS.IdsMap.stMatic?.v2 as string,
-    riskI18nLabels: [
-      `${riskI18nLabelPrefix}.loseUSDPeg`,
-      `${riskI18nLabelPrefix}.aaveStableExploit`,
-    ],
   },
   {
     type: PoolMigrationType.MAI_POOL,

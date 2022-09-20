@@ -104,6 +104,7 @@ const showMigrateButton = computed(
       bnum(stakedSharesForProvidedPool.value).gt(0)) &&
     isMigratablePool(props.pool)
 );
+
 /**
  * METHODS
  */
@@ -193,7 +194,13 @@ function navigateToPoolMigration(pool: Pool) {
         block
         @click.prevent="navigateToPoolMigration(props.pool)"
       >
-        {{ $t('migratePool.migrateToBoostedPool') }}
+        {{
+          $t(
+            `migratePool.${
+              POOL_MIGRATIONS_MAP[props.pool.id].type
+            }.migrateToPool.title`
+          )
+        }}
       </BalBtn>
     </div>
     <template #footer>
