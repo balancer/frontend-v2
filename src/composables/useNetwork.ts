@@ -80,6 +80,7 @@ export function appUrl(): string {
 
 export default function useNetwork() {
   return {
+    appUrl,
     networkId,
     networkConfig,
     networkSlug,
