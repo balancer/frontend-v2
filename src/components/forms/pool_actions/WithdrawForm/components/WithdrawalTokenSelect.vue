@@ -48,7 +48,7 @@ const tokenAddresses = computed(() => {
 const options = computed(() => {
   const options = tokenAddresses.value;
 
-  if (isProportionalAvailable.value) {
+  if (!noProportionalWithdrawals.value) {
     options.unshift('all');
   }
   return options;
@@ -60,8 +60,8 @@ const assetSetWidth = computed(
   () => 40 + (tokenAddresses.value.length - 2) * 10
 );
 
-const isProportionalAvailable = computed(
-  () => !isComposableStable(props.pool.poolType) && !isDeep(props.pool)
+const noProportionalWithdrawals = computed(
+  () => isComposableStable(props.pool.poolType) && !isDeep(props.pool)
 );
 
 function isOptionSelected(option: string): boolean {
@@ -87,7 +87,7 @@ function handleSelected(newToken: string): void {
 
 onMounted(() => {
   // if all option is not available, select the first token
-  if (!isProportionalAvailable.value) {
+  if (noProportionalWithdrawals.value) {
     handleSelected(options.value[0]);
   }
 });
