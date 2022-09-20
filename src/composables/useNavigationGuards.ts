@@ -21,24 +21,18 @@ export default function useNavigationGuards() {
     const networkFromSubdomain = networkFromSlug(
       window.location.host.split('.')[0]
     );
-    console.log(networkFromSubdomain);
     if (networkFromSubdomain) {
       // old format subdomain redirect
       const networkFromUrl = networkFromSlug(to.params.networkSlug?.toString());
-      console.log(networkFromUrl);
-      document.write('');
       localStorage.setItem(
         'networkId',
         (networkFromUrl || networkFromSubdomain).toString()
       );
-      alert(
-        `${appUrl()}/${config[networkFromUrl || networkFromSubdomain].slug}${
-          to.fullPath
-        }`
-      );
-      window.location.href = `${appUrl()}/${
-        config[networkFromUrl || networkFromSubdomain].slug
-      }${to.fullPath}`;
+      window.location.href = networkFromUrl
+        ? `${appUrl()}${to.fullPath}`
+        : `${appUrl()}/${config[networkFromUrl || networkFromSubdomain].slug}${
+            to.fullPath
+          }`;
     } else {
       // check for network in url and redirect if necessary
       const networkSlug = to.params.networkSlug?.toString();
