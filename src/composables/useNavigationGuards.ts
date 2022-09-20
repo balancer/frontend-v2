@@ -18,42 +18,51 @@ export default function useNavigationGuards() {
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
-    const networkSlug = to.params.networkSlug?.toString();
-    if (networkSlug) {
-      const networkFromSubdomain = networkFromSlug(
-        window.location.host.split('.')[0]
+    const networkFromSubdomain = networkFromSlug(
+      window.location.host.split('.')[0]
+    );
+    console.log(networkFromSubdomain);
+    if (networkFromSubdomain) {
+      // old format subdomain redirect
+      const networkFromUrl = networkFromSlug(to.params.networkSlug?.toString());
+      console.log(networkFromUrl);
+      document.write('');
+      localStorage.setItem(
+        'networkId',
+        (networkFromUrl || networkFromSubdomain).toString()
       );
-      const networkFromUrl = networkFromSlug(networkSlug);
-      if (networkFromSubdomain) {
-        // old format subdomain redirect
-        document.write('');
-        localStorage.setItem(
-          'networkId',
-          (networkFromUrl || networkFromSubdomain).toString()
-        );
-        window.location.href = `${appUrl()}/#$${
-          config[networkFromUrl || networkFromSubdomain].slug
-        }/${to.fullPath}`;
-        router.go(0);
-      }
-      const localStorageNetwork: Network = networkFor(
-        localStorage.getItem('networkId') ?? '1'
+      console.log(
+        `${appUrl()}/#$${config[networkFromUrl || networkFromSubdomain].slug}/${
+          to.fullPath
+        }`
       );
-      if (!networkFromUrl) {
-        // missing or incorrect network name -> next() withtout network change
-        next();
-      } else if (localStorageNetwork === networkFromUrl) {
-        // if on the correct network -> next()
-        next();
-      } else {
-        // if on different network -> update localstorage and reload
-        document.write('');
-        localStorage.setItem('networkId', networkFromUrl.toString());
-        window.location.href = `/#${to.fullPath}`;
-        router.go(0);
-      }
+      window.location.href = `${appUrl()}/#$${
+        config[networkFromUrl || networkFromSubdomain].slug
+      }/${to.fullPath}`;
+      router.go(0);
     } else {
-      next();
+      const networkSlug = to.params.networkSlug?.toString();
+      if (networkSlug) {
+        const networkFromUrl = networkFromSlug(networkSlug);
+        const localStorageNetwork: Network = networkFor(
+          localStorage.getItem('networkId') ?? '1'
+        );
+        if (!networkFromUrl) {
+          // missing or incorrect network name -> next() withtout network change
+          next();
+        } else if (localStorageNetwork === networkFromUrl) {
+          // if on the correct network -> next()
+          next();
+        } else {
+          // if on different network -> update localstorage and reload
+          document.write('');
+          localStorage.setItem('networkId', networkFromUrl.toString());
+          window.location.href = `/#${to.fullPath}`;
+          router.go(0);
+        }
+      } else {
+        next();
+      }
     }
   });
 
