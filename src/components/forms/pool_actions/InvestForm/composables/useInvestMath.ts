@@ -196,8 +196,7 @@ export default function useInvestMath(
   );
 
   const shouldFetchBatchSwap = computed(
-    (): boolean =>
-      pool.value && isComposableStableLikePool.value && hasAmounts.value
+    (): boolean => pool.value && isDeepPool.value && hasAmounts.value
   );
 
   const supportsPropotionalOptimization = computed(
