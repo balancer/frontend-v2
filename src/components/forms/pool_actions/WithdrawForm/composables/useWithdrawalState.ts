@@ -94,12 +94,7 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
-      return poolTokens.map(address => {
-        if (isSameAddress(address, wrappedNativeAsset.value.address)) {
-          return nativeAsset.address;
-        }
-        return address;
-      });
+      return replaceWethWithEth(poolTokens);
 
     return poolTokens;
   });
@@ -113,6 +108,15 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   function maxSlider(): void {
     state.slider.val = state.slider.max;
+  }
+
+  function replaceWethWithEth(addresses: string[]): string[] {
+    return addresses.map(address => {
+      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
+        return nativeAsset.address;
+      }
+      return address;
+    });
   }
 
   return {
