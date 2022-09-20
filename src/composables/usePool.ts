@@ -150,7 +150,7 @@ export function poolURLFor(
   }
   // temporarily remove links to ComposableStablePools until the frontend fully supports them
   if (poolType && poolType.toString() === 'ComposableStable') {
-    return urlFor(network);
+    return appUrl();
   }
 
   return `${appUrl()}/pool/${poolId}`;
