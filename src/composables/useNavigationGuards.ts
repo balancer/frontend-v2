@@ -32,15 +32,16 @@ export default function useNavigationGuards() {
         (networkFromUrl || networkFromSubdomain).toString()
       );
       console.log(
-        `${appUrl()}/#$${config[networkFromUrl || networkFromSubdomain].slug}/${
+        `${appUrl()}/$${config[networkFromUrl || networkFromSubdomain].slug}${
           to.fullPath
         }`
       );
-      window.location.href = `${appUrl()}/#$${
+      window.location.href = `${appUrl()}/$${
         config[networkFromUrl || networkFromSubdomain].slug
-      }/${to.fullPath}`;
+      }${to.fullPath}`;
       router.go(0);
     } else {
+      // check for network in url and redirect if necessary
       const networkSlug = to.params.networkSlug?.toString();
       if (networkSlug) {
         const networkFromUrl = networkFromSlug(networkSlug);
