@@ -233,6 +233,7 @@ watch(
     />
 
     <MigratePoolsInfo
+      :fromPool="fromPool"
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
     />

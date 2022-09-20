@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 import { Pool } from '@/services/pool/types';
 
 /**
@@ -29,7 +28,6 @@ withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const { currency } = useUserSettings();
 </script>
 
 <template>
@@ -43,7 +41,7 @@ const { currency } = useUserSettings();
         <div class="summary-table-number">
           ~{{ fNum2(fromTotal, FNumFormats.fiat) }}
           <BalTooltip
-            :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
+            :text="$t('migratePool.tooltips.totalTo')"
             iconSize="sm"
             class="ml-2"
           />
@@ -56,7 +54,7 @@ const { currency } = useUserSettings();
         <div class="summary-table-number">
           ~{{ fNum2(toTotal, FNumFormats.fiat) }}
           <BalTooltip
-            :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
+            :text="$t('migratePool.tooltips.newTotal')"
             iconSize="sm"
             class="ml-2"
           />

@@ -11,4 +11,5 @@ export type PoolMigrationInfo = {
   fromPoolId: string;
   toPoolId: string;
   riskI18nLabels?: string[];
+  showOldVHint?: boolean;
 };

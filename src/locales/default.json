@@ -298,7 +298,12 @@
     "errorLoadingMigration": {
       "title": "Something went wrong",
       "description": "An error occurred while trying to show pool migration."
-    }
+    },
+    "tooltips": {
+      "totalTo": "The total value of your investment in USD that you'll be migrating",
+      "newTotal": "The total value in USD that you'll get into the migrated pool"
+    },
+    "oldVersion": "old version"
   },
   "contractAddress": "Contract address",
   "creator": "Creator",

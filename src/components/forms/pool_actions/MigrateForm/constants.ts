@@ -16,6 +16,7 @@ const GOERLI_POOL_MIGRATIONS: PoolMigrationInfo[] = [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
     ],
+    showOldVHint: true,
   },
   {
     type: PoolMigrationType.STABAL3_POOL,
@@ -48,6 +49,7 @@ const MAINNET_POOL_MIGRATIONS: PoolMigrationInfo[] = [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`,
     ],
+    showOldVHint: true,
   },
   {
     type: PoolMigrationType.STABAL3_POOL,
@@ -66,11 +68,13 @@ const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
     type: PoolMigrationType.XMATIC_POOL,
     fromPoolId: POOLS.IdsMap.xMatic?.v1 as string,
     toPoolId: POOLS.IdsMap.xMatic?.v2 as string,
+    showOldVHint: true,
   },
   {
     type: PoolMigrationType.STMATIC_POOL,
     fromPoolId: POOLS.IdsMap.stMatic?.v1 as string,
     toPoolId: POOLS.IdsMap.stMatic?.v2 as string,
+    showOldVHint: true,
   },
   {
     type: PoolMigrationType.MAI_POOL,
