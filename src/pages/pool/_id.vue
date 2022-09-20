@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -16,6 +9,7 @@ import {
   PoolTransactionsCard,
   MyPoolBalancesCard,
   PoolBalancesCard,
+  PoolContractDetails,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
@@ -31,34 +25,23 @@ import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 
-interface PoolPageData {
-  id: string;
-}
+/**
+ * STATE
+ */
+const route = useRoute();
+const poolId = (route.params.id as string).toLowerCase();
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-const route = useRoute();
 
 const { prices } = useTokens();
 const { addAlert, removeAlert } = useAlerts();
-const _isVeBalPool = isVeBalPool(route.params.id as string);
-
-/**
- * STATE
- */
-const data = reactive<PoolPageData>({
-  id: route.params.id as string,
-});
+const _isVeBalPool = isVeBalPool(poolId);
 
 //#region pool query
-const poolQuery = usePoolQuery(
-  route.params.id as string,
-  undefined,
-  undefined,
-  false
-);
+const poolQuery = usePoolQuery(poolId, undefined, undefined, false);
 const pool = computed(() => poolQuery.data.value);
 const poolQueryLoading = computed(
   () =>
@@ -74,7 +57,7 @@ const { isStableLikePool, isLiquidityBootstrappingPool, isStablePhantomPool } =
 
 //#region pool snapshot query
 const poolSnapshotsQuery = usePoolSnapshotsQuery(
-  route.params.id as string,
+  poolId,
   undefined,
   // in order to prevent multiple coingecko requests
   { refetchOnWindowFocus: false }
@@ -88,7 +71,7 @@ const historicalPrices = computed(() => poolSnapshotsQuery.data.value?.prices);
 //#endregion
 
 //#region APR query
-const aprQuery = usePoolAprQuery(route.params.id as string);
+const aprQuery = usePoolAprQuery(poolId);
 const loadingApr = computed(
   () =>
     aprQuery.isLoading.value ||
@@ -165,7 +148,7 @@ const titleTokens = computed(() => {
 });
 
 const isStakablePool = computed((): boolean =>
-  POOLS.Stakable.AllowList.includes(route.params.id as string)
+  POOLS.Stakable.AllowList.includes(poolId)
 );
 
 /**
@@ -237,11 +220,10 @@ watch(poolQuery.error, () => {
           </div>
 
           <div ref="intersectionSentinel" />
-          <PoolTransactionsCard
-            v-if="isSentinelIntersected && pool"
-            :pool="pool"
-            :loading="loadingPool"
-          />
+          <template v-if="isSentinelIntersected && pool">
+            <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
+            <PoolContractDetails :pool="pool" />
+          </template>
         </div>
       </div>
 
@@ -249,7 +231,7 @@ watch(poolQuery.error, () => {
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-4 lg:px-0"
       >
-        <StakingProvider :poolAddress="getAddressFromPoolId(data.id)">
+        <StakingProvider :poolAddress="getAddressFromPoolId(poolId)">
           <BalStack vertical>
             <BalLoadingBlock
               v-if="loadingPool || !pool"

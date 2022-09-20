@@ -1,0 +1,30 @@
+[
+  {
+    "address": "0xe42382D005A620FaaA1B82543C9c04ED79Db03bA",
+    "network": 137,
+    "addedTimestamp": 1663017781,
+    "relativeWeightCap": "null",
+    "pool": {
+      "id": "0x726e324c29a1e49309672b244bdc4ff62a270407000200000000000000000702",
+      "address": "0x726E324c29a1e49309672b244bdC4Ff62A270407",
+      "poolType": "FX",
+      "symbol": "XSGD-USDC",
+      "tokens": [
+        {
+          "address": "0xDC3326e71D45186F113a2F448984CA0e8D201995",
+          "weight": "null",
+          "symbol": "XSGD"
+        },
+        {
+          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+          "weight": "null",
+          "symbol": "USDC"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0xDC3326e71D45186F113a2F448984CA0e8D201995": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x70e8dE73cE538DA2bEEd35d14187F6959a8ecA96/logo.png",
+      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/logo.png"
+    }
+  }
+]

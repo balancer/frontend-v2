@@ -14,7 +14,6 @@ import {
   watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
@@ -74,7 +73,6 @@ const withdrawalState = reactive<WithdrawalState>({
 /**
  * COMPOSABLES
  */
-const route = useRoute();
 const { t } = useI18n();
 const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
@@ -241,7 +239,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkSlug, id: route.params.id },
+          params: { networkSlug, id: pool.id },
         }"
         color="gray"
         outline

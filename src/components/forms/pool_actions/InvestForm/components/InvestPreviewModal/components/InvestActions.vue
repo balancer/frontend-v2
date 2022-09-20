@@ -7,7 +7,6 @@ import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
 import { computed, reactive, toRef, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
@@ -71,7 +70,6 @@ const investmentState = reactive<InvestmentState>({
 /**
  * COMPOSABLES
  */
-const route = useRoute();
 const { t } = useI18n();
 const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
@@ -123,7 +121,7 @@ const transactionInProgress = computed(
 
 const isStakablePool = computed((): boolean => {
   return (
-    POOLS.Stakable.AllowList.includes(route.params.id as string) &&
+    POOLS.Stakable.AllowList.includes(props.pool.id) &&
     isPoolEligibleForStaking.value
   );
 });
@@ -245,7 +243,7 @@ watch(blockNumber, async () => {
         tag="router-link"
         :to="{
           name: 'pool',
-          params: { networkSlug, id: route.params.id },
+          params: { networkSlug, id: pool.id },
         }"
         color="gray"
         outline
