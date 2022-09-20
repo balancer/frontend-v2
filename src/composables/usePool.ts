@@ -43,12 +43,18 @@ export function isComposableStableLike(poolType: PoolType): boolean {
 }
 
 export function isDeep(pool: Pool): boolean {
+  // TODO - remove this exception when we can support generalised deep pool joins/exits.
+  const treatAsShallow = [
+    '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // bb-am-USD/MAI (polygon)
+  ];
+  if (treatAsShallow.includes(pool.id)) return false;
+
   return (
     pool.tokens
       // ignore the token with the same address as the pool itself
       .filter(({ address }) => address !== pool.address)
       // check if every of the pool tokens are actually pools
-      .every(({ token }) => {
+      .some(({ token }) => {
         const poolType = token.pool?.poolType;
         if (!poolType) return false;
         return typeof poolType === 'string';
