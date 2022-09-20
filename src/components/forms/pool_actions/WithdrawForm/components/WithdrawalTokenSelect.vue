@@ -46,12 +46,10 @@ const tokenAddresses = computed(() => {
 });
 
 const options = computed(() => {
-  const options = tokenAddresses.value;
-
   if (!noProportionalWithdrawals.value) {
-    options.unshift('all');
+    return ['all', ...tokenAddresses.value];
   }
-  return options;
+  return tokenAddresses.value;
 });
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
