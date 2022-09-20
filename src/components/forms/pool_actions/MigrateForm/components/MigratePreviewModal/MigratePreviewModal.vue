@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
-import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
 import { PoolMigrationInfo } from '../../types';
 import MigrateActions from './components/MigrateActions.vue';
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
@@ -15,8 +14,9 @@ import useRelayerApprovalQuery from '@/composables/queries/useRelayerApprovalQue
 import { usePoolMigration } from '@/composables/pools/usePoolMigration';
 import { bnum } from '@/lib/utils';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
-import { bptPriceFor } from '@/composables/usePool';
-import { parseUnits } from '@ethersproject/units';
+import { fiatValueOf } from '@/composables/usePool';
+import { formatUnits, parseUnits } from '@ethersproject/units';
+import MigrateSummary from './components/MigrateSummary.vue';
 
 /**
  * TYPES
@@ -50,7 +50,8 @@ const { fromPool, toPool } = toRefs(props);
  */
 const currentActionIndex = ref(0);
 const priceImpact = ref(1);
-const priceImpactLoading = ref(true);
+const bptOut = ref('0');
+const bptOutLoading = ref(true);
 const highPriceImpactAccepted = ref(false);
 const relayerAddress = ref(configService.network.addresses.batchRelayer);
 
@@ -59,7 +60,7 @@ const relayerAddress = ref(configService.network.addresses.batchRelayer);
  */
 const { t } = useI18n();
 const relayerApproval = useRelayerApprovalQuery(relayerAddress);
-const { actions, migratePoolState, getExpectedBptOut, fiatTotal } =
+const { actions, migratePoolState, getExpectedBptOut, fromFiatTotal } =
   usePoolMigration(
     props.stakedBptBalance,
     props.unstakedBptBalance,
@@ -89,7 +90,7 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 );
 
 const highPriceImpact = computed((): boolean => {
-  if (priceImpactLoading.value) return false;
+  if (bptOutLoading.value) return false;
   return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
 });
 
@@ -103,7 +104,7 @@ const isaActionBtnDisabled = computed(() => {
   if (actions.value[currentActionIndex.value].isSignAction) {
     return false;
   }
-  return !priceImpactLoading.value && !hasAcceptedHighPriceImpact.value;
+  return !bptOutLoading.value && !hasAcceptedHighPriceImpact.value;
 });
 
 const summaryTitle = computed(() => {
@@ -133,6 +134,12 @@ const evmUnstakedBptBalance = computed((): string => {
   ).toString();
 });
 
+// Computes fiat value of expected BPT out.
+const toFiatTotal = computed((): string => {
+  const bpt = formatUnits(bptOut.value, toPool.value.onchain?.decimals || 18);
+  return fiatValueOf(toPool.value, bpt);
+});
+
 /**
  * METHODS
  */
@@ -155,17 +162,29 @@ async function calcPriceImpact(
   bptIn: string,
   isStaked: boolean
 ): Promise<number> {
-  priceImpactLoading.value = true;
-  const bptOut = await getExpectedBptOut(bptIn, isStaked);
+  bptOut.value = await calcBptOut(bptIn, isStaked);
 
-  const fromBptPrice = bptPriceFor(fromPool.value);
-  const toBptPrice = bptPriceFor(toPool.value);
+  const fromBptValue = fiatValueOf(fromPool.value, bptIn);
+  console.log('fromBptValue', fromBptValue);
+  const toBptValue = fiatValueOf(toPool.value, bptOut.value);
+  console.log('toBptValue', toBptValue);
 
-  const fromBptValue = bnum(fromBptPrice).times(bptIn);
-  const toBptValue = bnum(toBptPrice).times(bptOut);
+  return bnum(1).minus(bnum(toBptValue).div(fromBptValue)).toNumber();
+}
 
-  priceImpactLoading.value = false;
-  return bnum(1).minus(toBptValue.div(fromBptValue)).toNumber();
+/**
+ * Calculates USD value of BPT out, i.e. the value you get after migration.
+ * This calculation is based on coingecko prices so may not be accurate.
+ *
+ * @param bptIn fromPool BPT in EVM scale, could be a staked or unstaked balance.
+ * @param isStaked defines if the bptIn is a staked or unstaked balance.
+ * @returns Approximate BPT value (EVM scaled).
+ */
+async function calcBptOut(bptIn: string, isStaked: boolean): Promise<string> {
+  bptOutLoading.value = true;
+  const value = await getExpectedBptOut(bptIn, isStaked);
+  bptOutLoading.value = false;
+  return value;
 }
 
 /**
@@ -218,12 +237,13 @@ watch(
       :toPoolTokenInfo="toPoolTokenInfo"
     />
 
-    <InvestSummary
+    <MigrateSummary
       v-if="isInvestSummaryShown"
       :pool="toPool"
-      :fiatTotal="fiatTotal"
+      :fromTotal="fromFiatTotal"
+      :toTotal="toFiatTotal"
       :priceImpact="priceImpact"
-      :isLoadingPriceImpact="priceImpactLoading"
+      :isLoadingBptOut="bptOutLoading"
       :highPriceImpact="highPriceImpact"
       :summaryTitle="summaryTitle"
     />

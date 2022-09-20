@@ -172,7 +172,7 @@ export function usePoolMigration(
     };
   });
 
-  const fiatTotal = computed((): string => {
+  const fromFiatTotal = computed((): string => {
     if (actions.value[currentActionIndex.value].isStakeAction) {
       return fiatValueOf(fromPool, stakedBptBalance);
     } else if (actions.value[currentActionIndex.value].isUnstakeAction) {
@@ -182,8 +182,8 @@ export function usePoolMigration(
     }
   });
 
-  const fiatTotalLabel = computed((): string => {
-    return fNum2(fiatTotal.value, FNumFormats.fiat);
+  const fromFiatTotalLabel = computed((): string => {
+    return fNum2(fromFiatTotal.value, FNumFormats.fiat);
   });
 
   /**
@@ -250,14 +250,14 @@ export function usePoolMigration(
       type: 'tx',
       action: 'migratePool',
       summary: t('transactionSummary.migratePool', [
-        fiatTotalLabel.value,
+        fromFiatTotalLabel.value,
         fromPoolTokenInfo.symbol,
         toPoolTokenInfo.symbol,
       ]),
       details: {
         fromPool: fromPool,
         toPool: toPool,
-        totalFiatPoolInvestment: fiatTotalLabel.value,
+        totalFiatPoolInvestment: fromFiatTotalLabel.value,
       },
     });
 
@@ -378,6 +378,6 @@ export function usePoolMigration(
     actions,
     migratePoolState,
     getExpectedBptOut,
-    fiatTotal,
+    fromFiatTotal,
   };
 }
