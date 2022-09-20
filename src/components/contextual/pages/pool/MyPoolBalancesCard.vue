@@ -194,13 +194,7 @@ function navigateToPoolMigration(pool: Pool) {
         block
         @click.prevent="navigateToPoolMigration(props.pool)"
       >
-        {{
-          $t(
-            `migratePool.${
-              POOL_MIGRATIONS_MAP[props.pool.id].type
-            }.migrateToPool.title`
-          )
-        }}
+        {{ $t('migratePool.migrateLiquidity') }}
       </BalBtn>
     </div>
     <template #footer>

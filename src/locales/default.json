@@ -294,6 +294,7 @@
       "priceImpactAccept": "I accept the high price impact from pool migration."
     },
     "migrateToBoostedPool": "Migrate to a boosted pool",
+    "migrateLiquidity": "Migrate your liquidity",
     "errorLoadingMigration": {
       "title": "Something went wrong",
       "description": "An error occurred while trying to show pool migration."
