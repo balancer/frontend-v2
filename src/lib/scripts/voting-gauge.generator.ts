@@ -31,6 +31,7 @@ type GaugeInfo = {
   isKilled: boolean;
   network: Network;
   poolId: string;
+  addedTimestamp: number;
   relativeWeightCap: string;
 };
 
@@ -275,6 +276,9 @@ async function getLiquidityGaugesInfo(
         id
         isKilled
         relativeWeightCap
+        gauge {
+          addedTimestamp
+        }
       }
     }
   `;
@@ -296,6 +300,7 @@ async function getLiquidityGaugesInfo(
         address: getAddress(gauge.id),
         isKilled: Boolean(gauge.isKilled),
         relativeWeightCap: gauge.relativeWeightCap || 'null',
+        addedTimestamp: gauge.gauge.addedTimestamp,
         network,
         poolId,
       };
@@ -386,6 +391,9 @@ async function getRootGaugeInfo(
         id
         isKilled
         relativeWeightCap
+        gauge {
+          addedTimestamp
+        }
       }
     }
   `;
@@ -407,6 +415,7 @@ async function getRootGaugeInfo(
         address: getAddress(gauge.id),
         isKilled: Boolean(gauge.isKilled),
         relativeWeightCap: gauge.relativeWeightCap || 'null',
+        addedTimestamp: gauge.gauge.addedTimestamp,
         network,
         poolId,
       };
@@ -465,25 +474,34 @@ async function getGaugeInfo(
   );
 
   let votingGauges = await Promise.all(
-    validGauges.map(async ({ address, poolId, network, relativeWeightCap }) => {
-      const pool = await getPoolInfo(poolId, network);
-
-      const tokenLogoURIs = {};
-      for (let i = 0; i < pool.tokens.length; i++) {
-        tokenLogoURIs[pool.tokens[i].address] = await getTokenLogoURI(
-          pool.tokens[i].address,
-          network
-        );
-      }
-
-      return {
+    validGauges.map(
+      async ({
         address,
+        poolId,
         network,
+        addedTimestamp,
         relativeWeightCap,
-        pool,
-        tokenLogoURIs,
-      };
-    })
+      }) => {
+        const pool = await getPoolInfo(poolId, network);
+
+        const tokenLogoURIs = {};
+        for (let i = 0; i < pool.tokens.length; i++) {
+          tokenLogoURIs[pool.tokens[i].address] = await getTokenLogoURI(
+            pool.tokens[i].address,
+            network
+          );
+        }
+
+        return {
+          address,
+          network,
+          relativeWeightCap,
+          addedTimestamp,
+          pool,
+          tokenLogoURIs,
+        };
+      }
+    )
   );
 
   votingGauges = [
