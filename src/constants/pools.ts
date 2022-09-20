@@ -349,6 +349,10 @@ const POOLS_MAINNET: Pools = {
       name: 'Balancer Boosted Aave USD',
       hasIcon: true,
     },
+    '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
+      name: 'Balancer Boosted Aave USD',
+      hasIcon: true,
+    },
     '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063': {
       name: 'Balancer Stable USD',
       hasIcon: true,
