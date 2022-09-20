@@ -550,6 +550,7 @@
   "new": "New",
   "newInvestment": "New investment",
   "newTrade": "New Trade",
+  "newTotal": "New total",
   "newToEthereum": "New to Ethereum?",
   "newWithdrawal": "New withdrawal",
   "next": "Next",
@@ -1135,6 +1136,7 @@
     }
   },
   "total": "Total",
+  "totalToMigrate": "Total to migrate",
   "totalAllocated": "Total allocated",
   "totalAPR": "Total APR",
   "totalInvested": "Total invested",
