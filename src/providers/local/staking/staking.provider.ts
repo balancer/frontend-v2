@@ -52,10 +52,6 @@ export async function getGaugeAddress(poolAddress: string): Promise<string> {
         preferentialGauge {
           id
         }
-        gauges {
-          id
-          relativeWeightCap
-        }
       }
     }
   `;

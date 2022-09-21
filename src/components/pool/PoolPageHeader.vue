@@ -31,7 +31,7 @@ type Props = {
   titleTokens: [string, OnchainTokenData][];
   missingPrices: boolean;
   isLiquidityBootstrappingPool: boolean;
-  isStablePhantomPool: boolean;
+  isComposableStableLikePool: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -112,7 +112,7 @@ const hasCustomToken = computed(() => {
   return (
     !!props.pool &&
     !props.isLiquidityBootstrappingPool &&
-    !props.isStablePhantomPool &&
+    !props.isComposableStableLikePool &&
     props.pool.tokensList.some(
       address => !includesAddress(knownTokens, address)
     )

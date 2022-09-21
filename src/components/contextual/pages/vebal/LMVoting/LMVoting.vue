@@ -11,6 +11,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 
 import GaugesTable from './GaugesTable.vue';
 import GaugeVoteModal from './GaugeVoteModal.vue';
+import { Pool } from '@/services/pool/types';
 
 /**
  * DATA
@@ -77,8 +78,7 @@ function setActiveGaugeVote(votingGauge: VotingGaugeWithVotes) {
 
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
   const sortedTokens = orderedPoolTokens(
-    gauge.pool.poolType,
-    gauge.pool.address,
+    gauge.pool as unknown as Pool,
     gauge.pool.tokens
   );
   return sortedTokens.map(
@@ -184,11 +184,7 @@ function handleVoteSuccess() {
       :gauge="activeVotingGauge"
       :logoURIs="orderedTokenURIs(activeVotingGauge)"
       :poolURL="
-        poolURLFor(
-          activeVotingGauge.pool.id,
-          activeVotingGauge.network,
-          activeVotingGauge.pool.poolType
-        )
+        poolURLFor(activeVotingGauge.pool.id, activeVotingGauge.network)
       "
       :unallocatedVoteWeight="unallocatedVoteWeight"
       :veBalLockInfo="veBalLockInfoQuery.data.value"

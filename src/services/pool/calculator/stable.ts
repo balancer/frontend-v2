@@ -4,7 +4,7 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import * as SDK from '@georgeroman/balancer-v2-pools';
 import OldBigNumber from 'bignumber.js';
 
-import { bnum } from '@/lib/utils';
+import { bnum, findByAddress, isSameAddress } from '@/lib/utils';
 
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
@@ -25,9 +25,9 @@ export default class Stable {
     try {
       const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
       const ampAdjusted = this.adjustAmp(amp);
-      const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
-        this.scaleInput(tokenAmounts[i], priceRate)
-      );
+      const amounts = this.calc.pool.value.tokens
+        .filter(({ address }) => address !== this.calc.pool.value.address)
+        .map(({ priceRate }, i) => this.scaleInput(tokenAmounts[i], priceRate));
 
       const bptOut = SDK.StableMath._calcBptOutGivenExactTokensIn(
         ampAdjusted,
@@ -58,9 +58,9 @@ export default class Stable {
     const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
 
-    const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
-      this.scaleInput(tokenAmounts[i], priceRate)
-    );
+    const amounts = this.calc.pool.value.tokens
+      .filter(token => token.address !== this.calc.pool.value.address)
+      .map(({ priceRate }, i) => this.scaleInput(tokenAmounts[i], priceRate));
 
     const bptIn = SDK.StableMath._calcBptInGivenExactTokensOut(
       ampAdjusted,
@@ -109,11 +109,23 @@ export default class Stable {
     bptAmount: string,
     tokenIndex: number
   ): OldBigNumber {
+    // Make sure to get correct address.
+    // tokenIndex does not account for pre-minted BPT
+    // So you must get the address from an address list that also excludes
+    // pre-minted BPT.
+    const tokenOutAddress = this.calc.pool.value.tokensList[tokenIndex];
+    const tokenOutDecimals =
+      findByAddress(this.calc.poolTokens, tokenOutAddress)?.decimals || 18;
+    const tokenOutPriceRate =
+      this.calc.pool.value.tokens.find(t =>
+        isSameAddress(t.address, tokenOutAddress)
+      )?.priceRate || '1';
+
     if (bnum(bptAmount).eq(0))
       return this.scaleOutput(
         '0',
-        this.calc.poolTokenDecimals[tokenIndex],
-        this.calc.pool.value.tokens[tokenIndex].priceRate,
+        tokenOutDecimals,
+        tokenOutPriceRate,
         OldBigNumber.ROUND_DOWN // If OUT given IN, round down
       );
 
@@ -133,8 +145,8 @@ export default class Stable {
 
     return this.scaleOutput(
       tokenAmountOut.toString(),
-      this.calc.poolTokenDecimals[tokenIndex],
-      this.calc.pool.value.tokens[tokenIndex].priceRate,
+      tokenOutDecimals,
+      tokenOutPriceRate,
       OldBigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
@@ -184,15 +196,17 @@ export default class Stable {
     const amp = bnum(this.calc.pool.value?.onchain?.amp?.toString() || '0');
     const ampAdjusted = BigNumber.from(this.adjustAmp(amp).toString());
     // These amounts need to take priceRate into consideration
-    const denormAmounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
-      BigNumber.from(
-        this.scaleInput(
-          tokenAmounts[i],
-          priceRate,
-          this.calc.poolTokenDecimals[i]
-        ).toString()
-      )
-    );
+    const denormAmounts = this.calc.pool.value.tokens
+      .filter(({ address }) => address !== this.calc.pool.value.address)
+      .map(({ priceRate }, i) =>
+        BigNumber.from(
+          this.scaleInput(
+            tokenAmounts[i],
+            priceRate,
+            this.calc.poolTokenDecimals[i]
+          ).toString()
+        )
+      );
     // _bptForTokensZeroPriceImpact is the only stable pool function
     // that requires balances be scaled by the token decimals and not 18
     // scaledBalances already use priceRate
