@@ -100,11 +100,11 @@ const isInvestSummaryShown = computed(
     !migratePoolState.value.confirmed
 );
 
-const isaActionBtnDisabled = computed(() => {
+const isActionBtnDisabled = computed(() => {
   if (actions.value[currentActionIndex.value].isSignAction) {
     return false;
   }
-  return !bptOutLoading.value && !hasAcceptedHighPriceImpact.value;
+  return bptOutLoading.value || !hasAcceptedHighPriceImpact.value;
 });
 
 const summaryTitle = computed(() => {
@@ -266,7 +266,7 @@ watch(
       class="mt-4"
       :fromPool="fromPool"
       :toPool="toPool"
-      :disabled="isaActionBtnDisabled"
+      :disabled="isActionBtnDisabled"
       :actions="actions"
       :migratePoolState="migratePoolState"
       @set-current-action-index="setCurrentActionIndex"
