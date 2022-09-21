@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
+import BalChipNew from '@/components/chips/BalChipNew.vue';
 import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -30,6 +31,8 @@ import {
   remainingVoteLockTime,
 } from '@/composables/useVeBAL';
 import { Pool } from '@/services/pool/types';
+import { differenceInWeeks } from 'date-fns';
+import { oneSecondInMs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -152,6 +155,10 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
   );
 }
 
+function getIsGaugeNew(addedTimestamp: number): boolean {
+  return differenceInWeeks(Date.now(), addedTimestamp * oneSecondInMs) < 2;
+}
+
 function getIsGaugeExpired(gaugeAddress: string): boolean {
   return !!props.expiredGauges.some(item => isSameAddress(gaugeAddress, item));
 }
@@ -219,7 +226,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool, address }">
+      <template #poolCompositionCell="{ pool, address, addedTimestamp }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
             :tokens="orderedPoolTokens(pool, pool.tokens)"
@@ -227,6 +234,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
+          <BalChipNew v-if="getIsGaugeNew(addedTimestamp)" class="ml-2" />
           <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
