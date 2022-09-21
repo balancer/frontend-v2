@@ -36,6 +36,7 @@ import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
+import { isEqual } from 'lodash';
 
 /**
  * TYPES
@@ -477,6 +478,7 @@ export default function useWithdrawMath(
     tokensOut: string[] | null = null,
     swapType: SwapType = SwapType.SwapExactIn
   ): Promise<BatchSwapOut> {
+    console.trace('GET SWAP');
     batchSwapLoading.value = true;
 
     amounts = amounts || batchSwapBPTIn.value;
@@ -656,12 +658,12 @@ export default function useWithdrawMath(
 
   watch(account, () => initMath());
 
-  watch(fullAmounts, async () => {
+  watch(fullAmounts, async newAmounts => {
     /**
      * If a single asset exit and the input values change we
      * need to refetch the swap to get the required BPT in.
      */
-    if (!isProportional.value) {
+    if (!isProportional.value && !isEqual(fullAmounts.value, newAmounts)) {
       swapPromises.value.push(getSwap);
       if (!processingSwaps.value) processSwaps();
     }
