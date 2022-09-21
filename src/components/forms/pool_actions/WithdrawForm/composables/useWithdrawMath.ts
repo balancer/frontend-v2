@@ -439,10 +439,8 @@ export default function useWithdrawMath(
     propBptIn.value = bptBalance.value;
 
     if (shouldFetchBatchSwap.value) {
-      batchSwap.value = await getBatchSwap();
-      if (shouldUseBatchRelayer.value) {
-        batchRelayerSwap.value = await getBatchRelayerSwap();
-      }
+      swapPromises.value.push(getSwap);
+      if (!processingSwaps.value) processSwaps();
     }
   }
 
@@ -492,7 +490,7 @@ export default function useWithdrawMath(
         amounts,
         fetchPools: {
           fetchPools,
-          fetchOnChain: false,
+          fetchOnChain: true,
         },
       });
       batchSwapLoading.value = false;
@@ -560,13 +558,13 @@ export default function useWithdrawMath(
   // Fetch single asset max out for current tokenOut using batch swaps.
   // Set max out returned from batchSwap in state.
   async function getSingleAssetMaxOut(): Promise<void> {
-    const _batchSwap = await getBatchSwap(
+    batchSwap.value = await getBatchSwap(
       [bptBalanceScaled.value],
       [tokenOut.value]
     );
 
     const batchSwapAmountOut = bnum(
-      _batchSwap.returnAmounts[0].toString()
+      batchSwap.value.returnAmounts[0].toString()
     ).abs();
 
     if (batchSwapAmountOut.gt(0)) {
@@ -657,12 +655,12 @@ export default function useWithdrawMath(
 
   watch(account, () => initMath());
 
-  watch(fullAmounts, async newAmounts => {
+  watch(tokenOutAmount, async (newAmount, oldAmount) => {
     /**
      * If a single asset exit and the input values change we
      * need to refetch the swap to get the required BPT in.
      */
-    if (!isProportional.value && !isEqual(fullAmounts.value, newAmounts)) {
+    if (!isProportional.value && !isEqual(oldAmount, newAmount)) {
       swapPromises.value.push(getSwap);
       if (!processingSwaps.value) processSwaps();
     }
