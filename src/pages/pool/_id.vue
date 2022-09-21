@@ -176,65 +176,65 @@ watch(poolQuery.error, () => {
 
 <template>
   <div class="xl:container lg:px-4 pt-8 xl:mx-auto">
-    <div
-      class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
-    >
-      <PoolPageHeader
-        :loadingPool="loadingPool"
-        :loadingApr="loadingApr"
-        :pool="pool"
-        :poolApr="poolApr"
-        :isStableLikePool="isStableLikePool"
-        :noInitLiquidity="noInitLiquidity"
-        :titleTokens="titleTokens"
-        :missingPrices="missingPrices"
-        :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
-        :isComposableStableLikePool="isComposableStableLikePool"
-      />
-      <div class="hidden lg:block" />
-      <div class="order-2 lg:order-1 col-span-2">
-        <div class="grid grid-cols-1 gap-y-8">
-          <div class="px-4 lg:px-0">
-            <PoolChart
-              :historicalPrices="historicalPrices"
-              :snapshots="snapshots"
-              :loading="isLoadingSnapshots"
-              :totalLiquidity="pool?.totalLiquidity"
-              :tokensList="pool?.tokensList"
-              :poolType="pool?.poolType"
-            />
-          </div>
-          <div class="px-4 lg:px-0 mb-4">
-            <PoolStatCards
-              :pool="pool"
-              :poolApr="poolApr"
-              :loading="loadingPool"
-              :loadingApr="loadingApr"
-            />
-            <ApyVisionPoolLink
-              v-if="!loadingPool && pool"
-              :poolId="pool.id"
-              :titleTokens="titleTokens"
-            />
-          </div>
-          <div class="mb-4">
-            <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />
-            <PoolBalancesCard :pool="pool" :loading="loadingPool" />
-          </div>
-
-          <div ref="intersectionSentinel" />
-          <template v-if="isSentinelIntersected && pool">
-            <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
-            <PoolContractDetails :pool="pool" />
-          </template>
-        </div>
-      </div>
-
+    <StakingProvider :poolAddress="getAddressFromPoolId(poolId)">
       <div
-        v-if="!isLiquidityBootstrappingPool"
-        class="order-1 lg:order-2 px-4 lg:px-0"
+        class="grid grid-cols-1 lg:grid-cols-3 gap-x-0 lg:gap-x-4 xl:gap-x-8 gap-y-8"
       >
-        <StakingProvider :poolAddress="getAddressFromPoolId(poolId)">
+        <PoolPageHeader
+          :loadingPool="loadingPool"
+          :loadingApr="loadingApr"
+          :pool="pool"
+          :poolApr="poolApr"
+          :isStableLikePool="isStableLikePool"
+          :noInitLiquidity="noInitLiquidity"
+          :titleTokens="titleTokens"
+          :missingPrices="missingPrices"
+          :isLiquidityBootstrappingPool="isLiquidityBootstrappingPool"
+          :isComposableStableLikePool="isComposableStableLikePool"
+        />
+        <div class="hidden lg:block" />
+        <div class="order-2 lg:order-1 col-span-2">
+          <div class="grid grid-cols-1 gap-y-8">
+            <div class="px-4 lg:px-0">
+              <PoolChart
+                :historicalPrices="historicalPrices"
+                :snapshots="snapshots"
+                :loading="isLoadingSnapshots"
+                :totalLiquidity="pool?.totalLiquidity"
+                :tokensList="pool?.tokensList"
+                :poolType="pool?.poolType"
+              />
+            </div>
+            <div class="px-4 lg:px-0 mb-4">
+              <PoolStatCards
+                :pool="pool"
+                :poolApr="poolApr"
+                :loading="loadingPool"
+                :loadingApr="loadingApr"
+              />
+              <ApyVisionPoolLink
+                v-if="!loadingPool && pool"
+                :poolId="pool.id"
+                :titleTokens="titleTokens"
+              />
+            </div>
+            <div class="mb-4">
+              <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />
+              <PoolBalancesCard :pool="pool" :loading="loadingPool" />
+            </div>
+
+            <div ref="intersectionSentinel" />
+            <template v-if="isSentinelIntersected && pool">
+              <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
+              <PoolContractDetails :pool="pool" />
+            </template>
+          </div>
+        </div>
+
+        <div
+          v-if="!isLiquidityBootstrappingPool"
+          class="order-1 lg:order-2 px-4 lg:px-0"
+        >
           <BalStack vertical>
             <BalLoadingBlock
               v-if="loadingPool || !pool"
@@ -262,9 +262,9 @@ watch(poolQuery.error, () => {
               class="pool-locking"
             />
           </BalStack>
-        </StakingProvider>
+        </div>
       </div>
-    </div>
+    </StakingProvider>
   </div>
 </template>
 

@@ -1311,6 +1311,8 @@
   "unlocking": "Unlocking",
   "unstake": "Unstake",
   "unstaked": "Unstaked",
+  "restake": "Restake",
+  "restaked": "Restaked",
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
   "useOf": "use of",
