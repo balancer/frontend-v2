@@ -62,6 +62,7 @@ const poolsToRenderKey = computed(() => JSON.stringify(poolsWithBoost.value));
       <PoolsTable
         :key="poolsToRenderKey"
         :data="poolsWithBoost"
+        poolsType="staked"
         :noPoolsLabel="noPoolsLabel"
         :hiddenColumns="hiddenColumns"
         :isLoading="isLoading"

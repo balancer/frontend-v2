@@ -34,6 +34,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
  */
 type Props = {
   data?: PoolWithShares[];
+  poolsType?: 'unstaked' | 'staked';
   isLoading?: boolean;
   isLoadingMore?: boolean;
   showPoolShares?: boolean;
@@ -51,6 +52,7 @@ type Props = {
  */
 
 const props = withDefaults(defineProps<Props>(), {
+  poolsType: 'unstaked',
   isLoadingMore: false,
   showPoolShares: false,
   noPoolsLabel: 'No pools',
@@ -351,6 +353,7 @@ function iconAddresses(pool: PoolWithShares) {
       <template #actionsCell="pool">
         <PoolsTableActionsCell
           :pool="pool"
+          :poolsType="poolsType"
           @click:stake="pool => emit('triggerStake', pool)"
           @click:migrate="pool => navigateToPoolMigration(pool)"
         />

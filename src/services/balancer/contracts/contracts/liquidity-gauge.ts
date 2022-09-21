@@ -52,7 +52,7 @@ export class LiquidityGauge {
     });
   }
 
-  async balance(account: string): Promise<string> {
+  async balance(account: string): Promise<BigNumber> {
     return this.instance.balanceOf(getAddress(account));
   }
 
