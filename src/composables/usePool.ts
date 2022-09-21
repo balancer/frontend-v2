@@ -34,9 +34,44 @@ export function isStablePhantom(poolType: PoolType): boolean {
   return poolType === PoolType.StablePhantom;
 }
 
+export function isComposableStable(poolType: PoolType): boolean {
+  return poolType === PoolType.ComposableStable;
+}
+
+export function isComposableStableLike(poolType: PoolType): boolean {
+  return isStablePhantom(poolType) || isComposableStable(poolType);
+}
+
+export function isDeep(pool: Pool): boolean {
+  // TODO - remove this exception when we can support generalised deep pool joins/exits.
+  const treatAsShallow = [
+    '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // bb-am-USD/MAI (polygon)
+  ];
+  if (treatAsShallow.includes(pool.id)) return false;
+
+  return (
+    pool.tokens
+      // ignore the token with the same address as the pool itself
+      .filter(({ address }) => address !== pool.address)
+      // check if every of the pool tokens are actually pools
+      .some(({ token }) => {
+        const poolType = token.pool?.poolType;
+        if (!poolType) return false;
+        return typeof poolType === 'string';
+      })
+  );
+}
+
+export function isShallowComposableStable(pool: Pool): boolean {
+  return isComposableStable(pool.poolType) && !isDeep(pool);
+}
+
 export function isStableLike(poolType: PoolType): boolean {
   return (
-    isStable(poolType) || isMetaStable(poolType) || isStablePhantom(poolType)
+    isStable(poolType) ||
+    isMetaStable(poolType) ||
+    isStablePhantom(poolType) ||
+    isComposableStable(poolType)
   );
 }
 
@@ -77,20 +112,22 @@ export function isWeth(pool: AnyPool): boolean {
 }
 
 export function isMigratablePool(pool: AnyPool) {
-  return POOL_MIGRATIONS.some(
-    poolMigrationInfo => poolMigrationInfo.fromPoolId === pool.id
-  );
+  return POOL_MIGRATIONS.some(migration => migration.fromPoolId === pool.id);
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
 }
 
+export function preMintedBptIndex(pool: Pool): number | void {
+  return pool.tokens.findIndex(token => token.address === pool.address);
+}
+
 /**
  * @returns tokens that can be used to invest or withdraw from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
-  if (isStablePhantom(pool.poolType)) {
+  if (isDeep(pool)) {
     const mainTokens = pool.mainTokens || [];
     const wrappedTokens = pool.wrappedTokens || [];
     return [...mainTokens, ...wrappedTokens];
@@ -104,11 +141,7 @@ export function lpTokensFor(pool: AnyPool): string[] {
  * @returns Array of checksum addresses
  */
 export function orderedTokenAddresses(pool: AnyPool): string[] {
-  const sortedTokens = orderedPoolTokens(
-    pool.poolType,
-    pool.address,
-    pool.tokens
-  );
+  const sortedTokens = orderedPoolTokens(pool, pool.tokens);
   return sortedTokens.map(token => getAddress(token?.address || ''));
 }
 
@@ -118,13 +151,12 @@ type TokenProperties = Pick<PoolToken, 'address' | 'weight'>;
  * @summary Orders pool tokens by weight if weighted pool
  */
 export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
-  poolType: PoolType,
-  poolAddress: string,
+  pool: Pool,
   tokens: TPoolTokens[]
 ): TPoolTokens[] {
-  if (isStablePhantom(poolType))
-    return tokens.filter(token => !isSameAddress(token.address, poolAddress));
-  if (isStableLike(poolType)) return tokens;
+  if (isComposableStable(pool.poolType))
+    return tokens.filter(token => !isSameAddress(token.address, pool.address));
+  if (isStableLike(pool.poolType)) return tokens;
   return tokens
     .slice()
     .sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
@@ -136,7 +168,7 @@ export function orderedPoolTokens<TPoolTokens extends TokenProperties>(
 export function poolURLFor(
   poolId: string,
   network: Network,
-  poolType?: string | PoolType
+  poolType: string | PoolType
 ): string {
   console.log({ poolType, poolId, network });
   if (network === Network.OPTIMISM) {
@@ -144,6 +176,13 @@ export function poolURLFor(
   }
   if (poolType && poolType.toString() === 'Element') {
     return `https://app.element.fi/pools/${addressFor(poolId)}`;
+  }
+  if (poolType && poolType.toString() === 'FX') {
+    return `https://app.xave.finance/#/pool`;
+  }
+  // temporarily remove links to ComposableStablePools until the frontend fully supports them
+  if (poolType && poolType.toString() === 'ComposableStable') {
+    return urlFor(network);
   }
 
   return `${urlFor(network)}/pool/${poolId}`;
@@ -185,7 +224,7 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
  * @summary Checks if given pool is BAL 80/20 pool (veBAL)
  */
 export function isVeBalPool(poolId: string): boolean {
-  return POOLS.IdsMap['B-80BAL-20WETH'] === poolId;
+  return POOLS.IdsMap?.veBAL === poolId;
 }
 
 /**
@@ -213,6 +252,25 @@ export function isBlocked(pool: Pool, account: string): boolean {
   return (
     !isTestnet.value && requiresAllowlisting && !isAllowlisted && !isOwnedByUser
   );
+}
+
+/**
+ * Approximate BPT price using total liquidity calculated via Coingecko prices
+ * and subgraph total shares. Cannot be relied on to be 100% accurate.
+ *
+ * @returns USD value of 1 BPT
+ */
+export function bptPriceFor(pool: Pool): string {
+  return bnum(pool.totalLiquidity).div(pool.totalShares).toString();
+}
+
+/**
+ * Calculate USD value of shares using approx. BPT price function.
+ *
+ * @returns USD value of shares.
+ */
+export function fiatValueOf(pool: Pool, shares: string): string {
+  return bnum(shares).times(bptPriceFor(pool)).toString();
 }
 
 /**
@@ -256,8 +314,17 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isStablePhantomPool = computed(
     (): boolean => !!pool.value && isStablePhantom(pool.value.poolType)
   );
+  const isComposableStablePool = computed(
+    (): boolean => !!pool.value && isComposableStable(pool.value.poolType)
+  );
+  const isDeepPool = computed(
+    (): boolean => !!pool.value && isDeep(pool.value)
+  );
   const isStableLikePool = computed(
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
+  );
+  const isComposableStableLikePool = computed(
+    (): boolean => !!pool.value && isComposableStableLike(pool.value.poolType)
   );
   const isWeightedPool = computed(
     (): boolean => !!pool.value && isWeighted(pool.value.poolType)
@@ -296,7 +363,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStablePool,
     isMetaStablePool,
     isStablePhantomPool,
+    isComposableStablePool,
     isStableLikePool,
+    isComposableStableLikePool,
+    isDeepPool,
     isWeightedPool,
     isWeightedLikePool,
     isManagedPool,

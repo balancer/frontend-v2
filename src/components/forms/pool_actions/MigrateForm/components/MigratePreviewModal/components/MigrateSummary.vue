@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 import { Pool } from '@/services/pool/types';
 
 /**
@@ -8,9 +7,10 @@ import { Pool } from '@/services/pool/types';
  */
 type Props = {
   pool: Pool;
-  fiatTotal: string;
+  fromTotal: string;
+  toTotal: string;
   priceImpact: number;
-  isLoadingPriceImpact?: boolean;
+  isLoadingBptOut?: boolean;
   highPriceImpact?: boolean;
   summaryTitle?: string | undefined;
 };
@@ -28,7 +28,6 @@ withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const { currency } = useUserSettings();
 </script>
 
 <template>
@@ -37,12 +36,25 @@ const { currency } = useUserSettings();
     <div class="flex flex-col py-2">
       <div class="summary-table-row">
         <div class="summary-table-label">
-          {{ $t('total') }}
+          {{ $t('totalToMigrate') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum2(fiatTotal, FNumFormats.fiat) }}
+          ~{{ fNum2(fromTotal, FNumFormats.fiat) }}
           <BalTooltip
-            :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
+            :text="$t('migratePool.tooltips.totalTo')"
+            iconSize="sm"
+            class="ml-2"
+          />
+        </div>
+      </div>
+      <div class="summary-table-row">
+        <div class="summary-table-label">
+          {{ $t('newTotal') }}
+        </div>
+        <div class="summary-table-number">
+          ~{{ fNum2(toTotal, FNumFormats.fiat) }}
+          <BalTooltip
+            :text="$t('migratePool.tooltips.newTotal')"
             iconSize="sm"
             class="ml-2"
           />
@@ -61,7 +73,7 @@ const { currency } = useUserSettings();
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          <BalLoadingBlock v-if="isLoadingPriceImpact" class="w-10 h-6" />
+          <BalLoadingBlock v-if="isLoadingBptOut" class="w-10 h-6" />
           <template v-else>
             {{ fNum2(priceImpact, FNumFormats.percent) }}
             <BalTooltip

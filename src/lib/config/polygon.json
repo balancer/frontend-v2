@@ -13,7 +13,7 @@
   "publicRpc": "https://polygon-rpc.com",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2-beta",
   "poolsUrlV2": "",
   "subgraphs": {
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
@@ -45,7 +45,7 @@
     "wstETH": "",
     "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d",
-    "batchRelayer": "0x4574ccBcC09A00C9eE55fB92Fe353699A4fA800e",
+    "batchRelayer": "0xcf6a66E32dCa0e26AcC3426b851FD8aCbF12Dac7",
     "gaugeFactory": "0x3b8ca519122cdd8efb272b0d3085453404b25bd0",
     "balancerMinter": "",
     "gaugeController": "",

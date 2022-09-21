@@ -9,7 +9,6 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -217,7 +216,7 @@ function navigateToPoolMigration(pool: PoolWithShares) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId,
+      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
     },
     query: { returnRoute: 'home' },
   });
@@ -293,9 +292,7 @@ function iconAddresses(pool: PoolWithShares) {
           </div>
           <div v-else>
             <TokenPills
-              :tokens="
-                orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-              "
+              :tokens="orderedPoolTokens(pool, pool.tokens)"
               :isStablePool="isStableLike(pool.poolType)"
               :selectedTokens="selectedTokens"
             />
@@ -355,6 +352,7 @@ function iconAddresses(pool: PoolWithShares) {
         <PoolsTableActionsCell
           :pool="pool"
           @click:stake="pool => emit('triggerStake', pool)"
+          @click:migrate="pool => navigateToPoolMigration(pool)"
         />
       </template>
     </BalTable>
