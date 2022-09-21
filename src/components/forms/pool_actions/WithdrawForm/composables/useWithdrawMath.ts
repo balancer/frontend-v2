@@ -439,10 +439,8 @@ export default function useWithdrawMath(
     propBptIn.value = bptBalance.value;
 
     if (shouldFetchBatchSwap.value) {
-      batchSwap.value = await getBatchSwap();
-      if (shouldUseBatchRelayer.value) {
-        batchRelayerSwap.value = await getBatchRelayerSwap();
-      }
+      swapPromises.value.push(getSwap);
+      if (!processingSwaps.value) processSwaps();
     }
   }
 
@@ -657,12 +655,12 @@ export default function useWithdrawMath(
 
   watch(account, () => initMath());
 
-  watch(fullAmounts, async newAmounts => {
+  watch(tokenOutAmount, async (newAmount, oldAmount) => {
     /**
      * If a single asset exit and the input values change we
      * need to refetch the swap to get the required BPT in.
      */
-    if (!isProportional.value && !isEqual(fullAmounts.value, newAmounts)) {
+    if (!isProportional.value && !isEqual(oldAmount, newAmount)) {
       swapPromises.value.push(getSwap);
       if (!processingSwaps.value) processSwaps();
     }
