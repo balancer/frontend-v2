@@ -11,6 +11,8 @@ import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { Pool, PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { getAddressFromPoolId } from '@/lib/utils';
+import StakingProvider from '@/providers/local/staking/staking.provider';
 
 import StakePreviewModal from '../../stake/StakePreviewModal.vue';
 
@@ -146,12 +148,16 @@ function handleModalClose() {
         @trigger-stake="handleStake"
       />
     </BalStack>
-    <StakePreviewModal
+    <StakingProvider
       v-if="stakePool"
-      :pool="stakePool"
-      :isVisible="showStakeModal"
-      action="stake"
-      @close="handleModalClose"
-    />
+      :poolAddress="getAddressFromPoolId(stakePool.id)"
+    >
+      <StakePreviewModal
+        :pool="stakePool"
+        :isVisible="showStakeModal"
+        action="stake"
+        @close="handleModalClose"
+      />
+    </StakingProvider>
   </div>
 </template>
