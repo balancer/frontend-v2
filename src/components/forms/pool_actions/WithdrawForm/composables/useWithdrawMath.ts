@@ -492,7 +492,7 @@ export default function useWithdrawMath(
         amounts,
         fetchPools: {
           fetchPools,
-          fetchOnChain: false,
+          fetchOnChain: true,
         },
       });
       batchSwapLoading.value = false;
@@ -560,13 +560,13 @@ export default function useWithdrawMath(
   // Fetch single asset max out for current tokenOut using batch swaps.
   // Set max out returned from batchSwap in state.
   async function getSingleAssetMaxOut(): Promise<void> {
-    const _batchSwap = await getBatchSwap(
+    batchSwap.value = await getBatchSwap(
       [bptBalanceScaled.value],
       [tokenOut.value]
     );
 
     const batchSwapAmountOut = bnum(
-      _batchSwap.returnAmounts[0].toString()
+      batchSwap.value.returnAmounts[0].toString()
     ).abs();
 
     if (batchSwapAmountOut.gt(0)) {
