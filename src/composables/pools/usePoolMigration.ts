@@ -53,7 +53,7 @@ export function usePoolMigration(
    */
   const { txListener, getTxConfirmedAt } = useEthers();
   const { addTransaction } = useTransactions();
-  const { account, getSigner, getProvider } = useWeb3();
+  const { account, getSigner } = useWeb3();
   const { t } = useI18n();
   const { oneHourInMs } = useTime();
   const { fNum2 } = useNumbers();
@@ -336,14 +336,8 @@ export function usePoolMigration(
     };
 
     if (staked) {
-      const fromGaugeAddress = await getGaugeAddress(
-        fromPool.address,
-        getProvider()
-      );
-      const toGaugeAddress = await getGaugeAddress(
-        toPool.address,
-        getProvider()
-      );
+      const fromGaugeAddress = await getGaugeAddress(fromPool.address);
+      const toGaugeAddress = await getGaugeAddress(toPool.address);
       fromData['gauge'] = fromGaugeAddress;
       toData['gauge'] = toGaugeAddress;
     }
