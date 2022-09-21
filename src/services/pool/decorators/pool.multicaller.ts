@@ -7,10 +7,12 @@ import {
 
 import {
   isStableLike,
-  isStablePhantom,
   isTradingHaltable,
   isWeightedLike,
   removePreMintedBPT,
+  isDeep,
+  isComposableStableLike,
+  isComposableStable,
 } from '@/composables/usePool';
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
@@ -95,7 +97,7 @@ export class PoolMulticaller {
           abi: PoolTypeABIs,
         });
 
-        if (isStablePhantom(pool.poolType)) {
+        if (isComposableStableLike(pool.poolType)) {
           // Overwrite totalSupply with virtualSupply for StablePhantom pools
           multicaller.call({
             key: `${pool.id}.totalSupply`,
@@ -103,7 +105,17 @@ export class PoolMulticaller {
             function: 'getVirtualSupply',
             abi: PoolTypeABIs,
           });
+          if (isComposableStable(pool.poolType)) {
+            multicaller.call({
+              key: `${pool.id}.totalSupply`,
+              address: pool.address,
+              function: 'getActualSupply',
+              abi: PoolTypeABIs,
+            });
+          }
+        }
 
+        if (isDeep(pool)) {
           pool.tokensList.forEach((poolToken, i) => {
             multicaller
               .call({
@@ -163,7 +175,7 @@ export class PoolMulticaller {
     result = await multicaller.execute();
 
     this.pools.forEach(pool => {
-      if (isStablePhantom(pool.poolType) && result[pool.id].linearPools) {
+      if (isDeep(pool) && result[pool.id].linearPools) {
         const wrappedTokensMap: Record<string, string> = {};
         const linearPools = result[pool.id].linearPools || {};
 

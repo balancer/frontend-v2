@@ -41,7 +41,11 @@ export default function useInvestMath(
   const { toFiat, fNum2 } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
-  const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
+  const {
+    managedPoolWithTradingHalted,
+    isComposableStableLikePool,
+    isDeepPool,
+  } = usePool(pool);
   const {
     promises: batchSwapPromises,
     processing: processingBatchSwaps,
@@ -157,7 +161,7 @@ export default function useInvestMath(
   const fullBPTOut = computed((): string => {
     let _bptOut: string;
 
-    if (isStablePhantomPool.value) {
+    if (isDeepPool.value) {
       _bptOut = batchSwap.value
         ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
@@ -166,8 +170,6 @@ export default function useInvestMath(
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
     }
-
-    console.log('query BPT', _bptOut.toString());
 
     return _bptOut;
   });
@@ -194,11 +196,11 @@ export default function useInvestMath(
   );
 
   const shouldFetchBatchSwap = computed(
-    (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
+    (): boolean => pool.value && isDeepPool.value && hasAmounts.value
   );
 
   const supportsPropotionalOptimization = computed(
-    (): boolean => !isStablePhantomPool.value
+    (): boolean => !isComposableStableLikePool.value
   );
 
   /**

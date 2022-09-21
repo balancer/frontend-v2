@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPUTED
  */
 const tabs = computed(() =>
-  isStablePhantomPool.value
+  isComposableStableLikePool.value
     ? [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
@@ -54,7 +54,7 @@ const tabs = computed(() =>
 /**
  * COMPOSABLES
  */
-const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { isComposableStableLikePool } = usePool(toRef(props, 'pool'));
 const { t } = useI18n();
 
 /**
@@ -77,7 +77,7 @@ const activeTab = ref(tabs.value[0].value);
       </div>
     </div>
 
-    <template v-if="isStablePhantomPool">
+    <template v-if="isComposableStableLikePool">
       <BoostedActivities
         v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
         :poolActivityType="PoolTransactionsTab.ALL_ACTIVITY"
