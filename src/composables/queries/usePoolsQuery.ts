@@ -98,6 +98,7 @@ export default function usePoolsQuery(
 
   let balancerApiRepository = initializeDecoratedAPIRepository();
   let subgraphRepository = initializeDecoratedSubgraphRepository();
+  let poolsRepository = initializePoolsRepository();
 
   /**
    * COMPUTED
@@ -221,6 +222,7 @@ export default function usePoolsQuery(
     () => {
       balancerApiRepository = initializeDecoratedAPIRepository();
       subgraphRepository = initializeDecoratedSubgraphRepository();
+      poolsRepository = initializePoolsRepository();
     },
     { deep: true }
   );
@@ -241,7 +243,6 @@ export default function usePoolsQuery(
    */
   const queryFn = async ({ pageParam = 0 }) => {
     const fetchOptions = getFetchOptions(pageParam);
-    const poolsRepository = initializePoolsRepository();
 
     const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
 
