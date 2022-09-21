@@ -478,7 +478,6 @@ export default function useWithdrawMath(
     tokensOut: string[] | null = null,
     swapType: SwapType = SwapType.SwapExactIn
   ): Promise<BatchSwapOut> {
-    console.trace('GET SWAP');
     batchSwapLoading.value = true;
 
     amounts = amounts || batchSwapBPTIn.value;
