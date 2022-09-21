@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { isStablePhantom } from '@/composables/usePool';
+import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -50,7 +50,7 @@ export default function usePoolTransfers() {
 
   const tokenAddresses = computed(() => {
     if (pool.value) {
-      if (isStablePhantom(pool.value.poolType)) {
+      if (isDeep(pool.value)) {
         return pool.value.mainTokens || [];
       }
       return pool.value?.tokensList || [];

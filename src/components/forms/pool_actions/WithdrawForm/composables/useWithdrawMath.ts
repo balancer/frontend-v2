@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isStablePhantom, usePool } from '@/composables/usePool';
+import { isDeep, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
@@ -36,6 +36,7 @@ import { BatchSwapOut } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
+import { isEqual } from 'lodash';
 
 /**
  * TYPES
@@ -78,7 +79,8 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isStablePhantomPool, isWeightedPool } = usePool(pool);
+  const { isComposableStableLikePool, isWeightedPool, isDeepPool } =
+    usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -95,7 +97,7 @@ export default function useWithdrawMath(
    * COMPUTED
    */
   const tokenAddresses = computed((): string[] => {
-    if (isStablePhantom(pool.value.poolType)) {
+    if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
     return pool.value.tokensList;
@@ -196,7 +198,7 @@ export default function useWithdrawMath(
   });
 
   const proportionalAmounts = computed((): string[] => {
-    if (isStablePhantomPool.value) {
+    if (isComposableStableLikePool.value) {
       return proportionalMainTokenAmounts.value;
     }
     return proportionalPoolTokenAmounts.value;
@@ -237,7 +239,7 @@ export default function useWithdrawMath(
 
     // Else single asset exact out amount case
 
-    if (isStablePhantomPool.value) {
+    if (isDeepPool.value) {
       if (shouldUseBatchRelayer.value) {
         return batchRelayerSwap.value?.outputs?.amountsIn || '0';
       }
@@ -267,7 +269,7 @@ export default function useWithdrawMath(
   );
 
   const singleAssetMaxes = computed((): string[] => {
-    if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;
+    if (isDeepPool.value) return batchSwapSingleAssetMaxes.value;
 
     try {
       return poolTokens.value.map((token, tokenIndex) => {
@@ -331,7 +333,6 @@ export default function useWithdrawMath(
         tokenIndex: tokenOutIndex.value,
         queryBPT: fullBPTIn.value,
       })
-
       .toNumber();
   });
 
@@ -358,14 +359,11 @@ export default function useWithdrawMath(
 
   const shouldFetchBatchSwap = computed(
     (): boolean =>
-      pool.value &&
-      isStablePhantomPool.value &&
-      bnum(normalizedBPTIn.value).gt(0)
+      pool.value && isDeepPool.value && bnum(normalizedBPTIn.value).gt(0)
   );
 
   const shouldUseBatchRelayer = computed((): boolean => {
-    if (!isStablePhantomPool.value || !pool.value?.onchain?.linearPools)
-      return false;
+    if (!isDeepPool.value || !pool.value?.onchain?.linearPools) return false;
 
     // If batchSwap has any 0 return amounts, we should use batch relayer
     if (batchSwap.value) {
@@ -441,10 +439,8 @@ export default function useWithdrawMath(
     propBptIn.value = bptBalance.value;
 
     if (shouldFetchBatchSwap.value) {
-      batchSwap.value = await getBatchSwap();
-      if (shouldUseBatchRelayer.value) {
-        batchRelayerSwap.value = await getBatchRelayerSwap();
-      }
+      swapPromises.value.push(getSwap);
+      if (!processingSwaps.value) processSwaps();
     }
   }
 
@@ -494,7 +490,7 @@ export default function useWithdrawMath(
         amounts,
         fetchPools: {
           fetchPools,
-          fetchOnChain: false,
+          fetchOnChain: true,
         },
       });
       batchSwapLoading.value = false;
@@ -562,13 +558,13 @@ export default function useWithdrawMath(
   // Fetch single asset max out for current tokenOut using batch swaps.
   // Set max out returned from batchSwap in state.
   async function getSingleAssetMaxOut(): Promise<void> {
-    const _batchSwap = await getBatchSwap(
+    batchSwap.value = await getBatchSwap(
       [bptBalanceScaled.value],
       [tokenOut.value]
     );
 
     const batchSwapAmountOut = bnum(
-      _batchSwap.returnAmounts[0].toString()
+      batchSwap.value.returnAmounts[0].toString()
     ).abs();
 
     if (batchSwapAmountOut.gt(0)) {
@@ -604,7 +600,7 @@ export default function useWithdrawMath(
    * decide what swap should be fetched and sets it.
    */
   async function getSwap(): Promise<void> {
-    if (!isStablePhantomPool.value) return;
+    if (!isDeepPool.value) return;
 
     if (isProportional.value) {
       batchSwap.value = await getBatchSwap();
@@ -649,7 +645,7 @@ export default function useWithdrawMath(
    */
   watch(tokenOut, () => {
     tokenOutAmount.value = '';
-    if (isStablePhantomPool.value) getSingleAssetMaxOut();
+    if (isDeepPool.value) getSingleAssetMaxOut();
   });
 
   watch(isWalletReady, async () => {
@@ -659,12 +655,12 @@ export default function useWithdrawMath(
 
   watch(account, () => initMath());
 
-  watch(fullAmounts, async () => {
+  watch(tokenOutAmount, async (newAmount, oldAmount) => {
     /**
      * If a single asset exit and the input values change we
      * need to refetch the swap to get the required BPT in.
      */
-    if (!isProportional.value) {
+    if (!isProportional.value && !isEqual(oldAmount, newAmount)) {
       swapPromises.value.push(getSwap);
       if (!processingSwaps.value) processSwaps();
     }

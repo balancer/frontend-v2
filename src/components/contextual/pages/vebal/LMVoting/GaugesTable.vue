@@ -30,6 +30,7 @@ import {
   isVotingTimeLocked,
   remainingVoteLockTime,
 } from '@/composables/useVeBAL';
+import { Pool } from '@/services/pool/types';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
 
@@ -134,11 +135,7 @@ const dataKey = computed(() => JSON.stringify(props.data));
  * METHODS
  */
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(
-    gauge.pool.poolType,
-    gauge.pool.address,
-    gauge.pool.tokens
-  );
+  const sortedTokens = orderedPoolTokens(gauge.pool as Pool, gauge.pool.tokens);
   return sortedTokens.map(
     token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );
@@ -232,9 +229,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       <template #poolCompositionCell="{ pool, address, addedTimestamp }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
-            :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-            "
+            :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "

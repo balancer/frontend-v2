@@ -1,5 +1,3 @@
-import { getAddress } from '@ethersproject/address';
-import { AddressZero } from '@ethersproject/constants';
 import { formatUnits } from 'ethers/lib/utils';
 import { intersection } from 'lodash';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
@@ -18,8 +16,7 @@ import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidit
 import { PoolWithShares } from '@/services/pool/types';
 import { stakingRewardsService } from '@/services/staking/staking-rewards.service';
 import useWeb3 from '@/services/web3/useWeb3';
-
-import { getGaugeAddress } from './staking.provider';
+import BigNumber from 'bignumber.js';
 
 export type UserGaugeShare = {
   id: string;
@@ -46,6 +43,20 @@ export type UserGaugeSharesResponse = {
 
 export type PoolStakingDataResponse = {
   liquidityGauge: UserLiquidityGauge;
+};
+
+export type PoolGaugesInfo = {
+  preferentialGauge: {
+    id: string | null;
+  };
+  gauges: {
+    id: string;
+    relativeWeightCap: string;
+  }[];
+};
+
+export type PoolGaugesResponse = {
+  pools: PoolGaugesInfo[];
 };
 
 export type UserStakingDataResponse = {
@@ -86,13 +97,16 @@ export type UserStakingDataResponse = {
   poolBoosts: Ref<Record<string, string> | undefined>;
   isLoadingBoosts: Ref<boolean>;
   getBoostFor: (poolAddress: string) => string;
+  hasNonPrefGaugeBalances: Ref<boolean | undefined>;
+  refetchHasNonPrefGauge: Ref<() => void>;
+  poolGaugeAddresses: Ref<PoolGaugesInfo>;
 };
 
 export default function useUserStakingData(
   poolAddress: Ref<string>
 ): UserStakingDataResponse {
   /** COMPOSABLES */
-  const { account, getProvider, isWalletReady } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   /**
    * QUERIES
@@ -105,9 +119,6 @@ export default function useUserStakingData(
 
   /** QUERY ARGS */
   const userPools = computed(() => userPoolsResponse.value?.pools || []);
-  const isStakedSharesQueryEnabled = computed(
-    () => !!poolAddress.value && poolAddress.value != '' && isWalletReady.value
-  );
   const stakeableUserPoolIds = computed(() =>
     intersection(userPoolIds.value, POOLS.Stakable.AllowList)
   );
@@ -150,6 +161,50 @@ export default function useUserStakingData(
     })
   );
 
+  // this query is responsible for checking gauge addresses for the pool
+  const {
+    data: poolGaugeAddressesResponse,
+    isLoading: isLoadingGaugeAddresses,
+  } = useGraphQuery<PoolGaugesResponse>(
+    subgraphs.gauge,
+    ['pool', 'gaugeAddresses', { poolAddress: poolAddress.value }],
+    () => ({
+      pools: {
+        __args: {
+          where: {
+            address: poolAddress.value,
+          },
+        },
+        preferentialGauge: {
+          id: true,
+        },
+        gauges: {
+          id: true,
+          relativeWeightCap: true,
+        },
+      },
+    }),
+    reactive({
+      enabled: !!poolAddress.value,
+      refetchOnWindowFocus: false,
+    })
+  );
+
+  const poolGaugeAddresses = computed(() => {
+    return (
+      poolGaugeAddressesResponse?.value?.pools[0] ||
+      ({ preferentialGauge: { id: null }, gauges: [] } as PoolGaugesInfo)
+    );
+  });
+
+  const isStakedSharesQueryEnabled = computed(
+    () =>
+      !!poolAddress.value &&
+      poolAddress.value != '' &&
+      isWalletReady.value &&
+      !isLoadingGaugeAddresses.value
+  );
+
   // we pull staked shares for a specific pool manually do to the
   // fact that the subgraph is too slow, so we gotta rely on the
   // contract. We want users to receive instant feedback that their
@@ -161,7 +216,7 @@ export default function useUserStakingData(
     isRefetching: isRefetchingStakedShares,
     refetch: refetchStakedShares,
   } = useQuery<string>(
-    ['staking', 'pool', 'shares', { poolAddress }],
+    ['staking', 'pool', 'shares', { account, poolAddress }],
     () => getStakedShares(),
     reactive({
       enabled: isStakedSharesQueryEnabled,
@@ -221,6 +276,33 @@ export default function useUserStakingData(
       }
     );
 
+  const fetchedBalances = computed(() => !isLoadingStakedShares.value);
+  const { data: hasNonPrefGaugeBalances, refetch: refetchHasNonPrefGauge } =
+    useQuery<boolean>(
+      ['gauges', 'hasNonPrefGaugeBalances', poolAddress, account],
+      async () => {
+        if (poolGaugeAddresses.value?.gauges?.length === 0) return false;
+
+        const gaugeNonPrefBalances = await Promise.all(
+          poolGaugeAddresses.value.gauges
+            .filter(
+              gauge =>
+                gauge.id !== poolGaugeAddresses.value.preferentialGauge.id
+            )
+            .map(async nonPrefGauge => {
+              const gauge = new LiquidityGauge(nonPrefGauge.id);
+              const balance = await gauge.balance(account.value);
+              return balance?.toString();
+            })
+        );
+
+        return gaugeNonPrefBalances.some(balance => balance !== '0');
+      },
+      reactive({
+        enabled: fetchedBalances,
+      })
+    );
+
   const isBoostQueryEnabled = computed(
     () => isWalletReady.value && userGaugeShares.value.length > 0 && !isL2.value
   );
@@ -265,16 +347,20 @@ export default function useUserStakingData(
         `Attempted to get staked shares, however useStaking was initialised without a pool address.`
       );
     }
-    const gaugeAddress = await getGaugeAddress(
-      getAddress(poolAddress.value),
-      getProvider()
+
+    if (!poolGaugeAddresses.value?.preferentialGauge?.id) return '0';
+
+    // sum balances from all gauges in the pool
+    const totalBalance = await poolGaugeAddresses.value.gauges.reduce(
+      async (totalPromise, value) => {
+        const gauge = new LiquidityGauge(value.id);
+        const balance = await gauge.balance(account.value);
+        const total = await totalPromise;
+        return total.plus(balance?.toString() || '0');
+      },
+      Promise.resolve(new BigNumber(0))
     );
-
-    if (gaugeAddress === AddressZero) return '0';
-
-    const gauge = new LiquidityGauge(gaugeAddress);
-    const balance = await gauge.balance(account.value);
-    return formatUnits(balance.toString(), 18);
+    return formatUnits(totalBalance.toString(), 18);
   }
 
   function getBoostFor(poolId: string) {
@@ -301,6 +387,9 @@ export default function useUserStakingData(
     totalStakedFiatValue,
     poolBoosts,
     isLoadingBoosts,
+    poolGaugeAddresses,
+    hasNonPrefGaugeBalances,
+    refetchHasNonPrefGauge,
     getStakedShares,
     getBoostFor,
   };
