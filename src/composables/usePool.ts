@@ -170,7 +170,6 @@ export function poolURLFor(
   network: Network,
   poolType?: string | PoolType
 ): string {
-  console.log({ poolType, poolId, network });
   if (network === Network.OPTIMISM) {
     return `https://op.beets.fi/#/pool/${poolId}`;
   }
