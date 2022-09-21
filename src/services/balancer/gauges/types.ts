@@ -15,6 +15,7 @@ export interface SubgraphGauge {
   factory: {
     id: string;
   };
+  isPreferentialGauge: boolean;
 }
 
 export interface OnchainGaugeData {
