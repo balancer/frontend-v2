@@ -1,8 +1,5 @@
-import { Interface } from '@ethersproject/abi';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
-import { Contract } from '@ethersproject/contracts';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { fromUnixTime, isAfter } from 'date-fns';
 import { parseUnits } from 'ethers/lib/utils';
 import {
@@ -19,11 +16,10 @@ import {
 import { LiquidityGauge as TLiquidityGauge } from '@/components/contextual/pages/pools/types';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import useTokens from '@/composables/useTokens';
+import useWeb3 from '@/services/web3/useWeb3';
 import symbolKeys from '@/constants/symbol.keys';
-import GaugeFactoryABI from '@/lib/abi/GaugeFactory.json';
 import { LiquidityGauge } from '@/services/balancer/contracts/contracts/liquidity-gauge';
 import { configService } from '@/services/config/config.service';
-import useWeb3 from '@/services/web3/useWeb3';
 
 import useUserStakingData, {
   UserStakingDataResponse,
@@ -44,18 +40,38 @@ export type StakingProvider = {
   userData: UserStakingDataResponse;
 };
 
-export async function getGaugeAddress(
-  poolAddress: string,
-  provider: JsonRpcProvider
-): Promise<string> {
-  const gaugeInterface = new Interface(GaugeFactoryABI);
-  const contract = new Contract(
-    configService.network.addresses.gaugeFactory,
-    gaugeInterface,
-    provider
-  );
-  const gaugeAddress = await contract.getPoolGauge(getAddress(poolAddress));
-  return gaugeAddress;
+export async function getGaugeAddress(poolAddress: string): Promise<string> {
+  const subgraphEndpoint = configService.network.subgraphs.gauge;
+  const query = `
+    {
+      pools(
+        where: {
+          address: "${poolAddress}"
+        }
+      ) {
+        preferentialGauge {
+          id
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch(subgraphEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    const { data } = await response.json();
+    return data.pools[0].preferentialGauge.id;
+  } catch {
+    console.log('Pool not found when searching for gauge address');
+    return new Promise(() => '');
+  }
 }
 
 /**
@@ -88,8 +104,8 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { getProvider } = useWeb3();
     const { balanceFor } = useTokens();
+    const { account } = useWeb3();
     const {
       userGaugeShares,
       userLiquidityGauges,
@@ -110,6 +126,9 @@ export default defineComponent({
       totalStakedFiatValue,
       poolBoosts,
       isLoadingBoosts,
+      poolGaugeAddresses,
+      hasNonPrefGaugeBalances,
+      refetchHasNonPrefGauge,
       getStakedShares,
       getBoostFor,
     } = useUserStakingData(poolAddress);
@@ -157,11 +176,12 @@ export default defineComponent({
           `Attempted to call stake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(
-        poolAddress.value,
-        getProvider()
+      if (!poolGaugeAddresses.value?.preferentialGauge?.id) {
+        throw new Error(`No preferential gauge found for this pool.`);
+      }
+      const gauge = new LiquidityGauge(
+        poolGaugeAddresses.value.preferentialGauge.id
       );
-      const gauge = new LiquidityGauge(gaugeAddress);
       const tx = await gauge.stake(
         parseUnits(balanceFor(getAddress(poolAddress.value)), 18)
       );
@@ -174,14 +194,26 @@ export default defineComponent({
           `Attempted to call unstake, however useStaking was initialised without a pool address.`
         );
       }
-      const gaugeAddress = await getGaugeAddress(
-        getAddress(poolAddress.value),
-        getProvider()
+      const gaugesWithBalance = await Promise.all(
+        poolGaugeAddresses.value.gauges.map(async gauge => {
+          const gaugeInstance = new LiquidityGauge(gauge.id);
+          const balance = await gaugeInstance.balance(account.value);
+          return { ...gauge, balance: balance?.toString() };
+        })
       );
-      const gauge = new LiquidityGauge(gaugeAddress);
-      const tx = await gauge.unstake(
-        parseUnits(stakedSharesForProvidedPool.value || '0', 18)
+
+      const gaugeWithBalance = gaugesWithBalance.find(
+        gauge => gauge.balance !== '0'
       );
+      if (!gaugeWithBalance) {
+        throw new Error(
+          `Attempted to call unstake, however user doesn't have any balance for any gauges.`
+        );
+      }
+
+      const gauge = new LiquidityGauge(gaugeWithBalance.id);
+      const balance = await gauge.balance(account.value);
+      const tx = await gauge.unstake(balance);
       return tx;
     }
 
@@ -213,6 +245,9 @@ export default defineComponent({
         totalStakedFiatValue,
         isLoadingBoosts,
         poolBoosts,
+        poolGaugeAddresses,
+        refetchHasNonPrefGauge,
+        hasNonPrefGaugeBalances,
         getStakedShares,
         getBoostFor,
       },
