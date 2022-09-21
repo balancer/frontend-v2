@@ -16,7 +16,7 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import usePoolQuery from './usePoolQuery';
-import { AprBreakdown, Op } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 export default function usePoolAprQuery(
   id: string,
@@ -57,7 +57,7 @@ export default function usePoolAprQuery(
   async function getSnapshot(id: string): Promise<Pool[]> {
     const blockNumber = await getTimeTravelBlock();
     const block = { number: blockNumber };
-    const isInPoolIds = { id: Op.In([id]) };
+    const isInPoolIds = { id: { in: [id] } };
     try {
       const data = await balancerSubgraphService.pools.get({
         where: isInPoolIds,

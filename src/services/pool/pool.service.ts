@@ -18,7 +18,7 @@ import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
-import { Op, PoolToken, AprBreakdown } from '@balancer-labs/sdk';
+import { PoolToken, AprBreakdown } from '@balancer-labs/sdk';
 
 export default class PoolService {
   constructor(
@@ -99,8 +99,8 @@ export default class PoolService {
     const linearPools = (await balancerSubgraphService.pools.get(
       {
         where: {
-          address: Op.In(this.pool.tokensList),
-          totalShares: Op.GreaterThan(-1), // Avoid the filtering for low liquidity pools
+          address: { in: this.pool.tokensList },
+          totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
         },
       },
       { mainIndex: true, wrappedIndex: true }

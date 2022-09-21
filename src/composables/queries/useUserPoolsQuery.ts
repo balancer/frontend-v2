@@ -19,7 +19,6 @@ import { isStablePhantom, lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
-import { Op } from '@balancer-labs/sdk';
 
 type UserPoolsQueryResponse = {
   pools: PoolWithShares[];
@@ -72,8 +71,8 @@ export default function useUserPoolsQuery(
 
     const pools = await balancerSubgraphService.pools.get({
       where: {
-        id: Op.In(poolSharesIds),
-        poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
+        id: { in: poolSharesIds },
+        poolType: { not_in: POOLS.ExcludedPoolTypes },
       },
     });
 

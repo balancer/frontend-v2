@@ -14,7 +14,6 @@ import useGaugesQuery from './useGaugesQuery';
 import { configService } from '@/services/config/config.service';
 import {
   GraphQLArgs,
-  Op,
   PoolsBalancerAPIRepository,
   PoolsFallbackRepository,
   PoolsRepositoryFetchOptions,
@@ -142,6 +141,7 @@ export default function usePoolsQuery(
   function initializeDecoratedSubgraphRepository() {
     const subgraphRepository = new PoolsSubgraphRepository({
       url: configService.network.subgraph,
+      chainId: configService.network.chainId,
       query: {
         args: getQueryArgs(),
         attrs: queryAttrs,
@@ -170,8 +170,8 @@ export default function usePoolsQuery(
 
   function getQueryArgs(): GraphQLArgs {
     const tokensListFilterOperation = filterOptions?.isExactTokensList
-      ? Op.Equals
-      : Op.Contains;
+      ? 'eq'
+      : 'contains';
 
     const tokenListFormatted = filterTokens.value.map(address =>
       address.toLowerCase()
@@ -182,17 +182,17 @@ export default function usePoolsQuery(
       orderBy: 'totalLiquidity',
       orderDirection: 'desc',
       where: {
-        tokensList: tokensListFilterOperation(tokenListFormatted),
-        poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
-        totalShares: Op.GreaterThan(0.01),
-        id: Op.NotIn(POOLS.BlockList),
+        tokensList: { [tokensListFilterOperation]: tokenListFormatted },
+        poolType: { not_in: POOLS.ExcludedPoolTypes },
+        totalShares: { gt: 0.01 },
+        id: { not_in: POOLS.BlockList },
       },
     };
     if (filterOptions?.poolIds?.value.length) {
-      queryArgs.where.id = Op.In(filterOptions.poolIds.value);
+      queryArgs.where.id = { in: filterOptions.poolIds.value };
     }
     if (filterOptions?.poolAddresses?.value.length) {
-      queryArgs.where.address = Op.In(filterOptions.poolAddresses.value);
+      queryArgs.where.address = { in: filterOptions.poolAddresses.value };
     }
     return queryArgs;
   }

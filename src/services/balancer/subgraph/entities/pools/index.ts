@@ -19,6 +19,7 @@ export default class Pools {
     const query = this.query(args, attrs);
     const repository = new PoolsSubgraphRepository({
       url: configService.network.subgraph,
+      chainId: configService.network.chainId,
       query: query,
     });
     const pools = await repository.fetch({

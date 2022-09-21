@@ -1,15 +1,19 @@
 import { merge } from 'lodash';
 
 import { POOLS } from '@/constants/pools';
-import { GraphQLArgs, Op } from '@balancer-labs/sdk';
+import { GraphQLArgs } from '@balancer-labs/sdk';
 
 const defaultArgs: GraphQLArgs = {
   first: 1000,
   orderBy: 'totalLiquidity',
   orderDirection: 'desc',
   where: {
-    totalShares: Op.GreaterThan(0.01),
-    id: Op.NotIn(POOLS.BlockList),
+    totalShares: {
+      gt: 0.01,
+    },
+    id: {
+      not_in: POOLS.BlockList,
+    },
   },
 };
 

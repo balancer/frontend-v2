@@ -15,7 +15,6 @@ import useApp from '../useApp';
 import { isBlocked, lpTokensFor } from '../usePool';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
-import { Op } from '@balancer-labs/sdk';
 
 export default function usePoolQuery(
   id: string,
@@ -62,9 +61,9 @@ export default function usePoolQuery(
       // Fetch basic data from subgraph
       [pool] = await balancerSubgraphService.pools.get({
         where: {
-          id: Op.Equals(id.toLowerCase()),
-          totalShares: Op.GreaterThan(-1), // Avoid the filtering for low liquidity pools
-          poolType: Op.NotIn(POOLS.ExcludedPoolTypes),
+          id: { eq: id.toLowerCase() },
+          totalShares: { gt: -1 }, // Avoid the filtering for low liquidity pools
+          poolType: { not_in: POOLS.ExcludedPoolTypes },
         },
       });
     }
