@@ -49,6 +49,7 @@ export class AprConcern {
       stakingBalApr,
       stakingRewardApr
     );
+    const protocolApr = isVeBalPool(this.pool.id) ? Number(veBalAPR) : 0;
     return this.convertAPRFromDecToBP({
       swapFees: Number(swapFeeAPR),
       tokenAprs: yieldAPR,
@@ -60,9 +61,9 @@ export class AprConcern {
         total: Number(stakingRewardApr),
         breakdown: {},
       },
-      protocolApr: isVeBalPool(this.pool.id) ? Number(veBalAPR) : 0,
-      min: bnum(unstakedTotalAPR).plus(stakedAprRange.min).toNumber(),
-      max: bnum(unstakedTotalAPR).plus(stakedAprRange.max).toNumber(),
+      protocolApr,
+      min: bnum(stakedAprRange.min).toNumber(),
+      max: bnum(stakedAprRange.max).plus(protocolApr).toNumber(),
     });
   }
 
