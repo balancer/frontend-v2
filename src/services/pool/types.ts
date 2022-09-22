@@ -10,9 +10,9 @@ export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
-  priceRate: string | null;
+  priceRate: string | undefined;
   symbol?: string;
-  token: { pool: { poolType: null | PoolType } | null };
+  token?: { pool: { poolType: null | PoolType } | null };
 }
 
 // PoolToken data from onchain call

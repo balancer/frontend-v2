@@ -124,7 +124,10 @@ export default class PoolService {
       linearPool.tokens
         .filter(token => !isSameAddress(token.address, linearPool.address))
         .forEach(token => {
-          linearPoolTokensMap[token.address] = token;
+          linearPoolTokensMap[token.address] = {
+            ...token,
+            ...{ weight: token.weight || '', priceRate: token.priceRate || '' },
+          };
         });
     });
 

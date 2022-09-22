@@ -54,6 +54,7 @@ const queryAttrs = {
     amp: true,
     createTime: true,
     swapEnabled: true,
+    isNew: true,
     tokens: {
       address: true,
       balance: true,
