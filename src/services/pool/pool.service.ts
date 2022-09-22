@@ -1,6 +1,6 @@
 import { differenceInWeeks } from 'date-fns';
 
-import { isStable, isStablePhantom } from '@/composables/usePool';
+import { isStable, isDeep } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
@@ -93,7 +93,7 @@ export default class PoolService {
    * required attributes.
    */
   public async setLinearPools(): Promise<Record<string, PoolToken> | null> {
-    if (!isStablePhantom(this.pool.poolType)) return null;
+    if (!isDeep(this.pool)) return null;
 
     // Fetch linear pools from subgraph
     const linearPools = (await balancerSubgraphService.pools.get(
@@ -169,12 +169,16 @@ export default class PoolService {
     rawOnchainData: RawOnchainPoolData,
     tokenMeta: TokenInfoMap
   ): OnchainPoolData | undefined {
-    const onchainData = new OnchainDataFormater(
-      this.pool,
-      rawOnchainData,
-      tokenMeta
-    );
-    return (this.pool.onchain = onchainData.format());
+    try {
+      const onchainData = new OnchainDataFormater(
+        this.pool,
+        rawOnchainData,
+        tokenMeta
+      );
+      return (this.pool.onchain = onchainData.format());
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   public setUnwrappedTokens(): string[] {

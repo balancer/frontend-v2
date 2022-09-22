@@ -13,7 +13,7 @@ import { JsonRpcSigner, TransactionRequest } from '@ethersproject/providers';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
-const GAS_LIMIT_BUFFER = 0.1;
+export const GAS_LIMIT_BUFFER = 0.1;
 
 export class GasPriceService {
   constructor(

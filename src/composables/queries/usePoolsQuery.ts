@@ -20,6 +20,9 @@ import {
   PoolsSubgraphRepository,
 } from '@balancer-labs/sdk';
 import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
+import { flatten } from 'lodash';
+import { lpTokensFor } from '../usePool';
+import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -87,7 +90,12 @@ export default function usePoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { prices, tokens: tokenMeta } = useTokens();
+  const {
+    injectTokens,
+    prices,
+    tokens: tokenMeta,
+    dynamicDataLoading,
+  } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
@@ -154,8 +162,24 @@ export default function usePoolsQuery(
         const pools = await subgraphRepository.fetch(options);
 
         const poolDecorator = new PoolDecorator(pools);
-        const decoratedPools = await poolDecorator.decorate(
+        let decoratedPools = await poolDecorator.decorate(
           subgraphGauges.value || [],
+          prices.value,
+          currency.value,
+          tokenMeta.value
+        );
+
+        const tokens = flatten(
+          pools.map(pool => [
+            ...pool.tokensList,
+            ...lpTokensFor(pool),
+            pool.address,
+          ])
+        );
+        await injectTokens(tokens);
+        await forChange(dynamicDataLoading, false);
+
+        decoratedPools = poolDecorator.reCalculateTotalLiquidities(
           prices.value,
           currency.value,
           tokenMeta.value

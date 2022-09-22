@@ -15,7 +15,7 @@ import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import { isStablePhantom, lpTokensFor } from '../usePool';
+import { isComposableStableLike, lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
@@ -77,9 +77,7 @@ export default function useUserPoolsQuery(
     });
 
     for (let i = 0; i < pools.length; i++) {
-      const isStablePhantomPool = isStablePhantom(pools[i].poolType);
-
-      if (isStablePhantomPool) {
+      if (isComposableStableLike(pools[i].poolType)) {
         const poolService = new PoolService(pools[i]);
         poolService.removePreMintedBPT();
         await poolService.setLinearPools();
@@ -105,14 +103,13 @@ export default function useUserPoolsQuery(
 
     // TODO - cleanup and extract elsewhere in refactor
     for (let i = 0; i < decoratedPools.length; i++) {
-      const isStablePhantomPool = isStablePhantom(decoratedPools[i].poolType);
-
-      if (isStablePhantomPool) {
+      if (isComposableStableLike(decoratedPools[i].poolType)) {
         const decoratedPool = decoratedPools[i];
 
         const poolTokenMeta = getTokens(decoratedPool.tokensList);
 
         const onchainData = await balancerContractsService.vault.getPoolData(
+          decoratedPool,
           decoratedPool.id,
           decoratedPool.poolType,
           poolTokenMeta

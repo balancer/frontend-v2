@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
+import BalChipNew from '@/components/chips/BalChipNew.vue';
 import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -29,6 +30,9 @@ import {
   isVotingTimeLocked,
   remainingVoteLockTime,
 } from '@/composables/useVeBAL';
+import { Pool } from '@/services/pool/types';
+import { differenceInWeeks } from 'date-fns';
+import { oneSecondInMs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -131,11 +135,7 @@ const dataKey = computed(() => JSON.stringify(props.data));
  * METHODS
  */
 function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
-  const sortedTokens = orderedPoolTokens(
-    gauge.pool.poolType,
-    gauge.pool.address,
-    gauge.pool.tokens
-  );
+  const sortedTokens = orderedPoolTokens(gauge.pool as Pool, gauge.pool.tokens);
   return sortedTokens.map(
     token => gauge.tokenLogoURIs[token?.address || ''] || ''
   );
@@ -153,6 +153,10 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
     gauge.network,
     gauge.pool.poolType
   );
+}
+
+function getIsGaugeNew(addedTimestamp: number): boolean {
+  return differenceInWeeks(Date.now(), addedTimestamp * oneSecondInMs) < 2;
 }
 
 function getIsGaugeExpired(gaugeAddress: string): boolean {
@@ -222,16 +226,15 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool, address }">
+      <template #poolCompositionCell="{ pool, address, addedTimestamp }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
-            :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-            "
+            :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
+          <BalChipNew v-if="getIsGaugeNew(addedTimestamp)" class="ml-2" />
           <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { AprBreakdown, PoolType } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@balancer-labs/sdk';
+import { Pool } from '@/services/pool/types';
 import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
-import { isStablePhantom } from '@/composables/usePool';
+import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 
@@ -14,8 +15,7 @@ import { includesWstEth } from '@/lib/utils/balancer/lido';
  */
 type Props = {
   yieldAPR: AprBreakdown['tokenAprs'];
-  poolTokens: string[];
-  poolType: PoolType;
+  pool: Pool;
 };
 
 /**
@@ -42,8 +42,9 @@ const hasMultiRewardTokens = computed(
 );
 
 const yieldAPRLabel = computed(() => {
-  if (includesWstEth(props.poolTokens)) return t('yieldAprRewards.apr.steth');
-  if (isStablePhantom(props.poolType)) return t('yieldAprRewards.apr.boosted');
+  if (includesWstEth(props.pool.tokensList))
+    return t('yieldAprRewards.apr.steth');
+  if (isDeep(props.pool)) return t('yieldAprRewards.apr.boosted');
 
   return '';
 });

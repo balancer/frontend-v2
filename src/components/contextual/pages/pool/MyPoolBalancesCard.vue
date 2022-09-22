@@ -3,12 +3,10 @@ import { computed, ref, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { PoolMigrationType } from '@/components/forms/pool_actions/MigrateForm/types';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { MIN_FIAT_VALUE_POOL_MIGRATION } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
@@ -35,7 +33,7 @@ const props = defineProps<Props>();
 const { tokens, balances, balanceFor, getTokens } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady } = useWeb3();
-const { isStableLikePool, isStablePhantomPool, isMigratablePool } = usePool(
+const { isStableLikePool, isMigratablePool, isDeepPool } = usePool(
   toRef(props, 'pool')
 );
 const {
@@ -70,7 +68,7 @@ const propTokenAmounts = computed((): string[] => {
     'send'
   );
 
-  if (isStablePhantomPool.value) {
+  if (isDeepPool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
     return props.pool.tokensList.map((address, i) => {
@@ -86,7 +84,7 @@ const propTokenAmounts = computed((): string[] => {
 });
 
 const tokenAddresses = computed((): string[] => {
-  if (isStablePhantomPool.value) {
+  if (isDeepPool.value) {
     // We're using mainToken balances for StablePhantom pools
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];
@@ -102,11 +100,11 @@ const fiatValue = computed(() =>
 
 const showMigrateButton = computed(
   () =>
-    bnum(bptBalance.value).gt(0) &&
-    isMigratablePool(props.pool) &&
-    // TODO: this is a temporary solution to allow only big holders to migrate due to gas costs.
-    bnum(fiatValue.value).gt(MIN_FIAT_VALUE_POOL_MIGRATION)
+    (bnum(bptBalance.value).gt(0) ||
+      bnum(stakedSharesForProvidedPool.value).gt(0)) &&
+    isMigratablePool(props.pool)
 );
+
 /**
  * METHODS
  */
@@ -131,7 +129,7 @@ function navigateToPoolMigration(pool: Pool) {
     name: 'migrate-pool',
     params: {
       from: pool.id,
-      to: POOL_MIGRATIONS_MAP[PoolMigrationType.AAVE_BOOSTED_POOL].toPoolId,
+      to: POOL_MIGRATIONS_MAP[pool.id].toPoolId,
     },
     query: {
       returnRoute: 'pool',
@@ -196,7 +194,7 @@ function navigateToPoolMigration(pool: Pool) {
         block
         @click.prevent="navigateToPoolMigration(props.pool)"
       >
-        {{ $t('migratePool.migrateToBoostedPool') }}
+        {{ $t('migratePool.migrateLiquidity') }}
       </BalBtn>
     </div>
     <template #footer>

@@ -1,20 +1,18 @@
 import { BigNumber } from 'ethers';
-import { Pool as SDKPool, PoolToken } from '@balancer-labs/sdk';
+import { Pool as SDKPool, PoolType } from '@balancer-labs/sdk';
 import { Address } from '@/types';
 
 export interface Pool extends SDKPool {
   onchain?: OnchainPoolData;
   linearPoolTokensMap?: Record<string, PoolToken>;
 }
-
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  LiquidityBootstrapping = 'LiquidityBootstrapping',
-  Managed = 'Managed',
+export interface PoolToken {
+  address: string;
+  balance: string;
+  weight: string;
+  priceRate: string | null;
+  symbol?: string;
+  token: { pool: { poolType: null | PoolType } | null };
 }
 
 // PoolToken data from onchain call
