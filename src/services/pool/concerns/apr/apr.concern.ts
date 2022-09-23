@@ -1,5 +1,5 @@
 import { isKovan } from '@/composables/useNetwork';
-import { isStablePhantom, isVeBalPool } from '@/composables/usePool';
+import { isDeep, isVeBalPool } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
 import { calcUSDPlusWeightedAPR } from '@/lib/utils/apr.helper';
@@ -144,7 +144,7 @@ export class AprConcern {
 
     if (includesWstEth(this.pool.tokensList)) {
       total = await this.lido.calcStEthAPRFor(this.pool, protocolFeePercentage);
-    } else if (isStablePhantom(this.pool.poolType)) {
+    } else if (isDeep(this.pool)) {
       const aaveAPR = await this.aave.calcWeightedSupplyAPRFor(
         this.pool,
         prices,

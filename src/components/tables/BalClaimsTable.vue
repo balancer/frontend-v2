@@ -144,9 +144,7 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
       <template #pillsColumnCell="{ pool }">
         <div class="py-4 px-6">
           <TokenPills
-            :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-            "
+            :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="isStableLike(pool.poolType)"
           />
         </div>

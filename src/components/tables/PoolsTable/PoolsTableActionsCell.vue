@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 
-import { isVeBalPool } from '@/composables/usePool';
-import useNetwork from '@/composables/useNetwork';
+import { isVeBalPool, usePool } from '@/composables/usePool';
 import { POOLS } from '@/constants/pools';
 import { PoolWithShares } from '@/services/pool/types';
 
@@ -11,19 +10,24 @@ import { PoolWithShares } from '@/services/pool/types';
  */
 type Props = {
   pool: PoolWithShares;
+  poolsType?: 'unstaked' | 'staked';
 };
 
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {});
+const props = withDefaults(defineProps<Props>(), {
+  poolsType: 'unstaked',
+});
 
 const emit = defineEmits<{
   (e: 'click:stake', value: PoolWithShares): void;
+  (e: 'click:migrate', value: PoolWithShares): void;
 }>();
-
-/** COMPOSABLES */
-const { networkSlug } = useNetwork();
+/**
+ * COMPOSABLES
+ */
+const { isMigratablePool } = usePool(toRef(props, 'pool'));
 
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
@@ -33,7 +37,15 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
 <template>
   <div class="flex justify-center py-4 px-2">
     <BalBtn
-      v-if="stakablePoolIds.includes(pool.id)"
+      v-if="isMigratablePool(pool)"
+      color="gradient"
+      size="sm"
+      @click.prevent="emit('click:migrate', pool)"
+    >
+      {{ $t('migrate') }}
+    </BalBtn>
+    <BalBtn
+      v-else-if="poolsType === 'unstaked' && stakablePoolIds.includes(pool.id)"
       color="gradient"
       size="sm"
       @click.prevent="emit('click:stake', pool)"
@@ -52,8 +64,6 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
     >
       {{ $t('transactionAction.createLock') }}
     </BalBtn>
-    <div v-else>
-      {{ $t('notAvailable') }}
-    </div>
+    <div v-else>-</div>
   </div>
 </template>

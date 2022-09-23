@@ -51,6 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'success', value: any): void;
+  (e: 'setCurrentActionIndex', value: number): void;
 }>();
 
 const defaultActionState: TransactionActionState = {
@@ -88,6 +89,13 @@ watch(
   }
 );
 
+watch(
+  () => currentActionIndex.value,
+  (val: number) => {
+    emit('setCurrentActionIndex', val);
+  },
+  { immediate: true }
+);
 /**
  * COMPOSABLES
  */
@@ -107,6 +115,7 @@ const actions = computed((): TransactionAction[] => {
         ? actionInfo.loadingLabel
         : actionInfo.confirmingLabel,
       pending: actionState.init || actionState.confirming,
+      isSignAction: actionInfo.isSignAction,
       promise: submit.bind(null, actionInfo.action, actionState),
       step: {
         tooltip: actionInfo.stepTooltip,
@@ -163,6 +172,11 @@ async function submit(
     state.init = false;
     state.confirming = true;
 
+    if (currentAction.value.isSignAction) {
+      handleSignAction(state);
+      return;
+    }
+
     handleTransaction(tx, state);
   } catch (error) {
     state.init = false;
@@ -170,6 +184,12 @@ async function submit(
     state.error = parseError(error);
     console.error(error);
   }
+}
+
+function handleSignAction(state: TransactionActionState) {
+  currentActionIndex.value += 1;
+  state.confirming = false;
+  state.confirmed = true;
 }
 
 async function handleTransaction(
@@ -236,7 +256,19 @@ async function handleTransaction(
           block
           @click="currentAction.promise()"
         >
-          {{ currentAction?.label }}
+          <div
+            :class="{
+              'flex flex-grow justify-between items-center':
+                currentAction.isSignAction,
+            }"
+          >
+            <img
+              v-if="currentAction.isSignAction"
+              :src="require('@/assets/images/icons/signature.svg')"
+            />
+            {{ currentAction?.label }}
+            <div v-if="currentAction.isSignAction" class="w-8"></div>
+          </div>
         </BalBtn>
       </BalStack>
     </AnimatePresence>

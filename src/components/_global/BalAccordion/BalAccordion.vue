@@ -22,10 +22,12 @@ type Props = {
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   dependencies?: unknown;
   showSectionBorder?: boolean;
+  reCalcKey?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   showSectionBorder: true,
+  reCalcKey: 0,
 });
 
 const activeSection = ref('');
@@ -170,6 +172,15 @@ watch(
   () => props.dependencies,
   () => {
     toggleSection(activeSection.value, false);
+  }
+);
+
+watch(
+  () => props.reCalcKey,
+  newVal => {
+    if (newVal && activeSection.value) {
+      toggleSection(activeSection.value, false);
+    }
   }
 );
 </script>
