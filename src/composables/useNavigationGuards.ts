@@ -18,9 +18,13 @@ export default function useNavigationGuards() {
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
-    const networkFromSubdomain = networkFromSlug(
-      window.location.host.split('.')[0]
-    );
+    const betaEnv =
+      window.location.host.split('.')[0] === 'beta' ||
+      window.location.host.split('.')[0] === 'staging';
+    const subdomain = betaEnv
+      ? window.location.host.split('.')[1]
+      : window.location.host.split('.')[0];
+    const networkFromSubdomain = networkFromSlug(subdomain);
     if (networkFromSubdomain) {
       // old format subdomain redirect
       const networkFromUrl = networkFromSlug(to.params.networkSlug?.toString());

@@ -75,7 +75,7 @@ export function networkFromSlug(networkSlug: string): Network | null {
 }
 
 export function appUrl(): string {
-  return `https://app.${configService.env.APP_HOST}/#`;
+  return `https://${configService.env.APP_DOMAIN}/#`;
 }
 
 export default function useNetwork() {
