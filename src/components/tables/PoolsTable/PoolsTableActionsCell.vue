@@ -2,6 +2,7 @@
 import { computed, toRef } from 'vue';
 
 import { isVeBalPool, usePool } from '@/composables/usePool';
+import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { PoolWithShares } from '@/services/pool/types';
 
@@ -28,6 +29,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { networkSlug } = useNetwork();
 
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
