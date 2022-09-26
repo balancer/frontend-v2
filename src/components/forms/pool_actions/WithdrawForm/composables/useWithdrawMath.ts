@@ -167,9 +167,13 @@ export default function useWithdrawMath(
    * Only relevant for exit calls, not batchSwap or batch relayer exits.
    */
   const proportionalPoolTokenAmounts = computed((): string[] => {
-    const buffer =
-      isProportional.value && isComposableStablePool.value ? 1e6 : 0;
+    const shouldUseBuffer =
+      isProportional.value &&
+      isComposableStablePool.value &&
+      propBptIn.value === bptBalance.value;
+    const buffer = shouldUseBuffer ? 1e6 : 0;
 
+    console.log('buffer', buffer);
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
       0,
