@@ -225,12 +225,18 @@ const poolTypeLabel = computed(() => {
     <BalAlert
       v-if="hasNonPrefGaugeBalances"
       :title="$t('staking.restakeGauge')"
+      :type="'warning'"
       class="mt-2"
     >
       <BalStack spacing="sm">
         <span>{{ $t('staking.restakeGaugeDescription') }}</span>
         <div>
-          <BalBtn @click="isRestakePreviewVisible = true">
+          <BalBtn
+            :color="'gradient'"
+            class="p-2"
+            :size="'sm'"
+            @click="isRestakePreviewVisible = true"
+          >
             {{ $t('restake') }}
           </BalBtn>
         </div>

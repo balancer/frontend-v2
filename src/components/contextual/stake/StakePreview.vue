@@ -67,7 +67,10 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: () => txWithNotification(unstakeBPT),
-  stepTooltip: t('staking.unstakeTooltip'),
+  stepTooltip:
+    props.action === 'restake'
+      ? t('staking.restakeTooltip')
+      : t('staking.unstakeTooltip'),
 };
 
 /**
