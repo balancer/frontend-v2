@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
+import { POOL_MIGRATIONS_MAP } from '../../../constants';
 
 type Props = {
   pool: Pool;
@@ -13,7 +14,7 @@ type Props = {
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 /**
  * STATE
@@ -24,6 +25,13 @@ const isExpanded = ref(false);
  * COMPOSABLES
  */
 const { getToken } = useTokens();
+
+/**
+ * COMPUTED
+ */
+const showOldVHint = computed(
+  () => POOL_MIGRATIONS_MAP[props.pool.id]?.showOldVHint
+);
 </script>
 
 <template>
@@ -40,8 +48,14 @@ const { getToken } = useTokens();
       <div class="flex items-center">
         <BalAsset :address="pool.address" class="mr-2" :size="36" />
         <div>
-          <div>{{ poolTokenInfo.symbol }}</div>
-          <div class="text-secondary">
+          <div class="font-semibold">
+            {{ poolTokenInfo.symbol }}
+            <span v-if="showOldVHint">
+              ({{ $t('migratePool.oldVersion') }})
+            </span>
+          </div>
+
+          <div class="text-sm text-secondary">
             {{ poolTokenInfo.name }}
           </div>
         </div>

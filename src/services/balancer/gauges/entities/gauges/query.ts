@@ -13,6 +13,7 @@ const defaultAttrs = {
   factory: {
     id: true,
   },
+  isPreferentialGauge: true,
 };
 
 export const gaugeQueryBuilder = (args = {}, attrs = {}) => ({

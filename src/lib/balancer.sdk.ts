@@ -22,4 +22,5 @@ const network = ((): Network => {
 export const balancer = new BalancerSDK({
   network,
   rpcUrl: configService.rpc,
+  customSubgraphUrl: configService.network.subgraph,
 });

@@ -73,7 +73,7 @@ export function isVotingTimeLocked(lastVoteTime: number): boolean {
 
 export function remainingVoteLockTime(lastVoteTime: number): string {
   const lastUserVoteTime = toJsTimestamp(lastVoteTime);
-  return formatDistanceToNow(lastUserVoteTime - WEIGHT_VOTE_DELAY);
+  return formatDistanceToNow(lastUserVoteTime + WEIGHT_VOTE_DELAY);
 }
 
 export default function useVeBal() {
@@ -94,7 +94,7 @@ export default function useVeBal() {
     balanceFor(networkConfig.addresses.veBAL)
   );
 
-  const lockablePoolId = computed(() => POOLS.IdsMap?.['B-80BAL-20WETH']);
+  const lockablePoolId = computed(() => POOLS.IdsMap?.veBAL);
 
   return {
     // computed
