@@ -167,10 +167,14 @@ export default function useWithdrawMath(
    * Only relevant for exit calls, not batchSwap or batch relayer exits.
    */
   const proportionalPoolTokenAmounts = computed((): string[] => {
+    const buffer =
+      isProportional.value && isComposableStablePool.value ? 1e6 : 0;
+
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
       0,
-      'send'
+      'send',
+      buffer
     );
     return receive;
   });
@@ -255,7 +259,7 @@ export default function useWithdrawMath(
    * The BPT value to be used for the withdrawal transaction accounting for slippage.
    * BPT value should be adjusted to account for slippage when:
    * - single asset exact out
-   * - A shallow ComposableStable proportional exit (because we need to use exitBPTInForExactTokensOut)
+   * - A shallow ComposableStable proportional exit (because we need to use BPTInForExactTokensOut)
    */
   const bptIn = computed((): string => {
     if (exactOut.value) return addSlippageScaled(fullBPTIn.value);
