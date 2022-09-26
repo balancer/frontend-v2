@@ -79,8 +79,7 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isComposableStableLikePool, isWeightedPool, isDeepPool } =
-    usePool(pool);
+  const { isComposableStablePool, isWeightedPool, isDeepPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -198,7 +197,7 @@ export default function useWithdrawMath(
   });
 
   const proportionalAmounts = computed((): string[] => {
-    if (isComposableStableLikePool.value) {
+    if (isDeepPool.value) {
       return proportionalMainTokenAmounts.value;
     }
     return proportionalPoolTokenAmounts.value;
@@ -224,6 +223,7 @@ export default function useWithdrawMath(
   const amountsOut = computed(() => {
     return fullAmounts.value.map((amount, i) => {
       if (amount === '0' || exactOut.value) return amount;
+      if (isProportional.value && isComposableStablePool.value) return amount;
       return minusSlippage(amount, withdrawalTokens.value[i].decimals);
     });
   });
@@ -253,10 +253,14 @@ export default function useWithdrawMath(
 
   /**
    * The BPT value to be used for the withdrawal transaction accounting for slippage.
-   * Only in the single asset exact out case should the BPT value be adjusted to account for slippage.
+   * BPT value should be adjusted to account for slippage when:
+   * - single asset exact out
+   * - A shallow ComposableStable proportional exit (because we need to use exitBPTInForExactTokensOut)
    */
   const bptIn = computed((): string => {
     if (exactOut.value) return addSlippageScaled(fullBPTIn.value);
+    if (isProportional && isComposableStablePool.value)
+      return addSlippageScaled(fullBPTIn.value);
     return fullBPTIn.value.toString();
   });
 
