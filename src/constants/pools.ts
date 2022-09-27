@@ -13,9 +13,9 @@ export const APR_THRESHOLD = 10_000;
  * exit type was removed. Therefore we have to use BPTInForExactTokensOut which
  * makes proportional exits using a user's total BPT balance impossible. In
  * order to 'fix' this we need to subtract a little bit from the bptIn value
- * when calculating the ExactTokensOut. The variable below is that 'little bit'.
+ * when calculating the ExactTokensOut. The variable below is that "little bit".
  */
-export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e6;
+export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e6; // EVM scale, so this is 1 Mwei
 
 export type FactoryType =
   | 'oracleWeightedPool'
