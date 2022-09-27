@@ -143,8 +143,8 @@ export default class CalculatorService {
    *
    * @param {string} fixedAmount - The fixed amount in/out.
    * @param {number} index - The pool token index for the fixedAmount.
-   * @param {string} type - If send fixedAmount is tokenIn expecting bptOut, if
-   * receive fixedAmount is bptIn expecting tokensOut.
+   * @param {string} type - If receive fixedAmount is tokenIn expecting bptOut, if
+   * send fixedAmount is bptIn expecting tokensOut.
    * @param {number} buffer - A buffer (EVM scale) used in specific BPTInForExactTokensOut
    * case. Should otherwise always be zero.
    */
