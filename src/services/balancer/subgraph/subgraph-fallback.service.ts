@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 
 import { configService } from '@/services/config/config.service';
 
-class SubgraphFallbackService {
+export class SubgraphFallbackService {
   private urlIndex = ref(0);
 
   public url = computed(() => {
@@ -14,9 +14,12 @@ class SubgraphFallbackService {
   constructor(private readonly urls = configService.subgraphUrls || []) {}
 
   public async get(payload: unknown): Promise<AxiosResponse | void> {
+    if (!payload) {
+      throw new Error('Payload is required');
+    }
     try {
       const response = await axios.post(this.url.value, payload);
-      const errorMessage = response.data.errors?.message;
+      const errorMessage = response?.data.errors?.message;
       if (errorMessage) {
         throw new Error(errorMessage);
       }
@@ -33,7 +36,7 @@ class SubgraphFallbackService {
       }
 
       this.incrementUrlIndex();
-      this.get(payload);
+      return this.get(payload);
     }
   }
 
