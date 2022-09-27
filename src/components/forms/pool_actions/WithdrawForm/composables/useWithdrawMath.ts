@@ -173,7 +173,6 @@ export default function useWithdrawMath(
       propBptIn.value === bptBalance.value;
     const buffer = shouldUseBuffer ? 1e6 : 0;
 
-    console.log('buffer', buffer);
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
       0,
