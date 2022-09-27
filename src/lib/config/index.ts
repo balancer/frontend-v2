@@ -28,7 +28,7 @@ export interface Config {
   subgraph: string;
   poolsUrlV2: string;
   subgraphs: {
-    main?: string[];
+    main: string[];
     aave: string;
     gauge: string;
     blocks: string;
