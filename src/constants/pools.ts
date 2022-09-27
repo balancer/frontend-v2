@@ -8,6 +8,15 @@ export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 1
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
 export const APR_THRESHOLD = 10_000;
 
+/**
+ * For proportional exits from ComposableStable pools the ExactBPTInForTokensOut
+ * exit type was removed. Therefore we have to use BPTInForExactTokensOut which
+ * makes proportional exits using a user's total BPT balance impossible. In
+ * order to 'fix' this we need to subtract a little bit from the bptIn value
+ * when calculating the ExactTokensOut. The variable below is that 'little bit'.
+ */
+export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e6;
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'

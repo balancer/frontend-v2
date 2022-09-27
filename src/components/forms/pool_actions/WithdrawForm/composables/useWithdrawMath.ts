@@ -37,6 +37,7 @@ import { TokenInfo } from '@/types/TokenList';
 
 import { setError, WithdrawalError } from './useWithdrawalState';
 import { isEqual } from 'lodash';
+import { SHALLOW_COMPOSABLE_STABLE_BUFFER } from '@/constants/pools';
 
 /**
  * TYPES
@@ -171,7 +172,7 @@ export default function useWithdrawMath(
       isProportional.value &&
       isComposableStablePool.value &&
       propBptIn.value === bptBalance.value;
-    const buffer = shouldUseBuffer ? 1e6 : 0;
+    const buffer = shouldUseBuffer ? SHALLOW_COMPOSABLE_STABLE_BUFFER : 0;
 
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
