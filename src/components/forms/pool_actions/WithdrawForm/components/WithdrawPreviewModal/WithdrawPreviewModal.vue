@@ -50,7 +50,9 @@ const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { fullAmounts, priceImpact, resetMath } = toRefs(props.math);
-const { tokensOut, maxSlider } = useWithdrawalState(toRef(props, 'pool'));
+const { tokensOut, maxSlider, resetTxState } = useWithdrawalState(
+  toRef(props, 'pool')
+);
 
 /**
  * COMPUTED
@@ -102,6 +104,7 @@ function hasAmount(index: number): boolean {
 function handleClose(): void {
   if (withdrawalConfirmed.value) {
     resetMath.value();
+    resetTxState();
     maxSlider();
   }
   emit('close');

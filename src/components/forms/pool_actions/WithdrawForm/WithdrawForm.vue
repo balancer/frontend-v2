@@ -15,6 +15,8 @@ import WithdrawTotals from './components/WithdrawTotals.vue';
 import useWithdrawalState from './composables/useWithdrawalState';
 // Composables
 import useWithdrawMath from './composables/useWithdrawMath';
+import usePoolQuery from '@/composables/queries/usePoolQuery';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -34,6 +36,9 @@ const showPreview = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
+const { blockNumber } = useWeb3();
+const poolQuery = usePoolQuery(props.pool.id);
+const { refetchBalances } = useTokens();
 
 const {
   isProportional,
@@ -46,6 +51,7 @@ const {
   error,
   parseError,
   setError,
+  txInProgress,
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
@@ -61,8 +67,10 @@ const {
   singleAssetMaxes,
   tokenOutAmount,
   tokenOutPoolBalance,
-  initMath,
   loadingAmountsOut,
+  bptBalance,
+  initMath,
+  resetMath,
 } = withdrawMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -92,6 +100,23 @@ watch(isProportional, newVal => {
   if (newVal) {
     initMath();
     maxSlider();
+  }
+});
+
+watch(blockNumber, async () => {
+  // Fetch latest balances on every block to ensure up to date prior to any tx
+  // initiation except when a tx is already triggered.
+  if (!txInProgress.value) {
+    poolQuery.refetch.value();
+    refetchBalances.value();
+  }
+});
+
+watch(bptBalance, () => {
+  if (!txInProgress.value) {
+    // The user's BPT balance has changed in the background. Reset maths so
+    // they're working with up to date values.
+    resetMath();
   }
 });
 
