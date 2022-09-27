@@ -19,7 +19,6 @@ import { formatUnits } from 'ethers/lib/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import template from '../utils/template';
 import { mapValues } from 'lodash';
-import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env.development'),
@@ -194,7 +193,7 @@ async function getPoolInfo(
   retries = 5
 ): Promise<VotingGauge['pool']> {
   log(`getPoolInfo. poolId: network: ${network} poolId: ${poolId}`);
-  const subgraphEndpoint = subgraphFallbackService.url.value;
+  const subgraphEndpoint = config[network].subgraph;
   const query = `
     {
       pool(
