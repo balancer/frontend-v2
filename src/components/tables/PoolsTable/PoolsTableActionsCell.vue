@@ -10,12 +10,15 @@ import { PoolWithShares } from '@/services/pool/types';
  */
 type Props = {
   pool: PoolWithShares;
+  poolsType?: 'unstaked' | 'staked';
 };
 
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {});
+const props = withDefaults(defineProps<Props>(), {
+  poolsType: 'unstaked',
+});
 
 const emit = defineEmits<{
   (e: 'click:stake', value: PoolWithShares): void;
@@ -42,7 +45,7 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       {{ $t('migrate') }}
     </BalBtn>
     <BalBtn
-      v-else-if="stakablePoolIds.includes(pool.id)"
+      v-else-if="poolsType === 'unstaked' && stakablePoolIds.includes(pool.id)"
       color="gradient"
       size="sm"
       :disabled="isMigratablePool(pool)"
@@ -59,8 +62,6 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
     >
       {{ $t('transactionAction.createLock') }}
     </BalBtn>
-    <div v-else>
-      {{ $t('notAvailable') }}
-    </div>
+    <div v-else>-</div>
   </div>
 </template>

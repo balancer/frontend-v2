@@ -6,6 +6,7 @@ import { Ref, ref } from 'vue';
 
 import {
   isComposableStableLike,
+  isDeep,
   isStable,
   isStableLike,
 } from '@/composables/usePool';
@@ -60,7 +61,7 @@ export default class CalculatorService {
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): OldBigNumber {
     if (this.isStableLikePool) {
-      if (this.isComposableStableLikePool) {
+      if (isDeep(this.pool.value)) {
         return this.stablePhantom.priceImpact(tokenAmounts, opts);
       } else {
         return this.stable.priceImpact(tokenAmounts, opts);

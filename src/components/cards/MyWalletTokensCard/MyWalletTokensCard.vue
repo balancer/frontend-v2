@@ -35,9 +35,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool, isComposableStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const route = useRoute();
@@ -48,7 +46,7 @@ const route = useRoute();
 const pageContext = computed(() => route.name);
 
 const tokenAddresses = computed((): string[] => {
-  if (isComposableStableLikePool.value) {
+  if (isDeepPool.value) {
     return props.pool.mainTokens || [];
   }
 

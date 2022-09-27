@@ -1,13 +1,9 @@
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 
-import {
-  isStableLike,
-  isComposableStableLike,
-  isWeightedLike,
-} from '@/composables/usePool';
+import { isStableLike, isWeightedLike, isDeep } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { AnyPool, OnchainTokenData, PoolToken } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -36,7 +32,7 @@ export default class LiquidityConcern {
     if (isWeightedLike(this.poolType)) {
       return this.calcWeightedTotal(prices, currency);
     } else if (isStableLike(this.poolType)) {
-      if (isComposableStableLike(this.poolType)) {
+      if (isDeep(this.pool)) {
         return this.calcStablePhantom(prices, currency, tokenMeta);
       }
       return this.calcStableTotal(prices, currency);
@@ -101,12 +97,12 @@ export default class LiquidityConcern {
   }
 
   public calcStableTotal(prices: TokenPrices, currency: FiatCurrency): string {
-    let tokens = this.poolTokens;
+    let tokens = this.poolTokens as PoolToken[];
+    tokens = tokens.filter(
+      token => !isSameAddress(token.address, this.pool.address)
+    );
 
-    if (
-      isComposableStableLike(this.poolType) &&
-      this.pool.linearPoolTokensMap != null
-    ) {
+    if (isDeep(this.pool) && this.pool.linearPoolTokensMap != null) {
       tokens = Object.values(this.pool.linearPoolTokensMap);
     }
 

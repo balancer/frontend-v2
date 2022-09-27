@@ -3,7 +3,7 @@ import { computed, reactive, Ref, toRefs } from 'vue';
 import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
-import { isComposableStableLike } from '@/composables/usePool';
+import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { isSameAddress } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
@@ -88,18 +88,13 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   const tokensOut = computed(() => {
     if (!pool.value) return [];
-    const poolTokens = isComposableStableLike(pool.value.poolType)
+    const poolTokens = isDeep(pool.value)
       ? pool.value.mainTokens || []
       : pool.value.tokensList;
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
-      return poolTokens.map(address => {
-        if (isSameAddress(address, wrappedNativeAsset.value.address)) {
-          return nativeAsset.address;
-        }
-        return address;
-      });
+      return replaceWethWithEth(poolTokens);
 
     return poolTokens;
   });
@@ -113,6 +108,15 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   function maxSlider(): void {
     state.slider.val = state.slider.max;
+  }
+
+  function replaceWethWithEth(addresses: string[]): string[] {
+    return addresses.map(address => {
+      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
+        return nativeAsset.address;
+      }
+      return address;
+    });
   }
 
   return {

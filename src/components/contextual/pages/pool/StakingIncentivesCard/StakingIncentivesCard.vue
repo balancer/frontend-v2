@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAddress } from 'ethers/lib/utils';
-import { computed, ref, toRef } from 'vue';
+import { computed, ref } from 'vue';
 
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -12,7 +12,6 @@ import { Pool } from '@/services/pool/types';
 
 import StakePreviewModal from '../../../stake/StakePreviewModal.vue';
 import { StakeAction } from '@/components/contextual/stake/StakePreview.vue';
-import { usePool } from '@/composables/usePool';
 
 type Props = {
   pool: Pool;
@@ -38,12 +37,12 @@ const {
     isLoadingStakedShares,
     isRefetchingStakedShares,
     stakedSharesForProvidedPool,
+    hasNonPrefGaugeBalances,
     isLoadingBoosts,
   },
   isPoolEligibleForStaking,
   isLoadingPoolEligibility,
 } = useStaking();
-const { isMigratablePool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -107,6 +106,7 @@ async function handleActionSuccess() {
               isDisabled: !isPoolEligibleForStaking,
             },
           ]"
+          :reCalcKey="hasNonPrefGaugeBalances ? 0 : 1"
         >
           <template #staking-handle>
             <button
@@ -183,8 +183,8 @@ async function handleActionSuccess() {
                     color="gradient"
                     size="sm"
                     :disabled="
-                      isMigratablePool(pool) ||
-                      fiatValueOfUnstakedShares === '0'
+                      fiatValueOfUnstakedShares === '0' ||
+                      hasNonPrefGaugeBalances
                     "
                     @click="showStakePreview"
                   >
@@ -200,6 +200,13 @@ async function handleActionSuccess() {
                     {{ $t('unstake') }}
                   </BalBtn>
                 </BalStack>
+                <BalAlert
+                  v-if="hasNonPrefGaugeBalances"
+                  :title="$t('staking.restakeGauge')"
+                  class="mt-2"
+                >
+                  {{ $t('staking.restakeGaugeDescription') }}
+                </BalAlert>
               </BalStack>
             </div>
           </template>

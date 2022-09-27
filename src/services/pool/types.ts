@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers';
-
 import { Address } from '@/types';
 
 export interface Pool {
@@ -47,6 +46,7 @@ export interface PoolToken {
   weight: string;
   priceRate: string | null;
   symbol?: string;
+  token: { pool: { poolType: null | PoolType } | null };
 }
 
 // PoolToken data from onchain call

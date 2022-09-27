@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, onMounted, ref, toRef } from 'vue';
 
-import { usePool } from '@/composables/usePool';
+import { isComposableStable, isDeep, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -34,25 +34,32 @@ const selectedOption = ref(props.initToken);
  */
 const { getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
-const { isWethPool, isComposableStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
 const tokenAddresses = computed(() => {
-  if (isComposableStableLikePool.value) return props.pool?.mainTokens || [];
+  if (isDeepPool.value) return props.pool?.mainTokens || [];
   if (isWethPool.value) return [nativeAsset.address, ...props.pool.tokensList];
   return props.pool.tokensList;
 });
 
-const options = computed(() => ['all', ...tokenAddresses.value]);
+const options = computed(() => {
+  if (!noProportionalWithdrawals.value) {
+    return ['all', ...tokenAddresses.value];
+  }
+  return tokenAddresses.value;
+});
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
 const assetSetWidth = computed(
   () => 40 + (tokenAddresses.value.length - 2) * 10
+);
+
+const noProportionalWithdrawals = computed(
+  () => isComposableStable(props.pool.poolType) && !isDeep(props.pool)
 );
 
 function isOptionSelected(option: string): boolean {
@@ -75,6 +82,13 @@ function handleSelected(newToken: string): void {
     tokenOut.value = newToken;
   }
 }
+
+onMounted(() => {
+  // if all option is not available, select the first token
+  if (noProportionalWithdrawals.value) {
+    handleSelected(options.value[0]);
+  }
+});
 </script>
 
 <template>
