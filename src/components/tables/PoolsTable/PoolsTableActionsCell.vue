@@ -50,6 +50,7 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
       v-else-if="poolsType === 'unstaked' && stakablePoolIds.includes(pool.id)"
       color="gradient"
       size="sm"
+      :disabled="isMigratablePool(pool)"
       @click.prevent="emit('click:stake', pool)"
     >
       {{ $t('stake') }}
