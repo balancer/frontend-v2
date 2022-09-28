@@ -80,7 +80,8 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isComposableStablePool, isWeightedPool, isDeepPool } = usePool(pool);
+  const { isWeightedPool, isDeepPool, isShallowComposableStablePool } =
+    usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -170,7 +171,7 @@ export default function useWithdrawMath(
   const proportionalPoolTokenAmounts = computed((): string[] => {
     const shouldUseBuffer =
       isProportional.value &&
-      isComposableStablePool.value &&
+      isShallowComposableStablePool.value &&
       propBptIn.value === bptBalance.value;
     const buffer = shouldUseBuffer ? SHALLOW_COMPOSABLE_STABLE_BUFFER : 0;
 
@@ -231,7 +232,9 @@ export default function useWithdrawMath(
   const amountsOut = computed(() => {
     return fullAmounts.value.map((amount, i) => {
       if (amount === '0' || exactOut.value) return amount;
-      if (isProportional.value && isComposableStablePool.value) return amount;
+      if (isProportional.value && isShallowComposableStablePool.value)
+        return amount;
+
       return minusSlippage(amount, withdrawalTokens.value[i].decimals);
     });
   });
@@ -267,7 +270,7 @@ export default function useWithdrawMath(
    */
   const bptIn = computed((): string => {
     if (exactOut.value) return addSlippageScaled(fullBPTIn.value);
-    if (isProportional && isComposableStablePool.value)
+    if (isProportional && isShallowComposableStablePool.value)
       return addSlippageScaled(fullBPTIn.value);
     return fullBPTIn.value.toString();
   });
