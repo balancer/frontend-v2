@@ -3,7 +3,7 @@ import { computed, toRef } from 'vue';
 
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { lpTokensFor } from '@/composables/usePool';
+import { lpTokensFor, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -26,6 +26,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { isMigratablePool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
@@ -81,10 +82,11 @@ const fiatTotal = computed(() => {
     />
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
-        tag="router-link"
+        :tag="isMigratablePool(pool) ? 'div' : 'router-link'"
         :to="{ name: 'invest' }"
         :label="$t('invest')"
         color="gradient"
+        :disabled="isMigratablePool(pool)"
         block
       />
       <BalBtn
