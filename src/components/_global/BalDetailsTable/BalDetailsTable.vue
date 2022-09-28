@@ -18,7 +18,7 @@ defineProps<Props>();
  */
 const { upToLargeBreakpoint } = useBreakpoints();
 </script>
-    
+
 <template>
   <BalCard class="overflow-x-auto" :square="upToLargeBreakpoint" noPad>
     <div
@@ -42,8 +42,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
     </div>
   </BalCard>
 </template>
-    
-    
+
 <style scoped>
 .table-row {
   @apply flex border-b dark:border-gray-700;

@@ -1,29 +1,25 @@
-import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
-import { configService as _configService } from '@/services/config/config.service';
+import { subgraphFallbackService } from './subgraph-fallback.service';
 
 export default class BalancerSubgraphClient {
-  url: string;
-
-  constructor(private readonly configService = _configService) {
-    this.url = configService.network.subgraph;
-  }
-
   public async get(query) {
     try {
       const payload = this.toPayload(query);
-      const {
-        data: { data },
-      } = await axios.post(this.url, payload);
-      return data;
+      const response = await subgraphFallbackService.get(payload);
+
+      if (!response) {
+        return;
+      }
+
+      return response.data.data;
     } catch (error) {
       console.error(error);
     }
   }
 
   public toPayload(query) {
-    return JSON.stringify({ query: jsonToGraphQLQuery({ query }) });
+    return { query: jsonToGraphQLQuery({ query }) };
   }
 }
 
