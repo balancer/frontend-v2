@@ -54,15 +54,13 @@ const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
 /**
  * COMPUTED
  */
-const fromPool = computed<Pool | undefined>(() => poolsData.value?.[0]);
+const fromPool = computed<Pool | undefined>(() =>
+  poolsData.value?.find(pool => pool.id === props.poolMigrationInfo.fromPoolId)
+);
 
-const toPool = computed<Pool | undefined>(() => {
-  // TO-DO: remove after pool migration merge (this condition is temporary for testing purpose)
-  if (props.poolMigrationInfo.fromPoolId === props.poolMigrationInfo.toPoolId) {
-    return fromPool.value;
-  }
-  return poolsData.value?.[1];
-});
+const toPool = computed<Pool | undefined>(() =>
+  poolsData.value?.find(pool => pool.id === props.poolMigrationInfo.toPoolId)
+);
 
 const fromPoolTokenInfo = computed(() =>
   fromPool.value != null ? getToken(fromPool.value.address) : null
