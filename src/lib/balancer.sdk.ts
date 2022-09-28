@@ -1,7 +1,5 @@
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
-
 import { configService } from '@/services/config/config.service';
-import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 
 const network = ((): Network => {
   switch (configService.network.key) {
@@ -23,5 +21,5 @@ const network = ((): Network => {
 export const balancer = new BalancerSDK({
   network,
   rpcUrl: configService.rpc,
-  customSubgraphUrl: subgraphFallbackService.url.value,
+  customSubgraphUrl: configService.network.subgraph,
 });
