@@ -18,6 +18,8 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { Pool } from '@/services/pool/types';
 import { BatchSwap } from '@/types';
 import { TokenInfo } from '@/types/TokenList';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
@@ -34,6 +36,7 @@ export default function useInvestMath(
   const proportionalAmounts = ref<string[]>([]);
   const batchSwap = ref<BatchSwap | null>(null);
   const batchSwapLoading = ref(false);
+  const queryBptOut = ref<string>('0');
 
   /**
    * COMPOSABLES
@@ -41,9 +44,11 @@ export default function useInvestMath(
   const { toFiat, fNum2 } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
+  const { getProvider, account } = useWeb3();
   const {
     managedPoolWithTradingHalted,
     isComposableStableLikePool,
+    isShallowComposableStablePool,
     isDeepPool,
   } = usePool(pool);
   const {
@@ -62,6 +67,7 @@ export default function useInvestMath(
     'join',
     useNativeAsset
   );
+  const poolExchange = new PoolExchange(pool);
 
   /**
    * COMPUTED
@@ -165,6 +171,8 @@ export default function useInvestMath(
       _bptOut = batchSwap.value
         ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
+    } else if (isShallowComposableStablePool.value) {
+      _bptOut = queryBptOut.value;
     } else {
       _bptOut = poolCalculator
         .exactTokensInForBPTOut(fullAmounts.value)
@@ -245,12 +253,43 @@ export default function useInvestMath(
     batchSwapLoading.value = false;
   }
 
+  /**
+   * Fetches expected BPT out using queryJoin and overrides bptOut value derived
+   * from JS maths. Only used shallow ComposableStable pools due to issue with
+   * cached priceRates.
+   *
+   * Note: This was originally seen with BAL#208 failures on join calls of the
+   * Polygon MaticX pool.
+   */
+  async function getQueryBptOut() {
+    if (!isShallowComposableStablePool.value) return;
+
+    try {
+      const result = await poolExchange.queryJoin(
+        getProvider(),
+        account.value,
+        fullAmounts.value,
+        tokenAddresses.value,
+        '0'
+      );
+
+      queryBptOut.value = result.bptOut.toString();
+    } catch (error) {
+      console.error('Failed to fetch query bptOut', error);
+    }
+  }
+
+  /**
+   * WATCHERS
+   */
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
     const changedIndex = newAmounts.findIndex(
       (amount, i) => oldAmounts[i] !== amount
     );
 
     if (changedIndex >= 0) {
+      getQueryBptOut();
+
       if (shouldFetchBatchSwap.value) {
         batchSwapPromises.value.push(getBatchSwap);
         if (!processingBatchSwaps.value) processBatchSwaps();
