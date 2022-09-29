@@ -22,29 +22,6 @@ export interface LinearPool extends Pool {
 }
 
 export type AprRange = { min: string; max: string };
-export interface PoolAPRs {
-  total: {
-    unstaked: string;
-    staked: {
-      calc: (boost?: string) => string;
-      max: string;
-      min: string;
-    };
-  };
-  swap: string;
-  yield: {
-    total: string;
-    breakdown: { [address: string]: string };
-  };
-  staking?: {
-    bal: {
-      min: string;
-      max: string;
-    };
-    rewards: string;
-  };
-  veBal?: string;
-}
 
 export interface OnchainTokenData {
   balance: string;
