@@ -29,6 +29,7 @@ export interface Config {
   balancerApi?: string;
   poolsUrlV2: string;
   subgraphs: {
+    main: string[];
     aave: string;
     gauge: string;
     blocks: string;
@@ -72,6 +73,7 @@ export interface Config {
   keys: {
     infura: string;
     alchemy: string;
+    graph?: string;
     balancerApi?: string;
   };
   strategies: Record<

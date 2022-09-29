@@ -16,6 +16,10 @@
   "balancerApi": "https://xpbjj5txdbhs5iiw4dnatjwttu.appsync-api.ap-southeast-2.amazonaws.com/graphql",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "subgraphs": {
+    "main": [
+      "https://gateway.thegraph.com/api/{{GRAPH_KEY}}/subgraphs/id/GAWNgiGrA9eRce5gha9tWc7q5DPvN3fs5rSJ6tEULFNM",
+      "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2"
+    ],
     "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges",
     "blocks": "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks"
@@ -65,6 +69,7 @@
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
     "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
+    "graph": "7c7b4c36244b0b86171a3931eaf9bb23",
     "balancerApi": "da2-cnbvmperrjcktoayuy43cvqkda"
   },
   "strategies": {
