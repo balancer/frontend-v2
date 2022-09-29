@@ -1,20 +1,12 @@
 import { BigNumber } from 'ethers';
-import { Pool as SDKPool, PoolType } from '@balancer-labs/sdk';
+import { Pool as SDKPool, PoolToken } from '@balancer-labs/sdk';
 import { Address } from '@/types';
 
-export { PoolType } from '@balancer-labs/sdk';
+export { PoolType, PoolToken } from '@balancer-labs/sdk';
 
 export interface Pool extends SDKPool {
   onchain?: OnchainPoolData;
   linearPoolTokensMap?: Record<string, PoolToken>;
-}
-export interface PoolToken {
-  address: string;
-  balance: string;
-  weight: string;
-  priceRate: string | undefined;
-  symbol?: string;
-  token?: { pool: { poolType: null | PoolType } | null };
 }
 
 // PoolToken data from onchain call
