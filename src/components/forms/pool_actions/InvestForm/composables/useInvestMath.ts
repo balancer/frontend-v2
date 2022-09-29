@@ -171,7 +171,10 @@ export default function useInvestMath(
       _bptOut = batchSwap.value
         ? bnum(batchSwap.value.amountTokenOut).abs().toString()
         : '0';
-    } else if (isShallowComposableStablePool.value) {
+    } else if (
+      isShallowComposableStablePool.value &&
+      bnum(queryBptOut.value).gt(0)
+    ) {
       _bptOut = queryBptOut.value;
     } else {
       _bptOut = poolCalculator
