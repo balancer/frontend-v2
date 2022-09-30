@@ -5,11 +5,11 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { isSameAddress } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
 import { BaseContent } from '@/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { useTokenHelpers } from '@/composables/useTokenHelpers';
 
 /**
  * TYPES
@@ -107,7 +107,8 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
   /**
    * COMPOSABLES
    */
-  const { nativeAsset, wrappedNativeAsset } = useTokens();
+  const { nativeAsset } = useTokens();
+  const { replaceWethWithEth } = useTokenHelpers();
   const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
   /**
@@ -135,15 +136,6 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   function maxSlider(): void {
     state.slider.val = state.slider.max;
-  }
-
-  function replaceWethWithEth(addresses: string[]): string[] {
-    return addresses.map(address => {
-      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
-        return nativeAsset.address;
-      }
-      return address;
-    });
   }
 
   return {

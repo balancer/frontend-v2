@@ -25,7 +25,13 @@ import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { HIGH_PRICE_IMPACT } from '@/constants/poolLiquidity';
 import { balancer } from '@/lib/balancer.sdk';
-import { bnSum, bnum, forChange, isSameAddress } from '@/lib/utils';
+import {
+  bnSum,
+  bnum,
+  forChange,
+  indexOfAddress,
+  isSameAddress,
+} from '@/lib/utils';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 // Services
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -40,6 +46,7 @@ import { isEqual } from 'lodash';
 import { SHALLOW_COMPOSABLE_STABLE_BUFFER } from '@/constants/pools';
 
 import PoolExchange from '@/services/pool/exchange/exchange.service';
+import { useTokenHelpers } from '@/composables/useTokenHelpers';
 
 /**
  * TYPES
@@ -79,7 +86,9 @@ export default function useWithdrawMath(
     balanceFor,
     getToken,
     dynamicDataLoading,
+    nativeAsset,
   } = useTokens();
+  const { replaceWethWithEth } = useTokenHelpers();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
   const { isWeightedPool, isDeepPool, isShallowComposableStablePool } =
@@ -585,8 +594,12 @@ export default function useWithdrawMath(
         tokenOutIndex.value,
         false
       );
+      let tokens = pool.value.tokens.map(t => t.address);
+      if (isSameAddress(tokenOut.value, nativeAsset.address))
+        tokens = replaceWethWithEth(tokens);
+      const actualIndex = indexOfAddress(tokens, tokenOut.value);
       const maxOut = formatUnits(
-        result.amountsOut[tokenOutIndex.value].toString(),
+        result.amountsOut[actualIndex].toString(),
         tokenOutDecimals.value
       );
       fetchedSingleAssetMaxes.value[tokenOutIndex.value] = maxOut;
@@ -719,14 +732,16 @@ export default function useWithdrawMath(
   watch(account, () => initMath());
 
   watch(tokenOutAmount, async (newAmount, oldAmount) => {
-    /**
-     * If a single asset exit and the input values change we
-     * need to refetch the swap to get the required BPT in.
-     */
-    if (!isProportional.value && !isEqual(oldAmount, newAmount)) {
-      await getQueryBptIn();
-      swapPromises.value.push(getSwap);
-      if (!processingSwaps.value) processSwaps();
+    if (!isEqual(oldAmount, newAmount)) {
+      /**
+       * If a single asset exit and the input values change we
+       * need to refetch the swap to get the required BPT in.
+       */
+      if (!isProportional.value) {
+        await getQueryBptIn();
+        swapPromises.value.push(getSwap);
+        if (!processingSwaps.value) processSwaps();
+      }
     }
   });
 
