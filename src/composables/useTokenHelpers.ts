@@ -7,24 +7,33 @@ import { TokenInfo } from '@/types/TokenList';
 
 import useTokens from './useTokens';
 
+const balAddress = getAddress(TOKENS.Addresses.BAL);
+
+function isBalAddress(address: string): boolean {
+  return isSameAddress(address, balAddress);
+}
+
 export function useTokenHelpers() {
   /**
    * COMPOSABLES
    */
-  const { getToken } = useTokens();
+  const { getToken, wrappedNativeAsset, nativeAsset } = useTokens();
 
   /**
    * COMPUTED
    */
-  const balAddress = computed((): string => getAddress(TOKENS.Addresses.BAL));
-
-  const balToken = computed((): TokenInfo => getToken(balAddress.value));
+  const balToken = computed((): TokenInfo => getToken(balAddress));
 
   /**
    * METHODS
    */
-  function isBalAddress(address: string): boolean {
-    return isSameAddress(address, balAddress.value);
+  function replaceWethWithEth(addresses: string[]): string[] {
+    return addresses.map(address => {
+      if (isSameAddress(address, wrappedNativeAsset.value.address)) {
+        return nativeAsset.address;
+      }
+      return address;
+    });
   }
 
   return {
@@ -33,5 +42,6 @@ export function useTokenHelpers() {
     balToken,
     // methods
     isBalAddress,
+    replaceWethWithEth,
   };
 }

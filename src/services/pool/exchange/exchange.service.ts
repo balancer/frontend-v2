@@ -12,6 +12,7 @@ import { Pool } from '@/services/pool/types';
 import ExitParams from './serializers/ExitParams';
 import JoinParams from './serializers/JoinParams';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
+import { BigNumber } from 'ethers';
 
 export default class ExchangeService {
   pool: Ref<Pool>;
@@ -33,7 +34,7 @@ export default class ExchangeService {
     amountsIn: string[],
     tokensIn: string[],
     bptOut = '0'
-  ) {
+  ): Promise<{ bptOut: BigNumber; amountsIn: BigNumber[] }> {
     const params = this.joinParams.serialize(
       account,
       amountsIn,
@@ -83,7 +84,7 @@ export default class ExchangeService {
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
-  ) {
+  ): Promise<{ bptIn: BigNumber; amountsOut: BigNumber[] }> {
     const params = this.exitParams.serialize(
       account,
       amountsOut,
