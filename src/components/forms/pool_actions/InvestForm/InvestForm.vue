@@ -80,7 +80,7 @@ const {
   maximizeAmounts,
   optimizeAmounts,
   proportionalAmounts,
-  batchSwapLoading,
+  loadingData,
 } = investMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -294,10 +294,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmounts ||
-          !hasValidInputs ||
-          isMismatchedNetwork ||
-          batchSwapLoading
+          !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
         "
         block
         @click="showInvestPreview = true"

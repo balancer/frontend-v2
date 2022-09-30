@@ -34,8 +34,8 @@ export default function useInvestMath(
    * STATE
    */
   const proportionalAmounts = ref<string[]>([]);
+  const loadingData = ref(false);
   const batchSwap = ref<BatchSwap | null>(null);
-  const batchSwapLoading = ref(false);
   const queryBptOut = ref<string>('0');
 
   /**
@@ -136,12 +136,12 @@ export default function useInvestMath(
   });
 
   const highPriceImpact = computed((): boolean => {
-    if (batchSwapLoading.value) return false;
+    if (loadingData.value) return false;
     return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
   });
 
   const rektPriceImpact = computed((): boolean => {
-    if (batchSwapLoading.value) return false;
+    if (loadingData.value) return false;
     return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
   });
 
@@ -244,7 +244,7 @@ export default function useInvestMath(
   }
 
   async function getBatchSwap(): Promise<void> {
-    batchSwapLoading.value = true;
+    loadingData.value = true;
     batchSwap.value = await queryBatchSwapTokensIn(
       sor,
       balancerContractsService.vault.instance as any,
@@ -253,7 +253,7 @@ export default function useInvestMath(
       pool.value.address.toLowerCase()
     );
 
-    batchSwapLoading.value = false;
+    loadingData.value = false;
   }
 
   /**
@@ -268,6 +268,7 @@ export default function useInvestMath(
     if (!isShallowComposableStablePool.value) return;
 
     try {
+      loadingData.value = true;
       const result = await poolExchange.queryJoin(
         getProvider(),
         account.value,
@@ -277,6 +278,7 @@ export default function useInvestMath(
       );
 
       queryBptOut.value = result.bptOut.toString();
+      loadingData.value = false;
     } catch (error) {
       console.error('Failed to fetch query bptOut', error);
     }
@@ -291,7 +293,7 @@ export default function useInvestMath(
     );
 
     if (changedIndex >= 0) {
-      getQueryBptOut();
+      await getQueryBptOut();
 
       if (shouldFetchBatchSwap.value) {
         batchSwapPromises.value.push(getBatchSwap);
@@ -327,7 +329,7 @@ export default function useInvestMath(
     hasNoBalances,
     hasAllTokens,
     shouldFetchBatchSwap,
-    batchSwapLoading,
+    loadingData,
     supportsPropotionalOptimization,
     // methods
     maximizeAmounts,
