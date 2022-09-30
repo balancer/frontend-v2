@@ -54,12 +54,12 @@ const options = computed(() => {
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
-const assetSetWidth = computed(
-  () => 40 + (tokenAddresses.value.length - 2) * 10
-);
-
 const noProportionalWithdrawals = computed(
   () => isComposableStable(props.pool.poolType) && !isDeep(props.pool)
+);
+
+const assetSetWidth = computed(
+  () => 40 + (tokenAddresses.value.length - 2) * 10
 );
 
 function isOptionSelected(option: string): boolean {

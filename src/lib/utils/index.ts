@@ -157,14 +157,22 @@ export function indexOfAddress(addresses: string[], address: string): number {
   return addresses.indexOf(getAddress(address));
 }
 
-export function findByAddress<T>(
-  items: Record<string, T>,
+export function selectByAddress<T>(
+  map: Record<string, T>,
   address: string
 ): T | undefined {
-  const foundAddress = Object.keys(items).find(itemAddress => {
+  const foundAddress = Object.keys(map).find(itemAddress => {
     if (isSameAddress(itemAddress, address)) {
       return true;
     }
   });
-  if (foundAddress) return items[foundAddress];
+  if (foundAddress) return map[foundAddress];
+}
+
+export function findByAddress<T>(
+  items: Array<T>,
+  address: string,
+  key = 'address'
+): T | undefined {
+  return items.find(item => isSameAddress(item[key], address));
 }
