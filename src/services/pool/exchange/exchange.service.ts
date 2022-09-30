@@ -84,7 +84,7 @@ export default class ExchangeService {
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
-  ) {
+  ): Promise<{ bptIn: BigNumber; amountsOut: BigNumber[] }> {
     const params = this.exitParams.serialize(
       account,
       amountsOut,

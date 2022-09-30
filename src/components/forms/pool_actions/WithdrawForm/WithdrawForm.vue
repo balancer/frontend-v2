@@ -57,6 +57,7 @@ const {
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   isProportional,
+  tokensOut,
   tokenOut,
   tokenOutIndex
 );
@@ -67,7 +68,7 @@ const {
   singleAssetMaxes,
   tokenOutAmount,
   tokenOutPoolBalance,
-  loadingAmountsOut,
+  loadingData,
   bptBalance,
   initMath,
   resetMath,
@@ -148,7 +149,7 @@ onBeforeMount(() => {
       :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
-      :balanceLoading="loadingAmountsOut"
+      :balanceLoading="loadingData"
       fixedToken
       disableNativeAssetBuffer
     >
@@ -196,10 +197,7 @@ onBeforeMount(() => {
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmounts ||
-          !hasValidInputs ||
-          isMismatchedNetwork ||
-          loadingAmountsOut
+          !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
         "
         block
         @click="showPreview = true"

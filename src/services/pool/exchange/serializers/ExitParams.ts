@@ -43,7 +43,6 @@ export default class ExitParams {
     exitTokenIndex: number | null,
     exactOut: boolean
   ): any[] {
-    console.log([amountsOut, tokensOut, bptIn, exitTokenIndex, exactOut]);
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
       bptIn,
