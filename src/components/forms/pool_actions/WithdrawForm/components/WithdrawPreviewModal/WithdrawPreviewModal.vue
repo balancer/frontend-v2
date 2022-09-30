@@ -102,9 +102,9 @@ function hasAmount(index: number): boolean {
 }
 
 function handleClose(): void {
+  resetTxState();
   if (withdrawalConfirmed.value) {
     resetMath.value();
-    resetTxState();
     maxSlider();
   }
   emit('close');
