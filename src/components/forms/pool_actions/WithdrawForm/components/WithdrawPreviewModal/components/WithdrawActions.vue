@@ -24,6 +24,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
+import router from '@/plugins/router';
 
 /**
  * TYPES
@@ -57,6 +58,7 @@ const {
   batchRelayerApproval,
   txInProgress,
   tx: txState,
+  resetTxState,
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const {
@@ -167,6 +169,11 @@ async function submit(): Promise<TransactionResponse> {
   }
 }
 
+function redirectToPool() {
+  resetTxState();
+  router.push({ name: 'pool', params: { id: props.pool.id } });
+}
+
 /**
  * CALLBACKS
  */
@@ -201,14 +208,7 @@ watch(blockNumber, async () => {
     />
     <div v-else>
       <ConfirmationIndicator :txReceipt="txState.receipt" />
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { id: pool.id } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
+      <BalBtn color="gray" outline block class="mt-2" @click="redirectToPool">
         {{ $t('returnToPool') }}
       </BalBtn>
     </div>
