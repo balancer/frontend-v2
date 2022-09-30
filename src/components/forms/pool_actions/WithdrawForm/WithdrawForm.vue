@@ -15,8 +15,6 @@ import WithdrawTotals from './components/WithdrawTotals.vue';
 import useWithdrawalState from './composables/useWithdrawalState';
 // Composables
 import useWithdrawMath from './composables/useWithdrawMath';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -36,9 +34,6 @@ const showPreview = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { blockNumber } = useWeb3();
-const poolQuery = usePoolQuery(props.pool.id);
-const { refetchBalances } = useTokens();
 
 const {
   isProportional,
@@ -101,15 +96,6 @@ watch(isProportional, newVal => {
   if (newVal) {
     initMath();
     maxSlider();
-  }
-});
-
-watch(blockNumber, async () => {
-  // Fetch latest balances on every block to ensure up to date prior to any tx
-  // initiation except when a tx is already triggered.
-  if (!txInProgress.value) {
-    poolQuery.refetch.value();
-    refetchBalances.value();
   }
 });
 
