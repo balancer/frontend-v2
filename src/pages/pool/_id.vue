@@ -11,6 +11,7 @@ import {
   PoolBalancesCard,
   PoolContractDetails,
 } from '@/components/contextual/pages/pool';
+import PoolChangelog from '@/components/contextual/pages/pool/changelog/PoolChangelog.vue';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
 import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
@@ -226,6 +227,7 @@ watch(poolQuery.error, () => {
           <template v-if="isSentinelIntersected && pool">
             <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
             <PoolContractDetails :pool="pool" />
+            <PoolChangelog :pool="pool" />
           </template>
         </div>
       </div>

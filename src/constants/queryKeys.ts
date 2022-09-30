@@ -64,6 +64,11 @@ const QUERY_KEYS = {
       'user',
       { networkId, account, id },
     ],
+    AmpUpdates: (networkId: Ref<Network>, id: string) => [
+      POOLS_ROOT_KEY,
+      'ampUpdates',
+      { networkId, id },
+    ],
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],
