@@ -269,7 +269,9 @@ export default function useWithdrawMath(
    */
   const fullBPTIn = computed((): string => {
     if (isProportional.value) {
-      const _bpt = bnum(propBptIn.value).minus(bptBuffer.value).toString();
+      const _bpt = bnum(propBptIn.value)
+        .minus(formatUnits(bptBuffer.value), 18)
+        .toString();
       return parseUnits(_bpt, poolDecimals.value).toString();
     }
     if (!exactOut.value)
