@@ -9,7 +9,7 @@ import configs from '@/lib/config';
 import { networkId } from '@/composables/useNetwork';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { getNextAllowedTimeToVote } from '@/components/contextual/pages/vebal/LMVoting/utils';
+import { isVotingTimeLocked } from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -79,7 +79,7 @@ export default function useVotingEscrowLocks() {
           // Has user received veBAL since they last voted
           gauge.lastUserVoteTime < lastReceivedVebal.value &&
           // Is voting currently locked
-          !getNextAllowedTimeToVote(gauge.lastUserVoteTime) &&
+          isVotingTimeLocked(gauge.lastUserVoteTime) &&
           // Is gauge not expired
           !expiredGauges.value?.includes(gauge.address)
         ) {

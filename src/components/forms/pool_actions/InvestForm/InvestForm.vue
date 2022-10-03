@@ -8,12 +8,12 @@ import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.v
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
+import { isStableLike, usePool, isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
   bnum,
-  findByAddress,
+  selectByAddress,
   indexOfAddress,
   isSameAddress,
 } from '@/lib/utils';
@@ -80,7 +80,7 @@ const {
   maximizeAmounts,
   optimizeAmounts,
   proportionalAmounts,
-  batchSwapLoading,
+  loadingData,
 } = investMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -112,7 +112,7 @@ const poolHasLowLiquidity = computed((): boolean =>
 );
 
 const investmentTokens = computed((): string[] => {
-  if (isStablePhantom(props.pool.poolType)) {
+  if (isDeep(props.pool)) {
     return props.pool.mainTokens || [];
   }
   return props.pool.tokensList;
@@ -141,12 +141,14 @@ function tokenWeight(address: string): number {
 
   if (isSameAddress(address, nativeAsset.address)) {
     return (
-      findByAddress(props.pool.onchain.tokens, wrappedNativeAsset.value.address)
-        ?.weight || 1
+      selectByAddress(
+        props.pool.onchain.tokens,
+        wrappedNativeAsset.value.address
+      )?.weight || 1
     );
   }
 
-  return findByAddress(props.pool.onchain.tokens, address)?.weight || 1;
+  return selectByAddress(props.pool.onchain.tokens, address)?.weight || 1;
 }
 
 function propAmountFor(index: number): string {
@@ -292,10 +294,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmounts ||
-          !hasValidInputs ||
-          isMismatchedNetwork ||
-          batchSwapLoading
+          !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
         "
         block
         @click="showInvestPreview = true"

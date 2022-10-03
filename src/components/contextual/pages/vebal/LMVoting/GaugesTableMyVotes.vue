@@ -7,7 +7,10 @@ import BigNumber from 'bignumber.js';
 import useNumbers from '@/composables/useNumbers';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import { useI18n } from 'vue-i18n';
-
+import {
+  isVotingTimeLocked,
+  remainingVoteLockTime,
+} from '@/composables/useVeBAL';
 /**
  * TYPES
  */
@@ -51,7 +54,28 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
     }"
   >
     {{ myVotes }}
-    <template v-if="poolHasUnderUtilizedVotingPoewer">
+
+    <BalTooltip v-if="isVotingTimeLocked(gauge.lastUserVoteTime)">
+      <template #activator>
+        <TimelockIcon />
+      </template>
+      <div>
+        <span class="font-semibold">
+          {{
+            $t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title')
+          }}
+        </span>
+        <p class="text-gray-500">
+          {{
+            $t(
+              'veBAL.liquidityMining.popover.warnings.votedTooRecently.description',
+              [remainingVoteLockTime(gauge.lastUserVoteTime)]
+            )
+          }}
+        </p>
+      </div>
+    </BalTooltip>
+    <template v-else-if="poolHasUnderUtilizedVotingPoewer">
       <BalTooltip textAlign="left" width="60">
         <template #activator>
           <BalIcon class="ml-1" name="alert-triangle" size="sm" />

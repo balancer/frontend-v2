@@ -4,17 +4,8 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { formatUnits } from '@ethersproject/units';
-import {
-  computed,
-  onBeforeMount,
-  reactive,
-  ref,
-  toRef,
-  toRefs,
-  watch,
-} from 'vue';
+import { onBeforeMount, ref, toRef, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
@@ -33,6 +24,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
+import router from '@/plugins/router';
 
 /**
  * TYPES
@@ -40,14 +32,6 @@ import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 type Props = {
   pool: Pool;
   math: WithdrawMathResponse;
-};
-
-type WithdrawalState = {
-  init: boolean;
-  confirming: boolean;
-  confirmed: boolean;
-  confirmedAt: string;
-  receipt?: TransactionReceipt;
 };
 
 /**
@@ -61,27 +45,21 @@ const emit = defineEmits<{
 }>();
 
 /**
- * STATE
- */
-const withdrawalState = reactive<WithdrawalState>({
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: '',
-});
-
-/**
  * COMPOSABLES
  */
-const route = useRoute();
 const { t } = useI18n();
 const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
-  toRef(props, 'pool')
-);
+const {
+  tokenOutIndex,
+  tokensOut,
+  batchRelayerApproval,
+  txInProgress,
+  tx: txState,
+  resetTxState,
+} = useWithdrawalState(toRef(props, 'pool'));
 
 const {
   bptIn,
@@ -113,16 +91,6 @@ const actions = ref<TransactionActionInfo[]>([withdrawalAction]);
 const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
 /**
- * COMPUTED
- */
-const transactionInProgress = computed(
-  (): boolean =>
-    withdrawalState.init ||
-    withdrawalState.confirming ||
-    withdrawalState.confirmed
-);
-
-/**
  * METHODS
  */
 async function handleTransaction(tx): Promise<void> {
@@ -140,17 +108,17 @@ async function handleTransaction(tx): Promise<void> {
     },
   });
 
-  withdrawalState.confirmed = await txListener(tx, {
+  txState.value.confirmed = await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       emit('success', receipt);
-      withdrawalState.confirming = false;
-      withdrawalState.receipt = receipt;
+      txState.value.confirming = false;
+      txState.value.receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
-      withdrawalState.confirmedAt = dateTimeLabelFor(confirmedAt);
+      txState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
     },
     onTxFailed: () => {
-      withdrawalState.confirming = false;
+      txState.value.confirming = false;
     },
   });
 }
@@ -158,7 +126,7 @@ async function handleTransaction(tx): Promise<void> {
 async function submit(): Promise<TransactionResponse> {
   try {
     let tx;
-    withdrawalState.init = true;
+    txState.value.init = true;
 
     if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
       tx = await balancerContractsService.batchRelayer.execute(
@@ -186,19 +154,24 @@ async function submit(): Promise<TransactionResponse> {
       );
     }
 
-    withdrawalState.init = false;
-    withdrawalState.confirming = true;
+    txState.value.init = false;
+    txState.value.confirming = true;
 
     console.log('Receipt', tx);
 
     handleTransaction(tx);
     return tx;
   } catch (error) {
-    withdrawalState.init = false;
-    withdrawalState.confirming = false;
+    txState.value.init = false;
+    txState.value.confirming = false;
     console.error(error);
     return Promise.reject(error);
   }
+}
+
+function redirectToPool() {
+  resetTxState();
+  router.push({ name: 'pool', params: { id: props.pool.id } });
 }
 
 /**
@@ -215,7 +188,7 @@ onBeforeMount(() => {
  * WATCHERS
  */
 watch(blockNumber, async () => {
-  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+  if (shouldFetchBatchSwap.value && !txInProgress.value) {
     await props.math.getSwap();
     if (
       batchSwap.value &&
@@ -230,19 +203,12 @@ watch(blockNumber, async () => {
 <template>
   <transition>
     <BalActionSteps
-      v-if="!withdrawalState.confirmed || !withdrawalState.receipt"
+      v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
     />
     <div v-else>
-      <ConfirmationIndicator :txReceipt="withdrawalState.receipt" />
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { id: route.params.id } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
+      <ConfirmationIndicator :txReceipt="txState.receipt" />
+      <BalBtn color="gray" outline block class="mt-2" @click="redirectToPool">
         {{ $t('returnToPool') }}
       </BalBtn>
     </div>

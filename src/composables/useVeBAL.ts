@@ -1,4 +1,4 @@
-import { differenceInSeconds, sub } from 'date-fns';
+import { differenceInSeconds, formatDistanceToNow, sub } from 'date-fns';
 import { computed, ref } from 'vue';
 
 import { isGoerli, isKovan, isMainnet } from '@/composables/useNetwork';
@@ -6,8 +6,9 @@ import { POOLS } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 
 import useConfig from './useConfig';
-import { getPreviousThursday, oneYearInSecs } from './useTime';
+import { getPreviousThursday, oneYearInSecs, toJsTimestamp } from './useTime';
 import useTokens from './useTokens';
+import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 
 /**
  * STATE
@@ -65,6 +66,16 @@ export function getPreviousEpoch(weeksToGoBack = 0): Date {
   });
 }
 
+export function isVotingTimeLocked(lastVoteTime: number): boolean {
+  const lastUserVoteTime = toJsTimestamp(lastVoteTime);
+  return Date.now() < lastUserVoteTime + WEIGHT_VOTE_DELAY;
+}
+
+export function remainingVoteLockTime(lastVoteTime: number): string {
+  const lastUserVoteTime = toJsTimestamp(lastVoteTime);
+  return formatDistanceToNow(lastUserVoteTime + WEIGHT_VOTE_DELAY);
+}
+
 export default function useVeBal() {
   /**
    * COMPOSABLES
@@ -83,7 +94,7 @@ export default function useVeBal() {
     balanceFor(networkConfig.addresses.veBAL)
   );
 
-  const lockablePoolId = computed(() => POOLS.IdsMap?.['B-80BAL-20WETH']);
+  const lockablePoolId = computed(() => POOLS.IdsMap?.veBAL);
 
   return {
     // computed

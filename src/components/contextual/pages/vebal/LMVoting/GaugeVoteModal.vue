@@ -11,7 +11,10 @@ import useEthers from '@/composables/useEthers';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { dateTimeLabelFor, toUtcTime } from '@/composables/useTime';
 import useTransactions from '@/composables/useTransactions';
-import useVeBal from '@/composables/useVeBAL';
+import useVeBal, {
+  isVotingTimeLocked,
+  remainingVoteLockTime,
+} from '@/composables/useVeBAL';
 import { WEIGHT_VOTE_DELAY } from '@/constants/gauge-controller';
 import { VEBAL_VOTING_GAUGE } from '@/constants/voting-gauges';
 import { bnum, isSameAddress, scale } from '@/lib/utils';
@@ -20,7 +23,6 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
-import { getNextAllowedTimeToVote } from './utils';
 import useVoteState from './useVoteState';
 import SubmitVoteBtn from './SubmitVoteBtn.vue';
 
@@ -72,7 +74,7 @@ const voteButtonDisabled = computed((): boolean => {
     return !!voteError.value || !hasEnoughVotes.value;
   }
 
-  return !!voteWarning.value || !!voteError.value || !hasEnoughVotes.value;
+  return !!voteError.value || !hasEnoughVotes.value;
 });
 
 const voteInputDisabled = computed((): boolean => {
@@ -89,10 +91,14 @@ const isVeBalGauge = computed((): boolean =>
   isSameAddress(props.gauge.address, VEBAL_VOTING_GAUGE?.address || '')
 );
 
-// Is votes next period value above 10%?
-const votesNextPeriodGt10pct = computed((): boolean => {
+// Is votes next period value above voting cap?
+const votesNextPeriodOverCap = computed((): boolean => {
+  if (!isVeBalGauge.value && props.gauge.relativeWeightCap === 'null')
+    return false;
   const gaugeVoteWeightNormalized = scale(props.gauge.votesNextPeriod, -18);
-  return gaugeVoteWeightNormalized.gte(bnum('0.1'));
+  return gaugeVoteWeightNormalized.gte(
+    bnum(isVeBalGauge.value ? '0.1' : props.gauge.relativeWeightCap)
+  );
 });
 
 const voteTitle = computed(() =>
@@ -108,8 +114,8 @@ const voteButtonText = computed(() =>
 );
 
 const votedToRecentlyWarning = computed(() => {
-  const remainingTime = getNextAllowedTimeToVote(props.gauge.lastUserVoteTime);
-  if (remainingTime) {
+  if (isVotingTimeLocked(props.gauge.lastUserVoteTime)) {
+    const remainingTime = remainingVoteLockTime(props.gauge.lastUserVoteTime);
     return {
       title: t('veBAL.liquidityMining.popover.warnings.votedTooRecently.title'),
       description: t(
@@ -156,16 +162,28 @@ const veBalLockTooShortWarning = computed(() => {
   return null;
 });
 
-const veBalVoteOverLimitWarning = computed(() => {
-  if (isVeBalGauge.value && votesNextPeriodGt10pct.value) {
-    return {
-      title: t(
-        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
-      ),
-      description: t(
-        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
-      ),
-    };
+const lpVoteOverLimitWarning = computed(() => {
+  if (votesNextPeriodOverCap.value) {
+    if (isVeBalGauge.value) {
+      return {
+        title: t(
+          'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
+        ),
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
+        ),
+      };
+    } else {
+      return {
+        title: t(
+          'veBAL.liquidityMining.popover.warnings.lpVoteOverLimitWarning.title'
+        ),
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.lpVoteOverLimitWarning.description',
+          [(Number(props.gauge.relativeWeightCap) * 100).toFixed()]
+        ),
+      };
+    }
   }
 
   return null;
@@ -176,7 +194,7 @@ const voteWarning = computed(
     title: string;
     description: string;
   } | null => {
-    if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
+    if (lpVoteOverLimitWarning.value) return lpVoteOverLimitWarning.value;
     return null;
   }
 );

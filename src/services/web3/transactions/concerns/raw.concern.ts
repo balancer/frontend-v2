@@ -6,6 +6,7 @@ import {
 } from '@ethersproject/providers';
 import { captureException } from '@sentry/minimal';
 import { Wallet } from 'ethers';
+import { verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
 export class RawConcern extends TransactionConcern {
@@ -18,6 +19,8 @@ export class RawConcern extends TransactionConcern {
     forceLegacyTxType = false
   ): Promise<TransactionResponse> {
     console.log('sendTransaction', options);
+    // will throw an error if signer is a sanctioned address
+    await verifyTransactionSender(this.signer);
 
     try {
       const gasSettings = await this.gasPrice.settings(
@@ -41,7 +44,7 @@ export class RawConcern extends TransactionConcern {
   }
 
   public async call(options: TransactionRequest): Promise<string> {
-    const gasSettings = this.gasPrice.settings(this.signer, options);
+    const gasSettings = await this.gasPrice.settings(this.signer, options);
     options = { ...options, ...gasSettings };
 
     return await this.signer.call(options);

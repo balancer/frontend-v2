@@ -2,6 +2,7 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { Pool } from '@/services/pool/types';
+
 /**
  * TYPES
  */
@@ -11,14 +12,18 @@ type Props = {
   priceImpact: number;
   isLoadingPriceImpact?: boolean;
   highPriceImpact?: boolean;
+  summaryTitle?: string | undefined;
 };
+
 /**
  * PROPS & EMITS
  */
 withDefaults(defineProps<Props>(), {
   isLoadingPriceImpact: false,
   highPriceImpact: false,
+  summaryTitle: undefined,
 });
+
 /**
  * COMPOSABLES
  */
@@ -28,9 +33,7 @@ const { currency } = useUserSettings();
 
 <template>
   <div class="summary-table">
-    <h6 class="p-2">
-      {{ $t('summary') }}
-    </h6>
+    <h6 class="p-2">{{ summaryTitle || $t('summary') }}</h6>
     <div class="flex flex-col py-2">
       <div class="summary-table-row">
         <div class="summary-table-label">

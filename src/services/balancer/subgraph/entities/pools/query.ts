@@ -27,12 +27,19 @@ const defaultAttrs = {
   amp: true,
   createTime: true,
   swapEnabled: true,
+  symbol: true,
+  name: true,
   tokens: {
     address: true,
     balance: true,
     weight: true,
     priceRate: true,
     symbol: true,
+    token: {
+      pool: {
+        poolType: true,
+      },
+    },
   },
 };
 

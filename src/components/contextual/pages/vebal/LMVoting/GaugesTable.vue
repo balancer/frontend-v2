@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
+import BalChipNew from '@/components/chips/BalChipNew.vue';
 import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -24,6 +25,9 @@ import GaugeVoteInfo from './GaugeVoteInfo.vue';
 import GaugesTableMyVotes from './GaugesTableMyVotes.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 import { orderedTokenURIs } from './utils';
+import IconLimit from '@/components/icons/IconLimit.vue';
+import { differenceInWeeks } from 'date-fns';
+import { oneSecondInMs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -68,7 +72,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: '',
     Header: 'chainColumnHeader',
     Cell: 'networkColumnCell',
-    width: 80,
+    width: 50,
     noGrow: true,
   },
   {
@@ -77,7 +81,7 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     accessor: 'uri',
     Header: 'iconColumnHeader',
     Cell: 'iconColumnCell',
-    width: 125,
+    width: 100,
     noGrow: true,
   },
   {
@@ -94,17 +98,17 @@ const columns = ref<ColumnDefinition<VotingGaugeWithVotes>[]>([
     id: 'nextPeriodVotes',
     Cell: 'nextPeriodVotesCell',
     sortKey: gauge => Number(gauge.votesNextPeriod),
-    width: 150,
+    width: 160,
     cellClassName: 'font-numeric',
   },
   {
     name: t('veBAL.liquidityMining.table.myVotes'),
-    accessor: 'id',
-    Cell: 'myVotesCell',
+    accessor: 'myVotes',
     align: 'right',
     id: 'myVotes',
     sortKey: gauge => Number(gauge.userVotes),
-    width: 150,
+    width: 100,
+    Cell: 'myVotesCell',
     cellClassName: 'font-numeric',
     hidden: !isWalletReady.value,
   },
@@ -136,6 +140,10 @@ function redirectToPool(gauge: VotingGaugeWithVotes) {
     gauge.network,
     gauge.pool.poolType
   );
+}
+
+function getIsGaugeNew(addedTimestamp: number): boolean {
+  return differenceInWeeks(Date.now(), addedTimestamp * oneSecondInMs) < 2;
 }
 
 function getIsGaugeExpired(gaugeAddress: string): boolean {
@@ -205,22 +213,44 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <BalAssetSet :logoURIs="orderedTokenURIs(gauge)" :width="100" />
         </div>
       </template>
-      <template #poolCompositionCell="{ pool, address }">
+      <template #poolCompositionCell="{ pool, address, addedTimestamp }">
         <div v-if="!isLoading" class="flex items-center py-4 px-6">
           <TokenPills
-            :tokens="
-              orderedPoolTokens(pool.poolType, pool.address, pool.tokens)
-            "
+            :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="
               isStableLike(pool.poolType) || isUnknownType(pool.poolType)
             "
           />
+          <BalChipNew v-if="getIsGaugeNew(addedTimestamp)" class="ml-2" />
           <BalChipExpired v-if="getIsGaugeExpired(address)" class="ml-2" />
         </div>
       </template>
       <template #nextPeriodVotesCell="gauge">
-        <div v-if="!isLoading" class="py-4 px-6 text-right">
+        <div v-if="!isLoading" class="flex justify-end py-4 px-6">
           <GaugeVoteInfo :gauge="gauge" />
+          <div class="flex justify-end w-6">
+            <IconLimit
+              v-if="gauge.pool.symbol === 'veBAL'"
+              size="sm"
+              amount="10"
+              :tooltip="
+                $t(
+                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedVeBAL'
+                )
+              "
+            />
+            <IconLimit
+              v-else-if="gauge.relativeWeightCap !== 'null'"
+              size="sm"
+              :amount="(Number(gauge.relativeWeightCap) * 100).toFixed()"
+              :tooltip="
+                $t(
+                  'veBAL.liquidityMining.limitsTooltip.distributionsCappedAt',
+                  [(Number(gauge.relativeWeightCap) * 100).toFixed()]
+                )
+              "
+            />
+          </div>
         </div>
       </template>
       <template #myVotesCell="gauge">

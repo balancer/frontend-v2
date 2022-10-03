@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers';
-
 import { Address } from '@/types';
 
 export interface Pool {
@@ -16,6 +15,8 @@ export interface Pool {
   totalSwapFee: string;
   totalSwapVolume: string;
   createTime: number;
+  name: string;
+  symbol: string;
   onchain?: OnchainPoolData;
   mainTokens?: string[];
   wrappedTokens?: string[];
@@ -34,7 +35,9 @@ export enum PoolType {
   Stable = 'Stable',
   MetaStable = 'MetaStable',
   StablePhantom = 'StablePhantom',
+  ComposableStable = 'ComposableStable',
   LiquidityBootstrapping = 'LiquidityBootstrapping',
+  Managed = 'Managed',
 }
 
 export interface PoolToken {
@@ -43,6 +46,7 @@ export interface PoolToken {
   weight: string;
   priceRate: string | null;
   symbol?: string;
+  token: { pool: { poolType: null | PoolType } | null };
 }
 
 // PoolToken data from onchain call

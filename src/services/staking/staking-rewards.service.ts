@@ -119,7 +119,9 @@ export class StakingRewardsService {
       const nilApr = [poolId, { min: '0', max: '0' }];
 
       if (!pool) return nilApr;
+      if (!gauge.isPreferentialGauge) return [null];
       if (isNil(inflationRate)) return nilApr;
+      if (gauge.isKilled) return nilApr;
 
       const poolService = new PoolService(pool);
       if (!balAddress) return nilApr;
@@ -142,7 +144,8 @@ export class StakingRewardsService {
       const range = getAprRange(gaugeBALApr || '0'.toString());
       return [poolId, { ...range }];
     });
-    return Object.fromEntries(aprs);
+
+    return Object.fromEntries(aprs.filter(apr => apr));
   }
 
   async getRewardTokenAprs({

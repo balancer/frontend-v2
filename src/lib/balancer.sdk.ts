@@ -1,5 +1,4 @@
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
-
 import { configService } from '@/services/config/config.service';
 
 const network = ((): Network => {
@@ -22,4 +21,5 @@ const network = ((): Network => {
 export const balancer = new BalancerSDK({
   network,
   rpcUrl: configService.rpc,
+  customSubgraphUrl: configService.network.subgraph,
 });

@@ -62,6 +62,8 @@ export default defineComponent({
     raised: { type: Boolean, default: false },
     block: { type: Boolean, default: false },
     contentClass: { type: String, default: '' },
+    square: { type: Boolean, default: false },
+    noBorder: { type: Boolean, default: false },
   },
 
   emits: ['action-click'],
@@ -72,11 +74,11 @@ export default defineComponent({
         case 'tip':
           return 'bg-yellow-600 border-0 text-black';
         case 'warning':
-          return 'bg-orange-50 dark:bg-orange-500 border border-orange-200 dark:border-0 text-black dark:text-white';
+          return 'bg-orange-50 dark:bg-orange-600 dark:bg-opacity-10 border-orange-200 dark:border-orange-700 text-black dark:text-white';
         case 'error':
-          return 'bg-red-50 dark:bg-red-500 border border-red-200 dark:border-0 text-black dark:text-white';
+          return 'bg-red-50 dark:bg-red-500 dark:bg-opacity-10 border-red-200 dark:border-red-900 text-black dark:text-white';
         default:
-          return 'bg-gray-100 dark:bg-gray-500 border dark:border-0 border-gray-200 text-black dark:text-white';
+          return 'bg-gray-100 dark:bg-gray-500 dark:border-0 border-gray-200 text-black dark:text-white';
       }
     });
 
@@ -106,6 +108,8 @@ export default defineComponent({
         [paddingClasses.value]: true,
         'shadow-sm': props.raised,
         'w-full': props.block,
+        'rounded-lg': !props.square,
+        border: !props.noBorder,
       };
     });
 
@@ -206,7 +210,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-alert {
-  @apply inline-block rounded-lg font-medium;
+  @apply inline-block font-medium;
 }
 
 .bal-alert-container {
