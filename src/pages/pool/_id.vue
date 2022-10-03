@@ -25,6 +25,7 @@ import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
+import usePoolAmpUpdatesQuery from '@/composables/queries/usePoolAmpUpdatesQuery';
 
 /**
  * STATE
@@ -83,6 +84,12 @@ const loadingApr = computed(
     Boolean(aprQuery.error.value)
 );
 const poolApr = computed(() => aprQuery.data.value);
+//#endregion
+
+//#region APR query
+const ampUpdatesQuery = usePoolAmpUpdatesQuery(poolId);
+const ampUpdates = computed(() => ampUpdatesQuery.data.value);
+ampUpdates;
 //#endregion
 
 //#region Intersection Observer
@@ -226,8 +233,8 @@ watch(poolQuery.error, () => {
           <div ref="intersectionSentinel" />
           <template v-if="isSentinelIntersected && pool">
             <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
-            <PoolContractDetails :pool="pool" />
-            <PoolChangelog :pool="pool" />
+            <PoolContractDetails :pool="pool" :ampUpdates="ampUpdates" />
+            <PoolChangelog :pool="pool" :ampUpdates="ampUpdates" />
           </template>
         </div>
       </div>

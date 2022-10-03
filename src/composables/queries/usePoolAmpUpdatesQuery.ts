@@ -2,7 +2,7 @@ import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { Pool } from '@/services/pool/types';
+import { PoolAmpUpdate } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
 
 export default function usePoolAmpUpdatesQuery(id: string) {
@@ -21,11 +21,16 @@ export default function usePoolAmpUpdatesQuery(id: string) {
       where: {
         poolId: id.toLowerCase(),
       },
+      first: 1,
+      orderBy: 'scheduledTimestamp',
+      orderDirection: 'desc',
     });
+
+    console.log(ampUpdates);
     return ampUpdates;
   };
 
   const queryOptions = reactive({});
 
-  return useQuery<Pool>(queryKey, queryFn, queryOptions);
+  return useQuery<PoolAmpUpdate[]>(queryKey, queryFn, queryOptions);
 }

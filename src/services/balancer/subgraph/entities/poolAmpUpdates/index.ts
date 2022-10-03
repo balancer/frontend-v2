@@ -1,4 +1,4 @@
-import { Pool } from '@/services/pool/types';
+import { PoolAmpUpdate } from '@/services/pool/types';
 import { QueryBuilder } from '@/types/subgraph';
 
 import Service from '../../balancer-subgraph.service';
@@ -13,11 +13,10 @@ export default class PoolAmpUpdates {
     this.query = query;
   }
 
-  public async get(args = {}, attrs = {}): Promise<Pool[]> {
+  public async get(args = {}, attrs = {}): Promise<PoolAmpUpdate[]> {
     const query = this.query(args, attrs);
-    console.log(query);
     const data = await this.service.client.get(query);
-    console.log(data);
-    return data.pools;
+    console.log('data', data);
+    return data.ampUpdates;
   }
 }

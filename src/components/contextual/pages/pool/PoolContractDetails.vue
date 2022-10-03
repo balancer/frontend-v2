@@ -13,6 +13,7 @@ import { useI18n } from 'vue-i18n';
  */
 type Props = {
   pool: Pool;
+  ampUpdates: any;
   loading: boolean;
 };
 
@@ -45,8 +46,16 @@ function formSwapFeesHint(owner: string): string {
  * COMPUTED
  */
 const data = computed(() => {
-  const { poolType, address, symbol, owner, createTime, swapFee, name } =
-    props.pool;
+  const {
+    poolType,
+    address,
+    symbol,
+    owner,
+    createTime,
+    swapFee,
+    name,
+    onchain,
+  } = props.pool;
 
   return [
     {
@@ -64,6 +73,10 @@ const data = computed(() => {
     {
       title: t('poolType'),
       value: poolType,
+    },
+    {
+      title: t('ampFactor.title'),
+      value: onchain?.amp ? `${onchain.amp} (${formSwapFeesHint(owner)})` : '',
     },
     {
       title: t('swapFees'),

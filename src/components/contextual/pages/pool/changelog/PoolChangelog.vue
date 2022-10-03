@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+// import { computed } from 'vue';
 import { Pool } from '@/services/pool/types';
 import ChangelogAccordion from './ChangelogAccordion.vue';
-import usePoolAmpUpdatesQuery from '@/composables/queries/usePoolAmpUpdatesQuery';
+import PoolAmpUpdates from '@/services/balancer/subgraph/entities/poolAmpUpdates';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
+  ampUpdates: PoolAmpUpdates[];
 };
 
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+defineProps<Props>();
 
-const ampUpdatesQuery = usePoolAmpUpdatesQuery(props.pool.id);
+/**
+ * COMPOSABLES
+ */
+const { t } = useI18n();
 
-const ampUpdates = computed(() => ampUpdatesQuery.data.value);
-ampUpdates;
 const changelogData = [
   {
     title: 'Pool creation',
@@ -27,7 +30,18 @@ const changelogData = [
     icon: 'swap-fee',
     active: true,
   },
+  {
+    title: `${t('ampFactor.change')} ${t('ampFactor.range', ['1', '2'])}}`,
+    subTitle: t('ampFactor.update'),
+    icon: 'amp',
+    active: true,
+  },
 ];
+
+// const ampUpdatedData = computed(() => {
+//   console.log(props.ampUpdates);
+//   return props.ampUpdates;
+// });
 </script>
     
 <template>
@@ -48,7 +62,7 @@ const changelogData = [
                 class="changelog__timeline-header"
                 :class="{ 'header-active': false }"
               >
-                <h3>{{ item.title }}</h3>
+                <h4>{{ item.title }}</h4>
               </div>
             </div>
           </template>
@@ -83,7 +97,8 @@ const changelogData = [
 .changelog__timeline-header {
   padding: 20px 25px;
   border-top: 2px solid theme('colors.gray.200');
-  border-bottom: 2px solid theme('colors.gray.200');
+
+  /* border-bottom: 2px solid theme('colors.gray.200'); */
   flex: 1;
 }
 

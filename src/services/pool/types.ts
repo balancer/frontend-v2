@@ -219,3 +219,15 @@ export interface PoolSnapshot {
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
+
+export interface PoolAmpUpdate {
+  endAmp: string;
+  endTimestamp: string;
+  id: string;
+  poolId: {
+    id: string;
+    symbol: string;
+  };
+  startAmp: string;
+  startTimestamp: string;
+}

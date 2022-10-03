@@ -21,25 +21,23 @@ const { upToLargeBreakpoint } = useBreakpoints();
 
 <template>
   <BalCard class="overflow-x-auto" :square="upToLargeBreakpoint" noPad>
-    <div
-      v-for="{ title, value, link } in tableData"
-      :key="title"
-      class="table-row"
-    >
-      <div class="table-row-title">
-        {{ title }}
+    <template v-for="{ title, value, link } in tableData" :key="title">
+      <div v-if="value" class="table-row">
+        <div class="table-row-title">
+          {{ title }}
+        </div>
+        <div class="table-row-value">
+          {{ value }}
+          <BalLink v-if="link" :href="link" external noStyle>
+            <BalIcon
+              name="arrow-up-right"
+              size="sm"
+              class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+            />
+          </BalLink>
+        </div>
       </div>
-      <div class="table-row-value">
-        {{ value }}
-        <BalLink v-if="link" :href="link" external noStyle>
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="mt-2 ml-2 text-gray-500 hover:text-blue-500 transition-colors"
-          />
-        </BalLink>
-      </div>
-    </div>
+    </template>
   </BalCard>
 </template>
 
