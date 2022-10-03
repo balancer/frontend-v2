@@ -79,7 +79,7 @@ export default function useVotingEscrowLocks() {
           // Has user received veBAL since they last voted
           gauge.lastUserVoteTime < lastReceivedVebal.value &&
           // Is voting currently locked
-          isVotingTimeLocked(gauge.lastUserVoteTime) &&
+          !isVotingTimeLocked(gauge.lastUserVoteTime) &&
           // Is gauge not expired
           !expiredGauges.value?.includes(gauge.address)
         ) {

@@ -54,8 +54,10 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
     }"
   >
     {{ myVotes }}
-
-    <BalTooltip v-if="isVotingTimeLocked(gauge.lastUserVoteTime)">
+    <BalTooltip
+      v-if="isVotingTimeLocked(gauge.lastUserVoteTime)"
+      textAlign="left"
+    >
       <template #activator>
         <TimelockIcon />
       </template>
@@ -75,21 +77,24 @@ const poolHasUnderUtilizedVotingPoewer = computed<boolean>(
         </p>
       </div>
     </BalTooltip>
-    <template v-else-if="poolHasUnderUtilizedVotingPoewer">
-      <BalTooltip textAlign="left" width="60">
-        <template #activator>
-          <BalIcon class="ml-1" name="alert-triangle" size="sm" />
-        </template>
-        <div class="flex flex-col gap-1">
-          <span class="font-semibold"
-            >{{ t('veBAL.liquidityMining.resubmit.hint.title') }}
-          </span>
-          <span>
-            {{ t('veBAL.liquidityMining.resubmit.hint.description') }}
-          </span>
-        </div>
-      </BalTooltip>
-    </template>
+    <BalTooltip
+      v-else-if="poolHasUnderUtilizedVotingPoewer"
+      template
+      textAlign="left"
+      width="60"
+    >
+      <template #activator>
+        <BalIcon class="ml-1" name="alert-triangle" size="sm" />
+      </template>
+      <div class="flex flex-col gap-1">
+        <span class="font-semibold"
+          >{{ t('veBAL.liquidityMining.resubmit.hint.title') }}
+        </span>
+        <span>
+          {{ t('veBAL.liquidityMining.resubmit.hint.description') }}
+        </span>
+      </div>
+    </BalTooltip>
   </div>
 </template>
 
