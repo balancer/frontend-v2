@@ -13,6 +13,7 @@ interface Env {
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
+  GRAPH_KEY: string;
   INFURA_PROJECT_ID: string;
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
@@ -31,6 +32,10 @@ export default class ConfigService {
       ALCHEMY_KEY:
         process.env.VUE_APP_ALCHEMY_KEY ||
         this.getNetworkConfig(networkId.value).keys.alchemy ||
+        'MISSING_KEY',
+      GRAPH_KEY:
+        process.env.VUE_APP_GRAPH_KEY ||
+        this.getNetworkConfig(networkId.value).keys.graph ||
         'MISSING_KEY',
       INFURA_PROJECT_ID:
         process.env.VUE_APP_INFURA_PROJECT_ID ||
@@ -56,6 +61,17 @@ export default class ConfigService {
     return template(this.network.rpc, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,
       ALCHEMY_KEY: this.env.ALCHEMY_KEY,
+    });
+  }
+
+  public get subgraphUrls(): string[] | void {
+    return this.network.subgraphs.main?.map(url => {
+      if (url.includes('GRAPH_KEY')) {
+        return template(url, {
+          GRAPH_KEY: this.env.GRAPH_KEY,
+        });
+      }
+      return url;
     });
   }
 

@@ -8,6 +8,15 @@ export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 1
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
 export const APR_THRESHOLD = 10_000;
 
+/**
+ * For proportional exits from ComposableStable pools the ExactBPTInForTokensOut
+ * exit type was removed. Therefore we have to use BPTInForExactTokensOut which
+ * makes proportional exits using a user's total BPT balance impossible. In
+ * order to 'fix' this we need to subtract a little bit from the bptIn value
+ * when calculating the ExactTokensOut. The variable below is that "little bit".
+ */
+export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e6; // EVM scale, so this is 1 Mwei
+
 export type FactoryType =
   | 'oracleWeightedPool'
   | 'weightedPool'
@@ -258,8 +267,9 @@ const POOLS_MAINNET: Pools = {
       '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d', // sdBAL Stable Pool (sdBAL / 8020 BALETH)
       '0x178e029173417b1f9c8bc16dcec6f697bc32374600000000000000000000025d', // Fiat DAO Stable Pool
       '0xf93579002dbe8046c43fefe86ec78b1112247bb80000000000000000000002bc', // USDD 3 pool
-      '0xf3aeb3abba741f0eece8a1b1d2f11b85899951cb000200000000000000000351', //MAI stable pool
+      '0xf3aeb3abba741f0eece8a1b1d2f11b85899951cb000200000000000000000351', // MAI stable pool
       '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD V2
+      '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // DOLA/INV stable pool
     ],
   },
   Investment: {

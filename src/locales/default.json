@@ -118,8 +118,8 @@
   "claiming": "Claiming...",
   "claimSuccess": "You successfully claimed $BAL!",
   "classic": "Classic",
+  "clearForms": "Clear forms",
   "clearTransactions": "Clear transactions",
-  "clickHere": "Click here",
   "close": "Close",
   "coingeckoPricingTooltip": "The data for this graph is pulled from our pricing provider, CoinGecko.",
   "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
@@ -173,7 +173,7 @@
     "previewPool": "Preview new {0} pool",
     "recommendedLiquidity": "It’s recommended to  provide new pools with at least $20,000 in initial funds",
     "recoveredState": "We've recovered your previous choices",
-    "recoveredStateInfo": "You last left off before finishing creating this pool. We've restored all your choices from before. Want to start over?",
+    "recoveredStateInfo": "Your previously left before creating this pool. Your choices have been saved so you can continue from before.",
     "similarPoolsExist": "Similar pools exist",
     "setAnAddress": "Set an address to control fees",
     "setPoolFees": "Set pool fees",
@@ -927,6 +927,10 @@
           "veBalVoteOverLimitWarning": {
             "title": "You may be wasting your vote: veBAL cap hit",
             "description": "Distributions to veBAL holders of weekly emissions are capped at 10%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted."
+          },
+          "lpVoteOverLimitWarning": {
+            "title": "You may be wasting your vote",
+            "description": "Distributions to LPs of this pool gauge are capped at {0}%. Any votes exceeding this amount at Thursday 0:00 UTC will not be counted."
           }
         },
         "errors": {
@@ -1335,6 +1339,7 @@
   "volumeTime": "Volume ({0})",
   "vote": "Vote",
   "wallet": "Wallet",
+  "wantToStartOverInstead": "Want to start over instead?",
   "warning": "Warning",
   "week": "Week",
   "weekAbbrev": "w",

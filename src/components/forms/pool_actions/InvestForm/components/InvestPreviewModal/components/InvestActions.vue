@@ -126,6 +126,10 @@ const isStakablePool = computed((): boolean => {
   );
 });
 
+const normalizedBptOut = computed((): string => {
+  return formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18);
+});
+
 /**
  * METHODS
  */
@@ -181,7 +185,7 @@ async function submit(): Promise<TransactionResponse> {
         account.value,
         fullAmounts.value,
         props.tokenAddresses,
-        formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18)
+        normalizedBptOut.value
       );
     }
 

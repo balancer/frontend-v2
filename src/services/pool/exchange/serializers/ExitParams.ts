@@ -134,6 +134,13 @@ export default class ExitParams {
         maxBPTAmountIn: bptIn,
       });
     } else {
+      // Proportional exit
+      if (isComposableStable(this.pool.value.poolType)) {
+        return this.dataEncodeFn({
+          amountsOut,
+          maxBPTAmountIn: bptIn,
+        });
+      }
       return this.dataEncodeFn({
         kind: 'ExactBPTInForTokensOut',
         bptAmountIn: bptIn,

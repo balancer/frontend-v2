@@ -308,6 +308,14 @@ export const ARBITRUM_POOLS: Pool[] = [
     id: '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102',
     network: Network.ARBITRUM,
   },
+  {
+    id: '0xfb5e6d0c1dfed2ba000fbc040ab8df3615ac329c000000000000000000000159',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158',
+    network: Network.ARBITRUM,
+  },
 ];
 
 export const POLYGON_POOLS: Pool[] = [
