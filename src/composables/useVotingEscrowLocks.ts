@@ -72,21 +72,18 @@ export default function useVotingEscrowLocks() {
   //  If user has received more veBAL since they last voted, their voting power is under-utilized
   const gaugesUsingUnderUtilizedVotingPower = computed<VotingGaugeWithVotes[]>(
     () =>
-      allVotingGauges.value.reduce<VotingGaugeWithVotes[]>((acc, gauge) => {
-        if (
+      allVotingGauges.value.filter(gauge => {
+        return (
           // Does the gauge have user votes
           Number(gauge.userVotes) &&
           // Has user received veBAL since they last voted
           gauge.lastUserVoteTime < lastReceivedVebal.value &&
-          // Is voting currently locked
+          // Is voting currently not locked
           !isVotingTimeLocked(gauge.lastUserVoteTime) &&
           // Is gauge not expired
           !expiredGauges.value?.includes(gauge.address)
-        ) {
-          return [...acc, gauge];
-        }
-        return acc;
-      }, [])
+        );
+      })
   );
 
   const shouldResubmitVotes = computed<boolean>(
