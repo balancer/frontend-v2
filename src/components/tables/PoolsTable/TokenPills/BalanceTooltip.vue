@@ -29,12 +29,13 @@ const { balanceFor } = useTokens();
  * COMPUTED
  */
 const tokenBalance = computed(() => balanceFor(props.token.address));
+const shortenedAccount = computed(() => shortenLabel(account.value));
 </script>
 
 <template>
   <div>
     <div class="mb-2 text-secondary">
-      {{ $t('tokenPills.balanceTooltip.title', [shortenLabel(account)]) }}
+      {{ $t('tokenPills.balanceTooltip.title', [shortenedAccount]) }}
     </div>
     <div class="flex">
       <BalAsset :address="token.address" :size="36" class="mr-2" />

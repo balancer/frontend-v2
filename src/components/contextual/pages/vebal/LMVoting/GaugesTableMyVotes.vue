@@ -11,6 +11,9 @@ import {
   isVotingTimeLocked,
   remainingVoteLockTime,
 } from '@/composables/useVeBAL';
+import TimelockIcon from '@/components/_global/icons/TimelockIcon.vue';
+import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
+
 /**
  * TYPES
  */
