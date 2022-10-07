@@ -4,7 +4,12 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import OldBigNumber from 'bignumber.js';
 import { Ref, ref } from 'vue';
 
-import { isStable, isStableLike, isStablePhantom } from '@/composables/usePool';
+import {
+  isComposableStableLike,
+  isDeep,
+  isStable,
+  isStableLike,
+} from '@/composables/usePool';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
@@ -56,7 +61,7 @@ export default class CalculatorService {
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): OldBigNumber {
     if (this.isStableLikePool) {
-      if (this.isStablePhantomPool) {
+      if (isDeep(this.pool.value)) {
         return this.stablePhantom.priceImpact(tokenAmounts, opts);
       } else {
         return this.stable.priceImpact(tokenAmounts, opts);
@@ -132,10 +137,22 @@ export default class CalculatorService {
     return maxAmounts;
   }
 
+  /**
+   * Calculates proportional amounts in/out given a fixed amount out/in based on
+   * the balances and totalSupply of the pool.
+   *
+   * @param {string} fixedAmount - The fixed amount in/out.
+   * @param {number} index - The pool token index for the fixedAmount.
+   * @param {string} type - If receive fixedAmount is tokenIn expecting bptOut, if
+   * send fixedAmount is bptIn expecting tokensOut.
+   * @param {number} buffer - A buffer (EVM scale) used in specific BPTInForExactTokensOut
+   * case. Should otherwise always be zero.
+   */
   public propAmountsGiven(
     fixedAmount: string,
     index: number,
-    type: 'send' | 'receive'
+    type: 'send' | 'receive',
+    buffer = 0
   ): Amounts {
     if (fixedAmount.trim() === '')
       return { send: [], receive: [], fixedToken: 0 };
@@ -143,7 +160,9 @@ export default class CalculatorService {
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
     const fixedToken = this.allTokens.value[fixedTokenAddress];
-    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals);
+    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals).sub(
+      buffer
+    );
     const fixedRatio = this.ratioOf(type, index);
     const amounts = {
       send: this.sendTokens.map(() => ''),
@@ -244,8 +263,8 @@ export default class CalculatorService {
     return isStableLike(this.pool.value.poolType);
   }
 
-  public get isStablePhantomPool(): boolean {
-    return isStablePhantom(this.pool.value.poolType);
+  public get isComposableStableLikePool(): boolean {
+    return isComposableStableLike(this.pool.value.poolType);
   }
 
   public get sendTokens(): string[] {

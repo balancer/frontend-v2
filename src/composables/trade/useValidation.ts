@@ -52,11 +52,10 @@ export default function useValidation(
   );
 
   const validationStatus = computed(() => {
-    if (!isWalletReady.value) return TradeValidation.NO_ACCOUNT;
-
     if (noAmounts.value || missingToken.value) return TradeValidation.EMPTY;
 
-    if (exceedsBalance.value) return TradeValidation.NO_BALANCE;
+    if (isWalletReady.value && exceedsBalance.value)
+      return TradeValidation.NO_BALANCE;
 
     if (probablyNotEnoughLiquidity.value) return TradeValidation.NO_LIQUIDITY;
 

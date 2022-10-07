@@ -3,7 +3,12 @@ import { AddressZero } from '@ethersproject/constants';
 import { parseUnits } from '@ethersproject/units';
 import { Ref } from 'vue';
 
-import { isManaged, isStableLike } from '@/composables/usePool';
+import {
+  preMintedBptIndex,
+  isComposableStable,
+  isManaged,
+  isStableLike,
+} from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
@@ -11,6 +16,7 @@ import ConfigService from '@/services/config/config.service';
 import { Pool } from '@/services/pool/types';
 
 import PoolExchange from '../exchange.service';
+import { encodeJoinComposableStablePool } from '@/lib/utils/balancer/composableStablePoolEncoding';
 
 export default class JoinParams {
   private pool: Ref<Pool>;
@@ -29,7 +35,9 @@ export default class JoinParams {
     this.isSwapEnabled =
       this.isManagedPool && !!this.pool.value?.onchain?.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
-      ? encodeJoinStablePool
+      ? isComposableStable(exchange.pool.value.poolType)
+        ? encodeJoinComposableStablePool
+        : encodeJoinStablePool
       : encodeJoinWeightedPool;
   }
 
@@ -44,8 +52,23 @@ export default class JoinParams {
       bptOut,
       this.pool.value?.onchain?.decimals || 18
     );
+
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
+
+    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
+    const maxAmountsIn = [...parsedAmountsIn];
+
+    if (
+      isComposableStable(this.pool.value.poolType) &&
+      poolTokenItselfIndex !== undefined
+    ) {
+      maxAmountsIn.splice(
+        poolTokenItselfIndex,
+        0,
+        parseUnits('0', this.pool.value.onchain?.decimals || 18)
+      );
+    }
 
     return [
       this.pool.value.id,
@@ -53,7 +76,7 @@ export default class JoinParams {
       account,
       {
         assets,
-        maxAmountsIn: parsedAmountsIn,
+        maxAmountsIn,
         userData: txData,
         fromInternalBalance: this.fromInternalBalance,
       },
@@ -76,7 +99,7 @@ export default class JoinParams {
   private parseAmounts(amounts: string[], tokensIn: string[]): BigNumberish[] {
     const nativeAsset = this.config.network.nativeAsset;
 
-    return amounts.map((amount, i) => {
+    const parsedAmounts = amounts.map((amount, i) => {
       const token = tokensIn[i];
       // In WETH pools, tokenIn can include ETH so we need to check for this
       // and return the correct decimals.
@@ -86,14 +109,28 @@ export default class JoinParams {
 
       return parseUnits(amount, decimals);
     });
+
+    return parsedAmounts;
   }
 
   private parseTokensIn(tokensIn: string[]): string[] {
     const nativeAsset = this.config.network.nativeAsset;
-
-    return tokensIn.map(address =>
+    const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
+    const tokensInProcessed = tokensIn.map(address =>
       isSameAddress(address, nativeAsset.address) ? AddressZero : address
     );
+
+    if (
+      isComposableStable(this.pool.value.poolType) &&
+      poolTokenItselfIndex !== undefined
+    ) {
+      tokensInProcessed.splice(
+        poolTokenItselfIndex,
+        0,
+        this.pool.value.address
+      );
+    }
+    return tokensInProcessed;
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {

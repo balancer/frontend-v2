@@ -35,6 +35,11 @@ const defaultAttrs = {
     weight: true,
     priceRate: true,
     symbol: true,
+    token: {
+      pool: {
+        poolType: true,
+      },
+    },
   },
 };
 

@@ -149,6 +149,8 @@
     <TradePreviewModalGP
       v-if="modalTradePreviewIsOpen"
       :trading="trading"
+      :error="error"
+      :warning="warning"
       @trade="trade"
       @close="handlePreviewModalClose"
     />
@@ -248,12 +250,12 @@ export default defineComponent({
         !dismissedErrors.value.highPriceImpact
     );
     const tradeDisabled = computed(() => {
-      const hasValidationError = errorMessage.value !== TradeValidation.VALID;
+      const hasAmountsError = !tokenInAmount.value || !tokenOutAmount.value;
       const hasGnosisErrors =
         trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
-      return hasValidationError || hasGnosisErrors || hasBalancerErrors;
+      return hasAmountsError || hasGnosisErrors || hasBalancerErrors;
     });
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {

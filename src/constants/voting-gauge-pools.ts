@@ -210,6 +210,26 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0x48607651416a943bf5ac71c41be1420538e78f87000200000000000000000327',
     network: Network.MAINNET,
   },
+  {
+    id: '0x6a5ead5433a50472642cd268e584dafa5a394490000200000000000000000366',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x0fd5663d4893ae0d579d580584806aadd2dd0b8b000200000000000000000367',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x441b8a1980f2f2e43a9397099d15cc2fe6d3625000020000000000000000035f',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xf3aeb3abba741f0eece8a1b1d2f11b85899951cb000200000000000000000351',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -282,6 +302,18 @@ export const ARBITRUM_POOLS: Pool[] = [
   },
   {
     id: '0xb3028ca124b80cfe6e9ca57b70ef2f0ccc41ebd40002000000000000000000ba',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x7bceaa9c5e7f4836fec3bce2d5346637c9b13970000000000000000000000102',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0xfb5e6d0c1dfed2ba000fbc040ab8df3615ac329c000000000000000000000159',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158',
     network: Network.ARBITRUM,
   },
 ];
@@ -377,6 +409,22 @@ export const POLYGON_POOLS: Pool[] = [
   },
   {
     id: '0x8f9dd2064eb38e8e40f2ab67bde27c0e16ea9b080002000000000000000004ca',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c',
     network: Network.POLYGON,
   },
 ];

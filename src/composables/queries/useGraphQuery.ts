@@ -6,17 +6,18 @@ import { reactive } from 'vue';
 import { useQuery, UseQueryOptions } from 'vue-query';
 
 import { configService } from '@/services/config/config.service';
+import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 
 export const subgraphs = {
   gauge: configService.network.subgraphs.gauge,
-  balancer: configService.network.subgraph,
 };
 
 export default function useGraphQuery<T>(
   subgraphUrl: string,
   key: QueryKey,
   query: () => Record<any, any>,
-  options: UseQueryOptions<T> = {}
+  options: UseQueryOptions<T> = {},
+  shouldUseSubgraphFallbackUrl?: boolean
 ) {
   const queryKey = reactive([
     // for our query key style, initial are the string
@@ -34,7 +35,16 @@ export default function useGraphQuery<T>(
     if (!subgraphUrl) {
       throw new Error(`A graphQL endpoint wasn't supplied for this query`);
     }
+
+    const payload = {
+      query: jsonToGraphQLQuery({ query: query() }),
+    };
+
     try {
+      if (shouldUseSubgraphFallbackUrl) {
+        const response = await subgraphFallbackService.get(payload);
+        return response?.data.data;
+      }
       const {
         data: { data },
       } = await axios.post(subgraphUrl, {
