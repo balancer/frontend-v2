@@ -2,7 +2,7 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { POOLS } from '@/constants/pools';
 import { shortenLabel } from '@/lib/utils';
-import { Pool, PoolType } from '@/services/pool/types';
+import { Pool, PoolAmpUpdate, PoolType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -13,7 +13,7 @@ import { useI18n } from 'vue-i18n';
  */
 type Props = {
   pool: Pool;
-  ampUpdates: any;
+  ampUpdates: PoolAmpUpdate[];
   loading: boolean;
 };
 

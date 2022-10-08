@@ -1,41 +1,46 @@
 <script setup lang="ts">
 // import { computed } from 'vue';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolAmpUpdate } from '@/services/pool/types';
 import ChangelogAccordion from './ChangelogAccordion.vue';
-import PoolAmpUpdates from '@/services/balancer/subgraph/entities/poolAmpUpdates';
 import { useI18n } from 'vue-i18n';
+import AmpUpdate from './AmpUpdate.vue';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  ampUpdates: PoolAmpUpdates[];
+  ampUpdates: PoolAmpUpdate[];
 };
 
 /**
  * PROPS
  */
-defineProps<Props>();
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
 
-const changelogData = [
+const changelogData: any = [
   {
     title: 'Pool creation',
     subTitle: '',
     icon: 'swap-fee',
     active: true,
   },
-  {
-    title: `${t('ampFactor.change')} ${t('ampFactor.range', ['1', '2'])}}`,
+  ...props.ampUpdates.map(ampUpdate => ({
+    title: `${t('ampFactor.change')} ${t('ampFactor.range', [
+      ampUpdate.startAmp,
+      ampUpdate.endAmp,
+    ])}`,
     subTitle: t('ampFactor.update'),
     icon: 'amp',
     active: true,
-  },
+    isAmpUpdate: true,
+    data: ampUpdate,
+  })),
 ];
 
 // const ampUpdatedData = computed(() => {
@@ -62,19 +67,15 @@ const changelogData = [
                 class="changelog__timeline-header"
                 :class="{ 'header-active': false }"
               >
-                <h4>{{ item.title }}</h4>
+                <div class="header-subtitle">{{ item.subTitle }}</div>
+                <div class="header-title">{{ item.title }}</div>
               </div>
             </div>
           </template>
           <!-- This slot will handle all the content that is passed to the accordion -->
           <template #accordion-content>
             <div class="changelog__timeline-content">
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </span>
+              <AmpUpdate v-if="item.isAmpUpdate" :ampUpdate="item.data" />
             </div>
           </template>
         </ChangelogAccordion>
@@ -100,6 +101,16 @@ const changelogData = [
 
   /* border-bottom: 2px solid theme('colors.gray.200'); */
   flex: 1;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.header-subtitle {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .changelog__timeline-header.header-active {
