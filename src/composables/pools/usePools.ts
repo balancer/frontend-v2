@@ -1,5 +1,4 @@
 import { computed } from 'vue';
-
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
 export default function usePools() {

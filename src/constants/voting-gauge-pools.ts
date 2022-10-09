@@ -434,6 +434,18 @@ export const OPTIMISM_POOLS: Pool[] = [
     id: '0x4fd63966879300cafafbb35d157dc5229278ed2300020000000000000000002b',
     network: Network.OPTIMISM,
   },
+  {
+    id: '0xde45f101250f2ca1c0f8adfc172576d10c12072d00000000000000000000003f',
+    network: Network.OPTIMISM,
+  },
+  {
+    id: '0x981fb05b738e981ac532a99e77170ecb4bc27aef00010000000000000000004b',
+    network: Network.OPTIMISM,
+  },
+  {
+    id: '0x479a7d1fcdd71ce0c2ed3184bfbe9d23b92e8337000000000000000000000049',
+    network: Network.OPTIMISM,
+  },
 ];
 
 export const POOLS = [

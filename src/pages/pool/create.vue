@@ -320,8 +320,10 @@ watch(
           :title="$t('createAPool.recoveredState')"
         >
           {{ $t('createAPool.recoveredStateInfo') }}
+
+          {{ $t('wantToStartOverInstead') }}
           <button class="font-semibold text-blue-500" @click="handleReset">
-            {{ $t('clickHere') }}
+            {{ $t('clearForms') }}
           </button>
         </BalAlert>
       </AnimatePresence>

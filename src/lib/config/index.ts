@@ -28,6 +28,7 @@ export interface Config {
   subgraph: string;
   poolsUrlV2: string;
   subgraphs: {
+    main: string[];
     aave: string;
     gauge: string;
     blocks: string;
@@ -71,6 +72,7 @@ export interface Config {
   keys: {
     infura: string;
     alchemy: string;
+    graph?: string;
   };
   strategies: Record<
     string,
