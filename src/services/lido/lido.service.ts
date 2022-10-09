@@ -53,7 +53,7 @@ export default class LidoService {
         ?.weight || bnum(wstethBalance).div(totalBalance);
 
     return bnum(stethAPR)
-      .times(1 - protocolFeePercentage)
+      .times(1 - protocolFeePercentage) // TODO: check pool type and use protocol yield percentage cache when applicable
       .times(wstethRatio)
       .toString();
   }
