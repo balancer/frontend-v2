@@ -23,8 +23,8 @@ import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
-import useVoteState from './useVoteState';
 import SubmitVoteBtn from './SubmitVoteBtn.vue';
+import { State, useActionsState } from '@/composables/useActionState';
 
 /**
  * TYPES
@@ -59,7 +59,7 @@ const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { veBalBalance } = useVeBal();
-const voteState = useVoteState();
+const voteState = useActionsState();
 
 /**
  * STATE
@@ -207,13 +207,15 @@ const voteError = computed(
     if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
     if (noVeBalWarning.value) return noVeBalWarning.value;
     if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-    if (voteState.state.error) return voteState.state.error;
+    if (voteState.error.value) return voteState.error.value;
     return null;
   }
 );
 
 const transactionInProgress = computed(
-  (): boolean => voteState.state.init || voteState.state.confirming
+  (): boolean =>
+    voteState.state.value === State.TRANSACTIONINITIALIZED ||
+    voteState.state.value === State.CONFIRMING
 );
 
 const hasEnoughVotes = computed((): boolean => {
@@ -276,18 +278,18 @@ function isVoteWeightValid(voteWeight) {
 async function submitVote() {
   const totalVoteShares = scale(voteWeight.value, 2).toString();
   try {
-    voteState.actions.init();
+    voteState.setInit();
     const tx = await gaugeControllerService.voteForGaugeWeights(
       props.gauge.address,
       BigNumber.from(totalVoteShares)
     );
-    voteState.actions.confirm();
+    voteState.setConfirming();
     handleTransaction(tx);
   } catch (e) {
     console.error(e);
     const error = e as WalletError;
 
-    voteState.actions.error({
+    voteState.setError({
       title: 'Vote failed',
       description: error.message,
     });
@@ -312,12 +314,12 @@ async function handleTransaction(tx) {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
-      voteState.actions.success({ receipt, confirmedAt });
+      voteState.setSuccess({ receipt, confirmedAt });
       emit('success');
     },
     onTxFailed: () => {
       console.error('Vote failed');
-      voteState.actions.error({
+      voteState.setError({
         title: 'Vote Failed',
         description: 'Vote failed for an unknown reason',
       });
@@ -334,11 +336,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <BalModal show :fireworks="voteState.state.confirmed" @close="emit('close')">
+  <BalModal
+    show
+    :fireworks="voteState.state.value === State.CONFIRMED"
+    @close="emit('close')"
+  >
     <template #header>
       <div class="flex items-center">
         <BalCircle
-          v-if="voteState.state.confirmed"
+          v-if="voteState.state.value === State.CONFIRMED"
           size="8"
           color="green"
           class="mr-2 text-white"
@@ -420,9 +426,7 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="
-            voteInputDisabled ||
-            transactionInProgress ||
-            !!voteState.state.receipt
+            voteInputDisabled || transactionInProgress || !!voteState.receipt
           "
           size="md"
           autoFocus
@@ -445,10 +449,14 @@ onMounted(() => {
         </div>
 
         <SubmitVoteBtn
-          :voteState="voteState.state"
           :disabled="voteButtonDisabled"
           :loading="transactionInProgress"
           class="mt-4"
+          :loadingLabel="
+            voteState.state.value === State.IDLE
+              ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
+              : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
+          "
           @click:close="emit('close')"
           @click:submit="submitVote"
         >

@@ -13,9 +13,9 @@ import { Address, WalletError } from '@/types';
 import useVotingEscrowLocks from '@/composables/useVotingEscrowLocks';
 import useVotingGauges from '@/composables/useVotingGauges';
 import VoteInput from './VoteInput.vue';
-import useVoteState from '../useVoteState';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
 import { POOLS } from '@/constants/pools';
+import { State, useActionsState } from '@/composables/useActionState';
 
 /**
  * PROPS & EMITS
@@ -29,7 +29,7 @@ const emit = defineEmits<{
  */
 const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 const { votingGauges, refetch: refetchVotingGauges } = useVotingGauges();
-const voteState = useVoteState();
+const voteState = useActionsState();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
@@ -82,7 +82,9 @@ const voteButtonDisabled = computed<boolean>(
   () => allGaugesTotalAllocation.value > 100
 );
 const transactionInProgress = computed(
-  (): boolean => voteState.state.init || voteState.state.confirming
+  (): boolean =>
+    voteState.state.value === State.TRANSACTIONINITIALIZED ||
+    voteState.state.value === State.CONFIRMING
 );
 const totalAllocationClass = computed(() => ({
   'total-allocation-disabled': voteButtonDisabled.value,
@@ -97,7 +99,7 @@ function bpsToPct(weight: string | number): string {
 }
 
 async function submitVote() {
-  // Gauge Controller takes a fixed 8 Gauge Addresses
+  // Gauge Controller requires a fixed 8 Gauge Addresses
   // We take the first 8 Voting Gauges
   // If there's less than 8, fill the remaining with Zero Addresses
   const gaugeAddresses: string[] = Object.keys(votes.value);
@@ -113,19 +115,19 @@ async function submitVote() {
   );
 
   try {
-    voteState.actions.init();
+    voteState.setInit();
     const tx = await gaugeControllerService.voteForManyGaugeWeights(
       [...gaugeAddresses, ...zeroAddresses],
       [...weights, ...zeroWeights]
     );
 
-    voteState.actions.confirm();
+    voteState.setConfirming();
     handleTransaction(tx);
   } catch (e) {
     console.error(e);
     const error = e as WalletError;
     console.error({ error });
-    voteState.actions.error({
+    voteState.setError({
       title: 'Vote failed',
       description: error.message,
     });
@@ -159,12 +161,12 @@ async function handleTransaction(tx) {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       const confirmedAt = dateTimeLabelFor(await getTxConfirmedAt(receipt));
 
-      voteState.actions.success({ receipt, confirmedAt });
+      voteState.setSuccess({ receipt, confirmedAt });
       refetchVotingGauges.value();
     },
     onTxFailed: () => {
       console.error('Vote failed');
-      voteState.actions.error({
+      voteState.setError({
         title: 'Vote Failed',
         description: 'Vote failed for an unknown reason',
       });
@@ -202,10 +204,10 @@ watchEffect(() => {
       >
       </BalAlert>
       <BalAlert
-        v-if="voteState.state.error"
+        v-if="voteState.error.value"
         type="error"
-        :title="voteState.state.error.title"
-        :description="voteState.state.error.description"
+        :title="voteState.error.value.title"
+        :description="voteState.error.value.description"
         block
         class="mt-2 mb-4"
       />
@@ -246,10 +248,14 @@ watchEffect(() => {
       </div>
 
       <SubmitVoteBtn
-        :voteState="voteState.state"
         :disabled="voteButtonDisabled"
         :loading="transactionInProgress"
         class="mt-4"
+        :loadingLabel="
+          voteState.state.value === State.IDLE
+            ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
+            : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
+        "
         @click:close="emit('close')"
         @click:submit="submitVote"
       >

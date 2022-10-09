@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 
-import { TransactionActionState } from '@/types/transactions';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 /**
  * TYPES
  */
 type Props = {
-  voteState: TransactionActionState;
   disabled: boolean;
   loading: boolean;
+  receipt?: TransactionReceipt;
 };
 
 /**
@@ -18,6 +18,7 @@ type Props = {
 withDefaults(defineProps<Props>(), {
   disabled: false,
   loading: false,
+  receipt: undefined,
 });
 
 const emit = defineEmits<{
@@ -28,12 +29,13 @@ const emit = defineEmits<{
 
 <template>
   <div>
-    <template v-if="voteState.receipt">
-      <ConfirmationIndicator :txReceipt="voteState.receipt" class="mb-2" />
+    <template v-if="receipt">
+      <ConfirmationIndicator :txReceipt="receipt" class="mb-2" />
       <BalBtn
-        v-if="voteState.receipt"
+        v-if="receipt"
         color="gray"
         outline
+        v-bind="$attrs"
         block
         @click="emit('click:close')"
       >
@@ -46,11 +48,7 @@ const emit = defineEmits<{
       block
       :disabled="disabled"
       :loading="loading"
-      :loadingLabel="
-        voteState.init
-          ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
-          : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
-      "
+      v-bind="$attrs"
       @click.prevent="emit('click:submit')"
     >
       <slot></slot>
