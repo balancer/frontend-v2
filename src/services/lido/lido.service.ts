@@ -48,7 +48,9 @@ export default class LidoService {
       pool.tokens.find(t => isSameAddress(t.address, this.wstEthAddress))
         ?.balance || '0';
     const totalBalance = bnum(wethBalance).plus(wstethBalance);
-    const wstethRatio = bnum(wstethBalance).div(totalBalance);
+    const wstethRatio =
+      pool.tokens.find(t => isSameAddress(t.address, this.wstEthAddress))
+        ?.weight || bnum(wstethBalance).div(totalBalance);
 
     return bnum(stethAPR)
       .times(1 - protocolFeePercentage)
