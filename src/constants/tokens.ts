@@ -12,6 +12,7 @@ type CommonTokens = {
   WETH: string;
   BAL: string;
   bbaUSD?: string;
+  bbaUSDv2?: string;
 };
 
 type TokenConstants = {
@@ -38,6 +39,7 @@ export const TOKENS_MAINNET: TokenConstants = {
     WETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     BAL: '0xba100000625a3754423978a60c9317c58a424e3d',
     bbaUSD: '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2',
+    bbaUSDv2: '0xA13a9247ea42D743238089903570127DdA72fE44',
   },
 };
 
