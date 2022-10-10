@@ -2002,6 +2002,34 @@
     }
   },
   {
+    "address": "0x610f1569045041Af6212be048Bc43e8DC6a07b55",
+    "network": 1,
+    "relativeWeightCap": "null",
+    "addedTimestamp": 1665429443,
+    "pool": {
+      "id": "0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b",
+      "address": "0x5b3240B6BE3E7487d61cd1AFdFC7Fe4Fa1D81e64",
+      "poolType": "ComposableStable",
+      "symbol": "DOLA BSP",
+      "tokens": [
+        {
+          "address": "0x865377367054516e17014CcdED1e7d814EDC9ce4",
+          "weight": "null",
+          "symbol": "DOLA"
+        },
+        {
+          "address": "0xA13a9247ea42D743238089903570127DdA72fE44",
+          "weight": "null",
+          "symbol": "bb-a-USD"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x865377367054516e17014CcdED1e7d814EDC9ce4": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x865377367054516e17014ccded1e7d814edc9ce4.png",
+      "0xA13a9247ea42D743238089903570127DdA72fE44": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0xa13a9247ea42d743238089903570127dda72fe44.png"
+    }
+  },
+  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "relativeWeightCap": "null",
