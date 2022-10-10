@@ -1974,6 +1974,34 @@
     }
   },
   {
+    "address": "0x9C0f4144D037688e0AdA74B22a9aAb7c14c58e6C",
+    "network": 1,
+    "relativeWeightCap": "null",
+    "addedTimestamp": 1664866055,
+    "pool": {
+      "id": "0x496ff26b76b8d23bbc6cf1df1eee4a48795490f7000200000000000000000377",
+      "address": "0x496ff26B76b8d23bbc6cF1Df1eeE4a48795490F7",
+      "poolType": "Weighted",
+      "symbol": "50COMP-50WSTETH",
+      "tokens": [
+        {
+          "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+          "weight": "0.5",
+          "symbol": "wstETH"
+        },
+        {
+          "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+          "weight": "0.5",
+          "symbol": "COMP"
+        }
+      ]
+    },
+    "tokenLogoURIs": {
+      "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0": "https://raw.githubusercontent.com/balancer-labs/assets/master/assets/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png",
+      "0xc00e94Cb662C3520282E6f5717214004A7f26888": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc00e94Cb662C3520282E6f5717214004A7f26888/logo.png"
+    }
+  },
+  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "relativeWeightCap": "null",
