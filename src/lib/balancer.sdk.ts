@@ -1,5 +1,4 @@
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
-
 import { configService } from '@/services/config/config.service';
 
 const network = ((): Network => {
