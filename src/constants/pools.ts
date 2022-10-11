@@ -15,7 +15,7 @@ export const APR_THRESHOLD = 10_000;
  * order to 'fix' this we need to subtract a little bit from the bptIn value
  * when calculating the ExactTokensOut. The variable below is that "little bit".
  */
-export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e6; // EVM scale, so this is 1 Mwei
+export const SHALLOW_COMPOSABLE_STABLE_BUFFER = 1e9; // EVM scale, so this is 1 Gwei
 
 export type FactoryType =
   | 'oracleWeightedPool'
