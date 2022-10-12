@@ -16,11 +16,12 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
   /**
    * COMPUTED
    */
-  const pools = computed<Pool[]>(() =>
-    poolsQuery.data.value
-      ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
-      : []
-  );
+  const pools = computed<Pool[]>(() => {
+    const paginatedPools = poolsQuery.data.value;
+    return paginatedPools
+      ? flatten(paginatedPools.pages.map(page => page.pools))
+      : [];
+  });
 
   const isLoading = computed(
     () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
