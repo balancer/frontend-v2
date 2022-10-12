@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, onMounted } from 'vue';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { UseTrading } from '@/composables/trade/useTrading';
@@ -140,6 +140,12 @@ watchEffect(() => {
   _tokenInAddress.value = props.tokenInAddress;
   _tokenOutAmount.value = props.tokenOutAmount;
   _tokenOutAddress.value = props.tokenOutAddress;
+});
+onMounted(() => {
+  // populates initial tokenOutAmount
+  if (props.tokenOutAmount) {
+    handleOutAmountChange(props.tokenOutAmount);
+  }
 });
 </script>
 
