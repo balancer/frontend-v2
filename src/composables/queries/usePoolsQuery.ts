@@ -23,6 +23,7 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { flatten } from 'lodash';
 import { extractTokenAddresses } from '../usePool';
 import { forChange } from '@/lib/utils';
+import { isQueryLoading } from './useQueryHelpers';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -99,9 +100,9 @@ export default function usePoolsQuery(
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
-  const { data: subgraphGauges } = useGaugesQuery();
+  const gaugesQuery = useGaugesQuery();
   const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id)
+    (gaugesQuery.data.value || []).map(gauge => gauge.id)
   );
 
   let balancerApiRepository = initializeDecoratedAPIRepository();
@@ -111,7 +112,9 @@ export default function usePoolsQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !appLoading.value);
+  const enabled = computed(
+    () => !appLoading.value && !isQueryLoading(gaugesQuery)
+  );
 
   /**
    * METHODS
@@ -163,7 +166,7 @@ export default function usePoolsQuery(
 
         const poolDecorator = new PoolDecorator(pools);
         let decoratedPools = await poolDecorator.decorate(
-          subgraphGauges.value || [],
+          gaugesQuery.data.value || [],
           prices.value,
           currency.value,
           tokenMeta.value
@@ -260,6 +263,7 @@ export default function usePoolsQuery(
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
+    console.trace('FETCH POOLS');
     const fetchOptions = getFetchOptions(pageParam);
 
     const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
