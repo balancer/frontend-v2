@@ -166,8 +166,14 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
       const prices =
         props.historicalPrices && props.historicalPrices[snapshot.timestamp];
 
-      // timestamp is removed if there are no prices from coingecko
+      // if there are no prices from coingecko use snapshot.liquidity
       if (!prices || prices.length < (props.tokensList?.length || 0)) {
+        tvlValues.push(
+          Object.freeze<[string, number]>([
+            timestamp,
+            Number(snapshot.liquidity),
+          ])
+        );
         return;
       }
 
