@@ -27,7 +27,6 @@ import { forChange } from '@/lib/utils';
 type PoolsQueryResponse = {
   pools: Pool[];
   skip?: number;
-  enabled?: boolean;
 };
 
 type FilterOptions = {
@@ -112,7 +111,7 @@ export default function usePoolsQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => !appLoading.value && options.enabled);
+  const enabled = computed(() => !appLoading.value);
 
   /**
    * METHODS
@@ -278,7 +277,6 @@ export default function usePoolsQuery(
     return {
       pools,
       skip,
-      enabled: true,
     };
   };
 
