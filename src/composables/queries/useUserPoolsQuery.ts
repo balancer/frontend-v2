@@ -15,7 +15,7 @@ import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import { isComposableStableLike, lpTokensFor } from '../usePool';
+import { extractTokenAddresses, isComposableStableLike } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
@@ -85,11 +85,7 @@ export default function useUserPoolsQuery(
       }
     }
 
-    const tokens = flatten(
-      pools.map(pool => {
-        return [...pool.tokensList, ...lpTokensFor(pool), pool.address];
-      })
-    );
+    const tokens = flatten(pools.map(extractTokenAddresses));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 

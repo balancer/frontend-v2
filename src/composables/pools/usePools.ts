@@ -2,15 +2,20 @@ import { flatten } from 'lodash';
 import { computed, Ref, ref, watch } from 'vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
 import { Pool } from '@/services/pool/types';
+import { extractTokenAddresses } from '../usePool';
 
 export default function usePools(filterTokens: Ref<string[]> = ref([])) {
-  // COMPOSABLES
+  /**
+   * COMPOSABLES
+   */
   const poolsQuery = usePoolsQuery(filterTokens);
   const { injectTokens } = useTokens();
 
+  /**
+   * COMPUTED
+   */
   const pools = computed<Pool[]>(() =>
     poolsQuery.data.value
       ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
@@ -26,19 +31,18 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
     () => poolsQuery.isFetchingNextPage?.value
   );
 
-  // METHODS
+  /**
+   * METHODS
+   */
   function loadMorePools() {
     poolsQuery.fetchNextPage.value();
   }
 
+  /**
+   * WATCHERS
+   */
   watch(pools, async newPools => {
-    const tokenAddresses = flatten(
-      newPools.map(pool => [
-        ...pool.tokensList,
-        ...lpTokensFor(pool),
-        pool.address,
-      ])
-    );
+    const tokenAddresses = flatten(newPools.map(extractTokenAddresses));
     await injectTokens(tokenAddresses);
   });
 
@@ -47,7 +51,6 @@ export default function usePools(filterTokens: Ref<string[]> = ref([])) {
     isLoading,
     poolsHasNextPage,
     poolsIsFetchingNextPage,
-
     // methods
     loadMorePools,
   };
