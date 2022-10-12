@@ -246,6 +246,20 @@ onBeforeMount(async () => {
         :title="t('getVeBAL.previewModal.firstVeBALReceived.title')"
         :description="t('getVeBAL.previewModal.firstVeBALReceived.description')"
       >
+        <ul class="ml-5 list-disc">
+          <li>
+            {{ t('getVeBAL.previewModal.firstVeBALReceived.bulletPoints[0]') }}
+          </li>
+          <li>
+            {{ t('getVeBAL.previewModal.firstVeBALReceived.bulletPoints[1]') }}
+          </li>
+          <li>
+            {{ t('getVeBAL.previewModal.firstVeBALReceived.bulletPoints[2]') }}
+          </li>
+          <li>
+            {{ t('getVeBAL.previewModal.firstVeBALReceived.bulletPoints[3]') }}
+          </li>
+        </ul>
       </BalAlert>
       <BalAlert
         v-else-if="shouldResubmitVotes"
