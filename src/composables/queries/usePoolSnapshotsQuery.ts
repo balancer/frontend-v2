@@ -1,4 +1,3 @@
-import differenceInDays from 'date-fns/differenceInDays';
 import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
@@ -47,10 +46,12 @@ export default function usePoolSnapshotsQuery(
     if (!pool.value && !storedPool) throw new Error('No pool');
 
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
-    const shapshotDaysNum =
-      days || differenceInDays(new Date(), new Date(createTime * 1000));
-
-    return await balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum);
+    return await balancerSubgraphService.poolSnapshots.get({
+      where: {
+        pool: id.toLowerCase(),
+        timestamp_gt: createTime,
+      },
+    });
   };
 
   const queryOptions = reactive({
