@@ -79,7 +79,7 @@ const voteButtonDisabled = computed((): boolean => {
     return !!voteError.value || !hasEnoughVotes.value;
   }
 
-  return !!voteWarning.value || !!voteError.value || !hasEnoughVotes.value;
+  return !!voteError.value || !hasEnoughVotes.value;
 });
 
 const voteInputDisabled = computed((): boolean => {
@@ -96,10 +96,14 @@ const isVeBalGauge = computed((): boolean =>
   isSameAddress(props.gauge.address, VEBAL_VOTING_GAUGE?.address || '')
 );
 
-// Is votes next period value above 10%?
-const votesNextPeriodGt10pct = computed((): boolean => {
+// Is votes next period value above voting cap?
+const votesNextPeriodOverCap = computed((): boolean => {
+  if (!isVeBalGauge.value && props.gauge.relativeWeightCap === 'null')
+    return false;
   const gaugeVoteWeightNormalized = scale(props.gauge.votesNextPeriod, -18);
-  return gaugeVoteWeightNormalized.gte(bnum('0.1'));
+  return gaugeVoteWeightNormalized.gte(
+    bnum(isVeBalGauge.value ? '0.1' : props.gauge.relativeWeightCap)
+  );
 });
 
 const voteTitle = computed(() =>
@@ -163,16 +167,28 @@ const veBalLockTooShortWarning = computed(() => {
   return null;
 });
 
-const veBalVoteOverLimitWarning = computed(() => {
-  if (isVeBalGauge.value && votesNextPeriodGt10pct.value) {
-    return {
-      title: t(
-        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
-      ),
-      description: t(
-        'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
-      ),
-    };
+const lpVoteOverLimitWarning = computed(() => {
+  if (votesNextPeriodOverCap.value) {
+    if (isVeBalGauge.value) {
+      return {
+        title: t(
+          'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.title'
+        ),
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.veBalVoteOverLimitWarning.description'
+        ),
+      };
+    } else {
+      return {
+        title: t(
+          'veBAL.liquidityMining.popover.warnings.lpVoteOverLimitWarning.title'
+        ),
+        description: t(
+          'veBAL.liquidityMining.popover.warnings.lpVoteOverLimitWarning.description',
+          [(Number(props.gauge.relativeWeightCap) * 100).toFixed()]
+        ),
+      };
+    }
   }
 
   return null;
@@ -183,7 +199,7 @@ const voteWarning = computed(
     title: string;
     description: string;
   } | null => {
-    if (veBalVoteOverLimitWarning.value) return veBalVoteOverLimitWarning.value;
+    if (lpVoteOverLimitWarning.value) return lpVoteOverLimitWarning.value;
     return null;
   }
 );

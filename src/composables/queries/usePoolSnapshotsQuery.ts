@@ -78,7 +78,12 @@ export default function usePoolSnapshotsQuery(
         1,
         aggregateBy
       ),
-      balancerSubgraphService.poolSnapshots.get(id, shapshotDaysNum),
+      balancerSubgraphService.poolSnapshots.get({
+        where: {
+          pool: id.toLowerCase(),
+          timestamp_gt: createTime,
+        },
+      }),
     ]);
 
     return { prices, snapshots };

@@ -4,6 +4,8 @@ import { computed, ref } from 'vue';
 
 import { configService } from '@/services/config/config.service';
 
+const DECENTRALIZED_SUBGRAPH_URL = 'https://gateway.thegraph.com';
+
 export class SubgraphFallbackService {
   private urlIndex = ref(0);
 
@@ -25,13 +27,17 @@ export class SubgraphFallbackService {
       }
       return response;
     } catch (error) {
-      captureException(
-        `GraphQL request to [${this.url.value}] failed with message: ${
-          (error as Error).message
-        }. Payload: ${payload}`
-      );
+      console.error(error);
+      // Capture exception only with decentralized url
+      if (this.url.value.startsWith(DECENTRALIZED_SUBGRAPH_URL)) {
+        captureException(
+          `GraphQL request to [${this.url.value}] failed with message: ${
+            (error as Error)?.message
+          }. Payload: ${payload}`
+        );
+      }
 
-      if (this.urlIndex.value + 1 > this.urls.length) {
+      if (this.urlIndex.value + 1 === this.urls.length) {
         throw error;
       }
 
