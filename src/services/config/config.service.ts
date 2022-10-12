@@ -34,9 +34,11 @@ export default class ConfigService {
         this.getNetworkConfig(networkId.value).keys.alchemy ||
         'MISSING_KEY',
       GRAPH_KEY:
-        process.env.VUE_APP_GRAPH_KEY ||
-        this.getNetworkConfig(networkId.value).keys.graph ||
-        'MISSING_KEY',
+        process.env.VUE_APP_ENV === 'development'
+          ? process.env.VUE_APP_GRAPH_KEY_DEV || 'MISSING_KEY'
+          : process.env.VUE_APP_GRAPH_KEY ||
+            this.getNetworkConfig(networkId.value).keys.graph ||
+            'MISSING_KEY',
       INFURA_PROJECT_ID:
         process.env.VUE_APP_INFURA_PROJECT_ID ||
         this.getNetworkConfig(networkId.value).keys.infura ||
