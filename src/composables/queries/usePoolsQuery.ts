@@ -263,7 +263,6 @@ export default function usePoolsQuery(
    * QUERY FUNCTION
    */
   const queryFn = async ({ pageParam = 0 }) => {
-    console.trace('FETCH POOLS');
     const fetchOptions = getFetchOptions(pageParam);
 
     const pools: Pool[] = await poolsRepository.fetch(fetchOptions);
