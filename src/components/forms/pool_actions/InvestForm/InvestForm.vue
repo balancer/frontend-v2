@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, ref, toRef, watch } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
 // Composables
 import { useI18n } from 'vue-i18n';
 
@@ -27,6 +27,7 @@ import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
+import useVeBal from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -66,8 +67,10 @@ const {
   sor,
 } = useInvestState();
 
+const pool = computed(() => props.pool);
+
 const investMath = useInvestMath(
-  toRef(props, 'pool'),
+  pool,
   tokenAddresses,
   amounts,
   useNativeAsset,
@@ -86,9 +89,13 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const {
+  managedPoolWithTradingHalted,
+  isWethPool,
+  isStableLikePool,
+  isDeepPool,
+} = usePool(pool);
+const { veBalTokenInfo } = useVeBal();
 
 /**
  * COMPUTED
@@ -244,24 +251,37 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     />
 
     <TokenInput
-      v-for="(n, i) in tokenAddresses.length"
-      :key="i"
-      v-model:address="tokenAddresses[i]"
-      v-model:amount="amounts[i]"
-      v-model:isValid="validInputs[i]"
-      :name="tokenAddresses[i]"
-      :weight="tokenWeight(tokenAddresses[i])"
-      :hintAmount="propAmountFor(i)"
-      :hint="hint(i)"
+      v-if="isDeepPool"
+      v-model:address="tokenAddresses[0]"
+      v-model:amount="amounts[0]"
+      v-model:isValid="validInputs[0]"
+      :name="tokenAddresses[0]"
       class="mb-4"
-      fixedToken
-      :options="tokenOptions(i)"
-      @update:amount="handleAmountChange($event, i)"
-      @update:address="handleAddressChange($event)"
+      :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+      @update:amount="amount => (amounts[0] = amount)"
+      @update:address="address => (tokenAddresses[0] = address)"
     />
-
+    <template v-else>
+      <TokenInput
+        v-for="(n, i) in tokenAddresses"
+        :key="n"
+        v-model:address="tokenAddresses[i]"
+        v-model:amount="amounts[i]"
+        v-model:isValid="validInputs[i]"
+        :name="tokenAddresses[i]"
+        :weight="tokenWeight(tokenAddresses[i])"
+        :hintAmount="propAmountFor(i)"
+        :hint="hint(i)"
+        class="mb-4"
+        fixedToken
+        :options="tokenOptions(i)"
+        @update:amount="handleAmountChange($event, i)"
+        @update:address="handleAddressChange($event)"
+      />
+    </template>
     <InvestFormTotals
       :math="investMath"
+      :showTotalRow="!isDeepPool"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
