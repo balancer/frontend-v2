@@ -1,5 +1,5 @@
 import NProgress from 'nprogress';
-import { useRouter } from 'vue-router';
+import { RouteLocationNormalized, useRouter } from 'vue-router';
 
 import { Network } from '@balancer-labs/sdk';
 import config from '@/lib/config';
@@ -12,52 +12,84 @@ import { networkFor, networkFromSlug, appUrl } from '@/composables/useNetwork';
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
+// Handle different url formats
+function getSubdomain() {
+  const betaEnv =
+    window.location.host.split('.')[0] === 'beta' ||
+    window.location.host.split('.')[0] === 'staging';
+  return betaEnv
+    ? window.location.host.split('.')[1]
+    : window.location.host.split('.')[0];
+}
+
+// old format subdomain redirect - e.g. "https://polygon.balancer.fi/"
+// if conflicting formats - use the url - e.g. "https://polygon.balancer.fi/#/arbitrum" -> arbitrum
+function redirectOldFormatUrl(
+  networkFromSubdomain: Network,
+  networkSlug: string | undefined,
+  to: RouteLocationNormalized
+) {
+  const networkFromUrl = networkFromSlug(networkSlug ?? '');
+  localStorage.setItem(
+    'networkId',
+    (networkFromUrl || networkFromSubdomain).toString()
+  );
+  window.location.href = networkFromUrl
+    ? `${appUrl()}${to.fullPath}`
+    : `${appUrl()}/${config[networkFromUrl || networkFromSubdomain].slug}${
+        to.fullPath
+      }`;
+}
+
+// check for network in url and redirect if necessary
+function handleNetworkUrl(
+  networkSlug: string,
+  noNetworkChangeCallback,
+  networkChangeCallback
+) {
+  const networkFromUrl = networkFromSlug(networkSlug);
+  const localStorageNetwork: Network = networkFor(
+    localStorage.getItem('networkId') ?? '1'
+  );
+  if (!networkFromUrl) {
+    // missing or incorrect network name -> next() withtout network change
+    noNetworkChangeCallback();
+  } else if (localStorageNetwork === networkFromUrl) {
+    // if on the correct network -> next()
+    noNetworkChangeCallback();
+  } else {
+    // if on different network -> update localstorage and reload
+    networkChangeCallback(networkFromUrl);
+  }
+}
+
 export default function useNavigationGuards() {
   const router = useRouter();
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
-    const betaEnv =
-      window.location.host.split('.')[0] === 'beta' ||
-      window.location.host.split('.')[0] === 'staging';
-    const subdomain = betaEnv
-      ? window.location.host.split('.')[1]
-      : window.location.host.split('.')[0];
+    const subdomain = getSubdomain();
     const networkFromSubdomain = networkFromSlug(subdomain);
+    const networkSlug = to.params.networkSlug?.toString();
     if (networkFromSubdomain) {
-      // old format subdomain redirect
-      const networkFromUrl = networkFromSlug(to.params.networkSlug?.toString());
-      localStorage.setItem(
-        'networkId',
-        (networkFromUrl || networkFromSubdomain).toString()
-      );
-      window.location.href = networkFromUrl
-        ? `${appUrl()}${to.fullPath}`
-        : `${appUrl()}/${config[networkFromUrl || networkFromSubdomain].slug}${
-            to.fullPath
-          }`;
+      redirectOldFormatUrl(networkFromSubdomain, networkSlug, to);
     } else {
-      // check for network in url and redirect if necessary
-      const networkSlug = to.params.networkSlug?.toString();
       if (networkSlug) {
-        const networkFromUrl = networkFromSlug(networkSlug);
-        const localStorageNetwork: Network = networkFor(
-          localStorage.getItem('networkId') ?? '1'
-        );
-        if (!networkFromUrl) {
-          // missing or incorrect network name -> next() withtout network change
+        const noNetworkChangeCallback = () => {
           next();
-        } else if (localStorageNetwork === networkFromUrl) {
-          // if on the correct network -> next()
-          next();
-        } else {
-          // if on different network -> update localstorage and reload
+        };
+        const networkChangeCallback = (networkFromUrl: Network) => {
           document.write('');
           localStorage.setItem('networkId', networkFromUrl.toString());
           window.location.href = `/#${to.fullPath}`;
           router.go(0);
-        }
+        };
+        handleNetworkUrl(
+          networkSlug,
+          noNetworkChangeCallback,
+          networkChangeCallback
+        );
       } else {
         next();
       }
