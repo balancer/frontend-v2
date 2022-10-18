@@ -1,5 +1,7 @@
 import { getTopLevelDomain } from './useNavigationGuards';
 
+jest.mock('@/services/web3/useWeb3');
+
 describe('Navigation guards', () => {
   it('should get correct top level domains', () => {
     const urls = [
