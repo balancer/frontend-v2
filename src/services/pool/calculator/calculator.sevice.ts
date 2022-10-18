@@ -145,14 +145,16 @@ export default class CalculatorService {
    * @param {number} index - The pool token index for the fixedAmount.
    * @param {string} type - If receive fixedAmount is tokenIn expecting bptOut, if
    * send fixedAmount is bptIn expecting tokensOut.
-   * @param {number} buffer - A buffer (EVM scale) used in specific BPTInForExactTokensOut
-   * case. Should otherwise always be zero.
    */
   public propAmountsGiven(
     fixedAmount: string,
     index: number,
     type: 'send' | 'receive',
-    buffer = 0
+    fixedRatioOverride?: {
+      bps: number;
+      value: string;
+      buffer: number;
+    }
   ): Amounts {
     if (fixedAmount.trim() === '')
       return { send: [], receive: [], fixedToken: 0 };
@@ -160,9 +162,7 @@ export default class CalculatorService {
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
     const fixedToken = this.allTokens.value[fixedTokenAddress];
-    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals).sub(
-      buffer
-    );
+    const fixedDenormAmount = parseUnits(fixedAmount, fixedToken?.decimals);
     const fixedRatio = this.ratioOf(type, index);
     const amounts = {
       send: this.sendTokens.map(() => ''),
@@ -177,10 +177,18 @@ export default class CalculatorService {
         if (i !== index || type !== types[ratioType]) {
           const tokenAddress = this.tokenOf(types[ratioType], i);
           const token = this.allTokens.value[tokenAddress];
-          amounts[types[ratioType]][i] = formatUnits(
-            fixedDenormAmount.mul(ratio).div(fixedRatio),
-            token?.decimals
-          );
+          let amount;
+          if (fixedRatioOverride) {
+            amount = fixedDenormAmount
+              .sub(fixedRatioOverride.buffer)
+              .mul(fixedRatioOverride.bps)
+              .div(10000)
+              .mul(ratio)
+              .div(fixedRatioOverride.value);
+          } else {
+            amount = fixedDenormAmount.mul(ratio).div(fixedRatio);
+          }
+          amounts[types[ratioType]][i] = formatUnits(amount, token?.decimals);
         }
       });
     });
