@@ -13,7 +13,7 @@ NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
 // Get top level domain excluding 'beta' or 'staging'
-export function getTopDomain(url: string) {
+export function getTopLevelDomain(url: string) {
   const betaEnv =
     url.split('.')[0] === 'beta' || url.split('.')[0] === 'staging';
   return betaEnv ? url.split('.')[1] : url.split('.')[0];
@@ -66,7 +66,7 @@ export default function useNavigationGuards() {
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
-    const subdomain = getTopDomain(window.location.host);
+    const subdomain = getTopLevelDomain(window.location.host);
     const networkFromSubdomain = networkFromSlug(subdomain);
     const networkSlug = to.params.networkSlug?.toString();
     if (networkFromSubdomain) {
