@@ -39,10 +39,10 @@ function redirectOldFormatUrl(
 }
 
 // check for network in url and redirect if necessary
-function handleNetworkUrl(
+export function handleNetworkUrl(
   networkSlug: string,
-  noNetworkChangeCallback,
-  networkChangeCallback
+  noNetworkChangeCallback: () => void,
+  networkChangeCallback: (networkFromUrl?: Network) => void
 ) {
   const networkFromUrl = networkFromSlug(networkSlug);
   const localStorageNetwork: Network = networkFor(
@@ -50,13 +50,13 @@ function handleNetworkUrl(
   );
   if (!networkFromUrl) {
     // missing or incorrect network name -> next() withtout network change
-    noNetworkChangeCallback();
+    return noNetworkChangeCallback();
   } else if (localStorageNetwork === networkFromUrl) {
     // if on the correct network -> next()
-    noNetworkChangeCallback();
+    return noNetworkChangeCallback();
   } else {
     // if on different network -> update localstorage and reload
-    networkChangeCallback(networkFromUrl);
+    return networkChangeCallback(networkFromUrl);
   }
 }
 
@@ -74,9 +74,9 @@ export default function useNavigationGuards() {
     } else {
       if (networkSlug) {
         const noNetworkChangeCallback = () => next();
-        const networkChangeCallback = (networkFromUrl: Network) => {
+        const networkChangeCallback = (networkFromUrl?: Network) => {
           document.write('');
-          localStorage.setItem('networkId', networkFromUrl.toString());
+          localStorage.setItem('networkId', (networkFromUrl ?? '').toString());
           window.location.href = `/#${to.fullPath}`;
           router.go(0);
         };
