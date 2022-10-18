@@ -109,6 +109,7 @@ describe('Navigation guards', () => {
         () => true
       );
     });
+    localStorage.removeItem('networkId');
     expect(networkChangeArr.length).toEqual(0);
   });
 
@@ -128,6 +129,7 @@ describe('Navigation guards', () => {
         () => true
       );
     });
+    localStorage.removeItem('networkId');
     expect(networkChangeArr.length).toEqual(networks.length);
   });
 });
