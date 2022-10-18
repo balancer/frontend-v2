@@ -36,7 +36,7 @@ export function getOldFormatRedirectUrl(
     : `${appUrl()}/${config[networkFromSubdomain].slug}${fullPath}`;
 }
 
-// check for network in url and redirect if necessary
+// using network in url check if redirect is necessary
 export function handleNetworkUrl(
   networkSlug: string,
   noNetworkChangeCallback: () => void,
