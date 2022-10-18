@@ -1,22 +1,80 @@
-import { getTopLevelDomain, handleNetworkUrl } from './useNavigationGuards';
+import {
+  getOldFormatRedirectUrl,
+  getTopLevelDomain,
+  handleNetworkUrl,
+} from './useNavigationGuards';
+import { Network } from '@balancer-labs/sdk';
 
 jest.mock('@/services/web3/useWeb3');
 
 describe('Navigation guards', () => {
   it('should get correct top level domains', () => {
     const urls = [
-      { path: 'polygon.balancer.fi/#/test', expect: 'polygon' },
-      { path: 'app.balancer.fi', expect: 'app' },
-      { path: 'balancer.fi', expect: 'balancer' },
-      { path: 'staging.balancer.fi/trade', expect: 'balancer' },
-      { path: 'staging.goerli.balancer.fi', expect: 'goerli' },
-      { path: 'beta.balancer.fi/#/claim/test', expect: 'balancer' },
-      { path: 'localhost:8080', expect: 'localhost:8080' },
-      { path: 'localhost', expect: 'localhost' },
+      { path: 'polygon.balancer.fi/#/test', result: 'polygon' },
+      { path: 'app.balancer.fi', result: 'app' },
+      { path: 'balancer.fi', result: 'balancer' },
+      { path: 'staging.balancer.fi/trade', result: 'balancer' },
+      { path: 'staging.goerli.balancer.fi', result: 'goerli' },
+      { path: 'beta.balancer.fi/#/claim/test', result: 'balancer' },
+      { path: 'localhost:8080', result: 'localhost:8080' },
+      { path: 'localhost', result: 'localhost' },
     ];
 
     urls.forEach(url => {
-      expect(getTopLevelDomain(url.path)).toEqual(url.expect);
+      expect(getTopLevelDomain(url.path)).toEqual(url.result);
+    });
+  });
+
+  it('should get correct url redirects for old format urls', () => {
+    const urls = [
+      {
+        networkFromSubdomain: 137 as Network,
+        networkSlug: undefined,
+        fullPath: '/pool/create',
+        result: 'https://localhost:8080/#/polygon/pool/create',
+      },
+      {
+        networkFromSubdomain: 5 as Network,
+        networkSlug: undefined,
+        fullPath: '/pool/create',
+        result: 'https://localhost:8080/#/goerli/pool/create',
+      },
+      {
+        networkFromSubdomain: 1 as Network,
+        networkSlug: undefined,
+        fullPath: '/pool/create',
+        result: 'https://localhost:8080/#/ethereum/pool/create',
+      },
+      {
+        networkFromSubdomain: 1 as Network,
+        networkSlug: 'ethereum',
+        fullPath: '/ethereum/pool/create',
+        result: 'https://localhost:8080/#/ethereum/pool/create',
+      },
+      {
+        networkFromSubdomain: 5 as Network,
+        networkSlug: 'polygon',
+        fullPath: '/polygon/pool/create',
+        result: 'https://localhost:8080/#/polygon/pool/create',
+      },
+      {
+        networkFromSubdomain: 137 as Network,
+        networkSlug: 'ethereum',
+        fullPath: '/ethereum/pool/create',
+        result: 'https://localhost:8080/#/ethereum/pool/create',
+      },
+      {
+        networkFromSubdomain: 137 as Network,
+        networkSlug: 'arbitrum',
+        fullPath: '/arbitrum/pool/create',
+        result: 'https://localhost:8080/#/arbitrum/pool/create',
+      },
+    ];
+
+    urls.forEach(({ networkFromSubdomain, networkSlug, result, fullPath }) => {
+      expect(
+        getOldFormatRedirectUrl(networkFromSubdomain, networkSlug, fullPath)
+      ).toEqual(result);
     });
   });
 

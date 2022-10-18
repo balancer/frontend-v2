@@ -1,5 +1,5 @@
 import NProgress from 'nprogress';
-import { RouteLocationNormalized, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import { Network } from '@balancer-labs/sdk';
 import config from '@/lib/config';
@@ -21,21 +21,19 @@ export function getTopLevelDomain(url: string) {
 
 // old format subdomain redirect - e.g. "https://polygon.balancer.fi/"
 // if conflicting formats - use the url - e.g. "https://polygon.balancer.fi/#/arbitrum" -> arbitrum
-function redirectOldFormatUrl(
+export function getOldFormatRedirectUrl(
   networkFromSubdomain: Network,
   networkSlug: string | undefined,
-  to: RouteLocationNormalized
+  fullPath: string
 ) {
   const networkFromUrl = networkFromSlug(networkSlug ?? '');
   localStorage.setItem(
     'networkId',
     (networkFromUrl || networkFromSubdomain).toString()
   );
-  window.location.href = networkFromUrl
-    ? `${appUrl()}${to.fullPath}`
-    : `${appUrl()}/${config[networkFromUrl || networkFromSubdomain].slug}${
-        to.fullPath
-      }`;
+  return networkFromUrl
+    ? `${appUrl()}${fullPath}`
+    : `${appUrl()}/${config[networkFromSubdomain].slug}${fullPath}`;
 }
 
 // check for network in url and redirect if necessary
@@ -70,7 +68,11 @@ export default function useNavigationGuards() {
     const networkFromSubdomain = networkFromSlug(subdomain);
     const networkSlug = to.params.networkSlug?.toString();
     if (networkFromSubdomain) {
-      redirectOldFormatUrl(networkFromSubdomain, networkSlug, to);
+      window.location.href = getOldFormatRedirectUrl(
+        networkFromSubdomain,
+        networkSlug,
+        to.fullPath
+      );
     } else {
       if (networkSlug) {
         const noNetworkChangeCallback = () => next();
