@@ -26,6 +26,7 @@ import { Gauge } from '@/services/balancer/gauges/types';
 import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TOKENS } from '@/constants/tokens';
 
 /**
  * TYPES
@@ -197,11 +198,10 @@ function formatRewardsData(data?: BalanceMap): ProtocolRewardRow[] {
  */
 async function getBBaUSDPrice() {
   if (isMainnet.value) {
-    const appoxPrice = await bbAUSDToken.getRate();
+    const appoxPrice = bnum(await bbAUSDToken.getRate()).toNumber();
     injectPrices({
-      [FiatCurrency.usd]: {
-        [bbAUSDToken.address as string]: bnum(appoxPrice).toNumber(),
-      },
+      [TOKENS.Addresses.bbaUSD as string]: { [FiatCurrency.usd]: appoxPrice },
+      [TOKENS.Addresses.bbaUSDv2 as string]: { [FiatCurrency.usd]: appoxPrice },
     });
   }
 }

@@ -64,6 +64,11 @@ const QUERY_KEYS = {
       'user',
       { networkId, account, id },
     ],
+    HistoricalPrices: (networkId: Ref<Network>, id: string) => [
+      POOLS_ROOT_KEY,
+      'historicalPrices',
+      { networkId, id },
+    ],
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],

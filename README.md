@@ -78,13 +78,3 @@ docker run \
 Click the button below to deploy the frontend Docker image to a new instance in your Digital Ocean account. You will be prompted to provide your Infura Project ID, Alchemy Key, and Blocknative Dapp ID as these are required for the frontend to work correctly.
 
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/balancer-labs/frontend-v2/tree/UI-769-one-click-deploy-to-digital-ocean)
-
-## Design System
-
-The app is using [Tailwind](https://tailwindcss.com/) to configure base styles. In development these styles can be viewed by running:
-
-```bash
-npm run tailwind-viewer
-```
-
-Your browser should load the app at [http://localhost:3000](http://localhost:3000).

@@ -191,7 +191,7 @@ onBeforeMount(() => {
  */
 watch(blockNumber, async () => {
   if (shouldFetchBatchSwap.value && !txInProgress.value) {
-    await props.math.getSwap();
+    await props.math.fetchExitData();
     if (
       batchSwap.value &&
       (batchSwap.value.assets.length === 0 ||
