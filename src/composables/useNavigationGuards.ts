@@ -12,14 +12,11 @@ import { networkFor, networkFromSlug, appUrl } from '@/composables/useNetwork';
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
-// Handle different url formats
-function getSubdomain() {
+// Get top level domain excluding 'beta' or 'staging'
+export function getTopDomain(url: string) {
   const betaEnv =
-    window.location.host.split('.')[0] === 'beta' ||
-    window.location.host.split('.')[0] === 'staging';
-  return betaEnv
-    ? window.location.host.split('.')[1]
-    : window.location.host.split('.')[0];
+    url.split('.')[0] === 'beta' || url.split('.')[0] === 'staging';
+  return betaEnv ? url.split('.')[1] : url.split('.')[0];
 }
 
 // old format subdomain redirect - e.g. "https://polygon.balancer.fi/"
@@ -69,16 +66,14 @@ export default function useNavigationGuards() {
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
-    const subdomain = getSubdomain();
+    const subdomain = getTopDomain(window.location.host);
     const networkFromSubdomain = networkFromSlug(subdomain);
     const networkSlug = to.params.networkSlug?.toString();
     if (networkFromSubdomain) {
       redirectOldFormatUrl(networkFromSubdomain, networkSlug, to);
     } else {
       if (networkSlug) {
-        const noNetworkChangeCallback = () => {
-          next();
-        };
+        const noNetworkChangeCallback = () => next();
         const networkChangeCallback = (networkFromUrl: Network) => {
           document.write('');
           localStorage.setItem('networkId', networkFromUrl.toString());
