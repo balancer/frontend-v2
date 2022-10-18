@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 
-import { isComposableStable, isDeep, usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -46,20 +46,13 @@ const tokenAddresses = computed(() => {
 });
 
 const options = computed(() => {
-  if (!noProportionalWithdrawals.value) {
-    return ['all', ...tokenAddresses.value];
-  }
-  return tokenAddresses.value;
+  return ['all', ...tokenAddresses.value];
 });
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
 const assetSetWidth = computed(
   () => 40 + (tokenAddresses.value.length - 2) * 10
-);
-
-const noProportionalWithdrawals = computed(
-  () => isComposableStable(props.pool.poolType) && !isDeep(props.pool)
 );
 
 function isOptionSelected(option: string): boolean {
@@ -82,13 +75,6 @@ function handleSelected(newToken: string): void {
     tokenOut.value = newToken;
   }
 }
-
-onMounted(() => {
-  // if all option is not available, select the first token
-  if (noProportionalWithdrawals.value) {
-    handleSelected(options.value[0]);
-  }
-});
 </script>
 
 <template>

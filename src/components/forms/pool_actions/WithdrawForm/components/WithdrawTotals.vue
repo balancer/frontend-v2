@@ -22,7 +22,7 @@ const props = defineProps<Props>();
  */
 const { fNum2 } = useNumbers();
 
-const { priceImpact, highPriceImpact, loadingAmountsOut } = toRefs(props.math);
+const { priceImpact, highPriceImpact, loadingData } = toRefs(props.math);
 
 /**
  * COMPUTED
@@ -40,7 +40,7 @@ const priceImpactClasses = computed(() => ({
       </div>
       <div class="data-table-number-col">
         <div class="flex items-center">
-          <BalLoadingBlock v-if="loadingAmountsOut" class="w-10 h-6" />
+          <BalLoadingBlock v-if="loadingData" class="w-10 h-6" />
           <span v-else>{{ fNum2(priceImpact, FNumFormats.percent) }}</span>
 
           <BalTooltip :text="$t('withdraw.tooltips.priceImpact')">

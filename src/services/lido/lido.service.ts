@@ -48,10 +48,12 @@ export default class LidoService {
       pool.tokens.find(t => isSameAddress(t.address, this.wstEthAddress))
         ?.balance || '0';
     const totalBalance = bnum(wethBalance).plus(wstethBalance);
-    const wstethRatio = bnum(wstethBalance).div(totalBalance);
+    const wstethRatio =
+      pool.tokens.find(t => isSameAddress(t.address, this.wstEthAddress))
+        ?.weight || bnum(wstethBalance).div(totalBalance);
 
     return bnum(stethAPR)
-      .times(1 - protocolFeePercentage)
+      .times(1 - protocolFeePercentage) // TODO: check pool type and use protocol yield percentage cache when applicable
       .times(wstethRatio)
       .toString();
   }
