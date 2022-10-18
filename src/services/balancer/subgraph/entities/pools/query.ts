@@ -21,25 +21,27 @@ const tokenAttrs = {
   decimals: true,
 };
 
+const poolAttrs = {
+  id: true,
+  poolType: true,
+};
+
 // Nested token tree attributes, 3 levels deep.
 const tokenTreeAttrs = {
   ...tokenAttrs,
   token: {
     pool: {
-      id: true,
-      poolType: true,
+      ...poolAttrs,
       tokens: {
         ...tokenAttrs,
         token: {
           pool: {
-            id: true,
-            poolType: true,
+            ...poolAttrs,
             tokens: {
               ...tokenAttrs,
               token: {
                 pool: {
-                  id: true,
-                  poolType: true,
+                  ...poolAttrs,
                 },
               },
             },
