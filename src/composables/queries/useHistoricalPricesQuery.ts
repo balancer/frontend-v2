@@ -1,11 +1,12 @@
+import differenceInDays from 'date-fns/differenceInDays';
 import { QueryObserverOptions } from 'react-query/core';
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { HistoricalPrices } from '@/services/coingecko/api/price.service';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
-import { PoolSnapshots } from '@/services/pool/types';
 
 import useNetwork from '../useNetwork';
 import usePoolQuery from './usePoolQuery';
@@ -13,10 +14,10 @@ import usePoolQuery from './usePoolQuery';
 /**
  * HELPERS
  */
-export default function usePoolSnapshotsQuery(
+export default function useHistoricalPricesQuery(
   id: string,
   days?: number,
-  options: QueryObserverOptions<PoolSnapshots> = {}
+  options: QueryObserverOptions<HistoricalPrices> = {}
 ) {
   /**
    * @description
@@ -40,18 +41,29 @@ export default function usePoolSnapshotsQuery(
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Pools.Snapshot(networkId, id);
+  const queryKey = QUERY_KEYS.Pools.HistoricalPrices(networkId, id);
 
   const queryFn = async () => {
     if (!pool.value && !storedPool) throw new Error('No pool');
 
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
-    return await balancerSubgraphService.poolSnapshots.get({
-      where: {
-        pool: id.toLowerCase(),
-        timestamp_gt: createTime,
-      },
-    });
+    const tokensList = storedPool?.tokensList || pool.value?.tokensList || [];
+    const shapshotDaysNum =
+      days || differenceInDays(new Date(), new Date(createTime * 1000));
+
+    /**
+     * @description
+     * due to coin gecko docs if we query from 1 to 90 days from current time it returns hourly data
+     * @see https://www.coingecko.com/en/api/documentation
+     */
+    const aggregateBy = shapshotDaysNum <= 90 ? 'hour' : 'day';
+
+    return await coingeckoService.prices.getTokensHistorical(
+      tokensList,
+      shapshotDaysNum,
+      1,
+      aggregateBy
+    );
   };
 
   const queryOptions = reactive({
@@ -59,5 +71,5 @@ export default function usePoolSnapshotsQuery(
     ...options,
   });
 
-  return useQuery<PoolSnapshots>(queryKey, queryFn, queryOptions);
+  return useQuery<HistoricalPrices>(queryKey, queryFn, queryOptions);
 }

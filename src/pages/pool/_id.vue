@@ -24,6 +24,7 @@ import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
+import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 
 /**
  * STATE
@@ -59,18 +60,24 @@ const {
 //#endregion
 
 //#region pool snapshot query
-const poolSnapshotsQuery = usePoolSnapshotsQuery(
+const poolSnapshotsQuery = usePoolSnapshotsQuery(poolId, undefined, {
+  refetchOnWindowFocus: false,
+});
+const isLoadingSnapshots = computed(
+  () => poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
+);
+
+const snapshots = computed(() => poolSnapshotsQuery.data.value);
+//#endregion
+
+//#region historical prices query
+const historicalPricesQuery = useHistoricalPricesQuery(
   poolId,
   undefined,
   // in order to prevent multiple coingecko requests
   { refetchOnWindowFocus: false }
 );
-const isLoadingSnapshots = computed(
-  () => poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-);
-
-const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
-const historicalPrices = computed(() => poolSnapshotsQuery.data.value?.prices);
+const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#endregion
 
 //#region APR query

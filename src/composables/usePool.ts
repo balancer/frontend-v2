@@ -44,6 +44,8 @@ export function isComposableStableLike(poolType: PoolType): boolean {
 
 export function isDeep(pool: Pool): boolean {
   const treatAsDeep = [
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f', // bb-a-USD1 (goerli)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
@@ -305,6 +307,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isDeepPool = computed(
     (): boolean => !!pool.value && isDeep(pool.value)
   );
+  const isShallowComposableStablePool = computed(
+    (): boolean => isComposableStablePool.value && !isDeepPool.value
+  );
   const isStableLikePool = computed(
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
   );
@@ -352,6 +357,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStableLikePool,
     isComposableStableLikePool,
     isDeepPool,
+    isShallowComposableStablePool,
     isWeightedPool,
     isWeightedLikePool,
     isManagedPool,

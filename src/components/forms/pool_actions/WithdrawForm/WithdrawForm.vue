@@ -46,11 +46,13 @@ const {
   error,
   parseError,
   setError,
+  txInProgress,
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   isProportional,
+  tokensOut,
   tokenOut,
   tokenOutIndex
 );
@@ -61,8 +63,10 @@ const {
   singleAssetMaxes,
   tokenOutAmount,
   tokenOutPoolBalance,
+  loadingData,
+  bptBalance,
   initMath,
-  loadingAmountsOut,
+  resetMath,
 } = withdrawMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -95,6 +99,14 @@ watch(isProportional, newVal => {
   }
 });
 
+watch(bptBalance, () => {
+  if (!txInProgress.value) {
+    // The user's BPT balance has changed in the background. Reset maths so
+    // they're working with up to date values.
+    resetMath();
+  }
+});
+
 /**
  * CALLBACKS
  */
@@ -123,7 +135,7 @@ onBeforeMount(() => {
       :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
-      :balanceLoading="loadingAmountsOut"
+      :balanceLoading="loadingData"
       fixedToken
       disableNativeAssetBuffer
     >
@@ -171,10 +183,7 @@ onBeforeMount(() => {
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmounts ||
-          !hasValidInputs ||
-          isMismatchedNetwork ||
-          loadingAmountsOut
+          !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
         "
         block
         @click="showPreview = true"
