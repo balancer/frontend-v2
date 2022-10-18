@@ -27,16 +27,19 @@ const tokenTreeAttrs = {
   token: {
     pool: {
       id: true,
+      poolType: true,
       tokens: {
         ...tokenAttrs,
         token: {
           pool: {
             id: true,
+            poolType: true,
             tokens: {
               ...tokenAttrs,
               token: {
                 pool: {
                   id: true,
+                  poolType: true,
                 },
               },
             },
