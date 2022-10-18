@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 // Components
@@ -12,6 +12,8 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
+import InvestFormSingleToken from '@/components/forms/pool_actions/InvestForm/InvestFormSingleToken.vue';
+import InvestFormDeepPool from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPool.vue';
 
 /**
  * STATE
@@ -20,6 +22,21 @@ const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
+
+enum Tabs {
+  POOL_TOKENS = 'poolTokens',
+  SINGLE_TOKEN = 'singleToken',
+}
+
+const tabs = [
+  { value: Tabs.POOL_TOKENS, label: 'Pool Tokens' },
+  {
+    value: Tabs.SINGLE_TOKEN,
+    label: 'Single Token',
+  },
+];
+
+const activeTab = ref(tabs[0].value);
 
 /**
  * CALLBACKS
@@ -52,9 +69,25 @@ onBeforeMount(async () => {
             <h4>{{ $t('investInPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
+          <BalTabs
+            v-if="isDeepPool"
+            v-model="activeTab"
+            :tabs="tabs"
+            class="p-0 m-0 -mb-px whitespace-nowrap"
+            noPad
+          />
         </div>
       </template>
-      <InvestForm :pool="pool" />
+      <template v-if="!isDeepPool">
+        <InvestForm :pool="pool" />
+      </template>
+      <template v-else>
+        <InvestFormDeepPool
+          v-if="activeTab === Tabs.POOL_TOKENS"
+          :pool="pool"
+        />
+        <InvestFormSingleToken v-else :pool="pool" />
+      </template>
     </BalCard>
   </div>
 </template>

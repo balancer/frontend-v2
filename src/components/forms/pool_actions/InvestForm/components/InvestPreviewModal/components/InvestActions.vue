@@ -84,7 +84,7 @@ const {
   fiatTotalLabel,
   batchSwap,
   shouldFetchBatchSwap,
-} = toRefs(props.math);
+} = toRefs(reactive(props.math));
 
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
