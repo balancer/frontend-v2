@@ -101,7 +101,7 @@ export default class JoinPool {
 
   // Calculate price impact.
   // Difference between fiat value in & fiat value out
-  getPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
+  private getPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
     console.log({ fiatValueIn, fiatValueOut });
     const bnumFiatValueIn = bnum(fiatValueIn);
     const bnumFiatValueOut = bnum(fiatValueOut);

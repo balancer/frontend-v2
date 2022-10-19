@@ -11,15 +11,12 @@ import { InvestMathResponse } from '../composables/useInvestMath';
  */
 type Props = {
   math: InvestMathResponse;
-  showTotalRow?: boolean;
 };
 
 /**
  * Props
  */
-const props = withDefaults(defineProps<Props>(), {
-  showTotalRow: false,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'maximize'): void;
@@ -60,7 +57,7 @@ const optimizeBtnClasses = computed(() => ({
 
 <template>
   <div class="data-table">
-    <div v-if="showTotalRow" class="data-table-row total-row">
+    <div class="data-table-row total-row">
       <div class="p-2">
         {{ $t('total') }}
       </div>
@@ -141,19 +138,16 @@ const optimizeBtnClasses = computed(() => ({
   @apply divide-x dark:divide-gray-900;
 }
 
-.data-table-row:first-child {
-  @apply rounded-t-lg;
-}
-
 .data-table-number-col {
   @apply col-span-3 p-2 flex items-center justify-between;
 }
 
 .total-row {
-  @apply text-lg font-bold dark:bg-gray-800;
+  @apply text-lg font-semibold rounded-t-lg dark:bg-gray-800;
 }
 
 .price-impact-row {
   @apply text-sm rounded-b-lg;
 }
 </style>
+  

@@ -27,7 +27,6 @@ import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
-import useVeBal from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -89,13 +88,8 @@ const {
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 
-const {
-  managedPoolWithTradingHalted,
-  isWethPool,
-  isStableLikePool,
-  isDeepPool,
-} = usePool(pool);
-const { veBalTokenInfo } = useVeBal();
+const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } =
+  usePool(pool);
 
 /**
  * COMPUTED
@@ -229,8 +223,8 @@ watch(useNativeAsset, shouldUseNativeAsset => {
   }
 });
 </script>
-
-<template>
+  
+  <template>
   <div>
     <BalAlert
       v-if="forceProportionalInputs"
@@ -251,37 +245,24 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     />
 
     <TokenInput
-      v-if="isDeepPool"
-      v-model:address="tokenAddresses[0]"
-      v-model:amount="amounts[0]"
-      v-model:isValid="validInputs[0]"
-      :name="tokenAddresses[0]"
+      v-for="(n, i) in tokenAddresses.length"
+      :key="i"
+      v-model:address="tokenAddresses[i]"
+      v-model:amount="amounts[i]"
+      v-model:isValid="validInputs[i]"
+      :name="tokenAddresses[i]"
+      :weight="tokenWeight(tokenAddresses[i])"
+      :hintAmount="propAmountFor(i)"
+      :hint="hint(i)"
       class="mb-4"
-      :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-      @update:amount="amount => (amounts[0] = amount)"
-      @update:address="address => (tokenAddresses[0] = address)"
+      fixedToken
+      :options="tokenOptions(i)"
+      @update:amount="handleAmountChange($event, i)"
+      @update:address="handleAddressChange($event)"
     />
-    <template v-else>
-      <TokenInput
-        v-for="(n, i) in tokenAddresses"
-        :key="n"
-        v-model:address="tokenAddresses[i]"
-        v-model:amount="amounts[i]"
-        v-model:isValid="validInputs[i]"
-        :name="tokenAddresses[i]"
-        :weight="tokenWeight(tokenAddresses[i])"
-        :hintAmount="propAmountFor(i)"
-        :hint="hint(i)"
-        class="mb-4"
-        fixedToken
-        :options="tokenOptions(i)"
-        @update:amount="handleAmountChange($event, i)"
-        @update:address="handleAddressChange($event)"
-      />
-    </template>
+
     <InvestFormTotals
       :math="investMath"
-      :showTotalRow="!isDeepPool"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -341,3 +322,4 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     </StakingProvider>
   </div>
 </template>
+  

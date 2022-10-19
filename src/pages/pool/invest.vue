@@ -13,7 +13,7 @@ import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import InvestFormSingleToken from '@/components/forms/pool_actions/InvestForm/InvestFormSingleToken.vue';
-import InvestFormDeepPool from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPool.vue';
+import InvestFormDeepPoolMultiToken from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPoolMultiToken.vue';
 
 /**
  * STATE
@@ -78,15 +78,15 @@ onBeforeMount(async () => {
           />
         </div>
       </template>
-      <template v-if="!isDeepPool">
-        <InvestForm :pool="pool" />
-      </template>
-      <template v-else>
-        <InvestFormDeepPool
+      <template v-if="isDeepPool">
+        <InvestFormDeepPoolMultiToken
           v-if="activeTab === Tabs.POOL_TOKENS"
           :pool="pool"
         />
         <InvestFormSingleToken v-else :pool="pool" />
+      </template>
+      <template v-else>
+        <InvestForm :pool="pool" />
       </template>
     </BalCard>
   </div>
