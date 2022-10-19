@@ -1,8 +1,6 @@
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { SwapAttributes, SwapInfo } from '@balancer-labs/sdk';
-import { formatFixed } from '@ethersproject/bignumber';
 import { debounce } from 'lodash';
 import { computed, Ref, ref, watch } from 'vue';
 import JoinPool from './JoinPool';
@@ -30,7 +28,7 @@ export default function useJoinPool(
   });
   const { getToken } = useTokens();
   const { slippageBsp } = useUserSettings();
-  const joinPool = new JoinPool(poolId, poolAddress);
+  const joinPool = new JoinPool(poolId, poolAddress, bptDecimals);
 
   const swapRoute = ref<SwapInfo | null>(null);
   const bptOut = ref<string>('');
@@ -42,7 +40,6 @@ export default function useJoinPool(
   const loadingData = ref(false);
   const debouncedFindSwapRoute = ref(debounce(findSwapRoute, 1000));
 
-  const { toFiat } = useNumbers();
   const poolQuery = usePoolQuery(poolId);
   const { account } = useWeb3();
 
@@ -71,62 +68,53 @@ export default function useJoinPool(
 
   async function findSwapRoute() {
     if (!amountsIn.value[0]) return;
+    if (!pool.value) return;
     loadingData.value = true;
     const token = getToken(tokensIn.value[0]);
 
-    const _fiatValueIn = toFiat(amountsIn.value[0], tokensIn.value[0]);
-
-    const _swapRoute = await joinPool
+    const {
+      route,
+      fiatValueOut: _fiatValueOut,
+      bptOut: _bptOut,
+      priceImpact: _priceImpact,
+      fiatValueIn: _fiatValueIn,
+    } = await joinPool
       .findRouteGivenIn(
         tokensIn.value[0],
         amountsIn.value[0],
-        token?.decimals || 18
+        token?.decimals || 18,
+        pool.value
       )
       .finally(() => (loadingData.value = false));
 
-    const { totalLiquidity = '', totalShares = '' } = pool.value || {};
-    const _bptOut = formatFixed(
-      _swapRoute.returnAmountFromSwaps,
-      bptDecimals || 18
-    );
-
-    const _fiatValueOut = bnum(totalLiquidity)
-      .div(bnum(totalShares))
-      .times(bnum(_bptOut))
-      .toString();
-
-    const _priceImpact = joinPool.getPriceImpact(_fiatValueIn, _fiatValueOut);
-
     // Update state variables
-    // fiatValueOut.value = toFiat(bpt, poolAddress);
     fiatValueOut.value = _fiatValueOut;
     bptOut.value = _bptOut;
     fiatValueIn.value = _fiatValueIn;
-    swapRoute.value = _swapRoute;
+    swapRoute.value = route;
     priceImpact.value = _priceImpact;
 
     if (account.value) {
       swapAttributes.value = joinPool.getSwapAttributes(
-        _swapRoute,
+        route,
         slippageBsp.value,
         account.value
       );
     }
 
     console.log({
-      _swapRoute,
+      route,
       bptOut,
       fiatValueIn,
       fiatValueOut,
       priceImpact,
       swapAttributes,
       priceImpactPct: priceImpact.value * 100,
-      returnAmount: _swapRoute.returnAmount.toString(),
-      returnAmountConsideringFees:
-        _swapRoute.returnAmountConsideringFees.toString(),
-      returnAmountFromSwaps: _swapRoute.returnAmountFromSwaps.toString(),
-      swapAmount: _swapRoute.swapAmount.toString(),
-      swapAmountForSwaps: _swapRoute.swapAmountForSwaps.toString(),
+      returnAmount: route.returnAmount.toString(),
+      returnAmountConsideringFees: route.returnAmountConsideringFees.toString(),
+      returnAmountFromSwaps: route.returnAmountFromSwaps.toString(),
+      swapAmount: route.swapAmount.toString(),
+      swapAmountForSwaps: route.swapAmountForSwaps.toString(),
     });
   }
 

@@ -1,10 +1,20 @@
 import { balancer } from '@/lib/balancer.sdk';
+import { Pool } from '@/services/pool/types';
 import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
-import { BigNumber, parseFixed } from '@ethersproject/bignumber';
+import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { bnum } from '@/lib/utils';
+import useNumbers from '@/composables/useNumbers';
+
+interface JoinPoolReturnValue {
+  route: SwapInfo;
+  fiatValueIn: string;
+  fiatValueOut: string;
+  bptOut: string;
+  priceImpact: number;
+}
 
 export default class JoinPool {
   poolId: string;
@@ -12,16 +22,19 @@ export default class JoinPool {
   balancer: BalancerSDK;
   hasFetchedPools: boolean;
   swapRouteLoading: boolean;
-  constructor(poolId: string, poolAddress: string) {
+  bptDecimals: number;
+  constructor(poolId: string, poolAddress: string, bptDecimals = 18) {
     this.poolId = poolId;
     this.poolAddress = poolAddress;
     this.balancer = balancer;
     this.hasFetchedPools = false;
     this.swapRouteLoading = false;
+    this.bptDecimals = bptDecimals;
     this.fetchPools();
   }
 
   getProvider = useWeb3().getProvider;
+  toFiat = useNumbers().toFiat;
 
   async getGasPrice(): Promise<BigNumber> {
     const gasPriceParams = await gasPriceService.getGasPrice();
@@ -29,11 +42,29 @@ export default class JoinPool {
     return this.getProvider().getGasPrice();
   }
 
+  getFiatValueIn(amountsIn: string[], tokensIn: string[]): string {
+    return this.toFiat(amountsIn[0], tokensIn[0]);
+  }
+
+  getFiatValueOut(bptOut: string, pool: Pool) {
+    // toFiat(bpt, poolAddress)
+    const { totalLiquidity = '', totalShares = '' } = pool || {};
+    return bnum(totalLiquidity)
+      .div(bnum(totalShares))
+      .times(bnum(bptOut))
+      .toString();
+  }
+
+  getBptOut(swapRoute: SwapInfo, bptDecimals: number) {
+    return formatFixed(swapRoute.returnAmountFromSwaps, bptDecimals || 18);
+  }
+
   async findRouteGivenIn(
     tokenIn: string,
     amount: string,
-    decimals: number
-  ): Promise<SwapInfo> {
+    decimals: number,
+    pool: Pool
+  ): Promise<JoinPoolReturnValue> {
     this.swapRouteLoading = true;
     if (!this.hasFetchedPools) {
       await this.fetchPools();
@@ -55,8 +86,12 @@ export default class JoinPool {
 
     const route = await balancer.swaps.findRouteGivenIn(findRouteParams);
 
+    const bptOut = this.getBptOut(route, this.bptDecimals);
+    const fiatValueOut = this.getFiatValueOut(bptOut, pool);
+    const fiatValueIn = this.getFiatValueIn([amount], [tokenIn]);
+    const priceImpact = this.getPriceImpact(fiatValueIn, fiatValueOut);
     this.swapRouteLoading = false;
-    return route;
+    return { route, fiatValueOut, bptOut, priceImpact, fiatValueIn };
   }
 
   async fetchPools() {
@@ -66,6 +101,7 @@ export default class JoinPool {
   // Calculate price impact.
   // Difference between fiat value in & fiat value out
   getPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
+    console.log({ fiatValueIn, fiatValueOut });
     const bnumFiatValueIn = bnum(fiatValueIn);
     const bnumFiatValueOut = bnum(fiatValueOut);
     return Math.max(
