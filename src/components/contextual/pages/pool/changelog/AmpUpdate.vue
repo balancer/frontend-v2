@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { shortenLabel } from '@/lib/utils';
 import { PoolAmpUpdate } from '@/services/pool/types';
 import { format } from 'date-fns';
 
@@ -21,7 +22,7 @@ function formatDate(timestamp: string): string {
 
 <template>
   <div>
-    <ul class="list-disc list-inside">
+    <ul class="mb-5 list-disc list-inside">
       <li>{{ $t('ampFactor.change') }}</li>
       <li class="pl-5">{{ $t('before') }}: {{ props.ampUpdate.startAmp }}</li>
       <li class="pl-5">{{ $t('after') }}: {{ props.ampUpdate.endAmp }}</li>
@@ -37,6 +38,20 @@ function formatDate(timestamp: string): string {
         {{ formatDate(props.ampUpdate.endTimestamp) }}
       </li>
     </ul>
+
+    <!-- <div class="mb-2 font-semibold">
+      {{ $t('ampFactor.updatedBy') }}
+    </div> -->
+    <div class="text-sm text-gray-600">
+      <div>
+        {{ $t('ampFactor.id') }}:
+        {{ shortenLabel(props.ampUpdate.id.slice(0, 66)) }}
+      </div>
+      <div>
+        {{ $t('ampFactor.date') }}:
+        {{ formatDate(props.ampUpdate.startTimestamp) }}
+      </div>
+    </div>
   </div>
 </template>
 

@@ -5,7 +5,8 @@ import useBreakpoints from '@/composables/useBreakpoints';
  * TYPES
  */
 type Props = {
-  tableData: { title: string; value: string; link?: string }[];
+  // tableData: { title: string; values: { text: string; link?: string }[] }[];
+  tableData: any;
 };
 
 /**
@@ -21,13 +22,10 @@ const { upToLargeBreakpoint } = useBreakpoints();
 
 <template>
   <BalCard class="overflow-x-auto" :square="upToLargeBreakpoint" noPad>
-    <template v-for="{ title, value, link } in tableData" :key="title">
-      <div v-if="value" class="table-row">
-        <div class="table-row-title">
-          {{ title }}
-        </div>
-        <div class="table-row-value">
-          {{ value }}
+    <template v-for="(row, i) in tableData" :key="i">
+      <div v-if="row" class="table-row">
+        <div v-for="{ text, link } in row" :key="text" class="table-row-title">
+          <div>{{ text }}</div>
           <BalLink v-if="link" :href="link" external noStyle>
             <BalIcon
               name="arrow-up-right"

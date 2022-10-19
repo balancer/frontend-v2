@@ -4,6 +4,8 @@ import { Pool, PoolAmpUpdate } from '@/services/pool/types';
 import ChangelogAccordion from './ChangelogAccordion.vue';
 import { useI18n } from 'vue-i18n';
 import AmpUpdate from './AmpUpdate.vue';
+import PoolCreationChangelog from './PoolCreationChangelog.vue';
+import { shortenLabel } from '@/lib/utils';
 
 /**
  * TYPES
@@ -24,12 +26,6 @@ const props = defineProps<Props>();
 const { t } = useI18n();
 
 const changelogData: any = [
-  {
-    title: 'Pool creation',
-    subTitle: '',
-    icon: 'swap-fee',
-    active: true,
-  },
   ...props.ampUpdates.map(ampUpdate => ({
     title: `${t('ampFactor.change')} ${t('ampFactor.range', [
       ampUpdate.startAmp,
@@ -41,6 +37,14 @@ const changelogData: any = [
     isAmpUpdate: true,
     data: ampUpdate,
   })),
+  {
+    title: `${props.pool.poolType} Pool by ${shortenLabel(props.pool.owner)}`,
+    subTitle: t('changelog.poolCreation.subTitle'),
+    icon: 'swap-fee',
+    active: true,
+    isPoolCreation: true,
+    data: '',
+  },
 ];
 
 // const ampUpdatedData = computed(() => {
@@ -76,6 +80,10 @@ const changelogData: any = [
           <template #accordion-content>
             <div class="changelog__timeline-content">
               <AmpUpdate v-if="item.isAmpUpdate" :ampUpdate="item.data" />
+              <PoolCreationChangelog
+                v-if="item.isPoolCreation"
+                :poolCreation="item.data"
+              />
             </div>
           </template>
         </ChangelogAccordion>

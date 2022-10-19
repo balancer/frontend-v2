@@ -6,6 +6,7 @@ const isVisible = ref(true);
 function start(el: HTMLDivElement) {
   el.style.height = el.scrollHeight + 'px';
 }
+
 function end(el: HTMLDivElement) {
   el.style.height = '';
 }

@@ -14,15 +14,12 @@ import { useI18n } from 'vue-i18n';
 type Props = {
   pool: Pool;
   ampUpdates: PoolAmpUpdate[];
-  loading: boolean;
 };
 
 /**
  * PROPS
  */
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-});
+const props = withDefaults(defineProps<Props>(), {});
 
 /**
  * COMPOSABLES
@@ -58,50 +55,78 @@ const data = computed(() => {
   } = props.pool;
 
   return [
-    {
-      title: t('attribute'),
-      value: t('details'),
-    },
-    {
-      title: t('poolName'),
-      value: name,
-    },
-    {
-      title: t('poolSymbol'),
-      value: symbol,
-    },
-    {
-      title: t('poolType'),
-      value: poolType,
-    },
-    {
-      title: t('ampFactor.title'),
-      value: onchain?.amp ? `${onchain.amp} (${formSwapFeesHint(owner)})` : '',
-    },
-    {
-      title: t('swapFees'),
-      value: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
-        owner
-      )})`,
-    },
-    {
-      title: t('poolManager'),
-      value: poolType === PoolType.Managed ? t('yes') : t('none'),
-    },
-    {
-      title: t('poolOwner'),
-      value: shortenLabel(owner),
-      link: explorer.addressLink(owner || ''),
-    },
-    {
-      title: t('contractAddress'),
-      value: shortenLabel(address),
-      link: explorer.addressLink(address || ''),
-    },
-    {
-      title: t('createDate'),
-      value: format(createTime * 1000, 'dd MMMM yyyy'),
-    },
+    [
+      {
+        text: t('attribute'),
+      },
+      {
+        text: t('details'),
+      },
+    ],
+    [
+      {
+        text: t('poolName'),
+      },
+      {
+        text: name,
+      },
+    ],
+    [
+      { text: t('poolSymbol') },
+      {
+        text: symbol,
+      },
+    ],
+    [
+      { text: t('poolType') },
+      {
+        text: poolType,
+      },
+    ],
+    onchain?.amp
+      ? [
+          { text: t('ampFactor.title') },
+          {
+            text: onchain?.amp
+              ? `${onchain.amp} (${formSwapFeesHint(owner)})`
+              : '',
+          },
+        ]
+      : null,
+    [
+      { text: t('swapFees') },
+      {
+        text: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
+          owner
+        )})`,
+      },
+    ],
+    [
+      { text: t('poolManager') },
+      {
+        text: poolType === PoolType.Managed ? t('yes') : t('none'),
+        link: explorer.addressLink(owner || ''),
+      },
+    ],
+    [
+      { text: t('poolOwner') },
+      {
+        text: shortenLabel(owner),
+      },
+    ],
+    [
+      { text: t('contractAddress') },
+      {
+        text: shortenLabel(address),
+        link: explorer.addressLink(address || ''),
+      },
+    ],
+    [
+      { text: t('createDate') },
+      {
+        text: format(createTime * 1000, 'dd MMMM yyyy'),
+      },
+    ],
   ];
 });
 
