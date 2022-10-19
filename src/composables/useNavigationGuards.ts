@@ -27,23 +27,30 @@ export function getTopLevelDomain(url: string) {
 /**
  * Given domain network return a new format url to redirect to.
  *
- * @param {Network} networkFromSubdomain - Subdomain network - e.g. "https://polygon.balancer.fi/".
- * @param {Network | null} networkFromUrl - Url network - e.g. "https://app.balancer.fi/polygon".
+ * @param {string} hostUrl - Host url - e.g. "polygon.balancer.fi/pool/create".
  * @param {string} fullPath - Full path of the url - e.g. "/polygon/pool/create".
+ * @param {string?} networkSlug - Network name from the url.
  * @returns {string} URL to redirect to.
  */
 export function getSubdomainNetworkRedirectUrl(
-  networkFromSubdomain: Network,
-  networkFromUrl: Network | null,
-  fullPath: string
+  hostUrl: string,
+  fullPath: string,
+  networkSlug?: string
 ) {
-  localStorage.setItem(
-    'networkId',
-    (networkFromUrl || networkFromSubdomain).toString()
-  );
-  return `${appUrl()}${
-    networkFromUrl ? '' : '/' + config[networkFromSubdomain].slug
-  }${fullPath}`;
+  const subdomain = getTopLevelDomain(hostUrl);
+  const subdomainNetwork = networkFromSlug(subdomain);
+  if (subdomainNetwork) {
+    const networkFromUrl = networkFromSlug(networkSlug ?? '');
+    localStorage.setItem(
+      'networkId',
+      (networkFromUrl || subdomainNetwork).toString()
+    );
+    return `${appUrl()}${
+      networkFromUrl ? '' : '/' + config[subdomainNetwork].slug
+    }${fullPath}`;
+  } else {
+    return undefined;
+  }
 }
 
 /**
@@ -80,20 +87,15 @@ export default function useNavigationGuards() {
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
-    const subdomain = getTopLevelDomain(window.location.host);
-    const networkFromSubdomain = networkFromSlug(subdomain);
-    const networkSlug = to.params.networkSlug?.toString();
-    const networkFromUrl = networkFromSlug(networkSlug ?? '');
-    console.log(networkFromSubdomain);
-    console.log(networkFromUrl);
-    if (networkFromSubdomain) {
-      window.location.href = getSubdomainNetworkRedirectUrl(
-        networkFromSubdomain,
-        networkFromUrl,
-        to.fullPath
-      );
+    const subdomainNetworkRedirectUrl = getSubdomainNetworkRedirectUrl(
+      window.location.host,
+      to.fullPath,
+      to.params.networkSlug?.toString()
+    );
+    if (subdomainNetworkRedirectUrl) {
+      window.location.href = subdomainNetworkRedirectUrl;
     } else {
-      if (networkSlug) {
+      if (to.params.networkSlug) {
         const noNetworkChangeCallback = () => next();
         const networkChangeCallback = (networkFromUrl?: Network) => {
           document.write('');
@@ -102,7 +104,7 @@ export default function useNavigationGuards() {
           router.go(0);
         };
         handleNetworkUrl(
-          networkSlug,
+          to.params.networkSlug.toString(),
           noNetworkChangeCallback,
           networkChangeCallback
         );

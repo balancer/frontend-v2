@@ -3,7 +3,6 @@ import {
   getTopLevelDomain,
   handleNetworkUrl,
 } from './useNavigationGuards';
-import { Network } from '@balancer-labs/sdk';
 
 jest.mock('@/services/web3/useWeb3');
 
@@ -28,60 +27,54 @@ describe('Navigation guards', () => {
   it('should get correct url redirects for old format urls', () => {
     const urls = [
       {
-        networkFromSubdomain: 137 as Network,
-        networkFromUrl: null,
+        hostUrl: 'polygon.balancer.fi/#/pool/create',
+        networkSlug: undefined,
         fullPath: '/pool/create',
         result: 'https://localhost:8080/#/polygon/pool/create',
       },
       {
-        networkFromSubdomain: 5 as Network,
-        networkFromUrl: null,
+        hostUrl: 'goerli.balancer.fi/#/pool/create',
+        networkSlug: undefined,
         fullPath: '/pool/create',
         result: 'https://localhost:8080/#/goerli/pool/create',
       },
       {
-        networkFromSubdomain: 1 as Network,
-        networkFromUrl: null,
+        hostUrl: 'ethereum.balancer.fi/#/pool/create',
+        networkSlug: undefined,
         fullPath: '/pool/create',
         result: 'https://localhost:8080/#/ethereum/pool/create',
       },
       {
-        networkFromSubdomain: 1 as Network,
-        networkFromUrl: 1 as Network,
+        hostUrl: 'ethereum.balancer.fi/#/pool/create',
+        networkSlug: 'ethereum',
         fullPath: '/ethereum/pool/create',
         result: 'https://localhost:8080/#/ethereum/pool/create',
       },
       {
-        networkFromSubdomain: 5 as Network,
-        networkFromUrl: 137 as Network,
+        hostUrl: 'goerli.balancer.fi/#/pool/create',
+        networkSlug: 'polygon',
         fullPath: '/polygon/pool/create',
         result: 'https://localhost:8080/#/polygon/pool/create',
       },
       {
-        networkFromSubdomain: 137 as Network,
-        networkFromUrl: 1 as Network,
+        hostUrl: 'polygon.balancer.fi/#/pool/create',
+        networkSlug: 'goerli',
         fullPath: '/ethereum/pool/create',
         result: 'https://localhost:8080/#/ethereum/pool/create',
       },
       {
-        networkFromSubdomain: 137 as Network,
-        networkFromUrl: 42161 as Network,
+        hostUrl: 'polygon.balancer.fi/#/pool/create',
+        networkSlug: 'arbitrum',
         fullPath: '/arbitrum/pool/create',
         result: 'https://localhost:8080/#/arbitrum/pool/create',
       },
     ];
 
-    urls.forEach(
-      ({ networkFromSubdomain, networkFromUrl, result, fullPath }) => {
-        expect(
-          getSubdomainNetworkRedirectUrl(
-            networkFromSubdomain,
-            networkFromUrl,
-            fullPath
-          )
-        ).toEqual(result);
-      }
-    );
+    urls.forEach(({ hostUrl, networkSlug, result, fullPath }) => {
+      expect(
+        getSubdomainNetworkRedirectUrl(hostUrl, fullPath, networkSlug)
+      ).toEqual(result);
+    });
   });
 
   it('should render default route when networkSlug is not present/incorrect', () => {
