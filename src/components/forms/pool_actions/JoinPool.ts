@@ -1,16 +1,17 @@
 import { balancer } from '@/lib/balancer.sdk';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
+import { vaultService } from '@/services/contracts/vault.service';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 interface JoinPoolReturnValue {
   route: SwapInfo;
-  fiatValueIn: string;
   fiatValueOut: string;
   bptOut: string;
   priceImpact: number;
@@ -33,10 +34,10 @@ export default class JoinPool {
     this.fetchPools();
   }
 
-  getProvider = useWeb3().getProvider;
-  toFiat = useNumbers().toFiat;
+  private getProvider = useWeb3().getProvider;
+  private toFiat = useNumbers().toFiat;
 
-  async getGasPrice(): Promise<BigNumber> {
+  private async getGasPrice(): Promise<BigNumber> {
     const gasPriceParams = await gasPriceService.getGasPrice();
     if (gasPriceParams) return BigNumber.from(gasPriceParams.price);
     return this.getProvider().getGasPrice();
@@ -91,7 +92,7 @@ export default class JoinPool {
     const fiatValueIn = this.getFiatValueIn([amount], [tokenIn]);
     const priceImpact = this.getPriceImpact(fiatValueIn, fiatValueOut);
     this.swapRouteLoading = false;
-    return { route, fiatValueOut, bptOut, priceImpact, fiatValueIn };
+    return { route, fiatValueOut, bptOut, priceImpact };
   }
 
   async fetchPools() {
@@ -104,16 +105,18 @@ export default class JoinPool {
     console.log({ fiatValueIn, fiatValueOut });
     const bnumFiatValueIn = bnum(fiatValueIn);
     const bnumFiatValueOut = bnum(fiatValueOut);
+
+    // Don't return negative price impact
     return Math.max(
       0,
       bnumFiatValueIn
         .minus(bnumFiatValueOut)
         .div(bnumFiatValueIn.plus(bnumFiatValueOut).div(bnum(2)))
-        .toNumber()
+        .toNumber() || 0
     );
   }
 
-  getSwapAttributes(
+  private getSwapAttributes(
     swapInfo: SwapInfo,
     slippageBsp: number,
     userAddress: string
@@ -126,5 +129,27 @@ export default class JoinPool {
       deadline,
       maxSlippage: slippageBsp,
     });
+  }
+
+  async join(
+    route: SwapInfo,
+    slippageBsp: number,
+    userAddress: string
+  ): Promise<TransactionResponse> {
+    const buildSwapResult = this.getSwapAttributes(
+      route,
+      slippageBsp,
+      userAddress
+    );
+
+    const attributes: BatchSwap = buildSwapResult.attributes as BatchSwap;
+    const tx = await vaultService.batchSwap(
+      attributes.kind,
+      attributes.swaps,
+      attributes.assets,
+      attributes.funds,
+      attributes.limits as string[]
+    );
+    return tx;
   }
 }

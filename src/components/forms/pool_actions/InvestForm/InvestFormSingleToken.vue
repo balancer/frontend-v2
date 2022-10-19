@@ -14,7 +14,7 @@ import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import useInvestMath from './composables/useInvestMath';
+// import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
 import useVeBal from '@/composables/useVeBAL';
 
@@ -57,17 +57,21 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  sor,
+  // sor,
 } = useInvestState();
 
 const {
-  swapRoute,
+  // swapRoute,
   bptOut,
   fiatValueOut,
   fiatValueIn,
   priceImpact,
   highPriceImpact,
   loadingData,
+  fullAmounts,
+  rektPriceImpact,
+  hasAmounts,
+  join,
 } = useJoinPool(
   props.pool.id,
   props.pool.address,
@@ -78,15 +82,15 @@ const {
 
 const pool = computed(() => props.pool);
 
-const investMath = useInvestMath(
-  pool,
-  tokenAddresses,
-  amounts,
-  useNativeAsset,
-  sor
-);
+// const investMath = useInvestMath(
+//   pool,
+//   tokenAddresses,
+//   amounts,
+//   useNativeAsset,
+//   sor
+// );
 
-const { hasAmounts } = investMath;
+// const { hasAmounts } = investMath;
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -208,7 +212,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       @update:address="address => (tokenAddresses[0] = address)"
     />
     <InvestFormTotalsSingleToken
-      :math="investMath"
+      :loadingData="loadingData"
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"
       :showTotalRow="!isDeepPool"
@@ -254,9 +258,11 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         <InvestPreviewModalSingleToken
           v-if="showInvestPreview"
           :pool="pool"
-          :math="investMath"
+          :join="join"
           :tokenAddresses="tokenAddresses"
-          :swapRoute="swapRoute"
+          :fullAmounts="fullAmounts"
+          :highPriceImpact="highPriceImpact"
+          :rektPriceImpact="rektPriceImpact"
           :priceImpact="priceImpact"
           :bptOut="bptOut"
           :fiatValueOut="fiatValueOut"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, toRefs } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -8,22 +8,27 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import { InvestMathResponse } from '../../composables/useInvestMath';
+// import { InvestMathResponse } from '../../composables/useInvestMath';
 import useInvestState from '../../composables/useInvestState';
-import InvestActions from './components/InvestActions.vue';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
-import { SwapInfo } from '@balancer-labs/sdk';
+// import { SwapInfo } from '@balancer-labs/sdk';
+import InvestActionsSingleToken from './components/InvestActionsSingleToken.vue';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  math: InvestMathResponse;
+  // math: InvestMathResponse;
+  fullAmounts: string[];
+  highPriceImpact: boolean;
+  rektPriceImpact: boolean;
   tokenAddresses: string[];
-  swapRoute?: SwapInfo;
-  bptOut?: string;
+  // swapRoute?: SwapInfo;
+  join: () => Promise<TransactionResponse>;
+  bptOut: string;
   priceImpact: number;
   fiatValueOut: string;
   fiatValueIn: string;
@@ -37,8 +42,8 @@ type AmountMap = {
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  swapRoute: undefined,
-  bptOut: undefined,
+  // swapRoute: undefined,
+  // bptOut: undefined,
 });
 
 const emit = defineEmits<{
@@ -57,13 +62,13 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const {
-  fullAmounts,
-  // fiatTotal,
-  // priceImpact,
-  highPriceImpact,
-  rektPriceImpact,
-} = toRefs(reactive(props.math));
+// const {
+//   // fullAmounts,
+//   // fiatTotal,
+//   // priceImpact,
+//   // highPriceImpact,
+//   // rektPriceImpact,
+// } = toRefs(reactive(props.math));
 const { resetAmounts } = useInvestState();
 
 /**
@@ -79,17 +84,17 @@ const showTokensOut = computed<boolean>(
   () => !!Object.keys(tokenOutMap.value).length
 );
 
-const isSingleAssetInvestment = computed<boolean>(() => !!props.swapRoute);
+const isSingleAssetInvestment = computed<boolean>(() => true);
 const amountInMap = computed((): AmountMap => {
   const amountMap = {};
-  fullAmounts.value.forEach((amount, i) => {
+  props.fullAmounts.forEach((amount, i) => {
     amountMap[props.tokenAddresses[i]] = amount;
   });
   return amountMap;
 });
 
 const amountOutMap = computed((): AmountMap => {
-  if (!props.swapRoute) return {};
+  if (!isSingleAssetInvestment.value) return {};
   const amountMap = {
     [props.pool.address]: props.bptOut,
   };
@@ -105,7 +110,7 @@ const tokenInMap = computed((): TokenInfoMap => {
 });
 
 const tokenOutMap = computed((): TokenInfoMap => {
-  if (!props.swapRoute) return {};
+  if (!isSingleAssetInvestment.value) return {};
   const tokenMap = {
     [props.pool.address]: getToken(props.pool.address),
   };
@@ -203,9 +208,12 @@ function handleShowStakeModal() {
       class="mt-6 mb-2"
     />
 
-    <InvestActions
+    <InvestActionsSingleToken
       :pool="pool"
-      :math="math"
+      :fiatValueOut="fiatValueOut"
+      :bptOut="bptOut"
+      :fullAmounts="fullAmounts"
+      :join="join"
       :tokenAddresses="tokenAddresses"
       :disabled="rektPriceImpact"
       class="mt-4"

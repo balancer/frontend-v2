@@ -11,6 +11,7 @@ import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 export default function useJoinPool(
   poolId: string,
@@ -36,12 +37,13 @@ export default function useJoinPool(
   const fiatValueOut = ref<string>('');
   const priceImpact = ref<number>(0);
   const swapAttributes = ref<SwapAttributes | null>(null);
+  const transactionInProgress = ref<boolean>(false);
 
   const loadingData = ref(false);
   const debouncedFindSwapRoute = ref(debounce(findSwapRoute, 1000));
 
   const poolQuery = usePoolQuery(poolId);
-  const { account } = useWeb3();
+  const { account, blockNumber } = useWeb3();
 
   /**
    * COMPUTED
@@ -60,16 +62,38 @@ export default function useJoinPool(
 
   // Input amounts can be null so fullAmounts returns amounts for all tokens
   // and zero if null.
-  const fullAmounts = computed((): string[] =>
+  const fullAmounts = computed<string[]>(() =>
     new Array(tokenCount.value)
       .fill('0')
       .map((_, i) => amountsIn.value[i] || '0')
   );
 
+  const hasAmounts = computed(() =>
+    fullAmounts.value.some(amount => bnum(amount).gt(0))
+  );
+
+  async function join(): Promise<TransactionResponse> {
+    if (!account.value) throw new Error('Connect your account');
+    if (!swapRoute.value) await findSwapRoute();
+    transactionInProgress.value = true;
+    const tx = await joinPool
+      .join(swapRoute.value as SwapInfo, slippageBsp.value, account.value)
+      .finally(() => {
+        transactionInProgress.value = false;
+      });
+    return tx;
+  }
+
   async function findSwapRoute() {
     if (!amountsIn.value[0]) return;
     if (!pool.value) return;
     loadingData.value = true;
+
+    fiatValueIn.value = joinPool.getFiatValueIn(
+      amountsIn.value,
+      tokensIn.value
+    );
+
     const token = getToken(tokensIn.value[0]);
 
     const {
@@ -77,7 +101,6 @@ export default function useJoinPool(
       fiatValueOut: _fiatValueOut,
       bptOut: _bptOut,
       priceImpact: _priceImpact,
-      fiatValueIn: _fiatValueIn,
     } = await joinPool
       .findRouteGivenIn(
         tokensIn.value[0],
@@ -90,17 +113,8 @@ export default function useJoinPool(
     // Update state variables
     fiatValueOut.value = _fiatValueOut;
     bptOut.value = _bptOut;
-    fiatValueIn.value = _fiatValueIn;
     swapRoute.value = route;
     priceImpact.value = _priceImpact;
-
-    if (account.value) {
-      swapAttributes.value = joinPool.getSwapAttributes(
-        route,
-        slippageBsp.value,
-        account.value
-      );
-    }
 
     console.log({
       route,
@@ -127,6 +141,17 @@ export default function useJoinPool(
     { deep: true }
   );
 
+  watch(blockNumber, () => {
+    if (
+      hasAmounts.value &&
+      !loadingData.value &&
+      !transactionInProgress.value
+    ) {
+      console.log('block number changed');
+      findSwapRoute();
+    }
+  });
+
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
     const changedIndex = newAmounts.findIndex(
       (amount, i) => oldAmounts[i] !== amount
@@ -139,6 +164,7 @@ export default function useJoinPool(
 
   return {
     findSwapRoute,
+    join,
     highPriceImpact,
     rektPriceImpact,
     swapRoute,
@@ -147,5 +173,7 @@ export default function useJoinPool(
     fiatValueOut,
     priceImpact,
     loadingData,
+    fullAmounts,
+    hasAmounts,
   };
 }

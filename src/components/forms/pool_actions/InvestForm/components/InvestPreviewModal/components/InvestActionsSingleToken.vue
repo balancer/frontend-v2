@@ -3,9 +3,9 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from 'ethers';
-import { computed, reactive, toRef, toRefs, watch } from 'vue';
+// import { formatUnits } from '@ethersproject/units';
+// import { BigNumber } from 'ethers';
+import { computed, reactive, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
@@ -18,22 +18,27 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
-import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
+// import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+// import PoolExchange from '@/services/pool/exchange/exchange.service';
 // Types
 import { Pool } from '@/services/pool/types';
 // Composables
-import useWeb3 from '@/services/web3/useWeb3';
+// import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
-import { InvestMathResponse } from '../../../composables/useInvestMath';
+// import { InvestMathResponse } from '../../../composables/useInvestMath';
+// import JoinPool from '@/components/forms/pool_actions/JoinPool';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  math: InvestMathResponse;
+  // math: InvestMathResponse;
+  fiatValueOut: string;
+  bptOut: string;
+  fullAmounts: string[];
+  join: () => Promise<TransactionResponse>;
   tokenAddresses: string[];
   disabled: boolean;
 };
@@ -70,31 +75,31 @@ const investmentState = reactive<InvestmentState>({
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { account, getProvider, blockNumber } = useWeb3();
+// const { account, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const {
-  fullAmounts,
-  batchSwapAmountMap,
-  bptOut,
-  fiatTotalLabel,
-  batchSwap,
-  shouldFetchBatchSwap,
-} = toRefs(props.math);
+// const {
+//   fullAmounts,
+//   batchSwapAmountMap,
+//   bptOut,
+//   fiatTotalLabel,
+//   batchSwap,
+//   shouldFetchBatchSwap,
+// } = toRefs(reactive(props.math));
 
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  fullAmounts
+  toRef(props, 'fullAmounts')
 );
 
 /**
  * SERVICES
  */
-const poolExchange = new PoolExchange(toRef(props, 'pool'));
+// const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -110,12 +115,12 @@ const actions = computed((): TransactionActionInfo[] => [
   },
 ]);
 
-const transactionInProgress = computed(
-  (): boolean =>
-    investmentState.init ||
-    investmentState.confirming ||
-    investmentState.confirmed
-);
+// const transactionInProgress = computed(
+//   (): boolean =>
+//     investmentState.init ||
+//     investmentState.confirming ||
+//     investmentState.confirmed
+// );
 
 const isStakablePool = computed((): boolean => {
   return (
@@ -124,9 +129,9 @@ const isStakablePool = computed((): boolean => {
   );
 });
 
-const normalizedBptOut = computed((): string => {
-  return formatUnits(bptOut.value, props.pool?.onchain?.decimals || 18);
-});
+// const normalizedBptOut = computed((): string => {
+//   return formatUnits(props.bptOut, props.pool?.onchain?.decimals || 18);
+// });
 
 /**
  * METHODS
@@ -138,11 +143,11 @@ async function handleTransaction(tx): Promise<void> {
     type: 'tx',
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
-      fiatTotalLabel.value,
+      props.fiatValueOut,
       poolWeightsLabel(props.pool),
     ]),
     details: {
-      total: fiatTotalLabel.value,
+      total: props.fiatValueOut,
       pool: props.pool,
     },
   });
@@ -165,29 +170,10 @@ async function handleTransaction(tx): Promise<void> {
 }
 
 async function submit(): Promise<TransactionResponse> {
+  investmentState.init = true;
   try {
-    let tx;
-    investmentState.init = true;
+    const tx = await props.join();
 
-    if (batchSwap.value) {
-      tx = await boostedJoinBatchSwap(
-        batchSwap.value.swaps,
-        batchSwap.value.assets,
-        props.pool.address,
-        batchSwapAmountMap.value,
-        BigNumber.from(bptOut.value)
-      );
-    } else {
-      tx = await poolExchange.join(
-        getProvider(),
-        account.value,
-        fullAmounts.value,
-        props.tokenAddresses,
-        normalizedBptOut.value
-      );
-    }
-
-    investmentState.init = false;
     investmentState.confirming = true;
 
     console.log('Receipt', tx);
@@ -195,19 +181,12 @@ async function submit(): Promise<TransactionResponse> {
     handleTransaction(tx);
     return tx;
   } catch (error) {
-    console.error(error);
+    investmentState.confirming = false;
     return Promise.reject(error);
+  } finally {
+    investmentState.init = false;
   }
 }
-
-/**
- * WATCHERS
- */
-watch(blockNumber, async () => {
-  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
-    await props.math.getBatchSwap();
-  }
-});
 </script>
 
 <template>

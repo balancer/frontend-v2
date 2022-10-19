@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { computed, reactive, toRefs } from 'vue';
+import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
+// import useWeb3 from '@/services/web3/useWeb3';
 
-import { InvestMathResponse } from '../composables/useInvestMath';
+// import { InvestMathResponse } from '../composables/useInvestMath';
 
 /**
  * TYPES
  */
 type Props = {
-  math: InvestMathResponse;
-  showTotalRow?: boolean;
+  // math: InvestMathResponse;
+  // showTotalRow?: boolean;
+  loadingData: boolean;
   priceImpact: number;
   highPriceImpact: boolean;
 };
@@ -20,31 +21,31 @@ type Props = {
  * Props
  */
 const props = withDefaults(defineProps<Props>(), {
-  showTotalRow: false,
+  // showTotalRow: false,
 });
 
-const emit = defineEmits<{
-  (e: 'maximize'): void;
-  (e: 'optimize'): void;
-}>();
+// const emit = defineEmits<{
+//   (e: 'maximize'): void;
+//   (e: 'optimize'): void;
+// }>();
 
 /**
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const { isWalletReady } = useWeb3();
+// const { isWalletReady } = useWeb3();
 
-const {
-  fiatTotal,
-  hasNoBalances,
-  hasAllTokens,
-  // priceImpact,
-  // highPriceImpact,
-  maximized,
-  optimized,
-  loadingData,
-  supportsPropotionalOptimization,
-} = toRefs(reactive(props.math));
+// const {
+//   fiatTotal,
+//   hasNoBalances,
+//   hasAllTokens,
+//   // priceImpact,
+//   // highPriceImpact,
+//   maximized,
+//   optimized,
+//   loadingData,
+//   supportsPropotionalOptimization,
+// } = toRefs(reactive(props.math));
 
 /**
  * COMPUTED
@@ -54,15 +55,15 @@ const priceImpactClasses = computed(() => ({
   'bg-red-500 dark:bg-red-500 text-white divide-red-400': props.highPriceImpact,
 }));
 
-const optimizeBtnClasses = computed(() => ({
-  'text-gradient': !props.highPriceImpact,
-  'text-red-500 px-2 py-1 bg-white rounded-lg': props.highPriceImpact,
-}));
+// const optimizeBtnClasses = computed(() => ({
+//   'text-gradient': !props.highPriceImpact,
+//   'text-red-500 px-2 py-1 bg-white rounded-lg': props.highPriceImpact,
+// }));
 </script>
 
 <template>
   <div class="data-table">
-    <div v-if="showTotalRow" class="data-table-row total-row">
+    <!-- <div v-if="showTotalRow" class="data-table-row total-row">
       <div class="p-2">
         {{ $t('total') }}
       </div>
@@ -81,7 +82,7 @@ const optimizeBtnClasses = computed(() => ({
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">
         {{ $t('priceImpact') }}
@@ -111,7 +112,7 @@ const optimizeBtnClasses = computed(() => ({
           </BalTooltip>
         </div>
 
-        <div
+        <!-- <div
           v-if="
             isWalletReady && hasAllTokens && supportsPropotionalOptimization
           "
@@ -127,7 +128,7 @@ const optimizeBtnClasses = computed(() => ({
           >
             {{ $t('optimize') }}
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
