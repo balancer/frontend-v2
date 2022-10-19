@@ -111,7 +111,15 @@
   "changelog": {
     "poolCreation": {
       "subTitle": "Pool creation",
-      "attributes": "Pool attributes"
+      "attributes": "Pool attributes",
+      "setting": "Setting",
+      "initial": "Initial value",
+      "editable": "Editable",
+      "tokensNum": "Number of pool tokens",
+      "swaps": "Swaps",
+      "permissionless": "Permissionless",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
     }
   },
   "checkWallet": "Confirm in wallet",

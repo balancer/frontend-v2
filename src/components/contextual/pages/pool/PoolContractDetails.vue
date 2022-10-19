@@ -39,6 +39,7 @@ function formSwapFeesHint(owner: string): string {
 
   return t('poolAttrs.feesEditableOwner');
 }
+
 /**
  * COMPUTED
  */

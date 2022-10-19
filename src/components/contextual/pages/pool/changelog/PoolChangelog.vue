@@ -83,6 +83,7 @@ const changelogData: any = [
               <PoolCreationChangelog
                 v-if="item.isPoolCreation"
                 :poolCreation="item.data"
+                :pool="pool"
               />
             </div>
           </template>
