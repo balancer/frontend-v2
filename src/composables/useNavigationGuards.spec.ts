@@ -1,5 +1,5 @@
 import {
-  getOldFormatRedirectUrl,
+  getSubdomainNetworkRedirectUrl,
   getTopLevelDomain,
   handleNetworkUrl,
 } from './useNavigationGuards';
@@ -29,53 +29,59 @@ describe('Navigation guards', () => {
     const urls = [
       {
         networkFromSubdomain: 137 as Network,
-        networkSlug: undefined,
+        networkFromUrl: null,
         fullPath: '/pool/create',
         result: 'https://localhost:8080/#/polygon/pool/create',
       },
       {
         networkFromSubdomain: 5 as Network,
-        networkSlug: undefined,
+        networkFromUrl: null,
         fullPath: '/pool/create',
         result: 'https://localhost:8080/#/goerli/pool/create',
       },
       {
         networkFromSubdomain: 1 as Network,
-        networkSlug: undefined,
+        networkFromUrl: null,
         fullPath: '/pool/create',
         result: 'https://localhost:8080/#/ethereum/pool/create',
       },
       {
         networkFromSubdomain: 1 as Network,
-        networkSlug: 'ethereum',
+        networkFromUrl: 1 as Network,
         fullPath: '/ethereum/pool/create',
         result: 'https://localhost:8080/#/ethereum/pool/create',
       },
       {
         networkFromSubdomain: 5 as Network,
-        networkSlug: 'polygon',
+        networkFromUrl: 137 as Network,
         fullPath: '/polygon/pool/create',
         result: 'https://localhost:8080/#/polygon/pool/create',
       },
       {
         networkFromSubdomain: 137 as Network,
-        networkSlug: 'ethereum',
+        networkFromUrl: 1 as Network,
         fullPath: '/ethereum/pool/create',
         result: 'https://localhost:8080/#/ethereum/pool/create',
       },
       {
         networkFromSubdomain: 137 as Network,
-        networkSlug: 'arbitrum',
+        networkFromUrl: 42161 as Network,
         fullPath: '/arbitrum/pool/create',
         result: 'https://localhost:8080/#/arbitrum/pool/create',
       },
     ];
 
-    urls.forEach(({ networkFromSubdomain, networkSlug, result, fullPath }) => {
-      expect(
-        getOldFormatRedirectUrl(networkFromSubdomain, networkSlug, fullPath)
-      ).toEqual(result);
-    });
+    urls.forEach(
+      ({ networkFromSubdomain, networkFromUrl, result, fullPath }) => {
+        expect(
+          getSubdomainNetworkRedirectUrl(
+            networkFromSubdomain,
+            networkFromUrl,
+            fullPath
+          )
+        ).toEqual(result);
+      }
+    );
   });
 
   it('should render default route when networkSlug is not present/incorrect', () => {

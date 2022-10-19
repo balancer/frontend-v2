@@ -12,31 +12,47 @@ import { networkFor, networkFromSlug, appUrl } from '@/composables/useNetwork';
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
-// Get top level domain excluding 'beta' or 'staging'
+/**
+ * Get top level domain excluding 'beta' or 'staging'
+ *
+ * @param {string} url - Host url - e.g. "polygon.balancer.fi/".
+ * @returns {string} Subdomain.
+ */
 export function getTopLevelDomain(url: string) {
   const betaEnv =
     url.split('.')[0] === 'beta' || url.split('.')[0] === 'staging';
   return betaEnv ? url.split('.')[1] : url.split('.')[0];
 }
 
-// old format subdomain redirect - e.g. "https://polygon.balancer.fi/"
-// if conflicting formats - use the url - e.g. "https://polygon.balancer.fi/#/arbitrum" -> arbitrum
-export function getOldFormatRedirectUrl(
+/**
+ * Given domain network return a new format url to redirect to.
+ *
+ * @param {Network} networkFromSubdomain - Subdomain network - e.g. "https://polygon.balancer.fi/".
+ * @param {Network | null} networkFromUrl - Url network - e.g. "https://app.balancer.fi/polygon".
+ * @param {string} fullPath - Full path of the url - e.g. "/polygon/pool/create".
+ * @returns {string} URL to redirect to.
+ */
+export function getSubdomainNetworkRedirectUrl(
   networkFromSubdomain: Network,
-  networkSlug: string | undefined,
+  networkFromUrl: Network | null,
   fullPath: string
 ) {
-  const networkFromUrl = networkFromSlug(networkSlug ?? '');
   localStorage.setItem(
     'networkId',
     (networkFromUrl || networkFromSubdomain).toString()
   );
-  return networkFromUrl
-    ? `${appUrl()}${fullPath}`
-    : `${appUrl()}/${config[networkFromSubdomain].slug}${fullPath}`;
+  return `${appUrl()}${
+    networkFromUrl ? '' : '/' + config[networkFromSubdomain].slug
+  }${fullPath}`;
 }
 
-// using network in url check if redirect is necessary
+/**
+ * Using networkSlug in url check if redirect is necessary
+ *
+ * @param {string} networkSlug - Network name in url - e.g. "app.balancer.fi/polygon".
+ * @param {any} noNetworkChangeCallback - Function which gets triggered if user is on correct network already.
+ * @param {any} networkChangeCallback - Function which gets triggered if network change is required.
+ */
 export function handleNetworkUrl(
   networkSlug: string,
   noNetworkChangeCallback: () => void,
@@ -67,10 +83,13 @@ export default function useNavigationGuards() {
     const subdomain = getTopLevelDomain(window.location.host);
     const networkFromSubdomain = networkFromSlug(subdomain);
     const networkSlug = to.params.networkSlug?.toString();
+    const networkFromUrl = networkFromSlug(networkSlug ?? '');
+    console.log(networkFromSubdomain);
+    console.log(networkFromUrl);
     if (networkFromSubdomain) {
-      window.location.href = getOldFormatRedirectUrl(
+      window.location.href = getSubdomainNetworkRedirectUrl(
         networkFromSubdomain,
-        networkSlug,
+        networkFromUrl,
         to.fullPath
       );
     } else {
