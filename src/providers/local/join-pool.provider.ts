@@ -34,7 +34,7 @@ export const JoinPoolProviderSymbol: InjectionKey<Response> = Symbol(
 );
 
 /**
- * <JoinPoolProvier /> component.
+ * <JoinPoolProvider /> component.
  */
 export const JoinPoolProvider = defineComponent({
   name: 'JoinPoolProvider',
