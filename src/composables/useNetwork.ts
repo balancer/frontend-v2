@@ -78,11 +78,79 @@ export function appUrl(): string {
   return `https://${configService.env.APP_DOMAIN}/#`;
 }
 
+/**
+ * Get subdomain, excluding 'beta'
+ *
+ * @param {string} url - Host url - e.g. "polygon.balancer.fi/".
+ * @returns {string} Subdomain.
+ */
+export function getSubdomain(url: string) {
+  const subdomain = url.split('.')[0];
+  if (subdomain === 'beta') {
+    return url.split('.')[1];
+  } else {
+    return subdomain;
+  }
+}
+
+/**
+ * Given subdomain network return a new format url to redirect to.
+ *
+ * @param {string} url - Full url - e.g. "https://polygon.balancer.fi/pool/create".
+ * @returns {string | undefined} URL to redirect to.
+ */
+export function getSubdomainNetworkRedirectUrl(url: string) {
+  const formattedUrl = url
+    .replace('https://', '')
+    .replace('http://', '')
+    .replace('/#', '');
+  const subdomain = getSubdomain(formattedUrl);
+  const subdomainNetwork = networkFromSlug(subdomain);
+  if (subdomainNetwork) {
+    const urlArr = formattedUrl.split('/');
+    urlArr.shift();
+    return `${appUrl()}/${config[subdomainNetwork].slug}/${urlArr.join('/')}`;
+  } else {
+    return undefined;
+  }
+}
+
+/**
+ * Using networkSlug in url check if redirect is necessary
+ *
+ * @param {string} networkSlug - Network name in url - e.g. "app.balancer.fi/polygon".
+ * @param {any} noNetworkChangeCallback - Function which gets triggered if user is on correct network already.
+ * @param {any} networkChangeCallback - Function which gets triggered if network change is required.
+ */
+export function handleNetworkUrl(
+  networkSlug: string,
+  noNetworkChangeCallback: () => void,
+  networkChangeCallback: (networkFromUrl?: Network) => void
+) {
+  const networkFromUrl = networkFromSlug(networkSlug);
+  const localStorageNetwork: Network = networkFor(
+    localStorage.getItem('networkId') ?? '1'
+  );
+  if (!networkFromUrl) {
+    // missing or incorrect network name -> next() withtout network change
+    return noNetworkChangeCallback();
+  } else if (localStorageNetwork === networkFromUrl) {
+    // if on the correct network -> next()
+    return noNetworkChangeCallback();
+  } else {
+    // if on different network -> update localstorage and reload
+    return networkChangeCallback(networkFromUrl);
+  }
+}
+
 export default function useNetwork() {
   return {
     appUrl,
     networkId,
     networkConfig,
     networkSlug,
+    getSubdomain,
+    getSubdomainNetworkRedirectUrl,
+    handleNetworkUrl,
   };
 }

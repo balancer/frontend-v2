@@ -1,8 +1,8 @@
 import {
   getSubdomainNetworkRedirectUrl,
-  getTopLevelDomain,
+  getSubdomain,
   handleNetworkUrl,
-} from './useNavigationGuards';
+} from './useNetwork';
 
 jest.mock('@/services/web3/useWeb3');
 
@@ -12,68 +12,53 @@ describe('Navigation guards', () => {
       { path: 'polygon.balancer.fi/#/test', result: 'polygon' },
       { path: 'app.balancer.fi', result: 'app' },
       { path: 'balancer.fi', result: 'balancer' },
-      { path: 'staging.balancer.fi/trade', result: 'balancer' },
-      { path: 'staging.goerli.balancer.fi', result: 'goerli' },
+      { path: 'beta.balancer.fi/trade', result: 'balancer' },
+      { path: 'beta.goerli.balancer.fi', result: 'goerli' },
       { path: 'beta.balancer.fi/#/claim/test', result: 'balancer' },
       { path: 'localhost:8080', result: 'localhost:8080' },
       { path: 'localhost', result: 'localhost' },
     ];
 
     urls.forEach(url => {
-      expect(getTopLevelDomain(url.path)).toEqual(url.result);
+      expect(getSubdomain(url.path)).toEqual(url.result);
     });
   });
 
   it('should get correct url redirects for old format urls', () => {
     const urls = [
       {
-        hostUrl: 'polygon.balancer.fi/#/pool/create',
-        networkSlug: undefined,
-        fullPath: '/pool/create',
+        url: 'https://polygon.balancer.fi/#/pool/create',
         result: 'https://localhost:8080/#/polygon/pool/create',
       },
       {
-        hostUrl: 'goerli.balancer.fi/#/pool/create',
-        networkSlug: undefined,
-        fullPath: '/pool/create',
+        url: 'https://goerli.balancer.fi/#/pool/0x5a6a8cffb4347ff7fc484bf5f0f8a2e234d34255000200000000000000000275',
+        result:
+          'https://localhost:8080/#/goerli/pool/0x5a6a8cffb4347ff7fc484bf5f0f8a2e234d34255000200000000000000000275',
+      },
+      {
+        url: 'https://ethereum.balancer.fi/#/portfolio',
+        result: 'https://localhost:8080/#/ethereum/portfolio',
+      },
+      {
+        url: 'https://ethereum.balancer.fi/#/claim',
+        result: 'https://localhost:8080/#/ethereum/claim',
+      },
+      {
+        url: 'https://goerli.balancer.fi/#/pool/create',
         result: 'https://localhost:8080/#/goerli/pool/create',
       },
       {
-        hostUrl: 'ethereum.balancer.fi/#/pool/create',
-        networkSlug: undefined,
-        fullPath: '/pool/create',
-        result: 'https://localhost:8080/#/ethereum/pool/create',
+        url: 'https://polygon.balancer.fi/#/vebal',
+        result: 'https://localhost:8080/#/polygon/vebal',
       },
       {
-        hostUrl: 'ethereum.balancer.fi/#/pool/create',
-        networkSlug: 'ethereum',
-        fullPath: '/ethereum/pool/create',
-        result: 'https://localhost:8080/#/ethereum/pool/create',
-      },
-      {
-        hostUrl: 'goerli.balancer.fi/#/pool/create',
-        networkSlug: 'polygon',
-        fullPath: '/polygon/pool/create',
-        result: 'https://localhost:8080/#/polygon/pool/create',
-      },
-      {
-        hostUrl: 'polygon.balancer.fi/#/pool/create',
-        networkSlug: 'goerli',
-        fullPath: '/ethereum/pool/create',
-        result: 'https://localhost:8080/#/ethereum/pool/create',
-      },
-      {
-        hostUrl: 'polygon.balancer.fi/#/pool/create',
-        networkSlug: 'arbitrum',
-        fullPath: '/arbitrum/pool/create',
+        url: 'https://arbitrum.balancer.fi/#/pool/create',
         result: 'https://localhost:8080/#/arbitrum/pool/create',
       },
     ];
 
-    urls.forEach(({ hostUrl, networkSlug, result, fullPath }) => {
-      expect(
-        getSubdomainNetworkRedirectUrl(hostUrl, fullPath, networkSlug)
-      ).toEqual(result);
+    urls.forEach(({ url, result }) => {
+      expect(getSubdomainNetworkRedirectUrl(url)).toEqual(result);
     });
   });
 
