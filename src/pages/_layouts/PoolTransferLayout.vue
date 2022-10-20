@@ -87,7 +87,10 @@ function setTokenInAddress(tokenAddress) {
           class="mt-4"
           :sections="[
             {
-              title: $t('poolTransfer.myWalletTokensCard.title'),
+              title:
+                isInvestPage && poolSupportsSingleAssetSwaps
+                  ? $t('myWallet2')
+                  : $t('poolTransfer.myWalletTokensCard.title'),
               id: 'myWalletTokens',
             },
             {
@@ -102,6 +105,12 @@ function setTokenInAddress(tokenAddress) {
               v-if="loadingPool || !pool || !transfersAllowed"
               class="h-64"
             />
+            <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+              <MyWallet
+                :excludedTokens="excludedTokens"
+                @click:asset="setTokenInAddress"
+              />
+            </div>
             <MyWalletTokensCard
               v-else
               v-model:useNativeAsset="useNativeAsset"
