@@ -10,6 +10,11 @@ import {
   ref,
 } from 'vue';
 
+/**
+ * JoinPoolProvider
+ *
+ * Handles pool joining state and transaction building.
+ */
 const provider = props => {
   const pool = computed((): AnyPool => props.pool);
   const bptOut = ref('100');
@@ -20,12 +25,17 @@ const provider = props => {
   };
 };
 
+/**
+ * Provide setup, response type + symbol.
+ */
 export type Response = ReturnType<typeof provider>;
-
 export const JoinPoolProviderSymbol: InjectionKey<Response> = Symbol(
   symbolKeys.Providers.JoinPool
 );
 
+/**
+ * <JoinPoolProvier /> component.
+ */
 export const JoinPoolProvider = defineComponent({
   name: 'JoinPoolProvider',
 
