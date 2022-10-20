@@ -1,8 +1,8 @@
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useTokens from '@/composables/useTokens';
-import { SwapAttributes, SwapInfo } from '@balancer-labs/sdk';
+import { SwapInfo } from '@balancer-labs/sdk';
 import { debounce } from 'lodash';
-import { computed, Ref, ref, watch } from 'vue';
+import { computed, readonly, Ref, ref, watch } from 'vue';
 import JoinPool from './JoinPool';
 import { bnum } from '@/lib/utils';
 import useUserSettings from '@/composables/useUserSettings';
@@ -36,7 +36,6 @@ export default function useJoinPool(
   const fiatValueIn = ref<string>('');
   const fiatValueOut = ref<string>('');
   const priceImpact = ref<number>(0);
-  const swapAttributes = ref<SwapAttributes | null>(null);
   const transactionInProgress = ref<boolean>(false);
 
   const loadingData = ref(false);
@@ -116,20 +115,20 @@ export default function useJoinPool(
     swapRoute.value = route;
     priceImpact.value = _priceImpact;
 
-    console.log({
-      route,
-      bptOut,
-      fiatValueIn,
-      fiatValueOut,
-      priceImpact,
-      swapAttributes,
-      priceImpactPct: priceImpact.value * 100,
-      returnAmount: route.returnAmount.toString(),
-      returnAmountConsideringFees: route.returnAmountConsideringFees.toString(),
-      returnAmountFromSwaps: route.returnAmountFromSwaps.toString(),
-      swapAmount: route.swapAmount.toString(),
-      swapAmountForSwaps: route.swapAmountForSwaps.toString(),
-    });
+    // console.log({
+    //   route,
+    //   bptOut,
+    //   fiatValueIn,
+    //   fiatValueOut,
+    //   priceImpact,
+    //   swapAttributes,
+    //   priceImpactPct: priceImpact.value * 100,
+    //   returnAmount: route.returnAmount.toString(),
+    //   returnAmountConsideringFees: route.returnAmountConsideringFees.toString(),
+    //   returnAmountFromSwaps: route.returnAmountFromSwaps.toString(),
+    //   swapAmount: route.swapAmount.toString(),
+    //   swapAmountForSwaps: route.swapAmountForSwaps.toString(),
+    // });
   }
 
   // WATCHERS
@@ -165,14 +164,16 @@ export default function useJoinPool(
   return {
     findSwapRoute,
     join,
+    // state
+    swapRoute: readonly(swapRoute),
+    bptOut: readonly(bptOut),
+    fiatValueIn: readonly(fiatValueIn),
+    fiatValueOut: readonly(fiatValueOut),
+    priceImpact: readonly(priceImpact),
+    loadingData: readonly(loadingData),
+    // computed
     highPriceImpact,
     rektPriceImpact,
-    swapRoute,
-    bptOut,
-    fiatValueIn,
-    fiatValueOut,
-    priceImpact,
-    loadingData,
     fullAmounts,
     hasAmounts,
   };

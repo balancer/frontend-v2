@@ -15,6 +15,7 @@ interface JoinPoolReturnValue {
   fiatValueOut: string;
   bptOut: string;
   priceImpact: number;
+  priceImpactFiat: string;
 }
 
 export default class JoinPool {
@@ -91,8 +92,16 @@ export default class JoinPool {
     const fiatValueOut = this.getFiatValueOut(bptOut, pool);
     const fiatValueIn = this.getFiatValueIn([amount], [tokenIn]);
     const priceImpact = this.getPriceImpact(fiatValueIn, fiatValueOut);
+    const priceImpactFiat = this.getPriceImpactFiat(fiatValueIn, fiatValueOut);
     this.swapRouteLoading = false;
-    return { route, fiatValueOut, bptOut, priceImpact };
+    console.log({
+      route,
+      fiatValueOut,
+      bptOut,
+      priceImpact,
+      priceImpactFiat,
+    });
+    return { route, fiatValueOut, bptOut, priceImpact, priceImpactFiat };
   }
 
   async fetchPools() {
@@ -114,6 +123,16 @@ export default class JoinPool {
         .div(bnumFiatValueIn.plus(bnumFiatValueOut).div(bnum(2)))
         .toNumber() || 0
     );
+  }
+
+  private getPriceImpactFiat(
+    fiatValueIn: string,
+    fiatValueOut: string
+  ): string {
+    return Math.min(
+      0,
+      bnum(fiatValueOut).minus(bnum(fiatValueIn)).toNumber()
+    ).toString();
   }
 
   private getSwapAttributes(
