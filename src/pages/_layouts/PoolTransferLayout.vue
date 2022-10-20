@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-
+import { computed } from 'vue';
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
+import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 // Composables
+import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useReturnRoute } from '@/composables/useReturnRoute';
 import StakingProvider from '@/providers/local/staking/staking.provider';
+import { usePool } from '@/composables/usePool';
 
 /**
  * STATE
@@ -22,11 +25,25 @@ const id = (route.params.id as string).toLowerCase();
 /**
  * COMPOSABLES
  */
+const { tokenAddresses } = useInvestState();
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
+const { isDeepPool } = usePool(pool);
+
+const isInvestPage = computed(() => route.name === 'invest');
+const poolSupportsSingleAssetSwaps = computed(() => {
+  return pool.value && isDeepPool.value;
+});
+const excludedTokens = computed<string[]>(() => {
+  return pool.value?.address ? [pool.value.address] : [];
+});
+
+function setTokenInAddress(tokenAddress) {
+  tokenAddresses.value[0] = tokenAddress;
+}
 </script>
 
 <template>
@@ -50,6 +67,12 @@ usePoolTransfersGuard();
             v-if="loadingPool || !transfersAllowed || !pool"
             class="h-64"
           />
+          <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+            <MyWallet
+              :excludedTokens="excludedTokens"
+              @click:asset="setTokenInAddress"
+            />
+          </div>
           <MyWalletTokensCard
             v-else
             v-model:useNativeAsset="useNativeAsset"

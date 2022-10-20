@@ -3,17 +3,25 @@ import { take } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
+import { isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { Address } from '@/types';
+
+type Props = {
+  excludedTokens?: string[];
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  excludedTokens: () => [],
+});
 
 const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
   useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { setTokenInAddress } = useTradeState();
 const {
   hasBalance,
   nativeAsset,
@@ -42,17 +50,29 @@ const noTokensMessage = computed(() => {
   return t('noTokensInWallet', [networkName]);
 });
 
+function isExcludedToken(tokenAddress: Address) {
+  return props.excludedTokens.some(excludedAddress =>
+    isSameAddress(excludedAddress, tokenAddress)
+  );
+}
+
 const tokensWithBalance = computed(() => {
   return take(
-    Object.keys(balances.value).filter(
-      tokenAddress =>
+    Object.keys(balances.value).filter(tokenAddress => {
+      return (
         Number(balances.value[tokenAddress]) > 0 &&
-        tokenAddress !== appNetworkConfig.nativeAsset.address &&
-        tokenAddress !== appNetworkConfig.addresses.veBAL
-    ),
+        !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address) &&
+        !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL) &&
+        !isExcludedToken(tokenAddress)
+      );
+    }),
     21
   );
 });
+
+const emit = defineEmits<{
+  (e: 'click:asset', tokenAddress: Address): void;
+}>();
 </script>
 
 <template>
@@ -108,7 +128,7 @@ const tokensWithBalance = computed(() => {
             :size="30"
             :addresses="tokensWithBalance"
             :maxAssetsPerLine="28"
-            @click="setTokenInAddress"
+            @click="tokenAddress => emit('click:asset', tokenAddress)"
           />
           <p
             v-if="tokensWithBalance.length === 0"
