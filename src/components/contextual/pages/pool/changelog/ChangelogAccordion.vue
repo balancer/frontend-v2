@@ -53,6 +53,11 @@ function end(el: HTMLDivElement) {
   overflow: hidden;
 }
 
+.accordion-enter-from {
+  opacity: 0;
+  height: 0;
+}
+
 .accordion-enter,
 .accordion-leave-to {
   height: 0 !important;
