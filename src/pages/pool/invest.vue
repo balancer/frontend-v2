@@ -12,7 +12,7 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
-import InvestFormSingleToken from '@/components/forms/pool_actions/InvestForm/InvestFormSingleToken.vue';
+import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
 import InvestFormDeepPoolMultiToken from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPoolMultiToken.vue';
 
 /**
@@ -83,7 +83,7 @@ onBeforeMount(async () => {
           v-if="activeTab === Tabs.POOL_TOKENS"
           :pool="pool"
         />
-        <InvestFormSingleToken v-else :pool="pool" />
+        <InvestFormV2 v-else :pool="pool" />
       </template>
       <template v-else>
         <InvestForm :pool="pool" />
