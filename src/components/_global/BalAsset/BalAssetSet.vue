@@ -40,6 +40,7 @@ type BalAssetProps = {
   iconURI?: string;
   size?: number;
   button?: boolean;
+  disabled?: boolean;
 };
 
 export default defineComponent({
@@ -48,6 +49,10 @@ export default defineComponent({
   },
   props: {
     addresses: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    disabledAddresses: {
       type: Array as PropType<string[]>,
       default: () => [],
     },
@@ -135,10 +140,14 @@ export default defineComponent({
       );
     }
 
-    function assetAttrsFor(addressOrURI: string) {
-      return isAddress(addressOrURI)
+    function assetAttrsFor(addressOrURI: string): BalAssetProps {
+      const addressOrURIProp = isAddress(addressOrURI)
         ? { address: addressOrURI }
         : { iconURI: addressOrURI };
+      return {
+        ...addressOrURIProp,
+        disabled: props.disabledAddresses.includes(addressOrURI),
+      };
     }
 
     return {

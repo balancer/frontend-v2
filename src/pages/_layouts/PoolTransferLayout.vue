@@ -70,6 +70,7 @@ function setTokenInAddress(tokenAddress) {
           <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
             <MyWallet
               :excludedTokens="excludedTokens"
+              :pool="pool"
               @click:asset="setTokenInAddress"
             />
           </div>
@@ -108,6 +109,7 @@ function setTokenInAddress(tokenAddress) {
             <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
               <MyWallet
                 :excludedTokens="excludedTokens"
+                :pool="pool"
                 @click:asset="setTokenInAddress"
               />
             </div>

@@ -6,17 +6,22 @@ import { useI18n } from 'vue-i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
-import { isSameAddress } from '@/lib/utils';
+import { isSameAddress, includesAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
+import { AnyPool } from '@/services/pool/types';
 
 type Props = {
   excludedTokens?: string[];
+  // If pool prop is provided, Tokens are grouped into:
+  // 'Pool tokens in wallet' or 'Other tokens in wallet'
+  pool?: AnyPool;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   excludedTokens: () => [],
+  pool: undefined,
 });
 
 const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
@@ -67,6 +72,29 @@ const tokensWithBalance = computed(() => {
       );
     }),
     21
+  );
+});
+
+const poolTokensWithBalance = computed<string[]>(() => {
+  return (
+    props.pool?.mainTokens?.filter(poolToken =>
+      includesAddress(tokensWithBalance.value, poolToken)
+    ) || []
+  );
+});
+const poolTokensWithoutBalance = computed<string[]>(() => {
+  return (
+    props.pool?.mainTokens?.filter(
+      poolToken => !includesAddress(tokensWithBalance.value, poolToken)
+    ) || []
+  );
+});
+const notPoolTokensWithBalance = computed<string[]>(() => {
+  if (!props.pool?.mainTokens) return tokensWithBalance.value;
+  return (
+    tokensWithBalance.value.filter(
+      token => !includesAddress(props.pool.mainTokens || [], token)
+    ) || []
   );
 });
 
@@ -121,7 +149,34 @@ const emit = defineEmits<{
       <div class="z-0 p-3 h-full my-wallet">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
+          <template v-if="pool">
+            poolTokens
+            <BalAssetSet
+              :balAssetProps="{ button: true }"
+              :width="275"
+              wrap
+              :size="30"
+              :addresses="[
+                ...poolTokensWithBalance,
+                ...poolTokensWithoutBalance,
+              ]"
+              :disabledAddresses="poolTokensWithoutBalance"
+              :maxAssetsPerLine="28"
+              @click="tokenAddress => emit('click:asset', tokenAddress)"
+            />
+            notPoolTokensWithBalance
+            <BalAssetSet
+              :balAssetProps="{ button: true }"
+              :width="275"
+              wrap
+              :size="30"
+              :addresses="notPoolTokensWithBalance"
+              :maxAssetsPerLine="28"
+              @click="tokenAddress => emit('click:asset', tokenAddress)"
+            />
+          </template>
           <BalAssetSet
+            v-else
             :balAssetProps="{ button: true }"
             :width="275"
             wrap
@@ -130,6 +185,7 @@ const emit = defineEmits<{
             :maxAssetsPerLine="28"
             @click="tokenAddress => emit('click:asset', tokenAddress)"
           />
+
           <p
             v-if="tokensWithBalance.length === 0"
             class="text-sm opacity-0 text-secondary fade-in"
