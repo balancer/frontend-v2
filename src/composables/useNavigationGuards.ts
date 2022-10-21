@@ -17,7 +17,7 @@ import {
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
-function saveNetworkAndRefresh(networkId: string, url: string, router: Router) {
+function setNetworkAndRefresh(networkId: string, url: string, router: Router) {
   document.write('');
   localStorage.setItem('networkId', networkId);
   window.location.href = url;
@@ -36,7 +36,7 @@ export default function useNavigationGuards() {
     const subdomain = getSubdomain(window.location.host);
     const subdomainNetwork = networkFromSlug(subdomain);
     if (subdomainNetwork) {
-      saveNetworkAndRefresh(
+      setNetworkAndRefresh(
         subdomainNetwork.toString(),
         `/#${to.params.networkSlug ? '' : networkSlug}${to.fullPath}`,
         router
@@ -53,7 +53,7 @@ export default function useNavigationGuards() {
     if (urlNetwork) {
       const noNetworkChangeCallback = () => next();
       const networkChangeCallback = (urlNetwork?: Network) => {
-        saveNetworkAndRefresh(
+        setNetworkAndRefresh(
           (urlNetwork ?? '').toString(),
           `/#${to.fullPath}`,
           router
