@@ -213,7 +213,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       @update:address="address => (tokenAddresses[0] = address)"
     />
 
-    <label class="label" for="tokenOut">You provide</label>
+    <label class="label" for="tokenOut">You receive</label>
     <TokenInput
       id="tokenOut"
       v-model:address="pool.address"
@@ -223,7 +223,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       disableMax
       noRules
       noMax
-      class="mb-5"
+      class="mb-4"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
       @update:amount="amount => (amounts[0] = amount)"
     />
