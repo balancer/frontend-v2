@@ -1,5 +1,5 @@
 import NProgress from 'nprogress';
-import { useRouter } from 'vue-router';
+import { Router, useRouter } from 'vue-router';
 
 import { Network } from '@balancer-labs/sdk';
 
@@ -17,6 +17,13 @@ import {
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
+function saveNetworkAndRefresh(networkId: string, url: string, router: Router) {
+  document.write('');
+  localStorage.setItem('networkId', networkId);
+  window.location.href = url;
+  router.go(0);
+}
+
 export default function useNavigationGuards() {
   const router = useRouter();
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
@@ -29,12 +36,11 @@ export default function useNavigationGuards() {
     const subdomain = getSubdomain(window.location.host);
     const subdomainNetwork = networkFromSlug(subdomain);
     if (subdomainNetwork) {
-      document.write('');
-      localStorage.setItem('networkId', subdomainNetwork.toString());
-      window.location.href = `/#${to.params.networkSlug ? '' : networkSlug}${
-        to.fullPath
-      }`;
-      router.go(0);
+      saveNetworkAndRefresh(
+        subdomainNetwork.toString(),
+        `/#${to.params.networkSlug ? '' : networkSlug}${to.fullPath}`,
+        router
+      );
     }
     next();
   });
@@ -47,10 +53,11 @@ export default function useNavigationGuards() {
     if (urlNetwork) {
       const noNetworkChangeCallback = () => next();
       const networkChangeCallback = (urlNetwork?: Network) => {
-        document.write('');
-        localStorage.setItem('networkId', (urlNetwork ?? '').toString());
-        window.location.href = `/#${to.fullPath}`;
-        router.go(0);
+        saveNetworkAndRefresh(
+          (urlNetwork ?? '').toString(),
+          `/#${to.fullPath}`,
+          router
+        );
       };
       handleNetworkUrl(
         to.params.networkSlug.toString(),
