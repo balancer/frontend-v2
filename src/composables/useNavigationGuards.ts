@@ -11,6 +11,7 @@ import {
   handleNetworkUrl,
   networkId,
   networkSlug,
+  appUrl,
 } from '@/composables/useNetwork';
 
 // Progress bar config
@@ -38,7 +39,9 @@ export default function useNavigationGuards() {
     if (subdomainNetwork) {
       setNetworkAndRefresh(
         subdomainNetwork.toString(),
-        `/#${to.params.networkSlug ? '' : networkSlug}${to.fullPath}`,
+        `${appUrl().replace(subdomain, 'app')}${
+          to.params.networkSlug ? '' : networkSlug
+        }${to.fullPath}`,
         router
       );
     }
