@@ -11,6 +11,8 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
+import MyWalletSubheader from './MyWalletSubheader.vue';
+import useNativeBalance from '@/composables/useNativeBalance';
 
 type Props = {
   excludedTokens?: string[];
@@ -27,21 +29,9 @@ const props = withDefaults(defineProps<Props>(), {
 const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
   useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  hasBalance,
-  nativeAsset,
-  balanceFor,
-  balances,
-  dynamicDataLoading: isLoadingBalances,
-} = useTokens();
-const nativeCurrency = configService.network.nativeAsset.symbol;
+const { balances, dynamicDataLoading: isLoadingBalances } = useTokens();
 const networkName = configService.network.name;
 const { t } = useI18n();
-
-const etherBalance = computed(() => {
-  if (!isWalletReady.value) return '-';
-  return Number(balanceFor(appNetworkConfig.nativeAsset.address)).toFixed(4);
-});
 
 const noNativeCurrencyMessage = computed(() => {
   return t('noNativeCurrency', [nativeCurrency, networkName]);
@@ -54,6 +44,8 @@ const noNativeCurrencyMessageEthereum = computed(() => {
 const noTokensMessage = computed(() => {
   return t('noTokensInWallet', [networkName]);
 });
+
+const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 function isExcludedToken(tokenAddress: Address) {
   return props.excludedTokens.some(excludedAddress =>
@@ -114,9 +106,10 @@ const emit = defineEmits<{
   >
     <div class="flex flex-col w-full h-full bg-transparent">
       <div
-        class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:border-b dark:border-gray-700"
+        v-if="!upToLargeBreakpoint"
+        class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:border-b dark:border-gray-900"
       >
-        <h6 v-if="!upToLargeBreakpoint">
+        <h6>
           {{ $t('myWallet2') }}
         </h6>
         <div
@@ -124,10 +117,10 @@ const emit = defineEmits<{
           class="ml-1 lg:ml-0 font-semibold lg:font-normal"
         >
           <div
-            v-if="!hasBalance(nativeAsset.address)"
+            v-if="!hasNativeBalance"
             class="mr-0.5 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
           >
-            {{ etherBalance }} {{ nativeCurrency }}
+            {{ nativeBalance }} {{ nativeCurrency }}
             <BalTooltip
               v-if="isWalletReady"
               :text="
@@ -142,15 +135,17 @@ const emit = defineEmits<{
               class="relative top-0.5"
             />
           </div>
-          <div v-else>{{ etherBalance }} {{ nativeCurrency }}</div>
+          <div v-else>{{ nativeBalance }} {{ nativeCurrency }}</div>
         </div>
         <BalLoadingBlock v-else class="w-12 h-8" />
       </div>
-      <div class="z-0 p-3 h-full my-wallet">
+      <div class="z-0 px-3 pb-3 h-full my-wallet">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <template v-if="pool">
-            poolTokens
+            <MyWalletSubheader class="border-b">
+              Pool tokens (lowest price impact)
+            </MyWalletSubheader>
             <BalAssetSet
               :balAssetProps="{ button: true }"
               :width="275"
@@ -161,30 +156,33 @@ const emit = defineEmits<{
                 ...poolTokensWithoutBalance,
               ]"
               :disabledAddresses="poolTokensWithoutBalance"
-              :maxAssetsPerLine="28"
+              :maxAssetsPerLine="7"
               @click="tokenAddress => emit('click:asset', tokenAddress)"
             />
-            notPoolTokensWithBalance
+            <MyWalletSubheader class="mt-5 border-t border-b">
+              Other tokens (higher price impact)
+            </MyWalletSubheader>
             <BalAssetSet
               :balAssetProps="{ button: true }"
               :width="275"
               wrap
               :size="30"
               :addresses="notPoolTokensWithBalance"
-              :maxAssetsPerLine="28"
+              :maxAssetsPerLine="7"
               @click="tokenAddress => emit('click:asset', tokenAddress)"
             />
           </template>
-          <BalAssetSet
-            v-else
-            :balAssetProps="{ button: true }"
-            :width="275"
-            wrap
-            :size="30"
-            :addresses="tokensWithBalance"
-            :maxAssetsPerLine="28"
-            @click="tokenAddress => emit('click:asset', tokenAddress)"
-          />
+          <div v-else class="mt-3">
+            <BalAssetSet
+              :balAssetProps="{ button: true }"
+              :width="275"
+              wrap
+              :size="30"
+              :addresses="tokensWithBalance"
+              :maxAssetsPerLine="7"
+              @click="tokenAddress => emit('click:asset', tokenAddress)"
+            />
+          </div>
 
           <p
             v-if="tokensWithBalance.length === 0"

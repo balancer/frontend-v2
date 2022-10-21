@@ -15,6 +15,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { useReturnRoute } from '@/composables/useReturnRoute';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { usePool } from '@/composables/usePool';
+import useNativeBalance from '@/composables/useNativeBalance';
 
 /**
  * STATE
@@ -32,6 +33,7 @@ const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
 const { isDeepPool } = usePool(pool);
+const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 const isInvestPage = computed(() => route.name === 'invest');
 const poolSupportsSingleAssetSwaps = computed(() => {
@@ -90,7 +92,11 @@ function setTokenInAddress(tokenAddress) {
             {
               title:
                 isInvestPage && poolSupportsSingleAssetSwaps
-                  ? $t('myWallet2')
+                  ? `${$t('myWallet2')} ${
+                      hasNativeBalance
+                        ? `${nativeBalance} ${nativeCurrency}`
+                        : ''
+                    }`
                   : $t('poolTransfer.myWalletTokensCard.title'),
               id: 'myWalletTokens',
             },

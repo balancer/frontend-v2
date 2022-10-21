@@ -16,12 +16,7 @@
         v-bind="{ ...assetAttrsFor(addressOrURI), ...balAssetProps }"
         :size="size"
         :class="['token-icon', { absolute: !wrap, relative: wrap }]"
-        :style="{
-          left: `${leftOffsetFor(i)}px`,
-          zIndex: `${20 - i}`,
-          width: `${size}px`,
-          height: `${size}px`,
-        }"
+        :style="getBalAssetStyle(assetChunkIndex, i)"
         @click="$emit('click', addressOrURI)"
       />
     </div>
@@ -150,6 +145,16 @@ export default defineComponent({
       };
     }
 
+    function getBalAssetStyle(assetRowIndex: number, assetIndex: number) {
+      return {
+        left: `${leftOffsetFor(assetIndex)}px`,
+        zIndex: `${20 - assetIndex}`,
+        // After the first three rows, display any remaining tokens smaller to fit more in
+        width: `${assetRowIndex > 2 ? '24' : props.size}px`,
+        height: `${assetRowIndex > 2 ? '24' : props.size}px`,
+      };
+    }
+
     return {
       // computed
       assetChunks,
@@ -158,6 +163,7 @@ export default defineComponent({
       // methods
       leftOffsetFor,
       assetAttrsFor,
+      getBalAssetStyle,
     };
   },
 });
@@ -194,12 +200,5 @@ export default defineComponent({
 
 .addresses-row:last-child {
   @apply mb-0;
-}
-
-/* After the first three rows, display any remaining tokens smaller to fit more in */
-.my-wallet .addresses-row:nth-child(n + 2) img,
-.my-wallet .addresses-row:nth-child(n + 2) .token-icon {
-  width: 24px !important;
-  height: 24px !important;
 }
 </style>
