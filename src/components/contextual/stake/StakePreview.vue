@@ -21,7 +21,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
 
-export type StakeAction = 'stake' | 'unstake';
+export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
   pool: AnyPool;
   action: StakeAction;
@@ -67,7 +67,10 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: () => txWithNotification(unstakeBPT),
-  stepTooltip: t('staking.unstakeTooltip'),
+  stepTooltip:
+    props.action === 'restake'
+      ? t('staking.restakeTooltip')
+      : t('staking.unstakeTooltip'),
 };
 
 /**
@@ -89,8 +92,10 @@ const shareBalanceToDisplay = ref(
 watch(
   () => props.action,
   () => {
-    stakeActions.value =
-      props.action === 'stake' ? [stakeAction] : [unstakeAction];
+    if (props.action === 'stake') stakeActions.value = [stakeAction];
+    if (props.action === 'unstake') stakeActions.value = [unstakeAction];
+    if (props.action === 'restake')
+      stakeActions.value = [unstakeAction, stakeAction];
   },
   { immediate: true }
 );
