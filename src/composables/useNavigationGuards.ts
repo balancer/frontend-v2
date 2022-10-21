@@ -8,8 +8,9 @@ import useVeBal from './useVeBAL';
 import {
   networkFromSlug,
   getSubdomain,
-  getSubdomainNetworkRedirectUrl,
   handleNetworkUrl,
+  networkId,
+  networkSlug,
 } from '@/composables/useNetwork';
 
 // Progress bar config
@@ -21,27 +22,53 @@ export default function useNavigationGuards() {
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
   const { setSidebarOpen } = useSidebar();
 
+  /**
+   * Subdomain redirects - e.g. "polygon.balancer.fi/".
+   */
   router.beforeEach((to, from, next) => {
     const subdomain = getSubdomain(window.location.host);
     const subdomainNetwork = networkFromSlug(subdomain);
     if (subdomainNetwork) {
+      document.write('');
       localStorage.setItem('networkId', subdomainNetwork.toString());
-      window.location.href =
-        getSubdomainNetworkRedirectUrl(window.location.href) ?? '/';
+      window.location.href = `/#${to.params.networkSlug ? '' : networkSlug}${
+        to.fullPath
+      }`;
+      router.go(0);
+    }
+    next();
+  });
+
+  /**
+   * Network url redirects - e.g. "app.balancer.fi/#/arbitrum".
+   */
+  router.beforeEach((to, from, next) => {
+    const urlNetwork = networkFromSlug(to.params.networkSlug?.toString() ?? '');
+    if (urlNetwork) {
+      const noNetworkChangeCallback = () => next();
+      const networkChangeCallback = (urlNetwork?: Network) => {
+        document.write('');
+        localStorage.setItem('networkId', (urlNetwork ?? '').toString());
+        window.location.href = `/#${to.fullPath}`;
+        router.go(0);
+      };
+      handleNetworkUrl(
+        to.params.networkSlug.toString(),
+        noNetworkChangeCallback,
+        networkChangeCallback
+      );
     } else {
-      if (to.params.networkSlug) {
-        const noNetworkChangeCallback = () => next();
-        const networkChangeCallback = (networkFromUrl?: Network) => {
-          document.write('');
-          localStorage.setItem('networkId', (networkFromUrl ?? '').toString());
-          window.location.href = `/#${to.fullPath}`;
-          router.go(0);
-        };
-        handleNetworkUrl(
-          to.params.networkSlug.toString(),
-          noNetworkChangeCallback,
-          networkChangeCallback
-        );
+      const nonNetworkedRoutes = [
+        '/',
+        '/terms-of-use',
+        '/privacy-policy',
+        '/cookies-policy',
+      ];
+      if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
+        localStorage.setItem('networkId', networkId.value.toString());
+        router.push({
+          path: `/${networkSlug}${to.redirectedFrom?.fullPath ?? to.fullPath}`,
+        });
       } else {
         next();
       }

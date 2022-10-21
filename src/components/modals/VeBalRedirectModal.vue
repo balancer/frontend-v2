@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
+import { Network } from '@balancer-labs/sdk';
 
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
 import useVeBAL from '@/composables/useVeBAL';
+import { getNetworkSlug } from '@/composables/useNetwork';
 
 /**
  * STATE
@@ -13,6 +16,13 @@ const redirectModal = ref<typeof BalModal>();
  * COMPOSABLES
  */
 const { showRedirectModal, setShowRedirectModal } = useVeBAL();
+
+/**
+ * COPUTED
+ */
+const vebalURL = computed(
+  (): string => `/#/${getNetworkSlug(Network.MAINNET)}/vebal`
+);
 
 /**
  * METHODS
@@ -41,7 +51,7 @@ function handleInternalClose() {
       <div class="grid grid-cols-2 grid-rows-1 gap-4 mt-4">
         <BalBtn
           tag="a"
-          href="/#/ethereum/vebal"
+          :href="vebalURL"
           :label="$t('proceed')"
           color="gradient"
         />

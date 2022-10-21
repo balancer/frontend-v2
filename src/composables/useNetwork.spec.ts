@@ -1,8 +1,4 @@
-import {
-  getSubdomainNetworkRedirectUrl,
-  getSubdomain,
-  handleNetworkUrl,
-} from './useNetwork';
+import { getSubdomain, handleNetworkUrl } from './useNetwork';
 
 jest.mock('@/services/web3/useWeb3');
 
@@ -21,44 +17,6 @@ describe('Navigation guards', () => {
 
     urls.forEach(url => {
       expect(getSubdomain(url.path)).toEqual(url.result);
-    });
-  });
-
-  it('should get correct url redirects for old format urls', () => {
-    const urls = [
-      {
-        url: 'https://polygon.balancer.fi/#/pool/create',
-        result: 'https://localhost:8080/#/polygon/pool/create',
-      },
-      {
-        url: 'https://goerli.balancer.fi/#/pool/0x5a6a8cffb4347ff7fc484bf5f0f8a2e234d34255000200000000000000000275',
-        result:
-          'https://localhost:8080/#/goerli/pool/0x5a6a8cffb4347ff7fc484bf5f0f8a2e234d34255000200000000000000000275',
-      },
-      {
-        url: 'https://ethereum.balancer.fi/#/portfolio',
-        result: 'https://localhost:8080/#/ethereum/portfolio',
-      },
-      {
-        url: 'https://ethereum.balancer.fi/#/claim',
-        result: 'https://localhost:8080/#/ethereum/claim',
-      },
-      {
-        url: 'https://goerli.balancer.fi/#/pool/create',
-        result: 'https://localhost:8080/#/goerli/pool/create',
-      },
-      {
-        url: 'https://polygon.balancer.fi/#/vebal',
-        result: 'https://localhost:8080/#/polygon/vebal',
-      },
-      {
-        url: 'https://arbitrum.balancer.fi/#/pool/create',
-        result: 'https://localhost:8080/#/arbitrum/pool/create',
-      },
-    ];
-
-    urls.forEach(({ url, result }) => {
-      expect(getSubdomainNetworkRedirectUrl(url)).toEqual(result);
     });
   });
 

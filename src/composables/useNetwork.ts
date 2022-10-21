@@ -88,31 +88,8 @@ export function getSubdomain(url: string) {
   const subdomain = url.split('.')[0];
   if (subdomain === 'beta') {
     return url.split('.')[1];
-  } else {
-    return subdomain;
   }
-}
-
-/**
- * Given subdomain network return a new format url to redirect to.
- *
- * @param {string} url - Full url - e.g. "https://polygon.balancer.fi/pool/create".
- * @returns {string | undefined} URL to redirect to.
- */
-export function getSubdomainNetworkRedirectUrl(url: string) {
-  const formattedUrl = url
-    .replace('https://', '')
-    .replace('http://', '')
-    .replace('/#', '');
-  const subdomain = getSubdomain(formattedUrl);
-  const subdomainNetwork = networkFromSlug(subdomain);
-  if (subdomainNetwork) {
-    const urlArr = formattedUrl.split('/');
-    urlArr.shift();
-    return `${appUrl()}/${config[subdomainNetwork].slug}/${urlArr.join('/')}`;
-  } else {
-    return undefined;
-  }
+  return subdomain;
 }
 
 /**
@@ -128,19 +105,20 @@ export function handleNetworkUrl(
   networkChangeCallback: (networkFromUrl?: Network) => void
 ) {
   const networkFromUrl = networkFromSlug(networkSlug);
-  const localStorageNetwork: Network = networkFor(
+  const localStorageNetwork = networkFor(
     localStorage.getItem('networkId') ?? '1'
   );
   if (!networkFromUrl) {
     // missing or incorrect network name -> next() withtout network change
     return noNetworkChangeCallback();
-  } else if (localStorageNetwork === networkFromUrl) {
+  }
+  if (localStorageNetwork === networkFromUrl) {
     // if on the correct network -> next()
     return noNetworkChangeCallback();
-  } else {
-    // if on different network -> update localstorage and reload
-    return networkChangeCallback(networkFromUrl);
   }
+
+  // if on different network -> update localstorage and reload
+  return networkChangeCallback(networkFromUrl);
 }
 
 export default function useNetwork() {
@@ -150,7 +128,6 @@ export default function useNetwork() {
     networkConfig,
     networkSlug,
     getSubdomain,
-    getSubdomainNetworkRedirectUrl,
     handleNetworkUrl,
   };
 }

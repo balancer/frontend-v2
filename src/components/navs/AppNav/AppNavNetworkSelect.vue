@@ -118,14 +118,10 @@ function iconSrc(network: NetworkOption): string {
 }
 
 function getNetworkChangeUrl(network: NetworkOption): string {
-  if (
-    router.currentRoute.value.name === 'pool' ||
-    router.currentRoute.value.name === 'create-pool' ||
-    router.currentRoute.value.name === 'invest' ||
-    router.currentRoute.value.name === 'withdraw' ||
-    router.currentRoute.value.name === 'migrate-pool'
-  )
+  const routes = ['pool', 'create-pool', 'invest', 'withdraw', 'migrate-pool'];
+  if (routes.includes(router.currentRoute.value.name?.toString() ?? '')) {
     return `/#/${network.networkSlug}?poolNetworkAlert=true`;
+  }
 
   const currentRoute = router.currentRoute.value;
   return router.resolve({
