@@ -19,8 +19,10 @@ import useInvestState from './composables/useInvestState';
 import useVeBal from '@/composables/useVeBAL';
 
 import useJoinPool from '../useJoinPool';
+import { default as useJoinPoolv2 } from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
+
 /**
  * TYPES
  */
@@ -50,6 +52,9 @@ const showStakeModal = ref(false);
 
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { useNativeAsset } = usePoolTransfers();
+const { bptOut: bptOutTest } = useJoinPoolv2();
+
+console.log('bptOutTest', bptOutTest.value);
 
 const {
   tokenAddresses,

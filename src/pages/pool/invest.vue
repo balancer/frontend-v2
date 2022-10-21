@@ -15,6 +15,8 @@ import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
 import InvestFormDeepPoolMultiToken from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPoolMultiToken.vue';
 
+import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
+
 /**
  * STATE
  */
@@ -79,11 +81,13 @@ onBeforeMount(async () => {
         </div>
       </template>
       <template v-if="isDeepPool">
-        <InvestFormDeepPoolMultiToken
-          v-if="activeTab === Tabs.POOL_TOKENS"
-          :pool="pool"
-        />
-        <InvestFormV2 v-else :pool="pool" />
+        <JoinPoolProvider :pool="pool">
+          <InvestFormDeepPoolMultiToken
+            v-if="activeTab === Tabs.POOL_TOKENS"
+            :pool="pool"
+          />
+          <InvestFormV2 v-else :pool="pool" />
+        </JoinPoolProvider>
       </template>
       <template v-else>
         <InvestForm :pool="pool" />
