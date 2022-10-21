@@ -190,7 +190,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       :description="
         $t('investment.warning.managedPoolTradingHalted.description')
       "
-      class="mb-4"
+      class="mb-5"
     />
 
     <BalAlert
@@ -198,18 +198,34 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       type="warning"
       :title="$t('investment.warning.lowLiquidity.title')"
       :description="$t('investment.warning.lowLiquidity.description')"
-      class="mb-4"
+      class="mb-5"
     />
-
+    <label class="label" for="tokenIn">You provide</label>
     <TokenInput
+      id="tokenIn"
       v-model:address="tokenAddresses[0]"
       v-model:amount="amounts[0]"
       v-model:isValid="validInputs[0]"
       :name="tokenAddresses[0]"
-      class="mb-4"
+      class="mb-5"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
       @update:amount="amount => (amounts[0] = amount)"
       @update:address="address => (tokenAddresses[0] = address)"
+    />
+
+    <label class="label" for="tokenOut">You provide</label>
+    <TokenInput
+      id="tokenOut"
+      v-model:address="pool.address"
+      v-model:amount="bptOut"
+      :name="pool.address"
+      fixedToken
+      disableMax
+      noRules
+      noMax
+      class="mb-5"
+      :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+      @update:amount="amount => (amounts[0] = amount)"
     />
     <InvestFormTotalsV2
       :loadingData="loadingData"
@@ -220,7 +236,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <div
       v-if="highPriceImpact"
-      class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
+      class="p-2 pb-2 mt-5 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -231,7 +247,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       />
     </div>
 
-    <WrapStEthLink :pool="pool" class="mt-4" />
+    <WrapStEthLink :pool="pool" class="mt-5" />
 
     <div class="mt-4">
       <BalBtn
@@ -280,3 +296,10 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     </StakingProvider>
   </div>
 </template>
+
+<style scoped>
+/* This is needed because the trade settings popover overflows */
+.label {
+  @apply font-bold text-sm mb-2 inline-block;
+}
+</style>
