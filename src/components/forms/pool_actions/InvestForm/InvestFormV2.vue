@@ -205,7 +205,6 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       :description="$t('investment.warning.lowLiquidity.description')"
       class="mb-5"
     />
-    <label class="label" for="tokenIn">You provide</label>
     <TokenInput
       id="tokenIn"
       v-model:address="tokenAddresses[0]"
@@ -216,21 +215,6 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
       @update:amount="amount => (amounts[0] = amount)"
       @update:address="address => (tokenAddresses[0] = address)"
-    />
-
-    <label class="label" for="tokenOut">You receive</label>
-    <TokenInput
-      id="tokenOut"
-      v-model:address="pool.address"
-      v-model:amount="bptOut"
-      :name="pool.address"
-      fixedToken
-      disableMax
-      noRules
-      noMax
-      class="mb-4"
-      :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-      @update:amount="amount => (amounts[0] = amount)"
     />
     <InvestFormTotalsV2
       :loadingData="loadingData"
