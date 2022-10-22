@@ -4,7 +4,6 @@ import { computed } from 'vue';
 // Components
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
-import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 // Composables
@@ -14,6 +13,8 @@ import { useReturnRoute } from '@/composables/useReturnRoute';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { usePool } from '@/composables/usePool';
 import useNativeBalance from '@/composables/useNativeBalance';
+import useTokens from '@/composables/useTokens';
+import { isSameAddress } from '@/lib/utils';
 
 /**
  * STATE
@@ -40,9 +41,14 @@ const poolSupportsSingleAssetSwaps = computed(() => {
 const excludedTokens = computed<string[]>(() => {
   return pool.value?.address ? [pool.value.address] : [];
 });
+const { nativeAsset } = useTokens();
 
-function setTokenInAddress(tokenAddress) {
-  tokenAddresses.value[0] = tokenAddress;
+function handleMyWalletTokenClick(tokenAddress) {
+  if (isInvestPage.value && poolSupportsSingleAssetSwaps.value) {
+    tokenAddresses.value[0] = tokenAddress;
+  } else {
+    useNativeAsset.value = isSameAddress(tokenAddress, nativeAsset.address);
+  }
 }
 </script>
 
@@ -66,18 +72,19 @@ function setTokenInAddress(tokenAddress) {
             v-if="loadingPool || !transfersAllowed || !pool"
             class="h-64"
           />
-          <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+          <div v-else>
             <MyWallet
+              includeNativeAsset
               :excludedTokens="excludedTokens"
               :pool="pool"
-              @click:asset="setTokenInAddress"
+              @click:asset="handleMyWalletTokenClick"
             />
           </div>
-          <MyWalletTokensCard
+          <!-- <MyWalletTokensCard
             v-else
             v-model:useNativeAsset="useNativeAsset"
             :pool="pool"
-          />
+          /> -->
         </div>
 
         <div class="col-span-7">
@@ -107,21 +114,22 @@ function setTokenInAddress(tokenAddress) {
               v-if="loadingPool || !pool || !transfersAllowed"
               class="h-64"
             />
-            <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+            <div v-else>
               <MyWallet
+                includeNativeAsset
                 :excludedTokens="excludedTokens"
                 :pool="pool"
-                @click:asset="setTokenInAddress"
+                @click:asset="handleMyWalletTokenClick"
               />
             </div>
-            <MyWalletTokensCard
+            <!-- <MyWalletTokensCard
               v-else
               v-model:useNativeAsset="useNativeAsset"
               :pool="pool"
               hideHeader
               noBorder
               square
-            />
+            /> -->
           </template>
         </BalAccordion>
       </div>

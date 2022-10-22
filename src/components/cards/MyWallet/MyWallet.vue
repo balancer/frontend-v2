@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { take } from 'lodash';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -13,25 +13,33 @@ import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
+import { usePool } from '@/composables/usePool';
 
 type Props = {
   excludedTokens?: string[];
   // If pool prop is provided, Tokens are grouped into:
   // 'Pool tokens in wallet' or 'Other tokens in wallet'
   pool?: AnyPool;
+  includeNativeAsset?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   excludedTokens: () => [],
   pool: undefined,
+  includeNativeAsset: false,
 });
 
 const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
   useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { balances, dynamicDataLoading: isLoadingBalances } = useTokens();
+const {
+  balances,
+  dynamicDataLoading: isLoadingBalances,
+  nativeAsset,
+} = useTokens();
 const networkName = configService.network.name;
 const { t } = useI18n();
+const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
 
 const noNativeCurrencyMessage = computed(() => {
   return t('noNativeCurrency', [nativeCurrency, networkName]);
@@ -56,9 +64,12 @@ function isExcludedToken(tokenAddress: Address) {
 const tokensWithBalance = computed(() => {
   return take(
     Object.keys(balances.value).filter(tokenAddress => {
+      const _includeNativeAsset = props.includeNativeAsset
+        ? true
+        : !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address);
       return (
         Number(balances.value[tokenAddress]) > 0 &&
-        !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address) &&
+        _includeNativeAsset &&
         !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL) &&
         !isExcludedToken(tokenAddress)
       );
@@ -67,25 +78,35 @@ const tokensWithBalance = computed(() => {
   );
 });
 
+const poolTokenAddresses = computed((): string[] => {
+  if (isDeepPool.value) {
+    return props.pool.mainTokens || [];
+  }
+  if (isWethPool.value) {
+    return [nativeAsset.address, ...props.pool.tokensList];
+  }
+  return props.pool.tokensList;
+});
+
 const poolTokensWithBalance = computed<string[]>(() => {
   return (
-    props.pool?.mainTokens?.filter(poolToken =>
+    poolTokenAddresses.value.filter(poolToken =>
       includesAddress(tokensWithBalance.value, poolToken)
     ) || []
   );
 });
 const poolTokensWithoutBalance = computed<string[]>(() => {
   return (
-    props.pool?.mainTokens?.filter(
+    poolTokenAddresses.value.filter(
       poolToken => !includesAddress(tokensWithBalance.value, poolToken)
     ) || []
   );
 });
 const notPoolTokensWithBalance = computed<string[]>(() => {
-  if (!props.pool?.mainTokens) return tokensWithBalance.value;
+  if (!poolTokenAddresses.value) return tokensWithBalance.value;
   return (
     tokensWithBalance.value.filter(
-      token => !includesAddress(props.pool.mainTokens || [], token)
+      token => !includesAddress(poolTokenAddresses.value || [], token)
     ) || []
   );
 });
