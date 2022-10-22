@@ -791,6 +791,7 @@
     "unstakeValueTooltip": "The approximate value of the LP tokens you will unstake.",
     "unstaking": "Unstaking",
     "unstakeTooltip": "Confirm unstaking of LP tokens. You'll lose eligibility to earn liquidity mining incentives for this pool.",
+    "restakeTooltip": "Confirm unstaking of LP tokens. You'll be able to restake to earn liquidity mining incentives for this pool.",
     "weeklyEarning": "weekly earning"
   },
   "stakeToGetExtra": "Stake this to earn extra",
@@ -1322,6 +1323,8 @@
   "unlocking": "Unlocking",
   "unstake": "Unstake",
   "unstaked": "Unstaked",
+  "restake": "Restake",
+  "restaked": "Restaked",
   "unwrap": "Unwrap",
   "usdValue": "USD Value",
   "useOf": "use of",
