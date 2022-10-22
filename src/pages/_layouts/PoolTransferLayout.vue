@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
-import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 // Components
-import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
+import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 // Composables
@@ -62,9 +60,8 @@ function setTokenInAddress(tokenAddress) {
           <BalIcon name="x" size="lg" />
         </BalBtn>
       </div>
-
-      <Col3Layout offsetGutters mobileHideGutters>
-        <template v-if="!upToLargeBreakpoint" #gutterLeft>
+      <div class="pool-transfer-layout-grid">
+        <div v-if="!upToLargeBreakpoint" class="col-span-5">
           <BalLoadingBlock
             v-if="loadingPool || !transfersAllowed || !pool"
             class="h-64"
@@ -81,9 +78,11 @@ function setTokenInAddress(tokenAddress) {
             v-model:useNativeAsset="useNativeAsset"
             :pool="pool"
           />
-        </template>
+        </div>
 
-        <router-view :key="$route.path" />
+        <div class="col-span-7">
+          <router-view :key="$route.path" />
+        </div>
 
         <BalAccordion
           v-if="upToLargeBreakpoint"
@@ -99,10 +98,6 @@ function setTokenInAddress(tokenAddress) {
                     }`
                   : $t('poolTransfer.myWalletTokensCard.title'),
               id: 'myWalletTokens',
-            },
-            {
-              title: $t('poolTransfer.myPoolBalancesCard.title'),
-              id: 'myPoolBalances',
             },
           ]"
         >
@@ -128,29 +123,8 @@ function setTokenInAddress(tokenAddress) {
               square
             />
           </template>
-          <template #myPoolBalances>
-            <BalLoadingBlock
-              v-if="loadingPool || !pool || !transfersAllowed"
-              class="h-64"
-            />
-            <MyPoolBalancesCard
-              v-else
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            />
-          </template>
         </BalAccordion>
-
-        <template v-if="!upToLargeBreakpoint" #gutterRight>
-          <BalLoadingBlock
-            v-if="loadingPool || !pool || !transfersAllowed"
-            class="h-64"
-          />
-          <MyPoolBalancesCard v-else :pool="pool" />
-        </template>
-      </Col3Layout>
+      </div>
     </div>
   </StakingProvider>
 </template>
@@ -160,5 +134,10 @@ function setTokenInAddress(tokenAddress) {
   @apply h-16;
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
+}
+
+.pool-transfer-layout-grid {
+  @apply grid grid-cols-1 lg:grid-cols-12 gap-y-8;
+  @apply max-w-3xl mx-auto sm:px-4 lg:px-0 gap-x-0 lg:gap-x-8;
 }
 </style>
