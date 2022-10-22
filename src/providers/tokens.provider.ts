@@ -92,7 +92,10 @@ export interface TokensProviderResponse {
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
   injectPrices: (pricesToInject: TokenPrices) => void;
-  getMaxBalanceFor: (tokenAddress, disableNativeAssetBuffer: boolean) => string;
+  getMaxBalanceFor: (
+    tokenAddress,
+    disableNativeAssetBuffer?: boolean
+  ) => string;
 }
 
 /**

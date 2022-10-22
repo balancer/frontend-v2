@@ -14,7 +14,7 @@ import StakingProvider from '@/providers/local/staking/staking.provider';
 import { usePool } from '@/composables/usePool';
 import useNativeBalance from '@/composables/useNativeBalance';
 import useTokens from '@/composables/useTokens';
-import { isSameAddress } from '@/lib/utils';
+import { indexOfAddress, isSameAddress } from '@/lib/utils';
 
 /**
  * STATE
@@ -25,13 +25,13 @@ const id = (route.params.id as string).toLowerCase();
 /**
  * COMPOSABLES
  */
-const { tokenAddresses } = useInvestState();
+const { tokenAddresses, amounts } = useInvestState();
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
-const { isDeepPool } = usePool(pool);
+const { isDeepPool, isWethPool } = usePool(pool);
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 const isInvestPage = computed(() => route.name === 'invest');
@@ -41,13 +41,22 @@ const poolSupportsSingleAssetSwaps = computed(() => {
 const excludedTokens = computed<string[]>(() => {
   return pool.value?.address ? [pool.value.address] : [];
 });
-const { nativeAsset } = useTokens();
+const { nativeAsset, getMaxBalanceFor } = useTokens();
 
-function handleMyWalletTokenClick(tokenAddress) {
+function handleMyWalletTokenClick(tokenAddress: string) {
+  // TODO: Conditional to check if single asset tab is selected
   if (isInvestPage.value && poolSupportsSingleAssetSwaps.value) {
     tokenAddresses.value[0] = tokenAddress;
-  } else {
+  } else if (isWethPool.value) {
     useNativeAsset.value = isSameAddress(tokenAddress, nativeAsset.address);
+  }
+  // Max the input amount
+
+  // console.log(tokenAddresses.value, tokenAddress, useNativeAsset.value);
+  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
+
+  if (indexOfAsset >= 0) {
+    amounts.value[indexOfAsset] = getMaxBalanceFor(tokenAddress);
   }
 }
 </script>
