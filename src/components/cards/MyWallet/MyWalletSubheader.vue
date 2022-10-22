@@ -11,6 +11,6 @@
 
 <style scoped>
 .my-wallet-subheader {
-  @apply py-2 px-3 -mx-3 mb-5  dark:bg-gray-800 border-gray-200 dark:border-0;
+  @apply py-2 px-3 -mx-3  dark:bg-gray-800 border-gray-200 dark:border-0;
 }
 </style>

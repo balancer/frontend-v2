@@ -164,34 +164,38 @@ const emit = defineEmits<{
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <div v-else-if="isWalletReady">
           <template v-if="pool">
-            <MyWalletSubheader class="border-b">
+            <MyWalletSubheader v-if="isDeepPool" class="border-b">
               Pool tokens (lowest price impact)
             </MyWalletSubheader>
-            <BalAssetSet
-              :balAssetProps="{ button: true }"
-              :width="275"
-              wrap
-              :size="30"
-              :addresses="[
-                ...poolTokensWithBalance,
-                ...poolTokensWithoutBalance,
-              ]"
-              :disabledAddresses="poolTokensWithoutBalance"
-              :maxAssetsPerLine="7"
-              @click="tokenAddress => emit('click:asset', tokenAddress)"
-            />
-            <MyWalletSubheader class="mt-5 border-t border-b">
-              Other tokens (higher price impact)
-            </MyWalletSubheader>
-            <BalAssetSet
-              :balAssetProps="{ button: true }"
-              :width="275"
-              wrap
-              :size="30"
-              :addresses="notPoolTokensWithBalance"
-              :maxAssetsPerLine="7"
-              @click="tokenAddress => emit('click:asset', tokenAddress)"
-            />
+            <div class="mt-5">
+              <BalAssetSet
+                :balAssetProps="{ button: true }"
+                :width="275"
+                wrap
+                :size="30"
+                :addresses="[
+                  ...poolTokensWithBalance,
+                  ...poolTokensWithoutBalance,
+                ]"
+                :disabledAddresses="poolTokensWithoutBalance"
+                :maxAssetsPerLine="7"
+                @click="tokenAddress => emit('click:asset', tokenAddress)"
+              />
+            </div>
+            <template v-if="isDeepPool">
+              <MyWalletSubheader class="my-5 border-t border-b">
+                Other tokens (higher price impact)
+              </MyWalletSubheader>
+              <BalAssetSet
+                :balAssetProps="{ button: true }"
+                :width="275"
+                wrap
+                :size="30"
+                :addresses="notPoolTokensWithBalance"
+                :maxAssetsPerLine="7"
+                @click="tokenAddress => emit('click:asset', tokenAddress)"
+              />
+            </template>
           </template>
           <div v-else class="mt-3">
             <BalAssetSet
