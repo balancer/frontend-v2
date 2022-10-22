@@ -84,7 +84,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { getToken, balanceFor, nativeAsset } = useTokens();
+const { getToken, balanceFor, nativeAsset, getMaxBalanceFor } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
@@ -209,19 +209,11 @@ function handleAmountChange(amount: InputValue) {
 const setMax = () => {
   if (props.disableMax) return;
 
-  let _amount;
-  if (
-    props.address === nativeAsset.address &&
-    !props.disableNativeAssetBuffer
-  ) {
-    // Subtract buffer for gas
-    _amount = tokenBalanceBN.value.gt(nativeAsset.minTransactionBuffer)
-      ? tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer).toString()
-      : '0';
-  } else {
-    _amount = tokenBalance.value;
-  }
-  handleAmountChange(_amount);
+  const maxAmount = props.customBalance
+    ? props.customBalance
+    : getMaxBalanceFor(props.address, props.disableNativeAssetBuffer);
+
+  handleAmountChange(maxAmount);
 };
 </script>
   
