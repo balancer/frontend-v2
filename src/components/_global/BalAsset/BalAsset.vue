@@ -65,6 +65,7 @@ watch(iconSRC, newURL => {
 <template>
   <component
     :is="rootElement"
+    :title="token?.symbol"
     class="inline-block leading-none rounded-full shadow-sm bal-asset"
     :style="{
       width: `${size}px`,
