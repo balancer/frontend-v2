@@ -46,7 +46,7 @@ export interface PoolToken {
   weight: string;
   priceRate: string | null;
   symbol?: string;
-  token: { pool: { poolType: null | PoolType } | null };
+  token: { pool: { poolType: null | PoolType; tokens: PoolToken[] } | null };
 }
 
 // PoolToken data from onchain call
