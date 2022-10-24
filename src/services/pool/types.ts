@@ -40,13 +40,19 @@ export enum PoolType {
   Managed = 'Managed',
 }
 
+export interface TokenTreePool {
+  id: string;
+  poolType: null | PoolType;
+  tokens: PoolToken;
+}
+
 export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
   priceRate: string | null;
   symbol?: string;
-  token: { pool: { poolType: null | PoolType } | null };
+  token: { pool: TokenTreePool | null };
 }
 
 // PoolToken data from onchain call
