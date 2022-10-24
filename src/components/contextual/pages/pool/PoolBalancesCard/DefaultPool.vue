@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import numeral from 'numeral';
-import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
+import { computed, defineComponent, PropType, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -84,7 +84,7 @@ export default defineComponent({
     /**
      * STATE
      */
-    const { pool }: { pool: Ref<Pool> } = toRefs(props);
+    const pool = toRef(props, 'pool');
 
     /**
      * COMPOSABLES
@@ -100,7 +100,7 @@ export default defineComponent({
      * COMPUTED
      */
     const tableData = computed(() => {
-      if (!pool || !pool.value || props.loading) return [];
+      if (!pool.value || !pool.value || props.loading) return [];
       const onchainTokens = pool.value?.onchain?.tokens || [];
       return Object.keys(onchainTokens).map((address, index) => ({
         address,
@@ -150,26 +150,26 @@ export default defineComponent({
      * METHODS
      */
     function symbolFor(address: string) {
-      if (!pool || !pool.value) return '-';
+      if (!pool.value) return '-';
       const symbol = pool.value?.onchain?.tokens?.[address]?.symbol;
       return symbol ? symbol : shortenLabel(address);
     }
 
     function balanceFor(address: string): string {
-      if (!pool || !pool.value) return '-';
+      if (!pool.value) return '-';
       const balance = pool.value?.onchain?.tokens[address]?.balance;
       return balance ? fNum2(balance, FNumFormats.token) : '-';
     }
 
     function weightFor(address: string): string {
-      if (!pool || !pool.value) return '-';
+      if (!pool.value) return '-';
       const weight = pool.value?.onchain?.tokens[address]?.weight;
       return weight ? fNum2(weight, FNumFormats.percent) : '-';
     }
 
     function fiatValueFor(address: string): string {
       const price = priceFor(address);
-      if (!pool || !pool.value || price === 0) return '-';
+      if (!pool.value || price === 0) return '-';
 
       const balance = pool.value?.onchain?.tokens[address]?.balance;
       return balance ? fNum2(Number(balance) * price, FNumFormats.fiat) : '-';
