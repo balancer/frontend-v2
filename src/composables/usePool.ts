@@ -5,7 +5,12 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { POOLS } from '@/constants/pools';
-import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
+import {
+  bnum,
+  includesAddress,
+  isSameAddress,
+  removeAddress,
+} from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
@@ -215,12 +220,20 @@ export function isVeBalPool(poolId: string): boolean {
 }
 
 /**
+ * Removes pre-minted pool token from tokensList.
+ *
+ * @param {AnyPool} pool - Pool to get tokensList from.
+ * @returns tokensList excluding pre-minted BPT address.
+ */
+export function tokensExcludingBpt(pool: Pool): string[] {
+  return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
  * @summary Remove pre-minted pool token address from tokensList
  */
 export function removePreMintedBPT(pool: Pool): Pool {
-  pool.tokensList = pool.tokensList.filter(
-    address => !isSameAddress(address, pool.address)
-  );
+  pool.tokensList = tokensExcludingBpt(pool);
   return pool;
 }
 
