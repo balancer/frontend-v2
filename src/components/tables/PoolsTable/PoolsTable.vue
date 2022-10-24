@@ -305,6 +305,7 @@ function iconAddresses(pool: PoolWithShares) {
             v-if="isMigratablePool(pool)"
             class="ml-2"
             :label="$t('deprecated').toUpperCase()"
+            size="sm"
             color="red"
           />
         </div>
