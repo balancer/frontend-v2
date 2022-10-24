@@ -50,7 +50,7 @@ export const PoolMock: Pool = {
       balance: '95.094102533755196937',
       priceRate: '1',
       weight: '0.2',
-      token: { pool: { poolType: null } },
+      token: { pool: { poolType: null, tokens: null } },
     },
   ],
   tokensList: [
