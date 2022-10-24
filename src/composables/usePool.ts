@@ -231,9 +231,12 @@ export function tokensExcludingBpt(pool: Pool): string[] {
 }
 
 /**
- * @summary Remove pre-minted pool token address from tokensList
+ * Removes pre-minted pool token address from tokensList and returns modified pool.
+ *
+ * @param {Pool} pool - Pool to remove BPT from.
+ * @returns {Pool} modified pool.
  */
-export function removePreMintedBPT(pool: Pool): Pool {
+export function removeBptFrom(pool: Pool): Pool {
   pool.tokensList = tokensExcludingBpt(pool);
   return pool;
 }
