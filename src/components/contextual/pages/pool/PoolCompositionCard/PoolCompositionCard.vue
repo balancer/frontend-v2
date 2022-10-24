@@ -145,7 +145,7 @@ function fiatValueFor(address: string) {
           <template #item="{ item: asset }">
             <AssetRow
               :address="asset.address"
-              :mainTokenAddress="asset.mainTokenAddress"
+              :mainTokenAddress="address"
               :balance="convert(asset.balance, asset.decimals)"
               :priceRate="asset.priceRate"
               :share="getTokenShare(address)"
