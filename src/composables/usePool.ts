@@ -246,6 +246,7 @@ export function removePreMintedBPT(pool: Pool): Pool {
  */
 export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
   const addresses: string[] = [];
+
   for (const token of tokenTree) {
     addresses.push(token.address);
     if (token.token.pool?.tokens) {
