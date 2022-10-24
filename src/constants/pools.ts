@@ -361,7 +361,7 @@ const POOLS_MAINNET: Pools = {
   },
   Metadata: {
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe': {
-      name: 'Balancer Boosted Aave USD',
+      name: 'Balancer Boosted Aave USD (old)',
       hasIcon: true,
     },
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d': {
