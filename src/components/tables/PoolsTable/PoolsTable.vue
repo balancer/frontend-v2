@@ -304,7 +304,25 @@ function iconAddresses(pool: PoolWithShares) {
             />
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
+<<<<<<< HEAD
           <PoolMigrationWarningTooltip :pool="pool" />
+=======
+          <BalTooltip
+            v-if="isMigratablePool(pool)"
+            class="ml-2 text-red-500"
+            name="alert-circle"
+            filled
+            size="md"
+          >
+            <template #activator>
+              <BalIcon class="mt-1" name="alert-triangle" size="md" />
+            </template>
+
+            <div class="text-sm text-left">
+              {{ $t('deprecatedPool') }}
+            </div>
+          </BalTooltip>
+>>>>>>> 01bd0fb0 (parent 19d9d6e3bfa84441d6855d4c687305e73210512f)
         </div>
       </template>
       <template #volumeCell="pool">

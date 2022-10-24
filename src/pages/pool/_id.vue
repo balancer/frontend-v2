@@ -8,7 +8,7 @@ import {
   PoolStatCards,
   PoolTransactionsCard,
   MyPoolBalancesCard,
-  PoolBalancesCard,
+  PoolCompositionCard,
   PoolContractDetails,
 } from '@/components/contextual/pages/pool';
 import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
@@ -227,7 +227,8 @@ watch(poolQuery.error, () => {
             </div>
             <div class="mb-4">
               <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />
-              <PoolBalancesCard :pool="pool" :loading="loadingPool" />
+              <BalLoadingBlock v-if="loadingPool" class="h-64" />
+              <PoolCompositionCard v-else-if="pool" :pool="pool" />
             </div>
 
             <div ref="intersectionSentinel" />

@@ -250,10 +250,6 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396',
     network: Network.MAINNET,
   },
-  {
-    id: '0xae7bfd6fa54259fc477879712eebe34164d3a84f000200000000000000000376',
-    network: Network.MAINNET,
-  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -496,10 +492,6 @@ export const OPTIMISM_POOLS: Pool[] = [
   },
   {
     id: '0xc77e5645dbe48d54afc06655e39d3fe17eb76c1c00020000000000000000005c',
-    network: Network.OPTIMISM,
-  },
-  {
-    id: '0x785f08fb77ec934c01736e30546f87b4daccbe50000200000000000000000041',
     network: Network.OPTIMISM,
   },
 ];

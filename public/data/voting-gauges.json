@@ -2114,34 +2114,6 @@
     }
   },
   {
-    "address": "0x39a9E78c3b9b5B47f1f6632BD74890E2430215Cf",
-    "network": 1,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1667337815,
-    "pool": {
-      "id": "0xae7bfd6fa54259fc477879712eebe34164d3a84f000200000000000000000376",
-      "address": "0xae7bFd6fA54259fC477879712Eebe34164d3A84F",
-      "poolType": "Weighted",
-      "symbol": "80palStkAAVE-20AAVE",
-      "tokens": [
-        {
-          "address": "0x24E79e946dEa5482212c38aaB2D0782F04cdB0E0",
-          "weight": "0.8",
-          "symbol": "palStkAAVE"
-        },
-        {
-          "address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
-          "weight": "0.2",
-          "symbol": "AAVE"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x24E79e946dEa5482212c38aaB2D0782F04cdB0E0": "",
-      "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9/logo.png"
-    }
-  },
-  {
     "address": "0xc77E5645Dbe48d54afC06655e39D3Fe17eB76C1c",
     "network": 42161,
     "relativeWeightCap": "null",
@@ -3543,34 +3515,6 @@
     "tokenLogoURIs": {
       "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": "",
       "0xFdb794692724153d1488CcdBE0C56c252596735F": ""
-    }
-  },
-  {
-    "address": "0x78F50cF01a2Fd78f04da1D9ACF14a51487eC0347",
-    "network": 10,
-    "relativeWeightCap": "0.02",
-    "addedTimestamp": 1667337815,
-    "pool": {
-      "id": "0x785f08fb77ec934c01736e30546f87b4daccbe50000200000000000000000041",
-      "address": "0x785F08fB77ec934c01736E30546f87B4daccBe50",
-      "poolType": "Weighted",
-      "symbol": "IBT-IBRETH",
-      "tokens": [
-        {
-          "address": "0x00a35FD824c717879BF370E70AC6868b95870Dfb",
-          "weight": "0.5",
-          "symbol": "IB"
-        },
-        {
-          "address": "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D",
-          "weight": "0.5",
-          "symbol": "rETH"
-        }
-      ]
-    },
-    "tokenLogoURIs": {
-      "0x00a35FD824c717879BF370E70AC6868b95870Dfb": "",
-      "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/0x9Bcef72be871e61ED4fBbc7630889beE758eb81D/logo.png"
     }
   }
 ]
