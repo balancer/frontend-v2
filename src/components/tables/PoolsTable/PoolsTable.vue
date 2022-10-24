@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router';
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
-import BalChipUniversal from '@/components/chips/BalChipUniversal.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
@@ -302,10 +301,10 @@ function iconAddresses(pool: PoolWithShares) {
             />
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
-          <BalChipUniversal
+          <BalChip
             v-if="isMigratablePool(pool)"
             class="ml-2"
-            :text="$t('deprecated')"
+            :label="$t('deprecated')"
             color="red"
           />
         </div>
