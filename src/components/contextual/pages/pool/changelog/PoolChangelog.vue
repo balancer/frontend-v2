@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import AmpUpdate from './AmpUpdate.vue';
 import PoolCreationChangelog from './PoolCreationChangelog.vue';
 import { shortenLabel } from '@/lib/utils';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
@@ -24,14 +25,15 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { t } = useI18n();
+const { fNum2 } = useNumbers();
 
+/**
+ * STATE
+ */
 const changelogData: any = [
   ...props.ampUpdates.map(ampUpdate => ({
-    title: `${t('ampFactor.change')} ${t('ampFactor.range', [
-      ampUpdate.startAmp,
-      ampUpdate.endAmp,
-    ])}`,
-    subTitle: t('ampFactor.update'),
+    title: t('ampFactor.update'),
+    subTitle: `${t('ampFactor.range', [ampUpdate.startAmp, ampUpdate.endAmp])}`,
     icon: 'amp',
     active: true,
     isAmpUpdate: true,
@@ -71,8 +73,8 @@ const changelogData: any = [
                 class="changelog__timeline-header"
                 :class="{ 'header-active': false }"
               >
-                <div class="header-subtitle">{{ item.subTitle }}</div>
                 <div class="header-title">{{ item.title }}</div>
+                <div class="header-subtitle">{{ item.subTitle }}</div>
               </div>
             </div>
           </template>
@@ -106,20 +108,17 @@ const changelogData: any = [
 
 .changelog__timeline-header {
   padding: 20px 25px;
-  border-top: 2px solid theme('colors.gray.200');
 
-  /* border-bottom: 2px solid theme('colors.gray.200'); */
   flex: 1;
+  @apply py-3 flex-1 border-solid border-t-2 border-gray-200 px-5 sm:py-6;
 }
 
 .header-title {
-  font-size: 20px;
-  font-weight: 700;
+  @apply text-base font-bold;
 }
 
 .header-subtitle {
-  font-size: 16px;
-  font-weight: 600;
+  @apply text-sm text-gray-600;
 }
 
 .changelog__timeline-header.header-active {
@@ -127,8 +126,7 @@ const changelogData: any = [
 }
 
 .changelog__timeline-content {
-  /* position: relative; */
-  padding: 20px 25px;
+  @apply py-3 px-5 sm:py-6;
 }
 
 .changelog__timeline::before {

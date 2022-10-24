@@ -99,7 +99,6 @@ const data = computed(() => {
     <div class="mb-4 text-lg text-semibold">
       {{ $t('changelog.poolCreation.attributes') }}
     </div>
-
     <BalDetailsTable class="mb-12" :tableData="data" />
   </div>
 </template>
