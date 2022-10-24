@@ -43,7 +43,7 @@ export enum PoolType {
 export interface TokenTreePool {
   id: string;
   poolType: null | PoolType;
-  tokens: PoolToken[];
+  tokens?: PoolToken[];
 }
 
 export interface PoolToken {
@@ -52,6 +52,7 @@ export interface PoolToken {
   weight: string;
   priceRate: string | null;
   symbol?: string;
+  decimals: number;
   token: { pool: TokenTreePool | null };
 }
 
