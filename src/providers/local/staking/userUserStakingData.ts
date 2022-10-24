@@ -287,7 +287,7 @@ export default function useUserStakingData(
           poolGaugeAddresses.value.gauges
             .filter(
               gauge =>
-                gauge.id !== poolGaugeAddresses.value.preferentialGauge.id
+                gauge.id !== poolGaugeAddresses.value.preferentialGauge?.id
             )
             .map(async nonPrefGauge => {
               const gauge = new LiquidityGauge(nonPrefGauge.id);
