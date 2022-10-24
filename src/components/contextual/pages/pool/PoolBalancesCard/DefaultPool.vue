@@ -100,7 +100,7 @@ export default defineComponent({
      * COMPUTED
      */
     const tableData = computed(() => {
-      if (!pool.value || !pool.value || props.loading) return [];
+      if (!pool.value || props.loading) return [];
       const onchainTokens = pool.value?.onchain?.tokens || [];
       return Object.keys(onchainTokens).map((address, index) => ({
         address,
