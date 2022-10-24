@@ -14,7 +14,10 @@ import StakingProvider from '@/providers/local/staking/staking.provider';
 import { usePool } from '@/composables/usePool';
 import useNativeBalance from '@/composables/useNativeBalance';
 import useTokens from '@/composables/useTokens';
-import { indexOfAddress, isSameAddress } from '@/lib/utils';
+import {
+  // indexOfAddress,
+  isSameAddress,
+} from '@/lib/utils';
 
 /**
  * STATE
@@ -25,7 +28,10 @@ const id = (route.params.id as string).toLowerCase();
 /**
  * COMPOSABLES
  */
-const { tokenAddresses, amounts } = useInvestState();
+const {
+  tokenAddresses,
+  // amounts
+} = useInvestState();
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
@@ -41,23 +47,25 @@ const poolSupportsSingleAssetSwaps = computed(() => {
 const excludedTokens = computed<string[]>(() => {
   return pool.value?.address ? [pool.value.address] : [];
 });
-const { nativeAsset, getMaxBalanceFor } = useTokens();
+const {
+  nativeAsset,
+  //  getMaxBalanceFor
+} = useTokens();
 
 function handleMyWalletTokenClick(tokenAddress: string) {
-  // TODO: Conditional to check if single asset tab is selected
   if (isInvestPage.value && poolSupportsSingleAssetSwaps.value) {
+    // TODO: Only change the tokenAddress if single asset tab is selected
     tokenAddresses.value[0] = tokenAddress;
   } else if (isWethPool.value) {
     useNativeAsset.value = isSameAddress(tokenAddress, nativeAsset.address);
   }
-  // Max the input amount
+  //  Max the input amount (ENABLE LATER)
 
-  // console.log(tokenAddresses.value, tokenAddress, useNativeAsset.value);
-  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
+  //  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
 
-  if (indexOfAsset >= 0) {
-    amounts.value[indexOfAsset] = getMaxBalanceFor(tokenAddress);
-  }
+  //  if (indexOfAsset >= 0) {
+  //    amounts.value[indexOfAsset] = getMaxBalanceFor(tokenAddress);
+  //   }
 }
 </script>
 
@@ -89,11 +97,6 @@ function handleMyWalletTokenClick(tokenAddress: string) {
               @click:asset="handleMyWalletTokenClick"
             />
           </div>
-          <!-- <MyWalletTokensCard
-            v-else
-            v-model:useNativeAsset="useNativeAsset"
-            :pool="pool"
-          /> -->
         </div>
 
         <div class="col-span-7">
@@ -131,14 +134,6 @@ function handleMyWalletTokenClick(tokenAddress: string) {
                 @click:asset="handleMyWalletTokenClick"
               />
             </div>
-            <!-- <MyWalletTokensCard
-              v-else
-              v-model:useNativeAsset="useNativeAsset"
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            /> -->
           </template>
         </BalAccordion>
       </div>
