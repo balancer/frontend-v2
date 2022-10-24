@@ -301,13 +301,21 @@ function iconAddresses(pool: PoolWithShares) {
             />
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
-          <BalChip
+          <BalTooltip
             v-if="isMigratablePool(pool)"
-            class="ml-2"
-            :label="$t('deprecated').toUpperCase()"
-            size="sm"
-            color="red"
-          />
+            class="ml-2 text-red-500"
+            name="alert-circle"
+            filled
+            size="md"
+          >
+            <template #activator>
+              <BalIcon class="mt-1" name="alert-triangle" size="md" />
+            </template>
+
+            <div class="text-sm text-left">
+              {{ $t('deprecatedPool') }}
+            </div>
+          </BalTooltip>
         </div>
       </template>
       <template #volumeCell="pool">
