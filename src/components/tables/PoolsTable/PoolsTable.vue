@@ -304,7 +304,7 @@ function iconAddresses(pool: PoolWithShares) {
           <BalChip
             v-if="isMigratablePool(pool)"
             class="ml-2"
-            :label="$t('deprecated')"
+            :label="$t('deprecated').toUpperCase()"
             color="red"
           />
         </div>
