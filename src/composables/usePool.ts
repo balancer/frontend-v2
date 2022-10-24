@@ -19,6 +19,7 @@ import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, urlFor } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { uniq } from 'lodash';
 
 /**
  * METHODS
@@ -235,6 +236,25 @@ export function tokensExcludingBpt(pool: Pool): string[] {
 export function removePreMintedBPT(pool: Pool): Pool {
   pool.tokensList = tokensExcludingBpt(pool);
   return pool;
+}
+
+/**
+ * Parse token tree and extract all token addresses.
+ *
+ * @param {PoolToken[]} tokenTree - A pools token tree.
+ * @returns {string[]} Array of token addresses in tree.
+ */
+export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
+  const addresses: string[] = [];
+  for (const token of tokenTree) {
+    addresses.push(token.address);
+    if (token.token.pool?.tokens) {
+      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens);
+      addresses.push(...nestedTokens);
+    }
+  }
+
+  return uniq(addresses);
 }
 
 /**
