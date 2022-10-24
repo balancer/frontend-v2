@@ -241,7 +241,7 @@ export function removePreMintedBPT(pool: Pool): Pool {
 /**
  * Parse token tree and extract all token addresses.
  *
- * @param {PoolToken[]} tokenTree - A pools token tree.
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
  * @returns {string[]} Array of token addresses in tree.
  */
 export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
