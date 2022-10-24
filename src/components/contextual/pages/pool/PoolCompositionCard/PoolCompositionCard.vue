@@ -5,7 +5,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import {
   getUnderlyingTokens,
   findTokenByAddress,
-} from '@/services/balancer/subgraph/entities/pools/pools.builders';
+} from './nested-token-helpers';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { toRefs } from 'vue';
