@@ -262,6 +262,27 @@ export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
 }
 
 /**
+ * Parse token tree and extract all leaf token addresses.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @returns {string[]} Array of token addresses in tree.
+ */
+export function tokenTreeLeafs(tokenTree: PoolToken[]): string[] {
+  const addresses: string[] = [];
+
+  for (const token of tokenTree) {
+    if (token.token.pool?.tokens) {
+      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens);
+      addresses.push(...removeAddress(token.address, nestedTokens));
+    } else {
+      addresses.push(token.address);
+    }
+  }
+
+  return uniq(addresses);
+}
+
+/**
  * @summary Check if pool should be accessible in UI
  */
 export function isBlocked(pool: Pool, account: string): boolean {
