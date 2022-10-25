@@ -14,6 +14,7 @@ import {
   selectByAddress,
   indexOfAddress,
   isSameAddress,
+  forChange,
 } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
@@ -25,12 +26,9 @@ import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewMod
 import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
 import { parseFixed } from '@ethersproject/bignumber';
-// import { Relayer } from '@balancer-labs/sdk';
 
-import { balancer } from '@/lib/balancer.sdk';
-
-// import useConfig from '@/composables/useConfig';
-// import { Vault__factory } from '@balancer-labs/typechain';
+import mockGeneralizedJoin from './mockGeneralizedJoin';
+import useMyWallet from '@/composables/useMyWallet';
 
 /**
  * TYPES
@@ -54,7 +52,9 @@ const props = defineProps<Props>();
  */
 const showInvestPreview = ref(false);
 const showStakeModal = ref(false);
-const relayerAuthorization = ref<string>('');
+const relayerAuthorization = ref<string>(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001bc90329ed90439744b57601e9ae2d5525e8554ee14d40c84dc8ee89b01de129a35dfb25841fad7f887c025869bbf91496b39200ce19d55fede3f3e74bbe2ea91c'
+);
 
 /**
  * COMPOSABLES
@@ -128,10 +128,12 @@ const poolHasLowLiquidity = computed((): boolean =>
 
 const investmentTokens = computed((): string[] => {
   if (isDeep(props.pool)) {
-    return props.pool.mainTokens || [];
+    return poolTokensWithBalance.value || [];
   }
   return props.pool.tokensList;
 });
+
+const { poolTokensWithBalance } = useMyWallet({ pool: pool.value });
 
 /**
  * METHODS
@@ -217,11 +219,49 @@ function setNativeAsset(to: NativeAsset): void {
   }
 }
 
+async function runGeneralisedJoin(amounts: string[]) {
+  const signer = getProvider().getSigner();
+  const signerAddress = await signer.getAddress();
+  const wrapLeafTokens = false;
+  const slippage = '100'; // 100 bps = 1%
+  const poolId = pool.value.id;
+  const amountsIn = tokenAddresses.value.map((tokenAddress, index) => {
+    const amount = amounts[index] || '0';
+    const token = getToken(tokenAddress);
+    const amountIn = parseFixed(amount, token?.decimals ?? 18).toString();
+    return amountIn;
+  });
+
+  console.log({
+    poolId,
+    tokenAddresses: tokenAddresses.value,
+    amountsIn,
+    signerAddress,
+    wrapLeafTokens,
+    slippage,
+    signer,
+    authorisation: relayerAuthorization.value,
+  });
+
+  const generalisedJoinQuery = await mockGeneralizedJoin(
+    poolId,
+    tokenAddresses.value,
+    amountsIn,
+    signerAddress,
+    wrapLeafTokens,
+    slippage,
+    signer,
+    relayerAuthorization.value
+  );
+  console.log({ generalisedJoinQuery });
+}
+
 /**
  * CALLBACKS
  */
-onBeforeMount(() => {
+onBeforeMount(async () => {
   resetAmounts();
+  await forChange(isWalletReady, true);
   tokenAddresses.value = [...investmentTokens.value];
   if (isWethPool.value) setNativeAssetByBalance();
 });
@@ -252,7 +292,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 watch(
   () => amounts,
   val => {
-    if (val.value[0]) {
+    if (val.value) {
       runGeneralisedJoin(val.value);
     }
   },
@@ -260,43 +300,6 @@ watch(
     deep: true,
   }
 );
-
-async function runGeneralisedJoin(amounts: string[]) {
-  const signer = getProvider().getSigner();
-  const signerAddress = await signer.getAddress();
-  const wrapLeafTokens = false;
-  const slippage = '100'; // 100 bps = 1%
-  const poolId = pool.value.id;
-  const amountsIn = tokenAddresses.value.map((tokenAddress, index) => {
-    const amount = amounts[index] || '0';
-    const token = getToken(tokenAddress);
-    const amountIn = parseFixed(amount, token?.decimals ?? 18).toString();
-    return amountIn;
-  });
-
-  console.log({
-    poolId,
-    tokenAddresses: tokenAddresses.value,
-    amountsIn,
-    signerAddress,
-    wrapLeafTokens,
-    slippage,
-    signer,
-    authorisation: relayerAuthorization.value,
-  });
-
-  const generalisedJoinQuery = await balancer.pools.generalisedJoin(
-    poolId,
-    tokenAddresses.value,
-    amountsIn,
-    signerAddress,
-    wrapLeafTokens,
-    slippage,
-    signer,
-    relayerAuthorization.value
-  );
-  console.log({ generalisedJoinQuery });
-}
 </script>
 
 <template>

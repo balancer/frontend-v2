@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount } from 'vue';
 
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 // Components
@@ -16,6 +16,7 @@ import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV
 import InvestFormDeepPoolMultiToken from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPoolMultiToken.vue';
 
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
+import { activeTab, Tabs, tabs } from './investTabsState';
 
 /**
  * STATE
@@ -24,21 +25,6 @@ const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
-
-enum Tabs {
-  POOL_TOKENS = 'poolTokens',
-  SINGLE_TOKEN = 'singleToken',
-}
-
-const tabs = [
-  { value: Tabs.POOL_TOKENS, label: 'Pool Tokens' },
-  {
-    value: Tabs.SINGLE_TOKEN,
-    label: 'Single Token',
-  },
-];
-
-const activeTab = ref(tabs[0].value);
 
 /**
  * CALLBACKS

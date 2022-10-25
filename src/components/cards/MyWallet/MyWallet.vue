@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { take } from 'lodash';
 import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
-import { isSameAddress, includesAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
-import { AnyPool, PoolToken } from '@/services/pool/types';
+import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
 import { usePool } from '@/composables/usePool';
+import useMyWallet from '@/composables/useMyWallet';
 
 type Props = {
   excludedTokens?: string[];
@@ -29,17 +28,22 @@ const props = withDefaults(defineProps<Props>(), {
   includeNativeAsset: false,
 });
 
-const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
-  useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const {
-  balances,
-  dynamicDataLoading: isLoadingBalances,
-  nativeAsset,
-} = useTokens();
+const { dynamicDataLoading: isLoadingBalances } = useTokens();
 const networkName = configService.network.name;
 const { t } = useI18n();
-const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
+const { isDeepPool } = usePool(toRef(props, 'pool'));
+const {
+  tokensWithBalance,
+  poolTokensWithBalance,
+  poolTokensWithoutBalance,
+  notPoolTokensWithBalance,
+} = useMyWallet({
+  excludedTokens: props.excludedTokens,
+  pool: props.pool,
+  includeNativeAsset: props.includeNativeAsset,
+});
 
 const noNativeCurrencyMessage = computed(() => {
   return t('noNativeCurrency', [nativeCurrency, networkName]);
@@ -54,91 +58,6 @@ const noTokensMessage = computed(() => {
 });
 
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
-
-function isExcludedToken(tokenAddress: Address) {
-  return props.excludedTokens.some(excludedAddress =>
-    isSameAddress(excludedAddress, tokenAddress)
-  );
-}
-
-const tokensWithBalance = computed(() => {
-  return take(
-    Object.keys(balances.value).filter(tokenAddress => {
-      const _includeNativeAsset = props.includeNativeAsset
-        ? true
-        : !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address);
-      return (
-        Number(balances.value[tokenAddress]) > 0 &&
-        _includeNativeAsset &&
-        !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL) &&
-        !isExcludedToken(tokenAddress)
-      );
-    }),
-    21
-  );
-});
-
-function deepPoolTokenAddressReducer(
-  acc: Set<string>,
-  poolToken: PoolToken
-): Set<string> {
-  // Exclude BPT node
-  if (isSameAddress(poolToken.address, props.pool.address)) {
-    return acc;
-  }
-  // If current node has children, recursively look through the nested token tree
-  if (poolToken.token.pool?.tokens?.length) {
-    const nestedTokenAddresses = poolToken.token.pool?.tokens.reduce<
-      Set<string>
-    >(deepPoolTokenAddressReducer, acc);
-    return nestedTokenAddresses;
-  }
-
-  // Add the final token address to set
-  const { address } = poolToken;
-  return acc.add(address);
-}
-
-function getDeepPoolTokenAddresses(pool: AnyPool): string[] {
-  const tokensSet = pool.tokens.reduce<Set<string>>(
-    deepPoolTokenAddressReducer,
-    new Set<string>()
-  );
-
-  return Array.from(tokensSet);
-}
-const poolTokenAddresses = computed((): string[] => {
-  if (isDeepPool.value) {
-    return getDeepPoolTokenAddresses(props.pool);
-  }
-  if (isWethPool.value) {
-    return [nativeAsset.address, ...props.pool.tokensList];
-  }
-  return props.pool.tokensList;
-});
-
-const poolTokensWithBalance = computed<string[]>(() => {
-  return (
-    poolTokenAddresses.value.filter(poolToken =>
-      includesAddress(tokensWithBalance.value, poolToken)
-    ) || []
-  );
-});
-const poolTokensWithoutBalance = computed<string[]>(() => {
-  return (
-    poolTokenAddresses.value.filter(
-      poolToken => !includesAddress(tokensWithBalance.value, poolToken)
-    ) || []
-  );
-});
-const notPoolTokensWithBalance = computed<string[]>(() => {
-  if (!poolTokenAddresses.value) return tokensWithBalance.value;
-  return (
-    tokensWithBalance.value.filter(
-      token => !includesAddress(poolTokenAddresses.value || [], token)
-    ) || []
-  );
-});
 
 const emit = defineEmits<{
   (e: 'click:asset', tokenAddress: Address): void;

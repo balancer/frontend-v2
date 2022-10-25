@@ -126,7 +126,7 @@ const poolHasLowLiquidity = computed((): boolean =>
 
 const investmentTokens = computed((): string[] => {
   if (isDeep(props.pool)) {
-    return props.pool.mainTokens || [];
+    return props.pool.mainTokens ? [props.pool.mainTokens[0]] : [];
   }
   return props.pool.tokensList;
 });
