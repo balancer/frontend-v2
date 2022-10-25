@@ -28,7 +28,7 @@ const { t } = useI18n();
 /**
  * STATE
  */
-const changelogData = [
+const changelogData: any = [
   ...props.ampUpdates.map(ampUpdate => ({
     title: t('ampFactor.update'),
     subTitle: `${t('ampFactor.range', [ampUpdate.startAmp, ampUpdate.endAmp])}`,
@@ -77,7 +77,7 @@ function toggle(index: number) {
                 </div>
                 <div
                   class="changelog__timeline-header"
-                  :class="{ 'header-active': false }"
+                  :class="{ 'header-active': openedAccordions.includes(index) }"
                 >
                   <div>
                     <div class="header-title">{{ item.title }}</div>
@@ -91,7 +91,7 @@ function toggle(index: number) {
                   <img
                     class="chevron"
                     :class="{ 'chevron-up': openedAccordions.includes(index) }"
-                    :src="require(`@/assets/images/icons/chevron-down.svg`)"
+                    src="@/assets/images/icons/chevron-down.svg"
                   />
                 </div>
               </div>
@@ -124,7 +124,14 @@ function toggle(index: number) {
 }
 
 .changelog__timeline-header {
+  transition: all 0.3s ease;
   @apply py-3 flex justify-between flex-1 border-solid border-t-2 border-gray-200 px-5 sm:h-20 py-0;
+}
+
+.changelog__timeline-header.header-active {
+  border-color: theme('colors.blue.600');
+
+  @apply border-blue-600 border-solid border-b-2;
 }
 
 .header-title {
@@ -141,10 +148,6 @@ function toggle(index: number) {
   @apply text-lg text-black font-bold;
 }
 
-.changelog__timeline-header.header-active {
-  border-color: theme('colors.blue.600');
-}
-
 .changelog__timeline-content {
   @apply py-3 px-12 sm:py-6;
 }
@@ -159,10 +162,12 @@ function toggle(index: number) {
   transform: translateX(6px) rotate(0deg);
   will-change: transform;
   transition: all 0.3s ease;
+  color: theme('colors.blue.600');
 }
 
 .chevron-up {
   transform: translateX(6px) rotate(180deg);
+  color: theme('colors.pink.500');
 }
 </style>
     

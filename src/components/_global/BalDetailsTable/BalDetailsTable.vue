@@ -5,7 +5,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
  * TYPES
  */
 type Props = {
-  tableData: any[][];
+  tableData: any;
 };
 
 /**
