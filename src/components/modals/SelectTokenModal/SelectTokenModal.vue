@@ -14,15 +14,19 @@ import Search from './Search.vue';
 interface Props {
   open?: boolean;
   excludedTokens?: string[];
+  subset?: string[];
   includeEther?: boolean;
   disableInjection?: boolean;
+  hideTokenLists?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   open: false,
   excludedTokens: () => [],
+  subset: () => [],
   includeEther: false,
   disableInjection: false,
+  hideTokenLists: false,
 });
 
 const emit = defineEmits(['close', 'selectTokenlist', 'select']);
@@ -113,11 +117,11 @@ async function onSelectToken(token: string): Promise<void> {
 
 async function onToggleList(uri: string): Promise<void> {
   toggleTokenList(uri);
-  state.results = await searchTokens(
-    state.query,
-    excludedTokens.value,
-    props.disableInjection
-  );
+  state.results = await searchTokens(state.query, {
+    excluded: excludedTokens.value,
+    disableInjection: props.disableInjection,
+    subset: props.subset,
+  });
 }
 
 function onListExit(): void {
@@ -136,12 +140,13 @@ function toggleSelectTokenList(): void {
 watch(
   toRef(state, 'query'),
   async newQuery => {
+    console.log('NEW QUERY');
     state.loading = true;
-    state.results = await searchTokens(
-      newQuery,
-      excludedTokens.value,
-      props.disableInjection
-    ).finally(() => {
+    state.results = await searchTokens(newQuery, {
+      excluded: excludedTokens.value,
+      disableInjection: props.disableInjection,
+      subset: props.subset,
+    }).finally(() => {
       state.loading = false;
     });
   },
@@ -168,7 +173,7 @@ watch(
           <h5>{{ title }}</h5>
         </div>
         <div
-          v-if="!state.selectTokenList"
+          v-if="!state.selectTokenList && !hideTokenLists"
           class="group flex items-center cursor-pointer"
           @click="toggleSelectTokenList"
         >

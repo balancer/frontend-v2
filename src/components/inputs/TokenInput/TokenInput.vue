@@ -10,6 +10,7 @@ import { bnum } from '@/lib/utils';
 import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
+import { TokenSelectProps } from '../TokenSelectInput/TokenSelectInput.vue';
 
 /**
  * TYPES
@@ -42,6 +43,7 @@ type Props = {
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokenValue?: string;
   placeholder?: string;
+  tokenSelectProps?: Partial<TokenSelectProps>;
 };
 
 /**
@@ -69,7 +71,9 @@ const props = withDefaults(defineProps<Props>(), {
   balanceLabel: '',
   hint: '',
   excludedTokens: () => [],
+  subsetTokens: () => [],
   placeholder: '',
+  tokenSelectProps: () => ({}),
 });
 
 const emit = defineEmits<{
@@ -251,6 +255,7 @@ const setMax = () => {
       <slot name="tokenSelect">
         <TokenSelectInput
           :modelValue="props.address"
+          v-bind="tokenSelectProps"
           :weight="weight"
           :fixed="fixedToken"
           :options="options"
