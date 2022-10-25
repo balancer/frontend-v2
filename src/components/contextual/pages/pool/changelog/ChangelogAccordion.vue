@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+defineProps<{
+  isOpen: boolean;
+}>();
 
-const isVisible = ref(true);
+defineEmits<{
+  (event: 'toggle'): void;
+}>();
 
 function start(el: HTMLDivElement) {
   el.style.height = el.scrollHeight + 'px';
@@ -14,7 +18,7 @@ function end(el: HTMLDivElement) {
 
 <template>
   <div class="accordion">
-    <div class="accordion__trigger" @click="isVisible = !isVisible">
+    <div class="accordion__trigger" @click="$emit('toggle')">
       <slot name="accordion-trigger"></slot>
     </div>
 
@@ -25,7 +29,7 @@ function end(el: HTMLDivElement) {
       @before-leave="start"
       @after-leave="end"
     >
-      <div v-show="isVisible" class="accordion__content">
+      <div v-show="isOpen" class="accordion__content">
         <slot name="accordion-content"></slot>
       </div>
     </transition>

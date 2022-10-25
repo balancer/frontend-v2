@@ -210,11 +210,6 @@ watch(poolQuery.error, () => {
         <div class="hidden lg:block" />
         <div class="order-2 lg:order-1 col-span-2">
           <div class="grid grid-cols-1 gap-y-8">
-            <PoolChangelog
-              v-if="pool && ampUpdates"
-              :pool="pool"
-              :ampUpdates="ampUpdates"
-            />
             <div class="px-4 lg:px-0">
               <PoolChart
                 :historicalPrices="historicalPrices"
@@ -246,12 +241,10 @@ watch(poolQuery.error, () => {
             <div ref="intersectionSentinel" />
             <template v-if="isSentinelIntersected && pool">
               <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
-              <!-- Remove this v-if statement -->
-              <PoolContractDetails
-                v-if="ampUpdates"
-                :pool="pool"
-                :ampUpdates="ampUpdates"
-              />
+              <template v-if="pool && ampUpdates">
+                <PoolContractDetails :pool="pool" :ampUpdates="ampUpdates" />
+                <PoolChangelog :pool="pool" :ampUpdates="ampUpdates"
+              /></template>
             </template>
           </div>
         </div>

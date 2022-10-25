@@ -4,7 +4,6 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolAmpUpdate } from '@/services/pool/types';
 import useNetwork from '../useNetwork';
-import { testAmpUpdates } from '../testData';
 
 export default function usePoolAmpUpdatesQuery(id: string) {
   /**
@@ -18,17 +17,15 @@ export default function usePoolAmpUpdatesQuery(id: string) {
   const queryKey = QUERY_KEYS.Pools.AmpUpdates(networkId, id);
 
   const queryFn = async () => {
-    // const ampUpdates = await balancerSubgraphService.poolAmpUpdates.get({
-    //   where: {
-    //     poolId: id.toLowerCase(),
-    //   },
-    //   first: 1,
-    //   orderBy: 'scheduledTimestamp',
-    //   orderDirection: 'desc',
-    // });
-    const ampUpdates = testAmpUpdates;
+    const ampUpdates = await balancerSubgraphService.poolAmpUpdates.get({
+      where: {
+        poolId: id.toLowerCase(),
+      },
+      first: 1,
+      orderBy: 'scheduledTimestamp',
+      orderDirection: 'desc',
+    });
 
-    console.log(ampUpdates);
     return ampUpdates;
   };
 
