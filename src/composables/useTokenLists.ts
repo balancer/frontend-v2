@@ -1,12 +1,5 @@
-import { inject } from 'vue';
+import { getTokensListProvision } from '@/providers/token-lists.provider';
 
-import {
-  TokenListsProviderResponse,
-  TokenListsProviderSymbol,
-} from '@/providers/token-lists.provider';
-
-const defaultProviderResponse = {} as TokenListsProviderResponse;
-
-export default function useTokenLists(): TokenListsProviderResponse {
-  return inject(TokenListsProviderSymbol, defaultProviderResponse);
+export default function useTokenLists() {
+  return getTokensListProvision();
 }
