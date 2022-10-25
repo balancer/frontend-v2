@@ -1,4 +1,5 @@
-import JoinPool from '@/components/forms/pool_actions/JoinPool';
+// import JoinPool from '@/components/forms/pool_actions/JoinPool';
+import { isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import {
@@ -7,13 +8,13 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { balancer } from '@/lib/balancer.sdk';
-import { bnum } from '@/lib/utils';
-import { AnyPool } from '@/services/pool/types';
+import { bnum, isSameAddress, removeAddress } from '@/lib/utils';
+import { AnyPool, Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenAmountMap } from '@/types';
 import { SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { debounce } from 'lodash';
+import { add, debounce } from 'lodash';
 import { Address } from 'paraswap';
 import {
   computed,
@@ -35,13 +36,22 @@ import {
 //   validInputs: Record<Address, boolean>;
 //   highPriceImpactAccepted: boolean;
 // };
+type AmountIn = {
+  address: string;
+  value: string;
+  valid: boolean;
+};
+
 type FormState = {
-  amountsIn: TokenAmountMap;
+  amountsIn: AmountIn[];
   propAmounts: string[];
-  validInputs: Record<Address, boolean>;
   highPriceImpactAccepted: boolean;
   submitting: boolean;
   sorReady: boolean;
+};
+
+type Props = {
+  pool: Pool;
 };
 
 /**
@@ -49,9 +59,7 @@ type FormState = {
  *
  * Handles pool joining state and transaction building.
  */
-const provider = props => {
-  const pool = computed((): AnyPool => props.pool);
-
+const provider = ({ pool }: Props) => {
   /**
    * COMPOSABLES
    */
@@ -69,13 +77,13 @@ const provider = props => {
    * STATE
    */
   const form = reactive<FormState>({
-    amountsIn: {},
+    amountsIn: [],
     propAmounts: [],
-    validInputs: {},
     highPriceImpactAccepted: false,
     submitting: false,
     sorReady: false,
   });
+  const amountsIn = ref<AmountIn[]>([]);
   // const swapRoute = ref<SwapInfo | null>(null);
   const bptOut = ref<string>('');
   const fiatValueIn = ref<string>('');
@@ -89,7 +97,13 @@ const provider = props => {
    * COMPUTED
    */
   // All investable tokens in the pool's token tree.
-  // const tokenTreeNodes = computed((): string[] => {
+  const poolTokenAddresses = computed((): string[] => {
+    let addresses: string[] = [];
+
+    addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
+
+    return removeAddress(pool.address, addresses);
+  });
 
   // })
   // const highPriceImpact = computed<boolean>(() => {
@@ -121,8 +135,8 @@ const provider = props => {
    *
    * @param {TokenAmountMap} amounts - Map of token addresses and amounts.
    */
-  function setAmountsIn(amounts: TokenAmountMap) {
-    form.amountsIn = amounts;
+  function setAmountsIn(_amountsIn: AmountIn[]) {
+    amountsIn.value = _amountsIn;
   }
 
   /**
@@ -130,8 +144,22 @@ const provider = props => {
    *
    * @param {string} amount - Normalised (non-evm) token amount.
    */
-  function setAmountIn(address: string, amount: string) {
-    form.amountsIn[address] = amount;
+  function setAmountIn(amountIn: AmountIn) {
+    const index = amountsIn.value.findIndex(a =>
+      isSameAddress(a.address, amountIn.address)
+    );
+    amountsIn.value[index] = amountIn;
+  }
+
+  /**
+   * Adds amountsIn with value 0 for array of token addresses.
+   *
+   * @param {string[]} tokensIn - Array of token addresses.
+   */
+  function addTokensIn(tokensIn: string[]) {
+    tokensIn.forEach(address =>
+      amountsIn.value.push({ address, value: '0', valid: true })
+    );
   }
 
   // async function join(): Promise<TransactionResponse> {
@@ -198,9 +226,10 @@ const provider = props => {
    * WATCHERS
    */
   // watch(
-  //   form.amountsIn,
-  //   () => {
-  //     debouncedFindSwapRoute.value();
+  //   amountsIn,
+  //   newAmountsIn => {
+  //     console.log('newAmountsIn', newAmountsIn);
+  //     // debouncedFindSwapRoute.value();
   //   },
   //   { deep: true }
   // );
@@ -225,19 +254,22 @@ const provider = props => {
   return {
     pool,
     form,
+    amountsIn,
+    poolTokenAddresses,
     bptOut,
     fiatValueIn,
     fiatValueOut,
     // highPriceImpact,
     setAmountsIn,
     setAmountIn,
+    addTokensIn,
     // findSwapRoute,
     // join,
   };
 };
 
 /**
- * Provide setup, response type + symbol.
+ * Provide setup: response type + symbol.
  */
 export type Response = ReturnType<typeof provider>;
 export const JoinPoolProviderSymbol: InjectionKey<Response> = Symbol(
@@ -252,7 +284,7 @@ export const JoinPoolProvider = defineComponent({
 
   props: {
     pool: {
-      type: Object as PropType<AnyPool>,
+      type: Object as PropType<Pool>,
       required: true,
     },
   },

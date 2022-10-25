@@ -84,7 +84,14 @@ const showStakeModal = ref(false);
 //   tokenAddresses,
 //   amounts
 // );
-const { setAmountIn, setAmountsIn } = useJoinPoolv2();
+const {
+  setAmountIn,
+  setAmountsIn,
+  poolTokenAddresses,
+  addTokensIn,
+  form,
+  amountsIn,
+} = useJoinPoolv2();
 
 // const investMath = useInvestMath(
 //   pool,
@@ -170,19 +177,28 @@ const poolHasLowLiquidity = computed((): boolean =>
  * CALLBACKS
  */
 onBeforeMount(() => {
-  console.log(props.pool);
+  setAmountsIn([]);
   if (props.singleAsset) {
-    setAmountsIn({});
+    addTokensIn([poolTokenAddresses.value[0]]);
   } else {
-    // s
+    addTokensIn(poolTokenAddresses.value);
   }
-  // tokenAddresses.value = [...investmentTokens.value];
-  // if (isWethPool.value) setNativeAssetByBalance();
 });
 
 /**
  * WATCHERS
  */
+watch(
+  () => props.singleAsset,
+  isSingleAsset => {
+    setAmountsIn([]);
+    if (isSingleAsset) {
+      addTokensIn([poolTokenAddresses.value[0]]);
+    } else {
+      addTokensIn(poolTokenAddresses.value);
+    }
+  }
+);
 // watch(useNativeAsset, shouldUseNativeAsset => {
 //   if (shouldUseNativeAsset) {
 //     setNativeAsset(NativeAsset.unwrapped);
@@ -212,17 +228,16 @@ onBeforeMount(() => {
       class="mb-4"
     />
 
-    <!-- <TokenInput
-      v-for="(address, amount) in amountsIn"
-      v-model:address="address"
-      v-model:amount="amount"
-      v-model:isValid="validInputs[address]"
-      :name="address"
+    <TokenInput
+      v-for="amountIn in amountsIn"
+      :key="amountIn.address"
+      v-model:isValid="amountIn.valid"
+      v-model:address="amountIn.address"
+      v-model:amount="amountIn.value"
+      :name="amountIn.address"
       class="mb-4"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-      @update:amount="newAmount => setAmountIn(address, newAmount)"
-      @update:address="address => (tokenAddresses[0] = address)"
-    /> -->
+    />
     <!-- <InvestFormTotalsV2
       :loadingData="loadingData"
       :priceImpact="priceImpact"
