@@ -41,13 +41,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1.8.12
+        with:
+          useRollingCache: true
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - uses: bahmutov/npm-install@v1.8.25
-        with:
-          useRollingCache: true
       - name: Install deps
         run: npm install -g npm@7 && npm ci
       - name: Run build
