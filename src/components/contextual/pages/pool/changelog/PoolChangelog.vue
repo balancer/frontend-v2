@@ -77,9 +77,12 @@ function toggle(index: number) {
                 </div>
                 <div
                   class="changelog__timeline-header"
-                  :class="{ 'header-active': openedAccordions.includes(index) }"
+                  :class="{
+                    'header-active': openedAccordions.includes(index),
+                    'header-last': index === changelogData.length - 1,
+                  }"
                 >
-                  <div>
+                  <div class="flex flex-col justify-center">
                     <div class="header-title">{{ item.title }}</div>
                     <div
                       class="header-subtitle"
@@ -128,9 +131,11 @@ function toggle(index: number) {
   @apply py-3 flex justify-between flex-1 border-solid border-t-2 border-gray-200 px-5 sm:h-20 py-0;
 }
 
-.changelog__timeline-header.header-active {
-  border-color: theme('colors.blue.600');
+.changelog__timeline-header.header-last {
+  @apply border-gray-200 border-solid border-b-2;
+}
 
+.changelog__timeline-header.header-active {
   @apply border-blue-600 border-solid border-b-2;
 }
 
