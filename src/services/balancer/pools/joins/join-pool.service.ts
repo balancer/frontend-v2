@@ -34,11 +34,11 @@ export class JoinPoolService {
   //   this.joinHandler.getTx(inputs);
   // }
 
-  async queryTx(
+  async queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices
   ): Promise<QueryOutput> {
-    return this.joinHandler.queryTx(amountsIn, tokensIn, prices);
+    return this.joinHandler.queryJoin(amountsIn, tokensIn, prices);
   }
 }

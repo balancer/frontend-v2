@@ -18,12 +18,13 @@ export abstract class JoinPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  abstract getTx(
+  abstract buildJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices
   ): Promise<TransactionRequest>;
-  abstract queryTx(
+
+  abstract queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices

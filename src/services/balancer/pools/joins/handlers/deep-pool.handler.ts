@@ -1,5 +1,6 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { fiatValueOf } from '@/composables/usePool';
+import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum } from '@/lib/utils';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -12,14 +13,13 @@ import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
 export class DeepPoolHandler implements JoinPoolHandler {
-  private;
   constructor(
     public readonly pool: Pool,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async getTx(
+  async buildJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices
@@ -28,7 +28,7 @@ export class DeepPoolHandler implements JoinPoolHandler {
     throw new Error('Tx fn not handled yet');
   }
 
-  async queryTx(
+  async queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices
@@ -49,13 +49,13 @@ export class DeepPoolHandler implements JoinPoolHandler {
     prices: TokenPrices
   ): Promise<QueryOutput> {
     const tokenIn = tokensIn[amountIn.address];
-    const priceIn = prices[amountIn.address].usd;
+    const priceIn = prices[amountIn.address]?.usd;
     if (!tokenIn) throw new Error('Must provide token meta for amountIn');
     if (!priceIn) throw new Error('Must provide token price for amountIn');
     if (!amountIn.value || bnum(amountIn.value).eq(0))
       return { bptOut: '0', priceImpact: 0 };
 
-    this.sdk.swaps.fetchPools();
+    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
 
     const safeAmount = overflowProtected(amountIn.value, tokenIn.decimals);
     const bnumAmount = parseFixed(safeAmount, tokenIn.decimals);
@@ -77,8 +77,11 @@ export class DeepPoolHandler implements JoinPoolHandler {
       route.returnAmountFromSwaps,
       this.pool.onchain?.decimals || 18
     );
-    const fiatValueIn = fiatValueOf(this.pool, bptOut);
-    const fiatValueOut = bnum(priceIn).times(amountIn.value).toString();
+    const fiatValueIn = bnum(priceIn).times(amountIn.value).toString();
+    const fiatValueOut = fiatValueOf(this.pool, bptOut);
+
+    console.log('fiatValueIn', fiatValueIn);
+    console.log('fiatValueOut', fiatValueOut);
     const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
 
     return { bptOut, priceImpact };

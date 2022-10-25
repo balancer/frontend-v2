@@ -7,7 +7,7 @@ import {
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
-import { balancer } from '@/lib/balancer.sdk';
+import { balancer, fetchPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, removeAddress } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -24,6 +24,8 @@ import {
   defineComponent,
   h,
   InjectionKey,
+  onBeforeMount,
+  onBeforeUnmount,
   PropType,
   provide,
   reactive,
@@ -66,7 +68,7 @@ const provider = ({ pool }: Props) => {
   /**
    * COMPOSABLES
    */
-  const { getToken, getTokens, prices } = useTokens();
+  const { getToken, getTokens, prices, injectTokens } = useTokens();
   const { slippageBsp } = useUserSettings();
   const { account, blockNumber } = useWeb3();
 
@@ -95,7 +97,7 @@ const provider = ({ pool }: Props) => {
   // const priceImpact = ref<number>(0);
   // const transactionInProgress = ref<boolean>(false);
   // const loadingData = ref(false);
-  const debouncedQueryTx = ref(debounce(queryTx, 1000));
+  const debounceQueryJoin = ref(debounce(queryJoin, 1000));
 
   /**
    * COMPUTED
@@ -172,17 +174,15 @@ const provider = ({ pool }: Props) => {
   }
 
   /**
-   * Call JoinPoolService queryTx function
+   * Simulate join transaction to get expected output and calculate price impact.
    */
-  async function queryTx() {
-    console.log('Running query');
-    const res = await joinPoolService.queryTx(
+  async function queryJoin() {
+    const res = await joinPoolService.queryJoin(
       amountsIn.value,
       tokensIn.value,
       prices.value
     );
     console.log('QUERY', res);
-    // return res;
   }
 
   // async function join(): Promise<TransactionResponse> {
@@ -197,62 +197,13 @@ const provider = ({ pool }: Props) => {
   //   return tx;
   // }
 
-  // async function findSwapRoute() {
-  //   if (!form.amounts[0]) return;
-  //   if (!pool.value) return;
-  //   loadingData.value = true;
-
-  //   fiatValueIn.value = joinPool.getFiatValueIn(
-  //     form.amounts,
-  //     form.tokenAddresses
-  //   );
-
-  //   const token = getToken(form.tokenAddresses[0]);
-
-  //   const {
-  //     route,
-  //     fiatValueOut: _fiatValueOut,
-  //     bptOut: _bptOut,
-  //     priceImpact: _priceImpact,
-  //   } = await joinPool
-  //     .findRouteGivenIn(
-  //       form.tokenAddresses[0],
-  //       form.amounts[0],
-  //       token?.decimals || 18,
-  //       pool.value
-  //     )
-  //     .finally(() => (loadingData.value = false));
-
-  //   // Update state variables
-  //   fiatValueOut.value = _fiatValueOut;
-  //   bptOut.value = _bptOut;
-  //   swapRoute.value = route;
-  //   priceImpact.value = _priceImpact;
-
-  //   // console.log({
-  //   //   route,
-  //   //   bptOut,
-  //   //   fiatValueIn,
-  //   //   fiatValueOut,
-  //   //   priceImpact,
-  //   //   swapAttributes,
-  //   //   priceImpactPct: priceImpact.value * 100,
-  //   //   returnAmount: route.returnAmount.toString(),
-  //   //   returnAmountConsideringFees: route.returnAmountConsideringFees.toString(),
-  //   //   returnAmountFromSwaps: route.returnAmountFromSwaps.toString(),
-  //   //   swapAmount: route.swapAmount.toString(),
-  //   //   swapAmountForSwaps: route.swapAmountForSwaps.toString(),
-  //   // });
-  // }
-
   /**
    * WATCHERS
    */
   watch(
     amountsIn,
     () => {
-      console.log('amountsIn changed', amountsIn.value);
-      debouncedQueryTx.value();
+      debounceQueryJoin.value();
     },
     { deep: true }
   );
@@ -273,6 +224,21 @@ const provider = ({ pool }: Props) => {
   //     debouncedFindSwapRoute.value();
   //   }
   // });
+
+  /**
+   * LIFECYCLE
+   */
+  onBeforeMount(() => {
+    // Ensure prices are fetched for token tree. When pool architecture is
+    // refactoted probably won't be required.
+    injectTokens(poolTokenAddresses.value);
+    // Trigger SOR pool fetching in case swap joins are used.
+    fetchPoolsForSor();
+  });
+
+  onBeforeUnmount(() => {
+    debounceQueryJoin.value.cancel();
+  });
 
   return {
     pool,

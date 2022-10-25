@@ -236,7 +236,12 @@ watch(
       v-model:amount="amountIn.value"
       :name="amountIn.address"
       class="mb-4"
+      :fixedToken="!singleAsset"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+      :tokenSelectProps="{
+        subsetTokens: [wrappedNativeAsset.address, ...poolTokenAddresses],
+        hideTokenLists: true,
+      }"
     />
     <!-- <InvestFormTotalsV2
       :loadingData="loadingData"
