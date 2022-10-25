@@ -9,9 +9,12 @@ import {
 import symbolKeys from '@/constants/symbol.keys';
 import { balancer } from '@/lib/balancer.sdk';
 import { bnum, isSameAddress, removeAddress } from '@/lib/utils';
+import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { AnyPool, Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenAmountMap } from '@/types';
+import { TokenInfoMap } from '@/types/TokenList';
 import { SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { add, debounce } from 'lodash';
@@ -36,19 +39,19 @@ import {
 //   validInputs: Record<Address, boolean>;
 //   highPriceImpactAccepted: boolean;
 // };
-type AmountIn = {
+export type AmountIn = {
   address: string;
   value: string;
   valid: boolean;
 };
 
-type FormState = {
-  amountsIn: AmountIn[];
-  propAmounts: string[];
-  highPriceImpactAccepted: boolean;
-  submitting: boolean;
-  sorReady: boolean;
-};
+// type FormState = {
+//   amountsIn: AmountIn[];
+//   propAmounts: string[];
+//   highPriceImpactAccepted: boolean;
+//   submitting: boolean;
+//   sorReady: boolean;
+// };
 
 type Props = {
   pool: Pool;
@@ -63,26 +66,27 @@ const provider = ({ pool }: Props) => {
   /**
    * COMPOSABLES
    */
-  const { getToken } = useTokens();
+  const { getToken, getTokens, prices } = useTokens();
   const { slippageBsp } = useUserSettings();
   const { account, blockNumber } = useWeb3();
 
   /**
    * SERVICES
    */
+  const joinPoolService = new JoinPoolService(pool);
   // const joinPool = new JoinPool(pool.value.id, pool.value.address, 18);
   // const sor = balancer.sor;
 
   /**
    * STATE
    */
-  const form = reactive<FormState>({
-    amountsIn: [],
-    propAmounts: [],
-    highPriceImpactAccepted: false,
-    submitting: false,
-    sorReady: false,
-  });
+  // const form = reactive<FormState>({
+  //   amountsIn: [],
+  //   propAmounts: [],
+  //   highPriceImpactAccepted: false,
+  //   submitting: false,
+  //   sorReady: false,
+  // });
   const amountsIn = ref<AmountIn[]>([]);
   // const swapRoute = ref<SwapInfo | null>(null);
   const bptOut = ref<string>('');
@@ -91,7 +95,7 @@ const provider = ({ pool }: Props) => {
   // const priceImpact = ref<number>(0);
   // const transactionInProgress = ref<boolean>(false);
   // const loadingData = ref(false);
-  // const debouncedFindSwapRoute = ref(debounce(findSwapRoute, 1000));
+  const debouncedQueryTx = ref(debounce(queryTx, 1000));
 
   /**
    * COMPUTED
@@ -103,6 +107,11 @@ const provider = ({ pool }: Props) => {
     addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
 
     return removeAddress(pool.address, addresses);
+  });
+
+  // Token meta data for amountsIn tokens.
+  const tokensIn = computed((): TokenInfoMap => {
+    return getTokens(amountsIn.value.map(a => a.address));
   });
 
   // })
@@ -158,8 +167,22 @@ const provider = ({ pool }: Props) => {
    */
   function addTokensIn(tokensIn: string[]) {
     tokensIn.forEach(address =>
-      amountsIn.value.push({ address, value: '0', valid: true })
+      amountsIn.value.push({ address, value: '', valid: true })
     );
+  }
+
+  /**
+   * Call JoinPoolService queryTx function
+   */
+  async function queryTx() {
+    console.log('Running query');
+    const res = await joinPoolService.queryTx(
+      amountsIn.value,
+      tokensIn.value,
+      prices.value
+    );
+    console.log('QUERY', res);
+    // return res;
   }
 
   // async function join(): Promise<TransactionResponse> {
@@ -225,14 +248,14 @@ const provider = ({ pool }: Props) => {
   /**
    * WATCHERS
    */
-  // watch(
-  //   amountsIn,
-  //   newAmountsIn => {
-  //     console.log('newAmountsIn', newAmountsIn);
-  //     // debouncedFindSwapRoute.value();
-  //   },
-  //   { deep: true }
-  // );
+  watch(
+    amountsIn,
+    () => {
+      console.log('amountsIn changed', amountsIn.value);
+      debouncedQueryTx.value();
+    },
+    { deep: true }
+  );
 
   // watch(blockNumber, () => {
   //   if (!loadingData.value && !transactionInProgress.value) {
@@ -253,7 +276,6 @@ const provider = ({ pool }: Props) => {
 
   return {
     pool,
-    form,
     amountsIn,
     poolTokenAddresses,
     bptOut,

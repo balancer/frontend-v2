@@ -22,6 +22,7 @@ import useVeBal from '@/composables/useVeBAL';
 import { default as useJoinPoolv2 } from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -53,7 +54,7 @@ const showStakeModal = ref(false);
  * COMPOSABLES
  */
 
-// const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 // const { useNativeAsset } = usePoolTransfers();
 
 // const {
@@ -89,7 +90,6 @@ const {
   setAmountsIn,
   poolTokenAddresses,
   addTokensIn,
-  form,
   amountsIn,
 } = useJoinPoolv2();
 
@@ -193,7 +193,7 @@ watch(
   isSingleAsset => {
     setAmountsIn([]);
     if (isSingleAsset) {
-      addTokensIn([poolTokenAddresses.value[0]]);
+      addTokensIn([wrappedNativeAsset.value.address]);
     } else {
       addTokensIn(poolTokenAddresses.value);
     }
