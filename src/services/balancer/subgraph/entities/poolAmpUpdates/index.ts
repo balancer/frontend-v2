@@ -16,7 +16,7 @@ export default class PoolAmpUpdates {
   public async get(args = {}, attrs = {}): Promise<PoolAmpUpdate[]> {
     const query = this.query(args, attrs);
     const data = await this.service.client.get(query);
-    console.log('data', data);
+
     return data.ampUpdates;
   }
 }

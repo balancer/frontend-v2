@@ -81,7 +81,12 @@ function toggle(index: number) {
                 >
                   <div>
                     <div class="header-title">{{ item.title }}</div>
-                    <div class="header-subtitle">{{ item.subTitle }}</div>
+                    <div
+                      class="header-subtitle"
+                      :class="{ active: openedAccordions.includes(index) }"
+                    >
+                      {{ item.subTitle }}
+                    </div>
                   </div>
                   <img
                     class="chevron"
@@ -119,7 +124,7 @@ function toggle(index: number) {
 }
 
 .changelog__timeline-header {
-  @apply py-3 flex justify-between flex-1 border-solid border-t-2 border-gray-200 px-5 sm:py-4;
+  @apply py-3 flex justify-between flex-1 border-solid border-t-2 border-gray-200 px-5 sm:h-20 py-0;
 }
 
 .header-title {
@@ -127,7 +132,13 @@ function toggle(index: number) {
 }
 
 .header-subtitle {
+  will-change: font-size;
+  transition: all 0.3s ease;
   @apply text-sm text-gray-600;
+}
+
+.header-subtitle.active {
+  @apply text-lg text-black font-bold;
 }
 
 .changelog__timeline-header.header-active {
@@ -144,6 +155,7 @@ function toggle(index: number) {
 }
 
 .chevron {
+  width: 14px;
   transform: translateX(6px) rotate(0deg);
   will-change: transform;
   transition: all 0.3s ease;
