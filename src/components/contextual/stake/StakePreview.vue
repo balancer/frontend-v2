@@ -51,7 +51,12 @@ const {
 } = useStaking();
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([balanceFor(props.pool.address).toString()])
+  ref([
+    (props.action === 'restake'
+      ? stakedSharesForProvidedPool.value
+      : balanceFor(props.pool.address)
+    ).toString(),
+  ])
 );
 
 const stakeAction = {
