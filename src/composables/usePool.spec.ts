@@ -20,8 +20,8 @@ test('tokenTreeNodes', () => {
 });
 
 test('tokenTreeNodes', () => {
-  const nodes = tokenTreeLeafs(BoostedPoolMock.tokens);
-  expect(nodes).toEqual([
+  const leafs = tokenTreeLeafs(BoostedPoolMock.tokens);
+  expect(leafs).toEqual([
     '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
     '0x3ed3b47dd13ec9a98b44e6204a523e766b225811', // aUSDT
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC

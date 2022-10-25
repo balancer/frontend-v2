@@ -272,9 +272,9 @@ export function tokenTreeLeafs(tokenTree: PoolToken[]): string[] {
 
   for (const token of tokenTree) {
     if (token.token.pool?.tokens) {
-      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens);
+      const nestedTokens = tokenTreeLeafs(token.token.pool?.tokens);
       addresses.push(...removeAddress(token.address, nestedTokens));
-    } else {
+    } else if (!token.token.pool?.poolType) {
       addresses.push(token.address);
     }
   }
