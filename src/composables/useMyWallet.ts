@@ -4,12 +4,10 @@ import { take } from 'lodash';
 import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import { isSameAddress, includesAddress } from '@/lib/utils';
-
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
-import { AnyPool, PoolToken } from '@/services/pool/types';
-
-import { usePool } from '@/composables/usePool';
+import { AnyPool } from '@/services/pool/types';
+import { tokenTreeNodes, usePool } from '@/composables/usePool';
 
 type Props = {
   excludedTokens?: string[];
@@ -56,42 +54,14 @@ export default function useMyWallet({
     );
   });
 
-  function deepPoolTokenAddressReducer(
-    acc: Set<string>,
-    poolToken: PoolToken
-  ): Set<string> {
-    if (!pool) {
-      return acc;
-    }
-    // Exclude BPT node
-    if (isSameAddress(poolToken.address, pool.address)) {
-      return acc;
-    }
-    // If current node has children, recursively look through the nested token tree
-    if (poolToken.token.pool?.tokens?.length) {
-      const nestedTokenAddresses = poolToken.token.pool?.tokens.reduce<
-        Set<string>
-      >(deepPoolTokenAddressReducer, acc);
-      return nestedTokenAddresses;
-    }
-
-    // Add the final token address to set
-    const { address } = poolToken;
-    return acc.add(address);
-  }
-
-  function getDeepPoolTokenAddresses(pool: AnyPool): string[] {
-    const tokensSet = pool.tokens.reduce<Set<string>>(
-      deepPoolTokenAddressReducer,
-      new Set<string>()
-    );
-
-    return Array.from(tokensSet);
-  }
   const poolTokenAddresses = computed<string[]>(() => {
     if (!pool) return [];
     if (isDeepPool.value) {
-      return getDeepPoolTokenAddresses(pool);
+      return tokenTreeNodes(pool.tokens).filter(
+        // Exclude BPT address
+        address => !isSameAddress(address, pool.address)
+      );
+      // return getDeepPoolTokenAddresses(pool);
     }
     if (isWethPool.value) {
       return [nativeAsset.address, ...pool.tokensList];
