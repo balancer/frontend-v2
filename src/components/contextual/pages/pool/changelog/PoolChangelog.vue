@@ -28,7 +28,7 @@ const { t } = useI18n();
 /**
  * STATE
  */
-const changelogData: any = [
+const changelogData = [
   ...props.ampUpdates.map(ampUpdate => ({
     title: t('ampFactor.update'),
     subTitle: `${t('ampFactor.range', [ampUpdate.startAmp, ampUpdate.endAmp])}`,
