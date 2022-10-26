@@ -1,10 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-<<<<<<< HEAD
   "version": "1.76.0",
-=======
-  "version": "1.75.2",
->>>>>>> f472b7aa (Update voting gauge list (#2328))
   "engines": {
     "node": "14.x",
     "npm": ">=7"
