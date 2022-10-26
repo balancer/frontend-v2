@@ -28,6 +28,14 @@ export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42));
 }
 
+export function isLinear(poolType: PoolType): boolean {
+  return (
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.Linear ||
+    poolType === PoolType.ERC4626Linear
+  );
+}
+
 export function isStable(poolType: PoolType): boolean {
   return poolType === PoolType.Stable;
 }
@@ -241,20 +249,71 @@ export function removeBptFrom(pool: Pool): Pool {
   return pool;
 }
 
+interface TokenTreeOpts {
+  includeLinearUnwrapped?: boolean;
+}
+
 /**
  * Parse token tree and extract all token addresses.
  *
  * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
  * @returns {string[]} Array of token addresses in tree.
  */
-export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
+export function tokenTreeNodes(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): string[] {
   const addresses: string[] = [];
 
   for (const token of tokenTree) {
     addresses.push(token.address);
     if (token.token.pool?.tokens) {
-      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens);
-      addresses.push(...nestedTokens);
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
+        addresses.push(
+          token.token.pool.tokens[token.token.pool.mainIndex].address
+        );
+      } else {
+        const nestedTokens = tokenTreeNodes(token.token.pool?.tokens, options);
+        addresses.push(...nestedTokens);
+      }
+    }
+  }
+
+  return uniq(addresses);
+}
+
+/**
+ * Parse token tree and extract all leaf token addresses.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
+ * @returns {string[]} Array of token addresses in tree.
+ */
+export function tokenTreeLeafs(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): string[] {
+  const addresses: string[] = [];
+
+  for (const token of tokenTree) {
+    if (token.token.pool?.tokens) {
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
+        addresses.push(
+          token.token.pool.tokens[token.token.pool.mainIndex].address
+        );
+      } else {
+        const nestedTokens = tokenTreeLeafs(token.token.pool.tokens, options);
+        addresses.push(...removeAddress(token.address, nestedTokens));
+      }
+    } else if (!token.token.pool?.poolType) {
+      addresses.push(token.address);
     }
   }
 
