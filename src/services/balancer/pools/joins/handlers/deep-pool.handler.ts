@@ -12,13 +12,14 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
 export class DeepPoolHandler implements JoinPoolHandler {
   private lastSwapRoute?: SwapInfo;
 
   constructor(
-    public readonly pool: Pool,
+    public readonly pool: Ref<Pool>,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
   ) {}
@@ -86,7 +87,7 @@ export class DeepPoolHandler implements JoinPoolHandler {
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
       tokenIn: amountIn.address,
-      tokenOut: this.pool.address,
+      tokenOut: this.pool.value.address,
       amount: bnumAmount,
       gasPrice,
       maxPools: 4,
@@ -94,10 +95,12 @@ export class DeepPoolHandler implements JoinPoolHandler {
 
     const bptOut = formatFixed(
       this.lastSwapRoute.returnAmountFromSwaps,
-      this.pool.onchain?.decimals || 18
+      this.pool.value.onchain?.decimals || 18
     );
+    if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity');
+
     const fiatValueIn = bnum(priceIn).times(amountIn.value).toString();
-    const fiatValueOut = fiatValueOf(this.pool, bptOut);
+    const fiatValueOut = fiatValueOf(this.pool.value, bptOut);
 
     const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
 

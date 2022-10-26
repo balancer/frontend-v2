@@ -27,6 +27,7 @@ import {
   PropType,
   provide,
   ref,
+  toRef,
   watch,
 } from 'vue';
 
@@ -41,6 +42,7 @@ export type AmountIn = {
 
 type Props = {
   pool: Pool;
+  isSingleAssetJoin;
 };
 
 /**
@@ -48,10 +50,12 @@ type Props = {
  *
  * Handles pool joining state and transaction execution.
  */
-const provider = ({ pool }: Props) => {
+const provider = (props: Props) => {
   /**
    * STATE
    */
+  const pool = toRef(props, 'pool');
+  const isSingleAssetJoin = toRef(props, 'isSingleAssetJoin');
   const amountsIn = ref<AmountIn[]>([]);
   const bptOut = ref<string>('');
   const priceImpact = ref<number>(0);
@@ -83,9 +87,11 @@ const provider = ({ pool }: Props) => {
   const joinTokens = computed((): string[] => {
     let addresses: string[] = [];
 
-    addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
+    addresses = isDeep(pool.value)
+      ? tokenTreeNodes(pool.value.tokens)
+      : pool.value.tokensList;
 
-    return removeAddress(pool.address, addresses);
+    return removeAddress(pool.value.address, addresses);
   });
 
   // Token meta data for amountsIn tokens.
@@ -130,7 +136,9 @@ const provider = ({ pool }: Props) => {
 
   // Calculates estimated fiatValueOut using pool's totalLiquity.
   // Could be inaccurate if total liquidity has come from subgraph.
-  const fiatValueOut = computed((): string => fiatValueOf(pool, bptOut.value));
+  const fiatValueOut = computed((): string =>
+    fiatValueOf(pool.value, bptOut.value)
+  );
 
   /**
    * METHODS
@@ -221,6 +229,12 @@ const provider = ({ pool }: Props) => {
     debounceQueryJoin.value();
   });
 
+  // If singleAssetJoin is toggled we need to reset any queryErrors. queryJoin
+  // will be re-triggered by the amountsIn state change.
+  watch(isSingleAssetJoin, () => {
+    queryError.value = '';
+  });
+
   /**
    * LIFECYCLE
    */
@@ -238,6 +252,7 @@ const provider = ({ pool }: Props) => {
 
   return {
     pool,
+    isSingleAssetJoin,
     amountsIn,
     joinTokens,
     bptOut,
@@ -280,6 +295,10 @@ export const JoinPoolProvider = defineComponent({
     pool: {
       type: Object as PropType<Pool>,
       required: true,
+    },
+    isSingleAssetJoin: {
+      type: Boolean,
+      default: false,
     },
   },
 

@@ -6,6 +6,7 @@ import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { Ref } from 'vue';
 import { DeepPoolHandler } from './handlers/deep-pool.handler';
 import {
   JoinParams,
@@ -27,11 +28,11 @@ export class JoinPoolService {
    *
    * @param {Pool} pool - The pool you want to join.
    */
-  constructor(pool: Pool, sdk = balancer, gasPriceServ = gasPriceService) {
-    if (isDeep(pool)) {
+  constructor(pool: Ref<Pool>, sdk = balancer, gasPriceServ = gasPriceService) {
+    if (isDeep(pool.value)) {
       this.joinHandler = new DeepPoolHandler(pool, sdk, gasPriceServ);
     } else {
-      throw new Error(`Pool type not handled: ${pool.poolType}`);
+      throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
   }
 

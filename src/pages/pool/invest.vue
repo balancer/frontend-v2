@@ -81,15 +81,11 @@ onBeforeMount(async () => {
         </div>
       </template>
       <template v-if="isDeepPool">
-        <JoinPoolProvider :pool="pool">
-          <!-- <InvestFormDeepPoolMultiToken
-            v-if="activeTab === Tabs.POOL_TOKENS"
-            :pool="pool"
-          /> -->
-          <InvestFormV2
-            :pool="pool"
-            :singleAsset="activeTab === Tabs.SINGLE_TOKEN"
-          />
+        <JoinPoolProvider
+          :pool="pool"
+          :isSingleAssetJoin="activeTab === Tabs.SINGLE_TOKEN"
+        >
+          <InvestFormV2 :pool="pool" />
         </JoinPoolProvider>
       </template>
       <template v-else>

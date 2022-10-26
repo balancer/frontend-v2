@@ -23,15 +23,12 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
  */
 type Props = {
   pool: Pool;
-  singleAsset: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {
-  singleAsset: false,
-});
+const props = defineProps<Props>();
 
 /**
  * STATE
@@ -49,6 +46,7 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 const {
   isLoadingQuery,
+  isSingleAssetJoin,
   joinTokens,
   amountsIn,
   highPriceImpact,
@@ -76,7 +74,7 @@ const poolHasLowLiquidity = computed((): boolean =>
  */
 onBeforeMount(() => {
   setAmountsIn([]);
-  if (props.singleAsset) {
+  if (isSingleAssetJoin.value) {
     addTokensIn([joinTokens.value[0]]);
   } else {
     addTokensIn(joinTokens.value);
@@ -86,17 +84,14 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-watch(
-  () => props.singleAsset,
-  isSingleAsset => {
-    setAmountsIn([]);
-    if (isSingleAsset) {
-      addTokensIn([wrappedNativeAsset.value.address]);
-    } else {
-      addTokensIn(joinTokens.value);
-    }
+watch(isSingleAssetJoin, isSingleAsset => {
+  setAmountsIn([]);
+  if (isSingleAsset) {
+    addTokensIn([wrappedNativeAsset.value.address]);
+  } else {
+    addTokensIn(joinTokens.value);
   }
-);
+});
 </script>
 
 <template>
@@ -126,7 +121,7 @@ watch(
       v-model:amount="amountIn.value"
       :name="amountIn.address"
       class="mb-4"
-      :fixedToken="!singleAsset"
+      :fixedToken="!isSingleAssetJoin"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
     />
 

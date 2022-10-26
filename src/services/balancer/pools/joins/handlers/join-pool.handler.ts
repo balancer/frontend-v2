@@ -6,6 +6,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
+import { Ref } from 'vue';
 
 export type JoinParams = {
   amountsIn: AmountIn[];
@@ -22,7 +23,7 @@ export type QueryOutput = {
 
 export abstract class JoinPoolHandler {
   constructor(
-    public readonly pool: Pool,
+    public readonly pool: Ref<Pool>,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
   ) {}
