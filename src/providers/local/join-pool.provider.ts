@@ -1,4 +1,3 @@
-// import JoinPool from '@/components/forms/pool_actions/JoinPool';
 import useNumbers from '@/composables/useNumbers';
 import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
