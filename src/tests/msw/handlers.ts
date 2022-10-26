@@ -40,6 +40,16 @@ export const handlers = [
   rest.post('https://mainnet.infura.io/v3/*', chainIdHandler),
 
   rest.get(
+    'https://api.coingecko.com/api/v3/simple/token_price/ethereum',
+    (req, res, ctx) => {
+      return res(ctx.json({}));
+    }
+  ),
+  rest.get('https://api.coingecko.com/api/v3/simple/price', (req, res, ctx) => {
+    return res(ctx.json({}));
+  }),
+
+  rest.get(
     'https://api.coingecko.com/api/v3/coins/ethereum/contract/*/market_chart/range',
     (req, res, ctx) => {
       return res(

@@ -15,4 +15,8 @@ module.exports = {
   testEnvironment: 'jsdom',
   testMatch: null,
   testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$',
+  //TODO: replace with a smaller version
+  moduleNameMapper: {
+    '/public/data/tokenlists.json': '<rootDir>/public/data/tokenlists.json',
+  },
 };
