@@ -13,15 +13,12 @@ import { useI18n } from 'vue-i18n';
  */
 type Props = {
   pool: Pool;
-  loading: boolean;
 };
 
 /**
  * PROPS
  */
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-});
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
