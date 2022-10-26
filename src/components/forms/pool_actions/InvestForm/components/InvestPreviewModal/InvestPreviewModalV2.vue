@@ -48,6 +48,7 @@ const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { blockNumber } = useWeb3();
 const {
+  isSingleAssetJoin,
   amountsIn,
   bptOut,
   fiatValueIn,
@@ -74,7 +75,6 @@ const showTokensOut = computed<boolean>(
   () => !!Object.keys(tokenOutMap.value).length
 );
 
-const isSingleAssetInvestment = computed<boolean>(() => true);
 const amountInMap = computed((): AmountMap => {
   const amountMap = {};
   amountsIn.value.forEach(amountIn => {
@@ -84,7 +84,7 @@ const amountInMap = computed((): AmountMap => {
 });
 
 const amountOutMap = computed((): AmountMap => {
-  if (!isSingleAssetInvestment.value) return {};
+  if (!isSingleAssetJoin.value) return {};
   const amountMap = {
     [props.pool.address]: bptOut.value,
   };
@@ -100,7 +100,7 @@ const tokenInMap = computed((): TokenInfoMap => {
 });
 
 const tokenOutMap = computed((): TokenInfoMap => {
-  if (!isSingleAssetInvestment.value) return {};
+  if (!isSingleAssetJoin.value) return {};
   const tokenMap = {
     [props.pool.address]: getToken(props.pool.address),
   };
@@ -182,7 +182,7 @@ watch(blockNumber, () => {
       :tokenMap="tokenInMap"
       :fiatAmountMap="fiatAmountInMap"
       :fiatTotal="fiatValueIn"
-      :hideAmountShare="isSingleAssetInvestment"
+      :hideAmountShare="isSingleAssetJoin"
     />
     <TokenAmounts
       v-if="showTokensOut"
