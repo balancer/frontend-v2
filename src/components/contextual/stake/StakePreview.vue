@@ -49,14 +49,16 @@ const {
   stakeBPT,
   unstakeBPT,
 } = useStaking();
+
+const approvalAmounts = ref([
+  (props.action === 'restake'
+    ? stakedSharesForProvidedPool.value
+    : balanceFor(props.pool.address)
+  ).toString(),
+]);
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([
-    (props.action === 'restake'
-      ? stakedSharesForProvidedPool.value
-      : balanceFor(props.pool.address)
-    ).toString(),
-  ])
+  approvalAmounts
 );
 
 const stakeAction = {
@@ -86,7 +88,7 @@ const isActionConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
 const shareBalanceToDisplay = ref(
-  props.action === 'unstake'
+  props.action === 'unstake' || props.action === 'restake'
     ? stakedSharesForProvidedPool.value
     : balanceFor(props.pool.address)
 );
