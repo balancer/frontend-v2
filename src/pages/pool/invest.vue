@@ -20,15 +20,15 @@ const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
 
-enum Tabs {
-  POOL_TOKENS = 'poolTokens',
-  SINGLE_TOKEN = 'singleToken',
+enum Tab {
+  PoolTokens,
+  SingleToken,
 }
 
 const tabs = [
-  { value: Tabs.POOL_TOKENS, label: 'Pool Tokens' },
+  { value: Tab.PoolTokens, label: 'Pool Tokens' },
   {
-    value: Tabs.SINGLE_TOKEN,
+    value: Tab.SingleToken,
     label: 'Single Token',
   },
 ];
@@ -78,7 +78,7 @@ onBeforeMount(async () => {
       <template v-if="isDeepPool">
         <JoinPoolProvider
           :pool="pool"
-          :isSingleAssetJoin="activeTab === Tabs.SINGLE_TOKEN"
+          :isSingleAssetJoin="activeTab === Tab.SingleToken"
         >
           <InvestFormV2 :pool="pool" />
         </JoinPoolProvider>
