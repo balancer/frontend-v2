@@ -257,6 +257,7 @@ interface TokenTreeOpts {
  * Parse token tree and extract all token addresses.
  *
  * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
  * @returns {string[]} Array of token addresses in tree.
  */
 export function tokenTreeNodes(
@@ -280,6 +281,7 @@ export function tokenTreeNodes(
  * Parse token tree and extract all leaf token addresses.
  *
  * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
  * @returns {string[]} Array of token addresses in tree.
  */
 export function tokenTreeLeafs(
