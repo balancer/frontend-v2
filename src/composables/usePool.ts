@@ -5,7 +5,12 @@ import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
 import { POOLS } from '@/constants/pools';
-import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
+import {
+  bnum,
+  includesAddress,
+  isSameAddress,
+  removeAddress,
+} from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
@@ -14,6 +19,7 @@ import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, urlFor } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { uniq } from 'lodash';
 
 /**
  * METHODS
@@ -215,13 +221,44 @@ export function isVeBalPool(poolId: string): boolean {
 }
 
 /**
- * @summary Remove pre-minted pool token address from tokensList
+ * Removes pre-minted pool token from tokensList.
+ *
+ * @param {Pool} pool - Pool to get tokensList from.
+ * @returns tokensList excluding pre-minted BPT address.
  */
-export function removePreMintedBPT(pool: Pool): Pool {
-  pool.tokensList = pool.tokensList.filter(
-    address => !isSameAddress(address, pool.address)
-  );
+export function tokensExcludingBpt(pool: Pool): string[] {
+  return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
+ * Removes pre-minted pool token address from tokensList and returns modified pool.
+ *
+ * @param {Pool} pool - Pool to remove BPT from.
+ * @returns {Pool} modified pool.
+ */
+export function removeBptFrom(pool: Pool): Pool {
+  pool.tokensList = tokensExcludingBpt(pool);
   return pool;
+}
+
+/**
+ * Parse token tree and extract all token addresses.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @returns {string[]} Array of token addresses in tree.
+ */
+export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
+  const addresses: string[] = [];
+
+  for (const token of tokenTree) {
+    addresses.push(token.address);
+    if (token.token.pool?.tokens) {
+      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens);
+      addresses.push(...nestedTokens);
+    }
+  }
+
+  return uniq(addresses);
 }
 
 /**
