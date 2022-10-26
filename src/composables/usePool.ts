@@ -28,6 +28,14 @@ export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42));
 }
 
+export function isLinear(poolType: PoolType): boolean {
+  return (
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.Linear ||
+    poolType === PoolType.ERC4626Linear
+  );
+}
+
 export function isStable(poolType: PoolType): boolean {
   return poolType === PoolType.Stable;
 }
@@ -272,8 +280,14 @@ export function tokenTreeLeafs(tokenTree: PoolToken[]): string[] {
 
   for (const token of tokenTree) {
     if (token.token.pool?.tokens) {
-      const nestedTokens = tokenTreeLeafs(token.token.pool?.tokens);
-      addresses.push(...removeAddress(token.address, nestedTokens));
+      if (isLinear(token.token.pool.poolType)) {
+        addresses.push(
+          token.token.pool.tokens[token.token.pool.mainIndex].address
+        );
+      } else {
+        const nestedTokens = tokenTreeLeafs(token.token.pool.tokens);
+        addresses.push(...removeAddress(token.address, nestedTokens));
+      }
     } else if (!token.token.pool?.poolType) {
       addresses.push(token.address);
     }
