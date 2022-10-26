@@ -14,7 +14,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useVeBal from '@/composables/useVeBAL';
 
-import { default as useJoinPoolv2 } from '@/composables/pools/useJoinPool';
+import useJoinPool from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 
@@ -56,7 +56,7 @@ const {
   queryError,
   setAmountsIn,
   addTokensIn,
-} = useJoinPoolv2();
+} = useJoinPool();
 
 /**
  * COMPUTED
