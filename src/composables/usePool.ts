@@ -249,19 +249,26 @@ export function removeBptFrom(pool: Pool): Pool {
   return pool;
 }
 
+interface TokenTreeOpts {
+  includeLinearUnwrapped?: boolean;
+}
+
 /**
  * Parse token tree and extract all token addresses.
  *
  * @param {PoolToken[]} tokenTree - A pool's token tree.
  * @returns {string[]} Array of token addresses in tree.
  */
-export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
+export function tokenTreeNodes(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): string[] {
   const addresses: string[] = [];
 
   for (const token of tokenTree) {
     addresses.push(token.address);
     if (token.token.pool?.tokens) {
-      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens);
+      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens, options);
       addresses.push(...nestedTokens);
     }
   }
@@ -275,17 +282,23 @@ export function tokenTreeNodes(tokenTree: PoolToken[]): string[] {
  * @param {PoolToken[]} tokenTree - A pool's token tree.
  * @returns {string[]} Array of token addresses in tree.
  */
-export function tokenTreeLeafs(tokenTree: PoolToken[]): string[] {
+export function tokenTreeLeafs(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): string[] {
   const addresses: string[] = [];
 
   for (const token of tokenTree) {
     if (token.token.pool?.tokens) {
-      if (isLinear(token.token.pool.poolType)) {
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
         addresses.push(
           token.token.pool.tokens[token.token.pool.mainIndex].address
         );
       } else {
-        const nestedTokens = tokenTreeLeafs(token.token.pool.tokens);
+        const nestedTokens = tokenTreeLeafs(token.token.pool.tokens, options);
         addresses.push(...removeAddress(token.address, nestedTokens));
       }
     } else if (!token.token.pool?.poolType) {
