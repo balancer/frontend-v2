@@ -140,7 +140,6 @@ function toggleSelectTokenList(): void {
 watch(
   toRef(state, 'query'),
   async newQuery => {
-    console.log('NEW QUERY');
     state.loading = true;
     state.results = await searchTokens(newQuery, {
       excluded: excludedTokens.value,
