@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
-
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
-// Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
-// Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
-// import InvestFormDeepPoolMultiToken from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPoolMultiToken.vue';
-
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
 
 /**
