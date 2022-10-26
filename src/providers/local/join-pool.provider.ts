@@ -42,7 +42,7 @@ export type AmountIn = {
 
 type Props = {
   pool: Pool;
-  isSingleAssetJoin;
+  isSingleAssetJoin: boolean;
 };
 
 /**
@@ -230,9 +230,11 @@ const provider = (props: Props) => {
   });
 
   // If singleAssetJoin is toggled we need to reset any queryErrors. queryJoin
-  // will be re-triggered by the amountsIn state change.
-  watch(isSingleAssetJoin, () => {
+  // will be re-triggered by the amountsIn state change. We also need to call
+  // setJoinHandler on the joinPoolService to update the join handler.
+  watch(isSingleAssetJoin, newVal => {
     queryError.value = '';
+    joinPoolService.setJoinHandler(newVal);
   });
 
   /**

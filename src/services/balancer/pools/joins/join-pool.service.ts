@@ -21,27 +21,41 @@ import { GeneralizedJoinHandler } from './handlers/generalized-join.handler';
  * JoinPoolHandler interface.
  */
 export class JoinPoolService {
-  // The handle class to call join pool interface functions.
+  // The join pool handler class to call join pool interface functions.
   public joinHandler: JoinPoolHandler;
 
   /**
    * Initialize the JoinPoolService
    *
    * @param {Pool} pool - The pool you want to join.
-   * @param {boolean} swapJoin - Flag to ensure SwapJoinHandler is used for joining.
    * @param {BalancerSDK} sdk - Balancers SDK.
    * @param {GasPriceService} gasPriceServ - Gas price service for fetching gas price.
    */
   constructor(
-    pool: Ref<Pool>,
-    swapJoin = false,
-    sdk = balancer,
-    gasPriceServ = gasPriceService
+    public readonly pool: Ref<Pool>,
+    public readonly sdk = balancer,
+    public readonly gasPriceServ = gasPriceService
   ) {
+    this.joinHandler = this.setJoinHandler();
+  }
+
+  /**
+   * Sets JoinHandler class on instance.
+   *
+   * @param {boolean} [swapJoin=false] - Flag to ensure SwapJoinHandler is used for joining.
+   * @returns {JoinPoolHandler} The JoinPoolHandler classe to be used.
+   */
+  setJoinHandler(swapJoin = false): JoinPoolHandler {
+    const { pool, sdk, gasPriceServ } = this;
+
     if (swapJoin) {
-      this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ);
+      return (this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ));
     } else if (isDeep(pool.value)) {
-      this.joinHandler = new GeneralizedJoinHandler(pool, sdk, gasPriceServ);
+      return (this.joinHandler = new GeneralizedJoinHandler(
+        pool,
+        sdk,
+        gasPriceServ
+      ));
     } else {
       throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
