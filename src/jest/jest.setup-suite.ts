@@ -2,15 +2,13 @@
 // This file runs immediately after the test framework has been installed in the environment
 // but before the test code itself.
 
-import nock from 'nock';
+import { server } from '@/tests/msw/server';
 
-/**
- * HTTP Requests
- *
- * We should not allow external http requests from tests
- * All http requests should be mocked with expected responses
- * See nock docs for details: https://github.com/nock/nock
- */
-nock.disableNetConnect();
-// Enable for mocked websockets
-nock.enableNetConnect('balancer.fi');
+// MSW SETUP
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+// Clean up after the tests are finished.
+afterAll(() => server.close());
