@@ -46,7 +46,7 @@ type Props = {
 /**
  * JoinPoolProvider
  *
- * Handles pool joining state and transaction building.
+ * Handles pool joining state and transaction execution.
  */
 const provider = ({ pool }: Props) => {
   /**
@@ -120,7 +120,7 @@ const provider = ({ pool }: Props) => {
     amountsIn.value.some(amountIn => bnum(amountIn.value).gt(0))
   );
 
-  // Calculates fiat value in with Coingecko prices.
+  // Calculates total fiat value in for all amountsIn with Coingecko prices.
   const fiatValueIn = computed((): string => {
     const fiatValuesIn = amountsIn.value.map(amountIn =>
       toFiat(amountIn.value, amountIn.address)
