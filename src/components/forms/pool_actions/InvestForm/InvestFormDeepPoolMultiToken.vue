@@ -133,7 +133,9 @@ const investmentTokens = computed((): string[] => {
   return props.pool.tokensList;
 });
 
-const { poolTokensWithBalance } = useMyWallet({ pool: pool.value });
+const { poolTokensWithBalance } = useMyWallet({
+  pool: pool.value,
+});
 
 /**
  * METHODS
@@ -239,7 +241,6 @@ async function runGeneralisedJoin(amounts: string[]) {
     signerAddress,
     wrapLeafTokens,
     slippage,
-    signer,
     authorisation: relayerAuthorization.value,
   });
 
@@ -250,7 +251,6 @@ async function runGeneralisedJoin(amounts: string[]) {
     signerAddress,
     wrapLeafTokens,
     slippage,
-    signer,
     relayerAuthorization.value
   );
   console.log({ generalisedJoinQuery });

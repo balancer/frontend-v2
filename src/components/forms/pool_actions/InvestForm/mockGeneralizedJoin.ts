@@ -1,5 +1,5 @@
 import { balancer } from '@/lib/balancer.sdk';
-import { JsonRpcSigner } from '@ethersproject/providers';
+// import { JsonRpcSigner } from '@ethersproject/providers';
 
 export default async function mockGeneralizedJoin(
   poolId: string,
@@ -8,7 +8,6 @@ export default async function mockGeneralizedJoin(
   signerAddress: string,
   wrapLeafTokens: boolean,
   slippage: string,
-  signer: JsonRpcSigner,
   authorisation: string
 ) {
   // console.log('MOCK', {
@@ -29,7 +28,6 @@ export default async function mockGeneralizedJoin(
     signerAddress,
     wrapLeafTokens,
     slippage,
-    signer,
     authorisation
   );
   // console.log({ generalisedJoinQuery });
