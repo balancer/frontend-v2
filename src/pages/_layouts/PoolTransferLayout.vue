@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
-import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 // Components
-import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
+import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
-import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
-import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
 // Composables
@@ -15,6 +12,12 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { useReturnRoute } from '@/composables/useReturnRoute';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { usePool } from '@/composables/usePool';
+import useNativeBalance from '@/composables/useNativeBalance';
+import useTokens from '@/composables/useTokens';
+import {
+  // indexOfAddress,
+  isSameAddress,
+} from '@/lib/utils';
 
 /**
  * STATE
@@ -25,13 +28,17 @@ const id = (route.params.id as string).toLowerCase();
 /**
  * COMPOSABLES
  */
-const { tokenAddresses } = useInvestState();
+const {
+  tokenAddresses,
+  // amounts
+} = useInvestState();
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
-const { isDeepPool } = usePool(pool);
+const { isDeepPool, isWethPool } = usePool(pool);
+const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 const isInvestPage = computed(() => route.name === 'invest');
 const poolSupportsSingleAssetSwaps = computed(() => {
@@ -40,9 +47,25 @@ const poolSupportsSingleAssetSwaps = computed(() => {
 const excludedTokens = computed<string[]>(() => {
   return pool.value?.address ? [pool.value.address] : [];
 });
+const {
+  nativeAsset,
+  //  getMaxBalanceFor
+} = useTokens();
 
-function setTokenInAddress(tokenAddress) {
-  tokenAddresses.value[0] = tokenAddress;
+function handleMyWalletTokenClick(tokenAddress: string) {
+  if (isInvestPage.value && poolSupportsSingleAssetSwaps.value) {
+    // TODO: Only change the tokenAddress if single asset tab is selected
+    tokenAddresses.value[0] = tokenAddress;
+  } else if (isWethPool.value) {
+    useNativeAsset.value = isSameAddress(tokenAddress, nativeAsset.address);
+  }
+  //  Max the input amount (ENABLE LATER)
+
+  //  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
+
+  //  if (indexOfAsset >= 0) {
+  //    amounts.value[indexOfAsset] = getMaxBalanceFor(tokenAddress);
+  //   }
 }
 </script>
 
@@ -60,27 +83,25 @@ function setTokenInAddress(tokenAddress) {
           <BalIcon name="x" size="lg" />
         </BalBtn>
       </div>
-
-      <Col3Layout offsetGutters mobileHideGutters>
-        <template v-if="!upToLargeBreakpoint" #gutterLeft>
+      <div class="pool-transfer-layout-grid">
+        <div v-if="!upToLargeBreakpoint" class="col-span-5">
           <BalLoadingBlock
             v-if="loadingPool || !transfersAllowed || !pool"
             class="h-64"
           />
-          <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+          <div v-else>
             <MyWallet
+              includeNativeAsset
               :excludedTokens="excludedTokens"
-              @click:asset="setTokenInAddress"
+              :pool="pool"
+              @click:asset="handleMyWalletTokenClick"
             />
           </div>
-          <MyWalletTokensCard
-            v-else
-            v-model:useNativeAsset="useNativeAsset"
-            :pool="pool"
-          />
-        </template>
+        </div>
 
-        <router-view :key="$route.path" />
+        <div class="col-span-7">
+          <router-view :key="$route.path" />
+        </div>
 
         <BalAccordion
           v-if="upToLargeBreakpoint"
@@ -89,13 +110,13 @@ function setTokenInAddress(tokenAddress) {
             {
               title:
                 isInvestPage && poolSupportsSingleAssetSwaps
-                  ? $t('myWallet2')
+                  ? `${$t('myWallet2')} ${
+                      hasNativeBalance
+                        ? `${nativeBalance} ${nativeCurrency}`
+                        : ''
+                    }`
                   : $t('poolTransfer.myWalletTokensCard.title'),
               id: 'myWalletTokens',
-            },
-            {
-              title: $t('poolTransfer.myPoolBalancesCard.title'),
-              id: 'myPoolBalances',
             },
           ]"
         >
@@ -105,44 +126,17 @@ function setTokenInAddress(tokenAddress) {
               v-if="loadingPool || !pool || !transfersAllowed"
               class="h-64"
             />
-            <div v-else-if="isInvestPage && poolSupportsSingleAssetSwaps">
+            <div v-else>
               <MyWallet
+                includeNativeAsset
                 :excludedTokens="excludedTokens"
-                @click:asset="setTokenInAddress"
+                :pool="pool"
+                @click:asset="handleMyWalletTokenClick"
               />
             </div>
-            <MyWalletTokensCard
-              v-else
-              v-model:useNativeAsset="useNativeAsset"
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            />
-          </template>
-          <template #myPoolBalances>
-            <BalLoadingBlock
-              v-if="loadingPool || !pool || !transfersAllowed"
-              class="h-64"
-            />
-            <MyPoolBalancesCard
-              v-else
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            />
           </template>
         </BalAccordion>
-
-        <template v-if="!upToLargeBreakpoint" #gutterRight>
-          <BalLoadingBlock
-            v-if="loadingPool || !pool || !transfersAllowed"
-            class="h-64"
-          />
-          <MyPoolBalancesCard v-else :pool="pool" />
-        </template>
-      </Col3Layout>
+      </div>
     </div>
   </StakingProvider>
 </template>
@@ -152,5 +146,10 @@ function setTokenInAddress(tokenAddress) {
   @apply h-16;
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
+}
+
+.pool-transfer-layout-grid {
+  @apply grid grid-cols-1 lg:grid-cols-12 gap-y-8;
+  @apply max-w-3xl mx-auto sm:px-4 lg:px-0 gap-x-0 lg:gap-x-8;
 }
 </style>

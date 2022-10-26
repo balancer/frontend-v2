@@ -108,7 +108,7 @@ watch(
       :description="
         $t('investment.warning.managedPoolTradingHalted.description')
       "
-      class="mb-4"
+      class="mb-5"
     />
 
     <BalAlert
@@ -116,9 +116,8 @@ watch(
       type="warning"
       :title="$t('investment.warning.lowLiquidity.title')"
       :description="$t('investment.warning.lowLiquidity.description')"
-      class="mb-4"
+      class="mb-5"
     />
-
     <TokenInput
       v-for="amountIn in amountsIn"
       :key="amountIn.address"
@@ -135,7 +134,7 @@ watch(
 
     <div
       v-if="highPriceImpact"
-      class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
+      class="p-2 pb-2 mt-5 rounded-lg border dark:border-gray-700"
     >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
@@ -146,7 +145,7 @@ watch(
       />
     </div>
 
-    <WrapStEthLink :pool="pool" class="mt-4" />
+    <WrapStEthLink :pool="pool" class="mt-5" />
 
     <BalAlert
       v-if="queryError"
@@ -199,3 +198,10 @@ watch(
     </StakingProvider>
   </div>
 </template>
+
+<style scoped>
+/* This is needed because the trade settings popover overflows */
+.label {
+  @apply font-bold text-sm mb-2 inline-block;
+}
+</style>

@@ -95,6 +95,10 @@ export interface TokensProviderResponse {
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
   injectPrices: (pricesToInject: TokenPrices) => void;
+  getMaxBalanceFor: (
+    tokenAddress,
+    disableNativeAssetBuffer?: boolean
+  ) => string;
 }
 
 /**
@@ -451,6 +455,30 @@ export default {
     }
 
     /**
+     * Get max balance of token
+     * @param tokenAddress
+     * @param disableNativeAssetBuffer Optionally disable native asset buffer
+     */
+    function getMaxBalanceFor(
+      tokenAddress,
+      disableNativeAssetBuffer = false
+    ): string {
+      let maxAmount;
+      const tokenBalance = balanceFor(tokenAddress) || '0';
+      const tokenBalanceBN = bnum(tokenBalance);
+
+      if (tokenAddress === nativeAsset.address && !disableNativeAssetBuffer) {
+        // Subtract buffer for gas
+        maxAmount = tokenBalanceBN.gt(nativeAsset.minTransactionBuffer)
+          ? tokenBalanceBN.minus(nativeAsset.minTransactionBuffer).toString()
+          : '0';
+      } else {
+        maxAmount = tokenBalance;
+      }
+      return maxAmount;
+    }
+
+    /**
      * LIFECYCLE
      */
     onBeforeMount(async () => {
@@ -498,6 +526,7 @@ export default {
       getTokens,
       getToken,
       injectPrices,
+      getMaxBalanceFor,
     });
 
     return () => slots.default();
