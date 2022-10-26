@@ -1,5 +1,5 @@
-import nock from 'nock';
-
+import { server } from '@/tests/msw/server';
+import { rest } from 'msw';
 import BlocknativeProvider from './blocknative.provider';
 
 const defaultResponse = {
@@ -27,13 +27,14 @@ describe('Blocknative Provider', () => {
   const blocknativeProvider = new BlocknativeProvider();
 
   beforeEach(() => {
-    nock('https://api.blocknative.com')
-      .options('/gasprices/blockprices')
-      .reply(200);
-
-    nock('https://api.blocknative.com')
-      .get('/gasprices/blockprices')
-      .reply(200, defaultResponse);
+    server.use(
+      rest.get(
+        'https://api.blocknative.com/gasprices/blockprices',
+        (req, res, ctx) => {
+          return res(ctx.json(defaultResponse));
+        }
+      )
+    );
   });
 
   it('Should not return gas values with rounding errors', async () => {
