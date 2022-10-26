@@ -50,15 +50,14 @@ const {
   unstakeBPT,
 } = useStaking();
 
-const approvalAmounts = ref([
-  (props.action === 'restake'
-    ? stakedSharesForProvidedPool.value
-    : balanceFor(props.pool.address)
-  ).toString(),
-]);
+const numSharesToModify = computed(() =>
+  props.action === 'stake'
+    ? balanceFor(getAddress(props.pool.address))
+    : stakedSharesForProvidedPool.value
+);
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  approvalAmounts
+  ref([numSharesToModify.value])
 );
 
 const stakeAction = {
@@ -109,12 +108,6 @@ watch(
 
 /* COMPUTED */
 const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
-
-const numSharesToModify = ref(
-  props.action === 'stake'
-    ? balanceFor(getAddress(props.pool.address))
-    : stakedSharesForProvidedPool.value
-);
 
 const fiatValueOfModifiedShares = ref(
   bnum(props.pool.totalLiquidity)
