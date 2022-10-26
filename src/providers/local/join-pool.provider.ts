@@ -50,20 +50,6 @@ type Props = {
  */
 const provider = ({ pool }: Props) => {
   /**
-   * COMPOSABLES
-   */
-  const { getTokens, prices, injectTokens } = useTokens();
-  const { toFiat } = useNumbers();
-  const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
-  const { txState, txInProgress } = useTxState();
-
-  /**
-   * SERVICES
-   */
-  const joinPoolService = new JoinPoolService(pool);
-
-  /**
    * STATE
    */
   const amountsIn = ref<AmountIn[]>([]);
@@ -71,8 +57,24 @@ const provider = ({ pool }: Props) => {
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const isLoadingQuery = ref<boolean>(false);
+  const queryError = ref<string>('');
+  const txError = ref<string>('');
 
   const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
+
+  /**
+   * SERVICES
+   */
+  const joinPoolService = new JoinPoolService(pool);
+
+  /**
+   * COMPOSABLES
+   */
+  const { getTokens, prices, injectTokens } = useTokens();
+  const { toFiat } = useNumbers();
+  const { slippageBsp } = useUserSettings();
+  const { getSigner } = useWeb3();
+  const { txState, txInProgress } = useTxState();
 
   /**
    * COMPUTED
@@ -168,27 +170,36 @@ const provider = ({ pool }: Props) => {
    */
   async function queryJoin() {
     trackLoading(async () => {
-      const output = await joinPoolService.queryJoin(
-        amountsIn.value,
-        tokensIn.value,
-        prices.value
-      );
-      bptOut.value = output.bptOut;
-      priceImpact.value = output.priceImpact;
+      try {
+        const output = await joinPoolService.queryJoin(
+          amountsIn.value,
+          tokensIn.value,
+          prices.value
+        );
+        bptOut.value = output.bptOut;
+        priceImpact.value = output.priceImpact;
+      } catch (error) {
+        queryError.value = (error as Error).message;
+      }
     }, isLoadingQuery);
   }
 
   /**
-   * Constructs transaction for joining pool.
+   * Executes join transaction.
    */
   async function join(): Promise<TransactionResponse> {
-    return joinPoolService.join({
-      amountsIn: amountsIn.value,
-      tokensIn: tokensIn.value,
-      prices: prices.value,
-      signer: getSigner(),
-      slippageBsp: slippageBsp.value,
-    });
+    try {
+      return joinPoolService.join({
+        amountsIn: amountsIn.value,
+        tokensIn: tokensIn.value,
+        prices: prices.value,
+        signer: getSigner(),
+        slippageBsp: slippageBsp.value,
+      });
+    } catch (error) {
+      txError.value = (error as Error).message;
+      throw error;
+    }
   }
 
   /**
@@ -243,6 +254,7 @@ const provider = ({ pool }: Props) => {
     txState,
     txInProgress,
     debounceQueryJoin,
+    queryError,
     setAmountsIn,
     addTokensIn,
     resetAmounts,

@@ -49,14 +49,15 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
 const {
   isLoadingQuery,
-  setAmountsIn,
   joinTokens,
-  addTokensIn,
   amountsIn,
   highPriceImpact,
   highPriceImpactAccepted,
   hasValidInputs,
   hasAmountsIn,
+  queryError,
+  setAmountsIn,
+  addTokensIn,
 } = useJoinPoolv2();
 
 /**
@@ -147,6 +148,15 @@ watch(
 
     <WrapStEthLink :pool="pool" class="mt-4" />
 
+    <BalAlert
+      v-if="queryError"
+      type="error"
+      :title="$t('thereWasAnError')"
+      :description="queryError"
+      class="mt-4"
+      block
+    />
+
     <div class="mt-4">
       <BalBtn
         v-if="!isWalletReady"
@@ -163,7 +173,8 @@ watch(
           !hasAmountsIn ||
           !hasValidInputs ||
           isMismatchedNetwork ||
-          isLoadingQuery
+          isLoadingQuery ||
+          !!queryError
         "
         block
         @click="showInvestPreview = true"

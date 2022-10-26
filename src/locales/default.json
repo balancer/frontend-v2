@@ -1120,6 +1120,7 @@
       "boosted": "Boosted rewards"
     }
   },
+  "thereWasAnError": "There was an error",
   "threeMonths": "3M",
   "time": "Time",
   "timeAgo": "{0} ago",
