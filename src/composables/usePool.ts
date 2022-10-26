@@ -269,8 +269,17 @@ export function tokenTreeNodes(
   for (const token of tokenTree) {
     addresses.push(token.address);
     if (token.token.pool?.tokens) {
-      const nestedTokens = tokenTreeNodes(token.token.pool?.tokens, options);
-      addresses.push(...nestedTokens);
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
+        addresses.push(
+          token.token.pool.tokens[token.token.pool.mainIndex].address
+        );
+      } else {
+        const nestedTokens = tokenTreeNodes(token.token.pool?.tokens, options);
+        addresses.push(...nestedTokens);
+      }
     }
   }
 
