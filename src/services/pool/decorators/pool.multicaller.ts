@@ -9,7 +9,6 @@ import {
   isStableLike,
   isTradingHaltable,
   isWeightedLike,
-  removeBptFrom,
   isDeep,
   isComposableStableLike,
   isComposableStable,
@@ -51,8 +50,6 @@ export class PoolMulticaller {
     const multicaller = new this.MulticallerClass();
 
     this.pools.forEach(pool => {
-      pool = removeBptFrom(pool);
-
       multicaller
         .call({
           key: `${pool.id}.totalSupply`,

@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, usePool } from '@/composables/usePool';
+import { isDeep, tokensExcludingBpt, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
@@ -114,14 +114,14 @@ export default function useWithdrawMath(
     if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
-    return pool.value.tokensList;
+    return tokensExcludingBpt(pool.value);
   });
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
   // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
-    pool.value.tokensList.map(address => getToken(address))
+    tokensExcludingBpt(pool.value).map(address => getToken(address))
   );
 
   const tokenOutDecimals = computed(
@@ -206,6 +206,7 @@ export default function useWithdrawMath(
       'send',
       fixedRatioOverride
     );
+    console.log('proportionalPoolTokenAmounts', receive);
     return receive;
   });
 
@@ -239,6 +240,13 @@ export default function useWithdrawMath(
 
   const fullAmounts = computed(() => {
     if (isProportional.value) return proportionalAmounts.value;
+    console.log(
+      'fullAmounts',
+      new Array(tokenCount.value).fill('0').map((_, i) => {
+        return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
+      })
+    );
+
     return new Array(tokenCount.value).fill('0').map((_, i) => {
       return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
     });
@@ -389,7 +397,7 @@ export default function useWithdrawMath(
 
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((amount, i) =>
-      toFiat(amount, withdrawalTokens.value[i].address)
+      toFiat(amount, withdrawalTokens.value[i]?.address)
     )
   );
 

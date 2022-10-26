@@ -9,6 +9,7 @@ import {
   isDeep,
   isStable,
   isStableLike,
+  tokensExcludingBpt,
 } from '@/composables/usePool';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -209,14 +210,15 @@ export default class CalculatorService {
   }
 
   public get tokenAddresses(): string[] {
+    const tokensList = tokensExcludingBpt(this.pool.value);
     if (this.useNativeAsset.value) {
-      return this.pool.value.tokensList.map(address => {
+      return tokensList.map(address => {
         if (isSameAddress(address, this.config.network.addresses.weth))
           return this.config.network.nativeAsset.address;
         return address;
       });
     }
-    return this.pool.value.tokensList;
+    return tokensList;
   }
 
   public get poolTokens(): OnchainTokenDataMap {

@@ -3,7 +3,7 @@ import { computed, reactive, Ref, toRefs } from 'vue';
 import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
-import { isDeep } from '@/composables/usePool';
+import { isDeep, tokensExcludingBpt } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import i18n from '@/plugins/i18n';
 import { Pool } from '@/services/pool/types';
@@ -116,9 +116,10 @@ export default function useWithdrawalState(pool: Ref<Pool | undefined>) {
    */
   const tokensOut = computed(() => {
     if (!pool.value) return [];
+
     const poolTokens = isDeep(pool.value)
       ? pool.value.mainTokens || []
-      : pool.value.tokensList;
+      : tokensExcludingBpt(pool.value);
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH

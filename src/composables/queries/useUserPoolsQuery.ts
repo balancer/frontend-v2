@@ -76,7 +76,6 @@ export default function useUserPoolsQuery(
     for (let i = 0; i < pools.length; i++) {
       if (isComposableStableLike(pools[i].poolType)) {
         const poolService = new PoolService(pools[i]);
-        poolService.removeBptFromTokens();
         await poolService.setLinearPools();
         pools[i] = poolService.pool;
       }
