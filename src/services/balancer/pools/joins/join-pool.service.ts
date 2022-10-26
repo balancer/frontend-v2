@@ -43,7 +43,7 @@ export class JoinPoolService {
    * Sets JoinHandler class on instance.
    *
    * @param {boolean} [swapJoin=false] - Flag to ensure SwapJoinHandler is used for joining.
-   * @returns {JoinPoolHandler} The JoinPoolHandler classe to be used.
+   * @returns {JoinPoolHandler} The JoinPoolHandler class to be used.
    */
   setJoinHandler(swapJoin = false): JoinPoolHandler {
     const { pool, sdk, gasPriceServ } = this;
