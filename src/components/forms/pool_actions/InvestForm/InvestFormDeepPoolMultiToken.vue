@@ -15,6 +15,7 @@ import {
   indexOfAddress,
   isSameAddress,
   forChange,
+  formatWordListAsSentence,
 } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
@@ -105,6 +106,10 @@ const {
   isDeepPool,
 } = usePool(pool);
 
+const { poolTokensWithBalance, poolTokensWithoutBalance } = useMyWallet({
+  pool: pool.value,
+});
+
 /**
  * COMPUTED
  */
@@ -133,8 +138,13 @@ const investmentTokens = computed((): string[] => {
   return props.pool.tokensList;
 });
 
-const { poolTokensWithBalance } = useMyWallet({
-  pool: pool.value,
+const tokenSymbolsWithoutBalance = computed(() => {
+  return poolTokensWithoutBalance.value.map(
+    address => getToken(address)?.symbol
+  );
+});
+const tokenSymbolsWithoutBalanceMsg = computed(() => {
+  return formatWordListAsSentence(tokenSymbolsWithoutBalance.value, t);
 });
 
 /**
@@ -338,6 +348,14 @@ watch(
       @update:amount="handleAmountChange($event, i)"
       @update:address="handleAddressChange($event)"
     />
+
+    <div
+      v-if="tokenSymbolsWithoutBalance.length"
+      class="mb-4 text-sm italic text-gray-600 dark:text-gray-400"
+    >
+      No wallet balance for some pool tokens:
+      {{ tokenSymbolsWithoutBalanceMsg }}
+    </div>
 
     <InvestFormTotals
       :math="investMath"
