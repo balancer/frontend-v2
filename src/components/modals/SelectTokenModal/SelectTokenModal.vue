@@ -8,7 +8,7 @@ import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import useTokenLists from '@/composables/useTokenLists';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
-import { TokenInfoMap } from '@/types/TokenList';
+import { TokenInfoMap, TokenList } from '@/types/TokenList';
 import Search from './Search.vue';
 
 interface Props {
@@ -73,7 +73,7 @@ const title = computed(() => {
   return t('tokenSearch');
 });
 
-const tokenLists = computed(() => {
+const tokenLists = computed<Record<string, TokenList>>(() => {
   const query = state.query.toLowerCase();
   const tokenListArray = Object.entries(approvedTokenLists.value);
   const results = tokenListArray.filter(([, tokenList]) =>

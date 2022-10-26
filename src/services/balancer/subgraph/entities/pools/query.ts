@@ -24,6 +24,7 @@ const tokenAttrs = {
 const poolAttrs = {
   id: true,
   poolType: true,
+  mainIndex: true,
 };
 
 // Nested token tree attributes, 3 levels deep.
