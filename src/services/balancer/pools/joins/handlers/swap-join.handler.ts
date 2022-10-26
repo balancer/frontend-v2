@@ -15,7 +15,11 @@ import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
-export class DeepPoolHandler implements JoinPoolHandler {
+/**
+ * Handles joins for single asset flows where we need to use a BatchSwap to join
+ * the pool.
+ */
+export class SwapJoinHandler implements JoinPoolHandler {
   private lastSwapRoute?: SwapInfo;
 
   constructor(
@@ -59,19 +63,7 @@ export class DeepPoolHandler implements JoinPoolHandler {
   ): Promise<QueryOutput> {
     if (amountsIn.length === 0) throw new Error('Must provide amountsIn');
 
-    if (amountsIn.length === 1) {
-      return this.querySingleAssetJoin(amountsIn[0], tokensIn, prices);
-    } else {
-      // Multi asset join
-      throw new Error('Multi asset not handled yet');
-    }
-  }
-
-  private async querySingleAssetJoin(
-    amountIn: AmountIn,
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices
-  ): Promise<QueryOutput> {
+    const amountIn = amountsIn[0];
     const tokenIn = tokensIn[amountIn.address];
     const priceIn = prices[amountIn.address]?.usd;
     if (!tokenIn) throw new Error('Must provide token meta for amountIn');
@@ -107,6 +99,9 @@ export class DeepPoolHandler implements JoinPoolHandler {
     return { bptOut, priceImpact };
   }
 
+  /**
+   * PRIVATE
+   */
   private calcPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
     const _fiatValueIn = bnum(fiatValueIn);
     const _fiatValueOut = bnum(fiatValueOut);

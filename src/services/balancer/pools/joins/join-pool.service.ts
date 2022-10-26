@@ -7,16 +7,17 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
-import { DeepPoolHandler } from './handlers/deep-pool.handler';
+import { SwapJoinHandler } from './handlers/swap-join.handler';
 import {
   JoinParams,
   JoinPoolHandler,
   QueryOutput,
 } from './handlers/join-pool.handler';
+import { GeneralizedJoinHandler } from './handlers/generalized-join.handler';
 
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
- * type. It provide highlevel access to the functions defined in the
+ * type or other criteria. It wraps calls to the functions defined in the
  * JoinPoolHandler interface.
  */
 export class JoinPoolService {
@@ -24,22 +25,51 @@ export class JoinPoolService {
   public joinHandler: JoinPoolHandler;
 
   /**
-   * Initialize a JoinPoolService
+   * Initialize the JoinPoolService
    *
    * @param {Pool} pool - The pool you want to join.
+   * @param {boolean} swapJoin - Flag to ensure SwapJoinHandler is used for joining.
+   * @param {BalancerSDK} sdk - Balancers SDK.
+   * @param {GasPriceService} gasPriceServ - Gas price service for fetching gas price.
    */
-  constructor(pool: Ref<Pool>, sdk = balancer, gasPriceServ = gasPriceService) {
-    if (isDeep(pool.value)) {
-      this.joinHandler = new DeepPoolHandler(pool, sdk, gasPriceServ);
+  constructor(
+    pool: Ref<Pool>,
+    swapJoin = false,
+    sdk = balancer,
+    gasPriceServ = gasPriceService
+  ) {
+    if (swapJoin) {
+      this.joinHandler = new SwapJoinHandler(pool, sdk, gasPriceServ);
+    } else if (isDeep(pool.value)) {
+      this.joinHandler = new GeneralizedJoinHandler(pool, sdk, gasPriceServ);
     } else {
       throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
   }
 
+  /**
+   * Executes a join pool transaction.
+   *
+   * @param {AmountIn[]} params.amountsIn - Array of token addresses and amounts
+   * to join with.
+   * @param {TokenInfoMap} params.tokensIn - Meta data for token addresses in amountsIn.
+   * @param {TokenPrices} params.prices - Fiat prices for tokens in amountsIn.
+   * @param {Signer} params.signer - Ethers Signer for executing the transaction.
+   * @param {number} params.slippageBsp - User's slippage setting in basis points.
+   * @returns {TransactionResponse} The ethers transaction response object.
+   */
   async join(params: JoinParams): Promise<TransactionResponse> {
     return this.joinHandler.join(params);
   }
 
+  /**
+   * Performs a query join to fetch the expected output from a join transaction.
+   *
+   * @param {AmountIn[]} amountsIn - Array of token addresses and amounts
+   * to join with.
+   * @param {TokenInfoMap} tokensIn - Meta data for token addresses in amountsIn.
+   * @param {TokenPrices} prices - Fiat prices for tokens in amountsIn.
+   */
   async queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
