@@ -1,24 +1,22 @@
 // import JoinPool from '@/components/forms/pool_actions/JoinPool';
-import { isDeep, tokenTreeNodes } from '@/composables/usePool';
+import useNumbers from '@/composables/useNumbers';
+import { fiatValueOf, isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
-import { balancer, fetchPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, isSameAddress, removeAddress } from '@/lib/utils';
+import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
+import { bnSum, bnum, removeAddress, trackLoading } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { AnyPool, Pool } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenAmountMap } from '@/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { add, debounce } from 'lodash';
-import { Address } from 'paraswap';
+import { debounce } from 'lodash';
 import {
   computed,
   defineComponent,
@@ -28,7 +26,6 @@ import {
   onBeforeUnmount,
   PropType,
   provide,
-  reactive,
   ref,
   watch,
 } from 'vue';
@@ -36,24 +33,11 @@ import {
 /**
  * TYPES
  */
-// type FormState = {
-//   amountsIn: Record<Address, string>;
-//   validInputs: Record<Address, boolean>;
-//   highPriceImpactAccepted: boolean;
-// };
 export type AmountIn = {
   address: string;
   value: string;
   valid: boolean;
 };
-
-// type FormState = {
-//   amountsIn: AmountIn[];
-//   propAmounts: string[];
-//   highPriceImpactAccepted: boolean;
-//   submitting: boolean;
-//   sorReady: boolean;
-// };
 
 type Props = {
   pool: Pool;
@@ -68,42 +52,33 @@ const provider = ({ pool }: Props) => {
   /**
    * COMPOSABLES
    */
-  const { getToken, getTokens, prices, injectTokens } = useTokens();
+  const { getTokens, prices, injectTokens } = useTokens();
+  const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
-  const { account, blockNumber } = useWeb3();
+  const { getSigner } = useWeb3();
+  const { txState, txInProgress } = useTxState();
 
   /**
    * SERVICES
    */
   const joinPoolService = new JoinPoolService(pool);
-  // const joinPool = new JoinPool(pool.value.id, pool.value.address, 18);
-  // const sor = balancer.sor;
 
   /**
    * STATE
    */
-  // const form = reactive<FormState>({
-  //   amountsIn: [],
-  //   propAmounts: [],
-  //   highPriceImpactAccepted: false,
-  //   submitting: false,
-  //   sorReady: false,
-  // });
   const amountsIn = ref<AmountIn[]>([]);
-  // const swapRoute = ref<SwapInfo | null>(null);
   const bptOut = ref<string>('');
-  const fiatValueIn = ref<string>('');
-  const fiatValueOut = ref<string>('');
-  // const priceImpact = ref<number>(0);
-  // const transactionInProgress = ref<boolean>(false);
-  // const loadingData = ref(false);
-  const debounceQueryJoin = ref(debounce(queryJoin, 1000));
+  const priceImpact = ref<number>(0);
+  const highPriceImpactAccepted = ref<boolean>(false);
+  const isLoadingQuery = ref<boolean>(false);
+
+  const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
 
   /**
    * COMPUTED
    */
-  // All investable tokens in the pool's token tree.
-  const poolTokenAddresses = computed((): string[] => {
+  // All tokens in the pool token tree that can be used in join functions.
+  const joinTokens = computed((): string[] => {
     let addresses: string[] = [];
 
     addresses = isDeep(pool) ? tokenTreeNodes(pool.tokens) : pool.tokensList;
@@ -116,50 +91,56 @@ const provider = ({ pool }: Props) => {
     return getTokens(amountsIn.value.map(a => a.address));
   });
 
-  // })
-  // const highPriceImpact = computed<boolean>(() => {
-  //   return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
-  // });
+  // High price impact if value greater than 1%.
+  const highPriceImpact = computed((): boolean => {
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(HIGH_PRICE_IMPACT);
+  });
 
-  // const rektPriceImpact = computed<boolean>(() => {
-  //   return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
-  // });
+  // rekt price impact if value greater than 20%.
+  const rektPriceImpact = computed((): boolean => {
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(REKT_PRICE_IMPACT);
+  });
 
-  // const tokenCount = computed<number>(() => form.tokensIn.length);
+  // If price impact is high (> 1%), user has checked acceptance checkbox.
+  const hasAcceptedHighPriceImpact = computed((): boolean =>
+    highPriceImpact.value ? highPriceImpactAccepted.value : true
+  );
 
-  // const fullAmounts = computed<string[]>(() =>
-  //   new Array(tokenCount.value)
-  //     .fill('0')
-  //     .map((_, i) => form.amountsIn[i] || '0')
-  // );
+  // Checks if all amountsIn are valid inputs.
+  const hasValidInputs = computed(
+    (): boolean =>
+      amountsIn.value.every(amountIn => amountIn.valid === true) &&
+      hasAcceptedHighPriceImpact.value
+  );
 
-  // const hasAmounts = computed(() =>
-  //   fullAmounts.value.some(amount => bnum(amount).gt(0))
-  // );
+  // Checks if amountsIn has any values > 0.
+  const hasAmountsIn = computed(() =>
+    amountsIn.value.some(amountIn => bnum(amountIn.value).gt(0))
+  );
+
+  // Calculates fiat value in with Coingecko prices.
+  const fiatValueIn = computed((): string => {
+    const fiatValuesIn = amountsIn.value.map(amountIn =>
+      toFiat(amountIn.value, amountIn.address)
+    );
+    return bnSum(fiatValuesIn).toString();
+  });
+
+  // Calculates estimated fiatValueOut using pool's totalLiquity.
+  // Could be inaccurate if total liquidity has come from subgraph.
+  const fiatValueOut = computed((): string => fiatValueOf(pool, bptOut.value));
 
   /**
    * METHODS
    */
 
   /**
-   * Mutates token>amount map in form state.
+   * Sets full amountsIn state.
    *
    * @param {TokenAmountMap} amounts - Map of token addresses and amounts.
    */
   function setAmountsIn(_amountsIn: AmountIn[]) {
     amountsIn.value = _amountsIn;
-  }
-
-  /**
-   * Mutates single input token amount in form state.
-   *
-   * @param {string} amount - Normalised (non-evm) token amount.
-   */
-  function setAmountIn(amountIn: AmountIn) {
-    const index = amountsIn.value.findIndex(a =>
-      isSameAddress(a.address, amountIn.address)
-    );
-    amountsIn.value[index] = amountIn;
   }
 
   /**
@@ -174,32 +155,46 @@ const provider = ({ pool }: Props) => {
   }
 
   /**
+   * Resets all amounts in amountsIn state to null.
+   */
+  function resetAmounts() {
+    amountsIn.value.forEach((_, i) => {
+      amountsIn.value[i].value = '';
+    });
+  }
+
+  /**
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
-    const res = await joinPoolService.queryJoin(
-      amountsIn.value,
-      tokensIn.value,
-      prices.value
-    );
-    console.log('QUERY', res);
+    trackLoading(async () => {
+      const output = await joinPoolService.queryJoin(
+        amountsIn.value,
+        tokensIn.value,
+        prices.value
+      );
+      bptOut.value = output.bptOut;
+      priceImpact.value = output.priceImpact;
+    }, isLoadingQuery);
   }
 
-  // async function join(): Promise<TransactionResponse> {
-  //   if (!account.value) throw new Error('Connect your account');
-  //   if (!swapRoute.value) await findSwapRoute();
-  //   transactionInProgress.value = true;
-  //   const tx = await joinPool
-  //     .join(swapRoute.value as SwapInfo, slippageBsp.value, account.value)
-  //     .finally(() => {
-  //       transactionInProgress.value = false;
-  //     });
-  //   return tx;
-  // }
+  /**
+   * Constructs transaction for joining pool.
+   */
+  async function join(): Promise<TransactionResponse> {
+    return joinPoolService.join({
+      amountsIn: amountsIn.value,
+      tokensIn: tokensIn.value,
+      prices: prices.value,
+      signer: getSigner(),
+      slippageBsp: slippageBsp.value,
+    });
+  }
 
   /**
    * WATCHERS
    */
+  // If amountsIn change we should call queryJoin to get expected output.
   watch(
     amountsIn,
     () => {
@@ -208,22 +203,12 @@ const provider = ({ pool }: Props) => {
     { deep: true }
   );
 
-  // watch(blockNumber, () => {
-  //   if (!loadingData.value && !transactionInProgress.value) {
-  //     console.log('block number changed');
-  //     findSwapRoute();
-  //   }
-  // });
-
-  // watch(fullAmounts, async (newAmounts, oldAmounts) => {
-  //   const changedIndex = newAmounts.findIndex(
-  //     (amount, i) => oldAmounts[i] !== amount
-  //   );
-
-  //   if (changedIndex >= 0) {
-  //     debouncedFindSwapRoute.value();
-  //   }
-  // });
+  // If the global pool fetching for the SOR changes it's been set to true. In
+  // this case we should re-trigger queryJoin to fetch the expected output for
+  // existing input.
+  watch(hasFetchedPoolsForSor, () => {
+    debounceQueryJoin.value();
+  });
 
   /**
    * LIFECYCLE
@@ -231,7 +216,7 @@ const provider = ({ pool }: Props) => {
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
-    injectTokens(poolTokenAddresses.value);
+    injectTokens(joinTokens.value);
     // Trigger SOR pool fetching in case swap joins are used.
     fetchPoolsForSor();
   });
@@ -243,16 +228,25 @@ const provider = ({ pool }: Props) => {
   return {
     pool,
     amountsIn,
-    poolTokenAddresses,
+    joinTokens,
     bptOut,
+    priceImpact,
+    isLoadingQuery,
+    highPriceImpact,
+    rektPriceImpact,
+    hasAcceptedHighPriceImpact,
+    highPriceImpactAccepted,
+    hasValidInputs,
+    hasAmountsIn,
     fiatValueIn,
     fiatValueOut,
-    // highPriceImpact,
+    txState,
+    txInProgress,
+    debounceQueryJoin,
     setAmountsIn,
-    setAmountIn,
     addTokensIn,
-    // findSwapRoute,
-    // join,
+    resetAmounts,
+    join,
   };
 };
 

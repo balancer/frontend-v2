@@ -2,94 +2,32 @@
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-// import useWeb3 from '@/services/web3/useWeb3';
-
-// import { InvestMathResponse } from '../composables/useInvestMath';
-
-/**
- * TYPES
- */
-type Props = {
-  // math: InvestMathResponse;
-  // showTotalRow?: boolean;
-  loadingData: boolean;
-  priceImpact: number;
-  highPriceImpact: boolean;
-};
-
-/**
- * Props
- */
-const props = withDefaults(defineProps<Props>(), {
-  // showTotalRow: false,
-});
-
-// const emit = defineEmits<{
-//   (e: 'maximize'): void;
-//   (e: 'optimize'): void;
-// }>();
+import useJoinPool from '@/composables/pools/useJoinPool';
 
 /**
  * COMPOSABLES
  */
+const { highPriceImpact, isLoadingQuery, priceImpact } = useJoinPool();
 const { fNum2 } = useNumbers();
-// const { isWalletReady } = useWeb3();
-
-// const {
-//   fiatTotal,
-//   hasNoBalances,
-//   hasAllTokens,
-//   // priceImpact,
-//   // highPriceImpact,
-//   maximized,
-//   optimized,
-//   loadingData,
-//   supportsPropotionalOptimization,
-// } = toRefs(reactive(props.math));
 
 /**
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'dark:bg-gray-800': !props.highPriceImpact,
-  'bg-red-500 dark:bg-red-500 text-white divide-red-400': props.highPriceImpact,
+  'dark:bg-gray-800': !highPriceImpact.value,
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value,
 }));
-
-// const optimizeBtnClasses = computed(() => ({
-//   'text-gradient': !props.highPriceImpact,
-//   'text-red-500 px-2 py-1 bg-white rounded-lg': props.highPriceImpact,
-// }));
 </script>
 
 <template>
   <div class="data-table">
-    <!-- <div v-if="showTotalRow" class="data-table-row total-row">
-      <div class="p-2">
-        {{ $t('total') }}
-      </div>
-      <div class="data-table-number-col">
-        {{ fNum2(fiatTotal, FNumFormats.fiat) }}
-        <div v-if="isWalletReady && !hasNoBalances" class="text-sm">
-          <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
-            {{ $t('maxed') }}
-          </span>
-          <span
-            v-else
-            class="text-blue-500 cursor-pointer"
-            @click="emit('maximize')"
-          >
-            {{ $t('max') }}
-          </span>
-        </div>
-      </div>
-    </div> -->
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">
         {{ $t('priceImpact') }}
       </div>
       <div class="data-table-number-col">
         <div class="flex">
-          <span v-if="!loadingData">
+          <span v-if="!isLoadingQuery">
             {{ fNum2(priceImpact, FNumFormats.percent) }}
           </span>
           <BalLoadingBlock v-else class="w-10" />
@@ -111,24 +49,6 @@ const priceImpactClasses = computed(() => ({
             </template>
           </BalTooltip>
         </div>
-
-        <!-- <div
-          v-if="
-            isWalletReady && hasAllTokens && supportsPropotionalOptimization
-          "
-          class="text-sm font-semibold"
-        >
-          <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
-            {{ $t('optimized') }}
-          </span>
-          <div
-            v-else
-            :class="['cursor-pointer', optimizeBtnClasses]"
-            @click="emit('optimize')"
-          >
-            {{ $t('optimize') }}
-          </div>
-        </div> -->
       </div>
     </div>
   </div>

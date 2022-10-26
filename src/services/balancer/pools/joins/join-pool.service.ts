@@ -5,8 +5,13 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { DeepPoolHandler } from './handlers/deep-pool.handler';
-import { JoinPoolHandler, QueryOutput } from './handlers/join-pool.handler';
+import {
+  JoinParams,
+  JoinPoolHandler,
+  QueryOutput,
+} from './handlers/join-pool.handler';
 
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
@@ -30,9 +35,9 @@ export class JoinPoolService {
     }
   }
 
-  // async getTx(inputs: JoinState) {
-  //   this.joinHandler.getTx(inputs);
-  // }
+  async join(params: JoinParams): Promise<TransactionResponse> {
+    return this.joinHandler.join(params);
+  }
 
   async queryJoin(
     amountsIn: AmountIn[],

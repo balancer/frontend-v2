@@ -4,34 +4,23 @@ import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool, isDeep } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum, indexOfAddress } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-
-// import useInvestMath from './composables/useInvestMath';
-import useInvestState from './composables/useInvestState';
 import useVeBal from '@/composables/useVeBAL';
 
-// import useJoinPool from '../useJoinPool';
 import { default as useJoinPoolv2 } from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
-import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
  */
-enum NativeAsset {
-  wrapped = 'wrapped',
-  unwrapped = 'unwrapped',
-}
-
 type Props = {
   pool: Pool;
   singleAsset: boolean;
@@ -53,77 +42,26 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-
-const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-// const { useNativeAsset } = usePoolTransfers();
-
-// const {
-//   tokenAddresses,
-//   amounts,
-//   validInputs,
-//   highPriceImpactAccepted,
-//   resetAmounts,
-//   // sor,
-// } = useInvestState();
-
-// const {
-//   // swapRoute,
-//   bptOut,
-//   fiatValueOut,
-//   fiatValueIn,
-//   priceImpact,
-//   highPriceImpact,
-//   loadingData,
-//   fullAmounts,
-//   rektPriceImpact,
-//   hasAmounts,
-//   join,
-// } = useJoinPool(
-//   props.pool.id,
-//   props.pool.address,
-//   props.pool.onchain?.decimals,
-//   tokenAddresses,
-//   amounts
-// );
-const {
-  setAmountIn,
-  setAmountsIn,
-  poolTokenAddresses,
-  addTokensIn,
-  amountsIn,
-} = useJoinPoolv2();
-
-// const investMath = useInvestMath(
-//   pool,
-//   tokenAddresses,
-//   amounts,
-//   useNativeAsset,
-//   sor
-// );
-
-// const { hasAmounts } = investMath;
-
+const { wrappedNativeAsset } = useTokens();
+const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
+const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-
-const { managedPoolWithTradingHalted, isWethPool, isDeepPool } = usePool(
-  toRef(props, 'pool')
-);
-const { veBalTokenInfo } = useVeBal();
+const {
+  isLoadingQuery,
+  setAmountsIn,
+  joinTokens,
+  addTokensIn,
+  amountsIn,
+  highPriceImpact,
+  highPriceImpactAccepted,
+  hasValidInputs,
+  hasAmountsIn,
+} = useJoinPoolv2();
 
 /**
  * COMPUTED
  */
-// const hasValidInputs = computed(
-//   (): boolean =>
-//     validInputs.value.every(validInput => validInput === true) &&
-//     hasAcceptedHighPriceImpact.value
-// );
-
-// const hasAcceptedHighPriceImpact = computed((): boolean =>
-//   highPriceImpact.value ? highPriceImpactAccepted.value : true
-// );
-
 const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value
 );
@@ -132,56 +70,15 @@ const poolHasLowLiquidity = computed((): boolean =>
   bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
-// const investmentTokens = computed((): string[] => {
-//   if (isDeep(props.pool)) {
-//     return props.pool.mainTokens || [];
-//   }
-//   return props.pool.tokensList;
-// });
-
-/**
- * METHODS
- */
-
-// // If ETH has a higher balance than WETH then use it for the input.
-// function setNativeAssetByBalance(): void {
-//   const nativeAssetBalance = balanceFor(nativeAsset.address);
-//   const wrappedNativeAssetBalance = balanceFor(
-//     wrappedNativeAsset.value.address
-//   );
-
-//   if (bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)) {
-//     setNativeAsset(NativeAsset.unwrapped);
-//     useNativeAsset.value = true;
-//   }
-// }
-
-// function setNativeAsset(to: NativeAsset): void {
-//   const fromAddress =
-//     to === NativeAsset.wrapped
-//       ? nativeAsset.address
-//       : wrappedNativeAsset.value.address;
-//   const toAddress =
-//     to === NativeAsset.wrapped
-//       ? wrappedNativeAsset.value.address
-//       : nativeAsset.address;
-
-//   const indexOfAsset = indexOfAddress(tokenAddresses.value, fromAddress);
-
-//   if (indexOfAsset >= 0) {
-//     tokenAddresses.value[indexOfAsset] = toAddress;
-//   }
-// }
-
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
   setAmountsIn([]);
   if (props.singleAsset) {
-    addTokensIn([poolTokenAddresses.value[0]]);
+    addTokensIn([joinTokens.value[0]]);
   } else {
-    addTokensIn(poolTokenAddresses.value);
+    addTokensIn(joinTokens.value);
   }
 });
 
@@ -195,17 +92,10 @@ watch(
     if (isSingleAsset) {
       addTokensIn([wrappedNativeAsset.value.address]);
     } else {
-      addTokensIn(poolTokenAddresses.value);
+      addTokensIn(joinTokens.value);
     }
   }
 );
-// watch(useNativeAsset, shouldUseNativeAsset => {
-//   if (shouldUseNativeAsset) {
-//     setNativeAsset(NativeAsset.unwrapped);
-//   } else {
-//     setNativeAsset(NativeAsset.wrapped);
-//   }
-// });
 </script>
 
 <template>
@@ -238,19 +128,11 @@ watch(
       class="mb-4"
       :fixedToken="!singleAsset"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-      :tokenSelectProps="{
-        subsetTokens: [wrappedNativeAsset.address, ...poolTokenAddresses],
-        hideTokenLists: true,
-      }"
     />
-    <!-- <InvestFormTotalsV2
-      :loadingData="loadingData"
-      :priceImpact="priceImpact"
-      :highPriceImpact="highPriceImpact"
-      :showTotalRow="!isDeepPool"
-    /> -->
 
-    <!-- <div
+    <InvestFormTotalsV2 />
+
+    <div
       v-if="highPriceImpact"
       class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
     >
@@ -261,9 +143,9 @@ watch(
         size="sm"
         :label="$t('priceImpactAccept', [$t('depositing')])"
       />
-    </div> -->
+    </div>
 
-    <!-- <WrapStEthLink :pool="pool" class="mt-4" />
+    <WrapStEthLink :pool="pool" class="mt-4" />
 
     <div class="mt-4">
       <BalBtn
@@ -278,27 +160,21 @@ watch(
         :label="$t('preview')"
         color="gradient"
         :disabled="
-          !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
+          !hasAmountsIn ||
+          !hasValidInputs ||
+          isMismatchedNetwork ||
+          isLoadingQuery
         "
         block
         @click="showInvestPreview = true"
       />
-    </div> -->
+    </div>
 
-    <!-- <StakingProvider :poolAddress="pool.address">
+    <StakingProvider :poolAddress="pool.address">
       <teleport to="#modal">
         <InvestPreviewModalV2
           v-if="showInvestPreview"
           :pool="pool"
-          :join="join"
-          :tokenAddresses="tokenAddresses"
-          :fullAmounts="fullAmounts"
-          :highPriceImpact="highPriceImpact"
-          :rektPriceImpact="rektPriceImpact"
-          :priceImpact="priceImpact"
-          :bptOut="bptOut"
-          :fiatValueOut="fiatValueOut"
-          :fiatValueIn="fiatValueIn"
           @close="showInvestPreview = false"
           @show-stake-modal="showStakeModal = true"
         />
@@ -309,6 +185,6 @@ watch(
           @close="showStakeModal = false"
         />
       </teleport>
-    </StakingProvider> -->
+    </StakingProvider>
   </div>
 </template>

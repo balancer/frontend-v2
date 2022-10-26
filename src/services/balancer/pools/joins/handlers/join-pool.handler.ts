@@ -4,7 +4,16 @@ import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK } from '@balancer-labs/sdk';
-import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { Signer } from '@ethersproject/abstract-signer';
+
+export type JoinParams = {
+  amountsIn: AmountIn[];
+  tokensIn: TokenInfoMap;
+  prices: TokenPrices;
+  signer: Signer;
+  slippageBsp: number;
+};
 
 export type QueryOutput = {
   bptOut: string;
@@ -18,11 +27,7 @@ export abstract class JoinPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  abstract buildJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices
-  ): Promise<TransactionRequest>;
+  abstract join(params: JoinParams): Promise<TransactionResponse>;
 
   abstract queryJoin(
     amountsIn: AmountIn[],

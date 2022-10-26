@@ -1,31 +1,54 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
 import { fiatValueOf } from '@/composables/usePool';
+import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum } from '@/lib/utils';
 import { AmountIn } from '@/providers/local/join-pool.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { BalancerSDK } from '@balancer-labs/sdk';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { JoinPoolHandler, QueryOutput } from './join-pool.handler';
+import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
 export class DeepPoolHandler implements JoinPoolHandler {
+  private lastSwapRoute?: SwapInfo;
+
   constructor(
     public readonly pool: Pool,
     public readonly sdk: BalancerSDK,
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async buildJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices
-  ): Promise<TransactionReceipt> {
-    // All the logic for handling deep pool joins starts here.
-    throw new Error('Tx fn not handled yet');
+  async join({
+    amountsIn,
+    tokensIn,
+    prices,
+    signer,
+    slippageBsp,
+  }: JoinParams): Promise<TransactionResponse> {
+    const userAddress = await signer.getAddress();
+    await this.queryJoin(amountsIn, tokensIn, prices);
+    if (!this.lastSwapRoute)
+      throw new Error('Could not fetch swap route for join');
+
+    const swap = this.getSwapAttributes(
+      this.lastSwapRoute,
+      slippageBsp,
+      userAddress
+    );
+
+    const { kind, swaps, assets, funds, limits } = swap.attributes as BatchSwap;
+    return vaultService.batchSwap(
+      kind,
+      swaps,
+      assets,
+      funds,
+      limits as string[]
+    );
   }
 
   async queryJoin(
@@ -33,7 +56,7 @@ export class DeepPoolHandler implements JoinPoolHandler {
     tokensIn: TokenInfoMap,
     prices: TokenPrices
   ): Promise<QueryOutput> {
-    if (amountsIn.length === 0) throw new Error('Must provider amountsIn');
+    if (amountsIn.length === 0) throw new Error('Must provide amountsIn');
 
     if (amountsIn.length === 1) {
       return this.querySingleAssetJoin(amountsIn[0], tokensIn, prices);
@@ -61,9 +84,7 @@ export class DeepPoolHandler implements JoinPoolHandler {
     const bnumAmount = parseFixed(safeAmount, tokenIn.decimals);
     const gasPrice = await this.getGasPrice();
 
-    console.log('INPUTS', [bnumAmount.toString(), gasPrice.toString()]);
-
-    const route = await this.sdk.swaps.findRouteGivenIn({
+    this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
       tokenIn: amountIn.address,
       tokenOut: this.pool.address,
       amount: bnumAmount,
@@ -71,17 +92,13 @@ export class DeepPoolHandler implements JoinPoolHandler {
       maxPools: 4,
     });
 
-    console.log('route', route);
-
     const bptOut = formatFixed(
-      route.returnAmountFromSwaps,
+      this.lastSwapRoute.returnAmountFromSwaps,
       this.pool.onchain?.decimals || 18
     );
     const fiatValueIn = bnum(priceIn).times(amountIn.value).toString();
     const fiatValueOut = fiatValueOf(this.pool, bptOut);
 
-    console.log('fiatValueIn', fiatValueIn);
-    console.log('fiatValueOut', fiatValueOut);
     const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
 
     return { bptOut, priceImpact };
@@ -106,5 +123,20 @@ export class DeepPoolHandler implements JoinPoolHandler {
     if (!gasPriceParams) throw new Error('Failed to fetch gas price');
 
     return BigNumber.from(gasPriceParams.price);
+  }
+
+  private getSwapAttributes(
+    swapInfo: SwapInfo,
+    maxSlippage: number,
+    userAddress: string
+  ) {
+    const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
+    return this.sdk.swaps.buildSwap({
+      userAddress,
+      swapInfo,
+      kind: 0,
+      deadline,
+      maxSlippage,
+    });
   }
 }
