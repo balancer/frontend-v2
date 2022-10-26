@@ -147,14 +147,15 @@ const provider = (props: Props) => {
   /**
    * Sets full amountsIn state.
    *
-   * @param {TokenAmountMap} amounts - Map of token addresses and amounts.
+   * @param {AmountIn[]} _amountsIn - Array of amounts in: token address, value
+   * & input validity.
    */
   function setAmountsIn(_amountsIn: AmountIn[]) {
     amountsIn.value = _amountsIn;
   }
 
   /**
-   * Adds amountsIn with value 0 for array of token addresses.
+   * Adds amountsIn with no value for array of token addresses.
    *
    * @param {string[]} tokensIn - Array of token addresses.
    */
@@ -165,7 +166,7 @@ const provider = (props: Props) => {
   }
 
   /**
-   * Resets all amounts in amountsIn state to null.
+   * Resets all amounts in amountsIn state to have no value.
    */
   function resetAmounts() {
     amountsIn.value.forEach((_, i) => {
@@ -224,7 +225,7 @@ const provider = (props: Props) => {
 
   // If the global pool fetching for the SOR changes it's been set to true. In
   // this case we should re-trigger queryJoin to fetch the expected output for
-  // existing input.
+  // any existing input.
   watch(hasFetchedPoolsForSor, () => {
     debounceQueryJoin.value();
   });
