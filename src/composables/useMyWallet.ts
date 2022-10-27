@@ -7,7 +7,7 @@ import { isSameAddress, includesAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
-import { tokenTreeNodes, usePool } from '@/composables/usePool';
+import { tokenTreeLeafs, usePool } from '@/composables/usePool';
 
 type Props = {
   excludedTokens?: string[];
@@ -57,10 +57,7 @@ export default function useMyWallet({
   const poolTokenAddresses = computed<string[]>(() => {
     if (!pool) return [];
     if (isDeepPool.value) {
-      return tokenTreeNodes(pool.tokens).filter(
-        // Exclude BPT address
-        address => !isSameAddress(address, pool.address)
-      );
+      return tokenTreeLeafs(pool.tokens);
       // return getDeepPoolTokenAddresses(pool);
     }
     if (isWethPool.value) {
