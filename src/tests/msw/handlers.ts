@@ -49,6 +49,10 @@ export const handlers = [
     return res(ctx.json({}));
   }),
 
+  rest.get('https://api.blocknative.com/v0', (req, res, ctx) => {
+    return res(ctx.json({}));
+  }),
+
   rest.get(
     'https://api.coingecko.com/api/v3/coins/ethereum/contract/*/market_chart/range',
     (req, res, ctx) => {

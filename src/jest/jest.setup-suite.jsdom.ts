@@ -15,7 +15,6 @@ import CompositionIcon from '@/components/_global/icons/CompositionIcon.vue';
 import NetworkIcon from '@/components/_global/icons/NetworkIcon.vue';
 import translations from '@/locales/default.json';
 import { QueryClient } from 'vue-query';
-import Web3Plugin from '@/services/web3/web3.plugin';
 
 const i18n = createI18n({
   locale: 'en-US',
@@ -34,8 +33,7 @@ const i18n = createI18n({
 });
 
 // Testing Library config
-config.global.plugins = [i18n, Web3Plugin];
-// config.plugins.install(Web3Plugin);
+config.global.plugins = [i18n];
 config.global.stubs = {
   RouterLink: RouterLinkStub,
   Jazzicon: { template: '<span />' },
