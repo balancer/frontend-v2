@@ -136,6 +136,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                  mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
                     {
@@ -215,6 +216,7 @@ export const poolWith3NestedLevels: Pool = {
       token: {
         pool: {
           id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+          mainIndex: 1,
           poolType: PoolType.ComposableStable,
           tokens: [
             {
@@ -227,6 +229,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                  mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
                     {
@@ -280,6 +283,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                  mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
                     {
@@ -333,6 +337,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+                  mainIndex: 1,
                   poolType: PoolType.ComposableStable,
                   tokens: [
                     {
@@ -409,6 +414,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                  mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
                     {
@@ -466,6 +472,7 @@ export const poolWith3NestedLevels: Pool = {
       token: {
         pool: {
           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+          mainIndex: 1,
           poolType: PoolType.Stable,
           tokens: [
             {
@@ -500,6 +507,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                  mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
                     {
