@@ -28,6 +28,8 @@ export const balancer = new BalancerSDK({
 export const hasFetchedPoolsForSor = ref(false);
 
 export async function fetchPoolsForSor() {
+  if (hasFetchedPoolsForSor.value) return;
+
   console.time('fetchPoolsForSor');
   await balancer.swaps.fetchPools();
   hasFetchedPoolsForSor.value = true;
