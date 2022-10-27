@@ -38,7 +38,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
     const userAddress = await signer.getAddress();
     await this.queryJoin(amountsIn, tokensIn, prices);
     if (!this.lastSwapRoute)
-      throw new Error('Could not fetch swap route for join');
+      throw new Error('Could not fetch swap route for join.');
 
     const swap = this.getSwapAttributes(
       this.lastSwapRoute,
@@ -61,13 +61,14 @@ export class SwapJoinHandler implements JoinPoolHandler {
     tokensIn: TokenInfoMap,
     prices: TokenPrices
   ): Promise<QueryOutput> {
-    if (amountsIn.length === 0) throw new Error('Must provide amountsIn');
+    if (amountsIn.length === 0)
+      throw new Error('Missing amounts to join with.');
 
     const amountIn = amountsIn[0];
     const tokenIn = tokensIn[amountIn.address];
     const priceIn = prices[amountIn.address]?.usd;
-    if (!tokenIn) throw new Error('Must provide token meta for amountIn');
-    if (!priceIn) throw new Error('Must provide token price for amountIn');
+    if (!tokenIn) throw new Error('Missing critical token metadata.');
+    if (!priceIn) throw new Error('Missing price for token to join with.');
     if (!amountIn.value || bnum(amountIn.value).eq(0))
       return { bptOut: '0', priceImpact: 0 };
 
@@ -89,7 +90,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
       this.lastSwapRoute.returnAmountFromSwaps,
       this.pool.value.onchain?.decimals || 18
     );
-    if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity');
+    if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity.');
 
     const fiatValueIn = bnum(priceIn).times(amountIn.value).toString();
     const fiatValueOut = fiatValueOf(this.pool.value, bptOut);
@@ -118,7 +119,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
   private async getGasPrice(): Promise<BigNumber> {
     const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (!gasPriceParams) throw new Error('Failed to fetch gas price');
+    if (!gasPriceParams) throw new Error('Failed to fetch gas price.');
 
     return BigNumber.from(gasPriceParams.price);
   }
