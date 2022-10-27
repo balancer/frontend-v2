@@ -9,7 +9,10 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
+import {
+  migratablePoolsInvestExceptions,
+  POOL_MIGRATIONS_MAP,
+} from '@/components/forms/pool_actions/MigrateForm/constants';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
@@ -302,7 +305,10 @@ function iconAddresses(pool: PoolWithShares) {
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
           <BalTooltip
-            v-if="isMigratablePool(pool)"
+            v-if="
+              isMigratablePool(pool) &&
+              !migratablePoolsInvestExceptions.includes(pool.id)
+            "
             class="ml-2 text-red-500"
             name="alert-circle"
             filled

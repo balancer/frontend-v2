@@ -87,6 +87,8 @@ const POLYGON_POOL_MIGRATIONS: PoolMigrationInfo[] = [
   },
 ];
 
+export const migratablePoolsInvestExceptions = [POOLS.IdsMap.mai4?.mai4];
+
 const MIGRATIONS_BY_NETWORK = {
   [Network.GOERLI]: GOERLI_POOL_MIGRATIONS,
   [Network.MAINNET]: MAINNET_POOL_MIGRATIONS,
