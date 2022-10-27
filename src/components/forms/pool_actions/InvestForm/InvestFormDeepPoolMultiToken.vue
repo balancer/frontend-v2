@@ -133,7 +133,7 @@ const poolHasLowLiquidity = computed((): boolean =>
 
 const investmentTokens = computed((): string[] => {
   if (isDeep(props.pool)) {
-    return poolTokensWithBalance.value || [];
+    return poolTokensWithBalance.value;
   }
   return props.pool.tokensList;
 });
@@ -146,6 +146,9 @@ const tokenSymbolsWithoutBalance = computed(() => {
 const tokenSymbolsWithoutBalanceMsg = computed(() => {
   return formatWordListAsSentence(tokenSymbolsWithoutBalance.value, t);
 });
+const hasPoolTokensInWallet = computed<boolean>(
+  () => !!poolTokensWithBalance.value.length
+);
 
 /**
  * METHODS
@@ -331,73 +334,80 @@ watch(
       :description="$t('investment.warning.lowLiquidity.description')"
       class="mb-4"
     />
-
-    <TokenInput
-      v-for="(n, i) in tokenAddresses"
-      :key="n"
-      v-model:address="tokenAddresses[i]"
-      v-model:amount="amounts[i]"
-      v-model:isValid="validInputs[i]"
-      :name="tokenAddresses[i]"
-      :weight="tokenWeight(tokenAddresses[i])"
-      :hintAmount="propAmountFor(i)"
-      :hint="hint(i)"
-      class="mb-4"
-      fixedToken
-      :options="tokenOptions(i)"
-      @update:amount="handleAmountChange($event, i)"
-      @update:address="handleAddressChange($event)"
-    />
-
-    <div
-      v-if="tokenSymbolsWithoutBalance.length"
-      class="mb-4 text-sm italic text-gray-600 dark:text-gray-400"
-    >
-      No wallet balance for some pool tokens:
-      {{ tokenSymbolsWithoutBalanceMsg }}
-    </div>
-
-    <InvestFormTotals
-      :math="investMath"
-      :showTotalRow="!isDeepPool"
-      @maximize="maximizeAmounts"
-      @optimize="optimizeAmounts"
-    />
-
-    <div
-      v-if="highPriceImpact"
-      class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
-    >
-      <BalCheckbox
-        v-model="highPriceImpactAccepted"
-        :rules="[isRequired($t('priceImpactCheckbox'))]"
-        name="highPriceImpactAccepted"
-        size="sm"
-        :label="$t('priceImpactAccept', [$t('depositing')])"
+    <BalAlert
+      v-if="!hasPoolTokensInWallet"
+      type="warning"
+      :title="$t('investment.warning.noPoolTokensToJoinWith.title')"
+      :description="$t('investment.warning.noPoolTokensToJoinWith.description')"
+    ></BalAlert>
+    <template v-else>
+      <TokenInput
+        v-for="(n, i) in tokenAddresses"
+        :key="n"
+        v-model:address="tokenAddresses[i]"
+        v-model:amount="amounts[i]"
+        v-model:isValid="validInputs[i]"
+        :name="tokenAddresses[i]"
+        :weight="tokenWeight(tokenAddresses[i])"
+        :hintAmount="propAmountFor(i)"
+        :hint="hint(i)"
+        class="mb-4"
+        fixedToken
+        :options="tokenOptions(i)"
+        @update:amount="handleAmountChange($event, i)"
+        @update:address="handleAddressChange($event)"
       />
-    </div>
 
-    <WrapStEthLink :pool="pool" class="mt-4" />
+      <div
+        v-if="tokenSymbolsWithoutBalance.length"
+        class="mb-4 text-sm italic text-gray-600 dark:text-gray-400"
+      >
+        No wallet balance for some pool tokens:
+        {{ tokenSymbolsWithoutBalanceMsg }}
+      </div>
 
-    <div class="mt-4">
-      <BalBtn
-        v-if="!isWalletReady"
-        :label="$t('connectWallet')"
-        color="gradient"
-        block
-        @click="startConnectWithInjectedProvider"
+      <InvestFormTotals
+        :math="investMath"
+        :showTotalRow="!isDeepPool"
+        @maximize="maximizeAmounts"
+        @optimize="optimizeAmounts"
       />
-      <BalBtn
-        v-else
-        :label="$t('preview')"
-        color="gradient"
-        :disabled="
-          !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
-        "
-        block
-        @click="showInvestPreview = true"
-      />
-    </div>
+
+      <div
+        v-if="highPriceImpact"
+        class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
+      >
+        <BalCheckbox
+          v-model="highPriceImpactAccepted"
+          :rules="[isRequired($t('priceImpactCheckbox'))]"
+          name="highPriceImpactAccepted"
+          size="sm"
+          :label="$t('priceImpactAccept', [$t('depositing')])"
+        />
+      </div>
+
+      <WrapStEthLink :pool="pool" class="mt-4" />
+
+      <div class="mt-4">
+        <BalBtn
+          v-if="!isWalletReady"
+          :label="$t('connectWallet')"
+          color="gradient"
+          block
+          @click="startConnectWithInjectedProvider"
+        />
+        <BalBtn
+          v-else
+          :label="$t('preview')"
+          color="gradient"
+          :disabled="
+            !hasAmounts || !hasValidInputs || isMismatchedNetwork || loadingData
+          "
+          block
+          @click="showInvestPreview = true"
+        />
+      </div>
+    </template>
 
     <StakingProvider :poolAddress="pool.address">
       <teleport to="#modal">

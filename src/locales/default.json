@@ -449,6 +449,10 @@
       "lowLiquidity": {
         "description": "Add assets proportionally to the pool weights or the price impact will be high and you will likely get REKT and lose money.",
         "title": "Be careful: This pool has low liquidity"
+      },
+      "noPoolTokensToJoinWith": {
+        "title": "You have no pool tokens to invest",
+        "description": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact. \n\nHowever, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to invest in this pool with non-pool tokens. "
       }
     },
     "error": {
