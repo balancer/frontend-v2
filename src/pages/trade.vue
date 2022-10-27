@@ -11,6 +11,8 @@ import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { useTradeState } from '@/composables/trade/useTradeState';
+import useNativeBalance from '@/composables/useNativeBalance';
 
 /**
  * STATE
@@ -23,6 +25,8 @@ const showPriceGraphModal = ref(false);
 const store = useStore();
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { setTokenInAddress } = useTradeState();
+const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 /**
  * COMPUTED
@@ -52,7 +56,7 @@ onMounted(() => {
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
-      <MyWallet />
+      <MyWallet @click:asset="setTokenInAddress" />
       <TrendingPairs class="mt-4" />
     </template>
 
@@ -65,13 +69,18 @@ onMounted(() => {
         v-if="upToLargeBreakpoint"
         class="w-full"
         :sections="[
-          { title: 'My wallet', id: 'my-wallet' },
+          {
+            title: `${$t('myWallet2')} ${
+              hasNativeBalance ? `${nativeBalance} ${nativeCurrency}` : ''
+            }`,
+            id: 'my-wallet',
+          },
           { title: 'Trending pairs', id: 'trending-pairs' },
           { title: 'Price chart', id: 'price-chart' },
         ]"
       >
         <template #my-wallet>
-          <MyWallet />
+          <MyWallet @click:asset="setTokenInAddress" />
         </template>
         <template #trending-pairs>
           <TrendingPairs />

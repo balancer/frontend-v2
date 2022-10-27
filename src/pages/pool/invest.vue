@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
-
+import { onBeforeMount, ref } from 'vue';
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
-// Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
-// Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
+import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
+import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
 
 /**
  * STATE
@@ -20,6 +19,21 @@ const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
+
+enum Tab {
+  PoolTokens,
+  SingleToken,
+}
+
+const tabs = [
+  { value: Tab.PoolTokens, label: 'Pool Tokens' },
+  {
+    value: Tab.SingleToken,
+    label: 'Single Token',
+  },
+];
+
+const activeTab = ref(tabs[0].value);
 
 /**
  * CALLBACKS
@@ -52,9 +66,26 @@ onBeforeMount(async () => {
             <h4>{{ $t('investInPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
+          <BalTabs
+            v-if="isDeepPool"
+            v-model="activeTab"
+            :tabs="tabs"
+            class="p-0 m-0 -mb-px whitespace-nowrap"
+            noPad
+          />
         </div>
       </template>
-      <InvestForm :pool="pool" />
+      <template v-if="isDeepPool">
+        <JoinPoolProvider
+          :pool="pool"
+          :isSingleAssetJoin="activeTab === Tab.SingleToken"
+        >
+          <InvestFormV2 :pool="pool" />
+        </JoinPoolProvider>
+      </template>
+      <template v-else>
+        <InvestForm :pool="pool" />
+      </template>
     </BalCard>
   </div>
 </template>

@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
-// Composables
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
-// Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { isStableLike, usePool, isDeep } from '@/composables/usePool';
@@ -19,7 +17,6 @@ import {
 } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
-// Types
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -27,6 +24,13 @@ import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import useInvestMath from './composables/useInvestMath';
 import useInvestState from './composables/useInvestState';
+import { parseFixed } from '@ethersproject/bignumber';
+// import { Relayer } from '@balancer-labs/sdk';
+
+import { balancer } from '@/lib/balancer.sdk';
+
+// import useConfig from '@/composables/useConfig';
+// import { Vault__factory } from '@balancer-labs/typechain';
 
 /**
  * TYPES
@@ -50,13 +54,15 @@ const props = defineProps<Props>();
  */
 const showInvestPreview = ref(false);
 const showStakeModal = ref(false);
+const relayerAuthorization = ref<string>('');
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { balanceFor, nativeAsset, wrappedNativeAsset, getToken } = useTokens();
 const { useNativeAsset } = usePoolTransfers();
+// const { networkConfig } = useConfig();
 const {
   tokenAddresses,
   amounts,
@@ -85,11 +91,19 @@ const {
   loadingData,
 } = investMath;
 
-const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
-  useWeb3();
+const {
+  isWalletReady,
+  startConnectWithInjectedProvider,
+  isMismatchedNetwork,
+  getProvider,
+} = useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } =
-  usePool(pool);
+const {
+  managedPoolWithTradingHalted,
+  isWethPool,
+  isStableLikePool,
+  isDeepPool,
+} = usePool(pool);
 
 /**
  * COMPUTED
@@ -212,6 +226,18 @@ onBeforeMount(() => {
   if (isWethPool.value) setNativeAssetByBalance();
 });
 
+onMounted(async () => {
+  // const signer = getProvider().getSigner();
+  // const signerAddress = await signer.getAddress();
+  // const authorisation = await Relayer.signRelayerApproval(
+  //   networkConfig.addresses.batchRelayer,
+  //   signerAddress,
+  //   signer,
+  //   Vault__factory.connect(networkConfig.addresses.vault, signer)
+  // );
+  // relayerAuthorization.value = authorisation;
+});
+
 /**
  * WATCHERS
  */
@@ -222,9 +248,58 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     setNativeAsset(NativeAsset.wrapped);
   }
 });
+
+watch(
+  () => amounts,
+  val => {
+    if (val.value[0]) {
+      runGeneralisedJoin(val.value);
+    }
+  },
+  {
+    deep: true,
+  }
+);
+
+async function runGeneralisedJoin(amounts: string[]) {
+  const signer = getProvider().getSigner();
+  const signerAddress = await signer.getAddress();
+  const wrapLeafTokens = false;
+  const slippage = '100'; // 100 bps = 1%
+  const poolId = pool.value.id;
+  const amountsIn = tokenAddresses.value.map((tokenAddress, index) => {
+    const amount = amounts[index] || '0';
+    const token = getToken(tokenAddress);
+    const amountIn = parseFixed(amount, token?.decimals ?? 18).toString();
+    return amountIn;
+  });
+
+  console.log({
+    poolId,
+    tokenAddresses: tokenAddresses.value,
+    amountsIn,
+    signerAddress,
+    wrapLeafTokens,
+    slippage,
+    signer,
+    authorisation: relayerAuthorization.value,
+  });
+
+  const generalisedJoinQuery = await balancer.pools.generalisedJoin(
+    poolId,
+    tokenAddresses.value,
+    amountsIn,
+    signerAddress,
+    wrapLeafTokens,
+    slippage,
+    signer,
+    relayerAuthorization.value
+  );
+  console.log({ generalisedJoinQuery });
+}
 </script>
-  
-  <template>
+
+<template>
   <div>
     <BalAlert
       v-if="forceProportionalInputs"
@@ -245,8 +320,8 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     />
 
     <TokenInput
-      v-for="(n, i) in tokenAddresses.length"
-      :key="i"
+      v-for="(n, i) in tokenAddresses"
+      :key="n"
       v-model:address="tokenAddresses[i]"
       v-model:amount="amounts[i]"
       v-model:isValid="validInputs[i]"
@@ -263,6 +338,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <InvestFormTotals
       :math="investMath"
+      :showTotalRow="!isDeepPool"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -322,4 +398,3 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     </StakingProvider>
   </div>
 </template>
-  

@@ -4,5 +4,6 @@ export default {
     TokenLists: 'providers.tokenLists',
     Tokens: 'providers.tokens',
     Staking: 'providers.staking',
+    JoinPool: 'provider.joinPool',
   },
 };

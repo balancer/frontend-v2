@@ -429,8 +429,13 @@
         "investment": "Confirm investment in wallet"
       },
       "titles": {
+        "tokenIn": "You’re providing",
+        "tokenOut": "You’re expected to receive",
         "confirmed": "Investment confirmed",
-        "default": "Investment preview"
+        "default": "Preview investment"
+      },
+      "summary": {
+        "total": "Total to invest"
       },
       "tooltips": {
         "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
@@ -653,7 +658,9 @@
   },
   "poolTransfer": {
     "myPoolBalancesCard": {
-      "title": "My pool balance"
+      "title": "My pool balance",
+      "altTitle": "My pool investment balance",
+      "underlyingTokens": "Underlying pool tokens"
     },
     "myWalletTokensCard": {
       "title": "Pool tokens in my wallet",
@@ -1113,6 +1120,7 @@
       "boosted": "Boosted rewards"
     }
   },
+  "thereWasAnError": "There was an error",
   "threeMonths": "3M",
   "time": "Time",
   "timeAgo": "{0} ago",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { computed, reactive, toRefs } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -39,7 +39,7 @@ const {
   optimized,
   loadingData,
   supportsPropotionalOptimization,
-} = toRefs(props.math);
+} = toRefs(reactive(props.math));
 
 /**
  * COMPUTED
@@ -150,3 +150,4 @@ const optimizeBtnClasses = computed(() => ({
   @apply text-sm rounded-b-lg;
 }
 </style>
+  
