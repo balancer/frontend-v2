@@ -2,7 +2,6 @@ import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
-import { Web3Provider } from '@ethersproject/providers';
 import { BarChart, LineChart } from 'echarts/charts';
 import {
   GridComponent,
@@ -41,7 +40,7 @@ const app = createApp(Root)
   .use(store)
   .use(blocknative)
   .use(vueQuery)
-  .use(Web3Plugin, Web3Provider)
+  .use(Web3Plugin)
   .use(VueVirtualScroller);
 
 registerDirectives(app);
