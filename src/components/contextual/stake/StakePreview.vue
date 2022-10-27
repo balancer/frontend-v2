@@ -50,13 +50,15 @@ const {
   unstakeBPT,
 } = useStaking();
 
-const numSharesToModify =
+// Staked or unstaked shares depending on action type.
+const currentShares =
   props.action === 'stake'
     ? balanceFor(getAddress(props.pool.address))
     : stakedSharesForProvidedPool.value;
+
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([numSharesToModify])
+  ref([currentShares])
 );
 
 const stakeAction = {
@@ -85,11 +87,6 @@ const isLoadingApprovalsForGauge = ref(false);
 const isActionConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
-const shareBalanceToDisplay = ref(
-  props.action === 'unstake' || props.action === 'restake'
-    ? stakedSharesForProvidedPool.value
-    : balanceFor(props.pool.address)
-);
 
 /**
  * WATCHERS
@@ -111,7 +108,7 @@ const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 const fiatValueOfModifiedShares = ref(
   bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .times(numSharesToModify)
+    .times(currentShares)
     .toString()
 );
 
@@ -192,7 +189,7 @@ function handleClose() {
     <BalCard shadow="none" noPad class="py-2 px-4">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
-          <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
+          <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
           <span class="text-secondary">
             {{ getToken(pool.address).symbol }}
           </span>
