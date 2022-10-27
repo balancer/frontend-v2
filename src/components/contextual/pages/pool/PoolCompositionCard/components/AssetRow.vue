@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { formatUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import { computed } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import { PoolToken } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
   mainTokenAddress?: string;
-  priceRate?: string;
-  address: string;
-  balance: string;
+  poolToken: PoolToken;
   share: string | null;
 };
 
@@ -33,19 +32,22 @@ const { explorerLinks } = useWeb3();
 /**
  * COMPUTED
  */
-const token = computed(() => getToken(props.address));
+const tokenInfo = computed(() => getToken(props.poolToken.address));
 
 const balance = computed(() => {
-  const formattedBalance = formatUnits(props.balance, token.value.decimals);
+  const formattedBalance = formatUnits(
+    parseUnits(props.poolToken.balance, props.poolToken.decimals).toString(),
+    tokenInfo.value.decimals
+  );
   return props.share != null
     ? bnum(formattedBalance).times(props.share).toString()
     : formattedBalance;
 });
 
 const balanceLabel = computed(() => {
-  if (props.priceRate && props.mainTokenAddress) {
+  if (props.poolToken.priceRate && props.mainTokenAddress) {
     const equivMainTokenBalance = bnum(balance.value)
-      .times(props.priceRate)
+      .times(props.poolToken.priceRate)
       .toString();
 
     return fNum2(equivMainTokenBalance, FNumFormats.token);
@@ -55,16 +57,16 @@ const balanceLabel = computed(() => {
 });
 
 const fiatLabel = computed(() => {
-  if (props.priceRate && props.mainTokenAddress) {
+  if (props.poolToken.priceRate && props.mainTokenAddress) {
     const equivMainTokenBalance = bnum(balance.value)
-      .times(props.priceRate)
+      .times(props.poolToken.priceRate)
       .toString();
 
     const fiatValue = toFiat(equivMainTokenBalance, props.mainTokenAddress);
     return fNum2(fiatValue, FNumFormats.fiat);
   }
 
-  let fiatValue = toFiat(balance.value, props.address);
+  let fiatValue = toFiat(balance.value, props.poolToken.address);
   return fNum2(fiatValue, FNumFormats.fiat);
 });
 </script>
@@ -73,13 +75,13 @@ const fiatLabel = computed(() => {
   <div class="grid grid-cols-3">
     <div>
       <BalLink
-        :href="explorerLinks.addressLink(token.address)"
+        :href="explorerLinks.addressLink(tokenInfo.address)"
         external
         noStyle
         class="flex items-center"
       >
-        <BalAsset :address="token.address" class="mr-2" />
-        {{ token.symbol }}
+        <BalAsset :address="tokenInfo.address" class="mr-2" />
+        {{ tokenInfo.symbol }}
         <BalIcon
           name="arrow-up-right"
           size="sm"

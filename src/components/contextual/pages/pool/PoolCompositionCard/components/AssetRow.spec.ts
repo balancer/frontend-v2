@@ -13,6 +13,13 @@ const listedTokens =
   ];
 
 test('Shows balance and price for a given token', async () => {
+  const poolToken = {
+    address: '0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58',
+    balance: '24392820.970327',
+    priceRate: '1.094280477130783889',
+    decimals: 6,
+  };
+
   render(AssetRow, {
     global: {
       plugins: [registerGlobalComponents],
@@ -27,9 +34,7 @@ test('Shows balance and price for a given token', async () => {
     },
     props: {
       mainTokenAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      address: '0xf8Fd466F12e236f4c96F7Cce6c79EAdB819abF58',
-      balance: '24392820970327',
-      priceRate: '1.094280477130783889',
+      poolToken,
       share: '0.999996864452977869',
     },
   });

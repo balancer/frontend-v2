@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
 import { bnum } from '@/lib/utils';
-import { parseUnits } from 'ethers/lib/utils';
 import {
   getUnderlyingTokens,
   findTokenByAddress,
@@ -52,10 +51,6 @@ function getTokenShare(address: string) {
   return bnum(token?.balance || '0')
     .div(linearPools[address].totalSupply)
     .toString();
-}
-
-function convert(balance: string, decimals: number) {
-  return parseUnits(balance, decimals).toString();
 }
 
 function hasNestedTokens(address: string) {
@@ -144,10 +139,8 @@ function fiatValueFor(address: string) {
           </BalLink>
           <template #item="{ item: asset }">
             <AssetRow
-              :address="asset.address"
               :mainTokenAddress="address"
-              :balance="convert(asset.balance, asset.decimals)"
-              :priceRate="asset.priceRate"
+              :poolToken="asset"
               :share="getTokenShare(address)"
             />
           </template>
