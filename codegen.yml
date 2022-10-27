@@ -1,0 +1,23 @@
+overwrite: true
+documents: ["**/*.fragments.ts", "**/*.graphql.ts"]
+generates:
+  # src/generated/subgraph-types.ts:
+  #   schema: "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2"
+  #   plugins:
+  #     - "typescript"
+  #     - "typescript-operations"
+  #   config:
+  #     preResolveTypes: true
+  #     resolvers: false
+  #     scalars:
+  #       BigDecimal: "string" # "BigNumber" on the server side types
+  #       BigInt: "string" # "BigNumber" on the server side types
+  #       Bytes: "string"
+  src/generated/subgraph-gauge-types.ts:
+    schema: "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+    config:
+      preResolveTypes: true
+      resolvers: false

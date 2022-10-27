@@ -23,7 +23,8 @@
     "generate:tokenlists": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/voting-gauge.generator.ts",
     "generate:global-types": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/global-component-types.generator.ts",
-    "typecheck": "npm run generate:global-types && vue-tsc --noEmit"
+    "typecheck": "npm run generate:global-types && vue-tsc --noEmit",
+    "generate-gql-types": "graphql-codegen --config codegen.yml"
   },
   "devDependencies": {
     "@aave/protocol-js": "^4.3.0",
@@ -46,6 +47,8 @@
     "@georgeroman/balancer-v2-pools": "^0.0.5",
     "@gnosis.pm/safe-apps-provider": "^0.6.0",
     "@gnosis.pm/safe-apps-sdk": "4.0.0",
+    "@graphql-codegen/cli": "^2.13.7",
+    "@graphql-codegen/typescript-operations": "^2.5.5",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.9.2",
     "@sentry/browser": "^6.3.2",
@@ -92,6 +95,8 @@
     "ethereumjs-util": "^7.0.7",
     "events": "^3.3.0",
     "feather-icons": "^4.28.0",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.0.0",
     "husky": "^8.0.0",
     "isomorphic-fetch": "^3.0.0",
     "json-to-graphql-query": "^2.0.0",
