@@ -10,7 +10,7 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import {
-  migratablePoolsInvestExceptions,
+  isSoftMigratablePool,
   POOL_MIGRATIONS_MAP,
 } from '@/components/forms/pool_actions/MigrateForm/constants';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
@@ -305,10 +305,7 @@ function iconAddresses(pool: PoolWithShares) {
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
           <BalTooltip
-            v-if="
-              isMigratablePool(pool) &&
-              !migratablePoolsInvestExceptions.includes(pool.id)
-            "
+            v-if="isMigratablePool(pool) && !isSoftMigratablePool(pool.id)"
             class="mb-1 ml-2 text-red-500"
             name="alert-circle"
             filled

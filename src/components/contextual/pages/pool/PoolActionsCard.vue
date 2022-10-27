@@ -8,7 +8,7 @@ import useTokens from '@/composables/useTokens';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { migratablePoolsInvestExceptions } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
 
 /**
  * TYPES
@@ -87,10 +87,7 @@ const fiatTotal = computed(() => {
         :to="{ name: 'invest' }"
         :label="$t('invest')"
         color="gradient"
-        :disabled="
-          isMigratablePool(pool) &&
-          !migratablePoolsInvestExceptions.includes(pool.id)
-        "
+        :disabled="isMigratablePool(pool) && !isSoftMigratablePool(pool.id)"
         block
       />
       <BalBtn
