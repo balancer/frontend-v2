@@ -1629,11 +1629,34 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
-export type StakingDataQueryVariables = Exact<{
+export type QueryStakingEligibleQueryVariables = Exact<{
   poolAddress?: InputMaybe<Scalars['Bytes']>;
 }>;
 
-export type StakingDataQuery = {
+export type QueryStakingEligibleQuery = {
   __typename?: 'Query';
   liquidityGauges: Array<{ __typename?: 'LiquidityGauge'; id: string }>;
+};
+
+export type QueryStakingDataQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  poolId_in?: InputMaybe<Array<Scalars['Bytes']> | Scalars['Bytes']>;
+}>;
+
+export type QueryStakingDataQuery = {
+  __typename?: 'Query';
+  gaugeShares: Array<{
+    __typename?: 'GaugeShare';
+    balance: any;
+    gauge: {
+      __typename?: 'LiquidityGauge';
+      id: string;
+      poolId?: any | null;
+      totalSupply: any;
+    };
+  }>;
+  liquidityGauges: Array<{
+    __typename?: 'LiquidityGauge';
+    poolId?: any | null;
+  }>;
 };
