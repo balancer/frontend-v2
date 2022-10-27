@@ -309,7 +309,7 @@ function iconAddresses(pool: PoolWithShares) {
               isMigratablePool(pool) &&
               !migratablePoolsInvestExceptions.includes(pool.id)
             "
-            class="ml-2 text-red-500"
+            class="mb-1 ml-2 text-red-500"
             name="alert-circle"
             filled
             size="md"
