@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
-
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
-// Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
-// Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
-import InvestFormDeepPoolMultiToken from '@/components/forms/pool_actions/InvestForm/InvestFormDeepPoolMultiToken.vue';
-
 import { JoinPoolProvider } from '@/providers/local/join-pool.provider';
 
 /**
@@ -25,15 +20,15 @@ const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
 
-enum Tabs {
-  POOL_TOKENS = 'poolTokens',
-  SINGLE_TOKEN = 'singleToken',
+enum Tab {
+  PoolTokens,
+  SingleToken,
 }
 
 const tabs = [
-  { value: Tabs.POOL_TOKENS, label: 'Pool Tokens' },
+  { value: Tab.PoolTokens, label: 'Pool Tokens' },
   {
-    value: Tabs.SINGLE_TOKEN,
+    value: Tab.SingleToken,
     label: 'Single Token',
   },
 ];
@@ -81,12 +76,11 @@ onBeforeMount(async () => {
         </div>
       </template>
       <template v-if="isDeepPool">
-        <JoinPoolProvider :pool="pool">
-          <InvestFormDeepPoolMultiToken
-            v-if="activeTab === Tabs.POOL_TOKENS"
-            :pool="pool"
-          />
-          <InvestFormV2 v-else :pool="pool" />
+        <JoinPoolProvider
+          :pool="pool"
+          :isSingleAssetJoin="activeTab === Tab.SingleToken"
+        >
+          <InvestFormV2 :pool="pool" />
         </JoinPoolProvider>
       </template>
       <template v-else>

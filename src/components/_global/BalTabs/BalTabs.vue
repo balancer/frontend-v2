@@ -17,7 +17,7 @@
 import { computed, defineComponent, PropType, ref } from 'vue';
 
 interface Tab {
-  value: string;
+  value: string | number;
   label: string;
 }
 
@@ -26,7 +26,7 @@ export default defineComponent({
 
   props: {
     tabs: { type: Array as PropType<Tab[]>, required: true },
-    modelValue: { type: String, default: '' },
+    modelValue: { type: [String, Number], default: '' },
     noPad: { type: Boolean, default: false },
   },
 

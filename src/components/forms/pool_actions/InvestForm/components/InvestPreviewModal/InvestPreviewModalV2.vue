@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -8,30 +8,17 @@ import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-// import { InvestMathResponse } from '../../composables/useInvestMath';
-import useInvestState from '../../composables/useInvestState';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
-// import { SwapInfo } from '@balancer-labs/sdk';
 import InvestActionsV2 from './components/InvestActionsV2.vue';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import useJoinPool from '@/composables/pools/useJoinPool';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  // math: InvestMathResponse;
-  fullAmounts: string[];
-  highPriceImpact: boolean;
-  rektPriceImpact: boolean;
-  tokenAddresses: string[];
-  // swapRoute?: SwapInfo;
-  join: () => Promise<TransactionResponse>;
-  bptOut: string;
-  priceImpact: number;
-  fiatValueOut: string;
-  fiatValueIn: string;
 };
 
 type AmountMap = {
@@ -41,10 +28,7 @@ type AmountMap = {
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {
-  // swapRoute: undefined,
-  // bptOut: undefined,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -62,14 +46,21 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-// const {
-//   // fullAmounts,
-//   // fiatTotal,
-//   // priceImpact,
-//   // highPriceImpact,
-//   // rektPriceImpact,
-// } = toRefs(reactive(props.math));
-const { resetAmounts } = useInvestState();
+const { blockNumber } = useWeb3();
+const {
+  isSingleAssetJoin,
+  amountsIn,
+  bptOut,
+  fiatValueIn,
+  fiatValueOut,
+  priceImpact,
+  highPriceImpact,
+  rektPriceImpact,
+  isLoadingQuery,
+  txInProgress,
+  debounceQueryJoin,
+  resetAmounts,
+} = useJoinPool();
 
 /**
  * COMPUTED
@@ -84,19 +75,18 @@ const showTokensOut = computed<boolean>(
   () => !!Object.keys(tokenOutMap.value).length
 );
 
-const isSingleAssetInvestment = computed<boolean>(() => true);
 const amountInMap = computed((): AmountMap => {
   const amountMap = {};
-  props.fullAmounts.forEach((amount, i) => {
-    amountMap[props.tokenAddresses[i]] = amount;
+  amountsIn.value.forEach(amountIn => {
+    amountMap[amountIn.address] = amountIn.value;
   });
   return amountMap;
 });
 
 const amountOutMap = computed((): AmountMap => {
-  if (!isSingleAssetInvestment.value) return {};
+  if (!isSingleAssetJoin.value) return {};
   const amountMap = {
-    [props.pool.address]: props.bptOut,
+    [props.pool.address]: bptOut.value,
   };
   return amountMap;
 });
@@ -110,7 +100,7 @@ const tokenInMap = computed((): TokenInfoMap => {
 });
 
 const tokenOutMap = computed((): TokenInfoMap => {
-  if (!isSingleAssetInvestment.value) return {};
+  if (!isSingleAssetJoin.value) return {};
   const tokenMap = {
     [props.pool.address]: getToken(props.pool.address),
   };
@@ -126,9 +116,9 @@ const fiatAmountInMap = computed((): AmountMap => {
 });
 
 const fiatAmountOutMap = computed((): AmountMap => {
-  if (!props.fiatValueOut) return {};
+  if (!fiatValueOut.value) return {};
   const fiatAmountMap = {
-    [props.pool.address]: props.fiatValueOut,
+    [props.pool.address]: fiatValueOut.value,
   };
   return fiatAmountMap;
 });
@@ -154,6 +144,18 @@ function handleShowStakeModal() {
   handleClose();
   emit('showStakeModal');
 }
+
+/**
+ * WATCHERS
+ */
+// On every block we should re-trigger queryJoin in case the expected output
+// has changed as a result of pool state changing. This should only happen in
+// the preview modal, not at the JoinPoolProvider level.
+watch(blockNumber, () => {
+  if (!isLoadingQuery.value && !txInProgress.value) {
+    debounceQueryJoin.value();
+  }
+});
 </script>
   
 <template>
@@ -180,7 +182,7 @@ function handleShowStakeModal() {
       :tokenMap="tokenInMap"
       :fiatAmountMap="fiatAmountInMap"
       :fiatTotal="fiatValueIn"
-      :hideAmountShare="isSingleAssetInvestment"
+      :hideAmountShare="isSingleAssetJoin"
     />
     <TokenAmounts
       v-if="showTokensOut"
@@ -210,12 +212,6 @@ function handleShowStakeModal() {
 
     <InvestActionsV2
       :pool="pool"
-      :fiatValueOut="fiatValueOut"
-      :bptOut="bptOut"
-      :fullAmounts="fullAmounts"
-      :join="join"
-      :tokenAddresses="tokenAddresses"
-      :disabled="rektPriceImpact"
       class="mt-4"
       @success="investmentConfirmed = true"
       @show-stake-modal="handleShowStakeModal"

@@ -73,8 +73,11 @@ export interface TokensProviderResponse {
   injectTokens: (addresses: string[]) => Promise<void>;
   searchTokens: (
     query: string,
-    excluded: string[],
-    disableInjection?: boolean
+    opts: {
+      excluded?: string[];
+      disableInjection?: boolean;
+      subset?: string[];
+    }
   ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
@@ -304,16 +307,23 @@ export default {
      */
     async function searchTokens(
       query: string,
-      excluded: string[] = [],
-      disableInjection = false
+      {
+        excluded = [],
+        disableInjection = false,
+        subset = [],
+      }: { excluded?: string[]; disableInjection?: boolean; subset?: string[] }
     ): Promise<TokenInfoMap> {
-      if (!query) return removeExcluded(tokens.value, excluded);
+      let tokensToSearch = subset.length > 0 ? getTokens(subset) : tokens.value;
+      if (!query) return removeExcluded(tokensToSearch, excluded);
+
+      tokensToSearch =
+        subset.length > 0 ? tokensToSearch : allTokenListTokens.value;
 
       const potentialAddress = getAddressFromPoolId(query);
 
       if (isAddress(potentialAddress)) {
         const address = getAddress(potentialAddress);
-        const token = allTokenListTokens.value[address];
+        const token = tokensToSearch[address];
         if (token) {
           return { [address]: token };
         } else {
@@ -325,7 +335,7 @@ export default {
           }
         }
       } else {
-        const tokensArray = Object.entries(allTokenListTokens.value);
+        const tokensArray = Object.entries(tokensToSearch);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
