@@ -38,11 +38,15 @@ export enum PoolType {
   ComposableStable = 'ComposableStable',
   LiquidityBootstrapping = 'LiquidityBootstrapping',
   Managed = 'Managed',
+  AaveLinear = 'AaveLinear',
+  Linear = 'Linear',
+  ERC4626Linear = 'ERC4626Linear',
 }
 
 export interface TokenTreePool {
   id: string;
-  poolType: null | PoolType;
+  poolType: PoolType;
+  mainIndex: number;
   tokens?: PoolToken[];
 }
 
