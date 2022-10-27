@@ -1629,7 +1629,9 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
-export type StakingDataQueryVariables = Exact<{ [key: string]: never }>;
+export type StakingDataQueryVariables = Exact<{
+  poolAddress?: InputMaybe<Scalars['Bytes']>;
+}>;
 
 export type StakingDataQuery = {
   __typename?: 'Query';
