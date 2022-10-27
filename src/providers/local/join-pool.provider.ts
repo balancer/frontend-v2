@@ -186,6 +186,7 @@ const provider = (props: Props) => {
         );
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;
+        queryError.value = '';
       } catch (error) {
         queryError.value = (error as Error).message;
       }
