@@ -9,10 +9,9 @@ import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
 /**
- * Handles generalized joins using SDK functions. Primarily for pools we
- * consider as 'deep'.
+ * Handles generalized joins for deep pools using SDK functions.
  */
-export class GeneralizedJoinHandler implements JoinPoolHandler {
+export class DeepPoolJoinHandler implements JoinPoolHandler {
   constructor(
     public readonly pool: Ref<Pool>,
     public readonly sdk: BalancerSDK,
