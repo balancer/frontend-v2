@@ -1,6 +1,7 @@
 import { isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
+import useUserSettings from '@/composables/useUserSettings';
 import {
   HIGH_PRICE_IMPACT,
   REKT_PRICE_IMPACT,
@@ -8,7 +9,9 @@ import {
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, removeAddress, trackLoading } from '@/lib/utils';
+import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { Pool } from '@/services/pool/types';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { debounce } from 'lodash';
 import {
@@ -53,13 +56,15 @@ const provider = (props: Props) => {
   /**
    * SERVICES
    */
-  // const exitPoolService = new exitPoolService(pool);
+  const exitPoolService = new ExitPoolService(pool);
 
   /**
    * COMPOSABLES
    */
   const { injectTokens } = useTokens();
   const { txState, txInProgress } = useTxState();
+  const { slippageBsp } = useUserSettings();
+  const { getSigner } = useWeb3();
 
   /**
    * COMPUTED
@@ -100,9 +105,9 @@ const provider = (props: Props) => {
   async function queryExit() {
     trackLoading(async () => {
       try {
-        // const output = await exitPoolService.queryExit();
-        // priceImpact.value = output.priceImpact;
-        // queryError.value = '';
+        const output = await exitPoolService.queryExit();
+        priceImpact.value = output.priceImpact;
+        queryError.value = '';
       } catch (error) {
         queryError.value = (error as Error).message;
       }
@@ -114,7 +119,10 @@ const provider = (props: Props) => {
    */
   async function exit(): Promise<TransactionResponse> {
     try {
-      // return exitPoolService.exit();
+      return exitPoolService.exit({
+        signer: getSigner(),
+        slippageBsp: slippageBsp.value,
+      });
       throw new Error('To be implemented');
     } catch (error) {
       txError.value = (error as Error).message;
