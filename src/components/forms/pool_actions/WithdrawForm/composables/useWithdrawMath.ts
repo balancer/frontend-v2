@@ -206,7 +206,7 @@ export default function useWithdrawMath(
       'send',
       fixedRatioOverride
     );
-    console.log('proportionalPoolTokenAmounts', receive);
+
     return receive;
   });
 
@@ -240,12 +240,6 @@ export default function useWithdrawMath(
 
   const fullAmounts = computed(() => {
     if (isProportional.value) return proportionalAmounts.value;
-    console.log(
-      'fullAmounts',
-      new Array(tokenCount.value).fill('0').map((_, i) => {
-        return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
-      })
-    );
 
     return new Array(tokenCount.value).fill('0').map((_, i) => {
       return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';

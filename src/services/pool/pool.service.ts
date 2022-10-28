@@ -132,12 +132,6 @@ export default class PoolService {
     return (this.pool.linearPoolTokensMap = linearPoolTokensMap);
   }
 
-  removeBptFromTokens(): string[] {
-    return (this.pool.tokensList = this.pool.tokensList.filter(
-      address => !isSameAddress(address, this.pool.address)
-    ));
-  }
-
   formatPoolTokens(): PoolToken[] {
     if (isStable(this.pool.poolType)) return this.pool.tokens;
 

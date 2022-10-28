@@ -35,7 +35,6 @@ type SwapRow = {
 };
 
 type Props = {
-  tokens: string[];
   poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;

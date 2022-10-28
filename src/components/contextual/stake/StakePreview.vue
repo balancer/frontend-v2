@@ -19,7 +19,7 @@ import { getGaugeAddress } from '@/providers/local/staking/staking.provider';
 import { AnyPool } from '@/services/pool/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
-import { usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePool';
 
 export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
@@ -101,7 +101,9 @@ watch(
 );
 
 /* COMPUTED */
-const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
+const assetRowWidth = computed(
+  () => (tokensListExclBpt(props.pool).length * 32) / 1.5
+);
 
 const numSharesToModify = ref(
   props.action === 'stake'
@@ -199,7 +201,7 @@ function handleClose() {
           </span>
         </BalStack>
         <BalAssetSet
-          :addresses="pool.tokensList"
+          :addresses="tokensListExclBpt(pool)"
           :width="assetRowWidth"
           :size="32"
         />

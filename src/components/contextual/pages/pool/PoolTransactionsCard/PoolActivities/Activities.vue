@@ -8,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 
 import { PoolTransactionsTab } from '../types';
 import Table from './Table.vue';
+import { tokensListExclBpt } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -65,7 +66,7 @@ function loadMorePoolActivities() {
 
 <template>
   <Table
-    :tokens="pool ? pool.tokensList : []"
+    :tokens="tokensListExclBpt(pool)"
     :poolActivities="poolActivities"
     :isLoading="loading || isLoadingPoolActivities"
     :isLoadingMore="poolActivitiesIsFetchingNextPage"

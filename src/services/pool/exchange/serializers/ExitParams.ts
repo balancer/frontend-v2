@@ -44,9 +44,7 @@ export default class ExitParams {
     exitTokenIndex: number | null,
     exactOut: boolean
   ): any[] {
-    console.log('serilized', tokensOut);
     const parsedAmountsOut = this.parseAmounts(amountsOut);
-    console.log('parsedAmountsOut', parsedAmountsOut);
     const parsedBptIn = parseUnits(
       bptIn,
       this.pool.value?.onchain?.decimals || 18
@@ -66,7 +64,7 @@ export default class ExitParams {
       amount.gt(0) ? amount.sub(1) : amount
     );
     const poolTokenItselfIndex = preMintedBptIndex(this.pool.value);
-    console.log('poolTokenItselfIndex', poolTokenItselfIndex);
+
     if (
       isComposableStable(this.pool.value.poolType) &&
       poolTokenItselfIndex !== undefined
@@ -77,7 +75,6 @@ export default class ExitParams {
         parseUnits('0', this.pool.value.onchain?.decimals || 18)
       );
     }
-    console.log('minAmountsOut', minAmountsOut);
 
     return [
       this.pool.value.id,
@@ -94,7 +91,7 @@ export default class ExitParams {
 
   private parseAmounts(amounts: string[]): BigNumber[] {
     const tokensList = tokensListExclBpt(this.pool.value);
-    console.log(amounts, tokensList);
+
     return amounts.map((amount, i) => {
       const token = tokensList[i];
       return parseUnits(
@@ -117,7 +114,7 @@ export default class ExitParams {
     ) {
       tokensOutProcessed.splice(preMintedBptIdx, 0, this.pool.value.address);
     }
-    console.log(tokensOutProcessed);
+
     return tokensOutProcessed;
   }
 
