@@ -17,7 +17,7 @@ import OldBigNumber from 'bignumber.js';
 import { computed, Ref, ref, watch } from 'vue';
 
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, tokensExcludingBpt, usePool } from '@/composables/usePool';
+import { isDeep, tokensListExclBpt, usePool } from '@/composables/usePool';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
@@ -114,14 +114,14 @@ export default function useWithdrawMath(
     if (isDeep(pool.value)) {
       return pool.value.mainTokens || [];
     }
-    return tokensExcludingBpt(pool.value);
+    return tokensListExclBpt(pool.value);
   });
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
   // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
-    tokensExcludingBpt(pool.value).map(address => getToken(address))
+    tokensListExclBpt(pool.value).map(address => getToken(address))
   );
 
   const tokenOutDecimals = computed(

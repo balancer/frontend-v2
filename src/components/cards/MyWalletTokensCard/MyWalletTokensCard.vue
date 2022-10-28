@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { tokensExcludingBpt, usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
@@ -50,7 +50,7 @@ const tokenAddresses = computed((): string[] => {
     return props.pool.mainTokens || [];
   }
 
-  return tokensExcludingBpt(props.pool);
+  return tokensListExclBpt(props.pool);
 });
 
 const tokensForTotal = computed((): string[] => {

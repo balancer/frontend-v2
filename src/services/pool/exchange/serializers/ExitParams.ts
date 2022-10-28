@@ -7,7 +7,7 @@ import {
   preMintedBptIndex,
   isComposableStable,
   isStableLike,
-  tokensExcludingBpt,
+  tokensListExclBpt,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
@@ -93,7 +93,7 @@ export default class ExitParams {
   }
 
   private parseAmounts(amounts: string[]): BigNumber[] {
-    const tokensList = tokensExcludingBpt(this.pool.value);
+    const tokensList = tokensListExclBpt(this.pool.value);
     console.log(amounts, tokensList);
     return amounts.map((amount, i) => {
       const token = tokensList[i];
