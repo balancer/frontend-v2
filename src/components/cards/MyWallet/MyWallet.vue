@@ -89,12 +89,11 @@ const poolTokenAddresses = computed((): string[] => {
 });
 
 const poolTokensWithBalance = computed<string[]>(() => {
-  return (
-    poolTokenAddresses.value.filter(poolToken =>
-      includesAddress(tokensWithBalance.value, poolToken)
-    ) || []
+  return tokensWithBalance.value.filter(token =>
+    includesAddress(poolTokenAddresses.value, token)
   );
 });
+
 const poolTokensWithoutBalance = computed<string[]>(() => {
   return (
     poolTokenAddresses.value.filter(
@@ -103,10 +102,10 @@ const poolTokensWithoutBalance = computed<string[]>(() => {
   );
 });
 const notPoolTokensWithBalance = computed<string[]>(() => {
-  if (!poolTokenAddresses.value) return tokensWithBalance.value;
+  if (!poolTokenAddresses.value.length) return tokensWithBalance.value;
   return (
     tokensWithBalance.value.filter(
-      token => !includesAddress(poolTokenAddresses.value || [], token)
+      token => !includesAddress(poolTokenAddresses.value, token)
     ) || []
   );
 });
