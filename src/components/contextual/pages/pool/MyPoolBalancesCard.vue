@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import useStaking from '@/composables/staking/useStaking';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
+import { tokensListExclBpt, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -58,7 +58,7 @@ const poolCalculator = new PoolCalculator(
 const bptBalance = computed((): string => balanceFor(props.pool.address));
 
 const poolTokens = computed(() =>
-  Object.values(getTokens(props.pool.tokensList))
+  Object.values(getTokens(tokensListExclBpt(props.pool)))
 );
 
 const propTokenAmounts = computed((): string[] => {
@@ -71,7 +71,7 @@ const propTokenAmounts = computed((): string[] => {
   if (isDeepPool.value) {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
-    return props.pool.tokensList.map((address, i) => {
+    return tokensListExclBpt(props.pool).map((address, i) => {
       if (!props.pool?.onchain?.linearPools) return '0';
 
       const priceRate = props.pool.onchain.linearPools[address].priceRate;
@@ -89,7 +89,7 @@ const tokenAddresses = computed((): string[] => {
     // so return mainTokens here so that fiat values are correct.
     return props.pool.mainTokens || [];
   }
-  return props.pool.tokensList;
+  return tokensListExclBpt(props.pool);
 });
 
 const fiatValue = computed(() =>
