@@ -22,8 +22,7 @@ const { pool, loadingPool, transfersAllowed, useNativeAsset } =
 
 const { isWethPool } = usePool(pool);
 const { tokenAddresses, amounts } = useInvestState();
-const { addTokensIn, setAmountsIn, isSingleAssetJoin, amountsIn } =
-  useJoinPool();
+const { setAmountsIn, isSingleAssetJoin } = useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
 
 /**
@@ -36,17 +35,33 @@ const excludedTokens = computed<string[]>(() => {
 /**
  * METHODS
  */
+
+// Set the input value to max token balance for lecacy invest state
+function setMaxAmountForLegacyInvestState(
+  tokenAddress: string,
+  maxBalance: string
+) {
+  const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
+
+  if (indexOfAsset >= 0) {
+    amounts.value[indexOfAsset] = maxBalance;
+  }
+}
+
 function handleMyWalletTokenClick(tokenAddress: string) {
   const maxBalance = getMaxBalanceFor(tokenAddress);
 
   if (props.poolSupportsGeneralisedJoin && isSingleAssetJoin.value) {
     // TODO: Swap the tab to single asset join
 
-    // Set the new Token address
-    setAmountsIn([]);
-    addTokensIn([tokenAddress]);
-    // Set the input value to max token balance
-    amountsIn.value[0].value = maxBalance;
+    // Set the new Token address, and set the input value to max token balance
+    setAmountsIn([
+      {
+        address: tokenAddress,
+        value: maxBalance,
+        valid: true,
+      },
+    ]);
   } else if (isWethPool.value) {
     const isNativeAsset = isSameAddress(tokenAddress, nativeAsset.address);
     const isWrappedNativeAsset = isSameAddress(
@@ -62,13 +77,10 @@ function handleMyWalletTokenClick(tokenAddress: string) {
     // Race condition when switching between 'native'/'wrapped native' assets,
     // and then setting the new input value
     setTimeout(() => {
-      // Set the input value to max token balance for lecacy invest state
-      const indexOfAsset = indexOfAddress(tokenAddresses.value, tokenAddress);
-
-      if (indexOfAsset >= 0) {
-        amounts.value[indexOfAsset] = maxBalance;
-      }
+      setMaxAmountForLegacyInvestState(tokenAddress, maxBalance);
     }, 50);
+  } else {
+    setMaxAmountForLegacyInvestState(tokenAddress, maxBalance);
   }
 }
 </script>
