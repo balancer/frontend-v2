@@ -33,9 +33,9 @@ type Props = {
 };
 
 /**
- * JoinPoolProvider
+ * ExitPoolProvider
  *
- * Handles pool joining state and transaction execution.
+ * Handles pool exiting state and transaction execution.
  */
 const provider = (props: Props) => {
   /**
@@ -64,7 +64,7 @@ const provider = (props: Props) => {
   /**
    * COMPUTED
    */
-  // All tokens in the pool token tree that can be used in join functions.
+  // All tokens in the pool token tree that can be used in exit functions.
   const exitTokens = computed((): string[] => {
     let addresses: string[] = [];
 
@@ -110,9 +110,9 @@ const provider = (props: Props) => {
   }
 
   /**
-   * Executes join transaction.
+   * Executes exit transaction.
    */
-  async function join(): Promise<TransactionResponse> {
+  async function exit(): Promise<TransactionResponse> {
     try {
       // return exitPoolService.exit();
       throw new Error('To be implemented');
@@ -126,7 +126,7 @@ const provider = (props: Props) => {
    * WATCHERS
    */
   // If the global pool fetching for the SOR changes it's been set to true. In
-  // this case we should re-trigger queryJoin to fetch the expected output for
+  // this case we should re-trigger queryExit to fetch the expected output for
   // any existing input.
   watch(hasFetchedPoolsForSor, () => {
     debounceQueryExit.value();
@@ -139,7 +139,7 @@ const provider = (props: Props) => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
     injectTokens(exitTokens.value);
-    // Trigger SOR pool fetching in case swap joins are used.
+    // Trigger SOR pool fetching in case swap exits are used.
     fetchPoolsForSor();
   });
 
@@ -160,7 +160,7 @@ const provider = (props: Props) => {
     txInProgress,
     debounceQueryExit,
     queryError,
-    join,
+    exit,
   };
 };
 
