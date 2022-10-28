@@ -8,7 +8,12 @@ import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.v
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { isStableLike, usePool, isDeep } from '@/composables/usePool';
+import {
+  isStableLike,
+  usePool,
+  isDeep,
+  tokensListExclBpt,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
@@ -115,7 +120,7 @@ const investmentTokens = computed((): string[] => {
   if (isDeep(props.pool)) {
     return props.pool.mainTokens || [];
   }
-  return props.pool.tokensList;
+  return tokensListExclBpt(props.pool);
 });
 
 /**
