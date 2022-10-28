@@ -11,7 +11,7 @@ import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
-import { lpTokensFor } from '../usePool';
+import { lpTokensFor, tokensListExclBpt } from '../usePool';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
@@ -111,7 +111,7 @@ export default function usePoolsQuery(
 
     const tokens = flatten(
       pools.map(pool => [
-        ...pool.tokensList,
+        ...tokensListExclBpt(pool),
         ...lpTokensFor(pool),
         pool.address,
       ])
