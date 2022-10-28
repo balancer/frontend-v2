@@ -130,7 +130,7 @@ export function lpTokensFor(pool: AnyPool): string[] {
     const wrappedTokens = pool.wrappedTokens || [];
     return [...mainTokens, ...wrappedTokens];
   } else {
-    return pool.tokensList || [];
+    return tokensListExclBpt(pool);
   }
 }
 
