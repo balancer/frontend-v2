@@ -19,7 +19,7 @@ import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { isVeBalPool, usePool } from '@/composables/usePool';
+import { isVeBalPool, tokensListExclBpt, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
@@ -142,7 +142,7 @@ const missingPrices = computed(() => {
     const tokens =
       isComposableStableLikePool.value && pool.value.mainTokens
         ? pool.value.mainTokens
-        : pool.value.tokensList;
+        : tokensListExclBpt(pool.value);
 
     return !tokens.every(token => includesAddress(tokensWithPrice, token));
   }
@@ -208,7 +208,7 @@ watch(poolQuery.error, () => {
                 :snapshots="snapshots"
                 :loading="isLoadingSnapshots"
                 :totalLiquidity="pool?.totalLiquidity"
-                :tokensList="pool?.tokensList"
+                :tokensList="tokensListExclBpt(pool)"
                 :poolType="pool?.poolType"
               />
             </div>

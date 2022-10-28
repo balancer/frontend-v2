@@ -50,9 +50,7 @@ export default function useHistoricalPricesQuery(
     const createTime = storedPool?.createTime || pool.value?.createTime || 0;
     const tokensList = storedPool
       ? tokensListExclBpt(storedPool)
-      : pool.value
-      ? tokensListExclBpt(pool.value)
-      : [];
+      : tokensListExclBpt(pool.value);
 
     const shapshotDaysNum =
       days || differenceInDays(new Date(), new Date(createTime * 1000));

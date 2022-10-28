@@ -226,7 +226,8 @@ export function isVeBalPool(poolId: string): boolean {
  * @param {Pool} pool - Pool to get tokensList from.
  * @returns tokensList excluding pre-minted BPT address.
  */
-export function tokensListExclBpt(pool: Pool): string[] {
+export function tokensListExclBpt(pool?: Pool): string[] {
+  if (!pool) return [];
   return removeAddress(pool.address, pool.tokensList);
 }
 
