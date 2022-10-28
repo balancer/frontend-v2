@@ -12,6 +12,7 @@ import {
   isDeep,
   isComposableStableLike,
   isComposableStable,
+  tokensListExclBpt,
 } from '@/composables/usePool';
 import ERC20_ABI from '@/lib/abi/ERC20.json';
 import IERC4626 from '@/lib/abi/IERC4626.json';
@@ -50,6 +51,8 @@ export class PoolMulticaller {
     const multicaller = new this.MulticallerClass();
 
     this.pools.forEach(pool => {
+      // pool = removeBptFrom(pool);
+
       multicaller
         .call({
           key: `${pool.id}.totalSupply`,
@@ -113,7 +116,7 @@ export class PoolMulticaller {
         }
 
         if (isDeep(pool)) {
-          pool.tokensList.forEach((poolToken, i) => {
+          tokensListExclBpt(pool).forEach((poolToken, i) => {
             multicaller
               .call({
                 key: `${pool.id}.linearPools.${poolToken}.id`,
