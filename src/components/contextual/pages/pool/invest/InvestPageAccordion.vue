@@ -20,11 +20,13 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
+const nativeBalanceText = computed<string>(() =>
+  hasNativeBalance ? `${nativeBalance} ${nativeCurrency}` : ''
+);
+
 const sectionTitle = computed<string>(() =>
   props.poolSupportsGeneralisedJoin
-    ? `${t('myWallet2')} ${
-        hasNativeBalance ? `${nativeBalance} ${nativeCurrency}` : ''
-      }`
+    ? `${t('myWallet2')} ${nativeBalanceText.value}`
     : t('poolTransfer.myWalletTokensCard.title')
 );
 </script>
