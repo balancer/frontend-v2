@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import useBreakpoints from '@/composables/useBreakpoints';
-import StakingProvider from '@/providers/local/staking/staking.provider';
 import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import InvestPageAccordion from './InvestPageAccordion.vue';
 import InvestPageInvestBlock from './InvestPageInvestBlock.vue';
@@ -24,28 +23,25 @@ const poolSupportsGeneralisedJoin = computed<boolean>(() => {
 </script>
 
 <template>
-  <!-- TODO: Move staking provider somewhere else. -->
-  <StakingProvider :poolAddress="pool?.address">
-    <div class="invest-page-layout-grid">
-      <div v-if="!upToLargeBreakpoint" class="col-span-5">
-        <InvestPageMyWallet
-          :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
-        />
-      </div>
-
-      <div class="col-span-7">
-        <InvestPageInvestBlock
-          :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
-        ></InvestPageInvestBlock>
-      </div>
-
-      <InvestPageAccordion
-        v-if="upToLargeBreakpoint"
-        class="mt-4"
+  <div class="invest-page-layout-grid">
+    <div v-if="!upToLargeBreakpoint" class="col-span-5">
+      <InvestPageMyWallet
         :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
-      ></InvestPageAccordion>
+      />
     </div>
-  </StakingProvider>
+
+    <div class="col-span-7">
+      <InvestPageInvestBlock
+        :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
+      ></InvestPageInvestBlock>
+    </div>
+
+    <InvestPageAccordion
+      v-if="upToLargeBreakpoint"
+      class="mt-4"
+      :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
+    ></InvestPageAccordion>
+  </div>
 </template>
 
 <style scoped>
