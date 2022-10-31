@@ -11,8 +11,8 @@ import useDarkMode from '@/composables/useDarkMode';
 
 interface Props {
   modelValue: string | number;
-  leftLabel: string;
-  rightLabel: string;
+  leftLabel?: string;
+  rightLabel?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

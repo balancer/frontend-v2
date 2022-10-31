@@ -92,8 +92,12 @@ export default function useWithdrawMath(
   const { replaceWethWithEth } = useTokenHelpers();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const { isWeightedPool, isDeepPool, isShallowComposableStablePool } =
-    usePool(pool);
+  const {
+    isWeightedPool,
+    isDeepPool,
+    isShallowComposableStablePool,
+    isStablePhantomPool,
+  } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -231,7 +235,7 @@ export default function useWithdrawMath(
   });
 
   const proportionalAmounts = computed((): string[] => {
-    if (isDeepPool.value) {
+    if (isStablePhantomPool.value) {
       return proportionalMainTokenAmounts.value;
     }
     return proportionalPoolTokenAmounts.value;
