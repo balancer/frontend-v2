@@ -15,7 +15,7 @@ interface GoerliGasStationResponse {
   standard: GoerliEstimatedPrice;
 }
 
-export default class PolygonProvider {
+export default class GoerliProvider {
   public async getGasPrice(
     txSpeed: TxSpeedOptions = 'standard'
   ): Promise<GasPrice | null> {
@@ -23,6 +23,7 @@ export default class PolygonProvider {
       const { data } = await axios.get<GoerliGasStationResponse>(
         'https://gasstation-mainnet.matic.network/v2'
       );
+      console.log('gasprice', data);
       return {
         price: Math.floor(data[txSpeed].maxFee * GWEI_UNIT),
         maxFeePerGas: Math.floor(data[txSpeed].maxFee * GWEI_UNIT),
