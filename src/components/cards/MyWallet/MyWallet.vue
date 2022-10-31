@@ -80,12 +80,14 @@ const tokensWithBalance = computed(() => {
 
 const poolTokenAddresses = computed((): string[] => {
   if (isDeepPool.value) {
-    return tokenTreeLeafs(props.pool.tokens);
+    return tokenTreeLeafs(props.pool?.tokens);
   }
+
+  const tokensList = props.pool?.tokensList || [];
   if (isWethPool.value) {
-    return [nativeAsset.address, ...props.pool.tokensList];
+    return [nativeAsset.address, ...tokensList];
   }
-  return props.pool.tokensList;
+  return tokensList;
 });
 
 const poolTokensWithBalance = computed<string[]>(() => {
@@ -110,8 +112,13 @@ const notPoolTokensWithBalance = computed<string[]>(() => {
   );
 });
 
+function handleAssetClick(tokenAddress) {
+  const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
+  emit('click:asset', tokenAddress, isPoolToken);
+}
+
 const emit = defineEmits<{
-  (e: 'click:asset', tokenAddress: Address): void;
+  (e: 'click:asset', tokenAddress: Address, isPoolToken: boolean): void;
 }>();
 </script>
 
@@ -178,7 +185,7 @@ const emit = defineEmits<{
                 ]"
                 :disabledAddresses="poolTokensWithoutBalance"
                 :maxAssetsPerLine="7"
-                @click="tokenAddress => emit('click:asset', tokenAddress)"
+                @click="handleAssetClick"
               />
             </div>
             <template v-if="isDeepPool">
@@ -192,7 +199,7 @@ const emit = defineEmits<{
                 :size="30"
                 :addresses="notPoolTokensWithBalance"
                 :maxAssetsPerLine="7"
-                @click="tokenAddress => emit('click:asset', tokenAddress)"
+                @click="handleAssetClick"
               />
             </template>
           </template>
@@ -204,7 +211,7 @@ const emit = defineEmits<{
               :size="30"
               :addresses="tokensWithBalance"
               :maxAssetsPerLine="7"
-              @click="tokenAddress => emit('click:asset', tokenAddress)"
+              @click="handleAssetClick"
             />
           </div>
 
