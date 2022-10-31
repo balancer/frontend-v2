@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import { take } from 'lodash';
 import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isMainnet } from '@/composables/useNetwork';
 import useTokens from '@/composables/useTokens';
+import { isSameAddress, includesAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
-import { usePool } from '@/composables/usePool';
-import useMyWallet from '@/composables/useMyWallet';
+import { usePool, tokenTreeLeafs } from '@/composables/usePool';
 
 type Props = {
   excludedTokens?: string[];
@@ -28,22 +29,17 @@ const props = withDefaults(defineProps<Props>(), {
   includeNativeAsset: false,
 });
 
-const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
+const { appNetworkConfig, isWalletReady, startConnectWithInjectedProvider } =
+  useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { dynamicDataLoading: isLoadingBalances } = useTokens();
+const {
+  balances,
+  dynamicDataLoading: isLoadingBalances,
+  nativeAsset,
+} = useTokens();
 const networkName = configService.network.name;
 const { t } = useI18n();
-const { isDeepPool } = usePool(toRef(props, 'pool'));
-const {
-  tokensWithBalance,
-  poolTokensWithBalance,
-  poolTokensWithoutBalance,
-  notPoolTokensWithBalance,
-} = useMyWallet({
-  excludedTokens: props.excludedTokens,
-  pool: props.pool,
-  includeNativeAsset: props.includeNativeAsset,
-});
+const { isWethPool, isDeepPool } = usePool(toRef(props, 'pool'));
 
 const noNativeCurrencyMessage = computed(() => {
   return t('noNativeCurrency', [nativeCurrency, networkName]);
@@ -59,8 +55,70 @@ const noTokensMessage = computed(() => {
 
 const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
+function isExcludedToken(tokenAddress: Address) {
+  return props.excludedTokens.some(excludedAddress =>
+    isSameAddress(excludedAddress, tokenAddress)
+  );
+}
+
+const tokensWithBalance = computed(() => {
+  return take(
+    Object.keys(balances.value).filter(tokenAddress => {
+      const _includeNativeAsset = props.includeNativeAsset
+        ? true
+        : !isSameAddress(tokenAddress, appNetworkConfig.nativeAsset.address);
+      return (
+        Number(balances.value[tokenAddress]) > 0 &&
+        _includeNativeAsset &&
+        !isSameAddress(tokenAddress, appNetworkConfig.addresses.veBAL) &&
+        !isExcludedToken(tokenAddress)
+      );
+    }),
+    21
+  );
+});
+
+const poolTokenAddresses = computed((): string[] => {
+  if (isDeepPool.value) {
+    return tokenTreeLeafs(props.pool?.tokens);
+  }
+
+  const tokensList = props.pool?.tokensList || [];
+  if (isWethPool.value) {
+    return [nativeAsset.address, ...tokensList];
+  }
+  return tokensList;
+});
+
+const poolTokensWithBalance = computed<string[]>(() => {
+  return tokensWithBalance.value.filter(token =>
+    includesAddress(poolTokenAddresses.value, token)
+  );
+});
+
+const poolTokensWithoutBalance = computed<string[]>(() => {
+  return (
+    poolTokenAddresses.value.filter(
+      poolToken => !includesAddress(tokensWithBalance.value, poolToken)
+    ) || []
+  );
+});
+const notPoolTokensWithBalance = computed<string[]>(() => {
+  if (!poolTokenAddresses.value.length) return tokensWithBalance.value;
+  return (
+    tokensWithBalance.value.filter(
+      token => !includesAddress(poolTokenAddresses.value, token)
+    ) || []
+  );
+});
+
+function handleAssetClick(tokenAddress) {
+  const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
+  emit('click:asset', tokenAddress, isPoolToken);
+}
+
 const emit = defineEmits<{
-  (e: 'click:asset', tokenAddress: Address): void;
+  (e: 'click:asset', tokenAddress: Address, isPoolToken: boolean): void;
 }>();
 </script>
 
@@ -127,7 +185,7 @@ const emit = defineEmits<{
                 ]"
                 :disabledAddresses="poolTokensWithoutBalance"
                 :maxAssetsPerLine="7"
-                @click="tokenAddress => emit('click:asset', tokenAddress)"
+                @click="handleAssetClick"
               />
             </div>
             <template v-if="isDeepPool">
@@ -141,7 +199,7 @@ const emit = defineEmits<{
                 :size="30"
                 :addresses="notPoolTokensWithBalance"
                 :maxAssetsPerLine="7"
-                @click="tokenAddress => emit('click:asset', tokenAddress)"
+                @click="handleAssetClick"
               />
             </template>
           </template>
@@ -153,7 +211,7 @@ const emit = defineEmits<{
               :size="30"
               :addresses="tokensWithBalance"
               :maxAssetsPerLine="7"
-              @click="tokenAddress => emit('click:asset', tokenAddress)"
+              @click="handleAssetClick"
             />
           </div>
 

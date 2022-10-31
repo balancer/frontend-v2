@@ -3,9 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-// import { formatUnits } from '@ethersproject/units';
-// import { BigNumber } from 'ethers';
-import { computed, reactive, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
@@ -18,37 +16,16 @@ import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
 import { POOLS } from '@/constants/pools';
-// import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
-// import PoolExchange from '@/services/pool/exchange/exchange.service';
-// Types
 import { Pool } from '@/services/pool/types';
-// Composables
-// import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
-
-// import { InvestMathResponse } from '../../../composables/useInvestMath';
-// import JoinPool from '@/components/forms/pool_actions/JoinPool';
+import useJoinPool from '@/composables/pools/useJoinPool';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  // math: InvestMathResponse;
-  fiatValueOut: string;
-  bptOut: string;
-  fullAmounts: string[];
-  join: () => Promise<TransactionResponse>;
-  tokenAddresses: string[];
-  disabled: boolean;
-};
-
-type InvestmentState = {
-  init: boolean;
-  confirming: boolean;
-  confirmed: boolean;
-  confirmedAt: string;
-  receipt?: TransactionReceipt;
 };
 
 /**
@@ -62,44 +39,28 @@ const emit = defineEmits<{
 }>();
 
 /**
- * STATE
- */
-const investmentState = reactive<InvestmentState>({
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: '',
-});
-
-/**
  * COMPOSABLES
  */
 const { t } = useI18n();
-// const { account, getProvider, blockNumber } = useWeb3();
+const { fNum2 } = useNumbers();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
-
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-// const {
-//   fullAmounts,
-//   batchSwapAmountMap,
-//   bptOut,
-//   fiatTotalLabel,
-//   batchSwap,
-//   shouldFetchBatchSwap,
-// } = toRefs(reactive(props.math));
+const { rektPriceImpact, amountsIn, fiatValueOut, join, txState } =
+  useJoinPool();
 
-const { tokenApprovalActions } = useTokenApprovalActions(
-  props.tokenAddresses,
-  toRef(props, 'fullAmounts')
+const tokensToApprove = computed(() =>
+  amountsIn.value.map(amountIn => amountIn.address)
 );
-
-/**
- * SERVICES
- */
-// const poolExchange = new PoolExchange(toRef(props, 'pool'));
+const amountsToApprove = computed(() =>
+  amountsIn.value.map(amountIn => amountIn.value)
+);
+const { tokenApprovalActions } = useTokenApprovalActions(
+  tokensToApprove.value,
+  amountsToApprove
+);
 
 /**
  * COMPUTED
@@ -115,13 +76,6 @@ const actions = computed((): TransactionActionInfo[] => [
   },
 ]);
 
-// const transactionInProgress = computed(
-//   (): boolean =>
-//     investmentState.init ||
-//     investmentState.confirming ||
-//     investmentState.confirmed
-// );
-
 const isStakablePool = computed((): boolean => {
   return (
     POOLS.Stakable.AllowList.includes(props.pool.id) &&
@@ -129,25 +83,20 @@ const isStakablePool = computed((): boolean => {
   );
 });
 
-// const normalizedBptOut = computed((): string => {
-//   return formatUnits(props.bptOut, props.pool?.onchain?.decimals || 18);
-// });
-
 /**
  * METHODS
  */
-
 async function handleTransaction(tx): Promise<void> {
   addTransaction({
     id: tx.hash,
     type: 'tx',
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
-      props.fiatValueOut,
+      fNum2(fiatValueOut.value, FNumFormats.fiat),
       poolWeightsLabel(props.pool),
     ]),
     details: {
-      total: props.fiatValueOut,
+      total: fNum2(fiatValueOut.value, FNumFormats.fiat),
       pool: props.pool,
     },
   });
@@ -155,36 +104,36 @@ async function handleTransaction(tx): Promise<void> {
   await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       emit('success', receipt);
-      investmentState.receipt = receipt;
+      txState.receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
-      investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
-      investmentState.confirmed = true;
-      investmentState.confirming = false;
+      txState.confirmedAt = dateTimeLabelFor(confirmedAt);
+      txState.confirmed = true;
+      txState.confirming = false;
     },
     onTxFailed: () => {
       console.error('Invest failed');
-      investmentState.confirming = false;
+      txState.confirming = false;
     },
   });
 }
 
 async function submit(): Promise<TransactionResponse> {
-  investmentState.init = true;
+  txState.init = true;
   try {
-    const tx = await props.join();
+    const tx = await join();
 
-    investmentState.confirming = true;
+    txState.confirming = true;
 
     console.log('Receipt', tx);
 
     handleTransaction(tx);
     return tx;
   } catch (error) {
-    investmentState.confirming = false;
+    txState.confirming = false;
     return Promise.reject(error);
   } finally {
-    investmentState.init = false;
+    txState.init = false;
   }
 }
 </script>
@@ -192,12 +141,12 @@ async function submit(): Promise<TransactionResponse> {
 <template>
   <transition>
     <BalActionSteps
-      v-if="!investmentState.confirmed || !investmentState.receipt"
+      v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
-      :disabled="disabled"
+      :disabled="rektPriceImpact"
     />
     <div v-else>
-      <ConfirmationIndicator :txReceipt="investmentState.receipt" />
+      <ConfirmationIndicator :txReceipt="txState.receipt" />
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"

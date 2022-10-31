@@ -18,7 +18,6 @@ import {
   // indexOfAddress,
   isSameAddress,
 } from '@/lib/utils';
-import { activeTab, Tabs } from '@/pages/pool/investTabsState';
 
 /**
  * STATE
@@ -55,10 +54,8 @@ const {
 
 function handleMyWalletTokenClick(tokenAddress: string) {
   if (isInvestPage.value && poolSupportsSingleAssetSwaps.value) {
-    // Only change the tokenAddress if single asset tab is selected
-    if (activeTab.value === Tabs.SINGLE_TOKEN) {
-      tokenAddresses.value[0] = tokenAddress;
-    }
+    // TODO: Only change the tokenAddress if single asset tab is selected
+    tokenAddresses.value[0] = tokenAddress;
   } else if (isWethPool.value) {
     useNativeAsset.value = isSameAddress(tokenAddress, nativeAsset.address);
   }

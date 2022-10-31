@@ -180,3 +180,19 @@ export function findByAddress<T>(
 export function removeAddress(address: string, addresses: string[]): string[] {
   return addresses.filter(a => !isSameAddress(a, address));
 }
+
+/**
+ * Wraps an async function with loading=true and then loading=false for a given
+ * reactive ref.
+ *
+ * @param {Function} fn - The async function to track if loading or finished.
+ * @param {Ref<boolean>} toggle - The reactive property tracking loading state.
+ */
+export async function trackLoading(
+  fn: () => Promise<any>,
+  toggle: Ref<boolean>
+) {
+  toggle.value = true;
+  await fn();
+  toggle.value = false;
+}
