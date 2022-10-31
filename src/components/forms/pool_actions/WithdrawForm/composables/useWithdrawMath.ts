@@ -92,12 +92,8 @@ export default function useWithdrawMath(
   const { replaceWethWithEth } = useTokenHelpers();
   const { minusSlippage, addSlippageScaled, minusSlippageScaled } =
     useSlippage();
-  const {
-    isWeightedPool,
-    isDeepPool,
-    isShallowComposableStablePool,
-    isStablePhantomPool,
-  } = usePool(pool);
+  const { isWeightedPool, isDeepPool, isShallowComposableStablePool } =
+    usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {
     promises: swapPromises,
@@ -235,7 +231,7 @@ export default function useWithdrawMath(
   });
 
   const proportionalAmounts = computed((): string[] => {
-    if (isStablePhantomPool.value) {
+    if (isDeepPool.value) {
       return proportionalMainTokenAmounts.value;
     }
     return proportionalPoolTokenAmounts.value;
@@ -669,7 +665,7 @@ export default function useWithdrawMath(
    * decide what swap should be fetched and sets it.
    */
   async function fetchExitData(): Promise<void> {
-    if (!isDeepPool.value || !isShallowComposableStablePool.value) return;
+    if (!isDeepPool.value && !isShallowComposableStablePool.value) return;
 
     if (isShallowComposableStablePool.value) {
       await getQueryBptIn();
