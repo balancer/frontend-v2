@@ -70,6 +70,7 @@ onMounted(() => {
           { title: 'My wallet', id: 'my-wallet' },
           { title: 'Trending pairs', id: 'trending-pairs' },
           { title: 'Price chart', id: 'price-chart' },
+          { title: 'Bridge assets', id: 'bridge' },
         ]"
       >
         <template #my-wallet>
@@ -80,6 +81,9 @@ onMounted(() => {
         </template>
         <template #price-chart>
           <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+        </template>
+        <template #bridge>
+          <BridgeLink v-if="isL2" />
         </template>
       </BalAccordion>
     </div>
