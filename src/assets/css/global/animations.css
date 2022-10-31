@@ -1,4 +1,4 @@
-@import '../animations/fireworks.css';
+@import url('../animations/fireworks.css');
 
 .icon-spin-anim .feather-settings {
   @apply transition-all duration-200 ease-out;
