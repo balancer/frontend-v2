@@ -33,14 +33,11 @@ export default defineComponent({
   emits: ['selected', 'update:modelValue'],
 
   setup(props, { emit }) {
-    // const activeTab = ref(props.modelValue);
-
     function isActiveTab(tab: Tab): boolean {
       return props.modelValue === tab.value;
     }
 
     function onClick(tab: Tab) {
-      // activeTab.value = tab.value;
       emit('selected', tab.value);
       emit('update:modelValue', tab.value);
     }
@@ -61,7 +58,6 @@ export default defineComponent({
     }
 
     return {
-      // activeTab,
       onClick,
       containerClasses,
       stateClasses,
