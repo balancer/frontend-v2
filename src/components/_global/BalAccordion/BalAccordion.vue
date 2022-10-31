@@ -47,7 +47,7 @@ const totalHeight = ref(0);
 const easing = 'spring(0.2, 150, 18, 0)';
 
 async function toggleSection(section: string, collapse = true) {
-  const _section = props.sections.find(s => (s.id = section));
+  const _section = props.sections.find(s => s.id === section);
   if (_section?.isDisabled) return;
 
   const collapseCurrentSection = activeSection.value === section && collapse;
