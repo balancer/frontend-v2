@@ -34,5 +34,6 @@
   "[javascript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.formatOnSave": true
-  }
+  },
+  "cSpell.words": ["Aprs", "Multicaller"]
 }
