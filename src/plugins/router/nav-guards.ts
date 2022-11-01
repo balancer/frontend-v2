@@ -38,7 +38,7 @@ function applyNetworkSubdomainRedirect(router: Router): Router {
   router.beforeEach((to, from, next) => {
     const redirectUrl = getRedirectUrlFor(
       window.location.host,
-      to.fullPath,
+      to.redirectedFrom?.fullPath ?? to.fullPath,
       to.params
     );
 
