@@ -1,7 +1,7 @@
 import {
   getRedirectUrlFor,
   getSubdomain,
-  handleNetworkUrl,
+  handleNetworkSlug,
 } from './useNetwork';
 
 jest.mock('@/services/web3/useWeb3');
@@ -86,7 +86,7 @@ describe('useNetwork', () => {
 
     localStorage.removeItem('networkId');
     const networkChangeArr = networkSlugs.filter(networkSlug =>
-      handleNetworkUrl(
+      handleNetworkSlug(
         networkSlug,
         () => false,
         () => true
@@ -106,7 +106,7 @@ describe('useNetwork', () => {
     localStorage.removeItem('networkId');
     const networkChangeArr = networks.filter(({ networkSlug, networkId }) => {
       localStorage.setItem('networkId', networkId);
-      return handleNetworkUrl(
+      return handleNetworkSlug(
         networkSlug,
         () => false,
         () => true
@@ -126,7 +126,7 @@ describe('useNetwork', () => {
     localStorage.removeItem('networkId');
     const networkChangeArr = networks.filter(({ networkSlug }) => {
       localStorage.setItem('networkId', '1');
-      return handleNetworkUrl(
+      return handleNetworkSlug(
         networkSlug,
         () => false,
         () => true

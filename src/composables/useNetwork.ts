@@ -159,6 +159,6 @@ export default function useNetwork() {
     networkConfig,
     networkSlug,
     getSubdomain,
-    handleNetworkUrl,
+    handleNetworkSlug,
   };
 }
