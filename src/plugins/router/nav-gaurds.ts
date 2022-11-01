@@ -42,8 +42,7 @@ function applyNetworkSubdomainRedirect(router: Router): Router {
     );
 
     if (redirectUrl) hardRedirectTo(redirectUrl, router);
-
-    next();
+    else next();
   });
 
   return router;
