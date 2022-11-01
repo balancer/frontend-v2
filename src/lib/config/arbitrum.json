@@ -4,6 +4,7 @@
   "chainName": "Arbitrum One",
   "name": "Arbitrum One",
   "shortName": "Arbitrum",
+  "slug": "arbitrum",
   "network": "arbitrum-one",
   "unknown": false,
   "rpc": "https://arbitrum-mainnet.infura.io/v3/{{INFURA_KEY}}",
