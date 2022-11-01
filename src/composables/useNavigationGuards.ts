@@ -9,7 +9,7 @@ NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
 /**
- * Navigation gaurds that require Vue app context.
+ * Navigation guards that require Vue app context.
  */
 export default function useNavigationGuards() {
   const router = useRouter();

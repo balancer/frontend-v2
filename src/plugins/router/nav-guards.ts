@@ -6,9 +6,9 @@ import {
 import { Router } from 'vue-router';
 
 /**
- * Navigation gaurds
+ * Navigation guards
  */
-export function applyNavGaurds(router: Router): Router {
+export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
 
