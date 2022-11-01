@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 import { isGoerli } from '@/composables/useNetwork';
+import { applyNavGuards } from './nav-guards';
 
 const ClaimPage = () =>
   import(/* webpackChunkName: "ClaimPage" */ '@/pages/claim.vue');
@@ -191,4 +192,4 @@ const router = createRouter({
   },
 });
 
-export default router;
+export default applyNavGuards(router);

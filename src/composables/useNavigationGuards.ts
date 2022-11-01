@@ -1,91 +1,24 @@
 import NProgress from 'nprogress';
-import { Router, useRouter } from 'vue-router';
-
-import { Network } from '@balancer-labs/sdk';
-
+import { useRouter } from 'vue-router';
+import { networkId } from './useNetwork';
 import { useSidebar } from './useSidebar';
 import useVeBal from './useVeBAL';
-import {
-  networkFromSlug,
-  getSubdomain,
-  handleNetworkUrl,
-  networkId,
-  networkSlug,
-  appUrl,
-} from '@/composables/useNetwork';
 
 // Progress bar config
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
-function setNetworkAndRefresh(networkId: string, url: string, router: Router) {
-  document.write('');
-  localStorage.setItem('networkId', networkId);
-  window.location.href = url;
-  router.go(0);
-}
-
+/**
+ * Navigation guards that require Vue app context.
+ */
 export default function useNavigationGuards() {
   const router = useRouter();
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
   const { setSidebarOpen } = useSidebar();
 
-  /**
-   * Subdomain redirects - e.g. "polygon.balancer.fi/".
-   */
   router.beforeEach((to, from, next) => {
-    const subdomain = getSubdomain(window.location.host);
-    const subdomainNetwork = networkFromSlug(subdomain);
-    if (subdomainNetwork) {
-      setNetworkAndRefresh(
-        subdomainNetwork.toString(),
-        `${appUrl().replace(subdomain, 'app')}${
-          to.params.networkSlug ? '' : networkSlug
-        }${to.fullPath}`,
-        router
-      );
-    }
-    next();
-  });
+    localStorage.setItem('networkId', networkId.value.toString());
 
-  /**
-   * Network url redirects - e.g. "app.balancer.fi/#/arbitrum".
-   */
-  router.beforeEach((to, from, next) => {
-    const urlNetwork = networkFromSlug(to.params.networkSlug?.toString() ?? '');
-    if (urlNetwork) {
-      const noNetworkChangeCallback = () => next();
-      const networkChangeCallback = (urlNetwork?: Network) => {
-        setNetworkAndRefresh(
-          (urlNetwork ?? '').toString(),
-          `/#${to.fullPath}`,
-          router
-        );
-      };
-      handleNetworkUrl(
-        to.params.networkSlug.toString(),
-        noNetworkChangeCallback,
-        networkChangeCallback
-      );
-    } else {
-      const nonNetworkedRoutes = [
-        '/',
-        '/terms-of-use',
-        '/privacy-policy',
-        '/cookies-policy',
-      ];
-      if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
-        localStorage.setItem('networkId', networkId.value.toString());
-        router.push({
-          path: `/${networkSlug}${to.redirectedFrom?.fullPath ?? to.fullPath}`,
-        });
-      } else {
-        next();
-      }
-    }
-  });
-
-  router.beforeEach((to, from, next) => {
     if (to.name == 'vebal') {
       if (isVeBalSupported.value) next();
       else {
@@ -104,6 +37,7 @@ export default function useNavigationGuards() {
       NProgress.start();
     }, 1000);
   });
+
   router.afterEach(() => {
     // Clear progress bar timeout, so it doesn't start after page load
     clearTimeout(delayedStartProgressBar);
@@ -111,6 +45,7 @@ export default function useNavigationGuards() {
     // Complete the animation of the route progress bar.
     NProgress.done();
   });
+
   router.onError(() => {
     NProgress.done();
   });

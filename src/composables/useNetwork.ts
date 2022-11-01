@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import config from '@/lib/config';
 import { configService } from '@/services/config/config.service';
 import { Network } from '@balancer-labs/sdk';
+import { RouteParamsRaw } from 'vue-router';
 
 /**
  * STATE
@@ -93,16 +94,17 @@ export function getSubdomain(url: string) {
 }
 
 /**
- * Using networkSlug in url check if redirect is necessary
+ * Using networkSlug in url check if redirect is necessary. Redirect is
+ * necessary if something about the current state doesn't match the networkSlug.
  *
  * @param {string} networkSlug - Network name in url - e.g. "app.balancer.fi/polygon".
- * @param {any} noNetworkChangeCallback - Function which gets triggered if user is on correct network already.
- * @param {any} networkChangeCallback - Function which gets triggered if network change is required.
+ * @param {Function} noNetworkChangeCallback - Function which gets triggered if user is on correct network already.
+ * @param {Function} networkChangeCallback - Function which gets triggered if network change is required.
  */
-export function handleNetworkUrl(
+export function handleNetworkSlug(
   networkSlug: string,
   noNetworkChangeCallback: () => void,
-  networkChangeCallback: (networkFromUrl?: Network) => void
+  networkChangeCallback: () => void
 ) {
   const networkFromUrl = networkFromSlug(networkSlug);
   const localStorageNetwork = networkFor(
@@ -118,7 +120,36 @@ export function handleNetworkUrl(
   }
 
   // if on different network -> update localstorage and reload
-  return networkChangeCallback(networkFromUrl);
+  return networkChangeCallback();
+}
+
+/**
+ * Takes current URL and checks if a redirect URL is required, if not returns undefined.
+ *
+ * @param {string} host - The current host, e.g. polygon.balancer.fi
+ * @param {string} fullPath - The current full path from vue router.
+ * @param {RouteParamsRaw} params - The params in the current route.
+ * @returns {string|undefined} The URL to redirect to, e.g. https://app.balancer.fi/#/polygon
+ */
+export function getRedirectUrlFor(
+  host: string,
+  fullPath: string,
+  params: RouteParamsRaw = {}
+): string | undefined {
+  const subdomain = getSubdomain(host);
+  const subdomainNetwork = networkFromSlug(subdomain);
+
+  if (subdomainNetwork) {
+    // Legacy network subdomain, we need to redirect to app.balancer.fi.
+    const newDomain = appUrl().replace(subdomain, 'app');
+    // If networkSlug provided it will be in the fullPath, so pass empty string instead.
+    const newNetwork = params?.networkSlug
+      ? ''
+      : `/${getNetworkSlug(subdomainNetwork)}`;
+    return `${newDomain}${newNetwork}${fullPath}`;
+  }
+
+  return;
 }
 
 export default function useNetwork() {
@@ -128,6 +159,6 @@ export default function useNetwork() {
     networkConfig,
     networkSlug,
     getSubdomain,
-    handleNetworkUrl,
+    handleNetworkSlug,
   };
 }

@@ -45,6 +45,7 @@ export default defineComponent({
      * STATE
      */
     const layout = ref('DefaultLayout');
+
     /**
      * COMPOSABLES
      */
@@ -54,12 +55,8 @@ export default defineComponent({
     useGnosisSafeApp();
     useExploitWatcher();
     useNavigationGuards();
-    const {
-      isWalletSelectVisible,
-      toggleWalletSelectModal,
-      isBlocked,
-      // isMainnet
-    } = useWeb3();
+    const { isWalletSelectVisible, toggleWalletSelectModal, isBlocked } =
+      useWeb3();
     const route = useRoute();
     const store = useStore();
     const { newRouteHandler: updateBgColorFor } = useBackgroundColor();
