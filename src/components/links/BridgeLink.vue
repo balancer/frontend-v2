@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import useNetwork, { networkNameFor } from '@/composables/useNetwork';
+import useNetwork, { getNetworkSlug } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import { Network } from '@balancer-labs/sdk';
 import { computed } from 'vue';
@@ -22,7 +22,7 @@ const label = computed((): string => {
 });
 
 function networkSrc(network: Network) {
-  return require(`@/assets/images/icons/networks/${networkNameFor(
+  return require(`@/assets/images/icons/networks/${getNetworkSlug(
     network
   )}.svg`);
 }

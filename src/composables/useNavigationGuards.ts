@@ -1,6 +1,6 @@
 import NProgress from 'nprogress';
 import { useRouter } from 'vue-router';
-
+import { networkId } from './useNetwork';
 import { useSidebar } from './useSidebar';
 import useVeBal from './useVeBAL';
 
@@ -8,12 +8,17 @@ import useVeBal from './useVeBAL';
 NProgress.configure({ showSpinner: false });
 let delayedStartProgressBar;
 
+/**
+ * Navigation guards that require Vue app context.
+ */
 export default function useNavigationGuards() {
   const router = useRouter();
   const { setShowRedirectModal, isVeBalSupported } = useVeBal();
   const { setSidebarOpen } = useSidebar();
 
   router.beforeEach((to, from, next) => {
+    localStorage.setItem('networkId', networkId.value.toString());
+
     if (to.name == 'vebal') {
       if (isVeBalSupported.value) next();
       else {
@@ -32,6 +37,7 @@ export default function useNavigationGuards() {
       NProgress.start();
     }, 1000);
   });
+
   router.afterEach(() => {
     // Clear progress bar timeout, so it doesn't start after page load
     clearTimeout(delayedStartProgressBar);
@@ -39,6 +45,7 @@ export default function useNavigationGuards() {
     // Complete the animation of the route progress bar.
     NProgress.done();
   });
+
   router.onError(() => {
     NProgress.done();
   });
