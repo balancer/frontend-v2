@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { usePool } from '@/composables/usePool';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -13,33 +12,22 @@ import InvestPageInvestBlock from './InvestPageInvestBlock.vue';
 const { pool } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
-
-/**
- * COMPUTED
- */
-const poolSupportsGeneralisedJoin = computed<boolean>(() => {
-  return !!(pool.value && isDeepPool.value);
-});
 </script>
 
 <template>
   <div class="invest-page-layout-grid">
     <div v-if="!upToLargeBreakpoint" class="col-span-5">
-      <InvestPageMyWallet
-        :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
-      />
+      <InvestPageMyWallet />
     </div>
 
     <div class="col-span-7">
-      <InvestPageInvestBlock
-        :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
-      ></InvestPageInvestBlock>
+      <InvestPageInvestBlock></InvestPageInvestBlock>
     </div>
 
     <InvestPageAccordion
       v-if="upToLargeBreakpoint"
       class="mt-4"
-      :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
+      :isDeepPool="isDeepPool"
     ></InvestPageAccordion>
   </div>
 </template>

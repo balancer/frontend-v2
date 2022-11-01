@@ -6,7 +6,7 @@ import InvestPageMyWallet from './InvestPageMyWallet.vue';
 import { useI18n } from 'vue-i18n';
 
 type Props = {
-  poolSupportsGeneralisedJoin: boolean;
+  isDeepPool: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {});
@@ -25,7 +25,7 @@ const nativeBalanceText = computed<string>(() =>
 );
 
 const sectionTitle = computed<string>(() =>
-  props.poolSupportsGeneralisedJoin
+  props.isDeepPool
     ? `${t('myWallet2')} ${nativeBalanceText.value}`
     : t('poolTransfer.myWalletTokensCard.title')
 );
@@ -42,9 +42,7 @@ const sectionTitle = computed<string>(() =>
   >
     <!-- TODO: Show some 404 message if Pool not found -->
     <template #myWalletTokens>
-      <InvestPageMyWallet
-        :poolSupportsGeneralisedJoin="poolSupportsGeneralisedJoin"
-      />
+      <InvestPageMyWallet />
     </template>
   </BalAccordion>
 </template>

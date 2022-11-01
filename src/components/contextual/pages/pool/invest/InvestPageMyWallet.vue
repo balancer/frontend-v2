@@ -12,19 +12,13 @@ import useInvestPageTabs, {
   tabs,
 } from '@/composables/pools/useInvestPageTabs';
 
-type Props = {
-  poolSupportsGeneralisedJoin: boolean;
-};
-
-const props = withDefaults(defineProps<Props>(), {});
-
 /**
  * COMPOSABLES
  */
 const { pool, loadingPool, transfersAllowed, useNativeAsset } =
   usePoolTransfers();
 
-const { isWethPool } = usePool(pool);
+const { isWethPool, isDeepPool } = usePool(pool);
 const { tokenAddresses, amounts } = useInvestState();
 const { setAmountsIn, isSingleAssetJoin, amountsIn } = useJoinPool();
 const { nativeAsset, wrappedNativeAsset, getMaxBalanceFor } = useTokens();
@@ -78,7 +72,7 @@ function setMaxAmountForLegacyInvestState(
 function handleMyWalletTokenClick(tokenAddress: string, isPoolToken: boolean) {
   const maxBalance = getMaxBalanceFor(tokenAddress);
 
-  if (props.poolSupportsGeneralisedJoin) {
+  if (isDeepPool.value) {
     if (isPoolToken) {
       setMaxAmount(tokenAddress, maxBalance);
     } else {
