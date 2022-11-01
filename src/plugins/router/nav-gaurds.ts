@@ -2,7 +2,6 @@ import {
   getRedirectUrlFor,
   handleNetworkSlug,
   networkFromSlug,
-  networkId,
 } from '@/composables/useNetwork';
 import { Router } from 'vue-router';
 
@@ -51,7 +50,18 @@ function applyNetworkSubdomainRedirect(router: Router): Router {
 }
 
 /**
- * Network url redirects - e.g. "app.balancer.fi/#/arbitrum".
+ * Assuming the domain is correct, e.g. applyNetworkSubdomainRedirect() has not
+ * triggered a redirect, check if the URL path is using the old format and
+ * redirect if required.
+ *
+ * Requirements for a redirect:
+ * - If the network is in the path, does it match the current app state? If not
+ *   we should redirect to sync path with app state.
+ * - If the current route is a redirect and the the path is one that requires a
+ *   network slug, update the route to include the network slug.
+ *
+ * Note: We can assume the domain is correct because applyNetworkSubdomainRedirect() is
+ * run before this function, see applyNavGuards().
  */
 function applyNetworkPathRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
@@ -61,9 +71,6 @@ function applyNetworkPathRedirects(router: Router): Router {
     if (networkFromPath) {
       const noNetworkChangeCallback = () => next();
       const networkChangeCallback = () => {
-        // I don't think local storage item should be set here. It should be set
-        // on app load.
-        // localStorage.setItem('networkId', urlNetwork.toString());
         hardRedirectTo(`/#${to.fullPath}`, router);
       };
 
@@ -80,10 +87,8 @@ function applyNetworkPathRedirects(router: Router): Router {
         '/cookies-policy',
       ];
       if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
-        localStorage.setItem('networkId', networkId.value.toString());
-        router.push({
-          path: `/${networkSlug}${to.redirectedFrom?.fullPath ?? to.fullPath}`,
-        });
+        const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
+        router.push({ path: `/${networkSlug}${newPath}` });
       } else {
         next();
       }
