@@ -10,10 +10,10 @@ import { isSameAddress, includesAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
-import { AnyPool, PoolToken } from '@/services/pool/types';
+import { AnyPool } from '@/services/pool/types';
 import MyWalletSubheader from './MyWalletSubheader.vue';
 import useNativeBalance from '@/composables/useNativeBalance';
-import { usePool } from '@/composables/usePool';
+import { usePool, tokenTreeLeafs } from '@/composables/usePool';
 
 type Props = {
   excludedTokens?: string[];
@@ -78,52 +78,24 @@ const tokensWithBalance = computed(() => {
   );
 });
 
-function deepPoolTokenAddressReducer(
-  acc: Set<string>,
-  poolToken: PoolToken
-): Set<string> {
-  // Exclude BPT node
-  if (isSameAddress(poolToken.address, props.pool.address)) {
-    return acc;
-  }
-  // If current node has children, recursively look through the nested token tree
-  if (poolToken.token.pool?.tokens?.length) {
-    const nestedTokenAddresses = poolToken.token.pool?.tokens.reduce<
-      Set<string>
-    >(deepPoolTokenAddressReducer, acc);
-    return nestedTokenAddresses;
-  }
-
-  // Add the final token address to set
-  const { address } = poolToken;
-  return acc.add(address);
-}
-
-function getDeepPoolTokenAddresses(pool: AnyPool): string[] {
-  const tokensSet = pool.tokens.reduce<Set<string>>(
-    deepPoolTokenAddressReducer,
-    new Set<string>()
-  );
-
-  return Array.from(tokensSet);
-}
 const poolTokenAddresses = computed((): string[] => {
   if (isDeepPool.value) {
-    return getDeepPoolTokenAddresses(props.pool);
+    return tokenTreeLeafs(props.pool?.tokens);
   }
+
+  const tokensList = props.pool?.tokensList || [];
   if (isWethPool.value) {
-    return [nativeAsset.address, ...props.pool.tokensList];
+    return [nativeAsset.address, ...tokensList];
   }
-  return props.pool.tokensList;
+  return tokensList;
 });
 
 const poolTokensWithBalance = computed<string[]>(() => {
-  return (
-    poolTokenAddresses.value.filter(poolToken =>
-      includesAddress(tokensWithBalance.value, poolToken)
-    ) || []
+  return tokensWithBalance.value.filter(token =>
+    includesAddress(poolTokenAddresses.value, token)
   );
 });
+
 const poolTokensWithoutBalance = computed<string[]>(() => {
   return (
     poolTokenAddresses.value.filter(
@@ -132,16 +104,21 @@ const poolTokensWithoutBalance = computed<string[]>(() => {
   );
 });
 const notPoolTokensWithBalance = computed<string[]>(() => {
-  if (!poolTokenAddresses.value) return tokensWithBalance.value;
+  if (!poolTokenAddresses.value.length) return tokensWithBalance.value;
   return (
     tokensWithBalance.value.filter(
-      token => !includesAddress(poolTokenAddresses.value || [], token)
+      token => !includesAddress(poolTokenAddresses.value, token)
     ) || []
   );
 });
 
+function handleAssetClick(tokenAddress) {
+  const isPoolToken = includesAddress(poolTokenAddresses.value, tokenAddress);
+  emit('click:asset', tokenAddress, isPoolToken);
+}
+
 const emit = defineEmits<{
-  (e: 'click:asset', tokenAddress: Address): void;
+  (e: 'click:asset', tokenAddress: Address, isPoolToken: boolean): void;
 }>();
 </script>
 
@@ -208,7 +185,7 @@ const emit = defineEmits<{
                 ]"
                 :disabledAddresses="poolTokensWithoutBalance"
                 :maxAssetsPerLine="7"
-                @click="tokenAddress => emit('click:asset', tokenAddress)"
+                @click="handleAssetClick"
               />
             </div>
             <template v-if="isDeepPool">
@@ -222,7 +199,7 @@ const emit = defineEmits<{
                 :size="30"
                 :addresses="notPoolTokensWithBalance"
                 :maxAssetsPerLine="7"
-                @click="tokenAddress => emit('click:asset', tokenAddress)"
+                @click="handleAssetClick"
               />
             </template>
           </template>
@@ -234,7 +211,7 @@ const emit = defineEmits<{
               :size="30"
               :addresses="tokensWithBalance"
               :maxAssetsPerLine="7"
-              @click="tokenAddress => emit('click:asset', tokenAddress)"
+              @click="handleAssetClick"
             />
           </div>
 
