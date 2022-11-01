@@ -2,6 +2,7 @@ import {
   getRedirectUrlFor,
   handleNetworkSlug,
   networkFromSlug,
+  networkSlug,
 } from '@/composables/useNetwork';
 import { Router } from 'vue-router';
 
@@ -64,8 +65,8 @@ function applyNetworkSubdomainRedirect(router: Router): Router {
  */
 function applyNetworkPathRedirects(router: Router): Router {
   router.beforeEach((to, from, next) => {
-    const networkSlug = to.params.networkSlug?.toString() ?? '';
-    const networkFromPath = networkFromSlug(networkSlug);
+    const networkSlugFromUrl = to.params.networkSlug?.toString() ?? '';
+    const networkFromPath = networkFromSlug(networkSlugFromUrl);
 
     if (networkFromPath) {
       const noNetworkChangeCallback = () => next();
@@ -74,7 +75,7 @@ function applyNetworkPathRedirects(router: Router): Router {
       };
 
       handleNetworkSlug(
-        networkSlug,
+        networkSlugFromUrl,
         noNetworkChangeCallback,
         networkChangeCallback
       );
