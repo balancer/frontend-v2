@@ -21,7 +21,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
     </div>
 
     <div class="col-span-7">
-      <InvestPageInvestBlock></InvestPageInvestBlock>
+      <InvestPageInvestBlock />
     </div>
 
     <InvestPageAccordion
