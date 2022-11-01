@@ -11,7 +11,7 @@ import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { POOLS } from '@/constants/pools';
+import { ALLOWED_PRICE_RATE_PROVIDERS, POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import { OnchainTokenData, Pool, PoolAPRs } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -124,6 +124,16 @@ const poolTypeLabel = computed(() => {
 
   return key ? t(key) : t('unknownPoolType');
 });
+
+const nonAllowedRateProviders = computed(() => {
+  return (
+    props.pool?.poolType === 'Weighted' &&
+    props.pool?.priceRateProviders?.some(
+      provider =>
+        !ALLOWED_PRICE_RATE_PROVIDERS[provider.token.address][provider.address]
+    )
+  );
+});
 </script>
 
 <template>
@@ -208,6 +218,13 @@ const poolTypeLabel = computed(() => {
       </div>
     </div>
 
+    <BalAlert
+      v-if="nonAllowedRateProviders"
+      type="warning"
+      :title="$t('nonAllowedRateProviders')"
+      class="mt-2"
+      block
+    />
     <BalAlert
       v-if="!appLoading && !loadingPool && missingPrices"
       type="warning"
