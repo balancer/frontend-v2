@@ -665,7 +665,7 @@ export default function useWithdrawMath(
    * decide what swap should be fetched and sets it.
    */
   async function fetchExitData(): Promise<void> {
-    if (!isDeepPool.value || !isShallowComposableStablePool.value) return;
+    if (!isDeepPool.value && !isShallowComposableStablePool.value) return;
 
     if (isShallowComposableStablePool.value) {
       await getQueryBptIn();
