@@ -34,6 +34,7 @@ export abstract class JoinPoolHandler {
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices,
-    signer: Signer
+    signer: Signer,
+    slippageBsp: number
   ): Promise<QueryOutput>;
 }

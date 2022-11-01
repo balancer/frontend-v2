@@ -48,7 +48,8 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices,
-    signer: Signer
+    signer: Signer,
+    slippageBsp: number
   ): Promise<QueryOutput> {
     const parsedAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       // Get the address in right casing style
@@ -64,7 +65,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     const tokenAddresses: string[] = amountsIn.map(({ address }) => address);
     const signerAddress = await signer.getAddress();
     const wrapLeafTokens = false;
-    const slippage = '100'; // 100 bps = 1%
+    const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
     const authorisation =
       '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001bc90329ed90439744b57601e9ae2d5525e8554ee14d40c84dc8ee89b01de129a35dfb25841fad7f887c025869bbf91496b39200ce19d55fede3f3e74bbe2ea91c';

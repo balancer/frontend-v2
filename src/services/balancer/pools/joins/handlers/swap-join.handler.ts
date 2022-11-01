@@ -37,7 +37,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
     slippageBsp,
   }: JoinParams): Promise<TransactionResponse> {
     const userAddress = await signer.getAddress();
-    await this.queryJoin(amountsIn, tokensIn, prices, signer);
+    await this.queryJoin(amountsIn, tokensIn, prices, signer, slippageBsp);
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 
@@ -62,7 +62,9 @@ export class SwapJoinHandler implements JoinPoolHandler {
     tokensIn: TokenInfoMap,
     prices: TokenPrices,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    signer: Signer
+    signer: Signer,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    slippageBsp: number
   ): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');

@@ -85,13 +85,21 @@ export class JoinPoolService {
    * @param {TokenInfoMap} tokensIn - Meta data for token addresses in amountsIn.
    * @param {TokenPrices} prices - Fiat prices for tokens in amountsIn.
    * @param {Signer} params.signer - Ethers Signer for executing the transaction.
+   * @param {number} params.slippageBsp - User's slippage setting in basis points.
    */
   async queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
     prices: TokenPrices,
-    signer: Signer
+    signer: Signer,
+    slippageBsp: number
   ): Promise<QueryOutput> {
-    return this.joinHandler.queryJoin(amountsIn, tokensIn, prices, signer);
+    return this.joinHandler.queryJoin(
+      amountsIn,
+      tokensIn,
+      prices,
+      signer,
+      slippageBsp
+    );
   }
 }

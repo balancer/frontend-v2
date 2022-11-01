@@ -183,7 +183,8 @@ const provider = (props: Props) => {
           amountsIn.value,
           tokensIn.value,
           prices.value,
-          getSigner()
+          getSigner(),
+          slippageBsp.value
         );
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;
