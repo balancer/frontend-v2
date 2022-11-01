@@ -7,7 +7,10 @@
         class="flex flex-col md:flex-row gap-8 md:justify-between py-12 px-4 lg:px-0 text-primary"
       >
         <div class="flex flex-col gap-8">
-          <router-link class="font-medium link" :to="{ name: 'home' }">
+          <router-link
+            class="font-medium link"
+            :to="{ name: 'home', params: { networkSlug } }"
+          >
             <AppLogo class="mb-4" />
           </router-link>
 
@@ -15,7 +18,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'home' }"
+                :to="{ name: 'home', params: { networkSlug } }"
               >
                 {{ $t('invest') }}
               </router-link>
@@ -23,7 +26,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'trade' }"
+                :to="{ name: 'trade', params: { networkSlug } }"
               >
                 {{ $t('trade') }}
               </router-link>
@@ -31,7 +34,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'portfolio' }"
+                :to="{ name: 'portfolio', params: { networkSlug } }"
               >
                 {{ $t('portfolio') }}
               </router-link>
@@ -39,7 +42,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'vebal' }"
+                :to="{ name: 'vebal', params: { networkSlug } }"
               >
                 {{ $t('vebal') }}
               </router-link>
@@ -47,7 +50,7 @@
             <p>
               <router-link
                 class="text-lg font-medium link"
-                :to="{ name: 'claim' }"
+                :to="{ name: 'claim', params: { networkSlug } }"
               >
                 {{ $t('claim') }}
               </router-link>
@@ -228,6 +231,8 @@ import IconTwitter from '@/components/icons/IconTwitter.vue';
 import IconYoutube from '@/components/icons/IconYoutube.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 
+import useNetwork from '@/composables/useNetwork';
+
 import AppLogo from '../images/AppLogo.vue';
 
 export default {
@@ -243,9 +248,12 @@ export default {
   },
   setup() {
     const { t } = useI18n();
+    const { networkSlug } = useNetwork();
+
     return {
       EXTERNAL_LINKS,
       t,
+      networkSlug,
       isThirdPartyServicesModalVisible,
     };
   },

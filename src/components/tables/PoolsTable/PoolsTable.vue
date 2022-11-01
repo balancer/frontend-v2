@@ -15,6 +15,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
 import useNumbers from '@/composables/useNumbers';
+import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
   isMigratablePool,
@@ -78,6 +79,7 @@ const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { networkSlug } = useNetwork();
 
 const wideCompositionWidth = computed(() =>
   upToMediumBreakpoint.value ? 450 : undefined
@@ -212,7 +214,7 @@ const visibleColumns = computed(() =>
  */
 function handleRowClick(pool: PoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
-  router.push({ name: 'pool', params: { id: pool.id } });
+  router.push({ name: 'pool', params: { id: pool.id, networkSlug } });
 }
 
 function navigateToPoolMigration(pool: PoolWithShares) {
@@ -262,7 +264,7 @@ function iconAddresses(pool: PoolWithShares) {
       :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
-        getParams: pool => ({ id: pool.id || '' }),
+        getParams: pool => ({ id: pool.id || '', networkSlug }),
       }"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"

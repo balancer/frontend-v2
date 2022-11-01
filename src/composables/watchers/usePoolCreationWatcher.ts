@@ -2,6 +2,8 @@ import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import useNetwork from '@/composables/useNetwork';
+
 import { lsGet } from '@/lib/utils';
 
 import {
@@ -15,9 +17,10 @@ export default function usePoolCreationWatcher() {
   const { addAlert } = useAlerts();
   const { t } = useI18n();
   const router = useRouter();
+  const { networkSlug } = useNetwork();
 
   function navigateToPoolCreation() {
-    router.push({ name: 'create-pool' });
+    router.push({ name: 'create-pool', params: { networkSlug } });
   }
 
   onMounted(() => {
