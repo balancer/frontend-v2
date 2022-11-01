@@ -14,6 +14,7 @@ import {
   QueryOutput,
 } from './handlers/join-pool.handler';
 import { DeepPoolJoinHandler } from './handlers/deep-pool-join.handler';
+import { Signer } from '@ethersproject/abstract-signer';
 
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
@@ -83,12 +84,14 @@ export class JoinPoolService {
    * to join with.
    * @param {TokenInfoMap} tokensIn - Meta data for token addresses in amountsIn.
    * @param {TokenPrices} prices - Fiat prices for tokens in amountsIn.
+   * @param {Signer} params.signer - Ethers Signer for executing the transaction.
    */
   async queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
-    prices: TokenPrices
+    prices: TokenPrices,
+    signer: Signer
   ): Promise<QueryOutput> {
-    return this.joinHandler.queryJoin(amountsIn, tokensIn, prices);
+    return this.joinHandler.queryJoin(amountsIn, tokensIn, prices, signer);
   }
 }

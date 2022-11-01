@@ -182,7 +182,8 @@ const provider = (props: Props) => {
         const output = await joinPoolService.queryJoin(
           amountsIn.value,
           tokensIn.value,
-          prices.value
+          prices.value,
+          getSigner()
         );
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;

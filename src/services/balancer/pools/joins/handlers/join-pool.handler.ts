@@ -33,6 +33,7 @@ export abstract class JoinPoolHandler {
   abstract queryJoin(
     amountsIn: AmountIn[],
     tokensIn: TokenInfoMap,
-    prices: TokenPrices
+    prices: TokenPrices,
+    signer: Signer
   ): Promise<QueryOutput>;
 }
