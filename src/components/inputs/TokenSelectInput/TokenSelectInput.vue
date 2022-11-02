@@ -7,28 +7,29 @@ import useTokens from '@/composables/useTokens';
 import { isSameAddress } from '@/lib/utils';
 import { TokenInfo } from '@/types/TokenList';
 
-/**
- * TYPES
- */
-type Props = {
+export type TokenSelectProps = {
   modelValue: string;
   fixed?: boolean;
   weight?: number | string;
+  disableInjection?: boolean;
+  hideTokenLists?: boolean;
   excludedTokens?: string[];
   options?: string[];
-  disableInjection?: boolean;
+  subsetTokens?: string[];
 };
 
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TokenSelectProps>(), {
   modelValue: '',
   fixed: false,
   weight: 0,
-  excludedTokens: () => [],
-  options: () => [],
   disableInjection: false,
+  hideTokenLists: false,
+  excludedTokens: () => [],
+  subsetTokens: () => [],
+  options: () => [],
 });
 
 const emit = defineEmits<{
@@ -158,8 +159,10 @@ function toggleModal(): void {
       <SelectTokenModal
         v-if="openTokenModal"
         :excludedTokens="[...excludedTokens, modelValue]"
+        :subset="subsetTokens"
         :includeEther="true"
         :disableInjection="disableInjection"
+        :hideTokenLists="hideTokenLists"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />

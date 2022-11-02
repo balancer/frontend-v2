@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-// Composables
 import { useStore } from 'vuex';
-
-// Components
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
@@ -25,6 +22,8 @@ const showPriceGraphModal = ref(false);
 const store = useStore();
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { setTokenInAddress } = useTradeState();
+const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 /**
  * COMPUTED
@@ -54,7 +53,7 @@ onMounted(() => {
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
-      <MyWallet />
+      <MyWallet @click:asset="setTokenInAddress" />
       <TrendingPairs class="mt-4" />
     </template>
 
@@ -67,14 +66,19 @@ onMounted(() => {
         v-if="upToLargeBreakpoint"
         class="w-full"
         :sections="[
-          { title: 'My wallet', id: 'my-wallet' },
+          {
+            title: `${$t('myWallet2')} ${
+              hasNativeBalance ? `${nativeBalance} ${nativeCurrency}` : ''
+            }`,
+            id: 'my-wallet',
+          },
           { title: 'Trending pairs', id: 'trending-pairs' },
           { title: 'Price chart', id: 'price-chart' },
           { title: 'Bridge assets', id: 'bridge' },
         ]"
       >
         <template #my-wallet>
-          <MyWallet />
+          <MyWallet @click:asset="setTokenInAddress" />
         </template>
         <template #trending-pairs>
           <TrendingPairs />
