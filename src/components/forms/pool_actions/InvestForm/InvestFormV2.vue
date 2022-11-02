@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, ref, toRef, watch } from 'vue';
+import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
@@ -17,9 +17,6 @@ import useJoinPool from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import InvestFormMissingPoolTokens from './components/InvestFormMissingPoolTokens.vue';
 
@@ -62,8 +59,6 @@ const {
   addTokensIn,
 } = useJoinPool();
 
-const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-
 const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
   useMyWalletTokens({
     pool: props.pool,
@@ -96,15 +91,6 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
  */
 onBeforeMount(() => {
   initializeTokensForm(isSingleAssetJoin.value);
-});
-
-onMounted(async () => {
-  await forChange(relayerApproval.loading, false);
-  if (!relayerApproval.isUnlocked.value) {
-    const tx = await relayerApproval.approve();
-    const res = await tx.wait();
-    console.log({ res });
-  }
 });
 
 /**

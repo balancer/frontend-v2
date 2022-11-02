@@ -9,7 +9,13 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, removeAddress, trackLoading } from '@/lib/utils';
+import {
+  bnSum,
+  bnum,
+  forChange,
+  removeAddress,
+  trackLoading,
+} from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -29,6 +35,9 @@ import {
   toRef,
   watch,
 } from 'vue';
+import useRelayerApproval, {
+  Relayer,
+} from '@/composables/trade/useRelayerApproval';
 
 /**
  * TYPES
@@ -78,6 +87,7 @@ const provider = (props: Props) => {
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const { txState, txInProgress } = useTxState();
+  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
 
   /**
    * COMPUTED
@@ -139,6 +149,14 @@ const provider = (props: Props) => {
     fiatValueOf(pool.value, bptOut.value)
   );
 
+  const isFormEmpty = computed<boolean>(
+    () =>
+      !amountsIn.value.reduce<number>(
+        (acc, item) => acc + Number(item.value),
+        0
+      )
+  );
+
   /**
    * METHODS
    */
@@ -177,6 +195,11 @@ const provider = (props: Props) => {
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
+    if (isFormEmpty.value) return;
+    if (isDeep(pool.value) && !isSingleAssetJoin.value) {
+      await checkRelayerApproval();
+    }
+
     trackLoading(async () => {
       try {
         const output = await joinPoolService.queryJoin(
@@ -211,6 +234,19 @@ const provider = (props: Props) => {
       txError.value = (error as Error).message;
       throw error;
     }
+  }
+
+  async function checkRelayerApproval() {
+    await forChange(relayerApproval.loading, false);
+    if (
+      relayerApproval.isUnlocked.value ||
+      relayerApproval.approving.value ||
+      relayerApproval.init.value
+    ) {
+      return;
+    }
+    const tx = await relayerApproval.approve();
+    await tx.wait();
   }
 
   /**
