@@ -273,6 +273,7 @@ const POOLS_MAINNET: Pools = {
       '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // DOLA/INV stable pool
       '0x2ba7aa2213fa2c909cd9e46fed5a0059542b36b00000000000000000000003a3', // TUSD/bbausd
       '0x6a9603e481fb8f2c09804ea9adab49a338855b900000000000000000000003a8', // Balancer graviAURA Stable Pool
+      '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba', //staked frax/rocket/wsteth
     ],
   },
   Investment: {
