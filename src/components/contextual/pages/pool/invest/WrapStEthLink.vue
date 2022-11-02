@@ -22,7 +22,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { isWstETHPool } = usePool(toRef(props, 'pool'));
+const { isMainnetWstETHPool } = usePool(toRef(props, 'pool'));
 const { networkConfig } = useConfig();
 const { getToken } = useTokens();
 const { networkSlug } = useNetwork();
@@ -35,7 +35,7 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
 </script>
 
 <template>
-  <div v-if="isWstETHPool" class="flex items-center mb-4">
+  <div v-if="isMainnetWstETHPool" class="flex items-center mb-4">
     <router-link
       :to="{
         name: 'trade',
