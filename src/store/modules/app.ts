@@ -13,7 +13,7 @@ const state: AppState = {
   loading: true,
   modalOpen: false,
   locale: lsGet(LS_KEYS.App.Locale, 'en-US'),
-  transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 6000), // seconds
+  transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 100), // minutes
 };
 
 const actions = {
