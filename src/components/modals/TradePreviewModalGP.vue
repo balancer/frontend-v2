@@ -17,7 +17,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { FiatCurrency } from '@/constants/currency';
-import { bnum } from '@/lib/utils';
+import { bnum, bnumZero } from '@/lib/utils';
 import { isStETH } from '@/lib/utils/balancer/lido';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -391,23 +391,39 @@ function handlePriceUpdate() {
      * For that reason, the price difference has to be cast to our bignumber type.
      */
     if (props.trading.exactIn.value) {
-      const priceDiff = lastQuote.value.minimumOutAmount
-        .sub(newQuote.minimumOutAmount)
-        .abs()
-        .div(lastQuote.value.minimumOutAmount);
+      const lastQuoteMin = bnum(lastQuote.value.minimumOutAmount.toString());
+      const newQuoteMin = bnum(newQuote.minimumOutAmount.toString());
+      if (lastQuoteMin.eq(bnumZero)) {
+        if (newQuoteMin.eq(bnumZero)) {
+          priceUpdated.value = false;
+        } else {
+          priceUpdated.value = true;
+        }
+      } else {
+        const priceDiff = lastQuoteMin
+          .minus(newQuoteMin)
+          .abs()
+          .div(lastQuoteMin);
 
-      priceUpdated.value = bnum(priceDiff.toString()).gt(
-        PRICE_UPDATE_THRESHOLD
-      );
+        priceUpdated.value = priceDiff.gt(PRICE_UPDATE_THRESHOLD);
+      }
     } else {
-      const priceDiff = lastQuote.value.maximumInAmount
-        .sub(newQuote.maximumInAmount)
-        .abs()
-        .div(lastQuote.value.maximumInAmount);
+      const lastQuoteMax = bnum(lastQuote.value.maximumInAmount.toString());
+      const newQuoteMax = bnum(newQuote.maximumInAmount.toString());
+      if (lastQuoteMax.eq(bnumZero)) {
+        if (newQuoteMax.eq(bnumZero)) {
+          priceUpdated.value = false;
+        } else {
+          priceUpdated.value = true;
+        }
+      } else {
+        const priceDiff = lastQuoteMax
+          .minus(newQuoteMax)
+          .abs()
+          .div(lastQuoteMax);
 
-      priceUpdated.value = bnum(priceDiff.toString()).gt(
-        PRICE_UPDATE_THRESHOLD
-      );
+        priceUpdated.value = priceDiff.gt(PRICE_UPDATE_THRESHOLD);
+      }
     }
 
     if (priceUpdated.value) {
