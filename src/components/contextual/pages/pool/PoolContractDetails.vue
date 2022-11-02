@@ -62,7 +62,7 @@ const data = computed(() => {
     },
     {
       title: t('swapFees'),
-      value: `${swapFee} (${formSwapFeesHint(owner)})`,
+      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner)})`,
     },
     {
       title: t('poolManager'),
