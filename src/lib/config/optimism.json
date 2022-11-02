@@ -47,6 +47,7 @@
     "lidoRelayer": "",
     "balancerHelpers": "",
     "batchRelayer": "",
+    "batchRelayerV4": "0x1a58897Ab366082028ced3740900ecBD765Af738",
     "gaugeFactory": "",
     "balancerMinter": "",
     "gaugeController": "",

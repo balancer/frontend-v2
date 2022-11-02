@@ -19,12 +19,14 @@ export enum Relayer {
   GNOSIS = 'Gnosis',
   LIDO = 'Lido',
   BATCH = 'Batch',
+  BATCH_V4 = 'Batch_v4',
 }
 
 const relayerAddressMap = {
   [Relayer.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
   [Relayer.LIDO]: configService.network.addresses.lidoRelayer,
   [Relayer.BATCH]: configService.network.addresses.batchRelayer,
+  [Relayer.BATCH_V4]: configService.network.addresses.batchRelayerV4,
 };
 
 export default function useRelayerApproval(
