@@ -1,7 +1,7 @@
 {
   "key": "42",
   "chainId": 42,
-  "chainName": "Ethereum",
+  "chainName": "Kovan",
   "name": "Ethereum Testnet Kovan",
   "shortName": "Kovan",
   "slug": "kovan",

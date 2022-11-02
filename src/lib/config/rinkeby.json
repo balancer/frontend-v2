@@ -1,7 +1,7 @@
 {
   "key": "4",
   "chainId": 4,
-  "chainName": "Ethereum",
+  "chainName": "Rinkeby",
   "name": "Ethereum Testnet Rinkeby",
   "shortName": "Rinkeby",
   "slug": "rinkeby",
