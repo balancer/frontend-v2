@@ -1,8 +1,8 @@
 {
   "key": "42161",
   "chainId": 42161,
-  "chainName": "Arbitrum One",
-  "name": "Arbitrum One",
+  "chainName": "Arbitrum",
+  "name": "Arbitrum",
   "shortName": "Arbitrum",
   "slug": "arbitrum",
   "network": "arbitrum-one",
