@@ -18,8 +18,4 @@ module.exports = {
   transformIgnorePatterns: [
     '/node_modules/(?!(echarts|zrender|vue-slider-component|vue3-jazzicon)/)',
   ],
-  displayName: 'dom',
-  testEnvironment: 'jsdom',
-  testMatch: null,
-  testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$',
 };
