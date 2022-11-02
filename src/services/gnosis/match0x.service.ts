@@ -45,7 +45,6 @@ export interface MatchaPriceQuote extends MatchaBaseQuote {
 
 export const API_URLS = {
   [Network.MAINNET]: 'https://api.0x.org/swap',
-  [Network.ROPSTEN]: 'https://ropsten.api.0x.org/swap',
 };
 
 // GPV2Settlement

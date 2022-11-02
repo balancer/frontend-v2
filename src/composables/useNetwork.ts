@@ -37,11 +37,10 @@ export const networkId = ref<Network>(NETWORK_ID);
 export const isMainnet = computed(() => networkId.value === Network.MAINNET);
 export const isPolygon = computed(() => networkId.value === Network.POLYGON);
 export const isArbitrum = computed(() => networkId.value === Network.ARBITRUM);
-export const isKovan = computed(() => networkId.value === Network.KOVAN);
 export const isGoerli = computed(() => networkId.value === Network.GOERLI);
 
 export const isL2 = computed(() => isPolygon.value || isArbitrum.value);
-export const isTestnet = computed(() => isKovan.value || isGoerli.value);
+export const isTestnet = computed(() => isGoerli.value);
 
 /**
  * METHODS
@@ -53,8 +52,6 @@ export function networkFor(key: string | number): Network {
       return Network.MAINNET;
     case '5':
       return Network.GOERLI;
-    case '42':
-      return Network.KOVAN;
     case '137':
       return Network.POLYGON;
     case '42161':
