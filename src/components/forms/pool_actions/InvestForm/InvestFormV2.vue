@@ -5,7 +5,6 @@ import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLi
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
@@ -21,6 +20,7 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
+import useMyWalletTokens from '@/composables/useMyWalletTokens';
 
 /**
  * TYPES
@@ -43,7 +43,6 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { wrappedNativeAsset } = useTokens();
 const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
@@ -64,6 +63,11 @@ const {
 
 const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
 
+const { poolTokensWithBalance, isLoadingBalances } = useMyWalletTokens({
+  pool: props.pool,
+  includeNativeAsset: true,
+});
+
 /**
  * COMPUTED
  */
@@ -75,21 +79,25 @@ const poolHasLowLiquidity = computed((): boolean =>
   bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
+async function initializeTokensForm(isSingleAssetJoin: boolean) {
+  setAmountsIn([]);
+  if (isSingleAssetJoin) {
+    addTokensIn([joinTokens.value[0]]);
+  } else {
+    await forChange(isLoadingBalances, false);
+    addTokensIn(poolTokensWithBalance.value);
+  }
+}
+
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
-  setAmountsIn([]);
-  if (isSingleAssetJoin.value) {
-    addTokensIn([joinTokens.value[0]]);
-  } else {
-    addTokensIn(joinTokens.value);
-  }
+  initializeTokensForm(isSingleAssetJoin.value);
 });
 
 onMounted(async () => {
   await forChange(relayerApproval.loading, false);
-  console.log({ relayerApproval });
   if (!relayerApproval.isUnlocked.value) {
     const tx = await relayerApproval.approve();
     const res = await tx.wait();
@@ -101,12 +109,7 @@ onMounted(async () => {
  * WATCHERS
  */
 watch(isSingleAssetJoin, isSingleAsset => {
-  setAmountsIn([]);
-  if (isSingleAsset) {
-    addTokensIn([wrappedNativeAsset.value.address]);
-  } else {
-    addTokensIn(joinTokens.value);
-  }
+  initializeTokensForm(isSingleAsset);
 });
 </script>
 

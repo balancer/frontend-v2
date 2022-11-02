@@ -255,7 +255,7 @@ interface TokenTreeOpts {
 }
 
 /**
- * Parse token tree and extract all leaf token addresses.
+ * Parse token tree and extract all token addresses.
  *
  * @param {PoolToken[]} tokenTree - A pool's token tree.
  * @param {TokenTreeOpts} options
@@ -268,7 +268,7 @@ export function tokenTreeNodes(
   const addresses: string[] = [];
 
   for (const token of tokenTree) {
-    // addresses.push(token.address);
+    addresses.push(token.address);
     if (token.token.pool?.tokens) {
       if (
         !options.includeLinearUnwrapped &&

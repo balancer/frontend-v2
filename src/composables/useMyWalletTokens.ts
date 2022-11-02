@@ -1,13 +1,11 @@
-// Other name option: useMyWalletState, useMyWalletTokens
-
 import { take } from 'lodash';
 import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
-import { isSameAddress, includesAddress } from '@/lib/utils';
+import { isSameAddress, includesAddress, removeAddress } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { Address } from '@/types';
 import { AnyPool } from '@/services/pool/types';
-import { tokenTreeLeafs, usePool } from '@/composables/usePool';
+import { tokenTreeNodes, usePool } from '@/composables/usePool';
 
 type Props = {
   excludedTokens?: string[];
@@ -17,14 +15,18 @@ type Props = {
   includeNativeAsset?: boolean;
 };
 
-export default function useMyWallet({
+export default function useMyWalletTokens({
   excludedTokens = [],
   pool,
   includeNativeAsset = false,
 }: Props) {
-  const { appNetworkConfig, isWalletReady } = useWeb3();
+  const { appNetworkConfig } = useWeb3();
 
-  const { balances, nativeAsset } = useTokens();
+  const {
+    balances,
+    dynamicDataLoading: isLoadingBalances,
+    nativeAsset,
+  } = useTokens();
 
   const poolRef = computed(() => pool);
 
@@ -36,8 +38,7 @@ export default function useMyWallet({
     );
   }
 
-  const tokensWithBalance = computed<string[]>(() => {
-    if (!isWalletReady) return [];
+  const tokensWithBalance = computed(() => {
     return take(
       Object.keys(balances.value).filter(tokenAddress => {
         const _includeNativeAsset = includeNativeAsset
@@ -54,25 +55,27 @@ export default function useMyWallet({
     );
   });
 
-  const poolTokenAddresses = computed<string[]>(() => {
-    if (!pool) return [];
-    if (isDeepPool.value) {
-      return tokenTreeLeafs(pool.tokens);
-      // return getDeepPoolTokenAddresses(pool);
+  const poolTokenAddresses = computed((): string[] => {
+    if (isDeepPool.value && pool?.tokens) {
+      const nodes = tokenTreeNodes(pool.tokens);
+
+      // Remove BPT from token list
+      return removeAddress(pool.address, nodes);
     }
+
+    const tokensList = pool?.tokensList || [];
     if (isWethPool.value) {
-      return [nativeAsset.address, ...pool.tokensList];
+      return [nativeAsset.address, ...tokensList];
     }
-    return pool.tokensList;
+    return tokensList;
   });
 
   const poolTokensWithBalance = computed<string[]>(() => {
-    return (
-      poolTokenAddresses.value.filter(poolToken =>
-        includesAddress(tokensWithBalance.value, poolToken)
-      ) || []
+    return tokensWithBalance.value.filter(token =>
+      includesAddress(poolTokenAddresses.value, token)
     );
   });
+
   const poolTokensWithoutBalance = computed<string[]>(() => {
     return (
       poolTokenAddresses.value.filter(
@@ -81,16 +84,18 @@ export default function useMyWallet({
     );
   });
   const notPoolTokensWithBalance = computed<string[]>(() => {
-    if (!poolTokenAddresses.value) return tokensWithBalance.value;
+    if (!poolTokenAddresses.value.length) return tokensWithBalance.value;
     return (
       tokensWithBalance.value.filter(
-        token => !includesAddress(poolTokenAddresses.value || [], token)
+        token => !includesAddress(poolTokenAddresses.value, token)
       ) || []
     );
   });
 
   return {
+    isLoadingBalances,
     tokensWithBalance,
+    poolTokenAddresses,
     poolTokensWithBalance,
     poolTokensWithoutBalance,
     notPoolTokensWithBalance,
