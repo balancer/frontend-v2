@@ -4,6 +4,7 @@
   "chainName": "Ethereum",
   "name": "Ethereum Testnet Goerli",
   "shortName": "Goerli",
+  "slug": "goerli",
   "network": "goerli",
   "unknown": false,
   "rpc": "https://goerli.infura.io/v3/{{INFURA_KEY}}",

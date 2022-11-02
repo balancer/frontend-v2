@@ -28,3 +28,4 @@ pnpm-debug.log*
 
 # tokenlists
 /public/data/tokenlists.json
+/public/data/tokenlists/*.json

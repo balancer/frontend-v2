@@ -171,7 +171,7 @@ export default defineComponent({
 
 <style scoped>
 .addresses-row {
-  @apply relative flex;
+  @apply relative flex z-0;
 }
 
 .token-icon {

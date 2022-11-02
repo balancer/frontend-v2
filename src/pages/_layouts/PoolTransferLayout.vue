@@ -6,6 +6,7 @@ import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
+import useNetwork from '@/composables/useNetwork';
 // Composables
 import useInvestState from '@/components/forms/pool_actions/InvestForm/composables/useInvestState';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -34,6 +35,7 @@ const {
 } = useInvestState();
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { networkSlug } = useNetwork();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
@@ -76,7 +78,7 @@ function handleMyWalletTokenClick(tokenAddress: string) {
         <div />
         <BalBtn
           tag="router-link"
-          :to="getReturnRoute({ name: 'pool', params: { id } })"
+          :to="getReturnRoute({ name: 'pool', params: { id, networkSlug } })"
           color="white"
           circle
         >
