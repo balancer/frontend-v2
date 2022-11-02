@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
+import { computed, onBeforeMount, onMounted, ref, toRef, watch } from 'vue';
 
 import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
@@ -7,7 +7,7 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum } from '@/lib/utils';
+import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
@@ -17,6 +17,10 @@ import useVeBal from '@/composables/useVeBAL';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
+
+import useRelayerApproval, {
+  Relayer,
+} from '@/composables/trade/useRelayerApproval';
 
 /**
  * TYPES
@@ -58,6 +62,8 @@ const {
   addTokensIn,
 } = useJoinPool();
 
+const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
+
 /**
  * COMPUTED
  */
@@ -78,6 +84,16 @@ onBeforeMount(() => {
     addTokensIn([joinTokens.value[0]]);
   } else {
     addTokensIn(joinTokens.value);
+  }
+});
+
+onMounted(async () => {
+  await forChange(relayerApproval.loading, false);
+  console.log({ relayerApproval });
+  if (!relayerApproval.isUnlocked.value) {
+    const tx = await relayerApproval.approve();
+    const res = await tx.wait();
+    console.log({ res });
   }
 });
 

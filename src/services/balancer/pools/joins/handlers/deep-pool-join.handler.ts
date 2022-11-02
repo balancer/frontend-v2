@@ -67,8 +67,6 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     const wrapLeafTokens = false;
     const slippage = slippageBsp.toString();
     const poolId = this.pool.value.id;
-    const authorisation =
-      '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001bc90329ed90439744b57601e9ae2d5525e8554ee14d40c84dc8ee89b01de129a35dfb25841fad7f887c025869bbf91496b39200ce19d55fede3f3e74bbe2ea91c';
 
     this.lastGeneralisedJoinRes = await balancer.pools
       .generalisedJoin(
@@ -77,8 +75,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
         parsedAmountsIn,
         signerAddress,
         wrapLeafTokens,
-        slippage,
-        authorisation
+        slippage
       )
       .catch(err => {
         console.error(err);
