@@ -96,8 +96,8 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-watch(isSingleAssetJoin, isSingleAsset => {
-  initializeTokensForm(isSingleAsset);
+watch([isSingleAssetJoin, poolTokensWithBalance], () => {
+  initializeTokensForm(isSingleAssetJoin.value);
 });
 </script>
 
