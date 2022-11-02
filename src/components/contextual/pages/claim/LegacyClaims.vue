@@ -54,6 +54,7 @@ const {
   getProvider,
   isArbitrum,
   isMainnet,
+  isGoerli,
   isPolygon,
   isMismatchedNetwork,
 } = useWeb3();
