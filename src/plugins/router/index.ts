@@ -111,7 +111,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:networkSlug/pool/:id/invest',
     name: 'invest',
     component: PoolInvestPage,
-    meta: { layout: 'PoolTransferLayout' },
+    meta: { layout: 'FocusedLayout' },
   },
   {
     path: '/:networkSlug/pool/:id/withdraw',
