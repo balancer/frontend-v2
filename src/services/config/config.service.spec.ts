@@ -1,6 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
-
-import { setNetworkId } from '@/composables/useNetwork';
+import { networkSlug, networkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 
 describe('Config service', () => {
@@ -18,11 +16,10 @@ describe('Config service', () => {
     });
   });
 
-  describe('Get app network config', () => {
-    it('Returns the correct config for app network key', () => {
-      setNetworkId(Network.POLYGON);
-
-      expect(configService.network.shortName).toBe('Polygon');
+  describe('Get app network slug and id', () => {
+    it('Returns the correct slug and id for app network key', () => {
+      expect(networkSlug).toBe('kovan');
+      expect(networkId.value).toBe(42);
     });
   });
 });

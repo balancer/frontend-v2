@@ -11,6 +11,7 @@ import ConfirmationIndicator from '@/components/web3/ConfirmationIndicator.vue';
 import useEthers from '@/composables/useEthers';
 import { usePool } from '@/composables/usePool';
 import { dateTimeLabelFor } from '@/composables/useTime';
+import useNetwork from '@/composables/useNetwork';
 import useTransactions from '@/composables/useTransactions';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -60,6 +61,7 @@ const {
   tx: txState,
   resetTxState,
 } = useWithdrawalState(toRef(props, 'pool'));
+const { networkSlug } = useNetwork();
 
 const {
   bptIn,
@@ -171,7 +173,7 @@ async function submit(): Promise<TransactionResponse> {
 
 function redirectToPool() {
   resetTxState();
-  router.push({ name: 'pool', params: { id: props.pool.id } });
+  router.push({ name: 'pool', params: { networkSlug, id: props.pool.id } });
 }
 
 /**
