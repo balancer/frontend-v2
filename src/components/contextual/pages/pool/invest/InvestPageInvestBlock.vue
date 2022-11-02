@@ -12,12 +12,6 @@ import { configService } from '@/services/config/config.service';
 import InvestFormV2 from '@/components/forms/pool_actions/InvestForm/InvestFormV2.vue';
 import useInvestPageTabs, { tabs } from '@/composables/pools/useInvestPageTabs';
 
-type Props = {
-  poolSupportsGeneralisedJoin: boolean;
-};
-
-const props = withDefaults(defineProps<Props>(), {});
-
 /**
  * COMPOSABLES
  */
@@ -33,7 +27,7 @@ const { isDeepPool } = usePool(pool);
 onBeforeMount(async () => {
   await forChange(loadingPool, false);
 
-  if (props.poolSupportsGeneralisedJoin) {
+  if (isDeepPool.value) {
     // Initialise SOR for batch swap queries
     sorReady.value = await sor.fetchPools();
   } else {
@@ -66,7 +60,7 @@ onBeforeMount(async () => {
         />
       </div>
     </template>
-    <template v-if="poolSupportsGeneralisedJoin">
+    <template v-if="isDeepPool">
       <InvestFormV2 :pool="pool" />
     </template>
     <template v-else>
