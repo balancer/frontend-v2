@@ -21,6 +21,7 @@ import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
+import InvestFormMissingPoolTokens from './components/InvestFormMissingPoolTokens.vue';
 
 /**
  * TYPES
@@ -63,10 +64,11 @@ const {
 
 const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
 
-const { poolTokensWithBalance, isLoadingBalances } = useMyWalletTokens({
-  pool: props.pool,
-  includeNativeAsset: true,
-});
+const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
+  useMyWalletTokens({
+    pool: props.pool,
+    includeNativeAsset: true,
+  });
 
 /**
  * COMPUTED
@@ -142,6 +144,10 @@ watch(isSingleAssetJoin, isSingleAsset => {
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+    />
+
+    <InvestFormMissingPoolTokens
+      :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 
     <InvestFormTotalsV2 />
