@@ -40,8 +40,15 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     signer,
     slippageBsp,
   }: JoinParams): Promise<TransactionResponse> {
-    console.log([amountsIn, tokensIn, prices, signer, slippageBsp]);
-    throw new Error('To be implemented');
+    await this.queryJoin(amountsIn, tokensIn, prices, signer, slippageBsp);
+    if (!this.lastGeneralisedJoinRes) {
+      throw new Error('Could not query generalised join');
+    }
+    const { to, callData } = this.lastGeneralisedJoinRes;
+    return signer.sendTransaction({
+      to,
+      data: callData,
+    });
   }
 
   async queryJoin(
