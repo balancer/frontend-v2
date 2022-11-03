@@ -11,6 +11,8 @@ import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
+import BridgeLink from '@/components/links/BridgeLink.vue';
+import { isL2 } from '@/composables/useNetwork';
 
 /**
  * STATE
@@ -68,6 +70,7 @@ onMounted(() => {
           { title: 'My wallet', id: 'my-wallet' },
           { title: 'Trending pairs', id: 'trending-pairs' },
           { title: 'Price chart', id: 'price-chart' },
+          { title: 'Bridge assets', id: 'bridge' },
         ]"
       >
         <template #my-wallet>
@@ -79,11 +82,15 @@ onMounted(() => {
         <template #price-chart>
           <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
         </template>
+        <template #bridge>
+          <BridgeLink v-if="isL2" />
+        </template>
       </BalAccordion>
     </div>
 
     <template #gutterRight>
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
+      <BridgeLink v-if="isL2" class="mt-4" />
     </template>
   </Col3Layout>
 

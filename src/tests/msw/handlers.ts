@@ -1,6 +1,8 @@
 import { rest } from 'msw';
 import gaugesResponse from '../../services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
+export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
+
 const chainIdHandler = (req, res, ctx) => {
   return req.json().then(data => {
     if (data[0].method === 'eth_chainId') {
@@ -58,4 +60,13 @@ export const handlers = [
       );
     }
   ),
+
+  rest.post('https://api.balancer.fi/wallet-check', (req, res, ctx) => {
+    return req.json().then(data => {
+      if (data.address === SANCTIONED_ADDRESS)
+        return res(ctx.json({ is_blocked: true }));
+      // NOT SANCTIONED:
+      return res(ctx.json({ is_blocked: false }));
+    });
+  }),
 ];

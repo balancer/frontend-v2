@@ -5,6 +5,7 @@ import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/compos
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { lpTokensFor, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -31,6 +32,7 @@ const { isMigratablePool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -84,7 +86,7 @@ const fiatTotal = computed(() => {
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         :tag="isMigratablePool(pool) ? 'div' : 'router-link'"
-        :to="{ name: 'invest' }"
+        :to="{ name: 'invest', params: { networkSlug } }"
         :label="$t('invest')"
         color="gradient"
         :disabled="isMigratablePool(pool) && !isSoftMigratablePool(pool.id)"
@@ -92,7 +94,7 @@ const fiatTotal = computed(() => {
       />
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
-        :to="{ name: 'withdraw' }"
+        :to="{ name: 'withdraw', params: { networkSlug } }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
         color="blue"

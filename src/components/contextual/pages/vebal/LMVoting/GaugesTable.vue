@@ -10,7 +10,7 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { networkNameFor } from '@/composables/useNetwork';
+import { getNetworkSlug } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
@@ -142,7 +142,7 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
 }
 
 function networkSrc(network: Network) {
-  return require(`@/assets/images/icons/networks/${networkNameFor(
+  return require(`@/assets/images/icons/networks/${getNetworkSlug(
     network
   )}.svg`);
 }

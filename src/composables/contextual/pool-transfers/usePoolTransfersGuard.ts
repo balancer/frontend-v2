@@ -5,6 +5,7 @@ import { usePool } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 
 import usePoolTransfers from './usePoolTransfers';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * This should only be used once at the highest level of the invest/withdraw flow
@@ -23,6 +24,7 @@ export default function usePoolTransfersGuard() {
   const router = useRouter();
   const { pool, transfersAllowed } = usePoolTransfers();
   const { noInitLiquidity } = usePool(pool);
+  const { networkSlug } = useNetwork();
 
   /**
    * METHODS
@@ -38,7 +40,7 @@ export default function usePoolTransfersGuard() {
   watch(pool, loadedPool => {
     if (loadedPool && shouldBlockAccess(loadedPool)) {
       transfersAllowed.value = false;
-      router.push({ name: 'pool', params: { id: loadedPool.id } });
+      router.push({ name: 'pool', params: { id: loadedPool.id, networkSlug } });
     }
   });
 
@@ -48,7 +50,7 @@ export default function usePoolTransfersGuard() {
   onBeforeMount(() => {
     transfersAllowed.value = false;
     if (pool.value && shouldBlockAccess(pool.value)) {
-      router.push({ name: 'pool', params: { id: pool.value.id } });
+      router.push({ name: 'pool', params: { id: pool.value.id, networkSlug } });
     } else {
       transfersAllowed.value = true;
     }
