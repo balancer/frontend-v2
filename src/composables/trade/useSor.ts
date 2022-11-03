@@ -43,6 +43,7 @@ import { TokenInfo } from '@/types/TokenList';
 import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
+import { isMainnet } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
@@ -370,11 +371,13 @@ export default function useSor({
           formatFixed(swapReturn.returnAmount, tokenOutDecimals)
         );
 
-        returnAmtNormalised = await adjustedPiAmount(
-          returnAmtNormalised,
-          tokenOutAddress,
-          tokenOutDecimals
-        );
+        if (isMainnet.value) {
+          returnAmtNormalised = await adjustedPiAmount(
+            returnAmtNormalised,
+            tokenOutAddress,
+            tokenOutDecimals
+          );
+        }
 
         const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
         const priceImpactCalc = effectivePrice
