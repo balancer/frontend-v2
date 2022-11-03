@@ -228,7 +228,6 @@ function getPoolLink(id: string): string {
   const chainId = appNetworkConfig.chainId;
   const prefixMap = {
     [Network.MAINNET]: 'app.',
-    [Network.KOVAN]: 'kovan.',
     [Network.GOERLI]: 'goerli.',
     [Network.POLYGON]: 'polygon.',
     [Network.ARBITRUM]: 'arbitrum.',

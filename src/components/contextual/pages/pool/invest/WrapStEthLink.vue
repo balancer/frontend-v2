@@ -4,6 +4,7 @@ import { computed, toRef } from 'vue';
 import useConfig from '@/composables/useConfig';
 import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import { Pool } from '@/services/pool/types';
 
 /**
@@ -21,9 +22,10 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { isWstETHPool } = usePool(toRef(props, 'pool'));
+const { isMainnetWstETHPool } = usePool(toRef(props, 'pool'));
 const { networkConfig } = useConfig();
 const { getToken } = useTokens();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -33,11 +35,12 @@ const wstETH = computed(() => getToken(networkConfig.addresses.wstETH));
 </script>
 
 <template>
-  <div v-if="isWstETHPool" class="flex items-center mb-4">
+  <div v-if="isMainnetWstETHPool" class="flex items-center mb-4">
     <router-link
       :to="{
         name: 'trade',
         params: {
+          networkSlug,
           assetIn: stETH.address,
           assetOut: wstETH.address,
         },

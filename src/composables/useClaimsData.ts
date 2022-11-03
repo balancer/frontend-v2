@@ -11,7 +11,7 @@ import useProtocolRewardsQuery, {
   ProtocolRewardsQueryResponse,
 } from './queries/useProtocolRewardsQuery';
 import { isQueryLoading } from './queries/useQueryHelpers';
-import { isKovan, isL2 } from './useNetwork';
+import { isGoerli, isL2 } from './useNetwork';
 import { subgraphFallbackService } from '@/services/balancer/subgraph/subgraph-fallback.service';
 
 export type GaugePool = {
@@ -80,7 +80,7 @@ export function useClaimsData() {
   const isLoading = computed(
     (): boolean =>
       isQueryLoading(gaugePoolQuery) ||
-      (!isL2.value && !isKovan.value && isQueryLoading(protocolRewardsQuery))
+      (!isL2.value && !isGoerli.value && isQueryLoading(protocolRewardsQuery))
   );
 
   return {

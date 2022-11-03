@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import { networkId } from './useNetwork';
 
 const POOL_ISSUES = {
-  [Network.KOVAN]: {},
   [Network.GOERLI]: {},
   [Network.MAINNET]: {
     poolOwnerVulnWarningGovernanceMigrate: [
