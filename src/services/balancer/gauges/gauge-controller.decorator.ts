@@ -172,12 +172,10 @@ export class GaugeControllerDecorator {
   /**
    * @summary Get gauge controller network.
    * @description We only have a testnet and mainnet gauge controller
-   * so the network key can only be kovan (42) or mainnet (1).
+   * so the network key can only be goerli (5) or mainnet (1).
    */
   private getNetwork(): Network {
-    if (this.config.env.NETWORK === Network.KOVAN) {
-      return Network.KOVAN;
-    } else if (this.config.env.NETWORK === Network.GOERLI) {
+    if (this.config.env.NETWORK === Network.GOERLI) {
       return Network.GOERLI;
     } else {
       return Network.MAINNET;
