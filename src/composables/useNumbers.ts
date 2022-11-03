@@ -172,7 +172,7 @@ export default function useNumbers() {
 
   function toFiat(amount: number | string, tokenAddress: string): string {
     const price = priceFor(tokenAddress);
-    const tokenAmount = new BigNumber(amount);
+    const tokenAmount = new BigNumber(amount || '0');
     return tokenAmount.times(price).toString();
   }
 

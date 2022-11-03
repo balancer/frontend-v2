@@ -51,7 +51,7 @@ const sortedAmounts = computed(() =>
 
 const groupedAmounts = computed(() =>
   groupBy(sortedAmounts.value, amounts =>
-    bnum(amounts.amount).isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
+    bnum(amounts.amount || '0').isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
   )
 );
 
