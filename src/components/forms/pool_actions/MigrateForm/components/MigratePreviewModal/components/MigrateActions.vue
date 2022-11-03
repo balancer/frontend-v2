@@ -8,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -31,6 +32,7 @@ defineEmits(['setCurrentActionIndex']);
  */
 const { networkConfig } = useConfig();
 const { explorerLinks } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -76,7 +78,10 @@ const explorerLink = computed(() =>
       </div>
       <BalBtn
         tag="router-link"
-        :to="{ name: 'pool', params: { id: toPool.id } }"
+        :to="{
+          name: 'pool',
+          params: { networkSlug, id: toPool.id },
+        }"
         color="gray"
         outline
         block

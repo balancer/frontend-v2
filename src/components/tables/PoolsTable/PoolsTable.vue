@@ -9,15 +9,13 @@ import { ColumnDefinition } from '@/components/_global/BalTable/types';
 import BalChipNew from '@/components/chips/BalChipNew.vue';
 
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
-import {
-  isSoftMigratablePool,
-  POOL_MIGRATIONS_MAP,
-} from '@/components/forms/pool_actions/MigrateForm/constants';
+import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
 import useNumbers from '@/composables/useNumbers';
+import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
   isMigratablePool,
@@ -32,6 +30,7 @@ import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
+import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningTooltip.vue';
 
 /**
  * TYPES
@@ -80,6 +79,7 @@ const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { networkSlug } = useNetwork();
 
 const wideCompositionWidth = computed(() =>
   upToMediumBreakpoint.value ? 450 : undefined
@@ -214,7 +214,7 @@ const visibleColumns = computed(() =>
  */
 function handleRowClick(pool: PoolWithShares) {
   trackGoal(Goals.ClickPoolsTableRow);
-  router.push({ name: 'pool', params: { id: pool.id } });
+  router.push({ name: 'pool', params: { id: pool.id, networkSlug } });
 }
 
 function navigateToPoolMigration(pool: PoolWithShares) {
@@ -264,7 +264,7 @@ function iconAddresses(pool: PoolWithShares) {
       :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
-        getParams: pool => ({ id: pool.id || '' }),
+        getParams: pool => ({ id: pool.id || '', networkSlug }),
       }"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
@@ -304,21 +304,7 @@ function iconAddresses(pool: PoolWithShares) {
             />
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
-          <BalTooltip
-            v-if="isMigratablePool(pool) && !isSoftMigratablePool(pool.id)"
-            class="mb-1 ml-2 text-red-500"
-            name="alert-circle"
-            filled
-            size="md"
-          >
-            <template #activator>
-              <BalIcon class="mt-1" name="alert-triangle" size="md" />
-            </template>
-
-            <div class="text-sm text-left">
-              {{ $t('deprecatedPool') }}
-            </div>
-          </BalTooltip>
+          <PoolMigrationWarningTooltip :pool="pool" />
         </div>
       </template>
       <template #volumeCell="pool">

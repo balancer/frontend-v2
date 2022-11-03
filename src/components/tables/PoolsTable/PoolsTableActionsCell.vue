@@ -2,6 +2,7 @@
 import { computed, toRef } from 'vue';
 
 import { isVeBalPool, usePool } from '@/composables/usePool';
+import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { PoolWithShares } from '@/services/pool/types';
 
@@ -28,6 +29,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { networkSlug } = useNetwork();
 
 /** COMPUTED */
 const stakablePoolIds = computed((): string[] => POOLS.Stakable.AllowList);
@@ -56,7 +58,10 @@ const showVeBalLock = computed(() => isVeBalPool(props.pool.id));
     <BalBtn
       v-else-if="showVeBalLock"
       tag="router-link"
-      :to="{ name: 'get-vebal', query: { returnRoute: $route.name } }"
+      :to="{
+        name: 'get-vebal',
+        query: { networkSlug, returnRoute: $route.name },
+      }"
       color="gradient-pink-yellow"
       size="sm"
     >
