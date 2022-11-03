@@ -5,6 +5,8 @@ import { useI18n } from 'vue-i18n';
 import { Pool } from '@/services/pool/types';
 import { TokenInfo } from '@/types/TokenList';
 
+import useNetwork from '@/composables/useNetwork';
+
 /**
  * TYPES
  */
@@ -22,6 +24,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { t } = useI18n();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -66,7 +69,10 @@ const steps = computed(() => [
               {{ $t('getVeBAL.howToLock.steps.investPart1') }}
               <BalLink
                 tag="router-link"
-                :to="{ name: 'invest', params: { id: lockablePool.id } }"
+                :to="{
+                  name: 'invest',
+                  params: { networkSlug, id: lockablePool.id },
+                }"
                 external
               >
                 {{ lockablePoolTokenInfo.symbol }}

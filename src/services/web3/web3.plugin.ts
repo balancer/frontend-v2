@@ -68,7 +68,9 @@ type PluginState = {
 };
 type WalletScreenResponse = { is_blocked: boolean };
 
-async function isBlockedAddress(address: string): Promise<boolean | null> {
+export async function isBlockedAddress(
+  address: string
+): Promise<boolean | null> {
   try {
     if (!configService.env.WALLET_SCREENING) return false;
     const response = await axios.post<WalletScreenResponse>(
