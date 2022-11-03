@@ -37,7 +37,7 @@ describe('ClaimRewardsBtn', () => {
     expect(getByText('Claim all')).toBeVisible();
   });
 
-  xit('Calls LiquidityGauge.claimRewards on click', async () => {
+  it('Calls LiquidityGauge.claimRewards on click', async () => {
     const { getByText } = render(ClaimRewardsBtn, {
       props: {
         gauge,

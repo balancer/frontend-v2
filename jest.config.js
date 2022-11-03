@@ -18,6 +18,6 @@ module.exports = {
   //TODO: replace with a smaller version
   moduleNameMapper: {
     '/public/data/tokenlists/tokens-42.json':
-      '<rootDir>/public/data/tokenlists/tokens-42.json',
+      '<rootDir>/src/tests/tokenlists/tokens-42.json',
   },
 };
