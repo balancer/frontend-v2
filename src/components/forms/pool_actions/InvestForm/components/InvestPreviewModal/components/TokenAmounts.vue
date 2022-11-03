@@ -16,6 +16,7 @@ type Props = {
   fiatTotal: string;
   title?: string;
   hideAmountShare?: boolean;
+  showZeroAmounts?: boolean;
 };
 
 type AmountMap = {
@@ -28,6 +29,7 @@ type AmountMap = {
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   hideAmountShare: false,
+  showZeroAmounts: false,
 });
 /**
  * COMPOSABLES
@@ -55,7 +57,11 @@ const groupedAmounts = computed(() =>
   )
 );
 
-const amountsToShow = computed(() => groupedAmounts.value.nonZeroAmounts);
+const amountsToShow = computed(() =>
+  props.showZeroAmounts
+    ? sortedAmounts.value
+    : groupedAmounts.value.nonZeroAmounts
+);
 /**
  * METHODS
  */

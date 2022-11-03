@@ -186,6 +186,7 @@ watch(blockNumber, () => {
     />
     <TokenAmounts
       v-if="showTokensOut"
+      showZeroAmounts
       :title="$t('investment.preview.titles.tokenOut')"
       class="mt-4"
       :amountMap="amountOutMap"
