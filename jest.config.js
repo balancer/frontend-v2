@@ -17,6 +17,7 @@ module.exports = {
   testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$',
   //TODO: replace with a smaller version
   moduleNameMapper: {
-    '/public/data/tokenlists.json': '<rootDir>/public/data/tokenlists.json',
+    '/public/data/tokenlists/tokens-42.json':
+      '<rootDir>/public/data/tokenlists/tokens-42.json',
   },
 };
