@@ -25,7 +25,8 @@ const classes = computed(() => ({
 
 <template>
   <AppHero :class="classes">
-    <h1 class="headline" v-text="$t('ammPlatform')" />
+    <h1 class="headline" v-text="$t('defiLiquidityPools')" />
+    <p class="mt-2 text-xl" v-text="$t('builtOnBalancer')" />
     <template v-if="!isWalletReady && !isWalletConnecting">
       <div class="flex justify-center mt-4">
         <HeroConnectWalletButton class="mr-4" />

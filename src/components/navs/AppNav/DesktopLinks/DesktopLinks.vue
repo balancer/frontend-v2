@@ -27,13 +27,21 @@ function isActive(page: string): boolean {
       :to="{ name: 'home', params: { networkSlug } }"
       :active="isActive('home')"
     >
-      {{ $t('invest') }}
+      {{ $t('pool') }}
     </DesktopLinkItem>
     <DesktopLinkItem
       :to="{ name: 'trade', params: { networkSlug } }"
       :active="isActive('trade')"
     >
-      {{ $t('trade') }}
+      {{ $t('swap') }}
+    </DesktopLinkItem>
+    <DesktopLinkItem
+      :to="{ name: 'claim', params: { networkSlug } }"
+      :active="isActive('claim')"
+    >
+      <div class="flex items-center">
+        {{ $t('claim') }}
+      </div>
     </DesktopLinkItem>
     <DesktopLinkItem
       v-if="isGoerli"
@@ -53,15 +61,6 @@ function isActive(page: string): boolean {
       :active="isActive('vebal')"
     >
       veBAL
-    </DesktopLinkItem>
-    <DesktopLinkItem
-      :to="{ name: 'claim', params: { networkSlug } }"
-      :active="isActive('claim')"
-    >
-      <div class="flex items-center">
-        {{ $t('claim') }}
-        <StarsIcon class="ml-0.5 w-3.5 h-5" />
-      </div>
     </DesktopLinkItem>
   </div>
 </template>

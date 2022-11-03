@@ -104,7 +104,7 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
 const actions = computed((): TransactionActionInfo[] => [
   ...tokenApprovalActions,
   {
-    label: t('invest'),
+    label: t('addLiquidity'),
     loadingLabel: t('investment.preview.loadingLabel.investment'),
     confirmingLabel: t('confirming'),
     action: submit,

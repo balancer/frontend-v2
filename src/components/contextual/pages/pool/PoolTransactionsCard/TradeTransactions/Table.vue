@@ -65,7 +65,7 @@ const { explorerLinks } = useWeb3();
  */
 const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
   {
-    name: t('trader'),
+    name: t('swapper'),
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
@@ -83,7 +83,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     width: 125,
   },
   {
-    name: t('tradeDetails'),
+    name: t('swapDetails'),
     id: 'details',
     accessor: '',
     Cell: 'detailsCell',

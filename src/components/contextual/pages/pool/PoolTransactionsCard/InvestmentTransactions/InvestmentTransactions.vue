@@ -66,10 +66,7 @@ const activeTab = ref(tabs.value[0].value);
 <template>
   <div>
     <div>
-      <h4
-        class="px-4 lg:px-0 mb-5"
-        v-text="$t('poolTransactions.tabs.allInvestments')"
-      />
+      <h4 class="px-4 lg:px-0 mb-5" v-text="$t('liquidityProvision')" />
       <div
         class="flex justify-between items-end mx-4 lg:mx-0 mb-6 border-b dark:border-gray-900"
       >
