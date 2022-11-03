@@ -133,6 +133,8 @@ watch([isSingleAssetJoin, poolTokensWithBalance], () => {
     />
 
     <InvestFormMissingPoolTokens
+      v-if="!isSingleAssetJoin"
+      :poolTokensWithBalance="poolTokensWithBalance"
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 

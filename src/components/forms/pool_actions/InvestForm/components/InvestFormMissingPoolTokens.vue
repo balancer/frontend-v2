@@ -9,14 +9,13 @@ import useTokens from '@/composables/useTokens';
  */
 type Props = {
   poolTokensWithoutBalance: string[];
+  poolTokensWithBalance: string[];
 };
 
 /**
  * PROPS & EMITS
  */
-const props = withDefaults(defineProps<Props>(), {
-  poolTokensWithoutBalance: () => [],
-});
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
@@ -37,8 +36,15 @@ const tokenSymbolsWithoutBalanceMsg = computed(() => {
 </script>
 
 <template>
+  <BalAlert
+    v-if="!poolTokensWithBalance.length"
+    class="mb-4"
+    :type="'warning'"
+    :title="t('investment.warning.noPoolTokensToJoinWith.title')"
+    :description="t('investment.warning.noPoolTokensToJoinWith.description')"
+  ></BalAlert>
   <div
-    v-if="tokenSymbolsWithoutBalance.length"
+    v-else-if="tokenSymbolsWithoutBalance.length"
     class="mb-4 text-sm italic text-gray-600 dark:text-gray-400"
   >
     No wallet balance for some pool tokens:
