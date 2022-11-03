@@ -19,7 +19,7 @@ import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { isVeBalPool, usePool } from '@/composables/usePool';
+import { isVeBalPool, preMintedBptIndex, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
@@ -161,6 +161,11 @@ const isStakablePool = computed((): boolean =>
   POOLS.Stakable.AllowList.includes(poolId)
 );
 
+const poolPremintedBptIndex = computed(() => {
+  if (!pool.value) return null;
+  return preMintedBptIndex(pool.value) ?? null;
+});
+
 /**
  * WATCHERS
  */
@@ -210,6 +215,7 @@ watch(poolQuery.error, () => {
                 :totalLiquidity="pool?.totalLiquidity"
                 :tokensList="pool?.tokensList"
                 :poolType="pool?.poolType"
+                :poolPremintedBptIndex="poolPremintedBptIndex"
               />
             </div>
             <div class="px-4 lg:px-0 mb-4">

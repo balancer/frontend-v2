@@ -26,7 +26,7 @@ type Props = {
   historicalPrices?: HistoricalPrices | null;
   snapshots?: PoolSnapshots | null;
   loading: boolean;
-
+  poolPremintedBptIndex: number | null;
   // these props are added to prevent line chart rerender on each pool update
   // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
@@ -168,6 +168,9 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
 
       // if there are no prices from coingecko use snapshot.liquidity
       if (!prices || prices.length < (props.tokensList?.length || 0)) {
+        if (!snapshot.liquidity) {
+          return;
+        }
         tvlValues.push(
           Object.freeze<[string, number]>([
             timestamp,
@@ -186,12 +189,8 @@ function getTVLData(periodSnapshots: PoolSnapshot[]) {
        * It is removed here to calculate properly snapshot pool value.
        */
       if (snapshot.amounts.length > prices.length) {
-        const maxValue = Math.max(
-          ...snapshot.amounts.map(amount => Number(amount))
-        );
-
         amounts = amounts.filter(
-          amount => Number(amount).toFixed() !== maxValue?.toString()
+          (_, index) => index !== props.poolPremintedBptIndex
         );
       }
 
