@@ -195,7 +195,12 @@ const provider = (props: Props) => {
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
-    if (isFormEmpty.value) return;
+    // If form is empty, clear the price impact and
+    // return early
+    if (isFormEmpty.value) {
+      priceImpact.value = 0;
+      return;
+    }
     if (isDeep(pool.value) && !isSingleAssetJoin.value) {
       await checkRelayerApproval();
     }
