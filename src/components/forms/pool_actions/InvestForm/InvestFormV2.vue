@@ -43,12 +43,8 @@ const showStakeModal = ref(false);
  */
 const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
-const {
-  account,
-  isWalletReady,
-  startConnectWithInjectedProvider,
-  isMismatchedNetwork,
-} = useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
@@ -100,7 +96,7 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-watch([isSingleAssetJoin, account], () => {
+watch([isSingleAssetJoin, poolTokensWithBalance], () => {
   initializeTokensForm(isSingleAssetJoin.value);
 });
 </script>
