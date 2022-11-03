@@ -48,8 +48,14 @@ const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const { rektPriceImpact, amountsIn, fiatValueOut, join, txState } =
-  useJoinPool();
+const {
+  rektPriceImpact,
+  amountsIn,
+  fiatValueOut,
+  join,
+  txState,
+  approvalActions,
+} = useJoinPool();
 
 const tokensToApprove = computed(() =>
   amountsIn.value.map(amountIn => amountIn.address)
@@ -66,6 +72,7 @@ const { tokenApprovalActions } = useTokenApprovalActions(
  * COMPUTED
  */
 const actions = computed((): TransactionActionInfo[] => [
+  ...approvalActions.value,
   ...tokenApprovalActions,
   {
     label: t('invest'),

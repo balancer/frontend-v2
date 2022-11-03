@@ -9,13 +9,7 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import {
-  bnSum,
-  bnum,
-  forChange,
-  removeAddress,
-  trackLoading,
-} from '@/lib/utils';
+import { bnSum, bnum, removeAddress, trackLoading } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -38,6 +32,7 @@ import {
 import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
+import { TransactionActionInfo } from '@/types/transactions';
 
 /**
  * TYPES
@@ -60,12 +55,22 @@ type Props = {
  */
 const provider = (props: Props) => {
   /**
+   * COMPOSABLES
+   */
+  const { getTokens, prices, injectTokens } = useTokens();
+  const { toFiat } = useNumbers();
+  const { slippageBsp } = useUserSettings();
+  const { getSigner } = useWeb3();
+  const { txState, txInProgress } = useTxState();
+  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
+
+  /**
    * STATE
    */
   const pool = toRef(props, 'pool');
   const isSingleAssetJoin = toRef(props, 'isSingleAssetJoin');
   const amountsIn = ref<AmountIn[]>([]);
-  const bptOut = ref<string>('');
+  const bptOut = ref<string>('0');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const isLoadingQuery = ref<boolean>(false);
@@ -80,23 +85,15 @@ const provider = (props: Props) => {
   const joinPoolService = new JoinPoolService(pool);
 
   /**
-   * COMPOSABLES
-   */
-  const { getTokens, prices, injectTokens } = useTokens();
-  const { toFiat } = useNumbers();
-  const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
-  const { txState, txInProgress } = useTxState();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-
-  /**
    * COMPUTED
    */
+  const isDeepPool = computed<boolean>(() => isDeep(pool.value));
+
   // All tokens in the pool token tree that can be used in join functions.
   const joinTokens = computed((): string[] => {
     let addresses: string[] = [];
 
-    addresses = isDeep(pool.value)
+    addresses = isDeepPool.value
       ? tokenTreeNodes(pool.value.tokens)
       : pool.value.tokensList;
 
@@ -157,6 +154,17 @@ const provider = (props: Props) => {
       )
   );
 
+  const shouldApproveRelayer = computed<boolean>(
+    () =>
+      isDeepPool.value &&
+      !isSingleAssetJoin.value &&
+      !relayerApproval.isUnlocked.value
+  );
+
+  const approvalActions = computed<TransactionActionInfo[]>(() =>
+    shouldApproveRelayer.value ? [relayerApproval.action.value] : []
+  );
+
   /**
    * METHODS
    */
@@ -201,8 +209,9 @@ const provider = (props: Props) => {
       priceImpact.value = 0;
       return;
     }
-    if (isDeep(pool.value) && !isSingleAssetJoin.value) {
-      await checkRelayerApproval();
+    // Early return if relayer not yet approved
+    if (shouldApproveRelayer.value) {
+      return;
     }
 
     trackLoading(async () => {
@@ -239,19 +248,6 @@ const provider = (props: Props) => {
       txError.value = (error as Error).message;
       throw error;
     }
-  }
-
-  async function checkRelayerApproval() {
-    await forChange(relayerApproval.loading, false);
-    if (
-      relayerApproval.isUnlocked.value ||
-      relayerApproval.approving.value ||
-      relayerApproval.init.value
-    ) {
-      return;
-    }
-    const tx = await relayerApproval.approve();
-    await tx.wait();
   }
 
   /**
@@ -316,6 +312,7 @@ const provider = (props: Props) => {
     txInProgress,
     debounceQueryJoin,
     queryError,
+    approvalActions,
     setAmountsIn,
     addTokensIn,
     resetAmounts,
