@@ -2,6 +2,7 @@
 import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
@@ -10,13 +11,12 @@ import BalChipNew from '@/components/chips/BalChipNew.vue';
 import BalChipExpired from '@/components/chips/BalChipExpired.vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { networkNameFor } from '@/composables/useNetwork';
+import { getNetworkSlug } from '@/composables/useNetwork';
 import useNumbers from '@/composables/useNumbers';
 import {
   isStableLike,
   isUnknownType,
   orderedPoolTokens,
-  poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { scale } from '@/lib/utils';
@@ -64,6 +64,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
+const router = useRouter();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
@@ -142,17 +143,16 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
 }
 
 function networkSrc(network: Network) {
-  return require(`@/assets/images/icons/networks/${networkNameFor(
+  return require(`@/assets/images/icons/networks/${getNetworkSlug(
     network
   )}.svg`);
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {
-  window.location.href = poolURLFor(
-    gauge.pool.id,
-    gauge.network,
-    gauge.pool.poolType
-  );
+  router.push({
+    name: 'pool',
+    params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
+  });
 }
 
 function getIsGaugeNew(addedTimestamp: number): boolean {
@@ -191,6 +191,13 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       sticky="both"
       :square="upToLargeBreakpoint"
       :isPaginated="isPaginated"
+      :link="{
+        to: 'pool',
+        getParams: gauge => ({
+          id: gauge.pool.id || '',
+          networkSlug: getNetworkSlug(gauge.network),
+        }),
+      }"
       :onRowClick="redirectToPool"
       :getTableRowClass="getTableRowClass"
       :initialState="{

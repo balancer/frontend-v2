@@ -8,6 +8,7 @@ import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTo
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import usePoolTransfersGuard from '@/composables/contextual/pool-transfers/usePoolTransfersGuard';
+import useNetwork from '@/composables/useNetwork';
 // Composables
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useReturnRoute } from '@/composables/useReturnRoute';
@@ -24,6 +25,7 @@ const id = (route.params.id as string).toLowerCase();
  */
 const { getReturnRoute } = useReturnRoute();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { networkSlug } = useNetwork();
 const { pool, loadingPool, useNativeAsset, transfersAllowed } =
   usePoolTransfers();
 usePoolTransfersGuard();
@@ -36,7 +38,7 @@ usePoolTransfersGuard();
         <div />
         <BalBtn
           tag="router-link"
-          :to="getReturnRoute({ name: 'pool', params: { id } })"
+          :to="getReturnRoute({ name: 'pool', params: { id, networkSlug } })"
           color="white"
           circle
         >
