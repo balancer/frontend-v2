@@ -36,9 +36,9 @@ export default function useSignRelayerApproval() {
   }
 
   const signRelayerAction: TransactionActionInfo = {
-    label: t('migratePool.approve'),
+    label: t('approveBatchRelayer'),
     loadingLabel: t('checkWallet'),
-    confirmingLabel: t('migratePool.approving'),
+    confirmingLabel: t('approvingBatchRelayer'),
     stepTooltip: t('approveBatchRelayerTooltip'),
     action: signRelayerApproval as () => Promise<any>,
     isSignAction: true,
