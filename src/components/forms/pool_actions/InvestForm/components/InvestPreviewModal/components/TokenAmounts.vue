@@ -79,14 +79,17 @@ function amountShare(address: string): string {
     </div>
     <div v-for="token in amountsToShow" :key="token.address" class="relative">
       <div class="token-amount-table-content">
-        <div class="flex flex-col mr-3">
+        <div class="flex flex-col self-center mr-3">
           <div class="font-medium">
             <span class="font-numeric">
               {{ fNum2(token.amount, FNumFormats.token) }}
             </span>
             {{ tokenMap[token.address]?.symbol }}
           </div>
-          <div class="text-sm text-secondary font-numeric">
+          <div
+            v-if="Number(token.fiatAmount) > 0"
+            class="text-sm text-secondary font-numeric"
+          >
             {{ fNum2(token.fiatAmount, FNumFormats.fiat) }}
             <span v-if="!hideAmountShare">
               ({{ fNum2(amountShare(token.address), FNumFormats.percent) }})
