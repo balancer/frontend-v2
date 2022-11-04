@@ -231,7 +231,7 @@ export interface PoolSnapshot {
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
 
-export type PoolContractTableDetails = {
+export type BalDetailsTableData = {
   title: string;
   value: string;
   link?: string;

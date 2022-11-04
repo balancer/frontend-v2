@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
-import { PoolContractTableDetails } from '@/services/pool/types';
+import { BalDetailsTableData } from '@/services/pool/types';
 
 /**
  * TYPES
  */
 type Props = {
-  tableData: (PoolContractTableDetails | null)[];
+  tableData: (BalDetailsTableData | null)[];
 };
 
 /**
