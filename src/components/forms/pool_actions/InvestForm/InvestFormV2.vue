@@ -217,10 +217,3 @@ watch(
     </StakingProvider>
   </div>
 </template>
-
-<style scoped>
-/* This is needed because the trade settings popover overflows */
-.label {
-  @apply font-bold text-sm mb-2 inline-block;
-}
-</style>
