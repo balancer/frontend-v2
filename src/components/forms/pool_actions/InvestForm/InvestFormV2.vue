@@ -96,8 +96,13 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
+
+// Watch for the Single Asset tab change and account change (poolTokensWithBalance)
 watch([isSingleAssetJoin, poolTokensWithBalance], () => {
-  initializeTokensForm(isSingleAssetJoin.value);
+  // Reset the tokens form if confirm modal is not open
+  if (!showInvestPreview.value) {
+    initializeTokensForm(isSingleAssetJoin.value);
+  }
 });
 </script>
 
