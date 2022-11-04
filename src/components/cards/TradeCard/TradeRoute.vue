@@ -245,7 +245,7 @@ function getPoolLink(id: string): string {
       @click="toggleVisibility"
     >
       <div class="mr-2">
-        {{ $t('tradeRoute') }}
+        {{ $t('swapRoute') }}
       </div>
       <BalIcon v-if="visible" name="chevron-up" size="sm" />
       <BalIcon v-else name="chevron-down" size="sm" />

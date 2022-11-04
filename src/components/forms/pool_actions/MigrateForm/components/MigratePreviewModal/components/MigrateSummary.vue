@@ -77,7 +77,7 @@ const { fNum2 } = useNumbers();
           <template v-else>
             {{ fNum2(priceImpact, FNumFormats.percent) }}
             <BalTooltip
-              :text="$t('tooltips.invest.priceImpact')"
+              :text="$t('tooltips.addLiquidity.priceImpact')"
               iconSize="sm"
               :iconName="highPriceImpact ? 'alert-triangle' : 'info'"
               :iconClass="

@@ -130,7 +130,7 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to invest or withdraw from a pool
+ * @returns tokens that can be used to add or remove tokens from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
   if (isDeep(pool)) {
