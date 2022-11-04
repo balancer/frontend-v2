@@ -27,6 +27,9 @@
   "amountToInvest": "Amount to invest",
   "amountToWithdraw": "Amount to withdraw",
   "amplification": "Amplification",
+  "ampFactor": {
+    "title": "Amp factor"
+  },
   "analytics": "Analytics",
   "apiErrorCodeDetails": {
     "DuplicateOrder": "There was another identical order already submitted. Please try again.",
