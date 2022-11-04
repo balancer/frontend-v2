@@ -14,6 +14,7 @@ export type JoinParams = {
   prices: TokenPrices;
   signer: Signer;
   slippageBsp: number;
+  relayerSignature: string;
 };
 
 export type QueryOutput = {

@@ -25,15 +25,10 @@ export class SwapJoinHandler implements JoinPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async join({
-    amountsIn,
-    tokensIn,
-    prices,
-    signer,
-    slippageBsp,
-  }: JoinParams): Promise<TransactionResponse> {
+  async join(params: JoinParams): Promise<TransactionResponse> {
+    const { signer, slippageBsp } = params;
     const userAddress = await signer.getAddress();
-    await this.queryJoin({ amountsIn, tokensIn, prices, signer, slippageBsp });
+    await this.queryJoin(params);
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 

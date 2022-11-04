@@ -33,6 +33,7 @@ import useRelayerApproval, {
   Relayer,
 } from '@/composables/trade/useRelayerApproval';
 import { TransactionActionInfo } from '@/types/transactions';
+import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 
 /**
  * TYPES
@@ -63,6 +64,7 @@ const provider = (props: Props) => {
   const { getSigner } = useWeb3();
   const { txState, txInProgress } = useTxState();
   const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
+  const { relayerSignature, signRelayerAction } = useSignRelayerApproval();
 
   /**
    * STATE
@@ -154,15 +156,16 @@ const provider = (props: Props) => {
       )
   );
 
-  const shouldApproveRelayer = computed<boolean>(
+  const shouldSignRelayer = computed<boolean>(
     () =>
       isDeepPool.value &&
       !isSingleAssetJoin.value &&
-      !relayerApproval.isUnlocked.value
+      // Check if Batch Relayer is either approved, or signed
+      !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
 
   const approvalActions = computed<TransactionActionInfo[]>(() =>
-    shouldApproveRelayer.value ? [relayerApproval.action.value] : []
+    shouldSignRelayer.value ? [signRelayerAction] : []
   );
 
   /**
@@ -219,7 +222,7 @@ const provider = (props: Props) => {
       return;
     }
     // Early return if relayer not yet approved
-    if (shouldApproveRelayer.value) {
+    if (shouldSignRelayer.value) {
       return;
     }
 
@@ -231,6 +234,7 @@ const provider = (props: Props) => {
           prices: prices.value,
           signer: getSigner(),
           slippageBsp: slippageBsp.value,
+          relayerSignature: relayerSignature.value,
         });
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;
@@ -253,6 +257,7 @@ const provider = (props: Props) => {
         prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        relayerSignature: relayerSignature.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;

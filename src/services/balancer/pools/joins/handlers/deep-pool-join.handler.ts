@@ -29,14 +29,9 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async join({
-    amountsIn,
-    tokensIn,
-    prices,
-    signer,
-    slippageBsp,
-  }: JoinParams): Promise<TransactionResponse> {
-    await this.queryJoin({ amountsIn, tokensIn, prices, signer, slippageBsp });
+  async join(params: JoinParams): Promise<TransactionResponse> {
+    const { signer } = params;
+    await this.queryJoin(params);
     if (!this.lastGeneralisedJoinRes) {
       throw new Error('Could not query generalised join');
     }
@@ -52,6 +47,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     tokensIn,
     signer,
     slippageBsp,
+    relayerSignature,
   }: JoinParams): Promise<QueryOutput> {
     const parsedAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       // Get the address in right casing style
@@ -77,7 +73,8 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
         parsedAmountsIn,
         signerAddress,
         wrapLeafTokens,
-        slippage
+        slippage,
+        relayerSignature
       )
       .catch(err => {
         console.error(err);

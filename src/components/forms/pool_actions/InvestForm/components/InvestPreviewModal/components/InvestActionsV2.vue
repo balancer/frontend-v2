@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
@@ -54,7 +54,7 @@ const {
   fiatValueOut,
   join,
   txState,
-  approvalActions,
+  approvalActions: joinPoolApprovalActions,
 } = useJoinPool();
 
 const tokensToApprove = computed(() =>
@@ -67,6 +67,8 @@ const { tokenApprovalActions } = useTokenApprovalActions(
   tokensToApprove.value,
   amountsToApprove
 );
+
+const approvalActions = ref(joinPoolApprovalActions.value);
 
 /**
  * COMPUTED
