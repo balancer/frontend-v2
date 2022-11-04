@@ -8,7 +8,7 @@ import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { isKovan, isL2, networkId } from '../useNetwork';
+import { isL2, isGoerli, networkId } from '../useNetwork';
 
 /**
  * TYPES
@@ -47,7 +47,7 @@ export default function useProtocolRewardsQuery(
       isWalletReady.value &&
       account.value != null &&
       !isL2.value &&
-      !isKovan.value
+      !isGoerli.value
   );
 
   /**
