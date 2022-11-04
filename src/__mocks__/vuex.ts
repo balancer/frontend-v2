@@ -4,3 +4,7 @@ export function useStore() {
   };
   return store;
 }
+
+export function createStore() {
+  return { state: { app: { transactionDeadline: 20 } } };
+}
