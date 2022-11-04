@@ -246,6 +246,7 @@ const provider = (props: Props) => {
    */
   async function join(): Promise<TransactionResponse> {
     try {
+      txError.value = '';
       return joinPoolService.join({
         amountsIn: amountsIn.value,
         tokensIn: tokensIn.value,
