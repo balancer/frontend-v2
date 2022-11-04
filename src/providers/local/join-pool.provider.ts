@@ -200,6 +200,15 @@ const provider = (props: Props) => {
   }
 
   /**
+   * Resets previous joinQuery results
+   */
+  function resetState() {
+    bptOut.value = '';
+    priceImpact.value = 0;
+    queryError.value = '';
+  }
+
+  /**
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
@@ -269,11 +278,11 @@ const provider = (props: Props) => {
     debounceQueryJoin.value();
   });
 
-  // If singleAssetJoin is toggled we need to reset any queryErrors. queryJoin
+  // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
   watch(isSingleAssetJoin, newVal => {
-    queryError.value = '';
+    resetState();
     joinPoolService.setJoinHandler(newVal);
   });
 
@@ -316,6 +325,7 @@ const provider = (props: Props) => {
     setAmountsIn,
     addTokensIn,
     resetAmounts,
+    resetState,
     join,
   };
 };
