@@ -13,17 +13,15 @@ export default class ArbitrumProvider {
   public async getGasPrice(): Promise<GasPrice | null> {
     try {
       const [gasPrice, maxPriorityFee] = await Promise.all([
-        this.fetchArbutrumProvider('eth_gasPrice'),
-        this.fetchArbutrumProvider('eth_maxPriorityFeePerGas'),
+        this.fetchArbitrumProvider('eth_gasPrice'),
+        this.fetchArbitrumProvider('eth_maxPriorityFeePerGas'),
       ]);
 
       const price = bnum(gasPrice.result).toNumber();
       const maxPriorityFeePerGas = bnum(maxPriorityFee.result).toNumber();
-      console.log('price', price);
-      console.log('maxPriorityFeePerGas', maxPriorityFeePerGas);
+
       return {
         price,
-        // maxFeePerGas: Math.floor(data[txSpeed].maxFee * GWEI_UNIT),
         maxPriorityFeePerGas,
       };
     } catch (error) {
@@ -32,7 +30,7 @@ export default class ArbitrumProvider {
     }
   }
 
-  private async fetchArbutrumProvider(method: string) {
+  private async fetchArbitrumProvider(method: string) {
     const { data } = await axios.post<ArbitrumGasStationResponse>(
       configService.loggingRpc,
       { method, id: 1, jsonrpc: '2.0' }

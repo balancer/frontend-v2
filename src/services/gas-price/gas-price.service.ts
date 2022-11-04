@@ -10,7 +10,6 @@ import BlocknativeProvider from './providers/blocknative.provider';
 import PolygonProvider from './providers/polygon.provider';
 import { GasPrice, GasSettings } from './providers/types';
 import { JsonRpcSigner, TransactionRequest } from '@ethersproject/providers';
-import GoerliProvider from './providers/goerli.provider';
 import ArbitrumProvider from './providers/arbitrum.provider';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
@@ -22,7 +21,6 @@ export class GasPriceService {
     private readonly configService = new ConfigService(),
     private readonly blocknativeProvider = new BlocknativeProvider(),
     private readonly polygonProvider = new PolygonProvider(),
-    private readonly goerliProvider = new GoerliProvider(),
     private readonly arbitrumProvider = new ArbitrumProvider()
   ) {}
 
@@ -30,8 +28,6 @@ export class GasPriceService {
     switch (this.configService.network.key) {
       case '1':
         return await this.blocknativeProvider.getGasPrice();
-      case '5':
-        return await this.goerliProvider.getGasPrice();
       case '137':
         return await this.polygonProvider.getGasPrice();
       case '42161':

@@ -69,6 +69,13 @@ export default class BlocknativeProvider {
 
       // gas price is in gwei
       if (gasPrice != null) {
+        console.log({
+          price: Math.round(gasPrice.price * GWEI_UNIT),
+          maxFeePerGas: Math.round(gasPrice.maxFeePerGas * GWEI_UNIT),
+          maxPriorityFeePerGas: Math.round(
+            gasPrice.maxPriorityFeePerGas * GWEI_UNIT
+          ),
+        });
         return {
           price: Math.round(gasPrice.price * GWEI_UNIT),
           maxFeePerGas: Math.round(gasPrice.maxFeePerGas * GWEI_UNIT),
