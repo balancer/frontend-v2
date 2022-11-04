@@ -68,10 +68,10 @@ const data = computed(() => {
       title: t('poolType'),
       value: poolType,
     },
-    Number(onchain?.amp)
+    onchain?.amp && Number(onchain?.amp)
       ? {
           title: t('ampFactor.title'),
-          value: onchain?.amp ? `${onchain.amp}` : '',
+          value: onchain.amp,
         }
       : null,
     {
