@@ -17,7 +17,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, urlFor } from './useNetwork';
+import { isTestnet, isMainnet, appUrl } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { uniq } from 'lodash';
 
@@ -187,7 +187,7 @@ export function poolURLFor(
     return `https://app.xave.finance/#/pool`;
   }
 
-  return `${urlFor(network)}/pool/${poolId}`;
+  return `${appUrl()}/pool/${poolId}`;
 }
 
 /**
@@ -432,8 +432,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWethPool = computed(
     (): boolean => !!pool.value && isWeth(pool.value)
   );
-  const isWstETHPool = computed(
-    (): boolean => !!pool.value && includesWstEth(pool.value.tokensList)
+  const isMainnetWstETHPool = computed(
+    (): boolean =>
+      !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
   );
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
@@ -461,7 +462,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isLiquidityBootstrappingPool,
     managedPoolWithTradingHalted,
     isWethPool,
-    isWstETHPool,
+    isMainnetWstETHPool,
     noInitLiquidityPool,
     lpTokens,
     // methods

@@ -191,15 +191,6 @@ export default defineComponent({
         color = 'red';
       } else {
         switch (userNetworkConfig.value?.chainId) {
-          case Network.KOVAN:
-            color = 'purple';
-            break;
-          case Network.ROPSTEN:
-            color = 'pink';
-            break;
-          case Network.RINKEBY:
-            color = 'yellow';
-            break;
           case Network.GÖRLI:
             color = 'blue';
             break;

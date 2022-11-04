@@ -253,7 +253,7 @@ const chartGrid = computed(() => {
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
-        'h-64': !isModal,
+        'h-56': !isModal,
         'h-112': isModal,
       }"
     />

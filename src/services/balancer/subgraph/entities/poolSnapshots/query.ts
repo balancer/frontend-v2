@@ -10,6 +10,7 @@ const defaultAttrs = {
   pool: {
     id: true,
   },
+  liquidity: true,
   timestamp: true,
   amounts: true,
   totalShares: true,

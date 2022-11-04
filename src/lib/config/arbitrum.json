@@ -1,9 +1,10 @@
 {
   "key": "42161",
   "chainId": 42161,
-  "chainName": "Arbitrum One",
-  "name": "Arbitrum One",
+  "chainName": "Arbitrum",
+  "name": "Arbitrum",
   "shortName": "Arbitrum",
+  "slug": "arbitrum",
   "network": "arbitrum-one",
   "unknown": false,
   "rpc": "https://arbitrum-mainnet.infura.io/v3/{{INFURA_KEY}}",

@@ -4,6 +4,7 @@
   "chainName": "Ethereum",
   "name": "Docker localhost 8545",
   "shortName": "dockerLocalhost",
+  "slug": "docker",
   "network": "docker localhost",
   "unknown": false,
   "rpc": "http://localhost:8545",

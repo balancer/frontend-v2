@@ -4,6 +4,7 @@
   "chainName": "test",
   "name": "test",
   "shortName": "test",
+  "slug": "test",
   "network": "test",
   "unknown": false,
   "rpc": "https://mainnet.infura.io/v3/{{INFURA_KEY}}",

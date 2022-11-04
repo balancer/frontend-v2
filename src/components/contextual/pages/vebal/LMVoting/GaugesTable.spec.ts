@@ -7,6 +7,13 @@ GaugesTable.components = {
   BalAssetSet,
 };
 
+// Global settings for component render.
+const global = {
+  stubs: {
+    TimelockIcon: true,
+  },
+};
+
 jest.mock('@/composables/useTokens');
 jest.mock('@/services/web3/useWeb3', () => {
   return jest.fn().mockImplementation(() => {
@@ -72,6 +79,7 @@ const queryRemoveVotesBtn = () =>
 describe('GaugesTable', () => {
   it('should render right tokens for gauge', async () => {
     render(GaugesTable, {
+      global,
       props: {
         data: gauges,
       },
@@ -91,6 +99,7 @@ describe('GaugesTable', () => {
 
   it('should render Expired label and disabled Vote btn, if gauge is expired', async () => {
     render(GaugesTable, {
+      global,
       props: {
         expiredGauges,
         data: gauges,
@@ -108,6 +117,7 @@ describe('GaugesTable', () => {
 
   it("should render Expired label and Remove Votes btn if gauge is expired and it has user's votes", async () => {
     render(GaugesTable, {
+      global,
       props: {
         expiredGauges,
         data: [{ ...gauge, userVotes: '1' }],

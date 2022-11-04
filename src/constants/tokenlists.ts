@@ -42,18 +42,6 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [],
   },
-  '42': {
-    Balancer: {
-      Default:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/kovan.listed.tokenlist.json',
-      Vetted:
-        'https://raw.githubusercontent.com/balancer-labs/assets/refactor-for-multichain/generated/kovan.vetted.tokenlist.json',
-    },
-    External: [
-      'ipns://tokens.uniswap.org',
-      'https://umaproject.org/uma.tokenlist.json',
-    ],
-  },
   '137': {
     Balancer: {
       Default:

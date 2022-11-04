@@ -5,7 +5,6 @@ import {
   SwapV2,
 } from '@balancer-labs/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { MaxUint256 } from '@ethersproject/constants';
 
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { vaultService } from './vault.service';
@@ -69,7 +68,7 @@ describe('vault.service', () => {
         contractAddress: vaultService.address,
         abi: vaultService.abi,
         action: 'swap',
-        params: [single, funds, tokenOutAmount, MaxUint256],
+        params: [single, funds, tokenOutAmount, expect.any(Number)], // expect.any(Number) refers to the deadline from calculateValidTo(storeState.app.transactionDeadline)
         options: {},
       });
     });
@@ -93,7 +92,14 @@ describe('vault.service', () => {
         contractAddress: vaultService.address,
         abi: vaultService.abi,
         action: 'batchSwap',
-        params: [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
+        params: [
+          swapKind,
+          swaps,
+          tokenAddresses,
+          funds,
+          limits,
+          expect.any(Number), // expect.any(Number) refers to the deadline from calculateValidTo(storeState.app.transactionDeadline)
+        ],
         options: {},
       });
     });
