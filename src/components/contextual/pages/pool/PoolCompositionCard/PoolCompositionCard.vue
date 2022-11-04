@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
 import { bnum } from '@/lib/utils';
-import {
-  getUnderlyingTokens,
-  findTokenByAddress,
-} from './nested-token-helpers';
+import { getUnderlyingTokens, findTokenByAddress } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { toRefs } from 'vue';

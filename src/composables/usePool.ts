@@ -357,6 +357,19 @@ export function fiatValueOf(pool: Pool, shares: string): string {
   return bnum(shares).times(bptPriceFor(pool)).toString();
 }
 
+export function findTokenByAddress(pool: Pool, address: string) {
+  return pool.tokens.find(token => isSameAddress(token.address, address));
+}
+
+export function getUnderlyingTokens(pool: Pool, address: string) {
+  const token = findTokenByAddress(pool, address);
+
+  const underlyingTokens = token?.token.pool?.tokens || [];
+  return underlyingTokens.filter(
+    token => !includesAddress(pool.tokensList, token.address)
+  );
+}
+
 /**
  * COMPOSABLE
  */
