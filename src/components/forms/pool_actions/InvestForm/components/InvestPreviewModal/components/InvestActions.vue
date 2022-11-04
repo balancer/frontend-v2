@@ -160,7 +160,7 @@ async function handleTransaction(tx): Promise<void> {
       investmentState.confirming = false;
     },
     onTxFailed: () => {
-      console.error('Invest failed');
+      console.error('Add liquidity failed');
       investmentState.confirming = false;
     },
   });

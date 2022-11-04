@@ -466,7 +466,7 @@
   "liquidityMiningIncentives": "Liquidity mining incentives",
   "liquidityMiningIncentivesCopy": "Liquidity incentives on {0} are paused for 1 week during its upgrade to the veBAL system. Incentives will resume on April 28.",
   "liquidityMiningPopover": {
-    "airdropEligibility": "People who provide liquidity to eligible liquidity pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+    "airdropEligibility": "People who provide liquidity to eligible pools or swap on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
     "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
     "claimFreezeWarning": {
       "description": "Since you have several weeks' worth of tokens unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim.",
@@ -483,7 +483,7 @@
     },
     "title": "Token incentives"
   },
-  "liquidityProviderCopy": "People who provide liquidity to eligible liquidity pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+  "liquidityProviderCopy": "People who provide liquidity to eligible pools or swap on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
   "liquidityProvision": "Liquidity provision",
   "loading": "Loading...",
   "loadingBestPrice": "Looking for the best price...",
@@ -1126,7 +1126,7 @@
   "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
   "tokenWarningTitle": "You have added a custom token",
   "tooltips": {
-    "invest": {
+    "addLiquidity": {
       "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
       "total": "The total value in {0} you’ll be adding into this pool."
     },
@@ -1173,7 +1173,7 @@
     },
     "exactOut": {
       "title": "Swap to {0} details",
-      "totalAfterFees": "Total expected to trade after fees",
+      "totalAfterFees": "Total expected to swap after fees",
       "totalBeforeFees": "Total to swap before fees",
       "totalWithSlippage": "The most you’ll send at {0} slippage",
       "tradeFees": "Swap fees"
@@ -1333,7 +1333,7 @@
   "weekAbbrev": "w",
   "weight": "Weight",
   "weightedPool": "Weighted pool",
-  "whichPools": "Which liquidity pools should be used when you make a trade.",
+  "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
     "label": "Withdraw",
     "tooltips": {
@@ -1358,7 +1358,7 @@
   "withdrawal": "Withdrawal",
   "withdrawFromPool": "Withdraw from pool",
   "withdrawalSettled": "Your withdrawal has settled",
-  "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
+  "withdrawalSuccess": "Your liquidity has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
   "withdrawFee": "Withdraw fee",
   "withdrawing": "withdrawing",
   "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
