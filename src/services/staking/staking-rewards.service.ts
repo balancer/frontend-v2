@@ -79,7 +79,7 @@ export class StakingRewardsService {
 
   private async getRelativeWeightsForGauges(gaugeAddresses: string[]) {
     const timestamp = getUnixTime(new Date());
-    if (configService.network.chainId === Network.KOVAN) {
+    if (configService.network.chainId === Network.GOERLI) {
       return await this.gaugeController.getRelativeWeights(
         gaugeAddresses,
         timestamp

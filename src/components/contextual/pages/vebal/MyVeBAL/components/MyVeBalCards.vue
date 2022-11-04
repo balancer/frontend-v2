@@ -8,6 +8,7 @@ import UnlockPreviewModal from '@/components/forms/lock_actions/UnlockForm/compo
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useVeBal from '@/composables/useVeBAL';
+import useNetwork from '@/composables/useNetwork';
 import { bnum } from '@/lib/utils';
 import { VeBalLockInfo } from '@/services/balancer/contracts/contracts/veBAL';
 import { Pool } from '@/services/pool/types';
@@ -44,6 +45,7 @@ const { fNum2 } = useNumbers();
 const { veBalBalance, lockablePoolId } = useVeBal();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -94,7 +96,7 @@ const cards = computed(() => {
       showPlusIcon: isWalletReady.value ? true : false,
       plusIconTo: {
         name: 'invest',
-        params: { id: lockablePoolId.value },
+        params: { id: lockablePoolId.value, networkSlug },
         query: { returnRoute: 'vebal' },
       },
     },

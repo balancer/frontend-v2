@@ -1,4 +1,4 @@
-import { isKovan } from '@/composables/useNetwork';
+import { isGoerli } from '@/composables/useNetwork';
 import { isDeep, isVeBalPool } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
@@ -187,7 +187,7 @@ export class AprConcern {
   }
 
   private async calcVeBalAPR(prices: TokenPrices): Promise<string> {
-    if (!isVeBalPool(this.pool.id) || isKovan.value) return '0';
+    if (!isVeBalPool(this.pool.id) || isGoerli.value) return '0';
 
     const veBalApr = new this.VeBalAprCalcClass();
     return await veBalApr.calc(

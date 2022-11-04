@@ -16,11 +16,17 @@ const actions = {
   init({ commit }) {
     commit(
       'setInputAsset',
-      lsGet('trade.inputAsset', initialTokens[networkId.value].input)
+      lsGet(
+        `trade.inputAsset.${networkId.value}`,
+        initialTokens[networkId.value].input
+      )
     );
     commit(
       'setOutputAsset',
-      lsGet('trade.outputAsset', initialTokens[networkId.value].output)
+      lsGet(
+        `trade.outputAsset.${networkId.value}`,
+        initialTokens[networkId.value].output
+      )
     );
   },
 };
@@ -28,12 +34,12 @@ const actions = {
 const mutations = {
   setInputAsset(state: TradeState, asset: string): void {
     state.inputAsset = asset;
-    lsSet('trade.inputAsset', asset);
+    lsSet(`trade.inputAsset.${networkId.value}`, asset);
   },
 
   setOutputAsset(state: TradeState, asset: string): void {
     state.outputAsset = asset;
-    lsSet('trade.outputAsset', asset);
+    lsSet(`trade.outputAsset.${networkId.value}`, asset);
   },
 };
 

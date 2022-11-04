@@ -10,6 +10,7 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useStreamedPoolsQuery from '@/composables/queries/useStreamedPoolsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 
 // COMPOSABLES
@@ -27,6 +28,7 @@ const {
 } = useStreamedPoolsQuery(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
+const { networkSlug, networkConfig } = useNetwork();
 
 const isInvestmentPoolsTableLoading = computed(
   () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
@@ -38,7 +40,7 @@ const isPaginated = computed(() => investmentPools.value.length >= 10);
  * METHODS
  */
 function navigateToCreatePool() {
-  router.push({ name: 'create-pool' });
+  router.push({ name: 'create-pool', params: { networkSlug } });
 }
 </script>
 
@@ -48,9 +50,7 @@ function navigateToCreatePool() {
     <BalStack vertical>
       <div class="px-4 xl:px-0">
         <div class="flex justify-between items-end mb-8">
-          <h3>
-            {{ $t('investmentPools') }}
-          </h3>
+          <h3>{{ networkConfig.chainName }} {{ $t('pools') }}</h3>
           <BalBtn
             v-if="upToMediumBreakpoint"
             color="blue"
