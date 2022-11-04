@@ -203,7 +203,7 @@ const provider = (props: Props) => {
    * Resets previous joinQuery results
    */
   function resetState() {
-    bptOut.value = '';
+    bptOut.value = '0';
     priceImpact.value = 0;
     queryError.value = '';
   }
