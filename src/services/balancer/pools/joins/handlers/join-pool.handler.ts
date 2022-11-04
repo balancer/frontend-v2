@@ -30,11 +30,5 @@ export abstract class JoinPoolHandler {
 
   abstract join(params: JoinParams): Promise<TransactionResponse>;
 
-  abstract queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices,
-    signer: Signer,
-    slippageBsp: number
-  ): Promise<QueryOutput>;
+  abstract queryJoin(params: JoinParams): Promise<QueryOutput>;
 }

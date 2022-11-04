@@ -225,13 +225,13 @@ const provider = (props: Props) => {
 
     trackLoading(async () => {
       try {
-        const output = await joinPoolService.queryJoin(
-          amountsIn.value,
-          tokensIn.value,
-          prices.value,
-          getSigner(),
-          slippageBsp.value
-        );
+        const output = await joinPoolService.queryJoin({
+          amountsIn: amountsIn.value,
+          tokensIn: tokensIn.value,
+          prices: prices.value,
+          signer: getSigner(),
+          slippageBsp: slippageBsp.value,
+        });
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;
         queryError.value = '';

@@ -3,18 +3,14 @@ import { fiatValueOf } from '@/composables/usePool';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum } from '@/lib/utils';
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
-import { Signer } from '@ethersproject/abstract-signer';
 
 /**
  * Handles joins for single asset flows where we need to use a BatchSwap to join
@@ -37,7 +33,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
     slippageBsp,
   }: JoinParams): Promise<TransactionResponse> {
     const userAddress = await signer.getAddress();
-    await this.queryJoin(amountsIn, tokensIn, prices, signer, slippageBsp);
+    await this.queryJoin({ amountsIn, tokensIn, prices, signer, slippageBsp });
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 
@@ -57,15 +53,11 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
   }
 
-  async queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    signer: Signer,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    slippageBsp: number
-  ): Promise<QueryOutput> {
+  async queryJoin({
+    amountsIn,
+    tokensIn,
+    prices,
+  }: JoinParams): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');
 

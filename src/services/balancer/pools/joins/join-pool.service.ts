@@ -1,10 +1,7 @@
 import { isDeep } from '@/composables/usePool';
 import { balancer } from '@/lib/balancer.sdk';
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { SwapJoinHandler } from './handlers/swap-join.handler';
@@ -14,7 +11,6 @@ import {
   QueryOutput,
 } from './handlers/join-pool.handler';
 import { DeepPoolJoinHandler } from './handlers/deep-pool-join.handler';
-import { Signer } from '@ethersproject/abstract-signer';
 
 /**
  * JoinPoolService acts as an adapter to underlying handlers based on the pool
@@ -86,20 +82,9 @@ export class JoinPoolService {
    * @param {TokenPrices} prices - Fiat prices for tokens in amountsIn.
    * @param {Signer} params.signer - Ethers Signer for executing the transaction.
    * @param {number} params.slippageBsp - User's slippage setting in basis points.
+   * @returns {QueryOutput} Query output object.
    */
-  async queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices,
-    signer: Signer,
-    slippageBsp: number
-  ): Promise<QueryOutput> {
-    return this.joinHandler.queryJoin(
-      amountsIn,
-      tokensIn,
-      prices,
-      signer,
-      slippageBsp
-    );
+  async queryJoin(params: JoinParams): Promise<QueryOutput> {
+    return this.joinHandler.queryJoin(params);
   }
 }

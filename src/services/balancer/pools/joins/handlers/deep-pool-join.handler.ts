@@ -1,14 +1,10 @@
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 import { balancer } from '@/lib/balancer.sdk';
-import { Signer } from '@ethersproject/abstract-signer';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
@@ -40,7 +36,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     signer,
     slippageBsp,
   }: JoinParams): Promise<TransactionResponse> {
-    await this.queryJoin(amountsIn, tokensIn, prices, signer, slippageBsp);
+    await this.queryJoin({ amountsIn, tokensIn, prices, signer, slippageBsp });
     if (!this.lastGeneralisedJoinRes) {
       throw new Error('Could not query generalised join');
     }
@@ -51,13 +47,12 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     });
   }
 
-  async queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices,
-    signer: Signer,
-    slippageBsp: number
-  ): Promise<QueryOutput> {
+  async queryJoin({
+    amountsIn,
+    tokensIn,
+    signer,
+    slippageBsp,
+  }: JoinParams): Promise<QueryOutput> {
     const parsedAmountsIn: string[] = amountsIn.map(({ address, value }) => {
       // Get the address in right casing style
       const realAddress = getAddress(address);
