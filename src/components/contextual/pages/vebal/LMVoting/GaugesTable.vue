@@ -313,6 +313,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
             :hasUserVotes="getHasUserVotes(gauge.userVotes)"
             :isGaugeExpired="getIsGaugeExpired(gauge.address)"
             @click.stop="emit('clickedVote', gauge)"
+            @click.prevent=""
           />
         </div>
       </template>
