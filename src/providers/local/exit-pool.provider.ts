@@ -33,6 +33,7 @@ import {
  */
 type Props = {
   pool: Pool;
+  isSingleAssetExit: boolean;
 };
 
 /**
@@ -45,6 +46,7 @@ const provider = (props: Props) => {
    * STATE
    */
   const pool = toRef(props, 'pool');
+  const isSingleAssetExit = toRef(props, 'isSingleAssetExit');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const isLoadingQuery = ref<boolean>(false);
@@ -140,6 +142,11 @@ const provider = (props: Props) => {
     debounceQueryExit.value();
   });
 
+  watch(isSingleAssetExit, newVal => {
+    queryError.value = '';
+    exitPoolService.setExitHandler(newVal);
+  });
+
   /**
    * LIFECYCLE
    */
@@ -157,6 +164,7 @@ const provider = (props: Props) => {
 
   return {
     pool,
+    isSingleAssetExit,
     exitTokens,
     priceImpact,
     isLoadingQuery,
@@ -190,6 +198,10 @@ export const ExitPoolProvider = defineComponent({
     pool: {
       type: Object as PropType<Pool>,
       required: true,
+    },
+    isSingleAssetExit: {
+      type: Boolean,
+      default: false,
     },
   },
 
