@@ -28,9 +28,7 @@ type Props = {
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onRowClick?: (data: Data) => void;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   sticky?: Sticky;
   square?: boolean;
   isPaginated?: boolean;
@@ -40,7 +38,6 @@ type Props = {
     getParams: (data: any) => Record<string, string>;
   } | null;
   initialState?: InitialState;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: Data, rowIndex: number) => string;
 };

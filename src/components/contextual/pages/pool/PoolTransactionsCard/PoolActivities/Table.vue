@@ -38,7 +38,6 @@ type Props = {
   poolActivities: PoolActivity[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;

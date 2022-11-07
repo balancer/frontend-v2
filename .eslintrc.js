@@ -53,6 +53,8 @@ module.exports = {
         autofix: true,
       },
     ],
+    // Typescript forces to check optional props for "undefined" values anyway, so this rule is not needed
+    'vue/require-default-prop': 'off',
   },
 
   overrides: [
