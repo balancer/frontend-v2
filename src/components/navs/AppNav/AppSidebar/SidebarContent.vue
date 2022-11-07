@@ -9,6 +9,7 @@ import useConfig from '@/composables/useConfig';
 import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * PROPS & EMITS
@@ -22,6 +23,7 @@ const { darkMode, toggleDarkMode } = useDarkMode();
 const { blockNumber } = useWeb3();
 const { networkConfig } = useConfig();
 const { version } = useApp();
+const { networkSlug } = useNetwork();
 const { t } = useI18n();
 const router = useRouter();
 
@@ -31,11 +33,11 @@ const router = useRouter();
 const blockIcon = ref<HTMLDivElement>();
 
 const navLinks = [
-  { label: t('invest'), path: '/' },
-  { label: t('trade'), path: '/trade' },
-  { label: t('portfolio'), path: '/portfolio' },
-  { label: 'veBAL', path: '/vebal' },
-  { label: t('claim'), path: '/claim' },
+  { label: t('pool'), path: '/' },
+  { label: t('swap'), path: `/${networkSlug}/trade` },
+  { label: t('claim'), path: `/${networkSlug}/claim` },
+  { label: t('portfolio'), path: `/${networkSlug}/portfolio` },
+  { label: 'veBAL', path: `/${networkSlug}/vebal` },
 ];
 
 const ecosystemLinks = [

@@ -123,13 +123,13 @@ const swapRows = computed<SwapRow[]>(() => {
 
     if (tokenOut === props.pool.address) {
       type = 'invest';
-      label = t('invest');
+      label = t('pool');
     } else if (tokenIn === props.pool.address) {
       type = 'withdraw';
       label = t('withdraw.label');
     } else {
       type = 'trade';
-      label = t('trade');
+      label = t('swap');
     }
 
     const tokenAmounts = getTokenAmounts(swaps, type);

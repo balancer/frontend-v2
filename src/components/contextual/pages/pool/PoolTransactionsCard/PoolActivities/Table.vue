@@ -113,7 +113,7 @@ const activityRows = computed<ActivityRow[]>(() =>
         const value = getJoinExitValue(amounts);
 
         return {
-          label: isJoin ? t('invest') : t('withdraw.label'),
+          label: isJoin ? t('addTokens') : t('withdraw.label'),
           value,
           formattedValue:
             value > 0
@@ -198,7 +198,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
               />
               <BalIcon v-else name="minus" size="sm" class="text-red-500" />
             </div>
-            <div>{{ action.label }}</div>
+            <div class="text-left">{{ action.label }}</div>
           </div>
         </div>
       </template>

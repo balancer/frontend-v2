@@ -6,12 +6,14 @@ import {
 } from '@balancer-labs/sdk';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { MaxUint256 } from '@ethersproject/constants';
 import { ContractInterface } from '@ethersproject/contracts';
+
+import { calculateValidTo } from '../gnosis/utils';
 
 import ConfigService, { configService } from '@/services/config/config.service';
 
 import Web3Service, { web3Service } from '../web3/web3.service';
+import store from '@/store';
 
 export default class VaultService {
   abi: ContractInterface;
@@ -33,11 +35,13 @@ export default class VaultService {
     tokenOutAmount: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
+    const storeState = store.state as any;
+    const deadline = calculateValidTo(storeState.app.transactionDeadline);
     return this.web3.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'swap',
-      params: [single, funds, tokenOutAmount, MaxUint256],
+      params: [single, funds, tokenOutAmount, deadline],
       options,
     });
   }
@@ -50,11 +54,13 @@ export default class VaultService {
     limits: string[],
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
+    const storeState = store.state as any;
+    const deadline = calculateValidTo(storeState.app.transactionDeadline);
     return this.web3.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
       action: 'batchSwap',
-      params: [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
+      params: [swapKind, swaps, tokenAddresses, funds, limits, deadline],
       options,
     });
   }

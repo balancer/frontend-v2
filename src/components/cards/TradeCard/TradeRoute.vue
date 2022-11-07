@@ -228,7 +228,6 @@ function getPoolLink(id: string): string {
   const chainId = appNetworkConfig.chainId;
   const prefixMap = {
     [Network.MAINNET]: 'app.',
-    [Network.KOVAN]: 'kovan.',
     [Network.GOERLI]: 'goerli.',
     [Network.POLYGON]: 'polygon.',
     [Network.ARBITRUM]: 'arbitrum.',
@@ -246,7 +245,7 @@ function getPoolLink(id: string): string {
       @click="toggleVisibility"
     >
       <div class="mr-2">
-        {{ $t('tradeRoute') }}
+        {{ $t('swapRoute') }}
       </div>
       <BalIcon v-if="visible" name="chevron-up" size="sm" />
       <BalIcon v-else name="chevron-down" size="sm" />

@@ -17,6 +17,7 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import useTransactions from '@/composables/useTransactions';
 import useVeBal from '@/composables/useVeBAL';
+import useNetwork from '@/composables/useNetwork';
 import { POOLS } from '@/constants/pools';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
@@ -75,6 +76,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
+const { networkSlug } = useNetwork();
 
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
 const {
@@ -102,7 +104,7 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
 const actions = computed((): TransactionActionInfo[] => [
   ...tokenApprovalActions,
   {
-    label: t('invest'),
+    label: t('addLiquidity'),
     loadingLabel: t('investment.preview.loadingLabel.investment'),
     confirmingLabel: t('confirming'),
     action: submit,
@@ -158,7 +160,7 @@ async function handleTransaction(tx): Promise<void> {
       investmentState.confirming = false;
     },
     onTxFailed: () => {
-      console.error('Invest failed');
+      console.error('Add liquidity failed');
       investmentState.confirming = false;
     },
   });
@@ -222,7 +224,7 @@ watch(blockNumber, async () => {
       <BalBtn
         v-if="lockablePoolId === pool.id"
         tag="router-link"
-        :to="{ name: 'get-vebal' }"
+        :to="{ name: 'get-vebal', params: { networkSlug } }"
         color="gradient"
         block
         class="flex mt-2"
@@ -243,7 +245,10 @@ watch(blockNumber, async () => {
 
       <BalBtn
         tag="router-link"
-        :to="{ name: 'pool', params: { id: pool.id } }"
+        :to="{
+          name: 'pool',
+          params: { networkSlug, id: pool.id },
+        }"
         color="gray"
         outline
         block
