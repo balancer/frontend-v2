@@ -57,7 +57,8 @@
     "veBALHelpers": "0xE9aac58a051314C085773668f27DD6F673fc0B3F",
     "feeDistributor": "0x7F91dcdE02F72b478Dc73cB21730cAcA907c8c44",
     "feeDistributorDeprecated": "0x7F91dcdE02F72b478Dc73cB21730cAcA907c8c44",
-    "faucet": "0xccb0F4Cf5D3F97f4a55bb5f5cA321C3ED033f244"
+    "faucet": "0xccb0F4Cf5D3F97f4a55bb5f5cA321C3ED033f244",
+    "gaugeRewardsHelper": "0xC128a9954e6c874eA3d62ce62B468bA073093F25"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

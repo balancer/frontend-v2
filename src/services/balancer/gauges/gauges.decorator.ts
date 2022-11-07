@@ -2,6 +2,7 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { isL2 } from '@/composables/useNetwork';
 import LiquidityGaugeAbi from '@/lib/abi/LiquidityGaugeV5.json';
+import LiquidityGaugeRewardHelperAbi from '@/lib/abi/LiquidityGaugeHelperAbi.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
@@ -20,6 +21,7 @@ export class GaugesDecorator {
 
   constructor(
     private readonly abi = LiquidityGaugeAbi,
+    private readonly rewardsHelperAbi = LiquidityGaugeRewardHelperAbi,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly config = configService
   ) {
@@ -39,11 +41,14 @@ export class GaugesDecorator {
 
     let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
 
+    if (isL2.value) {
+      this.multicaller = this.resetHelperMulticaller();
+    }
     this.callClaimableRewards(subgraphGauges, userAddress, gaugesDataMap);
-
     gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
       gaugesDataMap
     );
+    console.log('gabesh', gaugesDataMap);
 
     return subgraphGauges.map(subgraphGauge => ({
       ...subgraphGauge,
@@ -118,18 +123,25 @@ export class GaugesDecorator {
     userAddress: string,
     gaugesDataMap: OnchainGaugeDataMap
   ) {
-    const methodName = isL2.value
-      ? 'claimable_reward_write'
-      : 'claimable_reward';
+    const methodName = isL2.value ? 'getPendingRewards' : 'claimable_reward';
+
     subgraphGauges.forEach(gauge => {
       gaugesDataMap[gauge.id].rewardTokens.forEach(rewardToken => {
         if (rewardToken === AddressZero) return;
 
+        const callArgs = isL2.value
+          ? [gauge.id, userAddress, rewardToken]
+          : [userAddress, rewardToken];
+
+        const contractAddress = isL2.value
+          ? configService.network.addresses.gaugeRewardsHelper
+          : gauge.id;
+
         this.multicaller.call(
           `${gauge.id}.claimableRewards.${rewardToken}`,
-          gauge.id,
+          contractAddress,
           methodName,
-          [userAddress, rewardToken]
+          callArgs
         );
       });
     });
@@ -152,6 +164,14 @@ export class GaugesDecorator {
 
   private resetMulticaller(): Multicaller {
     return new Multicaller(this.config.network.key, this.provider, this.abi);
+  }
+
+  private resetHelperMulticaller(): Multicaller {
+    return new Multicaller(
+      this.config.network.key,
+      this.provider,
+      this.rewardsHelperAbi
+    );
   }
 }
 
