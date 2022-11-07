@@ -12,8 +12,6 @@ import { bnum } from '@/lib/utils';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import { match0xService } from '@/services/gnosis/match0x.service';
-import { paraSwapService } from '@/services/gnosis/paraswap.service';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import {
   FeeInformation,
@@ -90,14 +88,6 @@ function getPriceQuotes(params: PriceQuoteParams) {
   return Promise.allSettled([
     tryPromiseWithTimeout(
       gnosisProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-    tryPromiseWithTimeout(
-      match0xService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-    tryPromiseWithTimeout(
-      paraSwapService.getPriceQuote(params),
       PRICE_QUOTE_TIMEOUT
     ),
   ]);

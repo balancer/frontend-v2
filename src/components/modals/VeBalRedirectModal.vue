@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import { Network } from '@balancer-labs/sdk';
-import { computed, ref } from 'vue';
 
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
-import { urlFor } from '@/composables/useNetwork';
 import useVeBAL from '@/composables/useVeBAL';
+import { getNetworkSlug } from '@/composables/useNetwork';
 
 /**
  * STATE
@@ -15,11 +17,7 @@ const redirectModal = ref<typeof BalModal>();
  * COMPOSABLES
  */
 const { showRedirectModal, setShowRedirectModal } = useVeBAL();
-
-/**
- * COMPUTED
- */
-const mainnetURL = computed((): string => `${urlFor(Network.MAINNET)}/vebal`);
+const router = useRouter();
 
 /**
  * METHODS
@@ -48,9 +46,14 @@ function handleInternalClose() {
       <div class="grid grid-cols-2 grid-rows-1 gap-4 mt-4">
         <BalBtn
           tag="a"
-          :href="mainnetURL"
           :label="$t('proceed')"
           color="gradient"
+          @click="
+            router.push({
+              name: 'vebal',
+              params: { networkSlug: getNetworkSlug(Network.MAINNET) },
+            })
+          "
         />
         <BalBtn
           color="gray"

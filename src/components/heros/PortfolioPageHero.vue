@@ -6,7 +6,7 @@ import AppHero from '@/components/heros/AppHero.vue';
 import usePools from '@/composables/pools/usePools';
 import useStaking from '@/composables/staking/useStaking';
 import { useLock } from '@/composables/useLock';
-import { isL2 } from '@/composables/useNetwork';
+import useNetwork, { isL2 } from '@/composables/useNetwork';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -21,6 +21,7 @@ const { fNum2 } = useNumbers();
 const { isWalletReady, isWalletConnecting } = useWeb3();
 const { totalInvestedAmount, isLoadingUserPools } = usePools();
 const { lockFiatValue, isLoadingLock } = useLock();
+const { networkSlug } = useNetwork();
 const {
   userData: {
     totalStakedFiatValue,
@@ -71,7 +72,7 @@ const isLoadingTotalValue = computed(
   <AppHero :class="classes">
     <h1
       class="mb-2 font-body text-base font-medium text-white opacity-90"
-      v-text="$t('myBalancerInvestments')"
+      v-text="$t('myBalancerBalance')"
     />
 
     <template v-if="isWalletReady || isWalletConnecting">
@@ -92,7 +93,7 @@ const isLoadingTotalValue = computed(
         <div
           v-else
           class="group flex items-center px-3 h-8 text-sm font-medium text-yellow-500 hover:text-white focus:text-white rounded-tr rounded-bl border border-yellow-500 transition-colors cursor-pointer vebal-banner"
-          @click="router.push({ name: 'vebal' })"
+          @click="router.push({ name: 'vebal', params: { networkSlug } })"
         >
           <span v-if="lockFiatValue === '0'"
             >{{ lockFiatValue }} {{ $t('veBAL.hero.tokens.veBAL') }}</span

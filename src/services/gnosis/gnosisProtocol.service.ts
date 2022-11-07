@@ -24,9 +24,6 @@ export const API_URLS = {
   [Network.MAINNET]: IS_DEV
     ? 'https://protocol-mainnet.dev.gnosisdev.com/api'
     : 'https://protocol-mainnet.gnosis.io/api',
-  [Network.RINKEBY]: IS_DEV
-    ? 'https://protocol-rinkeby.dev.gnosisdev.com/api'
-    : 'https://protocol-rinkeby.gnosis.io/api',
 };
 
 export default class GnosisProtocolService {

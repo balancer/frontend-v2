@@ -1,13 +1,15 @@
 import { rest } from 'msw';
 import gaugesResponse from '../../services/balancer/gauges/__mocks__/gauges-response.schema.json';
 
+export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
+
 const chainIdHandler = (req, res, ctx) => {
   return req.json().then(data => {
     if (data[0].method === 'eth_chainId') {
       const MAINNET = '1';
       return res(ctx.json([MAINNET]));
     }
-    console.log('Unhandled kovan post with payload: ', data);
+    console.log('Unhandled post with payload: ', data);
   });
 };
 
@@ -17,9 +19,6 @@ export const handlers = [
   }),
   rest.get('https://cloudflare-ipfs.com/ipns/xyz', (req, res, ctx) => {
     return res(ctx.text('ipns test response'));
-  }),
-  rest.get('*blocklytics/kovan-blocks', (req, res, ctx) => {
-    return res(ctx.json({ blocks: ['12345678'] }));
   }),
   rest.post('*blocklytics/*-blocks', (req, res, ctx) => {
     return res(ctx.json({ data: { blocks: ['12345678'] } }));
@@ -33,8 +32,6 @@ export const handlers = [
     });
   }),
 
-  rest.post('https://kovan.infura.io/v3/*', chainIdHandler),
-  rest.post('https://eth-kovan.alchemyapi.io/v2/*', chainIdHandler),
   rest.post('https://mainnet.infura.io/v3/*', chainIdHandler),
 
   rest.get(
@@ -58,4 +55,13 @@ export const handlers = [
       );
     }
   ),
+
+  rest.post('https://api.balancer.fi/wallet-check', (req, res, ctx) => {
+    return req.json().then(data => {
+      if (data.address === SANCTIONED_ADDRESS)
+        return res(ctx.json({ is_blocked: true }));
+      // NOT SANCTIONED:
+      return res(ctx.json({ is_blocked: false }));
+    });
+  }),
 ];
