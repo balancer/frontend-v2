@@ -1,8 +1,9 @@
 import WalletConnectProvider from '@walletconnect/web3-provider';
 
 import ConfigService from '@/services/config/config.service';
+import template from '@/lib/utils/template';
 import { WalletError } from '@/types';
-
+import { Network } from '@balancer-labs/sdk';
 import { Connector, ConnectorId } from '../connector';
 
 export class WalletConnectConnector extends Connector {
@@ -11,7 +12,33 @@ export class WalletConnectConnector extends Connector {
     const configService = new ConfigService();
     const provider = new WalletConnectProvider({
       rpc: {
-        [configService.env.NETWORK]: configService.rpc,
+        [Network.MAINNET]: template(
+          configService.getNetworkConfig(Network.MAINNET).rpc,
+          {
+            INFURA_KEY: configService.getNetworkConfig(Network.MAINNET).keys
+              .infura,
+            ALCHEMY_KEY: configService.getNetworkConfig(Network.MAINNET).keys
+              .alchemy,
+          }
+        ),
+        [Network.POLYGON]: template(
+          configService.getNetworkConfig(Network.POLYGON).rpc,
+          {
+            INFURA_KEY: configService.getNetworkConfig(Network.POLYGON).keys
+              .infura,
+            ALCHEMY_KEY: configService.getNetworkConfig(Network.POLYGON).keys
+              .alchemy,
+          }
+        ),
+        [Network.ARBITRUM]: template(
+          configService.getNetworkConfig(Network.ARBITRUM).rpc,
+          {
+            INFURA_KEY: configService.getNetworkConfig(Network.ARBITRUM).keys
+              .infura,
+            ALCHEMY_KEY: configService.getNetworkConfig(Network.ARBITRUM).keys
+              .alchemy,
+          }
+        ),
       },
     });
     this.provider = provider;
