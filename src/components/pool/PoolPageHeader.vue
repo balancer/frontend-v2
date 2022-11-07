@@ -130,7 +130,10 @@ const nonAllowedRateProviders = computed(() => {
     props.pool?.poolType === 'Weighted' &&
     props.pool?.priceRateProviders?.some(
       provider =>
-        !ALLOWED_PRICE_RATE_PROVIDERS[provider.token.address][provider.address]
+        !ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] &&
+        !ALLOWED_PRICE_RATE_PROVIDERS[provider.token?.address]?.[
+          provider.address
+        ]
     )
   );
 });

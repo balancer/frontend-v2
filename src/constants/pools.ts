@@ -672,7 +672,7 @@ export const POOLS: Pools = POOLS_MAP[networkId.value]
   : POOLS_GENERIC;
 
 export const ALLOWED_PRICE_RATE_PROVIDERS = {
-  '0xa13a9247ea42d743238089903570127dda72fe44': {
+  '*': {
     '0x0000000000000000000000000000000000000000': true,
   },
   '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': {
