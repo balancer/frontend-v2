@@ -19,6 +19,7 @@ import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
 import InvestFormMissingPoolTokens from './components/InvestFormMissingPoolTokens.vue';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -45,10 +46,10 @@ const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
+const { wrappedNativeAsset } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
-  joinTokens,
   amountsIn,
   highPriceImpact,
   highPriceImpactAccepted,
@@ -79,7 +80,7 @@ const poolHasLowLiquidity = computed((): boolean =>
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
   setAmountsIn([]);
   if (isSingleAssetJoin) {
-    addTokensIn([joinTokens.value[0]]);
+    addTokensIn([wrappedNativeAsset.value.address]);
   } else {
     await forChange(isLoadingBalances, false);
     addTokensIn(poolTokensWithBalance.value);
