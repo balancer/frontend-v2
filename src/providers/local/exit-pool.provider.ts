@@ -63,7 +63,7 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { injectTokens } = useTokens();
+  const { injectTokens, getToken, prices } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -107,7 +107,14 @@ const provider = (props: Props) => {
   async function queryExit() {
     trackLoading(async () => {
       try {
-        const output = await exitPoolService.queryExit();
+        const output = await exitPoolService.queryExit({
+          signer: getSigner(),
+          slippageBsp: slippageBsp.value,
+          amount: '0',
+          tokenInfo: getToken(''),
+          price: prices.value[''],
+          relayerSignature: '',
+        });
         priceImpact.value = output.priceImpact;
         queryError.value = '';
       } catch (error) {
@@ -124,6 +131,10 @@ const provider = (props: Props) => {
       return exitPoolService.exit({
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        amount: '0',
+        tokenInfo: getToken(''),
+        price: prices.value[''],
+        relayerSignature: '',
       });
       throw new Error('To be implemented');
     } catch (error) {

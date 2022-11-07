@@ -69,7 +69,7 @@ export class ExitPoolService {
    *
    * @param ...
    */
-  async queryExit(): Promise<QueryOutput> {
-    return this.exitHandler.queryExit();
+  async queryExit(params: ExitParams): Promise<QueryOutput> {
+    return this.exitHandler.queryExit(params);
   }
 }
