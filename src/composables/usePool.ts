@@ -17,7 +17,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, isMainnet, appUrl } from './useNetwork';
+import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { uniq } from 'lodash';
 
@@ -186,7 +186,7 @@ export function poolURLFor(
     return `https://app.xave.finance/#/pool`;
   }
 
-  return `${appUrl()}/pool/${poolId}`;
+  return `${appUrl()}/${getNetworkSlug(network)}/pool/${poolId}`;
 }
 
 /**
