@@ -84,7 +84,6 @@ const amountInMap = computed((): AmountMap => {
 });
 
 const amountOutMap = computed((): AmountMap => {
-  // if (!isSingleAssetJoin.value) return {};
   const amountMap = {
     [props.pool.address]: bptOut.value,
   };
@@ -100,7 +99,6 @@ const tokenInMap = computed((): TokenInfoMap => {
 });
 
 const tokenOutMap = computed((): TokenInfoMap => {
-  // if (!isSingleAssetJoin.value) return {};
   const tokenMap = {
     [props.pool.address]: getToken(props.pool.address),
   };

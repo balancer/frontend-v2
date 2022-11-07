@@ -90,7 +90,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     );
     const priceImpact: number = bnum(
       formatFixed(
-        // @ts-ignore-next-line -- priceImpact is not part of the response type, but it's still part of the response
+        // @ts-ignore-next-line -- priceImpact is part of the response, but type is missing
         this.lastGeneralisedJoinRes.priceImpact,
         this.pool.value.onchain?.decimals || 18
       )
