@@ -48,7 +48,6 @@ export class GaugesDecorator {
     gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
       gaugesDataMap
     );
-    console.log('gabesh', gaugesDataMap);
 
     return subgraphGauges.map(subgraphGauge => ({
       ...subgraphGauge,
