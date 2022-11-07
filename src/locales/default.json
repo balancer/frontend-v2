@@ -576,7 +576,7 @@
   "noPriceImpact": "Best price",
   "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
   "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
-  "nonAllowedRateProviders": "One or more token price providers for this pool have not been approved by Balancer. Ploceed with caution.",
+  "nonAllowedRateProviders": "One or more token price providers for this pool have not been approved by Balancer. Proceed with caution.",
   "noRecentActivity": "Your recent activity will appear here…",
   "noResults": "No results",
   "noSwapsPool": "No swaps in this pool.",
