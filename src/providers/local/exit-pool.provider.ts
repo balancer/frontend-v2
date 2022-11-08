@@ -1,3 +1,4 @@
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
@@ -35,6 +36,11 @@ type Props = {
   pool: Pool;
   isSingleAssetExit: boolean;
 };
+export type AmountOut = {
+  address: string;
+  value: string;
+  valid: boolean;
+};
 
 /**
  * ExitPoolProvider
@@ -52,6 +58,8 @@ const provider = (props: Props) => {
   const isLoadingQuery = ref<boolean>(false);
   const queryError = ref<string>('');
   const txError = ref<string>('');
+  const amountsOut = ref<AmountOut[]>([]);
+  const propBptIn = ref<string>('0');
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
 
@@ -63,7 +71,8 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { injectTokens, getToken, prices } = useTokens();
+  const { fNum2 } = useNumbers();
+  const { injectTokens, getToken, prices, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -97,9 +106,48 @@ const provider = (props: Props) => {
     highPriceImpact.value ? highPriceImpactAccepted.value : true
   );
 
+  // Checks if amountsIn has any values > 0.
+  const hasAmountsOut = computed(() =>
+    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
+  );
+
+  const bptBalance = computed((): string => balanceFor(pool.value.address));
+
+  const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
+
+  // TODO
+  const tokenOutPoolBalance = computed(() => {
+    return '1';
+  });
+
+  // TODO
+  const fiatTotal = computed((): string => '0');
+
+  const fiatTotalLabel = computed((): string =>
+    fNum2(fiatTotal.value, FNumFormats.fiat)
+  );
+
+  // TODO
+  const fiatAmounts = computed((): string[] => ['0', '1']);
+
+  // TODO
+  const proportionalAmounts = computed((): string[] => {
+    return ['0', '1'];
+  });
+
+  // TODO
+  const fullAmounts = computed(() => {
+    return ['0', '1'];
+  });
+
   /**
    * METHODS
    */
+
+  // TODO
+  function reset() {
+    console.log('reset');
+  }
 
   /**
    * Simulate exit transaction to get expected output and calculate price impact.
@@ -185,9 +233,20 @@ const provider = (props: Props) => {
     highPriceImpactAccepted,
     txState,
     txInProgress,
-    debounceQueryExit,
     queryError,
+    amountsOut,
+    hasAmountsOut,
+    bptBalance,
+    tokenOutPoolBalance,
+    hasBpt,
+    propBptIn,
+    fiatTotalLabel,
+    fiatAmounts,
+    proportionalAmounts,
+    fullAmounts,
+    debounceQueryExit,
     exit,
+    reset,
   };
 };
 
