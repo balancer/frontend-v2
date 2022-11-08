@@ -6,13 +6,17 @@ import { configService } from '@/services/config/config.service';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { useI18n } from 'vue-i18n';
 import { TransactionActionInfo } from '@/types/transactions';
+import {
+  relayerAddressMap,
+  Relayer as RelayerType,
+} from '@/composables/trade/useRelayerApproval';
 
 /**
  * STATE
  */
 const relayerSignature = ref<string>('');
 
-export default function useSignRelayerApproval() {
+export default function useSignRelayerApproval(relayerType: RelayerType) {
   /**
    * COMPOSABLES
    */
@@ -24,10 +28,11 @@ export default function useSignRelayerApproval() {
    * METHODS
    */
   async function signRelayerApproval(): Promise<void> {
+    const relayerAddress = relayerAddressMap[relayerType];
     const signer = getSigner();
     const signerAddress = await signer.getAddress();
     const signature = await Relayer.signRelayerApproval(
-      configService.network.addresses.batchRelayerV4,
+      relayerAddress,
       signerAddress,
       signer,
       Vault__factory.connect(configService.network.addresses.vault, signer)

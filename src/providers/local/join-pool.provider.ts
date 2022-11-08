@@ -77,7 +77,9 @@ const provider = (props: Props) => {
   const { getSigner } = useWeb3();
   const { txState, txInProgress } = useTxState();
   const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval();
+  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
+    Relayer.BATCH_V4
+  );
 
   const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
 
