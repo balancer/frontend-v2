@@ -56,17 +56,6 @@ type Props = {
  */
 const provider = (props: Props) => {
   /**
-   * COMPOSABLES
-   */
-  const { getTokens, prices, injectTokens } = useTokens();
-  const { toFiat } = useNumbers();
-  const { slippageBsp } = useUserSettings();
-  const { getSigner } = useWeb3();
-  const { txState, txInProgress } = useTxState();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval();
-
-  /**
    * STATE
    */
   const pool = toRef(props, 'pool');
@@ -78,6 +67,17 @@ const provider = (props: Props) => {
   const isLoadingQuery = ref<boolean>(false);
   const queryError = ref<string>('');
   const txError = ref<string>('');
+
+  /**
+   * COMPOSABLES
+   */
+  const { getTokens, prices, injectTokens } = useTokens();
+  const { toFiat } = useNumbers();
+  const { slippageBsp } = useUserSettings();
+  const { getSigner } = useWeb3();
+  const { txState, txInProgress } = useTxState();
+  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
+  const { relayerSignature, signRelayerAction } = useSignRelayerApproval();
 
   const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
 
