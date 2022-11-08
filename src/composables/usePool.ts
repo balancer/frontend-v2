@@ -4,7 +4,8 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
-import { ALLOWED_PRICE_RATE_PROVIDERS, POOLS } from '@/constants/pools';
+import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
+import { POOLS } from '@/constants/pools';
 import {
   bnum,
   includesAddress,
@@ -446,10 +447,8 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       isWeighted(pool.value.poolType) &&
       !pool.value?.priceRateProviders?.every(
         provider =>
-          ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] ||
-          ALLOWED_PRICE_RATE_PROVIDERS[provider.token?.address]?.[
-            provider.address
-          ]
+          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
+          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
       )
   );
 

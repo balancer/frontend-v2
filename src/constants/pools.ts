@@ -1,10 +1,6 @@
 import { Network } from '@balancer-labs/sdk';
 
 import { isMainnet, networkId } from '@/composables/useNetwork';
-import ALLOWED_PRICE_RATE_PROVIDERS_MAINNET from '@/constants/allowedRateProviders/allowed-rate-providers-mainnet.json';
-import ALLOWED_PRICE_RATE_PROVIDERS_GOERLI from '@/constants/allowedRateProviders/allowed-rate-providers-goerli.json';
-import ALLOWED_PRICE_RATE_PROVIDERS_POLYGON from '@/constants/allowedRateProviders/allowed-rate-providers-polygon.json';
-import ALLOWED_PRICE_RATE_PROVIDERS_ARBITRUM from '@/constants/allowedRateProviders/allowed-rate-providers-arbitrum.json';
 
 export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 100K USD or $1 for other networks
 
@@ -592,13 +588,3 @@ const POOLS_MAP = {
 export const POOLS: Pools = POOLS_MAP[networkId.value]
   ? POOLS_MAP[networkId.value]
   : POOLS_GENERIC;
-
-const ALLOWED_PRICE_RATE_PROVIDERS_ALL = {
-  [Network.MAINNET]: ALLOWED_PRICE_RATE_PROVIDERS_MAINNET,
-  [Network.GOERLI]: ALLOWED_PRICE_RATE_PROVIDERS_GOERLI,
-  [Network.POLYGON]: ALLOWED_PRICE_RATE_PROVIDERS_POLYGON,
-  [Network.ARBITRUM]: ALLOWED_PRICE_RATE_PROVIDERS_ARBITRUM,
-};
-
-export const ALLOWED_PRICE_RATE_PROVIDERS =
-  ALLOWED_PRICE_RATE_PROVIDERS_ALL[networkId.value];
