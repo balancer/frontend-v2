@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { GasPrice } from './types';
-import { configService } from '@/services/config/config.service';
 import { bnum } from '@/lib/utils';
 
 interface ArbitrumGasStationResponse {
@@ -16,7 +15,6 @@ export default class ArbitrumProvider {
         this.fetchArbitrumProvider('eth_gasPrice'),
         this.fetchArbitrumProvider('eth_maxPriorityFeePerGas'),
       ]);
-
       const price = bnum(gasPrice.result).toNumber();
       const maxPriorityFeePerGas = bnum(maxPriorityFee.result).toNumber();
 
@@ -32,7 +30,7 @@ export default class ArbitrumProvider {
 
   private async fetchArbitrumProvider(method: string) {
     const { data } = await axios.post<ArbitrumGasStationResponse>(
-      configService.loggingRpc,
+      'https://arb-mainnet.g.alchemy.com/v2/VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh',
       { method, id: 1, jsonrpc: '2.0' }
     );
 
