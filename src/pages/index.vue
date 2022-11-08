@@ -28,7 +28,7 @@ const {
 } = useStreamedPoolsQuery(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
 const { priceQueryLoading } = useTokens();
-const { networkSlug } = useNetwork();
+const { networkSlug, networkConfig } = useNetwork();
 
 const isInvestmentPoolsTableLoading = computed(
   () => dataStates.value['basic'] === 'loading' || priceQueryLoading.value
@@ -51,7 +51,8 @@ function navigateToCreatePool() {
       <div class="px-4 xl:px-0">
         <div class="flex justify-between items-end mb-8">
           <h3>
-            {{ $t('investmentPools') }}
+            {{ networkConfig.chainName }}
+            <span class="lowercase">{{ $t('pools') }}</span>
           </h3>
           <BalBtn
             v-if="upToMediumBreakpoint"

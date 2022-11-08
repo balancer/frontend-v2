@@ -8,7 +8,7 @@
       ]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
-      {{ $t('invest') }}
+      {{ $t('pool') }}
     </router-link>
     <router-link
       :to="{ name: 'trade', params: { networkSlug } }"
@@ -18,7 +18,7 @@
       ]"
       @click="trackGoal(Goals.ClickNavTrade)"
     >
-      {{ $t('trade') }}
+      {{ $t('swap') }}
     </router-link>
   </div>
 </template>

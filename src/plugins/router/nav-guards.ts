@@ -4,6 +4,8 @@ import {
   networkFromSlug,
   networkSlug,
 } from '@/composables/useNetwork';
+import config from '@/lib/config';
+import { Network } from '@balancer-labs/sdk';
 import { Router } from 'vue-router';
 
 /**
@@ -88,7 +90,10 @@ function applyNetworkPathRedirects(router: Router): Router {
       ];
       if (to.redirectedFrom || !nonNetworkedRoutes.includes(to.fullPath)) {
         const newPath = to.redirectedFrom?.fullPath ?? to.fullPath;
-        router.push({ path: `/${networkSlug}${newPath}` });
+        const newNetwork = newPath.includes('/pool')
+          ? config[Network.MAINNET].slug
+          : networkSlug;
+        router.push({ path: `/${newNetwork}${newPath}` });
       } else {
         next();
       }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { SubgraphPoolBase, SwapV2 } from '@balancer-labs/sdk';
-import { Network } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
@@ -13,6 +12,7 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isSameAddress } from '@/lib/utils';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import useWeb3 from '@/services/web3/useWeb3';
+import { networkSlug } from '@/composables/useNetwork';
 
 interface Props {
   addressIn: string;
@@ -223,20 +223,6 @@ function getV2Routes(
 function formatShare(share: number): string {
   return fNum2(share, FNumFormats.percent);
 }
-
-function getPoolLink(id: string): string {
-  const chainId = appNetworkConfig.chainId;
-  const prefixMap = {
-    [Network.MAINNET]: 'app.',
-    [Network.KOVAN]: 'kovan.',
-    [Network.GOERLI]: 'goerli.',
-    [Network.POLYGON]: 'polygon.',
-    [Network.ARBITRUM]: 'arbitrum.',
-  };
-  const prefix = prefixMap[chainId] || '';
-
-  return `https://${prefix}balancer.fi/#/pool/${id}`;
-}
 </script>
 
 <template>
@@ -246,7 +232,7 @@ function getPoolLink(id: string): string {
       @click="toggleVisibility"
     >
       <div class="mr-2">
-        {{ $t('tradeRoute') }}
+        {{ $t('swapRoute') }}
       </div>
       <BalIcon v-if="visible" name="chevron-up" size="sm" />
       <BalIcon v-else name="chevron-down" size="sm" />
@@ -337,7 +323,7 @@ function getPoolLink(id: string): string {
                 >
                   <a
                     class="flex p-1.5"
-                    :href="getPoolLink(hop.pool.id)"
+                    :href="`/#/${networkSlug}/pool/${hop.pool.id}`"
                     target="_blank"
                   >
                     <BalAsset

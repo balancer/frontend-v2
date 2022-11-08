@@ -236,3 +236,9 @@ export interface PriceRateProvider {
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
+
+export type BalDetailsTableData = {
+  title: string;
+  value: string;
+  link?: string;
+};

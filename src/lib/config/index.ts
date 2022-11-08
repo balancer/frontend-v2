@@ -4,10 +4,8 @@ import arbitrum from './arbitrum.json';
 import docker from './docker.json';
 import goerli from './goerli.json';
 import homestead from './homestead.json';
-import kovan from './kovan.json';
 import optimism from './optimism.json';
 import polygon from './polygon.json';
-import rinkeby from './rinkeby.json';
 import test from './test.json';
 
 export interface Config {
@@ -90,9 +88,7 @@ export interface Config {
 
 const config: Record<Network | number, Config> = {
   [Network.MAINNET]: homestead,
-  [Network.KOVAN]: kovan,
   [Network.GOERLI]: goerli,
-  [Network.RINKEBY]: rinkeby,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
   [Network.OPTIMISM]: optimism,

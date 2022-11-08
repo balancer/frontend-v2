@@ -71,7 +71,7 @@ const fiatTotal = computed(() => {
     </div>
     <div class="flex justify-between items-center mb-4">
       <h5>
-        {{ $t('youCanInvest') }}
+        {{ $t('youCanAdd') }}
       </h5>
       <h5>
         {{ isWalletReady ? fiatTotal : '-' }}
@@ -89,7 +89,7 @@ const fiatTotal = computed(() => {
       <BalBtn
         :tag="isMigratablePool(pool) ? 'div' : 'router-link'"
         :to="{ name: 'invest', params: { networkSlug } }"
-        :label="$t('invest')"
+        :label="$t('addLiquidity')"
         color="gradient"
         :disabled="
           hasNonApprovedRateProviders ||

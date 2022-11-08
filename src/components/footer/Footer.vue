@@ -20,7 +20,7 @@
                 class="text-lg font-medium link"
                 :to="{ name: 'home', params: { networkSlug } }"
               >
-                {{ $t('invest') }}
+                {{ $t('pool') }}
               </router-link>
             </p>
             <p>
@@ -28,7 +28,15 @@
                 class="text-lg font-medium link"
                 :to="{ name: 'trade', params: { networkSlug } }"
               >
-                {{ $t('trade') }}
+                {{ $t('swap') }}
+              </router-link>
+            </p>
+            <p>
+              <router-link
+                class="text-lg font-medium link"
+                :to="{ name: 'claim', params: { networkSlug } }"
+              >
+                {{ $t('claim') }}
               </router-link>
             </p>
             <p>
@@ -45,14 +53,6 @@
                 :to="{ name: 'vebal', params: { networkSlug } }"
               >
                 {{ $t('vebal') }}
-              </router-link>
-            </p>
-            <p>
-              <router-link
-                class="text-lg font-medium link"
-                :to="{ name: 'claim', params: { networkSlug } }"
-              >
-                {{ $t('claim') }}
               </router-link>
             </p>
           </div>
