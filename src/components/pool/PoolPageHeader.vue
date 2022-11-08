@@ -9,9 +9,10 @@ import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.v
 import useApp from '@/composables/useApp';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { ALLOWED_PRICE_RATE_PROVIDERS, POOLS } from '@/constants/pools';
+import { POOLS } from '@/constants/pools';
 import { includesAddress } from '@/lib/utils';
 import { OnchainTokenData, Pool, PoolAPRs } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -48,6 +49,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  */
 const { appLoading } = useApp();
 const { isAffected, warnings } = usePoolWarning(poolId);
+const { notAllowedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
@@ -123,19 +125,6 @@ const poolTypeLabel = computed(() => {
   const key = POOLS.Factories[props.pool.factory];
 
   return key ? t(key) : t('unknownPoolType');
-});
-
-const nonAllowedRateProviders = computed(() => {
-  return (
-    props.pool?.poolType === 'Weighted' &&
-    !props.pool?.priceRateProviders?.every(
-      provider =>
-        ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] ||
-        ALLOWED_PRICE_RATE_PROVIDERS[provider.token?.address]?.[
-          provider.address
-        ]
-    )
-  );
 });
 </script>
 
@@ -222,9 +211,9 @@ const nonAllowedRateProviders = computed(() => {
     </div>
 
     <BalAlert
-      v-if="nonAllowedRateProviders"
+      v-if="notAllowedRateProviders"
       type="warning"
-      :title="$t('nonAllowedRateProviders')"
+      :title="$t('notAllowedRateProviders')"
       class="mt-2"
       block
     />
