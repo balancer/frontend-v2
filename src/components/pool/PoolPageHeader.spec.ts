@@ -10,6 +10,8 @@ import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import samplePool from './__mocks__/sample-pool.json';
 import sampleTitleTokens from './__mocks__/sample-title-tokens.json';
 
+import i18n from '@/locales/default.json';
+
 PoolPageHeader.components = {
   BalAlert,
   BalStack,
@@ -86,7 +88,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = await screen.queryByText(
-      'One or more token price providers for this pool have not been approved by Balancer. Proceed with caution.'
+      i18n['notAllowedRateProviders']
     );
     expect(weightedPoolProvidersWarning).not.toBeTruthy();
   });
@@ -107,7 +109,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = await screen.findByText(
-      'One or more token price providers for this pool have not been approved by Balancer. Proceed with caution.'
+      i18n['notAllowedRateProviders']
     );
     expect(weightedPoolProvidersWarning).toBeVisible();
   });
