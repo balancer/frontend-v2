@@ -28,11 +28,8 @@ type Props = {
   loading: boolean;
   poolPremintedBptIndex: number | null;
   // these props are added to prevent line chart rerender on each pool update
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   totalLiquidity?: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokensList?: string[];
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   poolType?: PoolType;
 };
 

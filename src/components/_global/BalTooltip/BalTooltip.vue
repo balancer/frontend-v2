@@ -10,9 +10,7 @@ type TextAlign = 'left' | 'center' | 'right' | '';
 type Props = {
   text?: string;
   placement?: Placement;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onShow?: () => void;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onHide?: () => void;
   noPad?: boolean;
   disabled?: boolean;
