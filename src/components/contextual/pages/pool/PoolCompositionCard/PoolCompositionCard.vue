@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
-import { bnum } from '@/lib/utils';
-import { getUnderlyingTokens, findTokenByAddress } from '@/composables/usePool';
+import {
+  getUnderlyingTokens,
+  findTokenByAddress,
+  calculateTokenBPTShareByAddress,
+} from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { toRefs } from 'vue';
@@ -36,20 +39,6 @@ const { priceFor } = useTokens();
 /**
  * METHODS
  */
-function getTokenShare(address: string) {
-  const linearPools = pool.value.onchain?.linearPools;
-
-  if (linearPools == null) {
-    return null;
-  }
-
-  const token = props.pool?.onchain?.tokens[address];
-
-  return bnum(token?.balance || '0')
-    .div(linearPools[address].totalSupply)
-    .toString();
-}
-
 function hasNestedTokens(address: string) {
   return getUnderlyingTokens(pool.value, address).length;
 }
@@ -138,7 +127,7 @@ function fiatValueFor(address: string) {
             <AssetRow
               :mainTokenAddress="address"
               :poolToken="asset"
-              :share="getTokenShare(address)"
+              :tokenBTPShare="calculateTokenBPTShareByAddress(pool, address)"
             />
           </template>
         </BalBreakdown>

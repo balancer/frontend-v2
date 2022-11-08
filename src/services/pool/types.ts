@@ -46,6 +46,7 @@ export enum PoolType {
 export interface TokenTreePool {
   id: string;
   poolType: PoolType;
+  totalShares: string;
   mainIndex: number;
   tokens?: PoolToken[];
 }

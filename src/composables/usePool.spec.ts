@@ -1,6 +1,7 @@
 import { poolWith3NestedLevels } from '@/tests/builders/pools.builders';
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import {
+  calculateTokenBPTShareByAddress,
   findTokenByAddress,
   getUnderlyingTokens,
   tokenTreeLeafs,
@@ -131,4 +132,20 @@ test('Can access 3 deep levels of nested tokens', () => {
   expect(thirdChildrenTokens.length).toBe(2);
   expect(thirdChildrenTokens[0].symbol).toBe('aDAI');
   expect(thirdChildrenTokens[1].symbol).toBe('DAI');
+});
+
+test('calculate BPT shares', () => {
+  expect(
+    calculateTokenBPTShareByAddress(
+      poolWith3NestedLevels,
+      '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83' // bb-a-USDC
+    )
+  ).toBe('0.99999997005795420184');
+
+  expect(
+    calculateTokenBPTShareByAddress(
+      poolWith3NestedLevels,
+      '0xae37d54ae477268b9997d4161b96b8200755935c' // bb-a-DAI
+    )
+  ).toBe('0.99999996975306353788');
 });

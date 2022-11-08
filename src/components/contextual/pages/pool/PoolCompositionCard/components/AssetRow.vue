@@ -13,7 +13,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 type Props = {
   mainTokenAddress?: string;
   poolToken: PoolToken;
-  share: string | null;
+  tokenBTPShare: string | null;
 };
 
 /**
@@ -34,8 +34,8 @@ const { explorerLinks } = useWeb3();
 const tokenInfo = computed(() => getToken(props.poolToken.address));
 
 const balance = computed(() => {
-  return props.share != null
-    ? bnum(props.poolToken.balance).times(props.share).toString()
+  return props.tokenBTPShare != null
+    ? bnum(props.poolToken.balance).times(props.tokenBTPShare).toString()
     : props.poolToken.balance;
 });
 

@@ -31,6 +31,7 @@ export const poolWith3NestedLevels: Pool = {
         pool: {
           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
           mainIndex: 1,
+          totalShares: '33345330.826951213979096783',
           poolType: PoolType.Stable,
           tokens: [
             {
@@ -43,6 +44,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                  totalShares: '5192296825189377.700421180359267143',
                   mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
@@ -56,6 +58,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                          totalShares: '5192296825189374.700421180359267143',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -123,6 +126,7 @@ export const poolWith3NestedLevels: Pool = {
       token: {
         pool: {
           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+          totalShares: '33397851.527616149474983742',
           mainIndex: 1,
           poolType: PoolType.Stable,
           tokens: [
@@ -136,6 +140,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                  totalShares: '5192296825136750.660746694842359358',
                   mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
@@ -149,6 +154,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                          totalShares: '5192296825136750.660746694842359358',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -216,6 +222,7 @@ export const poolWith3NestedLevels: Pool = {
       token: {
         pool: {
           id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+          totalShares: '2596148329489018.674650662888664785',
           mainIndex: 1,
           poolType: PoolType.ComposableStable,
           tokens: [
@@ -229,6 +236,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                  totalShares: '33345327.826951213979096783',
                   mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
@@ -242,6 +250,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                          totalShares: '5192296825189378.700421180359267143',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -283,6 +292,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                  totalShares: '33397851.527616149474983742',
                   mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
@@ -296,6 +306,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                          totalShares: '5192296825136746.660746694842359358',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -337,6 +348,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+                  totalShares: '2596148329489017.674650662888664785',
                   mainIndex: 1,
                   poolType: PoolType.ComposableStable,
                   tokens: [
@@ -350,6 +362,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                          totalShares: '33345326.826951213979096783',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -365,6 +378,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                          totalShares: '33397851.527616149474983742',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -380,6 +394,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+                          totalShares: '2596148329489017.674650662888664785',
                           mainIndex: 1,
                           poolType: PoolType.ComposableStable,
                         },
@@ -395,6 +410,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                          totalShares: '33061199.478906406886871026',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -414,6 +430,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                  totalShares: '33061199.478906406886871026',
                   mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
@@ -449,6 +466,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                          totalShares: '5192296825473407.66334724567164977',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },
@@ -472,6 +490,7 @@ export const poolWith3NestedLevels: Pool = {
       token: {
         pool: {
           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+          totalShares: '33061199.478906406886871026',
           mainIndex: 1,
           poolType: PoolType.Stable,
           tokens: [
@@ -507,6 +526,7 @@ export const poolWith3NestedLevels: Pool = {
               token: {
                 pool: {
                   id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                  totalShares: '5192296825473407.66334724567164977',
                   mainIndex: 1,
                   poolType: PoolType.Stable,
                   tokens: [
@@ -542,6 +562,7 @@ export const poolWith3NestedLevels: Pool = {
                       token: {
                         pool: {
                           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                          totalShares: '5192296825473406.66334724567164977',
                           mainIndex: 1,
                           poolType: PoolType.Stable,
                         },

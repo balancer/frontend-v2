@@ -370,6 +370,17 @@ export function getUnderlyingTokens(pool: Pool, address: string) {
   );
 }
 
+export function calculateTokenBPTShareByAddress(
+  pool: Pool,
+  address: string
+): string {
+  const token = findTokenByAddress(pool, address);
+  if (!token) return '0';
+  return bnum(token?.balance || '0')
+    .div(token.token.pool?.totalShares || 1)
+    .toString();
+}
+
 /**
  * COMPOSABLE
  */
