@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
-import { computed, onBeforeMount, toRef, watch } from 'vue';
+import { computed, onBeforeMount, reactive, toRef, watch } from 'vue';
 
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
-import { bnum } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 // Types
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import useWithdrawalState from '../composables/useWithdrawalState';
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 
@@ -22,14 +21,22 @@ import useExitPool from '@/composables/pools/useExitPool';
  */
 type Props = {
   pool: Pool;
-  tokenAddresses: string[];
-  // math: WithdrawMathResponse;
 };
 
 /**
  * Props
  */
 const props = defineProps<Props>();
+
+/**
+ * STATE
+ */
+const slider = reactive({
+  val: 1000,
+  max: 1000,
+  min: 0,
+  interval: 1,
+});
 
 /**
  * COMPOSABLES
@@ -42,9 +49,9 @@ const {
   fiatAmounts,
   proportionalAmounts,
   isLoadingQuery,
+  exitTokenAddresses,
+  exitTokens,
 } = useExitPool();
-
-const { slider } = useWithdrawalState(toRef(props, 'pool'));
 
 const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
@@ -55,11 +62,8 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const tokens = computed((): TokenInfoMap => {
-  if (isDeep(props.pool)) {
-    return getTokens(props.pool.mainTokens || []);
-  }
-  return getTokens(props.pool.tokensList);
+const tokenMetaMap = computed((): TokenInfoMap => {
+  return getTokens(exitTokenAddresses.value);
 });
 
 const percentageLabel = computed(() => {
@@ -77,28 +81,20 @@ const percentageLabel = computed(() => {
   }
 });
 
-const seedTokens = computed((): number[] =>
-  Object.values(props.pool?.onchain?.tokens || []).map(token => token.weight)
-);
-
 /**
  * METHODS
  */
 function handleSliderChange(newVal: number): void {
-  const fractionBasisPoints = (newVal / slider.value.max) * 10000;
+  const fractionBasisPoints = (newVal / slider.max) * 10000;
   bptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
     .toFixed(props.pool?.onchain?.decimals || 18);
-
-  // if (shouldFetchBatchSwap.value) {
-  //   delayedExitDataFetch();
-  // }
 }
 
-// const delayedExitDataFetch = debounce(() => {
-//   void props.math.fetchExitData();
-// }, 500);
+function getToken(address: string): PoolToken | undefined {
+  return exitTokens.value.find(token => isSameAddress(token.address, address));
+}
 
 /**
  * WATCHERS
@@ -149,7 +145,7 @@ onBeforeMount(() => {
 
     <div class="token-amounts">
       <div
-        v-for="(token, address, i) in tokens"
+        v-for="(token, address, i) in tokenMetaMap"
         :key="address"
         class="p-4 last:mb-0"
       >
@@ -161,7 +157,7 @@ onBeforeMount(() => {
                 {{ token.symbol }}
                 <span v-if="!isStableLikePool">
                   {{
-                    fNum2(seedTokens[i], {
+                    fNum2(getToken(address)?.weight || '0', {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })

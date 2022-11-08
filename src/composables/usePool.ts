@@ -322,6 +322,54 @@ export function tokenTreeLeafs(
 }
 
 /**
+ * Get all unique token tree tokens as flat array.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
+ * @returns {PoolToken[]} Flat array of tokens in tree.
+ */
+export function flatTokenTree(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): PoolToken[] {
+  const tokens: PoolToken[] = [];
+
+  for (const token of tokenTree) {
+    tokens.push(token);
+
+    if (token.token.pool?.tokens) {
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
+        tokens.push(token.token.pool.tokens[token.token.pool.mainIndex]);
+      } else {
+        const nestedTokens = flatTokenTree(token.token.pool?.tokens, options);
+        tokens.push(...nestedTokens);
+      }
+    }
+  }
+
+  return uniq(tokens);
+}
+
+/**
+ * Find token in token tree with address.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree. e.g. pool.tokens.
+ * @param {string} tokenAddress - Address of token to find in tree.
+ * @param {TokenTreeOpts} options
+ */
+export function findTokenInTree(
+  tokenTree: PoolToken[],
+  tokenAddress: string,
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): PoolToken | undefined {
+  const tokens = flatTokenTree(tokenTree, options);
+  return tokens.find(token => isSameAddress(token.address, tokenAddress));
+}
+
+/**
  * @summary Check if pool should be accessible in UI
  */
 export function isBlocked(pool: Pool, account: string): boolean {

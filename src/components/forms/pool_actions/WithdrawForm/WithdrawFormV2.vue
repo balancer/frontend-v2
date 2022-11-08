@@ -42,7 +42,6 @@ const {
   // highPriceImpactAccepted,
   validInput,
   maxSlider,
-  tokensOut,
   error,
   parseError,
   setError,
@@ -75,7 +74,7 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
 const {
   pool,
   isSingleAssetExit,
-  exitTokens,
+  exitTokenAddresses,
   isLoadingQuery,
   highPriceImpact,
   hasAcceptedHighPriceImpact,
@@ -130,20 +129,15 @@ onBeforeMount(() => {
 
 <template>
   <div>
-    isSingleAssetExit: {{ isSingleAssetExit }}
-    <ProportionalWithdrawalInputV2
-      v-if="!isSingleAssetExit"
-      :pool="pool"
-      :tokenAddresses="tokensOut"
-    />
+    <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
     <TokenInput
       v-else
-      v-model:amount="exitTokens[0]"
+      v-model:amount="exitTokenAddresses[0]"
       v-model:isValid="validInput"
       :name="tokenOut"
       :address="tokenOut"
-      :disableBalance="exitTokens[0] === '-'"
-      :customBalance="exitTokens[0] || '0'"
+      :disableBalance="exitTokenAddresses[0] === '-'"
+      :customBalance="exitTokenAddresses[0] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
       :balanceLoading="isLoadingQuery"
