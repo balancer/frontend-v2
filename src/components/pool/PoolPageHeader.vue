@@ -128,10 +128,10 @@ const poolTypeLabel = computed(() => {
 const nonAllowedRateProviders = computed(() => {
   return (
     props.pool?.poolType === 'Weighted' &&
-    props.pool?.priceRateProviders?.some(
+    !props.pool?.priceRateProviders?.every(
       provider =>
-        !ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] &&
-        !ALLOWED_PRICE_RATE_PROVIDERS[provider.token?.address]?.[
+        ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] ||
+        ALLOWED_PRICE_RATE_PROVIDERS[provider.token?.address]?.[
           provider.address
         ]
     )
