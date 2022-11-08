@@ -439,7 +439,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   );
   const notAllowedRateProviders = computed(
     () =>
-      pool.value?.poolType === 'Weighted' &&
+      isWeighted(pool.value?.poolType) &&
       !pool.value?.priceRateProviders?.every(
         provider =>
           ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] ||
