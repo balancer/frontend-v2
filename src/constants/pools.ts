@@ -3,7 +3,6 @@ import { Network } from '@balancer-labs/sdk';
 import { isMainnet, networkId } from '@/composables/useNetwork';
 import ALLOWED_PRICE_RATE_PROVIDERS_MAINNET from '@/constants/allowedRateProviders/allowed-rate-providers-mainnet.json';
 import ALLOWED_PRICE_RATE_PROVIDERS_GOERLI from '@/constants/allowedRateProviders/allowed-rate-providers-goerli.json';
-import ALLOWED_PRICE_RATE_PROVIDERS_KOVAN from '@/constants/allowedRateProviders/allowed-rate-providers-kovan.json';
 import ALLOWED_PRICE_RATE_PROVIDERS_POLYGON from '@/constants/allowedRateProviders/allowed-rate-providers-polygon.json';
 import ALLOWED_PRICE_RATE_PROVIDERS_ARBITRUM from '@/constants/allowedRateProviders/allowed-rate-providers-arbitrum.json';
 
@@ -679,7 +678,6 @@ export const POOLS: Pools = POOLS_MAP[networkId.value]
 const ALLOWED_PRICE_RATE_PROVIDERS_ALL = {
   [Network.MAINNET]: ALLOWED_PRICE_RATE_PROVIDERS_MAINNET,
   [Network.GOERLI]: ALLOWED_PRICE_RATE_PROVIDERS_GOERLI,
-  [Network.KOVAN]: ALLOWED_PRICE_RATE_PROVIDERS_KOVAN,
   [Network.POLYGON]: ALLOWED_PRICE_RATE_PROVIDERS_POLYGON,
   [Network.ARBITRUM]: ALLOWED_PRICE_RATE_PROVIDERS_ARBITRUM,
 };

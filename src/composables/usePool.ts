@@ -437,9 +437,12 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
   );
-  const notAllowedRateProviders = computed(
+
+  // pool is "Weighted" and some of the rate providers are not on our approved list
+  const hasNonApprovedRateProviders = computed(
     () =>
-      isWeighted(pool.value?.poolType) &&
+      pool.value &&
+      isWeighted(pool.value.poolType) &&
       !pool.value?.priceRateProviders?.every(
         provider =>
           ALLOWED_PRICE_RATE_PROVIDERS['*'][provider.address] ||
@@ -473,7 +476,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWethPool,
     isWstETHPool,
     noInitLiquidityPool,
-    notAllowedRateProviders,
+    hasNonApprovedRateProviders,
     lpTokens,
     // methods
     isStable,

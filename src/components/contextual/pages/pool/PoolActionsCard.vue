@@ -28,7 +28,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
-const { isMigratablePool, notAllowedRateProviders } = usePool(
+const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
   toRef(props, 'pool')
 );
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
@@ -92,7 +92,7 @@ const fiatTotal = computed(() => {
         :label="$t('invest')"
         color="gradient"
         :disabled="
-          notAllowedRateProviders ||
+          hasNonApprovedRateProviders ||
           (isMigratablePool(pool) && !isSoftMigratablePool(pool.id))
         "
         block

@@ -49,7 +49,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  */
 const { appLoading } = useApp();
 const { isAffected, warnings } = usePoolWarning(poolId);
-const { notAllowedRateProviders } = usePool(toRef(props, 'pool'));
+const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
@@ -211,9 +211,9 @@ const poolTypeLabel = computed(() => {
     </div>
 
     <BalAlert
-      v-if="notAllowedRateProviders"
+      v-if="hasNonApprovedRateProviders"
       type="warning"
-      :title="$t('notAllowedRateProviders')"
+      :title="$t('hasNonApprovedRateProviders')"
       class="mt-2"
       block
     />

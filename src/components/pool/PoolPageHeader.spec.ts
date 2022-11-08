@@ -72,9 +72,9 @@ describe('PoolPageHeader', () => {
           id: '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387',
           priceRateProviders: [
             {
-              address: '0x72d07d7dca67b8a406ad1ec34ce969c90bfee768',
+              address: '0xd8143b8e7a6e452e5e1bc42a3cef43590a230031',
               token: {
-                address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+                address: '0xd8143b8e7a6e452e5e1bc42a3cef43590a230031',
               },
             },
           ],
@@ -88,7 +88,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = await screen.queryByText(
-      i18n['notAllowedRateProviders']
+      i18n['hasNonApprovedRateProviders']
     );
     expect(weightedPoolProvidersWarning).not.toBeTruthy();
   });
@@ -109,7 +109,7 @@ describe('PoolPageHeader', () => {
       },
     });
     const weightedPoolProvidersWarning = await screen.findByText(
-      i18n['notAllowedRateProviders']
+      i18n['hasNonApprovedRateProviders']
     );
     expect(weightedPoolProvidersWarning).toBeVisible();
   });
