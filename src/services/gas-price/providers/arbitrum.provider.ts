@@ -30,6 +30,8 @@ export default class ArbitrumProvider {
 
   private async fetchArbitrumProvider(method: string) {
     const { data } = await axios.post<ArbitrumGasStationResponse>(
+      // TO-DO
+      // if use configService.loggingRpc - test fails as jest somehow uses goerli config
       'https://arb-mainnet.g.alchemy.com/v2/VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh',
       { method, id: 1, jsonrpc: '2.0' }
     );
