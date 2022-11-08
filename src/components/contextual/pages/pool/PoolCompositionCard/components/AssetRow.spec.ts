@@ -35,7 +35,7 @@ test('Shows balance and price for a given token', async () => {
     props: {
       mainTokenAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       poolToken,
-      share: '0.999996864452977869',
+      tokenBTPShare: '0.999996864452977869',
     },
   });
   await screen.findByText('aUSDT');
