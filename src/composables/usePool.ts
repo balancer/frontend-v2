@@ -17,7 +17,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, isMainnet, appUrl } from './useNetwork';
+import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { uniq } from 'lodash';
 
@@ -130,7 +130,7 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to invest or withdraw from a pool
+ * @returns tokens that can be used to add or remove tokens from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
   if (isDeep(pool)) {
@@ -186,7 +186,7 @@ export function poolURLFor(
     return `https://app.xave.finance/#/pool`;
   }
 
-  return `${appUrl()}/pool/${poolId}`;
+  return `${appUrl()}/${getNetworkSlug(network)}/pool/${poolId}`;
 }
 
 /**

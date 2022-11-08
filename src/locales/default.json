@@ -5,7 +5,9 @@
   "action": "Action",
   "actions": "Actions",
   "activity": "Activity",
+  "addLiquidity": "Add liquidity",
   "addToken": "Add a token",
+  "addTokens": "Add tokens",
   "alerts": {
     "allowances-fetch-error": "Failed to fetch token allowances.",
     "balances-fetch-error": "Failed to fetch token balances.",
@@ -21,12 +23,12 @@
   "allPools": "All pools",
   "allTokens": "All tokens",
   "and": "and",
-  "ammPlatform": "Automated portfolio manager and trading platform",
   "amount": "Amount",
   "amountBeforeFees": "Amount before fees",
-  "amountToInvest": "Amount to invest",
-  "amountToWithdraw": "Amount to withdraw",
   "amplification": "Amplification",
+  "ampFactor": {
+    "title": "Amp factor"
+  },
   "analytics": "Analytics",
   "apiErrorCodeDetails": {
     "DuplicateOrder": "There was another identical order already submitted. Please try again.",
@@ -35,7 +37,7 @@
     "MissingOrderData": "The order has missing information.",
     "InsufficientValidTo": "The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.",
     "InsufficientFunds": "The account doesn't have enough funds.",
-    "UnsupportedToken": "One of the tokens you are trading is unsupported.",
+    "UnsupportedToken": "One of the tokens you are swapping is unsupported.",
     "WrongOwner": "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by Balancer.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
     "NotFound": "Token pair selected has insufficient liquidity.",
     "OrderNotFound": "The order you are trying to cancel does not exist.",
@@ -60,7 +62,7 @@
   "approvedGnosisRelayer": "Approved Gnosis relayer",
   "approvedLidoRelayer": "Approved Lido relayer",
   "approveGnosisRelayer": "Approve Gnosis relayer",
-  "approveGP": "Approve trading on Gnosis Protocol",
+  "approveGP": "Approve swapping on Gnosis Protocol",
   "approveLidoRelayer": "Approve Lido relayer",
   "approveBatchRelayer": "Approve Batch relayer",
   "approvingBatchRelayer": "Approving Batch relayer",
@@ -86,6 +88,7 @@
   "browseLists": "Browse lists",
   "browserWallet": "Browser Wallet",
   "bugBounty": "Bug bounty",
+  "builtOnBalancer": "Built on Balancer protocol",
   "buy": "Buy",
   "build": "Build",
   "blog": "Blog",
@@ -122,13 +125,13 @@
   "clearTransactions": "Clear transactions",
   "close": "Close",
   "coingeckoPricingTooltip": "The data for this graph is pulled from our pricing provider, CoinGecko.",
-  "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
+  "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <span class='font-semibold'>{0}</span>",
   "composition": "Composition",
   "composableStablePool": "Composable Stable Pool",
   "configuration": "Configuration",
   "confirm": "Confirm",
   "confirming": "Confirming...",
-  "confirmTrade": "Confirm trade",
+  "confirmTrade": "Confirm swap",
   "confirmUnwrap": "Confirm {0} unwrap",
   "confirmWrap": "Confirm {0} wrap",
   "connect": "Connect",
@@ -161,7 +164,7 @@
     "existingPoolInfo": "There’s already another pool with exactly the same tokens and fee structure. It’s recommended to add your liquidity to the other pool or to go back and change your Pool Creation parameters in a material way to avoid fractured liquidity and lower profits for both pools.",
     "fixedFeeRadioLabel": "Permanently fix fees to the initial rate",
     "governanceFees": "Allow Balancer governance to manage fees",
-    "governanceFeesTooltip": "Enable this to give Balancer governance the ability to dynamically manage the fees of this pool in order to maximize profits. But note, Balancer governance is under no obligation to actually manage the fees and will likely only do so if there is significant trading volume.",
+    "governanceFeesTooltip": "Enable this to give Balancer governance the ability to dynamically manage the fees of this pool in order to maximize profits. But note, Balancer governance is under no obligation to actually manage the fees and will likely only do so if there is significant swap volume.",
     "invalidInitialWeightsInfo": "One or more tokens has an initial weight less than 1% which may cause funding to fail. If the token has a missing price, enter in a price. Otherwise, adjust the initial balances in the previous step.",
     "invalidInitialWeightsTitle": "Invalid initial weight",
     "maxInitialLiquidity": "Max initial liquidity",
@@ -171,7 +174,7 @@
     "poolSummary": "Pool summary",
     "poolAlreadyExists": "This pool already exists",
     "previewPool": "Preview new {0} pool",
-    "recommendedLiquidity": "It’s recommended to  provide new pools with at least $20,000 in initial funds",
+    "recommendedLiquidity": "It’s recommended to provide new pools with at least $20,000 in initial funds",
     "recoveredState": "We've recovered your previous choices",
     "recoveredStateInfo": "Your previously left before creating this pool. Your choices have been saved so you can continue from before.",
     "similarPoolsExist": "Similar pools exist",
@@ -300,7 +303,7 @@
       "description": "An error occurred while trying to show pool migration."
     },
     "tooltips": {
-      "totalTo": "The total value of your investment in USD that you'll be migrating",
+      "totalTo": "The total value of your pool tokens in USD that you'll be migrating",
       "newTotal": "The total value in USD that you'll get into the migrated pool"
     },
     "oldVersion": "old version"
@@ -319,27 +322,24 @@
   "dark": "Dark",
   "date": "Date",
   "day": "day",
-  "delegateFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every trade utilizing the liquidity in this pool. Control has been delegated to the community, so fees could change in the future if this pool becomes actively managed.",
+  "defiLiquidityPools": "DeFi liquidity pools",
+  "delegateFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every swap utilizing the liquidity in this pool. Control has been delegated to the community, so fees could change in the future if this pool becomes actively managed.",
   "depositing": "depositing",
   "details": "Details",
   "deprecatedPool": "This pool has been deprecated. If you're a Liquidity Provider, please migrate to the new upgraded pool.",
   "disconnect": "Disconnect",
-  "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <b>{0}</b>",
+  "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <span class='font-semibold'>{0}</span>",
   "docs": "Docs",
   "earnings": "Earnings",
   "earnBAL": "Earn $BAL when swapping eligible tokens",
-  "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
-  "editoTitle": "Put your money to work",
   "effectivePrice": "Effective price:",
-  "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
-  "emptyInvestmentPoolsLink": "View investment pools ->",
   "enterAmount": "Enter amount",
   "enterAPrice": "Enter a price",
   "errorCancellingOrder": "Error cancelling order",
   "errorNoLists": "Sorry, we can't find any lists",
   "errorNoMatch": "Sorry, we can't find any matches",
   "errorNoTokens": "Sorry, we can't find any tokens",
-  "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
+  "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>liquidity provision, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
   "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
   "etherscan": "Etherscan",
   "exceedsBalance": "Exceeds wallet balance",
@@ -353,20 +353,20 @@
   "featuredProtocols": {
     "title": "Featured ecosystem protocols",
     "Copper": "Copper offers an intuitive UI for creating, managing & tracking Balancer Liquidity Bootstrapping Pools (LBPs) on a transparent and user-friendly platform.",
-    "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient trading with a Balancer Pool that minimizes slippage and impermanent loss.",
-    "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient trading between yield and principle tokens.",
+    "Element": "An open source protocol for fixed & variable yield markets, Element enables efficient swaps with a Balancer Pool that minimizes slippage and impermanent loss.",
+    "Sense": "Sense is a protocol for DeFi yield primitives, and Sense Space, an AMM built on Balancer, facilitates efficient swaps between yield and principle tokens.",
     "Tracer": "An open-source protocol for derivative markets, Tracer DAO utilizes Balancer Protocol for aggregated liquidity and creating a market for leveraged tokens."
   },
   "fees": "fees",
-  "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
+  "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every swap utilizing the liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
   "feesTime": "Fees ({0})",
   "filter": "Filter",
   "filterByToken": "Filter by token",
   "filters": "Filters",
   "finishCreatingPoolAlert": "You last left before finishing creating and seeding a pool.",
   "finishSeedingPoolAlert": "Finish initializing the pool you just created by seeding it with liquidity",
-  "fixedFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every trade utilizing the liquidity in this pool.",
-  "fixedSwapFeeLabel": "Fixed swap fees: <b>{0}</b>",
+  "fixedFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every swap that utilizes the liquidity in this pool.",
+  "fixedSwapFeeLabel": "Fixed swap fees: <span class='font-semibold'>{0}</span>",
   "flashLoanFee": "Flash loan fee",
   "fundPool": "Fund pool",
   "fundPoolTooltip": "Add the initial liquidity for this pool.",
@@ -374,12 +374,12 @@
   "getLpTokens": "Get LP tokens",
   "gnosisErrors": {
     "lowAmount": {
-      "header": "Your trade amount is too low",
-      "body": "The fees for this transaction exceed the amount you want to trade."
+      "header": "Your swap amount is too low",
+      "body": "The fees for this transaction exceed the amount you want to swap."
     },
     "lowBalance": {
       "header": "Insufficient {0} balance",
-      "body": "The fees and potential slippage (up to {2}) set for this trade exceed your {0} balance. You need at least {1} {0} to proceed."
+      "body": "The fees and potential slippage (up to {2}) set for this swap exceed your {0} balance. You need at least {1} {0} to proceed."
     },
     "noLiquidity": {
       "header": "No liquidity",
@@ -391,17 +391,16 @@
   },
   "gnosisWarnings": {
     "highFees": {
-      "body": "You can still proceed with the trade but a high percentage of it will be consumed by trade fees.",
-      "header": "The fees on this transaction exceed 20% of the trade amount."
+      "body": "You can still proceed with the swap but a high percentage of it will be consumed by swap fees.",
+      "header": "The fees on this transaction exceed 20% of the swap amount."
     }
   },
   "goToBalancerV1Site": "Go to the Balancer V1 site ->",
   "goToMigratedPool": "Go to migrated pool",
   "governance": "Governance",
   "grants": "Grants",
-  "highGasFees": "High gas fees? Here's a helping hand",
   "highPriceImpact": "High price impact",
-  "highPriceImpactDetailed": "This trade is significantly moving the market price.",
+  "highPriceImpactDetailed": "This swap is significantly moving the market price.",
   "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
   "home": "Home",
   "hourAbbrev": "h",
@@ -410,36 +409,32 @@
   "initialBPT": "Initial BPT",
   "initialWeight": "Initial weight",
   "insufficientBalance": "Not enough funds",
-  "insufficientBalanceDetailed": "This trade requires more funds than you have in your wallet.",
+  "insufficientBalanceDetailed": "This swap requires more funds than you have in your wallet.",
   "insufficientData": "Not enough data.",
   "insufficientLiquidity": "Not enough liquidity",
-  "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
+  "insufficientLiquidityDetailed": "Try swapping with a smaller amount or check back when liquidity for this pool has increased.",
   "invalidFee": "Invalid fee",
   "invalidFeeExplain": "Please enter a valid fee between 0.0001% and 10%",
-  "invest": "Invest",
-  "investInPool": "Invest in pool",
-  "investWithdraw": "Invest & Withdraw",
   "investment": {
-    "label": "Investment",
     "preview": {
       "loadingLabel": {
         "approval": "Confirm approval in wallet",
         "create": "Confirm create in wallet",
         "fund": "Confirm funding in wallet",
-        "investment": "Confirm investment in wallet"
+        "investment": "Confirm add liquidity in wallet"
       },
       "titles": {
-        "confirmed": "Investment confirmed",
-        "default": "Investment preview"
+        "confirmed": "Add liquidity confirmed",
+        "default": "Add liquidity preview"
       },
       "tooltips": {
-        "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
+        "approval": "You must approve {0} to add liquidity for this token on Balancer. Approvals are required once per token, per wallet."
       }
     },
     "warning": {
       "managedPoolTradingHalted": {
-        "description": "A trading halt has been issued by the manager of this pool. For your safety, while the trading halt is in effect, you may only invest in proportional amounts.",
-        "title": "Trading halted - proportional investments only"
+        "description": "A swapping halt has been issued by the manager of this pool. For your safety, while the swapping halt is in effect, you may only add liquidity in proportional amounts.",
+        "title": "Swapping halted - proportional liquidity provision only"
       },
       "lowLiquidity": {
         "description": "Add assets proportionally to the pool weights or the price impact will be high and you will likely get REKT and lose money.",
@@ -448,18 +443,18 @@
     },
     "error": {
       "rektPriceImpact": {
-        "description": "The likelyhood of you losing money is too high. For your protection, you can’t perform this transaction on this interface.",
+        "description": "The likelihood of you losing money is too high. For your protection, you can’t perform this transaction on this interface.",
         "title": "This price impact is too high. You cannot proceed"
       }
     }
   },
-  "investmentPool": "Investment pool",
-  "investmentPools": "Investment pools",
+  "investmentPool": "Liquidity pool",
+  "investmentPools": "Liquidity pools",
   "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
   "investmentPoolsAboutLink": "Learn more ->",
-  "investmentSettled": "Your investment has settled",
-  "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
-  "investmentTooltip": "Confirm investment into this pool",
+  "investmentSettled": "Your liquidity add has settled",
+  "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this action.",
+  "investmentTooltip": "Confirm your liquidity add into this pool",
   "inYourWallet": "In your wallet",
   "isRequired": "is required",
   "joinPool": "Join pool",
@@ -474,7 +469,7 @@
   "liquidityMiningIncentives": "Liquidity mining incentives",
   "liquidityMiningIncentivesCopy": "Liquidity incentives on {0} are paused for 1 week during its upgrade to the veBAL system. Incentives will resume on April 28.",
   "liquidityMiningPopover": {
-    "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+    "airdropEligibility": "People who provide liquidity to eligible pools or swap on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
     "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
     "claimFreezeWarning": {
       "description": "Since you have several weeks' worth of tokens unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim.",
@@ -491,7 +486,8 @@
     },
     "title": "Token incentives"
   },
-  "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+  "liquidityProviderCopy": "People who provide liquidity to eligible pools or swap on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+  "liquidityProvision": "Liquidity provision",
   "loading": "Loading...",
   "loadingBestPrice": "Looking for the best price...",
   "loadMore": "Load more",
@@ -506,7 +502,6 @@
   },
   "logOut": "Log out",
   "lost": "Lost",
-  "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
   "lpTokens": "LP tokens",
   "managedPool": "Managed pool",
   "manageLists": "Manage lists",
@@ -524,7 +519,7 @@
   "modals": {
     "veBalRedirectModal": {
       "title": "Proceed to mainnet",
-      "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by investing in eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
+      "description": "Getting and using veBAL to vest and vote must be performed on the Ethereum mainnet. \n\n You can still earn liquidity mining incentives on Arbitrum and Polygon by adding liquidty to eligible pools. However to vote to direct emissions to your favored pools and to earn the protocol fees, you will need to use veBAL on Ethereum Mainnet by locking B-80BAL-20WETH."
     }
   },
   "month": "month",
@@ -540,11 +535,11 @@
   "mustBeValidAddress": "This is not a valid Ethereum address",
   "myApr": "My APR",
   "myBalance": "My balance",
-  "myBalancerInvestments": "My Balancer investments",
+  "myBalancerBalance": "My Balancer balance",
   "myBoost": "My boost",
   "myPortfolio": "My portfolio",
   "myShare": "My share",
-  "myInvestments": "My investments",
+  "myLiquidityInBalancerPools": "My liquidity in Balancer pools",
   "myWallet": "My Ethereum wallet",
   "myWallet2": "My wallet",
   "name": "Name",
@@ -555,8 +550,6 @@
   "networkSelection": "Network selection",
   "poolDoesntExist": "Pool doesn't exist on",
   "new": "New",
-  "newInvestment": "New investment",
-  "newTrade": "New Trade",
   "newTotal": "New total",
   "newToEthereum": "New to Ethereum?",
   "newWithdrawal": "New withdrawal",
@@ -565,13 +558,12 @@
   "noClaimableIncentives": "No claimable incentives",
   "noData": "No data available",
   "noInitLiquidity": "This pool has no initial liquidity",
-  "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
-  "noInvestments": "No investments",
-  "noUnstakedInvestments": "You have no unstaked investments on {0}",
-  "noStakedInvestments": "You have no staked investments on {0}",
-  "noInvestmentsPool": "No investments in this pool",
+  "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before liquidity provision is supported.",
+  "noInvestments": "No liquidity",
+  "noUnstakedInvestments": "You have no unstaked liquidity on {0}",
+  "noStakedInvestments": "You have no staked liquidity on {0}",
   "noNativeCurrency": "You’ll need some {0} for gas fees in order to transact on {1}.",
-  "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to trade any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘trade gasless’ option.",
+  "noNativeCurrencyEthereum": "You’ll need some {0} for gas fees in order to do most basic transactions on {1}. However, you may continue to swap any tokens you’ve previously approved for use on Balancer with this wallet, by using the ‘swap gasless’ option.",
   "noPoolsFound": "No pools found",
   "noPriceImpact": "Best price",
   "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
@@ -592,7 +584,7 @@
   "oracleWeightedPool": "Oracle Weighted Pool",
   "otherTokenEarnings": "Other token earnings",
   "overview": "Overview",
-  "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
+  "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every swap that utilizes the liquidity in this pool. Dynamic swap fees are controlled by the Pool Owner.",
   "payload": "Payload",
   "pages": {
     "claim": {
@@ -639,17 +631,17 @@
     "tabs": {
       "allTransactions": "Transactions",
       "myTransactions": "My transactions",
-      "allInvestments": "All investments",
-      "myInvestments": "My investments",
+      "allInvestments": "All liquidity provision",
+      "myInvestments": "My liquidity",
       "swaps": "Swaps",
       "trades": "Trades"
     },
     "noResults": {
-      "allTransactions": "No transactions in this pool.",
-      "myTransactions": "You haven't made any transactions in this pool.",
-      "allInvestments": "No investments in this pool.",
-      "myInvestments": "You haven't made any investments in this pool.",
-      "swaps": "No swaps in this pool."
+      "allTransactions": "No transactions in this pool",
+      "myTransactions": "You haven't made any transactions in this pool",
+      "allInvestments": "No liquidity transactions in this pool",
+      "myInvestments": "You haven't added or removed any liquidity in this pool",
+      "swaps": "No swaps in this pool"
     }
   },
   "poolTransfer": {
@@ -659,22 +651,22 @@
     "myWalletTokensCard": {
       "title": "Pool tokens in my wallet",
       "tooltips": {
-        "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
+        "nativeAssetSelection": "Select {0} or {1} to add liquidity to this pool. Wrap or unwrap {0} to maximize your liquidity provision."
       }
     }
   },
   "poolTransactionStats": {
     "trade": {
       "volume": "Volume {period}",
-      "largest": "Largest trade {period}",
-      "ave": "Ave. trade {period}",
-      "total": "Total trades {period}"
+      "largest": "Largest swap {period}",
+      "ave": "Ave. swap {period}",
+      "total": "Total swaps {period}"
     },
     "investment": {
       "netTvl": "Net TVL {period}",
-      "largest": "Largest investment {period}",
-      "ave": "Ave. investment {period}",
-      "net": "Net investments {period}"
+      "largest": "Largest add {period}",
+      "ave": "Ave. liquidity add {period}",
+      "net": "Net liquidity adds {period}"
     }
   },
   "poolType": "Pool type",
@@ -708,8 +700,8 @@
   "potentialWeeklyYield": "Potential weekly yield",
   "preview": "Preview",
   "previewPool": "Preview new {0} pool",
-  "previewTrade": "Preview trade",
-  "previewTradeTransactions": "Preview trade transactions",
+  "previewTrade": "Preview swap",
+  "previewTradeTransactions": "Preview swap transactions",
   "previewUnwrap": "Preview {0} Unwrap",
   "previewWrap": "Preview {0} Wrap",
   "previewMigrate": "Preview migrate",
@@ -719,7 +711,7 @@
   "priceImpactTolerance": "Price impact tolerance",
   "priceUpdatedAlert": {
     "actionLabel": "Accept",
-    "description": "The trade price has updated by more than {0}",
+    "description": "The swap price has updated by more than {0}",
     "title": "Price updated"
   },
   "proceed": "Proceed",
@@ -743,7 +735,7 @@
   "seeMore": "See more",
   "seeOnExplorer": "See on explorer",
   "seePools": "See pools",
-  "seeV1BalancerInvestments": "Want to see your Balancer V1 investments?",
+  "seeV1BalancerInvestments": "Want to see your funds on Balancer V1?",
   "select": "Select",
   "selectToken": "Select token",
   "sell": "Sell",
@@ -757,7 +749,7 @@
     "sentry": "Used for error tracking and performance monitoring."
   },
   "settings": "Settings",
-  "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.",
+  "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to swap and provide liquidity here.",
   "singleToken": "Single token",
   "singleTokenMax": "Single token max",
   "slippageTolerance": "Slippage tolerance",
@@ -794,10 +786,13 @@
   "submit": "Submit",
   "summary": "Summary",
   "swap": "Swap",
+  "swapDetails": "Swap details",
   "swapFee": "Swap fee",
   "swapFees": "Swap fees",
   "swapFeeAPR": "Swap fees APR",
   "swapFeeManager": "Swap fee manager",
+  "swapper": "Swapper",
+  "swapRoute": "Swap route",
   "switchNetwork": "Switch network",
   "symbol": "Symbol",
   "veBAL": {
@@ -814,7 +809,7 @@
         "veBAL": "veBAL"
       },
       "tokenInfo": {
-        "balWETH": "Invest / add liquidity to the 80% BAL / 20% WETH pool to get the B-80BAL-20WETH LP token.",
+        "balWETH": "Add liquidity to the 80% BAL / 20% WETH pool to get the B-80BAL-20WETH LP token.",
         "lpToken": "Lock up the LP tokens from the 80% BAL / 20% WETH pool for up to a year to get veBAL. The longer you lock, the more veBAL you get.",
         "veBAL": "Use veBAL to earn extra on your staked pools. Only some pools are eligible for staking. Check any pools that you are in, and stake it to earn liquidity mining incentives. You can also use veBAL to vote to direct future liquidity mining emissions"
       },
@@ -869,7 +864,7 @@
       "myUnallocatedVotesTooltip": "veBAL holders can vote for a single pool or multiple pools in whatever weights they choose, up to their max of 100%. Note: If you’ve previously voted for a pool but no longer have any veBAL, your votes will not count.",
       "unallocatedVotes": "My unallocated votes: {0}.",
       "votingPeriod": "Voting period ends: {0}d {1}h {2}m {3}s",
-      "votingPeriodTooltip": "There is a weekly vote for veBAL holders which ends at 0:00 UTC on Thursdays. This vote determines the BAL incentives allocation for all Stakers in these pools for the next week. Although you don’t have to vote to get a boosted yield, your vote can help you earn more by voting on pools where you are a Staker.",
+      "votingPeriodTooltip": "There is a weekly vote for veBAL holders which ends at 0:00 UTC on Thursdays. This vote determines the BAL incentives allocation for all Stakers in these pools for the next week. Although you don’t have to vote to get a boosted yield, your vote can help you earn more by voting on pools where you are a staker.",
       "votingPeriodCountdown": "{0}d : {1}h : {2}m : {3}s",
       "votingPowerExpiredTooltip": "Your previous lock period has expired, so you no longer have any veBAL or voting power. Any votes that have been allocated in the past will no longer count. Lock up B-80BAL-20WETH LP tokens to get veBAL for higher yields and voting power.",
       "table": {
@@ -924,7 +919,7 @@
           },
           "veBalLockTooShort": {
             "title": "veBAL not locked for 7 days",
-            "description": "You must have veBAL locked for more than 7 days to vote on gagues."
+            "description": "You must have veBAL locked for more than 7 days to vote on gauges."
           },
           "veBalVoteOverLimitWarning": {
             "title": "You may be wasting your vote: veBAL cap hit",
@@ -954,7 +949,7 @@
     "howToLock": {
       "title": "How to lock and earn?",
       "steps": {
-        "investPart1": "Invest in the",
+        "investPart1": "Add liquidity to the",
         "investPart2": "pool.",
         "lock": "Lock-up the resulting LP token ({0}). The longer you lock (1 year max), the more veBAL you get."
       },
@@ -1118,7 +1113,6 @@
   "time": "Time",
   "timeAgo": "{0} ago",
   "token": "Token",
-  "tokenAlreadySelected": "Token Already Selected",
   "tokenInjected": "This token is injected",
   "tokenLists": "Token lists",
   "tokenPills": {
@@ -1135,9 +1129,9 @@
   "tokenWarning": "Balancer Foundation is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
   "tokenWarningTitle": "You have added a custom token",
   "tooltips": {
-    "invest": {
+    "addLiquidity": {
       "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
-      "total": "The total value in {0} you’ll be investing into this pool."
+      "total": "The total value in {0} you’ll be adding into this pool."
     },
     "withdraw": {
       "priceImpact": "Price impact from removing liquidity results when the value of each token removed is not proportional to the weights of the pool. Removing non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get for exiting your position.",
@@ -1153,64 +1147,57 @@
   "totalToMigrate": "Total to migrate",
   "totalAllocated": "Total allocated",
   "totalAPR": "Total APR",
-  "totalInvested": "Total invested",
   "totalSupply": "Total supply",
   "totalValue": "Total value",
   "totalValueTo": "Total value to",
-  "trade": "Trade",
-  "trader": "Trader",
-  "tradeDetails": "Trade details",
-  "tradeRoute": "Trade route",
-  "tradeEarns": "This trade earns you",
-  "tradeFromWeth": "Trade from WETH",
   "tradeGaslessToggle": {
     "disabledTooltip": {
-      "eth": "This option is disabled because gasless trades only work with ERC-20 tokens. 'ETH' is not an ERC-20 token.",
+      "eth": "This option is disabled because gasless swaps only work with ERC-20 tokens. 'ETH' is not an ERC-20 token.",
       "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction."
     },
-    "label": "Trade gasless",
-    "tooltip": "‘Trade gasless’ on the Balancer CoW Protocol for free signature trades, MEV protection, and the best prices with intelligent trade routing across DeFi exchanges. Turn it off to trade only through Balancer liquidity pools using gas."
+    "label": "Swap gasless",
+    "tooltip": "‘Swap gasless’ on the Balancer CoW Protocol for free signature swaps, MEV protection, and the best prices with intelligent swap routing across DeFi exchanges. Turn it off to swap only through Balancer liquidity pools using gas."
   },
-  "tradeLiquidity": "Trade liquidity",
-  "tradeSettled": "Your trade has settled",
-  "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",
+  "tradeLiquidity": "Swap liquidity",
+  "tradeSettled": "Your swap has settled",
+  "tradesThroughWeth": "Swaps from ETH route through Balancer liquidity pools and incur gas fees.",
   "tradeSubmissionError": {
     "actionLabel": "Dismiss",
     "title": "An error has occurred"
   },
-  "tradeSuccess": "Successfully traded your tokens",
+  "tradeSuccess": "Successfully swapped your tokens",
   "tradeSummary": {
     "exactIn": {
-      "title": "Trade from {0} details",
+      "title": "Swap from {0} details",
       "totalAfterFees": "Total expected after fees",
       "totalBeforeFees": "Total to receive before fees",
       "totalWithSlippage": "The least you’ll get at {0} slippage",
-      "tradeFees": "Trade fees"
+      "tradeFees": "Swap fees"
     },
     "exactOut": {
-      "title": "Trade to {0} details",
-      "totalAfterFees": "Total expected to trade after fees",
-      "totalBeforeFees": "Total to trade before fees",
+      "title": "Swap to {0} details",
+      "totalAfterFees": "Total expected to swap after fees",
+      "totalBeforeFees": "Total to swap before fees",
       "totalWithSlippage": "The most you’ll send at {0} slippage",
-      "tradeFees": "Trade fees"
+      "tradeFees": "Swap fees"
     },
     "gasCosts": "Gas costs",
     "transactionTypesTooltips": {
       "gnosisRelayerApproval": {
         "content": "Your permission is required to use a batch relayer for gas-free, MEV-protected transactions.",
-        "title": "Approve trading on Gnosis protocol"
+        "title": "Approve swaps on Gnosis protocol"
       },
       "lidoRelayerApproval": {
-        "content": "Your permission is required to use the Lido relayer for stETH trades.",
+        "content": "Your permission is required to use the Lido relayer for stETH swaps.",
         "title": "Approve Lido relayer"
       },
       "tokenApproval": {
-        "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet.",
+        "content": "Your permission is required to swap this token on Balancer. Approvals are required once per token, per wallet.",
         "title": "Approve {0}"
       },
       "sign": {
-        "content": "Upon your signature, the Balancer CoW Protocol will find an optimal route amongst other traders or DeFi exchanges, with MEV protection.",
-        "title": "Sign a free message to trade"
+        "content": "Upon your signature, the Balancer CoW Protocol will find an optimal route amongst other swappers or from liquidity on other DeFi exchanges, with MEV protection.",
+        "title": "Sign a free message to swap"
       },
       "trade": {
         "content": "Finalize the transaction by submitting it for inclusion on the blockchain.",
@@ -1233,12 +1220,12 @@
     }
   },
   "tradeToggle": {
-    "wrapEth": "Gas trade—required for wrapping ETH",
-    "unwrapEth": "Gas trade—required for unwrapping ETH",
-    "fromEth": "Gas trade—required when trading from ETH",
-    "signature": "Signature ‘gasless’ trade—price optimized with MEV protection.",
-    "tradeGasless": "Trade gasless by signature",
-    "tradeWithGas": "Trade with a gas fee"
+    "wrapEth": "Gas swap—required when wrapping ETH",
+    "unwrapEth": "Gas swap—required when unwrapping ETH",
+    "fromEth": "Gas swap—required when swapping from ETH",
+    "signature": "Signature ‘gasless’ swap—price optimized with MEV protection.",
+    "tradeGasless": "Swap gasless by signature",
+    "tradeWithGas": "Swap with a gas fee"
   },
   "transactionAction": {
     "stake": "Stake",
@@ -1248,8 +1235,8 @@
     "createPool": "Create pool",
     "fundPool": "Fund pool",
     "migratePool": "Migrate pool",
-    "invest": "Invest",
-    "trade": "Trade",
+    "invest": "Pool",
+    "trade": "Swap",
     "unwrap": "Unwrap",
     "voteForGauge": "Vote",
     "withdraw": "Withdraw",
@@ -1260,7 +1247,7 @@
     "unlock": "Unlock"
   },
   "transactionDeadline": "Transaction deadline",
-  "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
+  "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed transactions incur fees for swaps between ERC-20 tokens.",
   "transactionErrors": {
     "default": {
       "title": "Transaction failed",
@@ -1291,8 +1278,8 @@
   "transactionSummary": {
     "stake": "{amount} in {pool}",
     "unstake": "{amount} from {pool}",
-    "approveForInvesting": "Approve {0} for investing",
-    "approveForTrading": "Approve {0} for trading",
+    "approveForInvesting": "Approve {0} for adding liquidity",
+    "approveForTrading": "Approve {0} for swapping",
     "approveForLocking": "Approve {0} for locking",
     "extendLock": "Lock until {0}",
     "unlock": "Unlock {0}",
@@ -1349,7 +1336,7 @@
   "weekAbbrev": "w",
   "weight": "Weight",
   "weightedPool": "Weighted pool",
-  "whichPools": "Which liquidity pools should be used when you make a trade.",
+  "whichPools": "Which liquidity pools should be used when you make a swap.",
   "withdraw": {
     "label": "Withdraw",
     "tooltips": {
@@ -1374,13 +1361,13 @@
   "withdrawal": "Withdrawal",
   "withdrawFromPool": "Withdraw from pool",
   "withdrawalSettled": "Your withdrawal has settled",
-  "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
+  "withdrawalSuccess": "Your liquidity has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
   "withdrawFee": "Withdraw fee",
   "withdrawing": "withdrawing",
   "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
   "wrap": "Wrap",
   "wrapInstruction": "Wrap your {0} to {1}",
-  "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
+  "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your liquidity provision, you could wrap some additional stETH.",
   "yearAbbrev": "y",
   "yieldEarnings": "Yield earnings",
   "youDidIt": "You did it!",
@@ -1389,7 +1376,7 @@
   "yourBalanceInPool": "Your balance in this pool",
   "trendingPairs": "Trending pairs",
   "chooseAPair": "Please select a valid pair",
-  "youCanInvest": "You can invest",
+  "youCanAdd": "You can add",
   "poolChart": {
     "defaultTitle": {
       "tvl": "Current TVL"
