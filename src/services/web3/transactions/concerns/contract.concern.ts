@@ -4,8 +4,8 @@ import {
   TransactionResponse,
   TransactionRequest,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/minimal';
-import { Contract, ContractInterface, Wallet } from 'ethers';
+import { captureException } from '@sentry/browser';
+import { Contract, ContractInterface } from 'ethers';
 import { verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
@@ -99,12 +99,5 @@ export class ContractConcern extends TransactionConcern {
     Params: ${params}
     Overrides: ${overrides}
   `);
-    overrides.gasPrice = sender;
-    const dummyPrivateKey =
-      '0x651bd555534625dc2fd85e13369dc61547b2e3f2cfc8b98cee868b449c17a4d6';
-    const provider = this.rpcProviders.loggingProvider;
-    const dummyWallet = new Wallet(dummyPrivateKey).connect(provider);
-    const loggingContract = contract.connect(dummyWallet);
-    loggingContract[action](...params, overrides);
   }
 }

@@ -33,7 +33,7 @@ export class SubgraphFallbackService {
         captureException(
           `GraphQL request to [${this.url.value}] failed with message: ${
             (error as Error)?.message
-          }. Payload: ${payload}`
+          }. Payload: ${JSON.stringify(payload)}`
         );
       }
 
