@@ -36,6 +36,7 @@ type Props = {
   pool: Pool;
   isSingleAssetExit: boolean;
 };
+
 export type AmountOut = {
   address: string;
   value: string;
@@ -59,7 +60,7 @@ const provider = (props: Props) => {
   const queryError = ref<string>('');
   const txError = ref<string>('');
   const amountsOut = ref<AmountOut[]>([]);
-  const propBptIn = ref<string>('0');
+  const bptIn = ref<string>('0');
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
 
@@ -239,7 +240,7 @@ const provider = (props: Props) => {
     bptBalance,
     tokenOutPoolBalance,
     hasBpt,
-    propBptIn,
+    bptIn,
     fiatTotalLabel,
     fiatAmounts,
     proportionalAmounts,

@@ -35,7 +35,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const {
-  propBptIn,
+  bptIn,
   bptBalance,
   hasBpt,
   fiatTotalLabel,
@@ -66,7 +66,7 @@ const percentageLabel = computed(() => {
   try {
     if (!hasBpt.value) return '100';
 
-    return bnum(propBptIn.value)
+    return bnum(bptIn.value)
       .div(bptBalance.value)
       .times(100)
       .integerValue(BigNumber.ROUND_CEIL)
@@ -86,7 +86,7 @@ const seedTokens = computed((): number[] =>
  */
 function handleSliderChange(newVal: number): void {
   const fractionBasisPoints = (newVal / slider.value.max) * 10000;
-  propBptIn.value = bnum(bptBalance.value)
+  bptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
     .toFixed(props.pool?.onchain?.decimals || 18);
@@ -104,14 +104,14 @@ function handleSliderChange(newVal: number): void {
  * WATCHERS
  */
 watch(isWalletReady, () => {
-  propBptIn.value = bptBalance.value;
+  bptIn.value = bptBalance.value;
 });
 
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
-  propBptIn.value = bptBalance.value;
+  bptIn.value = bptBalance.value;
 });
 </script>
 
