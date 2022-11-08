@@ -25,7 +25,7 @@ export function applyNavGuards(router: Router): Router {
  * @param {Router} router - vue-router.
  */
 function hardRedirectTo(url: string, router: Router) {
-  document.write('');
+  document.body.style.display = 'none';
   window.location.href = url;
   router.go(0);
 }
