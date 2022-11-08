@@ -18,7 +18,7 @@ import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewM
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
 
 import useMyWalletTokens from '@/composables/useMyWalletTokens';
-import InvestFormMissingPoolTokens from './components/InvestFormMissingPoolTokens.vue';
+import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
 import useTokens from '@/composables/useTokens';
 
 /**
@@ -134,7 +134,7 @@ watch(isSingleAssetJoin, isSingleAsset => {
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
     />
 
-    <InvestFormMissingPoolTokens
+    <MissingPoolTokensAlert
       v-if="!isSingleAssetJoin"
       :poolTokensWithBalance="poolTokensWithBalance"
       :poolTokensWithoutBalance="poolTokensWithoutBalance"
