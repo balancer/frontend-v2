@@ -38,7 +38,7 @@ export default function useMyWalletTokens({
     );
   }
 
-  const tokensWithBalance = computed(() => {
+  const tokensWithBalance = computed((): string[] => {
     return take(
       Object.keys(balances.value).filter(tokenAddress => {
         const _includeNativeAsset = includeNativeAsset
@@ -70,20 +70,20 @@ export default function useMyWalletTokens({
     return tokensList;
   });
 
-  const poolTokensWithBalance = computed<string[]>(() => {
+  const poolTokensWithBalance = computed((): string[] => {
     return tokensWithBalance.value.filter(token =>
       includesAddress(poolTokenAddresses.value, token)
     );
   });
 
-  const poolTokensWithoutBalance = computed<string[]>(() => {
+  const poolTokensWithoutBalance = computed((): string[] => {
     return (
       poolTokenAddresses.value.filter(
         poolToken => !includesAddress(tokensWithBalance.value, poolToken)
       ) || []
     );
   });
-  const notPoolTokensWithBalance = computed<string[]>(() => {
+  const notPoolTokensWithBalance = computed((): string[] => {
     if (!poolTokenAddresses.value.length) return tokensWithBalance.value;
     return (
       tokensWithBalance.value.filter(

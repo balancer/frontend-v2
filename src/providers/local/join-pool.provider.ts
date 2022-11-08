@@ -91,7 +91,7 @@ const provider = (props: Props) => {
   /**
    * COMPUTED
    */
-  const isDeepPool = computed<boolean>(() => isDeep(pool.value));
+  const isDeepPool = computed((): boolean => isDeep(pool.value));
 
   // All tokens in the pool token tree that can be used in join functions.
   const joinTokens = computed((): string[] => {
@@ -150,23 +150,15 @@ const provider = (props: Props) => {
     fiatValueOf(pool.value, bptOut.value)
   );
 
-  const isFormEmpty = computed<boolean>(
-    () =>
-      !amountsIn.value.reduce<number>(
-        (acc, item) => acc + Number(item.value),
-        0
-      )
-  );
-
-  const shouldSignRelayer = computed<boolean>(
-    () =>
+  const shouldSignRelayer = computed(
+    (): boolean =>
       isDeepPool.value &&
       !isSingleAssetJoin.value &&
       // Check if Batch Relayer is either approved, or signed
       !(relayerApproval.isUnlocked.value || relayerSignature.value)
   );
 
-  const approvalActions = computed<TransactionActionInfo[]>(() =>
+  const approvalActions = computed((): TransactionActionInfo[] =>
     shouldSignRelayer.value ? [signRelayerAction] : []
   );
 
@@ -219,7 +211,7 @@ const provider = (props: Props) => {
   async function queryJoin() {
     // If form is empty, clear the price impact and
     // return early
-    if (isFormEmpty.value) {
+    if (!hasAmountsIn.value) {
       priceImpact.value = 0;
       return;
     }
