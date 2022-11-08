@@ -96,6 +96,7 @@ export const BoostedPoolMock: Pool = {
       token: {
         pool: {
           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+          totalShares: '50000000000.123456789101112131',
           poolType: PoolType.AaveLinear,
           mainIndex: 1,
           tokens: [
@@ -109,6 +110,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.AaveLinear,
                   mainIndex: 1,
                   tokens: [
@@ -122,6 +124,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                          totalShares: '5192296824054968.90984969956086889',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -189,6 +192,7 @@ export const BoostedPoolMock: Pool = {
       token: {
         pool: {
           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+          totalShares: '50000000000.123456789101112131',
           poolType: PoolType.AaveLinear,
           mainIndex: 1,
           tokens: [
@@ -202,6 +206,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.AaveLinear,
                   mainIndex: 1,
                   tokens: [
@@ -215,6 +220,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -282,6 +288,7 @@ export const BoostedPoolMock: Pool = {
       token: {
         pool: {
           id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+          totalShares: '50000000000.123456789101112131',
           poolType: PoolType.ComposableStable,
           mainIndex: 0,
           tokens: [
@@ -295,6 +302,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.AaveLinear,
                   mainIndex: 1,
                   tokens: [
@@ -308,6 +316,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -349,6 +358,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.AaveLinear,
                   mainIndex: 1,
                   tokens: [
@@ -362,6 +372,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -403,6 +414,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.ComposableStable,
                   mainIndex: 0,
                   tokens: [
@@ -416,6 +428,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0x2f4eb100552ef93840d5adc30560e5513dfffacb000000000000000000000334',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -431,6 +444,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83000000000000000000000336',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -446,6 +460,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.ComposableStable,
                           mainIndex: 0,
                         },
@@ -461,6 +476,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -480,6 +496,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.AaveLinear,
                   mainIndex: 1,
                   tokens: [
@@ -515,6 +532,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
@@ -538,6 +556,7 @@ export const BoostedPoolMock: Pool = {
       token: {
         pool: {
           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+          totalShares: '50000000000.123456789101112131',
           poolType: PoolType.AaveLinear,
           mainIndex: 1,
           tokens: [
@@ -573,6 +592,7 @@ export const BoostedPoolMock: Pool = {
               token: {
                 pool: {
                   id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                  totalShares: '50000000000.123456789101112131',
                   poolType: PoolType.AaveLinear,
                   mainIndex: 1,
                   tokens: [
@@ -608,6 +628,7 @@ export const BoostedPoolMock: Pool = {
                       token: {
                         pool: {
                           id: '0xae37d54ae477268b9997d4161b96b8200755935c000000000000000000000337',
+                          totalShares: '50000000000.123456789101112131',
                           poolType: PoolType.AaveLinear,
                           mainIndex: 1,
                         },
