@@ -65,7 +65,7 @@
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ fNum2(valueIn, FNumFormats.fiat) }}
+              {{ $t('swap') }} {{ fNum2(valueIn, FNumFormats.fiat) }}
               {{ symbolIn }} ->
               {{ symbolOut }}
             </div>

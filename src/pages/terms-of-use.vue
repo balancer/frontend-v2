@@ -2,7 +2,7 @@
   <div class="pb-4">
     <div class="subsection">
       <h1>Balancer Terms of Use</h1>
-      <p><em>Last updated: June 2022</em></p>
+      <p><em>Last updated: November 2022</em></p>
       <p>
         <em class="font-semibold">
           Do not access this site where such access is prohibited by applicable
@@ -77,7 +77,7 @@
       <p>
         As part of the Site, Balancer provides access to a decentralized finance
         application (“Application” or “Balancer Protocol app”) on the Ethereum
-        blockchain, that allows traders or liquidity providers of Ethereum
+        blockchain, that allows swappers or liquidity providers of Ethereum
         assets (“Cryptocurrency Assets”) to transact using smart contracts
         (“Smart Contracts”). Use of the Balancer Protocol may require that you
         pay a fee, such as gas charges on the Ethereum network to perform a

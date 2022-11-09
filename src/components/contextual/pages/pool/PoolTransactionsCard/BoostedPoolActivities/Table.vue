@@ -39,7 +39,6 @@ type Props = {
   poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
@@ -123,13 +122,13 @@ const swapRows = computed<SwapRow[]>(() => {
 
     if (tokenOut === props.pool.address) {
       type = 'invest';
-      label = t('invest');
+      label = t('pool');
     } else if (tokenIn === props.pool.address) {
       type = 'withdraw';
       label = t('withdraw.label');
     } else {
       type = 'trade';
-      label = t('trade');
+      label = t('swap');
     }
 
     const tokenAmounts = getTokenAmounts(swaps, type);
