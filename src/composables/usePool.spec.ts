@@ -63,7 +63,9 @@ describe('tokenTreeLeafs', () => {
 
 test.only('TBD', () => {
   expect(
-    flatTokenTree(BoostedPoolMock.tokens, { includeLinearUnwrapped: false })
+    flatTokenTree(BoostedPoolMock.tokens, {
+      includeLinearUnwrapped: false,
+    }).map(t => t.symbol)
   ).toEqual([
     'bb-a-USDT',
     'USDT',
@@ -75,6 +77,19 @@ test.only('TBD', () => {
   ]);
 
   expect(
-    flatTokenTree(BoostedPoolMock.tokens, { includeLinearUnwrapped: true })
-  ).toEqual(['bb-a-USDT', 'bb-a-USDC', 'bb-a-USD', 'bb-a-DAI']);
+    flatTokenTree(BoostedPoolMock.tokens, { includeLinearUnwrapped: true }).map(
+      t => t.symbol
+    )
+  ).toEqual([
+    'bb-a-USDT',
+    'USDT',
+    'aUSDT',
+    'bb-a-USDC',
+    'USDC',
+    'aUSDC',
+    'bb-a-USD',
+    'bb-a-DAI',
+    'aDAI',
+    'DAI',
+  ]);
 });
