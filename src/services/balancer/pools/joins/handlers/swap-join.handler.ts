@@ -107,6 +107,10 @@ export class SwapJoinHandler implements JoinPoolHandler {
     const _fiatValueIn = bnum(fiatValueIn);
     const _fiatValueOut = bnum(fiatValueOut);
 
+    if (_fiatValueIn.eq(_fiatValueOut)) {
+      return 0;
+    }
+
     // Don't return negative price impact
     return Math.max(
       0,
