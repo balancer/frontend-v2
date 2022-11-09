@@ -292,7 +292,6 @@ async function runGeneralisedJoin(amounts: string[]) {
     signerAddress,
     wrapLeafTokens,
     slippage,
-    signer,
     relayerAuthorization.value
   );
   console.log({ generalisedJoinQuery });
