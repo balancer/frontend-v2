@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { GasPrice } from './types';
 import { bnum } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
+import { Network } from '@balancer-labs/sdk';
 
 interface ArbitrumGasStationResponse {
   id: number;
@@ -30,9 +32,7 @@ export default class ArbitrumProvider {
 
   private async fetchArbitrumProvider(method: string) {
     const { data } = await axios.post<ArbitrumGasStationResponse>(
-      // TO-DO
-      // if use configService.loggingRpc - test fails as jest somehow uses goerli config
-      'https://arb-mainnet.g.alchemy.com/v2/VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh',
+      configService.getNetworkRpc(Network.ARBITRUM),
       { method, id: 1, jsonrpc: '2.0' }
     );
 
