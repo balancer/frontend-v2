@@ -74,7 +74,7 @@ const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
 const {
   pool,
   isSingleAssetExit,
-  exitTokenAddresses,
+  poolTokenAddresses,
   isLoadingQuery,
   highPriceImpact,
   hasAcceptedHighPriceImpact,
@@ -132,12 +132,12 @@ onBeforeMount(() => {
     <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
     <TokenInput
       v-else
-      v-model:amount="exitTokenAddresses[0]"
+      v-model:amount="poolTokenAddresses[0]"
       v-model:isValid="validInput"
       :name="tokenOut"
       :address="tokenOut"
-      :disableBalance="exitTokenAddresses[0] === '-'"
-      :customBalance="exitTokenAddresses[0] || '0'"
+      :disableBalance="poolTokenAddresses[0] === '-'"
+      :customBalance="poolTokenAddresses[0] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
       :balanceLoading="isLoadingQuery"

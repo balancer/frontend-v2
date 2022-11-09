@@ -3,7 +3,12 @@ import { Pool } from '@/services/pool/types';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
-import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
+import {
+  TokensOut,
+  ExitParams,
+  ExitPoolHandler,
+  QueryOutput,
+} from './exit-pool.handler';
 import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { isSameAddress } from '@/lib/utils';
@@ -72,21 +77,25 @@ export class DeepExitHandler implements ExitPoolHandler {
     if (!this.lastGeneralisedExitRes) throw new Error('Not enough liquidity.');
 
     const tokenAddressesOut = this.lastGeneralisedExitRes.tokensOut;
-
     const allPoolTokens = flatTokenTree(this.pool.value.tokens);
+    const tokensOut: TokensOut = {};
 
-    const parsedAmountsOut: string[] =
-      this.lastGeneralisedExitRes.expectedAmountsOut.map((amount, i) => {
-        const token = allPoolTokens.find(poolToken =>
-          isSameAddress(poolToken.address, tokenAddressesOut[i])
-        );
-        return formatFixed(amount, token?.decimals ?? 18).toString();
-      });
+    this.lastGeneralisedExitRes.expectedAmountsOut.forEach((amount, i) => {
+      const token = allPoolTokens.find(poolToken =>
+        isSameAddress(poolToken.address, tokenAddressesOut[i])
+      );
+      if (token) {
+        const scaledAmount = formatFixed(
+          amount,
+          token.decimals ?? 18
+        ).toString();
+        tokensOut[token.address] = scaledAmount;
+      }
+    });
 
     return {
       priceImpact: 0,
-      amountsOut: parsedAmountsOut,
-      tokensOut: tokenAddressesOut,
+      tokensOut,
     };
   }
 }
