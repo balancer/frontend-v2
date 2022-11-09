@@ -345,9 +345,10 @@ export function flatTokenTree(
   const tokens: PoolToken[] = [];
 
   for (const token of pool?.tokens || []) {
-    if (options.includePreMintedBpt) {
-      tokens.push(token);
-    } else if (!isSameAddress(pool.address, token.address)) {
+    if (
+      options.includePreMintedBpt ||
+      !isSameAddress(pool.address, token.address)
+    ) {
       tokens.push(token);
     }
 
