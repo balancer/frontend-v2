@@ -1,17 +1,29 @@
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { BigNumber } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
 import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
+import { balancer } from '@/lib/balancer.sdk';
+import { formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { isSameAddress } from '@/lib/utils';
+import { flatTokenTree } from '@/composables/usePool';
+
+interface GeneralisedExitResponse {
+  to: string;
+  callData: string;
+  tokensOut: string[];
+  expectedAmountsOut: string[];
+  minAmountsOut: string[];
+  // priceImpact: string;
+}
 
 /**
  * Handles exits for single asset flows where we need to use a BatchSwap to exit
  * the pool.
  */
 export class DeepExitHandler implements ExitPoolHandler {
-  private lastSwapRoute?: SwapInfo;
+  private lastGeneralisedExitRes?: GeneralisedExitResponse;
 
   constructor(
     public readonly pool: Ref<Pool>,
@@ -27,17 +39,54 @@ export class DeepExitHandler implements ExitPoolHandler {
     throw new Error('To be implemented');
   }
 
-  async queryExit(): Promise<QueryOutput> {
-    throw new Error('To be implemented');
-  }
+  async queryExit({
+    amount,
+    signer,
+    slippageBsp,
+    relayerSignature,
+  }: ExitParams): Promise<QueryOutput> {
+    const parsedAmount = parseFixed(
+      amount || '0',
+      this.pool.value.onchain?.decimals ?? 18
+    ).toString();
 
-  /**
-   * PRIVATE
-   */
-  private async getGasPrice(): Promise<BigNumber> {
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (!gasPriceParams) throw new Error('Failed to fetch gas price.');
+    const signerAddress = await signer.getAddress();
 
-    return BigNumber.from(gasPriceParams.price);
+    const slippage = slippageBsp.toString();
+    const poolId = this.pool.value.id;
+
+    this.lastGeneralisedExitRes = await balancer.pools
+      .generalisedExit(
+        poolId,
+        parsedAmount,
+        signerAddress,
+        slippage,
+        relayerSignature
+      )
+      .catch(err => {
+        console.error(err);
+        throw new Error(err);
+      });
+    console.log({ lastGeneralisedExitRes: this.lastGeneralisedExitRes });
+
+    if (!this.lastGeneralisedExitRes) throw new Error('Not enough liquidity.');
+
+    const tokenAddressesOut = this.lastGeneralisedExitRes.tokensOut;
+
+    const allPoolTokens = flatTokenTree(this.pool.value.tokens);
+
+    const parsedAmountsOut: string[] =
+      this.lastGeneralisedExitRes.expectedAmountsOut.map((amount, i) => {
+        const token = allPoolTokens.find(poolToken =>
+          isSameAddress(poolToken.address, tokenAddressesOut[i])
+        );
+        return formatFixed(amount, token?.decimals ?? 18).toString();
+      });
+
+    return {
+      priceImpact: 0,
+      amountsOut: parsedAmountsOut,
+      tokensOut: tokenAddressesOut,
+    };
   }
 }

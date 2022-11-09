@@ -1,5 +1,5 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { flatTokenTree, isDeep, tokenTreeNodes } from '@/composables/usePool';
+import { flatTokenTree, isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
@@ -9,7 +9,7 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, isSameAddress, removeAddress, trackLoading } from '@/lib/utils';
+import { bnum, isSameAddress, trackLoading } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -37,12 +37,6 @@ type Props = {
   isSingleAssetExit: boolean;
 };
 
-export type AmountOut = {
-  address: string;
-  value: string;
-  valid: boolean;
-};
-
 /**
  * ExitPoolProvider
  *
@@ -59,8 +53,9 @@ const provider = (props: Props) => {
   const isLoadingQuery = ref<boolean>(false);
   const queryError = ref<string>('');
   const txError = ref<string>('');
-  const amountsOut = ref<AmountOut[]>([]);
+  const amountsOut = ref<string[]>([]);
   const bptIn = ref<string>('0');
+  const exitTokenAddresses = ref<string[]>([]);
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
 
@@ -81,18 +76,8 @@ const provider = (props: Props) => {
   /**
    * COMPUTED
    */
-  // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
-  const exitTokenAddresses = computed((): string[] => {
-    let addresses: string[] = [];
 
-    addresses = isDeep(pool.value)
-      ? tokenTreeNodes(pool.value.tokens)
-      : pool.value.tokensList;
-
-    return removeAddress(pool.value.address, addresses);
-  });
-
-  // All tokens extracted from the token tree, excl. pre-minted BPT.
+  // All pool tokens returned from exit query.
   const exitTokens = computed((): PoolToken[] => {
     let tokens: PoolToken[] = [];
 
@@ -100,9 +85,16 @@ const provider = (props: Props) => {
       ? flatTokenTree(pool.value.tokens)
       : pool.value.tokens;
 
-    return tokens.filter(
-      token => !isSameAddress(token.address, pool.value.address)
-    );
+    return tokens.reduce<PoolToken[]>((acc, poolToken) => {
+      if (
+        exitTokenAddresses.value.some(address =>
+          isSameAddress(address, poolToken.address)
+        )
+      ) {
+        return [...acc, poolToken];
+      }
+      return acc;
+    }, []);
   });
 
   // High price impact if value greater than 1%.
@@ -122,7 +114,7 @@ const provider = (props: Props) => {
 
   // Checks if amountsIn has any values > 0.
   const hasAmountsOut = computed(() =>
-    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
+    amountsOut.value.some(amountOut => bnum(amountOut).gt(0))
   );
 
   const bptBalance = computed((): string => balanceFor(pool.value.address));
@@ -146,7 +138,7 @@ const provider = (props: Props) => {
 
   // TODO
   const proportionalAmounts = computed((): string[] => {
-    return ['0', '1'];
+    return amountsOut.value;
   });
 
   // TODO
@@ -172,15 +164,18 @@ const provider = (props: Props) => {
         const output = await exitPoolService.queryExit({
           signer: getSigner(),
           slippageBsp: slippageBsp.value,
-          amount: '0',
-          tokenInfo: getToken(''),
+          amount: bptIn.value,
+          tokenInfo: getToken(pool.value.address),
           price: prices.value[''],
-          relayerSignature: '',
+          relayerSignature: undefined,
         });
         priceImpact.value = output.priceImpact;
+        amountsOut.value = output.amountsOut;
+        exitTokenAddresses.value = output.tokensOut;
         queryError.value = '';
       } catch (error) {
         queryError.value = (error as Error).message;
+        console.error(error);
       }
     }, isLoadingQuery);
   }

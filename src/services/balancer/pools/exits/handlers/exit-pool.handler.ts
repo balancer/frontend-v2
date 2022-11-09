@@ -18,6 +18,8 @@ export type ExitParams = {
 
 export type QueryOutput = {
   priceImpact: number;
+  amountsOut: string[];
+  tokensOut: string[];
 };
 
 export abstract class ExitPoolHandler {

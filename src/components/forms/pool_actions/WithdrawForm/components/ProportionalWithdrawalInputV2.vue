@@ -13,7 +13,7 @@ import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
+import WithdrawalTokenSelectV2 from './WithdrawalTokenSelectV2.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 
 /**
@@ -116,7 +116,7 @@ onBeforeMount(() => {
     <div class="proportional-input">
       <div class="proportional-input-container">
         <div class="flex">
-          <WithdrawalTokenSelect :pool="pool" />
+          <WithdrawalTokenSelectV2 :pool="pool" />
           <div class="flex-grow text-xl text-right font-numeric">
             <BalLoadingBlock
               v-if="isLoadingQuery"
