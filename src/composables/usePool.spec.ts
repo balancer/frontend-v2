@@ -1,5 +1,12 @@
 import { BoostedPoolMock } from '@/__mocks__/pool';
-import { flatTokenTree, tokenTreeLeafs, tokenTreeNodes } from './usePool';
+import {
+  findTokenInTree,
+  findTokenInTreeWithoutPreminted,
+  flatTokenTree,
+  flatTokenTreeWithoutPreMinted,
+  tokenTreeLeafs,
+  tokenTreeNodes,
+} from './usePool';
 
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
@@ -61,35 +68,82 @@ describe('tokenTreeLeafs', () => {
   });
 });
 
-test.only('TBD', () => {
-  expect(
-    flatTokenTree(BoostedPoolMock.tokens, {
-      includeLinearUnwrapped: false,
-    }).map(t => t.symbol)
-  ).toEqual([
-    'bb-a-USDT',
-    'USDT',
-    'bb-a-USDC',
-    'USDC',
-    'bb-a-USD',
-    'bb-a-DAI',
-    'DAI',
-  ]);
+describe('FlatTokenTree should', () => {
+  test('avoid linear unwrapped tokens by default', () => {
+    expect(
+      flatTokenTree(BoostedPoolMock, {
+        includeLinearUnwrapped: false,
+      }).map(t => t.symbol)
+    ).toEqual([
+      'bb-a-USDT',
+      'USDT',
+      'bb-a-USDC',
+      'USDC',
+      'bb-a-USD',
+      'bb-a-DAI',
+      'DAI',
+    ]);
+  });
 
-  expect(
-    flatTokenTree(BoostedPoolMock.tokens, { includeLinearUnwrapped: true }).map(
-      t => t.symbol
-    )
-  ).toEqual([
-    'bb-a-USDT',
-    'USDT',
-    'aUSDT',
-    'bb-a-USDC',
-    'USDC',
-    'aUSDC',
-    'bb-a-USD',
-    'bb-a-DAI',
-    'aDAI',
-    'DAI',
-  ]);
+  test('include linear unwrapped tokens when includeLinearUnwrapped is true', () => {
+    expect(
+      flatTokenTree(BoostedPoolMock, { includeLinearUnwrapped: true }).map(
+        t => t.symbol
+      )
+    ).toEqual([
+      'bb-a-USDT',
+      'USDT',
+      'aUSDT',
+      'bb-a-USDC',
+      'USDC',
+      'aUSDC',
+      'bb-a-USD',
+      'bb-a-DAI',
+      'aDAI',
+      'DAI',
+    ]);
+  });
 });
+
+describe('flatTokenTreeWithoutPreMinted should', () => {
+  test('include linear unwrapped tokens when includeLinearUnwrapped is true', () => {
+    const symbols = flatTokenTreeWithoutPreMinted(BoostedPoolMock).map(
+      t => t.symbol
+    );
+
+    expect(symbols).toIncludeSameMembers([
+      'bb-a-USDT',
+      'bb-a-USDC',
+      'bb-a-USD',
+      'bb-a-DAI',
+      'USDT',
+      'aUSDT',
+      'USDC',
+      'aUSDC',
+      'aDAI',
+      'DAI',
+    ]);
+  });
+});
+
+test('findTokenInTree works', () => {
+  const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
+  const bbaDaiToken = findTokenInTree(BoostedPoolMock, bbaDaiAddress);
+  expect(bbaDaiToken?.token.pool?.tokens).toBeDefined();
+});
+
+test('findTokenInTreeWithoutPreminted works', () => {
+  const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
+  const bbaDaiToken = findTokenInTreeWithoutPreminted(
+    BoostedPoolMock,
+    bbaDaiAddress
+  );
+  console.log(bbaDaiToken);
+  expect(bbaDaiToken?.token.pool?.tokens).toBeDefined();
+});
+
+// describe('findTokenInTree should', () => {
+//   const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
+//   const bbaDaiToken = findTokenInTree(BoostedPoolMock, bbaDaiAddress);
+//   expect(bbaDaiToken?.token.pool?.tokens).toBeDefined();
+// });

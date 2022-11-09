@@ -25,7 +25,7 @@ import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, isMainnet, appUrl } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
-import { uniq } from 'lodash';
+import { uniq, uniqWith } from 'lodash';
 
 /**
  * METHODS
@@ -365,24 +365,98 @@ export function flatTokenTree(
     }
   }
 
-  return tokens.filter(
-    (v, i, a) => a.findIndex(v2 => isSameAddress(v2.address, v.address)) === i
+  // Avoid duplicated tokens with the same address
+  return uniqWith(tokens, (token1, token2) =>
+    isSameAddress(token1.address, token2.address)
   );
 }
+
+function isPool(poolOrToken: Pool | PoolToken[]): poolOrToken is Pool {
+  return (poolOrToken as Pool).tokens !== undefined;
+}
+
+export function flatTokenTreeWithoutPreMinted(
+  poolOrToken: Pool | PoolToken[],
+  excludedAddresses: string[] = []
+) {
+  const result: PoolToken[] = [];
+  let tokens: PoolToken[] = [];
+  if (isPool(poolOrToken)) {
+    tokens = poolOrToken?.tokens;
+    excludedAddresses.push(poolOrToken.address);
+  } else {
+    tokens = poolOrToken;
+  }
+
+  tokens.forEach(poolToken => {
+    if (!includesAddress(excludedAddresses, poolToken.address))
+      result.push(poolToken);
+    const parentAddresses = result.map(t => t.address);
+    const nestedTokens = poolToken.token.pool?.tokens;
+    if (nestedTokens) {
+      const flatNestedTokens = flatTokenTreeWithoutPreMinted(nestedTokens, [
+        ...excludedAddresses,
+        ...parentAddresses,
+        poolToken.address,
+      ]);
+      result.push(...flatNestedTokens);
+    }
+  });
+
+  // Avoid duplicated tokens with the same address
+  return uniqWith(result, (token1, token2) =>
+    isSameAddress(token1.address, token2.address)
+  );
+}
+
+// export function flatTokenTreeWithoutPreMinted2(
+//   tokens: PoolToken[],
+//   excludedAddresses: string[] = []
+// ) {
+//   const result: PoolToken[] = [];
+//   tokens.forEach(poolToken => {
+//     if (!includesAddress(excludedAddresses, poolToken.address))
+//       tokens.push(poolToken);
+//     const parentAddresses = result.map(t => t.address);
+//     const nestedTokens = poolToken.token.pool?.tokens;
+//     if (nestedTokens) {
+//       tokens.push(
+//         ...flatTokenTreeWithoutPreMinted(nestedTokens, [
+//           ...excludedAddresses,
+//           ...parentAddresses,
+//           poolToken.address,
+//         ])
+//       );
+//     }
+//   });
+
+//   // Avoid duplicated tokens with the same address
+//   return uniqWith(tokens, (token1, token2) =>
+//     isSameAddress(token1.address, token2.address)
+//   );
+// }
 
 /**
  * Find token in token tree with address.
  *
- * @param {PoolToken[]} tokenTree - A pool's token tree. e.g. pool.tokens.
+ * @param {Pool} pool - A pool
  * @param {string} tokenAddress - Address of token to find in tree.
  * @param {TokenTreeOpts} options
  */
 export function findTokenInTree(
-  tokenTree: PoolToken[],
+  pool: Pool,
   tokenAddress: string,
   options: TokenTreeOpts = { includeLinearUnwrapped: false }
 ): PoolToken | undefined {
-  const tokens = flatTokenTree(tokenTree, options);
+  const tokens = flatTokenTree(pool, options);
+  return tokens.find(token => isSameAddress(token.address, tokenAddress));
+}
+
+export function findTokenInTreeWithoutPreminted(
+  pool: Pool,
+  tokenAddress: string
+): PoolToken | undefined {
+  const tokens = flatTokenTreeWithoutPreMinted(pool);
   return tokens.find(token => isSameAddress(token.address, tokenAddress));
 }
 
