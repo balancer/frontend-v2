@@ -1,11 +1,11 @@
 import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { FiatCurrency } from '@/constants/currency';
+import { balancer } from '@/lib/balancer.sdk';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { Pool } from '@/services/pool/types';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import {
   GaugeBalAprs,
   GaugeRewardTokenAprs,
@@ -25,7 +25,6 @@ export class PoolDecorator {
     private readonly balancerContracts = balancerContractsService,
     private readonly stakingRewards = stakingRewardsService,
     private readonly poolServiceClass = PoolService,
-    private readonly providerService = rpcProviderService,
     private readonly poolSubgraph = balancerSubgraphService
   ) {}
 
@@ -39,18 +38,20 @@ export class PoolDecorator {
     const processedPools = this.pools.map(pool => {
       const poolService = new this.poolServiceClass(pool);
       poolService.removeBptFromTokens();
-      poolService.setTotalLiquidity(prices, currency, tokens);
       poolService.setUnwrappedTokens();
       return poolService.pool;
     });
 
     const poolMulticaller = new PoolMulticaller(processedPools);
+    const { pools: sdkPools } = balancer;
 
     const [
+      sdkPool,
       poolSnapshots,
       rawOnchainDataMap,
       [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs],
     ] = await Promise.all([
+      processedPools.length === 1 ? sdkPools.find(processedPools[0].id) : null,
       this.getSnapshots(),
       poolMulticaller.fetch(),
       this.getData(prices, gauges, tokens, processedPools, includeAprs),
@@ -69,6 +70,11 @@ export class PoolDecorator {
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();
+      if (sdkPool) {
+        pool.totalLiquidity = await sdkPools.liquidity(sdkPool);
+      } else {
+        poolService.setTotalLiquidity(prices, currency, tokens);
+      }
 
       if (setAprCondition) {
         await poolService.setAPR(
