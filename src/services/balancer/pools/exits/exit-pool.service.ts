@@ -5,6 +5,7 @@ import { Pool } from '@/services/pool/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import { SwapExitHandler } from './handlers/swap-exit.handler';
+import { DeepExitHandler } from './handlers/deep-exit.handler';
 import {
   ExitParams,
   ExitPoolHandler,
@@ -47,7 +48,7 @@ export class ExitPoolService {
     if (swapJoin) {
       return (this.exitHandler = new SwapExitHandler(pool, sdk, gasPriceServ));
     } else if (isDeep(pool.value)) {
-      throw new Error('To be implemented');
+      return (this.exitHandler = new DeepExitHandler(pool, sdk, gasPriceServ));
     } else {
       throw new Error(`Pool type not handled: ${pool.value.poolType}`);
     }
@@ -68,7 +69,7 @@ export class ExitPoolService {
    *
    * @param ...
    */
-  async queryExit(): Promise<QueryOutput> {
-    return this.exitHandler.queryExit();
+  async queryExit(params: ExitParams): Promise<QueryOutput> {
+    return this.exitHandler.queryExit(params);
   }
 }
