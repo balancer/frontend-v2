@@ -1,5 +1,5 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { isDeep, tokenTreeNodes } from '@/composables/usePool';
+import { flatTokenTree, isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
@@ -9,9 +9,9 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, removeAddress, trackLoading } from '@/lib/utils';
+import { bnum, isSameAddress, removeAddress, trackLoading } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { debounce } from 'lodash';
@@ -81,8 +81,8 @@ const provider = (props: Props) => {
   /**
    * COMPUTED
    */
-  // All tokens in the pool token tree that can be used in exit functions.
-  const exitTokens = computed((): string[] => {
+  // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
+  const exitTokenAddresses = computed((): string[] => {
     let addresses: string[] = [];
 
     addresses = isDeep(pool.value)
@@ -90,6 +90,19 @@ const provider = (props: Props) => {
       : pool.value.tokensList;
 
     return removeAddress(pool.value.address, addresses);
+  });
+
+  // All tokens extracted from the token tree, excl. pre-minted BPT.
+  const exitTokens = computed((): PoolToken[] => {
+    let tokens: PoolToken[] = [];
+
+    tokens = isDeep(pool.value)
+      ? flatTokenTree(pool.value.tokens)
+      : pool.value.tokens;
+
+    return tokens.filter(
+      token => !isSameAddress(token.address, pool.value.address)
+    );
   });
 
   // High price impact if value greater than 1%.
@@ -195,6 +208,11 @@ const provider = (props: Props) => {
   /**
    * WATCHERS
    */
+  // If bptIn changes refetch expected output.
+  watch(bptIn, () => {
+    debounceQueryExit.value();
+  });
+
   // If the global pool fetching for the SOR changes it's been set to true. In
   // this case we should re-trigger queryExit to fetch the expected output for
   // any existing input.
@@ -213,7 +231,7 @@ const provider = (props: Props) => {
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
-    injectTokens(exitTokens.value);
+    injectTokens(exitTokenAddresses.value);
     // Trigger SOR pool fetching in case swap exits are used.
     fetchPoolsForSor();
   });
@@ -225,6 +243,7 @@ const provider = (props: Props) => {
   return {
     pool,
     isSingleAssetExit,
+    exitTokenAddresses,
     exitTokens,
     priceImpact,
     isLoadingQuery,
