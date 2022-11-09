@@ -92,7 +92,7 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
       formatFixed(
         // @ts-ignore-next-line -- priceImpact is part of the response, but type is missing
         this.lastGeneralisedJoinRes.priceImpact,
-        this.pool.value.onchain?.decimals || 18
+        18
       )
     ).toNumber();
 
