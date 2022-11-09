@@ -13,7 +13,13 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
+import {
+  AnyPool,
+  Pool,
+  PoolAPRs,
+  PoolToken,
+  TokenTreePool,
+} from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
@@ -252,6 +258,7 @@ export function removeBptFrom(pool: Pool): Pool {
 
 interface TokenTreeOpts {
   includeLinearUnwrapped?: boolean;
+  includePreMintedBpt?: boolean;
 }
 
 /**
@@ -329,13 +336,20 @@ export function tokenTreeLeafs(
  * @returns {PoolToken[]} Flat array of tokens in tree.
  */
 export function flatTokenTree(
-  tokenTree: PoolToken[],
-  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+  pool: Pool | TokenTreePool,
+  options: TokenTreeOpts = {
+    includeLinearUnwrapped: false,
+    includePreMintedBpt: false,
+  }
 ): PoolToken[] {
   const tokens: PoolToken[] = [];
 
-  for (const token of tokenTree) {
-    tokens.push(token);
+  for (const token of pool?.tokens || []) {
+    if (options.includePreMintedBpt) {
+      tokens.push(token);
+    } else if (!isSameAddress(pool.address, token.address)) {
+      tokens.push(token);
+    }
 
     if (token.token.pool?.tokens) {
       if (
@@ -344,7 +358,7 @@ export function flatTokenTree(
       ) {
         tokens.push(token.token.pool.tokens[token.token.pool.mainIndex]);
       } else {
-        const nestedTokens = flatTokenTree(token.token.pool?.tokens, options);
+        const nestedTokens = flatTokenTree(token.token.pool, options);
         tokens.push(...nestedTokens);
       }
     }
