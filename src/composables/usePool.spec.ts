@@ -1,5 +1,5 @@
 import { BoostedPoolMock } from '@/__mocks__/pool';
-import { tokenTreeLeafs, tokenTreeNodes } from './usePool';
+import { flatTokenTree, tokenTreeLeafs, tokenTreeNodes } from './usePool';
 
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 
@@ -59,4 +59,37 @@ describe('tokenTreeLeafs', () => {
       '0x6b175474e89094c44da98b954eedeac495271d0f', // DAI
     ]);
   });
+});
+
+test.only('TBD', () => {
+  expect(
+    flatTokenTree(BoostedPoolMock.tokens, {
+      includeLinearUnwrapped: false,
+    }).map(t => t.symbol)
+  ).toEqual([
+    'bb-a-USDT',
+    'USDT',
+    'bb-a-USDC',
+    'USDC',
+    'bb-a-USD',
+    'bb-a-DAI',
+    'DAI',
+  ]);
+
+  expect(
+    flatTokenTree(BoostedPoolMock.tokens, { includeLinearUnwrapped: true }).map(
+      t => t.symbol
+    )
+  ).toEqual([
+    'bb-a-USDT',
+    'USDT',
+    'aUSDT',
+    'bb-a-USDC',
+    'USDC',
+    'aUSDC',
+    'bb-a-USD',
+    'bb-a-DAI',
+    'aDAI',
+    'DAI',
+  ]);
 });

@@ -350,7 +350,9 @@ export function flatTokenTree(
     }
   }
 
-  return uniq(tokens);
+  return tokens.filter(
+    (v, i, a) => a.findIndex(v2 => isSameAddress(v2.address, v.address)) === i
+  );
 }
 
 /**
