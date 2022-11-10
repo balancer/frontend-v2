@@ -4,10 +4,6 @@
 
 import registerRequireContextHook from 'babel-plugin-require-context-hook/register';
 import { server } from '@/tests/msw/server';
-import * as matchers from 'jest-extended';
-
-// add all jest-extended matchers
-expect.extend(matchers);
 
 registerRequireContextHook();
 

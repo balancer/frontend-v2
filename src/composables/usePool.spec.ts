@@ -74,12 +74,11 @@ describe('FlatTokenTree should', () => {
       flatTokenTree(BoostedPoolMock, {
         includeLinearUnwrapped: false,
       }).map(t => t.symbol)
-    ).toEqual([
+    ).toIncludeSameMembers([
       'bb-a-USDT',
       'USDT',
       'bb-a-USDC',
       'USDC',
-      'bb-a-USD',
       'bb-a-DAI',
       'DAI',
     ]);
@@ -90,14 +89,13 @@ describe('FlatTokenTree should', () => {
       flatTokenTree(BoostedPoolMock, { includeLinearUnwrapped: true }).map(
         t => t.symbol
       )
-    ).toEqual([
+    ).toIncludeSameMembers([
       'bb-a-USDT',
       'USDT',
       'aUSDT',
       'bb-a-USDC',
       'USDC',
       'aUSDC',
-      'bb-a-USD',
       'bb-a-DAI',
       'aDAI',
       'DAI',
