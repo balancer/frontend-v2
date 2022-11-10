@@ -1,5 +1,10 @@
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import { flatTokenTree, isDeep, tokenTreeNodes } from '@/composables/usePool';
+import {
+  fiatValueOf,
+  flatTokenTree,
+  isDeep,
+  tokenTreeNodes,
+} from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
@@ -9,7 +14,13 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, isSameAddress, removeAddress, trackLoading } from '@/lib/utils';
+import {
+  bnSum,
+  bnum,
+  isSameAddress,
+  removeAddress,
+  trackLoading,
+} from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { TokensOut } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { Pool, PoolToken } from '@/services/pool/types';
@@ -67,7 +78,7 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { fNum2 } = useNumbers();
+  const { fNum2, toFiat } = useNumbers();
   const { injectTokens, getToken, prices, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
@@ -115,7 +126,7 @@ const provider = (props: Props) => {
     highPriceImpact.value ? highPriceImpactAccepted.value : true
   );
 
-  // Checks if amountsIn has any values > 0.
+  // Checks if amountsOut has any values > 0.
   const hasAmountsOut = computed(() =>
     Object.values(tokensOut.value).some(amountOut => bnum(amountOut).gt(0))
   );
@@ -123,6 +134,15 @@ const provider = (props: Props) => {
   const bptBalance = computed((): string => balanceFor(pool.value.address));
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
+
+  const fiatValueIn = computed(() => fiatValueOf(pool.value, bptIn.value));
+
+  const fiatValueOut = computed((): string => {
+    const fiatValuesOut = Object.keys(tokensOut.value).map(item =>
+      toFiat(tokensOut.value[item], item)
+    );
+    return bnSum(fiatValuesOut).toString();
+  });
 
   // TODO
   const tokenOutPoolBalance = computed(() => {
@@ -168,6 +188,8 @@ const provider = (props: Props) => {
         tokensOut.value = output.tokensOut;
         queryError.value = '';
       } catch (error) {
+        priceImpact.value = 0;
+        tokensOut.value = {};
         queryError.value = (error as Error).message;
         console.error(error);
       }
@@ -251,6 +273,8 @@ const provider = (props: Props) => {
     bptIn,
     fiatTotalLabel,
     // proportionalAmounts,
+    fiatValueIn,
+    fiatValueOut,
     fullAmounts,
     debounceQueryExit,
     exit,
