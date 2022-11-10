@@ -204,10 +204,10 @@ const provider = (props: Props) => {
       return exitPoolService.exit({
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
-        amount: '0',
-        tokenInfo: getToken(''),
+        amount: bptIn.value,
+        tokenInfo: getToken(pool.value.address),
         prices: prices.value,
-        relayerSignature: '',
+        relayerSignature: undefined,
       });
       throw new Error('To be implemented');
     } catch (error) {

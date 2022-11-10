@@ -37,12 +37,17 @@ export class DeepExitHandler implements ExitPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async exit({
-    signer,
-    slippageBsp,
-  }: ExitParams): Promise<TransactionResponse> {
-    console.log(signer, slippageBsp);
-    throw new Error('To be implemented');
+  async exit(params: ExitParams): Promise<TransactionResponse> {
+    const { signer } = params;
+    await this.queryExit(params);
+    if (!this.lastGeneralisedExitRes) {
+      throw new Error('Could not query generalised join');
+    }
+    const { to, callData } = this.lastGeneralisedExitRes;
+    return signer.sendTransaction({
+      to,
+      data: callData,
+    });
   }
 
   async queryExit({
