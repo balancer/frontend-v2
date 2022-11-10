@@ -72,4 +72,8 @@ export class ExitPoolService {
   async queryExit(params: ExitParams): Promise<QueryOutput> {
     return this.exitHandler.queryExit(params);
   }
+
+  async getSingleAssetMax(params: ExitParams): Promise<string> {
+    return this.exitHandler.getSingleAssetMax(params);
+  }
 }

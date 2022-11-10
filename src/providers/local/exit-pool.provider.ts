@@ -13,6 +13,7 @@ import { bnum, isSameAddress, removeAddress, trackLoading } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { debounce } from 'lodash';
 import {
@@ -24,8 +25,8 @@ import {
   onBeforeUnmount,
   PropType,
   provide,
-  reactive,
   ref,
+  reactive,
   toRef,
   watch,
 } from 'vue';
@@ -42,6 +43,7 @@ export type AmountOut = {
   address: string;
   value: string;
   valid: boolean;
+  max: string;
 };
 
 /**
@@ -58,15 +60,17 @@ const provider = (props: Props) => {
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const isLoadingQuery = ref<boolean>(false);
+  const isLoadingSingleAssetMax = ref<boolean>(false);
+  const bptIn = ref<string>('0');
+  const bptValid = ref<boolean>(true);
   const queryError = ref<string>('');
   const txError = ref<string>('');
-  const amountsOut = ref<AmountOut[]>([]);
-  const singleTokenOut = reactive<AmountOut>({
+  const singleAmountOut = reactive<AmountOut>({
     address: '',
     value: '',
+    max: '',
     valid: true,
   });
-  const bptIn = ref<string>('0');
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
 
@@ -79,10 +83,11 @@ const provider = (props: Props) => {
    * COMPOSABLES
    */
   const { fNum2 } = useNumbers();
-  const { injectTokens, getToken, prices, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
+  const { injectTokens, getTokens, prices, balanceFor, wrappedNativeAsset } =
+    useTokens();
 
   /**
    * COMPUTED
@@ -98,6 +103,16 @@ const provider = (props: Props) => {
     return removeAddress(pool.value.address, addresses);
   });
 
+  // Token meta data for all relevant exit tokens including pool BPT.
+  const exitTokenInfo = computed(
+    (): TokenInfoMap =>
+      getTokens([
+        ...exitTokenAddresses.value,
+        pool.value.address,
+        ...amountsOut.value.map(ao => ao.address),
+      ])
+  );
+
   // All tokens extracted from the token tree, excl. pre-minted BPT.
   const exitTokens = computed((): PoolToken[] => {
     let tokens: PoolToken[] = [];
@@ -109,6 +124,12 @@ const provider = (props: Props) => {
     return tokens.filter(
       token => !isSameAddress(token.address, pool.value.address)
     );
+  });
+
+  // Amounts out to pass into exit functions
+  const amountsOut = computed((): AmountOut[] => {
+    if (isSingleAssetExit.value) return [singleAmountOut];
+    return [];
   });
 
   // High price impact if value greater than 1%.
@@ -163,11 +184,7 @@ const provider = (props: Props) => {
   /**
    * METHODS
    */
-
-  // TODO
-  function reset() {
-    console.log('reset');
-  }
+  function setDefaultSingleAmountOut() {}
 
   /**
    * Simulate exit transaction to get expected output and calculate price impact.
@@ -176,14 +193,16 @@ const provider = (props: Props) => {
     trackLoading(async () => {
       try {
         const output = await exitPoolService.queryExit({
+          bptIn: bptIn.value,
+          amountsOut: amountsOut.value,
           signer: getSigner(),
           slippageBsp: slippageBsp.value,
-          amount: '0',
-          tokenInfo: getToken(''),
-          price: prices.value[''],
+          tokenInfo: exitTokenInfo.value,
+          prices: prices.value,
           relayerSignature: '',
         });
         priceImpact.value = output.priceImpact;
+
         queryError.value = '';
       } catch (error) {
         queryError.value = (error as Error).message;
@@ -197,11 +216,12 @@ const provider = (props: Props) => {
   async function exit(): Promise<TransactionResponse> {
     try {
       return exitPoolService.exit({
+        bptIn: '0',
+        amountsOut: amountsOut.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
-        amount: '0',
-        tokenInfo: getToken(''),
-        price: prices.value[''],
+        tokenInfo: exitTokenInfo.value,
+        prices: prices.value,
         relayerSignature: '',
       });
       throw new Error('To be implemented');
@@ -226,9 +246,10 @@ const provider = (props: Props) => {
     debounceQueryExit.value();
   });
 
-  watch(isSingleAssetExit, newVal => {
+  watch(isSingleAssetExit, _isSingleAssetExit => {
+    bptIn.value = '';
     queryError.value = '';
-    exitPoolService.setExitHandler(newVal);
+    exitPoolService.setExitHandler(_isSingleAssetExit);
   });
 
   /**
@@ -237,9 +258,10 @@ const provider = (props: Props) => {
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
-    injectTokens(exitTokenAddresses.value);
+    injectTokens([...exitTokenAddresses.value, pool.value.address]);
     // Trigger SOR pool fetching in case swap exits are used.
     fetchPoolsForSor();
+    setDefaultSingleAmountOut();
   });
 
   onBeforeUnmount(() => {
@@ -249,11 +271,11 @@ const provider = (props: Props) => {
   return {
     pool,
     isSingleAssetExit,
-    singleTokenOut,
     exitTokenAddresses,
     exitTokens,
     priceImpact,
     isLoadingQuery,
+    isLoadingSingleAssetMax,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
@@ -267,13 +289,13 @@ const provider = (props: Props) => {
     tokenOutPoolBalance,
     hasBpt,
     bptIn,
+    bptValid,
     fiatTotalLabel,
     fiatAmounts,
     proportionalAmounts,
     fullAmounts,
     debounceQueryExit,
     exit,
-    reset,
   };
 };
 
