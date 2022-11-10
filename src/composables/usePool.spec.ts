@@ -125,7 +125,7 @@ describe('flatTokenTreeWithoutPreMinted should', () => {
   });
 });
 
-test('findTokenInTree works', () => {
+test.skip('findTokenInTree works', () => {
   const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
   const bbaDaiToken = findTokenInTree(BoostedPoolMock, bbaDaiAddress);
   expect(bbaDaiToken?.token.pool?.tokens).toBeDefined();

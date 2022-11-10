@@ -375,31 +375,22 @@ function isPool(poolOrToken: Pool | PoolToken[]): poolOrToken is Pool {
   return (poolOrToken as Pool).tokens !== undefined;
 }
 
-export function flatTokenTreeWithoutPreMinted(
-  poolOrToken: Pool | PoolToken[],
-  excludedAddresses: string[] = []
-) {
+export function flatTokenTreeWithoutPreMinted(poolOrToken: Pool | PoolToken[]) {
   const result: PoolToken[] = [];
   let tokens: PoolToken[] = [];
   if (isPool(poolOrToken)) {
     tokens = poolOrToken?.tokens.filter(
       t => !isSameAddress(t.address, poolOrToken.address)
     ); // AVOID ROOT TOKEN
-    excludedAddresses.push(poolOrToken.address);
   } else {
     tokens = poolOrToken;
   }
 
   tokens.forEach(poolToken => {
-    if (!includesAddress(excludedAddresses, poolToken.address)) {
-      result.push(poolToken);
-    }
+    result.push(poolToken);
     const nestedTokens = poolToken.token.pool?.tokens;
     if (nestedTokens) {
-      const flatNestedTokens = flatTokenTreeWithoutPreMinted(nestedTokens, [
-        ...excludedAddresses,
-        poolToken.address,
-      ]);
+      const flatNestedTokens = flatTokenTreeWithoutPreMinted(nestedTokens);
       result.push(...flatNestedTokens);
     }
   });
@@ -409,33 +400,6 @@ export function flatTokenTreeWithoutPreMinted(
     isSameAddress(token1.address, token2.address)
   );
 }
-
-// export function flatTokenTreeWithoutPreMinted2(
-//   tokens: PoolToken[],
-//   excludedAddresses: string[] = []
-// ) {
-//   const result: PoolToken[] = [];
-//   tokens.forEach(poolToken => {
-//     if (!includesAddress(excludedAddresses, poolToken.address))
-//       tokens.push(poolToken);
-//     const parentAddresses = result.map(t => t.address);
-//     const nestedTokens = poolToken.token.pool?.tokens;
-//     if (nestedTokens) {
-//       tokens.push(
-//         ...flatTokenTreeWithoutPreMinted(nestedTokens, [
-//           ...excludedAddresses,
-//           ...parentAddresses,
-//           poolToken.address,
-//         ])
-//       );
-//     }
-//   });
-
-//   // Avoid duplicated tokens with the same address
-//   return uniqWith(tokens, (token1, token2) =>
-//     isSameAddress(token1.address, token2.address)
-//   );
-// }
 
 /**
  * Find token in token tree with address.
