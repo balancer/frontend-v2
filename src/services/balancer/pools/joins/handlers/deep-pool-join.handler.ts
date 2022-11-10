@@ -80,10 +80,10 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
         console.error(err);
         throw new Error(err);
       });
-    console.log({ lastGeneralisedJoinRes: this.lastGeneralisedJoinRes });
 
-    if (!this.lastGeneralisedJoinRes) throw new Error('Not enough liquidity.');
-
+    if (!this.lastGeneralisedJoinRes) {
+      throw new Error('Failed to fetch expected output.');
+    }
     const bptOut = formatFixed(
       this.lastGeneralisedJoinRes.expectedOut,
       this.pool.value.onchain?.decimals || 18
