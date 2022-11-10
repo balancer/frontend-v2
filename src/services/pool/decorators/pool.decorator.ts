@@ -71,9 +71,7 @@ export class PoolDecorator {
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();
       if (sdkPool) {
-        pool.totalLiquidity = await sdkPools.liquidity(sdkPool);
-      } else {
-        poolService.setTotalLiquidity(prices, currency, tokens);
+        pool.totalLiquidity = await sdkPools.liquidity(poolService.pool as any);
       }
 
       if (setAprCondition) {
