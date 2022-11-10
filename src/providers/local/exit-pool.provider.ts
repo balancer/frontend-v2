@@ -1,4 +1,5 @@
-import { isDeep, tokenTreeNodes } from '@/composables/usePool';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import { flatTokenTree, isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
@@ -8,9 +9,9 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, removeAddress, trackLoading } from '@/lib/utils';
+import { bnum, isSameAddress, removeAddress, trackLoading } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
-import { Pool } from '@/services/pool/types';
+import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { debounce } from 'lodash';
@@ -33,6 +34,13 @@ import {
  */
 type Props = {
   pool: Pool;
+  isSingleAssetExit: boolean;
+};
+
+export type AmountOut = {
+  address: string;
+  value: string;
+  valid: boolean;
 };
 
 /**
@@ -45,11 +53,14 @@ const provider = (props: Props) => {
    * STATE
    */
   const pool = toRef(props, 'pool');
+  const isSingleAssetExit = toRef(props, 'isSingleAssetExit');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
   const isLoadingQuery = ref<boolean>(false);
   const queryError = ref<string>('');
   const txError = ref<string>('');
+  const amountsOut = ref<AmountOut[]>([]);
+  const bptIn = ref<string>('0');
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
 
@@ -61,7 +72,8 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { injectTokens } = useTokens();
+  const { fNum2 } = useNumbers();
+  const { injectTokens, getToken, prices, balanceFor } = useTokens();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -69,8 +81,8 @@ const provider = (props: Props) => {
   /**
    * COMPUTED
    */
-  // All tokens in the pool token tree that can be used in exit functions.
-  const exitTokens = computed((): string[] => {
+  // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
+  const exitTokenAddresses = computed((): string[] => {
     let addresses: string[] = [];
 
     addresses = isDeep(pool.value)
@@ -78,6 +90,19 @@ const provider = (props: Props) => {
       : pool.value.tokensList;
 
     return removeAddress(pool.value.address, addresses);
+  });
+
+  // All tokens extracted from the token tree, excl. pre-minted BPT.
+  const exitTokens = computed((): PoolToken[] => {
+    let tokens: PoolToken[] = [];
+
+    tokens = isDeep(pool.value)
+      ? flatTokenTree(pool.value.tokens)
+      : pool.value.tokens;
+
+    return tokens.filter(
+      token => !isSameAddress(token.address, pool.value.address)
+    );
   });
 
   // High price impact if value greater than 1%.
@@ -95,9 +120,48 @@ const provider = (props: Props) => {
     highPriceImpact.value ? highPriceImpactAccepted.value : true
   );
 
+  // Checks if amountsIn has any values > 0.
+  const hasAmountsOut = computed(() =>
+    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
+  );
+
+  const bptBalance = computed((): string => balanceFor(pool.value.address));
+
+  const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
+
+  // TODO
+  const tokenOutPoolBalance = computed(() => {
+    return '1';
+  });
+
+  // TODO
+  const fiatTotal = computed((): string => '0');
+
+  const fiatTotalLabel = computed((): string =>
+    fNum2(fiatTotal.value, FNumFormats.fiat)
+  );
+
+  // TODO
+  const fiatAmounts = computed((): string[] => ['0', '1']);
+
+  // TODO
+  const proportionalAmounts = computed((): string[] => {
+    return ['0', '1'];
+  });
+
+  // TODO
+  const fullAmounts = computed(() => {
+    return ['0', '1'];
+  });
+
   /**
    * METHODS
    */
+
+  // TODO
+  function reset() {
+    console.log('reset');
+  }
 
   /**
    * Simulate exit transaction to get expected output and calculate price impact.
@@ -105,7 +169,14 @@ const provider = (props: Props) => {
   async function queryExit() {
     trackLoading(async () => {
       try {
-        const output = await exitPoolService.queryExit();
+        const output = await exitPoolService.queryExit({
+          signer: getSigner(),
+          slippageBsp: slippageBsp.value,
+          amount: '0',
+          tokenInfo: getToken(''),
+          price: prices.value[''],
+          relayerSignature: '',
+        });
         priceImpact.value = output.priceImpact;
         queryError.value = '';
       } catch (error) {
@@ -122,6 +193,10 @@ const provider = (props: Props) => {
       return exitPoolService.exit({
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        amount: '0',
+        tokenInfo: getToken(''),
+        price: prices.value[''],
+        relayerSignature: '',
       });
       throw new Error('To be implemented');
     } catch (error) {
@@ -133,11 +208,21 @@ const provider = (props: Props) => {
   /**
    * WATCHERS
    */
+  // If bptIn changes refetch expected output.
+  watch(bptIn, () => {
+    debounceQueryExit.value();
+  });
+
   // If the global pool fetching for the SOR changes it's been set to true. In
   // this case we should re-trigger queryExit to fetch the expected output for
   // any existing input.
   watch(hasFetchedPoolsForSor, () => {
     debounceQueryExit.value();
+  });
+
+  watch(isSingleAssetExit, newVal => {
+    queryError.value = '';
+    exitPoolService.setExitHandler(newVal);
   });
 
   /**
@@ -146,7 +231,7 @@ const provider = (props: Props) => {
   onBeforeMount(() => {
     // Ensure prices are fetched for token tree. When pool architecture is
     // refactoted probably won't be required.
-    injectTokens(exitTokens.value);
+    injectTokens(exitTokenAddresses.value);
     // Trigger SOR pool fetching in case swap exits are used.
     fetchPoolsForSor();
   });
@@ -157,6 +242,8 @@ const provider = (props: Props) => {
 
   return {
     pool,
+    isSingleAssetExit,
+    exitTokenAddresses,
     exitTokens,
     priceImpact,
     isLoadingQuery,
@@ -166,9 +253,20 @@ const provider = (props: Props) => {
     highPriceImpactAccepted,
     txState,
     txInProgress,
-    debounceQueryExit,
     queryError,
+    amountsOut,
+    hasAmountsOut,
+    bptBalance,
+    tokenOutPoolBalance,
+    hasBpt,
+    bptIn,
+    fiatTotalLabel,
+    fiatAmounts,
+    proportionalAmounts,
+    fullAmounts,
+    debounceQueryExit,
     exit,
+    reset,
   };
 };
 
@@ -190,6 +288,10 @@ export const ExitPoolProvider = defineComponent({
     pool: {
       type: Object as PropType<Pool>,
       required: true,
+    },
+    isSingleAssetExit: {
+      type: Boolean,
+      default: false,
     },
   },
 
