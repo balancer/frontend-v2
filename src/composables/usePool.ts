@@ -382,21 +382,22 @@ export function flatTokenTreeWithoutPreMinted(
   const result: PoolToken[] = [];
   let tokens: PoolToken[] = [];
   if (isPool(poolOrToken)) {
-    tokens = poolOrToken?.tokens;
+    tokens = poolOrToken?.tokens.filter(
+      t => !isSameAddress(t.address, poolOrToken.address)
+    ); // AVOID ROOT TOKEN
     excludedAddresses.push(poolOrToken.address);
   } else {
     tokens = poolOrToken;
   }
 
   tokens.forEach(poolToken => {
-    if (!includesAddress(excludedAddresses, poolToken.address))
+    if (!includesAddress(excludedAddresses, poolToken.address)) {
       result.push(poolToken);
-    const parentAddresses = result.map(t => t.address);
+    }
     const nestedTokens = poolToken.token.pool?.tokens;
     if (nestedTokens) {
       const flatNestedTokens = flatTokenTreeWithoutPreMinted(nestedTokens, [
         ...excludedAddresses,
-        ...parentAddresses,
         poolToken.address,
       ]);
       result.push(...flatNestedTokens);

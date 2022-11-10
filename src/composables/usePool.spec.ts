@@ -114,7 +114,6 @@ describe('flatTokenTreeWithoutPreMinted should', () => {
     expect(symbols).toIncludeSameMembers([
       'bb-a-USDT',
       'bb-a-USDC',
-      'bb-a-USD',
       'bb-a-DAI',
       'USDT',
       'aUSDT',
@@ -138,12 +137,5 @@ test('findTokenInTreeWithoutPreminted works', () => {
     BoostedPoolMock,
     bbaDaiAddress
   );
-  console.log(bbaDaiToken);
   expect(bbaDaiToken?.token.pool?.tokens).toBeDefined();
 });
-
-// describe('findTokenInTree should', () => {
-//   const bbaDaiAddress = '0xae37d54ae477268b9997d4161b96b8200755935c';
-//   const bbaDaiToken = findTokenInTree(BoostedPoolMock, bbaDaiAddress);
-//   expect(bbaDaiToken?.token.pool?.tokens).toBeDefined();
-// });
