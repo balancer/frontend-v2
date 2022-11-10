@@ -69,7 +69,7 @@ export default function usePoolTransfers() {
    * WATCHERS
    */
   watch(blockNumber, async () => {
-    poolQuery.refetch.value();
+    // poolQuery.refetch.value();
   });
 
   return {

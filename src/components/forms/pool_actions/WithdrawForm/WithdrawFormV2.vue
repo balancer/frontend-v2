@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { onBeforeMount, toRef, watch } from 'vue';
-// import { useI18n } from 'vue-i18n';
-
-// Components
+import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 // import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 // import useWeb3 from '@/services/web3/useWeb3';
-
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
 // import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
 // import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
-
 import useWithdrawalState from './composables/useWithdrawalState';
-// Composables
 import useExitPool from '@/composables/pools/useExitPool';
-// import useVeBal from '@/composables/useVeBAL';
+import useVeBal from '@/composables/useVeBAL';
 // import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { isDeep } from '@/composables/usePool';
-// import useTokens from '@/composables/useTokens';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -37,9 +32,9 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-// const { t } = useI18n();
-// const { veBalTokenInfo } = useVeBal();
-// const { wrappedNativeAsset } = useTokens();
+const { t } = useI18n();
+const { veBalTokenInfo } = useVeBal();
+const { wrappedNativeAsset } = useTokens();
 
 const {
   // isProportional,
@@ -79,6 +74,10 @@ const {
 const {
   pool,
   isSingleAssetExit,
+  singleAmountOut,
+  isLoadingMax,
+  queryError,
+  maxError,
   // exitTokenAddresses,
   // isLoadingQuery,
   // isLoadingSingleAssetMax,
@@ -128,9 +127,8 @@ watch(bptBalance, () => {
  * CALLBACKS
  */
 onBeforeMount(() => {
-  if (!isSingleAssetExit.value) {
-    maxSlider();
-  }
+  singleAmountOut.address = wrappedNativeAsset.value.address;
+  maxSlider();
 });
 </script>
 
@@ -140,29 +138,16 @@ onBeforeMount(() => {
     <template v-else>
       <template v-if="isDeep(pool)">
         <!-- Render swap exit UI -->
-        <div class="mb-1 font-medium">{{ $t('youWithdraw') }}</div>
         <TokenInput
-          v-model:isValid="bptValid"
-          v-model:amount="bptIn"
-          :address="pool.address"
-          fixedToken
-          :name="pool.address"
-          class="mb-4"
-        />
-
-        <div class="mb-1 font-medium">{{ $t('youRecieve') }}</div>
-        <!-- <TokenInput
-          v-model:isValid="singleTokenOut.valid"
-          v-model:address="singleTokenOut.address"
-          v-model:amount="singleTokenOut.value"
-          :name="singleTokenOut.address"
-          disableNativeAssetBuffer
-          disableBalance
-          ignoreWalletBalance
-          disabled
-          noMax
+          v-model:isValid="singleAmountOut.valid"
+          v-model:address="singleAmountOut.address"
+          v-model:amount="singleAmountOut.value"
+          :name="singleAmountOut.address"
+          :customBalance="singleAmountOut.max"
+          :balanceLabel="$t('max')"
+          :balanceLoading="isLoadingMax"
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
-        /> -->
+        />
       </template>
       <template v-else>
         <!-- Render single asset exit UI -->
@@ -182,20 +167,18 @@ onBeforeMount(() => {
         size="sm"
         :label="$t('priceImpactAccept', [$t('withdrawing')])"
       />
-    </div>
+    </div>  -->
 
     <BalAlert
-      v-if="error !== null"
+      v-if="queryError || maxError"
       type="error"
-      :title="parseError(error).title"
-      :description="parseError(error).description"
+      :title="$t('thereWasAnError')"
+      :description="queryError || maxError"
       class="mt-4"
       block
-      actionLabel="Dismiss"
-      @action-click="setError(null)"
     />
 
-    <div class="mt-4">
+    <!-- <div class="mt-4">
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"

@@ -8,7 +8,13 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { Ref } from 'vue';
 
+export enum ExitType {
+  GivenIn, // When BPT in is specified.
+  GivenOut, // When an amount out is specified.
+}
+
 export type ExitParams = {
+  exitType: ExitType;
   bptIn: string;
   amountsOut: AmountOut[];
   tokenInfo: TokenInfoMap;
@@ -33,6 +39,4 @@ export abstract class ExitPoolHandler {
   abstract exit(params: ExitParams): Promise<TransactionResponse>;
 
   abstract queryExit(params: ExitParams): Promise<QueryOutput>;
-
-  abstract getSingleAssetMax(params: ExitParams): Promise<string>;
 }

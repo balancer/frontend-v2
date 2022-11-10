@@ -44,8 +44,6 @@ export class SwapExitHandler implements ExitPoolHandler {
     const tokenOut = tokenInfo[amountsOut[0].address];
     const priceOut = prices[tokenOut.address]?.usd;
 
-    console.log('tokenIn', tokenIn);
-    console.log('tokenOut', tokenOut);
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
     if (!priceIn || !priceOut)
