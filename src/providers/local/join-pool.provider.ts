@@ -216,9 +216,7 @@ const provider = (props: Props) => {
       return;
     }
     // Early return if relayer not yet approved
-    if (shouldSignRelayer.value) {
-      return;
-    }
+    if (shouldSignRelayer.value) return;
 
     trackLoading(async () => {
       try {
