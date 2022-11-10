@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, toRef, watch } from 'vue';
+import { computed, onBeforeMount, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
+import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
-import useWeb3 from '@/services/web3/useWeb3';
+// import useWeb3 from '@/services/web3/useWeb3';
 
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
 import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
-import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
+// import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
 
 import useWithdrawalState from './composables/useWithdrawalState';
 // Composables
 import useExitPool from '@/composables/pools/useExitPool';
-import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
+// import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 
 /**
  * TYPES
@@ -29,7 +29,7 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const showPreview = ref(false);
+// const showPreview = ref(false);
 
 /**
  * COMPOSABLES
@@ -38,13 +38,13 @@ const { t } = useI18n();
 
 const {
   // isProportional,
-  tokenOut,
+  // tokenOut,
   // highPriceImpactAccepted,
-  validInput,
+  // validInput,
   maxSlider,
-  error,
-  parseError,
-  setError,
+  // error,
+  // parseError,
+  // setError,
   // txInProgress,
 } = useWithdrawalState(toRef(props, 'pool'));
 
@@ -68,19 +68,20 @@ const {
 //   resetMath,
 // } = withdrawMath;
 
-const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
-  useWeb3();
+// const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+//   useWeb3();
 
 const {
   pool,
   isSingleAssetExit,
-  exitTokenAddresses,
+  singleTokenOut,
+  // exitTokenAddresses,
   isLoadingQuery,
-  highPriceImpact,
-  hasAcceptedHighPriceImpact,
-  highPriceImpactAccepted,
+  // highPriceImpact,
+  // hasAcceptedHighPriceImpact,
+  // highPriceImpactAccepted,
   txInProgress,
-  hasAmountsOut,
+  // hasAmountsOut,
   bptBalance,
   tokenOutPoolBalance,
 } = useExitPool();
@@ -89,9 +90,9 @@ const {
  * COMPUTED
  */
 
-const hasValidInputs = computed(
-  (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
-);
+// const hasValidInputs = computed(
+//   (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
+// );
 
 const singleAssetRules = computed(() => [
   isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance')),
@@ -132,12 +133,11 @@ onBeforeMount(() => {
     <ProportionalWithdrawalInputV2 v-if="!isSingleAssetExit" :pool="pool" />
     <TokenInput
       v-else
-      v-model:amount="exitTokenAddresses[0]"
-      v-model:isValid="validInput"
-      :name="tokenOut"
-      :address="tokenOut"
-      :disableBalance="exitTokenAddresses[0] === '-'"
-      :customBalance="exitTokenAddresses[0] || '0'"
+      v-model:amount="singleTokenOut.value"
+      v-model:isValid="singleTokenOut.valid"
+      :name="singleTokenOut.address"
+      :address="singleTokenOut.address"
+      :disableBalance="true"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
       :balanceLoading="isLoadingQuery"
@@ -145,11 +145,14 @@ onBeforeMount(() => {
       disableNativeAssetBuffer
     >
       <template #tokenSelect>
-        <WithdrawalTokenSelect :pool="pool" :initToken="tokenOut" />
+        <WithdrawalTokenSelect
+          :pool="pool"
+          :initToken="singleTokenOut.address"
+        />
       </template>
     </TokenInput>
 
-    <WithdrawTotalsV2 class="mt-4" />
+    <!-- <WithdrawTotalsV2 class="mt-4" />
 
     <div
       v-if="highPriceImpact"
@@ -204,6 +207,6 @@ onBeforeMount(() => {
         :pool="pool"
         @close="showPreview = false"
       />
-    </teleport>
+    </teleport> -->
   </div>
 </template>

@@ -24,6 +24,7 @@ import {
   onBeforeUnmount,
   PropType,
   provide,
+  reactive,
   ref,
   toRef,
   watch,
@@ -60,6 +61,11 @@ const provider = (props: Props) => {
   const queryError = ref<string>('');
   const txError = ref<string>('');
   const amountsOut = ref<AmountOut[]>([]);
+  const singleTokenOut = reactive<AmountOut>({
+    address: '',
+    value: '',
+    valid: true,
+  });
   const bptIn = ref<string>('0');
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
@@ -243,6 +249,7 @@ const provider = (props: Props) => {
   return {
     pool,
     isSingleAssetExit,
+    singleTokenOut,
     exitTokenAddresses,
     exitTokens,
     priceImpact,
