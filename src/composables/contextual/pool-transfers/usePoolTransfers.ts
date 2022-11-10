@@ -65,13 +65,6 @@ export default function usePoolTransfers() {
     );
   });
 
-  /**
-   * WATCHERS
-   */
-  watch(blockNumber, async () => {
-    poolQuery.refetch.value();
-  });
-
   return {
     pool,
     loadingPool,
