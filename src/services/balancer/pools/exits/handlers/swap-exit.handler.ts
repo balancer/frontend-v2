@@ -1,10 +1,12 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { bptPriceFor, fiatValueOf } from '@/composables/usePool';
+import { bptPriceFor } from '@/composables/usePool';
+import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, selectByAddress } from '@/lib/utils';
+import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
@@ -28,12 +30,26 @@ export class SwapExitHandler implements ExitPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async exit({
-    signer,
-    slippageBsp,
-  }: ExitParams): Promise<TransactionResponse> {
-    console.log(signer, slippageBsp);
-    throw new Error('To be implemented');
+  async exit(params: ExitParams): Promise<TransactionResponse> {
+    const userAddress = await params.signer.getAddress();
+    await this.queryExit(params);
+    if (!this.lastSwapRoute)
+      throw new Error('Could not fetch swap route for join.');
+
+    const swap = this.getSwapAttributes(
+      this.lastSwapRoute,
+      params.slippageBsp,
+      userAddress
+    );
+
+    const { kind, swaps, assets, funds, limits } = swap.attributes as BatchSwap;
+    return vaultService.batchSwap(
+      kind,
+      swaps,
+      assets,
+      funds,
+      limits as string[]
+    );
   }
 
   async queryExit(params: ExitParams): Promise<QueryOutput> {
@@ -164,5 +180,20 @@ export class SwapExitHandler implements ExitPoolHandler {
         .div(_fiatValueIn.plus(_fiatValueOut).div(bnum(2)))
         .toNumber() || 1 // If fails to calculate return error value of 100%
     );
+  }
+
+  private getSwapAttributes(
+    swapInfo: SwapInfo,
+    maxSlippage: number,
+    userAddress: string
+  ) {
+    const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
+    return this.sdk.swaps.buildSwap({
+      userAddress,
+      swapInfo,
+      kind: 0,
+      deadline,
+      maxSlippage,
+    });
   }
 }

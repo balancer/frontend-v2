@@ -273,7 +273,7 @@ const provider = (props: Props) => {
         singleAmountOut.max = output.amountsOut[singleAmountOut.address];
         maxError.value = '';
       } catch (error) {
-        console.error('error', error);
+        console.error(error);
         maxError.value = (error as Error).message;
       }
     }, isLoadingMax);
@@ -294,7 +294,6 @@ const provider = (props: Props) => {
         prices: prices.value,
         relayerSignature: '',
       });
-      throw new Error('To be implemented');
     } catch (error) {
       txError.value = (error as Error).message;
       throw error;
