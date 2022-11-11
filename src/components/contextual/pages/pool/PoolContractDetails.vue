@@ -40,8 +40,16 @@ function formSwapFeesHint(owner: string): string {
  * COMPUTED
  */
 const data = computed(() => {
-  const { poolType, address, symbol, owner, createTime, swapFee, name } =
-    props.pool;
+  const {
+    poolType,
+    address,
+    symbol,
+    owner,
+    createTime,
+    swapFee,
+    name,
+    onchain,
+  } = props.pool;
 
   return [
     {
@@ -60,6 +68,12 @@ const data = computed(() => {
       title: t('poolType'),
       value: poolType,
     },
+    onchain?.amp && Number(onchain?.amp)
+      ? {
+          title: t('ampFactor.title'),
+          value: onchain.amp,
+        }
+      : null,
     {
       title: t('swapFees'),
       value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner)})`,

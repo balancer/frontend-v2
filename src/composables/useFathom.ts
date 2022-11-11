@@ -1,5 +1,3 @@
-import { Goals } from '@/services/fathom/goals';
-
 interface Fathom {
   trackPageview: (opts?: PageViewOptions) => void;
   trackGoal: (code: string, cents: number) => void;
@@ -21,7 +19,24 @@ declare global {
   }
 }
 
-const goals = new Goals();
+export const Goals = {
+  ClickPoolsTableRow: 'NISBIX8B',
+  ClickHeroConnectWallet: 'EIWJBKAR',
+  ClickHeroLearnMore: 'HCF8QUTE',
+  ClickNavConnectWallet: 'ZIFARDWY',
+  ClickNavTrade: 'JKBUPMVR',
+  ClickNavInvest: 'XDOFAMCI',
+  ClickNavLogo: 'OT9IBNCJ',
+  ClickInvestSettings: 'ZNU2DISP',
+  ClickTradeSettings: '1M2HMAYJ',
+  ClickInvest: 'BRT10IGE',
+  ClickWithdraw: 'P5GBF31M',
+  Invested: 'KN2G0QUT',
+  Withdrawal: 'X4NINEBD',
+  ConnectedWallet: '2QHQLTRF',
+  ClickSwap: 'OGZ8QPE8',
+  Swapped: 'VYZUMRKD',
+};
 
 export default function useFathom() {
   function trackGoal(goal: string, value = 0) {
@@ -33,5 +48,5 @@ export default function useFathom() {
     }
   }
 
-  return { trackGoal, Goals: goals };
+  return { trackGoal, Goals };
 }

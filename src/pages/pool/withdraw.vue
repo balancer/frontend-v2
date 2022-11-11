@@ -4,7 +4,6 @@ import WithdrawFormV2 from '@/components/forms/pool_actions/WithdrawForm/Withdra
 import TradeSettingsPopover, {
   TradeSettingsContext,
 } from '@/components/popovers/TradeSettingsPopover.vue';
-// Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import { ExitPoolProvider } from '@/providers/local/exit-pool.provider';
 import { configService } from '@/services/config/config.service';
@@ -13,14 +12,22 @@ import useWithdrawPageTabs, {
   tabs,
   Tab,
 } from '@/composables/pools/useWithdrawPageTabs';
+import { oneMinInMs } from '@/composables/useTime';
+import { useIntervalFn } from '@vueuse/core';
 
 /**
  * COMPOSABLES
  */
 const { network } = configService;
-const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
+const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { activeTab } = useWithdrawPageTabs();
+
+// Instead of refetching pool data on every block, we refetch every minute to prevent
+// overfetching a heavy request on short blocktime networks like Polygon.
+// TODO: Don't refetch whole pool, only update balances and weights with
+// onchain calls. i.e. only refetch what's required to be up to date for joins/exits.
+useIntervalFn(poolQuery.refetch.value, oneMinInMs);
 </script>
 
 <template>
