@@ -72,7 +72,7 @@ const isLoadingTotalValue = computed(
   <AppHero :class="classes">
     <h1
       class="mb-2 font-body text-base font-medium text-white opacity-90"
-      v-text="$t('myBalancerInvestments')"
+      v-text="$t('myBalancerBalance')"
     />
 
     <template v-if="isWalletReady || isWalletConnecting">

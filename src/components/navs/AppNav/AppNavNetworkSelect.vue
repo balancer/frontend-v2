@@ -103,10 +103,10 @@ watchEffect(() => {
       n => Number(n.key) === chainId.value
     );
     if (newNetwork) {
-      document.write('');
+      document.body.style.display = 'none';
       localStorage.setItem('networkId', chainId.value.toString());
       window.location.href = getNetworkChangeUrl(newNetwork);
-      router.go(0);
+      location.reload();
     }
   }
   previousNetwork.value = chainId.value;

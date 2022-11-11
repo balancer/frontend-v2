@@ -50,7 +50,7 @@ const columns = ref<ColumnDefinition<ProtocolRewardRow>[]>([
     accessor: 'token',
     Cell: 'tokenColumnCell',
     align: 'left',
-    width: 125,
+    width: 50,
     noGrow: true,
   },
   {

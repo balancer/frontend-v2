@@ -41,7 +41,7 @@ const { currency } = useUserSettings();
         <div class="summary-table-number">
           {{ fNum2(fiatTotal, FNumFormats.fiat) }}
           <BalTooltip
-            :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
+            :text="$t('tooltips.addLiquidity.total', [currency.toUpperCase()])"
             iconSize="sm"
             class="ml-2"
           />
@@ -64,7 +64,7 @@ const { currency } = useUserSettings();
           <template v-else>
             {{ fNum2(priceImpact, FNumFormats.percent) }}
             <BalTooltip
-              :text="$t('tooltips.invest.priceImpact')"
+              :text="$t('tooltips.addLiquidity.priceImpact')"
               iconSize="sm"
               :iconName="highPriceImpact ? 'alert-triangle' : 'info'"
               :iconClass="

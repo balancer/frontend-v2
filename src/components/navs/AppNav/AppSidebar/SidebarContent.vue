@@ -33,11 +33,11 @@ const router = useRouter();
 const blockIcon = ref<HTMLDivElement>();
 
 const navLinks = [
-  { label: t('invest'), path: '/' },
-  { label: t('trade'), path: `/${networkSlug}/trade` },
+  { label: t('pool'), path: '/' },
+  { label: t('swap'), path: `/${networkSlug}/trade` },
+  { label: t('claim'), path: `/${networkSlug}/claim` },
   { label: t('portfolio'), path: `/${networkSlug}/portfolio` },
   { label: 'veBAL', path: `/${networkSlug}/vebal` },
-  { label: t('claim'), path: `/${networkSlug}/claim` },
 ];
 
 const ecosystemLinks = [
