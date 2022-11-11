@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { onBeforeMount, toRef, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { onBeforeMount, toRef, watch, ref } from 'vue';
+// import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-// import { isLessThanOrEqualTo } from '@/lib/utils/validations';
+import { isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
-// import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
-// import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
 import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
 import useWithdrawalState from './composables/useWithdrawalState';
 import useExitPool from '@/composables/pools/useExitPool';
 import useVeBal from '@/composables/useVeBAL';
-// import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
+import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 
@@ -27,12 +26,15 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-// const showPreview = ref(false);
+/**
+ * STATE
+ */
+const showPreview = ref(false);
 
 /**
  * COMPOSABLES
  */
-const { t } = useI18n();
+// const { t } = useI18n();
 const { veBalTokenInfo } = useVeBal();
 const { wrappedNativeAsset } = useTokens();
 
@@ -68,8 +70,8 @@ const {
 //   resetMath,
 // } = withdrawMath;
 
-// const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
-//   useWeb3();
+const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
+  useWeb3();
 
 const {
   pool,
@@ -79,16 +81,14 @@ const {
   queryError,
   maxError,
   // exitTokenAddresses,
-  // isLoadingQuery,
+  isLoadingQuery,
   // isLoadingSingleAssetMax,
-  bptIn,
-  bptValid,
-  // highPriceImpact,
-  // hasAcceptedHighPriceImpact,
-  // highPriceImpactAccepted,
+  highPriceImpact,
+  highPriceImpactAccepted,
   txInProgress,
-  // hasAmountsOut,
+  hasAmountsOut,
   bptBalance,
+  validAmounts,
   // tokenOutPoolBalance,
 } = useExitPool();
 
@@ -156,7 +156,7 @@ onBeforeMount(() => {
 
     <WithdrawTotalsV2 class="mt-4" />
 
-    <!-- <div
+    <div
       v-if="highPriceImpact"
       class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
     >
@@ -167,7 +167,7 @@ onBeforeMount(() => {
         size="sm"
         :label="$t('priceImpactAccept', [$t('withdrawing')])"
       />
-    </div>  -->
+    </div>
 
     <BalAlert
       v-if="queryError || maxError"
@@ -178,7 +178,7 @@ onBeforeMount(() => {
       block
     />
 
-    <!-- <div class="mt-4">
+    <div class="mt-4">
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"
@@ -192,9 +192,10 @@ onBeforeMount(() => {
         color="gradient"
         :disabled="
           !hasAmountsOut ||
-          !hasValidInputs ||
+          !validAmounts ||
           isMismatchedNetwork ||
-          isLoadingQuery
+          isLoadingQuery ||
+          isLoadingMax
         "
         block
         @click="showPreview = true"
@@ -207,6 +208,6 @@ onBeforeMount(() => {
         :pool="pool"
         @close="showPreview = false"
       />
-    </teleport> -->
+    </teleport>
   </div>
 </template>

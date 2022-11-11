@@ -60,11 +60,10 @@ const provider = (props: Props) => {
   const isSingleAssetExit = toRef(props, 'isSingleAssetExit');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
-  const isLoadingQuery = ref<boolean>(false);
+  const isLoadingQuery = ref<boolean>(true);
   const isLoadingMax = ref<boolean>(true);
   const isLoadingSingleAssetMax = ref<boolean>(false);
   const bptIn = ref<string>('0');
-  const bptValid = ref<boolean>(true);
   const queryError = ref<string>('');
   const maxError = ref<string>('');
   const txError = ref<string>('');
@@ -135,6 +134,11 @@ const provider = (props: Props) => {
   const amountsOut = computed((): AmountOut[] => {
     if (isSingleAssetExit.value) return [singleAmountOut];
     return [];
+  });
+
+  // Are amounts valid for transaction? That is bptIn and amountsOut.
+  const validAmounts = computed((): boolean => {
+    return bnum(bptIn.value).gt(0) && amountsOut.value.every(ao => ao.valid);
   });
 
   const singleAssetMaxed = computed((): boolean => {
@@ -223,19 +227,10 @@ const provider = (props: Props) => {
    * Simulate exit transaction to get expected output and calculate price impact.
    */
   async function queryExit() {
-    console.log('queryExit()');
+    if (!hasFetchedPoolsForSor.value) return;
+
     trackLoading(async () => {
       try {
-        console.log('inputs', {
-          exitType: exitType.value,
-          bptIn: _bptIn.value,
-          amountsOut: amountsOut.value,
-          signer: getSigner(),
-          slippageBsp: slippageBsp.value,
-          tokenInfo: exitTokenInfo.value,
-          prices: prices.value,
-          relayerSignature: '',
-        });
         const output = await exitPoolService.queryExit({
           exitType: exitType.value,
           bptIn: _bptIn.value,
@@ -246,7 +241,6 @@ const provider = (props: Props) => {
           prices: prices.value,
           relayerSignature: '',
         });
-        console.log('output', output);
         priceImpact.value = output.priceImpact;
         queryError.value = '';
       } catch (error) {
@@ -260,6 +254,8 @@ const provider = (props: Props) => {
    * Fetch maximum amount out given bptBalance as bptIn.
    */
   async function getSingleAssetMax() {
+    if (!hasFetchedPoolsForSor.value) return;
+
     trackLoading(async () => {
       try {
         singleAmountOut.max = '';
@@ -318,6 +314,7 @@ const provider = (props: Props) => {
   // any existing input.
   watch(hasFetchedPoolsForSor, () => {
     debounceQueryExit.value();
+    debounceGetSingleAssetMax.value();
   });
 
   watch(isSingleAssetExit, _isSingleAssetExit => {
@@ -336,10 +333,7 @@ const provider = (props: Props) => {
 
   watch(
     () => singleAmountOut.value,
-    async newVal => {
-      console.log('newVal', newVal);
-      await debounceQueryExit.value();
-    }
+    () => debounceQueryExit.value()
   );
 
   /**
@@ -377,12 +371,12 @@ const provider = (props: Props) => {
     queryError,
     maxError,
     amountsOut,
+    validAmounts,
     hasAmountsOut,
     bptBalance,
     tokenOutPoolBalance,
     hasBpt,
     bptIn,
-    bptValid,
     fiatTotalLabel,
     fiatAmounts,
     proportionalAmounts,
