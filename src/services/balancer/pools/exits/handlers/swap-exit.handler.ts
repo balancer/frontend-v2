@@ -8,7 +8,12 @@ import { BalancerSDK, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
-import { ExitParams, ExitPoolHandler, QueryOutput } from './exit-pool.handler';
+import {
+  ExitParams,
+  ExitPoolHandler,
+  ExitType,
+  QueryOutput,
+} from './exit-pool.handler';
 
 /**
  * Handles exits for single asset flows where we need to use a BatchSwap to exit
@@ -31,7 +36,18 @@ export class SwapExitHandler implements ExitPoolHandler {
     throw new Error('To be implemented');
   }
 
-  async queryExit({
+  async queryExit(params: ExitParams): Promise<QueryOutput> {
+    if (params.exitType === ExitType.GivenIn) {
+      return this.queryOutGivenIn(params);
+    } else {
+      return this.queryInGivenOut(params);
+    }
+  }
+
+  /**
+   * PRIVATE
+   */
+  private async queryOutGivenIn({
     bptIn,
     tokenInfo,
     amountsOut,
@@ -79,14 +95,56 @@ export class SwapExitHandler implements ExitPoolHandler {
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
-  async getSingleAssetMax(params: ExitParams): Promise<string> {
-    const { amountsOut } = await this.queryExit(params);
-    return Object.values(amountsOut)[0];
+  private async queryInGivenOut({
+    tokenInfo,
+    amountsOut,
+    prices,
+  }: ExitParams): Promise<QueryOutput> {
+    const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
+    const priceIn = bptPriceFor(this.pool.value);
+
+    const amountOut = amountsOut[0].value;
+    const tokenOut = tokenInfo[amountsOut[0].address];
+    const priceOut = prices[tokenOut.address]?.usd;
+
+    if (!tokenIn || !tokenOut)
+      throw new Error('Missing critical token metadata.');
+    if (!priceIn || !priceOut)
+      throw new Error('Missing price for token to join with.');
+    if (!amountOut || bnum(amountOut).eq(0))
+      return { amountsOut: {}, priceImpact: 0 };
+
+    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+
+    const safeAmountIn = overflowProtected(
+      amountsOut[0].value,
+      tokenOut.decimals
+    );
+    const bnumAmountIn = parseFixed(safeAmountIn, tokenOut.decimals);
+    const gasPrice = await this.getGasPrice();
+
+    this.lastSwapRoute = await this.sdk.swaps.findRouteGivenOut({
+      tokenIn: tokenIn.address,
+      tokenOut: tokenOut.address,
+      amount: bnumAmountIn,
+      gasPrice,
+      maxPools: 4,
+    });
+
+    const amountIn = formatFixed(
+      this.lastSwapRoute.returnAmountFromSwaps,
+      tokenOut.decimals
+    );
+    if (bnum(amountIn).eq(0)) throw new Error('Not enough liquidity.');
+
+    const fiatValueIn = bnum(priceIn).times(amountIn).toString();
+    const fiatValueOut = bnum(priceOut).times(amountOut).toString();
+
+    const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
+
+    return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
-  /**
-   * PRIVATE
-   */
   private async getGasPrice(): Promise<BigNumber> {
     const gasPriceParams = await this.gasPriceService.getGasPrice();
     if (!gasPriceParams) throw new Error('Failed to fetch gas price.');

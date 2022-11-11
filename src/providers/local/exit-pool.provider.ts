@@ -223,8 +223,19 @@ const provider = (props: Props) => {
    * Simulate exit transaction to get expected output and calculate price impact.
    */
   async function queryExit() {
+    console.log('queryExit()');
     trackLoading(async () => {
       try {
+        console.log('inputs', {
+          exitType: exitType.value,
+          bptIn: _bptIn.value,
+          amountsOut: amountsOut.value,
+          signer: getSigner(),
+          slippageBsp: slippageBsp.value,
+          tokenInfo: exitTokenInfo.value,
+          prices: prices.value,
+          relayerSignature: '',
+        });
         const output = await exitPoolService.queryExit({
           exitType: exitType.value,
           bptIn: _bptIn.value,
@@ -235,10 +246,11 @@ const provider = (props: Props) => {
           prices: prices.value,
           relayerSignature: '',
         });
+        console.log('output', output);
         priceImpact.value = output.priceImpact;
-
         queryError.value = '';
       } catch (error) {
+        console.log('error', error);
         queryError.value = (error as Error).message;
       }
     }, isLoadingQuery);
@@ -250,6 +262,8 @@ const provider = (props: Props) => {
   async function getSingleAssetMax() {
     trackLoading(async () => {
       try {
+        singleAmountOut.max = '';
+        maxError.value = '';
         const output = await exitPoolService.queryExit({
           exitType: ExitType.GivenIn,
           bptIn: bptBalance.value,
@@ -317,6 +331,14 @@ const provider = (props: Props) => {
     () => singleAmountOut.address,
     () => {
       debounceGetSingleAssetMax.value();
+    }
+  );
+
+  watch(
+    () => singleAmountOut.value,
+    async newVal => {
+      console.log('newVal', newVal);
+      await debounceQueryExit.value();
     }
   );
 

@@ -7,7 +7,7 @@ import { Pool } from '@/services/pool/types';
 // import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
 // import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
-// import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
+import WithdrawTotalsV2 from './components/WithdrawTotalsV2.vue';
 import useWithdrawalState from './composables/useWithdrawalState';
 import useExitPool from '@/composables/pools/useExitPool';
 import useVeBal from '@/composables/useVeBAL';
@@ -143,7 +143,7 @@ onBeforeMount(() => {
           v-model:address="singleAmountOut.address"
           v-model:amount="singleAmountOut.value"
           :name="singleAmountOut.address"
-          :customBalance="singleAmountOut.max"
+          :customBalance="singleAmountOut.max || '0'"
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
@@ -154,9 +154,9 @@ onBeforeMount(() => {
       </template>
     </template>
 
-    <!-- <WithdrawTotalsV2 class="mt-4" />
+    <WithdrawTotalsV2 class="mt-4" />
 
-    <div
+    <!-- <div
       v-if="highPriceImpact"
       class="p-2 pb-2 mt-4 rounded-lg border dark:border-gray-700"
     >
