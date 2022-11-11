@@ -25,7 +25,7 @@ import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, isMainnet, appUrl } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
-import { uniq, uniqWith } from 'lodash';
+import { uniq, uniqWith, cloneDeep } from 'lodash';
 
 /**
  * METHODS
@@ -328,6 +328,12 @@ export function tokenTreeLeafs(
   return uniq(addresses);
 }
 
+function isTokenTreePool(
+  poolOrToken: Pool | TokenTreePool
+): poolOrToken is TokenTreePool {
+  return (poolOrToken as TokenTreePool).mainIndex !== undefined;
+}
+
 /**
  * Get all unique token tree tokens as flat array.
  *
@@ -344,11 +350,17 @@ export function flatTokenTree(
 ): PoolToken[] {
   const tokens: PoolToken[] = [];
 
-  for (const token of pool?.tokens || []) {
-    if (
-      options.includePreMintedBpt ||
-      !isSameAddress(pool.address, token.address)
-    ) {
+  if (!options.includePreMintedBpt) {
+    return flatTokenTree(removePremintedBPT(pool), {
+      ...options,
+      includePreMintedBpt: true,
+    });
+  }
+
+  const nestedTokens = pool?.tokens || [];
+
+  nestedTokens.forEach(token => {
+    if (!isSameAddress(pool.address, token.address)) {
       tokens.push(token);
     }
 
@@ -363,7 +375,7 @@ export function flatTokenTree(
         tokens.push(...nestedTokens);
       }
     }
-  }
+  });
 
   // Avoid duplicated tokens with the same address
   return uniqWith(tokens, (token1, token2) =>
@@ -371,34 +383,44 @@ export function flatTokenTree(
   );
 }
 
-function isPool(poolOrToken: Pool | PoolToken[]): poolOrToken is Pool {
-  return (poolOrToken as Pool).tokens !== undefined;
-}
-
-export function flatTokenTreeWithoutPreMinted(poolOrToken: Pool | PoolToken[]) {
-  const result: PoolToken[] = [];
-  let tokens: PoolToken[] = [];
-  if (isPool(poolOrToken)) {
-    tokens = poolOrToken?.tokens.filter(
-      t => !isSameAddress(t.address, poolOrToken.address)
-    ); // AVOID ROOT TOKEN
+export function removePremintedBPT(pool: Pool | TokenTreePool) {
+  let newPool: Pool | TokenTreePool;
+  if (isTokenTreePool(pool)) {
+    //Avoid cloning when TokenTreePool for performance reasons
+    newPool = pool;
   } else {
-    tokens = poolOrToken;
+    newPool = cloneDeep(pool);
   }
 
-  tokens.forEach(poolToken => {
-    result.push(poolToken);
-    const nestedTokens = poolToken.token.pool?.tokens;
-    if (nestedTokens) {
-      const flatNestedTokens = flatTokenTreeWithoutPreMinted(nestedTokens);
-      result.push(...flatNestedTokens);
-    }
-  });
+  if (newPool.tokens) {
+    removePremintedToken(newPool);
 
-  // Avoid duplicated tokens with the same address
-  return uniqWith(result, (token1, token2) =>
-    isSameAddress(token1.address, token2.address)
+    newPool.tokens.forEach(token => {
+      if (token.token.pool) {
+        removePremintedBPT(token.token.pool) as TokenTreePool;
+      }
+    });
+  }
+  return newPool;
+}
+
+function removePremintedToken(pool: Pool | TokenTreePool) {
+  if (!pool.tokens) {
+    return;
+  }
+
+  const premintedIndex = pool.tokens.findIndex(token =>
+    isSameAddress(pool.address, token.address)
   );
+  // Remove preminted token by index
+  pool.tokens.splice(premintedIndex, 1);
+
+  // Fix mainIndex after removing premintedBPT
+  if (isTokenTreePool(pool) && premintedIndex >= 0) {
+    if (pool.mainIndex <= premintedIndex) {
+      pool.mainIndex -= 1;
+    }
+  }
 }
 
 /**
@@ -414,14 +436,6 @@ export function findTokenInTree(
   options: TokenTreeOpts = { includeLinearUnwrapped: false }
 ): PoolToken | undefined {
   const tokens = flatTokenTree(pool, options);
-  return tokens.find(token => isSameAddress(token.address, tokenAddress));
-}
-
-export function findTokenInTreeWithoutPreminted(
-  pool: Pool,
-  tokenAddress: string
-): PoolToken | undefined {
-  const tokens = flatTokenTreeWithoutPreMinted(pool);
   return tokens.find(token => isSameAddress(token.address, tokenAddress));
 }
 
