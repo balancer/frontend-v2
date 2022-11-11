@@ -25,15 +25,11 @@ import {
   onBeforeUnmount,
   PropType,
   provide,
+  readonly,
   ref,
   toRef,
   watch,
 } from 'vue';
-import useRelayerApproval, {
-  Relayer,
-} from '@/composables/trade/useRelayerApproval';
-import { TransactionActionInfo } from '@/types/transactions';
-import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 
 /**
  * TYPES
@@ -67,6 +63,7 @@ const provider = (props: Props) => {
   const isLoadingQuery = ref<boolean>(false);
   const queryError = ref<string>('');
   const txError = ref<string>('');
+  const queryJoinEnabled = ref<boolean>(true);
 
   /**
    * COMPOSABLES
@@ -76,10 +73,6 @@ const provider = (props: Props) => {
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const { txState, txInProgress } = useTxState();
-  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
-  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
-    Relayer.BATCH_V4
-  );
 
   const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
 
@@ -150,18 +143,6 @@ const provider = (props: Props) => {
     fiatValueOf(pool.value, bptOut.value)
   );
 
-  const shouldSignRelayer = computed(
-    (): boolean =>
-      isDeepPool.value &&
-      !isSingleAssetJoin.value &&
-      // Check if Batch Relayer is either approved, or signed
-      !(relayerApproval.isUnlocked.value || relayerSignature.value)
-  );
-
-  const approvalActions = computed((): TransactionActionInfo[] =>
-    shouldSignRelayer.value ? [signRelayerAction] : []
-  );
-
   /**
    * METHODS
    */
@@ -209,14 +190,14 @@ const provider = (props: Props) => {
    * Simulate join transaction to get expected output and calculate price impact.
    */
   async function queryJoin() {
-    // If form is empty, clear the price impact and
+    // If form is empty or inputs are not valid, clear the price impact and
     // return early
-    if (!hasAmountsIn.value) {
+    if (!hasAmountsIn.value || !hasValidInputs.value) {
       priceImpact.value = 0;
       return;
     }
-    // Early return if relayer not yet approved
-    if (shouldSignRelayer.value) return;
+    // Early return if query join is disabled
+    if (!queryJoinEnabled.value) return;
 
     trackLoading(async () => {
       try {
@@ -226,7 +207,7 @@ const provider = (props: Props) => {
           prices: prices.value,
           signer: getSigner(),
           slippageBsp: slippageBsp.value,
-          relayerSignature: relayerSignature.value,
+          // relayerSignature: relayerSignature.value,
         });
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;
@@ -249,7 +230,6 @@ const provider = (props: Props) => {
         prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
-        relayerSignature: relayerSignature.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -276,6 +256,12 @@ const provider = (props: Props) => {
     debounceQueryJoin.value();
   });
 
+  watch(queryJoinEnabled, enabled => {
+    if (enabled) {
+      debounceQueryJoin.value();
+    }
+  });
+
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
@@ -300,17 +286,23 @@ const provider = (props: Props) => {
   });
 
   return {
-    pool,
-    isSingleAssetJoin,
+    // State
     amountsIn,
+    queryJoinEnabled,
+    pool: readonly(pool),
+    isSingleAssetJoin: readonly(isSingleAssetJoin),
+    bptOut: readonly(bptOut),
+    priceImpact: readonly(priceImpact),
+    highPriceImpactAccepted: readonly(highPriceImpactAccepted),
+    isLoadingQuery: readonly(isLoadingQuery),
+    queryError: readonly(queryError),
+    txError: readonly(txError),
+
+    //  Computed
     joinTokens,
-    bptOut,
-    priceImpact,
-    isLoadingQuery,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,
-    highPriceImpactAccepted,
     hasValidInputs,
     hasAmountsIn,
     fiatValueIn,
@@ -318,8 +310,8 @@ const provider = (props: Props) => {
     txState,
     txInProgress,
     debounceQueryJoin,
-    queryError,
-    approvalActions,
+
+    // Methods
     setAmountsIn,
     addTokensIn,
     resetAmounts,

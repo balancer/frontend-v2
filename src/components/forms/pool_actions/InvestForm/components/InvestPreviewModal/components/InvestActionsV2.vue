@@ -3,7 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
@@ -48,14 +48,8 @@ const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const {
-  rektPriceImpact,
-  amountsIn,
-  fiatValueOut,
-  join,
-  txState,
-  approvalActions: joinPoolApprovalActions,
-} = useJoinPool();
+const { rektPriceImpact, amountsIn, fiatValueOut, join, txState } =
+  useJoinPool();
 
 const tokensToApprove = computed(() =>
   amountsIn.value.map(amountIn => amountIn.address)
@@ -68,13 +62,10 @@ const { tokenApprovalActions } = useTokenApprovalActions(
   amountsToApprove
 );
 
-const approvalActions = ref(joinPoolApprovalActions.value);
-
 /**
  * COMPUTED
  */
 const actions = computed((): TransactionActionInfo[] => [
-  ...approvalActions.value,
   ...tokenApprovalActions,
   {
     label: t('invest'),

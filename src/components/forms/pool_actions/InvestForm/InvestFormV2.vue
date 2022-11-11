@@ -56,6 +56,7 @@ const {
   hasValidInputs,
   hasAmountsIn,
   queryError,
+  queryJoinEnabled,
   setAmountsIn,
   addTokensIn,
 } = useJoinPool();
@@ -78,6 +79,7 @@ const poolHasLowLiquidity = computed((): boolean =>
 );
 
 async function initializeTokensForm(isSingleAssetJoin: boolean) {
+  queryJoinEnabled.value = isSingleAssetJoin;
   setAmountsIn([]);
   if (isSingleAssetJoin) {
     addTokensIn([wrappedNativeAsset.value.address]);
@@ -85,6 +87,12 @@ async function initializeTokensForm(isSingleAssetJoin: boolean) {
     await forChange(isLoadingBalances, false);
     addTokensIn(poolTokensWithBalance.value);
   }
+}
+
+function togglePreviewModal(isOpen: boolean) {
+  showInvestPreview.value = isOpen;
+  // When joining with pool tokens, run queryJoin only if preview modal is open
+  queryJoinEnabled.value = isSingleAssetJoin.value || isOpen;
 }
 
 /**
@@ -97,7 +105,6 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-
 watch(isSingleAssetJoin, isSingleAsset => {
   initializeTokensForm(isSingleAsset);
 });
@@ -186,7 +193,7 @@ watch(isSingleAssetJoin, isSingleAsset => {
           !!queryError
         "
         block
-        @click="showInvestPreview = true"
+        @click="togglePreviewModal(true)"
       />
     </div>
 
@@ -195,7 +202,7 @@ watch(isSingleAssetJoin, isSingleAsset => {
         <InvestPreviewModalV2
           v-if="showInvestPreview"
           :pool="pool"
-          @close="showInvestPreview = false"
+          @close="togglePreviewModal(false)"
           @show-stake-modal="showStakeModal = true"
         />
         <StakePreviewModal
