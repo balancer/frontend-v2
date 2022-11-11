@@ -64,7 +64,6 @@ const {
   exit,
   isLoadingQuery,
   debounceQueryExit,
-  // shouldUseBatchRelayer,
 } = useExitPool();
 
 const withdrawalAction: TransactionActionInfo = {

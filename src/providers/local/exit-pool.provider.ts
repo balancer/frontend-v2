@@ -1,4 +1,4 @@
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import { flatTokenTree, isDeep, tokenTreeNodes } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
@@ -9,7 +9,13 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnum, isSameAddress, removeAddress, trackLoading } from '@/lib/utils';
+import {
+  bnSum,
+  bnum,
+  isSameAddress,
+  removeAddress,
+  trackLoading,
+} from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { Pool, PoolToken } from '@/services/pool/types';
@@ -87,7 +93,7 @@ const provider = (props: Props) => {
   /**
    * COMPOSABLES
    */
-  const { fNum2 } = useNumbers();
+  const { toFiat } = useNumbers();
   const { txState, txInProgress } = useTxState();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
@@ -135,12 +141,6 @@ const provider = (props: Props) => {
     if (isSingleAssetExit.value) return [singleAmountOut];
     return [];
   });
-
-  // Are amounts valid for transaction? That is bptIn and amountsOut.
-  const validAmounts = computed((): boolean => {
-    return bnum(bptIn.value).gt(0) && amountsOut.value.every(ao => ao.valid);
-  });
-
   const singleAssetMaxed = computed((): boolean => {
     return bnum(singleAmountOut.value).eq(singleAmountOut.max);
   });
@@ -158,11 +158,6 @@ const provider = (props: Props) => {
   // If price impact is high (> 1%), user has checked acceptance checkbox.
   const hasAcceptedHighPriceImpact = computed((): boolean =>
     highPriceImpact.value ? highPriceImpactAccepted.value : true
-  );
-
-  // Checks if amountsIn has any values > 0.
-  const hasAmountsOut = computed(() =>
-    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
   );
 
   // The type of exit to perform, is the user specifying the bptIn or the amount
@@ -190,33 +185,35 @@ const provider = (props: Props) => {
     return bptIn.value;
   });
 
+  // The user's BPT balance.
   const bptBalance = computed((): string => balanceFor(pool.value.address));
 
+  // User has a balance of BPT.
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
-  // TODO
-  const tokenOutPoolBalance = computed(() => {
-    return '1';
-  });
-
-  // TODO
-  const fiatTotal = computed((): string => '0');
-
-  const fiatTotalLabel = computed((): string =>
-    fNum2(fiatTotal.value, FNumFormats.fiat)
+  // Checks if amountsIn has any values > 0.
+  const hasAmountsOut = computed(() =>
+    amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
   );
 
-  // TODO
-  const fiatAmounts = computed((): string[] => ['0', '1']);
-
-  // TODO
-  const proportionalAmounts = computed((): string[] => {
-    return ['0', '1'];
+  // Are amounts valid for transaction? That is bptIn and amountsOut.
+  const validAmounts = computed((): boolean => {
+    return bnum(_bptIn.value).gt(0) && amountsOut.value.every(ao => ao.valid);
   });
 
-  // TODO
-  const fullAmounts = computed(() => {
-    return ['0', '1'];
+  // Map of amount out address to value as fiat amount.
+  const fiatAmountsOut = computed((): Record<string, string> => {
+    return Object.fromEntries(
+      amountsOut.value.map(({ address, value }) => [
+        address,
+        toFiat(value, address),
+      ])
+    );
+  });
+
+  // Sum of all amountsOut fiat values.
+  const fiatTotalOut = computed((): string => {
+    return bnSum(Object.values(fiatAmountsOut.value)).toString();
   });
 
   /**
@@ -373,13 +370,10 @@ const provider = (props: Props) => {
     validAmounts,
     hasAmountsOut,
     bptBalance,
-    tokenOutPoolBalance,
     hasBpt,
     bptIn,
-    fiatTotalLabel,
-    fiatAmounts,
-    proportionalAmounts,
-    fullAmounts,
+    fiatTotalOut,
+    fiatAmountsOut,
     debounceQueryExit,
     exit,
   };
