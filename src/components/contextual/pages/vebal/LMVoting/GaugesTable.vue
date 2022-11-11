@@ -312,7 +312,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <GaugesTableVoteBtn
             :hasUserVotes="getHasUserVotes(gauge.userVotes)"
             :isGaugeExpired="getIsGaugeExpired(gauge.address)"
-            @click.stop="emit('clickedVote', gauge)"
+            @click.stop.prevent="emit('clickedVote', gauge)"
           />
         </div>
       </template>

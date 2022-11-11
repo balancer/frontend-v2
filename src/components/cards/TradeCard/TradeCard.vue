@@ -264,7 +264,7 @@ export default defineComponent({
       if (trading.wrapType.value === WrapType.Unwrap) {
         return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
-      return t('trade');
+      return t('swap');
     });
     const pools = computed<(Pool | SubgraphPoolBase)[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
