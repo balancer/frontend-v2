@@ -12,14 +12,22 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 import { usePool } from '@/composables/usePool';
 import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
+import { useIntervalFn } from '@vueuse/core';
+import { oneMinInMs } from '@/composables/useTime';
 
 /**
  * STATE
  */
 const { network } = configService;
-const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
+const { pool, poolQuery, loadingPool, transfersAllowed } = usePoolTransfers();
 const { isDeepPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
+
+// Instead of refetching pool data on every block, we refetch every minute to prevent
+// overfetching a heavy request on short blocktime networks like Polygon.
+// TODO: Don't refetch whole pool, only update balances and weights with
+// onchain calls. i.e. only refetch what's required to be up to date for joins/exits.
+useIntervalFn(poolQuery.refetch.value, oneMinInMs);
 
 /**
  * CALLBACKS
