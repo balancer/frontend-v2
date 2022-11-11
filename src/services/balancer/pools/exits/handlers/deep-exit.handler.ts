@@ -31,10 +31,6 @@ export class DeepExitHandler implements ExitPoolHandler {
     throw new Error('To be implemented');
   }
 
-  async getSingleAssetMax(): Promise<string> {
-    throw new Error('n/a to this exit type.');
-  }
-
   /**
    * PRIVATE
    */
