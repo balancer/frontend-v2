@@ -57,10 +57,18 @@ export class DeepExitHandler implements ExitPoolHandler {
     prices,
     relayerSignature,
   }: ExitParams): Promise<QueryOutput> {
-    const parsedAmount = parseFixed(
+    const bnumAmount = parseFixed(
       amount || '0',
       this.pool.value.onchain?.decimals ?? 18
-    ).toString();
+    );
+
+    // Return early if amount is less than 0
+    if (bnumAmount.lte(0)) {
+      return {
+        priceImpact: 0,
+        tokensOut: {},
+      };
+    }
 
     const signerAddress = await signer.getAddress();
 
@@ -70,7 +78,7 @@ export class DeepExitHandler implements ExitPoolHandler {
     this.lastGeneralisedExitRes = await balancer.pools
       .generalisedExit(
         poolId,
-        parsedAmount,
+        bnumAmount.toString(),
         signerAddress,
         slippage,
         relayerSignature
