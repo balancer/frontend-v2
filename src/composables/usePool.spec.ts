@@ -102,26 +102,6 @@ describe('FlatTokenTree should', () => {
       'DAI',
     ]);
   });
-});
-
-describe('flatTokenTree should', () => {
-  test('include linear unwrapped tokens when includeLinearUnwrapped is true', () => {
-    const symbols = flatTokenTree(BoostedPoolMock, {
-      includeLinearUnwrapped: true,
-    }).map(t => t.symbol);
-
-    expect(symbols).toIncludeSameMembers([
-      'bb-a-USDT',
-      'bb-a-USDC',
-      'bb-a-DAI',
-      'USDT',
-      'aUSDT',
-      'USDC',
-      'aUSDC',
-      'aDAI',
-      'DAI',
-    ]);
-  });
 
   test('not include linear unwrapped tokens when includeLinearUnwrapped is false', () => {
     const symbols = flatTokenTree(BoostedPoolMock, {
