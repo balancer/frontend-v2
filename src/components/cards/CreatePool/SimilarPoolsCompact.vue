@@ -3,6 +3,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/services/pool/types';
+import { networkSlug } from '@/composables/useNetwork';
 
 /**
  * COMPOSABLES
@@ -40,7 +41,7 @@ function getPoolLabel(pool: Pool) {
         v-for="pool in similarPools"
         :key="`similarpool-${pool.id}`"
         target="_blank"
-        :href="`/#/pool/${pool.id}`"
+        :href="`/#/${networkSlug}/pool/${pool.id}`"
       >
         <span class="text-sm">{{ getPoolLabel(pool) }}</span>
       </BalLink>

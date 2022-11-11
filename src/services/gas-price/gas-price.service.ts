@@ -10,6 +10,7 @@ import BlocknativeProvider from './providers/blocknative.provider';
 import PolygonProvider from './providers/polygon.provider';
 import { GasPrice, GasSettings } from './providers/types';
 import { JsonRpcSigner, TransactionRequest } from '@ethersproject/providers';
+import ArbitrumProvider from './providers/arbitrum.provider';
 
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
@@ -19,7 +20,8 @@ export class GasPriceService {
   constructor(
     private readonly configService = new ConfigService(),
     private readonly blocknativeProvider = new BlocknativeProvider(),
-    private readonly polygonProvider = new PolygonProvider()
+    private readonly polygonProvider = new PolygonProvider(),
+    private readonly arbitrumProvider = new ArbitrumProvider()
   ) {}
 
   public async getGasPrice(): Promise<GasPrice | null> {
@@ -28,6 +30,8 @@ export class GasPriceService {
         return await this.blocknativeProvider.getGasPrice();
       case '137':
         return await this.polygonProvider.getGasPrice();
+      case '42161':
+        return await this.arbitrumProvider.getGasPrice();
       default:
         return null;
     }

@@ -57,10 +57,11 @@ As we believe in decentralization at all layers, we've made it easy to host your
 
 ### Docker Production Image
 
-We've created a production ready [docker image](./Dockerfile) that connects to Mainnet and runs
-a pre-built version of Balancer Frontend-v2 using nginx. You'll need your own [Infura](https://infura.io), [Alchemy](https://www.alchemy.com/), and [Blocknative](https://blocknative.com) API keys in order to fetch data and make trades.
-
-You can also specify your Portis Dapp ID if you wish to use that service, otherwise it will use a default key.
+We've created a production ready [docker image](./Dockerfile) runs
+a pre-built version of Balancer Frontend-v2 using nginx. You'll need your own
+[Infura](https://infura.io), [Alchemy](https://www.alchemy.com/), and
+[Blocknative](https://blocknative.com) API keys in order to fetch data and
+execute transactions.
 
 Here's an example of how to run the container. This can also be found in [scripts/run-docker.sh](./scripts/run-docker.sh).
 
@@ -69,7 +70,6 @@ docker run \
   -e INFURA_PROJECT_ID=   \ # Required
   -e ALCHEMY_KEY=         \ # Required
   -e BLOCKNATIVE_DAPP_ID= \ # Required
-  -e PORTIS_DAPP_ID=      \ # Optional
   balancerfi/frontend-v2
 ```
 
