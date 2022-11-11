@@ -412,6 +412,9 @@ function removePremintedToken(pool: Pool | TokenTreePool) {
   const premintedIndex = pool.tokens.findIndex(token =>
     isSameAddress(pool.address, token.address)
   );
+  
+  if (premintedIndex === -1) return;
+
   // Remove preminted token by index
   pool.tokens.splice(premintedIndex, 1);
 
