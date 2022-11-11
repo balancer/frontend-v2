@@ -1,5 +1,3 @@
-
-
 <script setup lang="ts">
 import 'vue-slider-component/theme/antd.css';
 
