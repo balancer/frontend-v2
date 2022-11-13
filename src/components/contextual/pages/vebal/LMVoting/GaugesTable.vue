@@ -151,7 +151,7 @@ function networkSrc(network: Network) {
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {
   const redirectUrl = poolURLFor(gauge.pool.id, gauge.network);
-  if (redirectUrl.includes('https://')) {
+  if (redirectUrl.startsWith('https://')) {
     window.location.href = redirectUrl;
   } else {
     router.push({
