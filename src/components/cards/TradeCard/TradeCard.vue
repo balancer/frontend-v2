@@ -44,6 +44,12 @@
         block
       />
       <BalBtn
+        :label="'Join/exit trade'"
+        color="gradient"
+        block
+        @click.prevent="joinExitTrade"
+      />
+      <BalBtn
         v-if="trading.isLoading.value"
         loading
         disabled
@@ -158,7 +164,8 @@
 </template>
 
 <script lang="ts">
-import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sdk';
+import { balancer } from '@/lib/balancer.sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
@@ -350,6 +357,18 @@ export default defineComponent({
         modalTradePreviewIsOpen.value = false;
       });
     }
+
+    async function joinExitTrade() {
+      const swapInfo = await balancer.sor.getSwaps(
+        tokenInAddress.value,
+        tokenOutAddress.value,
+        SwapTypes.SwapExactIn,
+        tokenInAmount.value || tokenOutAmount.value,
+        undefined,
+        true
+      );
+      console.log(swapInfo);
+    }
     function handleErrorButtonClick() {
       if (trading.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;
@@ -423,6 +442,7 @@ export default defineComponent({
       handlePreviewModalClose,
       // methods
       trade,
+      joinExitTrade,
       switchToWETH,
       handleErrorButtonClick,
     };
