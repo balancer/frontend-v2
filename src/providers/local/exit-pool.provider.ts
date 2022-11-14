@@ -141,6 +141,8 @@ const provider = (props: Props) => {
     if (isSingleAssetExit.value) return [singleAmountOut];
     return [];
   });
+
+  // Is the single asset out value equal to it's maximum?
   const singleAssetMaxed = computed((): boolean => {
     return bnum(singleAmountOut.value).eq(singleAmountOut.max);
   });
@@ -322,8 +324,11 @@ const provider = (props: Props) => {
 
   watch(
     () => singleAmountOut.address,
-    () => {
-      debounceGetSingleAssetMax.value();
+    async () => {
+      await Promise.all([
+        debounceGetSingleAssetMax.value,
+        debounceQueryExit.value,
+      ]);
     }
   );
 

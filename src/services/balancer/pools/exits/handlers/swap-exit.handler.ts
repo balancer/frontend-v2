@@ -63,6 +63,11 @@ export class SwapExitHandler implements ExitPoolHandler {
   /**
    * PRIVATE
    */
+
+  /**
+   * Get swap given bptIn, this only used in exits when the user clicks to
+   * maximize their withdrawal, i.e. we have to send their full BPT balance.
+   */
   private async queryOutGivenIn({
     bptIn,
     tokenInfo,
@@ -111,50 +116,57 @@ export class SwapExitHandler implements ExitPoolHandler {
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
+  /**
+   * Get swap given specified amount out.
+   */
   private async queryInGivenOut({
     tokenInfo,
     amountsOut,
     prices,
   }: ExitParams): Promise<QueryOutput> {
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
-    const priceIn = bptPriceFor(this.pool.value);
-
-    const amountOut = amountsOut[0].value;
-    const tokenOut = tokenInfo[amountsOut[0].address];
-    const priceOut = prices[tokenOut.address]?.usd;
-
+    const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
+
+    const priceIn = bptPriceFor(this.pool.value);
+    const priceOut = selectByAddress(prices, tokenOut.address)?.usd;
     if (!priceIn || !priceOut)
       throw new Error('Missing price for token to join with.');
+
+    const amountOut = amountsOut[0].value;
     if (!amountOut || bnum(amountOut).eq(0))
       return { amountsOut: {}, priceImpact: 0 };
 
     if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
 
-    const safeAmountIn = overflowProtected(
+    const safeAmountOut = overflowProtected(
       amountsOut[0].value,
       tokenOut.decimals
     );
-    const bnumAmountIn = parseFixed(safeAmountIn, tokenOut.decimals);
+    const bnumAmountOut = parseFixed(safeAmountOut, tokenOut.decimals);
     const gasPrice = await this.getGasPrice();
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenOut({
       tokenIn: tokenIn.address,
       tokenOut: tokenOut.address,
-      amount: bnumAmountIn,
+      amount: bnumAmountOut,
       gasPrice,
       maxPools: 4,
     });
 
+    console.log('this.lastSwapRoute', this.lastSwapRoute);
+
     const amountIn = formatFixed(
       this.lastSwapRoute.returnAmountFromSwaps,
-      tokenOut.decimals
+      tokenIn.decimals
     );
+    console.log('amountIn', amountIn);
     if (bnum(amountIn).eq(0)) throw new Error('Not enough liquidity.');
 
     const fiatValueIn = bnum(priceIn).times(amountIn).toString();
     const fiatValueOut = bnum(priceOut).times(amountOut).toString();
+    console.log('fiat', fiatValueIn, fiatValueOut);
 
     const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
 
