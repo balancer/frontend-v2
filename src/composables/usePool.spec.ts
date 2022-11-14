@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 import {
   findTokenInTree,
   flatTokenTree,
-  removePremintedBPT,
+  removeBptFrom,
   tokenTreeLeafs,
   tokenTreeNodes,
 } from './usePool';
@@ -119,9 +119,9 @@ describe('FlatTokenTree should', () => {
   });
 });
 
-describe('removePremintedBPT should', () => {
+describe('removeBptFrom should', () => {
   test('remove preminted tokens given a pool', () => {
-    const poolWithoutPremintedBPT = removePremintedBPT(BoostedPoolMock) as Pool;
+    const poolWithoutPremintedBPT = removeBptFrom(BoostedPoolMock) as Pool;
 
     const daiNestedPool = poolWithoutPremintedBPT.tokens[2].token
       .pool as TokenTreePool;
@@ -165,6 +165,23 @@ describe('removePremintedBPT should', () => {
       'bb-a-DAI',
     ]);
   });
+
+  test('remove preminted tokens address from tokenList', () => {
+    expect(BoostedPoolMock.tokensList).toEqual([
+      '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
+      '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
+      '0xa13a9247ea42d743238089903570127dda72fe44', //Preminted token address to be deleted
+      '0xae37d54ae477268b9997d4161b96b8200755935c',
+    ]);
+
+    const poolWithoutPremintedBPT = removeBptFrom(BoostedPoolMock) as Pool;
+
+    expect(poolWithoutPremintedBPT.tokensList).toEqual([
+      '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
+      '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
+      '0xae37d54ae477268b9997d4161b96b8200755935c',
+    ]);
+  });
 });
 
 describe('remove preminted tokens given a TokenTreePool', () => {
@@ -175,7 +192,7 @@ describe('remove preminted tokens given a TokenTreePool', () => {
 
     expect(originalUsdtTree.mainIndex).toBe(1);
 
-    const usdtTreeWithoutPreminted = removePremintedBPT(
+    const usdtTreeWithoutPreminted = removeBptFrom(
       originalUsdtTree
     ) as TokenTreePool;
 
@@ -201,7 +218,7 @@ describe('remove preminted tokens given a TokenTreePool', () => {
     expect(originalDaiTree.mainIndex).toBe(1);
 
     // Updates the original Tree
-    const daiTreeWithoutPreminted = removePremintedBPT(
+    const daiTreeWithoutPreminted = removeBptFrom(
       originalDaiTree
     ) as TokenTreePool;
 

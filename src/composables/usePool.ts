@@ -235,27 +235,6 @@ export function isVeBalPool(poolId: string): boolean {
   return POOLS.IdsMap?.veBAL === poolId;
 }
 
-/**
- * Removes pre-minted pool token from tokensList.
- *
- * @param {Pool} pool - Pool to get tokensList from.
- * @returns tokensList excluding pre-minted BPT address.
- */
-export function tokensExcludingBpt(pool: Pool): string[] {
-  return removeAddress(pool.address, pool.tokensList);
-}
-
-/**
- * Removes pre-minted pool token address from tokensList and returns modified pool.
- *
- * @param {Pool} pool - Pool to remove BPT from.
- * @returns {Pool} modified pool.
- */
-export function removeBptFrom(pool: Pool): Pool {
-  pool.tokensList = tokensExcludingBpt(pool);
-  return pool;
-}
-
 interface TokenTreeOpts {
   includeLinearUnwrapped?: boolean;
   includePreMintedBpt?: boolean;
@@ -351,10 +330,7 @@ export function flatTokenTree(
   const tokens: PoolToken[] = [];
 
   if (!options.includePreMintedBpt) {
-    return flatTokenTree(removePremintedBPT(pool), {
-      ...options,
-      includePreMintedBpt: true,
-    });
+    pool = removeBptFrom(pool);
   }
 
   const nestedTokens = pool?.tokens || [];
@@ -383,13 +359,27 @@ export function flatTokenTree(
   );
 }
 
-export function removePremintedBPT(pool: Pool | TokenTreePool) {
+/**
+ * Removes pre-minted pool token from tokensList.
+ *
+ * @param {Pool} pool - Pool to get tokensList from.
+ * @returns tokensList excluding pre-minted BPT address.
+ */
+export function tokensExcludingBpt(pool: Pool): string[] {
+  return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
+ * Removes pre-minted pool tokens from tokensList and tokenTree given a pool or TokenTreePool.
+ */
+export function removeBptFrom(pool: Pool | TokenTreePool) {
   let newPool: Pool | TokenTreePool;
   if (isTokenTreePool(pool)) {
     //Avoid cloning when TokenTreePool for performance reasons
     newPool = pool;
   } else {
     newPool = cloneDeep(pool);
+    newPool.tokensList = tokensExcludingBpt(pool);
   }
 
   if (newPool.tokens) {
@@ -397,7 +387,7 @@ export function removePremintedBPT(pool: Pool | TokenTreePool) {
 
     newPool.tokens.forEach(token => {
       if (token.token.pool) {
-        removePremintedBPT(token.token.pool) as TokenTreePool;
+        removeBptFrom(token.token.pool) as TokenTreePool;
       }
     });
   }
