@@ -4,8 +4,8 @@ import {
   TransactionResponse,
   TransactionRequest,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/minimal';
-import { Contract, ContractInterface, Wallet } from 'ethers';
+import { captureException } from '@sentry/browser';
+import { Contract, ContractInterface } from 'ethers';
 import { verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
@@ -35,9 +35,9 @@ export class ContractConcern extends TransactionConcern {
     // will throw an error if signer is a sanctioned address
     await verifyTransactionSender(this.signer);
 
-    console.log('Contract: ', contractAddress);
-    console.log('Action: ', action);
-    console.log('Params: ', params);
+    const block = await this.signer.provider.getBlockNumber();
+    console.log(`Contract: ${contractAddress} Action: ${action}`);
+    console.log('Params: ', JSON.stringify(params));
 
     try {
       const gasSettings = await this.gasPrice.settingsForContractCall(
@@ -63,7 +63,13 @@ export class ContractConcern extends TransactionConcern {
           forceLegacyTxType: true,
         });
       } else if (this.shouldLogFailure(error)) {
-        await this.logFailedTx(contractWithSigner, action, params, options);
+        await this.logFailedTx(
+          contractWithSigner,
+          action,
+          params,
+          block,
+          options
+        );
       }
       return Promise.reject(error);
     }
@@ -89,22 +95,24 @@ export class ContractConcern extends TransactionConcern {
     contract: Contract,
     action: string,
     params: any,
+    block: number,
     overrides: any
   ): Promise<void> {
     const sender = await this.signer.getAddress();
+    const chainId = await this.signer.getChainId();
+    const calldata = contract.interface.encodeFunctionData(action, params);
+    const msgValue = overrides.value ? overrides.value.toString() : 0;
+    const simulate = `https://dashboard.tenderly.co/balancer/v2/simulator/new?rawFunctionInput=${calldata}&block=${block}&blockIndex=0&from=${sender}&gas=8000000&gasPrice=0&value=${msgValue}&contractAddress=${contract.address}&network=${chainId}`;
 
-    captureException(`Failed transaction:
-    Sender: ${sender}
-    Contract: ${contract.address}
-    Params: ${params}
-    Overrides: ${overrides}
-  `);
-    overrides.gasPrice = sender;
-    const dummyPrivateKey =
-      '0x651bd555534625dc2fd85e13369dc61547b2e3f2cfc8b98cee868b449c17a4d6';
-    const provider = this.rpcProviders.loggingProvider;
-    const dummyWallet = new Wallet(dummyPrivateKey).connect(provider);
-    const loggingContract = contract.connect(dummyWallet);
-    loggingContract[action](...params, overrides);
+    captureException(
+      `Failed transaction:
+    Action: ${action}
+    Sender: ${sender}`,
+      {
+        extra: {
+          simulate: simulate,
+        },
+      }
+    );
   }
 }
