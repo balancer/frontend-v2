@@ -79,6 +79,7 @@ const provider = (props: Props) => {
     max: '',
     valid: true,
   });
+  const propAmountsOut = ref<AmountOut[]>([]);
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
   const debounceGetSingleAssetMax = ref(
@@ -139,7 +140,7 @@ const provider = (props: Props) => {
   // Amounts out to pass into exit functions
   const amountsOut = computed((): AmountOut[] => {
     if (isSingleAssetExit.value) return [singleAmountOut];
-    return [];
+    return propAmountsOut.value;
   });
 
   // Is the single asset out value equal to it's maximum?
@@ -357,6 +358,7 @@ const provider = (props: Props) => {
     pool,
     isSingleAssetExit,
     singleAmountOut,
+    propAmountsOut,
     exitTokenAddresses,
     exitTokens,
     priceImpact,
@@ -379,6 +381,7 @@ const provider = (props: Props) => {
     bptIn,
     fiatTotalOut,
     fiatAmountsOut,
+    exitTokenInfo,
     debounceQueryExit,
     exit,
   };
