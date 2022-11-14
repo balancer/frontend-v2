@@ -126,7 +126,7 @@ const totalUserPoolSharePct = ref(
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  await loadApprovalsForGauge();
+  if (props.action !== 'unstake') await loadApprovalsForGauge();
 });
 
 /** METHODS */

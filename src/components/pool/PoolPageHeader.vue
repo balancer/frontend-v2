@@ -223,7 +223,7 @@ const poolTypeLabel = computed(() => {
       block
     />
     <BalAlert
-      v-if="hasNonPrefGaugeBalances"
+      v-if="hasNonPrefGaugeBalances && !isAffected"
       :title="$t('staking.restakeGauge')"
       :type="'warning'"
       class="mt-2"
