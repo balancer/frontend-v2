@@ -25,7 +25,7 @@ export class GaugesDecorator {
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly config = configService
   ) {
-    this.multicaller = this.resetMulticaller();
+    this.multicaller = this.resetMulticaller(abi);
   }
 
   /**
@@ -35,14 +35,14 @@ export class GaugesDecorator {
     subgraphGauges: SubgraphGauge[],
     userAddress: string
   ): Promise<Gauge[]> {
-    this.multicaller = this.resetMulticaller();
+    this.multicaller = this.resetMulticaller(this.abi);
     this.callRewardTokens(subgraphGauges);
     this.callClaimableTokens(subgraphGauges, userAddress);
 
     let gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>();
 
     if (isL2.value) {
-      this.multicaller = this.resetHelperMulticaller();
+      this.multicaller = this.resetMulticaller(this.rewardsHelperAbi);
     }
     this.callClaimableRewards(subgraphGauges, userAddress, gaugesDataMap);
     gaugesDataMap = await this.multicaller.execute<OnchainGaugeDataMap>(
@@ -161,16 +161,10 @@ export class GaugesDecorator {
     return claimableRewards;
   }
 
-  private resetMulticaller(): Multicaller {
-    return new Multicaller(this.config.network.key, this.provider, this.abi);
-  }
-
-  private resetHelperMulticaller(): Multicaller {
-    return new Multicaller(
-      this.config.network.key,
-      this.provider,
-      this.rewardsHelperAbi
-    );
+  private resetMulticaller(
+    abi: typeof LiquidityGaugeAbi | typeof LiquidityGaugeRewardHelperAbi
+  ): Multicaller {
+    return new Multicaller(this.config.network.key, this.provider, abi);
   }
 }
 

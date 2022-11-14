@@ -1,8 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 
 import LiquidityGaugeRewardHelperAbi from '@/lib/abi/LiquidityGaugeHelperAbi.json';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
@@ -33,17 +32,5 @@ export class LiquidityGaugeRewardsHelper {
       action: 'claimRewardsFromGauge()',
       params: [gaugeAddress, userAddress],
     });
-  }
-
-  private getMulticaller(): Multicaller {
-    return new Multicaller(this.config.network.key, this.provider, this.abi);
-  }
-
-  static getMulticaller(provider?: JsonRpcProvider): Multicaller {
-    return new Multicaller(
-      configService.network.key,
-      provider || rpcProviderService.jsonProvider,
-      LiquidityGaugeRewardHelperAbi
-    );
   }
 }

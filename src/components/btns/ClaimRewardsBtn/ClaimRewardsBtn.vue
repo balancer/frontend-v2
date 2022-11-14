@@ -41,15 +41,15 @@ const gaugesQuery = useGaugesDecorationQuery(subgraphGauges);
  */
 const gaugeAddress = getAddress(props.gauge.id);
 const liquidityGaugeContract = new LiquidityGauge(gaugeAddress);
-const liquidityGaugeRewardsHelperContract = new LiquidityGaugeRewardsHelper(
-  configService.network.addresses.gaugeRewardsHelper || ''
-);
 
 /**
  * METHODS
  */
 function claimTx() {
   if (isL2.value) {
+    const liquidityGaugeRewardsHelperContract = new LiquidityGaugeRewardsHelper(
+      configService.network.addresses.gaugeRewardsHelper || ''
+    );
     return liquidityGaugeRewardsHelperContract.claimRewardsForGauge(
       gaugeAddress,
       account.value
