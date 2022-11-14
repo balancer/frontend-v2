@@ -14,6 +14,7 @@ import { Router } from 'vue-router';
 export function applyNavGuards(router: Router): Router {
   router = applyNetworkSubdomainRedirect(router);
   router = applyNetworkPathRedirects(router);
+  router = manualUrlUpdateCheck(router);
 
   return router;
 }
@@ -97,6 +98,19 @@ function applyNetworkPathRedirects(router: Router): Router {
       } else {
         next();
       }
+    }
+  });
+
+  return router;
+}
+
+/**
+ * A hack to fix a problem with vue-router not always updating the browser url
+ */
+function manualUrlUpdateCheck(router: Router): Router {
+  router.afterEach(to => {
+    if (window.location.hash !== `#${to.fullPath}`) {
+      window.location.href = `/#${to.fullPath}`;
     }
   });
 
