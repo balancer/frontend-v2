@@ -59,6 +59,7 @@ const {
   isLoadingQuery,
   txInProgress,
   debounceQueryJoin,
+  isLoadingFirstQuery,
   resetAmounts,
 } = useJoinPool();
 
@@ -72,7 +73,9 @@ const title = computed((): string =>
 );
 
 const showTokensOut = computed<boolean>(
-  () => !!Object.keys(tokenOutMap.value).length
+  // Avoid showing 0 amount out
+  // Before first query is loaded, token out will always be 0
+  () => !isLoadingFirstQuery.value && !!Object.keys(tokenOutMap.value).length
 );
 
 const amountInMap = computed((): AmountMap => {
@@ -196,6 +199,7 @@ watch(blockNumber, () => {
 
     <InvestSummary
       :pool="pool"
+      :isLoadingPriceImpact="isLoadingFirstQuery"
       :fiatTotal="fiatValueIn"
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"

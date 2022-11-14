@@ -7,7 +7,8 @@ import useJoinPool from '@/composables/pools/useJoinPool';
 /**
  * COMPOSABLES
  */
-const { highPriceImpact, isLoadingQuery, priceImpact } = useJoinPool();
+const { highPriceImpact, isLoadingQuery, priceImpact, firstQueryJoinFetched } =
+  useJoinPool();
 const { fNum2 } = useNumbers();
 
 /**
@@ -27,10 +28,11 @@ const priceImpactClasses = computed(() => ({
       </div>
       <div class="data-table-number-col">
         <div class="flex">
-          <span v-if="!isLoadingQuery">
+          <BalLoadingBlock v-if="isLoadingQuery" class="w-10" />
+          <span v-else-if="!firstQueryJoinFetched">-</span>
+          <span v-else>
             {{ fNum2(priceImpact, FNumFormats.percent) }}
           </span>
-          <BalLoadingBlock v-else class="w-10" />
 
           <BalTooltip :text="$t('customAmountsTip')">
             <template #activator>
