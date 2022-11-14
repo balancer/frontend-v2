@@ -20,6 +20,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 import router from '@/plugins/router';
 import useExitPool from '@/composables/pools/useExitPool';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
@@ -47,23 +48,16 @@ const { blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-// const {
-//   tokenOutIndex,
-//   tokensOut,
-//   batchRelayerApproval,
-//   txInProgress,
-//   tx: txState,
-//   resetTxState,
-// } = useWithdrawalState(toRef(props, 'pool'));
 const { networkSlug } = useNetwork();
+const { fNum2 } = useNumbers();
 
 const {
-  fiatTotalLabel,
   txState,
   txInProgress,
   exit,
   isLoadingQuery,
   debounceQueryExit,
+  fiatTotalOut,
 } = useExitPool();
 
 const withdrawalAction: TransactionActionInfo = {
@@ -85,11 +79,11 @@ async function handleTransaction(tx): Promise<void> {
     type: 'tx',
     action: 'withdraw',
     summary: t('transactionSummary.withdrawFromPool', [
-      fiatTotalLabel.value,
+      fNum2(fiatTotalOut.value, FNumFormats.fiat),
       poolWeightsLabel(props.pool),
     ]),
     details: {
-      total: fiatTotalLabel.value,
+      total: fNum2(fiatTotalOut.value, FNumFormats.fiat),
       pool: props.pool,
     },
   });
