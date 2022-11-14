@@ -137,6 +137,21 @@ const provider = (props: Props) => {
     return bnSum(fiatValuesIn).toString();
   });
 
+  const isLoadingFirstQuery = computed(() => {
+    console.log(
+      isLoadingQuery.value,
+      bptOut.value,
+      priceImpact.value,
+      queryError.value
+    );
+    return (
+      isLoadingQuery.value &&
+      !Number(bptOut.value) &&
+      !priceImpact.value &&
+      !queryError.value
+    );
+  });
+
   // Calculates estimated fiatValueOut using pool's totalLiquity.
   // Could be inaccurate if total liquidity has come from subgraph.
   const fiatValueOut = computed((): string =>
@@ -309,7 +324,7 @@ const provider = (props: Props) => {
     fiatValueOut,
     txState,
     txInProgress,
-    debounceQueryJoin,
+    isLoadingFirstQuery,
 
     // Methods
     setAmountsIn,
@@ -317,6 +332,7 @@ const provider = (props: Props) => {
     resetAmounts,
     resetState,
     join,
+    debounceQueryJoin,
   };
 };
 

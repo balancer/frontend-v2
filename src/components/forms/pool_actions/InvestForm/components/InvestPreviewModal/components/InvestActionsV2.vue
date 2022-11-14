@@ -48,8 +48,14 @@ const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
 const { isPoolEligibleForStaking } = useStaking();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
-const { rektPriceImpact, amountsIn, fiatValueOut, join, txState } =
-  useJoinPool();
+const {
+  rektPriceImpact,
+  amountsIn,
+  fiatValueOut,
+  join,
+  txState,
+  isLoadingFirstQuery,
+} = useJoinPool();
 
 const tokensToApprove = computed(() =>
   amountsIn.value.map(amountIn => amountIn.address)
@@ -143,6 +149,7 @@ async function submit(): Promise<TransactionResponse> {
     <BalActionSteps
       v-if="!txState.confirmed || !txState.receipt"
       :actions="actions"
+      :isLoading="isLoadingFirstQuery"
       :disabled="rektPriceImpact"
     />
     <div v-else>
