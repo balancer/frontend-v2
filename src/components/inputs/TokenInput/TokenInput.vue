@@ -39,7 +39,6 @@ type Props = {
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
   ignoreWalletBalance?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   tokenValue?: string;
   placeholder?: string;
 };

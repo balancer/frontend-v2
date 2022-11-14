@@ -4,6 +4,8 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
+import { Network } from '@balancer-labs/sdk';
+import { setTag } from '@sentry/browser';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -197,6 +199,15 @@ export default {
           );
         }
         const { account } = await connector.connect();
+
+        setTag('wallet', wallet);
+        const networkMap = {
+          [Network.MAINNET]: 'mainnet',
+          [Network.GOERLI]: 'goerli',
+          [Network.POLYGON]: 'polygon',
+          [Network.ARBITRUM]: 'arbitrum-one',
+        };
+        setTag('network', networkMap[chainId.value]);
 
         // listens to wallet/chain changed and disconnect events
         connector.registerListeners();
