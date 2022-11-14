@@ -348,8 +348,6 @@ export default function useUserStakingData(
       );
     }
 
-    if (!poolGaugeAddresses.value?.preferentialGauge?.id) return '0';
-
     // sum balances from all gauges in the pool
     const totalBalance = await poolGaugeAddresses.value.gauges.reduce(
       async (totalPromise, value) => {
