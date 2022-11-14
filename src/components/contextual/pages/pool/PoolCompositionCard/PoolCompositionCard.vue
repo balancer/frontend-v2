@@ -2,7 +2,7 @@
 import useBreakpoints from '@/composables/useBreakpoints';
 import {
   getUnderlyingTokens,
-  findTokenByAddress,
+  findTokenInTree,
   calculateTokenBPTShareByAddress,
 } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
@@ -52,18 +52,18 @@ function getRootTokenStyle(address) {
 }
 
 function weightFor(address: string) {
-  const token = findTokenByAddress(pool.value, address);
+  const token = findTokenInTree(pool.value, address);
   if (!token || !token.weight) return '-';
   return fNum2(token.weight, FNumFormats.percent);
 }
 
 function balanceFor(address: string) {
-  const token = findTokenByAddress(pool.value, address);
+  const token = findTokenInTree(pool.value, address);
   return token ? fNum2(token.balance, FNumFormats.token) : '-';
 }
 
 function fiatValueFor(address: string) {
-  const token = findTokenByAddress(pool.value, address);
+  const token = findTokenInTree(pool.value, address);
   if (!token || !token.balance) return '-';
   const price = priceFor(address);
 
@@ -116,7 +116,7 @@ function fiatValueFor(address: string) {
             class="flex items-center"
           >
             <BalAsset :address="address" class="mr-2" />
-            {{ findTokenByAddress(pool, address)?.symbol || '---' }}
+            {{ findTokenInTree(pool, address)?.symbol || '---' }}
             <BalIcon
               name="arrow-up-right"
               size="sm"

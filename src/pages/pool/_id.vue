@@ -4,27 +4,20 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 import {
-  PoolChart,
-  PoolStatCards,
-  PoolTransactionsCard,
+  DeepPoolCompositionCard,
   MyPoolBalancesCard,
-  PoolCompositionCard,
-  PoolContractDetails,
 } from '@/components/contextual/pages/pool';
-import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import PoolLockingCard from '@/components/contextual/pages/pool/PoolLockingCard/PoolLockingCard.vue';
-import ApyVisionPoolLink from '@/components/links/ApyVisionPoolLink.vue';
+import StakingIncentivesCard from '@/components/contextual/pages/pool/StakingIncentivesCard/StakingIncentivesCard.vue';
 import PoolPageHeader from '@/components/pool/PoolPageHeader.vue';
 import usePoolAprQuery from '@/composables/queries/usePoolAprQuery';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { isVeBalPool, preMintedBptIndex, usePool } from '@/composables/usePool';
+import { isVeBalPool, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
 import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
-import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 
 /**
  * STATE
@@ -60,24 +53,9 @@ const {
 //#endregion
 
 //#region pool snapshot query
-const poolSnapshotsQuery = usePoolSnapshotsQuery(poolId, undefined, {
-  refetchOnWindowFocus: false,
-});
-const isLoadingSnapshots = computed(
-  () => poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
-);
-
-const snapshots = computed(() => poolSnapshotsQuery.data.value);
 //#endregion
 
 //#region historical prices query
-const historicalPricesQuery = useHistoricalPricesQuery(
-  poolId,
-  undefined,
-  // in order to prevent multiple coingecko requests
-  { refetchOnWindowFocus: false }
-);
-const historicalPrices = computed(() => historicalPricesQuery.data.value);
 //#endregion
 
 //#region APR query
@@ -161,11 +139,6 @@ const isStakablePool = computed((): boolean =>
   POOLS.Stakable.AllowList.includes(poolId)
 );
 
-const poolPremintedBptIndex = computed(() => {
-  if (!pool.value) return null;
-  return preMintedBptIndex(pool.value) ?? null;
-});
-
 /**
  * WATCHERS
  */
@@ -207,41 +180,20 @@ watch(poolQuery.error, () => {
         <div class="hidden lg:block" />
         <div class="order-2 lg:order-1 col-span-2">
           <div class="grid grid-cols-1 gap-y-8">
-            <div class="px-4 lg:px-0">
-              <PoolChart
-                :historicalPrices="historicalPrices"
-                :snapshots="snapshots"
-                :loading="isLoadingSnapshots"
-                :totalLiquidity="pool?.totalLiquidity"
-                :tokensList="pool?.tokensList"
-                :poolType="pool?.poolType"
-                :poolPremintedBptIndex="poolPremintedBptIndex"
-              />
-            </div>
-            <div class="px-4 lg:px-0 mb-4">
-              <PoolStatCards
-                :pool="pool"
-                :poolApr="poolApr"
-                :loading="loadingPool"
-                :loadingApr="loadingApr"
-              />
-              <ApyVisionPoolLink
-                v-if="!loadingPool && pool"
-                :poolId="pool.id"
-                :titleTokens="titleTokens"
-              />
-            </div>
             <div class="mb-4">
               <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />
               <BalLoadingBlock v-if="loadingPool" class="h-64" />
-              <PoolCompositionCard v-else-if="pool" :pool="pool" />
+              <template v-else-if="pool">
+                <DeepPoolCompositionCard :pool="pool" />
+                <!-- <PoolCompositionCard :pool="pool" /> -->
+              </template>
             </div>
 
-            <div ref="intersectionSentinel" />
+            <!-- <div ref="intersectionSentinel" />
             <template v-if="isSentinelIntersected && pool">
               <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
               <PoolContractDetails :pool="pool" />
-            </template>
+            </template> -->
           </div>
         </div>
 
