@@ -496,7 +496,7 @@ export default function useSor({
       onTxConfirmed: () => {
         trading.value = false;
         latestTxHash.value = tx.hash;
-        trackGoal(Goals.Swapped);
+        trackGoal(Goals.Swapped, Number(tokenInAmountInput.value) || 0);
       },
       onTxFailed: () => {
         trading.value = false;

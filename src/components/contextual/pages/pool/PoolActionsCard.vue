@@ -10,6 +10,7 @@ import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
  * TYPES
@@ -91,6 +92,7 @@ const fiatTotal = computed(() => {
         color="gradient"
         :disabled="isMigratablePool(pool) && !isSoftMigratablePool(pool.id)"
         block
+        @click="trackGoal(Goals.ClickAddLiquidity)"
       />
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
@@ -100,6 +102,7 @@ const fiatTotal = computed(() => {
         color="blue"
         outline
         block
+        @click="trackGoal(Goals.ClickWithdraw)"
       />
     </div>
   </div>
