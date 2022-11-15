@@ -4,6 +4,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { POOLS } from '@/constants/pools';
 import {
   bnum,
@@ -439,6 +440,18 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => !!pool.value && noInitLiquidity(pool.value)
   );
 
+  // pool is "Weighted" and some of the rate providers are not on our approved list
+  const hasNonApprovedRateProviders = computed(
+    () =>
+      pool.value &&
+      isWeighted(pool.value.poolType) &&
+      !pool.value?.priceRateProviders?.every(
+        provider =>
+          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
+          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+      )
+  );
+
   const lpTokens = computed(() => {
     if (!pool.value) return [];
 
@@ -463,6 +476,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWethPool,
     isMainnetWstETHPool,
     noInitLiquidityPool,
+    hasNonApprovedRateProviders,
     lpTokens,
     // methods
     isStable,
