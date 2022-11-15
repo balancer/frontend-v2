@@ -72,8 +72,6 @@ const title = computed((): string =>
 );
 
 const showTokensOut = computed<boolean>(
-  // Avoid showing 0 amount out
-  // Before first query is loaded, token out will always be 0
   () => !!Object.keys(tokenOutMap.value).length
 );
 

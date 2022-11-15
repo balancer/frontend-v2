@@ -64,6 +64,13 @@ const provider = (props: Props) => {
   const queryError = ref<string>('');
   const txError = ref<string>('');
 
+  const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
+
+  /**
+   * SERVICES
+   */
+  const joinPoolService = new JoinPoolService(pool);
+
   /**
    * COMPOSABLES
    */
@@ -72,13 +79,6 @@ const provider = (props: Props) => {
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const { txState, txInProgress } = useTxState();
-
-  const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
-
-  /**
-   * SERVICES
-   */
-  const joinPoolService = new JoinPoolService(pool);
 
   /**
    * COMPUTED
@@ -304,7 +304,6 @@ const provider = (props: Props) => {
     setAmountsIn,
     addTokensIn,
     resetAmounts,
-    resetQueryJoinState,
     join,
     debounceQueryJoin,
   };
