@@ -101,6 +101,7 @@ onBeforeMount(() => {
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+          :tokenSelectProps="{ ignoreBalances: true }"
           ignoreWalletBalance
         />
       </template>
