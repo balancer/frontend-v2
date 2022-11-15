@@ -327,8 +327,8 @@ const provider = (props: Props) => {
     () => singleAmountOut.address,
     async () => {
       await Promise.all([
-        debounceGetSingleAssetMax.value,
-        debounceQueryExit.value,
+        debounceGetSingleAssetMax.value(),
+        debounceQueryExit.value(),
       ]);
     }
   );
