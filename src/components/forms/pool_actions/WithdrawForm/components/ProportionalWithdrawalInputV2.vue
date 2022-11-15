@@ -5,12 +5,12 @@ import { computed, onBeforeMount, reactive, toRef, watch } from 'vue';
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
 import { bnum, isSameAddress } from '@/lib/utils';
 // Types
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+
 import useExitPool from '@/composables/pools/useExitPool';
 
 /**
@@ -38,11 +38,22 @@ const slider = reactive({
 /**
  * COMPOSABLES
  */
-const { bptIn, bptBalance, hasBpt, tokensOut, isLoadingQuery, poolTokens } =
-  useExitPool();
 
 const { isWalletReady } = useWeb3();
-const { getToken, priceFor } = useTokens();
+// const { getToken, priceFor } = useTokens();
+const {
+  bptIn,
+  bptBalance,
+  hasBpt,
+  isLoadingQuery,
+  exitTokens,
+  propAmountsOut,
+  exitTokenInfo,
+  fiatAmountsOut,
+} = useExitPool();
+
+// const { isWalletReady } = useWeb3();
+// const { missingPrices } = usePoolTransfers();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 
@@ -58,6 +69,8 @@ const sliderProps = computed(() => {
     tooltip: 'none',
     disabled: !hasBpt.value,
   };
+  // const tokenMetaMap = computed((): TokenInfoMap => {
+  //   return getTokens(exitTokenAddresses.value);
 });
 
 /**
@@ -85,12 +98,12 @@ function handleAmountChange(value: string): void {
 }
 
 function getPoolToken(address: string): PoolToken | undefined {
-  return poolTokens.value.find(token => isSameAddress(token.address, address));
+  return exitTokens.value.find(token => isSameAddress(token.address, address));
 }
 
-function getFiatValue(address: string, amount: string): string {
-  return bnum(priceFor(address)).times(amount).toString();
-}
+// function getFiatValue(address: string, amount: string): string {
+//   return bnum(priceFor(address)).times(amount).toString();
+// }
 
 /**
  * WATCHERS
@@ -123,7 +136,7 @@ onBeforeMount(() => {
 
     <div class="token-amounts">
       <div
-        v-for="(amount, address) in tokensOut"
+        v-for="{ address, value } in propAmountsOut"
         :key="address"
         class="p-4 last:mb-0"
       >
@@ -132,7 +145,7 @@ onBeforeMount(() => {
             <BalAsset :address="address" class="mr-2" />
             <div class="flex flex-col leading-none">
               <span class="text-lg font-medium">
-                {{ getToken(address).symbol }}
+                {{ exitTokenInfo[address].symbol }}
                 <span v-if="!isStableLikePool">
                   {{
                     fNum2(getPoolToken(address)?.weight || '0', {
@@ -150,10 +163,10 @@ onBeforeMount(() => {
             <BalLoadingBlock v-if="isLoadingQuery" class="w-20 h-12" />
             <template v-else>
               <span class="text-xl break-words">
-                {{ fNum2(amount, FNumFormats.token) }}
+                {{ fNum2(value, FNumFormats.token) }}
               </span>
               <span class="text-sm text-gray-400">
-                {{ fNum2(getFiatValue(address, amount), FNumFormats.fiat) }}
+                {{ fNum2(fiatAmountsOut[address], FNumFormats.fiat) }}
               </span>
             </template>
           </div>

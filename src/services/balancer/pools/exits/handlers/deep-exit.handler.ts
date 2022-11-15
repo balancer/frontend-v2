@@ -4,10 +4,10 @@ import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Ref } from 'vue';
 import {
-  TokensOut,
   ExitParams,
   ExitPoolHandler,
   QueryOutput,
+  AmountsOut,
 } from './exit-pool.handler';
 import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
@@ -51,14 +51,14 @@ export class DeepExitHandler implements ExitPoolHandler {
   }
 
   async queryExit({
-    amount,
+    bptIn,
     signer,
     slippageBsp,
     prices,
     relayerSignature,
   }: ExitParams): Promise<QueryOutput> {
     const bnumAmount = parseFixed(
-      amount || '0',
+      bptIn || '0',
       this.pool.value.onchain?.decimals ?? 18
     );
 
@@ -66,7 +66,7 @@ export class DeepExitHandler implements ExitPoolHandler {
     if (bnumAmount.lte(0)) {
       return {
         priceImpact: 0,
-        tokensOut: {},
+        amountsOut: {},
       };
     }
 
@@ -93,7 +93,7 @@ export class DeepExitHandler implements ExitPoolHandler {
 
     const tokenAddressesOut = this.lastGeneralisedExitRes.tokensOut;
     const allPoolTokens = flatTokenTree(this.pool.value.tokens);
-    const tokensOut: TokensOut = {};
+    const amountsOut: AmountsOut = {};
 
     this.lastGeneralisedExitRes.expectedAmountsOut.forEach((amount, i) => {
       const token = allPoolTokens.find(poolToken =>
@@ -105,30 +105,30 @@ export class DeepExitHandler implements ExitPoolHandler {
           amount,
           token.decimals ?? 18
         ).toString();
-        tokensOut[realAddress] = scaledAmount;
+        amountsOut[realAddress] = scaledAmount;
       }
     });
 
-    const fiatValueOut = this.getFiatValueOut(tokensOut, prices);
-    const fiatValueIn = fiatValueOf(this.pool.value, amount);
+    const fiatValueOut = this.getFiatValueOut(amountsOut, prices);
+    const fiatValueIn = fiatValueOf(this.pool.value, bptIn);
     const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
 
     return {
       priceImpact,
-      tokensOut,
+      amountsOut,
     };
   }
 
   /**
    * PRIVATE
    */
-  private getFiatValueOut(tokensOut: TokensOut, prices: TokenPrices): string {
+  private getFiatValueOut(amountsOut: AmountsOut, prices: TokenPrices): string {
     let fiatValueOut = '0';
 
-    for (const token in tokensOut) {
+    for (const token in amountsOut) {
       const price = prices[token]?.usd;
       fiatValueOut = bnum(fiatValueOut)
-        .plus(bnum(price).times(tokensOut[token]))
+        .plus(bnum(price).times(amountsOut[token]))
         .toString();
     }
     return fiatValueOut;

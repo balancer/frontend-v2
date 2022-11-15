@@ -16,6 +16,7 @@ export type TokenSelectProps = {
   excludedTokens?: string[];
   options?: string[];
   subsetTokens?: string[];
+  ignoreBalances?: boolean;
 };
 
 /**
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<TokenSelectProps>(), {
   weight: 0,
   disableInjection: false,
   hideTokenLists: false,
+  ignoreBalances: false,
   excludedTokens: () => [],
   subsetTokens: () => [],
   options: () => [],
@@ -163,6 +165,7 @@ function toggleModal(): void {
         :includeEther="true"
         :disableInjection="disableInjection"
         :hideTokenLists="hideTokenLists"
+        :ignoreBalances="ignoreBalances"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />
