@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { SubgraphPoolBase } from '@balancer-labs/sdk';
+import {
+  SubgraphPoolBase,
+  SwapTypes,
+  buildRelayerCalls,
+} from '@balancer-labs/sdk';
+import { balancer } from '@/lib/balancer.sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { formatUnits } from '@ethersproject/units';
+import { parseFixed } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -97,7 +103,8 @@ const exceedsBalance = computed(() => {
 });
 
 const disableSubmitButton = computed(() => {
-  return !!exceedsBalance.value || !!props.error;
+  // return !!exceedsBalance.value || !!props.error;
+  return !!props.error;
 });
 
 const summary = computed(() => {
@@ -245,6 +252,8 @@ const tokenApproval = useTokenApproval(
   tokens
 );
 
+const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
+
 const gnosisRelayerApproval = useRelayerApproval(
   Relayer.GNOSIS,
   props.trading.isGnosisTrade
@@ -285,6 +294,8 @@ const requiresTokenApproval = computed(() => {
   return false;
 });
 
+const requiresBatchRelayerApproval = ref(true);
+
 const requiresGnosisRelayerApproval = computed(
   () =>
     props.trading.isGnosisTrade.value &&
@@ -302,6 +313,14 @@ const showTokenApprovalStep = computed(
     requiresTokenApproval.value ||
     tokenApproval.approved.value ||
     tokenApproval.approving.value
+);
+
+const showBatchRelayerApprovalStep = computed(
+  () =>
+    requiresBatchRelayerApproval.value ||
+    batchRelayerApproval.init.value ||
+    batchRelayerApproval.approved.value ||
+    batchRelayerApproval.approving.value
 );
 
 const showGnosisRelayerApprovalStep = computed(
@@ -325,7 +344,9 @@ const totalRequiredTransactions = computed(() => {
   if (showTokenApprovalStep.value) {
     txCount++;
   }
-
+  if (showBatchRelayerApprovalStep.value) {
+    txCount++;
+  }
   if (showGnosisRelayerApprovalStep.value) {
     txCount++;
   } else if (showLidoRelayerApprovalStep.value) {
@@ -336,8 +357,15 @@ const totalRequiredTransactions = computed(() => {
 });
 
 const activeTransactionType = computed<
-  'gnosisRelayerApproval' | 'lidoRelayerApproval' | 'tokenApproval' | 'trade'
+  | 'batchRelayerApproval'
+  | 'gnosisRelayerApproval'
+  | 'lidoRelayerApproval'
+  | 'tokenApproval'
+  | 'trade'
 >(() => {
+  if (requiresBatchRelayerApproval.value) {
+    return 'batchRelayerApproval';
+  }
   if (requiresGnosisRelayerApproval.value) {
     return 'gnosisRelayerApproval';
   }
@@ -352,6 +380,7 @@ const activeTransactionType = computed<
 
 const requiresApproval = computed(
   () =>
+    requiresBatchRelayerApproval.value ||
     requiresGnosisRelayerApproval.value ||
     requiresLidoRelayerApproval.value ||
     requiresTokenApproval.value
@@ -439,6 +468,57 @@ async function approveToken(): Promise<void> {
     await tokenApproval.approveSpender(props.trading.tokenOut.value.address);
   } else {
     await tokenApproval.approveV2();
+  }
+}
+
+async function joinExitTrade() {
+  const swapInfo = await balancer.sor.getSwaps(
+    props.trading.tokenInAddressInput.value,
+    props.trading.tokenOutAddressInput.value,
+    SwapTypes.SwapExactIn,
+    parseFixed(
+      props.trading.tokenInAmountInput.value ||
+        props.trading.tokenOutAmountInput.value,
+      18
+    ),
+    undefined,
+    true
+  );
+  console.log(swapInfo);
+  if (swapInfo.returnAmount.isZero()) {
+    console.log('No Swap');
+    return;
+  }
+
+  console.log(`Return amount: `, swapInfo.returnAmount.toString());
+
+  // const pools = balancer.swaps.sor.getPools();
+  console.log(`Swaps with join/exit paths. Must submit via Relayer.`);
+  const slippage = '50'; // 50 bsp = 0.5%
+
+  try {
+    const relayerCallData = buildRelayerCalls(
+      swapInfo,
+      pools.value as SubgraphPoolBase[],
+      account.value,
+      balancer.contracts.relayerV4?.address ?? '',
+      balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
+      slippage,
+      undefined
+    );
+    // Static calling Relayer doesn't return any useful values but will allow confirmation tx is ok
+    // relayerCallData.data can be used to simulate tx on Tenderly to see token balance change, etc
+    // console.log(wallet.address);
+    // console.log(await balancer.sor.provider.getBlockNumber());
+    // console.log(relayerCallData.data);
+
+    const result = await balancer.contracts.relayerV4
+      ?.connect(account.value)
+      .callStatic.multicall(relayerCallData.rawCalls);
+    console.log(result);
+    console.log(123123);
+  } catch (err: any) {
+    console.log(err);
   }
 }
 
@@ -667,6 +747,48 @@ watch(blockNumber, () => {
         v-if="account && totalRequiredTransactions > 1"
         class="flex justify-center items-center my-5"
       >
+        <template v-if="showBatchRelayerApprovalStep">
+          <BalTooltip :disabled="!requiresBatchRelayerApproval" width="64">
+            <template #activator>
+              <div
+                :class="[
+                  'step',
+                  {
+                    'step-active':
+                      activeTransactionType === 'batchRelayerApproval',
+                    'step-approved': !requiresBatchRelayerApproval,
+                  },
+                ]"
+              >
+                <BalIcon
+                  v-if="!requiresBatchRelayerApproval"
+                  name="check"
+                  class="text-green-500"
+                />
+                <template v-else> 1 </template>
+              </div>
+            </template>
+            <div>
+              <div class="mb-2 font-semibold">
+                <div>
+                  {{
+                    $t(
+                      'tradeSummary.transactionTypesTooltips.batchRelayerApproval.title'
+                    )
+                  }}
+                </div>
+              </div>
+              <div>
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.batchRelayerApproval.content'
+                  )
+                }}
+              </div>
+            </div>
+          </BalTooltip>
+          <div class="step-seperator" />
+        </template>
         <template v-if="showGnosisRelayerApprovalStep">
           <BalTooltip :disabled="!requiresGnosisRelayerApproval" width="64">
             <template #activator>
@@ -833,12 +955,32 @@ watch(blockNumber, () => {
         </BalTooltip>
       </div>
       <BalBtn
+        :label="'Join/exit trade'"
+        color="gradient"
+        block
+        @click.prevent="joinExitTrade"
+      />
+      <BalBtn
         v-if="!account"
         color="gradient"
         block
         @click.prevent="startConnectWithInjectedProvider"
       >
         {{ $t('connectWallet') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="requiresBatchRelayerApproval"
+        color="gradient"
+        block
+        :loading="
+          batchRelayerApproval.init.value ||
+          batchRelayerApproval.approving.value
+        "
+        :disabled="disableSubmitButton"
+        :loadingLabel="`${$t('approvingBatchRelayer')}...`"
+        @click.prevent="batchRelayerApproval.approve"
+      >
+        {{ $t('approveBatchRelayer') }}
       </BalBtn>
       <BalBtn
         v-else-if="requiresGnosisRelayerApproval"

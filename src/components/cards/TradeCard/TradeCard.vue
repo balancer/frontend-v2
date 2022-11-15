@@ -44,12 +44,6 @@
         block
       />
       <BalBtn
-        :label="'Join/exit trade'"
-        color="gradient"
-        block
-        @click.prevent="joinExitTrade"
-      />
-      <BalBtn
         v-if="trading.isLoading.value"
         loading
         disabled
@@ -164,12 +158,7 @@
 </template>
 
 <script lang="ts">
-import {
-  SubgraphPoolBase,
-  SwapTypes,
-  buildRelayerCalls,
-} from '@balancer-labs/sdk';
-import { balancer } from '@/lib/balancer.sdk';
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
@@ -197,7 +186,6 @@ import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 import TradePair from './TradePair.vue';
 import TradeRoute from './TradeRoute.vue';
-import { parseFixed } from '@ethersproject/bignumber';
 export default defineComponent({
   components: {
     TradePair,
@@ -212,7 +200,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum2 } = useNumbers();
-    const { appNetworkConfig, account } = useWeb3();
+    const { appNetworkConfig } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
@@ -249,13 +237,13 @@ export default defineComponent({
       tokenOutAddress,
       tokenOutAmount
     );
-    // COMPUTED
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount
     );
+    // COMPUTED
     const isHighPriceImpact = computed(
       () =>
         trading.sor.validationErrors.value.highPriceImpact &&
@@ -363,54 +351,6 @@ export default defineComponent({
       });
     }
 
-    async function joinExitTrade() {
-      const swapInfo = await balancer.sor.getSwaps(
-        tokenInAddress.value,
-        tokenOutAddress.value,
-        SwapTypes.SwapExactIn,
-        parseFixed(tokenInAmount.value || tokenOutAmount.value, 18),
-        undefined,
-        true
-      );
-      console.log(swapInfo);
-      if (swapInfo.returnAmount.isZero()) {
-        console.log('No Swap');
-        return;
-      }
-
-      console.log(`Return amount: `, swapInfo.returnAmount.toString());
-
-      // const pools = balancer.swaps.sor.getPools();
-
-      console.log(`Swaps with join/exit paths. Must submit via Relayer.`);
-      const slippage = '50'; // 50 bsp = 0.5%
-
-      try {
-        const relayerCallData = buildRelayerCalls(
-          swapInfo,
-          pools.value as SubgraphPoolBase[],
-          account.value,
-          balancer.contracts.relayerV4?.address ?? '',
-          balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
-          slippage,
-          undefined
-        );
-        // Static calling Relayer doesn't return any useful values but will allow confirmation tx is ok
-        // relayerCallData.data can be used to simulate tx on Tenderly to see token balance change, etc
-        // console.log(wallet.address);
-        // console.log(await balancer.sor.provider.getBlockNumber());
-        // console.log(relayerCallData.data);
-
-        const result = await balancer.contracts.relayerV4
-          ?.connect(account.value)
-          .callStatic.multicall(relayerCallData.rawCalls);
-        console.log(result);
-        console.log(123123);
-      } catch (err: any) {
-        console.log(err);
-      }
-    }
-
     function handleErrorButtonClick() {
       if (trading.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;
@@ -484,7 +424,6 @@ export default defineComponent({
       handlePreviewModalClose,
       // methods
       trade,
-      joinExitTrade,
       switchToWETH,
       handleErrorButtonClick,
     };
