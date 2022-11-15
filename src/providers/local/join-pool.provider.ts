@@ -63,8 +63,6 @@ const provider = (props: Props) => {
   const isLoadingQuery = ref<boolean>(false);
   const queryError = ref<string>('');
   const txError = ref<string>('');
-  const queryJoinEnabled = ref<boolean>(true);
-  const firstQueryJoinFetched = ref<boolean>(false);
 
   /**
    * COMPOSABLES
@@ -138,10 +136,6 @@ const provider = (props: Props) => {
     return bnSum(fiatValuesIn).toString();
   });
 
-  const isLoadingFirstQuery = computed(() => {
-    return isLoadingQuery.value && !firstQueryJoinFetched.value;
-  });
-
   // Calculates estimated fiatValueOut using pool's totalLiquity.
   // Could be inaccurate if total liquidity has come from subgraph.
   const fiatValueOut = computed((): string =>
@@ -189,7 +183,6 @@ const provider = (props: Props) => {
     bptOut.value = '0';
     priceImpact.value = 0;
     queryError.value = '';
-    firstQueryJoinFetched.value = false;
   }
 
   /**
@@ -202,8 +195,6 @@ const provider = (props: Props) => {
       priceImpact.value = 0;
       return;
     }
-    // Early return if query join is disabled
-    if (!queryJoinEnabled.value) return;
 
     trackLoading(async () => {
       try {
@@ -213,9 +204,7 @@ const provider = (props: Props) => {
           prices: prices.value,
           signer: getSigner(),
           slippageBsp: slippageBsp.value,
-          // relayerSignature: relayerSignature.value,
         });
-        firstQueryJoinFetched.value = true;
         bptOut.value = output.bptOut;
         priceImpact.value = output.priceImpact;
         queryError.value = '';
@@ -264,12 +253,6 @@ const provider = (props: Props) => {
     debounceQueryJoin.value();
   });
 
-  watch(queryJoinEnabled, enabled => {
-    if (enabled) {
-      debounceQueryJoin.value();
-    }
-  });
-
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
   // setJoinHandler on the joinPoolService to update the join handler.
@@ -296,7 +279,6 @@ const provider = (props: Props) => {
   return {
     // State
     amountsIn,
-    queryJoinEnabled,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
@@ -305,7 +287,6 @@ const provider = (props: Props) => {
     isLoadingQuery: readonly(isLoadingQuery),
     queryError: readonly(queryError),
     txError: readonly(txError),
-    firstQueryJoinFetched: readonly(firstQueryJoinFetched),
 
     //  Computed
     joinTokens,
@@ -318,7 +299,6 @@ const provider = (props: Props) => {
     fiatValueOut,
     txState,
     txInProgress,
-    isLoadingFirstQuery,
 
     // Methods
     setAmountsIn,
