@@ -3,7 +3,7 @@ import {
   Vault__factory,
 } from '@balancer-labs/typechain';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { Ref } from 'vue';
 
 import ConfigService, { configService } from '@/services/config/config.service';
@@ -29,12 +29,13 @@ export default class ExchangeService {
   }
 
   public async queryJoin(
-    provider: Web3Provider | JsonRpcProvider,
-    account: string,
+    signer: JsonRpcSigner,
     amountsIn: string[],
     tokensIn: string[],
     bptOut = '0'
   ): Promise<{ bptOut: BigNumber; amountsIn: BigNumber[] }> {
+    const account = await signer.getAddress();
+
     const params = this.joinParams.serialize(
       account,
       amountsIn,
@@ -42,7 +43,7 @@ export default class ExchangeService {
       bptOut
     );
 
-    const txBuilder = new TransactionBuilder(provider.getSigner());
+    const txBuilder = new TransactionBuilder(signer);
     return await txBuilder.contract.callStatic({
       contractAddress: this.helpersAddress,
       abi: BalancerHelpers__factory.abi,
@@ -52,12 +53,13 @@ export default class ExchangeService {
   }
 
   public async join(
-    provider: Web3Provider | JsonRpcProvider,
-    account: string,
+    signer: JsonRpcSigner,
     amountsIn: string[],
     tokensIn: string[],
     bptOut = '0'
   ): Promise<TransactionResponse> {
+    const account = await signer.getAddress();
+
     const params = this.joinParams.serialize(
       account,
       amountsIn,
@@ -66,7 +68,7 @@ export default class ExchangeService {
     );
     const value = this.joinParams.value(amountsIn, tokensIn);
 
-    const txBuilder = new TransactionBuilder(provider.getSigner());
+    const txBuilder = new TransactionBuilder(signer);
     return await txBuilder.contract.sendTransaction({
       contractAddress: this.vaultAddress,
       abi: Vault__factory.abi,
@@ -77,14 +79,15 @@ export default class ExchangeService {
   }
 
   public async queryExit(
-    provider: Web3Provider | JsonRpcProvider,
-    account: string,
+    signer: JsonRpcSigner,
     amountsOut: string[],
     tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
   ): Promise<{ bptIn: BigNumber; amountsOut: BigNumber[] }> {
+    const account = await signer.getAddress();
+
     const params = this.exitParams.serialize(
       account,
       amountsOut,
@@ -94,7 +97,7 @@ export default class ExchangeService {
       exactOut
     );
 
-    const txBuilder = new TransactionBuilder(provider.getSigner());
+    const txBuilder = new TransactionBuilder(signer);
     return await txBuilder.contract.callStatic({
       contractAddress: this.helpersAddress,
       abi: BalancerHelpers__factory.abi,
@@ -104,14 +107,15 @@ export default class ExchangeService {
   }
 
   public async exit(
-    provider: Web3Provider | JsonRpcProvider,
-    account: string,
+    signer: JsonRpcSigner,
     amountsOut: string[],
     tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
   ): Promise<TransactionResponse> {
+    const account = await signer.getAddress();
+
     const params = this.exitParams.serialize(
       account,
       amountsOut,
@@ -121,7 +125,7 @@ export default class ExchangeService {
       exactOut
     );
 
-    const txBuilder = new TransactionBuilder(provider.getSigner());
+    const txBuilder = new TransactionBuilder(signer);
     return await txBuilder.contract.sendTransaction({
       contractAddress: this.vaultAddress,
       abi: Vault__factory.abi,

@@ -49,7 +49,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { account, getProvider, blockNumber } = useWeb3();
+const { getSigner, getProvider, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { poolWeightsLabel } = usePool(toRef(props, 'pool'));
@@ -146,8 +146,7 @@ async function submit(): Promise<TransactionResponse> {
       );
     } else {
       tx = await poolExchange.exit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut.value,
         tokensOut.value,
         formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
