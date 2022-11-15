@@ -37,6 +37,7 @@ type Props = {
     to: string;
     getParams: (data: any) => Record<string, string>;
   } | null;
+  href?: { getHref: (data: any) => string | null } | null;
   initialState?: InitialState;
   pin?: DataPinState | null;
   getTableRowClass?: (rowData: Data, rowIndex: number) => string;
@@ -47,6 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
   isPaginated: false,
   noResultsLabel: '',
   link: null,
+  href: null,
   initialState: () => ({
     sortColumn: null,
     sortDirection: null,
@@ -304,6 +306,7 @@ watch(
           :columns="filteredColumns"
           :onRowClick="onRowClick"
           :link="link"
+          :href="href"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
           pinned
@@ -327,6 +330,7 @@ watch(
           :columns="filteredColumns"
           :onRowClick="onRowClick"
           :link="link"
+          :href="href"
           :sticky="sticky"
           :isColumnStuck="isColumnStuck"
         >
