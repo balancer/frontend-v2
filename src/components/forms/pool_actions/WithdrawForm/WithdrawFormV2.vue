@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onBeforeMount, toRef, watch, ref } from 'vue';
+import { onBeforeMount, toRef, watch, ref, computed } from 'vue';
 // import { useI18n } from 'vue-i18n';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { isRequired } from '@/lib/utils/validations';
+import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import ProportionalWithdrawalInputV2 from './components/ProportionalWithdrawalInputV2.vue';
@@ -13,6 +13,7 @@ import useVeBal from '@/composables/useVeBAL';
 import WithdrawPreviewModalV2 from './components/WithdrawPreviewModal/WithdrawPreviewModalV2.vue';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -34,41 +35,11 @@ const showPreview = ref(false);
 /**
  * COMPOSABLES
  */
-// const { t } = useI18n();
+const { t } = useI18n();
 const { veBalTokenInfo } = useVeBal();
 const { wrappedNativeAsset } = useTokens();
 
-const {
-  // isProportional,
-  // tokenOut,
-  // highPriceImpactAccepted,
-  // validInput,
-  maxSlider,
-  // error,
-  // parseError,
-  // setError,
-  // txInProgress,
-} = useWithdrawalState(toRef(props, 'pool'));
-
-// const withdrawMath = useWithdrawMath(
-//   toRef(props, 'pool'),
-//   isProportional,
-//   tokensOut,
-//   tokenOut,
-//   tokenOutIndex
-// );
-
-// const {
-//   hasAmounts,
-//   highPriceImpact,
-//   singleAssetMaxes,
-//   tokenOutAmount,
-//   tokenOutPoolBalance,
-//   loadingData,
-//   bptBalance,
-//   initMath,
-//   resetMath,
-// } = withdrawMath;
+const { maxSlider } = useWithdrawalState(toRef(props, 'pool'));
 
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
@@ -80,29 +51,19 @@ const {
   isLoadingMax,
   queryError,
   maxError,
-  // exitTokenAddresses,
   isLoadingQuery,
-  // isLoadingSingleAssetMax,
   highPriceImpact,
   highPriceImpactAccepted,
-  txInProgress,
   hasAmountsOut,
-  bptBalance,
   validAmounts,
-  // tokenOutPoolBalance,
 } = useExitPool();
 
 /**
  * COMPUTED
  */
-
-// const hasValidInputs = computed(
-//   (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
-// );
-
-// const singleAssetRules = computed(() => [
-//   isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance')),
-// ]);
+const singleAssetRules = computed(() => [
+  isLessThanOrEqualTo(singleAmountOut.max, t('exceedsPoolBalance')),
+]);
 
 /**
  * WATCHERS
@@ -112,14 +73,6 @@ watch(isSingleAssetExit, _isSingleAssetExit => {
   // reset the slider to max.
   if (!_isSingleAssetExit) {
     maxSlider();
-  }
-});
-
-watch(bptBalance, () => {
-  if (!txInProgress.value) {
-    // The user's BPT balance has changed in the background. Reset maths so
-    // they're working with up to date values.
-    // resetMath();
   }
 });
 
@@ -143,10 +96,12 @@ onBeforeMount(() => {
           v-model:address="singleAmountOut.address"
           v-model:amount="singleAmountOut.value"
           :name="singleAmountOut.address"
+          :rules="singleAssetRules"
           :customBalance="singleAmountOut.max || '0'"
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
           :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+          ignoreWalletBalance
         />
       </template>
       <template v-else>
