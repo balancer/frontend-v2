@@ -597,14 +597,14 @@ watch(blockNumber, () => {
             </div>
           </div>
         </template>
-        <div class="p-3 text-sm">
+        <div v-if="trading.isGnosisTrade.value" class="p-3 text-sm">
           <div class="summary-item-row">
             <div>
               {{ labels.tradeSummary.totalBeforeFees }}
             </div>
             <div v-html="summary.amountBeforeFees" />
           </div>
-          <div v-if="trading.isGnosisTrade.value" class="summary-item-row">
+          <div class="summary-item-row">
             <div>{{ $t('tradeSummary.gasCosts') }}</div>
             <div class="text-green-400">-{{ zeroFee }}</div>
           </div>
@@ -614,11 +614,9 @@ watch(blockNumber, () => {
               v-html="
                 trading.isWrapUnwrapTrade.value
                   ? zeroFee
-                  : trading.isGnosisTrade.value
-                  ? trading.exactIn.value
-                    ? `-${summary.tradeFees}`
-                    : `+${summary.tradeFees}`
-                  : summary.tradeFees
+                  : trading.exactIn.value
+                  ? `-${summary.tradeFees}`
+                  : `+${summary.tradeFees}`
               "
             />
           </div>
