@@ -197,7 +197,7 @@ import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import useWeb3 from '@/services/web3/useWeb3';
 import TradePair from './TradePair.vue';
 import TradeRoute from './TradeRoute.vue';
-import { Wallet } from '@ethersproject/wallet';
+import { parseFixed } from '@ethersproject/bignumber';
 export default defineComponent({
   components: {
     TradePair,
@@ -212,7 +212,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum2 } = useNumbers();
-    const { appNetworkConfig } = useWeb3();
+    const { appNetworkConfig, account } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
@@ -368,7 +368,7 @@ export default defineComponent({
         tokenInAddress.value,
         tokenOutAddress.value,
         SwapTypes.SwapExactIn,
-        tokenInAmount.value || tokenOutAmount.value,
+        parseFixed(tokenInAmount.value || tokenOutAmount.value, 18),
         undefined,
         true
       );
@@ -380,18 +380,16 @@ export default defineComponent({
 
       console.log(`Return amount: `, swapInfo.returnAmount.toString());
 
-      const pools = balancer.swaps.sor.getPools();
+      // const pools = balancer.swaps.sor.getPools();
 
       console.log(`Swaps with join/exit paths. Must submit via Relayer.`);
-      const key: any = process.env.TRADER_KEY;
-      const wallet = new Wallet(key, balancer.sor.provider);
       const slippage = '50'; // 50 bsp = 0.5%
 
       try {
         const relayerCallData = buildRelayerCalls(
           swapInfo,
-          pools,
-          wallet.address,
+          pools.value as SubgraphPoolBase[],
+          account.value,
           balancer.contracts.relayerV4?.address ?? '',
           balancer.networkConfig.addresses.tokens.wrappedNativeAsset,
           slippage,
@@ -402,10 +400,12 @@ export default defineComponent({
         // console.log(wallet.address);
         // console.log(await balancer.sor.provider.getBlockNumber());
         // console.log(relayerCallData.data);
+
         const result = await balancer.contracts.relayerV4
-          ?.connect(wallet)
+          ?.connect(account.value)
           .callStatic.multicall(relayerCallData.rawCalls);
         console.log(result);
+        console.log(123123);
       } catch (err: any) {
         console.log(err);
       }
