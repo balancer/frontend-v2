@@ -18,6 +18,7 @@ interface Props {
   includeEther?: boolean;
   disableInjection?: boolean;
   hideTokenLists?: boolean;
+  ignoreBalances?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
   includeEther: false,
   disableInjection: false,
   hideTokenLists: false,
+  ignoreBalances: false,
 });
 
 const emit = defineEmits(['close', 'selectTokenlist', 'select']);
@@ -95,7 +97,8 @@ const tokens = computed(() => {
     };
   });
 
-  return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
+  if (props.ignoreBalances) return tokensWithValues;
+  else return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
 });
 
 const excludedTokens = computed(() => [
@@ -243,6 +246,7 @@ watch(
           <a @click="onSelectToken(token.address)">
             <TokenListItem
               :token="token"
+              :hideBalance="ignoreBalances"
               :balanceLoading="dynamicDataLoading"
             />
           </a>
