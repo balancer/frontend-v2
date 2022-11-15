@@ -19,7 +19,6 @@ export enum Relayer {
   GNOSIS = 'Gnosis',
   LIDO = 'Lido',
   BATCH = 'Batch',
-  BATCH_V4 = 'Batch_v4',
 }
 
 const relayerAddressMap = {
