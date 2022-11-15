@@ -329,7 +329,7 @@ export function flatTokenTree(
 ): PoolToken[] {
   const tokens: PoolToken[] = [];
 
-  if (!options.includePreMintedBpt) {
+  if (!options.includePreMintedBpt && !isTokenTreePool(pool)) {
     pool = removeBptFrom(pool);
   }
 
@@ -370,48 +370,61 @@ export function tokensExcludingBpt(pool: Pool): string[] {
 }
 
 /**
- * Removes pre-minted pool tokens from tokensList and tokenTree given a pool or TokenTreePool.
+ * Returns a new (cloned) pool with pre-minted pool tokens removed from both tokensList and tokenTree.
  */
-export function removeBptFrom(pool: Pool | TokenTreePool) {
-  let newPool: Pool | TokenTreePool;
-  if (isTokenTreePool(pool)) {
-    //Avoid cloning when TokenTreePool for performance reasons
-    newPool = pool;
-  } else {
-    newPool = cloneDeep(pool);
-    newPool.tokensList = tokensExcludingBpt(pool);
-  }
+export function removeBptFrom(pool: Pool): Pool {
+  const newPool = cloneDeep(pool);
+  newPool.tokensList = tokensExcludingBpt(pool);
 
-  if (newPool.tokens) {
-    removePremintedToken(newPool);
+  newPool.tokens = newPool.tokens.filter(
+    token => !isSameAddress(newPool.address, token.address)
+  );
 
-    newPool.tokens.forEach(token => {
-      if (token.token.pool) {
-        removeBptFrom(token.token.pool) as TokenTreePool;
-      }
-    });
-  }
+  newPool.tokens.forEach(token => {
+    if (token.token.pool) {
+      removeBptFromTree(token.token.pool);
+    }
+  });
   return newPool;
 }
 
-function removePremintedToken(pool: Pool | TokenTreePool) {
-  if (!pool.tokens) {
+/**
+ * Updates the passed tokenTreePool by removing its pre-minted tokens.
+ */
+export function removeBptFromTree(tree: TokenTreePool) {
+  if (tree.tokens) {
+    removePremintedToken(tree);
+
+    tree.tokens.forEach(token => {
+      if (token.token.pool) {
+        removeBptFromTree(token.token.pool);
+      }
+    });
+  }
+  return tree;
+}
+
+/**
+ * Updates the passed tokenTreePool by removing the preminted token from tokens and updating mainIndex accordingly.
+ */
+function removePremintedToken(tree: TokenTreePool) {
+  if (!tree.tokens) {
     return;
   }
 
-  const premintedIndex = pool.tokens.findIndex(token =>
-    isSameAddress(pool.address, token.address)
+  const premintedIndex = tree.tokens.findIndex(token =>
+    isSameAddress(tree.address, token.address)
   );
 
   if (premintedIndex === -1) return;
 
   // Remove preminted token by index
-  pool.tokens.splice(premintedIndex, 1);
+  tree.tokens.splice(premintedIndex, 1);
 
   // Fix mainIndex after removing premintedBPT
-  if (isTokenTreePool(pool) && premintedIndex >= 0) {
-    if (pool.mainIndex <= premintedIndex) {
-      pool.mainIndex -= 1;
+  if (premintedIndex >= 0) {
+    if (tree.mainIndex <= premintedIndex) {
+      tree.mainIndex -= 1;
     }
   }
 }

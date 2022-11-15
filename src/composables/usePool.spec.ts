@@ -5,6 +5,7 @@ import {
   findTokenInTree,
   flatTokenTree,
   removeBptFrom,
+  removeBptFromTree,
   tokenTreeLeafs,
   tokenTreeNodes,
 } from './usePool';
@@ -192,9 +193,7 @@ describe('remove preminted tokens given a TokenTreePool', () => {
 
     expect(originalUsdtTree.mainIndex).toBe(1);
 
-    const usdtTreeWithoutPreminted = removeBptFrom(
-      originalUsdtTree
-    ) as TokenTreePool;
+    const usdtTreeWithoutPreminted = removeBptFromTree(originalUsdtTree);
 
     //Fixes the mainIndex after removing premintedBPT
     expect(usdtTreeWithoutPreminted.mainIndex).toBe(1);
@@ -218,9 +217,7 @@ describe('remove preminted tokens given a TokenTreePool', () => {
     expect(originalDaiTree.mainIndex).toBe(1);
 
     // Updates the original Tree
-    const daiTreeWithoutPreminted = removeBptFrom(
-      originalDaiTree
-    ) as TokenTreePool;
+    const daiTreeWithoutPreminted = removeBptFromTree(originalDaiTree);
 
     //Fixes the mainIndex after removing premintedBPT
     expect(daiTreeWithoutPreminted.mainIndex).toBe(0);
