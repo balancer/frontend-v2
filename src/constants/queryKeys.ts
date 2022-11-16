@@ -69,6 +69,9 @@ const QUERY_KEYS = {
       'historicalPrices',
       { networkId, id },
     ],
+    Joins: {
+      QueryJoin: () => [POOLS_ROOT_KEY, 'query', 'join'],
+    },
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],

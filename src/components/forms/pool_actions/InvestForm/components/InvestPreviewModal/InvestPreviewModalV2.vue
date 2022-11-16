@@ -58,7 +58,7 @@ const {
   rektPriceImpact,
   isLoadingQuery,
   txInProgress,
-  debounceQueryJoin,
+  queryJoinQuery,
   resetAmounts,
 } = useJoinPool();
 
@@ -151,7 +151,7 @@ function handleShowStakeModal() {
 // the preview modal, not at the JoinPoolProvider level.
 watch(blockNumber, () => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    debounceQueryJoin.value();
+    queryJoinQuery.refetch.value();
   }
 });
 </script>
