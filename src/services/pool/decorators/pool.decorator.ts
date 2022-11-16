@@ -12,6 +12,7 @@ import {
   stakingRewardsService,
 } from '@/services/staking/staking-rewards.service';
 import { TokenInfoMap } from '@/types/TokenList';
+import { Pool as SDKPool } from '@balancer-labs/sdk';
 
 import PoolService from '../pool.service';
 import { PoolMulticaller } from './pool.multicaller';
@@ -43,15 +44,12 @@ export class PoolDecorator {
     });
 
     const poolMulticaller = new PoolMulticaller(processedPools);
-    const { pools: sdkPools } = balancer;
 
     const [
-      sdkPool,
       poolSnapshots,
       rawOnchainDataMap,
       [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs],
     ] = await Promise.all([
-      processedPools.length === 1 ? sdkPools.find(processedPools[0].id) : null,
       this.getSnapshots(),
       poolMulticaller.fetch(),
       this.getData(prices, gauges, tokens, processedPools, includeAprs),
@@ -70,9 +68,9 @@ export class PoolDecorator {
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();
-      if (sdkPool) {
-        pool.totalLiquidity = await sdkPools.liquidity(poolService.pool as any);
-      }
+      pool.totalLiquidity = await balancer.pools.liquidity(
+        pool as unknown as SDKPool
+      );
 
       if (setAprCondition) {
         await poolService.setAPR(
@@ -94,16 +92,14 @@ export class PoolDecorator {
   /**
    * Re-sets totalLiquidty on all pools, typically after prices have been updated.
    */
-  public reCalculateTotalLiquidities(
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    tokens: TokenInfoMap
-  ): Pool[] {
-    return this.pools.map(pool => {
-      const poolService = new this.poolServiceClass(pool);
-      poolService.setTotalLiquidity(prices, currency, tokens);
-      return poolService.pool;
-    });
+  public async reCalculateTotalLiquidities(): Promise<Pool[]> {
+    return Promise.all(
+      this.pools.map(async pool => {
+        const poolService = new this.poolServiceClass(pool);
+        await poolService.setTotalLiquidity();
+        return poolService.pool;
+      })
+    );
   }
 
   /**
