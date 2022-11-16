@@ -20,7 +20,6 @@ type Props = {
   action: TransactionAction;
   summary: string;
   confirmingLabel: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onConfirmFn?: () => unknown;
   disabled?: boolean;
 };

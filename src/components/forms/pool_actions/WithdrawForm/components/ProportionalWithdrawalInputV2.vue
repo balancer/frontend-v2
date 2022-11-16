@@ -6,12 +6,10 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
 // Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
 import { bnum, isSameAddress } from '@/lib/utils';
 // Types
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenInfoMap } from '@/types/TokenList';
 
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
 import useExitPool from '@/composables/pools/useExitPool';
@@ -45,26 +43,25 @@ const {
   bptIn,
   bptBalance,
   hasBpt,
-  fiatTotalLabel,
-  fiatAmounts,
-  proportionalAmounts,
   isLoadingQuery,
-  exitTokenAddresses,
   exitTokens,
+  fiatTotalOut,
+  propAmountsOut,
+  exitTokenInfo,
+  fiatAmountsOut,
 } = useExitPool();
 
 const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
-const { getTokens } = useTokens();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
  */
-const tokenMetaMap = computed((): TokenInfoMap => {
-  return getTokens(exitTokenAddresses.value);
-});
+// const tokenMetaMap = computed((): TokenInfoMap => {
+//   return getTokens(exitTokenAddresses.value);
+// });
 
 const percentageLabel = computed(() => {
   try {
@@ -122,7 +119,9 @@ onBeforeMount(() => {
               v-if="isLoadingQuery"
               class="float-right w-20 h-8"
             />
-            <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
+            <span v-else>{{
+              missingPrices ? '-' : fNum2(fiatTotalOut, FNumFormats.fiat)
+            }}</span>
           </div>
         </div>
         <div class="flex mt-2 text-sm text-secondary">
@@ -145,7 +144,7 @@ onBeforeMount(() => {
 
     <div class="token-amounts">
       <div
-        v-for="(token, address, i) in tokenMetaMap"
+        v-for="{ address, value } in propAmountsOut"
         :key="address"
         class="p-4 last:mb-0"
       >
@@ -154,7 +153,7 @@ onBeforeMount(() => {
             <BalAsset :address="address" class="mr-2" />
             <div class="flex flex-col leading-none">
               <span class="text-lg font-medium">
-                {{ token.symbol }}
+                {{ exitTokenInfo[address].symbol }}
                 <span v-if="!isStableLikePool">
                   {{
                     fNum2(getToken(address)?.weight || '0', {
@@ -172,10 +171,10 @@ onBeforeMount(() => {
             <BalLoadingBlock v-if="isLoadingQuery" class="w-20 h-12" />
             <template v-else>
               <span class="text-xl break-words">
-                {{ fNum2(proportionalAmounts[i], FNumFormats.token) }}
+                {{ fNum2(value, FNumFormats.token) }}
               </span>
               <span class="text-sm text-gray-400">
-                {{ fNum2(fiatAmounts[i], FNumFormats.fiat) }}
+                {{ fNum2(fiatAmountsOut[address], FNumFormats.fiat) }}
               </span>
             </template>
           </div>

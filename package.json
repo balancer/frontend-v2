@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.76.5",
+  "version": "1.78.5",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -48,8 +48,8 @@
     "@gnosis.pm/safe-apps-sdk": "4.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.9.2",
-    "@sentry/browser": "^6.3.2",
-    "@sentry/tracing": "^6.3.2",
+    "@sentry/browser": "^7.17.4",
+    "@sentry/tracing": "^7.17.4",
     "@sentry/webpack-plugin": "^1.15.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/vue": "^6.4.2",
@@ -79,7 +79,7 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-require-context-hook": "^1.0.0",
     "bignumber.js": "^9.0.1",
-    "bnc-sdk": "^3.5.0",
+    "bnc-sdk": "^3.7.1",
     "color.js": "^1.2.0",
     "date-fns": "^2.21.1",
     "echarts": "^5.3.2",
@@ -94,6 +94,7 @@
     "feather-icons": "^4.28.0",
     "husky": "^8.0.0",
     "isomorphic-fetch": "^3.0.0",
+    "jest-extended": "^3.1.0",
     "json-to-graphql-query": "^2.0.0",
     "lint-staged": "^13.0.3",
     "lodash": "^4.17.21",

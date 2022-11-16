@@ -14,6 +14,7 @@ const global = {
   },
 };
 
+jest.mock('vue-router');
 jest.mock('@/composables/useTokens');
 jest.mock('@/services/web3/useWeb3', () => {
   return jest.fn().mockImplementation(() => {

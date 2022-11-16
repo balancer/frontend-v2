@@ -38,7 +38,6 @@ type Props = {
   poolActivities: PoolActivity[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
@@ -113,7 +112,7 @@ const activityRows = computed<ActivityRow[]>(() =>
         const value = getJoinExitValue(amounts);
 
         return {
-          label: isJoin ? t('invest') : t('withdraw.label'),
+          label: isJoin ? t('addTokens') : t('withdraw.label'),
           value,
           formattedValue:
             value > 0
@@ -198,7 +197,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
               />
               <BalIcon v-else name="minus" size="sm" class="text-red-500" />
             </div>
-            <div>{{ action.label }}</div>
+            <div class="text-left">{{ action.label }}</div>
           </div>
         </div>
       </template>

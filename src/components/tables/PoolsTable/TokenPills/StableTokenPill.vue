@@ -54,8 +54,8 @@ withDefaults(defineProps<Props>(), {
 .pill {
   @apply flex;
   @apply relative;
-  @apply my-px;
-  @apply h-full;
+  @apply my-1;
+  @apply h-10 items-center;
 }
 
 .pill::before {
@@ -64,7 +64,7 @@ withDefaults(defineProps<Props>(), {
   @apply bg-gray-100 dark:bg-gray-700;
 
   content: '';
-  transform: skew(-12deg);
+  transform: skew(-16deg);
 }
 
 .pill:first-child::before {

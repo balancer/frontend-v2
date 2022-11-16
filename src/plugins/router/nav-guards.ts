@@ -24,10 +24,10 @@ export function applyNavGuards(router: Router): Router {
  * @param {string} url - URL to redirect to.
  * @param {Router} router - vue-router.
  */
-function hardRedirectTo(url: string, router: Router) {
-  document.write('');
+function hardRedirectTo(url: string) {
+  document.body.style.display = 'none';
   window.location.href = url;
-  router.go(0);
+  location.reload();
 }
 
 /**
@@ -73,7 +73,7 @@ function applyNetworkPathRedirects(router: Router): Router {
     if (networkFromPath) {
       const noNetworkChangeCallback = () => next();
       const networkChangeCallback = () => {
-        hardRedirectTo(`/#${to.fullPath}`, router);
+        hardRedirectTo(`/#${to.fullPath}`);
       };
 
       handleNetworkSlug(

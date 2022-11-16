@@ -50,7 +50,10 @@ function navigateToCreatePool() {
     <BalStack vertical>
       <div class="px-4 xl:px-0">
         <div class="flex justify-between items-end mb-8">
-          <h3>{{ networkConfig.chainName }} {{ $t('pools') }}</h3>
+          <h3>
+            {{ networkConfig.chainName }}
+            <span class="lowercase">{{ $t('pools') }}</span>
+          </h3>
           <BalBtn
             v-if="upToMediumBreakpoint"
             color="blue"

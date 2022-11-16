@@ -1,16 +1,24 @@
-import { Price } from '@/services/coingecko/api/price.service';
+import { AmountOut } from '@/providers/local/exit-pool.provider';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfo } from '@/types/TokenList';
+import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { Ref } from 'vue';
 
+export enum ExitType {
+  GivenIn, // When BPT in is specified.
+  GivenOut, // When an amount out is specified.
+}
+
 export type ExitParams = {
-  amount: string;
-  tokenInfo: TokenInfo;
-  price: Price;
+  exitType: ExitType;
+  bptIn: string;
+  amountsOut: AmountOut[];
+  tokenInfo: TokenInfoMap;
+  prices: TokenPrices;
   signer: Signer;
   slippageBsp: number;
   relayerSignature?: string;
@@ -18,6 +26,7 @@ export type ExitParams = {
 
 export type QueryOutput = {
   priceImpact: number;
+  amountsOut: Record<string, string>;
 };
 
 export abstract class ExitPoolHandler {

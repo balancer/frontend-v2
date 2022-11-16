@@ -24,6 +24,7 @@ const tokenAttrs = {
 const poolAttrs = {
   id: true,
   totalShares: true,
+  address: true,
   poolType: true,
   mainIndex: true,
 };
@@ -54,6 +55,13 @@ const tokenTreeAttrs = {
   },
 };
 
+const priceRateProviderAttrs = {
+  address: true,
+  token: {
+    address: true,
+  },
+};
+
 const defaultAttrs = {
   id: true,
   address: true,
@@ -71,6 +79,7 @@ const defaultAttrs = {
   swapEnabled: true,
   symbol: true,
   name: true,
+  priceRateProviders: priceRateProviderAttrs,
   tokens: tokenTreeAttrs,
 };
 

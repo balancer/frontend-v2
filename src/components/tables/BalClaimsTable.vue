@@ -60,7 +60,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     id: 'icons',
     accessor: 'icons',
     Cell: 'iconsColumnCell',
-    width: 125,
+    width: 50,
     noGrow: true,
   },
   {
