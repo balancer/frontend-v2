@@ -1,3 +1,4 @@
+import { Goals, trackGoal } from '@/composables/useFathom';
 import { WalletError } from '@/types';
 import {
   JsonRpcSigner,
@@ -29,6 +30,7 @@ export class RawConcern extends TransactionConcern {
       );
       options = { ...options, ...gasSettings };
 
+      trackGoal(Goals.RawTransactionSubmitted);
       return await this.signer.sendTransaction(options);
     } catch (err) {
       const error = err as WalletError;

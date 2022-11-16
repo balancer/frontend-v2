@@ -809,6 +809,7 @@ export default function useWithdrawMath(
     bptBalance,
     hasBpt,
     fiatTotalLabel,
+    fiatTotal,
     priceImpact,
     highPriceImpact,
     proportionalAmounts,
