@@ -173,9 +173,6 @@ export default function useNumbers() {
 
   function toFiat(amount: number | string, tokenAddress: string): string {
     const price = priceFor(tokenAddress);
-    console.log('tokenPrice', price);
-    const tokenAmount = bnum(amount);
-    console.log('tokenAmount', amount, tokenAmount);
     return bnum(amount).times(price).toString();
   }
 
