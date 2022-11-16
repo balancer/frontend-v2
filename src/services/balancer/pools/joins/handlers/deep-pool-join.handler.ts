@@ -53,10 +53,10 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
       // Get the address in right casing style
       const realAddress = getAddress(address);
       const token = tokensIn[realAddress];
-      const parsedAmount = parseFixed(
-        value || '0',
-        token?.decimals ?? 18
-      ).toString();
+
+      if (!token.decimals) throw new Error('Token decimals missing.');
+
+      const parsedAmount = parseFixed(value || '0', token.decimals).toString();
       return parsedAmount;
     });
 
