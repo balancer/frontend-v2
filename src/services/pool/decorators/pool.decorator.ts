@@ -1,6 +1,5 @@
 import { getTimeTravelBlock } from '@/composables/useSnapshots';
 import { FiatCurrency } from '@/constants/currency';
-import { balancer } from '@/lib/balancer.sdk';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
@@ -12,7 +11,6 @@ import {
   stakingRewardsService,
 } from '@/services/staking/staking-rewards.service';
 import { TokenInfoMap } from '@/types/TokenList';
-import { Pool as SDKPool } from '@balancer-labs/sdk';
 
 import PoolService from '../pool.service';
 import { PoolMulticaller } from './pool.multicaller';
@@ -68,9 +66,7 @@ export class PoolDecorator {
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();
-      pool.totalLiquidity = await balancer.pools.liquidity(
-        pool as unknown as SDKPool
-      );
+      await poolService.setTotalLiquidity();
 
       if (setAprCondition) {
         await poolService.setAPR(
