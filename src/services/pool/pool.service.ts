@@ -20,6 +20,8 @@ import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
+import { balancer } from '@/lib/balancer.sdk';
+import { Pool as SDKPool } from '@balancer-labs/sdk';
 
 export default class PoolService {
   constructor(
@@ -46,16 +48,9 @@ export default class PoolService {
   /**
    * @summary Calculates and sets total liquidity of pool.
    */
-  public setTotalLiquidity(
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    tokenMeta: TokenInfoMap = {}
-  ): string {
-    const liquidityConcern = new this.liquidity(this.pool);
-    const totalLiquidity = liquidityConcern.calcTotal(
-      prices,
-      currency,
-      tokenMeta
+  public async setTotalLiquidity(): Promise<string> {
+    const totalLiquidity = await balancer.pools.liquidity(
+      this.pool as unknown as SDKPool
     );
     // if totalLiquidity can be computed from coingecko prices, use that
     // else, use the value retrieved from the subgraph
