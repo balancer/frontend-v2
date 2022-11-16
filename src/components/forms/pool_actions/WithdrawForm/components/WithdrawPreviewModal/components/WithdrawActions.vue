@@ -27,6 +27,7 @@ import useWithdrawalState from '../../../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 import router from '@/plugins/router';
 import { Goals, trackGoal } from '@/composables/useFathom';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -120,7 +121,10 @@ async function handleTransaction(tx): Promise<void> {
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       txState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
-      trackGoal(Goals.Withdrawal, Number(fiatTotal.value) || 0);
+      trackGoal(
+        Goals.Withdrawal,
+        bnum(fiatTotal.value).times(100).toNumber() || 0
+      );
     },
     onTxFailed: () => {
       txState.value.confirming = false;
