@@ -5,7 +5,7 @@
  * current state.
  *
  * Useful if there are an arbitrary number of actions the user must take such as
- * "approve n tokens, then invest in a pool.""
+ * "approve n tokens, then add liquidity to a pool.""
  */
 import { ChainId } from '@aave/protocol-js';
 import {

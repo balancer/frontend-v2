@@ -5,9 +5,12 @@ import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/compos
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { lpTokensFor, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
+import useNetwork from '@/composables/useNetwork';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { isSoftMigratablePool } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
  * TYPES
@@ -26,10 +29,13 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
-const { isMigratablePool } = usePool(toRef(props, 'pool'));
+const { isMigratablePool, hasNonApprovedRateProviders } = usePool(
+  toRef(props, 'pool')
+);
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
 const { isWalletReady, startConnectWithInjectedProvider } = useWeb3();
+const { networkSlug } = useNetwork();
 
 /**
  * COMPUTED
@@ -66,7 +72,7 @@ const fiatTotal = computed(() => {
     </div>
     <div class="flex justify-between items-center mb-4">
       <h5>
-        {{ $t('youCanInvest') }}
+        {{ $t('youCanAdd') }}
       </h5>
       <h5>
         {{ isWalletReady ? fiatTotal : '-' }}
@@ -83,20 +89,25 @@ const fiatTotal = computed(() => {
     <div v-else class="grid grid-cols-2 gap-2">
       <BalBtn
         :tag="isMigratablePool(pool) ? 'div' : 'router-link'"
-        :to="{ name: 'invest' }"
-        :label="$t('invest')"
+        :to="{ name: 'invest', params: { networkSlug } }"
+        :label="$t('addLiquidity')"
         color="gradient"
-        :disabled="isMigratablePool(pool)"
+        :disabled="
+          hasNonApprovedRateProviders ||
+          (isMigratablePool(pool) && !isSoftMigratablePool(pool.id))
+        "
         block
+        @click="trackGoal(Goals.ClickAddLiquidity)"
       />
       <BalBtn
         :tag="hasBpt ? 'router-link' : 'div'"
-        :to="{ name: 'withdraw' }"
+        :to="{ name: 'withdraw', params: { networkSlug } }"
         :label="$t('withdraw.label')"
         :disabled="!hasBpt"
         color="blue"
         outline
         block
+        @click="trackGoal(Goals.ClickWithdraw)"
       />
     </div>
   </div>

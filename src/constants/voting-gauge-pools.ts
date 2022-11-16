@@ -246,6 +246,30 @@ export const MAINNET_POOLS: Pool[] = [
     id: '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387',
     network: Network.MAINNET,
   },
+  {
+    id: '0xe340ebfcaa544da8bb1ee9005f1a346d50ec422e000200000000000000000396',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0xae7bfd6fa54259fc477879712eebe34164d3a84f000200000000000000000376',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x4ce0bd7debf13434d3ae127430e9bd4291bfb61f00020000000000000000038b',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x8e85e97ed19c0fa13b2549309965291fbbc0048b0000000000000000000003ba',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x173063a30e095313eee39411f07e95a8a806014e0002000000000000000003ab',
+    network: Network.MAINNET,
+  },
+  {
+    id: '0x8167a1117691f39e05e9131cfa88f0e3a620e96700020000000000000000038c',
+    network: Network.MAINNET,
+  },
 ];
 
 export const GOERLI_POOLS: Pool[] = [
@@ -330,6 +354,10 @@ export const ARBITRUM_POOLS: Pool[] = [
   },
   {
     id: '0x178e029173417b1f9c8bc16dcec6f697bc323746000200000000000000000158',
+    network: Network.ARBITRUM,
+  },
+  {
+    id: '0x13f2f70a951fb99d48ede6e25b0bdf06914db33f00020000000000000000016b',
     network: Network.ARBITRUM,
   },
 ];
@@ -443,6 +471,18 @@ export const POLYGON_POOLS: Pool[] = [
     id: '0xb20fc01d21a50d2c734c4a1262b4404d41fa7bf000000000000000000000075c',
     network: Network.POLYGON,
   },
+  {
+    id: '0x8ac5fafe2e52e52f5352aec64b64ff8b305e1d4a0002000000000000000007ab',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x05f21bacc4fd8590d1eaca9830a64b66a733316c00000000000000000000087e',
+    network: Network.POLYGON,
+  },
+  {
+    id: '0x4973f591784d9c94052a6c3ebd553fcd37bb0e5500020000000000000000087f',
+    network: Network.POLYGON,
+  },
 ];
 
 export const OPTIMISM_POOLS: Pool[] = [
@@ -472,6 +512,18 @@ export const OPTIMISM_POOLS: Pool[] = [
   },
   {
     id: '0x6222ae1d2a9f6894da50aa25cb7b303497f9bebd000000000000000000000046',
+    network: Network.OPTIMISM,
+  },
+  {
+    id: '0xc77e5645dbe48d54afc06655e39d3fe17eb76c1c00020000000000000000005c',
+    network: Network.OPTIMISM,
+  },
+  {
+    id: '0x785f08fb77ec934c01736e30546f87b4daccbe50000200000000000000000041',
+    network: Network.OPTIMISM,
+  },
+  {
+    id: '0x05e7732bf9ae5592e6aa05afe8cd80f7ab0a7bea00020000000000000000005a',
     network: Network.OPTIMISM,
   },
 ];

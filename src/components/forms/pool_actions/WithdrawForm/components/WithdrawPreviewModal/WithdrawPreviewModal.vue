@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRef, toRefs } from 'vue';
+import { computed, ref, toRef, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // Composables
@@ -16,6 +16,7 @@ import TokenAmounts from './components/TokenAmounts.vue';
 import WithdrawActions from './components/WithdrawActions.vue';
 // Components
 import WithdrawSummary from './components/WithdrawSummary.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -53,6 +54,7 @@ const { fullAmounts, priceImpact, resetMath } = toRefs(props.math);
 const { tokensOut, maxSlider, resetTxState } = useWithdrawalState(
   toRef(props, 'pool')
 );
+const { account } = useWeb3();
 
 /**
  * COMPUTED
@@ -109,6 +111,11 @@ function handleClose(): void {
   }
   emit('close');
 }
+
+/**
+ * WATCHERS
+ */
+watch(account, () => emit('close'));
 </script>
 
 <template>

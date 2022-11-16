@@ -24,7 +24,6 @@ type Props = {
   type?: InputType;
   size?: InputSize;
   disabled?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   label?: string;
   inputAlignRight?: boolean;
   decimalLimit?: number;
@@ -34,7 +33,6 @@ type Props = {
   noShadow?: boolean;
   noBorder?: boolean;
   autoFocus?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   format?: (input: string | number) => string | number;
 };
 

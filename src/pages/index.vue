@@ -8,6 +8,7 @@ import FeaturedProtocols from '@/components/sections/FeaturedProtocols.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useNetwork from '@/composables/useNetwork';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePools from '@/composables/pools/usePools';
 
@@ -21,6 +22,7 @@ const { selectedTokens, addSelectedToken, removeSelectedToken } =
 const { pools, isLoading, poolsIsFetchingNextPage, loadMorePools } =
   usePools(selectedTokens);
 const { upToMediumBreakpoint } = useBreakpoints();
+const { networkSlug, networkConfig } = useNetwork();
 
 const isPaginated = computed(() => pools.value.length >= 10);
 
@@ -28,7 +30,7 @@ const isPaginated = computed(() => pools.value.length >= 10);
  * METHODS
  */
 function navigateToCreatePool() {
-  router.push({ name: 'create-pool' });
+  router.push({ name: 'create-pool', params: { networkSlug } });
 }
 </script>
 
@@ -39,7 +41,8 @@ function navigateToCreatePool() {
       <div class="px-4 xl:px-0">
         <div class="flex justify-between items-end mb-8">
           <h3>
-            {{ $t('investmentPools') }}
+            {{ networkConfig.chainName }}
+            <span class="lowercase">{{ $t('pools') }}</span>
           </h3>
           <BalBtn
             v-if="upToMediumBreakpoint"

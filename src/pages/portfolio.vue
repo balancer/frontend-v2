@@ -18,7 +18,7 @@ const { lockPool, lock } = useLock();
       <BalStack vertical>
         <div class="px-4 xl:px-0">
           <BalStack horizontal justify="between" align="center">
-            <h3>{{ $t('myInvestments') }}</h3>
+            <h3>{{ $t('myLiquidityInBalancerPools') }}</h3>
           </BalStack>
         </div>
         <BalStack vertical spacing="2xl">

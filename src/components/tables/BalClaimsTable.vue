@@ -18,6 +18,9 @@ import { bnum } from '@/lib/utils';
 import { GaugePool } from '@/composables/useClaimsData';
 
 import { Gauge } from '@/services/balancer/gauges/types';
+import { POOLS } from '@/constants/pools';
+import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningTooltip.vue';
+import useNetwork from '@/composables/useNetwork';
 
 /**
  * TYPES
@@ -46,6 +49,7 @@ const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum2 } = useNumbers();
 const router = useRouter();
+const { networkSlug } = useNetwork();
 
 /**
  * STATE
@@ -56,7 +60,7 @@ const columns = ref<ColumnDefinition<RewardRow>[]>([
     id: 'icons',
     accessor: 'icons',
     Cell: 'iconsColumnCell',
-    width: 125,
+    width: 50,
     noGrow: true,
   },
   {
@@ -115,7 +119,7 @@ const totalClaimValue = computed((): string =>
  * METHODS
  */
 function redirectToPool({ pool }: { pool: GaugePool }) {
-  router.push({ name: 'pool', params: { id: pool.id } });
+  router.push({ name: 'pool', params: { id: pool.id, networkSlug } });
 }
 </script>
 
@@ -140,11 +144,17 @@ function redirectToPool({ pool }: { pool: GaugePool }) {
         </div>
       </template>
       <template #pillsColumnCell="{ pool }">
-        <div class="py-4 px-6">
+        <div class="flex items-center py-4 px-6">
+          <div v-if="POOLS.Metadata[pool.id]" class="text-left">
+            {{ POOLS.Metadata[pool.id].name }}
+          </div>
+
           <TokenPills
+            v-else
             :tokens="orderedPoolTokens(pool, pool.tokens)"
             :isStablePool="isStableLike(pool.poolType)"
           />
+          <PoolMigrationWarningTooltip :pool="pool" />
         </div>
       </template>
       <template #claimColumnCell="{ gauge, amount }">

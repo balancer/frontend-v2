@@ -59,6 +59,15 @@ export default class ConfigService {
     return configs[key];
   }
 
+  public getNetworkRpc(network: Network): string {
+    const networkConfig = this.getNetworkConfig(network);
+
+    return template(networkConfig.rpc, {
+      INFURA_KEY: networkConfig.keys.infura,
+      ALCHEMY_KEY: networkConfig.keys.alchemy,
+    });
+  }
+
   public get rpc(): string {
     return template(this.network.rpc, {
       INFURA_KEY: this.env.INFURA_PROJECT_ID,

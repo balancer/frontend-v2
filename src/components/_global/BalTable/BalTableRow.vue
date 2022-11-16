@@ -16,6 +16,7 @@ type Props = {
     to: string;
     getParams: (data: any) => Record<string, string>;
   } | null;
+  href?: { getHref: (data: any) => string | null } | null;
   sticky?: Sticky;
   isColumnStuck?: boolean;
   pinned?: boolean;
@@ -59,12 +60,17 @@ function getHorizontalStickyClass(index: number) {
         isColumnStuck ? 'isSticky' : '',
       ]"
     >
-      <router-link
-        v-if="link"
-        :to="{
-          name: link.to,
-          params: link.getParams(data),
-        }"
+      <component
+        :is="href?.getHref(data) ? 'a' : link ? 'router-link' : 'div'"
+        :to="
+          link
+            ? {
+                name: link.to,
+                params: link.getParams(data),
+              }
+            : null
+        "
+        :href="href?.getHref(data)"
       >
         <slot v-if="column.Cell" v-bind="data" :name="column.Cell" />
         <div
@@ -83,26 +89,7 @@ function getHorizontalStickyClass(index: number) {
               : column.accessor(data)
           }}
         </div>
-      </router-link>
-      <template v-else>
-        <slot v-if="column.Cell" v-bind="data" :name="column.Cell" />
-        <div
-          v-else
-          :class="
-            compact([
-              'px-6 py-4',
-              column.align === 'right' ? 'text-right' : 'text-left',
-              column.cellClassName,
-            ])
-          "
-        >
-          {{
-            typeof column.accessor === 'string'
-              ? data[column.accessor]
-              : column.accessor(data)
-          }}
-        </div>
-      </template>
+      </component>
     </td>
   </tr>
 </template>
