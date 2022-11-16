@@ -5,6 +5,7 @@ import useUserSettings from '@/composables/useUserSettings';
 import { FiatCurrency } from '@/constants/currency';
 
 import useTokens from './useTokens';
+import { bnum } from '@/lib/utils';
 
 interface Options {
   format?: string;
@@ -172,8 +173,10 @@ export default function useNumbers() {
 
   function toFiat(amount: number | string, tokenAddress: string): string {
     const price = priceFor(tokenAddress);
-    const tokenAmount = new BigNumber(amount);
-    return tokenAmount.times(price).toString();
+    console.log('tokenPrice', price);
+    const tokenAmount = bnum(amount);
+    console.log('tokenAmount', amount, tokenAmount);
+    return bnum(amount).times(price).toString();
   }
 
   function fNum2(
