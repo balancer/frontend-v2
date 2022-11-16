@@ -128,9 +128,9 @@ export default defineComponent({
 
     function onActivatorClick(): void {
       if (context.value === TradeSettingsContext.trade) {
-        trackGoal(Goals.ClickTradeSettings);
+        trackGoal(Goals.ClickSwapSettings);
       } else if (context.value === TradeSettingsContext.invest) {
-        trackGoal(Goals.ClickInvestSettings);
+        trackGoal(Goals.ClickJoinPoolSettings);
       }
     }
 

@@ -26,6 +26,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 import router from '@/plugins/router';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
  * TYPES
@@ -66,6 +67,7 @@ const { networkSlug } = useNetwork();
 const {
   bptIn,
   fiatTotalLabel,
+  fiatTotal,
   amountsOut,
   exactOut,
   singleAssetMaxOut,
@@ -118,6 +120,7 @@ async function handleTransaction(tx): Promise<void> {
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       txState.value.confirmedAt = dateTimeLabelFor(confirmedAt);
+      trackGoal(Goals.Withdrawal, Number(fiatTotal.value) || 0);
     },
     onTxFailed: () => {
       txState.value.confirming = false;

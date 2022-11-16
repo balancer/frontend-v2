@@ -9,6 +9,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
  * COMPOSABLES
@@ -21,6 +22,14 @@ const { setSidebarOpen } = useSidebar();
  * COMPUTED
  */
 const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
+
+/**
+ * METHODS
+ */
+function connectWalletHandler() {
+  trackGoal(Goals.ClickNavConnectWallet);
+  startConnectWithInjectedProvider();
+}
 </script>
 
 <template>
@@ -32,7 +41,7 @@ const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
       v-else
       color="white"
       :size="isMobile ? 'md' : 'sm'"
-      @click="startConnectWithInjectedProvider"
+      @click="connectWalletHandler"
     >
       <WalletIcon class="mr-2" />
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />

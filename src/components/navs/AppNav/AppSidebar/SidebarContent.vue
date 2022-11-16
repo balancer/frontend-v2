@@ -10,6 +10,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
  * PROPS & EMITS
@@ -33,11 +34,19 @@ const router = useRouter();
 const blockIcon = ref<HTMLDivElement>();
 
 const navLinks = [
-  { label: t('pool'), path: '/' },
-  { label: t('swap'), path: `/${networkSlug}/trade` },
-  { label: t('claim'), path: `/${networkSlug}/claim` },
-  { label: t('portfolio'), path: `/${networkSlug}/portfolio` },
-  { label: 'veBAL', path: `/${networkSlug}/vebal` },
+  { label: t('pool'), path: '/', goal: Goals.ClickNavPools },
+  { label: t('swap'), path: `/${networkSlug}/trade`, goal: Goals.ClickNavSwap },
+  {
+    label: t('claim'),
+    path: `/${networkSlug}/claim`,
+    goal: Goals.ClickNavClaim,
+  },
+  {
+    label: t('portfolio'),
+    path: `/${networkSlug}/portfolio`,
+    goal: Goals.ClickNavPortfolio,
+  },
+  { label: 'veBAL', path: `/${networkSlug}/vebal`, goal: Goals.ClickNavVebal },
 ];
 
 const ecosystemLinks = [
@@ -67,7 +76,8 @@ const socialLinks = [
 /**
  * METHODS
  */
-async function navTo(path: string) {
+async function navTo(path: string, goal: string) {
+  trackGoal(goal);
   router.push(path);
   emit('close');
 }
@@ -95,7 +105,7 @@ watch(blockNumber, async () => {
         v-for="link in navLinks"
         :key="link.label"
         class="side-bar-link"
-        @click="navTo(link.path)"
+        @click="navTo(link.path, link.goal)"
       >
         {{ link.label }}
       </div>
