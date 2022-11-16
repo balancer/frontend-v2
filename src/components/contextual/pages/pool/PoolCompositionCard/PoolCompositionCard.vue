@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import useBreakpoints from '@/composables/useBreakpoints';
-import {
-  getUnderlyingTokens,
-  findTokenByAddress,
-  calculateTokenBPTShareByAddress,
-} from '@/composables/usePool';
+import { removeBptFrom, usePool } from '@/composables/usePool';
 import { Pool } from '@/services/pool/types';
-import useWeb3 from '@/services/web3/useWeb3';
 import { toRefs } from 'vue';
 
-import AssetRow from './components/AssetRow.vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import { isWeightedLike } from '@/composables/usePool';
+import TokenBreakdown from './components/TokenBreakdown.vue';
 
 /**
  * TYPES
@@ -31,44 +24,13 @@ const isWeighted = isWeightedLike(pool.value.poolType);
 /**
  * COMPOSABLES
  */
+// const isDeepPool = true; //DEBUG Deep pools
+const { isDeepPool } = usePool(pool);
 const { upToLargeBreakpoint } = useBreakpoints();
-const { explorerLinks } = useWeb3();
-const { fNum2 } = useNumbers();
-const { priceFor } = useTokens();
 
 /**
  * METHODS
  */
-function hasNestedTokens(address: string) {
-  return getUnderlyingTokens(pool.value, address).length;
-}
-
-function getRootTokenStyle(address) {
-  // When there are nested tokens, the root token will have full width (just breakdown)
-  if (hasNestedTokens(address)) return 'py-4';
-  // When NO nested tokens, the root token will have 3 cols (breakdown + balance + value)
-  if (isWeighted) return 'grid grid-cols-4 py-4';
-  return 'grid grid-cols-3 py-4';
-}
-
-function weightFor(address: string) {
-  const token = findTokenByAddress(pool.value, address);
-  if (!token || !token.weight) return '-';
-  return fNum2(token.weight, FNumFormats.percent);
-}
-
-function balanceFor(address: string) {
-  const token = findTokenByAddress(pool.value, address);
-  return token ? fNum2(token.balance, FNumFormats.token) : '-';
-}
-
-function fiatValueFor(address: string) {
-  const token = findTokenByAddress(pool.value, address);
-  if (!token || !token.balance) return '-';
-  const price = priceFor(address);
-
-  return fNum2(Number(token.balance) * price, FNumFormats.fiat);
-}
 </script>
 
 <template>
@@ -96,51 +58,15 @@ function fiatValueFor(address: string) {
       </div>
     </template>
 
-    <div class="p-4 -mt-2">
-      <div
-        v-for="address in pool.tokensList"
-        :key="address"
-        :class="getRootTokenStyle(address)"
-      >
-        <BalBreakdown
-          :items="getUnderlyingTokens(pool, address)"
-          class="w-full"
-          offsetClassOverrides="mt-4 ml-3"
-          initVertBarClassOverrides="h-6 -mt-6"
-          size="lg"
-        >
-          <BalLink
-            :href="explorerLinks.addressLink(address)"
-            external
-            noStyle
-            class="flex items-center"
-          >
-            <BalAsset :address="address" class="mr-2" />
-            {{ findTokenByAddress(pool, address)?.symbol || '---' }}
-            <BalIcon
-              name="arrow-up-right"
-              size="sm"
-              class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
-            />
-          </BalLink>
-          <template #item="{ item: asset }">
-            <AssetRow
-              :mainTokenAddress="address"
-              :poolToken="asset"
-              :tokenBTPShare="calculateTokenBPTShareByAddress(pool, address)"
-            />
-          </template>
-        </BalBreakdown>
-        <div v-if="isWeighted" class="justify-self-end">
-          {{ weightFor(address) }}
-        </div>
-        <div v-if="!hasNestedTokens(address)" class="justify-self-end">
-          {{ balanceFor(address) }}
-        </div>
-        <div v-if="!hasNestedTokens(address)" class="justify-self-end">
-          {{ fiatValueFor(address) }}
-        </div>
-      </div>
+    <div v-for="token in removeBptFrom(pool).tokens" :key="token.address">
+      <TokenBreakdown
+        :token="token"
+        :padding="4"
+        :parentTotalShare="pool.totalShares"
+        mainTokenAddress=""
+        :isWeighted="isWeighted"
+        :isDeepPool="isDeepPool"
+      ></TokenBreakdown>
     </div>
   </BalCard>
 </template>

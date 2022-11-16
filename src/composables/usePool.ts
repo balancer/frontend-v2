@@ -428,8 +428,8 @@ function removePremintedToken(tree: TokenTreePool) {
   }
 }
 
-export function mainTokenAddress(pool: TokenTreePool) {
-  if (!pool.tokens) return '';
+export function findMainTokenAddress(pool: TokenTreePool | null) {
+  if (!pool || !pool.tokens) return '';
   return pool.tokens[pool.mainIndex].address;
 }
 
