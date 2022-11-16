@@ -9,6 +9,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { vaultService } from './vault.service';
 
+jest.mock('@/locales');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 jest.mock('@/services/web3/web3.service');
 
