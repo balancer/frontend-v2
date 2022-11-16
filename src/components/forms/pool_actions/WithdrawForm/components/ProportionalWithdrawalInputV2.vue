@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
 import { computed, onBeforeMount, reactive, toRef, watch } from 'vue';
-
-// Composables
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import { bnum, isSameAddress } from '@/lib/utils';
-// Types
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-
 import useExitPool from '@/composables/pools/useExitPool';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -40,7 +37,6 @@ const slider = reactive({
  */
 
 const { isWalletReady } = useWeb3();
-// const { getToken, priceFor } = useTokens();
 const {
   bptIn,
   bptBalance,
@@ -51,9 +47,7 @@ const {
   exitTokenInfo,
   fiatAmountsOut,
 } = useExitPool();
-
-// const { isWalletReady } = useWeb3();
-// const { missingPrices } = usePoolTransfers();
+const { t } = useI18n();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 
@@ -69,8 +63,6 @@ const sliderProps = computed(() => {
     tooltip: 'none',
     disabled: !hasBpt.value,
   };
-  // const tokenMetaMap = computed((): TokenInfoMap => {
-  //   return getTokens(exitTokenAddresses.value);
 });
 
 /**
@@ -81,7 +73,7 @@ function handleSliderChange(newVal: number): void {
   bptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
-    .toFixed(props.pool?.onchain?.decimals || 18);
+    .toFixed(props.pool.onchain?.decimals || 18);
 }
 
 function handleAmountChange(value: string): void {
@@ -101,10 +93,6 @@ function getPoolToken(address: string): PoolToken | undefined {
   return exitTokens.value.find(token => isSameAddress(token.address, address));
 }
 
-// function getFiatValue(address: string, amount: string): string {
-//   return bnum(priceFor(address)).times(amount).toString();
-// }
-
 /**
  * WATCHERS
  */
@@ -122,6 +110,7 @@ onBeforeMount(() => {
 
 <template>
   <div>
+    <div class="label">{{ t('youProvide') }}</div>
     <TokenInput
       v-model:amount="bptIn"
       :address="pool.address"
@@ -133,7 +122,7 @@ onBeforeMount(() => {
       @update:amount="handleAmountChange"
       @update:slider="handleSliderChange"
     />
-
+    <div class="label">{{ t('youReceive') }}</div>
     <div class="token-amounts">
       <div
         v-for="{ address, value } in propAmountsOut"
@@ -143,8 +132,8 @@ onBeforeMount(() => {
         <div class="flex justify-between items-center">
           <div class="flex items-center">
             <BalAsset :address="address" class="mr-2" />
-            <div class="flex flex-col leading-none">
-              <span class="text-lg font-medium">
+            <div class="flex flex-col leading-none truncate">
+              <div class="text-lg font-medium">
                 {{ exitTokenInfo[address].symbol }}
                 <span v-if="!isStableLikePool">
                   {{
@@ -154,7 +143,12 @@ onBeforeMount(() => {
                     })
                   }}
                 </span>
-              </span>
+              </div>
+              <div class="flex w-52 text-sm text-gray-600 dark:text-gray-400">
+                <span class="truncate">
+                  {{ exitTokenInfo[address].name }}
+                </span>
+              </div>
             </div>
           </div>
           <div
@@ -162,10 +156,10 @@ onBeforeMount(() => {
           >
             <BalLoadingBlock v-if="isLoadingQuery" class="w-20 h-12" />
             <template v-else>
-              <span class="text-xl break-words">
+              <span class="text-xl font-medium break-words">
                 {{ fNum2(value, FNumFormats.token) }}
               </span>
-              <span class="text-sm text-gray-400">
+              <span class="text-sm text-gray-600 dark:text-gray-400">
                 {{ fNum2(fiatAmountsOut[address], FNumFormats.fiat) }}
               </span>
             </template>
@@ -177,6 +171,10 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
+.label {
+  @apply mb-3 text-sm font-bold;
+}
+
 .proportional-input {
   @apply shadow-lg rounded-lg mb-4 w-full dark:bg-gray-800;
 }

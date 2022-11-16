@@ -1368,6 +1368,8 @@
       "SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT": "You can only withdraw 30% of the pool's value in single asset withdrawals"
     }
   },
+  "youProvide": "You provide",
+  "youReceive": "You receive",
   "withdrawal": "Withdrawal",
   "withdrawFromPool": "Withdraw from pool",
   "withdrawalSettled": "Your withdrawal has settled",
