@@ -19,7 +19,7 @@ import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
-import useFathom from '@/composables/useFathom';
+import useFathom, { Goals, trackGoal } from '@/composables/useFathom';
 import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 
@@ -75,12 +75,16 @@ export async function isBlockedAddress(
 ): Promise<boolean | null> {
   try {
     if (!configService.env.WALLET_SCREENING) return false;
+    trackGoal(Goals.WalletScreenRequest);
+
     const response = await axios.post<WalletScreenResponse>(
       WALLET_SCREEN_ENDPOINT,
       {
         address: address.toLowerCase(),
       }
     );
+
+    trackGoal(Goals.WalletScreened);
     return response.data.is_blocked;
   } catch {
     return false;
