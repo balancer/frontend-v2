@@ -30,6 +30,11 @@ import {
   toRef,
   watch,
 } from 'vue';
+import useRelayerApproval, {
+  Relayer,
+} from '@/composables/trade/useRelayerApproval';
+import { TransactionActionInfo } from '@/types/transactions';
+import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 
 /**
  * TYPES
@@ -79,6 +84,10 @@ const provider = (props: Props) => {
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
   const { txState, txInProgress } = useTxState();
+  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
+  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
+    Relayer.BATCH_V4
+  );
 
   /**
    * COMPUTED
@@ -140,6 +149,18 @@ const provider = (props: Props) => {
   // Could be inaccurate if total liquidity has come from subgraph.
   const fiatValueOut = computed((): string =>
     fiatValueOf(pool.value, bptOut.value)
+  );
+
+  const shouldSignRelayer = computed(
+    (): boolean =>
+      isDeepPool.value &&
+      !isSingleAssetJoin.value &&
+      // Check if Batch Relayer is either approved, or signed
+      !(relayerApproval.isUnlocked.value || relayerSignature.value)
+  );
+
+  const approvalActions = computed((): TransactionActionInfo[] =>
+    shouldSignRelayer.value ? [signRelayerAction] : []
   );
 
   /**
@@ -299,6 +320,7 @@ const provider = (props: Props) => {
     fiatValueOut,
     txState,
     txInProgress,
+    approvalActions,
 
     // Methods
     setAmountsIn,
