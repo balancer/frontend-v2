@@ -23,6 +23,7 @@ const tokenAttrs = {
 
 const poolAttrs = {
   id: true,
+  address: true,
   poolType: true,
   mainIndex: true,
 };
