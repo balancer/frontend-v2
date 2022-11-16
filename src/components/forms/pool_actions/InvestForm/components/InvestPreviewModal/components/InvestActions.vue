@@ -72,7 +72,7 @@ const investmentState = reactive<InvestmentState>({
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { account, getProvider, blockNumber } = useWeb3();
+const { getSigner, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
@@ -184,8 +184,7 @@ async function submit(): Promise<TransactionResponse> {
       );
     } else {
       tx = await poolExchange.join(
-        getProvider(),
-        account.value,
+        getSigner(),
         fullAmounts.value,
         props.tokenAddresses,
         normalizedBptOut.value
