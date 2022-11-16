@@ -247,6 +247,7 @@ const provider = (props: Props) => {
         prices: prices.value,
         signer: getSigner(),
         slippageBsp: slippageBsp.value,
+        relayerSignature: relayerSignature.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -300,11 +301,11 @@ const provider = (props: Props) => {
   return {
     // State
     amountsIn,
+    highPriceImpactAccepted,
     pool: readonly(pool),
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
     priceImpact: readonly(priceImpact),
-    highPriceImpactAccepted: readonly(highPriceImpactAccepted),
     isLoadingQuery: readonly(isLoadingQuery),
     queryError: readonly(queryError),
     txError: readonly(txError),
