@@ -422,11 +422,14 @@ function removePremintedToken(tree: TokenTreePool) {
   tree.tokens.splice(premintedIndex, 1);
 
   // Fix mainIndex after removing premintedBPT
-  if (premintedIndex >= 0) {
-    if (tree.mainIndex <= premintedIndex) {
-      tree.mainIndex -= 1;
-    }
+  if (premintedIndex < tree.mainIndex) {
+    tree.mainIndex -= 1;
   }
+}
+
+export function mainTokenAddress(pool: TokenTreePool) {
+  if (!pool.tokens) return '';
+  return pool.tokens[pool.mainIndex].address;
 }
 
 /**
