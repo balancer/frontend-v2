@@ -118,7 +118,7 @@ const provider = (props: Props) => {
     QUERY_KEYS.Pools.Exits.SingleAssetMax(
       hasFetchedPoolsForSor,
       isSingleAssetExit,
-      singleAmountOut
+      toRef(singleAmountOut, 'address')
     ),
     getSingleAssetMax,
     reactive({ enabled: queriesEnabled })
@@ -136,7 +136,10 @@ const provider = (props: Props) => {
   );
 
   const isLoadingMax = computed(
-    (): boolean => singleAssetMaxQuery.isFetching.value
+    (): boolean =>
+      singleAssetMaxQuery.isFetching.value ||
+      !queriesEnabled.value ||
+      !hasFetchedPoolsForSor.value
   );
 
   const maxError = computed(
@@ -254,7 +257,7 @@ const provider = (props: Props) => {
   // Are amounts valid for transaction? That is bptIn and amountsOut.
   const validAmounts = computed((): boolean => {
     return isSingleAssetExit.value
-      ? bnum(_bptIn.value).gt(0) && amountsOut.value.every(ao => ao.valid)
+      ? amountsOut.value.every(ao => ao.valid)
       : bptInValid.value;
   });
 
