@@ -208,7 +208,7 @@ export default defineComponent({
 }
 
 .bal-alert-content {
-  @apply flex;
+  @apply flex whitespace-pre-wrap;
 
   min-width: 0;
 }

@@ -3,12 +3,9 @@ import { fiatValueOf } from '@/composables/usePool';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum } from '@/lib/utils';
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
@@ -28,15 +25,10 @@ export class SwapJoinHandler implements JoinPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async join({
-    amountsIn,
-    tokensIn,
-    prices,
-    signer,
-    slippageBsp,
-  }: JoinParams): Promise<TransactionResponse> {
+  async join(params: JoinParams): Promise<TransactionResponse> {
+    const { signer, slippageBsp } = params;
     const userAddress = await signer.getAddress();
-    await this.queryJoin(amountsIn, tokensIn, prices);
+    await this.queryJoin(params);
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 
@@ -56,11 +48,11 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
   }
 
-  async queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices
-  ): Promise<QueryOutput> {
+  async queryJoin({
+    amountsIn,
+    tokensIn,
+    prices,
+  }: JoinParams): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');
 
