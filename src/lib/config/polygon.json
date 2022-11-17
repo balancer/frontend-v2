@@ -18,6 +18,7 @@
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
+      "https://subgraph.satsuma-prod.com/balancer/polygon-v2/api",
       "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2"
     ],
     "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic",
