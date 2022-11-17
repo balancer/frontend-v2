@@ -57,6 +57,7 @@ export interface Config {
     lidoRelayer: string;
     balancerHelpers: string;
     batchRelayer: string;
+    batchRelayerV4: string;
     veBAL: string;
     gaugeController: string;
     gaugeFactory: string;

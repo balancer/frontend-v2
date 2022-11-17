@@ -17,6 +17,7 @@ import {
   isStableLike,
   isUnknownType,
   orderedPoolTokens,
+  poolURLFor,
 } from '@/composables/usePool';
 import { isSameAddress } from '@/lib/utils';
 import { scale } from '@/lib/utils';
@@ -149,10 +150,20 @@ function networkSrc(network: Network) {
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {
-  router.push({
-    name: 'pool',
-    params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
-  });
+  const redirectUrl = poolURLFor(gauge.pool.id, gauge.network);
+  if (redirectUrl.startsWith('https://')) {
+    window.location.href = redirectUrl;
+  } else {
+    router.push({
+      name: 'pool',
+      params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
+    });
+  }
+}
+
+function getPoolExternalUrl(gauge: VotingGaugeWithVotes) {
+  const poolUrl = poolURLFor(gauge.pool.id, gauge.network);
+  return poolUrl.startsWith('https://') ? poolUrl : null;
 }
 
 function getIsGaugeNew(addedTimestamp: number): boolean {
@@ -198,6 +209,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           networkSlug: getNetworkSlug(gauge.network),
         }),
       }"
+      :href="{ getHref: gauge => getPoolExternalUrl(gauge) }"
       :onRowClick="redirectToPool"
       :getTableRowClass="getTableRowClass"
       :initialState="{

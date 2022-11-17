@@ -5,7 +5,6 @@ import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { Pool } from '@/services/pool/types';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import {
   GaugeBalAprs,
   GaugeRewardTokenAprs,
@@ -25,7 +24,6 @@ export class PoolDecorator {
     private readonly balancerContracts = balancerContractsService,
     private readonly stakingRewards = stakingRewardsService,
     private readonly poolServiceClass = PoolService,
-    private readonly providerService = rpcProviderService,
     private readonly poolSubgraph = balancerSubgraphService
   ) {}
 
@@ -39,7 +37,6 @@ export class PoolDecorator {
     const processedPools = this.pools.map(pool => {
       const poolService = new this.poolServiceClass(pool);
       poolService.removeBptFromTokens();
-      poolService.setTotalLiquidity(prices, currency, tokens);
       poolService.setUnwrappedTokens();
       return poolService.pool;
     });
@@ -69,6 +66,7 @@ export class PoolDecorator {
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();
+      await poolService.setTotalLiquidity();
 
       if (setAprCondition) {
         await poolService.setAPR(
@@ -90,16 +88,14 @@ export class PoolDecorator {
   /**
    * Re-sets totalLiquidty on all pools, typically after prices have been updated.
    */
-  public reCalculateTotalLiquidities(
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    tokens: TokenInfoMap
-  ): Pool[] {
-    return this.pools.map(pool => {
-      const poolService = new this.poolServiceClass(pool);
-      poolService.setTotalLiquidity(prices, currency, tokens);
-      return poolService.pool;
-    });
+  public async reCalculateTotalLiquidities(): Promise<Pool[]> {
+    return Promise.all(
+      this.pools.map(async pool => {
+        const poolService = new this.poolServiceClass(pool);
+        await poolService.setTotalLiquidity();
+        return poolService.pool;
+      })
+    );
   }
 
   /**

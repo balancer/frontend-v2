@@ -135,7 +135,7 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { fNum2 } = useNumbers();
+  const { fNum2, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
 
@@ -492,11 +492,17 @@ export default function useSor({
       },
     });
 
+    const tradeUSDValue =
+      toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
+
     txListener(tx, {
       onTxConfirmed: () => {
+        trackGoal(
+          Goals.Swapped,
+          bnum(tradeUSDValue).times(100).toNumber() || 0
+        );
         trading.value = false;
         latestTxHash.value = tx.hash;
-        trackGoal(Goals.Swapped);
       },
       onTxFailed: () => {
         trading.value = false;

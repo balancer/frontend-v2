@@ -1,9 +1,6 @@
-import { Network } from '@balancer-labs/sdk';
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { App } from 'vue';
-
-import { networkId } from '@/composables/useNetwork';
 
 import { version } from '../../package.json';
 
@@ -11,18 +8,11 @@ import { version } from '../../package.json';
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.
 // https://github.com/getsentry/sentry-javascript/issues/2925
 
-const ENV = process.env.VUE_APP_ENV || 'development';
-const networkMap = {
-  [Network.MAINNET]: 'mainnet',
-  [Network.GOERLI]: 'goerli',
-  [Network.POLYGON]: 'polygon',
-  [Network.ARBITRUM]: 'arbitrum-one',
-};
-const environment = `${ENV}-${networkMap[networkId.value]}`;
+const environment = process.env.VUE_APP_ENV || 'development';
 const release = `frontend-v2@${version}`;
 
 export default function initSentry(app: App) {
-  if (['production', 'staging'].includes(ENV)) {
+  if (['production', 'staging'].includes(environment)) {
     app.config.errorHandler = (error, _, info) => {
       try {
         setTag('info', info);
@@ -42,10 +32,6 @@ export default function initSentry(app: App) {
       tracesSampleRate: 1.0,
       environment,
       release,
-      beforeSend: event => {
-        console.error(event);
-        return event;
-      },
     });
   }
 }

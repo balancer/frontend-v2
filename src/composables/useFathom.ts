@@ -24,29 +24,37 @@ export const Goals = {
   ClickHeroConnectWallet: 'EIWJBKAR',
   ClickHeroLearnMore: 'HCF8QUTE',
   ClickNavConnectWallet: 'ZIFARDWY',
-  ClickNavTrade: 'JKBUPMVR',
-  ClickNavInvest: 'XDOFAMCI',
+  ClickNavSwap: 'JKBUPMVR',
+  ClickNavPools: 'XDOFAMCI',
   ClickNavLogo: 'OT9IBNCJ',
-  ClickInvestSettings: 'ZNU2DISP',
-  ClickTradeSettings: '1M2HMAYJ',
-  ClickInvest: 'BRT10IGE',
+  ClickNavClaim: 'DQ4RN4GT',
+  ClickNavPortfolio: 'VEQEWKKK',
+  ClickNavVebal: 'IVLEEHDK',
+  ClickJoinPoolSettings: 'ZNU2DISP',
+  ClickSwapSettings: '1M2HMAYJ',
+  ClickAddLiquidity: 'BRT10IGE',
   ClickWithdraw: 'P5GBF31M',
-  Invested: 'KN2G0QUT',
+  LiquidityAdded: 'KN2G0QUT',
   Withdrawal: 'X4NINEBD',
   ConnectedWallet: '2QHQLTRF',
   ClickSwap: 'OGZ8QPE8',
   Swapped: 'VYZUMRKD',
+  WalletScreenRequest: 'BNSBUTJW',
+  WalletScreened: 'ENOWYUGJ',
+  ContractTransactionSubmitted: 'Y9NIVW3X',
+  RawTransactionSubmitted: 'MVKM6CDX',
 };
 
-export default function useFathom() {
-  function trackGoal(goal: string, value = 0) {
-    if (!window.fathom) return;
-    try {
-      window.fathom.trackGoal(goal, value);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+export function trackGoal(goal: string, value = 0) {
+  if (!window.fathom) return;
 
+  try {
+    window.fathom.trackGoal(goal, value);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export default function useFathom() {
   return { trackGoal, Goals };
 }

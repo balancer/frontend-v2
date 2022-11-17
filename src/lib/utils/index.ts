@@ -98,9 +98,9 @@ export function shortenLabel(str, segLength = 4) {
 /**
  * Wait for a reactive variable to change to an expected value.
  */
-export async function forChange(
-  reactiveVar: Ref<any>,
-  expected: any,
+export async function forChange<T>(
+  reactiveVar: Ref<T>,
+  expected: T,
   checkCount = 0,
   checkDelay = 500,
   checkLimit = 20

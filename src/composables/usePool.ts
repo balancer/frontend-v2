@@ -4,6 +4,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { POOLS } from '@/constants/pools';
 import {
   bnum,
@@ -13,13 +14,19 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
+import {
+  AnyPool,
+  Pool,
+  PoolAPRs,
+  PoolToken,
+  TokenTreePool,
+} from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
-import { uniq } from 'lodash';
+import { uniq, uniqWith, cloneDeep } from 'lodash';
 
 /**
  * METHODS
@@ -229,29 +236,9 @@ export function isVeBalPool(poolId: string): boolean {
   return POOLS.IdsMap?.veBAL === poolId;
 }
 
-/**
- * Removes pre-minted pool token from tokensList.
- *
- * @param {Pool} pool - Pool to get tokensList from.
- * @returns tokensList excluding pre-minted BPT address.
- */
-export function tokensExcludingBpt(pool: Pool): string[] {
-  return removeAddress(pool.address, pool.tokensList);
-}
-
-/**
- * Removes pre-minted pool token address from tokensList and returns modified pool.
- *
- * @param {Pool} pool - Pool to remove BPT from.
- * @returns {Pool} modified pool.
- */
-export function removeBptFrom(pool: Pool): Pool {
-  pool.tokensList = tokensExcludingBpt(pool);
-  return pool;
-}
-
 interface TokenTreeOpts {
   includeLinearUnwrapped?: boolean;
+  includePreMintedBpt?: boolean;
 }
 
 /**
@@ -321,6 +308,12 @@ export function tokenTreeLeafs(
   return uniq(addresses);
 }
 
+function isTokenTreePool(
+  poolOrToken: Pool | TokenTreePool
+): poolOrToken is TokenTreePool {
+  return (poolOrToken as TokenTreePool).mainIndex !== undefined;
+}
+
 /**
  * Get all unique token tree tokens as flat array.
  *
@@ -329,13 +322,24 @@ export function tokenTreeLeafs(
  * @returns {PoolToken[]} Flat array of tokens in tree.
  */
 export function flatTokenTree(
-  tokenTree: PoolToken[],
-  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+  pool: Pool | TokenTreePool,
+  options: TokenTreeOpts = {
+    includeLinearUnwrapped: false,
+    includePreMintedBpt: false,
+  }
 ): PoolToken[] {
   const tokens: PoolToken[] = [];
 
-  for (const token of tokenTree) {
-    tokens.push(token);
+  if (!options.includePreMintedBpt && !isTokenTreePool(pool)) {
+    pool = removeBptFrom(pool);
+  }
+
+  const nestedTokens = pool?.tokens || [];
+
+  nestedTokens.forEach(token => {
+    if (!isSameAddress(pool.address, token.address)) {
+      tokens.push(token);
+    }
 
     if (token.token.pool?.tokens) {
       if (
@@ -344,30 +348,104 @@ export function flatTokenTree(
       ) {
         tokens.push(token.token.pool.tokens[token.token.pool.mainIndex]);
       } else {
-        const nestedTokens = flatTokenTree(token.token.pool?.tokens, options);
+        const nestedTokens = flatTokenTree(token.token.pool, options);
         tokens.push(...nestedTokens);
       }
     }
+  });
+
+  // Avoid duplicated tokens with the same address
+  return uniqWith(tokens, (token1, token2) =>
+    isSameAddress(token1.address, token2.address)
+  );
+}
+
+/**
+ * Removes pre-minted pool token from tokensList.
+ *
+ * @param {Pool} pool - Pool to get tokensList from.
+ * @returns tokensList excluding pre-minted BPT address.
+ */
+export function tokensExcludingBpt(pool: Pool): string[] {
+  return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
+ * Returns a new (cloned) pool with pre-minted pool tokens removed from both tokensList and tokenTree.
+ */
+export function removeBptFrom(pool: Pool): Pool {
+  const newPool = cloneDeep(pool);
+  newPool.tokensList = tokensExcludingBpt(pool);
+
+  newPool.tokens = newPool.tokens.filter(
+    token => !isSameAddress(newPool.address, token.address)
+  );
+
+  newPool.tokens.forEach(token => {
+    if (token.token.pool) {
+      removeBptFromTree(token.token.pool);
+    }
+  });
+  return newPool;
+}
+
+/**
+ * Updates the passed tokenTreePool by removing its pre-minted tokens.
+ */
+export function removeBptFromTree(tree: TokenTreePool) {
+  if (tree.tokens) {
+    removePremintedToken(tree);
+
+    tree.tokens.forEach(token => {
+      if (token.token.pool) {
+        removeBptFromTree(token.token.pool);
+      }
+    });
+  }
+  return tree;
+}
+
+/**
+ * Updates the passed tokenTreePool by removing the preminted token from tokens and updating mainIndex accordingly.
+ */
+function removePremintedToken(tree: TokenTreePool) {
+  if (!tree.tokens) {
+    return;
   }
 
-  return tokens.filter(
-    (v, i, a) => a.findIndex(v2 => isSameAddress(v2.address, v.address)) === i
+  const premintedIndex = tree.tokens.findIndex(token =>
+    isSameAddress(tree.address, token.address)
   );
+
+  if (premintedIndex === -1) return;
+
+  // Remove preminted token by index
+  tree.tokens.splice(premintedIndex, 1);
+
+  // Fix mainIndex after removing premintedBPT
+  if (premintedIndex < tree.mainIndex) {
+    tree.mainIndex -= 1;
+  }
+}
+
+export function mainTokenAddress(pool: TokenTreePool) {
+  if (!pool.tokens) return '';
+  return pool.tokens[pool.mainIndex].address;
 }
 
 /**
  * Find token in token tree with address.
  *
- * @param {PoolToken[]} tokenTree - A pool's token tree. e.g. pool.tokens.
+ * @param {Pool} pool - A pool
  * @param {string} tokenAddress - Address of token to find in tree.
  * @param {TokenTreeOpts} options
  */
 export function findTokenInTree(
-  tokenTree: PoolToken[],
+  pool: Pool,
   tokenAddress: string,
   options: TokenTreeOpts = { includeLinearUnwrapped: false }
 ): PoolToken | undefined {
-  const tokens = flatTokenTree(tokenTree, options);
+  const tokens = flatTokenTree(pool, options);
   return tokens.find(token => isSameAddress(token.address, tokenAddress));
 }
 
@@ -490,6 +568,18 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => !!pool.value && noInitLiquidity(pool.value)
   );
 
+  // pool is "Weighted" and some of the rate providers are not on our approved list
+  const hasNonApprovedRateProviders = computed(
+    () =>
+      pool.value &&
+      isWeighted(pool.value.poolType) &&
+      !pool.value?.priceRateProviders?.every(
+        provider =>
+          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
+          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+      )
+  );
+
   const lpTokens = computed(() => {
     if (!pool.value) return [];
 
@@ -514,6 +604,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWethPool,
     isMainnetWstETHPool,
     noInitLiquidityPool,
+    hasNonApprovedRateProviders,
     lpTokens,
     // methods
     isStable,
