@@ -78,9 +78,11 @@ const QUERY_KEYS = {
         POOLS_ROOT_KEY,
         'query',
         'join',
-        amountsIn,
-        hasFetchedPoolsForSor,
-        isSingleAssetJoin,
+        {
+          amountsIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetJoin,
+        }
       ],
     },
   },
