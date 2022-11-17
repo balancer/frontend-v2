@@ -492,14 +492,17 @@ export default function useSor({
       },
     });
 
+    const tradeUSDValue =
+      toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
+
     txListener(tx, {
       onTxConfirmed: () => {
+        trackGoal(
+          Goals.Swapped,
+          bnum(tradeUSDValue).times(100).toNumber() || 0
+        );
         trading.value = false;
         latestTxHash.value = tx.hash;
-
-        const tradeUSDValue =
-          toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
-        trackGoal(Goals.Swapped, Number(tradeUSDValue) || 0);
       },
       onTxFailed: () => {
         trading.value = false;

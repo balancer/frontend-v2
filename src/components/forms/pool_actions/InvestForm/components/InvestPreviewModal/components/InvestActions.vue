@@ -29,6 +29,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 
 import { InvestMathResponse } from '../../../composables/useInvestMath';
 import { Goals, trackGoal } from '@/composables/useFathom';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -160,7 +161,10 @@ async function handleTransaction(tx): Promise<void> {
       investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
       investmentState.confirmed = true;
       investmentState.confirming = false;
-      trackGoal(Goals.LiquidityAdded, Number(fiatTotal.value) || 0);
+      trackGoal(
+        Goals.LiquidityAdded,
+        bnum(fiatTotal.value).times(100).toNumber() || 0
+      );
     },
     onTxFailed: () => {
       console.error('Add liquidity failed');
