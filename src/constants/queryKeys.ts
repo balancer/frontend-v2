@@ -82,7 +82,7 @@ const QUERY_KEYS = {
           amountsIn,
           hasFetchedPoolsForSor,
           isSingleAssetJoin,
-        }
+        },
       ],
     },
   },
