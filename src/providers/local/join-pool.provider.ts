@@ -9,22 +9,21 @@ import {
 } from '@/constants/poolLiquidity';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import { bnSum, bnum, removeAddress, trackLoading } from '@/lib/utils';
+import { bnSum, bnum, removeAddress } from '@/lib/utils';
 import { JoinPoolService } from '@/services/balancer/pools/joins/join-pool.service';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { debounce } from 'lodash';
 import {
   computed,
   defineComponent,
   h,
   InjectionKey,
   onBeforeMount,
-  onBeforeUnmount,
   PropType,
   provide,
+  reactive,
   readonly,
   ref,
   toRef,
@@ -35,6 +34,8 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { TransactionActionInfo } from '@/types/transactions';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
+import { useQuery } from 'vue-query';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 /**
  * TYPES
@@ -65,11 +66,21 @@ const provider = (props: Props) => {
   const bptOut = ref<string>('0');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
-  const isLoadingQuery = ref<boolean>(false);
-  const queryError = ref<string>('');
   const txError = ref<string>('');
 
-  const debounceQueryJoin = ref(debounce(queryJoin, 1000, { leading: true }));
+  const queryJoinQuery = useQuery<void, Error>(
+    QUERY_KEYS.Pools.Joins.QueryJoin(
+      // If amountsIn change we should call queryJoin to get expected output.
+      amountsIn,
+      // If the global pool fetching for the SOR changes it's been set to true. In
+      // this case we should re-trigger queryJoin to fetch the expected output for
+      // any existing input.
+      hasFetchedPoolsForSor,
+      isSingleAssetJoin
+    ),
+    queryJoin,
+    reactive({ enabled: true })
+  );
 
   /**
    * SERVICES
@@ -163,6 +174,14 @@ const provider = (props: Props) => {
     shouldSignRelayer.value ? [signRelayerAction] : []
   );
 
+  const isLoadingQuery = computed(
+    (): boolean => queryJoinQuery.isFetching.value
+  );
+
+  const queryError = computed(
+    (): string | undefined => queryJoinQuery.error.value?.message
+  );
+
   /**
    * METHODS
    */
@@ -203,7 +222,6 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
-    queryError.value = '';
   }
 
   /**
@@ -217,22 +235,16 @@ const provider = (props: Props) => {
       return;
     }
 
-    trackLoading(async () => {
-      try {
-        const output = await joinPoolService.queryJoin({
-          amountsIn: amountsIn.value,
-          tokensIn: tokensIn.value,
-          prices: prices.value,
-          signer: getSigner(),
-          slippageBsp: slippageBsp.value,
-        });
-        bptOut.value = output.bptOut;
-        priceImpact.value = output.priceImpact;
-        queryError.value = '';
-      } catch (error) {
-        queryError.value = (error as Error).message;
-      }
-    }, isLoadingQuery);
+    const output = await joinPoolService.queryJoin({
+      amountsIn: amountsIn.value,
+      tokensIn: tokensIn.value,
+      prices: prices.value,
+      signer: getSigner(),
+      slippageBsp: slippageBsp.value,
+    });
+
+    bptOut.value = output.bptOut;
+    priceImpact.value = output.priceImpact;
   }
 
   /**
@@ -258,22 +270,6 @@ const provider = (props: Props) => {
   /**
    * WATCHERS
    */
-  // If amountsIn change we should call queryJoin to get expected output.
-  watch(
-    amountsIn,
-    () => {
-      resetQueryJoinState();
-      debounceQueryJoin.value();
-    },
-    { deep: true }
-  );
-
-  // If the global pool fetching for the SOR changes it's been set to true. In
-  // this case we should re-trigger queryJoin to fetch the expected output for
-  // any existing input.
-  watch(hasFetchedPoolsForSor, () => {
-    debounceQueryJoin.value();
-  });
 
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call
@@ -294,10 +290,6 @@ const provider = (props: Props) => {
     fetchPoolsForSor();
   });
 
-  onBeforeUnmount(() => {
-    debounceQueryJoin.value.cancel();
-  });
-
   return {
     // State
     amountsIn,
@@ -306,8 +298,8 @@ const provider = (props: Props) => {
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
     priceImpact: readonly(priceImpact),
-    isLoadingQuery: readonly(isLoadingQuery),
-    queryError: readonly(queryError),
+    isLoadingQuery,
+    queryError,
     txError: readonly(txError),
 
     //  Computed
@@ -328,7 +320,9 @@ const provider = (props: Props) => {
     addTokensIn,
     resetAmounts,
     join,
-    debounceQueryJoin,
+
+    // queries
+    queryJoinQuery,
   };
 };
 
