@@ -155,18 +155,14 @@ export class SwapExitHandler implements ExitPoolHandler {
       maxPools: 4,
     });
 
-    console.log('this.lastSwapRoute', this.lastSwapRoute);
-
     const amountIn = formatFixed(
       this.lastSwapRoute.returnAmount,
       tokenIn.decimals
     );
-    console.log('amountIn', amountIn);
     if (bnum(amountIn).eq(0)) throw new Error('Not enough liquidity.');
 
     const fiatValueIn = bnum(priceIn).times(amountIn).toString();
     const fiatValueOut = bnum(priceOut).times(amountOut).toString();
-    console.log('fiat', fiatValueIn, fiatValueOut);
 
     const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
 
