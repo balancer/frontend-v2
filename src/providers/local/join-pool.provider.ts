@@ -69,7 +69,15 @@ const provider = (props: Props) => {
   const txError = ref<string>('');
 
   const queryJoinQuery = useQuery<void, Error>(
-    QUERY_KEYS.Pools.Joins.QueryJoin(),
+    QUERY_KEYS.Pools.Joins.QueryJoin(
+      // If amountsIn change we should call queryJoin to get expected output.
+      amountsIn,
+      // If the global pool fetching for the SOR changes it's been set to true. In
+      // this case we should re-trigger queryJoin to fetch the expected output for
+      // any existing input.
+      hasFetchedPoolsForSor,
+      isSingleAssetJoin
+    ),
     queryJoin,
     reactive({ enabled: true })
   );
@@ -262,22 +270,6 @@ const provider = (props: Props) => {
   /**
    * WATCHERS
    */
-  // If amountsIn change we should call queryJoin to get expected output.
-  watch(
-    amountsIn,
-    () => {
-      resetQueryJoinState();
-      queryJoinQuery.refetch.value();
-    },
-    { deep: true }
-  );
-
-  // If the global pool fetching for the SOR changes it's been set to true. In
-  // this case we should re-trigger queryJoin to fetch the expected output for
-  // any existing input.
-  watch(hasFetchedPoolsForSor, () => {
-    queryJoinQuery.refetch.value();
-  });
 
   // If singleAssetJoin is toggled we need to reset previous query state. queryJoin
   // will be re-triggered by the amountsIn state change. We also need to call

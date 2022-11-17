@@ -70,7 +70,18 @@ const QUERY_KEYS = {
       { networkId, id },
     ],
     Joins: {
-      QueryJoin: () => [POOLS_ROOT_KEY, 'query', 'join'],
+      QueryJoin: (
+        amountsIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetJoin: Ref<unknown>
+      ) => [
+        POOLS_ROOT_KEY,
+        'query',
+        'join',
+        amountsIn,
+        hasFetchedPoolsForSor,
+        isSingleAssetJoin,
+      ],
     },
   },
   TokenLists: {
