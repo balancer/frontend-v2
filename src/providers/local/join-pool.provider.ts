@@ -21,6 +21,7 @@ import {
   h,
   InjectionKey,
   onBeforeMount,
+  onMounted,
   PropType,
   provide,
   reactive,
@@ -61,6 +62,7 @@ const provider = (props: Props) => {
    * STATE
    */
   const pool = toRef(props, 'pool');
+  const isMounted = ref(false);
   const isSingleAssetJoin = toRef(props, 'isSingleAssetJoin');
   const amountsIn = ref<AmountIn[]>([]);
   const bptOut = ref<string>('0');
@@ -79,7 +81,7 @@ const provider = (props: Props) => {
       isSingleAssetJoin
     ),
     queryJoin,
-    reactive({ enabled: true })
+    reactive({ enabled: isMounted })
   );
 
   /**
@@ -290,6 +292,8 @@ const provider = (props: Props) => {
     fetchPoolsForSor();
   });
 
+  onMounted(() => (isMounted.value = true));
+
   return {
     // State
     amountsIn,
@@ -298,11 +302,11 @@ const provider = (props: Props) => {
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
     priceImpact: readonly(priceImpact),
-    isLoadingQuery,
-    queryError,
     txError: readonly(txError),
 
     //  Computed
+    isLoadingQuery,
+    queryError,
     joinTokens,
     highPriceImpact,
     rektPriceImpact,

@@ -1,12 +1,14 @@
+import { Address, BalancerSDK } from '@balancer-labs/sdk';
 import { AmountOut } from '@/providers/local/exit-pool.provider';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Signer } from '@ethersproject/abstract-signer';
 import { Ref } from 'vue';
+import { JsonRpcSigner } from '@ethersproject/providers';
+
+export type AmountsOut = Record<Address, string>;
 
 export enum ExitType {
   GivenIn, // When BPT in is specified.
@@ -19,14 +21,14 @@ export type ExitParams = {
   amountsOut: AmountOut[];
   tokenInfo: TokenInfoMap;
   prices: TokenPrices;
-  signer: Signer;
+  signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
 };
 
 export type QueryOutput = {
   priceImpact: number;
-  amountsOut: Record<string, string>;
+  amountsOut: AmountsOut;
 };
 
 export abstract class ExitPoolHandler {

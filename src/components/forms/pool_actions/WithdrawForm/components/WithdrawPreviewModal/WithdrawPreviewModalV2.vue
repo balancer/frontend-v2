@@ -2,14 +2,13 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useTokens from '@/composables/useTokens';
-import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-import TokenAmounts from './components/TokenAmounts.vue';
 import WithdrawSummary from './components/WithdrawSummary.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 import WithdrawActionsV2 from './components/WithdrawActionsV2.vue';
+import TokenAmounts from '@/components/forms/pool_actions/shared/TokenAmounts.vue';
 
 /**
  * TYPES
@@ -25,7 +24,7 @@ type AmountMap = {
 /**
  * PROPS & EMITS
  */
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {});
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -41,7 +40,16 @@ const withdrawalConfirmed = ref(false);
  */
 const { t } = useI18n();
 const { getToken } = useTokens();
-const { amountsOut, priceImpact, fiatTotalOut, fiatAmountsOut } = useExitPool();
+
+const {
+  bptIn,
+  fiatValueIn,
+  fiatTotalOut,
+  amountsOut,
+  priceImpact,
+  fiatAmountsOut,
+  isSingleAssetExit,
+} = useExitPool();
 
 /**
  * COMPUTED
@@ -52,18 +60,41 @@ const title = computed((): string =>
     : t('withdraw.preview.titles.default')
 );
 
-const amountMap = computed((): AmountMap => {
-  const amountMap = {};
-  amountsOut.value.forEach(({ address, value }) => {
-    if (bnum(value).gt(0)) amountMap[address] = value;
-  });
+const showTokensIn = computed<boolean>(() => !isSingleAssetExit.value);
+
+const amountInMap = computed((): AmountMap => {
+  const amountMap = {
+    [props.pool.address]: bptIn.value,
+  };
   return amountMap;
 });
 
-const tokenMap = computed((): TokenInfoMap => {
+const tokenInMap = computed((): TokenInfoMap => {
+  const tokenMap = {
+    [props.pool.address]: getToken(props.pool.address),
+  };
+  return tokenMap;
+});
+
+const fiatAmountInMap = computed((): AmountMap => {
+  const fiatAmountMap = {
+    [props.pool.address]: fiatValueIn.value,
+  };
+  return fiatAmountMap;
+});
+
+const tokenOutMap = computed((): TokenInfoMap => {
   const tokenMap = {};
-  Object.keys(amountMap.value).forEach(address => {
-    tokenMap[address] = getToken(address);
+  amountsOut.value.forEach(item => {
+    tokenMap[item.address] = getToken(item.address);
+  });
+  return tokenMap;
+});
+
+const amountsOutMap = computed((): AmountMap => {
+  const tokenMap = {};
+  amountsOut.value.forEach(item => {
+    tokenMap[item.address] = item.value;
   });
   return tokenMap;
 });
@@ -95,8 +126,19 @@ function handleClose(): void {
     </template>
 
     <TokenAmounts
-      :amountMap="amountMap"
-      :tokenMap="tokenMap"
+      v-if="showTokensIn"
+      :title="$t('investment.preview.titles.tokenIn')"
+      :amountMap="amountInMap"
+      :tokenMap="tokenInMap"
+      :fiatAmountMap="fiatAmountInMap"
+      :fiatTotal="fiatValueIn"
+    />
+
+    <TokenAmounts
+      :title="$t('investment.preview.titles.tokenOut')"
+      class="mt-4"
+      :amountMap="amountsOutMap"
+      :tokenMap="tokenOutMap"
       :fiatAmountMap="fiatAmountsOut"
       :fiatTotal="fiatTotalOut"
     />
