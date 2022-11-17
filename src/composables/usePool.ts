@@ -1,4 +1,4 @@
-import { Network, AprBreakdown } from '@balancer-labs/sdk';
+import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { isAddress } from '@ethersproject/address';
 import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
@@ -15,12 +15,16 @@ import {
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolToken } from '@/services/pool/types';
-import { PoolType } from '@/services/pool/types';
 import { divApr, hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { uniq } from 'lodash';
+
+enum LocalPoolTypes {
+  Linear = 'Linear',
+}
+type LocalPoolType = PoolType | LocalPoolTypes;
 
 /**
  * METHODS
@@ -29,10 +33,10 @@ export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42));
 }
 
-export function isLinear(poolType: PoolType): boolean {
+export function isLinear(poolType: LocalPoolType): boolean {
   return (
     poolType === PoolType.AaveLinear ||
-    poolType === PoolType.Linear ||
+    poolType === LocalPoolTypes.Linear ||
     poolType === PoolType.ERC4626Linear
   );
 }

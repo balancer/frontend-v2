@@ -70,15 +70,8 @@ export class PoolDecorator {
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();
 
-      if (setAprCondition) {
-        await poolService.setAPR(
-          poolSnapshot,
-          prices,
-          currency,
-          protocolFeePercentage,
-          gaugeBALAprs[pool.id],
-          gaugeRewardTokenAprs[pool.id]
-        );
+      if (setAprCondition && poolSnapshot) {
+        await poolService.setAPR(poolSnapshot, prices);
       }
 
       return poolService.pool;

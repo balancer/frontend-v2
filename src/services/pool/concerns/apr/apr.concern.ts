@@ -1,4 +1,4 @@
-import { isGoerli } from '@/composables/useNetwork';
+import { isGoerli, networkId } from '@/composables/useNetwork';
 import { isDeep, isVeBalPool } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
@@ -7,10 +7,16 @@ import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { aaveService } from '@/services/aave/aave.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
-import { AprRange, Pool } from '@/services/pool/types';
-import { AprBreakdown } from '@balancer-labs/sdk';
-
+import { Pool } from '@/services/pool/types';
+import {
+  AprBreakdown,
+  PoolsStaticRepository,
+  StaticTokenPriceProvider,
+  Pools,
+  BalancerDataRepositories,
+} from '@balancer-labs/sdk';
 import { VeBalAprCalc } from './calcs/vebal-apr.calc';
+import { balancer } from '@/lib/balancer.sdk';
 
 export class AprConcern {
   constructor(
@@ -21,57 +27,26 @@ export class AprConcern {
   ) {}
 
   public async calc(
-    poolSnapshot: Pool | undefined,
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    protocolFeePercentage: number,
-    stakingBalApr: AprRange,
-    stakingRewardApr = '0'
+    poolSnapshot: Pool,
+    prices: TokenPrices
   ): Promise<AprBreakdown> {
-    const swapFeeAPR = this.calcSwapFeeAPR(poolSnapshot, protocolFeePercentage);
+    const poolsRepository = new PoolsStaticRepository([poolSnapshot]);
+    const tokenPriceRepository = new StaticTokenPriceProvider(prices);
 
-    const yieldAPR = await this.calcYieldAPR(
-      prices,
-      currency,
-      protocolFeePercentage
-    );
-
-    const veBalAPR = await this.calcVeBalAPR(prices);
-
-    const unstakedTotalAPR = bnSum([
-      swapFeeAPR,
-      yieldAPR.total.toString(),
-    ]).toString();
-
-    // const aprGivenBoost = (boost = '1') =>
-    //   this.calcAprGivenBoost(
-    //     unstakedTotalAPR,
-    //     stakingBalApr,
-    //     stakingRewardApr,
-    //     boost
-    //   );
-
-    const stakedAprRange = this.calcStakedAprRange(
-      unstakedTotalAPR,
-      stakingBalApr,
-      stakingRewardApr
-    );
-
-    return {
-      swapFees: Number(swapFeeAPR),
-      tokenAprs: yieldAPR,
-      stakingApr: {
-        min: Number(stakingBalApr.min),
-        max: Number(stakingBalApr.max),
+    const dataRepositories = balancer.data;
+    const poolsRepositories: BalancerDataRepositories = {
+      ...dataRepositories,
+      ...{
+        // pools: poolsRepository,
+        // tokenPrices: tokenPriceRepository,
       },
-      rewardsApr: {
-        total: Number(stakingRewardApr),
-        breakdown: {},
-      },
-      protocolApr: isVeBalPool(this.pool.id) ? Number(veBalAPR) : 0,
-      min: bnum(unstakedTotalAPR).plus(stakedAprRange.min).toNumber(),
-      max: bnum(unstakedTotalAPR).plus(stakedAprRange.max).toNumber(),
     };
+
+    const pools = new Pools(balancer.networkConfig, poolsRepositories);
+    const pool = (await pools.find(poolSnapshot.id)) || poolSnapshot;
+    const apr = await pools.apr(pool);
+
+    return apr;
   }
 
   private calcSwapFeeAPR(
@@ -94,41 +69,6 @@ export class AprConcern {
       .dividedBy(this.pool.totalLiquidity)
       .multipliedBy(365)
       .toString();
-  }
-
-  /**
-   * @summary Total APR given boost
-   */
-  private calcAprGivenBoost(
-    unstakedTotalAPR: string,
-    stakingBalApr: AprRange,
-    stakingRewardApr = '0',
-    boost = '1'
-  ): string {
-    const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
-    const boostedAPR = stakingBalApr?.min
-      ? bnum(stakingBalApr.min).times(boost)
-      : bnum('0');
-
-    return stakedBaseAPR.plus(boostedAPR).toString();
-  }
-
-  /**
-   * @summary Absolute total staked APR range
-   */
-  private calcStakedAprRange(
-    unstakedTotalAPR: string,
-    stakingBalApr: AprRange,
-    stakingRewardApr = '0'
-  ): AprRange {
-    const stakedBaseAPR = bnum(unstakedTotalAPR).plus(stakingRewardApr);
-    const maxBalApr = stakingBalApr?.max || '0';
-    const minBalApr = stakingBalApr?.min || '0';
-
-    return {
-      max: stakedBaseAPR.plus(maxBalApr).toString(),
-      min: stakedBaseAPR.plus(minBalApr).toString(),
-    };
   }
 
   /**

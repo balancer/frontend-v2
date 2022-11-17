@@ -101,15 +101,8 @@ export default function usePoolAprQuery(
         }),
       ]);
 
-    const _snaphshot = await getSnapshot(_pool.id);
-    const apr = await new AprConcern(_pool).calc(
-      _snaphshot[0],
-      prices.value,
-      currency.value,
-      protocolFeePercentage,
-      gaugeBALAprs[_pool.id],
-      gaugeRewardTokenAprs[_pool.id]
-    );
+    const _snapshot = await getSnapshot(_pool.id);
+    const apr = await new AprConcern(_pool).calc(_snapshot[0], prices.value);
 
     return apr;
   };

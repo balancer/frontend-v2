@@ -1,48 +1,18 @@
 import { BigNumber } from 'ethers';
 import { Address } from '@/types';
-import { AprBreakdown } from '@balancer-labs/sdk';
+import { PoolType, Pool as SDKPool } from '@balancer-labs/sdk';
 
-export interface Pool {
-  id: string;
-  address: string;
-  poolType: PoolType;
-  swapFee: string;
+export interface Pool extends SDKPool {
   owner: string;
   factory: string;
   tokens: PoolToken[];
-  tokensList: string[];
-  totalLiquidity: string;
-  totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
   createTime: number;
-  name: string;
   symbol: string;
   onchain?: OnchainPoolData;
-  mainTokens?: string[];
-  wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
-  unwrappedTokens?: string[];
-  isNew?: boolean;
-  volumeSnapshot?: string;
-  feesSnapshot?: string;
-  apr?: AprBreakdown;
-  boost?: string;
   priceRateProviders?: PriceRateProvider[];
-}
-
-export enum PoolType {
-  Weighted = 'Weighted',
-  Investment = 'Investment',
-  Stable = 'Stable',
-  MetaStable = 'MetaStable',
-  StablePhantom = 'StablePhantom',
-  ComposableStable = 'ComposableStable',
-  LiquidityBootstrapping = 'LiquidityBootstrapping',
-  Managed = 'Managed',
-  AaveLinear = 'AaveLinear',
-  Linear = 'Linear',
-  ERC4626Linear = 'ERC4626Linear',
 }
 
 export interface TokenTreePool {
@@ -56,7 +26,7 @@ export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
-  priceRate: string | null;
+  priceRate: string | undefined;
   symbol?: string;
   decimals: number;
   token: { pool: TokenTreePool | null };

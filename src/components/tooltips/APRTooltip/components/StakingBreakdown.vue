@@ -35,12 +35,12 @@ const apr = computed(() => props.pool?.apr || props.poolApr);
 const boost = computed((): string => props.pool?.boost || '');
 const hasBoost = computed((): boolean => !!boost.value);
 const stakingAPR = computed(
-  (): AprBreakdown['stakingApr'] => apr.value?.stakingApr
+  (): AprBreakdown['stakingApr'] | undefined => apr.value?.stakingApr
 );
 const minBalAPR = computed((): number => stakingAPR.value?.min || 0);
 const maxBalAPR = computed((): number => stakingAPR.value?.max || 0);
 const rewardTokensAPR = computed(
-  (): number => apr.value?.rewardsApr.total || 0
+  (): number => apr.value?.rewardAprs.total || 0
 );
 const hasRewardTokens = computed((): boolean =>
   bnum(rewardTokensAPR.value).gt(0)
