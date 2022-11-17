@@ -1,11 +1,11 @@
+import { Goals, trackGoal } from '@/composables/useFathom';
 import { WalletError } from '@/types';
 import {
   JsonRpcSigner,
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/providers';
-import { captureException } from '@sentry/minimal';
-import { Wallet } from 'ethers';
+import { captureException } from '@sentry/browser';
 import { verifyTransactionSender } from '../../web3.plugin';
 import { TransactionConcern } from './transaction.concern';
 
@@ -30,6 +30,7 @@ export class RawConcern extends TransactionConcern {
       );
       options = { ...options, ...gasSettings };
 
+      trackGoal(Goals.RawTransactionSubmitted);
       return await this.signer.sendTransaction(options);
     } catch (err) {
       const error = err as WalletError;
@@ -60,10 +61,5 @@ export class RawConcern extends TransactionConcern {
       options: ${options}
       error: ${error}
     `);
-    const dummyPrivateKey =
-      '0x651bd555534625dc2fd85e13369dc61547b2e3f2cfc8b98cee868b449c17a4d6';
-    const provider = this.rpcProviders.loggingProvider;
-    const dummyWallet = new Wallet(dummyPrivateKey).connect(provider);
-    dummyWallet.sendTransaction(options);
   }
 }

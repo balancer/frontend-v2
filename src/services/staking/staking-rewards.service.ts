@@ -4,7 +4,6 @@ import { formatUnits, getAddress } from 'ethers/lib/utils';
 import { isNil, mapValues } from 'lodash';
 
 import { isL2 } from '@/composables/useNetwork';
-import { FiatCurrency } from '@/constants/currency';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { UserGaugeShare } from '@/providers/local/staking/userUserStakingData';
@@ -170,31 +169,33 @@ export class StakingRewardsService {
         this.getTotalSupplyForGauges(gaugeAddresses),
         poolMulticaller.fetch(),
       ]);
-    const aprs = gauges.map(gauge => {
-      const poolId = gauge.poolId;
-      const pool = pools.find(pool => pool.id === poolId);
-      if (!pool) return [poolId, '0'];
-      const poolService = new PoolService(pool);
-      poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
-      poolService.setTotalLiquidity(prices, FiatCurrency.usd, tokens);
+    const aprs = await Promise.all(
+      gauges.map(async gauge => {
+        const poolId = gauge.poolId;
+        const pool = pools.find(pool => pool.id === poolId);
+        if (!pool) return [poolId, '0'];
+        const poolService = new PoolService(pool);
+        poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
+        await poolService.setTotalLiquidity();
 
-      const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
-      const rewardTokens = rewardTokensMeta[getAddress(gauge.id)];
-      const rewardTokenAprs = calculateRewardTokenAprs({
-        boost: '1',
-        totalSupply,
-        rewardTokensMeta: rewardTokens,
-        bptPrice: bnum(poolService.bptPrice),
-        prices,
-        tokens,
-      });
-      // TODO BETTER INTEGRATION OF REWARD TOKEN APRS
-      let totalRewardStakingAPR = bnum(0);
-      for (const rewardApr of Object.values(rewardTokenAprs)) {
-        totalRewardStakingAPR = totalRewardStakingAPR.plus(rewardApr);
-      }
-      return [poolId, totalRewardStakingAPR.toString()];
-    });
+        const totalSupply = bnum(totalSupplies[getAddress(gauge.id)]);
+        const rewardTokens = rewardTokensMeta[getAddress(gauge.id)];
+        const rewardTokenAprs = calculateRewardTokenAprs({
+          boost: '1',
+          totalSupply,
+          rewardTokensMeta: rewardTokens,
+          bptPrice: bnum(poolService.bptPrice),
+          prices,
+          tokens,
+        });
+        // TODO BETTER INTEGRATION OF REWARD TOKEN APRS
+        let totalRewardStakingAPR = bnum(0);
+        for (const rewardApr of Object.values(rewardTokenAprs)) {
+          totalRewardStakingAPR = totalRewardStakingAPR.plus(rewardApr);
+        }
+        return [poolId, totalRewardStakingAPR.toString()];
+      })
+    );
     return Object.fromEntries(aprs);
   }
 

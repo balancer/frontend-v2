@@ -28,6 +28,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionActionInfo } from '@/types/transactions';
 
 import { InvestMathResponse } from '../../../composables/useInvestMath';
+import { Goals, trackGoal } from '@/composables/useFathom';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -71,7 +73,7 @@ const investmentState = reactive<InvestmentState>({
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { account, getProvider, blockNumber } = useWeb3();
+const { getSigner, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { lockablePoolId } = useVeBal();
@@ -84,6 +86,7 @@ const {
   batchSwapAmountMap,
   bptOut,
   fiatTotalLabel,
+  fiatTotal,
   batchSwap,
   shouldFetchBatchSwap,
 } = toRefs(props.math);
@@ -158,6 +161,10 @@ async function handleTransaction(tx): Promise<void> {
       investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
       investmentState.confirmed = true;
       investmentState.confirming = false;
+      trackGoal(
+        Goals.LiquidityAdded,
+        bnum(fiatTotal.value).times(100).toNumber() || 0
+      );
     },
     onTxFailed: () => {
       console.error('Add liquidity failed');
@@ -181,8 +188,7 @@ async function submit(): Promise<TransactionResponse> {
       );
     } else {
       tx = await poolExchange.join(
-        getProvider(),
-        account.value,
+        getSigner(),
         fullAmounts.value,
         props.tokenAddresses,
         normalizedBptOut.value

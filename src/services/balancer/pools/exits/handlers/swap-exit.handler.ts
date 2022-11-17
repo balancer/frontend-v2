@@ -103,7 +103,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     });
 
     const amountOut = formatFixed(
-      this.lastSwapRoute.returnAmountFromSwaps,
+      this.lastSwapRoute.returnAmount,
       tokenOut.decimals
     );
     if (bnum(amountOut).eq(0)) throw new Error('Not enough liquidity.');
@@ -158,7 +158,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     console.log('this.lastSwapRoute', this.lastSwapRoute);
 
     const amountIn = formatFixed(
-      this.lastSwapRoute.returnAmountFromSwaps,
+      this.lastSwapRoute.returnAmount,
       tokenIn.decimals
     );
     console.log('amountIn', amountIn);

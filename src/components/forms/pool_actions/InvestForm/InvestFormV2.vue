@@ -5,9 +5,8 @@ import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLi
 import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { usePool } from '@/composables/usePool';
-import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
-import { bnum } from '@/lib/utils';
+import { bnum, forChange } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import { Pool } from '@/services/pool/types';
@@ -17,6 +16,10 @@ import useVeBal from '@/composables/useVeBAL';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import InvestPreviewModalV2 from './components/InvestPreviewModal/InvestPreviewModalV2.vue';
 import InvestFormTotalsV2 from './components/InvestFormTotalsV2.vue';
+
+import useMyWalletTokens from '@/composables/useMyWalletTokens';
+import MissingPoolTokensAlert from './components/MissingPoolTokensAlert.vue';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -39,15 +42,14 @@ const showStakeModal = ref(false);
 /**
  * COMPOSABLES
  */
-const { wrappedNativeAsset } = useTokens();
 const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
+const { wrappedNativeAsset } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
-  joinTokens,
   amountsIn,
   highPriceImpact,
   highPriceImpactAccepted,
@@ -57,6 +59,12 @@ const {
   setAmountsIn,
   addTokensIn,
 } = useJoinPool();
+
+const { poolTokensWithBalance, isLoadingBalances, poolTokensWithoutBalance } =
+  useMyWalletTokens({
+    pool: props.pool,
+    includeNativeAsset: true,
+  });
 
 /**
  * COMPUTED
@@ -69,28 +77,28 @@ const poolHasLowLiquidity = computed((): boolean =>
   bnum(props.pool.totalLiquidity).lt(LOW_LIQUIDITY_THRESHOLD)
 );
 
+async function initializeTokensForm(isSingleAssetJoin: boolean) {
+  setAmountsIn([]);
+  if (isSingleAssetJoin) {
+    addTokensIn([wrappedNativeAsset.value.address]);
+  } else {
+    await forChange(isLoadingBalances, false);
+    addTokensIn(poolTokensWithBalance.value);
+  }
+}
+
 /**
  * CALLBACKS
  */
 onBeforeMount(() => {
-  setAmountsIn([]);
-  if (isSingleAssetJoin.value) {
-    addTokensIn([joinTokens.value[0]]);
-  } else {
-    addTokensIn(joinTokens.value);
-  }
+  initializeTokensForm(isSingleAssetJoin.value);
 });
 
 /**
  * WATCHERS
  */
 watch(isSingleAssetJoin, isSingleAsset => {
-  setAmountsIn([]);
-  if (isSingleAsset) {
-    addTokensIn([wrappedNativeAsset.value.address]);
-  } else {
-    addTokensIn(joinTokens.value);
-  }
+  initializeTokensForm(isSingleAsset);
 });
 </script>
 
@@ -123,6 +131,12 @@ watch(isSingleAssetJoin, isSingleAsset => {
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
       :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+    />
+
+    <MissingPoolTokensAlert
+      v-if="!isSingleAssetJoin"
+      :poolTokensWithBalance="poolTokensWithBalance"
+      :poolTokensWithoutBalance="poolTokensWithoutBalance"
     />
 
     <InvestFormTotalsV2 />
@@ -193,10 +207,3 @@ watch(isSingleAssetJoin, isSingleAsset => {
     </StakingProvider>
   </div>
 </template>
-
-<style scoped>
-/* This is needed because the trade settings popover overflows */
-.label {
-  @apply font-bold text-sm mb-2 inline-block;
-}
-</style>

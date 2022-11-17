@@ -426,11 +426,11 @@
       "titles": {
         "tokenIn": "You’re providing",
         "tokenOut": "You’re expected to receive",
-        "confirmed": "Investment confirmed",
-        "default": "Preview investment"
+        "confirmed": "Add liquidity confirmed",
+        "default": "Add liquidity preview"
       },
       "summary": {
-        "total": "Total to invest",
+        "total": "Total",
         "confirmed": "Add liquidity confirmed",
         "default": "Add liquidity preview"
       },
@@ -446,6 +446,10 @@
       "lowLiquidity": {
         "description": "Add assets proportionally to the pool weights or the price impact will be high and you will likely get REKT and lose money.",
         "title": "Be careful: This pool has low liquidity"
+      },
+      "noPoolTokensToJoinWith": {
+        "title": "You have no pool tokens to join with",
+        "description": "This option would usually allow you to add pool tokens in any combination or proportionally to reduce price impact. \n\nHowever, since your connected wallet doesn’t have any pool tokens, go to the ‘Single token’ tab above to add liquidity to this pool with non-pool tokens. "
       }
     },
     "error": {
@@ -484,7 +488,7 @@
     },
     "networksExplainer": "Switch networks in the header to see your current cumulative $BAL incentives on {0} and {1}.",
     "noRewards": {
-      "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to investors weekly in proportion to their contribution.",
+      "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to liquidity providers weekly in proportion to their contribution.",
       "title": "You have no token incentives to claim"
     },
     "tabs": {
@@ -575,6 +579,7 @@
   "noPriceImpact": "Best price",
   "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
   "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
+  "hasNonApprovedRateProviders": "One or more token rate providers associated with tokens in this pool have not been vetted. Investing has been disabled.",
   "noRecentActivity": "Your recent activity will appear here…",
   "noResults": "No results",
   "noSwapsPool": "No swaps in this pool.",
@@ -654,7 +659,7 @@
   "poolTransfer": {
     "myPoolBalancesCard": {
       "title": "My pool balance",
-      "altTitle": "My pool investment balance",
+      "altTitle": "My pool liquidity balance",
       "underlyingTokens": "Underlying pool tokens"
     },
     "myWalletTokensCard": {

@@ -5,7 +5,19 @@ import { ContractConcern } from './concerns/contract.concern';
 import { RawConcern } from './concerns/raw.concern';
 import { TransactionBuilder } from './transaction.builder';
 
-jest.mock('@ethersproject/providers');
+jest.mock('@ethersproject/providers', () => {
+  return {
+    JsonRpcSigner: jest.fn().mockImplementation(() => {
+      return {
+        provider: {
+          getBlockNumber: jest.fn().mockImplementation(),
+        },
+        getAddress: jest.fn().mockImplementation(),
+        sendTransaction: jest.fn().mockImplementation(),
+      };
+    }),
+  };
+});
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 jest.mock('@/services/gas-price/gas-price.service', () => {
   return {

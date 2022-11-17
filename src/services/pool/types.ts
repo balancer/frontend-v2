@@ -27,6 +27,7 @@ export interface Pool {
   feesSnapshot?: string;
   apr?: PoolAPRs;
   boost?: string;
+  priceRateProviders?: PriceRateProvider[];
 }
 
 export enum PoolType {
@@ -45,6 +46,7 @@ export enum PoolType {
 
 export interface TokenTreePool {
   id: string;
+  address: string;
   poolType: PoolType;
   mainIndex: number;
   tokens?: PoolToken[];
@@ -227,6 +229,11 @@ export interface PoolSnapshot {
   swapVolume: string;
   swapFees: string;
   liquidity: string;
+}
+
+export interface PriceRateProvider {
+  address: string;
+  token: PoolToken;
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;

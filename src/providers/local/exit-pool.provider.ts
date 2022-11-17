@@ -133,9 +133,7 @@ const provider = (props: Props) => {
   const exitTokens = computed((): PoolToken[] => {
     let tokens: PoolToken[] = [];
 
-    tokens = isDeep(pool.value)
-      ? flatTokenTree(pool.value.tokens)
-      : pool.value.tokens;
+    tokens = isDeep(pool.value) ? flatTokenTree(pool.value) : pool.value.tokens;
 
     return tokens.filter(
       token => !isSameAddress(token.address, pool.value.address)
