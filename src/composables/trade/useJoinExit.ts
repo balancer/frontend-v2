@@ -38,9 +38,9 @@ import {
   SwapInfo,
   SwapTypes,
   buildRelayerCalls,
+  Pool,
 } from '@balancer-labs/sdk';
 import { balancer } from '@/lib/balancer.sdk';
-import useTrading from './useTrading';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -90,6 +90,7 @@ type Props = {
   tokenIn: ComputedRef<TokenInfo>;
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
+  pools: Ref<(Pool | SubgraphPoolBase)[]>;
 };
 
 const PRICE_QUOTE_TIMEOUT = 10000;
@@ -121,18 +122,12 @@ export default function useJoinExit({
   tokenIn,
   tokenOut,
   slippageBufferRate,
+  pools,
 }: Props) {
   // COMPOSABLES
   const store = useStore();
   const { account } = useWeb3();
   const { balanceFor } = useTokens();
-  const trading = useTrading(
-    exactIn,
-    tokenInAddressInput,
-    tokenInAmountInput,
-    tokenOutAddressInput,
-    tokenOutAmountInput
-  );
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);
@@ -192,7 +187,8 @@ export default function useJoinExit({
       }
       const relayerCallData = buildRelayerCalls(
         swapInfo.value,
-        trading.sor.pools.value as SubgraphPoolBase[],
+        // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
+        pools.value as SubgraphPoolBase[],
         account.value,
         balancer.contracts.relayerV4?.address ?? '',
         balancer.networkConfig.addresses.tokens.wrappedNativeAsset,

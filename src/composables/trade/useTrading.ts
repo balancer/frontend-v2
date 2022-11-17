@@ -16,6 +16,7 @@ import useUserSettings from '../useUserSettings';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
 import useJoinExit from './useJoinExit';
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis' | 'joinExit';
 
@@ -172,6 +173,7 @@ export default function useTrading(
     tokenIn,
     tokenOut,
     slippageBufferRate,
+    pools: sor.pools as Ref<SubgraphPoolBase[]>,
   });
 
   const isLoading = computed(() => {
