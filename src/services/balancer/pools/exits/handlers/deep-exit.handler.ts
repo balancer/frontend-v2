@@ -92,7 +92,7 @@ export class DeepExitHandler implements ExitPoolHandler {
     if (!this.lastGeneralisedExitRes) throw new Error('Not enough liquidity.');
 
     const tokenAddressesOut = this.lastGeneralisedExitRes.tokensOut;
-    const allPoolTokens = flatTokenTree(this.pool.value.tokens);
+    const allPoolTokens = flatTokenTree(this.pool.value);
     const amountsOut: AmountsOut = {};
 
     this.lastGeneralisedExitRes.expectedAmountsOut.forEach((amount, i) => {

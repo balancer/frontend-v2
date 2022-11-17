@@ -39,6 +39,7 @@ const slider = reactive({
 const { isWalletReady } = useWeb3();
 const {
   bptIn,
+  bptInValid,
   bptBalance,
   hasBpt,
   isLoadingQuery,
@@ -113,6 +114,7 @@ onBeforeMount(() => {
     <div class="label">{{ t('youProvide') }}</div>
     <TokenInput
       v-model:amount="bptIn"
+      v-model:isValid="bptInValid"
       :address="pool.address"
       :name="pool.address"
       class="mb-4"
