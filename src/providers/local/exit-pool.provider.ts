@@ -42,6 +42,7 @@ import {
   onMounted,
 } from 'vue';
 import { useQuery } from 'vue-query';
+import debounce from 'debounce-promise';
 
 /**
  * TYPES
@@ -64,6 +65,11 @@ export type AmountOut = {
  * Handles pool exiting state and transaction execution.
  */
 const provider = (props: Props) => {
+  const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
+  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
+    leading: true,
+  });
+
   /**
    * STATE
    */
@@ -110,7 +116,7 @@ const provider = (props: Props) => {
       isSingleAssetExit,
       singleAmountOut
     ),
-    queryExit,
+    debounceQueryExit,
     reactive({ enabled: queriesEnabled })
   );
 
@@ -120,7 +126,7 @@ const provider = (props: Props) => {
       isSingleAssetExit,
       toRef(singleAmountOut, 'address')
     ),
-    getSingleAssetMax,
+    debounceGetSingleAssetMax,
     reactive({ enabled: queriesEnabled })
   );
 
@@ -318,6 +324,7 @@ const provider = (props: Props) => {
    */
   async function getSingleAssetMax() {
     if (!hasFetchedPoolsForSor.value) return;
+    if (!isSingleAssetExit.value) return;
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
     singleAmountOut.max = '';
