@@ -56,7 +56,7 @@ const {
   txInProgress,
   exit,
   isLoadingQuery,
-  debounceQueryExit,
+  queryExitQuery,
   fiatTotalOut,
   approvalActions: exitPoolApprovalActions,
 } = useExitPool();
@@ -188,7 +188,7 @@ function redirectToPool() {
  */
 watch(blockNumber, () => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    debounceQueryExit.value();
+    queryExitQuery.refetch.value();
   }
 });
 </script>

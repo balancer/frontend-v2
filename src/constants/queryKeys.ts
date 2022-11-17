@@ -85,6 +85,24 @@ const QUERY_KEYS = {
         },
       ],
     },
+    Exits: {
+      QueryExit: (
+        bptIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'query',
+        'exit',
+        {
+          bptIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+    },
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],

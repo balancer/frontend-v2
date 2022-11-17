@@ -298,11 +298,11 @@ const provider = (props: Props) => {
     isSingleAssetJoin: readonly(isSingleAssetJoin),
     bptOut: readonly(bptOut),
     priceImpact: readonly(priceImpact),
-    isLoadingQuery,
-    queryError,
     txError: readonly(txError),
 
     //  Computed
+    isLoadingQuery,
+    queryError,
     joinTokens,
     highPriceImpact,
     rektPriceImpact,
