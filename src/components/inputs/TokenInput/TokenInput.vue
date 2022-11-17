@@ -40,6 +40,7 @@ type Props = {
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
+  hideFiatValue?: boolean;
   ignoreWalletBalance?: boolean;
   tokenValue?: string;
   placeholder?: string;
@@ -64,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
   hintAmount: '',
   disableNativeAssetBuffer: false,
   hideFooter: false,
+  hideFiatValue: false,
   ignoreWalletBalance: false,
   options: () => [],
   rules: () => [],
@@ -296,7 +298,9 @@ const setMax = () => {
           </button>
           <div>
             <template v-if="hasAmount && hasToken">
-              {{ fNum2(tokenValue, FNumFormats.fiat) }}
+              <span v-if="!hideFiatValue">
+                {{ fNum2(tokenValue, FNumFormats.fiat) }}
+              </span>
               <span v-if="priceImpact" :class="priceImpactClass">
                 ({{
                   priceImpactSign + fNum2(priceImpact, FNumFormats.percent)

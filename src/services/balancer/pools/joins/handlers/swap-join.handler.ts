@@ -108,7 +108,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
       0,
       _fiatValueIn
         .minus(_fiatValueOut)
-        .div(_fiatValueIn.plus(_fiatValueOut).div(bnum(2)))
+        .div(_fiatValueIn.plus(_fiatValueOut).div(2))
         .toNumber() || 1 // If fails to calculate return error value of 100%
     );
   }

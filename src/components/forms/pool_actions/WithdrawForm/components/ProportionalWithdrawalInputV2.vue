@@ -47,6 +47,7 @@ const {
   propAmountsOut,
   exitTokenInfo,
   fiatAmountsOut,
+  fiatTotalOut,
 } = useExitPool();
 const { t } = useI18n();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
@@ -121,6 +122,7 @@ onBeforeMount(() => {
       fixedToken
       slider
       :sliderProps="sliderProps"
+      :tokenValue="fiatTotalOut"
       @update:amount="handleAmountChange"
       @update:slider="handleSliderChange"
     />
