@@ -15,8 +15,9 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useGnosis from './useGnosis';
 import useSor from './useSor';
+import useJoinExit from './useJoinExit';
 
-export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
+export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis' | 'joinExit';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
@@ -97,6 +98,10 @@ export default function useTrading(
   );
 
   const tradeRoute = computed<TradeRoute>(() => {
+    if (!joinExit.swapInfo.value?.returnAmount.isZero()) {
+      return 'joinExit';
+    }
+
     if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
     } else if (isEthTrade.value) {
@@ -111,6 +116,8 @@ export default function useTrading(
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
 
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
+
+  const isJoinExitTrade = computed(() => tradeRoute.value === 'joinExit');
 
   const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
 
@@ -154,6 +161,19 @@ export default function useTrading(
     slippageBufferRate,
   });
 
+  const joinExit = useJoinExit({
+    exactIn,
+    tokenInAddressInput,
+    tokenInAmountInput,
+    tokenOutAddressInput,
+    tokenOutAmountInput,
+    tokenInAmountScaled,
+    tokenOutAmountScaled,
+    tokenIn,
+    tokenOut,
+    slippageBufferRate,
+  });
+
   const isLoading = computed(() => {
     if (hasTradeQuote.value || isWrapUnwrapTrade.value) {
       return false;
@@ -174,7 +194,15 @@ export default function useTrading(
 
   // METHODS
   function trade(successCallback?: () => void) {
-    if (isGnosisTrade.value) {
+    if (isJoinExitTrade.value) {
+      return joinExit.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        joinExit.resetState();
+      });
+    } else if (isGnosisTrade.value) {
       return gnosis.trade(() => {
         if (successCallback) {
           successCallback();
