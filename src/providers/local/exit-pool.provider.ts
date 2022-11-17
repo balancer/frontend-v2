@@ -19,13 +19,7 @@ import {
 import QUERY_KEYS from '@/constants/queryKeys';
 import symbolKeys from '@/constants/symbol.keys';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
-import {
-  bnSum,
-  bnum,
-  isSameAddress,
-  removeAddress,
-  trackLoading,
-} from '@/lib/utils';
+import { bnSum, bnum, isSameAddress, removeAddress } from '@/lib/utils';
 import { ExitPoolService } from '@/services/balancer/pools/exits/exit-pool.service';
 import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.handler';
 import { Pool, PoolToken } from '@/services/pool/types';
@@ -33,7 +27,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import debounce from 'debounce-promise';
 import {
   computed,
   defineComponent,
@@ -46,6 +39,7 @@ import {
   reactive,
   toRef,
   watch,
+  onMounted,
 } from 'vue';
 import { useQuery } from 'vue-query';
 
@@ -74,14 +68,12 @@ const provider = (props: Props) => {
    * STATE
    */
   const pool = toRef(props, 'pool');
+  const isMounted = ref(false);
   const isSingleAssetExit = toRef(props, 'isSingleAssetExit');
   const priceImpact = ref<number>(0);
   const highPriceImpactAccepted = ref<boolean>(false);
-  const isLoadingMax = ref<boolean>(true);
-  const isLoadingSingleAssetMax = ref<boolean>(false);
   const bptIn = ref<string>('0');
   const bptInValid = ref<boolean>(true);
-  const maxError = ref<string>('');
   const txError = ref<string>('');
   const singleAmountOut = reactive<AmountOut>({
     address: '',
@@ -90,11 +82,6 @@ const provider = (props: Props) => {
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
-
-  const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
-  const debounceGetSingleAssetMax = ref(
-    debounce(getSingleAssetMax, 1000, { leading: true })
-  );
 
   /**
    * SERVICES
@@ -114,6 +101,8 @@ const provider = (props: Props) => {
     Relayer.BATCH_V4
   );
 
+  const queriesEnabled = computed((): boolean => isMounted.value);
+
   const queryExitQuery = useQuery<void, Error>(
     QUERY_KEYS.Pools.Exits.QueryExit(
       bptIn,
@@ -121,8 +110,18 @@ const provider = (props: Props) => {
       isSingleAssetExit,
       singleAmountOut
     ),
-    debounceQueryExit,
-    reactive({ enabled: true })
+    queryExit,
+    reactive({ enabled: queriesEnabled })
+  );
+
+  const singleAssetMaxQuery = useQuery<void, Error>(
+    QUERY_KEYS.Pools.Exits.SingleAssetMax(
+      hasFetchedPoolsForSor,
+      isSingleAssetExit,
+      singleAmountOut
+    ),
+    getSingleAssetMax,
+    reactive({ enabled: queriesEnabled })
   );
 
   /**
@@ -134,6 +133,14 @@ const provider = (props: Props) => {
 
   const queryError = computed(
     (): string | undefined => queryExitQuery.error.value?.message
+  );
+
+  const isLoadingMax = computed(
+    (): boolean => singleAssetMaxQuery.isFetching.value
+  );
+
+  const maxError = computed(
+    (): string | undefined => singleAssetMaxQuery.error.value?.message
   );
 
   const isDeepPool = computed((): boolean => isDeep(pool.value));
@@ -282,28 +289,25 @@ const provider = (props: Props) => {
       return;
     }
 
-    try {
-      const output = await exitPoolService.queryExit({
-        exitType: exitType.value,
-        bptIn: _bptIn.value,
-        amountsOut: amountsOut.value,
-        signer: getSigner(),
-        slippageBsp: slippageBsp.value,
-        tokenInfo: exitTokenInfo.value,
-        prices: prices.value,
-      });
-      priceImpact.value = output.priceImpact;
-      propAmountsOut.value = Object.keys(output.amountsOut).map(item => ({
-        address: item,
-        value: output.amountsOut[item],
-        max: '',
-        valid: true,
-      }));
-    } catch (error) {
-      priceImpact.value = 0;
-      console.error(error);
-      throw error;
-    }
+    exitPoolService.setExitHandler(isSingleAssetExit.value);
+
+    const output = await exitPoolService.queryExit({
+      exitType: exitType.value,
+      bptIn: _bptIn.value,
+      amountsOut: amountsOut.value,
+      signer: getSigner(),
+      slippageBsp: slippageBsp.value,
+      tokenInfo: exitTokenInfo.value,
+      prices: prices.value,
+    });
+
+    priceImpact.value = output.priceImpact;
+    propAmountsOut.value = Object.keys(output.amountsOut).map(item => ({
+      address: item,
+      value: output.amountsOut[item],
+      max: '',
+      valid: true,
+    }));
   }
 
   /**
@@ -312,27 +316,21 @@ const provider = (props: Props) => {
   async function getSingleAssetMax() {
     if (!hasFetchedPoolsForSor.value) return;
 
-    trackLoading(async () => {
-      try {
-        singleAmountOut.max = '';
-        maxError.value = '';
-        const output = await exitPoolService.queryExit({
-          exitType: ExitType.GivenIn,
-          bptIn: bptBalance.value,
-          amountsOut: [singleAmountOut],
-          signer: getSigner(),
-          slippageBsp: slippageBsp.value,
-          tokenInfo: exitTokenInfo.value,
-          prices: prices.value,
-          relayerSignature: '',
-        });
-        singleAmountOut.max = output.amountsOut[singleAmountOut.address];
-        maxError.value = '';
-      } catch (error) {
-        console.error(error);
-        maxError.value = (error as Error).message;
-      }
-    }, isLoadingMax);
+    exitPoolService.setExitHandler(isSingleAssetExit.value);
+    singleAmountOut.max = '';
+
+    const output = await exitPoolService.queryExit({
+      exitType: ExitType.GivenIn,
+      bptIn: bptBalance.value,
+      amountsOut: [singleAmountOut],
+      signer: getSigner(),
+      slippageBsp: slippageBsp.value,
+      tokenInfo: exitTokenInfo.value,
+      prices: prices.value,
+      relayerSignature: '',
+    });
+
+    singleAmountOut.max = output.amountsOut[singleAmountOut.address];
   }
 
   /**
@@ -359,26 +357,10 @@ const provider = (props: Props) => {
   /**
    * WATCHERS
    */
-
-  // If the global pool fetching for the SOR changes it's been set to true. In
-  // this case we should re-trigger queryExit to fetch the expected output for
-  // any existing input.
-  watch(hasFetchedPoolsForSor, () => {
-    debounceGetSingleAssetMax.value();
-  });
-
   watch(isSingleAssetExit, _isSingleAssetExit => {
     bptIn.value = '';
     exitPoolService.setExitHandler(_isSingleAssetExit);
-    debounceGetSingleAssetMax.value();
   });
-
-  watch(
-    () => singleAmountOut.address,
-    () => {
-      debounceGetSingleAssetMax.value();
-    }
-  );
 
   /**
    * LIFECYCLE
@@ -392,6 +374,10 @@ const provider = (props: Props) => {
     exitPoolService.setExitHandler(isSingleAssetExit.value);
   });
 
+  onMounted(() => {
+    isMounted.value = true;
+  });
+
   return {
     pool,
     isSingleAssetExit,
@@ -402,7 +388,6 @@ const provider = (props: Props) => {
     priceImpact,
     isLoadingQuery,
     isLoadingMax,
-    isLoadingSingleAssetMax,
     highPriceImpact,
     rektPriceImpact,
     hasAcceptedHighPriceImpact,

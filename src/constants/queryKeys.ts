@@ -102,6 +102,19 @@ const QUERY_KEYS = {
           singleAmountOut,
         },
       ],
+      SingleAssetMax: (
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'singleAssetMax',
+        {
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
     },
   },
   TokenLists: {
