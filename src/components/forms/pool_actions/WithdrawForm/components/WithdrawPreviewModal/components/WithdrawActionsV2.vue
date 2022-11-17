@@ -58,6 +58,7 @@ const {
   isLoadingQuery,
   debounceQueryExit,
   fiatTotalOut,
+  approvalActions: exitPoolApprovalActions,
 } = useExitPool();
 
 const withdrawalAction: TransactionActionInfo = {
@@ -68,7 +69,10 @@ const withdrawalAction: TransactionActionInfo = {
   stepTooltip: t('withdraw.preview.tooltips.withdrawStep'),
 };
 
-const actions = ref<TransactionActionInfo[]>([withdrawalAction]);
+const actions = ref<TransactionActionInfo[]>([
+  ...exitPoolApprovalActions.value,
+  withdrawalAction,
+]);
 
 /**
  * METHODS

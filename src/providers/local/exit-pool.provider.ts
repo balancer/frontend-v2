@@ -1,3 +1,6 @@
+import useRelayerApproval, {
+  Relayer,
+} from '@/composables/trade/useRelayerApproval';
 import useNumbers from '@/composables/useNumbers';
 import {
   fiatValueOf,
@@ -5,6 +8,7 @@ import {
   isDeep,
   tokenTreeNodes,
 } from '@/composables/usePool';
+import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 import useTokens from '@/composables/useTokens';
 import { useTxState } from '@/composables/useTxState';
 import useUserSettings from '@/composables/useUserSettings';
@@ -26,6 +30,7 @@ import { ExitType } from '@/services/balancer/pools/exits/handlers/exit-pool.han
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
+import { TransactionActionInfo } from '@/types/transactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { debounce } from 'lodash';
 import {
@@ -85,6 +90,10 @@ const provider = (props: Props) => {
     valid: true,
   });
   const propAmountsOut = ref<AmountOut[]>([]);
+  const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
+  const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
+    Relayer.BATCH_V4
+  );
 
   const debounceQueryExit = ref(debounce(queryExit, 1000, { leading: true }));
   const debounceGetSingleAssetMax = ref(
@@ -108,6 +117,20 @@ const provider = (props: Props) => {
   /**
    * COMPUTED
    */
+  const isDeepPool = computed((): boolean => isDeep(pool.value));
+
+  const shouldSignRelayer = computed(
+    (): boolean =>
+      isDeepPool.value &&
+      !isSingleAssetExit.value &&
+      // Check if Batch Relayer is either approved, or signed
+      !(relayerApproval.isUnlocked.value || relayerSignature.value)
+  );
+
+  const approvalActions = computed((): TransactionActionInfo[] =>
+    shouldSignRelayer.value ? [signRelayerAction] : []
+  );
+
   // All token addresses (excl. pre-minted BPT) in the pool token tree that can be used in exit functions.
   const exitTokenAddresses = computed((): string[] => {
     let addresses: string[] = [];
@@ -303,6 +326,7 @@ const provider = (props: Props) => {
         slippageBsp: slippageBsp.value,
         tokenInfo: exitTokenInfo.value,
         prices: prices.value,
+        relayerSignature: relayerSignature.value,
       });
     } catch (error) {
       txError.value = (error as Error).message;
@@ -395,6 +419,7 @@ const provider = (props: Props) => {
     fiatAmountsOut,
     exitTokenInfo,
     debounceQueryExit,
+    approvalActions,
     exit,
   };
 };
