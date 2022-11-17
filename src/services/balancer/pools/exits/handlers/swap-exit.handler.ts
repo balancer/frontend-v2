@@ -84,7 +84,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
     if (!priceIn || !priceOut)
-      throw new Error('Missing price for token to join with.');
+      throw new Error('Missing price for token to exit with.');
     if (!amountIn || bnum(amountIn).eq(0))
       return { amountsOut: {}, priceImpact: 0 };
 
@@ -132,7 +132,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     const priceIn = bptPriceFor(this.pool.value);
     const priceOut = selectByAddress(prices, tokenOut.address)?.usd;
     if (!priceIn || !priceOut)
-      throw new Error('Missing price for token to join with.');
+      throw new Error('Missing price for token to exit with.');
 
     const amountOut = amountsOut[0].value;
     if (!amountOut || bnum(amountOut).eq(0))
