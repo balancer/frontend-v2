@@ -8,6 +8,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { bnum } from '@/lib/utils';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 /**
  * Handles generalized joins for deep pools using SDK functions.
@@ -35,11 +36,9 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     if (!this.lastGeneralisedJoinRes) {
       throw new Error('Could not query generalised join');
     }
+    const txBuilder = new TransactionBuilder(signer);
     const { to, callData } = this.lastGeneralisedJoinRes;
-    return signer.sendTransaction({
-      to,
-      data: callData,
-    });
+    return txBuilder.raw.sendTransaction({ to, data: callData });
   }
 
   async queryJoin({

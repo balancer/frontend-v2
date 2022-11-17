@@ -5,8 +5,8 @@ import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Signer } from '@ethersproject/abstract-signer';
 import { Ref } from 'vue';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
 export type AmountsOut = Record<Address, string>;
 
@@ -21,7 +21,7 @@ export type ExitParams = {
   amountsOut: AmountOut[];
   tokenInfo: TokenInfoMap;
   prices: TokenPrices;
-  signer: Signer;
+  signer: JsonRpcSigner;
   slippageBsp: number;
   relayerSignature?: string;
 };

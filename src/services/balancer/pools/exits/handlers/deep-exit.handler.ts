@@ -15,6 +15,7 @@ import { bnum, isSameAddress } from '@/lib/utils';
 import { fiatValueOf, flatTokenTree } from '@/composables/usePool';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { getAddress } from '@ethersproject/address';
+import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 interface GeneralisedExitResponse {
   to: string;
@@ -43,11 +44,9 @@ export class DeepExitHandler implements ExitPoolHandler {
     if (!this.lastGeneralisedExitRes) {
       throw new Error('Could not query generalised join');
     }
+    const txBuilder = new TransactionBuilder(signer);
     const { to, callData } = this.lastGeneralisedExitRes;
-    return signer.sendTransaction({
-      to,
-      data: callData,
-    });
+    return txBuilder.raw.sendTransaction({ to, data: callData });
   }
 
   async queryExit({
@@ -87,7 +86,6 @@ export class DeepExitHandler implements ExitPoolHandler {
         console.error(err);
         throw new Error(err);
       });
-    console.log({ lastGeneralisedExitRes: this.lastGeneralisedExitRes });
 
     if (!this.lastGeneralisedExitRes) throw new Error('Not enough liquidity.');
 
