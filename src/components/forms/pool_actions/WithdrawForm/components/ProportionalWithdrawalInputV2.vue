@@ -134,7 +134,7 @@ onBeforeMount(() => {
         <div class="flex justify-between items-center">
           <div class="flex items-center">
             <BalAsset :address="address" class="mr-2" />
-            <div class="flex flex-col leading-none truncate">
+            <div class="flex flex-col leading-none">
               <div class="text-lg font-medium">
                 {{ exitTokenInfo[address].symbol }}
                 <span v-if="!isStableLikePool">
@@ -175,15 +175,6 @@ onBeforeMount(() => {
 <style scoped>
 .label {
   @apply mb-3 text-sm font-bold;
-}
-
-.proportional-input {
-  @apply shadow-lg rounded-lg mb-4 w-full dark:bg-gray-800;
-}
-
-.proportional-input-container {
-  @apply shadow-inner p-3 pb-1 rounded-lg;
-  @apply border border-gray-100 dark:border-gray-800;
 }
 
 .token-amounts {
