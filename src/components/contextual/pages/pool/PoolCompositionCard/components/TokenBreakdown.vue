@@ -93,6 +93,7 @@ const nestedPadding = computed(() => padding.value + 6);
       :mainTokenAddress="mainTokenAddressForNextLevel"
       :padding="nestedPadding"
       :isWeighted="isWeighted"
+      :isDeepPool="isDeepPool"
     />
   </template>
 </template>

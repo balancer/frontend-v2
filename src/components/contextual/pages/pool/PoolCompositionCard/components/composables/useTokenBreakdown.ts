@@ -55,6 +55,9 @@ export function useTokenBreakdown(
     }
 
     const fiatValue = toFiat(token.value.balance, token.value.address);
+
+    if (fiatValue === '0') return '-';
+
     return fNum2(fiatValue, FNumFormats.fiat);
   });
 
