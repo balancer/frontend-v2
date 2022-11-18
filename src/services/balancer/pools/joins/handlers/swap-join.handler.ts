@@ -1,5 +1,4 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { fiatValueOf } from '@/composables/usePool';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum } from '@/lib/utils';
@@ -48,19 +47,13 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
   }
 
-  async queryJoin({
-    amountsIn,
-    tokensIn,
-    prices,
-  }: JoinParams): Promise<QueryOutput> {
+  async queryJoin({ amountsIn, tokensIn }: JoinParams): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');
 
     const amountIn = amountsIn[0];
     const tokenIn = tokensIn[amountIn.address];
-    const priceIn = prices[amountIn.address]?.usd;
     if (!tokenIn) throw new Error('Missing critical token metadata.');
-    if (!priceIn) throw new Error('Missing price for token to join with.');
     if (!amountIn.value || bnum(amountIn.value).eq(0))
       return { bptOut: '0', priceImpact: 0 };
 
@@ -84,10 +77,11 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
     if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity.');
 
-    const fiatValueIn = bnum(priceIn).times(amountIn.value).toString();
-    const fiatValueOut = fiatValueOf(this.pool.value, bptOut);
-
-    const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
+    const priceImpact = this.calcPriceImpact(
+      amountIn.value,
+      bptOut,
+      this.lastSwapRoute.marketSp
+    );
 
     return { bptOut, priceImpact };
   }
@@ -95,22 +89,16 @@ export class SwapJoinHandler implements JoinPoolHandler {
   /**
    * PRIVATE
    */
-  private calcPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
-    const _fiatValueIn = bnum(fiatValueIn);
-    const _fiatValueOut = bnum(fiatValueOut);
-
-    if (_fiatValueIn.eq(_fiatValueOut)) {
-      return 0;
-    }
+  private calcPriceImpact(
+    amountIn: string,
+    amountOut: string,
+    marketSp: string
+  ): number {
+    const effectivePrice = bnum(amountIn).div(amountOut);
+    const priceImpact = effectivePrice.div(marketSp).minus(1) || 1; // If fails to calculate return error value of 100%
 
     // Don't return negative price impact
-    return Math.max(
-      0,
-      _fiatValueIn
-        .minus(_fiatValueOut)
-        .div(_fiatValueIn.plus(_fiatValueOut).div(2))
-        .toNumber() || 1 // If fails to calculate return error value of 100%
-    );
+    return Math.max(0, priceImpact.toNumber());
   }
 
   private async getGasPrice(): Promise<BigNumber> {
