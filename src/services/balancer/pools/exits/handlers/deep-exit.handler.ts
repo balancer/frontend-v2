@@ -61,13 +61,7 @@ export class DeepExitHandler implements ExitPoolHandler {
       this.pool.value.onchain?.decimals ?? 18
     );
 
-    // Return early if amount is less than 0
-    if (bnumAmount.lte(0)) {
-      return {
-        priceImpact: 0,
-        amountsOut: {},
-      };
-    }
+    if (bnumAmount.lte(0)) throw new Error('BPT in amount is 0.');
 
     const signerAddress = await signer.getAddress();
 
