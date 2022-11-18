@@ -107,7 +107,9 @@ const provider = (props: Props) => {
     Relayer.BATCH_V4
   );
 
-  const queriesEnabled = computed((): boolean => isMounted.value);
+  const queriesEnabled = computed(
+    (): boolean => isMounted.value && !txInProgress.value
+  );
 
   const queryExitQuery = useQuery<void, Error>(
     QUERY_KEYS.Pools.Exits.QueryExit(

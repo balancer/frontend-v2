@@ -70,6 +70,9 @@ const provider = (props: Props) => {
   const highPriceImpactAccepted = ref<boolean>(false);
   const txError = ref<string>('');
 
+  const queryEnabled = computed(
+    (): boolean => isMounted.value && !txInProgress.value
+  );
   const queryJoinQuery = useQuery<void, Error>(
     QUERY_KEYS.Pools.Joins.QueryJoin(
       // If amountsIn change we should call queryJoin to get expected output.
@@ -81,7 +84,7 @@ const provider = (props: Props) => {
       isSingleAssetJoin
     ),
     queryJoin,
-    reactive({ enabled: isMounted })
+    reactive({ enabled: queryEnabled })
   );
 
   /**
