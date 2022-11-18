@@ -6,7 +6,7 @@ export const MIN_FIAT_VALUE_POOL_MIGRATION = isMainnet.value ? 100_000 : 1; // 1
 
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
-export const APR_THRESHOLD = 10_000;
+export const APR_THRESHOLD = 1_000_000;
 
 /**
  * For proportional exits from ComposableStable pools the ExactBPTInForTokensOut

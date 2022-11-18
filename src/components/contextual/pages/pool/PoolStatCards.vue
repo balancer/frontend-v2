@@ -70,7 +70,7 @@ const stats = computed(() => {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.poolApr?.min || '0') * 100 > APR_THRESHOLD
+        Number(props.poolApr?.min || '0') > APR_THRESHOLD
           ? '-'
           : aprLabel.value,
       loading: props.loadingApr,
