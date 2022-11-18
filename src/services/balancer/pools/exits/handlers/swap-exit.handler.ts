@@ -6,7 +6,7 @@ import { bnum, selectByAddress } from '@/lib/utils';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
@@ -37,6 +37,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       throw new Error('Could not fetch swap route for join.');
 
     const swap = this.getSwapAttributes(
+      params.exitType,
       this.lastSwapRoute,
       params.slippageBsp,
       userAddress
@@ -88,7 +89,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     if (!amountIn || bnum(amountIn).eq(0))
       return { amountsOut: {}, priceImpact: 0 };
 
-    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+    if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmountIn = overflowProtected(bptIn, tokenIn.decimals);
     const bnumAmountIn = parseFixed(safeAmountIn, tokenIn.decimals);
@@ -138,7 +139,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     if (!amountOut || bnum(amountOut).eq(0))
       return { amountsOut: {}, priceImpact: 0 };
 
-    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+    if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmountOut = overflowProtected(
       amountsOut[0].value,
@@ -191,15 +192,21 @@ export class SwapExitHandler implements ExitPoolHandler {
   }
 
   private getSwapAttributes(
+    exitType: ExitType,
     swapInfo: SwapInfo,
     maxSlippage: number,
     userAddress: string
   ) {
     const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
+    const kind =
+      exitType === ExitType.GivenIn
+        ? SwapType.SwapExactIn
+        : SwapType.SwapExactOut;
+
     return this.sdk.swaps.buildSwap({
       userAddress,
       swapInfo,
-      kind: 0,
+      kind,
       deadline,
       maxSlippage,
     });

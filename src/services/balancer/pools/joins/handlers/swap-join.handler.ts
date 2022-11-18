@@ -64,7 +64,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
     if (!amountIn.value || bnum(amountIn.value).eq(0))
       return { bptOut: '0', priceImpact: 0 };
 
-    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+    if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmount = overflowProtected(amountIn.value, tokenIn.decimals);
     const bnumAmount = parseFixed(safeAmount, tokenIn.decimals);
