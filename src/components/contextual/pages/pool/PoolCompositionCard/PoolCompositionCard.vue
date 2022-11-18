@@ -66,7 +66,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
         mainTokenAddress=""
         :isWeighted="isWeighted"
         :isDeepPool="isDeepPool"
-      ></TokenBreakdown>
+      />
     </div>
   </BalCard>
 </template>
