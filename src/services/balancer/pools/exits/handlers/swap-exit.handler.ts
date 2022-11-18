@@ -81,7 +81,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
     if (!amountIn || bnum(amountIn).eq(0))
-      return { amountsOut: {}, priceImpact: 0 };
+      return { amountsOut: { [tokenOut.address]: '0' }, priceImpact: 0 };
 
     if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
