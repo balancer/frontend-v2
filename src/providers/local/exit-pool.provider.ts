@@ -297,7 +297,6 @@ const provider = (props: Props) => {
    */
   async function queryExit() {
     if (!hasFetchedPoolsForSor.value) return;
-    if (!_bptIn.value) return;
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
