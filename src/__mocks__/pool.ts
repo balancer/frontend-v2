@@ -1,4 +1,26 @@
-import { Pool, PoolType } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
+import { PoolType } from '@balancer-labs/sdk';
+
+export const EmptyPoolMock: Pool = {
+  id: '',
+  address: '',
+  name: '',
+  owner: '',
+  chainId: 1,
+  poolType: PoolType.Weighted,
+  factory: '',
+  tokens: [],
+  tokensList: [],
+  swapFee: '0',
+  totalSwapFee: '0',
+  totalSwapVolume: '0',
+  totalLiquidity: '0',
+  totalShares: '0',
+  swapEnabled: true,
+  totalWeight: '0',
+  createTime: Date.now(),
+  symbol: '',
+};
 
 export const PoolMock: Pool = {
   onchain: {
@@ -30,6 +52,7 @@ export const PoolMock: Pool = {
   },
   symbol: 'GRO-WETH',
   address: '0x702605F43471183158938C1a3e5f5A359d7b31ba',
+  chainId: 1,
   createTime: 1633385013,
   name: 'GRO-WETH',
   factory: '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9',
@@ -37,6 +60,8 @@ export const PoolMock: Pool = {
   owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   poolType: PoolType.Weighted,
   swapFee: '0.0037',
+  swapEnabled: true,
+  totalWeight: '',
   tokens: [
     {
       address: '0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7',
@@ -68,8 +93,10 @@ export const PoolMock: Pool = {
 export const BoostedPoolMock: Pool = {
   id: '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d',
   address: '0xa13a9247ea42d743238089903570127dda72fe44',
+  chainId: 1,
   poolType: PoolType.ComposableStable,
   swapFee: '0.00001',
+  swapEnabled: true,
   tokensList: [
     '0x2f4eb100552ef93840d5adc30560e5513dfffacb',
     '0x82698aecc9e28e9bb27608bd52cf57f704bd1b83',
@@ -80,6 +107,7 @@ export const BoostedPoolMock: Pool = {
   totalSwapVolume: '260432002.4421270620735632848253712',
   totalSwapFee: '4570.865566672696168181339511309256',
   totalShares: '129467502.524175958648827523',
+  totalWeight: '',
   owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
   factory: '0xf9ac7b9df2b3454e841110cce5550bd5ac6f875f',
   createTime: 1662537668,
