@@ -20,6 +20,7 @@ import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import { networkId } from '@/composables/useNetwork';
 
 export default class PoolService {
   constructor(
@@ -35,6 +36,7 @@ export default class PoolService {
    */
   public format(): Pool {
     this.pool.isNew = this.isNew;
+    this.pool.chainId = networkId.value;
     this.formatPoolTokens();
     return this.pool;
   }
@@ -68,12 +70,9 @@ export default class PoolService {
   /**
    * @summary Calculates APRs for pool.
    */
-  public async setAPR(
-    poolSnapshot: Pool,
-    prices: TokenPrices
-  ): Promise<AprBreakdown> {
+  public async setAPR(): Promise<AprBreakdown> {
     const aprConcern = new this.apr(this.pool);
-    const apr = await aprConcern.calc(poolSnapshot, prices);
+    const apr = await aprConcern.calc();
 
     return (this.pool.apr = apr);
   }

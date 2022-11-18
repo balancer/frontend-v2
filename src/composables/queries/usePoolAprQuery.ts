@@ -17,6 +17,7 @@ import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import usePoolQuery from './usePoolQuery';
 import { AprBreakdown } from '@balancer-labs/sdk';
+import _ from 'lodash';
 
 export default function usePoolAprQuery(
   id: string,
@@ -85,6 +86,8 @@ export default function usePoolAprQuery(
       return storedPool.apr;
     }
 
+    _pool.chainId = networkId.value;
+
     const payload = {
       pools: [_pool],
       prices: prices.value,
@@ -101,8 +104,8 @@ export default function usePoolAprQuery(
         }),
       ]);
 
-    const _snapshot = await getSnapshot(_pool.id);
-    const apr = await new AprConcern(_pool).calc(_snapshot[0], prices.value);
+    // const _snapshot = await getSnapshot(_pool.id);
+    const apr = await new AprConcern(_pool).calc();
 
     return apr;
   };

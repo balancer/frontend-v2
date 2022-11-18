@@ -1,4 +1,4 @@
-import { isGoerli, networkId } from '@/composables/useNetwork';
+import { isGoerli } from '@/composables/useNetwork';
 import { isDeep, isVeBalPool } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnSum, bnum } from '@/lib/utils';
@@ -8,13 +8,7 @@ import { aaveService } from '@/services/aave/aave.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { lidoService } from '@/services/lido/lido.service';
 import { Pool } from '@/services/pool/types';
-import {
-  AprBreakdown,
-  PoolsStaticRepository,
-  StaticTokenPriceProvider,
-  Pools,
-  BalancerDataRepositories,
-} from '@balancer-labs/sdk';
+import { AprBreakdown } from '@balancer-labs/sdk';
 import { VeBalAprCalc } from './calcs/vebal-apr.calc';
 import { balancer } from '@/lib/balancer.sdk';
 
@@ -26,25 +20,10 @@ export class AprConcern {
     private readonly VeBalAprCalcClass = VeBalAprCalc
   ) {}
 
-  public async calc(
-    poolSnapshot: Pool,
-    prices: TokenPrices
-  ): Promise<AprBreakdown> {
-    const poolsRepository = new PoolsStaticRepository([poolSnapshot]);
-    const tokenPriceRepository = new StaticTokenPriceProvider(prices);
+  public async calc(): Promise<AprBreakdown> {
+    const apr = await balancer.pools.apr(this.pool);
 
-    const dataRepositories = balancer.data;
-    const poolsRepositories: BalancerDataRepositories = {
-      ...dataRepositories,
-      ...{
-        // pools: poolsRepository,
-        // tokenPrices: tokenPriceRepository,
-      },
-    };
-
-    const pools = new Pools(balancer.networkConfig, poolsRepositories);
-    const pool = (await pools.find(poolSnapshot.id)) || poolSnapshot;
-    const apr = await pools.apr(pool);
+    console.log('APR: ', apr);
 
     return apr;
   }

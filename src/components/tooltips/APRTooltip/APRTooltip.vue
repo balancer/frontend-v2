@@ -37,7 +37,10 @@ const { fNum2 } = useNumbers();
 const apr = computed<AprBreakdown>(() => props.pool?.apr || props.poolApr);
 const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
 
-const hasYieldAPR = computed(() => bnum(apr.value?.tokenAprs || '0').gt(0));
+const hasYieldAPR = computed(() => {
+  console.log('total yield apr: ', apr.value.tokenAprs.total);
+  return bnum(apr.value?.tokenAprs.total || '0').gt(0);
+});
 
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 

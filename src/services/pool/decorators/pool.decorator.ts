@@ -71,7 +71,7 @@ export class PoolDecorator {
       await poolService.setLinearPools();
 
       if (setAprCondition && poolSnapshot) {
-        await poolService.setAPR(poolSnapshot, prices);
+        await poolService.setAPR();
       }
 
       return poolService.pool;

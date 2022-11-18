@@ -9,6 +9,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
+import { divApr } from '@/services/staking/utils';
 
 /**
  * TYPES
@@ -57,7 +58,7 @@ const yieldBreakdownItems = computed((): [string, number][] =>
 <template>
   <BalBreakdown :items="yieldBreakdownItems" :hideItems="!hasMultiRewardTokens">
     <div class="flex items-center">
-      {{ fNum2(yieldAPR.total, FNumFormats.percent) }}
+      {{ fNum2(divApr(yieldAPR.total), FNumFormats.percent) }}
       <span class="ml-1 text-xs text-secondary">
         {{ yieldAPRLabel }}
       </span>
