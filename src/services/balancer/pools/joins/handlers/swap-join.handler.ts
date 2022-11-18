@@ -1,14 +1,10 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { fiatValueOf } from '@/composables/usePool';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum } from '@/lib/utils';
-import { AmountIn } from '@/providers/local/join-pool.provider';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
@@ -28,15 +24,10 @@ export class SwapJoinHandler implements JoinPoolHandler {
     public readonly gasPriceService: GasPriceService
   ) {}
 
-  async join({
-    amountsIn,
-    tokensIn,
-    prices,
-    signer,
-    slippageBsp,
-  }: JoinParams): Promise<TransactionResponse> {
+  async join(params: JoinParams): Promise<TransactionResponse> {
+    const { signer, slippageBsp } = params;
     const userAddress = await signer.getAddress();
-    await this.queryJoin(amountsIn, tokensIn, prices);
+    await this.queryJoin(params);
     if (!this.lastSwapRoute)
       throw new Error('Could not fetch swap route for join.');
 
@@ -56,23 +47,17 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
   }
 
-  async queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices
-  ): Promise<QueryOutput> {
+  async queryJoin({ amountsIn, tokensIn }: JoinParams): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');
 
     const amountIn = amountsIn[0];
     const tokenIn = tokensIn[amountIn.address];
-    const priceIn = prices[amountIn.address]?.usd;
     if (!tokenIn) throw new Error('Missing critical token metadata.');
-    if (!priceIn) throw new Error('Missing price for token to join with.');
     if (!amountIn.value || bnum(amountIn.value).eq(0))
       return { bptOut: '0', priceImpact: 0 };
 
-    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+    if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmount = overflowProtected(amountIn.value, tokenIn.decimals);
     const bnumAmount = parseFixed(safeAmount, tokenIn.decimals);
@@ -92,10 +77,11 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
     if (bnum(bptOut).eq(0)) throw new Error('Not enough liquidity.');
 
-    const fiatValueIn = bnum(priceIn).times(amountIn.value).toString();
-    const fiatValueOut = fiatValueOf(this.pool.value, bptOut);
-
-    const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
+    const priceImpact = this.calcPriceImpact(
+      amountIn.value,
+      bptOut,
+      this.lastSwapRoute.marketSp
+    );
 
     return { bptOut, priceImpact };
   }
@@ -103,18 +89,16 @@ export class SwapJoinHandler implements JoinPoolHandler {
   /**
    * PRIVATE
    */
-  private calcPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
-    const _fiatValueIn = bnum(fiatValueIn);
-    const _fiatValueOut = bnum(fiatValueOut);
+  private calcPriceImpact(
+    amountIn: string,
+    amountOut: string,
+    marketSp: string
+  ): number {
+    const effectivePrice = bnum(amountIn).div(amountOut);
+    const priceImpact = effectivePrice.div(marketSp).minus(1) || 1; // If fails to calculate return error value of 100%
 
     // Don't return negative price impact
-    return Math.max(
-      0,
-      _fiatValueIn
-        .minus(_fiatValueOut)
-        .div(_fiatValueIn.plus(_fiatValueOut).div(bnum(2)))
-        .toNumber() || 1 // If fails to calculate return error value of 100%
-    );
+    return Math.max(0, priceImpact.toNumber());
   }
 
   private async getGasPrice(): Promise<BigNumber> {

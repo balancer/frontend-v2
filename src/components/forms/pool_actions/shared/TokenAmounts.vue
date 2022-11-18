@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { groupBy, orderBy } from 'lodash';
 import { computed } from 'vue';
-
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
-
 /**
  * TYPES
  */
@@ -18,11 +16,9 @@ type Props = {
   hideAmountShare?: boolean;
   showZeroAmounts?: boolean;
 };
-
 type AmountMap = {
   [address: string]: string;
 };
-
 /**
  * PROPS & EMITS
  */
@@ -35,7 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-
 /**
  * COMPUTED
  */
@@ -50,13 +45,11 @@ const sortedAmounts = computed(() =>
     address,
   }))
 );
-
 const groupedAmounts = computed(() =>
   groupBy(sortedAmounts.value, amounts =>
     bnum(amounts.amount || '0').isZero() ? 'zeroAmounts' : 'nonZeroAmounts'
   )
 );
-
 const amountsToShow = computed(() =>
   props.showZeroAmounts
     ? sortedAmounts.value

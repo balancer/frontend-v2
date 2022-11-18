@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
@@ -12,7 +12,8 @@ import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActionsV2 from './components/InvestActionsV2.vue';
 import useJoinPool from '@/composables/pools/useJoinPool';
-import useWeb3 from '@/services/web3/useWeb3';
+import { useIntervalFn } from '@vueuse/shared';
+import { oneSecondInMs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -46,7 +47,6 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { blockNumber } = useWeb3();
 const {
   isSingleAssetJoin,
   amountsIn,
@@ -58,7 +58,7 @@ const {
   rektPriceImpact,
   isLoadingQuery,
   txInProgress,
-  debounceQueryJoin,
+  queryJoinQuery,
   resetAmounts,
 } = useJoinPool();
 
@@ -84,7 +84,6 @@ const amountInMap = computed((): AmountMap => {
 });
 
 const amountOutMap = computed((): AmountMap => {
-  if (!isSingleAssetJoin.value) return {};
   const amountMap = {
     [props.pool.address]: bptOut.value,
   };
@@ -100,7 +99,6 @@ const tokenInMap = computed((): TokenInfoMap => {
 });
 
 const tokenOutMap = computed((): TokenInfoMap => {
-  if (!isSingleAssetJoin.value) return {};
   const tokenMap = {
     [props.pool.address]: getToken(props.pool.address),
   };
@@ -148,14 +146,17 @@ function handleShowStakeModal() {
 /**
  * WATCHERS
  */
-// On every block we should re-trigger queryJoin in case the expected output
+// Every 10s we should re-trigger queryJoin in case the expected output
 // has changed as a result of pool state changing. This should only happen in
 // the preview modal, not at the JoinPoolProvider level.
-watch(blockNumber, () => {
+//
+// Originally we did it every block but this is overfetching on short blocktime
+// networks like Polygon.
+useIntervalFn(() => {
   if (!isLoadingQuery.value && !txInProgress.value) {
-    debounceQueryJoin.value();
+    queryJoinQuery.refetch.value();
   }
-});
+}, oneSecondInMs * 10);
 </script>
   
 <template>
@@ -186,6 +187,7 @@ watch(blockNumber, () => {
     />
     <TokenAmounts
       v-if="showTokensOut"
+      showZeroAmounts
       :title="$t('investment.preview.titles.tokenOut')"
       class="mt-4"
       :amountMap="amountOutMap"

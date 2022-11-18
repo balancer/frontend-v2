@@ -5,15 +5,16 @@ import { Pool } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalancerSDK } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Signer } from '@ethersproject/abstract-signer';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { Ref } from 'vue';
 
 export type JoinParams = {
   amountsIn: AmountIn[];
   tokensIn: TokenInfoMap;
   prices: TokenPrices;
-  signer: Signer;
+  signer: JsonRpcSigner;
   slippageBsp: number;
+  relayerSignature?: string;
 };
 
 export type QueryOutput = {
@@ -30,9 +31,5 @@ export abstract class JoinPoolHandler {
 
   abstract join(params: JoinParams): Promise<TransactionResponse>;
 
-  abstract queryJoin(
-    amountsIn: AmountIn[],
-    tokensIn: TokenInfoMap,
-    prices: TokenPrices
-  ): Promise<QueryOutput>;
+  abstract queryJoin(params: JoinParams): Promise<QueryOutput>;
 }

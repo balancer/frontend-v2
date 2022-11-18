@@ -11,6 +11,7 @@ import { isLessThanOrEqualTo, isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { TokenSelectProps } from '../TokenSelectInput/TokenSelectInput.vue';
+import { BalRangeInputProps } from '@/components/_global/BalRangeInput/BalRangeInput.vue';
 
 /**
  * TYPES
@@ -39,10 +40,13 @@ type Props = {
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
+  hideFiatValue?: boolean;
   ignoreWalletBalance?: boolean;
   tokenValue?: string;
   placeholder?: string;
   tokenSelectProps?: Partial<TokenSelectProps>;
+  slider?: boolean;
+  sliderProps?: Partial<BalRangeInputProps>;
 };
 
 /**
@@ -61,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
   hintAmount: '',
   disableNativeAssetBuffer: false,
   hideFooter: false,
+  hideFiatValue: false,
   ignoreWalletBalance: false,
   options: () => [],
   rules: () => [],
@@ -73,6 +78,8 @@ const props = withDefaults(defineProps<Props>(), {
   subsetTokens: () => [],
   placeholder: '',
   tokenSelectProps: () => ({}),
+  slider: false,
+  sliderProps: () => ({}),
 });
 
 const emit = defineEmits<{
@@ -80,6 +87,7 @@ const emit = defineEmits<{
   (e: 'input', value: string): void;
   (e: 'update:amount', value: string): void;
   (e: 'update:address', value: string): void;
+  (e: 'update:slider', value: number): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: KeyboardEvent);
 }>();
@@ -265,7 +273,7 @@ const setMax = () => {
           class="flex justify-between items-center text-sm leading-none text-gray-600 dark:text-gray-400"
         >
           <div v-if="!isWalletReady || disableBalance" />
-          <div v-else class="flex items-center cursor-pointer" @click="setMax">
+          <button v-else class="flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
 
             <BalLoadingBlock v-if="balanceLoading" class="mx-2 w-12 h-4" />
@@ -287,10 +295,12 @@ const setMax = () => {
                 {{ $t('maxed') }}
               </span>
             </template>
-          </div>
+          </button>
           <div>
             <template v-if="hasAmount && hasToken">
-              {{ fNum2(tokenValue, FNumFormats.fiat) }}
+              <span v-if="!hideFiatValue">
+                {{ fNum2(tokenValue, FNumFormats.fiat) }}
+              </span>
               <span v-if="priceImpact" :class="priceImpactClass">
                 ({{
                   priceImpactSign + fNum2(priceImpact, FNumFormats.percent)
@@ -307,8 +317,14 @@ const setMax = () => {
             </template>
           </div>
         </div>
+        <BalRangeInput
+          v-if="props.slider"
+          v-bind="props.sliderProps"
+          class="mt-2"
+          @update:model-value="emit('update:slider', $event)"
+        />
         <BalProgressBar
-          v-if="hasBalance && !noMax"
+          v-else-if="hasBalance && !noMax"
           :width="maxPercentage"
           :bufferWidth="bufferPercentage"
           :color="barColor"

@@ -1,12 +1,11 @@
 import { overflowProtected } from '@/components/_global/BalTextInput/helpers';
-import { bptPriceFor } from '@/composables/usePool';
 import { getTimestampSecondsFromNow } from '@/composables/useTime';
 import { fetchPoolsForSor, hasFetchedPoolsForSor } from '@/lib/balancer.sdk';
 import { bnum, selectByAddress } from '@/lib/utils';
 import { vaultService } from '@/services/contracts/vault.service';
 import { GasPriceService } from '@/services/gas-price/gas-price.service';
 import { Pool } from '@/services/pool/types';
-import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
+import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { Ref } from 'vue';
@@ -37,6 +36,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       throw new Error('Could not fetch swap route for join.');
 
     const swap = this.getSwapAttributes(
+      params.exitType,
       this.lastSwapRoute,
       params.slippageBsp,
       userAddress
@@ -72,23 +72,18 @@ export class SwapExitHandler implements ExitPoolHandler {
     bptIn,
     tokenInfo,
     amountsOut,
-    prices,
   }: ExitParams): Promise<QueryOutput> {
     const amountIn = bptIn;
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
-    const priceIn = bptPriceFor(this.pool.value);
 
     const tokenOut = tokenInfo[amountsOut[0].address];
-    const priceOut = prices[tokenOut.address]?.usd;
 
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
-    if (!priceIn || !priceOut)
-      throw new Error('Missing price for token to join with.');
     if (!amountIn || bnum(amountIn).eq(0))
-      return { amountsOut: {}, priceImpact: 0 };
+      return { amountsOut: { [tokenOut.address]: '0' }, priceImpact: 0 };
 
-    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+    if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmountIn = overflowProtected(bptIn, tokenIn.decimals);
     const bnumAmountIn = parseFixed(safeAmountIn, tokenIn.decimals);
@@ -108,10 +103,11 @@ export class SwapExitHandler implements ExitPoolHandler {
     );
     if (bnum(amountOut).eq(0)) throw new Error('Not enough liquidity.');
 
-    const fiatValueIn = bnum(priceIn).times(amountIn).toString();
-    const fiatValueOut = bnum(priceOut).times(amountOut).toString();
-
-    const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
+    const priceImpact = this.calcPriceImpact(
+      amountIn,
+      amountOut,
+      this.lastSwapRoute.marketSp
+    );
 
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
@@ -122,23 +118,17 @@ export class SwapExitHandler implements ExitPoolHandler {
   private async queryInGivenOut({
     tokenInfo,
     amountsOut,
-    prices,
   }: ExitParams): Promise<QueryOutput> {
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
     if (!tokenIn || !tokenOut)
       throw new Error('Missing critical token metadata.');
 
-    const priceIn = bptPriceFor(this.pool.value);
-    const priceOut = selectByAddress(prices, tokenOut.address)?.usd;
-    if (!priceIn || !priceOut)
-      throw new Error('Missing price for token to join with.');
-
     const amountOut = amountsOut[0].value;
     if (!amountOut || bnum(amountOut).eq(0))
       return { amountsOut: {}, priceImpact: 0 };
 
-    if (!hasFetchedPoolsForSor) await fetchPoolsForSor();
+    if (!hasFetchedPoolsForSor.value) await fetchPoolsForSor();
 
     const safeAmountOut = overflowProtected(
       amountsOut[0].value,
@@ -155,20 +145,17 @@ export class SwapExitHandler implements ExitPoolHandler {
       maxPools: 4,
     });
 
-    console.log('this.lastSwapRoute', this.lastSwapRoute);
-
     const amountIn = formatFixed(
       this.lastSwapRoute.returnAmount,
       tokenIn.decimals
     );
-    console.log('amountIn', amountIn);
     if (bnum(amountIn).eq(0)) throw new Error('Not enough liquidity.');
 
-    const fiatValueIn = bnum(priceIn).times(amountIn).toString();
-    const fiatValueOut = bnum(priceOut).times(amountOut).toString();
-    console.log('fiat', fiatValueIn, fiatValueOut);
-
-    const priceImpact = this.calcPriceImpact(fiatValueIn, fiatValueOut);
+    const priceImpact = this.calcPriceImpact(
+      amountIn,
+      amountOut,
+      this.lastSwapRoute.marketSp
+    );
 
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
@@ -180,30 +167,34 @@ export class SwapExitHandler implements ExitPoolHandler {
     return BigNumber.from(gasPriceParams.price);
   }
 
-  private calcPriceImpact(fiatValueIn: string, fiatValueOut: string): number {
-    const _fiatValueIn = bnum(fiatValueIn);
-    const _fiatValueOut = bnum(fiatValueOut);
+  private calcPriceImpact(
+    amountIn: string,
+    amountOut: string,
+    marketSp: string
+  ): number {
+    const effectivePrice = bnum(amountIn).div(amountOut);
+    const priceImpact = effectivePrice.div(marketSp).minus(1) || 1; // If fails to calculate return error value of 100%
 
     // Don't return negative price impact
-    return Math.max(
-      0,
-      _fiatValueIn
-        .minus(_fiatValueOut)
-        .div(_fiatValueIn.plus(_fiatValueOut).div(bnum(2)))
-        .toNumber() || 1 // If fails to calculate return error value of 100%
-    );
+    return Math.max(0, priceImpact.toNumber());
   }
 
   private getSwapAttributes(
+    exitType: ExitType,
     swapInfo: SwapInfo,
     maxSlippage: number,
     userAddress: string
   ) {
     const deadline = BigNumber.from(getTimestampSecondsFromNow(60)); // 60 seconds from now
+    const kind =
+      exitType === ExitType.GivenIn
+        ? SwapType.SwapExactIn
+        : SwapType.SwapExactOut;
+
     return this.sdk.swaps.buildSwap({
       userAddress,
       swapInfo,
-      kind: 0,
+      kind,
       deadline,
       maxSlippage,
     });

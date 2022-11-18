@@ -69,6 +69,53 @@ const QUERY_KEYS = {
       'historicalPrices',
       { networkId, id },
     ],
+    Joins: {
+      QueryJoin: (
+        amountsIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetJoin: Ref<unknown>
+      ) => [
+        POOLS_ROOT_KEY,
+        'query',
+        'join',
+        {
+          amountsIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetJoin,
+        },
+      ],
+    },
+    Exits: {
+      QueryExit: (
+        bptIn: Ref<unknown>,
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'query',
+        'exit',
+        {
+          bptIn,
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+      SingleAssetMax: (
+        hasFetchedPoolsForSor: Ref<unknown>,
+        isSingleAssetExit: Ref<unknown>,
+        singleAmountOut: unknown
+      ) => [
+        POOLS_ROOT_KEY,
+        'singleAssetMax',
+        {
+          hasFetchedPoolsForSor,
+          isSingleAssetExit,
+          singleAmountOut,
+        },
+      ],
+    },
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }],
