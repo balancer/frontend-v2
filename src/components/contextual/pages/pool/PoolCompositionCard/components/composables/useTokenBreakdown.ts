@@ -5,22 +5,21 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 export function useTokenBreakdown(
   token: Ref<PoolToken>,
-  parentTotalShare: Ref<string>,
+  shareOfParentInPool: Ref<string>,
   mainTokenAddress: Ref<string>,
   isDeepPool: Ref<boolean>
 ) {
   const { fNum2, toFiat } = useNumbers();
 
-  const tokenBPTShare = computed(() => {
-    return bnum(token.value?.balance || '0')
-      .div(parentTotalShare.value || 1)
-      .toString();
-  });
-
+  // To get the balance of this token in the current pool we need to know the
+  // share of it's parent in this pool. e.g. If the token is DAI which is nested
+  // in bb-a-DAI, we need to know what share of bb-a-DAI is contained in the
+  // current pool. Then we can use this share and multiple it by the total
+  // balance of this token.
   const balance = computed(() => {
-    return tokenBPTShare.value != null
-      ? bnum(token.value.balance).times(tokenBPTShare.value).toString()
-      : token.value.balance;
+    return bnum(token.value.balance)
+      .times(shareOfParentInPool.value)
+      .toString();
   });
 
   const isParentTokenInDeepPool = computed(() => {
@@ -66,5 +65,5 @@ export function useTokenBreakdown(
     return fNum2(token.value.weight, FNumFormats.percent);
   });
 
-  return { balanceLabel, fiatLabel, tokenWeightLabel, tokenBPTShare };
+  return { balanceLabel, fiatLabel, tokenWeightLabel };
 }
