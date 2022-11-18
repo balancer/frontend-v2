@@ -65,6 +65,10 @@ const singleAssetRules = computed(() => [
   isLessThanOrEqualTo(singleAmountOut.max, t('exceedsPoolBalance')),
 ]);
 
+const hasValidInputs = computed(
+  (): boolean => validAmounts.value && highPriceImpactAccepted.value
+);
+
 /**
  * WATCHERS
  */
@@ -148,7 +152,7 @@ onBeforeMount(() => {
         color="gradient"
         :disabled="
           !hasAmountsOut ||
-          !validAmounts ||
+          !hasValidInputs ||
           isMismatchedNetwork ||
           isLoadingQuery ||
           isLoadingMax

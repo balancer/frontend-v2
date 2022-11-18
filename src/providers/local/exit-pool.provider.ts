@@ -67,11 +67,6 @@ export type AmountOut = {
  * Handles pool exiting state and transaction execution.
  */
 const provider = (props: Props) => {
-  const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
-  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
-    leading: true,
-  });
-
   /**
    * STATE
    */
@@ -108,6 +103,11 @@ const provider = (props: Props) => {
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
   );
+
+  const debounceQueryExit = debounce(queryExit, 1000, { leading: true });
+  const debounceGetSingleAssetMax = debounce(getSingleAssetMax, 1000, {
+    leading: true,
+  });
 
   const queriesEnabled = computed(
     (): boolean => isMounted.value && !txInProgress.value
@@ -297,10 +297,6 @@ const provider = (props: Props) => {
    */
   async function queryExit() {
     if (!hasFetchedPoolsForSor.value) return;
-    if (!validAmounts.value) {
-      priceImpact.value = 0;
-      return;
-    }
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
