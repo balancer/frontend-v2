@@ -6,6 +6,7 @@ import {
   fiatValueOf,
   flatTokenTree,
   isDeep,
+  tokenTreeLeafs,
   tokenTreeNodes,
 } from '@/composables/usePool';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
@@ -43,6 +44,7 @@ import {
 } from 'vue';
 import { useQuery } from 'vue-query';
 import debounce from 'debounce-promise';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -313,9 +315,9 @@ const provider = (props: Props) => {
     });
 
     priceImpact.value = output.priceImpact;
-    propAmountsOut.value = Object.keys(output.amountsOut).map(item => ({
-      address: item,
-      value: output.amountsOut[item],
+    propAmountsOut.value = Object.keys(output.amountsOut).map(address => ({
+      address,
+      value: output.amountsOut[address],
       max: '',
       valid: true,
     }));
@@ -366,12 +368,25 @@ const provider = (props: Props) => {
     }
   }
 
+  function setInitialPropAmountsOut() {
+    const leafNodes = tokenTreeLeafs(props.pool.tokens);
+    propAmountsOut.value = leafNodes.map(address => ({
+      address: getAddress(address),
+      value: '0',
+      max: '',
+      valid: true,
+    }));
+  }
+
   /**
    * WATCHERS
    */
   watch(isSingleAssetExit, _isSingleAssetExit => {
     bptIn.value = '';
     exitPoolService.setExitHandler(_isSingleAssetExit);
+    if (!_isSingleAssetExit) {
+      setInitialPropAmountsOut();
+    }
   });
 
   /**
@@ -384,6 +399,9 @@ const provider = (props: Props) => {
     // Trigger SOR pool fetching in case swap exits are used.
     fetchPoolsForSor();
     exitPoolService.setExitHandler(isSingleAssetExit.value);
+    if (!props.isSingleAssetExit) {
+      setInitialPropAmountsOut();
+    }
   });
 
   onMounted(() => {
