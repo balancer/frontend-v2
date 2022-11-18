@@ -6,7 +6,6 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 export function useTokenBreakdown(
   token: Ref<PoolToken>,
   shareOfParentInPool: Ref<string>,
-  mainTokenAddress: Ref<string>,
   isDeepPool: Ref<boolean>
 ) {
   const { fNum2, toFiat } = useNumbers();
@@ -44,16 +43,14 @@ export function useTokenBreakdown(
   const fiatLabel = computed(() => {
     if (isParentTokenInDeepPool.value) return '';
 
-    if (token.value.priceRate && isDeepPool.value) {
-      const equivMainTokenBalance = bnum(balance.value)
-        .times(token.value.priceRate)
+    let fiatValue = toFiat(token.value.balance, token.value.address);
+
+    if (fiatValue === '0') {
+      // Attempt to use latest USD price from subgraph.
+      fiatValue = bnum(token.value.balance)
+        .times(token.value.token.latestUSDPrice)
         .toString();
-
-      const fiatValue = toFiat(equivMainTokenBalance, mainTokenAddress.value);
-      return fNum2(fiatValue, FNumFormats.fiat);
     }
-
-    const fiatValue = toFiat(token.value.balance, token.value.address);
 
     if (fiatValue === '0') return '-';
 

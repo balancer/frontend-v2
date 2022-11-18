@@ -2,7 +2,6 @@
 import { PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
-import { findMainTokenAddress } from '@/composables/usePool';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
 import { bnum } from '@/lib/utils';
 
@@ -12,7 +11,6 @@ import { bnum } from '@/lib/utils';
 type Props = {
   token: PoolToken;
   shareOfParentInPool: string;
-  mainTokenAddress: string;
   padding: number;
   isWeighted: boolean;
   isDeepPool: boolean;
@@ -23,28 +21,17 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const {
-  token,
-  shareOfParentInPool,
-  mainTokenAddress,
-  padding,
-  isWeighted,
-  isDeepPool,
-} = toRefs(props);
+const { token, shareOfParentInPool, padding, isWeighted, isDeepPool } =
+  toRefs(props);
 
 /**
  * COMPOSABLES
  */
 const { explorerLinks } = useWeb3();
 
-const mainTokenAddressForNextLevel = findMainTokenAddress(
-  token.value?.token?.pool
-);
-
 const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
   shareOfParentInPool,
-  mainTokenAddress,
   isDeepPool
 );
 
@@ -104,7 +91,6 @@ const shareOfTokenInPool = computed((): number => {
       :key="nestedToken.address"
       :token="nestedToken"
       :shareOfParentInPool="shareOfTokenInPool"
-      :mainTokenAddress="mainTokenAddressForNextLevel"
       :padding="nestedPadding"
       :isWeighted="isWeighted"
       :isDeepPool="isDeepPool"

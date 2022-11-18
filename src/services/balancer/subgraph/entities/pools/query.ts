@@ -33,16 +33,19 @@ const poolAttrs = {
 const tokenTreeAttrs = {
   ...tokenAttrs,
   token: {
+    latestUSDPrice: true,
     pool: {
       ...poolAttrs,
       tokens: {
         ...tokenAttrs,
         token: {
+          latestUSDPrice: true,
           pool: {
             ...poolAttrs,
             tokens: {
               ...tokenAttrs,
               token: {
+                latestUSDPrice: true,
                 pool: {
                   ...poolAttrs,
                 },

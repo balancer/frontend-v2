@@ -60,7 +60,10 @@ export interface PoolToken {
   priceRate: string | null;
   symbol?: string;
   decimals: number;
-  token: { pool: TokenTreePool | null };
+  token: {
+    pool: TokenTreePool | null;
+    latestUSDPrice: string;
+  };
 }
 
 // PoolToken data from onchain call
