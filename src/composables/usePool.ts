@@ -15,10 +15,10 @@ import {
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolToken } from '@/services/pool/types';
-import { divApr, hasBalEmissions } from '@/services/staking/utils';
+import { hasBalEmissions } from '@/services/staking/utils';
 
 import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
-import useNumbers, { FNumFormats, numF } from './useNumbers';
+import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
 import { uniq } from 'lodash';
 
 enum LocalPoolTypes {
@@ -216,23 +216,15 @@ export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
  * @summary Returns total APR label, whether range or single value.
  */
 export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
-  // TODO - Can this all be replaced by aprs.min / aprs.max ? Is there a reason it excludes token/rewards Aprs?
   if (boost) {
     return numF(absMaxApr(aprs, boost), FNumFormats.percent);
-  } else if (hasBalEmissions(aprs)) {
-    const minAPR = numF(divApr(aprs.stakingApr.min), FNumFormats.percent);
-    const maxAPR = numF(divApr(aprs.stakingApr.max), FNumFormats.percent);
-    return `${minAPR} - ${maxAPR}`;
-  } else if (aprs.protocolApr) {
-    const minAPR = numF(divApr(aprs.stakingApr.min), FNumFormats.percent);
-    const maxValue = bnum(aprs.stakingApr.min)
-      .plus(aprs.protocolApr)
-      .toString();
-    const maxAPR = numF(divApr(maxValue), FNumFormats.percent);
+  } else if (hasBalEmissions(aprs) || aprs.protocolApr > 0) {
+    const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
+    const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(aprs.stakingApr.min, FNumFormats.percent);
+  return numF(bpToDec(aprs.min), FNumFormats.percent);
 }
 
 /**

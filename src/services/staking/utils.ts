@@ -140,10 +140,3 @@ export function hasBalEmissions(aprs?: AprBreakdown): boolean {
   if (!aprs) return false;
   return bnum(aprs?.stakingApr?.min || 0).gt(0);
 }
-
-/**
- * @summary Most aprs are numbers of 100 = 1%, this helper should be run on each before formatting as a percent
- */
-export function divApr(value: number | string): string {
-  return bnum(value).div(10000).toString();
-}

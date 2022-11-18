@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { isVeBalPool, totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
 import { bnum } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
-import { hasStakingRewards, divApr } from '@/services/staking/utils';
+import { hasStakingRewards } from '@/services/staking/utils';
 
 import StakingBreakdown from './components/StakingBreakdown.vue';
 import VeBalBreakdown from './components/VeBalBreakdown.vue';
@@ -78,7 +78,7 @@ const totalLabel = computed((): string =>
       <div class="p-3 text-left">
         <!-- SWAP FEE APR -->
         <div class="flex items-center mb-1 whitespace-nowrap">
-          {{ fNum2(divApr(apr?.swapFees || '0'), FNumFormats.percent) }}
+          {{ fNum2(bpToDec(apr?.swapFees || '0'), FNumFormats.percent) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
           </span>

@@ -5,11 +5,10 @@ import { getAddress } from '@ethersproject/address';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
-import { divApr } from '@/services/staking/utils';
 
 /**
  * TYPES
@@ -58,13 +57,13 @@ const yieldBreakdownItems = computed((): [string, number][] =>
 <template>
   <BalBreakdown :items="yieldBreakdownItems" :hideItems="!hasMultiRewardTokens">
     <div class="flex items-center">
-      {{ fNum2(divApr(yieldAPR.total), FNumFormats.percent) }}
+      {{ fNum2(bpToDec(yieldAPR.total), FNumFormats.percent) }}
       <span class="ml-1 text-xs text-secondary">
         {{ yieldAPRLabel }}
       </span>
     </div>
     <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
-      {{ fNum2(amount, FNumFormats.percent) }}
+      {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
       <span class="ml-1 text-xs text-secondary">
         {{ yieldAPRTokens[getAddress(address)].symbol }} {{ $t('apr') }}
       </span>
