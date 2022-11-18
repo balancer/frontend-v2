@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
 import { computed, onBeforeMount, reactive, toRef, watch } from 'vue';
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
-import { bnum, isSameAddress } from '@/lib/utils';
+import { bnum, isSameAddress, selectByAddress } from '@/lib/utils';
 import { Pool, PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import useExitPool from '@/composables/pools/useExitPool';
 import { useI18n } from 'vue-i18n';
+import ProportionalWithdrawalTokenInfoV2 from './ProportionalWithdrawalTokenInfoV2.vue';
 
 /**
  * TYPES
@@ -51,7 +51,6 @@ const {
 } = useExitPool();
 const { t } = useI18n();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
-const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
@@ -128,48 +127,18 @@ onBeforeMount(() => {
     />
     <div class="label">{{ t('youReceive') }}</div>
     <div class="token-amounts">
-      <div
+      <ProportionalWithdrawalTokenInfoV2
         v-for="{ address, value } in propAmountsOut"
         :key="address"
-        class="p-4 last:mb-0"
-      >
-        <div class="flex justify-between items-center">
-          <div class="flex items-center">
-            <BalAsset :address="address" class="mr-2" />
-            <div class="flex flex-col leading-none">
-              <div class="text-lg font-medium">
-                {{ exitTokenInfo[address].symbol }}
-                <span v-if="!isStableLikePool">
-                  {{
-                    fNum2(getPoolToken(address)?.weight || '0', {
-                      style: 'percent',
-                      maximumFractionDigits: 0,
-                    })
-                  }}
-                </span>
-              </div>
-              <div class="flex w-52 text-sm text-gray-600 dark:text-gray-400">
-                <span class="truncate">
-                  {{ exitTokenInfo[address].name }}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            class="flex flex-col flex-grow items-end pl-2 text-right font-numeric"
-          >
-            <BalLoadingBlock v-if="isLoadingQuery" class="w-20 h-12" />
-            <template v-else>
-              <span class="text-xl font-medium break-words">
-                {{ fNum2(value, FNumFormats.token) }}
-              </span>
-              <span class="text-sm text-gray-600 dark:text-gray-400">
-                {{ fNum2(fiatAmountsOut[address], FNumFormats.fiat) }}
-              </span>
-            </template>
-          </div>
-        </div>
-      </div>
+        :token="selectByAddress(exitTokenInfo, address)"
+        :weight="getPoolToken(address)?.weight || '0'"
+        :address="address"
+        :fiatAmountOut="selectByAddress(fiatAmountsOut, address)"
+        :loading="isLoadingQuery"
+        :isStableLikePool="isStableLikePool"
+        :value="value"
+        class="last:mb-0"
+      ></ProportionalWithdrawalTokenInfoV2>
     </div>
   </div>
 </template>

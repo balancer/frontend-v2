@@ -44,7 +44,6 @@ import {
 } from 'vue';
 import { useQuery } from 'vue-query';
 import debounce from 'debounce-promise';
-import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -138,7 +137,8 @@ const provider = (props: Props) => {
    * COMPUTED
    */
   const isLoadingQuery = computed(
-    (): boolean => queryExitQuery.isFetching.value
+    (): boolean =>
+      !hasFetchedPoolsForSor.value || queryExitQuery.isFetching.value
   );
 
   const queryError = computed(
@@ -301,6 +301,7 @@ const provider = (props: Props) => {
       priceImpact.value = 0;
       return;
     }
+    if (!_bptIn.value) return;
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
@@ -371,7 +372,7 @@ const provider = (props: Props) => {
   function setInitialPropAmountsOut() {
     const leafNodes = tokenTreeLeafs(props.pool.tokens);
     propAmountsOut.value = leafNodes.map(address => ({
-      address: getAddress(address),
+      address,
       value: '0',
       max: '',
       valid: true,
