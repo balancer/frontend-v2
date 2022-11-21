@@ -10,7 +10,7 @@ import { bnum } from '@/lib/utils';
  */
 type Props = {
   token: PoolToken;
-  shareOfParentInPool: number;
+  shareOfParentInPool?: number;
   padding: number;
   isWeighted: boolean;
   isDeepPool: boolean;
@@ -19,7 +19,9 @@ type Props = {
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  shareOfParentInPool: 1,
+});
 
 const { token, shareOfParentInPool, padding, isWeighted, isDeepPool } =
   toRefs(props);

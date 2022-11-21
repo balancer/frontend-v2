@@ -62,7 +62,6 @@ const { upToLargeBreakpoint } = useBreakpoints();
       <TokenBreakdown
         :token="token"
         :padding="4"
-        :shareOfParentInPool="1"
         :isWeighted="isWeighted"
         :isDeepPool="isDeepPool"
       />
