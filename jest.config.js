@@ -20,4 +20,8 @@ module.exports = {
   transformIgnorePatterns: [
     '/node_modules/(?!(echarts|zrender|vue-slider-component|vue3-jazzicon)/)',
   ],
+  moduleNameMapper: {
+    '/public/data/tokenlists/tokens-5.json':
+      '<rootDir>/src/tests/tokenlists/tokens-5.json',
+  },
 };
