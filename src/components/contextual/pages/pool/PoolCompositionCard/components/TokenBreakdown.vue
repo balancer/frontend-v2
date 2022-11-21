@@ -58,8 +58,12 @@ const shareOfTokenInPool = computed((): number => {
 
 <template>
   <div
-    class="grid p-3 px-6 w-full"
-    :class="[isWeighted ? 'grid-cols-4' : 'grid-cols-3', 'pl-' + padding]"
+    class="grid px-6 w-full"
+    :class="[
+      isWeighted ? 'grid-cols-4' : 'grid-cols-3',
+      isDeepPool ? 'p-3' : 'p-4',
+      'pl-' + padding,
+    ]"
   >
     <BalLink
       :href="explorerLinks.addressLink(token.address)"
@@ -67,7 +71,11 @@ const shareOfTokenInPool = computed((): number => {
       noStyle
       class="flex items-center"
     >
-      <BalAsset :address="token.address" class="mr-2" />
+      <BalAsset
+        :address="token.address"
+        class="mr-2"
+        :size="isDeepPool ? 24 : 36"
+      />
       {{ token?.symbol || '---' }}
       <BalIcon
         name="arrow-up-right"
@@ -80,7 +88,6 @@ const shareOfTokenInPool = computed((): number => {
     </div>
     <div class="justify-self-end">
       {{ balanceLabel }}
-      <!-- {{ token.priceRate }} -->
     </div>
     <div class="justify-self-end">
       {{ fiatLabel }}
