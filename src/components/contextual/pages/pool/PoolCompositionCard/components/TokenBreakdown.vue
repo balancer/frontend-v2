@@ -58,7 +58,7 @@ const shareOfTokenInPool = computed((): number => {
 
 <template>
   <div
-    class="grid p-4 w-full"
+    class="grid p-3 px-6 w-full"
     :class="[isWeighted ? 'grid-cols-4' : 'grid-cols-3', 'pl-' + padding]"
   >
     <BalLink
