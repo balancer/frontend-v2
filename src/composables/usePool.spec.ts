@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 import {
   findTokenInTree,
   flatTokenTree,
-  mainTokenAddress,
+  findMainTokenAddress,
   removeBptFrom,
   removeBptFromTree,
   tokenTreeLeafs,
@@ -260,19 +260,19 @@ describe('findTokenInTree should', () => {
   });
 });
 
-test('mainToken address', () => {
+test('findMainTokenAddress works after removing BPT', () => {
   const poolWithoutPremintedBPT = removeBptFrom(BoostedPoolMock);
-  const bbaUSDTMainAddress = mainTokenAddress(
+  const bbaUSDTMainAddress = findMainTokenAddress(
     poolWithoutPremintedBPT.tokens[0].token.pool as TokenTreePool
   );
   expect(bbaUSDTMainAddress).toBe('0xdac17f958d2ee523a2206206994597c13d831ec7'); //USDT
 
-  const bbaUsdcMainAddress = mainTokenAddress(
+  const bbaUsdcMainAddress = findMainTokenAddress(
     poolWithoutPremintedBPT.tokens[1].token.pool as TokenTreePool
   );
   expect(bbaUsdcMainAddress).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'); //USDC
 
-  const bbaDaiMainAddress = mainTokenAddress(
+  const bbaDaiMainAddress = findMainTokenAddress(
     poolWithoutPremintedBPT.tokens[2].token.pool as TokenTreePool
   );
   expect(bbaDaiMainAddress).toBe('0x6b175474e89094c44da98b954eedeac495271d0f'); //DAI

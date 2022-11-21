@@ -23,6 +23,7 @@ const tokenAttrs = {
 
 const poolAttrs = {
   id: true,
+  totalShares: true,
   address: true,
   poolType: true,
   mainIndex: true,
@@ -32,16 +33,19 @@ const poolAttrs = {
 const tokenTreeAttrs = {
   ...tokenAttrs,
   token: {
+    latestUSDPrice: true,
     pool: {
       ...poolAttrs,
       tokens: {
         ...tokenAttrs,
         token: {
+          latestUSDPrice: true,
           pool: {
             ...poolAttrs,
             tokens: {
               ...tokenAttrs,
               token: {
+                latestUSDPrice: true,
                 pool: {
                   ...poolAttrs,
                 },

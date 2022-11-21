@@ -48,6 +48,7 @@ export interface TokenTreePool {
   id: string;
   address: string;
   poolType: PoolType;
+  totalShares: string;
   mainIndex: number;
   tokens?: PoolToken[];
 }
@@ -59,7 +60,10 @@ export interface PoolToken {
   priceRate: string | null;
   symbol?: string;
   decimals: number;
-  token: { pool: TokenTreePool | null };
+  token: {
+    pool: TokenTreePool | null;
+    latestUSDPrice?: string;
+  };
 }
 
 // PoolToken data from onchain call

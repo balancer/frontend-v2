@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+// Composables
 import { useStore } from 'vuex';
+
+// Components
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
@@ -8,10 +11,6 @@ import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { useTradeState } from '@/composables/trade/useTradeState';
-import useNativeBalance from '@/composables/useNativeBalance';
-import BridgeLink from '@/components/links/BridgeLink.vue';
-import { isL2 } from '@/composables/useNetwork';
 
 /**
  * STATE
@@ -24,8 +23,6 @@ const showPriceGraphModal = ref(false);
 const store = useStore();
 const { setSelectedTokens } = usePoolFilters();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { setTokenInAddress } = useTradeState();
-const { hasNativeBalance, nativeBalance, nativeCurrency } = useNativeBalance();
 
 /**
  * COMPUTED
@@ -55,7 +52,7 @@ onMounted(() => {
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
-      <MyWallet @click:asset="setTokenInAddress" />
+      <MyWallet />
       <TrendingPairs class="mt-4" />
     </template>
 
@@ -68,19 +65,13 @@ onMounted(() => {
         v-if="upToLargeBreakpoint"
         class="w-full"
         :sections="[
-          {
-            title: `${$t('myWallet2')} ${
-              hasNativeBalance ? `${nativeBalance} ${nativeCurrency}` : ''
-            }`,
-            id: 'my-wallet',
-          },
+          { title: 'My wallet', id: 'my-wallet' },
           { title: 'Trending pairs', id: 'trending-pairs' },
           { title: 'Price chart', id: 'price-chart' },
-          { title: 'Bridge assets', id: 'bridge' },
         ]"
       >
         <template #my-wallet>
-          <MyWallet @click:asset="setTokenInAddress" />
+          <MyWallet />
         </template>
         <template #trending-pairs>
           <TrendingPairs />
@@ -88,15 +79,11 @@ onMounted(() => {
         <template #price-chart>
           <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
         </template>
-        <template #bridge>
-          <BridgeLink v-if="isL2" />
-        </template>
       </BalAccordion>
     </div>
 
     <template #gutterRight>
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
-      <BridgeLink v-if="isL2" class="mt-4" />
     </template>
   </Col3Layout>
 

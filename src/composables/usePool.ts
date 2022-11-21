@@ -428,8 +428,8 @@ function removePremintedToken(tree: TokenTreePool) {
   }
 }
 
-export function mainTokenAddress(pool: TokenTreePool) {
-  if (!pool.tokens) return '';
+export function findMainTokenAddress(pool: TokenTreePool | null) {
+  if (!pool || !pool.tokens) return '';
   return pool.tokens[pool.mainIndex].address;
 }
 
@@ -483,6 +483,30 @@ export function bptPriceFor(pool: Pool): string {
  */
 export function fiatValueOf(pool: Pool, shares: string): string {
   return bnum(shares).times(bptPriceFor(pool)).toString();
+}
+
+export function findTokenByAddress(pool: Pool, address: string) {
+  return pool.tokens.find(token => isSameAddress(token.address, address));
+}
+
+export function getUnderlyingTokens(pool: Pool, address: string) {
+  const token = findTokenByAddress(pool, address);
+
+  const underlyingTokens = token?.token.pool?.tokens || [];
+  return underlyingTokens.filter(
+    token => !includesAddress(pool.tokensList, token.address)
+  );
+}
+
+export function calculateTokenBPTShareByAddress(
+  pool: Pool,
+  address: string
+): string {
+  const token = findTokenByAddress(pool, address);
+  if (!token) return '0';
+  return bnum(token?.balance || '0')
+    .div(token.token.pool?.totalShares || 1)
+    .toString();
 }
 
 /**

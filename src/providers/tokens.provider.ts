@@ -280,7 +280,10 @@ export default {
      * tokens into state tokens map.
      */
     async function injectTokens(addresses: string[]): Promise<void> {
-      addresses = addresses.map(getAddressFromPoolId).map(getAddress);
+      addresses = addresses
+        .filter(a => a)
+        .map(getAddressFromPoolId)
+        .map(getAddress);
 
       // Remove any duplicates
       addresses = [...new Set(addresses)];
