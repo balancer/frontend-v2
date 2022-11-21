@@ -264,6 +264,9 @@ const provider = (props: Props) => {
     amountsOut.value.some(amountOut => bnum(amountOut.value).gt(0))
   );
 
+  // Checks if BPT in is > 0
+  const hasBptIn = computed(() => bnum(bptIn.value).gt(0));
+
   // Are amounts valid for transaction? That is bptIn and amountsOut.
   const validAmounts = computed((): boolean => {
     return isSingleAssetExit.value
@@ -297,6 +300,12 @@ const provider = (props: Props) => {
    */
   async function queryExit() {
     if (!hasFetchedPoolsForSor.value) return;
+
+    // Single asset exit, and token out amount is 0 or less
+    if (isSingleAssetExit.value && !hasAmountsOut.value) return;
+
+    // Proportional exit, and BPT in is 0 or less
+    if (!isSingleAssetExit.value && !hasBptIn.value) return;
 
     exitPoolService.setExitHandler(isSingleAssetExit.value);
 
