@@ -9,6 +9,7 @@ import StakePreviewModal from '@/components/contextual/stake/StakePreviewModal.v
 import useApp from '@/composables/useApp';
 import useNumbers from '@/composables/useNumbers';
 import { usePoolWarning } from '@/composables/usePoolWarning';
+import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { POOLS } from '@/constants/pools';
@@ -48,6 +49,7 @@ const poolId = computed(() => toRef(props, 'pool').value.id);
  */
 const { appLoading } = useApp();
 const { isAffected, warnings } = usePoolWarning(poolId);
+const { hasNonApprovedRateProviders } = usePool(toRef(props, 'pool'));
 const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
@@ -208,6 +210,13 @@ const poolTypeLabel = computed(() => {
       </div>
     </div>
 
+    <BalAlert
+      v-if="hasNonApprovedRateProviders"
+      type="warning"
+      :title="$t('hasNonApprovedRateProviders')"
+      class="mt-2"
+      block
+    />
     <BalAlert
       v-if="!appLoading && !loadingPool && missingPrices"
       type="warning"
