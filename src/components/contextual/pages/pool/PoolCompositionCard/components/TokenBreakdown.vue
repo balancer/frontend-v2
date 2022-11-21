@@ -40,13 +40,13 @@ const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
  */
 const nestedPadding = computed(() => padding.value + 6);
 
-const tokenIsPool = computed((): boolean => !!token.value.token.pool);
+const isLeaf = computed((): boolean => !token.value.token.pool);
 
 // If this token is a pool, this is the share of that pool in it's parent.
 // e.g. The share of bb-a-DAI in bb-a-USD, since bb-a-DAI can be used in
 // multiple pools.
 const shareOfTokenInPool = computed((): number => {
-  if (!tokenIsPool.value) return 1;
+  if (isLeaf.value) return 1;
 
   return bnum(token.value?.balance || '0')
     .div(token.value.token.pool?.totalShares || 1)
