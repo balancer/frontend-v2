@@ -2,16 +2,15 @@
 import { PoolToken } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed, toRefs } from 'vue';
-import { findMainTokenAddress } from '@/composables/usePool';
 import { useTokenBreakdown } from './composables/useTokenBreakdown';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
  */
 type Props = {
   token: PoolToken;
-  parentTotalShare: string;
-  mainTokenAddress: string;
+  shareOfParentInPool?: number;
   padding: number;
   isWeighted: boolean;
   isDeepPool: boolean;
@@ -20,30 +19,21 @@ type Props = {
 /**
  * PROPS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  shareOfParentInPool: 1,
+});
 
-const {
-  token,
-  parentTotalShare,
-  mainTokenAddress,
-  padding,
-  isWeighted,
-  isDeepPool,
-} = toRefs(props);
+const { token, shareOfParentInPool, padding, isWeighted, isDeepPool } =
+  toRefs(props);
 
 /**
  * COMPOSABLES
  */
 const { explorerLinks } = useWeb3();
 
-const mainTokenAddressForNextLevel = findMainTokenAddress(
-  token.value?.token?.pool
-);
-
 const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
   token,
-  parentTotalShare,
-  mainTokenAddress,
+  shareOfParentInPool,
   isDeepPool
 );
 
@@ -51,11 +41,24 @@ const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
  * COMPUTED
  */
 const nestedPadding = computed(() => padding.value + 6);
+
+const isLeaf = computed((): boolean => !token.value.token.pool);
+
+// If this token is a pool, this is the share of that pool in it's parent.
+// e.g. The share of bb-a-DAI in bb-a-USD, since bb-a-DAI can be used in
+// multiple pools.
+const shareOfTokenInPool = computed((): number => {
+  if (isLeaf.value) return 1;
+
+  return bnum(token.value?.balance || '0')
+    .div(token.value.token.pool?.totalShares || 1)
+    .toNumber();
+});
 </script>
 
 <template>
   <div
-    class="grid p-4 w-full"
+    class="grid p-2 w-full"
     :class="[isWeighted ? 'grid-cols-4' : 'grid-cols-3', 'pl-' + padding]"
   >
     <BalLink
@@ -89,8 +92,7 @@ const nestedPadding = computed(() => padding.value + 6);
       v-for="nestedToken in token.token?.pool?.tokens"
       :key="nestedToken.address"
       :token="nestedToken"
-      :parentTotalShare="token.token.pool?.totalShares"
-      :mainTokenAddress="mainTokenAddressForNextLevel"
+      :shareOfParentInPool="shareOfTokenInPool"
       :padding="nestedPadding"
       :isWeighted="isWeighted"
       :isDeepPool="isDeepPool"

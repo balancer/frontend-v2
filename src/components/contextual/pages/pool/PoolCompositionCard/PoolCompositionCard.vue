@@ -62,11 +62,9 @@ const { upToLargeBreakpoint } = useBreakpoints();
       <TokenBreakdown
         :token="token"
         :padding="4"
-        :parentTotalShare="pool.totalShares"
-        mainTokenAddress=""
         :isWeighted="isWeighted"
         :isDeepPool="isDeepPool"
-      ></TokenBreakdown>
+      />
     </div>
   </BalCard>
 </template>
