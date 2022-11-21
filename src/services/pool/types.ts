@@ -62,7 +62,7 @@ export interface PoolToken {
   decimals: number;
   token: {
     pool: TokenTreePool | null;
-    latestUSDPrice: string;
+    latestUSDPrice?: string;
   };
 }
 
