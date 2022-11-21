@@ -5,6 +5,7 @@ import { EmptyPoolMock } from '@/__mocks__/pool';
 import APRTooltip from './APRTooltip.vue';
 import { Pool } from '@/services/pool/types';
 import { configService } from '@/services/config/config.service';
+import { POOLS } from '@/constants/pools';
 
 jest.mock('@/composables/useTokens');
 
@@ -50,6 +51,35 @@ describe('APRTooltip', () => {
       expect(
         container.getElementsByClassName('swap-fee-apr')[0].textContent
       ).toBe('15.22% Swap fees APR');
+    });
+  });
+
+  describe('Protocol APR', () => {
+    it('Should show veBAL locking rewards', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        swapFees: 78,
+        protocolApr: 117,
+        min: 78,
+        max: 195,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+        id: POOLS.IdsMap?.veBAL || '',
+      };
+      console.log('POOL ID: ', poolMock.id);
+      const { container } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
+        'Total APR0.78% - 1.95%'
+      );
+      expect(
+        container.getElementsByClassName('protocol-apr')[0].textContent
+      ).toContain('1.17% Max locking/veBAL APR');
     });
   });
 

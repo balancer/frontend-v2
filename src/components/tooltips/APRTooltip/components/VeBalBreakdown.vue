@@ -36,15 +36,17 @@ const items = computed((): string[] => [
 </script>
 
 <template>
-  <BalBreakdown :items="items">
-    {{ aprLabel }}
-    <span class="ml-1 text-xs text-secondary">
-      {{ $t('tooltips.veBalApr.title') }}
-    </span>
-    <template #item="{ item }">
-      <div class="text-xs text-secondary">
-        {{ item }}
-      </div>
-    </template>
-  </BalBreakdown>
+  <div class="protocol-apr">
+    <BalBreakdown :items="items">
+      {{ aprLabel }}
+      <span class="ml-1 text-xs text-secondary">
+        {{ $t('tooltips.veBalApr.title') }}
+      </span>
+      <template #item="{ item }">
+        <div class="text-xs text-secondary">
+          {{ item }}
+        </div>
+      </template>
+    </BalBreakdown>
+  </div>
 </template>
