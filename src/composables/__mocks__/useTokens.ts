@@ -15,6 +15,15 @@ const mockTokens = {
   '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': {
     symbol: 'wstETH',
   },
+  '0x2F4eb100552ef93840d5aDC30560E5513DFfFACb': {
+    symbol: 'bb-a-USDT',
+  },
+  '0x82698aeCc9E28e9Bb27608Bd52cF57f704BD1B83': {
+    symbol: 'bb-a-USDC',
+  },
+  '0xae37D54Ae477268B9997d4161B96b8200755935c': {
+    symbol: 'bb-a-DAI',
+  },
 };
 
 export default function useTokens() {
@@ -27,7 +36,11 @@ export default function useTokens() {
       return mockTokens[address];
     }),
     getTokens: jest.fn().mockImplementation(addresses => {
-      return addresses.map(address => mockTokens[address]);
+      return Object.fromEntries(
+        addresses.map(address => {
+          return [address, mockTokens[address]];
+        })
+      );
     }),
   };
 }

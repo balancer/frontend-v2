@@ -33,9 +33,9 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-const yieldAPRTokens = computed(() =>
-  getTokens(Object.keys(props.yieldAPR.breakdown))
-);
+const yieldAPRTokens = computed(() => {
+  return getTokens(Object.keys(props.yieldAPR.breakdown));
+});
 
 const hasMultiRewardTokens = computed(
   () => Object.keys(yieldAPRTokens.value).length > 1
