@@ -3,6 +3,10 @@ import { AprBreakdown } from '@balancer-labs/sdk';
 import { EmptyPoolMock } from '@/__mocks__/pool';
 
 import APRTooltip from './APRTooltip.vue';
+import { Pool } from '@/services/pool/types';
+import { configService } from '@/services/config/config.service';
+
+jest.mock('@/composables/useTokens');
 
 const EmptyAprBreakdownMock: AprBreakdown = {
   swapFees: 0,
@@ -124,5 +128,35 @@ describe('APRTooltip', () => {
     });
   });
 
-  // describe('Token Aprs', () => {});
+  describe('Token Aprs', () => {
+    it('Should show stETH staking reward APRs', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        tokenAprs: {
+          total: 166,
+          breakdown: {
+            '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': 166,
+          },
+        },
+        min: 166,
+        max: 166,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+        tokensList: [configService.network.addresses.wstETH],
+      };
+      const { container } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
+        'Total APR1.66%'
+      );
+      expect(container.getElementsByClassName('yield-apr')[0].textContent).toBe(
+        '1.66% stETH staking rewards APR'
+      );
+    });
+  });
 });
