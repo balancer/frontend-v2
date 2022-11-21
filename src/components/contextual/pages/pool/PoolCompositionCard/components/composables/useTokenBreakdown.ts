@@ -5,7 +5,7 @@ import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 export function useTokenBreakdown(
   token: Ref<PoolToken>,
-  shareOfParentInPool: Ref<string>,
+  shareOfParentInPool: Ref<number>,
   isDeepPool: Ref<boolean>
 ) {
   const { fNum2, toFiat } = useNumbers();

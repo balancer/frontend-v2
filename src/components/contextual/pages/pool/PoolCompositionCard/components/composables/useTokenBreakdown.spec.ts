@@ -1,4 +1,4 @@
-import { findMainTokenAddress, removeBptFrom } from '@/composables/usePool';
+import { removeBptFrom } from '@/composables/usePool';
 import { PoolToken } from '@/services/pool/types';
 import { BoostedPoolMock, PoolMock } from '@/__mocks__/pool';
 import { ref } from 'vue';
@@ -6,6 +6,7 @@ import { mount } from 'vue-composable-tester';
 import { useTokenBreakdown } from './useTokenBreakdown';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
 
 // TODO: refactor providers to avoid mocking useTokens
 jest.mock('@/composables/useTokens');
@@ -15,10 +16,9 @@ const isDeepPool = ref(true);
 
 it('Works for a parent token in a deep nested pool', async () => {
   const token = ref(bbaDaiToken);
-  const parentTotalShare = ref(BoostedPoolMock.totalShares);
-  const mainTokenAddress = ref('');
+  const shareOfParentInPool = ref(1);
   const { result } = mount(() =>
-    useTokenBreakdown(token, parentTotalShare, mainTokenAddress, isDeepPool)
+    useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
   );
 
   // Hides parent token balance and fiat
@@ -29,24 +29,22 @@ it('Works for a parent token in a deep nested pool', async () => {
 });
 
 describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakdown works', () => {
-  const mainTokenAddress = ref(findMainTokenAddress(bbaDaiToken.token.pool));
-  const parentTotalShare = ref(bbaDaiToken.token.pool?.totalShares as string);
+  const shareOfParentInPool = ref(
+    bnum(bbaDaiToken.balance)
+      .div(bbaDaiToken.token.pool?.totalShares as string)
+      .toNumber()
+  );
 
   it('for wrapped tokens (aDAi)', async () => {
     const aDaiToken = ref(bbaDaiToken.token.pool?.tokens?.[0] as PoolToken);
     const { result } = mount(() =>
-      useTokenBreakdown(
-        aDaiToken,
-        parentTotalShare,
-        mainTokenAddress,
-        isDeepPool
-      )
+      useTokenBreakdown(aDaiToken, shareOfParentInPool, isDeepPool)
     );
 
-    expect(result.balanceLabel.value).toEqual('13,324');
+    expect(result.balanceLabel.value).toEqual('24,104');
     //useTokens global mock is mocking priceFor to return 2
     // so fiat should be double the balance
-    expect(result.fiatLabel.value).toEqual('$26,648');
+    expect(result.fiatLabel.value).toEqual('$51,621,291');
 
     expect(result.tokenWeightLabel.value).toEqual('');
   });
@@ -54,33 +52,27 @@ describe('Given a boosted pool with a deep bb-a-DAI linear token, useTokenBreakd
   it('for a non wrapped token (DAI)', async () => {
     const daiToken = ref(bbaDaiToken.token.pool?.tokens?.[1] as PoolToken);
     const { result } = mount(() =>
-      useTokenBreakdown(
-        daiToken,
-        parentTotalShare,
-        mainTokenAddress,
-        isDeepPool
-      )
+      useTokenBreakdown(daiToken, shareOfParentInPool, isDeepPool)
     );
 
-    expect(result.balanceLabel.value).toEqual('7,179.966');
+    expect(result.balanceLabel.value).toEqual('17,695');
     //useTokens global mock is mocking priceFor to return 2
     // so fiat should be double the balance
-    expect(result.fiatLabel.value).toEqual('$14,360');
+    expect(result.fiatLabel.value).toEqual('$37,894,501');
 
     expect(result.tokenWeightLabel.value).toEqual('');
   });
 });
 
 describe('Given a weighted pool (GRO-WETH)', () => {
-  const parentTotalShare = ref(PoolMock.totalShares);
-  const mainTokenAddress = ref('');
+  const shareOfParentInPool = ref(0);
   const isDeepPool = ref(false);
 
   it('for GRO token', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, parentTotalShare, mainTokenAddress, isDeepPool)
+      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 
     expect(result.balanceLabel.value).toEqual('408,785');
@@ -93,7 +85,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, parentTotalShare, mainTokenAddress, isDeepPool)
+      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 
     expect(result.balanceLabel.value).toEqual('95.0941');
@@ -106,7 +98,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const wethToken = removeBptFrom(PoolMock).tokens[1];
     const token = ref(wethToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, parentTotalShare, mainTokenAddress, isDeepPool)
+      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
 
     expect(result.balanceLabel.value).toEqual('95.0941');
@@ -115,7 +107,7 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     expect(result.tokenWeightLabel.value).toEqual('20.00%');
   });
 
-  it('Returns - when the token price is not defined (fiat value is zero because priceFor returns zero when token price not found)', () => {
+  it('Uses latestUSDPrice when the token price is not defined (fiat value is zero because priceFor returns zero when token price not found)', () => {
     //@ts-ignore
     useTokens = () => ({
       priceFor: () => 0,
@@ -124,8 +116,10 @@ describe('Given a weighted pool (GRO-WETH)', () => {
     const groToken = removeBptFrom(PoolMock).tokens[0];
     const token = ref(groToken);
     const { result } = mount(() =>
-      useTokenBreakdown(token, parentTotalShare, mainTokenAddress, isDeepPool)
+      useTokenBreakdown(token, shareOfParentInPool, isDeepPool)
     );
-    expect(result.fiatLabel.value).toEqual('-');
+
+    expect(result.balanceLabel.value).toEqual('408,785');
+    expect(result.fiatLabel.value).toEqual('$437,400'); // balance x latestUSDPrice = 408,785 x 1.07 = $437,400
   });
 });

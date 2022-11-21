@@ -10,7 +10,7 @@ import { bnum } from '@/lib/utils';
  */
 type Props = {
   token: PoolToken;
-  shareOfParentInPool: string;
+  shareOfParentInPool: number;
   padding: number;
   isWeighted: boolean;
   isDeepPool: boolean;
@@ -56,7 +56,7 @@ const shareOfTokenInPool = computed((): number => {
 
 <template>
   <div
-    class="grid p-4 w-full"
+    class="grid p-2 w-full"
     :class="[isWeighted ? 'grid-cols-4' : 'grid-cols-3', 'pl-' + padding]"
   >
     <BalLink
