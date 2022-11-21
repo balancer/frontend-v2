@@ -54,6 +54,7 @@ const {
   isLoadingQuery,
   highPriceImpact,
   highPriceImpactAccepted,
+  hasAcceptedHighPriceImpact,
   hasAmountsOut,
   validAmounts,
 } = useExitPool();
@@ -66,7 +67,7 @@ const singleAssetRules = computed(() => [
 ]);
 
 const hasValidInputs = computed(
-  (): boolean => validAmounts.value && highPriceImpactAccepted.value
+  (): boolean => validAmounts.value && hasAcceptedHighPriceImpact.value
 );
 
 /**
