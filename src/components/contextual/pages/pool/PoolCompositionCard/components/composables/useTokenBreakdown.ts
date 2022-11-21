@@ -13,7 +13,7 @@ export function useTokenBreakdown(
   // To get the balance of this token in the current pool we need to know the
   // share of it's parent in this pool. e.g. If the token is DAI which is nested
   // in bb-a-DAI, we need to know what share of bb-a-DAI is contained in the
-  // current pool. Then we can use this share and multiple it by the total
+  // current pool. Then we can use this share and multiply it by the total
   // balance of this token.
   const balance = computed(() => {
     return bnum(token.value.balance)
