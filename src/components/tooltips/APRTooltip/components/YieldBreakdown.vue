@@ -55,7 +55,7 @@ const yieldBreakdownItems = computed((): [string, number][] =>
 </script>
 
 <template>
-  <div class="yield-apr">
+  <div data-testid="yield-apr">
     <BalBreakdown
       :items="yieldBreakdownItems"
       :hideItems="!hasMultiRewardTokens"

@@ -37,20 +37,18 @@ describe('APRTooltip', () => {
         min: 1522,
         max: 1522,
       };
-      const { container } = render(APRTooltip, {
+      const { getByTestId } = render(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });
-      expect(container.getElementsByClassName('total-apr').length).toBe(1);
-      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
-        'Total APR15.22%'
+      expect(getByTestId('total-apr')).toBeTruthy();
+      expect(getByTestId('total-apr').textContent).toBe('Total APR15.22%');
+      expect(getByTestId('swap-fee-apr')).toBeTruthy();
+      expect(getByTestId('swap-fee-apr').textContent).toBe(
+        '15.22% Swap fees APR'
       );
-      expect(container.getElementsByClassName('swap-fee-apr').length).toBe(1);
-      expect(
-        container.getElementsByClassName('swap-fee-apr')[0].textContent
-      ).toBe('15.22% Swap fees APR');
     });
   });
 
@@ -68,18 +66,18 @@ describe('APRTooltip', () => {
         id: POOLS.IdsMap?.veBAL || '',
       };
       console.log('POOL ID: ', poolMock.id);
-      const { container } = render(APRTooltip, {
+      const { getByTestId } = render(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
         },
       });
-      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
+      expect(getByTestId('total-apr').textContent).toBe(
         'Total APR0.78% - 1.95%'
       );
-      expect(
-        container.getElementsByClassName('protocol-apr')[0].textContent
-      ).toContain('1.17% Max locking/veBAL APR');
+      expect(getByTestId('protocol-apr').textContent).toContain(
+        '1.17% Max locking/veBAL APR'
+      );
     });
   });
 
@@ -94,29 +92,28 @@ describe('APRTooltip', () => {
         min: 44,
         max: 567,
       };
-      const { container } = render(APRTooltip, {
+      const { getByTestId } = render(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });
-      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
+      expect(getByTestId('total-apr').textContent).toBe(
         'Total APR0.44% - 5.67%'
       );
+      expect(getByTestId('swap-fee-apr').textContent).toBe(
+        '0.00% Swap fees APR'
+      );
       expect(
-        container.getElementsByClassName('swap-fee-apr')[0].textContent
-      ).toBe('0.00% Swap fees APR');
-      expect(
-        container.getElementsByClassName('staking-apr')[0].children[0]
-          .children[0].textContent
+        getByTestId('staking-apr').children[0].children[0].textContent
       ).toBe('0.44% Min staking APR');
       expect(
-        container.getElementsByClassName('staking-apr')[0].children[0]
-          .children[1].children[0].textContent
+        getByTestId('staking-apr').children[0].children[1].children[0]
+          .textContent
       ).toBe('0.44% Min BAL APR');
       expect(
-        container.getElementsByClassName('staking-apr')[0].children[0]
-          .children[1].children[1].textContent
+        getByTestId('staking-apr').children[0].children[1].children[1]
+          .textContent
       ).toBe('5.67% Max BAL APR');
     });
 
@@ -131,29 +128,28 @@ describe('APRTooltip', () => {
         min: 271,
         max: 778,
       };
-      const { container } = render(APRTooltip, {
+      const { getByTestId } = render(APRTooltip, {
         props: {
           pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });
-      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
+      expect(getByTestId('total-apr').textContent).toBe(
         'Total APR2.71% - 7.78%'
       );
+      expect(getByTestId('swap-fee-apr').textContent).toBe(
+        '2.23% Swap fees APR'
+      );
       expect(
-        container.getElementsByClassName('swap-fee-apr')[0].textContent
-      ).toBe('2.23% Swap fees APR');
-      expect(
-        container.getElementsByClassName('staking-apr')[0].children[0]
-          .children[0].textContent
+        getByTestId('staking-apr').children[0].children[0].textContent
       ).toBe('0.48% Min staking APR');
       expect(
-        container.getElementsByClassName('staking-apr')[0].children[0]
-          .children[1].children[0].textContent
+        getByTestId('staking-apr').children[0].children[1].children[0]
+          .textContent
       ).toBe('0.48% Min BAL APR');
       expect(
-        container.getElementsByClassName('staking-apr')[0].children[0]
-          .children[1].children[1].textContent
+        getByTestId('staking-apr').children[0].children[1].children[1]
+          .textContent
       ).toBe('5.55% Max BAL APR');
     });
   });
@@ -175,16 +171,14 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         tokensList: [configService.network.addresses.wstETH],
       };
-      const { container } = render(APRTooltip, {
+      const { getByTestId } = render(APRTooltip, {
         props: {
           pool: poolMock,
           poolApr: aprBreakdown,
         },
       });
-      expect(container.getElementsByClassName('total-apr')[0].textContent).toBe(
-        'Total APR1.66%'
-      );
-      expect(container.getElementsByClassName('yield-apr')[0].textContent).toBe(
+      expect(getByTestId('total-apr').textContent).toBe('Total APR1.66%');
+      expect(getByTestId('yield-apr').textContent).toBe(
         '1.66% stETH staking rewards APR'
       );
     });

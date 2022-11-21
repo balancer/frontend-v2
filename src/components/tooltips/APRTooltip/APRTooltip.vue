@@ -69,7 +69,8 @@ const totalLabel = computed((): string =>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div
-        class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t total-apr"
+        class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t"
+        data-testid="total-apr"
       >
         <div class="text-secondary">
           {{ $t('totalAPR') }}
@@ -78,7 +79,10 @@ const totalLabel = computed((): string =>
       </div>
       <div class="p-3 text-left">
         <!-- SWAP FEE APR -->
-        <div class="flex items-center mb-1 whitespace-nowrap swap-fee-apr">
+        <div
+          class="flex items-center mb-1 whitespace-nowrap"
+          data-testid="swap-fee-apr"
+        >
           {{ fNum2(bpToDec(apr?.swapFees || '0'), FNumFormats.percent) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}

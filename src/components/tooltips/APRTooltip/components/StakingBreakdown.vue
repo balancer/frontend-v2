@@ -83,7 +83,7 @@ const breakdownItems = computed((): Array<any> => {
 </script>
 
 <template>
-  <div class="staking-apr">
+  <div data-testid="staking-apr">
     <div v-if="hasBoost">
       <div class="flex items-center">
         {{ boostedTotalAPR }}

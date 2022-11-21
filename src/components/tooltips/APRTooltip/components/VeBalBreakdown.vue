@@ -36,7 +36,7 @@ const items = computed((): string[] => [
 </script>
 
 <template>
-  <div class="protocol-apr">
+  <div data-testid="protocol-apr">
     <BalBreakdown :items="items">
       {{ aprLabel }}
       <span class="ml-1 text-xs text-secondary">
