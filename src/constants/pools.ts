@@ -444,7 +444,12 @@ const POOLS_POLYGON: Pools = {
       '0x4973f591784d9c94052a6c3ebd553fcd37bb0e5500020000000000000000087f',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
+      name: 'Balancer Boosted Aave USD (Polygon)',
+      hasIcon: true,
+    },
+  },
 };
 
 const POOLS_ARBITRUM: Pools = {
