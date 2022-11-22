@@ -38,7 +38,8 @@ const i18n = createI18n({
 config.global.plugins = [i18n];
 config.global.stubs = {
   RouterLink: RouterLinkStub,
-  Jazzicon: { template: '<span />' },
+  Jazzicon: true,
+  BalIcon: true,
 };
 
 config.global.components = {

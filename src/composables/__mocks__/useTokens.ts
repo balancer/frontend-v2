@@ -29,7 +29,7 @@ const mockTokens = {
 export default function useTokens() {
   return {
     injectTokens: jest.fn().mockImplementation(),
-    priceFor: jest.fn().mockImplementation(),
+    priceFor: () => 2,
     hasBalance: jest.fn().mockReturnValue(false),
     balanceFor: jest.fn().mockReturnValue('0'),
     getToken: jest.fn().mockImplementation(address => {

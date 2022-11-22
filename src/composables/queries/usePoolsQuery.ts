@@ -119,11 +119,7 @@ export default function usePoolsQuery(
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 
-    decoratedPools = poolDecorator.reCalculateTotalLiquidities(
-      prices.value,
-      currency.value,
-      tokenMeta.value
-    );
+    decoratedPools = await poolDecorator.reCalculateTotalLiquidities();
 
     return {
       pools: decoratedPools,
