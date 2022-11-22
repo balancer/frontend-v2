@@ -10,7 +10,6 @@ import { Pool } from '@/services/pool/types';
 
 import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
 import useGaugesQuery from './useGaugesQuery';
 import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
@@ -48,14 +47,8 @@ export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions
 ) {
-  const {
-    priceQueryLoading,
-    prices,
-    tokens,
-    injectTokens,
-    dynamicDataLoading,
-  } = useTokens();
-  const { currency } = useUserSettings();
+  const { priceQueryLoading, tokens, injectTokens, dynamicDataLoading } =
+    useTokens();
   const gaugesQuery = useGaugesQuery();
 
   const decorationEnabled = computed(
@@ -101,12 +94,7 @@ export default function useStreamedPoolsQuery(
       enabled: decorationEnabled,
       queryFn: async (pools: Ref<Pool[]>) => {
         const poolDecorator = new PoolDecorator(pools.value);
-        return poolDecorator.decorate(
-          gaugesQuery.data.value || [],
-          prices.value,
-          currency.value,
-          tokens.value
-        );
+        return poolDecorator.decorate(tokens.value);
       },
     },
   });

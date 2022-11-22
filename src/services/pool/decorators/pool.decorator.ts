@@ -1,17 +1,7 @@
 import { getTimeTravelBlock } from '@/composables/useSnapshots';
-import { FiatCurrency } from '@/constants/currency';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { SubgraphGauge } from '@/services/balancer/gauges/types';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { Pool } from '@/services/pool/types';
-import {
-  GaugeBalAprs,
-  GaugeRewardTokenAprs,
-  stakingRewardsService,
-} from '@/services/staking/staking-rewards.service';
 import { TokenInfoMap } from '@/types/TokenList';
-
 import PoolService from '../pool.service';
 import { PoolMulticaller } from './pool.multicaller';
 
@@ -21,16 +11,11 @@ import { PoolMulticaller } from './pool.multicaller';
 export class PoolDecorator {
   constructor(
     public pools: Pool[],
-    private readonly balancerContracts = balancerContractsService,
-    private readonly stakingRewards = stakingRewardsService,
     private readonly poolServiceClass = PoolService,
     private readonly poolSubgraph = balancerSubgraphService
   ) {}
 
   public async decorate(
-    gauges: SubgraphGauge[],
-    prices: TokenPrices,
-    currency: FiatCurrency,
     tokens: TokenInfoMap,
     includeAprs = true
   ): Promise<Pool[]> {
@@ -43,20 +28,10 @@ export class PoolDecorator {
 
     const poolMulticaller = new PoolMulticaller(processedPools);
 
-    const [
-      poolSnapshots,
-      rawOnchainDataMap,
-      [protocolFeePercentage, gaugeBALAprs, gaugeRewardTokenAprs],
-    ] = await Promise.all([
+    const [poolSnapshots, rawOnchainDataMap] = await Promise.all([
       this.getSnapshots(),
       poolMulticaller.fetch(),
-      this.getData(prices, gauges, tokens, processedPools, includeAprs),
     ]);
-
-    const setAprCondition =
-      gaugeBALAprs &&
-      gaugeRewardTokenAprs &&
-      typeof protocolFeePercentage === 'number';
 
     const promises = processedPools.map(async pool => {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
@@ -68,9 +43,7 @@ export class PoolDecorator {
       await poolService.setLinearPools();
       await poolService.setTotalLiquidity();
 
-      if (setAprCondition && poolSnapshot) {
-        await poolService.setAPR();
-      }
+      if (includeAprs) await poolService.setAPR();
 
       return poolService.pool;
     });
@@ -110,36 +83,5 @@ export class PoolDecorator {
       console.error('Failed to fetch pool snapshots', error);
       return [];
     }
-  }
-
-  /**
-   * @summary Fetch supporting data required to calculate APRs.
-   */
-  public async getData(
-    prices: TokenPrices,
-    gauges: SubgraphGauge[],
-    tokens: TokenInfoMap,
-    pools: Pool[],
-    includeAprs = true
-  ): Promise<
-    [number, GaugeBalAprs, GaugeRewardTokenAprs] | [null, null, null]
-  > {
-    if (!includeAprs) {
-      return [null, null, null];
-    }
-    return await Promise.all([
-      this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage(),
-      this.stakingRewards.getGaugeBALAprs({
-        pools,
-        prices,
-        gauges,
-      }),
-      this.stakingRewards.getRewardTokenAprs({
-        pools,
-        prices,
-        gauges,
-        tokens,
-      }),
-    ]);
   }
 }
