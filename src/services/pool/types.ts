@@ -2,6 +2,8 @@ import { BigNumber } from 'ethers';
 import { Address } from '@/types';
 import { PoolType, Pool as SDKPool } from '@balancer-labs/sdk';
 
+export { PoolType } from '@balancer-labs/sdk';
+
 export interface Pool extends SDKPool {
   owner: string;
   factory: string;
