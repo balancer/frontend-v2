@@ -6,7 +6,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
-import { isBoostedPool, isDeep } from '@/composables/usePool';
+import { isBoostedPool, isDeep, isVeBalAddress } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { includesAddress } from '@/lib/utils';
@@ -51,8 +51,12 @@ const yieldAPRLabel = computed(() => {
   if (isDeep(props.pool)) return t('yieldAprRewards.apr.boosted');
 
   const yieldTokensList = Object.keys(props.yieldAPR.breakdown);
-  if (yieldTokensList.length === 1 && isBoostedPool(yieldTokensList[0]))
-    return t('yieldAprRewards.apr.boosted');
+  if (yieldTokensList.length === 1) {
+    if (isBoostedPool(yieldTokensList[0]))
+      return t('yieldAprRewards.apr.boosted');
+    if (isVeBalAddress(yieldTokensList[0]))
+      return t('yieldAprRewards.apr.veBAL');
+  }
 
   return '';
 });

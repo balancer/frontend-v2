@@ -316,5 +316,30 @@ describe('APRTooltip', () => {
           .textContent
       ).toBe('14.18% Max BAL APR');
     });
+
+    it('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        tokenAprs: {
+          total: 17,
+          breakdown: {
+            '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56': 17,
+          },
+        },
+        min: 17,
+        max: 17,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('total-apr').textContent).toBe('Total APR0.17%');
+      expect(getByTestId('yield-apr').textContent).toBe('0.17% veBAL APR');
+    });
   });
 });

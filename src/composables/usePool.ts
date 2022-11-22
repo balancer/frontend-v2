@@ -252,6 +252,12 @@ export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
 export function isVeBalPool(poolId: string): boolean {
   return POOLS.IdsMap?.veBAL === poolId;
 }
+/**
+ * @summary Checks if given token address is BAL 80/20 pool (veBAL)
+ */
+export function isVeBalAddress(address: string): boolean {
+  return POOLS.IdsMap?.veBAL?.slice(0, 42) === address;
+}
 
 interface TokenTreeOpts {
   includeLinearUnwrapped?: boolean;
