@@ -1,5 +1,5 @@
 import { flatten } from 'lodash';
-import { computed, Ref, ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 
 import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
@@ -10,8 +10,6 @@ import { Pool } from '@/services/pool/types';
 
 import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
-import useGaugesQuery from './useGaugesQuery';
-import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
 
 type FilterOptions = {
@@ -47,13 +45,7 @@ export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions
 ) {
-  const { priceQueryLoading, tokens, injectTokens, dynamicDataLoading } =
-    useTokens();
-  const gaugesQuery = useGaugesQuery();
-
-  const decorationEnabled = computed(
-    (): boolean => !priceQueryLoading.value && !isQueryLoading(gaugesQuery)
-  );
+  const { tokens, injectTokens, dynamicDataLoading } = useTokens();
 
   const {
     dataStates,
@@ -91,7 +83,7 @@ export default function useStreamedPoolsQuery(
     },
     decoratePools: {
       waitFor: ['injectTokens.id'],
-      enabled: decorationEnabled,
+      enabled: ref(true),
       queryFn: async (pools: Ref<Pool[]>) => {
         const poolDecorator = new PoolDecorator(pools.value);
         return poolDecorator.decorate(tokens.value);
