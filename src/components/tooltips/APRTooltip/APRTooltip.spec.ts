@@ -65,7 +65,6 @@ describe('APRTooltip', () => {
         ...EmptyPoolMock,
         id: POOLS.IdsMap?.veBAL || '',
       };
-      console.log('POOL ID: ', poolMock.id);
       const { getByTestId } = render(APRTooltip, {
         props: {
           pool: poolMock,
@@ -317,7 +316,7 @@ describe('APRTooltip', () => {
       ).toBe('14.18% Max BAL APR');
     });
 
-    it('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
+    it.only('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         tokenAprs: {
