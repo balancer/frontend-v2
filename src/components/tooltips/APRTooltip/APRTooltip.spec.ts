@@ -339,7 +339,7 @@ describe('APRTooltip', () => {
           poolApr: aprBreakdown,
         },
       });
-      expect(getByTestId('total-apr').textContent).toBe('Total APR 0.17%');
+      expect(getByTestId('total-apr').textContent).toBe('Total APR0.17%');
       expect(getByTestId('vebal-apr').textContent).toBe('0.17% veBAL APR');
     });
   });
