@@ -77,11 +77,8 @@ export async function isBlockedAddress(
     if (!configService.env.WALLET_SCREENING) return false;
     trackGoal(Goals.WalletScreenRequest);
 
-    const response = await axios.post<WalletScreenResponse>(
-      WALLET_SCREEN_ENDPOINT,
-      {
-        address: address.toLowerCase(),
-      }
+    const response = await axios.get<WalletScreenResponse>(
+      `${WALLET_SCREEN_ENDPOINT}/${address.toLowerCase()}`
     );
 
     trackGoal(Goals.WalletScreened);
