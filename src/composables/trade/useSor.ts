@@ -47,6 +47,7 @@ import { isMainnet } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
+import { captureException } from '@sentry/browser';
 
 type SorState = {
   validationErrors: {
@@ -542,6 +543,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -564,6 +566,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -590,6 +593,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -613,6 +617,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
