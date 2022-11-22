@@ -255,9 +255,8 @@ export function isVeBalPool(poolId: string): boolean {
 /**
  * @summary Checks if given token address is BAL 80/20 pool (veBAL)
  */
-export function isVeBalAddress(address: string): boolean {
+export function isVeBalPoolAddress(address: string): boolean {
   const veBALPoolAddress = POOLS.IdsMap?.veBAL?.slice(0, 42);
-  console.log('veBal address: ', veBALPoolAddress);
   if (!veBALPoolAddress) return false;
 
   return isSameAddress(veBALPoolAddress, address);

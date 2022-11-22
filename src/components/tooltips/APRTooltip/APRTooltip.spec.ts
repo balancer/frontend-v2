@@ -316,13 +316,14 @@ describe('APRTooltip', () => {
       ).toBe('14.18% Max BAL APR');
     });
 
-    it.only('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
+    it('Should show veBAL staking rewards as a line item for pools that contain the 80/20 veBAL pool', () => {
+      const veBalPoolAddress = POOLS.IdsMap?.veBAL?.slice(0, 42) || '';
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
         tokenAprs: {
           total: 17,
           breakdown: {
-            '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56': 17,
+            [veBalPoolAddress]: 17,
           },
         },
         min: 17,
