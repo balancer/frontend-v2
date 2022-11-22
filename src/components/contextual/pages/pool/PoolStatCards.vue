@@ -14,7 +14,7 @@ import { AprBreakdown } from '@balancer-labs/sdk';
  */
 type Props = {
   pool?: Pool | null;
-  poolApr?: AprBreakdown | null;
+  poolApr: AprBreakdown | null;
   loading?: boolean;
   loadingApr?: boolean;
 };
@@ -51,7 +51,7 @@ const stats = computed(() => {
     {
       id: 'poolValue',
       label: t('poolValue'),
-      value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat),
+      value: fNum2(props.pool.totalLiquidity || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {

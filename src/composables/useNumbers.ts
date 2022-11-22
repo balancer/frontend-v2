@@ -4,9 +4,7 @@ import numeral from 'numeral';
 import useUserSettings from '@/composables/useUserSettings';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
-
 import useTokens from './useTokens';
-import { bnum } from '@/lib/utils';
 
 interface Options {
   format?: string;

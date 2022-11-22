@@ -2,23 +2,24 @@ import { differenceInWeeks } from 'date-fns';
 
 import { isStable, isDeep } from '@/composables/usePool';
 import { oneSecondInMs } from '@/composables/useTime';
-import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
 import {
   LinearPool,
   OnchainPoolData,
   Pool,
+  PoolToken,
   RawOnchainPoolData,
 } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
-import { TokenPrices } from '../coingecko/api/price.service';
-import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
-import { PoolToken, AprBreakdown } from '@balancer-labs/sdk';
+import { AprBreakdown } from '@balancer-labs/sdk';
+import { networkId } from '@/composables/useNetwork';
+import { balancer } from '@/lib/balancer.sdk';
+import { Pool as SDKPool } from '@balancer-labs/sdk';
 
 export default class PoolService {
   constructor(
@@ -34,6 +35,7 @@ export default class PoolService {
    */
   public format(): Pool {
     this.pool.isNew = this.isNew;
+    this.pool.chainId = networkId.value;
     this.formatPoolTokens();
     return this.pool;
   }
@@ -45,16 +47,9 @@ export default class PoolService {
   /**
    * @summary Calculates and sets total liquidity of pool.
    */
-  public setTotalLiquidity(
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    tokenMeta: TokenInfoMap = {}
-  ): string {
-    const liquidityConcern = new this.liquidity(this.pool);
-    const totalLiquidity = liquidityConcern.calcTotal(
-      prices,
-      currency,
-      tokenMeta
+  public async setTotalLiquidity(): Promise<string> {
+    const totalLiquidity = await balancer.pools.liquidity(
+      this.pool as unknown as SDKPool
     );
     // if totalLiquidity can be computed from coingecko prices, use that
     // else, use the value retrieved from the subgraph
@@ -67,23 +62,9 @@ export default class PoolService {
   /**
    * @summary Calculates APRs for pool.
    */
-  public async setAPR(
-    poolSnapshot: Pool | undefined,
-    prices: TokenPrices,
-    currency: FiatCurrency,
-    protocolFeePercentage: number,
-    stakingBalApr: GaugeBalApr,
-    stakingRewardApr = '0'
-  ): Promise<AprBreakdown> {
+  public async setAPR(): Promise<AprBreakdown> {
     const aprConcern = new this.apr(this.pool);
-    const apr = await aprConcern.calc(
-      poolSnapshot,
-      prices,
-      currency,
-      protocolFeePercentage,
-      stakingBalApr,
-      stakingRewardApr
-    );
+    const apr = await aprConcern.calc();
 
     return (this.pool.apr = apr);
   }

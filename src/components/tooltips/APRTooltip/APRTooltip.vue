@@ -39,9 +39,9 @@ const apr = computed<AprBreakdown | undefined>(
 );
 const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
 
-const hasYieldAPR = computed(() =>
-  bnum(apr.value?.tokenAprs.total || '0').gt(0)
-);
+const hasYieldAPR = computed(() => {
+  return bnum(apr.value?.tokenAprs.total || '0').gt(0);
+});
 
 const hasVebalAPR = computed((): boolean => isVeBalPool(props.pool.id));
 
@@ -70,7 +70,10 @@ const totalLabel = computed((): string =>
       </div>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
-      <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
+      <div
+        class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t"
+        data-testid="total-apr"
+      >
         <div class="text-secondary">
           {{ $t('totalAPR') }}
         </div>
@@ -78,7 +81,10 @@ const totalLabel = computed((): string =>
       </div>
       <div class="p-3 text-left">
         <!-- SWAP FEE APR -->
-        <div class="flex items-center mb-1 whitespace-nowrap">
+        <div
+          class="flex items-center mb-1 whitespace-nowrap"
+          data-testid="swap-fee-apr"
+        >
           {{ fNum2(bpToDec(apr?.swapFees || '0'), FNumFormats.percent) }}
           <span class="ml-1 text-xs text-secondary">
             {{ $t('swapFeeAPR') }}
@@ -86,14 +92,12 @@ const totalLabel = computed((): string =>
         </div>
 
         <!-- VeBal APR -->
-        <VeBalBreakdown
-          v-if="hasVebalAPR"
-          :apr="apr?.protocolApr.toString() || '0'"
-        />
+
+        <VeBalBreakdown v-if="hasVebalAPR" :apr="apr?.protocolApr || 0" />
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
-          v-if="hasYieldAPR && apr"
+          v-if="apr?.tokenAprs && hasYieldAPR"
           :yieldAPR="apr?.tokenAprs"
           :pool="pool"
         />

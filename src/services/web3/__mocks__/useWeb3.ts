@@ -13,5 +13,8 @@ export default function useWeb3Mock() {
     account: {
       value: AddressZero,
     },
+    explorerLinks: {
+      addressLink: (address: string) => `$test-explorer/address/${address}`,
+    },
   };
 }

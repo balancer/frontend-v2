@@ -319,11 +319,14 @@ function iconAddresses(pool: PoolWithShares) {
         </div>
       </template>
       <template #aprCell="pool">
-        <div class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric">
+        <div
+          :key="columnStates.aprs"
+          class="flex justify-end py-4 px-6 -mt-1 text-right font-numeric"
+        >
           <BalLoadingBlock v-if="!pool?.apr" class="w-12 h-4" />
           <template v-else>
             {{ aprLabelFor(pool) }}
-            <APRTooltip :pool="pool" />
+            <APRTooltip v-if="pool?.apr" :pool="pool" />
           </template>
         </div>
       </template>
