@@ -541,6 +541,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackGoal(Goals.BalancerSwap);
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -564,6 +565,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackGoal(Goals.BalancerSwap);
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -591,6 +593,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackGoal(Goals.BalancerSwap);
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -615,6 +618,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackGoal(Goals.BalancerSwap);
       } catch (e) {
         console.log(e);
         captureException(e);

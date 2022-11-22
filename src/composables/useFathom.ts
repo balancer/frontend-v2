@@ -43,6 +43,8 @@ export const Goals = {
   WalletScreened: 'ENOWYUGJ',
   ContractTransactionSubmitted: 'Y9NIVW3X',
   RawTransactionSubmitted: 'MVKM6CDX',
+  GnosisSwap: '6OKQIZ6Y',
+  BalancerSwap: 'YV0NCHEC',
 };
 
 export function trackGoal(goal: string, value = 0) {
