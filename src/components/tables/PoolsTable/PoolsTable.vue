@@ -212,7 +212,7 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares, inNewTab: boolean) {
+function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
   const route = router.resolve({
     name: 'pool',
