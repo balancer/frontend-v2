@@ -74,7 +74,7 @@ describe('APRTooltip', () => {
       expect(getByTestId('total-apr').textContent).toBe(
         'Total APR0.78% - 1.95%'
       );
-      expect(getByTestId('protocol-apr').textContent).toContain(
+      expect(getByTestId('vebal-apr').textContent).toContain(
         '1.17% Max locking/veBAL APR'
       );
     });
@@ -290,12 +290,9 @@ describe('APRTooltip', () => {
         min: 595,
         max: 1446,
       };
-      const poolMock: Pool = {
-        ...EmptyPoolMock,
-      };
       const { getByTestId } = render(APRTooltip, {
         props: {
-          pool: poolMock,
+          pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });
@@ -329,18 +326,14 @@ describe('APRTooltip', () => {
         min: 17,
         max: 17,
       };
-      const poolMock: Pool = {
-        ...EmptyPoolMock,
-        id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
-      };
       const { getByTestId } = render(APRTooltip, {
         props: {
-          pool: poolMock,
+          pool: EmptyPoolMock,
           poolApr: aprBreakdown,
         },
       });
       expect(getByTestId('total-apr').textContent).toBe('Total APR0.17%');
-      expect(getByTestId('vebal-apr').textContent).toBe('0.17% veBAL APR');
+      expect(getByTestId('yield-apr').textContent).toBe('0.17% veBAL APR');
     });
   });
 });
