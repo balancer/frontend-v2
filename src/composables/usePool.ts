@@ -256,7 +256,7 @@ export function isVeBalPool(poolId: string): boolean {
  * @summary Checks if given token address is BAL 80/20 pool (veBAL)
  */
 export function isVeBalAddress(address: string): boolean {
-  return POOLS.IdsMap?.veBAL?.slice(0, 42) === address;
+  return isSameAddress(POOLS.IdsMap?.veBAL?.slice(0, 42), address);
 }
 
 interface TokenTreeOpts {
