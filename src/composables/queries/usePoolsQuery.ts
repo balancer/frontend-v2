@@ -13,7 +13,6 @@ import useApp from '../useApp';
 import useNetwork from '../useNetwork';
 import { lpTokensFor } from '../usePool';
 import useTokens from '../useTokens';
-import useGaugesQuery from './useGaugesQuery';
 import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {
@@ -41,10 +40,6 @@ export default function usePoolsQuery(
   const { injectTokens, tokens: tokenMeta, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { networkId } = useNetwork();
-  const { data: subgraphGauges } = useGaugesQuery();
-  const gaugeAddresses = computed(() =>
-    (subgraphGauges.value || []).map(gauge => gauge.id)
-  );
 
   /**
    * COMPUTED
@@ -83,8 +78,7 @@ export default function usePoolsQuery(
     networkId,
     tokenList,
     filterOptions?.poolIds,
-    filterOptions?.poolAddresses,
-    gaugeAddresses
+    filterOptions?.poolAddresses
   );
 
   /**
