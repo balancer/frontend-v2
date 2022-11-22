@@ -5,8 +5,6 @@ import { PoolType, Pool as SDKPool } from '@balancer-labs/sdk';
 export { PoolType } from '@balancer-labs/sdk';
 
 export interface Pool extends SDKPool {
-  owner: string;
-  factory: string;
   tokens: PoolToken[];
   totalSwapFee: string;
   totalSwapVolume: string;
@@ -29,11 +27,11 @@ export interface TokenTreePool {
 export interface PoolToken {
   address: string;
   balance: string;
-  weight: string;
-  priceRate: string | undefined;
+  weight?: string | null;
+  priceRate?: string;
   symbol?: string;
-  decimals: number;
-  token: {
+  decimals?: number;
+  token?: {
     pool: TokenTreePool | null;
     latestUSDPrice?: string;
   };
