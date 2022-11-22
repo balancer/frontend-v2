@@ -28,7 +28,7 @@ type Props = {
   isLoading?: boolean;
   isLoadingMore?: boolean;
   skeletonClass?: string;
-  onRowClick?: (data: Data) => void;
+  onRowClick?: (data: Data, inNewTab?: boolean) => void;
   sticky?: Sticky;
   square?: boolean;
   isPaginated?: boolean;
