@@ -274,5 +274,47 @@ describe('APRTooltip', () => {
           .textContent
       ).toBe('0.75% Max BAL APR');
     });
+
+    it('Should show boosted staking rewards as a line item for pools that contain a boosted pool', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        tokenAprs: {
+          total: 28,
+          breakdown: {
+            '0xa13a9247ea42d743238089903570127dda72fe44': 28,
+          },
+        },
+        stakingApr: {
+          min: 567,
+          max: 1418,
+        },
+        min: 595,
+        max: 1446,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('total-apr').textContent).toBe(
+        'Total APR5.95% - 14.46%'
+      );
+      expect(getByTestId('yield-apr').textContent).toBe('0.28% Boosted APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[0].textContent
+      ).toBe('5.67% Min staking APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[0]
+          .textContent
+      ).toBe('5.67% Min BAL APR');
+      expect(
+        getByTestId('staking-apr').children[0].children[1].children[1]
+          .textContent
+      ).toBe('14.18% Max BAL APR');
+    });
   });
 });

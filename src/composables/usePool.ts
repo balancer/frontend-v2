@@ -77,6 +77,21 @@ export function isDeep(pool: Pool): boolean {
   return treatAsDeep.includes(pool.id);
 }
 
+export function isBoostedPool(address: string): boolean {
+  const boostedPoolAddresses = [
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', // bb-a-USD1 (goerli)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2 (goerli)
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD (polygon)
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
+    '0xa13a9247ea42d743238089903570127dda72fe44', // bb-a-USD2 (mainnet)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2 (goerli)
+    '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a', // wstETH/bb-a-USD
+    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e64', // dola/bb-a-USD
+  ];
+
+  return includesAddress(boostedPoolAddresses, address);
+}
+
 export function isShallowComposableStable(pool: Pool): boolean {
   return isComposableStable(pool.poolType) && !isDeep(pool);
 }
