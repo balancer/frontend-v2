@@ -34,7 +34,9 @@ const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */
-const apr = computed<AprBreakdown>(() => props.pool?.apr || props.poolApr);
+const apr = computed<AprBreakdown | undefined>(
+  () => props.pool?.apr || props.poolApr
+);
 const validAPR = computed(() => Number(apr.value?.min || 0) <= APR_THRESHOLD);
 
 const hasYieldAPR = computed(() => {
@@ -94,7 +96,7 @@ const totalLabel = computed((): string =>
 
         <!-- YIELD APR BREAKDOWN -->
         <YieldBreakdown
-          v-if="hasYieldAPR"
+          v-if="apr?.tokenAprs && hasYieldAPR"
           :yieldAPR="apr?.tokenAprs"
           :pool="pool"
         />

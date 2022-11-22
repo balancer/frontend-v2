@@ -165,7 +165,7 @@ const columns = computed<ColumnDefinition<PoolWithShares>[]>(() => [
   {
     name: props.showPoolShares ? t('myApr') : t('apr'),
     Cell: 'aprCell',
-    accessor: pool => pool?.apr?.min || '0',
+    accessor: pool => pool?.apr?.min.toString() || '0',
     align: 'right',
     id: 'poolApr',
     sortKey: pool => {

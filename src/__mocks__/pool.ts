@@ -20,6 +20,10 @@ export const EmptyPoolMock: Pool = {
   totalWeight: '0',
   createTime: Date.now(),
   symbol: '',
+  poolTypeVersion: 0,
+  protocolYieldFeeCache: '',
+  lowerTarget: '',
+  upperTarget: '',
 };
 
 export const PoolMock: Pool = {
@@ -88,6 +92,10 @@ export const PoolMock: Pool = {
   totalShares: '150501.891977546028526082',
   totalSwapFee: '165820.9454823753843641664971705477',
   totalSwapVolume: '52262349.4122392298543195893618041',
+  poolTypeVersion: 0,
+  protocolYieldFeeCache: '',
+  lowerTarget: '',
+  upperTarget: '',
 };
 
 export const BoostedPoolMock: Pool = {
@@ -650,4 +658,8 @@ export const BoostedPoolMock: Pool = {
       },
     },
   ],
+  poolTypeVersion: 0,
+  protocolYieldFeeCache: '',
+  lowerTarget: '',
+  upperTarget: '',
 };
