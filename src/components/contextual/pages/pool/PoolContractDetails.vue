@@ -14,12 +14,6 @@ type Props = {
   pool: Pool;
 };
 
-enum LocalPoolTypes {
-  Linear = 'Linear',
-  Managed = 'Managed',
-}
-type LocalPoolType = PoolType | LocalPoolTypes;
-
 /**
  * PROPS
  */
@@ -86,10 +80,7 @@ const data = computed(() => {
     },
     {
       title: t('poolManager'),
-      value:
-        (poolType as LocalPoolType) === LocalPoolTypes.Managed
-          ? t('yes')
-          : t('none'),
+      value: poolType === PoolType.Managed ? t('yes') : t('none'),
     },
     {
       title: t('poolOwner'),
@@ -109,7 +100,7 @@ const data = computed(() => {
 });
 
 const poolManagementText = computed(() => {
-  if ((props.pool.poolType as LocalPoolType) === LocalPoolTypes.Managed) {
+  if (props.pool.poolType === PoolType.Managed) {
     return t('');
   }
 
