@@ -60,7 +60,6 @@ export default function usePoolAprQuery(
 
     _pool.chainId = networkId.value;
 
-    // const _snapshot = await getSnapshot(_pool.id);
     const apr = await new AprConcern(_pool).calc();
 
     return apr;
