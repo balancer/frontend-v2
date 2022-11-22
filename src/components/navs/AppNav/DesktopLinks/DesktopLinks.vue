@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router';
 import useWeb3 from '@/services/web3/useWeb3';
 import DesktopLinkItem from './DesktopLinkItem.vue';
 import useNetwork from '@/composables/useNetwork';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 const { isGoerli } = useWeb3();
 
@@ -26,14 +27,25 @@ function isActive(page: string): boolean {
     <DesktopLinkItem
       :to="{ name: 'home', params: { networkSlug } }"
       :active="isActive('home')"
+      @click="trackGoal(Goals.ClickNavPools)"
     >
-      {{ $t('invest') }}
+      {{ $t('pool') }}
     </DesktopLinkItem>
     <DesktopLinkItem
       :to="{ name: 'trade', params: { networkSlug } }"
       :active="isActive('trade')"
+      @click="trackGoal(Goals.ClickNavSwap)"
     >
-      {{ $t('trade') }}
+      {{ $t('swap') }}
+    </DesktopLinkItem>
+    <DesktopLinkItem
+      :to="{ name: 'claim', params: { networkSlug } }"
+      :active="isActive('claim')"
+      @click="trackGoal(Goals.ClickNavClaim)"
+    >
+      <div class="flex items-center">
+        {{ $t('claim') }}
+      </div>
     </DesktopLinkItem>
     <DesktopLinkItem
       v-if="isGoerli"
@@ -45,23 +57,16 @@ function isActive(page: string): boolean {
     <DesktopLinkItem
       :to="{ name: 'portfolio', params: { networkSlug } }"
       :active="isActive('portfolio')"
+      @click="trackGoal(Goals.ClickNavPortfolio)"
     >
       {{ $t('portfolio') }}
     </DesktopLinkItem>
     <DesktopLinkItem
       :to="{ name: 'vebal', params: { networkSlug } }"
       :active="isActive('vebal')"
+      @click="trackGoal(Goals.ClickNavVebal)"
     >
       veBAL
-    </DesktopLinkItem>
-    <DesktopLinkItem
-      :to="{ name: 'claim', params: { networkSlug } }"
-      :active="isActive('claim')"
-    >
-      <div class="flex items-center">
-        {{ $t('claim') }}
-        <StarsIcon class="ml-0.5 w-3.5 h-5" />
-      </div>
     </DesktopLinkItem>
   </div>
 </template>

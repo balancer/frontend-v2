@@ -4,6 +4,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { POOLS } from '@/constants/pools';
 import {
   bnum,
@@ -17,7 +18,7 @@ import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, isMainnet, appUrl } from './useNetwork';
+import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
 import { uniq } from 'lodash';
 
@@ -130,7 +131,7 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to invest or withdraw from a pool
+ * @returns tokens that can be used to add or remove tokens from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
   if (isDeep(pool)) {
@@ -186,7 +187,7 @@ export function poolURLFor(
     return `https://app.xave.finance/#/pool`;
   }
 
-  return `${appUrl()}/pool/${poolId}`;
+  return `${appUrl()}/${getNetworkSlug(network)}/pool/${poolId}`;
 }
 
 /**
@@ -439,6 +440,18 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => !!pool.value && noInitLiquidity(pool.value)
   );
 
+  // pool is "Weighted" and some of the rate providers are not on our approved list
+  const hasNonApprovedRateProviders = computed(
+    () =>
+      pool.value &&
+      isWeighted(pool.value.poolType) &&
+      !pool.value?.priceRateProviders?.every(
+        provider =>
+          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
+          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+      )
+  );
+
   const lpTokens = computed(() => {
     if (!pool.value) return [];
 
@@ -463,6 +476,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWethPool,
     isMainnetWstETHPool,
     noInitLiquidityPool,
+    hasNonApprovedRateProviders,
     lpTokens,
     // methods
     isStable,

@@ -2,6 +2,7 @@
 import { Network } from '@balancer-labs/sdk';
 import BigNumber from 'bignumber.js';
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
@@ -64,6 +65,7 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
+const router = useRouter();
 const { t } = useI18n();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { isWalletReady } = useWeb3();
@@ -148,11 +150,20 @@ function networkSrc(network: Network) {
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {
-  window.location.href = poolURLFor(
-    gauge.pool.id,
-    gauge.network,
-    gauge.pool.poolType
-  );
+  const redirectUrl = poolURLFor(gauge.pool.id, gauge.network);
+  if (redirectUrl.startsWith('https://')) {
+    window.location.href = redirectUrl;
+  } else {
+    router.push({
+      name: 'pool',
+      params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
+    });
+  }
+}
+
+function getPoolExternalUrl(gauge: VotingGaugeWithVotes) {
+  const poolUrl = poolURLFor(gauge.pool.id, gauge.network);
+  return poolUrl.startsWith('https://') ? poolUrl : null;
 }
 
 function getIsGaugeNew(addedTimestamp: number): boolean {
@@ -191,6 +202,14 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       sticky="both"
       :square="upToLargeBreakpoint"
       :isPaginated="isPaginated"
+      :link="{
+        to: 'pool',
+        getParams: gauge => ({
+          id: gauge.pool.id || '',
+          networkSlug: getNetworkSlug(gauge.network),
+        }),
+      }"
+      :href="{ getHref: gauge => getPoolExternalUrl(gauge) }"
       :onRowClick="redirectToPool"
       :getTableRowClass="getTableRowClass"
       :initialState="{
@@ -305,7 +324,7 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
           <GaugesTableVoteBtn
             :hasUserVotes="getHasUserVotes(gauge.userVotes)"
             :isGaugeExpired="getIsGaugeExpired(gauge.address)"
-            @click.stop="emit('clickedVote', gauge)"
+            @click.stop.prevent="emit('clickedVote', gauge)"
           />
         </div>
       </template>

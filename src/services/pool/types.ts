@@ -27,6 +27,7 @@ export interface Pool {
   feesSnapshot?: string;
   apr?: PoolAPRs;
   boost?: string;
+  priceRateProviders?: PriceRateProvider[];
 }
 
 export enum PoolType {
@@ -229,4 +230,15 @@ export interface PoolSnapshot {
   liquidity: string;
 }
 
+export interface PriceRateProvider {
+  address: string;
+  token: PoolToken;
+}
+
 export type PoolSnapshots = Record<number, PoolSnapshot>;
+
+export type BalDetailsTableData = {
+  title: string;
+  value: string;
+  link?: string;
+};

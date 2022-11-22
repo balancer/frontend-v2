@@ -139,7 +139,6 @@ function getTrustWalletAssetsURI(
     [Network.MAINNET]: 'ethereum',
     [Network.ARBITRUM]: 'arbitrum',
     [Network.POLYGON]: 'polygon',
-    [Network.KOVAN]: 'kovan',
     [Network.GOERLI]: 'goerli',
     [Network.OPTIMISM]: 'optimism',
   };

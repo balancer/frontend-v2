@@ -3,20 +3,17 @@ import { computed, onUnmounted, ref } from 'vue';
 
 import {
   GOERLI_VOTING_GAUGES,
-  KOVAN_VOTING_GAUGES,
   MAINNET_VOTING_GAUGES,
   VotingGauge,
 } from '@/constants/voting-gauges';
 
 import useGaugeVotesQuery from './queries/useGaugeVotesQuery';
-import { isGoerli, isKovan } from './useNetwork';
+import { isGoerli } from './useNetwork';
 
 export default function useVotingGauges() {
   // Hard coded list of voting gauges
   const _votingGauges = computed((): VotingGauge[] => {
-    if (isKovan.value) {
-      return KOVAN_VOTING_GAUGES as VotingGauge[];
-    } else if (isGoerli.value) {
+    if (isGoerli.value) {
       return GOERLI_VOTING_GAUGES as VotingGauge[];
     } else {
       return MAINNET_VOTING_GAUGES as VotingGauge[];

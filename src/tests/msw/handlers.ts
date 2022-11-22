@@ -9,7 +9,7 @@ const chainIdHandler = (req, res, ctx) => {
       const MAINNET = '1';
       return res(ctx.json([MAINNET]));
     }
-    console.log('Unhandled kovan post with payload: ', data);
+    console.log('Unhandled post with payload: ', data);
   });
 };
 
@@ -19,9 +19,6 @@ export const handlers = [
   }),
   rest.get('https://cloudflare-ipfs.com/ipns/xyz', (req, res, ctx) => {
     return res(ctx.text('ipns test response'));
-  }),
-  rest.get('*blocklytics/kovan-blocks', (req, res, ctx) => {
-    return res(ctx.json({ blocks: ['12345678'] }));
   }),
   rest.post('*blocklytics/*-blocks', (req, res, ctx) => {
     return res(ctx.json({ data: { blocks: ['12345678'] } }));
@@ -35,9 +32,9 @@ export const handlers = [
     });
   }),
 
-  rest.post('https://kovan.infura.io/v3/*', chainIdHandler),
-  rest.post('https://eth-kovan.alchemyapi.io/v2/*', chainIdHandler),
   rest.post('https://mainnet.infura.io/v3/*', chainIdHandler),
+  rest.post('https://goerli.infura.io/v3/*', chainIdHandler),
+  rest.post('https://eth-goerli.alchemyapi.io/v2/*', chainIdHandler),
 
   rest.get(
     'https://api.coingecko.com/api/v3/simple/token_price/ethereum',
