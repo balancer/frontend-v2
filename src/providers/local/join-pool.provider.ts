@@ -37,6 +37,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useSignRelayerApproval from '@/composables/useSignRelayerApproval';
 import { useQuery } from 'vue-query';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { captureException } from '@sentry/browser';
 
 /**
  * TYPES
@@ -240,16 +241,21 @@ const provider = (props: Props) => {
       return;
     }
 
-    const output = await joinPoolService.queryJoin({
-      amountsIn: amountsIn.value,
-      tokensIn: tokensIn.value,
-      prices: prices.value,
-      signer: getSigner(),
-      slippageBsp: slippageBsp.value,
-    });
+    try {
+      const output = await joinPoolService.queryJoin({
+        amountsIn: amountsIn.value,
+        tokensIn: tokensIn.value,
+        prices: prices.value,
+        signer: getSigner(),
+        slippageBsp: slippageBsp.value,
+      });
 
-    bptOut.value = output.bptOut;
-    priceImpact.value = output.priceImpact;
+      bptOut.value = output.bptOut;
+      priceImpact.value = output.priceImpact;
+    } catch (error) {
+      captureException(error);
+      throw error;
+    }
   }
 
   /**
