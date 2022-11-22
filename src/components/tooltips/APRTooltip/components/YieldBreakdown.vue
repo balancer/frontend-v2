@@ -51,6 +51,7 @@ const yieldAPRLabel = computed(() => {
   if (isDeep(props.pool)) return t('yieldAprRewards.apr.boosted');
 
   const yieldTokensList = Object.keys(props.yieldAPR.breakdown);
+  console.log('Yield tokens list:', yieldTokensList);
   if (yieldTokensList.length === 1) {
     if (isBoostedPool(yieldTokensList[0]))
       return t('yieldAprRewards.apr.boosted');
@@ -74,9 +75,7 @@ const yieldBreakdownItems = computed((): [string, number][] =>
     >
       <div class="flex items-center">
         {{ fNum2(bpToDec(yieldAPR.total), FNumFormats.percent) }}
-        <span class="ml-1 text-xs text-secondary">
-          {{ yieldAPRLabel }}
-        </span>
+        <span class="ml-1 text-xs text-secondary"> {{ yieldAPRLabel }}AA </span>
       </div>
       <template v-if="hasMultiRewardTokens" #item="{ item: [address, amount] }">
         {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
