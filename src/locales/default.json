@@ -1116,10 +1116,12 @@
   "yieldAprRewards": {
     "apr": {
       "steth": "stETH staking rewards APR",
+      "reth": "rETH staking rewards APR",
       "boosted": "Boosted APR"
     },
     "fiat": {
       "steth": "stETH staking rewards",
+      "reth": "rETH staking rewards",
       "boosted": "Boosted rewards"
     }
   },

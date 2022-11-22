@@ -43,6 +43,7 @@
     "weightedPoolFactory": "",
     "stablePoolFactory": "",
     "weth": "",
+    "rETH": "",
     "stETH": "",
     "wstETH": "",
     "lidoRelayer": "",

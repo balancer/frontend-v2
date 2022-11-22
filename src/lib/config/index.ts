@@ -52,6 +52,7 @@ export interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    rETH: string;
     stETH: string;
     wstETH: string;
     lidoRelayer: string;

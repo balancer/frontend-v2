@@ -9,6 +9,8 @@ import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { isDeep } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
+import { includesAddress } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -44,6 +46,10 @@ const hasMultiRewardTokens = computed(
 const yieldAPRLabel = computed(() => {
   if (includesWstEth(props.pool.tokensList))
     return t('yieldAprRewards.apr.steth');
+  if (
+    includesAddress(props.pool.tokensList, configService.network.addresses.rETH)
+  )
+    return t('yieldAprRewards.apr.reth');
   if (isDeep(props.pool)) return t('yieldAprRewards.apr.boosted');
 
   return '';

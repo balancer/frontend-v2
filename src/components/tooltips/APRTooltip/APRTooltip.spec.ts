@@ -183,6 +183,35 @@ describe('APRTooltip', () => {
       );
     });
 
+    it('Should show rETH staking reward APRs', () => {
+      const aprBreakdown: AprBreakdown = {
+        ...EmptyAprBreakdownMock,
+        swapFees: 29,
+        tokenAprs: {
+          total: 73,
+          breakdown: {
+            '0xae78736cd615f374d3085123a210448e74fc6393': 73,
+          },
+        },
+        min: 102,
+        max: 102,
+      };
+      const poolMock: Pool = {
+        ...EmptyPoolMock,
+        tokensList: [configService.network.addresses.rETH],
+      };
+      const { getByTestId } = render(APRTooltip, {
+        props: {
+          pool: poolMock,
+          poolApr: aprBreakdown,
+        },
+      });
+      expect(getByTestId('total-apr').textContent).toBe('Total APR1.02%');
+      expect(getByTestId('yield-apr').textContent).toBe(
+        '0.73% rETH staking rewards APR'
+      );
+    });
+
     it('Should show a breakdown of a boosted pools linear pool APRs and staking rewards', () => {
       const aprBreakdown: AprBreakdown = {
         ...EmptyAprBreakdownMock,
