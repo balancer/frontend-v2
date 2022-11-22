@@ -5,43 +5,43 @@ import { ContractConcern } from './concerns/contract.concern';
 import { RawConcern } from './concerns/raw.concern';
 import { TransactionBuilder } from './transaction.builder';
 
-jest.mock('@ethersproject/providers', () => {
+vi.mock('@ethersproject/providers', () => {
   return {
-    JsonRpcSigner: jest.fn().mockImplementation(() => {
+    JsonRpcSigner: vi.fn().mockImplementation(() => {
       return {
         provider: {
-          getBlockNumber: jest.fn().mockImplementation(),
+          getBlockNumber: vi.fn().mockImplementation(),
         },
-        getAddress: jest.fn().mockImplementation(),
-        sendTransaction: jest.fn().mockImplementation(),
+        getAddress: vi.fn().mockImplementation(),
+        sendTransaction: vi.fn().mockImplementation(),
       };
     }),
   };
 });
-jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/services/gas-price/gas-price.service', () => {
+vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/gas-price/gas-price.service', () => {
   return {
     gasPriceService: {
-      settings: jest.fn().mockReturnValue({
+      settings: vi.fn().mockReturnValue({
         gasLimit: 1e5,
       }),
-      settingsForContractCall: jest.fn().mockReturnValue({
+      settingsForContractCall: vi.fn().mockReturnValue({
         gasLimit: 1e5,
       }),
     },
   };
 });
-jest.mock('ethers', () => {
+vi.mock('ethers', () => {
   return {
-    Contract: jest.fn().mockImplementation(() => {
+    Contract: vi.fn().mockImplementation(() => {
       return {
-        test: jest.fn().mockImplementation(),
+        test: vi.fn().mockImplementation(),
       };
     }),
   };
 });
 
-const SignerMock = JsonRpcSigner as jest.Mocked<typeof JsonRpcSigner>;
+const SignerMock = JsonRpcSigner as vi.mocked<typeof JsonRpcSigner>;
 
 describe('TransactionBuilder', () => {
   let signer;
@@ -51,7 +51,7 @@ describe('TransactionBuilder', () => {
   });
 
   beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation();
   });
 
   it('Instantiates given signer', () => {

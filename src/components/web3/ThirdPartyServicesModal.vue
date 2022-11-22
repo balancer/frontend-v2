@@ -22,7 +22,7 @@
           <img
             width="36"
             height="36"
-            :src="require(`@/assets/images/services/${service}.svg`)"
+            :src="buildURL(`/src/assets/images/services/${service}.svg`)"
             alt="Balancer 3rd party service"
             class="mt-1"
           />
@@ -39,6 +39,8 @@
 </template>
 
 <script setup lang="ts">
+import { buildURL } from '@/lib/utils/urls';
+
 type Props = {
   isVisible: boolean;
 };

@@ -8,35 +8,43 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-jest.mock('vue-i18n');
-jest.mock('vuex');
-jest.mock('@/composables/useEthereumTxType');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useUserSettings');
-jest.mock('@/composables/useTransactions');
-jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
-jest.mock('@/locales');
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('vuex');
+vi.mock('@/composables/useEthereumTxType');
+vi.mock('@/composables/useEthers');
+vi.mock('@/composables/useUserSettings');
+vi.mock('@/composables/useTransactions');
+vi.mock('@/lib/utils/balancer/helpers/sor/sorManager');
+vi.mock('@/locales');
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;
 const mockTokenPrice = 0.2;
 
-jest.mock('@/composables/useTokens', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      injectTokens: jest.fn().mockImplementation(),
-      priceFor: jest.fn().mockImplementation(address => {
-        if (address === mockNativeAssetAddress) {
-          return mockEthPrice;
-        }
-        return mockTokenPrice;
-      }),
-      useTokens: jest.fn().mockImplementation(),
-      getToken: jest.fn().mockImplementation(),
-    };
-  });
+vi.mock('@/composables/useTokens', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        injectTokens: vi.fn().mockImplementation(),
+        priceFor: vi.fn().mockImplementation(address => {
+          if (address === mockNativeAssetAddress) {
+            return mockEthPrice;
+          }
+          return mockTokenPrice;
+        }),
+        useTokens: vi.fn().mockImplementation(),
+        getToken: vi.fn().mockImplementation(),
+      };
+    }),
+  };
+});
+
+vi.mock('vue-i18n', () => {
+  return {
+    useI18n: () => ({ t: tKey => tKey }),
+    createI18n: vi.fn(),
+  };
 });
 
 const mockTokenInfo = {
@@ -63,7 +71,7 @@ const mockProps = {
 
 describe('useSor', () => {
   it('Should load', () => {
-    jest.spyOn(console, 'time').mockImplementation();
+    vi.spyOn(console, 'time');
     const { result } = mount(() => useSor(mockProps));
     expect(result).toBeTruthy();
   });
@@ -78,13 +86,13 @@ describe('setSwapCost', () => {
     '1'
   );
 
-  const mockedSorManager = jest.mocked(sorManager);
+  const mockedSorManager = vi.mocked(sorManager);
 
   beforeEach(() => {
     mockedSorManager.setCostOutputToken.mockClear();
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(console, 'time').mockImplementation();
-    jest.spyOn(console, 'timeEnd').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation();
+    vi.spyOn(console, 'time').mockImplementation();
+    vi.spyOn(console, 'timeEnd').mockImplementation();
   });
 
   it('Should pass a correct gas price to sorManager', async () => {

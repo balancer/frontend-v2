@@ -36,8 +36,8 @@ type GaugeInfo = {
 };
 
 async function getGaugeRelativeWeight(gaugeAddresses: string[]) {
-  const INFURA_KEY = process.env.VUE_APP_INFURA_PROJECT_ID;
-  if (!INFURA_KEY) throw Error('VUE_APP_INFURA_PROJECT_ID not found!');
+  const INFURA_KEY = import.meta.env.VITE_INFURA_PROJECT_ID;
+  if (!INFURA_KEY) throw Error('VITE_INFURA_PROJECT_ID not found!');
 
   const rpcUrl = template(config[Network.MAINNET].rpc, { INFURA_KEY });
   const provider = new JsonRpcProvider(rpcUrl);

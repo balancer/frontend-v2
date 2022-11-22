@@ -1,5 +1,5 @@
 const path = require('path');
-const plugins = require('./src/plugins/webpack');
+// const plugins = require('./src/plugins/webpack');
 
 module.exports = {
   parallel: false, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
@@ -9,9 +9,9 @@ module.exports = {
       openAnalyzer: false,
     },
   },
-  configureWebpack: {
-    plugins,
-  },
+  // configureWebpack: {
+  //   plugins,
+  // },
   chainWebpack: config => {
     config.resolve.alias.set(
       'bn.js',

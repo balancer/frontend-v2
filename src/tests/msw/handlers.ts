@@ -5,11 +5,12 @@ export const SANCTIONED_ADDRESS = '0x7f367cc41522ce07553e823bf3be79a889debe1b';
 
 const chainIdHandler = (req, res, ctx) => {
   return req.json().then(data => {
+    const MAINNET = '1';
     if (data[0].method === 'eth_chainId') {
-      const MAINNET = '1';
       return res(ctx.json([MAINNET]));
     }
-    console.log('Unhandled post with payload: ', data);
+
+    console.warn('Unhandled chain id request with payload: ', data);
   });
 };
 

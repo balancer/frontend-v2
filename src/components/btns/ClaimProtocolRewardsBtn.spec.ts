@@ -11,17 +11,17 @@ import TxActionBtn from './TxActionBtn/TxActionBtn.vue';
 ClaimProtocolRewardsBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
 
-jest.mock('@/services/balancer/contracts/contracts/fee-distributor');
-jest.mock('@/composables/useTransactions');
-jest.mock('@/composables/useTokens');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/useNumbers');
-jest.mock('@/composables/queries/useProtocolRewardsQuery');
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/balancer/contracts/contracts/fee-distributor');
+vi.mock('@/composables/useTransactions');
+vi.mock('@/composables/useTokens');
+vi.mock('@/composables/useEthers');
+vi.mock('@/composables/useNumbers');
+vi.mock('@/composables/queries/useProtocolRewardsQuery');
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
-const mockClaimBalance = jest.fn().mockResolvedValue(txResponseMock);
-const mockClaimBalances = jest.fn().mockResolvedValue(txResponseMock);
+const mockClaimBalance = vi.fn().mockResolvedValue(txResponseMock);
+const mockClaimBalances = vi.fn().mockResolvedValue(txResponseMock);
 
 describe.only('ClaimProtocolRewardsBtn', () => {
   beforeAll(() => {

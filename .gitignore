@@ -27,5 +27,9 @@ pnpm-debug.log*
 *.sw?
 
 # tokenlists
-/public/data/tokenlists.json
-/public/data/tokenlists/*.json
+/src/assets/data/tokenlists.json
+/src/assets/data/tokenlists/*.json
+
+#test coverage
+/coverage
+

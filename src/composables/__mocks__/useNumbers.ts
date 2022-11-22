@@ -1,8 +1,8 @@
-export const FNumFormats = jest.fn().mockImplementation();
+export const FNumFormats = vi.fn().mockImplementation();
 
 export default function useNumbers() {
   return {
-    toFiat: jest.fn().mockImplementation(),
-    fNum2: jest.fn().mockImplementation(),
+    toFiat: vi.fn().mockImplementation(),
+    fNum2: vi.fn().mockImplementation(),
   };
 }

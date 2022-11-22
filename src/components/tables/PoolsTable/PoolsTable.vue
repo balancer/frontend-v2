@@ -25,6 +25,7 @@ import {
   totalAprLabel,
 } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
+import { buildURL } from '@/lib/utils/urls';
 import { PoolWithShares } from '@/services/pool/types';
 import { POOLS } from '@/constants/pools';
 
@@ -278,11 +279,11 @@ function iconAddresses(pool: PoolWithShares) {
         <div class="flex items-center">
           <img
             v-if="darkMode"
-            :src="require('@/assets/images/icons/tokens_white.svg')"
+            :src="buildURL('/src/assets/images/icons/tokens_white.svg')"
           />
           <img
             v-else
-            :src="require('@/assets/images/icons/tokens_black.svg')"
+            :src="buildURL('/src/assets/images/icons/tokens_black.svg')"
           />
         </div>
       </template>

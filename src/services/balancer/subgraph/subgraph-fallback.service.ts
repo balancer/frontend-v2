@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/browser';
+// import { captureException } from '@sentry/browser';
 import axios, { AxiosResponse } from 'axios';
 import { computed, ref } from 'vue';
 
@@ -30,16 +30,16 @@ export class SubgraphFallbackService {
       console.error(error);
       // Capture exception only with decentralized url
       if (this.url.value.startsWith(DECENTRALIZED_SUBGRAPH_URL)) {
-        captureException(
-          `GraphQL request to [${this.url.value}] failed with message: ${
-            (error as Error)?.message
-          }`,
-          {
-            extra: {
-              Payload: `${JSON.stringify(payload)}`,
-            },
-          }
-        );
+        // captureException(
+        //   `GraphQL request to [${this.url.value}] failed with message: ${
+        //     (error as Error)?.message
+        //   }`,
+        //   {
+        //     extra: {
+        //       Payload: `${JSON.stringify(payload)}`,
+        //     },
+        //   }
+        // );
       }
 
       if (this.urlIndex.value + 1 === this.urls.length) {

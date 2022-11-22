@@ -11,13 +11,13 @@ import ClaimBalBtn from './ClaimBalBtn.vue';
 ClaimBalBtn.components = { TxActionBtn };
 TxActionBtn.components = { BalBtn };
 
-jest.mock('@/composables/useTransactions');
-jest.mock('@/composables/useTokens');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/queries/useGaugesQuery');
-jest.mock('@/composables/queries/useGaugesDecorationQuery');
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/balancer/contracts/contracts/balancer-minter');
+vi.mock('@/composables/useTransactions');
+vi.mock('@/composables/useTokens');
+vi.mock('@/composables/useEthers');
+vi.mock('@/composables/queries/useGaugesQuery');
+vi.mock('@/composables/queries/useGaugesDecorationQuery');
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/balancer/contracts/contracts/balancer-minter');
 
 const mockGaugeAddress = getAddress(gauge.id);
 

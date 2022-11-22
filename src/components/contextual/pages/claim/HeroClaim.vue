@@ -135,7 +135,11 @@
 }
 
 .tip {
+  /*
+  group removed to avoid error in vite migration
   @apply flex flex-col items-center text-center group;
+  */
+  @apply flex flex-col items-center text-center;
 }
 
 .tip-icon {

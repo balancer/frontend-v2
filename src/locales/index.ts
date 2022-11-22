@@ -1,10 +1,9 @@
-const requireFile = require.context('./', true, /[\w-]+\.json$/);
+// TODO: check if this is 100% equivalent to the previous expression
+const modules = import.meta.globEager('./**/*.json');
 
 export default Object.fromEntries(
-  requireFile
-    .keys()
-    .map(fileName => [
-      fileName.replace('./', '').replace('.json', ''),
-      requireFile(fileName),
-    ])
+  Object.keys(modules).map(fileName => [
+    fileName.replace('./', '').replace('.json', ''),
+    modules[fileName].default,
+  ])
 );

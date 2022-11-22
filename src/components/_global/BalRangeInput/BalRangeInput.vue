@@ -6,7 +6,7 @@ import 'vue-slider-component/theme/antd.css';
 import { computed, ref, watch } from 'vue';
 import VueSlider from 'vue-slider-component';
 
-import { theme } from '@/../tailwind.config';
+import tailwindConfig from '@/../tailwind.config';
 import useDarkMode from '@/composables/useDarkMode';
 
 interface Props {
@@ -25,7 +25,7 @@ const emit = defineEmits(['change', 'update:modelValue', 'dragEnd']);
 const range = ref(0);
 const { darkMode } = useDarkMode();
 
-const colors = theme.extend.colors;
+const colors = tailwindConfig.theme.extend.colors;
 
 function onChange(value) {
   emit('change', value);

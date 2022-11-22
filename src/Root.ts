@@ -3,7 +3,14 @@ import { defineComponent, h } from 'vue';
 import App from './App.vue';
 import * as providerMap from './providers';
 
-const providers = Object.values(providerMap);
+// The order registration of the providers is important but Object.values behaves differently in the vite bundle.
+// Setting explicit execution order in the following array:
+const providers = [
+  providerMap.UserSettingsProvider,
+  providerMap.TokenListProvider,
+  providerMap.TokensProvider,
+  providerMap.AppProvider,
+];
 
 export default defineComponent({
   components: {

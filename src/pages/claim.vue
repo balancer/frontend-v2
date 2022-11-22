@@ -27,6 +27,7 @@ import { configService } from '@/services/config/config.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
+import { buildURL } from '@/lib/utils/urls';
 
 /**
  * TYPES
@@ -229,7 +230,7 @@ onBeforeMount(async () => {
   <HeroClaim />
   <div>
     <div class="xl:container py-12 xl:px-4 xl:mx-auto">
-      <h2 class="px-4 xl:px-0 font-body text-2xl font-semibold">
+      <h2 class="px-4 xl:px-0 text-2xl font-semibold font-body">
         {{ configService.network.chainName }} {{ $t('liquidityIncentives') }}
       </h2>
 
@@ -295,7 +296,7 @@ onBeforeMount(async () => {
         {{ $t('noClaimableIncentives') }}
       </BalBlankSlate>
       <div class="px-4 xl:px-0 mb-16">
-        <h2 class="mt-8 font-body text-2xl font-semibold">
+        <h2 class="mt-8 text-2xl font-semibold font-body">
           {{ $t('pages.claim.titles.incentivesOnOtherNetworks') }}
         </h2>
         <BalFlexGrid class="mt-4" flexWrap>
@@ -307,7 +308,9 @@ onBeforeMount(async () => {
             color="white"
           >
             <img
-              :src="require(`@/assets/images/icons/networks/${network.id}.svg`)"
+              :src="
+                buildURL(`/src/assets/images/icons/networks/${network.id}.svg`)
+              "
               :alt="network.id"
               class="mr-2 w-6 h-6 rounded-full shadow-sm"
             />

@@ -21,43 +21,51 @@ PoolPageHeader.components = {
 };
 
 // neede to prevent jest teleport error
-jest.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
-  template: '<div>-</div>',
+vi.mock('@/components/contextual/stake/StakePreviewModal.vue', () => ({
+  default: {
+    template: '<div>-</div>',
+  },
 }));
 
-jest.mock('@/locales');
-jest.mock('@/composables/useNumbers');
-jest.mock('@/composables/useTokens');
-jest.mock('@/composables/useApp', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      appLoading: false,
-    };
-  });
+vi.mock('@/locales');
+vi.mock('@/composables/useNumbers');
+vi.mock('@/composables/useTokens');
+vi.mock('@/composables/useApp', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        appLoading: false,
+      };
+    }),
+  };
 });
-jest.mock('@/composables/staking/useStaking', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      userData: {
-        hasNonPrefGaugeBalances: false,
-      },
-    };
-  });
+vi.mock('@/composables/staking/useStaking', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        userData: {
+          hasNonPrefGaugeBalances: false,
+        },
+      };
+    }),
+  };
 });
-jest.mock('@/services/web3/useWeb3', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      isWalletReady: new Proxy(
-        {},
-        {
-          get() {
-            return true;
-          },
-        }
-      ),
-      account: '0x0000000000000000000000000000000000000000',
-    };
-  });
+vi.mock('@/services/web3/useWeb3', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        isWalletReady: new Proxy(
+          {},
+          {
+            get() {
+              return true;
+            },
+          }
+        ),
+        account: '0x0000000000000000000000000000000000000000',
+      };
+    }),
+  };
 });
 
 describe('PoolPageHeader', () => {

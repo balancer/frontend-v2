@@ -8,10 +8,11 @@ import { BigNumber } from '@ethersproject/bignumber';
 
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { vaultService } from './vault.service';
+import { web3Service } from '@/services/web3/web3.service';
 
-jest.mock('@/locales');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/services/web3/web3.service');
+vi.mock('@/locales');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/web3/web3.service');
 
 const userAddress = '0xAAA00fB39c06E7b41bEdFf8A6a4e013666141d40';
 
@@ -28,7 +29,7 @@ describe('vault.service', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     tokens.USDC = {
       address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
       amount: BigNumber.from('1000000'),
@@ -63,8 +64,8 @@ describe('vault.service', () => {
       const tokenOutAmount = '10';
 
       await vaultService.swap(single, funds, tokenOutAmount);
-      const sendTransactionArgs = require('@/services/web3/web3.service')
-        .web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
+      const sendTransactionArgs =
+        web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
       expect(sendTransactionArgs[0]).toEqual({
         contractAddress: vaultService.address,
         abi: vaultService.abi,
@@ -87,8 +88,8 @@ describe('vault.service', () => {
         funds,
         limits
       );
-      const sendTransactionArgs = require('@/services/web3/web3.service')
-        .web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
+      const sendTransactionArgs =
+        web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
       expect(sendTransactionArgs[0]).toEqual({
         contractAddress: vaultService.address,
         abi: vaultService.abi,

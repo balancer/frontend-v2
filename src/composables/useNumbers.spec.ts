@@ -16,20 +16,22 @@ const mockTokens = {
 
 const mockDefaultCurrency = FiatCurrency.usd;
 
-jest.mock('@/composables/useUserSettings');
-jest.mock('@/composables/useTokens', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      priceFor: jest
-        .fn()
-        .mockImplementation((address, currency = mockDefaultCurrency) => {
-          const token = Object.values(mockTokens).find(
-            token => address === token.address
-          );
-          return token?.price[currency];
-        }),
-    };
-  });
+vi.mock('@/composables/useUserSettings');
+vi.mock('@/composables/useTokens', () => {
+  return {
+    default: vi.fn().mockImplementation(() => {
+      return {
+        priceFor: vi
+          .fn()
+          .mockImplementation((address, currency = mockDefaultCurrency) => {
+            const token = Object.values(mockTokens).find(
+              token => address === token.address
+            );
+            return token?.price[currency];
+          }),
+      };
+    }),
+  };
 });
 
 describe('useNumbers', () => {

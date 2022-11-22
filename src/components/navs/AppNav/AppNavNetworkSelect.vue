@@ -9,6 +9,7 @@ import useNetwork from '@/composables/useNetwork';
 import useNotifications from '@/composables/useNotifications';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import { buildURL } from '@/lib/utils/urls';
 
 export interface NetworkOption {
   id: string;
@@ -113,8 +114,8 @@ watchEffect(() => {
 });
 
 // METHODS
-function iconSrc(network: NetworkOption): string {
-  return require(`@/assets/images/icons/networks/${network.id}.svg`);
+function iconSrc(network: NetworkOption) {
+  return buildURL(`/src/assets/images/icons/networks/${network.id}.svg`);
 }
 
 function getNetworkChangeUrl(network: NetworkOption): string {
@@ -164,7 +165,7 @@ function isActive(network: NetworkOption): boolean {
         v-for="network in allNetworks"
         :key="network.id"
         :href="getNetworkChangeUrl(network)"
-        class="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer"
+        class="flex justify-between items-center p-3 hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-850"
       >
         <div class="flex items-center">
           <img

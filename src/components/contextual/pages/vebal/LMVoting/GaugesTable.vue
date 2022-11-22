@@ -34,6 +34,7 @@ import {
 import { Pool } from '@/services/pool/types';
 import { differenceInWeeks } from 'date-fns';
 import { oneSecondInMs } from '@/composables/useTime';
+import { buildURL } from '@/lib/utils/urls';
 
 /**
  * TYPES
@@ -144,9 +145,9 @@ function orderedTokenURIs(gauge: VotingGaugeWithVotes): string[] {
 }
 
 function networkSrc(network: Network) {
-  return require(`@/assets/images/icons/networks/${getNetworkSlug(
-    network
-  )}.svg`);
+  return buildURL(
+    `/src/assets/images/icons/networks/${getNetworkSlug(network)}.svg`
+  );
 }
 
 function redirectToPool(gauge: VotingGaugeWithVotes) {

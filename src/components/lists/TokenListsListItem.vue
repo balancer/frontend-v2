@@ -80,8 +80,8 @@ export default {
     function url(url) {
       if (!url) return '';
       return url
-        .replace('ipfs://', `https://${process.env.VUE_APP_IPFS_NODE}/ipfs/`)
-        .replace('ipns://', `https://${process.env.VUE_APP_IPFS_NODE}/ipns/`);
+        .replace('ipfs://', `https://${import.meta.env.VITE_IPFS_NODE}/ipfs/`)
+        .replace('ipns://', `https://${import.meta.env.VITE_IPFS_NODE}/ipns/`);
     }
 
     return {

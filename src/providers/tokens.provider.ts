@@ -35,7 +35,7 @@ import {
   NativeAsset,
   TokenInfo,
   TokenInfoMap,
-  TokenList,
+  TokenListMap,
 } from '@/types/TokenList';
 
 /**
@@ -146,7 +146,7 @@ export default {
      */
     const allTokenListTokens = computed(
       (): TokenInfoMap => ({
-        ...mapTokenListTokens(Object.values(allTokenLists)),
+        ...mapTokenListTokens(allTokenLists.value),
         ...state.injectedTokens,
       })
     );
@@ -154,17 +154,15 @@ export default {
     /**
      * All tokens from token lists that are toggled on.
      */
-    const activeTokenListTokens = computed(
-      (): TokenInfoMap =>
-        mapTokenListTokens(Object.values(activeTokenLists.value))
-    );
+    const activeTokenListTokens = computed((): TokenInfoMap => {
+      return mapTokenListTokens(activeTokenLists.value);
+    });
 
     /**
      * All tokens from Balancer token lists, e.g. 'listed' and 'vetted'.
      */
     const balancerTokenListTokens = computed(
-      (): TokenInfoMap =>
-        mapTokenListTokens(Object.values(balancerTokenLists.value))
+      (): TokenInfoMap => mapTokenListTokens(balancerTokenLists.value)
     );
 
     /**
@@ -247,10 +245,16 @@ export default {
      * METHODS
      */
     /**
-     * Create token map from a token list tokens array.
+     * Create token map from a token list tokens array.const isEmpty = Object.keys(person).length === 0;
+
      */
-    function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
-      const tokens = [...tokenLists].map(list => list.tokens).flat();
+    function mapTokenListTokens(tokenListMap: TokenListMap): TokenInfoMap {
+      const isEmpty = Object.keys(tokenListMap).length === 0;
+      if (isEmpty) return {};
+
+      const tokens = [...Object.values(tokenListMap)]
+        .map(list => list.tokens)
+        .flat();
 
       const tokensMap = tokens.reduce<TokenInfoMap>((acc, token) => {
         const address: string = getAddress(token.address);
@@ -288,7 +292,7 @@ export default {
 
       const newTokens = await tokenService.metadata.get(
         injectable,
-        allTokenLists
+        allTokenLists.value
       );
 
       state.injectedTokens = { ...state.injectedTokens, ...newTokens };

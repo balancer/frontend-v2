@@ -5,18 +5,17 @@ import gauge from '@/services/balancer/gauges/__mocks__/decorated-gauge.schema.j
 
 import ClaimRewardsBtn from './ClaimRewardsBtn.vue';
 
-jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge');
-jest.mock('@/composables/useTransactions');
-jest.mock('@/composables/useEthers');
-jest.mock('@/composables/queries/useGaugesQuery');
-jest.mock('@/composables/queries/useGaugesDecorationQuery');
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/composables/useTransactions');
+vi.mock('@/composables/useEthers');
+vi.mock('@/composables/queries/useGaugesQuery');
+vi.mock('@/composables/queries/useGaugesDecorationQuery');
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
-const mockClaimRewards = jest.fn().mockResolvedValue(txResponseMock);
-jest.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
+const mockClaimRewards = vi.fn().mockResolvedValue(txResponseMock);
+vi.mock('@/services/balancer/contracts/contracts/liquidity-gauge', () => {
   return {
-    LiquidityGauge: jest.fn().mockImplementation(() => {
+    LiquidityGauge: vi.fn().mockImplementation(() => {
       return {
         claimRewards: mockClaimRewards,
       };

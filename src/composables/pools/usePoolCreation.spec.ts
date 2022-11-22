@@ -1,3 +1,4 @@
+import { mockI18n } from '@/__mocks__/vue-i18n';
 import { mount } from 'vue-composable-tester';
 
 import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
@@ -6,14 +7,14 @@ import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 
 const tokens: Record<string, PoolSeedToken> = {};
 
-jest.mock('vue-i18n');
-jest.mock('@/locales');
-jest.mock('@/composables/useTokens');
-jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/balancer/balancer.service');
-jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/composables/queries/usePoolsQuery');
-jest.mock('@/composables/useEthers');
+mockI18n();
+vi.mock('@/locales');
+vi.mock('@/composables/useTokens');
+vi.mock('@/services/web3/useWeb3');
+vi.mock('@/services/balancer/balancer.service');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/composables/queries/usePoolsQuery');
+vi.mock('@/composables/useEthers');
 
 describe('usePoolCreation', () => {
   const { result: poolCreation } = mount(() => usePoolCreation());

@@ -2,7 +2,7 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 import { render, screen } from '@testing-library/vue';
 import TokenListsProvider from './token-lists.provider';
 import useTokenLists from '@/composables/useTokenLists';
-import { h } from 'vue';
+import { computed, h, ComputedRef } from 'vue';
 
 function renderWithTokenListProvider(componentUnderTest) {
   render(TokenListsProvider, {
@@ -10,12 +10,18 @@ function renderWithTokenListProvider(componentUnderTest) {
   });
 }
 
-function renderFirstTokenListSymbols(tokenList: TokenListMap) {
-  return JSON.stringify(Object.values(tokenList)[0].tokens.map(t => t.symbol));
-}
-function renderTokenListSymbols(tokenList: TokenList) {
-  return JSON.stringify(tokenList.tokens.map(t => t.symbol));
-}
+const tokenListSymbols = (tokenList: ComputedRef<TokenList>) =>
+  computed(() => {
+    if (!tokenList.value) return [];
+    return JSON.stringify(tokenList.value.tokens.map(t => t.symbol));
+  });
+
+const firstTokenListSymbols = (activeTokenLists: ComputedRef<TokenListMap>) =>
+  computed(() => {
+    const lists = Object.values(activeTokenLists.value);
+    if (!lists.length) return [];
+    return JSON.stringify(lists[0].tokens.map(t => t.symbol));
+  });
 
 describe('Token lists provider should', () => {
   test('provide active TokenList', async () => {
@@ -23,7 +29,7 @@ describe('Token lists provider should', () => {
       setup() {
         const { activeTokenLists } = useTokenLists();
 
-        return () => `${renderFirstTokenListSymbols(activeTokenLists.value)}`;
+        return () => `${firstTokenListSymbols(activeTokenLists).value}`;
       },
     };
 
@@ -38,7 +44,7 @@ describe('Token lists provider should', () => {
       setup() {
         const { approvedTokenLists } = useTokenLists();
 
-        return () => `${renderFirstTokenListSymbols(approvedTokenLists.value)}`;
+        return () => `${firstTokenListSymbols(approvedTokenLists).value}`;
       },
     };
     renderWithTokenListProvider(ComponentUnderTest);
@@ -52,7 +58,7 @@ describe('Token lists provider should', () => {
       setup() {
         const { balancerTokenLists } = useTokenLists();
 
-        return () => `${renderFirstTokenListSymbols(balancerTokenLists.value)}`;
+        return () => `${firstTokenListSymbols(balancerTokenLists).value}`;
       },
     };
     renderWithTokenListProvider(ComponentUnderTest);
@@ -66,7 +72,7 @@ describe('Token lists provider should', () => {
       setup() {
         const { defaultTokenList } = useTokenLists();
 
-        return () => `${renderTokenListSymbols(defaultTokenList.value)}`;
+        return () => `${tokenListSymbols(defaultTokenList).value}`;
       },
     };
     renderWithTokenListProvider(ComponentUnderTest);
@@ -80,7 +86,7 @@ describe('Token lists provider should', () => {
       setup() {
         const { vettedTokenList } = useTokenLists();
 
-        return () => `${renderTokenListSymbols(vettedTokenList.value)}`;
+        return () => `${tokenListSymbols(vettedTokenList).value}`;
       },
     };
     renderWithTokenListProvider(ComponentUnderTest);

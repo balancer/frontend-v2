@@ -1,7 +1,7 @@
 import { BoostedPoolMock } from '@/__mocks__/pool';
 import { tokenTreeLeafs, tokenTreeNodes } from './usePool';
 
-jest.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/rpc-provider/rpc-provider.service');
 
 describe('tokenTreeNodes', () => {
   it('returns all nodes including unwrapped Linear tokens', () => {

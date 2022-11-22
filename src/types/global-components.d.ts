@@ -42,6 +42,7 @@ import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import BalToggle from '@/components/_global/BalToggle/BalToggle.vue';
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
+import Jazzicon from '@/components/_global/JazzIcon/Jazzicon.vue';
 import ActivityIcon from '@/components/_global/icons/ActivityIcon.vue';
 import ArrowDownIcon from '@/components/_global/icons/ArrowDownIcon.vue';
 import BalCloseIcon from '@/components/_global/icons/BalCloseIcon.vue';
@@ -109,6 +110,7 @@ declare module '@vue/runtime-core' {
     BalToggle: typeof BalToggle;
     BalTooltip: typeof BalTooltip;
     BalVerticalSteps: typeof BalVerticalSteps;
+    Jazzicon: typeof Jazzicon;
     ActivityIcon: typeof ActivityIcon;
     ArrowDownIcon: typeof ArrowDownIcon;
     BalCloseIcon: typeof BalCloseIcon;

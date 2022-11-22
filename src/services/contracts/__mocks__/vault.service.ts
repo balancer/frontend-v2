@@ -1,7 +1,7 @@
 export default function VaultService() {
   return {
-    swap: jest.fn().mockImplementation(),
-    batchSwap: jest.fn().mockImplementation(),
+    swap: vi.fn().mockImplementation(),
+    batchSwap: vi.fn().mockImplementation(),
   };
 }
 

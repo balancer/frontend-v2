@@ -1,12 +1,12 @@
 import camelCase from 'lodash/camelCase';
 
-const requireModule = require.context('.', false, /\.ts$/);
+const importedModules = import.meta.globEager('./!(*.spec).ts');
+
 const modules = {};
 
-requireModule.keys().forEach(fileName => {
-  if (fileName === './index.ts') return;
+Object.keys(importedModules).forEach(fileName => {
   const moduleName = camelCase(fileName.replace(/(\.\/|\.ts)/g, ''));
-  modules[moduleName] = requireModule(fileName).default;
+  modules[moduleName] = importedModules[fileName].default;
 });
 
 export default modules;

@@ -4,7 +4,7 @@ on:
   - pull_request
 
 env:
-  VUE_APP_FATHOM_SITE_ID: xxx
+  VITE_FATHOM_SITE_ID: xxx
 
 jobs:
   Version:

@@ -29,7 +29,7 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "resolveJsonModule": true,
-    "types": ["node", "webpack-env", "jest"],
+    "types": ["node", "webpack-env", "vitest/globals"],
     "paths": {
       "@/*": ["src/*"],
       // Stubbing react types

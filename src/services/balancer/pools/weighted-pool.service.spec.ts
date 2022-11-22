@@ -1,14 +1,15 @@
 import { AddressZero } from '@ethersproject/constants';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 
-import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
-import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
-import WeightedPoolsService from './weighted-pool.service';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 import { JoinPoolRequest, WeightedPoolEncoder } from '@balancer-labs/sdk';
+import { WeightedPool__factory } from '@balancer-labs/typechain';
+import WeightedPoolsService from './weighted-pool.service';
+import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
+import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
 
 const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
@@ -16,18 +17,26 @@ const weightedPoolsService = new WeightedPoolsService();
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
 
-jest.mock('@/services/rpc-provider/rpc-provider.service');
-jest.mock('@/services/web3/transactions/transaction.builder');
-jest.mock('@ethersproject/contracts', () => {
-  const Contract = jest.fn().mockImplementation(() => {
+vi.mock('@/services/rpc-provider/rpc-provider.service');
+vi.mock('@/services/web3/transactions/transaction.builder');
+vi.mock('@ethersproject/contracts', () => {
+  const Contract = vi.fn().mockImplementation(() => {
     return {
-      getPoolId: jest.fn().mockImplementation(() => mockPoolId),
+      getPoolId: vi.fn().mockImplementation(() => mockPoolId),
     };
   });
   return {
     Contract,
   };
 });
+
+// Overwrite connect
+//@ts-ignore
+WeightedPool__factory.connect = () => {
+  return {
+    getPoolId: () => Promise.resolve(mockPoolId),
+  };
+};
 
 describe('PoolCreator', () => {
   const mockPoolName = 'TestPool';
@@ -36,7 +45,7 @@ describe('PoolCreator', () => {
   const mockOwner = AddressZero;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     tokens.MKR = {
       tokenAddress: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
       weight: 70,
@@ -60,12 +69,37 @@ describe('PoolCreator', () => {
     };
   });
 
+  vi.mock('@/services/gas-price/gas-price.service', () => {
+    return {
+      gasPriceService: {
+        settings: vi.fn().mockReturnValue({
+          gasLimit: 1e5,
+        }),
+        settingsForContractCall: vi.fn().mockReturnValue({
+          gasLimit: 1e5,
+        }),
+      },
+    };
+  });
+
+  const mockProvider = {
+    _isProvider: true,
+    getTransactionReceipt: () => polygonCreatePoolReceipt,
+    getSigner: () => {
+      return {
+        _isSigner: true,
+        getAddress: vi.fn().mockImplementation(() => {
+          return '0x0';
+        }),
+      };
+    },
+    initBlockListener: vi.fn().mockImplementation(),
+    getJsonProvider: vi.fn().mockImplementation(),
+  };
+
   describe('create', () => {
     describe('happy case', () => {
       beforeEach(async () => {
-        const mockProvider = {
-          getSigner: jest.fn().mockImplementation(),
-        } as any;
         tokens.WETH.weight = 50;
         tokens.USDT.weight = 50;
         await weightedPoolsService.create(
@@ -104,7 +138,6 @@ describe('PoolCreator', () => {
 
     describe('error handling', () => {
       it('should error if a zero length string is passed in for the pool owner', () => {
-        const mockProvider = {} as Web3Provider;
         tokens.WETH.weight = 50;
         tokens.USDT.weight = 50;
         expect(
@@ -124,28 +157,7 @@ describe('PoolCreator', () => {
   describe('details', () => {
     const mockPoolAddress = '0x3bB9d50A0743103F896D823B332EE15E231848D1';
 
-    beforeEach(async () => {
-      tokens.WETH.weight = 50;
-      tokens.USDT.weight = 50;
-      const mockProvider = {
-        getTransactionReceipt: () => polygonCreatePoolReceipt,
-        getSigner: jest.fn().mockImplementation(),
-      } as any;
-      await weightedPoolsService.create(
-        mockProvider,
-        mockPoolName,
-        mockPoolSymbol,
-        mockSwapFee,
-        [tokens.WETH, tokens.USDT],
-        mockOwner
-      );
-    });
-
     it('should take a pool create transaction response and return details about the pool', async () => {
-      const mockProvider = {
-        getTransactionReceipt: () => polygonCreatePoolReceipt,
-        getSigner: jest.fn().mockImplementation(),
-      } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
         'hash'
@@ -155,10 +167,6 @@ describe('PoolCreator', () => {
     });
 
     it('should work with a polygon create pool transaction receipt', async () => {
-      const mockProvider = {
-        getTransactionReceipt: () => polygonCreatePoolReceipt,
-        getSigner: jest.fn().mockImplementation(),
-      } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
         'hash'
@@ -171,7 +179,7 @@ describe('PoolCreator', () => {
     it('should work with a polygon create pool transaction receipt with no events', async () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceiptNoEvents,
-        getSigner: jest.fn().mockImplementation(),
+        getSigner: vi.fn().mockImplementation(),
       } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,
@@ -195,9 +203,6 @@ describe('PoolCreator', () => {
     ];
 
     beforeEach(async () => {
-      const mockProvider = {
-        getSigner: jest.fn().mockImplementation(),
-      } as any;
       joinTx = await weightedPoolsService.initJoin(
         mockProvider,
         mockPoolId,

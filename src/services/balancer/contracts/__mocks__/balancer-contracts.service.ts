@@ -1,4 +1,4 @@
-const BalancerContractsService = jest.fn().mockImplementation(() => {
+const BalancerContractsService = vi.fn().mockImplementation(() => {
   return {};
 });
 

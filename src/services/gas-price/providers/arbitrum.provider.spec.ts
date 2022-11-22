@@ -10,17 +10,14 @@ describe('Arbitrum Provider', () => {
 
   beforeEach(() => {
     server.use(
-      rest.post(
-        'https://arb-mainnet.g.alchemy.com/v2/VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh',
-        (req, res, ctx) => {
-          return req.json().then(data => {
-            if (data.method === 'eth_gasPrice')
-              return res(ctx.json(defaultGasResponse));
-            if (data.method === 'eth_maxPriorityFeePerGas')
-              return res(ctx.json(defaultMaxPriorityFeeResponse));
-          });
-        }
-      )
+      rest.post('https://arbitrum-mainnet.infura.io/v3/*', (req, res, ctx) => {
+        return req.json().then(data => {
+          if (data.method === 'eth_gasPrice')
+            return res(ctx.json(defaultGasResponse));
+          if (data.method === 'eth_maxPriorityFeePerGas')
+            return res(ctx.json(defaultMaxPriorityFeeResponse));
+        });
+      })
     );
   });
 

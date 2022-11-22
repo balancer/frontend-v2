@@ -1,19 +1,25 @@
-import parsePath from 'parse-filepath';
 import { App } from 'vue';
-import Jazzicon from 'vue3-jazzicon/src/components';
 
-export function registerGlobalComponents(app: App): void {
+export async function registerGlobalComponents(app: App): Promise<void> {
   // Load global components from @/components/_global
-  const req = require.context(
-    '@/components/_global',
-    true,
-    /^((?!(stories|spec)).)*\.(js|ts|vue)$/i
-  );
-  for (const filePath of req.keys()) {
-    const componentName = parsePath(filePath).name;
-    if (!componentName) continue;
-    const componentConfig = req(filePath);
+  const modules = import.meta.globEager([
+    '@/components/_global/**/*.{js,ts,vue}',
+    '!@/components/_global/**/*.spec.ts',
+    '!@/components/_global/**/*.stories.ts',
+  ]);
+
+  for (const filePath of Object.keys(modules)) {
+    const excludedPatterns = ['.spec.', '.stories.'];
+    if (excludedPatterns.some(pattern => filePath.includes(pattern))) continue;
+    const componentName = getComponentName(filePath);
+    // Ignore composables
+    if (componentName.startsWith('use')) continue;
+
+    const componentConfig = modules[filePath];
     app.component(componentName, componentConfig.default || componentConfig);
   }
-  app.component('Jazzicon', Jazzicon);
+}
+
+function getComponentName(filePath) {
+  return filePath.split('/').pop().split('.')[0];
 }

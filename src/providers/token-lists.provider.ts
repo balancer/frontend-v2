@@ -3,8 +3,10 @@ import {
   computed,
   ComputedRef,
   InjectionKey,
+  onMounted,
   provide,
   reactive,
+  ref,
   Ref,
   toRefs,
 } from 'vue';
@@ -23,7 +25,7 @@ export interface TokenListsState {
 
 export interface TokenListsProviderResponse {
   activeListKeys: Ref<string[]>;
-  allTokenLists: TokenListMap;
+  allTokenLists: Ref<TokenListMap>;
   activeTokenLists: ComputedRef<TokenListMap>;
   defaultTokenList: ComputedRef<TokenList>;
   balancerTokenLists: ComputedRef<TokenListMap>;
@@ -50,40 +52,45 @@ export default {
       activeListKeys: [uris.Balancer.Default],
     });
 
-    let allTokenLists = {};
-    try {
-      allTokenLists = require<TokenListMap>(`/public/data/tokenlists/tokens-${networkId.value}.json`);
-    } catch (error) {
-      console.error('Failed to fetch tokenlists', error);
-      throw error;
-    }
+    const allTokenLists = ref({});
+    onMounted(async () => {
+      try {
+        const module = await import(
+          `@/assets/data/tokenlists/tokens-${networkId.value}.json`
+        );
+        allTokenLists.value = module.default;
+      } catch (error) {
+        console.error('Failed to fetch tokenlists', error);
+        throw error;
+      }
+    });
 
     /**
      * All active (toggled) tokenlists
      */
     const activeTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists, state.activeListKeys)
+      (): TokenListMap => pick(allTokenLists.value, state.activeListKeys)
     );
 
     /**
      * The default Balancer token list.
      */
     const defaultTokenList = computed(
-      (): TokenList => allTokenLists[uris.Balancer.Default]
+      (): TokenList => allTokenLists.value[uris.Balancer.Default]
     );
 
     /**
      * The Balancer vetted token list, contains LBP tokens.
      */
     const vettedTokenList = computed(
-      (): TokenList => allTokenLists[uris.Balancer.Vetted]
+      (): TokenList => allTokenLists.value[uris.Balancer.Vetted]
     );
 
     /**
      * All Balancer token lists mapped by URI.
      */
     const balancerTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists, uris.Balancer.All)
+      (): TokenListMap => pick(allTokenLists.value, uris.Balancer.All)
     );
 
     /**
@@ -92,7 +99,7 @@ export default {
      * This excludes lists like the Balancer vetted list.
      */
     const approvedTokenLists = computed(
-      (): TokenListMap => pick(allTokenLists, uris.Approved)
+      (): TokenListMap => pick(allTokenLists.value, uris.Approved)
     );
 
     /**
@@ -136,6 +143,8 @@ export default {
       isActiveList,
     });
 
-    return () => slots.default();
+    return () => {
+      return slots.default();
+    };
   },
 };
