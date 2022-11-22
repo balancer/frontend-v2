@@ -15,7 +15,6 @@ import { TokenInfoMap } from '@/types/TokenList';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
 import { TokenPrices } from '../coingecko/api/price.service';
-import { GaugeBalApr } from '../staking/staking-rewards.service';
 import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
