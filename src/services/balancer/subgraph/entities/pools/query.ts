@@ -82,6 +82,7 @@ const defaultAttrs = {
   swapEnabled: true,
   symbol: true,
   name: true,
+  protocolYieldFeeCache: true,
   priceRateProviders: priceRateProviderAttrs,
   tokens: tokenTreeAttrs,
 };
