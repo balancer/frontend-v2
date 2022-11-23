@@ -8,7 +8,7 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 
-import { lpTokensFor } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
 import useQueryStreams from './useQueryStream';
 
@@ -72,7 +72,7 @@ export default function useStreamedPoolsQuery(
         const _tokens = flatten(
           pools.value.map(pool => [
             ...pool.tokensList,
-            ...lpTokensFor(pool),
+            ...tokenTreeLeafs(pool.tokens),
             pool.address,
           ])
         );

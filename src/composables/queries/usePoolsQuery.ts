@@ -11,7 +11,7 @@ import { Pool } from '@/services/pool/types';
 
 import useApp from '../useApp';
 import useNetwork from '../useNetwork';
-import { lpTokensFor } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
 import { forChange } from '@/lib/utils';
 
@@ -94,7 +94,7 @@ export default function usePoolsQuery(
     const tokens = flatten(
       pools.map(pool => [
         ...pool.tokensList,
-        ...lpTokensFor(pool),
+        ...tokenTreeLeafs(pool.tokens),
         pool.address,
       ])
     );

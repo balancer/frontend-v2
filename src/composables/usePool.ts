@@ -153,19 +153,6 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to add or remove tokens from a pool
- */
-export function lpTokensFor(pool: AnyPool): string[] {
-  if (isDeep(pool)) {
-    const mainTokens = pool.mainTokens || [];
-    const wrappedTokens = pool.wrappedTokens || [];
-    return [...mainTokens, ...wrappedTokens];
-  } else {
-    return pool.tokensList || [];
-  }
-}
-
-/**
  * @summary Orders pool token addresses by weight if weighted pool
  * @returns Array of checksum addresses
  */
@@ -629,12 +616,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       )
   );
 
-  const lpTokens = computed(() => {
-    if (!pool.value) return [];
-
-    return lpTokensFor(pool.value);
-  });
-
   return {
     // computed
     isStablePool,
@@ -654,7 +635,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
-    lpTokens,
     // methods
     isStable,
     isMetaStable,
@@ -666,7 +646,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isTradingHaltable,
     isWeth,
     noInitLiquidity,
-    lpTokensFor,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

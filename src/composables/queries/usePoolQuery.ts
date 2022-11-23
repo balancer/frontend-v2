@@ -12,7 +12,7 @@ import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useApp from '../useApp';
-import { isBlocked, lpTokensFor } from '../usePool';
+import { isBlocked, tokenTreeLeafs } from '../usePool';
 import useGaugesQuery from './useGaugesQuery';
 
 export default function usePoolQuery(
@@ -78,7 +78,7 @@ export default function usePoolQuery(
     // Inject pool tokens into token registry
     await injectTokens([
       ...decoratedPool.tokensList,
-      ...lpTokensFor(decoratedPool),
+      ...tokenTreeLeafs(decoratedPool.tokens),
       decoratedPool.address,
     ]);
     return decoratedPool;

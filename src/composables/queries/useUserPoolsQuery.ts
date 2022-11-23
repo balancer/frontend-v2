@@ -13,7 +13,7 @@ import { PoolWithShares } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useNetwork from '../useNetwork';
-import { isComposableStableLike, lpTokensFor } from '../usePool';
+import { isComposableStableLike, tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
 import useGaugesQuery from './useGaugesQuery';
 
@@ -77,7 +77,11 @@ export default function useUserPoolsQuery(
 
     const tokens = flatten(
       pools.map(pool => {
-        return [...pool.tokensList, ...lpTokensFor(pool), pool.address];
+        return [
+          ...pool.tokensList,
+          ...tokenTreeLeafs(pool.tokens),
+          pool.address,
+        ];
       })
     );
     await injectTokens(tokens);
