@@ -36,9 +36,7 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear ||
-    poolType === PoolType.Linear ||
-    poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
   );
 }
 
