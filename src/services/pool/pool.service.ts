@@ -13,7 +13,6 @@ import {
 import { TokenInfoMap } from '@/types/TokenList';
 
 import { balancerSubgraphService } from '../balancer/subgraph/balancer-subgraph.service';
-import { AprConcern } from './concerns/apr/apr.concern';
 import LiquidityConcern from './concerns/liquidity.concern';
 import { OnchainDataFormater } from './decorators/onchain-data.formater';
 import { AprBreakdown } from '@balancer-labs/sdk';
@@ -22,11 +21,7 @@ import { balancer } from '@/lib/balancer.sdk';
 import { Pool as SDKPool } from '@balancer-labs/sdk';
 
 export default class PoolService {
-  constructor(
-    public pool: Pool,
-    public liquidity = LiquidityConcern,
-    public apr = AprConcern
-  ) {
+  constructor(public pool: Pool, public liquidity = LiquidityConcern) {
     this.format();
   }
 
@@ -63,9 +58,7 @@ export default class PoolService {
    * @summary Calculates APRs for pool.
    */
   public async setAPR(): Promise<AprBreakdown> {
-    const aprConcern = new this.apr(this.pool);
-    const apr = await aprConcern.calc();
-
+    const apr = await balancer.pools.apr(this.pool);
     return (this.pool.apr = apr);
   }
 
