@@ -542,6 +542,7 @@ export default function useSor({
           successCallback();
         }
         trackGoal(Goals.BalancerSwap);
+        if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -566,6 +567,7 @@ export default function useSor({
           successCallback();
         }
         trackGoal(Goals.BalancerSwap);
+        if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -594,6 +596,7 @@ export default function useSor({
           successCallback();
         }
         trackGoal(Goals.BalancerSwap);
+        if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
       } catch (e) {
         console.log(e);
         captureException(e);
@@ -619,6 +622,7 @@ export default function useSor({
           successCallback();
         }
         trackGoal(Goals.BalancerSwap);
+        if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
       } catch (e) {
         console.log(e);
         captureException(e);

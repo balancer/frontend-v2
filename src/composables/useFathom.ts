@@ -45,6 +45,7 @@ export const Goals = {
   RawTransactionSubmitted: 'MVKM6CDX',
   GnosisSwap: '6OKQIZ6Y',
   BalancerSwap: 'YV0NCHEC',
+  BalancerSwapMainnet: 'LGKR6VHG',
 };
 
 export function trackGoal(goal: string, value = 0) {
