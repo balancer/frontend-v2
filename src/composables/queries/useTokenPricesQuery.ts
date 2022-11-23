@@ -25,6 +25,7 @@ const PER_PAGE = 1000;
 export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
   pricesToInject: Ref<TokenPrices> = ref({}),
+  enabled: Ref<boolean> = ref(false),
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   const { networkId } = useNetwork();
@@ -66,7 +67,7 @@ export default function useTokenPricesQuery(
   };
 
   const queryOptions = reactive({
-    enabled: true,
+    enabled,
     ...options,
   });
 
