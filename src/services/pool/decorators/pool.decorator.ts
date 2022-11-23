@@ -40,7 +40,6 @@ export class PoolDecorator {
       poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
-      await poolService.setLinearPools();
       await poolService.setTotalLiquidity();
 
       if (includeAprs) await poolService.setAPR();
