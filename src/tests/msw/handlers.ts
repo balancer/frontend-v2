@@ -58,12 +58,12 @@ export const handlers = [
     }
   ),
 
-  rest.post('https://api.balancer.fi/wallet-check', (req, res, ctx) => {
-    return req.json().then(data => {
-      if (data.address === SANCTIONED_ADDRESS)
-        return res(ctx.json({ is_blocked: true }));
-      // NOT SANCTIONED:
-      return res(ctx.json({ is_blocked: false }));
-    });
+  rest.get('https://api.balancer.fi/check-wallet', (req, res, ctx) => {
+    const query = req.url.searchParams;
+    const address = query.get('address');
+    if (address === SANCTIONED_ADDRESS)
+      return res(ctx.json({ is_blocked: true }));
+    // NOT SANCTIONED:
+    return res(ctx.json({ is_blocked: false }));
   }),
 ];

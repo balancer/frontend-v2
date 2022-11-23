@@ -212,9 +212,13 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares) {
+function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
-  router.push({ name: 'pool', params: { id: pool.id, networkSlug } });
+  const route = router.resolve({
+    name: 'pool',
+    params: { id: pool.id, networkSlug },
+  });
+  inNewTab ? window.open(route.href) : router.push(route);
 }
 
 function navigateToPoolMigration(pool: PoolWithShares) {
@@ -262,10 +266,6 @@ function iconAddresses(pool: PoolWithShares) {
       :skeletonClass="skeletonClass"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :link="{
-        to: 'pool',
-        getParams: pool => ({ id: pool.id || '', networkSlug }),
-      }"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       :initialState="{
