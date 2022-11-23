@@ -78,7 +78,7 @@ export async function isBlockedAddress(
     trackGoal(Goals.WalletScreenRequest);
 
     const response = await axios.get<WalletScreenResponse>(
-      `${WALLET_SCREEN_ENDPOINT}/${address.toLowerCase()}`
+      `${WALLET_SCREEN_ENDPOINT}?address=${address.toLowerCase()}`
     );
 
     trackGoal(Goals.WalletScreened);
