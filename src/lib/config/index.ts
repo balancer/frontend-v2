@@ -68,6 +68,7 @@ export interface Config {
     feeDistributor: string;
     feeDistributorDeprecated: string;
     faucet: string;
+    gaugeRewardsHelper?: string;
   };
   keys: {
     infura: string;
