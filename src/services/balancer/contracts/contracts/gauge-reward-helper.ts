@@ -2,7 +2,6 @@ import { Contract } from '@ethersproject/contracts';
 import { TransactionResponse } from '@ethersproject/providers';
 
 import LiquidityGaugeRewardHelperAbi from '@/lib/abi/LiquidityGaugeHelperAbi.json';
-import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { web3Service } from '@/services/web3/web3.service';
 
@@ -13,7 +12,6 @@ export class LiquidityGaugeRewardsHelper {
     public readonly address: string,
     private readonly provider = rpcProviderService.jsonProvider,
     private readonly abi = LiquidityGaugeRewardHelperAbi,
-    private readonly config = configService,
     private readonly web3 = web3Service
   ) {
     this.instance = new Contract(this.address, this.abi, this.provider);
@@ -29,7 +27,7 @@ export class LiquidityGaugeRewardsHelper {
     return await this.web3.txBuilder.contract.sendTransaction({
       contractAddress: this.address,
       abi: this.abi,
-      action: 'claimRewardsFromGauge()',
+      action: 'claimRewardsFromGauge',
       params: [gaugeAddress, userAddress],
     });
   }
