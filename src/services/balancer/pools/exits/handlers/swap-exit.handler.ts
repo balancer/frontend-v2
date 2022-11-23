@@ -8,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 import { BalancerSDK, BatchSwap, SwapInfo, SwapType } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { Ref } from 'vue';
 import {
   ExitParams,
@@ -72,6 +73,7 @@ export class SwapExitHandler implements ExitPoolHandler {
     bptIn,
     tokenInfo,
     amountsOut,
+    signer,
   }: ExitParams): Promise<QueryOutput> {
     const amountIn = bptIn;
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
@@ -87,7 +89,7 @@ export class SwapExitHandler implements ExitPoolHandler {
 
     const safeAmountIn = overflowProtected(bptIn, tokenIn.decimals);
     const bnumAmountIn = parseFixed(safeAmountIn, tokenIn.decimals);
-    const gasPrice = await this.getGasPrice();
+    const gasPrice = await this.getGasPrice(signer);
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
       tokenIn: tokenIn.address,
@@ -118,6 +120,7 @@ export class SwapExitHandler implements ExitPoolHandler {
   private async queryInGivenOut({
     tokenInfo,
     amountsOut,
+    signer,
   }: ExitParams): Promise<QueryOutput> {
     const tokenIn = selectByAddress(tokenInfo, this.pool.value.address);
     const tokenOut = selectByAddress(tokenInfo, amountsOut[0].address);
@@ -135,7 +138,7 @@ export class SwapExitHandler implements ExitPoolHandler {
       tokenOut.decimals
     );
     const bnumAmountOut = parseFixed(safeAmountOut, tokenOut.decimals);
-    const gasPrice = await this.getGasPrice();
+    const gasPrice = await this.getGasPrice(signer);
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenOut({
       tokenIn: tokenIn.address,
@@ -160,11 +163,19 @@ export class SwapExitHandler implements ExitPoolHandler {
     return { amountsOut: { [tokenOut.address]: amountOut }, priceImpact };
   }
 
-  private async getGasPrice(): Promise<BigNumber> {
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (!gasPriceParams) throw new Error('Failed to fetch gas price.');
+  private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
+    let price: number;
 
-    return BigNumber.from(gasPriceParams.price);
+    const gasPriceParams = await this.gasPriceService.getGasPrice();
+    if (gasPriceParams) {
+      price = gasPriceParams.price;
+    } else {
+      price = (await signer.getGasPrice()).toNumber();
+    }
+
+    if (!price) throw new Error('Failed to fetch gas price.');
+
+    return BigNumber.from(price);
   }
 
   private calcPriceImpact(

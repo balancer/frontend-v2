@@ -8,6 +8,7 @@ import { Pool } from '@/services/pool/types';
 import { BalancerSDK, BatchSwap, SwapInfo } from '@balancer-labs/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { Ref } from 'vue';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 
@@ -47,7 +48,11 @@ export class SwapJoinHandler implements JoinPoolHandler {
     );
   }
 
-  async queryJoin({ amountsIn, tokensIn }: JoinParams): Promise<QueryOutput> {
+  async queryJoin({
+    amountsIn,
+    tokensIn,
+    signer,
+  }: JoinParams): Promise<QueryOutput> {
     if (amountsIn.length === 0)
       throw new Error('Missing amounts to join with.');
 
@@ -61,7 +66,7 @@ export class SwapJoinHandler implements JoinPoolHandler {
 
     const safeAmount = overflowProtected(amountIn.value, tokenIn.decimals);
     const bnumAmount = parseFixed(safeAmount, tokenIn.decimals);
-    const gasPrice = await this.getGasPrice();
+    const gasPrice = await this.getGasPrice(signer);
 
     this.lastSwapRoute = await this.sdk.swaps.findRouteGivenIn({
       tokenIn: amountIn.address,
@@ -101,11 +106,19 @@ export class SwapJoinHandler implements JoinPoolHandler {
     return Math.max(0, priceImpact.toNumber());
   }
 
-  private async getGasPrice(): Promise<BigNumber> {
-    const gasPriceParams = await this.gasPriceService.getGasPrice();
-    if (!gasPriceParams) throw new Error('Failed to fetch gas price.');
+  private async getGasPrice(signer: JsonRpcSigner): Promise<BigNumber> {
+    let price: number;
 
-    return BigNumber.from(gasPriceParams.price);
+    const gasPriceParams = await this.gasPriceService.getGasPrice();
+    if (gasPriceParams) {
+      price = gasPriceParams.price;
+    } else {
+      price = (await signer.getGasPrice()).toNumber();
+    }
+
+    if (!price) throw new Error('Failed to fetch gas price.');
+
+    return BigNumber.from(price);
   }
 
   private getSwapAttributes(
