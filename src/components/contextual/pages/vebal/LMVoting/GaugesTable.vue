@@ -149,21 +149,26 @@ function networkSrc(network: Network) {
   )}.svg`);
 }
 
-function redirectToPool(gauge: VotingGaugeWithVotes) {
+function isInternalUrl(url: string): boolean {
+  return url.includes('balancer.fi') || url.includes('localhost');
+}
+
+function redirectToPool(gauge: VotingGaugeWithVotes, inNewTab) {
   const redirectUrl = poolURLFor(gauge.pool.id, gauge.network);
-  if (redirectUrl.startsWith('https://')) {
+  if (!isInternalUrl(redirectUrl)) {
     window.location.href = redirectUrl;
   } else {
-    router.push({
+    const route = router.resolve({
       name: 'pool',
       params: { id: gauge.pool.id, networkSlug: getNetworkSlug(gauge.network) },
     });
+    inNewTab ? window.open(route.href) : router.push(route);
   }
 }
 
 function getPoolExternalUrl(gauge: VotingGaugeWithVotes) {
   const poolUrl = poolURLFor(gauge.pool.id, gauge.network);
-  return poolUrl.startsWith('https://') ? poolUrl : null;
+  return isInternalUrl(poolUrl) ? null : poolUrl;
 }
 
 function getIsGaugeNew(addedTimestamp: number): boolean {
@@ -202,13 +207,6 @@ function getTableRowClass(gauge: VotingGaugeWithVotes): string {
       sticky="both"
       :square="upToLargeBreakpoint"
       :isPaginated="isPaginated"
-      :link="{
-        to: 'pool',
-        getParams: gauge => ({
-          id: gauge.pool.id || '',
-          networkSlug: getNetworkSlug(gauge.network),
-        }),
-      }"
       :href="{ getHref: gauge => getPoolExternalUrl(gauge) }"
       :onRowClick="redirectToPool"
       :getTableRowClass="getTableRowClass"
