@@ -209,14 +209,14 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
 }
 
 function getUnderlyingTokenAddress(address: string) {
-  const linearPools = props.pool?.onchain?.linearPools;
+  const linearPools = props.pool?.linearPools;
   return linearPools != null && linearPools[address] != null
     ? linearPools[address].mainToken.address
     : address;
 }
 
 function getMainTokenEquivalentAmount(address: string, amount: string) {
-  const linearPools = props.pool?.onchain?.linearPools;
+  const linearPools = props.pool?.linearPools;
   return linearPools != null && linearPools[address] != null
     ? bnum(amount).times(linearPools[address].priceRate)
     : bnum(amount);

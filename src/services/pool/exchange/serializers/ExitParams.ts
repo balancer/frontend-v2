@@ -44,10 +44,7 @@ export default class ExitParams {
     exactOut: boolean
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
-    const parsedBptIn = parseUnits(
-      bptIn,
-      this.pool.value?.onchain?.decimals || 18
-    );
+    const parsedBptIn = parseUnits(bptIn, this.pool.value?.decimals || 18);
 
     const assets = this.parseTokensOut(tokensOut);
     const txData = this.txData(
@@ -71,7 +68,7 @@ export default class ExitParams {
       minAmountsOut.splice(
         poolTokenItselfIndex,
         0,
-        parseUnits('0', this.pool.value.onchain?.decimals || 18)
+        parseUnits('0', this.pool.value.decimals || 18)
       );
     }
 
@@ -93,7 +90,7 @@ export default class ExitParams {
       const token = this.pool.value.tokensList[i];
       return parseUnits(
         amount,
-        this.pool.value?.onchain?.tokens?.[token]?.decimals || 18
+        this.pool.value?.tokens?.[token]?.decimals || 18
       );
     });
   }

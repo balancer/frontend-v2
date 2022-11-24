@@ -123,7 +123,7 @@ export function isMigratablePool(pool: AnyPool) {
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
-  return bnum(pool?.onchain?.totalSupply || '0').eq(0);
+  return bnum(pool?.totalSupply || '0').eq(0);
 }
 
 export function preMintedBptIndex(pool: Pool): number | void {
@@ -367,15 +367,15 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
    * Returns pool weights label
    */
   function poolWeightsLabel(pool: Pool): string {
-    if (!pool?.onchain?.tokens) return '';
+    if (!pool?.tokens) return '';
 
     if (isStableLike(pool.poolType)) {
-      return Object.values(pool.onchain.tokens)
+      return Object.values(pool.tokens)
         .map(token => token.symbol)
         .join(', ');
     }
 
-    return Object.values(pool.onchain.tokens)
+    return Object.values(pool.tokens)
       .map(
         token =>
           `${fNum2(token.weight, {
@@ -427,7 +427,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   );
   const managedPoolWithTradingHalted = computed(
     (): boolean =>
-      !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
+      !!pool.value && isManagedPool.value && !pool.value.swapEnabled
   );
   const isWethPool = computed(
     (): boolean => !!pool.value && isWeth(pool.value)

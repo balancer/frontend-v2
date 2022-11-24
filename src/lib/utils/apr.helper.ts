@@ -22,8 +22,7 @@ export async function calcUSDPlusWeightedAPR(
   const price = prices[mainToken][currency] || 0;
   const wrappedTokenBalance = formatUnits(linearPool.wrappedToken.balance, 6);
 
-  const linearPoolBalance =
-    pool.onchain?.tokens[linearPoolAddress].balance || '0';
+  const linearPoolBalance = pool.tokens[linearPoolAddress].balance || '0';
   const linearPoolShare = bnum(linearPoolBalance)
     .div(linearPool.totalSupply)
     .toString();

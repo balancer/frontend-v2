@@ -24,11 +24,7 @@ withDefaults(defineProps<Props>(), {
 <template>
   <BalLoadingBlock v-if="loading || !pool" class="h-64" />
   <template v-else>
-    <BoostedPool
-      v-if="pool?.onchain?.linearPools"
-      :pool="pool"
-      :loading="loading"
-    />
+    <BoostedPool v-if="pool?.linearPools" :pool="pool" :loading="loading" />
     <DefaultPool v-else :pool="pool" />
   </template>
 </template>

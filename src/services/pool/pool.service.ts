@@ -183,6 +183,7 @@ export default class PoolService {
         tokens: this.pool.tokens.map(token => ({
           ...token,
           ...onchainData.tokens[token.address],
+          weight: token.weight,
         })),
       };
       this.pool = updatedPool;
@@ -193,9 +194,9 @@ export default class PoolService {
   }
 
   public setUnwrappedTokens(): string[] {
-    const unwrappedTokens = Object.entries(
-      this.pool?.onchain?.linearPools || {}
-    ).map(([, linearPool]) => linearPool.unwrappedTokenAddress);
+    const unwrappedTokens = Object.entries(this.pool?.linearPools || {}).map(
+      ([, linearPool]) => linearPool.unwrappedTokenAddress
+    );
     return (this.pool.unwrappedTokens = unwrappedTokens);
   }
 

@@ -75,7 +75,7 @@ export function usePoolMigration(
     confirmingLabel: t('migratePool.confirming'),
     action: migrate.bind(
       null,
-      parseUnits(stakedBptBalance, fromPool.onchain?.decimals).toString(),
+      parseUnits(stakedBptBalance, fromPool.decimals).toString(),
       true
     ),
     stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
@@ -89,7 +89,7 @@ export function usePoolMigration(
     confirmingLabel: t('migratePool.confirming'),
     action: migrate.bind(
       null,
-      parseUnits(unstakedBptBalance, fromPool.onchain?.decimals).toString(),
+      parseUnits(unstakedBptBalance, fromPool.decimals).toString(),
       false
     ),
     stepTooltip: t('migratePool.previewModal.actions.migrationStep'),
@@ -161,7 +161,7 @@ export function usePoolMigration(
         token => token.address.toLowerCase() !== fromPool.address.toLowerCase()
       )
       .map(token =>
-        parseUnits(token.balance, fromPool.onchain?.decimals || 18).toString()
+        parseUnits(token.balance, fromPool.decimals || 18).toString()
       );
 
     return {

@@ -101,7 +101,7 @@ export default defineComponent({
      */
     const tableData = computed(() => {
       if (!pool.value || props.loading) return [];
-      const onchainTokens = pool.value?.onchain?.tokens || [];
+      const onchainTokens = pool.value?.tokens || [];
       return Object.keys(onchainTokens).map((address, index) => ({
         address,
         index,
@@ -151,19 +151,19 @@ export default defineComponent({
      */
     function symbolFor(address: string) {
       if (!pool.value) return '-';
-      const symbol = pool.value?.onchain?.tokens?.[address]?.symbol;
+      const symbol = pool.value?.tokens?.[address]?.symbol;
       return symbol ? symbol : shortenLabel(address);
     }
 
     function balanceFor(address: string): string {
       if (!pool.value) return '-';
-      const balance = pool.value?.onchain?.tokens[address]?.balance;
+      const balance = pool.value?.tokens[address]?.balance;
       return balance ? fNum2(balance, FNumFormats.token) : '-';
     }
 
     function weightFor(address: string): string {
       if (!pool.value) return '-';
-      const weight = pool.value?.onchain?.tokens[address]?.weight;
+      const weight = pool.value?.tokens[address]?.weight;
       return weight ? fNum2(weight, FNumFormats.percent) : '-';
     }
 
@@ -171,7 +171,7 @@ export default defineComponent({
       const price = priceFor(address);
       if (!pool.value || price === 0) return '-';
 
-      const balance = pool.value?.onchain?.tokens[address]?.balance;
+      const balance = pool.value?.tokens[address]?.balance;
       return balance ? fNum2(Number(balance) * price, FNumFormats.fiat) : '-';
     }
 

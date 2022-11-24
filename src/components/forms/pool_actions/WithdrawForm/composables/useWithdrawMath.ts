@@ -128,9 +128,7 @@ export default function useWithdrawMath(
     (): number => getToken(tokenOut.value).decimals
   );
 
-  const poolDecimals = computed(
-    (): number => pool.value?.onchain?.decimals || 18
-  );
+  const poolDecimals = computed((): number => pool.value?.decimals || 18);
 
   /**
    * The tokens being withdrawn
@@ -168,7 +166,7 @@ export default function useWithdrawMath(
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
   const tokenOutPoolBalance = computed(() => {
-    const tokens = pool.value?.onchain?.tokens || [];
+    const tokens = pool.value?.tokens || [];
     const balances = Object.values(tokens).map(token => token.balance);
     return balances[tokenOutIndex.value];
   });
@@ -410,7 +408,7 @@ export default function useWithdrawMath(
   );
 
   const shouldUseBatchRelayer = computed((): boolean => {
-    if (!isDeepPool.value || !pool.value?.onchain?.linearPools) return false;
+    if (!isDeepPool.value || !pool.value?.linearPools) return false;
 
     // If batchSwap has any 0 return amounts, we should use batch relayer
     if (batchSwap.value) {
@@ -498,10 +496,10 @@ export default function useWithdrawMath(
    * @param wrappedToken the wrapped linear pool token address.
    */
   function scaledWrappedTokenRateFor(wrappedToken: string): string {
-    if (!pool.value?.onchain?.linearPools) return '0';
+    if (!pool.value?.linearPools) return '0';
 
     const normalPriceRate =
-      Object.values(pool.value.onchain.linearPools).find(linearPool =>
+      Object.values(pool.value.linearPools).find(linearPool =>
         isSameAddress(linearPool.wrappedToken.address, wrappedToken)
       )?.wrappedToken?.priceRate || '0';
 
@@ -738,8 +736,8 @@ export default function useWithdrawMath(
   async function getBptOutGuide() {
     if (!isShallowComposableStablePool.value) return;
 
-    const bptIn = pool.value.onchain?.totalSupply || '0';
-    const amountsOut = Object.values(pool.value.onchain?.tokens || []).map(t =>
+    const bptIn = pool.value.totalSupply || '0';
+    const amountsOut = Object.values(pool.value.tokens || []).map(t =>
       formatUnits(
         parseUnits(t.balance, t.decimals).mul(1000).div(10000),
         t.decimals

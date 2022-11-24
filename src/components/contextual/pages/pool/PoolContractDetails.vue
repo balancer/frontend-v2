@@ -71,7 +71,7 @@ const data = computed(() => {
     onchain?.amp && Number(onchain?.amp)
       ? {
           title: t('ampFactor.title'),
-          value: onchain.amp,
+          value: amp,
         }
       : null,
     {

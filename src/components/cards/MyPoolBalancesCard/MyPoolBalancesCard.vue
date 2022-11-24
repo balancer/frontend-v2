@@ -64,9 +64,9 @@ const propTokenAmounts = computed((): string[] => {
     // Return linear pool's main token balance using the price rate.
     // mainTokenBalance = linearPoolBPT * priceRate
     return props.pool.tokensList.map((address, i) => {
-      if (!props.pool?.onchain?.linearPools) return '0';
+      if (!props.pool?.linearPools) return '0';
 
-      const priceRate = props.pool.onchain.linearPools[address].priceRate;
+      const priceRate = props.pool.linearPools[address].priceRate;
 
       return bnum(receive[i]).times(priceRate).toString();
     });

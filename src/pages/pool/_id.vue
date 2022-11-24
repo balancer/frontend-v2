@@ -132,7 +132,7 @@ const noInitLiquidity = computed(
   () =>
     !loadingPool.value &&
     pool.value &&
-    Number(pool.value?.onchain?.totalSupply || '0') === 0
+    Number(pool.value?.totalSupply || '0') === 0
 );
 
 const missingPrices = computed(() => {
@@ -150,9 +150,9 @@ const missingPrices = computed(() => {
 });
 
 const titleTokens = computed(() => {
-  if (!pool.value || !pool.value.onchain?.tokens) return [];
+  if (!pool.value || !pool.value.tokens) return [];
 
-  return Object.entries(pool.value.onchain.tokens).sort(
+  return Object.entries(pool.value.tokens).sort(
     ([, a]: any[], [, b]: any[]) => b.weight - a.weight
   );
 });

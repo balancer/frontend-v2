@@ -47,7 +47,7 @@ export default class LiquidityConcern {
 
   private get onchainPoolTokens(): OnchainTokenInfo[] | null {
     if (this.pool.onchain) {
-      const tokenMap = this.pool.onchain.tokens;
+      const tokenMap = this.pool.tokens;
       const addresses = Object.keys(tokenMap);
       const tokens = Object.values(tokenMap);
       return tokens.map<OnchainTokenInfo>(
@@ -159,43 +159,41 @@ export default class LiquidityConcern {
   ): string {
     let totalLiquidity = bnum(0);
 
-    Object.entries(this.pool?.onchain?.linearPools || {}).forEach(
-      ([address, token]) => {
-        const tokenShare = bnum(
-          this.pool?.onchain?.tokens?.[address]?.balance || '0'
-        ).div(token.totalSupply);
+    Object.entries(this.pool?.linearPools || {}).forEach(([address, token]) => {
+      const tokenShare = bnum(this.pool?.tokens?.[address]?.balance || '0').div(
+        token.totalSupply
+      );
 
-        const mainTokenBalance = formatUnits(
-          token.mainToken.balance,
-          tokenMeta[getAddress(token.mainToken.address)]?.decimals
-        );
+      const mainTokenBalance = formatUnits(
+        token.mainToken.balance,
+        tokenMeta[getAddress(token.mainToken.address)]?.decimals
+      );
 
-        const wrappedTokenBalance = formatUnits(
-          token.wrappedToken.balance,
-          tokenMeta[getAddress(token.wrappedToken.address)]?.decimals
-        );
+      const wrappedTokenBalance = formatUnits(
+        token.wrappedToken.balance,
+        tokenMeta[getAddress(token.wrappedToken.address)]?.decimals
+      );
 
-        const mainTokenPrice =
-          prices[token.mainToken.address] != null
-            ? prices[token.mainToken.address].usd
-            : null;
+      const mainTokenPrice =
+        prices[token.mainToken.address] != null
+          ? prices[token.mainToken.address].usd
+          : null;
 
-        if (mainTokenPrice != null) {
-          const mainTokenValue = bnum(mainTokenBalance)
-            .times(tokenShare)
-            .times(mainTokenPrice);
+      if (mainTokenPrice != null) {
+        const mainTokenValue = bnum(mainTokenBalance)
+          .times(tokenShare)
+          .times(mainTokenPrice);
 
-          const wrappedTokenValue = bnum(wrappedTokenBalance)
-            .times(tokenShare)
-            .times(mainTokenPrice)
-            .times(token.wrappedToken.priceRate);
+        const wrappedTokenValue = bnum(wrappedTokenBalance)
+          .times(tokenShare)
+          .times(mainTokenPrice)
+          .times(token.wrappedToken.priceRate);
 
-          totalLiquidity = bnum(totalLiquidity)
-            .plus(mainTokenValue)
-            .plus(wrappedTokenValue);
-        }
+        totalLiquidity = bnum(totalLiquidity)
+          .plus(mainTokenValue)
+          .plus(wrappedTokenValue);
       }
-    );
+    });
 
     return totalLiquidity.toString();
   }

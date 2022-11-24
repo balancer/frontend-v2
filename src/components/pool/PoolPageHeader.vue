@@ -89,9 +89,9 @@ const swapFeeToolTip = computed(() => {
 });
 
 const poolFeeLabel = computed(() => {
-  if (!props.pool || !props.pool?.onchain?.swapFee) return '';
+  if (!props.pool || !props.pool?.swapFee) return '';
 
-  const feeLabel = `${fNum2(props.pool.onchain.swapFee, {
+  const feeLabel = `${fNum2(props.pool.swapFee, {
     style: 'percent',
     maximumFractionDigits: 4,
   })}`;

@@ -81,7 +81,7 @@ const percentageLabel = computed(() => {
 });
 
 const seedTokens = computed((): number[] =>
-  Object.values(props.pool?.onchain?.tokens || []).map(token => token.weight)
+  Object.values(props.pool?.tokens || []).map(token => token.weight)
 );
 
 /**
@@ -92,7 +92,7 @@ function handleSliderChange(newVal: number): void {
   propBptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
-    .toFixed(props.pool?.onchain?.decimals || 18);
+    .toFixed(props.pool?.decimals || 18);
 
   if (shouldFetchBatchSwap.value) {
     delayedExitDataFetch();

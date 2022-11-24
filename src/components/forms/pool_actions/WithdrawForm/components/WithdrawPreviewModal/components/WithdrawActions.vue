@@ -156,7 +156,7 @@ async function submit(): Promise<TransactionResponse> {
         getSigner(),
         amountsOut.value,
         tokensOut.value,
-        formatUnits(bptIn.value, props.pool?.onchain?.decimals || 18),
+        formatUnits(bptIn.value, props.pool?.decimals || 18),
         singleAssetMaxOut.value ? tokenOutIndex.value : null,
         exactOut.value
       );

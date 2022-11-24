@@ -162,7 +162,7 @@ export class AprConcern {
       };
       if (Object.keys(usdPlusPools).includes(this.pool.id)) {
         const linearPoolAddress = usdPlusPools[this.pool.id];
-        const linearPool = this.pool.onchain?.linearPools?.[linearPoolAddress];
+        const linearPool = this.pool.linearPools?.[linearPoolAddress];
         if (linearPool) {
           const wrappedToken = linearPool.wrappedToken.address;
           const weightedAPR = await calcUSDPlusWeightedAPR(

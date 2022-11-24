@@ -118,10 +118,7 @@ const summaryTitle = computed(() => {
  * Converts stakedBptBalance to EVM scale.
  */
 const evmStakedBptBalance = computed((): string => {
-  return parseUnits(
-    props.stakedBptBalance,
-    props.fromPool.onchain?.decimals
-  ).toString();
+  return parseUnits(props.stakedBptBalance, props.fromPool.decimals).toString();
 });
 
 /**
@@ -130,13 +127,13 @@ const evmStakedBptBalance = computed((): string => {
 const evmUnstakedBptBalance = computed((): string => {
   return parseUnits(
     props.unstakedBptBalance,
-    props.fromPool.onchain?.decimals
+    props.fromPool.decimals
   ).toString();
 });
 
 // Computes fiat value of expected BPT out.
 const toFiatTotal = computed((): string => {
-  const bpt = formatUnits(bptOut.value, toPool.value.onchain?.decimals || 18);
+  const bpt = formatUnits(bptOut.value, toPool.value.decimals || 18);
   return fiatValueOf(toPool.value, bpt);
 });
 

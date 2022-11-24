@@ -137,18 +137,16 @@ function handleAddressChange(newAddress: string): void {
 
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
-  if (!props.pool?.onchain?.tokens) return 0;
+  if (!props.pool?.tokens) return 0;
 
   if (isSameAddress(address, nativeAsset.address)) {
     return (
-      selectByAddress(
-        props.pool.onchain.tokens,
-        wrappedNativeAsset.value.address
-      )?.weight || 1
+      selectByAddress(props.pool.tokens, wrappedNativeAsset.value.address)
+        ?.weight || 1
     );
   }
 
-  return selectByAddress(props.pool.onchain.tokens, address)?.weight || 1;
+  return selectByAddress(props.pool.tokens, address)?.weight || 1;
 }
 
 function propAmountFor(index: number): string {

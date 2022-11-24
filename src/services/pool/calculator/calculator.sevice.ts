@@ -12,7 +12,7 @@ import {
 } from '@/composables/usePool';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
-import { OnchainTokenDataMap, Pool } from '@/services/pool/types';
+import { OnchainPoolToken, Pool } from '@/services/pool/types';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -219,44 +219,39 @@ export default class CalculatorService {
     return this.pool.value.tokensList;
   }
 
-  public get poolTokens(): OnchainTokenDataMap {
-    if (!this.pool.value?.onchain?.tokens) return {};
-    return this.pool.value.onchain.tokens;
+  public get poolTokens(): OnchainPoolToken[] {
+    if (!this.pool.value?.tokens) return [];
+    return this.pool.value.tokens;
   }
 
   public get poolTokenBalances(): BigNumber[] {
-    if (!this.pool.value?.onchain?.tokens) return [];
+    if (!this.pool.value?.tokens) return [];
 
-    const normalizedBalances = Object.values(this.poolTokens).map(
-      t => t.balance
-    );
+    const normalizedBalances = this.poolTokens.map(t => t.balance);
     return normalizedBalances.map((balance, i) =>
       parseUnits(balance, this.poolTokenDecimals[i])
     );
   }
 
   public get poolTokenDecimals(): number[] {
-    return Object.values(this.poolTokens).map(t => t.decimals);
+    return this.poolTokens.map(t => t.decimals);
   }
 
   public get poolTokenWeights(): BigNumber[] {
-    const normalizedWeights = Object.values(this.poolTokens).map(t => t.weight);
+    const normalizedWeights = this.poolTokens.map(t => t.weight);
     return normalizedWeights.map(weight => parseUnits(weight.toString(), 18));
   }
 
   public get poolTotalSupply(): BigNumber {
-    return parseUnits(
-      this.pool.value?.onchain?.totalSupply || '0',
-      this.poolDecimals
-    );
+    return parseUnits(this.pool.value?.totalSupply || '0', this.poolDecimals);
   }
 
   public get poolSwapFee(): BigNumber {
-    return parseUnits(this.pool.value?.onchain?.swapFee || '0', 18);
+    return parseUnits(this.pool.value?.swapFee || '0', 18);
   }
 
   public get poolDecimals(): number {
-    return this.pool.value?.onchain?.decimals || 18;
+    return this.pool.value?.decimals || 18;
   }
 
   public get bptBalance(): string {

@@ -32,6 +32,7 @@ export interface Pool {
   linearPools?: Record<Address, LinearPoolData>;
   tokenRates?: string[];
   swapEnabled: boolean;
+  amp?: number;
 }
 
 export enum PoolType {
@@ -71,7 +72,7 @@ export interface OnchainPoolToken {
   symbol?: string;
   token: { pool: TokenTreePool | null };
   balance: string;
-  weight: number;
+  weight: string;
   decimals: number;
   logoURI: string | undefined;
   name: string;

@@ -32,8 +32,7 @@ export default class JoinParams {
     this.config = exchange.config;
     this.isStableLikePool = isStableLike(this.pool.value.poolType);
     this.isManagedPool = isManaged(this.pool.value.poolType);
-    this.isSwapEnabled =
-      this.isManagedPool && !!this.pool.value?.onchain?.swapEnabled;
+    this.isSwapEnabled = this.isManagedPool && !!this.pool.value?.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? isComposableStable(exchange.pool.value.poolType)
         ? encodeJoinComposableStablePool
@@ -48,10 +47,7 @@ export default class JoinParams {
     bptOut: string
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn, tokensIn);
-    const parsedBptOut = parseUnits(
-      bptOut,
-      this.pool.value?.onchain?.decimals || 18
-    );
+    const parsedBptOut = parseUnits(bptOut, this.pool.value?.decimals || 18);
 
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
     const assets = this.parseTokensIn(tokensIn);
@@ -66,7 +62,7 @@ export default class JoinParams {
       maxAmountsIn.splice(
         poolTokenItselfIndex,
         0,
-        parseUnits('0', this.pool.value.onchain?.decimals || 18)
+        parseUnits('0', this.pool.value.decimals || 18)
       );
     }
 
@@ -105,7 +101,7 @@ export default class JoinParams {
       // and return the correct decimals.
       const decimals = isSameAddress(nativeAsset.address, token)
         ? nativeAsset.decimals
-        : this.pool.value?.onchain?.tokens?.[token]?.decimals || 18;
+        : this.pool.value?.tokens?.[token]?.decimals || 18;
 
       return parseUnits(amount, decimals);
     });
@@ -134,7 +130,7 @@ export default class JoinParams {
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
-    if ((this.pool.value?.onchain?.totalSupply || '0') === '0') {
+    if ((this.pool.value?.totalSupply || '0') === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
       // Managed Pools can only be joined proportionally if trading is halted
