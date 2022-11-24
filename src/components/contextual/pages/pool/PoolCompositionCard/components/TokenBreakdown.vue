@@ -89,7 +89,7 @@ const shareOfTokenInPool = computed((): number => {
       <BalAsset
         :address="token.address"
         class="mr-2"
-        :size="isDeepPool ? 24 : 36"
+        :size="isDeepPool && currentLevel > 1 ? 28 : 36"
       />
       {{ token?.symbol || '---' }}
       <BalIcon
