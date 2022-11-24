@@ -11,7 +11,7 @@ import { bnum } from '@/lib/utils';
 type Props = {
   token: PoolToken;
   shareOfParentInPool?: number;
-  parentLevel: number;
+  parentLevel?: number;
   isWeighted: boolean;
   isDeepPool: boolean;
 };
