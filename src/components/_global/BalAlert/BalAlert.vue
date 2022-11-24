@@ -72,7 +72,7 @@ export default defineComponent({
     const bgColorClass = computed(() => {
       switch (props.type) {
         case 'tip':
-          return 'bg-yellow-600 border-0 text-black';
+          return 'bg-blue-50 dark:bg-blue-500 dark:bg-opacity-10 border-blue-200 dark:border-blue-500 text-black dark:text-white';
         case 'warning':
           return 'bg-orange-50 dark:bg-orange-600 dark:bg-opacity-10 border-orange-200 dark:border-orange-700 text-black dark:text-white';
         case 'error':
@@ -139,7 +139,7 @@ export default defineComponent({
     const iconColorClasses = computed(() => {
       switch (props.type) {
         case 'tip':
-          return 'text-black';
+          return 'text-blue-700 dark:text-blue-400';
         case 'warning':
           return 'text-orange-500 dark:text-white bg-orange-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         case 'error':
@@ -161,9 +161,7 @@ export default defineComponent({
     }));
 
     const descriptionColor = computed(() => {
-      if (props.type === 'tip') return 'text-black';
-      if (props.type === 'info')
-        return 'text-black dark:text-white text-opacity-70';
+      if (props.type === 'tip') return 'text-black dark:text-white';
       return 'text-black dark:text-white text-opacity-70';
     });
 

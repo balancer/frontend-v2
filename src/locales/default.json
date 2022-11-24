@@ -1072,13 +1072,8 @@
       },
       "returnToVeBalPage": "Return to veBAL page",
       "firstVeBALReceived": {
-        "title": "Using your veBAL to direct liquidity incentives",
-        "bulletPoints": [
-          "Holding veBAL allows you to vote on pools to receive liquidity mining incentives. ",
-          "Your voting power for a pool is set at the time of your vote.",
-          "If you vote on a pool and then acquire new veBAL, resubmit your vote to utilize your new veBAL voting power.",
-          "Finally, votes on each pool are timelocked for 10 days."
-        ]
+        "title": "Vote on pools to direct liquidity incentives",
+        "description": "Your voting weight is set at the time of the vote. If you acquire additional veBAL, resubmit your votes to utilize your newly acquired voting power. Voting per pool can only be done once every 10 days."
       }
     },
     "notSupported": {
