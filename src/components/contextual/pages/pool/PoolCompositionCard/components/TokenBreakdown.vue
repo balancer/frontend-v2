@@ -62,7 +62,7 @@ const shareOfTokenInPool = computed((): number => {
     :class="[
       isWeighted ? 'grid-cols-4' : 'grid-cols-3',
       isDeepPool ? 'p-3' : 'p-4',
-      `pl-${padding}`,
+      `pl-4`,
     ]"
   >
     <BalLink
