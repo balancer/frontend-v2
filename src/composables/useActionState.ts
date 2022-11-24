@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 export enum State {
   IDLE = 'IDLE',
-  TRANSACTIONINITIALIZED = 'INIT',
+  TRANSACTION_INITIALIZED = 'INIT',
   CONFIRMING = 'CONFIRMING',
   CONFIRMED = 'CONFIRMED',
   ERROR = 'ERROR',
@@ -15,14 +15,14 @@ interface SuccessParams {
   receipt: TransactionReceipt;
 }
 
-export function useActionsState() {
+export function useActionState() {
   const state = ref<State>(State.IDLE);
   const confirmedAt = ref<string>('');
   const receipt = ref<TransactionReceipt | null>(null);
   const error = ref<TransactionError | null>(null);
 
   function setInit() {
-    state.value = State.TRANSACTIONINITIALIZED;
+    state.value = State.TRANSACTION_INITIALIZED;
     error.value = null;
   }
 

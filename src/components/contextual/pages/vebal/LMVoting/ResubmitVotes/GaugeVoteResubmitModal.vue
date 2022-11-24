@@ -83,7 +83,7 @@ const voteButtonDisabled = computed<boolean>(
 );
 const transactionInProgress = computed(
   (): boolean =>
-    voteState.state.value === State.TRANSACTIONINITIALIZED ||
+    voteState.state.value === State.TRANSACTION_INITIALIZED ||
     voteState.state.value === State.CONFIRMING
 );
 const totalAllocationClass = computed(() => ({

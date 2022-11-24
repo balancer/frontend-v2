@@ -24,7 +24,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
 import SubmitVoteBtn from './SubmitVoteBtn.vue';
-import { State, useActionsState } from '@/composables/useActionState';
+import { State, useActionState } from '@/composables/useActionState';
 
 /**
  * TYPES
@@ -59,7 +59,7 @@ const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { veBalBalance } = useVeBal();
-const voteState = useActionsState();
+const voteState = useActionState();
 
 /**
  * STATE
@@ -195,6 +195,7 @@ const voteWarning = computed(
     description: string;
   } | null => {
     if (lpVoteOverLimitWarning.value) return lpVoteOverLimitWarning.value;
+    if (voteState.error.value) return voteState.error.value;
     return null;
   }
 );
@@ -207,14 +208,13 @@ const voteError = computed(
     if (votedToRecentlyWarning.value) return votedToRecentlyWarning.value;
     if (noVeBalWarning.value) return noVeBalWarning.value;
     if (veBalLockTooShortWarning.value) return veBalLockTooShortWarning.value;
-    if (voteState.error.value) return voteState.error.value;
     return null;
   }
 );
 
 const transactionInProgress = computed(
   (): boolean =>
-    voteState.state.value === State.TRANSACTIONINITIALIZED ||
+    voteState.state.value === State.TRANSACTION_INITIALIZED ||
     voteState.state.value === State.CONFIRMING
 );
 
@@ -426,7 +426,9 @@ onMounted(() => {
           validateOn="input"
           :rules="inputRules"
           :disabled="
-            voteInputDisabled || transactionInProgress || !!voteState.receipt
+            voteInputDisabled ||
+            transactionInProgress ||
+            voteState.state.value === State.CONFIRMED
           "
           size="md"
           autoFocus
@@ -453,7 +455,7 @@ onMounted(() => {
           :loading="transactionInProgress"
           class="mt-4"
           :loadingLabel="
-            voteState.state.value === State.IDLE
+            voteState.state.value === State.TRANSACTION_INITIALIZED
               ? $t('veBAL.liquidityMining.popover.actions.vote.loadingLabel')
               : $t('veBAL.liquidityMining.popover.actions.vote.confirming')
           "
