@@ -2,14 +2,14 @@ import { computed, reactive } from 'vue';
 import useGraphQuery, { subgraphs } from '@/composables/queries/useGraphQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import useConfig from '@/composables/useConfig';
-import { isSameAddress } from '@/lib/utils';
+import { bnum, isSameAddress } from '@/lib/utils';
 import useVeBalLockInfoQuery from '@/composables/queries/useVeBalLockInfoQuery';
 import useVotingGauges from '@/composables/useVotingGauges';
 import configs from '@/lib/config';
 import { networkId } from '@/composables/useNetwork';
 import useExpiredGaugesQuery from '@/composables/queries/useExpiredGaugesQuery';
 import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controller.decorator';
-import { isVotingTimeLocked } from '@/composables/useVeBAL';
+import useVeBal, { isVotingTimeLocked } from '@/composables/useVeBAL';
 
 /**
  * TYPES
@@ -33,6 +33,7 @@ export default function useVotingEscrowLocks() {
   const { networkConfig } = useConfig();
   const veBalLockInfoQuery = useVeBalLockInfoQuery();
   const { votingGauges: allVotingGauges } = useVotingGauges();
+  const { veBalBalance } = useVeBal();
 
   const votingEscrowLocksQueryEnabled = computed(() => !!account.value);
   const votingEscrowLocksQuery = useGraphQuery<VotingEscrowLockQueryResponse>(
@@ -75,7 +76,7 @@ export default function useVotingEscrowLocks() {
       allVotingGauges.value.filter(gauge => {
         return (
           // Does the gauge have user votes
-          Number(gauge.userVotes) &&
+          bnum(gauge.userVotes).gt(0) &&
           // Has user received veBAL since they last voted
           gauge.lastUserVoteTime < lastReceivedVebal.value &&
           // Is voting currently not locked
@@ -87,9 +88,13 @@ export default function useVotingEscrowLocks() {
   );
 
   const shouldResubmitVotes = computed<boolean>(
-    () => !!gaugesUsingUnderUtilizedVotingPower.value.length
+    () =>
+      // Does user have any veBAL
+      bnum(veBalBalance.value).gt(0) &&
+      !!gaugesUsingUnderUtilizedVotingPower.value.length
   );
 
+  // Timestamp when user has last received veBAL
   const lastReceivedVebal = computed(
     () =>
       votingEscrowLocks.value?.find(item =>
