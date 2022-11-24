@@ -638,4 +638,11 @@ export const BoostedPoolMock: Pool = {
       },
     },
   ],
+  chainId: 0,
+  poolTypeVersion: 0,
+  protocolYieldFeeCache: '',
+  swapEnabled: false,
+  totalWeight: '',
+  lowerTarget: '',
+  upperTarget: '',
 };

@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
+import useNumbers, { FNumFormats, bpToDec } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
-import { Pool, PoolAPRs } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 /**
  * TYPES
  */
 type Props = {
   pool: Pool;
-  poolApr?: PoolAPRs;
+  poolApr?: AprBreakdown;
 };
 
 /**
@@ -32,11 +33,13 @@ const apr = computed(() => props.pool?.apr || props.poolApr);
 
 const boost = computed((): string => props.pool?.boost || '');
 const hasBoost = computed((): boolean => !!boost.value);
-const stakingAPR = computed((): PoolAPRs['staking'] => apr.value?.staking);
-const minBalAPR = computed((): string => stakingAPR.value?.bal.min || '0');
-const maxBalAPR = computed((): string => stakingAPR.value?.bal.max || '0');
+const stakingAPR = computed(
+  (): AprBreakdown['stakingApr'] | undefined => apr.value?.stakingApr
+);
+const minBalAPR = computed((): number => stakingAPR.value?.min || 0);
+const maxBalAPR = computed((): number => stakingAPR.value?.max || 0);
 const rewardTokensAPR = computed(
-  (): string => stakingAPR.value?.rewards || '0'
+  (): number => apr.value?.rewardAprs.total || 0
 );
 const hasRewardTokens = computed((): boolean =>
   bnum(rewardTokensAPR.value).gt(0)
@@ -63,7 +66,7 @@ const boostedTotalAPR = computed((): string => {
  */
 const unboostedTotalAPR = computed((): string =>
   fNum2(
-    bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString(),
+    bpToDec(bnum(minBalAPR.value).plus(rewardTokensAPR.value).toString()),
     FNumFormats.percent
   )
 );
@@ -80,7 +83,7 @@ const breakdownItems = computed((): Array<any> => {
 </script>
 
 <template>
-  <div>
+  <div data-testid="staking-apr">
     <div v-if="hasBoost">
       <div class="flex items-center">
         {{ boostedTotalAPR }}
@@ -98,7 +101,7 @@ const breakdownItems = computed((): Array<any> => {
           </span>
         </div>
         <template #item="{ item: [label, amount] }">
-          {{ fNum2(amount, FNumFormats.percent) }}
+          {{ fNum2(bpToDec(amount), FNumFormats.percent) }}
           <span class="ml-1 text-xs capitalize text-secondary">
             {{ label }} {{ $t('apr') }}
           </span>

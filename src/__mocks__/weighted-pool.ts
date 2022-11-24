@@ -66,4 +66,11 @@ export const PoolMock: Pool = {
   totalShares: '150501.891977546028526082',
   totalSwapFee: '165820.9454823753843641664971705477',
   totalSwapVolume: '52262349.4122392298543195893618041',
+  chainId: 0,
+  poolTypeVersion: 0,
+  protocolYieldFeeCache: '',
+  swapEnabled: false,
+  totalWeight: '',
+  lowerTarget: '',
+  upperTarget: '',
 };

@@ -1,4 +1,4 @@
-import { Network } from '@balancer-labs/sdk';
+import { Network, AprBreakdown, PoolType } from '@balancer-labs/sdk';
 import { isAddress } from '@ethersproject/address';
 import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
@@ -14,18 +14,17 @@ import {
 } from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
-import {
-  AnyPool,
-  Pool,
-  PoolAPRs,
-  PoolToken,
-  TokenTreePool,
-} from '@/services/pool/types';
-import { PoolType } from '@/services/pool/types';
-import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
-import useNumbers, { FNumFormats, numF } from './useNumbers';
+import {
+  isTestnet,
+  isMainnet,
+  appUrl,
+  getNetworkSlug,
+  isL2,
+} from './useNetwork';
+import useNumbers, { FNumFormats, numF, bpToDec } from './useNumbers';
+import { AnyPool, Pool, PoolToken, TokenTreePool } from '@/services/pool/types';
+import { hasBalEmissions } from '@/services/staking/utils';
 import { uniq, uniqWith, cloneDeep } from 'lodash';
 
 /**
@@ -37,9 +36,7 @@ export function addressFor(poolId: string): string {
 
 export function isLinear(poolType: PoolType): boolean {
   return (
-    poolType === PoolType.AaveLinear ||
-    poolType === PoolType.Linear ||
-    poolType === PoolType.ERC4626Linear
+    poolType === PoolType.AaveLinear || poolType === PoolType.ERC4626Linear
   );
 }
 
@@ -73,9 +70,25 @@ export function isDeep(pool: Pool): boolean {
     '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
     '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a000200000000000000000387', // wstETH/bb-a-USD
     '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b', // dola/bb-a-USD
+    '0xb54b2125b711cd183edd3dd09433439d5396165200000000000000000000075e', // miMATIC/bb-am-USD (polygon)
   ];
 
   return treatAsDeep.includes(pool.id);
+}
+
+export function isBoostedPool(address: string): boolean {
+  const boostedPoolAddresses = [
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd', // bb-a-USD1 (goerli)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2 (goerli)
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d648085', // bb-am-USD (polygon)
+    '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb2', // bb-a-USD1 (mainnet)
+    '0xa13a9247ea42d743238089903570127dda72fe44', // bb-a-USD2 (mainnet)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e', // bb-a-USD2 (goerli)
+    '0x25accb7943fd73dda5e23ba6329085a3c24bfb6a', // wstETH/bb-a-USD
+    '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e64', // dola/bb-a-USD
+  ];
+
+  return includesAddress(boostedPoolAddresses, address);
 }
 
 export function isShallowComposableStable(pool: Pool): boolean {
@@ -140,19 +153,6 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to add or remove tokens from a pool
- */
-export function lpTokensFor(pool: AnyPool): string[] {
-  if (isDeep(pool)) {
-    const mainTokens = pool.mainTokens || [];
-    const wrappedTokens = pool.wrappedTokens || [];
-    return [...mainTokens, ...wrappedTokens];
-  } else {
-    return pool.tokensList || [];
-  }
-}
-
-/**
  * @summary Orders pool token addresses by weight if weighted pool
  * @returns Array of checksum addresses
  */
@@ -205,30 +205,31 @@ export function poolURLFor(
  * If not given boost returns pool absolute max assuming 2.5x boost.
  * Used primarily for sorting tables by the APR column.
  */
-export function absMaxApr(aprs: PoolAPRs, boost?: string): string {
-  if (boost) return aprs.total.staked.calc(boost);
+export function absMaxApr(aprs: AprBreakdown, boost?: string): string {
+  if (boost) {
+    const nonStakingApr = bnum(aprs.swapFees)
+      .plus(aprs.tokenAprs.total)
+      .plus(aprs.rewardAprs.total);
+    const stakingApr = bnum(aprs.stakingApr.min).times(boost).toString();
+    return nonStakingApr.plus(stakingApr).toString();
+  }
 
-  return aprs.total.staked.max;
+  return aprs.max.toString();
 }
 
 /**
  * @summary Returns total APR label, whether range or single value.
  */
-export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
+export function totalAprLabel(aprs: AprBreakdown, boost?: string): string {
   if (boost) {
-    return numF(aprs.total.staked.calc(boost), FNumFormats.percent);
-  } else if (hasBalEmissions(aprs)) {
-    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxAPR = numF(aprs.total.staked.max, FNumFormats.percent);
-    return `${minAPR} - ${maxAPR}`;
-  } else if (aprs.veBal) {
-    const minAPR = numF(aprs.total.staked.min, FNumFormats.percent);
-    const maxValue = bnum(aprs.total.staked.min).plus(aprs.veBal).toString();
-    const maxAPR = numF(maxValue, FNumFormats.percent);
+    return numF(absMaxApr(aprs, boost), FNumFormats.percent);
+  } else if ((hasBalEmissions(aprs) && !isL2.value) || aprs.protocolApr > 0) {
+    const minAPR = numF(bpToDec(aprs.min), FNumFormats.percent);
+    const maxAPR = numF(bpToDec(aprs.max), FNumFormats.percent);
     return `${minAPR} - ${maxAPR}`;
   }
 
-  return numF(aprs.total.staked.min, FNumFormats.percent);
+  return numF(bpToDec(aprs.min), FNumFormats.percent);
 }
 
 /**
@@ -236,6 +237,15 @@ export function totalAprLabel(aprs: PoolAPRs, boost?: string): string {
  */
 export function isVeBalPool(poolId: string): boolean {
   return POOLS.IdsMap?.veBAL === poolId;
+}
+/**
+ * @summary Checks if given token address is BAL 80/20 pool (veBAL)
+ */
+export function isVeBalPoolAddress(address: string): boolean {
+  const veBALPoolAddress = POOLS.IdsMap?.veBAL?.slice(0, 42);
+  if (!veBALPoolAddress) return false;
+
+  return isSameAddress(veBALPoolAddress, address);
 }
 
 interface TokenTreeOpts {
@@ -606,12 +616,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
       )
   );
 
-  const lpTokens = computed(() => {
-    if (!pool.value) return [];
-
-    return lpTokensFor(pool.value);
-  });
-
   return {
     // computed
     isStablePool,
@@ -631,7 +635,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMainnetWstETHPool,
     noInitLiquidityPool,
     hasNonApprovedRateProviders,
-    lpTokens,
     // methods
     isStable,
     isMetaStable,
@@ -643,7 +646,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isTradingHaltable,
     isWeth,
     noInitLiquidity,
-    lpTokensFor,
     isMigratablePool,
     poolWeightsLabel,
     orderedTokenAddresses,

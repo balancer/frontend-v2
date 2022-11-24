@@ -6,14 +6,15 @@ import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { totalAprLabel } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/pools';
-import { Pool, PoolAPRs } from '@/services/pool/types';
+import { Pool } from '@/services/pool/types';
+import { AprBreakdown } from '@balancer-labs/sdk';
 
 /**
  * TYPES
  */
 type Props = {
   pool?: Pool | null;
-  poolApr?: PoolAPRs | null;
+  poolApr: AprBreakdown | null;
   loading?: boolean;
   loadingApr?: boolean;
 };
@@ -50,7 +51,7 @@ const stats = computed(() => {
     {
       id: 'poolValue',
       label: t('poolValue'),
-      value: fNum2(props.pool.totalLiquidity, FNumFormats.fiat),
+      value: fNum2(props.pool.totalLiquidity || '0', FNumFormats.fiat),
       loading: props.loading,
     },
     {
@@ -69,7 +70,7 @@ const stats = computed(() => {
       id: 'apr',
       label: 'APR',
       value:
-        Number(props.poolApr?.total.unstaked || '0') * 100 > APR_THRESHOLD
+        Number(props.poolApr?.min || '0') > APR_THRESHOLD
           ? '-'
           : aprLabel.value,
       loading: props.loadingApr,

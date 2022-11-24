@@ -43,7 +43,6 @@ describe('useNumbers', () => {
     const { fNum, fNum2 } = result;
 
     const testNumbers = [
-      '',
       '-5678',
       '-122.45',
       '-1',
@@ -67,17 +66,28 @@ describe('useNumbers', () => {
       '112124.3791743',
       '1883234',
       '121237821371',
-      'NaN',
     ];
 
+    const badTestNumbers = ['NaN', '-', ''];
+
     it('Should return 0 for an empty string', () => {
-      expect(fNum2('')).toEqual('0');
+      expect(fNum2('')).toEqual('-');
+    });
+
+    it('should return bad inputs as -', () => {
+      badTestNumbers.forEach(testNumber => {
+        const formattedNumber = fNum2(testNumber, {
+          style: 'decimal',
+          maximumFractionDigits: 20,
+          useGrouping: false,
+          fixedFormat: true,
+        });
+        expect(formattedNumber).toEqual('-');
+      });
     });
 
     it('Should not lose any precision with numbers passed as a string', () => {
       testNumbers.forEach(testNumber => {
-        if (testNumber === '') return; // Ignore empty string as that is converted to 0
-        if (testNumber === 'NaN') return; // Ignore NaN as that is converted to 0
         if (Number(testNumber) === 0) return; // Ignore 0 numbers as it will always trim their precision.
         const formattedNumber = fNum2(testNumber, {
           style: 'decimal',

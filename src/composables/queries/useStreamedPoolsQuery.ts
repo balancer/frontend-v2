@@ -1,5 +1,5 @@
 import { flatten } from 'lodash';
-import { computed, Ref, ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 
 import { POOLS } from '@/constants/pools';
 import { forChange } from '@/lib/utils';
@@ -8,11 +8,8 @@ import { PoolDecorator } from '@/services/pool/decorators/pool.decorator';
 import { poolsStoreService } from '@/services/pool/pools-store.service';
 import { Pool } from '@/services/pool/types';
 
-import { lpTokensFor } from '../usePool';
+import { tokenTreeLeafs } from '../usePool';
 import useTokens from '../useTokens';
-import useUserSettings from '../useUserSettings';
-import useGaugesQuery from './useGaugesQuery';
-import { isQueryLoading } from './useQueryHelpers';
 import useQueryStreams from './useQueryStream';
 
 type FilterOptions = {
@@ -48,19 +45,7 @@ export default function useStreamedPoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   filterOptions?: FilterOptions
 ) {
-  const {
-    priceQueryLoading,
-    prices,
-    tokens,
-    injectTokens,
-    dynamicDataLoading,
-  } = useTokens();
-  const { currency } = useUserSettings();
-  const gaugesQuery = useGaugesQuery();
-
-  const decorationEnabled = computed(
-    (): boolean => !priceQueryLoading.value && !isQueryLoading(gaugesQuery)
-  );
+  const { tokens, injectTokens, dynamicDataLoading } = useTokens();
 
   const {
     dataStates,
@@ -87,7 +72,7 @@ export default function useStreamedPoolsQuery(
         const _tokens = flatten(
           pools.value.map(pool => [
             ...pool.tokensList,
-            ...lpTokensFor(pool),
+            ...tokenTreeLeafs(pool.tokens),
             pool.address,
           ])
         );
@@ -98,15 +83,10 @@ export default function useStreamedPoolsQuery(
     },
     decoratePools: {
       waitFor: ['injectTokens.id'],
-      enabled: decorationEnabled,
+      enabled: ref(true),
       queryFn: async (pools: Ref<Pool[]>) => {
         const poolDecorator = new PoolDecorator(pools.value);
-        return poolDecorator.decorate(
-          gaugesQuery.data.value || [],
-          prices.value,
-          currency.value,
-          tokens.value
-        );
+        return poolDecorator.decorate(tokens.value);
       },
     },
   });
