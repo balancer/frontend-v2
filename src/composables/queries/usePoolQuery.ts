@@ -86,6 +86,8 @@ export default function usePoolQuery(
       ...lpTokensFor(decoratedPool),
       decoratedPool.address,
     ]);
+
+    console.log('decoratedPool', decoratedPool);
     return decoratedPool;
   };
 

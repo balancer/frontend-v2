@@ -8,7 +8,7 @@ export interface Pool {
   swapFee: string;
   owner: string;
   factory: string;
-  tokens: PoolToken[];
+  tokens: OnchainPoolToken[];
   tokensList: string[];
   totalLiquidity: string;
   totalShares: string;
@@ -17,7 +17,6 @@ export interface Pool {
   createTime: number;
   name: string;
   symbol: string;
-  onchain?: OnchainPoolData;
   mainTokens?: string[];
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
@@ -28,6 +27,11 @@ export interface Pool {
   apr?: PoolAPRs;
   boost?: string;
   priceRateProviders?: PriceRateProvider[];
+  totalSupply?: string;
+  decimals?: number;
+  linearPools?: Record<Address, LinearPoolData>;
+  tokenRates?: string[];
+  swapEnabled: boolean;
 }
 
 export enum PoolType {
@@ -59,6 +63,18 @@ export interface PoolToken {
   symbol?: string;
   decimals: number;
   token: { pool: TokenTreePool | null };
+}
+
+export interface OnchainPoolToken {
+  address: string;
+  priceRate: string | null;
+  symbol?: string;
+  token: { pool: TokenTreePool | null };
+  balance: string;
+  weight: number;
+  decimals: number;
+  logoURI: string | undefined;
+  name: string;
 }
 
 // PoolToken data from onchain call

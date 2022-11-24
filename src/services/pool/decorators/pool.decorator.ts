@@ -65,7 +65,11 @@ export class PoolDecorator {
       const poolSnapshot = poolSnapshots.find(p => p.id === pool.id);
       const poolService = new this.poolServiceClass(pool);
 
-      poolService.setOnchainData(rawOnchainDataMap[pool.id], tokens);
+      const onchainData = poolService.setOnchainData(
+        rawOnchainDataMap[pool.id],
+        tokens
+      );
+      console.log(onchainData);
       poolService.setFeesSnapshot(poolSnapshot);
       poolService.setVolumeSnapshot(poolSnapshot);
       await poolService.setLinearPools();

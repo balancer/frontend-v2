@@ -175,8 +175,18 @@ export default class PoolService {
         this.pool,
         rawOnchainData,
         tokenMeta
-      );
-      return (this.pool.onchain = onchainData.format());
+      ).format();
+
+      const updatedPool = {
+        ...this.pool,
+        ...onchainData,
+        tokens: this.pool.tokens.map(token => ({
+          ...token,
+          ...onchainData.tokens[token.address],
+        })),
+      };
+      this.pool = updatedPool;
+      return onchainData;
     } catch (e) {
       console.warn(e);
     }
