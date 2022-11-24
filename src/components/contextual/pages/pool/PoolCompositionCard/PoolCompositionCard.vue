@@ -58,13 +58,18 @@ const { upToLargeBreakpoint } = useBreakpoints();
       </div>
     </template>
 
-    <div v-for="token in removeBptFrom(pool).tokens" :key="token.address">
-      <TokenBreakdown
-        :token="token"
-        :padding="4"
-        :isWeighted="isWeighted"
-        :isDeepPool="isDeepPool"
-      />
+    <div class="grid gap-y-4 py-4">
+      <div
+        v-for="token in removeBptFrom(pool).tokens"
+        :key="token.address"
+        class="grid gap-y-4"
+      >
+        <TokenBreakdown
+          :token="token"
+          :isWeighted="isWeighted"
+          :isDeepPool="isDeepPool"
+        />
+      </div>
     </div>
   </BalCard>
 </template>

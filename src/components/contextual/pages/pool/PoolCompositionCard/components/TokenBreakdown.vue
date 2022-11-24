@@ -11,7 +11,7 @@ import { bnum } from '@/lib/utils';
 type Props = {
   token: PoolToken;
   shareOfParentInPool?: number;
-  padding: number;
+  parentLevel: number;
   isWeighted: boolean;
   isDeepPool: boolean;
 };
@@ -20,11 +20,11 @@ type Props = {
  * PROPS
  */
 const props = withDefaults(defineProps<Props>(), {
+  parentLevel: 0,
   shareOfParentInPool: 1,
 });
 
-const { token, shareOfParentInPool, padding, isWeighted, isDeepPool } =
-  toRefs(props);
+const { token, shareOfParentInPool, isWeighted, isDeepPool } = toRefs(props);
 
 /**
  * COMPOSABLES
@@ -40,7 +40,23 @@ const { balanceLabel, fiatLabel, tokenWeightLabel } = useTokenBreakdown(
 /**
  * COMPUTED
  */
-const nestedPadding = computed(() => padding.value + 6);
+// The nested level, the top level being 0, the level below that 1, etc.
+const currentLevel = computed(() => props.parentLevel + 1);
+
+const nestedPaddingClass = computed(() => {
+  switch (currentLevel.value) {
+    case 1:
+      return 'pl-4';
+    case 2:
+      return 'pl-10';
+    case 3:
+      return 'pl-16';
+    case 4:
+      return 'pl-24';
+    default:
+      return 'pl-4';
+  }
+});
 
 const isLeaf = computed((): boolean => !token.value.token.pool);
 
@@ -58,11 +74,10 @@ const shareOfTokenInPool = computed((): number => {
 
 <template>
   <div
-    class="grid px-6 w-full"
     :class="[
+      'grid gap-y-4 px-4 w-full',
       isWeighted ? 'grid-cols-4' : 'grid-cols-3',
-      isDeepPool ? 'p-3' : 'p-4',
-      `pl-4`,
+      nestedPaddingClass,
     ]"
   >
     <BalLink
@@ -100,7 +115,7 @@ const shareOfTokenInPool = computed((): number => {
       :key="nestedToken.address"
       :token="nestedToken"
       :shareOfParentInPool="shareOfTokenInPool"
-      :padding="nestedPadding"
+      :parentLevel="currentLevel"
       :isWeighted="isWeighted"
       :isDeepPool="isDeepPool"
     />
