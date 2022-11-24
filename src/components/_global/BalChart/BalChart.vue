@@ -33,39 +33,28 @@ type AreaStyle = {
 type Props = {
   data: ChartData[];
   chartType: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   onAxisMoved?: undefined | ((value: readonly [string, number]) => void);
   isLoading?: boolean;
   hideYAxis?: boolean;
   hideXAxis?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   xAxisMinInterval?: number;
   showHeader?: boolean;
   needChartValue?: boolean;
   axisLabelFormatter?: AxisLabelFormat;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   color?: string[];
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   hoverColor?: string;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   hoverBorderColor?: string;
   height: number | string;
   showLegend?: boolean;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   legendState?: Dictionary<boolean>;
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   forceResizeTick?: number; // manually uptick this variable to force a resize calculation on the chart
   isLastValueChipVisible?: boolean; // whether to show the little rectangle with the last value of the data
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   customGrid?: echarts.ComposeOption<GridOption>; // provide a custom grid for the chart
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   chartClass?: string; // sets the class for the chart container
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   wrapperClass?: unknown; // sets the class for the element which wraps the chart and the header
   showTooltip?: boolean; // shows the tooltip
   showTooltipLayer?: boolean; // hides tooltip floating layer
   useMinMax?: boolean; // whether to constrain the y-axis based on the min and max values of the data passed in
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   areaStyle?: AreaStyle;
 };
 

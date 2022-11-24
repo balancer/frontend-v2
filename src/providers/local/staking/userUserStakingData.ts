@@ -287,7 +287,7 @@ export default function useUserStakingData(
           poolGaugeAddresses.value.gauges
             .filter(
               gauge =>
-                gauge.id !== poolGaugeAddresses.value.preferentialGauge.id
+                gauge.id !== poolGaugeAddresses.value.preferentialGauge?.id
             )
             .map(async nonPrefGauge => {
               const gauge = new LiquidityGauge(nonPrefGauge.id);
@@ -347,8 +347,6 @@ export default function useUserStakingData(
         `Attempted to get staked shares, however useStaking was initialised without a pool address.`
       );
     }
-
-    if (!poolGaugeAddresses.value?.preferentialGauge?.id) return '0';
 
     // sum balances from all gauges in the pool
     const totalBalance = await poolGaugeAddresses.value.gauges.reduce(

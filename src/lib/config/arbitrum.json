@@ -1,9 +1,10 @@
 {
   "key": "42161",
   "chainId": 42161,
-  "chainName": "Arbitrum One",
-  "name": "Arbitrum One",
+  "chainName": "Arbitrum",
+  "name": "Arbitrum",
   "shortName": "Arbitrum",
+  "slug": "arbitrum",
   "network": "arbitrum-one",
   "unknown": false,
   "rpc": "https://arbitrum-mainnet.infura.io/v3/{{INFURA_KEY}}",
@@ -45,7 +46,7 @@
     "stablePoolFactory": "0x2433477A10FC5d31B9513C638F19eE85CaED53Fd",
     "weth": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     "stETH": "",
-    "wstETH": "",
+    "wstETH": "0x5979d7b546e38e414f7e9822514be443a4800529",
     "lidoRelayer": "",
     "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab",
     "batchRelayer": "0x466262c2a275aB106E54D95B5B04603e12b58cA1",
@@ -58,7 +59,8 @@
     "veBALHelpers": "",
     "feeDistributor": "",
     "feeDistributorDeprecated": "",
-    "faucet": ""
+    "faucet": "",
+    "gaugeRewardsHelper": "0xA0DAbEBAAd1b243BBb243f933013d560819eB66f"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

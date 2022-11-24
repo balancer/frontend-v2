@@ -4,6 +4,8 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from '@ethersproject/providers';
+import { Network } from '@balancer-labs/sdk';
+import { setTag } from '@sentry/browser';
 import axios from 'axios';
 import { computed, reactive, Ref, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,7 +19,7 @@ import tallyLogo from '@/assets/images/connectors/tally.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
-import useFathom from '@/composables/useFathom';
+import useFathom, { Goals, trackGoal } from '@/composables/useFathom';
 import { WALLET_SCREEN_ENDPOINT } from '@/constants/exploits';
 import { lsGet, lsSet } from '@/lib/utils';
 
@@ -68,15 +70,18 @@ type PluginState = {
 };
 type WalletScreenResponse = { is_blocked: boolean };
 
-async function isBlockedAddress(address: string): Promise<boolean | null> {
+export async function isBlockedAddress(
+  address: string
+): Promise<boolean | null> {
   try {
     if (!configService.env.WALLET_SCREENING) return false;
-    const response = await axios.post<WalletScreenResponse>(
-      WALLET_SCREEN_ENDPOINT,
-      {
-        address: address.toLowerCase(),
-      }
+    trackGoal(Goals.WalletScreenRequest);
+
+    const response = await axios.get<WalletScreenResponse>(
+      `${WALLET_SCREEN_ENDPOINT}?address=${address.toLowerCase()}`
     );
+
+    trackGoal(Goals.WalletScreened);
     return response.data.is_blocked;
   } catch {
     return false;
@@ -195,6 +200,15 @@ export default {
           );
         }
         const { account } = await connector.connect();
+
+        setTag('wallet', wallet);
+        const networkMap = {
+          [Network.MAINNET]: 'mainnet',
+          [Network.GOERLI]: 'goerli',
+          [Network.POLYGON]: 'polygon',
+          [Network.ARBITRUM]: 'arbitrum-one',
+        };
+        setTag('network', networkMap[chainId.value]);
 
         // listens to wallet/chain changed and disconnect events
         connector.registerListeners();

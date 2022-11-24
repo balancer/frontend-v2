@@ -17,6 +17,7 @@ import useWithdrawalState from '../composables/useWithdrawalState';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
+import { debounce } from 'lodash';
 
 /**
  * TYPES
@@ -92,13 +93,15 @@ function handleSliderChange(newVal: number): void {
     .times(fractionBasisPoints)
     .div(10000)
     .toFixed(props.pool?.onchain?.decimals || 18);
-}
 
-async function handleSliderEnd(): Promise<void> {
   if (shouldFetchBatchSwap.value) {
-    await props.math.getSwap();
+    delayedExitDataFetch();
   }
 }
+
+const delayedExitDataFetch = debounce(() => {
+  void props.math.fetchExitData();
+}, 500);
 
 /**
  * WATCHERS
@@ -140,7 +143,6 @@ onBeforeMount(() => {
           tooltip="none"
           :disabled="!hasBpt"
           @update:model-value="handleSliderChange"
-          @drag-end="handleSliderEnd"
         />
       </div>
     </div>

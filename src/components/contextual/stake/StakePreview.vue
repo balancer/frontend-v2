@@ -21,7 +21,7 @@ import { TransactionActionInfo } from '@/types/transactions';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
 
-export type StakeAction = 'stake' | 'unstake';
+export type StakeAction = 'stake' | 'unstake' | 'restake';
 type Props = {
   pool: AnyPool;
   action: StakeAction;
@@ -49,9 +49,16 @@ const {
   stakeBPT,
   unstakeBPT,
 } = useStaking();
+
+// Staked or unstaked shares depending on action type.
+const currentShares =
+  props.action === 'stake'
+    ? balanceFor(getAddress(props.pool.address))
+    : stakedSharesForProvidedPool.value;
+
 const { getTokenApprovalActionsForSpender } = useTokenApprovalActions(
   [props.pool.address],
-  ref([balanceFor(props.pool.address).toString()])
+  ref([currentShares])
 );
 
 const stakeAction = {
@@ -67,7 +74,10 @@ const unstakeAction = {
   loadingLabel: t('staking.unstaking'),
   confirmingLabel: t('confirming'),
   action: () => txWithNotification(unstakeBPT),
-  stepTooltip: t('staking.unstakeTooltip'),
+  stepTooltip:
+    props.action === 'restake'
+      ? t('staking.restakeTooltip')
+      : t('staking.unstakeTooltip'),
 };
 
 /**
@@ -77,11 +87,6 @@ const isLoadingApprovalsForGauge = ref(false);
 const isActionConfirmed = ref(false);
 const confirmationReceipt = ref<TransactionReceipt>();
 const stakeActions = ref<TransactionActionInfo[]>([]);
-const shareBalanceToDisplay = ref(
-  props.action === 'unstake'
-    ? stakedSharesForProvidedPool.value
-    : balanceFor(props.pool.address)
-);
 
 /**
  * WATCHERS
@@ -89,8 +94,10 @@ const shareBalanceToDisplay = ref(
 watch(
   () => props.action,
   () => {
-    stakeActions.value =
-      props.action === 'stake' ? [stakeAction] : [unstakeAction];
+    if (props.action === 'stake') stakeActions.value = [stakeAction];
+    if (props.action === 'unstake') stakeActions.value = [unstakeAction];
+    if (props.action === 'restake')
+      stakeActions.value = [unstakeAction, stakeAction];
   },
   { immediate: true }
 );
@@ -98,16 +105,10 @@ watch(
 /* COMPUTED */
 const assetRowWidth = computed(() => (props.pool.tokensList.length * 32) / 1.5);
 
-const numSharesToModify = ref(
-  props.action === 'stake'
-    ? balanceFor(getAddress(props.pool.address))
-    : stakedSharesForProvidedPool.value
-);
-
 const fiatValueOfModifiedShares = ref(
   bnum(props.pool.totalLiquidity)
     .div(props.pool.totalShares)
-    .times(numSharesToModify.value)
+    .times(currentShares)
     .toString()
 );
 
@@ -125,7 +126,7 @@ const totalUserPoolSharePct = ref(
  * LIFECYCLE
  */
 onBeforeMount(async () => {
-  await loadApprovalsForGauge();
+  if (props.action !== 'unstake') await loadApprovalsForGauge();
 });
 
 /** METHODS */
@@ -188,7 +189,7 @@ function handleClose() {
     <BalCard shadow="none" noPad class="py-2 px-4">
       <BalStack horizontal justify="between" align="center">
         <BalStack vertical spacing="none">
-          <h5>{{ fNum2(shareBalanceToDisplay) }} {{ $t('lpTokens') }}</h5>
+          <h5>{{ fNum2(currentShares) }} {{ $t('lpTokens') }}</h5>
           <span class="text-secondary">
             {{ getToken(pool.address).symbol }}
           </span>

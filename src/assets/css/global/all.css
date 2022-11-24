@@ -1,9 +1,9 @@
-@import './fonts.css';
-@import './typography.css';
-@import './backgrounds.css';
-@import './animations.css';
-@import './social-icons.css';
-@import './nprogress.css';
+@import url('./fonts.css');
+@import url('./typography.css');
+@import url('./backgrounds.css');
+@import url('./animations.css');
+@import url('./social-icons.css');
+@import url('./nprogress.css');
 
 html,
 body {

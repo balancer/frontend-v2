@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
 
 import BalChipNew from '@/components/chips/BalChipNew.vue';
+
 import { PRETTY_DATE_FORMAT } from '@/components/forms/lock_actions/constants';
 import { POOL_MIGRATIONS_MAP } from '@/components/forms/pool_actions/MigrateForm/constants';
 import APRTooltip from '@/components/tooltips/APRTooltip/APRTooltip.vue';
@@ -14,6 +15,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useDarkMode from '@/composables/useDarkMode';
 import useFathom from '@/composables/useFathom';
 import useNumbers from '@/composables/useNumbers';
+import useNetwork from '@/composables/useNetwork';
 import {
   absMaxApr,
   isMigratablePool,
@@ -28,6 +30,7 @@ import { POOLS } from '@/constants/pools';
 
 import PoolsTableActionsCell from './PoolsTableActionsCell.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
+import PoolMigrationWarningTooltip from '@/components/pool/PoolMigrationWarningTooltip.vue';
 
 /**
  * TYPES
@@ -76,6 +79,7 @@ const { t } = useI18n();
 const { trackGoal, Goals } = useFathom();
 const { darkMode } = useDarkMode();
 const { upToLargeBreakpoint, upToMediumBreakpoint } = useBreakpoints();
+const { networkSlug } = useNetwork();
 
 const wideCompositionWidth = computed(() =>
   upToMediumBreakpoint.value ? 450 : undefined
@@ -208,9 +212,13 @@ const visibleColumns = computed(() =>
 /**
  * METHODS
  */
-function handleRowClick(pool: PoolWithShares) {
+function handleRowClick(pool: PoolWithShares, inNewTab?: boolean) {
   trackGoal(Goals.ClickPoolsTableRow);
-  router.push({ name: 'pool', params: { id: pool.id } });
+  const route = router.resolve({
+    name: 'pool',
+    params: { id: pool.id, networkSlug },
+  });
+  inNewTab ? window.open(route.href) : router.push(route);
 }
 
 function navigateToPoolMigration(pool: PoolWithShares) {
@@ -258,10 +266,6 @@ function iconAddresses(pool: PoolWithShares) {
       :skeletonClass="skeletonClass"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :link="{
-        to: 'pool',
-        getParams: pool => ({ id: pool.id || '' }),
-      }"
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       :initialState="{
@@ -300,6 +304,7 @@ function iconAddresses(pool: PoolWithShares) {
             />
           </div>
           <BalChipNew v-if="pool?.isNew" class="mt-1" />
+          <PoolMigrationWarningTooltip :pool="pool" />
         </div>
       </template>
       <template #volumeCell="pool">

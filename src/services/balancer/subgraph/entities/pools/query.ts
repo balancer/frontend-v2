@@ -12,6 +12,54 @@ const defaultArgs = {
   },
 };
 
+const tokenAttrs = {
+  address: true,
+  balance: true,
+  weight: true,
+  priceRate: true,
+  symbol: true,
+  decimals: true,
+};
+
+const poolAttrs = {
+  id: true,
+  poolType: true,
+  mainIndex: true,
+};
+
+// Nested token tree attributes, 3 levels deep.
+const tokenTreeAttrs = {
+  ...tokenAttrs,
+  token: {
+    pool: {
+      ...poolAttrs,
+      tokens: {
+        ...tokenAttrs,
+        token: {
+          pool: {
+            ...poolAttrs,
+            tokens: {
+              ...tokenAttrs,
+              token: {
+                pool: {
+                  ...poolAttrs,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
+const priceRateProviderAttrs = {
+  address: true,
+  token: {
+    address: true,
+  },
+};
+
 const defaultAttrs = {
   id: true,
   address: true,
@@ -29,18 +77,8 @@ const defaultAttrs = {
   swapEnabled: true,
   symbol: true,
   name: true,
-  tokens: {
-    address: true,
-    balance: true,
-    weight: true,
-    priceRate: true,
-    symbol: true,
-    token: {
-      pool: {
-        poolType: true,
-      },
-    },
-  },
+  priceRateProviders: priceRateProviderAttrs,
+  tokens: tokenTreeAttrs,
 };
 
 export default (args = {}, attrs = {}) => ({

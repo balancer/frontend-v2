@@ -27,6 +27,7 @@ export interface Pool {
   feesSnapshot?: string;
   apr?: PoolAPRs;
   boost?: string;
+  priceRateProviders?: PriceRateProvider[];
 }
 
 export enum PoolType {
@@ -38,6 +39,16 @@ export enum PoolType {
   ComposableStable = 'ComposableStable',
   LiquidityBootstrapping = 'LiquidityBootstrapping',
   Managed = 'Managed',
+  AaveLinear = 'AaveLinear',
+  Linear = 'Linear',
+  ERC4626Linear = 'ERC4626Linear',
+}
+
+export interface TokenTreePool {
+  id: string;
+  poolType: PoolType;
+  mainIndex: number;
+  tokens?: PoolToken[];
 }
 
 export interface PoolToken {
@@ -46,7 +57,8 @@ export interface PoolToken {
   weight: string;
   priceRate: string | null;
   symbol?: string;
-  token: { pool: { poolType: null | PoolType } | null };
+  decimals: number;
+  token: { pool: TokenTreePool | null };
 }
 
 // PoolToken data from onchain call
@@ -218,4 +230,15 @@ export interface PoolSnapshot {
   liquidity: string;
 }
 
+export interface PriceRateProvider {
+  address: string;
+  token: PoolToken;
+}
+
 export type PoolSnapshots = Record<number, PoolSnapshot>;
+
+export type BalDetailsTableData = {
+  title: string;
+  value: string;
+  link?: string;
+};

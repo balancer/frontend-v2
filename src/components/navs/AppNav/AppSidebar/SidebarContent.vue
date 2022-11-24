@@ -9,6 +9,8 @@ import useConfig from '@/composables/useConfig';
 import useDarkMode from '@/composables/useDarkMode';
 import { sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
+import { Goals, trackGoal } from '@/composables/useFathom';
 
 /**
  * PROPS & EMITS
@@ -22,6 +24,7 @@ const { darkMode, toggleDarkMode } = useDarkMode();
 const { blockNumber } = useWeb3();
 const { networkConfig } = useConfig();
 const { version } = useApp();
+const { networkSlug } = useNetwork();
 const { t } = useI18n();
 const router = useRouter();
 
@@ -31,11 +34,19 @@ const router = useRouter();
 const blockIcon = ref<HTMLDivElement>();
 
 const navLinks = [
-  { label: t('invest'), path: '/' },
-  { label: t('trade'), path: '/trade' },
-  { label: t('portfolio'), path: '/portfolio' },
-  { label: 'veBAL', path: '/vebal' },
-  { label: t('claim'), path: '/claim' },
+  { label: t('pool'), path: '/', goal: Goals.ClickNavPools },
+  { label: t('swap'), path: `/${networkSlug}/trade`, goal: Goals.ClickNavSwap },
+  {
+    label: t('claim'),
+    path: `/${networkSlug}/claim`,
+    goal: Goals.ClickNavClaim,
+  },
+  {
+    label: t('portfolio'),
+    path: `/${networkSlug}/portfolio`,
+    goal: Goals.ClickNavPortfolio,
+  },
+  { label: 'veBAL', path: `/${networkSlug}/vebal`, goal: Goals.ClickNavVebal },
 ];
 
 const ecosystemLinks = [
@@ -65,7 +76,8 @@ const socialLinks = [
 /**
  * METHODS
  */
-async function navTo(path: string) {
+async function navTo(path: string, goal: string) {
+  trackGoal(goal);
   router.push(path);
   emit('close');
 }
@@ -93,7 +105,7 @@ watch(blockNumber, async () => {
         v-for="link in navLinks"
         :key="link.label"
         class="side-bar-link"
-        @click="navTo(link.path)"
+        @click="navTo(link.path, link.goal)"
       >
         {{ link.label }}
       </div>

@@ -12,8 +12,6 @@ import { bnum } from '@/lib/utils';
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
-import { match0xService } from '@/services/gnosis/match0x.service';
-import { paraSwapService } from '@/services/gnosis/paraswap.service';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import {
   FeeInformation,
@@ -30,6 +28,8 @@ import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import useTransactions from '../useTransactions';
 import { TradeQuote } from './types';
+import { captureException } from '@sentry/browser';
+import { Goals, trackGoal } from '../useFathom';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -90,14 +90,6 @@ function getPriceQuotes(params: PriceQuoteParams) {
   return Promise.allSettled([
     tryPromiseWithTimeout(
       gnosisProtocolService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-    tryPromiseWithTimeout(
-      match0xService.getPriceQuote(params),
-      PRICE_QUOTE_TIMEOUT
-    ),
-    tryPromiseWithTimeout(
-      paraSwapService.getPriceQuote(params),
       PRICE_QUOTE_TIMEOUT
     ),
   ]);
@@ -266,7 +258,9 @@ export default function useGnosis({
         successCallback();
       }
       confirming.value = false;
+      trackGoal(Goals.GnosisSwap);
     } catch (e) {
+      captureException(e);
       state.submissionError = (e as Error).message;
       confirming.value = false;
     }

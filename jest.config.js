@@ -1,32 +1,22 @@
 module.exports = {
-  preset: 'ts-jest',
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   globals: {
     'ts-jest': {
       isolatedModules: true,
     },
   },
-  projects: [
-    {
-      preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
-      roots: ['<rootDir>/src/'],
-      setupFiles: ['./src/jest/jest.setup.jsdom.ts'],
-      setupFilesAfterEnv: [
-        './src/jest/jest.setup-suite.jsdom.ts',
-        './src/jest/jest.setup-suite.ts',
-      ],
-      displayName: 'dom',
-      testEnvironment: 'jsdom',
-      testMatch: null,
-      testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$',
-    },
-    {
-      preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
-      roots: ['<rootDir>/src/'],
-      setupFilesAfterEnv: ['./src/jest/jest.setup-suite.ts'],
-      displayName: 'node',
-      testEnvironment: 'node',
-      testMatch: null,
-      testRegex: '(\\.|/)(test|spec.node)\\.[jt]sx?$',
-    },
+  roots: ['<rootDir>/src/'],
+  setupFiles: ['./src/jest/jest.setup.jsdom.ts'],
+  setupFilesAfterEnv: [
+    './src/jest/jest.setup-suite.jsdom.ts',
+    './src/jest/jest.setup-suite.ts',
   ],
+  displayName: 'dom',
+  testEnvironment: 'jsdom',
+  testMatch: null,
+  testRegex: '(\\.|/)(test|spec)\\.[jt]sx?$',
+  moduleNameMapper: {
+    '/public/data/tokenlists/tokens-5.json':
+      '<rootDir>/src/tests/tokenlists/tokens-5.json',
+  },
 };

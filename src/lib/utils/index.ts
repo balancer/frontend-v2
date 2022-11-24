@@ -176,3 +176,7 @@ export function findByAddress<T>(
 ): T | undefined {
   return items.find(item => isSameAddress(item[key], address));
 }
+
+export function removeAddress(address: string, addresses: string[]): string[] {
+  return addresses.filter(a => !isSameAddress(a, address));
+}

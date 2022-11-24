@@ -18,8 +18,6 @@ type Props = {
   // changing variables which can be used to
   // determine whether to re-render the height
   // of an accordion section
-
-  // eslint-disable-next-line vue/require-default-prop -- TODO: Define default prop
   dependencies?: unknown;
   showSectionBorder?: boolean;
   reCalcKey?: number;
@@ -47,7 +45,7 @@ const totalHeight = ref(0);
 const easing = 'spring(0.2, 150, 18, 0)';
 
 async function toggleSection(section: string, collapse = true) {
-  const _section = props.sections.find(s => (s.id = section));
+  const _section = props.sections.find(s => s.id === section);
   if (_section?.isDisabled) return;
 
   const collapseCurrentSection = activeSection.value === section && collapse;

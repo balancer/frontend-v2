@@ -43,9 +43,11 @@ import { TokenInfo } from '@/types/TokenList';
 import useEthers from '../useEthers';
 import useFathom from '../useFathom';
 import useNumbers, { FNumFormats } from '../useNumbers';
+import { isMainnet } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
+import { captureException } from '@sentry/browser';
 
 type SorState = {
   validationErrors: {
@@ -134,7 +136,7 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { fNum2 } = useNumbers();
+  const { fNum2, toFiat } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor, getToken } = useTokens();
 
@@ -182,6 +184,11 @@ export default function useSor({
     if (sorConfig.handleAmountsOnFetchPools) {
       handleAmountChange();
     }
+  }
+
+  function trackSwapEvent() {
+    trackGoal(Goals.BalancerSwap);
+    if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
   }
 
   async function updateTradeAmounts(): Promise<void> {
@@ -370,11 +377,13 @@ export default function useSor({
           formatFixed(swapReturn.returnAmount, tokenOutDecimals)
         );
 
-        returnAmtNormalised = await adjustedPiAmount(
-          returnAmtNormalised,
-          tokenOutAddress,
-          tokenOutDecimals
-        );
+        if (isMainnet.value) {
+          returnAmtNormalised = await adjustedPiAmount(
+            returnAmtNormalised,
+            tokenOutAddress,
+            tokenOutDecimals
+          );
+        }
 
         const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
         const priceImpactCalc = effectivePrice
@@ -489,11 +498,17 @@ export default function useSor({
       },
     });
 
+    const tradeUSDValue =
+      toFiat(tokenInAmountInput.value, tokenInAddressInput.value) || '0';
+
     txListener(tx, {
       onTxConfirmed: () => {
+        trackGoal(
+          Goals.Swapped,
+          bnum(tradeUSDValue).times(100).toNumber() || 0
+        );
         trading.value = false;
         latestTxHash.value = tx.hash;
-        trackGoal(Goals.Swapped);
       },
       onTxFailed: () => {
         trading.value = false;
@@ -531,8 +546,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -553,8 +570,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -579,8 +598,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -602,8 +623,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;

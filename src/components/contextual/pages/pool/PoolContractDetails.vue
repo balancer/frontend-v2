@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { POOLS } from '@/constants/pools';
 import { shortenLabel } from '@/lib/utils';
 import { Pool, PoolType } from '@/services/pool/types';
@@ -13,22 +12,18 @@ import { useI18n } from 'vue-i18n';
  */
 type Props = {
   pool: Pool;
-  loading: boolean;
 };
 
 /**
  * PROPS
  */
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-});
+const props = defineProps<Props>();
 
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
 const { explorerLinks: explorer } = useWeb3();
-const { fNum2 } = useNumbers();
 
 function formSwapFeesHint(owner: string): string {
   if (owner === POOLS.ZeroAddress) {
@@ -45,8 +40,16 @@ function formSwapFeesHint(owner: string): string {
  * COMPUTED
  */
 const data = computed(() => {
-  const { poolType, address, symbol, owner, createTime, swapFee, name } =
-    props.pool;
+  const {
+    poolType,
+    address,
+    symbol,
+    owner,
+    createTime,
+    swapFee,
+    name,
+    onchain,
+  } = props.pool;
 
   return [
     {
@@ -65,11 +68,15 @@ const data = computed(() => {
       title: t('poolType'),
       value: poolType,
     },
+    onchain?.amp && Number(onchain?.amp)
+      ? {
+          title: t('ampFactor.title'),
+          value: onchain.amp,
+        }
+      : null,
     {
       title: t('swapFees'),
-      value: `${fNum2(swapFee, FNumFormats.percent)} (${formSwapFeesHint(
-        owner
-      )})`,
+      value: `${Number(swapFee) * 100}% (${formSwapFeesHint(owner)})`,
     },
     {
       title: t('poolManager'),

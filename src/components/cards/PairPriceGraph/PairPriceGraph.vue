@@ -47,7 +47,13 @@ async function getPairPriceData(
   if (inverse) {
     [_inputAsset, _outputAsset] = [_outputAsset, _inputAsset];
   }
-  const aggregateBy = days === 1 ? 'hour' : 'day';
+
+  /**
+   * @description
+   * due to coingecko docs if we query from 1 to 90 days from current time it returns hourly data
+   * @see https://www.coingecko.com/en/api/documentation
+   */
+  const aggregateBy = days <= 90 ? 'hour' : 'day';
   const getInputAssetData = coingeckoService.prices.getTokensHistorical(
     [_inputAsset],
     days,
@@ -253,7 +259,7 @@ const chartGrid = computed(() => {
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
-        'h-64': !isModal,
+        'h-56': !isModal,
         'h-112': isModal,
       }"
     />

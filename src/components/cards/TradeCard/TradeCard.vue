@@ -200,7 +200,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum2 } = useNumbers();
-    const { appNetworkConfig } = useWeb3();
+    const { appNetworkConfig, isMismatchedNetwork } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
@@ -209,6 +209,8 @@ export default defineComponent({
       tokenOutAmount,
       setTokenInAddress,
       setTokenOutAddress,
+      setTokenInAmount,
+      setTokenOutAmount,
       setInitialized,
     } = useTradeState();
     // DATA
@@ -248,12 +250,18 @@ export default defineComponent({
         !dismissedErrors.value.highPriceImpact
     );
     const tradeDisabled = computed(() => {
+      const hasMismatchedNetwork = isMismatchedNetwork.value;
       const hasAmountsError = !tokenInAmount.value || !tokenOutAmount.value;
       const hasGnosisErrors =
         trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
-      return hasAmountsError || hasGnosisErrors || hasBalancerErrors;
+      return (
+        hasAmountsError ||
+        hasGnosisErrors ||
+        hasBalancerErrors ||
+        hasMismatchedNetwork
+      );
     });
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
@@ -262,7 +270,7 @@ export default defineComponent({
       if (trading.wrapType.value === WrapType.Unwrap) {
         return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
-      return t('trade');
+      return t('swap');
     });
     const pools = computed<(Pool | SubgraphPoolBase)[]>(
       // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
@@ -271,6 +279,12 @@ export default defineComponent({
       }
     );
     const error = computed(() => {
+      if (isMismatchedNetwork.value) {
+        return {
+          header: t('switchNetwork'),
+          body: t('networkMismatch', [appNetworkConfig.name]),
+        };
+      }
       if (trading.isBalancerTrade.value && !trading.isLoading.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
@@ -368,6 +382,15 @@ export default defineComponent({
       }
       setTokenInAddress(assetIn || store.state.trade.inputAsset);
       setTokenOutAddress(assetOut || store.state.trade.outputAsset);
+
+      let assetInAmount = router.currentRoute.value.query?.inAmount as string;
+      let assetOutAmount = router.currentRoute.value.query?.outAmount as string;
+      if (assetInAmount) {
+        setTokenInAmount(assetInAmount);
+      }
+      if (!assetInAmount && assetOutAmount) {
+        setTokenOutAmount(assetOutAmount);
+      }
     }
     function switchToWETH() {
       tokenInAddress.value = appNetworkConfig.addresses.weth;

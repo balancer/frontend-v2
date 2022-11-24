@@ -34,9 +34,11 @@ export default class ConfigService {
         this.getNetworkConfig(networkId.value).keys.alchemy ||
         'MISSING_KEY',
       GRAPH_KEY:
-        process.env.VUE_APP_GRAPH_KEY ||
-        this.getNetworkConfig(networkId.value).keys.graph ||
-        'MISSING_KEY',
+        process.env.VUE_APP_ENV === 'development'
+          ? process.env.VUE_APP_GRAPH_KEY_DEV || 'MISSING_KEY'
+          : process.env.VUE_APP_GRAPH_KEY ||
+            this.getNetworkConfig(networkId.value).keys.graph ||
+            'MISSING_KEY',
       INFURA_PROJECT_ID:
         process.env.VUE_APP_INFURA_PROJECT_ID ||
         this.getNetworkConfig(networkId.value).keys.infura ||
@@ -55,6 +57,15 @@ export default class ConfigService {
     if (!Object.keys(configs).includes(key?.toString()))
       throw new Error(`No config for network key: ${key}`);
     return configs[key];
+  }
+
+  public getNetworkRpc(network: Network): string {
+    const networkConfig = this.getNetworkConfig(network);
+
+    return template(networkConfig.rpc, {
+      INFURA_KEY: networkConfig.keys.infura,
+      ALCHEMY_KEY: networkConfig.keys.alchemy,
+    });
   }
 
   public get rpc(): string {

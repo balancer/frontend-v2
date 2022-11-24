@@ -4,6 +4,7 @@
   "chainName": "Optimism",
   "name": "Optimism Mainnet",
   "shortName": "Optimism",
+  "slug": "optimism",
   "network": "optimism",
   "unknown": false,
   "rpc": "https://mainnet.optimism.io",
@@ -12,11 +13,11 @@
   "blockTime": 13,
   "explorer": "https://optimistic.etherscan.io/",
   "explorerName": "The Optimism Explorer",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-optimism",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-v2-optimism",
   "poolsUrlV2": "",
   "subgraphs": {
     "main": [
-      "https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-optimism"
+      "https://api.thegraph.com/subgraphs/name/beethovenxfi/beethovenx-v2-optimism"
     ],
     "aave": "",
     "gauge": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-gauges-optimism",

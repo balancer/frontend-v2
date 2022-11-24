@@ -63,11 +63,12 @@ export default function useWithdrawMath(
   /**
    * STATE
    */
-  const propBptIn = ref<string>('');
+  const propBptIn = ref<string>('0');
   const tokenOutAmount = ref<string>('');
 
   const loadingData = ref(false);
   const queryBptIn = ref<string>('');
+  const evmGuideBptIn = ref<string>('0');
   const batchSwap = ref<BatchSwapOut | null>(null);
   const batchRelayerSwap = ref<any | null>(null);
 
@@ -78,7 +79,7 @@ export default function useWithdrawMath(
   /**
    * COMPOSABLES
    */
-  const { isWalletReady, account, getProvider } = useWeb3();
+  const { isWalletReady, getSigner, account } = useWeb3();
   const { toFiat, fNum2 } = useNumbers();
   const {
     tokens: allTokens,
@@ -176,22 +177,34 @@ export default function useWithdrawMath(
     bnum(tokenOutAmount.value).gt(tokenOutPoolBalance.value)
   );
 
+  // To account for exact maths required in BPTInForExactTokensOut cases.
+  const shouldUseBptBuffer = computed(
+    (): boolean => isProportional.value && isShallowComposableStablePool.value
+  );
+
+  const bptBuffer = computed((): number =>
+    shouldUseBptBuffer.value ? SHALLOW_COMPOSABLE_STABLE_BUFFER : 0
+  );
+
   /**
    * Proportional pool token amounts out given BPT in.
    * Only relevant for exit calls, not batchSwap or batch relayer exits.
    */
   const proportionalPoolTokenAmounts = computed((): string[] => {
-    const shouldUseBuffer =
-      isProportional.value &&
-      isShallowComposableStablePool.value &&
-      propBptIn.value === bptBalance.value;
-    const buffer = shouldUseBuffer ? SHALLOW_COMPOSABLE_STABLE_BUFFER : 0;
+    let fixedRatioOverride;
+    if (shouldUseBptBuffer.value && bnum(evmGuideBptIn.value).gt(0)) {
+      fixedRatioOverride = {
+        bps: 1000, // 10%
+        value: evmGuideBptIn.value,
+        buffer: bptBuffer.value,
+      };
+    }
 
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
       0,
       'send',
-      buffer
+      fixedRatioOverride
     );
     return receive;
   });
@@ -255,8 +268,12 @@ export default function useWithdrawMath(
    * The BPT value to be used for the withdrawal transaction without accounting for slippage.
    */
   const fullBPTIn = computed((): string => {
-    if (isProportional.value)
-      return parseUnits(propBptIn.value, poolDecimals.value).toString();
+    if (isProportional.value) {
+      const _bpt = bnum(propBptIn.value)
+        .minus(formatUnits(bptBuffer.value), 18)
+        .toString();
+      return parseUnits(_bpt, poolDecimals.value).toString();
+    }
     if (!exactOut.value)
       return parseUnits(absMaxBpt.value, poolDecimals.value).toString(); // Single asset max withdrawal
 
@@ -462,10 +479,11 @@ export default function useWithdrawMath(
    * METHODS
    */
   async function initMath(): Promise<void> {
+    await getBptOutGuide();
     propBptIn.value = bptBalance.value;
 
     if (shouldFetchBatchSwap.value) {
-      swapPromises.value.push(getSwap);
+      swapPromises.value.push(fetchExitData);
       if (!processingSwaps.value) processSwaps();
     }
   }
@@ -586,8 +604,7 @@ export default function useWithdrawMath(
   async function getSingleAssetMaxOut(): Promise<void> {
     if (isShallowComposableStablePool.value) {
       const result = await poolExchange.queryExit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut.value.map(() => '0'),
         tokensOut.value,
         bptBalance.value,
@@ -646,43 +663,48 @@ export default function useWithdrawMath(
    * High level function that uses withdrawal state to
    * decide what swap should be fetched and sets it.
    */
-  async function getSwap(): Promise<void> {
-    if (!isDeepPool.value) return;
+  async function fetchExitData(): Promise<void> {
+    if (!isDeepPool.value && !isShallowComposableStablePool.value) return;
 
-    if (isProportional.value) {
-      batchSwap.value = await getBatchSwap();
-      if (shouldUseBatchRelayer.value) {
-        batchRelayerSwap.value = await getBatchRelayerSwap();
-      }
-    } else if (exactOut.value) {
-      const amountsOut = fullAmountsScaled.value.filter(amount =>
-        bnum(amount).gt(0)
-      );
-      batchSwap.value = await getBatchSwap(
-        amountsOut,
-        [tokenOut.value],
-        SwapType.SwapExactOut
-      );
-
-      if (shouldUseBatchRelayer.value) {
-        batchRelayerSwap.value = await getBatchRelayerSwap(
-          amountsOut.map(amount => amount.toString()),
-          [batchRelayerTokenOut.value],
-          true
-        );
-      }
+    if (isShallowComposableStablePool.value) {
+      await getQueryBptIn();
     } else {
-      // Single asset max out case
-      batchSwap.value = await getBatchSwap(
-        [bptBalanceScaled.value],
-        [tokenOut.value]
-      );
-
-      if (shouldUseBatchRelayer.value) {
-        batchRelayerSwap.value = await getBatchRelayerSwap(
-          [bptBalanceScaled.value.toString()],
-          [batchRelayerTokenOut.value]
+      // Is deep pool, use batch swap or relayer.
+      if (isProportional.value) {
+        batchSwap.value = await getBatchSwap();
+        if (shouldUseBatchRelayer.value) {
+          batchRelayerSwap.value = await getBatchRelayerSwap();
+        }
+      } else if (exactOut.value) {
+        const amountsOut = fullAmountsScaled.value.filter(amount =>
+          bnum(amount).gt(0)
         );
+        batchSwap.value = await getBatchSwap(
+          amountsOut,
+          [tokenOut.value],
+          SwapType.SwapExactOut
+        );
+
+        if (shouldUseBatchRelayer.value) {
+          batchRelayerSwap.value = await getBatchRelayerSwap(
+            amountsOut.map(amount => amount.toString()),
+            [batchRelayerTokenOut.value],
+            true
+          );
+        }
+      } else {
+        // Single asset max out case
+        batchSwap.value = await getBatchSwap(
+          [bptBalanceScaled.value],
+          [tokenOut.value]
+        );
+
+        if (shouldUseBatchRelayer.value) {
+          batchRelayerSwap.value = await getBatchRelayerSwap(
+            [bptBalanceScaled.value.toString()],
+            [batchRelayerTokenOut.value]
+          );
+        }
       }
     }
   }
@@ -695,8 +717,7 @@ export default function useWithdrawMath(
     try {
       loadingData.value = true;
       const result = await poolExchange.queryExit(
-        getProvider(),
-        account.value,
+        getSigner(),
         amountsOut.value,
         tokensOut.value,
         normalizedBptIn,
@@ -707,6 +728,38 @@ export default function useWithdrawMath(
       loadingData.value = false;
     } catch (error) {
       console.error('Failed to fetch queryJoin', error);
+    }
+  }
+
+  /**
+   * Fetches BPT out given 10% of pool token balances in. This value can then be
+   * used as a guide for proportional exits in the shallow ComposableStable case.
+   */
+  async function getBptOutGuide() {
+    if (!isShallowComposableStablePool.value) return;
+
+    const bptIn = pool.value.onchain?.totalSupply || '0';
+    const amountsOut = Object.values(pool.value.onchain?.tokens || []).map(t =>
+      formatUnits(
+        parseUnits(t.balance, t.decimals).mul(1000).div(10000),
+        t.decimals
+      )
+    );
+
+    try {
+      loadingData.value = true;
+      const result = await poolExchange.queryExit(
+        getSigner(),
+        amountsOut,
+        tokensOut.value,
+        bptIn,
+        null,
+        false
+      );
+      evmGuideBptIn.value = result.bptIn.toString();
+      loadingData.value = false;
+    } catch (error) {
+      console.error('Failed to fetch queryExit', error);
     }
   }
 
@@ -738,8 +791,7 @@ export default function useWithdrawMath(
        * need to refetch the swap to get the required BPT in.
        */
       if (!isProportional.value) {
-        await getQueryBptIn();
-        swapPromises.value.push(getSwap);
+        swapPromises.value.push(fetchExitData);
         if (!processingSwaps.value) processSwaps();
       }
     }
@@ -757,6 +809,7 @@ export default function useWithdrawMath(
     bptBalance,
     hasBpt,
     fiatTotalLabel,
+    fiatTotal,
     priceImpact,
     highPriceImpact,
     proportionalAmounts,
@@ -775,6 +828,6 @@ export default function useWithdrawMath(
     // methods
     initMath,
     resetMath,
-    getSwap,
+    fetchExitData,
   };
 }

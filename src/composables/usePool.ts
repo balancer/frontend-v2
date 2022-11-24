@@ -4,22 +4,37 @@ import { getAddress } from 'ethers/lib/utils';
 import { computed, Ref } from 'vue';
 
 import { POOL_MIGRATIONS } from '@/components/forms/pool_actions/MigrateForm/constants';
+import { ALLOWED_RATE_PROVIDERS } from '@/constants/rateProviders';
 import { POOLS } from '@/constants/pools';
-import { bnum, includesAddress, isSameAddress } from '@/lib/utils';
+import {
+  bnum,
+  includesAddress,
+  isSameAddress,
+  removeAddress,
+} from '@/lib/utils';
 import { includesWstEth } from '@/lib/utils/balancer/lido';
 import { configService } from '@/services/config/config.service';
 import { AnyPool, Pool, PoolAPRs, PoolToken } from '@/services/pool/types';
 import { PoolType } from '@/services/pool/types';
 import { hasBalEmissions } from '@/services/staking/utils';
 
-import { isTestnet, urlFor } from './useNetwork';
+import { isTestnet, isMainnet, appUrl, getNetworkSlug } from './useNetwork';
 import useNumbers, { FNumFormats, numF } from './useNumbers';
+import { uniq } from 'lodash';
 
 /**
  * METHODS
  */
 export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42));
+}
+
+export function isLinear(poolType: PoolType): boolean {
+  return (
+    poolType === PoolType.AaveLinear ||
+    poolType === PoolType.Linear ||
+    poolType === PoolType.ERC4626Linear
+  );
 }
 
 export function isStable(poolType: PoolType): boolean {
@@ -44,6 +59,8 @@ export function isComposableStableLike(poolType: PoolType): boolean {
 
 export function isDeep(pool: Pool): boolean {
   const treatAsDeep = [
+    '0x13acd41c585d7ebb4a9460f7c8f50be60dc080cd00000000000000000000005f', // bb-a-USD1 (goerli)
+    '0x3d5981bdd8d3e49eb7bbdc1d2b156a3ee019c18e0000000000000000000001a7', // bb-a-USD2 (goerli)
     '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b', // bb-am-USD (polygon)
     '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe', // bb-a-USD1 (mainnet)
     '0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d', // bb-a-USD2 (mainnet)
@@ -114,7 +131,7 @@ export function preMintedBptIndex(pool: Pool): number | void {
 }
 
 /**
- * @returns tokens that can be used to invest or withdraw from a pool
+ * @returns tokens that can be used to add or remove tokens from a pool
  */
 export function lpTokensFor(pool: AnyPool): string[] {
   if (isDeep(pool)) {
@@ -170,7 +187,7 @@ export function poolURLFor(
     return `https://app.xave.finance/#/pool`;
   }
 
-  return `${urlFor(network)}/pool/${poolId}`;
+  return `${appUrl()}/${getNetworkSlug(network)}/pool/${poolId}`;
 }
 
 /**
@@ -213,13 +230,95 @@ export function isVeBalPool(poolId: string): boolean {
 }
 
 /**
- * @summary Remove pre-minted pool token address from tokensList
+ * Removes pre-minted pool token from tokensList.
+ *
+ * @param {Pool} pool - Pool to get tokensList from.
+ * @returns tokensList excluding pre-minted BPT address.
  */
-export function removePreMintedBPT(pool: Pool): Pool {
-  pool.tokensList = pool.tokensList.filter(
-    address => !isSameAddress(address, pool.address)
-  );
+export function tokensExcludingBpt(pool: Pool): string[] {
+  return removeAddress(pool.address, pool.tokensList);
+}
+
+/**
+ * Removes pre-minted pool token address from tokensList and returns modified pool.
+ *
+ * @param {Pool} pool - Pool to remove BPT from.
+ * @returns {Pool} modified pool.
+ */
+export function removeBptFrom(pool: Pool): Pool {
+  pool.tokensList = tokensExcludingBpt(pool);
   return pool;
+}
+
+interface TokenTreeOpts {
+  includeLinearUnwrapped?: boolean;
+}
+
+/**
+ * Parse token tree and extract all token addresses.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
+ * @returns {string[]} Array of token addresses in tree.
+ */
+export function tokenTreeNodes(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): string[] {
+  const addresses: string[] = [];
+
+  for (const token of tokenTree) {
+    addresses.push(token.address);
+    if (token.token.pool?.tokens) {
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
+        addresses.push(
+          token.token.pool.tokens[token.token.pool.mainIndex].address
+        );
+      } else {
+        const nestedTokens = tokenTreeNodes(token.token.pool?.tokens, options);
+        addresses.push(...nestedTokens);
+      }
+    }
+  }
+
+  return uniq(addresses);
+}
+
+/**
+ * Parse token tree and extract all leaf token addresses.
+ *
+ * @param {PoolToken[]} tokenTree - A pool's token tree.
+ * @param {TokenTreeOpts} options
+ * @returns {string[]} Array of token addresses in tree.
+ */
+export function tokenTreeLeafs(
+  tokenTree: PoolToken[],
+  options: TokenTreeOpts = { includeLinearUnwrapped: false }
+): string[] {
+  const addresses: string[] = [];
+
+  for (const token of tokenTree) {
+    if (token.token.pool?.tokens) {
+      if (
+        !options.includeLinearUnwrapped &&
+        isLinear(token.token.pool.poolType)
+      ) {
+        addresses.push(
+          token.token.pool.tokens[token.token.pool.mainIndex].address
+        );
+      } else {
+        const nestedTokens = tokenTreeLeafs(token.token.pool.tokens, options);
+        addresses.push(...removeAddress(token.address, nestedTokens));
+      }
+    } else if (!token.token.pool?.poolType) {
+      addresses.push(token.address);
+    }
+  }
+
+  return uniq(addresses);
 }
 
 /**
@@ -333,11 +432,24 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWethPool = computed(
     (): boolean => !!pool.value && isWeth(pool.value)
   );
-  const isWstETHPool = computed(
-    (): boolean => !!pool.value && includesWstEth(pool.value.tokensList)
+  const isMainnetWstETHPool = computed(
+    (): boolean =>
+      !!pool.value && includesWstEth(pool.value.tokensList) && isMainnet.value
   );
   const noInitLiquidityPool = computed(
     () => !!pool.value && noInitLiquidity(pool.value)
+  );
+
+  // pool is "Weighted" and some of the rate providers are not on our approved list
+  const hasNonApprovedRateProviders = computed(
+    () =>
+      pool.value &&
+      isWeighted(pool.value.poolType) &&
+      !pool.value?.priceRateProviders?.every(
+        provider =>
+          ALLOWED_RATE_PROVIDERS['*'][provider.address] ||
+          ALLOWED_RATE_PROVIDERS[provider.token?.address]?.[provider.address]
+      )
   );
 
   const lpTokens = computed(() => {
@@ -362,8 +474,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isLiquidityBootstrappingPool,
     managedPoolWithTradingHalted,
     isWethPool,
-    isWstETHPool,
+    isMainnetWstETHPool,
     noInitLiquidityPool,
+    hasNonApprovedRateProviders,
     lpTokens,
     // methods
     isStable,
