@@ -68,6 +68,7 @@ const shareOfTokenInPool = computed((): number => {
 
   return bnum(token.value?.balance || '0')
     .div(token.value.token.pool?.totalShares || 1)
+    .times(props.shareOfParentInPool)
     .toNumber();
 });
 </script>
