@@ -135,6 +135,7 @@ const fiatTotalOut = computed((): string =>
 function handleClose(): void {
   if (investmentConfirmed.value) {
     resetAmounts();
+    investmentConfirmed.value = false;
   }
   emit('close');
 }
