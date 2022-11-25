@@ -103,7 +103,7 @@ const provider = (props: Props) => {
   const { toFiat } = useNumbers();
   const { slippageBsp } = useUserSettings();
   const { getSigner } = useWeb3();
-  const { txState, txInProgress } = useTxState();
+  const { txState, txInProgress, resetTxState } = useTxState();
   const relayerApproval = useRelayerApproval(Relayer.BATCH_V4);
   const { relayerSignature, signRelayerAction } = useSignRelayerApproval(
     Relayer.BATCH_V4
@@ -355,6 +355,7 @@ const provider = (props: Props) => {
     addTokensIn,
     resetAmounts,
     join,
+    resetTxState,
 
     // queries
     queryJoinQuery,
