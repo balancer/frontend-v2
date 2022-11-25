@@ -244,6 +244,7 @@ const provider = (props: Props) => {
   function resetQueryJoinState() {
     bptOut.value = '0';
     priceImpact.value = 0;
+    queryJoinQuery.remove.value();
   }
 
   /**
@@ -258,6 +259,8 @@ const provider = (props: Props) => {
     }
 
     try {
+      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+
       const output = await joinPoolService.queryJoin({
         amountsIn: amountsIn.value,
         tokensIn: tokensIn.value,
@@ -280,6 +283,8 @@ const provider = (props: Props) => {
   async function join(): Promise<TransactionResponse> {
     try {
       txError.value = '';
+      joinPoolService.setJoinHandler(isSingleAssetJoin.value);
+
       return joinPoolService.join({
         amountsIn: amountsIn.value,
         tokensIn: tokensIn.value,
