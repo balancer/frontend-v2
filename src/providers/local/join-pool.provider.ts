@@ -259,7 +259,7 @@ const provider = (props: Props) => {
 
     try {
       const output = await joinPoolService.queryJoin({
-        amountsIn: amountsIn.value,
+        amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         prices: prices.value,
         signer: getSigner(),
@@ -281,7 +281,7 @@ const provider = (props: Props) => {
     try {
       txError.value = '';
       return joinPoolService.join({
-        amountsIn: amountsIn.value,
+        amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         prices: prices.value,
         signer: getSigner(),
