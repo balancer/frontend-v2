@@ -484,6 +484,7 @@ async function getGaugeInfo(
         address,
         poolId,
         network,
+        isKilled,
         addedTimestamp,
         relativeWeightCap,
       }) => {
@@ -500,6 +501,7 @@ async function getGaugeInfo(
         return {
           address,
           network,
+          isKilled,
           relativeWeightCap,
           addedTimestamp,
           pool,
