@@ -24,7 +24,7 @@ import { VotingGaugeWithVotes } from '@/services/balancer/gauges/gauge-controlle
 import { gaugeControllerService } from '@/services/contracts/gauge-controller.service';
 import { WalletError } from '@/types';
 import SubmitVoteBtn from './SubmitVoteBtn.vue';
-import { State, useActionState } from '@/composables/useActionState';
+import useActionState, { State } from '@/composables/useActionState';
 
 /**
  * TYPES

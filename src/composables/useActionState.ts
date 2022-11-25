@@ -15,7 +15,7 @@ interface SuccessParams {
   receipt: TransactionReceipt;
 }
 
-export function useActionState() {
+export default function useActionState() {
   const state = ref<State>(State.IDLE);
   const confirmedAt = ref<string>('');
   const receipt = ref<TransactionReceipt | null>(null);

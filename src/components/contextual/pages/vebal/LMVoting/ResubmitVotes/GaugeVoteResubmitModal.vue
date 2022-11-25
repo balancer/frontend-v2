@@ -15,7 +15,7 @@ import useVotingGauges from '@/composables/useVotingGauges';
 import VoteInput from './VoteInput.vue';
 import SubmitVoteBtn from '../SubmitVoteBtn.vue';
 import { POOLS } from '@/constants/pools';
-import { State, useActionsState } from '@/composables/useActionState';
+import useActionState, { State } from '@/composables/useActionState';
 
 /**
  * PROPS & EMITS
@@ -29,7 +29,7 @@ const emit = defineEmits<{
  */
 const { gaugesUsingUnderUtilizedVotingPower } = useVotingEscrowLocks();
 const { votingGauges, refetch: refetchVotingGauges } = useVotingGauges();
-const voteState = useActionsState();
+const voteState = useActionState();
 const { t } = useI18n();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
