@@ -392,6 +392,7 @@ const POOLS_POLYGON: Pools = {
       '0x9e0a3a9b5a4e0b6dc299a56ef19002f23842be8d000000000000000000000862', // 2mxn
       '0x05f21bacc4fd8590d1eaca9830a64b66a733316c00000000000000000000087e', // tetuQI
       '0x02d2e2d7a89d6c5cb3681cfcb6f7dac02a55eda400000000000000000000088f', // csMatic
+      '0xe22483774bd8611be2ad2f4194078dac9159f4ba0000000000000000000008f0', // 2BRL
     ],
   },
   Investment: {
@@ -444,7 +445,12 @@ const POOLS_POLYGON: Pools = {
       '0x4973f591784d9c94052a6c3ebd553fcd37bb0e5500020000000000000000087f',
     ],
   },
-  Metadata: {},
+  Metadata: {
+    '0x48e6b98ef6329f8f0a30ebb8c7c960330d64808500000000000000000000075b': {
+      name: 'Balancer Boosted Aave USD (Polygon)',
+      hasIcon: true,
+    },
+  },
 };
 
 const POOLS_ARBITRUM: Pools = {

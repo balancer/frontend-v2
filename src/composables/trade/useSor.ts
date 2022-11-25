@@ -47,6 +47,7 @@ import { isMainnet } from '../useNetwork';
 import useTokens from '../useTokens';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import { TradeQuote } from './types';
+import { captureException } from '@sentry/browser';
 
 type SorState = {
   validationErrors: {
@@ -183,6 +184,11 @@ export default function useSor({
     if (sorConfig.handleAmountsOnFetchPools) {
       handleAmountChange();
     }
+  }
+
+  function trackSwapEvent() {
+    trackGoal(Goals.BalancerSwap);
+    if (isMainnet.value) trackGoal(Goals.BalancerSwapMainnet);
   }
 
   async function updateTradeAmounts(): Promise<void> {
@@ -540,8 +546,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -562,8 +570,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -588,8 +598,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
@@ -611,8 +623,10 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
+        trackSwapEvent();
       } catch (e) {
         console.log(e);
+        captureException(e);
         state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;

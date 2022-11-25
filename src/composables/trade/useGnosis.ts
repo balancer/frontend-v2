@@ -28,6 +28,8 @@ import useNumbers, { FNumFormats } from '../useNumbers';
 import useTokens from '../useTokens';
 import useTransactions from '../useTransactions';
 import { TradeQuote } from './types';
+import { captureException } from '@sentry/browser';
+import { Goals, trackGoal } from '../useFathom';
 
 const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
@@ -256,7 +258,9 @@ export default function useGnosis({
         successCallback();
       }
       confirming.value = false;
+      trackGoal(Goals.GnosisSwap);
     } catch (e) {
+      captureException(e);
       state.submissionError = (e as Error).message;
       confirming.value = false;
     }

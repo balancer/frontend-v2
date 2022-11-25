@@ -10,7 +10,7 @@ import {
 
 type Props = {
   columns: ColumnDefinition<any>[];
-  onRowClick?: (data: any) => void;
+  onRowClick?: (data: any, inNewTab?: boolean) => void;
   data: Ref<any>;
   link?: {
     to: string;
@@ -24,9 +24,9 @@ type Props = {
 
 const props = defineProps<Props>();
 
-function handleRowClick(data: Data) {
+function handleRowClick(data: Data, inNewTab = false) {
   if (props.link?.to) return;
-  props.onRowClick && props.onRowClick(data);
+  props.onRowClick && props.onRowClick(data, inNewTab);
 }
 
 // Need a method for horizontal stickiness as we need to
@@ -49,7 +49,8 @@ function getHorizontalStickyClass(index: number) {
         'border-b dark:border-gray-700': pinned,
       },
     ]"
-    @click="handleRowClick(data)"
+    @click.exact="handleRowClick(data)"
+    @click.meta="handleRowClick(data, true)"
   >
     <td
       v-for="(column, columnIndex) in columns"
