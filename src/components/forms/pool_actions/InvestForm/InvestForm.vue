@@ -13,9 +13,9 @@ import useTokens from '@/composables/useTokens';
 import { LOW_LIQUIDITY_THRESHOLD } from '@/constants/poolLiquidity';
 import {
   bnum,
-  selectByAddress,
   indexOfAddress,
   isSameAddress,
+  findByAddress,
 } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import StakingProvider from '@/providers/local/staking/staking.provider';
@@ -141,12 +141,14 @@ function tokenWeight(address: string): number {
 
   if (isSameAddress(address, nativeAsset.address)) {
     return (
-      selectByAddress(props.pool.tokens, wrappedNativeAsset.value.address)
-        ?.weight || 1
+      Number(
+        findByAddress(props.pool.tokens, wrappedNativeAsset.value.address)
+          ?.weight
+      ) || 1
     );
   }
 
-  return selectByAddress(props.pool.tokens, address)?.weight || 1;
+  return Number(findByAddress(props.pool.tokens, address)?.weight) || 1;
 }
 
 function propAmountFor(index: number): string {

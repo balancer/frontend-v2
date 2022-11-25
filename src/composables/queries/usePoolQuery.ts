@@ -87,7 +87,6 @@ export default function usePoolQuery(
       decoratedPool.address,
     ]);
 
-    console.log('decoratedPool', decoratedPool);
     return decoratedPool;
   };
 

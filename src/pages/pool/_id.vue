@@ -152,8 +152,8 @@ const missingPrices = computed(() => {
 const titleTokens = computed(() => {
   if (!pool.value || !pool.value.tokens) return [];
 
-  return Object.entries(pool.value.tokens).sort(
-    ([, a]: any[], [, b]: any[]) => b.weight - a.weight
+  return [...pool.value.tokens].sort(
+    (a, b) => Number(b.weight) - Number(a.weight)
   );
 });
 
@@ -225,11 +225,11 @@ watch(poolQuery.error, () => {
                 :loading="loadingPool"
                 :loadingApr="loadingApr"
               />
-              <ApyVisionPoolLink
+              <!-- <ApyVisionPoolLink
                 v-if="!loadingPool && pool"
                 :poolId="pool.id"
                 :titleTokens="titleTokens"
-              />
+              /> -->
             </div>
             <div class="mb-4">
               <h4 class="px-4 lg:px-0 mb-4" v-text="$t('poolComposition')" />

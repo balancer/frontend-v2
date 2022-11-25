@@ -4,7 +4,7 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import * as SDK from '@georgeroman/balancer-v2-pools';
 import OldBigNumber from 'bignumber.js';
 
-import { bnum, selectByAddress, isSameAddress } from '@/lib/utils';
+import { bnum, isSameAddress, findByAddress } from '@/lib/utils';
 
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
@@ -115,7 +115,7 @@ export default class Stable {
     // pre-minted BPT.
     const tokenOutAddress = this.calc.pool.value.tokensList[tokenIndex];
     const tokenOutDecimals =
-      selectByAddress(this.calc.poolTokens, tokenOutAddress)?.decimals || 18;
+      findByAddress(this.calc.poolTokens, tokenOutAddress)?.decimals || 18;
     const tokenOutPriceRate =
       this.calc.pool.value.tokens.find(t =>
         isSameAddress(t.address, tokenOutAddress)

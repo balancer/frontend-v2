@@ -5,21 +5,17 @@ import { isStableLike, isWeightedLike, isDeep } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum, isSameAddress } from '@/lib/utils';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { AnyPool, OnchainTokenData, PoolToken } from '@/services/pool/types';
+import { AnyPool, OnchainPoolToken, PoolToken } from '@/services/pool/types';
 import { TokenInfoMap } from '@/types/TokenList';
 
-interface OnchainTokenInfo extends OnchainTokenData {
-  address: string;
-}
-
 export default class LiquidityConcern {
-  poolTokens: OnchainTokenInfo[] | PoolToken[];
+  poolTokens: OnchainPoolToken[];
 
   constructor(
     public readonly pool: AnyPool,
     private readonly poolType = pool.poolType
   ) {
-    this.poolTokens = this.onchainPoolTokens || this.pool.tokens;
+    this.poolTokens = this.pool.tokens;
   }
 
   public calcTotal(
@@ -45,26 +41,11 @@ export default class LiquidityConcern {
     return Object.keys(this.poolTokens).length > 0;
   }
 
-  private get onchainPoolTokens(): OnchainTokenInfo[] | null {
-    if (this.pool.onchain) {
-      const tokenMap = this.pool.tokens;
-      const addresses = Object.keys(tokenMap);
-      const tokens = Object.values(tokenMap);
-      return tokens.map<OnchainTokenInfo>(
-        (token: OnchainTokenData, i: number) => ({
-          ...token,
-          address: addresses[i],
-        })
-      );
-    }
-    return null;
-  }
-
   public calcWeightedTotal(
     prices: TokenPrices,
     currency: FiatCurrency
   ): string {
-    const weights = this.poolTokens.map<number>(token => token.weight);
+    const weights = this.poolTokens.map<number>(token => Number(token.weight));
     const totalWeight = weights.reduce(
       (total, weight) => total + Number(weight),
       0

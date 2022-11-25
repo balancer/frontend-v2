@@ -185,7 +185,7 @@ export default class PoolService {
           ...onchainData.tokens[token.address],
           weight: token.weight,
         })),
-      };
+      } as Pool;
       this.pool = updatedPool;
       return onchainData;
     } catch (e) {

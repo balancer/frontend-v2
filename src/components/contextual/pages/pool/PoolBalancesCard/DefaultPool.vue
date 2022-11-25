@@ -72,6 +72,7 @@ import { shortenLabel } from '@/lib/utils';
 import { Pool } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import { ColumnDefinition } from '@/components/_global/BalTable/types';
+
 export default defineComponent({
   props: {
     pool: {
@@ -101,8 +102,7 @@ export default defineComponent({
      */
     const tableData = computed(() => {
       if (!pool.value || props.loading) return [];
-      const onchainTokens = pool.value?.tokens || [];
-      return Object.keys(onchainTokens).map((address, index) => ({
+      return pool.value.tokens.map(({ address }, index) => ({
         address,
         index,
       }));
