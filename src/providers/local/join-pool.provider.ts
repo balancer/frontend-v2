@@ -262,7 +262,7 @@ const provider = (props: Props) => {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
 
       const output = await joinPoolService.queryJoin({
-        amountsIn: amountsIn.value,
+        amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         prices: prices.value,
         signer: getSigner(),
@@ -286,7 +286,7 @@ const provider = (props: Props) => {
       joinPoolService.setJoinHandler(isSingleAssetJoin.value);
 
       return joinPoolService.join({
-        amountsIn: amountsIn.value,
+        amountsIn: amountsInWithValue.value,
         tokensIn: tokensIn.value,
         prices: prices.value,
         signer: getSigner(),
