@@ -32,6 +32,7 @@
     "types": ["node", "webpack-env", "vitest/globals"],
     "paths": {
       "@/*": ["src/*"],
+      "@tests/*": ["tests/*"],
       // Stubbing react types
       // https://github.com/johnsoncodehk/volar/discussions/592#discussioncomment-2163786
       "react": ["src/types/empty-stub.d.ts"],

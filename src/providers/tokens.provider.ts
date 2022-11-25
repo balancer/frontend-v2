@@ -112,8 +112,13 @@ export default {
      * COMPOSABLES
      */
     const { networkConfig } = useConfig();
-    const { allTokenLists, activeTokenLists, balancerTokenLists } =
-      useTokenLists();
+    const {
+      tokensListPromise,
+      allTokenLists,
+      activeTokenLists,
+      balancerTokenLists,
+    } = useTokenLists();
+
     const { currency } = useUserSettings();
 
     /**
@@ -289,6 +294,9 @@ export default {
         address => !includesAddress(existingAddresses, address)
       );
       if (injectable.length === 0) return;
+
+      //Wait for dynamic token list import to be resolved
+      await tokensListPromise;
 
       const newTokens = await tokenService.metadata.get(
         injectable,

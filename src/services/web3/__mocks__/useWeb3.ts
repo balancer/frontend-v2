@@ -13,5 +13,6 @@ export default function useWeb3Mock() {
     account: {
       value: AddressZero,
     },
+    isWalletReady: () => true,
   };
 }

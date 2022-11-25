@@ -3,7 +3,7 @@ import {
   computed,
   ComputedRef,
   InjectionKey,
-  onMounted,
+  onBeforeMount,
   provide,
   reactive,
   ref,
@@ -25,6 +25,7 @@ export interface TokenListsState {
 
 export interface TokenListsProviderResponse {
   activeListKeys: Ref<string[]>;
+  tokensListPromise: Promise<any>;
   allTokenLists: Ref<TokenListMap>;
   activeTokenLists: ComputedRef<TokenListMap>;
   defaultTokenList: ComputedRef<TokenList>;
@@ -53,16 +54,12 @@ export default {
     });
 
     const allTokenLists = ref({});
-    onMounted(async () => {
-      try {
-        const module = await import(
-          `@/assets/data/tokenlists/tokens-${networkId.value}.json`
-        );
-        allTokenLists.value = module.default;
-      } catch (error) {
-        console.error('Failed to fetch tokenlists', error);
-        throw error;
-      }
+    const tokensListPromise = import(
+      `@/assets/data/tokenlists/tokens-${networkId.value}.json`
+    );
+    onBeforeMount(async () => {
+      const module = await tokensListPromise;
+      allTokenLists.value = module.default;
     });
 
     /**
@@ -141,6 +138,7 @@ export default {
       // methods
       toggleTokenList,
       isActiveList,
+      tokensListPromise,
     });
 
     return () => {

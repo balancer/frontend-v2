@@ -9,6 +9,9 @@ const chainIdHandler = (req, res, ctx) => {
     if (data[0].method === 'eth_chainId') {
       return res(ctx.json([MAINNET]));
     }
+    if (data[0].method === 'net_version') {
+      return res(ctx.json([MAINNET]));
+    }
 
     console.warn('Unhandled chain id request with payload: ', data);
   });
@@ -56,6 +59,19 @@ export const handlers = [
           ],
         })
       );
+    }
+  ),
+
+  rest.get(
+    'https://api.coingecko.com/api/v3/simple/price*',
+    (req, res, ctx) => {
+      return res(ctx.json({}));
+    }
+  ),
+  rest.get(
+    'https://api.coingecko.com/api/v3/simple/token_price/ethereum',
+    (req, res, ctx) => {
+      return res(ctx.json({}));
     }
   ),
 
