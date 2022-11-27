@@ -97,17 +97,13 @@ onBeforeMount(() => {
 /**
  * WATCHERS
  */
-watch(
-  [isSingleAssetJoin, poolTokensWithBalance],
-  ([isSingleAsset, newpoolTokensWithBalance]) => {
-    console.log({ isSingleAsset, newpoolTokensWithBalance });
-    // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
-    // only if preview modal is not open
-    if (!showInvestPreview.value) {
-      initializeTokensForm(isSingleAsset);
-    }
+watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
+  // Initialize token form if token balances change (ie. After investing, transaction confirmed or when account changes)
+  // only if preview modal is not open
+  if (!showInvestPreview.value) {
+    initializeTokensForm(isSingleAsset);
   }
-);
+});
 </script>
 
 <template>
