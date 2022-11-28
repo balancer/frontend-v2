@@ -25,14 +25,14 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * COMPOSABLES
  */
-const { isComposableStableLikePool } = usePool(toRef(props, 'pool'));
+const { isDeepPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 </script>
 
 <template>
   <InvestmentTransactions :pool="pool" :loading="loading" />
 
   <TradeTransactions
-    v-if="!isComposableStableLikePool"
+    v-if="!isStablePhantomPool && !isDeepPool"
     :pool="pool"
     :loading="loading"
   />

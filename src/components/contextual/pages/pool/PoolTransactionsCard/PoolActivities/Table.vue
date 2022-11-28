@@ -10,8 +10,9 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { bnum } from '@/lib/utils';
-import { PoolActivity, PoolActivityType } from '@/services/pool/types';
+import { Pool, PoolActivity, PoolActivityType } from '@/services/pool/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { preMintedBptIndex, tokensExcludingBpt } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -35,6 +36,7 @@ type ActivityRow = {
 
 type Props = {
   tokens: string[];
+  pool: Pool;
   poolActivities: PoolActivity[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -108,8 +110,14 @@ const activityRows = computed<ActivityRow[]>(() =>
   props.isLoading
     ? []
     : props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
+        const poolTokenItselfIndex = preMintedBptIndex(props.pool);
+
+        const amountExcludedPoolTokenItself = amounts.filter(
+          (amount, index) => index !== poolTokenItselfIndex
+        );
+
         const isJoin = type === 'Join';
-        const value = getJoinExitValue(amounts);
+        const value = getJoinExitValue(amountExcludedPoolTokenItself);
 
         return {
           label: isJoin ? t('addTokens') : t('withdraw.label'),
@@ -122,7 +130,7 @@ const activityRows = computed<ActivityRow[]>(() =>
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
           type,
-          tokenAmounts: getJoinExitDetails(amounts),
+          tokenAmounts: getJoinExitDetails(amountExcludedPoolTokenItself),
         };
       })
 );
@@ -135,7 +143,7 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
 
   for (let i = 0; i < amounts.length; i++) {
     const amount = amounts[i];
-    const address = getAddress(props.tokens[i]);
+    const address = getAddress(tokensExcludingBpt(props.pool)[i]);
     const token = getToken(address);
     const price = priceFor(token?.address);
     const amountNumber = Math.abs(parseFloat(amount));
@@ -149,8 +157,8 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
 }
 
 function getJoinExitDetails(amounts: PoolActivity['amounts']) {
-  return amounts.map((amount, index) => {
-    const address = getAddress(props.tokens[index]);
+  return amounts.map((amount, i) => {
+    const address = getAddress(tokensExcludingBpt(props.pool)[i]);
     const token = getToken(address);
     const symbol = token ? token.symbol : address;
     const amountNumber = parseFloat(amount);
