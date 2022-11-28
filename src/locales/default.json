@@ -116,6 +116,13 @@
       "claim": "Token earnings from liquidity mining accumulate every block and can be claimed at any time. Some pools offer multiple token incentives (not just BAL). Additionally, veBAL holders also get a share of protocol revenue, in both bb-a-USD and BAL."
     }
   },
+  "claimPage": {
+    "tips": {
+      "BalIncentives": "Incentives for LPs who stake in eligible pools (based on the previous week's voting). This doesn't include swap fees or intrinsic yield from certain yield bearing tokens which accumulate into LP positions automatically.",
+      "ProtocolAndVebal": "Additional incentives for veBAL holders: For locking in the B-80BAL-20WETH pool (based on the previous week's voting), and their share of protocol revenue.",
+      "OtherIncentives": "Incentives from third parties who want to further incentivize liquidity on top of any BAL liquidity incentives."
+    }
+  },
   "claimAll": "Claim all",
   "claimBAL": "Claim $BAL for",
   "claiming": "Claiming...",
@@ -404,6 +411,7 @@
   "highRiskPool": "This is a higher-risk pool that contains one or more unlisted tokens. A liquidity pool is only as good as its weakest token! If a token were blacklisted, infinitely minted, frozen, or exploited in any other way, the value of this pool could go to 0. Balancer Foundation is never liable for losses incurred through using our UI or the Balancer protocol. Be careful, and do your own research!",
   "home": "Home",
   "hourAbbrev": "h",
+  "incentives": "incentives",
   "incentiveToken": "Incentive token",
   "inclXInVeBal": "{0} in veBAL",
   "initialBPT": "Initial BPT",
@@ -583,7 +591,7 @@
   "optimizedPrefilled": "Optimized amounts have been pre-filled",
   "oops": "Oops",
   "oracleWeightedPool": "Oracle Weighted Pool",
-  "otherTokenEarnings": "Other token earnings",
+  "otherTokenIncentives": "Other token incentives",
   "overview": "Overview",
   "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every swap that utilizes the liquidity in this pool. Dynamic swap fees are controlled by the Pool Owner.",
   "payload": "Payload",
@@ -720,7 +728,7 @@
   "proportionalSuggestion": "Proportional suggestion",
   "proportionalWithdrawal": "Proportional withdrawal",
   "protocolFees": "Protocol fees",
-  "protocolEarnings": "Protocol & veBAL earnings",
+  "protocolIncentives": "Protocol & veBAL incentives",
   "rank": "Rank (1{0})",
   "receipt": "Receipt",
   "receive": "Receive",
