@@ -2,6 +2,7 @@
   {
     "address": "0xe42382D005A620FaaA1B82543C9c04ED79Db03bA",
     "network": 137,
+    "isKilled": false,
     "addedTimestamp": 1663017781,
     "relativeWeightCap": "null",
     "pool": {

@@ -8,6 +8,7 @@ import ALL_VOTING_GAUGES from '../../public/data/voting-gauges.json';
 export type VotingGauge = {
   address: string;
   network: Network;
+  isKilled: boolean;
   addedTimestamp: number;
   relativeWeightCap: string;
   pool: {
