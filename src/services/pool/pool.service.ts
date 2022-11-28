@@ -147,10 +147,11 @@ export default class PoolService {
   }
 
   public setFeesSnapshot(poolSnapshot: Pool | undefined): string {
-    if (!poolSnapshot) return '0';
+    let snapshotFees = '0';
+    if (poolSnapshot) snapshotFees = poolSnapshot.totalSwapFee;
 
     const feesSnapshot = bnum(this.pool.totalSwapFee)
-      .minus(poolSnapshot.totalSwapFee)
+      .minus(snapshotFees)
       .toString();
 
     return (this.pool.feesSnapshot = feesSnapshot);
