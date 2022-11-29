@@ -46,7 +46,7 @@ const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 const { veBalTokenInfo } = useVeBal();
 const { isWalletReady, startConnectWithInjectedProvider, isMismatchedNetwork } =
   useWeb3();
-const { wrappedNativeAsset } = useTokens();
+const { wrappedNativeAsset, nativeAsset } = useTokens();
 const {
   isLoadingQuery,
   isSingleAssetJoin,
@@ -134,7 +134,11 @@ watch([isSingleAssetJoin, poolTokensWithBalance], ([isSingleAsset]) => {
       :name="amountIn.address"
       class="mb-4"
       :fixedToken="!isSingleAssetJoin"
-      :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+      :excludedTokens="[
+        veBalTokenInfo?.address,
+        pool.address,
+        nativeAsset.address,
+      ]"
     />
 
     <MissingPoolTokensAlert
