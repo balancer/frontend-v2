@@ -9,8 +9,10 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { configService } from '@/services/config/config.service';
 
+import { vaultService } from '@/services/contracts/vault.service';
+import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import SwapService, { SwapToken, SwapTokenType } from './swap.service';
-import vaultService from '@/services/contracts/vault.service';
+import { setUserAddress } from '../web3/__mocks__/web3.service';
 
 vi.mock('@/lib/utils/balancer/lido');
 vi.mock('@/services/rpc-provider/rpc-provider.service');
@@ -18,7 +20,7 @@ vi.mock('@/services/contracts/vault.service');
 vi.mock('@/services/contracts/lido-relayer.service');
 vi.mock('@/services/web3/web3.service');
 
-describe.skip('swap.service', () => {
+describe('swap.service', () => {
   const tokens: Record<string, SwapToken> = {};
   let service;
   const PoolIdETHUSDC =
@@ -29,9 +31,9 @@ describe.skip('swap.service', () => {
     '6B15A01B5D46A5321B627BD7DEEF1AF57BC629070000000000000000000000D4';
 
   beforeEach(() => {
-    vi.spyOn(console, 'log').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation(vi.fn());
     vi.clearAllMocks();
-    vaultService.batchSwap = vi.fn().mockImplementation();
+    vaultService.batchSwap = vi.fn();
     tokens.USDC = {
       address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
       amount: BigNumber.from('1000000'),
@@ -93,11 +95,11 @@ describe.skip('swap.service', () => {
           userData: '',
         },
       ];
-      // web3Service.setUserAddress(userAddress);
+      setUserAddress(userAddress);
     });
 
     describe('single swap', () => {
-      it.only('Should call vault.swap when swapping a single token for another', async () => {
+      it('Should call vault.swap when swapping a single token for another', async () => {
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
         await service.batchSwapV2(
@@ -106,9 +108,8 @@ describe.skip('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        console.log('ESTO ES ALUCINANTE: vaultService.swap', vaultService);
         const vaultSwapArgs = vaultService.swap.mock.calls[0];
-        const singleSwapArg: SingleSwap = vaultService[0];
+        const singleSwapArg: SingleSwap = vaultSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
         expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
         expect(singleSwapArg.assetIn).toEqual(tokens.USDC.address);
@@ -135,8 +136,7 @@ describe.skip('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const vaultSwapArgs = require('@/services/contracts/vault.service')
-          .vaultService.swap.mock.calls[0];
+        const vaultSwapArgs = vaultService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = vaultSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
         expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
@@ -173,9 +173,7 @@ describe.skip('swap.service', () => {
           tokens.ETHv2.address,
           tokens.wstETH.address, // tokenAddresses currently contain wstETH even though tokenIn is stETH
         ]);
-        const lidoRelayerSwapArgs =
-          require('@/services/contracts/lido-relayer.service')
-            .lidoRelayerService.swap.mock.calls[0];
+        const lidoRelayerSwapArgs = lidoRelayerService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = lidoRelayerSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdETHstETH);
         expect(singleSwapArg.kind).toEqual(SwapType.SwapExactIn);
@@ -229,8 +227,7 @@ describe.skip('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
-          .vaultService.batchSwap.mock.calls[0];
+        const vaultBatchSwapArgs = vaultService.batchSwap.mock.calls[0];
         expect(vaultBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(vaultBatchSwapArgs[1]).toEqual(swaps);
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
@@ -255,10 +252,9 @@ describe.skip('swap.service', () => {
           tokens.USDC.address,
           tokens.DAI.address,
         ];
-        require('@/services/contracts/vault.service').vaultService.batchSwap =
-          vi.fn().mockImplementation(() => {
-            throw new Error('Failed to swap');
-          });
+        vaultService.batchSwap = vi.fn().mockImplementation(() => {
+          throw new Error('Failed to swap');
+        });
         await expect(
           service.batchSwapV2(tokens.ETH, tokens.DAI, swaps, tokenAddresses)
         ).rejects.toThrow('Failed to swap');
@@ -299,9 +295,7 @@ describe.skip('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const lidoBatchSwapArgs =
-          require('@/services/contracts/lido-relayer.service')
-            .lidoRelayerService.batchSwap.mock.calls[0];
+        const lidoBatchSwapArgs = lidoRelayerService.batchSwap.mock.calls[0];
         expect(lidoBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(lidoBatchSwapArgs[1]).toEqual(swaps);
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
@@ -332,9 +326,7 @@ describe.skip('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const lidoBatchSwapArgs =
-          require('@/services/contracts/lido-relayer.service')
-            .lidoRelayerService.batchSwap.mock.calls[0];
+        const lidoBatchSwapArgs = lidoRelayerService.batchSwap.mock.calls[0];
         expect(lidoBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(lidoBatchSwapArgs[1]).toEqual(swaps);
         expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
@@ -354,10 +346,9 @@ describe.skip('swap.service', () => {
       });
 
       it('Should return a rejected promise if lido-relayer throws an error', async () => {
-        require('@/services/contracts/lido-relayer.service').lidoRelayerService.batchSwap =
-          vi.fn().mockImplementation(() => {
-            throw new Error('Failed to swap');
-          });
+        lidoRelayerService.batchSwap = vi.fn().mockImplementation(() => {
+          throw new Error('Failed to swap');
+        });
         await expect(
           service.batchSwapV2(tokens.USDC, tokens.stETH, swaps, tokenAddresses)
         ).rejects.toThrow('Failed to swap');
@@ -416,7 +407,7 @@ describe.skip('swap.service', () => {
         type: SwapTokenType.fixed,
       };
 
-      // web3Service.setUserAddress(userAddress);
+      setUserAddress(userAddress);
     });
 
     describe('boostedJoinBatchSwap', () => {
@@ -485,8 +476,7 @@ describe.skip('swap.service', () => {
           swaps,
           tokenAddresses
         );
-        const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
-          .vaultService.batchSwap.mock.calls[0];
+        const vaultBatchSwapArgs = vaultService.batchSwap.mock.calls[0];
         expect(vaultBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
         expect(vaultBatchSwapArgs[1]).toEqual(swaps);
         expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
@@ -575,13 +565,12 @@ describe.skip('swap.service', () => {
           tokenAddresses,
           SwapType.SwapExactIn
         );
+        const vaultBatchSwapArgs = vaultService.batchSwap.mock.calls[0];
+        expect(vaultBatchSwapArgs[0]).toEqual(SwapType.SwapExactIn);
+        expect(vaultBatchSwapArgs[1]).toEqual(swaps);
+        expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
 
-        vaultService.batchSwap.mock.calls[0];
-        expect(vaultService[0]).toEqual(SwapType.SwapExactIn);
-        expect(vaultService[1]).toEqual(swaps);
-        expect(vaultService[2]).toEqual(tokenAddresses);
-
-        const fundsArg: FundManagement = vaultService[3];
+        const fundsArg: FundManagement = vaultBatchSwapArgs[3];
         expect(fundsArg.sender).toEqual(userAddress);
         expect(fundsArg.recipient).toEqual(userAddress);
         expect(fundsArg.fromInternalBalance).toEqual(false);
