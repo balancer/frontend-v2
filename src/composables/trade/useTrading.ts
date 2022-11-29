@@ -99,14 +99,14 @@ export default function useTrading(
   );
 
   const tradeRoute = computed<TradeRoute>(() => {
-    if (!joinExit.swapInfo.value?.returnAmount.isZero()) {
-      return 'joinExit';
-    }
-
     if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
     } else if (isEthTrade.value) {
       return 'balancer';
+    }
+
+    if (!joinExit.swapInfo.value?.returnAmount.isZero()) {
+      return 'joinExit';
     }
 
     return tradeGasless.value && isGnosisSupportedOnNetwork.value
@@ -323,6 +323,7 @@ export default function useTrading(
     sor,
     isGnosisTrade,
     isBalancerTrade,
+    isJoinExitTrade,
     wrapType,
     isWrapUnwrapTrade,
     tokenInAddressInput,

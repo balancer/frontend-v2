@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { SubgraphPoolBase, SwapTypes, SwapInfo } from '@balancer-labs/sdk';
-import { balancer } from '@/lib/balancer.sdk';
+import { SubgraphPoolBase } from '@balancer-labs/sdk';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { formatUnits } from '@ethersproject/units';
-import { parseFixed } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
@@ -55,7 +53,6 @@ const priceUpdateAccepted = ref(false);
 
 // DATA
 const showSummaryInFiat = ref(false);
-const swapInfo = ref<SwapInfo | null>(null);
 
 // COMPUTED
 const slippageRatePercent = computed(() =>
@@ -291,7 +288,9 @@ const requiresTokenApproval = computed(() => {
   return false;
 });
 
-const requiresBatchRelayerApproval = computed(() => joinExitAvailable.value);
+const requiresBatchRelayerApproval = computed(
+  () => props.trading.isJoinExitTrade.value
+);
 
 const requiresGnosisRelayerApproval = computed(
   () =>
@@ -312,11 +311,13 @@ const showTokenApprovalStep = computed(
     tokenApproval.approving.value
 );
 
-const showBatchRelayerApprovalStep = computed(() => joinExitAvailable.value);
+const showBatchRelayerApprovalStep = computed(
+  () => props.trading.isJoinExitTrade.value
+);
 
 const showGnosisRelayerApprovalStep = computed(
   () =>
-    !joinExitAvailable.value &&
+    !props.trading.isJoinExitTrade.value &&
     (requiresGnosisRelayerApproval.value ||
       gnosisRelayerApproval.init.value ||
       gnosisRelayerApproval.approved.value ||
@@ -325,7 +326,7 @@ const showGnosisRelayerApprovalStep = computed(
 
 const showLidoRelayerApprovalStep = computed(
   () =>
-    !joinExitAvailable.value &&
+    !props.trading.isJoinExitTrade.value &&
     (requiresLidoRelayerApproval.value ||
       lidoRelayerApproval.init.value ||
       lidoRelayerApproval.approved.value ||
@@ -386,10 +387,6 @@ const showPriceUpdateError = computed(
 
 const tradeDisabled = computed(
   () => requiresApproval.value || showPriceUpdateError.value
-);
-
-const joinExitAvailable = computed(
-  () => !swapInfo.value?.returnAmount.isZero()
 );
 
 // METHODS
@@ -471,22 +468,6 @@ async function approveToken(): Promise<void> {
 // WATCHERS
 watch(blockNumber, () => {
   handlePriceUpdate();
-});
-
-// LIFECYCLE
-onBeforeMount(async () => {
-  swapInfo.value = await balancer.sor.getSwaps(
-    props.trading.tokenInAddressInput.value,
-    props.trading.tokenOutAddressInput.value,
-    SwapTypes.SwapExactIn,
-    parseFixed(
-      props.trading.tokenInAmountInput.value ||
-        props.trading.tokenOutAmountInput.value,
-      18
-    ),
-    undefined,
-    true
-  );
 });
 </script>
 
@@ -901,14 +882,14 @@ onBeforeMount(async () => {
           <div>
             <div class="mb-2 font-semibold">
               {{
-                trading.isGnosisTrade.value && !joinExitAvailable
+                trading.isGnosisTrade.value && !trading.isJoinExitTrade
                   ? $t('tradeSummary.transactionTypesTooltips.sign.title')
                   : $t('tradeSummary.transactionTypesTooltips.trade.title')
               }}
             </div>
             <div>
               {{
-                trading.isGnosisTrade.value && !joinExitAvailable
+                trading.isGnosisTrade.value && !trading.isJoinExitTrade
                   ? $t('tradeSummary.transactionTypesTooltips.sign.content')
                   : $t('tradeSummary.transactionTypesTooltips.trade.content')
               }}
@@ -925,7 +906,7 @@ onBeforeMount(async () => {
         {{ $t('connectWallet') }}
       </BalBtn>
       <BalBtn
-        v-else-if="requiresGnosisRelayerApproval && !joinExitAvailable"
+        v-else-if="requiresGnosisRelayerApproval && !trading.isJoinExitTrade"
         color="gradient"
         block
         :loading="
@@ -939,7 +920,7 @@ onBeforeMount(async () => {
         {{ $t('approveGnosisRelayer') }}
       </BalBtn>
       <BalBtn
-        v-else-if="requiresLidoRelayerApproval && !joinExitAvailable"
+        v-else-if="requiresLidoRelayerApproval && !trading.isJoinExitTrade"
         color="gradient"
         block
         :loading="

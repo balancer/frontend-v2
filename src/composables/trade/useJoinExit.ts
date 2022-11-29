@@ -185,6 +185,7 @@ export default function useJoinExit({
       if (!swapInfo.value) {
         return;
       }
+      console.log(pools.value);
       const relayerCallData = buildRelayerCalls(
         swapInfo.value,
         // @ts-ignore-next-line -- Fix types incompatibility error. Related to BigNumber?
