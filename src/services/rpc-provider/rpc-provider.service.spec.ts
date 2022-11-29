@@ -10,7 +10,7 @@ vi.mock('@ethersproject/providers', () => {
     }),
     WebSocketProvider: vi.fn().mockImplementation(() => {
       return {
-        once: vi.fn().mockImplementation(),
+        once: vi.fn(),
       };
     }),
   };

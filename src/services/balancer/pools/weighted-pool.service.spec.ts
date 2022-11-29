@@ -1,5 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
@@ -82,9 +82,11 @@ describe('PoolCreator', () => {
     };
   });
 
-  const mockProvider = {
+  const mockProvider: Web3Provider = {
     _isProvider: true,
-    getTransactionReceipt: () => polygonCreatePoolReceipt,
+    // @ts-ignore
+    getTransactionReceipt: async () => polygonCreatePoolReceipt,
+    // @ts-ignore
     getSigner: () => {
       return {
         _isSigner: true,
@@ -93,8 +95,8 @@ describe('PoolCreator', () => {
         }),
       };
     },
-    initBlockListener: vi.fn().mockImplementation(),
-    getJsonProvider: vi.fn().mockImplementation(),
+    initBlockListener: vi.fn(),
+    getJsonProvider: vi.fn(),
   };
 
   describe('create', () => {
@@ -179,7 +181,7 @@ describe('PoolCreator', () => {
     it('should work with a polygon create pool transaction receipt with no events', async () => {
       const mockProvider = {
         getTransactionReceipt: () => polygonCreatePoolReceiptNoEvents,
-        getSigner: vi.fn().mockImplementation(),
+        getSigner: vi.fn(),
       } as any;
       const poolDetails = await weightedPoolsService.retrievePoolIdAndAddress(
         mockProvider,

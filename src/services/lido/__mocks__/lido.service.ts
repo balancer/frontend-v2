@@ -1,7 +1,7 @@
 export default function LidoService() {
   return {
-    getStEthAPR: vi.fn().mockImplementation(),
-    calcStEthAPRFor: vi.fn().mockImplementation(),
+    getStEthAPR: vi.fn(),
+    calcStEthAPRFor: vi.fn(),
   };
 }
 

@@ -1,6 +1,6 @@
 export function useStore() {
   const store = {
-    commit: vi.fn().mockImplementation(),
+    commit: vi.fn(),
   };
   return store;
 }

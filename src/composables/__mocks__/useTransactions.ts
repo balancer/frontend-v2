@@ -1,5 +1,5 @@
 export default function useTransactions() {
   return {
-    addTransaction: vi.fn().mockImplementation(),
+    addTransaction: vi.fn(),
   };
 }

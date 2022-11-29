@@ -2,11 +2,14 @@ import { App } from 'vue';
 
 export async function registerGlobalComponents(app: App): Promise<void> {
   // Load global components from @/components/_global
-  const modules = import.meta.globEager([
-    '@/components/_global/**/*.{js,ts,vue}',
-    '!@/components/_global/**/*.spec.ts',
-    '!@/components/_global/**/*.stories.ts',
-  ]);
+  const modules = import.meta.glob(
+    [
+      '@/components/_global/**/*.{js,ts,vue}',
+      '!@/components/_global/**/*.spec.ts',
+      '!@/components/_global/**/*.stories.ts',
+    ],
+    { eager: true }
+  );
 
   for (const filePath of Object.keys(modules)) {
     const excludedPatterns = ['.spec.', '.stories.'];
@@ -16,6 +19,7 @@ export async function registerGlobalComponents(app: App): Promise<void> {
     if (componentName.startsWith('use')) continue;
 
     const componentConfig = modules[filePath];
+    // @ts-ignore
     app.component(componentName, componentConfig.default || componentConfig);
   }
 }

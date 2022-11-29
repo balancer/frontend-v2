@@ -1,6 +1,6 @@
 export default function AaveService() {
   return {
-    calcWeightedSupplyAPRFor: vi.fn().mockImplementation(),
+    calcWeightedSupplyAPRFor: vi.fn(),
   };
 }
 

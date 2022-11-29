@@ -1,8 +1,8 @@
-export const FNumFormats = vi.fn().mockImplementation();
+export const FNumFormats = vi.fn();
 
 export default function useNumbers() {
   return {
-    toFiat: vi.fn().mockImplementation(),
-    fNum2: vi.fn().mockImplementation(),
+    toFiat: vi.fn(),
+    fNum2: vi.fn(),
   };
 }

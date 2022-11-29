@@ -26,15 +26,15 @@ vi.mock('@/composables/useTokens', () => {
   return {
     default: vi.fn().mockImplementation(() => {
       return {
-        injectTokens: vi.fn().mockImplementation(),
+        injectTokens: vi.fn(),
         priceFor: vi.fn().mockImplementation(address => {
           if (address === mockNativeAssetAddress) {
             return mockEthPrice;
           }
           return mockTokenPrice;
         }),
-        useTokens: vi.fn().mockImplementation(),
-        getToken: vi.fn().mockImplementation(),
+        useTokens: vi.fn(),
+        getToken: vi.fn(),
       };
     }),
   };
@@ -90,9 +90,9 @@ describe('setSwapCost', () => {
 
   beforeEach(() => {
     mockedSorManager.setCostOutputToken.mockClear();
-    vi.spyOn(console, 'log').mockImplementation();
-    vi.spyOn(console, 'time').mockImplementation();
-    vi.spyOn(console, 'timeEnd').mockImplementation();
+    vi.spyOn(console, 'log');
+    vi.spyOn(console, 'time');
+    vi.spyOn(console, 'timeEnd');
   });
 
   it('Should pass a correct gas price to sorManager', async () => {

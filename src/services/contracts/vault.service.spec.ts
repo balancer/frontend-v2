@@ -65,6 +65,7 @@ describe('vault.service', () => {
 
       await vaultService.swap(single, funds, tokenOutAmount);
       const sendTransactionArgs =
+        // @ts-ignore
         web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
       expect(sendTransactionArgs[0]).toEqual({
         contractAddress: vaultService.address,
@@ -89,6 +90,7 @@ describe('vault.service', () => {
         limits
       );
       const sendTransactionArgs =
+        // @ts-ignore
         web3Service.txBuilder.contract.sendTransaction.mock.calls[0];
       expect(sendTransactionArgs[0]).toEqual({
         contractAddress: vaultService.address,

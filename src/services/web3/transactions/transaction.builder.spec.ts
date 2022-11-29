@@ -10,10 +10,10 @@ vi.mock('@ethersproject/providers', () => {
     JsonRpcSigner: vi.fn().mockImplementation(() => {
       return {
         provider: {
-          getBlockNumber: vi.fn().mockImplementation(),
+          getBlockNumber: vi.fn(),
         },
-        getAddress: vi.fn().mockImplementation(),
-        sendTransaction: vi.fn().mockImplementation(),
+        getAddress: vi.fn(),
+        sendTransaction: vi.fn(),
       };
     }),
   };
@@ -35,13 +35,13 @@ vi.mock('ethers', () => {
   return {
     Contract: vi.fn().mockImplementation(() => {
       return {
-        test: vi.fn().mockImplementation(),
+        test: vi.fn(),
       };
     }),
   };
 });
 
-const SignerMock = JsonRpcSigner as vi.mocked<typeof JsonRpcSigner>;
+const SignerMock = JsonRpcSigner;
 
 describe('TransactionBuilder', () => {
   let signer;
@@ -51,7 +51,7 @@ describe('TransactionBuilder', () => {
   });
 
   beforeEach(() => {
-    vi.spyOn(console, 'log').mockImplementation();
+    vi.spyOn(console, 'log');
   });
 
   it('Instantiates given signer', () => {

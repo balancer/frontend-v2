@@ -1,5 +1,5 @@
 export default function useEthers() {
   return {
-    txListener: vi.fn().mockImplementation(),
+    txListener: vi.fn(),
   };
 }

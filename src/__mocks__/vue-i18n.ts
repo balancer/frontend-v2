@@ -3,7 +3,7 @@ export function createI18n() {
 }
 
 export function useI18n() {
-  return { t: vi.fn().mockImplementation() };
+  return { t: vi.fn() };
 }
 
 export function mockI18n() {

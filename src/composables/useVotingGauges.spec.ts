@@ -8,7 +8,7 @@ vi.mock('@/services/web3/useWeb3');
 describe('useVotingGauges', () => {
   describe('votingPeriodEnd', () => {
     beforeAll(() => {
-      vi.useFakeTimers('modern');
+      vi.useFakeTimers();
     });
 
     it('Should work for an arbitrary time', () => {

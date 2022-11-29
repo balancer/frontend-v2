@@ -1,6 +1,6 @@
 export default function VeBalAprCalc() {
   return {
-    calc: vi.fn().mockImplementation(),
+    calc: vi.fn(),
   };
 }
 

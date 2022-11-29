@@ -10,8 +10,8 @@ const RpcProviderService = {
           }),
         };
       },
-      initBlockListener: vi.fn().mockImplementation(),
-      getJsonProvider: vi.fn().mockImplementation(),
+      initBlockListener: vi.fn(),
+      getJsonProvider: vi.fn(),
     };
   }),
 };

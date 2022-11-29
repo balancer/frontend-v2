@@ -27,7 +27,7 @@
     "tailwind:view": "tailwind-config-viewer -o",
     "generate:tokenlists": "NODE_ENV=development npx vite-node --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key ./src/lib/scripts/tokenlists.generator.ts",
     "generate:voting-gauges": "NODE_ENV=development npx vite-node --options.deps.inline=date-fns --options.deps.inline=@ethersproject/basex --options.deps.inline=@ethersproject/signing-key ./src/lib/scripts/voting-gauge.generator.ts",
-    "generate:global-types": "ts-node -O '{\"module\": \"commonjs\"}' ./src/lib/scripts/global-component-types.generator.ts",
+    "generate:global-types": "npx vite-node ./src/lib/scripts/global-component-types.generator.ts",
     "typecheck": "npm run generate:global-types && vue-tsc --noEmit"
   },
   "devDependencies": {

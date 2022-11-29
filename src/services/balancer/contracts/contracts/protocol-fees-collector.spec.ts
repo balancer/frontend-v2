@@ -38,7 +38,7 @@ describe('ProtocolFeesCollector', () => {
     });
 
     it('returns 0 if error thrown', async () => {
-      vi.spyOn(console, 'error').mockImplementation();
+      vi.spyOn(console, 'error');
       vault.instance.getProtocolFeesCollector.mockImplementation(() => {
         throw new Error('Failed to fetch addresss');
       });
