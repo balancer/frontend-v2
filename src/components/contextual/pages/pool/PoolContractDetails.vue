@@ -82,11 +82,13 @@ const data = computed(() => {
       title: t('poolManager'),
       value: poolType === PoolType.Managed ? t('yes') : t('none'),
     },
-    {
-      title: t('poolOwner'),
-      value: shortenLabel(owner),
-      link: explorer.addressLink(owner || ''),
-    },
+    owner
+      ? {
+          title: t('poolOwner'),
+          value: shortenLabel(owner),
+          link: explorer.addressLink(owner || ''),
+        }
+      : null,
     {
       title: t('contractAddress'),
       value: shortenLabel(address),
