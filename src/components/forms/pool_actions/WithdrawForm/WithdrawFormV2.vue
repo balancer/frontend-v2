@@ -37,7 +37,7 @@ const showPreview = ref(false);
  */
 const { t } = useI18n();
 const { veBalTokenInfo } = useVeBal();
-const { wrappedNativeAsset } = useTokens();
+const { wrappedNativeAsset, nativeAsset } = useTokens();
 
 const { maxSlider } = useWithdrawalState(toRef(props, 'pool'));
 
@@ -105,7 +105,11 @@ onBeforeMount(() => {
           :customBalance="singleAmountOut.max || '0'"
           :balanceLabel="$t('max')"
           :balanceLoading="isLoadingMax"
-          :excludedTokens="[veBalTokenInfo?.address, pool.address]"
+          :excludedTokens="[
+            veBalTokenInfo?.address,
+            pool.address,
+            nativeAsset.address,
+          ]"
           :tokenSelectProps="{ ignoreBalances: true }"
           ignoreWalletBalance
         />
