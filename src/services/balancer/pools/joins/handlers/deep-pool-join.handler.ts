@@ -5,8 +5,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { JoinParams, JoinPoolHandler, QueryOutput } from './join-pool.handler';
 import { balancer } from '@/lib/balancer.sdk';
 import { formatFixed, parseFixed } from '@ethersproject/bignumber';
-import { getAddress } from '@ethersproject/address';
-import { bnum } from '@/lib/utils';
+import { bnum, selectByAddress } from '@/lib/utils';
 import { TransactionBuilder } from '@/services/web3/transactions/transaction.builder';
 
 /**
@@ -48,11 +47,9 @@ export class DeepPoolJoinHandler implements JoinPoolHandler {
     relayerSignature,
   }: JoinParams): Promise<QueryOutput> {
     const parsedAmountsIn: string[] = amountsIn.map(({ address, value }) => {
-      // Get the address in right casing style
-      const realAddress = getAddress(address);
-      const token = tokensIn[realAddress];
+      const token = selectByAddress(tokensIn, address);
 
-      if (!token.decimals) throw new Error('Token decimals missing.');
+      if (!token?.decimals) throw new Error('Token decimals missing.');
 
       const parsedAmount = parseFixed(value || '0', token.decimals).toString();
       return parsedAmount;
