@@ -22,7 +22,7 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import { isVeBalPool, preMintedBptIndex, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { POOLS } from '@/constants/pools';
-import { getAddressFromPoolId, includesAddress } from '@/lib/utils';
+import { bnum, getAddressFromPoolId, includesAddress } from '@/lib/utils';
 import StakingProvider from '@/providers/local/staking/staking.provider';
 import useHistoricalPricesQuery from '@/composables/queries/useHistoricalPricesQuery';
 
@@ -129,10 +129,7 @@ onBeforeUnmount(() => {
 //#endregion
 
 const noInitLiquidity = computed(
-  () =>
-    !loadingPool.value &&
-    pool.value &&
-    Number(pool.value?.onchain?.totalSupply || '0') === 0
+  () => !loadingPool.value && pool.value && bnum(pool.value.totalShares).eq(0)
 );
 
 const missingPrices = computed(() => {
