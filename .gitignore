@@ -33,3 +33,6 @@ pnpm-debug.log*
 #test coverage
 /coverage
 
+#rollup analyzer
+stats.html
+

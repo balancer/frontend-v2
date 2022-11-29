@@ -103,6 +103,8 @@
     "prettier": "^2.7.1",
     "promise-worker": "^2.0.1",
     "require-context": "^1.1.0",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "rollup-plugin-visualizer": "^5.8.3",
     "stylelint": "^14.14.0",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-recommended-vue": "^1.4.0",

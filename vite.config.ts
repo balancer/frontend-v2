@@ -9,6 +9,8 @@ import nodePolyfills from 'vite-plugin-node-stdlib-browser';
 import postcss from './postcss.config.js';
 import type { ViteSentryPluginOptions } from 'vite-plugin-sentry';
 import viteSentry from 'vite-plugin-sentry';
+import analyze from 'rollup-plugin-analyzer';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 //TODO: check how this is used
 process.VITE_APP_VERSION = pkgVersion;
@@ -92,6 +94,12 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       minify: true,
+      rollupOptions: {
+        plugins: [
+          envConfig.VITE_BUILD_ANALIZE ? analyze({ summaryOnly: false }) : null,
+          envConfig.VITE_BUILD_VISUALIZE ? visualizer({ open: true }) : null,
+        ],
+      },
     },
     css: {
       postcss,
