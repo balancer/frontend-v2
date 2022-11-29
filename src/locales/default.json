@@ -696,6 +696,10 @@
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. You're advised to migrate your liquidity.",
       "description": ""
     },
+    "poolOwnerVulnWarningGovernanceWithdraw": {
+      "title": "This pool was deprecated due to a <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">vulnerability</a>. You're advised to withdraw your liquidity asap. Add it to the <a href=\"https://app.balancer.fi/#/ethereum/pool/0xa13a9247ea42d743238089903570127dda72fe4400000000000000000000035d\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">upgraded pool</a> to participate in liquidity incentives.",
+      "description": ""
+    },
     "poolOwnerVulnWarningEcosystem": {
       "title": "This pool is affected by a vulnerability disclosed <a href=\"https://forum.balancer.fi/t/vulnerability-disclosure/3179\" target=\"blank\" rel=\"noreferrer\" class=\"underline\">here</a>. Reach out on Discord if you need help creating a new pool with the same composition."
     },
