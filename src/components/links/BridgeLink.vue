@@ -33,7 +33,7 @@ function networkSrc(network: Network) {
     :href="bridgeUrl"
     external
     noStyle
-    class="flex items-center p-4 text-sm dark:bg-gray-850 rounded-lg border dark:border-0"
+    class="flex items-center p-4 text-sm rounded-lg border dark:border-0 dark:bg-gray-850"
   >
     <img :src="networkSrc(networkId)" :alt="label" class="mr-4 w-6 h-6" />
     {{ label }}

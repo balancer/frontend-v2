@@ -71,7 +71,7 @@ const isLoadingTotalValue = computed(
 <template>
   <AppHero :class="classes">
     <h1
-      class="mb-2 font-body text-base font-medium text-white opacity-90"
+      class="mb-2 text-base font-medium text-white opacity-90 font-body"
       v-text="$t('myBalancerBalance')"
     />
 
